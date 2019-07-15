@@ -35,9 +35,7 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build",
-    "prepublish": "npm run build",
-    "postinstall": "npm run build"
+    "dev": "parcel example/index.html -d example/build"
   },
   "files": [
     "dist"
