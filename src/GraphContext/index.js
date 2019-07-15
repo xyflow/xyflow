@@ -88,6 +88,10 @@ export const Provider = (props) => {
     setHeight(size.height);
   };
 
+  const getNodes = () => {
+    return nodes;
+  }
+
   const graphContext = {
     width,
     height,
@@ -96,6 +100,7 @@ export const Provider = (props) => {
     initD3ZoomState,
     nodes,
     setNodes,
+    getNodes,
     edges,
     setEdges,
     updateNodeData,

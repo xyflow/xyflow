@@ -1,17 +1,10 @@
 import React, { PureComponent } from 'react';
-import isEqual from 'lodash.isequal';
-import styled from '@emotion/styled';
 
 import { separateElements } from './graph-utils';
 import GraphView from './GraphView';
 import { Provider } from './GraphContext';
 
-const GraphWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-`;
+import './style.css';
 
 class ReactGraph extends PureComponent {
   render() {
@@ -20,12 +13,12 @@ class ReactGraph extends PureComponent {
 		} = this.props;
 
     return (
-      <GraphWrapper style={style}>
+      <div style={style} className="react-graph">
         <Provider {...separateElements(elements)} onNodeClick={onNodeClick}>
           <GraphView onLoad={onLoad} onMove={onMove} />
           {children}
         </Provider>
-      </GraphWrapper>
+      </div>
     );
   }
 }
@@ -33,7 +26,8 @@ class ReactGraph extends PureComponent {
 ReactGraph.defaultProps = {
 	onNodeClick: () => {},
 	onLoad: () => {},
-	onMove: () => {}
+  onMove: () => {},
+  onChange: () => {}
 };
 
 export default ReactGraph;

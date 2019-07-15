@@ -31800,6 +31800,10 @@
       setHeight(size.height);
     };
 
+    var getNodes = function getNodes() {
+      return nodes;
+    };
+
     var graphContext = {
       width: width,
       height: height,
@@ -31808,6 +31812,7 @@
       initD3ZoomState: initD3ZoomState,
       nodes: nodes,
       setNodes: setNodes,
+      getNodes: getNodes,
       edges: edges,
       setEdges: setEdges,
       updateNodeData: updateNodeData,
@@ -34406,6 +34411,7 @@
     }, [props.size.width, props.size.height]);
     React.useEffect(function () {
       if (graphContext.d3ZoomState.initialised) {
+        console.log(GraphContext);
         props.onLoad({
           nodes: graphContext.nodes,
           edges: graphContext.edges,
@@ -34425,16 +34431,35 @@
     monitorHeight: true
   })(GraphView);
 
-  function _templateObject$8() {
-    var data = _taggedTemplateLiteral(["\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n"]);
+  function styleInject(css, ref) {
+    if ( ref === void 0 ) ref = {};
+    var insertAt = ref.insertAt;
 
-    _templateObject$8 = function _templateObject() {
-      return data;
-    };
+    if (!css || typeof document === 'undefined') { return; }
 
-    return data;
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (insertAt === 'top') {
+      if (head.firstChild) {
+        head.insertBefore(style, head.firstChild);
+      } else {
+        head.appendChild(style);
+      }
+    } else {
+      head.appendChild(style);
+    }
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
   }
-  var GraphWrapper = newStyled.div(_templateObject$8());
+
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}";
+  styleInject(css);
 
   var ReactGraph =
   /*#__PURE__*/

@@ -2,8 +2,8 @@
   "name": "react-graph",
   "version": "1.0.0",
   "module": "dist/ReactGraph.esm.js",
-  "browser": "dist/ReactGraph.umd.js",
-  "main": "dist/ReactGraph.umd.js",
+  "browser": "dist/ReactGraph.js",
+  "main": "dist/ReactGraph.js",
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.14",
@@ -11,6 +11,7 @@
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.7.3",
     "lodash.isequal": "^4.5.0",
+    "react": "^16.8.6",
     "react-draggable": "^3.3.0",
     "react-sizeme": "^2.6.7"
   },
@@ -18,6 +19,7 @@
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "autoprefixer": "^9.6.1",
     "babel-preset-react-app": "^9.0.0",
     "husky": "^3.0.0",
     "parcel-bundler": "^1.12.3",
@@ -27,6 +29,7 @@
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-livereload": "^1.0.1",
     "rollup-plugin-node-resolve": "^5.1.0",
+    "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-serve": "^1.0.1"
   },
   "peerDependencies": {
@@ -39,7 +42,7 @@
     "dev": "parcel example/index.html -d example/build"
   },
   "husky": {
-    "hooks" : {
+    "hooks": {
       "pre-push": "npm run build"
     }
   },

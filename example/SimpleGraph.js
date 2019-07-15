@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import Graph from '../src';
+
+// import Graph from '../src';
+import Graph from '../dist/ReactGraph';
 
 class App extends PureComponent {
   constructor() {
@@ -23,14 +25,14 @@ class App extends PureComponent {
   onLoad(graphInstance) {
     this.graphInstance = graphInstance;
 
-    console.log('graph loaded:', graphInstance);
+    console.log('graph loaded:', this.graphInstance);
   }
 
   onMove() {
     if (!this.graphInstance) {
       return false;
     }
-    console.log('graph moved');
+    console.log('graph moved', this.graphInstance.nodes);
   }
 
   onFitView() {

@@ -1,0 +1,20 @@
+.react-graph {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.react-graph__renderer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.react-graph__zoomnode {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

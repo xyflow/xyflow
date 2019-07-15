@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useRef } from 'react';
-import styled from '@emotion/styled';
 import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import ReactSizeMe from 'react-sizeme';
@@ -7,20 +6,6 @@ import ReactSizeMe from 'react-sizeme';
 import { GraphContext } from '../GraphContext';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-
-const GraphViewWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-`;
-
-const ZoomNode = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
 
 const GraphView = (props) => {
   const zoomNode = useRef(null);
@@ -59,12 +44,19 @@ const GraphView = (props) => {
     }
   }, [graphContext.d3ZoomState.initialised]);
 
+  useEffect(() => {
+    props.onChange({
+      nodes: graphContext.nodes,
+      edges: graphContext.edges,
+    });
+  })
+
   return (
-    <GraphViewWrapper>
+    <div className="react-graph__renderer">
       <NodeRenderer />
       <EdgeRenderer width={graphContext.width} height={graphContext.height} />
-      <ZoomNode ref={zoomNode} />
-    </GraphViewWrapper>
+      <ZoomNode className="react-graph__zoomnode" ref={zoomNode} />
+    </div>
   );
 };
 
