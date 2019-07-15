@@ -44,6 +44,24 @@
     return obj;
   }
 
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
 
@@ -31203,7 +31221,7 @@
     };
   }();
 
-  var _extends = Object.assign || function (target) {
+  var _extends$1 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -31356,7 +31374,7 @@
         renderProps.size = size;
       }
 
-      var toRender = renderPlaceholder ? React__default.createElement(Placeholder, { className: className, style: style }) : React__default.createElement(WrappedComponent, _extends({}, renderProps, restProps));
+      var toRender = renderPlaceholder ? React__default.createElement(Placeholder, { className: className, style: style }) : React__default.createElement(WrappedComponent, _extends$1({}, renderProps, restProps));
 
       return React__default.createElement(
         ReferenceWrapper,
@@ -31457,7 +31475,7 @@
           }, _this2.determineStrategy = function (props) {
             if (props.onSize) {
               if (!_this2.callbackState) {
-                _this2.callbackState = _extends({}, _this2.state);
+                _this2.callbackState = _extends$1({}, _this2.state);
               }
               _this2.strategy = 'callback';
             } else {
@@ -31553,9 +31571,9 @@
           value: function render() {
             var disablePlaceholder = withSize.enableSSRBehaviour || withSize.noPlaceholders || noPlaceholder || this.strategy === 'callback';
 
-            var size = _extends({}, this.state);
+            var size = _extends$1({}, this.state);
 
-            return React__default.createElement(SizeMeRenderWrapper, _extends({
+            return React__default.createElement(SizeMeRenderWrapper, _extends$1({
               explicitRef: this.refCallback,
               size: this.strategy === 'callback' ? null : size,
               disablePlaceholder: disablePlaceholder
@@ -31723,6 +31741,19 @@
         _useState12 = _slicedToArray(_useState11, 2),
         transform = _useState12[0],
         setTransform = _useState12[1];
+
+    React.useEffect(function () {
+      var nodesChanged = !lodash_isequal(nodes, props.nodes);
+      var edgesChanged = !lodash_isequal(edges, props.edges);
+
+      if (nodesChanged) {
+        setNodes(props.nodes);
+      }
+
+      if (edgesChanged) {
+        setEdges(props.edges);
+      }
+    });
 
     var updateNodeData = function updateNodeData(nodeId, updateData) {
       var updatedNodes = nodes.map(function (n) {
@@ -34410,46 +34441,13 @@
   function (_PureComponent) {
     _inherits(ReactGraph, _PureComponent);
 
-    function ReactGraph(props) {
-      var _this;
-
+    function ReactGraph() {
       _classCallCheck(this, ReactGraph);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(ReactGraph).call(this));
-      var elements = props.elements;
-      _this.state = _objectSpread2({}, separateElements(elements));
-      return _this;
+      return _possibleConstructorReturn(this, _getPrototypeOf(ReactGraph).apply(this, arguments));
     }
 
     _createClass(ReactGraph, [{
-      key: "componentDidUpdate",
-      value: function componentDidUpdate(prevProps, prevState) {
-        var elements = this.props.elements;
-
-        var _separateElements = separateElements(elements),
-            nodes = _separateElements.nodes,
-            edges = _separateElements.edges;
-
-        var nodesChanged = !lodash_isequal(nodes, prevState.nodes);
-        var edgesChanged = !lodash_isequal(edges, prevState.edges);
-
-        if (!nodesChanged && !edgesChanged) {
-          return false;
-        }
-
-        if (nodesChanged) {
-          this.setState({
-            nodes: nodes
-          });
-        }
-
-        if (edgesChanged) {
-          this.setState({
-            edges: edges
-          });
-        }
-      }
-    }, {
       key: "render",
       value: function render() {
         var _this$props = this.props,
@@ -34457,17 +34455,13 @@
             onNodeClick = _this$props.onNodeClick,
             children = _this$props.children,
             onLoad = _this$props.onLoad,
-            onMove = _this$props.onMove;
-        var _this$state = this.state,
-            nodes = _this$state.nodes,
-            edges = _this$state.edges;
+            onMove = _this$props.onMove,
+            elements = _this$props.elements;
         return React__default.createElement(GraphWrapper, {
           style: style
-        }, React__default.createElement(Provider, {
-          nodes: nodes,
-          edges: edges,
+        }, React__default.createElement(Provider, _extends({}, separateElements(elements), {
           onNodeClick: onNodeClick
-        }, React__default.createElement(GraphView$1, {
+        }), React__default.createElement(GraphView$1, {
           onLoad: onLoad,
           onMove: onMove
         }), children));
