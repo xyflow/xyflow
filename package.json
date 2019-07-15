@@ -36,8 +36,12 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build",
-    "pre-commit": "npm run build"
+    "dev": "parcel example/index.html -d example/build"
+  },
+  "husky": {
+    "hooks" : {
+      "pre-commit": "npm run build"
+    }
   },
   "files": [
     "dist"
