@@ -1,27 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import styled from '@emotion/styled';
 import ReactDraggable from 'react-draggable';
 
 import { GraphContext } from '../../GraphContext';
-
-const NodeWrapper = styled.div`
-  position: absolute;
-  width: 150px;
-  color: #222;
-  font-family: sans-serif;
-  font-size: 12px;
-  text-align: center;
-  cursor: grab;
-  border: 1px solid #ddd;
-  border-radius: 2px;
-  user-select: none;
-  pointer-events: all;
-  transform-origin: 0 0;
-
-  &:hover {
-    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
-  }
-`;
 
 export default NodeComponent => (props) => {
   const { position, data, onNodeClick } = props;
@@ -62,15 +42,15 @@ export default NodeComponent => (props) => {
       }}
       scale={k}
     >
-      <NodeWrapper
-        className="node"
+      <div
+        className="react-graph__nodewrap"
         ref={nodeElement}
         style={{ transform: `translate(${position.x}px,${position.y}px)` }}
         onClick={() => onNodeClick(data)}
         // style={{ transform: `translate(${nodePosition.x}px,${nodePosition.y}px) scale(${k})` }}
       >
         <NodeComponent {...props} />
-      </NodeWrapper>
+      </div>
     </ReactDraggable.DraggableCore>
   );
 };

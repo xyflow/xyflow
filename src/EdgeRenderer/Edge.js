@@ -1,11 +1,4 @@
 import React from 'react';
-import styled from '@emotion/styled';
-
-const Path = styled.path`
-  fill: none;
-  stroke: #333;
-  stroke-width: 2;
-`;
 
 export default (props) => {
   const { targetNode, sourceNode } = props;
@@ -17,7 +10,8 @@ export default (props) => {
   const targetY = targetNode.position.y;
 
   return (
-    <Path
+    <path
+      className="react-graph__edge"
       d={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
     />
   );

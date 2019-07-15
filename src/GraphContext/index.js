@@ -25,11 +25,20 @@ export const Provider = (props) => {
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
 
   useEffect(() => {
-    const nodesChanged = !isEqual(nodes, props.nodes);
+    const nextNodes = props.nodes.map(propNode => {
+      const existingNode = nodes.find(n => n.data.id === propNode.data.id);
+
+      if (existingNode) {
+        return Object.assign(propNode, existingNode);
+      }
+      return propNode;
+    });
+
+    const nodesChanged = !isEqual(nodes, nextNodes);
     const edgesChanged = !isEqual(edges, props.edges);
 
     if (nodesChanged) {
-      setNodes(props.nodes);
+      setNodes(nextNodes);
     }
 
     if (edgesChanged) {

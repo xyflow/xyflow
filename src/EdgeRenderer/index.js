@@ -38,7 +38,7 @@ class EdgeRenderer extends PureComponent {
           <svg
             width={width}
             height={height}
-            style={{ pointerEvents: 'none' }}
+            className="react-graph__edges"
           >
             <g
               transform={`translate(${transform.x},${transform.y}) scale(${transform.k})`}
