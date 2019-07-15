@@ -1,5 +1,5 @@
 {
-  "name": "react-graphs",
+  "name": "react-graph",
   "version": "1.0.0",
   "module": "dist/ReactGraph.esm.js",
   "browser": "dist/ReactGraph.umd.js",
