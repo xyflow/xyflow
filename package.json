@@ -1,5 +1,5 @@
 {
-  "name": "react-graph",
+  "name": "react-graphs",
   "version": "1.0.0",
   "module": "dist/ReactGraph.esm.js",
   "browser": "dist/ReactGraph.umd.js",
@@ -10,10 +10,8 @@
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.7.3",
     "lodash.isequal": "^4.5.0",
-    "ms": "^2.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
     "react-draggable": "^3.3.0",
+    "react-graph": "git+ssh://git@github.com/wbkd/react-graph.git",
     "react-sizeme": "^2.6.7"
   },
   "devDependencies": {
@@ -30,10 +28,16 @@
     "rollup-plugin-node-resolve": "^5.1.0",
     "rollup-plugin-serve": "^1.0.1"
   },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "prop-types": "^15.0.0-0"
+  },
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build"
+    "dev": "parcel example/index.html -d example/build",
+    "prepublish": "npm run build",
+    "postinstall": "npm run build"
   },
   "files": [
     "dist"
