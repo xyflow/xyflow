@@ -1,0 +1,41 @@
+{
+  "name": "react-graph",
+  "version": "1.0.0",
+  "module": "dist/ReactGraph.esm.js",
+  "browser": "dist/ReactGraph.umd.js",
+  "private": true,
+  "dependencies": {
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
+    "d3-selection": "^1.4.0",
+    "d3-zoom": "^1.7.3",
+    "lodash.isequal": "^4.5.0",
+    "ms": "^2.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-draggable": "^3.3.0",
+    "react-sizeme": "^2.6.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-preset-react-app": "^9.0.0",
+    "parcel-bundler": "^1.12.3",
+    "react-dom": "^16.8.6",
+    "rollup": "^1.16.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-livereload": "^1.0.1",
+    "rollup-plugin-node-resolve": "^5.1.0",
+    "rollup-plugin-serve": "^1.0.1"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -w -c",
+    "dev": "parcel example/index.html -d example/build"
+  },
+  "files": [
+    "dist"
+  ]
+}
