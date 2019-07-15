@@ -24,6 +24,7 @@
     "react-dom": "^16.8.6",
     "rollup": "^1.16.2",
     "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-livereload": "^1.0.1",
     "rollup-plugin-node-resolve": "^5.1.0",
@@ -41,7 +42,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm run build"
+      "pre-commit": "npm run build"
     }
   },
   "files": [
