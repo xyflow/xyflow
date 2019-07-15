@@ -19,6 +19,7 @@
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "babel-preset-react-app": "^9.0.0",
+    "husky": "^3.0.0",
     "parcel-bundler": "^1.12.3",
     "react-dom": "^16.8.6",
     "rollup": "^1.16.2",
@@ -35,7 +36,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build"
+    "dev": "parcel example/index.html -d example/build",
+    "pre-commit": "npm run build"
   },
   "files": [
     "dist"
