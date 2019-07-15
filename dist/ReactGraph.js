@@ -34407,7 +34407,7 @@
     }, React__default.createElement(NodeRenderer, null), React__default.createElement(EdgeRenderer, {
       width: graphContext.width,
       height: graphContext.height
-    }), React__default.createElement(ZoomNode, {
+    }), React__default.createElement("div", {
       className: "react-graph__zoomnode",
       ref: zoomNode
     }));
@@ -34467,6 +34467,7 @@
             children = _this$props.children,
             onLoad = _this$props.onLoad,
             onMove = _this$props.onMove,
+            onChange = _this$props.onChange,
             elements = _this$props.elements;
         return React__default.createElement("div", {
           style: style,
@@ -34475,7 +34476,8 @@
           onNodeClick: onNodeClick
         }), React__default.createElement(GraphView$1, {
           onLoad: onLoad,
-          onMove: onMove
+          onMove: onMove,
+          onChange: onChange
         }), children));
       }
     }]);
