@@ -11,7 +11,6 @@
     "d3-zoom": "^1.7.3",
     "lodash.isequal": "^4.5.0",
     "react-draggable": "^3.3.0",
-    "react-graph": "git+ssh://git@github.com/wbkd/react-graph.git",
     "react-sizeme": "^2.6.7"
   },
   "devDependencies": {
