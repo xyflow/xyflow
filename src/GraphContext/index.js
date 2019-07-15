@@ -1,6 +1,8 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { zoomIdentity } from 'd3-zoom';
+import isEqual from 'lodash.isequal';
+
 import { getBoundingBox } from '../graph-utils';
 
 export const GraphContext = createContext({});
@@ -21,6 +23,19 @@ export const Provider = (props) => {
   const [nodes, setNodes] = useState(initNodes);
   const [edges, setEdges] = useState(initEdges);
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
+
+  useEffect(() => {
+    const nodesChanged = !isEqual(nodes, props.nodes);
+    const edgesChanged = !isEqual(edges, props.edges);
+
+    if (nodesChanged) {
+      setNodes(props.nodes);
+    }
+
+    if (edgesChanged) {
+      setEdges(props.edges);
+    }
+  });
 
   const updateNodeData = (nodeId, updateData) => {
     const updatedNodes = nodes.map((n) => {
