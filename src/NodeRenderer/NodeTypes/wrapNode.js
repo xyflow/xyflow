@@ -47,7 +47,7 @@ export default NodeComponent => (props) => {
         className="react-graph__nodewrap"
         ref={nodeElement}
         style={{ transform: `translate(${position.x}px,${position.y}px)` }}
-        onClick={() => onNodeClick(data)}
+        onClick={() => onNodeClick({ data, position })}
       >
         <NodeComponent {...props} />
       </div>
