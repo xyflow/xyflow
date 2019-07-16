@@ -46,8 +46,6 @@
   font-size: 12px;
   text-align: center;
   cursor: grab;
-  border: 1px solid #ddd;
-  border-radius: 2px;
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;

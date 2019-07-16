@@ -2,8 +2,14 @@ import React from 'react';
 
 import Handle from '../Handle';
 
+const nodeStyles = {
+  background: '#ff6060',
+  padding: 10,
+  borderRadius: 5
+};
+
 export default ({ data, style }) => (
-  <div style={{ background: '#ff6060', padding: '10px', ...style }}>
+  <div style={{ ...nodeStyles, ...style }}>
     <Handle style={{ top: 0 }} />
     {data.label}
     <Handle style={{ bottom: 0, top: 'auto', transform: 'translate(-50%, 50%)' }} />

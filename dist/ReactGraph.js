@@ -29962,7 +29962,12 @@
       key: "renderNode",
       value: function renderNode(d, onNodeClick) {
         var nodeType = d.data.type || 'default';
-        var NodeComponent = this.props.nodeTypes[nodeType];
+
+        if (!this.props.nodeTypes[nodeType]) {
+          console.warn("No node type found for type \"".concat(nodeType, "\". Using fallback type \"default\"."));
+        }
+
+        var NodeComponent = this.props.nodeTypes[nodeType] || this.props.nodeTypes["default"];
         return React__default.createElement(NodeComponent, {
           key: d.data.id,
           position: d.position,
@@ -30131,14 +30136,16 @@
     }, props));
   });
 
+  var nodeStyles = {
+    background: '#ff6060',
+    padding: 10,
+    borderRadius: 5
+  };
   var DefaultNode = (function (_ref) {
     var data = _ref.data,
         style = _ref.style;
     return React__default.createElement("div", {
-      style: _objectSpread2({
-        background: '#ff6060',
-        padding: '10px'
-      }, style)
+      style: _objectSpread2({}, nodeStyles, {}, style)
     }, React__default.createElement(Handle, {
       style: {
         top: 0
@@ -30152,14 +30159,16 @@
     }));
   });
 
+  var nodeStyles$1 = {
+    background: '#9999ff',
+    padding: 10,
+    borderRadius: 5
+  };
   var InputNode = (function (_ref) {
     var data = _ref.data,
         style = _ref.style;
     return React__default.createElement("div", {
-      style: _objectSpread2({
-        background: '#9999ff',
-        padding: '10px'
-      }, style)
+      style: _objectSpread2({}, nodeStyles$1, {}, style)
     }, data.label, React__default.createElement(Handle, {
       style: {
         bottom: 0,
@@ -30169,14 +30178,16 @@
     }));
   });
 
+  var nodeStyles$2 = {
+    background: '#55ff99',
+    padding: 10,
+    borderRadius: 5
+  };
   var OutputNode = (function (_ref) {
     var data = _ref.data,
         style = _ref.style;
     return React__default.createElement("div", {
-      style: _objectSpread2({
-        background: '#55ff99',
-        padding: '10px'
-      }, style)
+      style: _objectSpread2({}, nodeStyles$2, {}, style)
     }, React__default.createElement(Handle, {
       style: {
         top: 0
@@ -32474,7 +32485,7 @@
     var specialTypes = Object.keys(nodeTypes).filter(function (k) {
       return !['input', 'default', 'output'].includes(k);
     }).reduce(function (res, key) {
-      res[key] = wrapNode(nodeTypes[key]);
+      res[key] = wrapNode(nodeTypes[key] || DefaultNode);
       return res;
     }, {});
     return _objectSpread2({}, standardTypes, {}, specialTypes);
@@ -32507,7 +32518,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoomnode {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap {\n  position: absolute;\n  width: 150px;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  border: 1px solid #ddd;\n  border-radius: 2px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap:hover {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoomnode {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap {\n  position: absolute;\n  width: 150px;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap:hover {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
   styleInject(css);
 
   var ReactGraph =

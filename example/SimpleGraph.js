@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react';
 import Graph from '../src';
 // import Graph from '../dist/ReactGraph';
 
-const SpecialNode = ({ data }) =>
-  <div>I am Special!<br />{data.label}</div>
+const SpecialNode = ({ data, styles }) =>
+  <div style={{ background: '#FFCC00', padding: 10, borderRadius: 30, ...styles }}>I am Special!<br />{data.label}</div>
 ;
 
 class App extends PureComponent {
