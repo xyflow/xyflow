@@ -25,14 +25,14 @@ class NodeRenderer extends PureComponent {
   render() {
     return (
       <Consumer>
-        {({ transform, nodes, onNodeClick }) => (
+        {({ onNodeClick, state }) => (
           <div
             className="react-graph__nodes"
             style={{
-              transform: `translate(${transform.x}px,${transform.y}px) scale(${transform.k})`
+              transform: `translate(${state.transform[0]}px,${state.transform[1]}px) scale(${state.transform[2]})`
             }}
           >
-            {nodes.map(d => this.renderNode(d, onNodeClick))}
+            {state.nodes.map(d => this.renderNode(d, onNodeClick))}
           </div>
         )}
       </Consumer>

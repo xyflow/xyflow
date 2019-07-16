@@ -34,16 +34,16 @@ class EdgeRenderer extends PureComponent {
 
     return (
       <Consumer>
-        {({ transform, edges, nodes }) => (
+        {({ state }) => (
           <svg
             width={width}
             height={height}
             className="react-graph__edges"
           >
             <g
-              transform={`translate(${transform.x},${transform.y}) scale(${transform.k})`}
+              transform={`translate(${state.transform[0]},${state.transform[1]}) scale(${state.transform[2]})`}
             >
-              {edges.map(e => renderEdge(e, nodes))}
+              {state.edges.map(e => renderEdge(e, state.nodes))}
             </g>
           </svg>
         )}
