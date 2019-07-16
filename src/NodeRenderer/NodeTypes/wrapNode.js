@@ -3,10 +3,11 @@ import ReactDraggable from 'react-draggable';
 
 import { GraphContext } from '../../GraphContext';
 import { updateNodeData, updateNodePos } from '../../state/actions';
+import { projectPosition } from '../../graph-utils';
 
 export default NodeComponent => (props) => {
   const { position, data, onNodeClick } = props;
-  const { id, __width, __height } = data;
+  const { id } = data;
   const nodeElement = useRef(null);
   const graphContext = useContext(GraphContext);
   const [ x, y, k ] = graphContext.state.transform;
@@ -16,31 +17,32 @@ export default NodeComponent => (props) => {
     const unscaledWith = Math.round(bounds.width * (1 / k));
     const unscaledHeight = Math.round(bounds.height * (1 / k));
 
-    if (__width !== unscaledWith || __height !== unscaledHeight) {
-      graphContext.dispatch(updateNodeData(id, { __width: unscaledWith, __height: unscaledHeight }));
-    }
+    graphContext.dispatch(updateNodeData(id, { __width: unscaledWith, __height: unscaledHeight }));
   }, []);
-
-  const nodePosition = {
-    x: (k * position.x) + x,
-    y: (k * position.y) + y
-  };
 
   return (
     <ReactDraggable.DraggableCore
       grid={[1, 1]}
       onStart={(e) => {
-        const offsetX = e.clientX - position.x - x;
-        const offsetY = e.clientY - position.y - y;
+        const unscaledPos = {
+          x: e.clientX * (1 / k),
+          y: e.clientY * (1 / k)
+        }
+        const offsetX = unscaledPos.x - position.x - x;
+        const offsetY = unscaledPos.y - position.y - y;
 
         graphContext.dispatch(updateNodeData(id, { __offsetX: offsetX, __offsetY: offsetY }));
       }}
       onDrag={(e, d) => {
         const { __offsetX = 0, __offsetY = 0 } = data;
+        const unscaledPos = {
+          x: e.clientX * (1 / k),
+          y: e.clientY * (1 / k)
+        }
 
         graphContext.dispatch(updateNodePos(id, {
-          x: e.clientX - x - __offsetX,
-          y: e.clientY - y - __offsetY
+          x: unscaledPos.x - x - __offsetX,
+          y: unscaledPos.y - y - __offsetY
         }));
       }}
       scale={k}

@@ -42,8 +42,16 @@ export const getBoundingBox = (nodes) => {
   };
 };
 
+export const projectPosition = (pos, transform) => {
+  return {
+    x: (pos.x * transform[2]) + transform[0],
+    y: (pos.y * transform[2]) + transform[1]
+  };
+}
+
 export default {
   isEdge,
   separateElements,
-  getBoundingBox
+  getBoundingBox,
+  projectPosition
 };
