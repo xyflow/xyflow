@@ -13,9 +13,11 @@ export default NodeComponent => (props) => {
 
   useEffect(() => {
     const bounds = nodeElement.current.getBoundingClientRect();
+    const unscaledWith = Math.round(bounds.width * (1 / k));
+    const unscaledHeight = Math.round(bounds.height * (1 / k));
 
-    if (__width !== bounds.width || __height !== bounds.height) {
-      graphContext.dispatch(updateNodeData(id, { __width: bounds.width, __height: bounds.height }));
+    if (__width !== unscaledWith || __height !== unscaledHeight) {
+      graphContext.dispatch(updateNodeData(id, { __width: unscaledWith, __height: unscaledHeight }));
     }
   }, []);
 

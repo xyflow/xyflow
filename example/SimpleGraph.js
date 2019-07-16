@@ -38,7 +38,7 @@ class App extends PureComponent {
     if (!this.graphInstance) {
       return false;
     }
-    console.log('graph changed', elements);
+    // console.log('graph changed', elements);
   }
 
   onFitView() {
