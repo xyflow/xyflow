@@ -32401,9 +32401,7 @@
       var position = props.position,
           data = props.data,
           onNodeClick = props.onNodeClick;
-      var id = data.id,
-          __width = data.__width,
-          __height = data.__height;
+      var id = data.id;
       var nodeElement = React.useRef(null);
       var graphContext = React.useContext(GraphContext);
 
@@ -32414,23 +32412,22 @@
 
       React.useEffect(function () {
         var bounds = nodeElement.current.getBoundingClientRect();
-
-        if (__width !== bounds.width || __height !== bounds.height) {
-          graphContext.dispatch(updateNodeData(id, {
-            __width: bounds.width,
-            __height: bounds.height
-          }));
-        }
+        var unscaledWith = Math.round(bounds.width * (1 / k));
+        var unscaledHeight = Math.round(bounds.height * (1 / k));
+        graphContext.dispatch(updateNodeData(id, {
+          __width: unscaledWith,
+          __height: unscaledHeight
+        }));
       }, []);
-      var nodePosition = {
-        x: k * position.x + x,
-        y: k * position.y + y
-      };
       return React__default.createElement(reactDraggable.DraggableCore, {
         grid: [1, 1],
         onStart: function onStart(e) {
-          var offsetX = e.clientX - position.x - x;
-          var offsetY = e.clientY - position.y - y;
+          var unscaledPos = {
+            x: e.clientX * (1 / k),
+            y: e.clientY * (1 / k)
+          };
+          var offsetX = unscaledPos.x - position.x - x;
+          var offsetY = unscaledPos.y - position.y - y;
           graphContext.dispatch(updateNodeData(id, {
             __offsetX: offsetX,
             __offsetY: offsetY
@@ -32442,9 +32439,13 @@
               _data$__offsetY = data.__offsetY,
               __offsetY = _data$__offsetY === void 0 ? 0 : _data$__offsetY;
 
+          var unscaledPos = {
+            x: e.clientX * (1 / k),
+            y: e.clientY * (1 / k)
+          };
           graphContext.dispatch(updateNodePos(id, {
-            x: e.clientX - x - __offsetX,
-            y: e.clientY - y - __offsetY
+            x: unscaledPos.x - x - __offsetX,
+            y: unscaledPos.y - y - __offsetY
           }));
         },
         scale: k
