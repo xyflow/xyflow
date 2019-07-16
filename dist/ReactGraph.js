@@ -29759,54 +29759,155 @@
   module.exports = isEqual;
   });
 
+  var SET_EDGES = 'SET_EDGES';
+  var SET_NODES = 'SET_NODES';
+  var UPDATE_NODE_DATA = 'UPDATE_NODE_DATA';
+  var UPDATE_NODE_POS = 'UPDATE_NODE_POS';
+  var UPDATE_TRANSFORM = 'UPDATE_TRANSFORM';
+  var UPDATE_SIZE = 'UPDATE_SIZE';
+  var INIT_D3 = 'INIT_D3';
+  var FIT_VIEW = 'FIT_VIEW';
+  var initialState = {
+    width: 0,
+    height: 0,
+    transform: [0, 0, 1],
+    nodes: [],
+    edges: [],
+    d3Zoom: null,
+    d3Selection: null,
+    d3Initialised: false
+  };
+  var reducer = function reducer(state, action) {
+    switch (action.type) {
+      case UPDATE_NODE_DATA:
+        {
+          return _objectSpread2({}, state, {
+            nodes: state.nodes.map(function (n) {
+              if (n.data.id === action.payload.id) {
+                n.data = _objectSpread2({}, n.data, {}, action.payload.data);
+              }
+
+              return n;
+            })
+          });
+        }
+
+      case UPDATE_NODE_POS:
+        {
+          return _objectSpread2({}, state, {
+            nodes: state.nodes.map(function (n) {
+              if (n.data.id === action.payload.id) {
+                n.position = action.payload.pos;
+              }
+
+              return n;
+            })
+          });
+        }
+
+      case FIT_VIEW:
+        {
+          var bounds = getBoundingBox(state.nodes);
+          var k = Math.min(state.width, state.height) / Math.max(bounds.width, bounds.height);
+          var boundsCenterX = bounds.x + bounds.width / 2;
+          var boundsCenterY = bounds.y + bounds.height / 2;
+          var translate = [state.width / 2 - boundsCenterX * k, state.height / 2 - boundsCenterY * k];
+          var initialTransform = identity$1.translate(translate[0], translate[1]).scale(k);
+          state.d3Selection.call(state.d3Zoom.transform, initialTransform);
+          return state;
+        }
+
+      case SET_NODES:
+      case SET_EDGES:
+      case UPDATE_TRANSFORM:
+      case INIT_D3:
+      case UPDATE_SIZE:
+        return _objectSpread2({}, state, {}, action.payload);
+
+      default:
+        return state;
+    }
+  };
+
+  var updateTransform = function updateTransform(transform) {
+    return {
+      type: UPDATE_TRANSFORM,
+      payload: {
+        transform: [transform.x, transform.y, transform.k]
+      }
+    };
+  };
+  var updateSize = function updateSize(size) {
+    return {
+      type: UPDATE_SIZE,
+      payload: size
+    };
+  };
+  var setNodes = function setNodes(nodes) {
+    return {
+      type: SET_NODES,
+      payload: {
+        nodes: nodes
+      }
+    };
+  };
+  var setEdges = function setEdges(edges) {
+    return {
+      type: SET_EDGES,
+      payload: {
+        edges: edges
+      }
+    };
+  };
+  var updateNodeData = function updateNodeData(id, data) {
+    return {
+      type: UPDATE_NODE_DATA,
+      payload: {
+        id: id,
+        data: data
+      }
+    };
+  };
+  var updateNodePos = function updateNodePos(id, pos) {
+    return {
+      type: UPDATE_NODE_POS,
+      payload: {
+        id: id,
+        pos: pos
+      }
+    };
+  };
+  var initD3 = function initD3(_ref) {
+    var zoom = _ref.zoom,
+        selection = _ref.selection;
+    return {
+      type: INIT_D3,
+      payload: {
+        d3Zoom: zoom,
+        d3Selection: selection,
+        d3Initialised: true
+      }
+    };
+  };
+  var fitView = function fitView() {
+    return {
+      type: FIT_VIEW
+    };
+  };
+
   var GraphContext = React.createContext({});
   var Provider = function Provider(props) {
-    var initNodes = props.nodes,
-        initEdges = props.edges,
-        onNodeClick = props.onNodeClick,
+    var onNodeClick = props.onNodeClick,
         children = props.children;
 
-    var _useState = React.useState(0),
-        _useState2 = _slicedToArray(_useState, 2),
-        width = _useState2[0],
-        setWidth = _useState2[1];
-
-    var _useState3 = React.useState(0),
-        _useState4 = _slicedToArray(_useState3, 2),
-        height = _useState4[0],
-        setHeight = _useState4[1];
-
-    var _useState5 = React.useState({
-      zoom: null,
-      selection: null,
-      initialised: false
-    }),
-        _useState6 = _slicedToArray(_useState5, 2),
-        d3ZoomState = _useState6[0],
-        initD3ZoomState = _useState6[1];
-
-    var _useState7 = React.useState(initNodes),
-        _useState8 = _slicedToArray(_useState7, 2),
-        nodes = _useState8[0],
-        setNodes = _useState8[1];
-
-    var _useState9 = React.useState(initEdges),
-        _useState10 = _slicedToArray(_useState9, 2),
-        edges = _useState10[0],
-        setEdges = _useState10[1];
-
-    var _useState11 = React.useState({
-      x: 0,
-      y: 0,
-      k: 1
-    }),
-        _useState12 = _slicedToArray(_useState11, 2),
-        transform = _useState12[0],
-        setTransform = _useState12[1];
+    var _useReducer = React.useReducer(reducer, initialState),
+        _useReducer2 = _slicedToArray(_useReducer, 2),
+        state = _useReducer2[0],
+        dispatch = _useReducer2[1];
 
     React.useEffect(function () {
       var nextNodes = props.nodes.map(function (propNode) {
-        var existingNode = nodes.find(function (n) {
+        var existingNode = state.nodes.find(function (n) {
           return n.data.id === propNode.data.id;
         });
 
@@ -29816,84 +29917,21 @@
 
         return propNode;
       });
-      var nodesChanged = !lodash_isequal(nodes, nextNodes);
-      var edgesChanged = !lodash_isequal(edges, props.edges);
+      var nodesChanged = !lodash_isequal(state.nodes, nextNodes);
+      var edgesChanged = !lodash_isequal(state.edges, props.edges);
 
       if (nodesChanged) {
-        setNodes(nextNodes);
+        dispatch(setNodes(nextNodes));
       }
 
       if (edgesChanged) {
-        setEdges(props.edges);
+        dispatch(setEdges(props.edges));
       }
     });
-
-    var updateNodeData = function updateNodeData(nodeId, updateData) {
-      var updatedNodes = nodes.map(function (n) {
-        if (n.data.id === nodeId) {
-          n.data = _objectSpread2({}, n.data, {}, updateData);
-        }
-
-        return n;
-      });
-      setNodes(updatedNodes);
-    };
-
-    var updateNodePos = function updateNodePos(nodeId, pos) {
-      var updatedNodes = nodes.map(function (n) {
-        if (n.data.id === nodeId) {
-          n.position = pos;
-        }
-
-        return n;
-      });
-      setNodes(updatedNodes);
-    };
-
-    var updateTransform = function updateTransform(nextTransform) {
-      setTransform({
-        k: Math.round(nextTransform.k * 1000) / 1000,
-        x: nextTransform.x,
-        y: nextTransform.y
-      });
-    };
-
-    var fitView = function fitView() {
-      var bounds = getBoundingBox(nodes);
-      var k = Math.min(width, height) / Math.max(bounds.width, bounds.height);
-      var boundsCenterX = bounds.x + bounds.width / 2;
-      var boundsCenterY = bounds.y + bounds.height / 2;
-      var translate = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
-      var initialTransform = identity$1.translate(translate[0], translate[1]).scale(k);
-      d3ZoomState.selection.call(d3ZoomState.zoom.transform, initialTransform);
-    };
-
-    var updateSize = function updateSize(size) {
-      setWidth(size.width);
-      setHeight(size.height);
-    };
-
-    var getNodes = function getNodes() {
-      return nodes;
-    };
-
     var graphContext = {
-      width: width,
-      height: height,
-      updateSize: updateSize,
-      d3ZoomState: d3ZoomState,
-      initD3ZoomState: initD3ZoomState,
-      nodes: nodes,
-      setNodes: setNodes,
-      getNodes: getNodes,
-      edges: edges,
-      setEdges: setEdges,
-      updateNodeData: updateNodeData,
-      updateNodePos: updateNodePos,
-      transform: transform,
-      updateTransform: updateTransform,
       onNodeClick: onNodeClick,
-      fitView: fitView
+      state: state,
+      dispatch: dispatch
     };
     return React__default.createElement(GraphContext.Provider, {
       value: graphContext
@@ -32131,18 +32169,20 @@
           __height = data.__height;
       var nodeElement = React.useRef(null);
       var graphContext = React.useContext(GraphContext);
-      var _graphContext$transfo = graphContext.transform,
-          x = _graphContext$transfo.x,
-          y = _graphContext$transfo.y,
-          k = _graphContext$transfo.k;
+
+      var _graphContext$state$t = _slicedToArray(graphContext.state.transform, 3),
+          x = _graphContext$state$t[0],
+          y = _graphContext$state$t[1],
+          k = _graphContext$state$t[2];
+
       React.useEffect(function () {
         var bounds = nodeElement.current.getBoundingClientRect();
 
         if (__width !== bounds.width || __height !== bounds.height) {
-          graphContext.updateNodeData(id, {
+          graphContext.dispatch(updateNodeData(id, {
             __width: bounds.width,
             __height: bounds.height
-          });
+          }));
         }
       }, []);
       var nodePosition = {
@@ -32154,10 +32194,10 @@
         onStart: function onStart(e) {
           var offsetX = e.clientX - position.x - x;
           var offsetY = e.clientY - position.y - y;
-          graphContext.updateNodeData(id, {
+          graphContext.dispatch(updateNodeData(id, {
             __offsetX: offsetX,
             __offsetY: offsetY
-          });
+          }));
         },
         onDrag: function onDrag(e, d) {
           var _data$__offsetX = data.__offsetX,
@@ -32165,10 +32205,10 @@
               _data$__offsetY = data.__offsetY,
               __offsetY = _data$__offsetY === void 0 ? 0 : _data$__offsetY;
 
-          graphContext.updateNodePos(id, {
+          graphContext.dispatch(updateNodePos(id, {
             x: e.clientX - x - __offsetX,
             y: e.clientY - y - __offsetY
-          });
+          }));
         },
         scale: k
       }, React__default.createElement("div", {
@@ -32179,8 +32219,7 @@
         },
         onClick: function onClick() {
           return onNodeClick(data);
-        } // style={{ transform: `translate(${nodePosition.x}px,${nodePosition.y}px) scale(${k})` }}
-
+        }
       }, React__default.createElement(NodeComponent, props)));
     };
   });
@@ -32274,15 +32313,14 @@
         var _this = this;
 
         return React__default.createElement(Consumer, null, function (_ref) {
-          var transform = _ref.transform,
-              nodes = _ref.nodes,
-              onNodeClick = _ref.onNodeClick;
+          var onNodeClick = _ref.onNodeClick,
+              state = _ref.state;
           return React__default.createElement("div", {
             className: "react-graph__nodes",
             style: {
-              transform: "translate(".concat(transform.x, "px,").concat(transform.y, "px) scale(").concat(transform.k, ")")
+              transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
             }
-          }, nodes.map(function (d) {
+          }, state.nodes.map(function (d) {
             return _this.renderNode(d, onNodeClick);
           }));
         });
@@ -32359,17 +32397,15 @@
         }
 
         return React__default.createElement(Consumer, null, function (_ref) {
-          var transform = _ref.transform,
-              edges = _ref.edges,
-              nodes = _ref.nodes;
+          var state = _ref.state;
           return React__default.createElement("svg", {
             width: width,
             height: height,
             className: "react-graph__edges"
           }, React__default.createElement("g", {
-            transform: "translate(".concat(transform.x, ",").concat(transform.y, ") scale(").concat(transform.k, ")")
-          }, edges.map(function (e) {
-            return renderEdge(e, nodes);
+            transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
+          }, state.edges.map(function (e) {
+            return renderEdge(e, state.nodes);
           })));
         });
       }
@@ -32387,39 +32423,40 @@
           return false;
         }
 
-        graphContext.updateTransform(event.transform);
+        graphContext.dispatch(updateTransform(event.transform));
         props.onMove();
       });
       var selection = select(zoomNode.current).call(zoom$1);
-      graphContext.initD3ZoomState({
+      graphContext.dispatch(initD3({
         zoom: zoom$1,
-        selection: selection,
-        initialised: true
-      });
+        selection: selection
+      }));
     }, []);
     React.useEffect(function () {
-      return graphContext.updateSize(props.size);
+      return graphContext.dispatch(updateSize(props.size));
     }, [props.size.width, props.size.height]);
     React.useEffect(function () {
-      if (graphContext.d3ZoomState.initialised) {
+      if (graphContext.state.d3Initialised) {
         props.onLoad({
-          nodes: graphContext.nodes,
-          edges: graphContext.edges,
-          fitView: graphContext.fitView
+          nodes: graphContext.state.nodes,
+          edges: graphContext.state.edges,
+          fitView: function fitView$1() {
+            return graphContext.dispatch(fitView());
+          }
         });
       }
-    }, [graphContext.d3ZoomState.initialised]);
+    }, [graphContext.state.d3Initialised]);
     React.useEffect(function () {
       props.onChange({
-        nodes: graphContext.nodes,
-        edges: graphContext.edges
+        nodes: graphContext.state.nodes,
+        edges: graphContext.state.edges
       });
     });
     return React__default.createElement("div", {
       className: "react-graph__renderer"
     }, React__default.createElement(NodeRenderer, null), React__default.createElement(EdgeRenderer, {
-      width: graphContext.width,
-      height: graphContext.height
+      width: graphContext.state.width,
+      height: graphContext.state.height
     }), React__default.createElement("div", {
       className: "react-graph__zoomnode",
       ref: zoomNode
@@ -32482,12 +32519,19 @@
             onMove = _this$props.onMove,
             onChange = _this$props.onChange,
             elements = _this$props.elements;
+
+        var _separateElements = separateElements(elements),
+            nodes = _separateElements.nodes,
+            edges = _separateElements.edges;
+
         return React__default.createElement("div", {
           style: style,
           className: "react-graph"
-        }, React__default.createElement(Provider, _extends({}, separateElements(elements), {
+        }, React__default.createElement(Provider, {
+          nodes: nodes,
+          edges: edges,
           onNodeClick: onNodeClick
-        }), React__default.createElement(GraphView$1, {
+        }, React__default.createElement(GraphView$1, {
           onLoad: onLoad,
           onMove: onMove,
           onChange: onChange
