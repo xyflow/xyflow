@@ -1,13 +1,11 @@
 import React, { PureComponent } from 'react';
 
 import Graph from '../src';
-import wrapNode from '../src/NodeRenderer/NodeTypes/wrapNode';
-
 // import Graph from '../dist/ReactGraph';
 
-const SpecialNode = wrapNode(({ data }) =>
+const SpecialNode = ({ data }) =>
   <div>I am Special!<br />{data.label}</div>
-);
+;
 
 class App extends PureComponent {
   constructor() {
@@ -27,7 +25,7 @@ class App extends PureComponent {
         { data: { source: '3', target: '5' } },
         { data: { source: '5', target: '6' } }
       ]
-    }
+    };
   }
 
   onLoad(graphInstance) {
