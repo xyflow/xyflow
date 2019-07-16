@@ -11,12 +11,30 @@
   position: absolute;
 }
 
-.react-graph__zoomnode {
+.react-graph__zoompane {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 2;
+}
+
+.react-graph__selectionpane {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.react-graph__selection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid #222;
 }
 
 .react-graph__edges {
@@ -51,7 +69,7 @@
   transform-origin: 0 0;
 }
 
-.react-graph__nodewrap:hover {
+.react-graph__nodewrap:hover > * {
   box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
 }
 

@@ -29812,8 +29812,8 @@
           var boundsCenterX = bounds.x + bounds.width / 2;
           var boundsCenterY = bounds.y + bounds.height / 2;
           var translate = [state.width / 2 - boundsCenterX * k, state.height / 2 - boundsCenterY * k];
-          var initialTransform = identity$1.translate(translate[0], translate[1]).scale(k);
-          state.d3Selection.call(state.d3Zoom.transform, initialTransform);
+          var fittedTransform = identity$1.translate(translate[0], translate[1]).scale(k);
+          state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
           return state;
         }
 
@@ -30075,24 +30075,136 @@
     return EdgeRenderer;
   }(React.PureComponent);
 
-  var GraphView = function GraphView(props) {
-    var zoomNode = React.useRef(null);
-    var graphContext = React.useContext(GraphContext);
-    React.useEffect(function () {
-      var zoom$1 = zoom().scaleExtent([0.5, 2]).on('zoom', function () {
-        if (event.sourceEvent && event.sourceEvent.target !== zoomNode.current) {
-          return false;
-        }
+  var Selection$2 = (function () {
+    var selectionPane = React.useRef(null);
 
-        graphContext.dispatch(updateTransform(event.transform));
-        props.onMove();
-      });
-      var selection = select(zoomNode.current).call(zoom$1);
+    var _useState = React.useState({
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      draw: false
+    }),
+        _useState2 = _slicedToArray(_useState, 2),
+        rect = _useState2[0],
+        setRect = _useState2[1];
+
+    React.useEffect(function () {
+      function onMouseDown(evt) {
+        setRect(function (r) {
+          return _objectSpread2({}, r, {
+            x: evt.clientX,
+            y: evt.clientY,
+            draw: true
+          });
+        });
+      }
+
+      function onMouseMove(evt) {
+        setRect(function (r) {
+          return _objectSpread2({}, r, {
+            width: evt.clientX,
+            height: evt.clientY
+          });
+        });
+      }
+
+      function onMouseUp() {
+        console.log('selection mouse up');
+      }
+
+      function removeAll() {
+        selectionPane.current.removeEventListener('mousedown', onMouseDown);
+        selectionPane.current.removeEventListener('mousemove', onMouseMove);
+        selectionPane.current.removeEventListener('mouseup', onMouseUp);
+      }
+
+      selectionPane.current.addEventListener('mousedown', onMouseDown);
+      selectionPane.current.addEventListener('mousemove', onMouseMove);
+      selectionPane.current.addEventListener('mouseup', onMouseUp);
+      return function () {
+        removeAll();
+      };
+    }, []);
+    return React__default.createElement("div", {
+      className: "react-graph__selectionpane",
+      ref: selectionPane
+    }, rect.draw && React__default.createElement("div", {
+      className: "react-graph__selection",
+      style: {
+        width: rect.width,
+        height: rect.height,
+        transform: "translate(".concat(rect.x, "px, ").concat(rect.y, "px)")
+      }
+    }));
+  });
+
+  function useKeyPress(targetKey) {
+    var _useState = React.useState(false),
+        _useState2 = _slicedToArray(_useState, 2),
+        keyPressed = _useState2[0],
+        setKeyPressed = _useState2[1];
+
+    function downHandler(_ref) {
+      var key = _ref.key;
+
+      if (key === targetKey) {
+        setKeyPressed(true);
+      }
+    }
+
+    var upHandler = function upHandler(_ref2) {
+      var key = _ref2.key;
+
+      if (key === targetKey) {
+        setKeyPressed(false);
+      }
+    };
+
+    React.useEffect(function () {
+      window.addEventListener('keydown', downHandler);
+      window.addEventListener('keyup', upHandler);
+      return function () {
+        window.removeEventListener('keydown', downHandler);
+        window.removeEventListener('keyup', upHandler);
+      };
+    }, []);
+    return keyPressed;
+  }
+
+  var d3ZoomInstance = zoom().scaleExtent([0.5, 2]);
+
+  var GraphView = function GraphView(props) {
+    var zoomPane = React.useRef(null);
+    var graphContext = React.useContext(GraphContext);
+    var shiftPressed = useKeyPress('Shift');
+    React.useEffect(function () {
+      var selection = select(zoomPane.current).call(d3ZoomInstance);
       graphContext.dispatch(initD3({
-        zoom: zoom$1,
+        zoom: d3ZoomInstance,
         selection: selection
       }));
     }, []);
+    React.useEffect(function () {
+      if (shiftPressed) {
+        d3ZoomInstance.on('zoom', null);
+      } else {
+        d3ZoomInstance.on('zoom', function () {
+          if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
+            return false;
+          }
+
+          graphContext.dispatch(updateTransform(event.transform));
+          props.onMove();
+        });
+
+        if (graphContext.state.d3Selection) {
+          // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
+          var graphTransform = identity$1.translate(graphContext.state.transform[0], graphContext.state.transform[1]).scale(graphContext.state.transform[2]);
+          graphContext.state.d3Selection.call(graphContext.state.d3Zoom.transform, graphTransform);
+        }
+      }
+    }, [shiftPressed]);
     React.useEffect(function () {
       return graphContext.dispatch(updateSize(props.size));
     }, [props.size.width, props.size.height]);
@@ -30120,9 +30232,9 @@
     }), React__default.createElement(EdgeRenderer, {
       width: graphContext.state.width,
       height: graphContext.state.height
-    }), React__default.createElement("div", {
-      className: "react-graph__zoomnode",
-      ref: zoomNode
+    }), shiftPressed && React__default.createElement(Selection$2, null), React__default.createElement("div", {
+      className: "react-graph__zoompane",
+      ref: zoomPane
     }));
   };
 
@@ -32518,7 +32630,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoomnode {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap {\n  position: absolute;\n  width: 150px;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap:hover {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 3;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0,0,0,0.1);\n  border: 1px solid #222;\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap {\n  position: absolute;\n  width: 150px;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__nodewrap:hover > * {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
   styleInject(css);
 
   var ReactGraph =

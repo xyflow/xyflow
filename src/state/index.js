@@ -1,4 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
+
 import { getBoundingBox } from '../graph-utils';
 
 export const SET_EDGES = 'SET_EDGES';
@@ -56,9 +57,9 @@ export const reducer = (state, action) => {
       const boundsCenterX = bounds.x + (bounds.width / 2);
       const boundsCenterY = bounds.y + (bounds.height / 2);
       const translate = [(state.width / 2) - (boundsCenterX * k), (state.height / 2) - (boundsCenterY * k)];
-      const initialTransform = zoomIdentity.translate(translate[0], translate[1]).scale(k);
+      const fittedTransform = zoomIdentity.translate(translate[0], translate[1]).scale(k);
 
-      state.d3Selection.call(state.d3Zoom.transform, initialTransform);
+      state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
 
       return state;
     }
