@@ -32301,7 +32301,33 @@
       key: "renderNode",
       value: function renderNode(d, onNodeClick) {
         var nodeType = d.data.type || 'default';
-        var NodeComponent = this.props.nodeTypes[nodeType] || DefaultNode;
+        var NodeComponent = null;
+
+        switch (nodeType) {
+          case 'input':
+            {
+              NodeComponent = this.props.nodeTypes.input || InputNode;
+              break;
+            }
+
+          case 'default':
+            {
+              NodeComponent = this.props.nodeTypes["default"] || DefaultNode;
+              break;
+            }
+
+          case 'output':
+            {
+              NodeComponent = this.props.nodeTypes.output || OutputNode;
+              break;
+            }
+
+          default:
+            {
+              NodeComponent = this.props.nodeTypes[nodeType] || DefaultNode;
+            }
+        }
+
         return React__default.createElement(NodeComponent, {
           key: d.data.id,
           position: d.position,
@@ -32457,7 +32483,9 @@
     });
     return React__default.createElement("div", {
       className: "react-graph__renderer"
-    }, React__default.createElement(NodeRenderer, null), React__default.createElement(EdgeRenderer, {
+    }, React__default.createElement(NodeRenderer, {
+      nodeTypes: props.nodeTypes
+    }), React__default.createElement(EdgeRenderer, {
       width: graphContext.state.width,
       height: graphContext.state.height
     }), React__default.createElement("div", {
@@ -32521,7 +32549,8 @@
             onLoad = _this$props.onLoad,
             onMove = _this$props.onMove,
             onChange = _this$props.onChange,
-            elements = _this$props.elements;
+            elements = _this$props.elements,
+            nodeTypes = _this$props.nodeTypes;
 
         var _separateElements = separateElements(elements),
             nodes = _separateElements.nodes,
@@ -32537,7 +32566,8 @@
         }, React__default.createElement(GraphView$1, {
           onLoad: onLoad,
           onMove: onMove,
-          onChange: onChange
+          onChange: onChange,
+          nodeTypes: nodeTypes
         }), children));
       }
     }]);
