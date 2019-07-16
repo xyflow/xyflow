@@ -17,7 +17,7 @@ class App extends PureComponent {
         { data: { id: '2', label: 'This is a node This is a node This is a node This is a node' }, position: { x: 100, y: 100 } },
         { data: { id: '3', label: 'This is a node' }, position: { x: 100, y: 200 }, style: { background: '#222', color: '#fff' } },
         { data: { id: '4', label: 'nody nodes', type: 'output' }, position: { x: 50, y: 300 } },
-        { data: { id: '5', label: 'Another node', type: 'output' }, position: { x: 400, y: 300 } },
+        { data: { id: '5', label: 'Another node', type: 'default' }, position: { x: 400, y: 300 } },
         { data: { id: '6', label: 'A label', type: 'special' }, position: { x: 400, y: 400 } },
         { data: { source: '1', target: '2' } },
         { data: { source: '2', target: '3' } },
@@ -51,7 +51,7 @@ class App extends PureComponent {
   onAdd() {
     this.setState(prevState => ({
       ...prevState,
-      elements: prevState.elements.concat({ data: { id: (prevState.elements.length + 1).toString(), label: 'added', type: 'input' }, position: { x: 50, y: 50 } })
+      elements: prevState.elements.concat({ data: { id: prevState.elements.length + 1, label: 'Added node' }, position: { x: 50, y: 50 } })
     }))
   }
 
