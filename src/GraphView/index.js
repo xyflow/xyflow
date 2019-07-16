@@ -54,7 +54,7 @@ const GraphView = (props) => {
 
   return (
     <div className="react-graph__renderer">
-      <NodeRenderer />
+      <NodeRenderer nodeTypes={props.nodeTypes} />
       <EdgeRenderer width={graphContext.state.width} height={graphContext.state.height} />
       <div className="react-graph__zoomnode" ref={zoomNode} />
     </div>

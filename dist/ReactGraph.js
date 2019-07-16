@@ -32218,7 +32218,10 @@
           transform: "translate(".concat(position.x, "px,").concat(position.y, "px)")
         },
         onClick: function onClick() {
-          return onNodeClick(data);
+          return onNodeClick({
+            data: data,
+            position: position
+          });
         }
       }, React__default.createElement(NodeComponent, props)));
     };

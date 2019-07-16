@@ -41,9 +41,7 @@
     "dev": "parcel example/index.html -d example/build"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "npm run build"
-    }
+    "hooks": {}
   },
   "files": [
     "dist"

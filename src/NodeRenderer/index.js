@@ -9,7 +9,22 @@ class NodeRenderer extends PureComponent {
 
   renderNode(d, onNodeClick) {
     const nodeType = d.data.type || 'default';
-    const NodeComponent = this.props.nodeTypes[nodeType] || DefaultNode;
+    let NodeComponent = null;
+
+    switch (nodeType) {
+      case 'input': {
+        NodeComponent = this.props.nodeTypes.input || InputNode; break;
+      }
+      case 'default': {
+        NodeComponent = this.props.nodeTypes.default || DefaultNode; break;
+      }
+      case 'output': {
+        NodeComponent = this.props.nodeTypes.output || OutputNode; break;
+      }
+      default: {
+        NodeComponent = this.props.nodeTypes[nodeType] || DefaultNode;
+      }
+    }
 
     return (
       <NodeComponent

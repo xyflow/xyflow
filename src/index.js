@@ -9,7 +9,7 @@ import './style.css';
 class ReactGraph extends PureComponent {
   render() {
     const {
-      style, onNodeClick, children, onLoad, onMove, onChange, elements
+      style, onNodeClick, children, onLoad, onMove, onChange, elements, nodeTypes
     } = this.props;
 
     const { nodes, edges } = separateElements(elements);
@@ -21,6 +21,7 @@ class ReactGraph extends PureComponent {
             onLoad={onLoad}
             onMove={onMove}
             onChange={onChange}
+            nodeTypes={nodeTypes}
           />
           {children}
         </Provider>
