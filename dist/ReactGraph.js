@@ -29947,6 +29947,243 @@
     edges: []
   };
 
+  var NodeRenderer =
+  /*#__PURE__*/
+  function (_PureComponent) {
+    _inherits(NodeRenderer, _PureComponent);
+
+    function NodeRenderer() {
+      _classCallCheck(this, NodeRenderer);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(NodeRenderer).apply(this, arguments));
+    }
+
+    _createClass(NodeRenderer, [{
+      key: "renderNode",
+      value: function renderNode(d, onNodeClick) {
+        var nodeType = d.data.type || 'default';
+        var NodeComponent = this.props.nodeTypes[nodeType];
+        return React__default.createElement(NodeComponent, {
+          key: d.data.id,
+          position: d.position,
+          data: d.data,
+          style: d.style || {},
+          onNodeClick: onNodeClick
+        });
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var _this = this;
+
+        return React__default.createElement(Consumer, null, function (_ref) {
+          var onNodeClick = _ref.onNodeClick,
+              state = _ref.state;
+          return React__default.createElement("div", {
+            className: "react-graph__nodes",
+            style: {
+              transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
+            }
+          }, state.nodes.map(function (d) {
+            return _this.renderNode(d, onNodeClick);
+          }));
+        });
+      }
+    }]);
+
+    return NodeRenderer;
+  }(React.PureComponent);
+
+  var Edge = (function (props) {
+    var targetNode = props.targetNode,
+        sourceNode = props.sourceNode;
+    var sourceX = sourceNode.position.x + sourceNode.data.__width / 2;
+    var sourceY = sourceNode.position.y + sourceNode.data.__height;
+    var targetX = targetNode.position.x + targetNode.data.__width / 2;
+    var targetY = targetNode.position.y;
+    return React__default.createElement("path", {
+      className: "react-graph__edge",
+      d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
+    });
+  });
+
+  function renderEdge(e, nodes) {
+    var sourceNode = nodes.find(function (n) {
+      return n.data.id === e.data.source;
+    });
+    var targetNode = nodes.find(function (n) {
+      return n.data.id === e.data.target;
+    });
+
+    if (!sourceNode) {
+      throw new Error("couldn't create edge for source id: ".concat(e.data.source));
+    }
+
+    if (!targetNode) {
+      throw new Error("couldn't create edge for source id: ".concat(e.data.target));
+    }
+
+    return React__default.createElement(Edge, {
+      key: "".concat(e.data.source, "-").concat(e.data.target),
+      sourceNode: sourceNode,
+      targetNode: targetNode
+    });
+  }
+
+  var EdgeRenderer =
+  /*#__PURE__*/
+  function (_PureComponent) {
+    _inherits(EdgeRenderer, _PureComponent);
+
+    function EdgeRenderer() {
+      _classCallCheck(this, EdgeRenderer);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(EdgeRenderer).apply(this, arguments));
+    }
+
+    _createClass(EdgeRenderer, [{
+      key: "render",
+      value: function render() {
+        var _this$props = this.props,
+            width = _this$props.width,
+            height = _this$props.height;
+
+        if (!width) {
+          return null;
+        }
+
+        return React__default.createElement(Consumer, null, function (_ref) {
+          var state = _ref.state;
+          return React__default.createElement("svg", {
+            width: width,
+            height: height,
+            className: "react-graph__edges"
+          }, React__default.createElement("g", {
+            transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
+          }, state.edges.map(function (e) {
+            return renderEdge(e, state.nodes);
+          })));
+        });
+      }
+    }]);
+
+    return EdgeRenderer;
+  }(React.PureComponent);
+
+  var GraphView = function GraphView(props) {
+    var zoomNode = React.useRef(null);
+    var graphContext = React.useContext(GraphContext);
+    React.useEffect(function () {
+      var zoom$1 = zoom().scaleExtent([0.5, 2]).on('zoom', function () {
+        if (event.sourceEvent && event.sourceEvent.target !== zoomNode.current) {
+          return false;
+        }
+
+        graphContext.dispatch(updateTransform(event.transform));
+        props.onMove();
+      });
+      var selection = select(zoomNode.current).call(zoom$1);
+      graphContext.dispatch(initD3({
+        zoom: zoom$1,
+        selection: selection
+      }));
+    }, []);
+    React.useEffect(function () {
+      return graphContext.dispatch(updateSize(props.size));
+    }, [props.size.width, props.size.height]);
+    React.useEffect(function () {
+      if (graphContext.state.d3Initialised) {
+        props.onLoad({
+          nodes: graphContext.state.nodes,
+          edges: graphContext.state.edges,
+          fitView: function fitView$1() {
+            return graphContext.dispatch(fitView());
+          }
+        });
+      }
+    }, [graphContext.state.d3Initialised]);
+    React.useEffect(function () {
+      props.onChange({
+        nodes: graphContext.state.nodes,
+        edges: graphContext.state.edges
+      });
+    });
+    return React__default.createElement("div", {
+      className: "react-graph__renderer"
+    }, React__default.createElement(NodeRenderer, {
+      nodeTypes: props.nodeTypes
+    }), React__default.createElement(EdgeRenderer, {
+      width: graphContext.state.width,
+      height: graphContext.state.height
+    }), React__default.createElement("div", {
+      className: "react-graph__zoomnode",
+      ref: zoomNode
+    }));
+  };
+
+  var GraphView$1 = reactSizeme.withSize({
+    monitorHeight: true
+  })(GraphView);
+
+  var Handle = (function (props) {
+    return React__default.createElement("div", _extends({
+      className: "react-graph__handle"
+    }, props));
+  });
+
+  var DefaultNode = (function (_ref) {
+    var data = _ref.data,
+        style = _ref.style;
+    return React__default.createElement("div", {
+      style: _objectSpread2({
+        background: '#ff6060',
+        padding: '10px'
+      }, style)
+    }, React__default.createElement(Handle, {
+      style: {
+        top: 0
+      }
+    }), data.label, React__default.createElement(Handle, {
+      style: {
+        bottom: 0,
+        top: 'auto',
+        transform: 'translate(-50%, 50%)'
+      }
+    }));
+  });
+
+  var InputNode = (function (_ref) {
+    var data = _ref.data,
+        style = _ref.style;
+    return React__default.createElement("div", {
+      style: _objectSpread2({
+        background: '#9999ff',
+        padding: '10px'
+      }, style)
+    }, data.label, React__default.createElement(Handle, {
+      style: {
+        bottom: 0,
+        top: 'auto',
+        transform: 'translate(-50%, 50%)'
+      }
+    }));
+  });
+
+  var OutputNode = (function (_ref) {
+    var data = _ref.data,
+        style = _ref.style;
+    return React__default.createElement("div", {
+      style: _objectSpread2({
+        background: '#55ff99',
+        padding: '10px'
+      }, style)
+    }, React__default.createElement(Handle, {
+      style: {
+        top: 0
+      }
+    }), data.label);
+  });
+
   var reactDraggable = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
   	 module.exports = factory(reactDom, React__default) ;
@@ -32227,276 +32464,20 @@
     };
   });
 
-  var Handle = (function (props) {
-    return React__default.createElement("div", _extends({
-      className: "react-graph__handle"
-    }, props));
-  });
-
-  var DefaultNode = wrapNode(function (_ref) {
-    var data = _ref.data,
-        style = _ref.style;
-    return React__default.createElement("div", {
-      style: _objectSpread2({
-        background: '#ff6060',
-        padding: '10px'
-      }, style)
-    }, React__default.createElement(Handle, {
-      style: {
-        top: 0
-      }
-    }), data.label, React__default.createElement(Handle, {
-      style: {
-        bottom: 0,
-        top: 'auto',
-        transform: 'translate(-50%, 50%)'
-      }
-    }));
-  });
-
-  var InputNode = wrapNode(function (_ref) {
-    var data = _ref.data,
-        style = _ref.style;
-    return React__default.createElement("div", {
-      style: _objectSpread2({
-        background: '#9999ff',
-        padding: '10px'
-      }, style)
-    }, data.label, React__default.createElement(Handle, {
-      style: {
-        bottom: 0,
-        top: 'auto',
-        transform: 'translate(-50%, 50%)'
-      }
-    }));
-  });
-
-  var OutputNode = wrapNode(function (_ref) {
-    var data = _ref.data,
-        style = _ref.style;
-    return React__default.createElement("div", {
-      style: _objectSpread2({
-        background: '#55ff99',
-        padding: '10px'
-      }, style)
-    }, React__default.createElement(Handle, {
-      style: {
-        top: 0
-      }
-    }), data.label);
-  });
-
-  var NodeRenderer =
-  /*#__PURE__*/
-  function (_PureComponent) {
-    _inherits(NodeRenderer, _PureComponent);
-
-    function NodeRenderer() {
-      _classCallCheck(this, NodeRenderer);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(NodeRenderer).apply(this, arguments));
-    }
-
-    _createClass(NodeRenderer, [{
-      key: "renderNode",
-      value: function renderNode(d, onNodeClick) {
-        var nodeType = d.data.type || 'default';
-        var NodeComponent = null;
-
-        switch (nodeType) {
-          case 'input':
-            {
-              NodeComponent = this.props.nodeTypes.input || InputNode;
-              break;
-            }
-
-          case 'default':
-            {
-              NodeComponent = this.props.nodeTypes["default"] || DefaultNode;
-              break;
-            }
-
-          case 'output':
-            {
-              NodeComponent = this.props.nodeTypes.output || OutputNode;
-              break;
-            }
-
-          default:
-            {
-              NodeComponent = this.props.nodeTypes[nodeType] || DefaultNode;
-            }
-        }
-
-        return React__default.createElement(NodeComponent, {
-          key: d.data.id,
-          position: d.position,
-          data: d.data,
-          style: d.style || {},
-          onNodeClick: onNodeClick
-        });
-      }
-    }, {
-      key: "render",
-      value: function render() {
-        var _this = this;
-
-        return React__default.createElement(Consumer, null, function (_ref) {
-          var onNodeClick = _ref.onNodeClick,
-              state = _ref.state;
-          return React__default.createElement("div", {
-            className: "react-graph__nodes",
-            style: {
-              transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
-            }
-          }, state.nodes.map(function (d) {
-            return _this.renderNode(d, onNodeClick);
-          }));
-        });
-      }
-    }]);
-
-    return NodeRenderer;
-  }(React.PureComponent);
-
-  NodeRenderer.defaultProps = {
-    nodeTypes: {
-      input: InputNode,
-      "default": DefaultNode,
-      output: OutputNode
-    }
-  };
-
-  var Edge = (function (props) {
-    var targetNode = props.targetNode,
-        sourceNode = props.sourceNode;
-    var sourceX = sourceNode.position.x + sourceNode.data.__width / 2;
-    var sourceY = sourceNode.position.y + sourceNode.data.__height;
-    var targetX = targetNode.position.x + targetNode.data.__width / 2;
-    var targetY = targetNode.position.y;
-    return React__default.createElement("path", {
-      className: "react-graph__edge",
-      d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
-    });
-  });
-
-  function renderEdge(e, nodes) {
-    var sourceNode = nodes.find(function (n) {
-      return n.data.id === e.data.source;
-    });
-    var targetNode = nodes.find(function (n) {
-      return n.data.id === e.data.target;
-    });
-
-    if (!sourceNode) {
-      throw new Error("couldn't create edge for source id: ".concat(e.data.source));
-    }
-
-    if (!targetNode) {
-      throw new Error("couldn't create edge for source id: ".concat(e.data.target));
-    }
-
-    return React__default.createElement(Edge, {
-      key: "".concat(e.data.source, "-").concat(e.data.target),
-      sourceNode: sourceNode,
-      targetNode: targetNode
-    });
+  function createNodeTypes(nodeTypes) {
+    var standardTypes = {
+      input: wrapNode(nodeTypes.input || InputNode),
+      "default": wrapNode(nodeTypes["default"] || DefaultNode),
+      output: wrapNode(nodeTypes.output || OutputNode)
+    };
+    var specialTypes = Object.keys(nodeTypes).filter(function (k) {
+      return !['input', 'default', 'output'].includes(k);
+    }).reduce(function (res, key) {
+      res[key] = wrapNode(nodeTypes[key]);
+      return res;
+    }, {});
+    return _objectSpread2({}, standardTypes, {}, specialTypes);
   }
-
-  var EdgeRenderer =
-  /*#__PURE__*/
-  function (_PureComponent) {
-    _inherits(EdgeRenderer, _PureComponent);
-
-    function EdgeRenderer() {
-      _classCallCheck(this, EdgeRenderer);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(EdgeRenderer).apply(this, arguments));
-    }
-
-    _createClass(EdgeRenderer, [{
-      key: "render",
-      value: function render() {
-        var _this$props = this.props,
-            width = _this$props.width,
-            height = _this$props.height;
-
-        if (!width) {
-          return null;
-        }
-
-        return React__default.createElement(Consumer, null, function (_ref) {
-          var state = _ref.state;
-          return React__default.createElement("svg", {
-            width: width,
-            height: height,
-            className: "react-graph__edges"
-          }, React__default.createElement("g", {
-            transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
-          }, state.edges.map(function (e) {
-            return renderEdge(e, state.nodes);
-          })));
-        });
-      }
-    }]);
-
-    return EdgeRenderer;
-  }(React.PureComponent);
-
-  var GraphView = function GraphView(props) {
-    var zoomNode = React.useRef(null);
-    var graphContext = React.useContext(GraphContext);
-    React.useEffect(function () {
-      var zoom$1 = zoom().scaleExtent([0.5, 2]).on('zoom', function () {
-        if (event.sourceEvent && event.sourceEvent.target !== zoomNode.current) {
-          return false;
-        }
-
-        graphContext.dispatch(updateTransform(event.transform));
-        props.onMove();
-      });
-      var selection = select(zoomNode.current).call(zoom$1);
-      graphContext.dispatch(initD3({
-        zoom: zoom$1,
-        selection: selection
-      }));
-    }, []);
-    React.useEffect(function () {
-      return graphContext.dispatch(updateSize(props.size));
-    }, [props.size.width, props.size.height]);
-    React.useEffect(function () {
-      if (graphContext.state.d3Initialised) {
-        props.onLoad({
-          nodes: graphContext.state.nodes,
-          edges: graphContext.state.edges,
-          fitView: function fitView$1() {
-            return graphContext.dispatch(fitView());
-          }
-        });
-      }
-    }, [graphContext.state.d3Initialised]);
-    React.useEffect(function () {
-      props.onChange({
-        nodes: graphContext.state.nodes,
-        edges: graphContext.state.edges
-      });
-    });
-    return React__default.createElement("div", {
-      className: "react-graph__renderer"
-    }, React__default.createElement(NodeRenderer, {
-      nodeTypes: props.nodeTypes
-    }), React__default.createElement(EdgeRenderer, {
-      width: graphContext.state.width,
-      height: graphContext.state.height
-    }), React__default.createElement("div", {
-      className: "react-graph__zoomnode",
-      ref: zoomNode
-    }));
-  };
-
-  var GraphView$1 = reactSizeme.withSize({
-    monitorHeight: true
-  })(GraphView);
 
   function styleInject(css, ref) {
     if ( ref === void 0 ) ref = {};
@@ -32533,10 +32514,14 @@
   function (_PureComponent) {
     _inherits(ReactGraph, _PureComponent);
 
-    function ReactGraph() {
+    function ReactGraph(props) {
+      var _this;
+
       _classCallCheck(this, ReactGraph);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(ReactGraph).apply(this, arguments));
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(ReactGraph).call(this, props));
+      _this.nodeTypes = createNodeTypes(props.nodeTypes);
+      return _this;
     }
 
     _createClass(ReactGraph, [{
@@ -32549,8 +32534,7 @@
             onLoad = _this$props.onLoad,
             onMove = _this$props.onMove,
             onChange = _this$props.onChange,
-            elements = _this$props.elements,
-            nodeTypes = _this$props.nodeTypes;
+            elements = _this$props.elements;
 
         var _separateElements = separateElements(elements),
             nodes = _separateElements.nodes,
@@ -32567,7 +32551,7 @@
           onLoad: onLoad,
           onMove: onMove,
           onChange: onChange,
-          nodeTypes: nodeTypes
+          nodeTypes: this.nodeTypes
         }), children));
       }
     }]);
@@ -32579,7 +32563,12 @@
     onNodeClick: function onNodeClick() {},
     onLoad: function onLoad() {},
     onMove: function onMove() {},
-    onChange: function onChange() {}
+    onChange: function onChange() {},
+    nodeTypes: {
+      input: InputNode,
+      "default": DefaultNode,
+      output: OutputNode
+    }
   };
 
   return ReactGraph;
