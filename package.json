@@ -6,6 +6,7 @@
   "main": "dist/ReactGraph.js",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.6",
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.7.3",
     "lodash.isequal": "^4.5.0",

@@ -42,16 +42,33 @@ export const getBoundingBox = (nodes) => {
   };
 };
 
-export const projectPosition = (pos, transform) => {
+export const graphPosToZoomedPos = (pos, transform) => {
   return {
     x: (pos.x * transform[2]) + transform[0],
     y: (pos.y * transform[2]) + transform[1]
   };
 }
 
+export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
+  return nodes.
+    filter(n => {
+      const bboxPos = {
+        x: (bbox.x - transform[0]) * (1 / transform[2]),
+        y: (bbox.y - transform[1]) * (1 / transform[2])
+      };
+      const bboxWidth = bbox.width * (1 / transform[2]);
+      const bboxHeight = bbox.height * (1 / transform[2]);
+
+      return (
+        (n.position.x > bboxPos.x && (n.position.x + n.data.__width) < (bboxPos.x + bboxWidth)) &&
+        (n.position.y > bboxPos.y && (n.position.y + n.data.__height) < (bboxPos.y + bboxHeight))
+      );
+    });
+};
+
 export default {
   isEdge,
   separateElements,
   getBoundingBox,
-  projectPosition
+  graphPosToZoomedPos
 };

@@ -17,7 +17,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 1;
 }
 
 .react-graph__selectionpane {
@@ -26,15 +26,15 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 3;
+  z-index: 2;
 }
 
 .react-graph__selection {
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(0,0,0,0.1);
-  border: 1px solid #222;
+  background: rgba(0, 89, 220, 0.08);
+  border: 1px dotted rgba(0, 89, 220, 0.8);
 }
 
 .react-graph__edges {
@@ -56,7 +56,7 @@
   transform-origin: 0 0;
 }
 
-.react-graph__nodewrap {
+.react-graph__node {
   position: absolute;
   width: 150px;
   color: #222;
@@ -69,8 +69,12 @@
   transform-origin: 0 0;
 }
 
-.react-graph__nodewrap:hover > * {
+.react-graph__node:hover > * {
   box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
+}
+
+.react-graph__node.selected > * {
+  box-shadow: 0 0 0 2px #000;
 }
 
 .react-graph__handle {

@@ -1,6 +1,6 @@
 import { zoomIdentity } from 'd3-zoom';
 
-import { getBoundingBox } from '../graph-utils';
+import { getBoundingBox, getNodesInside } from '../graph-utils';
 
 export const SET_EDGES = 'SET_EDGES';
 export const SET_NODES = 'SET_NODES';
@@ -10,6 +10,8 @@ export const UPDATE_TRANSFORM = 'UPDATE_TRANSFORM';
 export const UPDATE_SIZE = 'UPDATE_SIZE';
 export const INIT_D3 = 'INIT_D3';
 export const FIT_VIEW = 'FIT_VIEW';
+export const UPDATE_SELECTION = 'UPDATE_SELECTION';
+export const SET_SELECTION = 'SET_SELECTION';
 
 export const initialState = {
   width: 0,
@@ -17,10 +19,14 @@ export const initialState = {
   transform: [0, 0, 1],
   nodes: [],
   edges: [],
+  selectedNodes: [],
 
   d3Zoom: null,
   d3Selection: null,
-  d3Initialised: false
+  d3Initialised: false,
+
+  selectionActive: false,
+  selection: {}
 };
 
 export const reducer = (state, action) => {
@@ -63,11 +69,16 @@ export const reducer = (state, action) => {
 
       return state;
     }
+    case UPDATE_SELECTION: {
+      const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform).map(n => n.data.id);
+      return { ...state, ...action.payload, selectedNodes };
+    }
     case SET_NODES:
     case SET_EDGES:
     case UPDATE_TRANSFORM:
     case INIT_D3:
     case UPDATE_SIZE:
+    case SET_SELECTION:
       return { ...state, ...action.payload };
     default:
       return state;

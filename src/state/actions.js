@@ -1,6 +1,7 @@
 import {
   UPDATE_TRANSFORM, UPDATE_SIZE, SET_NODES, SET_EDGES,
-  UPDATE_NODE_DATA, UPDATE_NODE_POS, INIT_D3, FIT_VIEW
+  UPDATE_NODE_DATA, UPDATE_NODE_POS, INIT_D3, FIT_VIEW,
+  UPDATE_SELECTION, SET_SELECTION
 } from './index';
 
 export const updateTransform = (transform) => {
@@ -54,4 +55,17 @@ export const initD3 = ({ zoom, selection }) => {
 
 export const fitView = () => {
   return { type: FIT_VIEW };
+};
+
+export const setSelection = (isActive) => {
+  return { type: SET_SELECTION, payload: { selectionActive: isActive } };
+};
+
+export const updateSelection = (selection) => {
+  return {
+    type: UPDATE_SELECTION,
+    payload: {
+      selection
+    }
+  };
 };

@@ -9,7 +9,10 @@ const nodeStyles = {
 };
 
 export default ({ data, style }) => (
-  <div style={{ ...nodeStyles, ...style }}>
+  <div
+    style={{ ...nodeStyles, ...style }}
+    className="react-graph__node-inner"
+  >
     {data.label}
     <Handle style={{ bottom: 0, top: 'auto', transform: 'translate(-50%, 50%)' }} />
   </div>
