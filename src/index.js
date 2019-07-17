@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { separateElements } from './graph-utils';
+import { parseElements, separateElements } from './graph-utils';
 import GraphView from './GraphView';
 import { Provider } from './GraphContext';
 import { createNodeTypes } from './NodeRenderer/utils';
@@ -23,7 +23,9 @@ class ReactGraph extends PureComponent {
       style, onNodeClick, children, onLoad, onMove, onChange, elements
     } = this.props;
 
-    const { nodes, edges } = separateElements(elements);
+    const { nodes, edges } = elements
+      .map(parseElements)
+      .reduce(separateElements, {});
 
     return (
       <div style={style} className="react-graph">

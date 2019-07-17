@@ -15,10 +15,8 @@ class NodeRenderer extends PureComponent {
     return (
       <NodeComponent
         key={d.data.id}
-        position={d.position}
-        data={d.data}
-        style={d.style || {}}
         onNodeClick={onNodeClick}
+        {...d}
       />
     );
   }

@@ -82,7 +82,6 @@ class App extends PureComponent {
   }
 
   render() {
-    console.log(this.state.elements);
     return (
       <Graph
         elements={this.state.elements}

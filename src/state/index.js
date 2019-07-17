@@ -36,8 +36,8 @@ export const reducer = (state, action) => {
         ...state,
         nodes: state.nodes.map((n) => {
           if (n.data.id === action.payload.id) {
-            n.data = {
-              ...n.data,
+            n.__rg = {
+              ...n.__rg,
               ...action.payload.data
             };
           }
@@ -50,7 +50,10 @@ export const reducer = (state, action) => {
         ...state,
         nodes: state.nodes.map((n) => {
           if (n.data.id === action.payload.id) {
-            n.position = action.payload.pos;
+            n.__rg = {
+              ...n.__rg,
+              position: action.payload.pos
+            };
           }
 
           return n;

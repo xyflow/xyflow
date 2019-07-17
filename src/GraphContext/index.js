@@ -20,7 +20,10 @@ export const Provider = (props) => {
       const existingNode = state.nodes.find(n => n.data.id === propNode.data.id);
 
       if (existingNode) {
-        return Object.assign(propNode, existingNode);
+        return {
+          ...existingNode,
+          data: { ...existingNode.data, ...propNode.data }
+        };
       }
 
       return propNode;

@@ -1,25 +1,43 @@
 export const isEdge = element => element.data.source && element.data.target;
 
-export const separateElements = elements => ({
-  nodes: elements.filter(e => !isEdge(e)),
-  edges: elements.filter(e => isEdge(e))
+export const parseElements = e => ({
+  ...e,
+  __rg: {
+    position: e.position,
+    width: null,
+    height: null
+  }
 });
+
+export const separateElements = (res, element) => {
+  res.edges = res.edges ? res.edges : [];
+  res.nodes = res.nodes ? res.nodes : [];
+
+  if (isEdge(element)) {
+    res.edges.push(element);
+  } else {
+    res.nodes.push(element);
+  }
+
+  return res;
+};
 
 export const getBoundingBox = (nodes) => {
   const bbox = nodes.reduce((res, node) => {
-    const x2 = node.position.x + node.data.__width;
-    const y2 = node.position.y + node.data.__height;
+    const { position } = node.__rg;
+    const x2 = position.x + node.__rg.width;
+    const y2 = position.y + node.__rg.height;
 
-    if (node.position.x < res.minX) {
-      res.minX = node.position.x;
+    if (position.x < res.minX) {
+      res.minX = position.x;
     }
 
     if (x2 > res.maxX) {
       res.maxX = x2;
     }
 
-    if (node.position.y < res.minY) {
-      res.minY = node.position.y;
+    if (position.y < res.minY) {
+      res.minY = position.y;
     }
 
     if (y2 > res.maxY) {
@@ -58,10 +76,11 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
       };
       const bboxWidth = bbox.width * (1 / transform[2]);
       const bboxHeight = bbox.height * (1 / transform[2]);
+      const { position, width, height } = n.__rg;
 
       return (
-        (n.position.x > bboxPos.x && (n.position.x + n.data.__width) < (bboxPos.x + bboxWidth)) &&
-        (n.position.y > bboxPos.y && (n.position.y + n.data.__height) < (bboxPos.y + bboxHeight))
+        (position.x > bboxPos.x && (position.x + width) < (bboxPos.x + bboxWidth)) &&
+        (position.y > bboxPos.y && (position.y + height) < (bboxPos.y + bboxHeight))
       );
     });
 };
