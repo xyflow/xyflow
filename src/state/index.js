@@ -19,14 +19,15 @@ export const initialState = {
   transform: [0, 0, 1],
   nodes: [],
   edges: [],
-  selectedNodes: [],
+  selectedNodeIds: [],
+  selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
   d3Zoom: null,
   d3Selection: null,
   d3Initialised: false,
 
   selectionActive: false,
-  selection: {}
+  selection: {},
 };
 
 export const reducer = (state, action) => {
@@ -73,8 +74,11 @@ export const reducer = (state, action) => {
       return state;
     }
     case UPDATE_SELECTION: {
-      const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform).map(n => n.data.id);
-      return { ...state, ...action.payload, selectedNodes };
+      const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
+      const selectedNodesBbox = getBoundingBox(selectedNodes);
+      const selectedNodeIds = selectedNodes.map(n => n.data.id);
+
+      return { ...state, ...action.payload, selectedNodeIds, selectedNodesBbox };
     }
     case SET_NODES:
     case SET_EDGES:

@@ -16,7 +16,7 @@ export default NodeComponent => (props) => {
   const { position } = __rg;
   const { id } = data;
   const [ x, y, k ] = graphContext.state.transform;
-  const selected = graphContext.state.selectedNodes.includes(id);
+  const selected = graphContext.state.selectedNodeIds.includes(id);
   const nodeClasses = cx('react-graph__node', { selected });
 
   useEffect(() => {
