@@ -7,14 +7,11 @@ const SpecialNode = ({ data, styles }) => (
   <div
     style={{ background: '#FFCC00', padding: 10, borderRadius: 30, ...styles }}
   >
-    I am <strong>special</strong>!<br />{data.label}
-    <input
-      style={{ margin: '10px 0' }}
-    />
-    <select>
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
+    <div>I am <strong>special</strong>!<br />{data.label}</div>
+    <select onChange={(e) => data.onChange(e.target.value, data)}>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
     </select>
   </div>
 );
@@ -23,6 +20,19 @@ class App extends PureComponent {
   constructor() {
     super();
 
+    const onChange = (id, d) => {
+      this.setState(prevState => (
+        { elements: prevState.elements.map(e => ({
+          ...e,
+          data: {
+            ...e.data,
+            label: '6' === e.data.id ? `option ${id} selected` : e.data.label
+          }
+        }))
+        }
+      ));
+    }
+
     this.state = {
       elements: [
         { data: { id: '1', label: 'Tests', type: 'input' }, position: { x: 50, y: 50 } },
@@ -30,7 +40,7 @@ class App extends PureComponent {
         { data: { id: '3', label: 'This is a node' }, position: { x: 100, y: 200 }, style: { background: '#222', color: '#fff' } },
         { data: { id: '4', label: 'nody nodes', type: 'output' }, position: { x: 50, y: 300 } },
         { data: { id: '5', label: 'Another node', type: 'default' }, position: { x: 400, y: 300 } },
-        { data: { id: '6', label: 'I have inputs', type: 'special' }, position: { x: 400, y: 400 } },
+        { data: { id: '6', label: 'no option selected', type: 'special', onChange }, position: { x: 400, y: 400 } },
         { data: { source: '1', target: '2' } },
         { data: { source: '2', target: '3' } },
         { data: { source: '3', target: '4' } },
@@ -72,6 +82,7 @@ class App extends PureComponent {
   }
 
   render() {
+    console.log(this.state.elements);
     return (
       <Graph
         elements={this.state.elements}
