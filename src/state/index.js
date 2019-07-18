@@ -78,7 +78,17 @@ export const reducer = (state, action) => {
       const selectedNodesBbox = getBoundingBox(selectedNodes);
       const selectedNodeIds = selectedNodes.map(n => n.data.id);
 
-      return { ...state, ...action.payload, selectedNodeIds, selectedNodesBbox };
+      const bboxPos = {
+        x: ((selectedNodesBbox.x * state.transform[2]) + (state.transform[0] * (1 / 1.0))),
+        y: ((selectedNodesBbox.y * state.transform[2]) + (state.transform[1] * (1 / 1.0)))
+      };
+      let bboxWidth = (selectedNodesBbox.width * state.transform[2]) + 10;
+      let bboxHeight = (selectedNodesBbox.height * state.transform[2]) + 10;
+
+      bboxPos.x -= 5;
+      bboxPos.y -= 5;
+
+      return { ...state, ...action.payload, selectedNodeIds, selectedNodesBbox: { ...bboxPos, width: bboxWidth, height: bboxHeight } };
     }
     case SET_NODES:
     case SET_EDGES:

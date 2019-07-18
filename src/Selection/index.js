@@ -88,7 +88,7 @@ export default () => {
       className="react-graph__selectionpane"
       ref={selectionPane}
     >
-      {selectionRect.draw && (
+      {(rect.draw || rect.fixed) && (
         <div
           className="react-graph__selection"
           style={{

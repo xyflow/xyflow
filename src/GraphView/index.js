@@ -74,7 +74,7 @@ const GraphView = (props) => {
     <div className="react-graph__renderer">
       <NodeRenderer nodeTypes={props.nodeTypes} />
       <EdgeRenderer width={graphContext.state.width} height={graphContext.state.height} />
-      {shiftPressed && <Selection />}
+      {(shiftPressed || graphContext.state.selectedNodeIds.length) && <Selection />}
       <div
         className="react-graph__zoompane"
         ref={zoomPane}
