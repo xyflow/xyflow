@@ -6,7 +6,7 @@ import ReactSizeMe from 'react-sizeme';
 import { GraphContext } from '../GraphContext';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import Selection from '../Selection';
+import UserSelection from '../UserSelection';
 import { updateTransform, updateSize, initD3, fitView } from '../state/actions';
 import { useKeyPress } from '../hooks';
 
@@ -74,7 +74,7 @@ const GraphView = (props) => {
     <div className="react-graph__renderer">
       <NodeRenderer nodeTypes={props.nodeTypes} />
       <EdgeRenderer width={graphContext.state.width} height={graphContext.state.height} />
-      {(shiftPressed || graphContext.state.selectedNodeIds.length) && <Selection />}
+      {shiftPressed && <UserSelection />}
       <div
         className="react-graph__zoompane"
         ref={zoomPane}

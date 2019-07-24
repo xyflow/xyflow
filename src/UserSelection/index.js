@@ -20,7 +20,7 @@ function getMousePosition(evt) {
   return {
     x: evt.clientX - containerBounds.left,
     y: evt.clientY - containerBounds.top,
-  }
+  };
 }
 
 export default () => {
