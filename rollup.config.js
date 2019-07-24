@@ -29,6 +29,7 @@ export default [{
 		plugins: [
 			bundleSize(),
 			postcss({
+				extract: true,
 				plugins: [
 					autoprefixer(),
 					postCssNested()
