@@ -204,6 +204,10 @@
     return element.data && element.data.source && element.data.target;
   };
   var parseElements = function parseElements(e) {
+    if (isEdge(e)) {
+      return e;
+    }
+
     return _objectSpread2({}, e, {
       __rg: {
         position: e.position,
@@ -32893,6 +32897,7 @@
         className: nodeClasses,
         ref: nodeElement,
         style: {
+          zIndex: selected ? 10 : 3,
           transform: "translate(".concat(position.x, "px,").concat(position.y, "px)")
         },
         onClick: function onClick(e) {

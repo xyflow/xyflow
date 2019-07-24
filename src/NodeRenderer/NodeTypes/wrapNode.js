@@ -64,7 +64,7 @@ export default NodeComponent => (props) => {
       <div
         className={nodeClasses}
         ref={nodeElement}
-        style={{ transform: `translate(${position.x}px,${position.y}px)` }}
+        style={{ zIndex: selected ? 10 : 3, transform: `translate(${position.x}px,${position.y}px)` }}
         onClick={(e) => {
           if (isInputTarget(e)) {
             return false;

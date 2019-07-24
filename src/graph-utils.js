@@ -1,13 +1,19 @@
 export const isEdge = element => element.data && element.data.source && element.data.target;
 
-export const parseElements = e => ({
-  ...e,
-  __rg: {
-    position: e.position,
-    width: null,
-    height: null
+export const parseElements = e => {
+  if (isEdge(e)) {
+    return e;
   }
-});
+
+  return {
+    ...e,
+    __rg: {
+      position: e.position,
+      width: null,
+      height: null
+    }
+  }
+};
 
 export const separateElements = (res, element) => {
   res.edges = res.edges ? res.edges : [];
