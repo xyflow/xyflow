@@ -13,6 +13,7 @@ export default (props) => {
     <path
       className="react-graph__edge"
       d={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
+      onClick={e => console.log('on edge click')}
     />
   );
 };

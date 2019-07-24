@@ -38,13 +38,18 @@
 }
 
 .react-graph__edges {
+  position: absolute;
+  top: 0;
+  left: 0;
   pointer-events: none;
+  z-index: 2;
 }
 
 .react-graph__edge {
   fill: none;
   stroke: #333;
   stroke-width: 2;
+  pointer-events: all;
 }
 
 .react-graph__nodes {
