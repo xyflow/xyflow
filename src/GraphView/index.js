@@ -74,7 +74,11 @@ const GraphView = (props) => {
   return (
     <div className="react-graph__renderer">
       <NodeRenderer nodeTypes={props.nodeTypes} />
-      <EdgeRenderer width={state.width} height={state.height} />
+      <EdgeRenderer
+        width={state.width}
+        height={state.height}
+        edgeTypes={props.edgeTypes}
+      />
       {shiftPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}
       <div

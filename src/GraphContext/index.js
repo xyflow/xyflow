@@ -19,7 +19,7 @@ function usePrevious(value) {
 
 export const Provider = (props) => {
   const {
-    onNodeClick,
+    onElementClick,
     children
   } = props;
 
@@ -52,7 +52,7 @@ export const Provider = (props) => {
   });
 
   const graphContext = {
-    onNodeClick,
+    onElementClick,
     state,
     dispatch
   };

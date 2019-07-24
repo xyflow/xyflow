@@ -1,30 +1,34 @@
 import React, { PureComponent } from 'react';
 
-import Edge from './Edge';
 import { Consumer } from '../GraphContext';
 
-function renderEdge(e, nodes) {
-  const sourceNode = nodes.find(n => n.data.id === e.data.source);
-  const targetNode = nodes.find(n => n.data.id === e.data.target);
-
-  if (!sourceNode) {
-    throw new Error(`couldn't create edge for source id: ${e.data.source}`);
-  }
-
-  if (!targetNode) {
-    throw new Error(`couldn't create edge for source id: ${e.data.target}`);
-  }
-
-  return (
-    <Edge
-      key={`${e.data.source}-${e.data.target}`}
-      sourceNode={sourceNode}
-      targetNode={targetNode}
-    />
-  );
-}
-
 class EdgeRenderer extends PureComponent {
+  renderEdge(e, nodes, onElementClick) {
+    const edgeType = e.data.type || 'default';
+    const sourceNode = nodes.find(n => n.data.id === e.data.source);
+    const targetNode = nodes.find(n => n.data.id === e.data.target);
+
+    if (!sourceNode) {
+      throw new Error(`couldn't create edge for source id: ${e.data.source}`);
+    }
+
+    if (!targetNode) {
+      throw new Error(`couldn't create edge for source id: ${e.data.target}`);
+    }
+
+    const EdgeComponent = this.props.edgeTypes[edgeType] || this.props.edgeTypes.default;
+
+    return (
+      <EdgeComponent
+        key={`${e.data.source}-${e.data.target}`}
+        sourceNode={sourceNode}
+        targetNode={targetNode}
+        onClick={onElementClick}
+        {...e}
+      />
+    );
+  }
+
   render() {
     const { width, height } = this.props;
 
@@ -34,7 +38,7 @@ class EdgeRenderer extends PureComponent {
 
     return (
       <Consumer>
-        {({ state }) => (
+        {({ state, onElementClick }) => (
           <svg
             width={width}
             height={height}
@@ -43,7 +47,7 @@ class EdgeRenderer extends PureComponent {
             <g
               transform={`translate(${state.transform[0]},${state.transform[1]}) scale(${state.transform[2]})`}
             >
-              {state.edges.map(e => renderEdge(e, state.nodes))}
+              {state.edges.map(e => this.renderEdge(e, state.nodes, onElementClick))}
             </g>
           </svg>
         )}

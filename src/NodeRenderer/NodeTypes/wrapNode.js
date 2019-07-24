@@ -12,7 +12,7 @@ export default NodeComponent => (props) => {
   const { state, dispatch } = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  const { data, onNodeClick, __rg } = props;
+  const { data, onClick, __rg } = props;
   const { position } = __rg;
   const { id } = data;
   const [ x, y, k ] = state.transform;
@@ -70,7 +70,7 @@ export default NodeComponent => (props) => {
           }
 
           dispatch(setSelectedNodesIds(id));
-          onNodeClick({ data, position });
+          onClick({ data, position });
         }}
       >
         <NodeComponent {...props} />

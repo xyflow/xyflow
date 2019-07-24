@@ -4,11 +4,14 @@ import { parseElements, separateElements } from './graph-utils';
 import GraphView from './GraphView';
 import GlobalKeyHandler from './GlobalKeyHandler';
 import { Provider } from './GraphContext';
-import { createNodeTypes } from './NodeRenderer/utils';
 
 import DefaultNode from './NodeRenderer/NodeTypes/DefaultNode';
 import InputNode from './NodeRenderer/NodeTypes/InputNode';
 import OutputNode from './NodeRenderer/NodeTypes/OutputNode';
+import { createNodeTypes } from './NodeRenderer/utils';
+
+import DefaultEdge from './EdgeRenderer/EdgeTypes/DefaultEdge';
+import { createEdgeTypes } from './EdgeRenderer/utils';
 
 import './style.css';
 
@@ -17,11 +20,12 @@ class ReactGraph extends PureComponent {
     super(props);
 
     this.nodeTypes = createNodeTypes(props.nodeTypes);
+    this.edgeTypes = createEdgeTypes(props.edgeTypes);
   }
 
   render() {
     const {
-      style, onNodeClick, children, onLoad, onMove, onChange, elements, onNodeRemove
+      style, onElementClick, children, onLoad, onMove, onChange, elements, onNodeRemove
     } = this.props;
 
     const { nodes, edges } = elements
@@ -30,12 +34,13 @@ class ReactGraph extends PureComponent {
 
     return (
       <div style={style} className="react-graph">
-        <Provider nodes={nodes} edges={edges} onNodeClick={onNodeClick}>
+        <Provider nodes={nodes} edges={edges} onElementClick={onElementClick}>
           <GraphView
             onLoad={onLoad}
             onMove={onMove}
             onChange={onChange}
             nodeTypes={this.nodeTypes}
+            edgeTypes={this.edgeTypes}
           />
           <GlobalKeyHandler
             onNodeRemove={onNodeRemove}
@@ -48,7 +53,7 @@ class ReactGraph extends PureComponent {
 }
 
 ReactGraph.defaultProps = {
-  onNodeClick: () => {},
+  onElementClick: () => {},
   onNodeRemove: () => {},
 	onLoad: () => {},
   onMove: () => {},
@@ -57,6 +62,9 @@ ReactGraph.defaultProps = {
     input: InputNode,
     default: DefaultNode,
     output: OutputNode
+  },
+  edgeTypes: {
+    default: DefaultEdge
   }
 };
 
