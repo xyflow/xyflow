@@ -52,6 +52,10 @@
   pointer-events: all;
 }
 
+.react-graph__edge.selected {
+  stroke: #ff5050;
+}
+
 .react-graph__nodes {
   width: 100%;
   height: 100%;

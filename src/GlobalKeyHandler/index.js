@@ -9,8 +9,8 @@ export default (props) => {
   const removePressed = useKeyPress('Backspace');
 
   useEffect(() => {
-    if (removePressed && state.selectedNodeIds.length) {
-      props.onNodeRemove(state.selectedNodeIds);
+    if (removePressed && state.selectedElements.length) {
+      props.onElementsRemove(state.selectedElements);
       dispatch(setNodesSelection({ isActive: false }));
     }
   }, [removePressed])

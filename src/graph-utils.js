@@ -1,4 +1,4 @@
-export const isEdge = element => element.data.source && element.data.target;
+export const isEdge = element => element.data && element.data.source && element.data.target;
 
 export const parseElements = e => ({
   ...e,

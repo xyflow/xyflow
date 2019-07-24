@@ -13,7 +13,7 @@ export const FIT_VIEW = 'FIT_VIEW';
 export const UPDATE_SELECTION = 'UPDATE_SELECTION';
 export const SET_SELECTION = 'SET_SELECTION';
 export const SET_NODES_SELECTION = 'SET_NODES_SELECTION';
-export const SET_SELECTED_NODES_IDS = 'SET_SELECTED_NODES_IDS';
+export const SET_SELECTED_ELEMENTS = 'SET_SELECTED_ELEMENTS';
 export const REMOVE_NODES = 'REMOVE_NODES';
 
 export const initialState = {
@@ -22,7 +22,7 @@ export const initialState = {
   transform: [0, 0, 1],
   nodes: [],
   edges: [],
-  selectedNodeIds: [],
+  selectedElements: [],
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
   d3Zoom: null,
@@ -79,13 +79,14 @@ export const reducer = (state, action) => {
     }
     case UPDATE_SELECTION: {
       const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
-      const selectedNodeIds = selectedNodes.map(n => n.data.id);
+      const selectedNodesIds = selectedNodes.map(n => n.data.id);
+      const selectedEdges = state.edges.filter(e => selectedNodesIds.includes(e.data.source) || selectedNodesIds.includes(e.data.target))
 
-      return { ...state, ...action.payload, selectedNodeIds };
+      return { ...state, ...action.payload, selectedElements: [...selectedNodes, ...selectedEdges] };
     }
     case SET_NODES_SELECTION: {
       if (!action.payload.nodesSelectionActive) {
-        return { ...state, nodesSelectionActive: false, selectedNodeIds: [] };
+        return { ...state, nodesSelectionActive: false, selectedElements: [] };
       }
       const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
       const selectedNodesBbox = getBoundingBox(selectedNodes);
@@ -105,7 +106,7 @@ export const reducer = (state, action) => {
     case INIT_D3:
     case UPDATE_SIZE:
     case SET_SELECTION:
-    case SET_SELECTED_NODES_IDS:
+    case SET_SELECTED_ELEMENTS:
       return { ...state, ...action.payload };
     default:
       return state;
