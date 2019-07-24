@@ -183,31 +183,43 @@
   var isEdge = function isEdge(element) {
     return element.data.source && element.data.target;
   };
-  var separateElements = function separateElements(elements) {
-    return {
-      nodes: elements.filter(function (e) {
-        return !isEdge(e);
-      }),
-      edges: elements.filter(function (e) {
-        return isEdge(e);
-      })
-    };
+  var parseElements = function parseElements(e) {
+    return _objectSpread2({}, e, {
+      __rg: {
+        position: e.position,
+        width: null,
+        height: null
+      }
+    });
+  };
+  var separateElements = function separateElements(res, element) {
+    res.edges = res.edges ? res.edges : [];
+    res.nodes = res.nodes ? res.nodes : [];
+
+    if (isEdge(element)) {
+      res.edges.push(element);
+    } else {
+      res.nodes.push(element);
+    }
+
+    return res;
   };
   var getBoundingBox = function getBoundingBox(nodes) {
     var bbox = nodes.reduce(function (res, node) {
-      var x2 = node.position.x + node.data.__width;
-      var y2 = node.position.y + node.data.__height;
+      var position = node.__rg.position;
+      var x2 = position.x + node.__rg.width;
+      var y2 = position.y + node.__rg.height;
 
-      if (node.position.x < res.minX) {
-        res.minX = node.position.x;
+      if (position.x < res.minX) {
+        res.minX = position.x;
       }
 
       if (x2 > res.maxX) {
         res.maxX = x2;
       }
 
-      if (node.position.y < res.minY) {
-        res.minY = node.position.y;
+      if (position.y < res.minY) {
+        res.minY = position.y;
       }
 
       if (y2 > res.maxY) {
@@ -237,7 +249,11 @@
       };
       var bboxWidth = bbox.width * (1 / transform[2]);
       var bboxHeight = bbox.height * (1 / transform[2]);
-      return n.position.x > bboxPos.x && n.position.x + n.data.__width < bboxPos.x + bboxWidth && n.position.y > bboxPos.y && n.position.y + n.data.__height < bboxPos.y + bboxHeight;
+      var _n$__rg = n.__rg,
+          position = _n$__rg.position,
+          width = _n$__rg.width,
+          height = _n$__rg.height;
+      return position.x > bboxPos.x && position.x + width < bboxPos.x + bboxWidth && position.y > bboxPos.y && position.y + height < bboxPos.y + bboxHeight;
     });
   };
 
@@ -29787,7 +29803,13 @@
     transform: [0, 0, 1],
     nodes: [],
     edges: [],
-    selectedNodes: [],
+    selectedNodeIds: [],
+    selectedNodesBbox: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    },
     d3Zoom: null,
     d3Selection: null,
     d3Initialised: false,
@@ -29801,7 +29823,7 @@
           return _objectSpread2({}, state, {
             nodes: state.nodes.map(function (n) {
               if (n.data.id === action.payload.id) {
-                n.data = _objectSpread2({}, n.data, {}, action.payload.data);
+                n.__rg = _objectSpread2({}, n.__rg, {}, action.payload.data);
               }
 
               return n;
@@ -29814,7 +29836,9 @@
           return _objectSpread2({}, state, {
             nodes: state.nodes.map(function (n) {
               if (n.data.id === action.payload.id) {
-                n.position = action.payload.pos;
+                n.__rg = _objectSpread2({}, n.__rg, {
+                  position: action.payload.pos
+                });
               }
 
               return n;
@@ -29836,11 +29860,25 @@
 
       case UPDATE_SELECTION:
         {
-          var selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform).map(function (n) {
+          var selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
+          var selectedNodesBbox = getBoundingBox(selectedNodes);
+          var selectedNodeIds = selectedNodes.map(function (n) {
             return n.data.id;
           });
+          var bboxPos = {
+            x: selectedNodesBbox.x * state.transform[2] + state.transform[0] * (1 / 1.0),
+            y: selectedNodesBbox.y * state.transform[2] + state.transform[1] * (1 / 1.0)
+          };
+          var bboxWidth = selectedNodesBbox.width * state.transform[2] + 10;
+          var bboxHeight = selectedNodesBbox.height * state.transform[2] + 10;
+          bboxPos.x -= 5;
+          bboxPos.y -= 5;
           return _objectSpread2({}, state, {}, action.payload, {
-            selectedNodes: selectedNodes
+            selectedNodeIds: selectedNodeIds,
+            selectedNodesBbox: _objectSpread2({}, bboxPos, {
+              width: bboxWidth,
+              height: bboxHeight
+            })
           });
         }
 
@@ -29956,7 +29994,9 @@
         });
 
         if (existingNode) {
-          return Object.assign(propNode, existingNode);
+          return _objectSpread2({}, existingNode, {
+            data: _objectSpread2({}, existingNode.data, {}, propNode.data)
+          });
         }
 
         return propNode;
@@ -30012,13 +30052,10 @@
         }
 
         var NodeComponent = this.props.nodeTypes[nodeType] || this.props.nodeTypes["default"];
-        return React__default.createElement(NodeComponent, {
+        return React__default.createElement(NodeComponent, _extends({
           key: d.data.id,
-          position: d.position,
-          data: d.data,
-          style: d.style || {},
           onNodeClick: onNodeClick
-        });
+        }, d));
       }
     }, {
       key: "render",
@@ -30046,10 +30083,10 @@
   var Edge = (function (props) {
     var targetNode = props.targetNode,
         sourceNode = props.sourceNode;
-    var sourceX = sourceNode.position.x + sourceNode.data.__width / 2;
-    var sourceY = sourceNode.position.y + sourceNode.data.__height;
-    var targetX = targetNode.position.x + targetNode.data.__width / 2;
-    var targetY = targetNode.position.y;
+    var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
+    var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
+    var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
+    var targetY = targetNode.__rg.position.y;
     return React__default.createElement("path", {
       className: "react-graph__edge",
       d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
@@ -30126,9 +30163,19 @@
     y: 0,
     width: 0,
     height: 0,
-    draw: false
+    draw: false,
+    fixed: false
   };
-  var Selection$2 = (function () {
+
+  function getMousePosition(evt) {
+    var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
+    return {
+      x: evt.clientX - containerBounds.left,
+      y: evt.clientY - containerBounds.top
+    };
+  }
+
+  var UserSelection = (function () {
     var selectionPane = React.useRef(null);
 
     var _useState = React.useState(initialRect),
@@ -30137,16 +30184,18 @@
         setRect = _useState2[1];
 
     var _useContext = React.useContext(GraphContext),
-        dispatch = _useContext.dispatch;
+        dispatch = _useContext.dispatch,
+        state = _useContext.state;
 
     React.useEffect(function () {
       function onMouseDown(evt) {
+        var mousePos = getMousePosition(evt);
         setRect(function (r) {
           return _objectSpread2({}, r, {
-            startX: evt.clientX,
-            startY: evt.clientY,
-            x: evt.clientX,
-            y: evt.clientY,
+            startX: mousePos.x,
+            startY: mousePos.y,
+            x: mousePos.x,
+            y: mousePos.y,
             draw: true
           });
         });
@@ -30155,18 +30204,19 @@
 
       function onMouseMove(evt) {
         setRect(function (r) {
-          var negativeX = evt.clientX < r.startX;
-          var negativeY = evt.clientY < r.startY;
+          var mousePos = getMousePosition(evt);
+          var negativeX = mousePos.x < r.startX;
+          var negativeY = mousePos.y < r.startY;
 
           if (!r.draw) {
             return r;
           }
 
           var nextRect = _objectSpread2({}, r, {
-            x: negativeX ? evt.clientX : r.x,
-            y: negativeY ? evt.clientY : r.y,
-            width: negativeX ? r.startX - evt.clientX : evt.clientX - r.startX,
-            height: negativeY ? r.startY - evt.clientY : evt.clientY - r.startY
+            x: negativeX ? mousePos.x : r.x,
+            y: negativeY ? mousePos.y : r.y,
+            width: negativeX ? r.startX - mousePos.x : mousePos.x - r.startX,
+            height: negativeY ? r.startY - mousePos.y : mousePos.y - r.startY
           });
 
           dispatch(updateSelection(nextRect));
@@ -30175,8 +30225,14 @@
       }
 
       function onMouseUp() {
-        setRect(initialRect);
-        dispatch(setSelection(false));
+        setRect(function (r) {
+          var nextRect = _objectSpread2({}, r, {
+            fixed: true
+          });
+
+          dispatch(updateSelection(nextRect));
+          return nextRect;
+        });
       }
 
       selectionPane.current.addEventListener('mousedown', onMouseDown);
@@ -30188,15 +30244,17 @@
         selectionPane.current.removeEventListener('mouseup', onMouseUp);
       };
     }, []);
+    var selectionRect = rect.fixed ? state.selectedNodesBbox : rect;
+    console.log(selectionRect);
     return React__default.createElement("div", {
       className: "react-graph__selectionpane",
       ref: selectionPane
-    }, rect.draw && React__default.createElement("div", {
+    }, (rect.draw || rect.fixed) && React__default.createElement("div", {
       className: "react-graph__selection",
       style: {
-        width: rect.width,
-        height: rect.height,
-        transform: "translate(".concat(rect.x, "px, ").concat(rect.y, "px)")
+        width: selectionRect.width,
+        height: selectionRect.height,
+        transform: "translate(".concat(selectionRect.x, "px, ").concat(selectionRect.y, "px)")
       }
     }));
   });
@@ -30294,7 +30352,7 @@
     }), React__default.createElement(EdgeRenderer, {
       width: graphContext.state.width,
       height: graphContext.state.height
-    }), shiftPressed && React__default.createElement(Selection$2, null), React__default.createElement("div", {
+    }), shiftPressed && React__default.createElement(UserSelection, null), React__default.createElement("div", {
       className: "react-graph__zoompane",
       ref: zoomPane
     }));
@@ -30313,7 +30371,8 @@
   var nodeStyles = {
     background: '#ff6060',
     padding: 10,
-    borderRadius: 5
+    borderRadius: 5,
+    width: 150
   };
   var DefaultNode = (function (_ref) {
     var data = _ref.data,
@@ -30336,7 +30395,8 @@
   var nodeStyles$1 = {
     background: '#9999ff',
     padding: 10,
-    borderRadius: 5
+    borderRadius: 5,
+    width: 150
   };
   var InputNode = (function (_ref) {
     var data = _ref.data,
@@ -30356,7 +30416,8 @@
   var nodeStyles$2 = {
     background: '#55ff99',
     padding: 10,
-    borderRadius: 5
+    borderRadius: 5,
+    width: 150
   };
   var OutputNode = (function (_ref) {
     var data = _ref.data,
@@ -32637,19 +32698,29 @@
 
   var wrapNode = (function (NodeComponent) {
     return function (props) {
-      var position = props.position,
-          data = props.data,
-          onNodeClick = props.onNodeClick;
-      var id = data.id;
       var nodeElement = React.useRef(null);
       var graphContext = React.useContext(GraphContext);
+
+      var _useState = React.useState({
+        x: 0,
+        y: 0
+      }),
+          _useState2 = _slicedToArray(_useState, 2),
+          offset = _useState2[0],
+          setOffset = _useState2[1];
+
+      var data = props.data,
+          onNodeClick = props.onNodeClick,
+          __rg = props.__rg;
+      var position = __rg.position;
+      var id = data.id;
 
       var _graphContext$state$t = _slicedToArray(graphContext.state.transform, 3),
           x = _graphContext$state$t[0],
           y = _graphContext$state$t[1],
           k = _graphContext$state$t[2];
 
-      var selected = graphContext.state.selectedNodes.includes(id);
+      var selected = graphContext.state.selectedNodeIds.includes(id);
       var nodeClasses = classnames('react-graph__node', {
         selected: selected
       });
@@ -32658,8 +32729,8 @@
         var unscaledWith = Math.round(bounds.width * (1 / k));
         var unscaledHeight = Math.round(bounds.height * (1 / k));
         graphContext.dispatch(updateNodeData(id, {
-          __width: unscaledWith,
-          __height: unscaledHeight
+          width: unscaledWith,
+          height: unscaledHeight
         }));
       }, []);
       return React__default.createElement(reactDraggable.DraggableCore, {
@@ -32675,24 +32746,19 @@
           };
           var offsetX = unscaledPos.x - position.x - x;
           var offsetY = unscaledPos.y - position.y - y;
-          graphContext.dispatch(updateNodeData(id, {
-            __offsetX: offsetX,
-            __offsetY: offsetY
-          }));
+          setOffset({
+            x: offsetX,
+            y: offsetY
+          });
         },
         onDrag: function onDrag(e, d) {
-          var _data$__offsetX = data.__offsetX,
-              __offsetX = _data$__offsetX === void 0 ? 0 : _data$__offsetX,
-              _data$__offsetY = data.__offsetY,
-              __offsetY = _data$__offsetY === void 0 ? 0 : _data$__offsetY;
-
           var unscaledPos = {
             x: e.clientX * (1 / k),
             y: e.clientY * (1 / k)
           };
           graphContext.dispatch(updateNodePos(id, {
-            x: unscaledPos.x - x - __offsetX,
-            y: unscaledPos.y - y - __offsetY
+            x: unscaledPos.x - x - offset.x,
+            y: unscaledPos.y - y - offset.y
           }));
         },
         scale: k
@@ -32758,7 +32824,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  width: 150px;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__node.selected > * {\n  box-shadow: 0 0 0 2px #000;\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__node.selected > * {\n  box-shadow: 0 0 0 2px #000;\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
   styleInject(css);
 
   var ReactGraph =
@@ -32788,9 +32854,9 @@
             onChange = _this$props.onChange,
             elements = _this$props.elements;
 
-        var _separateElements = separateElements(elements),
-            nodes = _separateElements.nodes,
-            edges = _separateElements.edges;
+        var _elements$map$reduce = elements.map(parseElements).reduce(separateElements, {}),
+            nodes = _elements$map$reduce.nodes,
+            edges = _elements$map$reduce.edges;
 
         return React__default.createElement("div", {
           style: style,
