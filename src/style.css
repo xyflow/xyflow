@@ -58,7 +58,6 @@
 
 .react-graph__node {
   position: absolute;
-  width: 150px;
   color: #222;
   font-family: sans-serif;
   font-size: 12px;

@@ -5,7 +5,8 @@ import Handle from '../Handle';
 const nodeStyles = {
   background: '#ff6060',
   padding: 10,
-  borderRadius: 5
+  borderRadius: 5,
+  width: 150
 };
 
 export default ({ data, style }) => (
