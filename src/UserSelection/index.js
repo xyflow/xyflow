@@ -31,8 +31,8 @@ export default () => {
     function onMouseDown(evt) {
       const mousePos = getMousePosition(evt);
 
-      setRect((r) => ({
-        ...r,
+      setRect((currentRect) => ({
+        ...currentRect,
         startX: mousePos.x,
         startY: mousePos.y,
         x: mousePos.x,
@@ -44,20 +44,20 @@ export default () => {
     }
 
     function onMouseMove(evt) {
-      setRect((r) => {
-        if (!r.draw) {
-          return r;
+      setRect((currentRect) => {
+        if (!currentRect.draw) {
+          return currentRect;
         }
 
         const mousePos = getMousePosition(evt);
-        const negativeX = mousePos.x < r.startX;
-        const negativeY = mousePos.y < r.startY;
+        const negativeX = mousePos.x < currentRect.startX;
+        const negativeY = mousePos.y < currentRect.startY;
         const nextRect = {
-          ...r,
-          x: negativeX ? mousePos.x : r.x,
-          y: negativeY ? mousePos.y : r.y,
-          width: negativeX ? r.startX - mousePos.x : mousePos.x - r.startX,
-          height: negativeY ? r.startY - mousePos.y : mousePos.y - r.startY,
+          ...currentRect,
+          x: negativeX ? mousePos.x : currentRect.x,
+          y: negativeY ? mousePos.y : currentRect.y,
+          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
+          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY,
         };
 
         dispatch(updateSelection(nextRect));
@@ -67,16 +67,14 @@ export default () => {
     }
 
     function onMouseUp() {
-      setRect((r) => {
-        const nextRect = {
-          ...r,
-          fixed: true
-        };
-
-        dispatch(setNodesSelection({ isActive: true, selection: nextRect }));
+      setRect((currentRect) => {
+        dispatch(setNodesSelection({ isActive: true, selection: currentRect }));
         dispatch(setSelection(false));
 
-        return nextRect;
+        return {
+          ...currentRect,
+          draw: false
+        };
       });
     }
 
