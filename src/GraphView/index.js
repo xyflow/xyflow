@@ -8,19 +8,19 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../UserSelection';
 import NodesSelection from '../NodesSelection';
-import { updateTransform, updateSize, initD3, fitView } from '../state/actions';
+import { updateTransform, updateSize, initD3, fitView, setNodesSelection } from '../state/actions';
 import { useKeyPress } from '../hooks';
 
 const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
 
 const GraphView = (props) => {
   const zoomPane = useRef(null);
-  const graphContext = useContext(GraphContext);
+  const { state, dispatch } = useContext(GraphContext);
   const shiftPressed = useKeyPress('Shift');
 
   useEffect(() => {
     const selection = select(zoomPane.current).call(d3ZoomInstance);
-    graphContext.dispatch(initD3({ zoom: d3ZoomInstance, selection }));
+    dispatch(initD3({ zoom: d3ZoomInstance, selection }));
   }, []);
 
   useEffect(() => {
@@ -32,53 +32,54 @@ const GraphView = (props) => {
           return false;
         }
 
-        graphContext.dispatch(updateTransform(event.transform));
+        dispatch(updateTransform(event.transform));
 
         props.onMove();
       });
 
-      if (graphContext.state.d3Selection) {
+      if (state.d3Selection) {
         // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
         const graphTransform = d3Zoom.zoomIdentity
-            .translate(graphContext.state.transform[0], graphContext.state.transform[1])
-            .scale(graphContext.state.transform[2]);
+            .translate(state.transform[0], state.transform[1])
+            .scale(state.transform[2]);
 
-        graphContext.state.d3Selection.call(graphContext.state.d3Zoom.transform, graphTransform);
+        state.d3Selection.call(state.d3Zoom.transform, graphTransform);
       }
     }
 
   }, [shiftPressed]);
 
   useEffect(
-    () => graphContext.dispatch(updateSize(props.size)),
+    () => dispatch(updateSize(props.size)),
     [props.size.width, props.size.height]
   );
 
   useEffect(() => {
-    if (graphContext.state.d3Initialised) {
+    if (state.d3Initialised) {
       props.onLoad({
-        nodes: graphContext.state.nodes,
-        edges: graphContext.state.edges,
-        fitView: () => graphContext.dispatch(fitView())
+        nodes: state.nodes,
+        edges: state.edges,
+        fitView: () => dispatch(fitView())
       });
     }
-  }, [graphContext.state.d3Initialised]);
+  }, [state.d3Initialised]);
 
   useEffect(() => {
     props.onChange({
-      nodes: graphContext.state.nodes,
-      edges: graphContext.state.edges,
+      nodes: state.nodes,
+      edges: state.edges,
     });
   });
 
   return (
     <div className="react-graph__renderer">
       <NodeRenderer nodeTypes={props.nodeTypes} />
-      <EdgeRenderer width={graphContext.state.width} height={graphContext.state.height} />
+      <EdgeRenderer width={state.width} height={state.height} />
       {shiftPressed && <UserSelection />}
-      {graphContext.state.nodesSelectionActive && <NodesSelection />}
+      {state.nodesSelectionActive && <NodesSelection />}
       <div
         className="react-graph__zoompane"
+        onClick={() => dispatch(setNodesSelection({ isActive: false }))}
         ref={zoomPane}
       />
     </div>
