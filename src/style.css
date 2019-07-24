@@ -50,10 +50,10 @@
   stroke: #333;
   stroke-width: 2;
   pointer-events: all;
-}
 
-.react-graph__edge.selected {
-  stroke: #ff5050;
+  &.selected {
+    stroke: #ff5050;
+  }
 }
 
 .react-graph__nodes {
@@ -75,14 +75,14 @@
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
-}
 
-.react-graph__node:hover > * {
-  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
-}
+  &:hover > * {
+    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
+  }
 
-.react-graph__node.selected > * {
-  box-shadow: 0 0 0 2px #000;
+  &.selected > * {
+    box-shadow: 0 0 0 2px #000;
+  }
 }
 
 .react-graph__handle {
@@ -104,10 +104,10 @@
   left: 0;
   transform-origin: left top;
   pointer-events: none;
-}
 
-.react-graph__nodesselection-rect {
-  position: absolute;
-  background: rgba(0, 89, 220, 0.08);
-  border: 1px dotted rgba(0, 89, 220, 0.8);
+  &-rect {
+    position: absolute;
+    background: rgba(0, 89, 220, 0.08);
+    border: 1px dotted rgba(0, 89, 220, 0.8);
+  }
 }

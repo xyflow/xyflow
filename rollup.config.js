@@ -2,6 +2,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
+import postCssNested from 'postcss-nested';
 import autoprefixer from 'autoprefixer';
 import bundleSize from 'rollup-plugin-bundle-size';
 
@@ -28,7 +29,10 @@ export default [{
 		plugins: [
 			bundleSize(),
 			postcss({
-				plugins: [autoprefixer()]
+				plugins: [
+					autoprefixer(),
+					postCssNested()
+				]
 			}),
 			resolve(),
 			babel({
