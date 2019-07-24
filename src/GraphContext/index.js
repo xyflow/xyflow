@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from 'react';
+import React, { createContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 
@@ -6,6 +6,16 @@ import { reducer, initialState } from '../state';
 import { setNodes, setEdges } from '../state/actions';
 
 export const GraphContext = createContext({});
+
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  });
+
+  return ref.current;
+}
 
 export const Provider = (props) => {
   const {

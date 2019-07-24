@@ -29798,6 +29798,8 @@
   var UPDATE_SELECTION = 'UPDATE_SELECTION';
   var SET_SELECTION = 'SET_SELECTION';
   var SET_NODES_SELECTION = 'SET_NODES_SELECTION';
+  var SET_SELECTED_NODES_IDS = 'SET_SELECTED_NODES_IDS';
+  var REMOVE_NODES = 'REMOVE_NODES';
   var initialState = {
     width: 0,
     height: 0,
@@ -29894,12 +29896,31 @@
           });
         }
 
+      case REMOVE_NODES:
+        {
+          var ids = action.payload.ids;
+          var nextEdges = state.edges.filter(function (e) {
+            return !ids.includes(e.data.target) && !ids.includes(e.data.source);
+          });
+          var nextNodes = state.nodes.filter(function (n) {
+            return !ids.includes(n.data.id);
+          });
+          console.log(ids);
+          console.log(state.edges, nextEdges);
+          console.log(state.nodes, nextNodes);
+          return _objectSpread2({}, state, {
+            nodes: nextNodes,
+            edges: nextEdges
+          });
+        }
+
       case SET_NODES:
       case SET_EDGES:
       case UPDATE_TRANSFORM:
       case INIT_D3:
       case UPDATE_SIZE:
       case SET_SELECTION:
+      case SET_SELECTED_NODES_IDS:
         return _objectSpread2({}, state, {}, action.payload);
 
       default:
@@ -29991,6 +30012,15 @@
       }
     };
   };
+  var setSelectedNodesIds = function setSelectedNodesIds(ids) {
+    var idArray = Array.isArray(ids) ? ids : [ids];
+    return {
+      type: SET_SELECTED_NODES_IDS,
+      payload: {
+        selectedNodeIds: idArray
+      }
+    };
+  };
   var updateSelection = function updateSelection(selection) {
     return {
       type: UPDATE_SELECTION,
@@ -30001,6 +30031,7 @@
   };
 
   var GraphContext = React.createContext({});
+
   var Provider = function Provider(props) {
     var onNodeClick = props.onNodeClick,
         children = props.children;
@@ -30284,17 +30315,11 @@
 
   var NodesSelection = (function () {
     var graphContext = React.useContext(GraphContext);
-    var state = graphContext.state,
-        dispatch = graphContext.dispatch;
+    var state = graphContext.state;
     return React__default.createElement("div", {
       className: "react-graph__nodesselection",
       style: {
         transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
-      },
-      onClick: function onClick() {
-        return dispatch(setNodesSelection({
-          isActive: false
-        }));
       }
     }, React__default.createElement("div", {
       className: "react-graph__nodesselection-rect",
@@ -30344,11 +30369,15 @@
 
   var GraphView = function GraphView(props) {
     var zoomPane = React.useRef(null);
-    var graphContext = React.useContext(GraphContext);
+
+    var _useContext = React.useContext(GraphContext),
+        state = _useContext.state,
+        dispatch = _useContext.dispatch;
+
     var shiftPressed = useKeyPress('Shift');
     React.useEffect(function () {
       var selection = select(zoomPane.current).call(d3ZoomInstance);
-      graphContext.dispatch(initD3({
+      dispatch(initD3({
         zoom: d3ZoomInstance,
         selection: selection
       }));
@@ -30362,35 +30391,35 @@
             return false;
           }
 
-          graphContext.dispatch(updateTransform(event.transform));
+          dispatch(updateTransform(event.transform));
           props.onMove();
         });
 
-        if (graphContext.state.d3Selection) {
+        if (state.d3Selection) {
           // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
-          var graphTransform = identity$1.translate(graphContext.state.transform[0], graphContext.state.transform[1]).scale(graphContext.state.transform[2]);
-          graphContext.state.d3Selection.call(graphContext.state.d3Zoom.transform, graphTransform);
+          var graphTransform = identity$1.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
+          state.d3Selection.call(state.d3Zoom.transform, graphTransform);
         }
       }
     }, [shiftPressed]);
     React.useEffect(function () {
-      return graphContext.dispatch(updateSize(props.size));
+      return dispatch(updateSize(props.size));
     }, [props.size.width, props.size.height]);
     React.useEffect(function () {
-      if (graphContext.state.d3Initialised) {
+      if (state.d3Initialised) {
         props.onLoad({
-          nodes: graphContext.state.nodes,
-          edges: graphContext.state.edges,
+          nodes: state.nodes,
+          edges: state.edges,
           fitView: function fitView$1() {
-            return graphContext.dispatch(fitView());
+            return dispatch(fitView());
           }
         });
       }
-    }, [graphContext.state.d3Initialised]);
+    }, [state.d3Initialised]);
     React.useEffect(function () {
       props.onChange({
-        nodes: graphContext.state.nodes,
-        edges: graphContext.state.edges
+        nodes: state.nodes,
+        edges: state.edges
       });
     });
     return React__default.createElement("div", {
@@ -30398,10 +30427,15 @@
     }, React__default.createElement(NodeRenderer, {
       nodeTypes: props.nodeTypes
     }), React__default.createElement(EdgeRenderer, {
-      width: graphContext.state.width,
-      height: graphContext.state.height
-    }), shiftPressed && React__default.createElement(UserSelection, null), graphContext.state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
+      width: state.width,
+      height: state.height
+    }), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
       className: "react-graph__zoompane",
+      onClick: function onClick() {
+        return dispatch(setNodesSelection({
+          isActive: false
+        }));
+      },
       ref: zoomPane
     }));
   };
@@ -30409,6 +30443,23 @@
   var GraphView$1 = reactSizeme.withSize({
     monitorHeight: true
   })(GraphView);
+
+  var GlobalKeyHandler = (function (props) {
+    var _useContext = React.useContext(GraphContext),
+        state = _useContext.state,
+        dispatch = _useContext.dispatch;
+
+    var removePressed = useKeyPress('Backspace');
+    React.useEffect(function () {
+      if (removePressed && state.selectedNodeIds.length) {
+        props.onNodeRemove(state.selectedNodeIds);
+        dispatch(setNodesSelection({
+          isActive: false
+        }));
+      }
+    }, [removePressed]);
+    return null;
+  });
 
   var Handle = (function (props) {
     return React__default.createElement("div", _extends({
@@ -32747,7 +32798,10 @@
   var wrapNode = (function (NodeComponent) {
     return function (props) {
       var nodeElement = React.useRef(null);
-      var graphContext = React.useContext(GraphContext);
+
+      var _useContext = React.useContext(GraphContext),
+          state = _useContext.state,
+          dispatch = _useContext.dispatch;
 
       var _useState = React.useState({
         x: 0,
@@ -32763,12 +32817,12 @@
       var position = __rg.position;
       var id = data.id;
 
-      var _graphContext$state$t = _slicedToArray(graphContext.state.transform, 3),
-          x = _graphContext$state$t[0],
-          y = _graphContext$state$t[1],
-          k = _graphContext$state$t[2];
+      var _state$transform = _slicedToArray(state.transform, 3),
+          x = _state$transform[0],
+          y = _state$transform[1],
+          k = _state$transform[2];
 
-      var selected = graphContext.state.selectedNodeIds.includes(id);
+      var selected = state.selectedNodeIds.includes(id);
       var nodeClasses = classnames('react-graph__node', {
         selected: selected
       });
@@ -32776,7 +32830,7 @@
         var bounds = nodeElement.current.getBoundingClientRect();
         var unscaledWith = Math.round(bounds.width * (1 / k));
         var unscaledHeight = Math.round(bounds.height * (1 / k));
-        graphContext.dispatch(updateNodeData(id, {
+        dispatch(updateNodeData(id, {
           width: unscaledWith,
           height: unscaledHeight
         }));
@@ -32804,7 +32858,7 @@
             x: e.clientX * (1 / k),
             y: e.clientY * (1 / k)
           };
-          graphContext.dispatch(updateNodePos(id, {
+          dispatch(updateNodePos(id, {
             x: unscaledPos.x - x - offset.x,
             y: unscaledPos.y - y - offset.y
           }));
@@ -32821,6 +32875,7 @@
             return false;
           }
 
+          dispatch(setSelectedNodesIds(id));
           onNodeClick({
             data: data,
             position: position
@@ -32900,7 +32955,8 @@
             onLoad = _this$props.onLoad,
             onMove = _this$props.onMove,
             onChange = _this$props.onChange,
-            elements = _this$props.elements;
+            elements = _this$props.elements,
+            onNodeRemove = _this$props.onNodeRemove;
 
         var _elements$map$reduce = elements.map(parseElements).reduce(separateElements, {}),
             nodes = _elements$map$reduce.nodes,
@@ -32918,6 +32974,8 @@
           onMove: onMove,
           onChange: onChange,
           nodeTypes: this.nodeTypes
+        }), React__default.createElement(GlobalKeyHandler, {
+          onNodeRemove: onNodeRemove
         }), children));
       }
     }]);
@@ -32927,6 +32985,7 @@
 
   ReactGraph.defaultProps = {
     onNodeClick: function onNodeClick() {},
+    onNodeRemove: function onNodeRemove() {},
     onLoad: function onLoad() {},
     onMove: function onMove() {},
     onChange: function onChange() {},

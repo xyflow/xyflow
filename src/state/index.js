@@ -13,6 +13,8 @@ export const FIT_VIEW = 'FIT_VIEW';
 export const UPDATE_SELECTION = 'UPDATE_SELECTION';
 export const SET_SELECTION = 'SET_SELECTION';
 export const SET_NODES_SELECTION = 'SET_NODES_SELECTION';
+export const SET_SELECTED_NODES_IDS = 'SET_SELECTED_NODES_IDS';
+export const REMOVE_NODES = 'REMOVE_NODES';
 
 export const initialState = {
   width: 0,
@@ -98,12 +100,24 @@ export const reducer = (state, action) => {
 
       return { ...state, ...action.payload, selectedNodesBbox };
     }
+    case REMOVE_NODES: {
+      const { ids } = action.payload;
+      const nextEdges = state.edges.filter(e => !ids.includes(e.data.target) && !ids.includes(e.data.source));
+      const nextNodes = state.nodes.filter(n => !ids.includes(n.data.id));
+
+      console.log(ids,);
+      console.log( state.edges, nextEdges, );
+      console.log(state.nodes, nextNodes);
+
+      return { ...state, nodes: nextNodes, edges: nextEdges };
+    }
     case SET_NODES:
     case SET_EDGES:
     case UPDATE_TRANSFORM:
     case INIT_D3:
     case UPDATE_SIZE:
     case SET_SELECTION:
+    case SET_SELECTED_NODES_IDS:
       return { ...state, ...action.payload };
     default:
       return state;

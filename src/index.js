@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 
 import { parseElements, separateElements } from './graph-utils';
 import GraphView from './GraphView';
+import GlobalKeyHandler from './GlobalKeyHandler';
 import { Provider } from './GraphContext';
 import { createNodeTypes } from './NodeRenderer/utils';
 
@@ -20,7 +21,7 @@ class ReactGraph extends PureComponent {
 
   render() {
     const {
-      style, onNodeClick, children, onLoad, onMove, onChange, elements
+      style, onNodeClick, children, onLoad, onMove, onChange, elements, onNodeRemove
     } = this.props;
 
     const { nodes, edges } = elements
@@ -36,6 +37,9 @@ class ReactGraph extends PureComponent {
             onChange={onChange}
             nodeTypes={this.nodeTypes}
           />
+          <GlobalKeyHandler
+            onNodeRemove={onNodeRemove}
+          />
           {children}
         </Provider>
       </div>
@@ -44,7 +48,8 @@ class ReactGraph extends PureComponent {
 }
 
 ReactGraph.defaultProps = {
-	onNodeClick: () => {},
+  onNodeClick: () => {},
+  onNodeRemove: () => {},
 	onLoad: () => {},
   onMove: () => {},
   onChange: () => {},
