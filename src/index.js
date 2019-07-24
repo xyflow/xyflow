@@ -25,7 +25,8 @@ class ReactGraph extends PureComponent {
 
   render() {
     const {
-      style, onElementClick, children, onLoad, onMove, onChange, elements, onElementsRemove
+      style, onElementClick, children, onLoad,
+      onMove, onChange, elements, onElementsRemove
     } = this.props;
 
     const { nodes, edges } = elements

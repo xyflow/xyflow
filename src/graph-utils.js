@@ -85,9 +85,15 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
     });
 };
 
+export const getConnectedEdges = (nodes, edges) => {
+  const nodeIds = nodes.map(n => n.data.id);
+  return edges.filter(e => nodeIds.includes(e.data.source) || nodeIds.includes(e.data.target))
+}
+
 export default {
   isEdge,
   separateElements,
   getBoundingBox,
-  graphPosToZoomedPos
+  graphPosToZoomedPos,
+  getConnectedEdges
 };
