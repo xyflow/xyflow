@@ -7,10 +7,11 @@ import { GraphContext } from '../GraphContext';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../UserSelection';
+import NodesSelection from '../NodesSelection';
 import { updateTransform, updateSize, initD3, fitView } from '../state/actions';
 import { useKeyPress } from '../hooks';
 
-const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2])
+const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
 
 const GraphView = (props) => {
   const zoomPane = useRef(null);
@@ -75,6 +76,7 @@ const GraphView = (props) => {
       <NodeRenderer nodeTypes={props.nodeTypes} />
       <EdgeRenderer width={graphContext.state.width} height={graphContext.state.height} />
       {shiftPressed && <UserSelection />}
+      {graphContext.state.nodesSelectionActive && <NodesSelection />}
       <div
         className="react-graph__zoompane"
         ref={zoomPane}

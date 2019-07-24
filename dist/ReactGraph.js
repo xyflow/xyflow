@@ -29797,6 +29797,7 @@
   var FIT_VIEW = 'FIT_VIEW';
   var UPDATE_SELECTION = 'UPDATE_SELECTION';
   var SET_SELECTION = 'SET_SELECTION';
+  var SET_NODES_SELECTION = 'SET_NODES_SELECTION';
   var initialState = {
     width: 0,
     height: 0,
@@ -29813,6 +29814,7 @@
     d3Zoom: null,
     d3Selection: null,
     d3Initialised: false,
+    nodesSelectionActive: false,
     selectionActive: false,
     selection: {}
   };
@@ -29861,24 +29863,34 @@
       case UPDATE_SELECTION:
         {
           var selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
-          var selectedNodesBbox = getBoundingBox(selectedNodes);
           var selectedNodeIds = selectedNodes.map(function (n) {
             return n.data.id;
           });
-          var bboxPos = {
-            x: selectedNodesBbox.x * state.transform[2] + state.transform[0] * (1 / 1.0),
-            y: selectedNodesBbox.y * state.transform[2] + state.transform[1] * (1 / 1.0)
-          };
-          var bboxWidth = selectedNodesBbox.width * state.transform[2] + 10;
-          var bboxHeight = selectedNodesBbox.height * state.transform[2] + 10;
-          bboxPos.x -= 5;
-          bboxPos.y -= 5;
           return _objectSpread2({}, state, {}, action.payload, {
-            selectedNodeIds: selectedNodeIds,
-            selectedNodesBbox: _objectSpread2({}, bboxPos, {
-              width: bboxWidth,
-              height: bboxHeight
-            })
+            selectedNodeIds: selectedNodeIds
+          });
+        }
+
+      case SET_NODES_SELECTION:
+        {
+          if (!action.payload.nodesSelectionActive) {
+            return _objectSpread2({}, state, {
+              nodesSelectionActive: false,
+              selectedNodeIds: []
+            });
+          }
+
+          var _selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
+
+          var selectedNodesBbox = getBoundingBox(_selectedNodes); // const bboxPos = {
+          //   left: ((selectedNodesBbox.x * state.transform[2]) + (state.transform[0] * (1 / 1.0))),
+          //   top: ((selectedNodesBbox.y * state.transform[2]) + (state.transform[1] * (1 / 1.0)))
+          // };
+          // let bboxWidth = (selectedNodesBbox.width * state.transform[2]) + 10;
+          // let bboxHeight = (selectedNodesBbox.height * state.transform[2]) + 10;
+
+          return _objectSpread2({}, state, {}, action.payload, {
+            selectedNodesBbox: selectedNodesBbox
           });
         }
 
@@ -29965,6 +29977,17 @@
       type: SET_SELECTION,
       payload: {
         selectionActive: isActive
+      }
+    };
+  };
+  var setNodesSelection = function setNodesSelection(_ref2) {
+    var isActive = _ref2.isActive,
+        selection = _ref2.selection;
+    return {
+      type: SET_NODES_SELECTION,
+      payload: {
+        nodesSelectionActive: isActive,
+        selection: selection
       }
     };
   };
@@ -30163,8 +30186,7 @@
     y: 0,
     width: 0,
     height: 0,
-    draw: false,
-    fixed: false
+    draw: false
   };
 
   function getMousePosition(evt) {
@@ -30184,8 +30206,7 @@
         setRect = _useState2[1];
 
     var _useContext = React.useContext(GraphContext),
-        dispatch = _useContext.dispatch,
-        state = _useContext.state;
+        dispatch = _useContext.dispatch;
 
     React.useEffect(function () {
       function onMouseDown(evt) {
@@ -30204,13 +30225,13 @@
 
       function onMouseMove(evt) {
         setRect(function (r) {
-          var mousePos = getMousePosition(evt);
-          var negativeX = mousePos.x < r.startX;
-          var negativeY = mousePos.y < r.startY;
-
           if (!r.draw) {
             return r;
           }
+
+          var mousePos = getMousePosition(evt);
+          var negativeX = mousePos.x < r.startX;
+          var negativeY = mousePos.y < r.startY;
 
           var nextRect = _objectSpread2({}, r, {
             x: negativeX ? mousePos.x : r.x,
@@ -30230,7 +30251,11 @@
             fixed: true
           });
 
-          dispatch(updateSelection(nextRect));
+          dispatch(setNodesSelection({
+            isActive: true,
+            selection: nextRect
+          }));
+          dispatch(setSelection(false));
           return nextRect;
         });
       }
@@ -30244,17 +30269,40 @@
         selectionPane.current.removeEventListener('mouseup', onMouseUp);
       };
     }, []);
-    var selectionRect = rect.fixed ? state.selectedNodesBbox : rect;
-    console.log(selectionRect);
     return React__default.createElement("div", {
       className: "react-graph__selectionpane",
       ref: selectionPane
     }, (rect.draw || rect.fixed) && React__default.createElement("div", {
       className: "react-graph__selection",
       style: {
-        width: selectionRect.width,
-        height: selectionRect.height,
-        transform: "translate(".concat(selectionRect.x, "px, ").concat(selectionRect.y, "px)")
+        width: rect.width,
+        height: rect.height,
+        transform: "translate(".concat(rect.x, "px, ").concat(rect.y, "px)")
+      }
+    }));
+  });
+
+  var NodesSelection = (function () {
+    var graphContext = React.useContext(GraphContext);
+    var state = graphContext.state,
+        dispatch = graphContext.dispatch;
+    return React__default.createElement("div", {
+      className: "react-graph__nodesselection",
+      style: {
+        transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
+      },
+      onClick: function onClick() {
+        return dispatch(setNodesSelection({
+          isActive: false
+        }));
+      }
+    }, React__default.createElement("div", {
+      className: "react-graph__nodesselection-rect",
+      style: {
+        width: state.selectedNodesBbox.width,
+        height: state.selectedNodesBbox.height,
+        top: state.selectedNodesBbox.y,
+        left: state.selectedNodesBbox.x
       }
     }));
   });
@@ -30352,7 +30400,7 @@
     }), React__default.createElement(EdgeRenderer, {
       width: graphContext.state.width,
       height: graphContext.state.height
-    }), shiftPressed && React__default.createElement(UserSelection, null), React__default.createElement("div", {
+    }), shiftPressed && React__default.createElement(UserSelection, null), graphContext.state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
       className: "react-graph__zoompane",
       ref: zoomPane
     }));
@@ -32824,7 +32872,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__node.selected > * {\n  box-shadow: 0 0 0 2px #000;\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  pointer-events: none;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 2;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n  box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n}\n\n.react-graph__node.selected > * {\n  box-shadow: 0 0 0 2px #000;\n}\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n  position: absolute;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}";
   styleInject(css);
 
   var ReactGraph =

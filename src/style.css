@@ -85,3 +85,20 @@
   left: 50%;
   border-radius: 50%;
 }
+
+.react-graph__nodesselection {
+  z-index: 3;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform-origin: left top;
+  pointer-events: none;
+}
+
+.react-graph__nodesselection-rect {
+  position: absolute;
+  background: rgba(0, 89, 220, 0.08);
+  border: 1px dotted rgba(0, 89, 220, 0.8);
+}

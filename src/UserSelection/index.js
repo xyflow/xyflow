@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 
 import { GraphContext } from '../GraphContext';
-import { updateSelection, setSelection } from '../state/actions';
+import { updateSelection, setSelection, setNodesSelection } from '../state/actions';
 
 const initialRect = {
   startX: 0,
@@ -10,8 +10,7 @@ const initialRect = {
   y: 0,
   width: 0,
   height: 0,
-  draw: false,
-  fixed: false
+  draw: false
 };
 
 function getMousePosition(evt) {
@@ -26,7 +25,7 @@ function getMousePosition(evt) {
 export default () => {
   const selectionPane = useRef(null);
   const [rect, setRect] = useState(initialRect);
-  const { dispatch, state } = useContext(GraphContext);
+  const { dispatch } = useContext(GraphContext);
 
   useEffect(() => {
     function onMouseDown(evt) {
@@ -46,15 +45,13 @@ export default () => {
 
     function onMouseMove(evt) {
       setRect((r) => {
-        const mousePos = getMousePosition(evt);
-
-        const negativeX = mousePos.x < r.startX;
-        const negativeY = mousePos.y < r.startY;
-
         if (!r.draw) {
           return r;
         }
 
+        const mousePos = getMousePosition(evt);
+        const negativeX = mousePos.x < r.startX;
+        const negativeY = mousePos.y < r.startY;
         const nextRect = {
           ...r,
           x: negativeX ? mousePos.x : r.x,
@@ -76,7 +73,8 @@ export default () => {
           fixed: true
         };
 
-        dispatch(updateSelection(nextRect));
+        dispatch(setNodesSelection({ isActive: true, selection: nextRect }));
+        dispatch(setSelection(false));
 
         return nextRect;
       });
@@ -93,9 +91,6 @@ export default () => {
     };
   }, []);
 
-  const selectionRect = rect.fixed ? state.selectedNodesBbox : rect;
-  console.log(selectionRect)
-
   return (
     <div
       className="react-graph__selectionpane"
@@ -105,9 +100,9 @@ export default () => {
         <div
           className="react-graph__selection"
           style={{
-            width: selectionRect.width,
-            height: selectionRect.height,
-            transform: `translate(${selectionRect.x}px, ${selectionRect.y}px)`
+            width: rect.width,
+            height: rect.height,
+            transform: `translate(${rect.x}px, ${rect.y}px)`
           }}
         />
       )}

@@ -12,6 +12,7 @@ export const INIT_D3 = 'INIT_D3';
 export const FIT_VIEW = 'FIT_VIEW';
 export const UPDATE_SELECTION = 'UPDATE_SELECTION';
 export const SET_SELECTION = 'SET_SELECTION';
+export const SET_NODES_SELECTION = 'SET_NODES_SELECTION';
 
 export const initialState = {
   width: 0,
@@ -26,6 +27,7 @@ export const initialState = {
   d3Selection: null,
   d3Initialised: false,
 
+  nodesSelectionActive: false,
   selectionActive: false,
   selection: {},
 };
@@ -75,20 +77,26 @@ export const reducer = (state, action) => {
     }
     case UPDATE_SELECTION: {
       const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
-      const selectedNodesBbox = getBoundingBox(selectedNodes);
       const selectedNodeIds = selectedNodes.map(n => n.data.id);
 
-      const bboxPos = {
-        x: ((selectedNodesBbox.x * state.transform[2]) + (state.transform[0] * (1 / 1.0))),
-        y: ((selectedNodesBbox.y * state.transform[2]) + (state.transform[1] * (1 / 1.0)))
-      };
-      let bboxWidth = (selectedNodesBbox.width * state.transform[2]) + 10;
-      let bboxHeight = (selectedNodesBbox.height * state.transform[2]) + 10;
+      return { ...state, ...action.payload, selectedNodeIds };
+    }
+    case SET_NODES_SELECTION: {
+      if (!action.payload.nodesSelectionActive) {
+        return { ...state, nodesSelectionActive: false, selectedNodeIds: [] };
+      }
+      const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
+      const selectedNodesBbox = getBoundingBox(selectedNodes);
 
-      bboxPos.x -= 5;
-      bboxPos.y -= 5;
+      // const bboxPos = {
+      //   left: ((selectedNodesBbox.x * state.transform[2]) + (state.transform[0] * (1 / 1.0))),
+      //   top: ((selectedNodesBbox.y * state.transform[2]) + (state.transform[1] * (1 / 1.0)))
+      // };
+      // let bboxWidth = (selectedNodesBbox.width * state.transform[2]) + 10;
+      // let bboxHeight = (selectedNodesBbox.height * state.transform[2]) + 10;
 
-      return { ...state, ...action.payload, selectedNodeIds, selectedNodesBbox: { ...bboxPos, width: bboxWidth, height: bboxHeight } };
+
+      return { ...state, ...action.payload, selectedNodesBbox };
     }
     case SET_NODES:
     case SET_EDGES:
