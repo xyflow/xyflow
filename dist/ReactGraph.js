@@ -29884,13 +29884,7 @@
 
           var _selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
 
-          var selectedNodesBbox = getBoundingBox(_selectedNodes); // const bboxPos = {
-          //   left: ((selectedNodesBbox.x * state.transform[2]) + (state.transform[0] * (1 / 1.0))),
-          //   top: ((selectedNodesBbox.y * state.transform[2]) + (state.transform[1] * (1 / 1.0)))
-          // };
-          // let bboxWidth = (selectedNodesBbox.width * state.transform[2]) + 10;
-          // let bboxHeight = (selectedNodesBbox.height * state.transform[2]) + 10;
-
+          var selectedNodesBbox = getBoundingBox(_selectedNodes);
           return _objectSpread2({}, state, {}, action.payload, {
             selectedNodesBbox: selectedNodesBbox
           });
@@ -29905,9 +29899,6 @@
           var nextNodes = state.nodes.filter(function (n) {
             return !ids.includes(n.data.id);
           });
-          console.log(ids);
-          console.log(state.edges, nextEdges);
-          console.log(state.nodes, nextNodes);
           return _objectSpread2({}, state, {
             nodes: nextNodes,
             edges: nextEdges
@@ -30017,7 +30008,8 @@
     return {
       type: SET_SELECTED_NODES_IDS,
       payload: {
-        selectedNodeIds: idArray
+        selectedNodeIds: idArray,
+        nodesSelectionActive: false
       }
     };
   };
@@ -32858,6 +32850,8 @@
             x: e.clientX * (1 / k),
             y: e.clientY * (1 / k)
           };
+          e.preventDefault();
+          e.stopPropagation();
           dispatch(updateNodePos(id, {
             x: unscaledPos.x - x - offset.x,
             y: unscaledPos.y - y - offset.y

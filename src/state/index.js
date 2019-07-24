@@ -90,24 +90,12 @@ export const reducer = (state, action) => {
       const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
       const selectedNodesBbox = getBoundingBox(selectedNodes);
 
-      // const bboxPos = {
-      //   left: ((selectedNodesBbox.x * state.transform[2]) + (state.transform[0] * (1 / 1.0))),
-      //   top: ((selectedNodesBbox.y * state.transform[2]) + (state.transform[1] * (1 / 1.0)))
-      // };
-      // let bboxWidth = (selectedNodesBbox.width * state.transform[2]) + 10;
-      // let bboxHeight = (selectedNodesBbox.height * state.transform[2]) + 10;
-
-
       return { ...state, ...action.payload, selectedNodesBbox };
     }
     case REMOVE_NODES: {
       const { ids } = action.payload;
       const nextEdges = state.edges.filter(e => !ids.includes(e.data.target) && !ids.includes(e.data.source));
       const nextNodes = state.nodes.filter(n => !ids.includes(n.data.id));
-
-      console.log(ids,);
-      console.log( state.edges, nextEdges, );
-      console.log(state.nodes, nextNodes);
 
       return { ...state, nodes: nextNodes, edges: nextEdges };
     }

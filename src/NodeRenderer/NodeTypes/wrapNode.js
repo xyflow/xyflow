@@ -50,6 +50,9 @@ export default NodeComponent => (props) => {
           y: e.clientY * (1 / k)
         }
 
+        e.preventDefault();
+        e.stopPropagation();
+
         dispatch(updateNodePos(id, {
           x: unscaledPos.x - x - offset.x,
           y: unscaledPos.y - y - offset.y
