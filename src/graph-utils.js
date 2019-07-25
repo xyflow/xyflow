@@ -1,4 +1,5 @@
 export const isEdge = element => element.data && element.data.source && element.data.target;
+export const isNode = element => element.data && !element.data.source && !element.data.target;
 
 export const parseElements = e => {
   if (isEdge(e)) {

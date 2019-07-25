@@ -36,17 +36,17 @@ export default NodeComponent => (props) => {
           return false;
         }
 
-        const unscaledPos = {
+        const scaledClientX = {
           x: e.clientX * (1 / k),
           y: e.clientY * (1 / k)
         }
-        const offsetX = unscaledPos.x - position.x - x;
-        const offsetY = unscaledPos.y - position.y - y;
+        const offsetX = scaledClientX.x - position.x - x;
+        const offsetY = scaledClientX.y - position.y - y;
 
         setOffset({ x: offsetX, y: offsetY });
       }}
-      onDrag={(e, d) => {
-        const unscaledPos = {
+      onDrag={(e) => {
+        const scaledClientX = {
           x: e.clientX * (1 / k),
           y: e.clientY * (1 / k)
         }
@@ -55,8 +55,8 @@ export default NodeComponent => (props) => {
         e.stopPropagation();
 
         dispatch(updateNodePos(id, {
-          x: unscaledPos.x - x - offset.x,
-          y: unscaledPos.y - y - offset.y
+          x: scaledClientX.x - x - offset.x,
+          y: scaledClientX.y - y - offset.y
         }));
       }}
       scale={k}
