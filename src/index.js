@@ -1,7 +1,12 @@
 import ReactGraph from './ReactGraph';
-import { isNode as isNodeRG , isEdge as isEdgeRG } from './graph-utils';
+import {
+  isNode as _isNode ,
+  isEdge as _isEdge,
+  removeElements as _removeElements
+} from './graph-utils';
 
-export const isNode = isNodeRG;
-export const isEdge = isEdgeRG;
+export const isNode = _isNode;
+export const isEdge = _isEdge;
+export const removeElements = _removeElements;
 
 export default ReactGraph;

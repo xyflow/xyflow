@@ -1,5 +1,18 @@
 export const isEdge = element => element.source && element.target;
+
 export const isNode = element => !element.source && !element.target;
+
+export const removeElements = (elements, elementsToRemove) => {
+  const nodeIdsToRemove = elementsToRemove.filter(isNode).map(n => n.id);
+
+  return elements.filter(e => {
+    return (
+      !nodeIdsToRemove.includes(e.id) &&
+      !nodeIdsToRemove.includes(e.target) &&
+      !nodeIdsToRemove.includes(e.source)
+    );
+  });
+}
 
 export const parseElements = e => {
   e.type = e.type || 'default';

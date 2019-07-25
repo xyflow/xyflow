@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, isNode } from '../src';
+import Graph, { isEdge, removeElements } from '../src';
 // import Graph from '../dist/ReactGraph';
 
 const SpecialNode = ({ data, onChange, styles }) => (
@@ -57,12 +57,11 @@ class App extends PureComponent {
   }
 
   onLoad(graphInstance) {
-    this.graphInstance = graphInstance;
     console.log('graph loaded:', this.graphInstance);
-
     window.rg = graphInstance;
-    this.graphInstance.fitView();
 
+    this.graphInstance = graphInstance;
+    this.graphInstance.fitView();
     this.setState({
       graphLoaded: true
     });
@@ -98,17 +97,9 @@ class App extends PureComponent {
     this.graphInstance.zoomOut();
   }
 
-  onElementsRemove(elements) {
-    const nodeIds = elements.filter(isNode).map(n => n.id);
-
+  onElementsRemove(elementsToRemove) {
     this.setState(prevState => ({
-      elements: prevState.elements.filter(e => {
-        return (
-          !nodeIds.includes(e.id) &&
-          !nodeIds.includes(e.target) &&
-          !nodeIds.includes(e.source)
-        );
-      })
+      elements: removeElements(prevState.elements, elementsToRemove)
     }));
   }
 
