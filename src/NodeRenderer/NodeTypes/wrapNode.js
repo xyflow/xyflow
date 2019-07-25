@@ -28,51 +28,54 @@ export default NodeComponent => (props) => {
     dispatch(updateNodeData(id, { width: unscaledWith, height: unscaledHeight }));
   }, []);
 
+  const onStart = (evt) => {
+    if (isInputTarget(evt)) {
+      return false;
+    }
+
+    const scaledClientX = {
+      x: evt.clientX * (1 / k),
+      y: evt.clientY * (1 / k)
+    }
+    const offsetX = scaledClientX.x - position.x - x;
+    const offsetY = scaledClientX.y - position.y - y;
+
+    setOffset({ x: offsetX, y: offsetY });
+  };
+
+  const onDrag = (evt) => {
+    const scaledClientX = {
+      x: evt.clientX * (1 / k),
+      y: evt.clientY * (1 / k)
+    };
+
+    dispatch(updateNodePos(id, {
+      x: scaledClientX.x - x - offset.x,
+      y: scaledClientX.y - y - offset.y
+    }));
+  };
+
+  const onNodeClick = (evt) => {
+    if (isInputTarget(evt)) {
+      return false;
+    }
+
+    dispatch(setSelectedElements({ data }));
+    onClick({ data, position });
+  };
+
   return (
     <ReactDraggable.DraggableCore
       grid={[1, 1]}
-      onStart={(e) => {
-        if (isInputTarget(e)) {
-          return false;
-        }
-
-        const scaledClientX = {
-          x: e.clientX * (1 / k),
-          y: e.clientY * (1 / k)
-        }
-        const offsetX = scaledClientX.x - position.x - x;
-        const offsetY = scaledClientX.y - position.y - y;
-
-        setOffset({ x: offsetX, y: offsetY });
-      }}
-      onDrag={(e) => {
-        const scaledClientX = {
-          x: e.clientX * (1 / k),
-          y: e.clientY * (1 / k)
-        }
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        dispatch(updateNodePos(id, {
-          x: scaledClientX.x - x - offset.x,
-          y: scaledClientX.y - y - offset.y
-        }));
-      }}
+      onStart={onStart}
+      onDrag={onDrag}
       scale={k}
     >
       <div
         className={nodeClasses}
         ref={nodeElement}
         style={{ zIndex: selected ? 10 : 3, transform: `translate(${position.x}px,${position.y}px)` }}
-        onClick={(e) => {
-          if (isInputTarget(e)) {
-            return false;
-          }
-
-          dispatch(setSelectedElements({ data }));
-          onClick({ data, position });
-        }}
+        onClick={onNodeClick}
       >
         <NodeComponent {...props} />
       </div>

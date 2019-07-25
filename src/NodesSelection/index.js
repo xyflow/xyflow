@@ -53,7 +53,7 @@ export default () => {
         y: startPositions[node.data.id].y + scaledClientX.y - position.y - offset.y - y
       }));
     });
-  }
+  };
 
   return (
     <div

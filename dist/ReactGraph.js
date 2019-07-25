@@ -203,6 +203,9 @@
   var isEdge = function isEdge(element) {
     return element.data && element.data.source && element.data.target;
   };
+  var isNode = function isNode(element) {
+    return element.data && !element.data.source && !element.data.target;
+  };
   var parseElements = function parseElements(e) {
     if (isEdge(e)) {
       return e;
@@ -30328,231 +30331,6 @@
     }));
   });
 
-  var NodesSelection = (function () {
-    var graphContext = React.useContext(GraphContext);
-    var state = graphContext.state;
-    return React__default.createElement("div", {
-      className: "react-graph__nodesselection",
-      style: {
-        transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
-      }
-    }, React__default.createElement("div", {
-      className: "react-graph__nodesselection-rect",
-      style: {
-        width: state.selectedNodesBbox.width,
-        height: state.selectedNodesBbox.height,
-        top: state.selectedNodesBbox.y,
-        left: state.selectedNodesBbox.x
-      }
-    }));
-  });
-
-  function useKeyPress(targetKey) {
-    var _useState = React.useState(false),
-        _useState2 = _slicedToArray(_useState, 2),
-        keyPressed = _useState2[0],
-        setKeyPressed = _useState2[1];
-
-    function downHandler(_ref) {
-      var key = _ref.key;
-
-      if (key === targetKey) {
-        setKeyPressed(true);
-      }
-    }
-
-    var upHandler = function upHandler(_ref2) {
-      var key = _ref2.key;
-
-      if (key === targetKey) {
-        setKeyPressed(false);
-      }
-    };
-
-    React.useEffect(function () {
-      window.addEventListener('keydown', downHandler);
-      window.addEventListener('keyup', upHandler);
-      return function () {
-        window.removeEventListener('keydown', downHandler);
-        window.removeEventListener('keyup', upHandler);
-      };
-    }, []);
-    return keyPressed;
-  }
-
-  var d3ZoomInstance = zoom().scaleExtent([0.5, 2]);
-
-  var GraphView = function GraphView(props) {
-    var zoomPane = React.useRef(null);
-
-    var _useContext = React.useContext(GraphContext),
-        state = _useContext.state,
-        dispatch = _useContext.dispatch;
-
-    var shiftPressed = useKeyPress('Shift');
-    React.useEffect(function () {
-      var selection = select(zoomPane.current).call(d3ZoomInstance);
-      dispatch(initD3({
-        zoom: d3ZoomInstance,
-        selection: selection
-      }));
-    }, []);
-    React.useEffect(function () {
-      if (shiftPressed) {
-        d3ZoomInstance.on('zoom', null);
-      } else {
-        d3ZoomInstance.on('zoom', function () {
-          if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
-            return false;
-          }
-
-          dispatch(updateTransform(event.transform));
-          props.onMove();
-        });
-
-        if (state.d3Selection) {
-          // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
-          var graphTransform = identity$1.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
-          state.d3Selection.call(state.d3Zoom.transform, graphTransform);
-        }
-      }
-    }, [shiftPressed]);
-    React.useEffect(function () {
-      return dispatch(updateSize(props.size));
-    }, [props.size.width, props.size.height]);
-    React.useEffect(function () {
-      if (state.d3Initialised) {
-        props.onLoad({
-          nodes: state.nodes,
-          edges: state.edges,
-          fitView: function fitView$1() {
-            return dispatch(fitView());
-          }
-        });
-      }
-    }, [state.d3Initialised]);
-    React.useEffect(function () {
-      props.onChange({
-        nodes: state.nodes,
-        edges: state.edges
-      });
-    });
-    return React__default.createElement("div", {
-      className: "react-graph__renderer"
-    }, React__default.createElement(NodeRenderer, {
-      nodeTypes: props.nodeTypes
-    }), React__default.createElement(EdgeRenderer, {
-      width: state.width,
-      height: state.height,
-      edgeTypes: props.edgeTypes
-    }), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
-      className: "react-graph__zoompane",
-      onClick: function onClick() {
-        return dispatch(setNodesSelection({
-          isActive: false
-        }));
-      },
-      ref: zoomPane
-    }));
-  };
-
-  var GraphView$1 = reactSizeme.withSize({
-    monitorHeight: true
-  })(GraphView);
-
-  var GlobalKeyHandler = (function (props) {
-    var _useContext = React.useContext(GraphContext),
-        state = _useContext.state,
-        dispatch = _useContext.dispatch;
-
-    var removePressed = useKeyPress('Backspace');
-    React.useEffect(function () {
-      if (removePressed && state.selectedElements.length) {
-        var elementsToRemove = state.selectedElements; // we also want to remove the edges if only one node is selected
-
-        if (state.selectedElements.length === 1 && !isEdge(state.selectedElements[0])) {
-          var connectedEdges = getConnectedEdges(state.selectedElements, state.edges);
-          elementsToRemove = [].concat(_toConsumableArray(state.selectedElements), _toConsumableArray(connectedEdges));
-        }
-
-        props.onElementsRemove(elementsToRemove);
-        dispatch(setNodesSelection({
-          isActive: false
-        }));
-      }
-    }, [removePressed]);
-    return null;
-  });
-
-  var Handle = (function (props) {
-    return React__default.createElement("div", _extends({
-      className: "react-graph__handle"
-    }, props));
-  });
-
-  var nodeStyles = {
-    background: '#ff6060',
-    padding: 10,
-    borderRadius: 5,
-    width: 150
-  };
-  var DefaultNode = (function (_ref) {
-    var data = _ref.data,
-        style = _ref.style;
-    return React__default.createElement("div", {
-      style: _objectSpread2({}, nodeStyles, {}, style)
-    }, React__default.createElement(Handle, {
-      style: {
-        top: 0
-      }
-    }), data.label, React__default.createElement(Handle, {
-      style: {
-        bottom: 0,
-        top: 'auto',
-        transform: 'translate(-50%, 50%)'
-      }
-    }));
-  });
-
-  var nodeStyles$1 = {
-    background: '#9999ff',
-    padding: 10,
-    borderRadius: 5,
-    width: 150
-  };
-  var InputNode = (function (_ref) {
-    var data = _ref.data,
-        style = _ref.style;
-    return React__default.createElement("div", {
-      style: _objectSpread2({}, nodeStyles$1, {}, style),
-      className: "react-graph__node-inner"
-    }, data.label, React__default.createElement(Handle, {
-      style: {
-        bottom: 0,
-        top: 'auto',
-        transform: 'translate(-50%, 50%)'
-      }
-    }));
-  });
-
-  var nodeStyles$2 = {
-    background: '#55ff99',
-    padding: 10,
-    borderRadius: 5,
-    width: 150
-  };
-  var OutputNode = (function (_ref) {
-    var data = _ref.data,
-        style = _ref.style;
-    return React__default.createElement("div", {
-      style: _objectSpread2({}, nodeStyles$2, {}, style)
-    }, React__default.createElement(Handle, {
-      style: {
-        top: 0
-      }
-    }), data.label);
-  });
-
   var reactDraggable = createCommonjsModule(function (module, exports) {
   (function (global, factory) {
   	 module.exports = factory(reactDom, React__default) ;
@@ -32765,6 +32543,297 @@
 
   });
 
+  function getStartPositions(elements) {
+    return elements.filter(isNode).reduce(function (res, node) {
+      var startPosition = {
+        x: node.__rg.position.x || node.position.x,
+        y: node.__rg.position.y || node.position.x
+      };
+      res[node.data.id] = startPosition;
+      return res;
+    }, {});
+  }
+
+  var NodesSelection = (function () {
+    var graphContext = React.useContext(GraphContext);
+
+    var _useState = React.useState({
+      x: 0,
+      y: 0
+    }),
+        _useState2 = _slicedToArray(_useState, 2),
+        offset = _useState2[0],
+        setOffset = _useState2[1];
+
+    var _useState3 = React.useState({}),
+        _useState4 = _slicedToArray(_useState3, 2),
+        startPositions = _useState4[0],
+        setStartPositions = _useState4[1];
+
+    var state = graphContext.state,
+        dispatch = graphContext.dispatch;
+
+    var _state$transform = _slicedToArray(state.transform, 3),
+        x = _state$transform[0],
+        y = _state$transform[1],
+        k = _state$transform[2];
+
+    var position = state.selectedNodesBbox;
+
+    var onStart = function onStart(evt) {
+      var scaledClientX = {
+        x: evt.clientX * (1 / k),
+        y: evt.clientY * (1 / k)
+      };
+      var offsetX = scaledClientX.x - position.x - x;
+      var offsetY = scaledClientX.y - position.y - y;
+      var startPositions = getStartPositions(state.selectedElements);
+      setOffset({
+        x: offsetX,
+        y: offsetY
+      });
+      setStartPositions(startPositions);
+    };
+
+    var onDrag = function onDrag(evt) {
+      var scaledClientX = {
+        x: evt.clientX * (1 / k),
+        y: evt.clientY * (1 / k)
+      };
+      state.selectedElements.filter(isNode).forEach(function (node) {
+        dispatch(updateNodePos(node.data.id, {
+          x: startPositions[node.data.id].x + scaledClientX.x - position.x - offset.x - x,
+          y: startPositions[node.data.id].y + scaledClientX.y - position.y - offset.y - y
+        }));
+      });
+    };
+
+    return React__default.createElement("div", {
+      className: "react-graph__nodesselection",
+      style: {
+        transform: "translate(".concat(state.transform[0], "px,").concat(state.transform[1], "px) scale(").concat(state.transform[2], ")")
+      }
+    }, React__default.createElement(reactDraggable, {
+      scale: k,
+      onStart: onStart,
+      onDrag: onDrag
+    }, React__default.createElement("div", {
+      className: "react-graph__nodesselection-rect",
+      style: {
+        width: state.selectedNodesBbox.width,
+        height: state.selectedNodesBbox.height,
+        top: state.selectedNodesBbox.y,
+        left: state.selectedNodesBbox.x
+      }
+    })));
+  });
+
+  function useKeyPress(targetKey) {
+    var _useState = React.useState(false),
+        _useState2 = _slicedToArray(_useState, 2),
+        keyPressed = _useState2[0],
+        setKeyPressed = _useState2[1];
+
+    function downHandler(_ref) {
+      var key = _ref.key;
+
+      if (key === targetKey) {
+        setKeyPressed(true);
+      }
+    }
+
+    var upHandler = function upHandler(_ref2) {
+      var key = _ref2.key;
+
+      if (key === targetKey) {
+        setKeyPressed(false);
+      }
+    };
+
+    React.useEffect(function () {
+      window.addEventListener('keydown', downHandler);
+      window.addEventListener('keyup', upHandler);
+      return function () {
+        window.removeEventListener('keydown', downHandler);
+        window.removeEventListener('keyup', upHandler);
+      };
+    }, []);
+    return keyPressed;
+  }
+
+  var d3ZoomInstance = zoom().scaleExtent([0.5, 2]);
+
+  var GraphView = function GraphView(props) {
+    var zoomPane = React.useRef(null);
+
+    var _useContext = React.useContext(GraphContext),
+        state = _useContext.state,
+        dispatch = _useContext.dispatch;
+
+    var shiftPressed = useKeyPress('Shift');
+    React.useEffect(function () {
+      var selection = select(zoomPane.current).call(d3ZoomInstance);
+      dispatch(initD3({
+        zoom: d3ZoomInstance,
+        selection: selection
+      }));
+    }, []);
+    React.useEffect(function () {
+      if (shiftPressed) {
+        d3ZoomInstance.on('zoom', null);
+      } else {
+        d3ZoomInstance.on('zoom', function () {
+          if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
+            return false;
+          }
+
+          dispatch(updateTransform(event.transform));
+          props.onMove();
+        });
+
+        if (state.d3Selection) {
+          // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
+          var graphTransform = identity$1.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
+          state.d3Selection.call(state.d3Zoom.transform, graphTransform);
+        }
+      }
+    }, [shiftPressed]);
+    React.useEffect(function () {
+      return dispatch(updateSize(props.size));
+    }, [props.size.width, props.size.height]);
+    React.useEffect(function () {
+      if (state.d3Initialised) {
+        props.onLoad({
+          nodes: state.nodes,
+          edges: state.edges,
+          fitView: function fitView$1() {
+            return dispatch(fitView());
+          }
+        });
+      }
+    }, [state.d3Initialised]);
+    React.useEffect(function () {
+      props.onChange({
+        nodes: state.nodes,
+        edges: state.edges
+      });
+    });
+    return React__default.createElement("div", {
+      className: "react-graph__renderer"
+    }, React__default.createElement(NodeRenderer, {
+      nodeTypes: props.nodeTypes
+    }), React__default.createElement(EdgeRenderer, {
+      width: state.width,
+      height: state.height,
+      edgeTypes: props.edgeTypes
+    }), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
+      className: "react-graph__zoompane",
+      onClick: function onClick() {
+        return dispatch(setNodesSelection({
+          isActive: false
+        }));
+      },
+      ref: zoomPane
+    }));
+  };
+
+  var GraphView$1 = reactSizeme.withSize({
+    monitorHeight: true
+  })(GraphView);
+
+  var GlobalKeyHandler = (function (props) {
+    var _useContext = React.useContext(GraphContext),
+        state = _useContext.state,
+        dispatch = _useContext.dispatch;
+
+    var removePressed = useKeyPress('Backspace');
+    React.useEffect(function () {
+      if (removePressed && state.selectedElements.length) {
+        var elementsToRemove = state.selectedElements; // we also want to remove the edges if only one node is selected
+
+        if (state.selectedElements.length === 1 && !isEdge(state.selectedElements[0])) {
+          var connectedEdges = getConnectedEdges(state.selectedElements, state.edges);
+          elementsToRemove = [].concat(_toConsumableArray(state.selectedElements), _toConsumableArray(connectedEdges));
+        }
+
+        props.onElementsRemove(elementsToRemove);
+        dispatch(setNodesSelection({
+          isActive: false
+        }));
+      }
+    }, [removePressed]);
+    return null;
+  });
+
+  var Handle = (function (props) {
+    return React__default.createElement("div", _extends({
+      className: "react-graph__handle"
+    }, props));
+  });
+
+  var nodeStyles = {
+    background: '#ff6060',
+    padding: 10,
+    borderRadius: 5,
+    width: 150
+  };
+  var DefaultNode = (function (_ref) {
+    var data = _ref.data,
+        style = _ref.style;
+    return React__default.createElement("div", {
+      style: _objectSpread2({}, nodeStyles, {}, style)
+    }, React__default.createElement(Handle, {
+      style: {
+        top: 0
+      }
+    }), data.label, React__default.createElement(Handle, {
+      style: {
+        bottom: 0,
+        top: 'auto',
+        transform: 'translate(-50%, 50%)'
+      }
+    }));
+  });
+
+  var nodeStyles$1 = {
+    background: '#9999ff',
+    padding: 10,
+    borderRadius: 5,
+    width: 150
+  };
+  var InputNode = (function (_ref) {
+    var data = _ref.data,
+        style = _ref.style;
+    return React__default.createElement("div", {
+      style: _objectSpread2({}, nodeStyles$1, {}, style),
+      className: "react-graph__node-inner"
+    }, data.label, React__default.createElement(Handle, {
+      style: {
+        bottom: 0,
+        top: 'auto',
+        transform: 'translate(-50%, 50%)'
+      }
+    }));
+  });
+
+  var nodeStyles$2 = {
+    background: '#55ff99',
+    padding: 10,
+    borderRadius: 5,
+    width: 150
+  };
+  var OutputNode = (function (_ref) {
+    var data = _ref.data,
+        style = _ref.style;
+    return React__default.createElement("div", {
+      style: _objectSpread2({}, nodeStyles$2, {}, style)
+    }, React__default.createElement(Handle, {
+      style: {
+        top: 0
+      }
+    }), data.label);
+  });
+
   var classnames = createCommonjsModule(function (module) {
   /*!
     Copyright (c) 2017 Jed Watson.
@@ -32835,7 +32904,7 @@
           setOffset = _useState2[1];
 
       var data = props.data,
-          _onClick = props.onClick,
+          onClick = props.onClick,
           __rg = props.__rg;
       var position = __rg.position;
       var id = data.id;
@@ -32862,36 +32931,53 @@
           height: unscaledHeight
         }));
       }, []);
+
+      var onStart = function onStart(evt) {
+        if (isInputTarget(evt)) {
+          return false;
+        }
+
+        var scaledClientX = {
+          x: evt.clientX * (1 / k),
+          y: evt.clientY * (1 / k)
+        };
+        var offsetX = scaledClientX.x - position.x - x;
+        var offsetY = scaledClientX.y - position.y - y;
+        setOffset({
+          x: offsetX,
+          y: offsetY
+        });
+      };
+
+      var onDrag = function onDrag(evt) {
+        var scaledClientX = {
+          x: evt.clientX * (1 / k),
+          y: evt.clientY * (1 / k)
+        };
+        dispatch(updateNodePos(id, {
+          x: scaledClientX.x - x - offset.x,
+          y: scaledClientX.y - y - offset.y
+        }));
+      };
+
+      var onNodeClick = function onNodeClick(evt) {
+        if (isInputTarget(evt)) {
+          return false;
+        }
+
+        dispatch(setSelectedElements({
+          data: data
+        }));
+        onClick({
+          data: data,
+          position: position
+        });
+      };
+
       return React__default.createElement(reactDraggable.DraggableCore, {
         grid: [1, 1],
-        onStart: function onStart(e) {
-          if (isInputTarget(e)) {
-            return false;
-          }
-
-          var unscaledPos = {
-            x: e.clientX * (1 / k),
-            y: e.clientY * (1 / k)
-          };
-          var offsetX = unscaledPos.x - position.x - x;
-          var offsetY = unscaledPos.y - position.y - y;
-          setOffset({
-            x: offsetX,
-            y: offsetY
-          });
-        },
-        onDrag: function onDrag(e, d) {
-          var unscaledPos = {
-            x: e.clientX * (1 / k),
-            y: e.clientY * (1 / k)
-          };
-          e.preventDefault();
-          e.stopPropagation();
-          dispatch(updateNodePos(id, {
-            x: unscaledPos.x - x - offset.x,
-            y: unscaledPos.y - y - offset.y
-          }));
-        },
+        onStart: onStart,
+        onDrag: onDrag,
         scale: k
       }, React__default.createElement("div", {
         className: nodeClasses,
@@ -32900,20 +32986,7 @@
           zIndex: selected ? 10 : 3,
           transform: "translate(".concat(position.x, "px,").concat(position.y, "px)")
         },
-        onClick: function onClick(e) {
-          if (isInputTarget(e)) {
-            return false;
-          }
-
-          dispatch(setSelectedElements({
-            data: data
-          }));
-
-          _onClick({
-            data: data,
-            position: position
-          });
-        }
+        onClick: onNodeClick
       }, React__default.createElement(NodeComponent, props)));
     };
   });
@@ -33024,7 +33097,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #ff5050;\n  }\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #000;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n  }";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #ff5050;\n  }\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #000;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
   styleInject(css);
 
   var ReactGraph =
