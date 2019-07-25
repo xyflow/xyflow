@@ -75,7 +75,7 @@ export default NodeComponent => memo((props) => {
         style={{ zIndex: selected ? 10 : 3, transform: `translate(${position.x}px,${position.y}px)` }}
         onClick={onNodeClick}
       >
-        <NodeComponent {...props} />
+        <NodeComponent {...props} selected={selected} />
       </div>
     </ReactDraggable.DraggableCore>
   );

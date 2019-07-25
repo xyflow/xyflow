@@ -33052,7 +33052,9 @@
           transform: "translate(".concat(position.x, "px,").concat(position.y, "px)")
         },
         onClick: onNodeClick
-      }, React__default.createElement(NodeComponent, props)));
+      }, React__default.createElement(NodeComponent, _extends({}, props, {
+        selected: selected
+      }))));
     });
   });
 
