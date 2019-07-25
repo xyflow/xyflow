@@ -1,11 +1,11 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, memo } from 'react';
 
 import { useKeyPress } from '../hooks';
 import { setNodesSelection } from '../state/actions';
 import { GraphContext } from '../GraphContext';
 import { isEdge, getConnectedEdges } from '../graph-utils';
 
-export default (props) => {
+export default memo((props) => {
   const { state, dispatch } = useContext(GraphContext);
   const removePressed = useKeyPress('Backspace');
 
@@ -25,4 +25,4 @@ export default (props) => {
   }, [removePressed])
 
   return null;
-};
+});

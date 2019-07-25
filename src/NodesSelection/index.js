@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 
 import { GraphContext } from '../GraphContext';
@@ -20,7 +20,7 @@ function getStartPositions(elements) {
   }, {});
 }
 
-export default () => {
+export default memo(() => {
   const graphContext = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState({});
@@ -79,4 +79,4 @@ export default () => {
       </ReactDraggable>
     </div>
   );
-};
+});

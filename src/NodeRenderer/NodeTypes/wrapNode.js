@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, useState } from 'react';
+import React, { useEffect, useRef, useContext, useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 import cx from 'classnames';
 
@@ -8,7 +8,7 @@ import { isEdge } from '../../graph-utils';
 
 const isInputTarget = (e) => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 
-export default NodeComponent => (props) => {
+export default NodeComponent => memo((props) => {
   const nodeElement = useRef(null);
   const { state, dispatch } = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -81,4 +81,4 @@ export default NodeComponent => (props) => {
       </div>
     </ReactDraggable.DraggableCore>
   );
-};
+});

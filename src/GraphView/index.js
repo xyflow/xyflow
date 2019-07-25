@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from 'react';
+import React, { useEffect, useContext, useRef, memo } from 'react';
 import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import ReactSizeMe from 'react-sizeme';
@@ -13,7 +13,7 @@ import { useKeyPress } from '../hooks';
 
 const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
 
-const GraphView = (props) => {
+const GraphView = memo((props) => {
   const zoomPane = useRef(null);
   const { state, dispatch } = useContext(GraphContext);
   const shiftPressed = useKeyPress('Shift');
@@ -88,7 +88,6 @@ const GraphView = (props) => {
       />
     </div>
   );
-};
-
+});
 
 export default ReactSizeMe.withSize({ monitorHeight: true })(GraphView);

@@ -1,14 +1,13 @@
-import React, { useContext } from 'react';
-import ReactDraggable from 'react-draggable';
+import React, { useContext, memo } from 'react';
 import cx from 'classnames';
 
 import { GraphContext } from '../../GraphContext';
-import { updateNodePos, setSelectedElements } from '../../state/actions';
+import { setSelectedElements } from '../../state/actions';
 import { isEdge } from '../../graph-utils';
 
 const isInputTarget = (e) => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 
-export default EdgeComponent => (props) => {
+export default EdgeComponent => memo((props) => {
   const { state, dispatch } = useContext(GraphContext);
   const { data, onClick } = props;
   const selected = state.selectedElements
@@ -31,4 +30,4 @@ export default EdgeComponent => (props) => {
       <EdgeComponent {...props} />
     </g>
   );
-};
+});

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useRef, useState, useContext, memo } from 'react';
 
 import { GraphContext } from '../GraphContext';
 import { updateSelection, setSelection, setNodesSelection } from '../state/actions';
@@ -22,7 +22,7 @@ function getMousePosition(evt) {
   };
 }
 
-export default () => {
+export default memo(() => {
   const selectionPane = useRef(null);
   const [rect, setRect] = useState(initialRect);
   const { dispatch } = useContext(GraphContext);
@@ -106,4 +106,4 @@ export default () => {
       )}
     </div>
   );
-}
+});
