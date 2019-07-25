@@ -61,7 +61,7 @@ class App extends PureComponent {
     window.rg = graphInstance;
 
     this.graphInstance = graphInstance;
-    this.graphInstance.fitView();
+    this.graphInstance.fitView({ padding: 0.1 });
     this.setState({
       graphLoaded: true
     });

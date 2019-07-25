@@ -54,8 +54,8 @@ export const initD3 = ({ zoom, selection }) => {
   };
 };
 
-export const fitView = () => {
-  return { type: FIT_VIEW };
+export const fitView = ({ padding = 0 }) => {
+  return { type: FIT_VIEW, payload: { padding } };
 };
 
 export const zoomIn = () => {

@@ -62,7 +62,7 @@ const GraphView = memo((props) => {
       props.onLoad({
         nodes: state.nodes,
         edges: state.edges,
-        fitView: () => dispatch(fitView()),
+        fitView: opts => dispatch(fitView(opts)),
         zoomIn: () => dispatch(zoomIn()),
         zoomOut: () => dispatch(zoomOut())
       });
