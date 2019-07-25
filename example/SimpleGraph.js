@@ -41,7 +41,7 @@ class App extends PureComponent {
         { data: { id: '4', label: 'nody nodes', type: 'output' }, position: { x: 50, y: 300 } },
         { data: { id: '5', label: 'Another node', type: 'default' }, position: { x: 400, y: 300 } },
         { data: { id: '6', label: 'no option selected', type: 'special', onChange }, position: { x: 400, y: 400 } },
-        { data: { source: '1', target: '2' } },
+        { data: { source: '1', target: '2', type: 'bezier', style: { stroke: 'orange' } } },
         { data: { source: '2', target: '3' } },
         { data: { source: '3', target: '4' } },
         { data: { source: '3', target: '5' } },

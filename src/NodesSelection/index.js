@@ -1,4 +1,4 @@
-import React, { useContext, useState, memo } from 'react';
+import React, { useContext, useState, useCallback, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 
 import { GraphContext } from '../GraphContext';
@@ -29,12 +29,12 @@ export default memo(() => {
   const position = state.selectedNodesBbox;
 
   const onStart = (evt) => {
-    const scaledClientX = {
+    const scaledClient = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     };
-    const offsetX = scaledClientX.x - position.x - x;
-    const offsetY = scaledClientX.y - position.y - y;
+    const offsetX = scaledClient.x - position.x - x;
+    const offsetY = scaledClient.y - position.y - y;
     const startPositions = getStartPositions(state.selectedElements);
 
     setOffset({ x: offsetX, y: offsetY });
@@ -42,15 +42,15 @@ export default memo(() => {
   };
 
   const onDrag = (evt) => {
-    const scaledClientX = {
+    const scaledClient = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     };
 
     state.selectedElements.filter(isNode).forEach(node => {
       dispatch(updateNodePos(node.data.id, {
-        x: startPositions[node.data.id].x + scaledClientX.x - position.x - offset.x - x ,
-        y: startPositions[node.data.id].y + scaledClientX.y - position.y - offset.y - y
+        x: startPositions[node.data.id].x + scaledClient.x - position.x - offset.x - x ,
+        y: startPositions[node.data.id].y + scaledClient.y - position.y - offset.y - y
       }));
     });
   };

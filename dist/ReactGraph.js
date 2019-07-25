@@ -30248,7 +30248,7 @@
     };
   }
 
-  var UserSelection = (function () {
+  var UserSelection = React.memo(function () {
     var selectionPane = React.useRef(null);
 
     var _useState = React.useState(initialRect),
@@ -32554,7 +32554,7 @@
     }, {});
   }
 
-  var NodesSelection = (function () {
+  var NodesSelection = React.memo(function () {
     var graphContext = React.useContext(GraphContext);
 
     var _useState = React.useState({
@@ -32581,12 +32581,12 @@
     var position = state.selectedNodesBbox;
 
     var onStart = function onStart(evt) {
-      var scaledClientX = {
+      var scaledClient = {
         x: evt.clientX * (1 / k),
         y: evt.clientY * (1 / k)
       };
-      var offsetX = scaledClientX.x - position.x - x;
-      var offsetY = scaledClientX.y - position.y - y;
+      var offsetX = scaledClient.x - position.x - x;
+      var offsetY = scaledClient.y - position.y - y;
       var startPositions = getStartPositions(state.selectedElements);
       setOffset({
         x: offsetX,
@@ -32596,14 +32596,14 @@
     };
 
     var onDrag = function onDrag(evt) {
-      var scaledClientX = {
+      var scaledClient = {
         x: evt.clientX * (1 / k),
         y: evt.clientY * (1 / k)
       };
       state.selectedElements.filter(isNode).forEach(function (node) {
         dispatch(updateNodePos(node.data.id, {
-          x: startPositions[node.data.id].x + scaledClientX.x - position.x - offset.x - x,
-          y: startPositions[node.data.id].y + scaledClientX.y - position.y - offset.y - y
+          x: startPositions[node.data.id].x + scaledClient.x - position.x - offset.x - x,
+          y: startPositions[node.data.id].y + scaledClient.y - position.y - offset.y - y
         }));
       });
     };
@@ -32662,8 +32662,7 @@
   }
 
   var d3ZoomInstance = zoom().scaleExtent([0.5, 2]);
-
-  var GraphView = function GraphView(props) {
+  var GraphView = React.memo(function (props) {
     var zoomPane = React.useRef(null);
 
     var _useContext = React.useContext(GraphContext),
@@ -32735,13 +32734,12 @@
       },
       ref: zoomPane
     }));
-  };
-
+  });
   var GraphView$1 = reactSizeme.withSize({
     monitorHeight: true
   })(GraphView);
 
-  var GlobalKeyHandler = (function (props) {
+  var GlobalKeyHandler = React.memo(function (props) {
     var _useContext = React.useContext(GraphContext),
         state = _useContext.state,
         dispatch = _useContext.dispatch;
@@ -32888,7 +32886,7 @@
   };
 
   var wrapNode = (function (NodeComponent) {
-    return function (props) {
+    return React.memo(function (props) {
       var nodeElement = React.useRef(null);
 
       var _useContext = React.useContext(GraphContext),
@@ -32937,12 +32935,12 @@
           return false;
         }
 
-        var scaledClientX = {
+        var scaledClient = {
           x: evt.clientX * (1 / k),
           y: evt.clientY * (1 / k)
         };
-        var offsetX = scaledClientX.x - position.x - x;
-        var offsetY = scaledClientX.y - position.y - y;
+        var offsetX = scaledClient.x - position.x - x;
+        var offsetY = scaledClient.y - position.y - y;
         setOffset({
           x: offsetX,
           y: offsetY
@@ -32950,13 +32948,13 @@
       };
 
       var onDrag = function onDrag(evt) {
-        var scaledClientX = {
+        var scaledClient = {
           x: evt.clientX * (1 / k),
           y: evt.clientY * (1 / k)
         };
         dispatch(updateNodePos(id, {
-          x: scaledClientX.x - x - offset.x,
-          y: scaledClientX.y - y - offset.y
+          x: scaledClient.x - x - offset.x,
+          y: scaledClient.y - y - offset.y
         }));
       };
 
@@ -32988,7 +32986,7 @@
         },
         onClick: onNodeClick
       }, React__default.createElement(NodeComponent, props)));
-    };
+    });
   });
 
   function createNodeTypes(nodeTypes) {
@@ -33009,13 +33007,30 @@
   var DefaultEdge = (function (props) {
     var targetNode = props.targetNode,
         sourceNode = props.sourceNode;
+    var style = props.data ? props.data.style : {};
     var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
     var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
     var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
     var targetY = targetNode.__rg.position.y;
-    return React__default.createElement("path", {
+    return React__default.createElement("path", _extends({}, style, {
       d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
-    });
+    }));
+  });
+
+  var BezierEdge = (function (props) {
+    var targetNode = props.targetNode,
+        sourceNode = props.sourceNode;
+    var style = props.data ? props.data.style : {};
+    var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
+    var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
+    var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
+    var targetY = targetNode.__rg.position.y;
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
+    return React__default.createElement("path", _extends({}, style, {
+      d: dAttr
+    }));
   });
 
   var isInputTarget$1 = function isInputTarget(e) {
@@ -33023,7 +33038,7 @@
   };
 
   var wrapEdge = (function (EdgeComponent) {
-    return function (props) {
+    return React.memo(function (props) {
       var _useContext = React.useContext(GraphContext),
           state = _useContext.state,
           dispatch = _useContext.dispatch;
@@ -33054,15 +33069,16 @@
           });
         }
       }, React__default.createElement(EdgeComponent, props));
-    };
+    });
   });
 
   function createEdgeTypes(edgeTypes) {
     var standardTypes = {
-      "default": wrapEdge(edgeTypes["default"] || DefaultEdge)
+      "default": wrapEdge(edgeTypes["default"] || DefaultEdge),
+      bezier: wrapEdge(edgeTypes.bezier || BezierEdge)
     };
     var specialTypes = Object.keys(DefaultEdge).filter(function (k) {
-      return !['default'].includes(k);
+      return !['default', 'bezier'].includes(k);
     }).reduce(function (res, key) {
       res[key] = wrapEdge(nodeTypes[key] || DefaultEdge);
       return res;

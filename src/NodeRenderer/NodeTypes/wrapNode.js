@@ -33,25 +33,25 @@ export default NodeComponent => memo((props) => {
       return false;
     }
 
-    const scaledClientX = {
+    const scaledClient = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     }
-    const offsetX = scaledClientX.x - position.x - x;
-    const offsetY = scaledClientX.y - position.y - y;
+    const offsetX = scaledClient.x - position.x - x;
+    const offsetY = scaledClient.y - position.y - y;
 
     setOffset({ x: offsetX, y: offsetY });
   };
 
   const onDrag = (evt) => {
-    const scaledClientX = {
+    const scaledClient = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     };
 
     dispatch(updateNodePos(id, {
-      x: scaledClientX.x - x - offset.x,
-      y: scaledClientX.y - y - offset.y
+      x: scaledClient.x - x - offset.x,
+      y: scaledClient.y - y - offset.y
     }));
   };
 
