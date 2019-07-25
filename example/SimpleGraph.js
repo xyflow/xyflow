@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, removeElements } from '../src';
+import Graph, { isEdge, removeElements, getOutgoers } from '../src';
 // import Graph from '../dist/ReactGraph';
 
 const SpecialNode = ({ data, onChange, styles }) => (
@@ -57,7 +57,7 @@ class App extends PureComponent {
   }
 
   onLoad(graphInstance) {
-    console.log('graph loaded:', this.graphInstance);
+    console.log('graph loaded:', graphInstance);
     window.rg = graphInstance;
 
     this.graphInstance = graphInstance;
@@ -89,6 +89,11 @@ class App extends PureComponent {
     }));
   }
 
+  onElementClick(element) {
+    console.log('click', element);
+    console.log('outgoers', getOutgoers(element, this.state.elements));
+  }
+
   onZoomIn() {
     this.graphInstance.zoomIn();
   }
@@ -107,7 +112,7 @@ class App extends PureComponent {
     return (
       <Graph
         elements={this.state.elements}
-        onElementClick={node => console.log('clicked', node)}
+        onElementClick={element => this.onElementClick(element)}
         onElementsRemove={elements => this.onElementsRemove(elements)}
         style={{ width: '100%', height: '100%' }}
         onLoad={graphInstance => this.onLoad(graphInstance)}

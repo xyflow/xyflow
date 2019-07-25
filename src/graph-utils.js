@@ -2,6 +2,15 @@ export const isEdge = element => element.source && element.target;
 
 export const isNode = element => !element.source && !element.target;
 
+export const getOutgoers = (node, elements) => {
+  if (!isNode(node)) {
+    return [];
+  }
+
+  const outgoerIds = elements.filter(e => e.source === node.id).map(e => e.target);
+  return elements.filter(e => outgoerIds.includes(e.id));
+};
+
 export const removeElements = (elements, elementsToRemove) => {
   const nodeIdsToRemove = elementsToRemove.filter(isNode).map(n => n.id);
 
@@ -12,7 +21,7 @@ export const removeElements = (elements, elementsToRemove) => {
       !nodeIdsToRemove.includes(e.source)
     );
   });
-}
+};
 
 export const parseElements = e => {
   e.type = e.type || 'default';
