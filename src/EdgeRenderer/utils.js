@@ -1,18 +1,18 @@
-import DefaultEdge from './EdgeTypes/DefaultEdge';
+import StraightEdge from './EdgeTypes/StraightEdge';
 import BezierEdge from './EdgeTypes/BezierEdge';
 import wrapEdge from './EdgeTypes/wrapEdge';
 
 export function createEdgeTypes(edgeTypes) {
   const standardTypes = {
-    default: wrapEdge(edgeTypes.default || DefaultEdge),
-    bezier: wrapEdge(edgeTypes.bezier || BezierEdge)
+    default: wrapEdge(edgeTypes.default || BezierEdge),
+    straight: wrapEdge(edgeTypes.bezier || StraightEdge)
   };
 
   const specialTypes = Object
-    .keys(DefaultEdge)
+    .keys(edgeTypes)
     .filter(k => !['default', 'bezier'].includes(k))
     .reduce((res, key) => {
-      res[key] = wrapEdge(nodeTypes[key] || DefaultEdge);
+      res[key] = wrapEdge(edgeTypes[key] ||BezierEdge);
 
       return res;
     }, {});

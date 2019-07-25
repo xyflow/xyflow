@@ -33004,19 +33004,6 @@
     return _objectSpread2({}, standardTypes, {}, specialTypes);
   }
 
-  var DefaultEdge = (function (props) {
-    var targetNode = props.targetNode,
-        sourceNode = props.sourceNode;
-    var style = props.data ? props.data.style : {};
-    var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
-    var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
-    var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
-    var targetY = targetNode.__rg.position.y;
-    return React__default.createElement("path", _extends({}, style, {
-      d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
-    }));
-  });
-
   var BezierEdge = (function (props) {
     var targetNode = props.targetNode,
         sourceNode = props.sourceNode;
@@ -33033,6 +33020,19 @@
     }));
   });
 
+  var StraightEdge = (function (props) {
+    var targetNode = props.targetNode,
+        sourceNode = props.sourceNode;
+    var style = props.data ? props.data.style : {};
+    var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
+    var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
+    var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
+    var targetY = targetNode.__rg.position.y;
+    return React__default.createElement("path", _extends({}, style, {
+      d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
+    }));
+  });
+
   var isInputTarget$1 = function isInputTarget(e) {
     return ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
   };
@@ -33043,7 +33043,8 @@
           state = _useContext.state,
           dispatch = _useContext.dispatch;
 
-      var data = props.data,
+      var _props$data = props.data,
+          data = _props$data === void 0 ? {} : _props$data,
           _onClick = props.onClick;
       var selected = state.selectedElements.filter(function (e) {
         return isEdge(e);
@@ -33051,7 +33052,8 @@
         return e.data.source === data.source && e.data.target === data.target;
       });
       var edgeClasses = classnames('react-graph__edge', {
-        selected: selected
+        selected: selected,
+        animated: data.animated
       });
       return React__default.createElement("g", {
         className: edgeClasses,
@@ -33074,13 +33076,13 @@
 
   function createEdgeTypes(edgeTypes) {
     var standardTypes = {
-      "default": wrapEdge(edgeTypes["default"] || DefaultEdge),
-      bezier: wrapEdge(edgeTypes.bezier || BezierEdge)
+      "default": wrapEdge(edgeTypes["default"] || BezierEdge),
+      straight: wrapEdge(edgeTypes.bezier || StraightEdge)
     };
-    var specialTypes = Object.keys(DefaultEdge).filter(function (k) {
+    var specialTypes = Object.keys(edgeTypes).filter(function (k) {
       return !['default', 'bezier'].includes(k);
     }).reduce(function (res, key) {
-      res[key] = wrapEdge(nodeTypes[key] || DefaultEdge);
+      res[key] = wrapEdge(edgeTypes[key] || BezierEdge);
       return res;
     }, {});
     return _objectSpread2({}, standardTypes, {}, specialTypes);
@@ -33113,7 +33115,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #ff5050;\n  }\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #000;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #333;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #ff5050;\n  }\n\n.react-graph__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #000;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 12px;\n  height: 12px;\n  transform: translate(-50%, -50%);\n  background: #222;\n  left: 50%;\n  border-radius: 50%;\n}\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
   styleInject(css);
 
   var ReactGraph =
@@ -33183,7 +33185,8 @@
       output: OutputNode
     },
     edgeTypes: {
-      "default": DefaultEdge
+      "default": BezierEdge,
+      straight: StraightEdge
     }
   };
 

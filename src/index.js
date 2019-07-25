@@ -10,7 +10,8 @@ import InputNode from './NodeRenderer/NodeTypes/InputNode';
 import OutputNode from './NodeRenderer/NodeTypes/OutputNode';
 import { createNodeTypes } from './NodeRenderer/utils';
 
-import DefaultEdge from './EdgeRenderer/EdgeTypes/DefaultEdge';
+import BezierEdge from './EdgeRenderer/EdgeTypes/BezierEdge';
+import StraightEdge from './EdgeRenderer/EdgeTypes/StraightEdge';
 import { createEdgeTypes } from './EdgeRenderer/utils';
 
 import './style.css';
@@ -65,7 +66,8 @@ ReactGraph.defaultProps = {
     output: OutputNode
   },
   edgeTypes: {
-    default: DefaultEdge
+    default: BezierEdge,
+    straight: StraightEdge
   }
 };
 

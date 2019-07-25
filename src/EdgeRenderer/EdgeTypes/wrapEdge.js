@@ -9,11 +9,11 @@ const isInputTarget = (e) => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.n
 
 export default EdgeComponent => memo((props) => {
   const { state, dispatch } = useContext(GraphContext);
-  const { data, onClick } = props;
+  const { data = {}, onClick } = props;
   const selected = state.selectedElements
     .filter(e => isEdge(e))
     .find(e => e.data.source === data.source && e.data.target === data.target);
-  const edgeClasses = cx('react-graph__edge', { selected });
+  const edgeClasses = cx('react-graph__edge', { selected, animated: data.animated });
 
   return (
     <g

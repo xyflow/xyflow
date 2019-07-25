@@ -54,6 +54,15 @@
   &.selected {
     stroke: #ff5050;
   }
+
+  &.animated {
+    stroke-dasharray: 5;
+    animation: dashdraw 0.5s linear infinite;
+  }
+}
+
+@keyframes dashdraw {
+  from {stroke-dashoffset: 10}
 }
 
 .react-graph__nodes {
