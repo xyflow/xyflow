@@ -15,6 +15,6 @@ export default ({ data, style }) => (
     className="react-graph__node-inner"
   >
     {data.label}
-    <Handle style={{ bottom: 0, top: 'auto', transform: 'translate(-50%, 50%)' }} />
+    <Handle output />
   </div>
 );

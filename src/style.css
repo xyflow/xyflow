@@ -47,12 +47,12 @@
 
 .react-graph__edge {
   fill: none;
-  stroke: #333;
+  stroke: #bbb;
   stroke-width: 2;
   pointer-events: all;
 
   &.selected {
-    stroke: #ff5050;
+    stroke: #555;
   }
 
   &.animated {
@@ -90,18 +90,23 @@
   }
 
   &.selected > * {
-    box-shadow: 0 0 0 2px #000;
+    box-shadow: 0 0 0 2px #555;
   }
 }
 
 .react-graph__handle {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  transform: translate(-50%, -50%);
-  background: #222;
+  width: 10px;
+  height: 5px;
+  transform: translate(-50%, 0);
+  background: rgba(255, 255, 255, 0.4);
   left: 50%;
-  border-radius: 50%;
+  top: 0;
+
+  &.output {
+    top: auto;
+    bottom: 0;
+  }
 }
 
 .react-graph__nodesselection {

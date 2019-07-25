@@ -3,7 +3,7 @@ import React from 'react';
 import Handle from '../Handle';
 
 const nodeStyles = {
-  background: '#55ff99',
+  background: '#55dd99',
   padding: 10,
   borderRadius: 5,
   width: 150
@@ -11,7 +11,7 @@ const nodeStyles = {
 
 export default ({ data, style }) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <Handle style={{ top: 0 }} />
+    <Handle input />
     {data.label}
   </div>
 );

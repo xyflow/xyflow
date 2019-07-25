@@ -11,8 +11,8 @@ const nodeStyles = {
 
 export default ({ data, style }) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <Handle style={{ top: 0 }} />
+    <Handle input />
     {data.label}
-    <Handle style={{ bottom: 0, top: 'auto', transform: 'translate(-50%, 50%)' }} />
+    <Handle output />
   </div>
 );

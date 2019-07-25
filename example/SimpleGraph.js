@@ -40,17 +40,17 @@ class App extends PureComponent {
 
     this.state = {
       elements: [
-        { id: '1', type: 'input', data: { label: 'Tests' }, position: { x: 50, y: 50 } },
+        { id: '1', type: 'input', data: { label: 'Tests' }, position: { x: 250, y: 5 } },
         { id: '2', data: { label: 'This is a node This is a node This is a node This is a node' }, position: { x: 100, y: 100 } },
-        { id: '3', data: { label: 'This is a node' }, position: { x: 100, y: 200 }, style: { background: '#222', color: '#fff' } },
+        { id: '3', data: { label: 'I bring my own style' }, position: { x: 100, y: 200 }, style: { background: '#eee', color: '#222', border: '1px solid #bbb' } },
         { id: '4', type: 'output', data: { label: 'nody nodes' }, position: { x: 50, y: 300 } },
         { id: '5', type: 'default', data: { label: 'Another node'}, position: { x: 400, y: 300 } },
-        { id: '6', type: 'special', onChange, data: { label: 'no option selected' }, position: { x: 400, y: 400 } },
-        { source: '1', target: '2', type: 'bezier', animated: true, style: { stroke: 'orange' } },
+        { id: '6', type: 'special', onChange, data: { label: 'no option selected' }, position: { x: 425, y: 400 } },
+        { source: '1', target: '2', animated: true },
         { source: '2', target: '3' },
         { source: '3', target: '4' },
         { source: '3', target: '5' },
-        { source: '5', target: '6' }
+        { source: '5', target: '6', type: 'straight', animated: true, style: { stroke: '#FFCC00' } }
       ]
     };
   }
