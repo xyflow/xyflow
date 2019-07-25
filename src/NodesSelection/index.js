@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, memo } from 'react';
+import React, { useContext, useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 
 import { GraphContext } from '../GraphContext';
@@ -14,7 +14,7 @@ function getStartPositions(elements) {
         y: node.__rg.position.y || node.position.x
       };
 
-      res[node.data.id] = startPosition;
+      res[node.id] = startPosition;
 
       return res;
   }, {});
@@ -48,9 +48,9 @@ export default memo(() => {
     };
 
     state.selectedElements.filter(isNode).forEach(node => {
-      dispatch(updateNodePos(node.data.id, {
-        x: startPositions[node.data.id].x + scaledClient.x - position.x - offset.x - x ,
-        y: startPositions[node.data.id].y + scaledClient.y - position.y - offset.y - y
+      dispatch(updateNodePos(node.id, {
+        x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x ,
+        y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
       }));
     });
   };

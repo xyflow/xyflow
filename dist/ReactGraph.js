@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react'), require('prop-types')) :
-  typeof define === 'function' && define.amd ? define(['react', 'prop-types'], factory) :
-  (global = global || self, global.ReactGraph = factory(global.React, global.PropTypes));
-}(this, function (React, PropTypes$1) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('prop-types')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'prop-types'], factory) :
+  (global = global || self, factory(global.ReactGraph = {}, global.React, global.PropTypes));
+}(this, function (exports, React, PropTypes$1) { 'use strict';
 
   var React__default = 'default' in React ? React['default'] : React;
   PropTypes$1 = PropTypes$1 && PropTypes$1.hasOwnProperty('default') ? PropTypes$1['default'] : PropTypes$1;
@@ -201,12 +201,14 @@
   }
 
   var isEdge = function isEdge(element) {
-    return element.data && element.data.source && element.data.target;
+    return element.source && element.target;
   };
   var isNode = function isNode(element) {
-    return element.data && !element.data.source && !element.data.target;
+    return !element.source && !element.target;
   };
   var parseElements = function parseElements(e) {
+    e.type = e.type || 'default';
+
     if (isEdge(e)) {
       return e;
     }
@@ -285,10 +287,10 @@
   };
   var getConnectedEdges = function getConnectedEdges(nodes, edges) {
     var nodeIds = nodes.map(function (n) {
-      return n.data.id;
+      return n.id;
     });
     return edges.filter(function (e) {
-      return nodeIds.includes(e.data.source) || nodeIds.includes(e.data.target);
+      return nodeIds.includes(e.source) || nodeIds.includes(e.target);
     });
   };
 
@@ -29861,7 +29863,7 @@
         {
           return _objectSpread2({}, state, {
             nodes: state.nodes.map(function (n) {
-              if (n.data.id === action.payload.id) {
+              if (n.id === action.payload.id) {
                 n.__rg = _objectSpread2({}, n.__rg, {}, action.payload.data);
               }
 
@@ -29874,7 +29876,7 @@
         {
           return _objectSpread2({}, state, {
             nodes: state.nodes.map(function (n) {
-              if (n.data.id === action.payload.id) {
+              if (n.id === action.payload.id) {
                 n.__rg = _objectSpread2({}, n.__rg, {
                   position: action.payload.pos
                 });
@@ -29928,10 +29930,10 @@
         {
           var ids = action.payload.ids;
           var nextEdges = state.edges.filter(function (e) {
-            return !ids.includes(e.data.target) && !ids.includes(e.data.source);
+            return !ids.includes(e.target) && !ids.includes(e.source);
           });
           var nextNodes = state.nodes.filter(function (n) {
-            return !ids.includes(n.data.id);
+            return !ids.includes(n.id);
           });
           return _objectSpread2({}, state, {
             nodes: nextNodes,
@@ -30070,7 +30072,7 @@
     React.useEffect(function () {
       var nextNodes = props.nodes.map(function (propNode) {
         var existingNode = state.nodes.find(function (n) {
-          return n.data.id === propNode.data.id;
+          return n.id === propNode.id;
         });
 
         if (existingNode) {
@@ -30125,7 +30127,7 @@
     _createClass(NodeRenderer, [{
       key: "renderNode",
       value: function renderNode(d, onElementClick) {
-        var nodeType = d.data.type || 'default';
+        var nodeType = d.type || 'default';
 
         if (!this.props.nodeTypes[nodeType]) {
           console.warn("No node type found for type \"".concat(nodeType, "\". Using fallback type \"default\"."));
@@ -30133,7 +30135,7 @@
 
         var NodeComponent = this.props.nodeTypes[nodeType] || this.props.nodeTypes["default"];
         return React__default.createElement(NodeComponent, _extends({
-          key: d.data.id,
+          key: d.id,
           onClick: onElementClick
         }, d));
       }
@@ -30174,25 +30176,25 @@
     _createClass(EdgeRenderer, [{
       key: "renderEdge",
       value: function renderEdge(e, nodes, onElementClick) {
-        var edgeType = e.data.type || 'default';
+        var edgeType = e.type || 'default';
         var sourceNode = nodes.find(function (n) {
-          return n.data.id === e.data.source;
+          return n.id === e.source;
         });
         var targetNode = nodes.find(function (n) {
-          return n.data.id === e.data.target;
+          return n.id === e.target;
         });
 
         if (!sourceNode) {
-          throw new Error("couldn't create edge for source id: ".concat(e.data.source));
+          throw new Error("couldn't create edge for source id: ".concat(e.source));
         }
 
         if (!targetNode) {
-          throw new Error("couldn't create edge for source id: ".concat(e.data.target));
+          throw new Error("couldn't create edge for source id: ".concat(e.target));
         }
 
         var EdgeComponent = this.props.edgeTypes[edgeType] || this.props.edgeTypes["default"];
         return React__default.createElement(EdgeComponent, _extends({
-          key: "".concat(e.data.source, "-").concat(e.data.target),
+          key: "".concat(e.source, "-").concat(e.target),
           sourceNode: sourceNode,
           targetNode: targetNode,
           onClick: onElementClick
@@ -32549,7 +32551,7 @@
         x: node.__rg.position.x || node.position.x,
         y: node.__rg.position.y || node.position.x
       };
-      res[node.data.id] = startPosition;
+      res[node.id] = startPosition;
       return res;
     }, {});
   }
@@ -32601,9 +32603,9 @@
         y: evt.clientY * (1 / k)
       };
       state.selectedElements.filter(isNode).forEach(function (node) {
-        dispatch(updateNodePos(node.data.id, {
-          x: startPositions[node.data.id].x + scaledClient.x - position.x - offset.x - x,
-          y: startPositions[node.data.id].y + scaledClient.y - position.y - offset.y - y
+        dispatch(updateNodePos(node.id, {
+          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x,
+          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
         }));
       });
     };
@@ -32903,19 +32905,18 @@
 
       var data = props.data,
           onClick = props.onClick,
+          type = props.type,
+          id = props.id,
           __rg = props.__rg;
       var position = __rg.position;
-      var id = data.id;
 
       var _state$transform = _slicedToArray(state.transform, 3),
           x = _state$transform[0],
           y = _state$transform[1],
           k = _state$transform[2];
 
-      var selected = state.selectedElements.filter(function (e) {
-        return !isEdge(e);
-      }).map(function (e) {
-        return e.data.id;
+      var selected = state.selectedElements.filter(isNode).map(function (e) {
+        return e.id;
       }).includes(id);
       var nodeClasses = classnames('react-graph__node', {
         selected: selected
@@ -32964,9 +32965,12 @@
         }
 
         dispatch(setSelectedElements({
-          data: data
+          data: data,
+          id: id
         }));
         onClick({
+          id: id,
+          type: type,
           data: data,
           position: position
         });
@@ -33007,7 +33011,7 @@
   var BezierEdge = (function (props) {
     var targetNode = props.targetNode,
         sourceNode = props.sourceNode;
-    var style = props.data ? props.data.style : {};
+    var style = props.style || {};
     var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
     var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
     var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
@@ -33023,7 +33027,7 @@
   var StraightEdge = (function (props) {
     var targetNode = props.targetNode,
         sourceNode = props.sourceNode;
-    var style = props.data ? props.data.style : {};
+    var style = props.style || {};
     var sourceX = sourceNode.__rg.position.x + sourceNode.__rg.width / 2;
     var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
     var targetX = targetNode.__rg.position.x + targetNode.__rg.width / 2;
@@ -33043,17 +33047,19 @@
           state = _useContext.state,
           dispatch = _useContext.dispatch;
 
-      var _props$data = props.data,
-          data = _props$data === void 0 ? {} : _props$data,
+      var source = props.source,
+          target = props.target,
+          animated = props.animated,
+          type = props.type,
           _onClick = props.onClick;
       var selected = state.selectedElements.filter(function (e) {
         return isEdge(e);
       }).find(function (e) {
-        return e.data.source === data.source && e.data.target === data.target;
+        return e.source === source && e.target === target;
       });
       var edgeClasses = classnames('react-graph__edge', {
         selected: selected,
-        animated: data.animated
+        animated: animated
       });
       return React__default.createElement("g", {
         className: edgeClasses,
@@ -33063,11 +33069,14 @@
           }
 
           dispatch(setSelectedElements({
-            data: data
+            source: source,
+            target: target
           }));
 
           _onClick({
-            data: data
+            source: source,
+            target: target,
+            type: type
           });
         }
       }, React__default.createElement(EdgeComponent, props));
@@ -33190,6 +33199,13 @@
     }
   };
 
-  return ReactGraph;
+  var isNode$1 = isNode;
+  var isEdge$1 = isEdge;
+
+  exports.default = ReactGraph;
+  exports.isEdge = isEdge$1;
+  exports.isNode = isNode$1;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

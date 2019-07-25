@@ -2,7 +2,7 @@ import React from 'react';
 
 export default (props) => {
   const { targetNode, sourceNode } = props;
-  const style = props.data ? props.data.style : {};
+  const style = props.style || {};
 
   const sourceX = sourceNode.__rg.position.x + (sourceNode.__rg.width / 2);
   const sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;

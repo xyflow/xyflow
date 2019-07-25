@@ -27,7 +27,7 @@ export const Provider = (props) => {
 
   useEffect(() => {
     const nextNodes = props.nodes.map(propNode => {
-      const existingNode = state.nodes.find(n => n.data.id === propNode.data.id);
+      const existingNode = state.nodes.find(n => n.id === propNode.id);
 
       if (existingNode) {
         return {

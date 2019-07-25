@@ -1,7 +1,9 @@
-export const isEdge = element => element.data && element.data.source && element.data.target;
-export const isNode = element => element.data && !element.data.source && !element.data.target;
+export const isEdge = element => element.source && element.target;
+export const isNode = element => !element.source && !element.target;
 
 export const parseElements = e => {
+  e.type = e.type || 'default';
+
   if (isEdge(e)) {
     return e;
   }
@@ -93,8 +95,8 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
 };
 
 export const getConnectedEdges = (nodes, edges) => {
-  const nodeIds = nodes.map(n => n.data.id);
-  return edges.filter(e => nodeIds.includes(e.data.source) || nodeIds.includes(e.data.target))
+  const nodeIds = nodes.map(n => n.id);
+  return edges.filter(e => nodeIds.includes(e.source) || nodeIds.includes(e.target))
 }
 
 export default {

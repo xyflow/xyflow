@@ -5,7 +5,7 @@ import { Consumer } from '../GraphContext';
 class NodeRenderer extends PureComponent {
 
   renderNode(d, onElementClick) {
-    const nodeType = d.data.type || 'default';
+    const nodeType = d.type || 'default';
     if (!this.props.nodeTypes[nodeType]) {
       console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
     }
@@ -14,7 +14,7 @@ class NodeRenderer extends PureComponent {
 
     return (
       <NodeComponent
-        key={d.data.id}
+        key={d.id}
         onClick={onElementClick}
         {...d}
       />

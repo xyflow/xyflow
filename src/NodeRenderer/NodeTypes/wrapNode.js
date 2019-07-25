@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { GraphContext } from '../../GraphContext';
 import { updateNodeData, updateNodePos, setSelectedElements } from '../../state/actions';
-import { isEdge } from '../../graph-utils';
+import { isNode } from '../../graph-utils';
 
 const isInputTarget = (e) => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 
@@ -12,12 +12,10 @@ export default NodeComponent => memo((props) => {
   const nodeElement = useRef(null);
   const { state, dispatch } = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-
-  const { data, onClick, __rg } = props;
+  const { data, onClick, type, id, __rg } = props;
   const { position } = __rg;
-  const { id } = data;
   const [ x, y, k ] = state.transform;
-  const selected = state.selectedElements.filter(e => !isEdge(e)).map(e => e.data.id).includes(id);
+  const selected = state.selectedElements.filter(isNode).map(e => e.id).includes(id);
   const nodeClasses = cx('react-graph__node', { selected });
 
   useEffect(() => {
@@ -60,8 +58,8 @@ export default NodeComponent => memo((props) => {
       return false;
     }
 
-    dispatch(setSelectedElements({ data }));
-    onClick({ data, position });
+    dispatch(setSelectedElements({ data, id }));
+    onClick({ id, type, data, position });
   };
 
   return (

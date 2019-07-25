@@ -4,23 +4,23 @@ import { Consumer } from '../GraphContext';
 
 class EdgeRenderer extends PureComponent {
   renderEdge(e, nodes, onElementClick) {
-    const edgeType = e.data.type || 'default';
-    const sourceNode = nodes.find(n => n.data.id === e.data.source);
-    const targetNode = nodes.find(n => n.data.id === e.data.target);
+    const edgeType = e.type || 'default';
+    const sourceNode = nodes.find(n => n.id === e.source);
+    const targetNode = nodes.find(n => n.id === e.target);
 
     if (!sourceNode) {
-      throw new Error(`couldn't create edge for source id: ${e.data.source}`);
+      throw new Error(`couldn't create edge for source id: ${e.source}`);
     }
 
     if (!targetNode) {
-      throw new Error(`couldn't create edge for source id: ${e.data.target}`);
+      throw new Error(`couldn't create edge for source id: ${e.target}`);
     }
 
     const EdgeComponent = this.props.edgeTypes[edgeType] || this.props.edgeTypes.default;
 
     return (
       <EdgeComponent
-        key={`${e.data.source}-${e.data.target}`}
+        key={`${e.source}-${e.target}`}
         sourceNode={sourceNode}
         targetNode={targetNode}
         onClick={onElementClick}

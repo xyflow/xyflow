@@ -40,7 +40,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         nodes: state.nodes.map((n) => {
-          if (n.data.id === action.payload.id) {
+          if (n.id === action.payload.id) {
             n.__rg = {
               ...n.__rg,
               ...action.payload.data
@@ -54,7 +54,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         nodes: state.nodes.map((n) => {
-          if (n.data.id === action.payload.id) {
+          if (n.id === action.payload.id) {
             n.__rg = {
               ...n.__rg,
               position: action.payload.pos
@@ -99,8 +99,8 @@ export const reducer = (state, action) => {
     // unused
     case REMOVE_NODES: {
       const { ids } = action.payload;
-      const nextEdges = state.edges.filter(e => !ids.includes(e.data.target) && !ids.includes(e.data.source));
-      const nextNodes = state.nodes.filter(n => !ids.includes(n.data.id));
+      const nextEdges = state.edges.filter(e => !ids.includes(e.target) && !ids.includes(e.source));
+      const nextNodes = state.nodes.filter(n => !ids.includes(n.id));
 
       return { ...state, nodes: nextNodes, edges: nextEdges };
     }
