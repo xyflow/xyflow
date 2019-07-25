@@ -10,6 +10,8 @@ export const UPDATE_TRANSFORM = 'UPDATE_TRANSFORM';
 export const UPDATE_SIZE = 'UPDATE_SIZE';
 export const INIT_D3 = 'INIT_D3';
 export const FIT_VIEW = 'FIT_VIEW';
+export const ZOOM_IN = 'ZOOM_IN';
+export const ZOOM_OUT = 'ZOOM_OUT';
 export const UPDATE_SELECTION = 'UPDATE_SELECTION';
 export const SET_SELECTION = 'SET_SELECTION';
 export const SET_NODES_SELECTION = 'SET_NODES_SELECTION';
@@ -70,10 +72,22 @@ export const reducer = (state, action) => {
       const k = Math.min(state.width, state.height) / Math.max(bounds.width, bounds.height);
       const boundsCenterX = bounds.x + (bounds.width / 2);
       const boundsCenterY = bounds.y + (bounds.height / 2);
-      const translate = [(state.width / 2) - (boundsCenterX * k), (state.height / 2) - (boundsCenterY * k)];
-      const fittedTransform = zoomIdentity.translate(translate[0], translate[1]).scale(k);
+      const transform = [(state.width / 2) - (boundsCenterX * k), (state.height / 2) - (boundsCenterY * k)];
+      const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
 
       state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
+
+      return state;
+    }
+    case ZOOM_IN: {
+      const { transform } = state;
+      state.d3Zoom.scaleTo(state.d3Selection, transform[2] + 0.2);
+
+      return state;
+    }
+    case ZOOM_OUT: {
+      const { transform } = state;
+      state.d3Zoom.scaleTo(state.d3Selection, transform[2] - 0.2);
 
       return state;
     }

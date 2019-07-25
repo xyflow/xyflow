@@ -7,16 +7,6 @@ import { setNodes, setEdges } from '../state/actions';
 
 export const GraphContext = createContext({});
 
-function usePrevious(value) {
-  const ref = useRef();
-
-  useEffect(() => {
-    ref.current = value;
-  });
-
-  return ref.current;
-}
-
 export const Provider = (props) => {
   const {
     onElementClick,

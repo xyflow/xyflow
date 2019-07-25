@@ -2,7 +2,7 @@ import {
   UPDATE_TRANSFORM, UPDATE_SIZE, SET_NODES, SET_EDGES,
   UPDATE_NODE_DATA, UPDATE_NODE_POS, INIT_D3, FIT_VIEW,
   UPDATE_SELECTION, SET_SELECTION, SET_NODES_SELECTION,
-  SET_SELECTED_ELEMENTS, REMOVE_NODES
+  SET_SELECTED_ELEMENTS, REMOVE_NODES, ZOOM_IN, ZOOM_OUT
 } from './index';
 
 export const updateTransform = (transform) => {
@@ -57,6 +57,14 @@ export const initD3 = ({ zoom, selection }) => {
 export const fitView = () => {
   return { type: FIT_VIEW };
 };
+
+export const zoomIn = () => {
+  return { type: ZOOM_IN };
+};
+
+export const zoomOut = () => {
+  return { type: ZOOM_OUT };
+}
 
 export const setSelection = (isActive) => {
   return { type: SET_SELECTION, payload: { selectionActive: isActive } };

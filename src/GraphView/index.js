@@ -8,7 +8,10 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../UserSelection';
 import NodesSelection from '../NodesSelection';
-import { updateTransform, updateSize, initD3, fitView, setNodesSelection } from '../state/actions';
+import {
+  updateTransform, updateSize, initD3, fitView,
+  zoomIn, zoomOut, setNodesSelection
+} from '../state/actions';
 import { useKeyPress } from '../hooks';
 
 const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
@@ -59,7 +62,9 @@ const GraphView = memo((props) => {
       props.onLoad({
         nodes: state.nodes,
         edges: state.edges,
-        fitView: () => dispatch(fitView())
+        fitView: () => dispatch(fitView()),
+        zoomIn: () => dispatch(zoomIn()),
+        zoomOut: () => dispatch(zoomOut())
       });
     }
   }, [state.d3Initialised]);
