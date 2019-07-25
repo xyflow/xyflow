@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge } from '../src';
+import Graph, { isEdge, isNode } from '../src';
 // import Graph from '../dist/ReactGraph';
 
 const SpecialNode = ({ data, onChange, styles }) => (
@@ -98,12 +98,26 @@ class App extends PureComponent {
     this.graphInstance.zoomOut();
   }
 
+  onElementsRemove(elements) {
+    const nodeIds = elements.filter(isNode).map(n => n.id);
+
+    this.setState(prevState => ({
+      elements: prevState.elements.filter(e => {
+        return (
+          !nodeIds.includes(e.id) &&
+          !nodeIds.includes(e.target) &&
+          !nodeIds.includes(e.source)
+        );
+      })
+    }));
+  }
+
   render() {
     return (
       <Graph
         elements={this.state.elements}
         onElementClick={node => console.log('clicked', node)}
-        onElementsRemove={elements => console.log('remove', elements)}
+        onElementsRemove={elements => this.onElementsRemove(elements)}
         style={{ width: '100%', height: '100%' }}
         onLoad={graphInstance => this.onLoad(graphInstance)}
         onChange={(elements) => this.onChange(elements)}
