@@ -10,6 +10,7 @@ function onDragStart(evt, nodeId) {
 export default memo(({ source, target, ...rest }) => {
   const handleClasses = cx(
     'react-graph__handle',
+    rest.className,
     { source, target }
   );
 

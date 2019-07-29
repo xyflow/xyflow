@@ -32910,7 +32910,7 @@
         target = _ref.target,
         rest = _objectWithoutProperties(_ref, ["source", "target"]);
 
-    var handleClasses = classnames('react-graph__handle', {
+    var handleClasses = classnames('react-graph__handle', rest.className, {
       source: source,
       target: target
     });
