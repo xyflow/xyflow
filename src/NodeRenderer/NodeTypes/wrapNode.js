@@ -93,13 +93,14 @@ export default NodeComponent => memo((props) => {
   const onDrop = (evt) => {
     evt.preventDefault();
 
-    const sourceId = evt.dataTransfer.getData('text/plain');
+    const source = evt.dataTransfer.getData('text/plain');
 
-    if (sourceId === id) {
+    if (source === id) {
+      console.warn('You can\'t connect a node with itself.');
       return false;
     }
 
-    onConnect({ sourceId, targetId: id });
+    onConnect({ source, target: id });
   };
 
   return (

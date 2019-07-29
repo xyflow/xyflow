@@ -41463,15 +41463,16 @@ var _default = function _default(NodeComponent) {
 
     var onDrop = function onDrop(evt) {
       evt.preventDefault();
-      var sourceId = evt.dataTransfer.getData('text/plain');
+      var source = evt.dataTransfer.getData('text/plain');
 
-      if (sourceId === id) {
+      if (source === id) {
+        console.warn('You can\'t connect a node with itself.');
         return false;
       }
 
       onConnect({
-        sourceId: sourceId,
-        targetId: id
+        source: source,
+        target: id
       });
     };
 
