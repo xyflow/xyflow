@@ -41120,7 +41120,7 @@ var _default = (0, _react.memo)(function (_ref) {
       target = _ref.target,
       rest = _objectWithoutProperties(_ref, ["source", "target"]);
 
-  var handleClasses = (0, _classnames.default)('react-graph__handle', {
+  var handleClasses = (0, _classnames.default)('react-graph__handle', rest.className, {
     source: source,
     target: target
   });
@@ -41558,12 +41558,14 @@ var _default = function _default(props) {
   var style = props.style || {};
   var sourceHandle = sourceNode.__rg.handleBounds.source;
   var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
+  var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
   var sourceX = sourceNode.__rg.position.x + sourceHandleX;
-  var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
+  var sourceY = sourceNode.__rg.position.y + sourceHandleY;
   var targetHandle = targetNode.__rg.handleBounds.target;
   var targetHandleX = targetHandle ? targetHandle.x + targetHandle.width / 2 : targetNode.__rg.width / 2;
+  var targetHandleY = targetHandle ? targetHandle.y + targetHandle.height / 2 : 0;
   var targetX = targetNode.__rg.position.x + targetHandleX;
-  var targetY = targetNode.__rg.position.y;
+  var targetY = targetNode.__rg.position.y + targetHandleY;
   var yOffset = Math.abs(targetY - sourceY) / 2;
   var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
   var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
@@ -42321,7 +42323,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56680" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63564" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -33171,12 +33171,14 @@
     var style = props.style || {};
     var sourceHandle = sourceNode.__rg.handleBounds.source;
     var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
+    var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
     var sourceX = sourceNode.__rg.position.x + sourceHandleX;
-    var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
+    var sourceY = sourceNode.__rg.position.y + sourceHandleY;
     var targetHandle = targetNode.__rg.handleBounds.target;
     var targetHandleX = targetHandle ? targetHandle.x + targetHandle.width / 2 : targetNode.__rg.width / 2;
+    var targetHandleY = targetHandle ? targetHandle.y + targetHandle.height / 2 : 0;
     var targetX = targetNode.__rg.position.x + targetHandleX;
-    var targetY = targetNode.__rg.position.y;
+    var targetY = targetNode.__rg.position.y + targetHandleY;
     var yOffset = Math.abs(targetY - sourceY) / 2;
     var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
     var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
