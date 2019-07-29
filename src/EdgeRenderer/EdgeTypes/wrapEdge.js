@@ -5,7 +5,7 @@ import { GraphContext } from '../../GraphContext';
 import { setSelectedElements } from '../../state/actions';
 import { isEdge } from '../../graph-utils';
 
-const isInputTarget = (e) => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
+const isInput = e => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 
 export default EdgeComponent => memo((props) => {
   const { state, dispatch } = useContext(GraphContext);
@@ -19,7 +19,7 @@ export default EdgeComponent => memo((props) => {
     <g
       className={edgeClasses}
       onClick={(e) => {
-        if (isInputTarget(e)) {
+        if (isInput(e)) {
           return false;
         }
 

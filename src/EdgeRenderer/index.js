@@ -13,7 +13,7 @@ class EdgeRenderer extends PureComponent {
     }
 
     if (!targetNode) {
-      throw new Error(`couldn't create edge for source id: ${e.target}`);
+      throw new Error(`couldn't create edge for target id: ${e.target}`);
     }
 
     const EdgeComponent = this.props.edgeTypes[edgeType] || this.props.edgeTypes.default;

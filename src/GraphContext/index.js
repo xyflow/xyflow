@@ -9,7 +9,6 @@ export const GraphContext = createContext({});
 
 export const Provider = (props) => {
   const {
-    onElementClick,
     children
   } = props;
 
@@ -42,7 +41,6 @@ export const Provider = (props) => {
   });
 
   const graphContext = {
-    onElementClick,
     state,
     dispatch
   };

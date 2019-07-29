@@ -47,23 +47,14 @@
 
 .react-graph__edge {
   fill: none;
-  stroke: #bbb;
+  stroke: #333;
   stroke-width: 2;
   pointer-events: all;
-
-  &.selected {
-    stroke: #555;
-  }
-
-  &.animated {
-    stroke-dasharray: 5;
-    animation: dashdraw 0.5s linear infinite;
-  }
 }
 
-@keyframes dashdraw {
-  from {stroke-dashoffset: 10}
-}
+.react-graph__edge.selected {
+    stroke: #ff5050;
+  }
 
 .react-graph__nodes {
   width: 100%;
@@ -80,39 +71,32 @@
   font-family: sans-serif;
   font-size: 12px;
   text-align: center;
+  cursor: -webkit-grab;
   cursor: grab;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
+}
 
-  &:hover > * {
+.react-graph__node:hover > * {
     box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
   }
 
-  &.selected > * {
-    box-shadow: 0 0 0 2px #555;
+.react-graph__node.selected > * {
+    box-shadow: 0 0 0 2px #000;
   }
-}
 
 .react-graph__handle {
   position: absolute;
-  width: 10px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.4);
-
-  &.source {
-    top: auto;
-    left: 50%;
-    bottom: 0;
-    transform: translate(-50%, 0);
-    cursor: crosshair;
-  }
-
-  &.target {
-    left: 50%;
-    top: 0;
-    transform: translate(-50%, 0);
-  }
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  background: #222;
+  left: 50%;
+  border-radius: 50%;
 }
 
 .react-graph__nodesselection {
@@ -124,11 +108,12 @@
   left: 0;
   transform-origin: left top;
   pointer-events: none;
+}
 
-  &-rect {
+.react-graph__nodesselection-rect {
     position: absolute;
     background: rgba(0, 89, 220, 0.08);
     border: 1px dotted rgba(0, 89, 220, 0.8);
-    pointer-events: all;
   }
-}
+
+/*# sourceMappingURL=/ReactGraph.ba0da17b.css.map */

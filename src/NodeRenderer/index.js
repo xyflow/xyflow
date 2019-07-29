@@ -4,7 +4,7 @@ import { Consumer } from '../GraphContext';
 
 class NodeRenderer extends PureComponent {
 
-  renderNode(d, onElementClick) {
+  renderNode(d) {
     const nodeType = d.type || 'default';
     if (!this.props.nodeTypes[nodeType]) {
       console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
@@ -15,7 +15,8 @@ class NodeRenderer extends PureComponent {
     return (
       <NodeComponent
         key={d.id}
-        onClick={onElementClick}
+        onClick={this.props.onElementClick}
+        onConnect={this.props.onConnect}
         {...d}
       />
     );
@@ -24,14 +25,14 @@ class NodeRenderer extends PureComponent {
   render() {
     return (
       <Consumer>
-        {({ onElementClick, state }) => (
+        {({ state }) => (
           <div
             className="react-graph__nodes"
             style={{
               transform: `translate(${state.transform[0]}px,${state.transform[1]}px) scale(${state.transform[2]})`
             }}
           >
-            {state.nodes.map(d => this.renderNode(d, onElementClick))}
+            {state.nodes.map(d => this.renderNode(d))}
           </div>
         )}
       </Consumer>
