@@ -106,16 +106,22 @@
 .react-graph__handle {
   position: absolute;
   width: 10px;
-  height: 5px;
-  transform: translate(-50%, 0);
+  height: 8px;
   background: rgba(255, 255, 255, 0.4);
-  left: 50%;
-  top: 0;
 }
 
-.react-graph__handle.output {
+.react-graph__handle.source {
     top: auto;
+    left: 50%;
     bottom: 0;
+    transform: translate(-50%, 0);
+    cursor: crosshair;
+  }
+
+.react-graph__handle.target {
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
   }
 
 .react-graph__nodesselection {

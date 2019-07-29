@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Handle from '../Handle';
+import TargetHandle from '../HandleTypes/TargetHandle';
 
 const nodeStyles = {
   background: '#55dd99',
@@ -11,7 +11,7 @@ const nodeStyles = {
 
 export default ({ data, style }) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <Handle input />
+    <TargetHandle />
     {data.label}
   </div>
 );

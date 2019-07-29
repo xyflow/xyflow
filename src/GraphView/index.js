@@ -78,7 +78,11 @@ const GraphView = memo((props) => {
 
   return (
     <div className="react-graph__renderer">
-      <NodeRenderer nodeTypes={props.nodeTypes} />
+      <NodeRenderer
+        nodeTypes={props.nodeTypes}
+        onElementClick={props.onElementClick}
+        onConnect={props.onConnect}
+      />
       <EdgeRenderer
         width={state.width}
         height={state.height}

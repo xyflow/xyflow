@@ -97,15 +97,21 @@
 .react-graph__handle {
   position: absolute;
   width: 10px;
-  height: 5px;
-  transform: translate(-50%, 0);
+  height: 8px;
   background: rgba(255, 255, 255, 0.4);
-  left: 50%;
-  top: 0;
 
-  &.output {
+  &.source {
     top: auto;
+    left: 50%;
     bottom: 0;
+    transform: translate(-50%, 0);
+    cursor: crosshair;
+  }
+
+  &.target {
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
   }
 }
 
