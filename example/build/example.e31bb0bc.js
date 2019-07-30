@@ -38213,6 +38213,7 @@ function (_PureComponent) {
       return _react.default.createElement(NodeComponent, _extends({
         key: d.id,
         onClick: this.props.onElementClick,
+        onNodeDragStop: this.props.onNodeDragStop,
         onConnect: this.props.onConnect
       }, d));
     }
@@ -40966,6 +40967,7 @@ var GraphView = (0, _react.memo)(function (props) {
   }, _react.default.createElement(_NodeRenderer.default, {
     nodeTypes: props.nodeTypes,
     onElementClick: props.onElementClick,
+    onNodeDragStop: props.onNodeDragStop,
     onConnect: props.onConnect
   }), _react.default.createElement(_EdgeRenderer.default, {
     width: state.width,
@@ -41365,7 +41367,7 @@ var isInput = function isInput(e) {
 };
 
 var isHandle = function isHandle(e) {
-  return e.target.className.includes('source');
+  return e.target.className && e.target.className.includes('source');
 };
 
 var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds) {
@@ -41410,7 +41412,8 @@ var _default = function _default(NodeComponent) {
         type = props.type,
         id = props.id,
         __rg = props.__rg,
-        onConnect = props.onConnect;
+        onConnect = props.onConnect,
+        onNodeDragStop = props.onNodeDragStop;
     var position = __rg.position;
 
     var _state$transform = _slicedToArray(state.transform, 3),
@@ -41484,6 +41487,15 @@ var _default = function _default(NodeComponent) {
       });
     };
 
+    var onStop = function onStop() {
+      onNodeDragStop({
+        id: id,
+        type: type,
+        data: data,
+        position: position
+      });
+    };
+
     var onDrop = function onDrop(evt) {
       evt.preventDefault();
       var source = evt.dataTransfer.getData('text/plain');
@@ -41503,6 +41515,7 @@ var _default = function _default(NodeComponent) {
       grid: [1, 1],
       onStart: onStart,
       onDrag: onDrag,
+      onStop: onStop,
       scale: k
     }, _react.default.createElement("div", {
       onDrop: onDrop,
@@ -41890,7 +41903,8 @@ function (_PureComponent) {
           onChange = _this$props.onChange,
           elements = _this$props.elements,
           onElementsRemove = _this$props.onElementsRemove,
-          onConnect = _this$props.onConnect;
+          onConnect = _this$props.onConnect,
+          onNodeDragStop = _this$props.onNodeDragStop;
 
       var _elements$map$reduce = elements.map(_graphUtils.parseElements).reduce(_graphUtils.separateElements, {}),
           nodes = _elements$map$reduce.nodes,
@@ -41909,6 +41923,7 @@ function (_PureComponent) {
         onChange: onChange,
         onElementClick: onElementClick,
         onConnect: onConnect,
+        onNodeDragStop: onNodeDragStop,
         nodeTypes: this.nodeTypes,
         edgeTypes: this.edgeTypes
       }), _react.default.createElement(_GlobalKeyHandler.default, {
@@ -41923,6 +41938,7 @@ function (_PureComponent) {
 ReactGraph.defaultProps = {
   onElementClick: function onElementClick() {},
   onElementsRemove: function onElementsRemove() {},
+  onNodeDragStop: function onNodeDragStop() {},
   onConnect: function onConnect() {},
   onLoad: function onLoad() {},
   onMove: function onMove() {},
@@ -42266,6 +42282,9 @@ function (_PureComponent) {
         onConnect: function onConnect(params) {
           return console.log(params);
         },
+        onNodeDragStop: function onNodeDragStop(node) {
+          return console.log('drag stop', node);
+        },
         style: {
           width: '100%',
           height: '100%'
@@ -42356,7 +42375,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54186" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61136" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

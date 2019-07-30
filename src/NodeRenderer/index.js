@@ -16,6 +16,7 @@ class NodeRenderer extends PureComponent {
       <NodeComponent
         key={d.id}
         onClick={this.props.onElementClick}
+        onNodeDragStop={this.props.onNodeDragStop}
         onConnect={this.props.onConnect}
         {...d}
       />

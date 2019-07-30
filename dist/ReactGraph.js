@@ -242,6 +242,20 @@
   var isNode = function isNode(element) {
     return !element.source && !element.target;
   };
+  var getOutgoers = function getOutgoers(node, elements) {
+    if (!isNode(node)) {
+      return [];
+    }
+
+    var outgoerIds = elements.filter(function (e) {
+      return e.source === node.id;
+    }).map(function (e) {
+      return e.target;
+    });
+    return elements.filter(function (e) {
+      return outgoerIds.includes(e.id);
+    });
+  };
   var removeElements = function removeElements(elements, elementsToRemove) {
     var nodeIdsToRemove = elementsToRemove.filter(isNode).map(function (n) {
       return n.id;
@@ -30218,6 +30232,7 @@
         return React__default.createElement(NodeComponent, _extends({
           key: d.id,
           onClick: this.props.onElementClick,
+          onNodeDragStop: this.props.onNodeDragStop,
           onConnect: this.props.onConnect
         }, d));
       }
@@ -32811,6 +32826,7 @@
     }, React__default.createElement(NodeRenderer, {
       nodeTypes: props.nodeTypes,
       onElementClick: props.onElementClick,
+      onNodeDragStop: props.onNodeDragStop,
       onConnect: props.onConnect
     }), React__default.createElement(EdgeRenderer, {
       width: state.width,
@@ -32999,7 +33015,7 @@
   };
 
   var isHandle = function isHandle(e) {
-    return e.target.className.includes('source');
+    return e.target.className && e.target.className.includes('source');
   };
 
   var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds) {
@@ -33044,7 +33060,8 @@
           type = props.type,
           id = props.id,
           __rg = props.__rg,
-          onConnect = props.onConnect;
+          onConnect = props.onConnect,
+          onNodeDragStop = props.onNodeDragStop;
       var position = __rg.position;
 
       var _state$transform = _slicedToArray(state.transform, 3),
@@ -33118,6 +33135,15 @@
         });
       };
 
+      var onStop = function onStop() {
+        onNodeDragStop({
+          id: id,
+          type: type,
+          data: data,
+          position: position
+        });
+      };
+
       var onDrop = function onDrop(evt) {
         evt.preventDefault();
         var source = evt.dataTransfer.getData('text/plain');
@@ -33137,6 +33163,7 @@
         grid: [1, 1],
         onStart: onStart,
         onDrag: onDrag,
+        onStop: onStop,
         scale: k
       }, React__default.createElement("div", {
         onDrop: onDrop,
@@ -33328,7 +33355,8 @@
             onChange = _this$props.onChange,
             elements = _this$props.elements,
             onElementsRemove = _this$props.onElementsRemove,
-            onConnect = _this$props.onConnect;
+            onConnect = _this$props.onConnect,
+            onNodeDragStop = _this$props.onNodeDragStop;
 
         var _elements$map$reduce = elements.map(parseElements).reduce(separateElements, {}),
             nodes = _elements$map$reduce.nodes,
@@ -33347,6 +33375,7 @@
           onChange: onChange,
           onElementClick: onElementClick,
           onConnect: onConnect,
+          onNodeDragStop: onNodeDragStop,
           nodeTypes: this.nodeTypes,
           edgeTypes: this.edgeTypes
         }), React__default.createElement(GlobalKeyHandler, {
@@ -33361,6 +33390,7 @@
   ReactGraph.defaultProps = {
     onElementClick: function onElementClick() {},
     onElementsRemove: function onElementsRemove() {},
+    onNodeDragStop: function onNodeDragStop() {},
     onConnect: function onConnect() {},
     onLoad: function onLoad() {},
     onMove: function onMove() {},
@@ -33379,12 +33409,14 @@
   var isNode$1 = isNode;
   var isEdge$1 = isEdge;
   var removeElements$1 = removeElements;
+  var getOutgoers$1 = getOutgoers;
   var SourceHandle = _SourceHandle;
   var TargetHandle = _TargetHandle;
 
   exports.SourceHandle = SourceHandle;
   exports.TargetHandle = TargetHandle;
   exports.default = ReactGraph;
+  exports.getOutgoers = getOutgoers$1;
   exports.isEdge = isEdge$1;
   exports.isNode = isNode$1;
   exports.removeElements = removeElements$1;

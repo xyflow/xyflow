@@ -119,6 +119,7 @@ class App extends PureComponent {
         onElementClick={element => this.onElementClick(element)}
         onElementsRemove={elements => this.onElementsRemove(elements)}
         onConnect={params => console.log(params)}
+        onNodeDragStop={node => console.log('drag stop', node)}
         style={{ width: '100%', height: '100%' }}
         onLoad={graphInstance => this.onLoad(graphInstance)}
         onChange={(elements) => this.onChange(elements)}

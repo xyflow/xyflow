@@ -81,6 +81,7 @@ const GraphView = memo((props) => {
       <NodeRenderer
         nodeTypes={props.nodeTypes}
         onElementClick={props.onElementClick}
+        onNodeDragStop={props.onNodeDragStop}
         onConnect={props.onConnect}
       />
       <EdgeRenderer

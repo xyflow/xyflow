@@ -36,7 +36,9 @@ export default NodeComponent => memo((props) => {
   const nodeElement = useRef(null);
   const { state, dispatch } = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const { data, onClick, type, id, __rg, onConnect } = props;
+  const {
+    data, onClick, type, id, __rg, onConnect, onNodeDragStop
+  } = props;
   const { position } = __rg;
   const [ x, y, k ] = state.transform;
   const selected = state.selectedElements.filter(isNode).map(e => e.id).includes(id);
@@ -90,6 +92,15 @@ export default NodeComponent => memo((props) => {
     onClick({ id, type, data, position });
   };
 
+  const onStop = () => {
+    onNodeDragStop({
+      id,
+      type,
+      data,
+      position
+    });
+  }
+
   const onDrop = (evt) => {
     evt.preventDefault();
 
@@ -108,6 +119,7 @@ export default NodeComponent => memo((props) => {
       grid={[1, 1]}
       onStart={onStart}
       onDrag={onDrag}
+      onStop={onStop}
       scale={k}
     >
       <div
