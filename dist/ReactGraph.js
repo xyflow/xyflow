@@ -33017,13 +33017,13 @@
     }, rest));
   });
 
-  var _TargetHandle = (function (props) {
+  var TargetHandle = (function (props) {
     return React__default.createElement(BaseHandle, _extends({
       target: true
     }, props));
   });
 
-  var _SourceHandle = (function (props) {
+  var SourceHandle = (function (props) {
     return React__default.createElement(BaseHandle, _extends({
       source: true
     }, props));
@@ -33040,7 +33040,7 @@
         style = _ref.style;
     return React__default.createElement("div", {
       style: _objectSpread2({}, nodeStyles, {}, style)
-    }, React__default.createElement(_TargetHandle, null), data.label, React__default.createElement(_SourceHandle, null));
+    }, React__default.createElement(TargetHandle, null), data.label, React__default.createElement(SourceHandle, null));
   });
 
   var nodeStyles$1 = {
@@ -33055,7 +33055,7 @@
     return React__default.createElement("div", {
       style: _objectSpread2({}, nodeStyles$1, {}, style),
       className: "react-graph__node-inner"
-    }, data.label, React__default.createElement(_SourceHandle, null));
+    }, data.label, React__default.createElement(SourceHandle, null));
   });
 
   var nodeStyles$2 = {
@@ -33069,7 +33069,7 @@
         style = _ref.style;
     return React__default.createElement("div", {
       style: _objectSpread2({}, nodeStyles$2, {}, style)
-    }, React__default.createElement(_TargetHandle, null), data.label);
+    }, React__default.createElement(TargetHandle, null), data.label);
   });
 
   var isInput = function isInput(e) {
@@ -33463,20 +33463,13 @@
     }
   };
 
-  var isNode$1 = isNode;
-  var isEdge$1 = isEdge;
-  var removeElements$1 = removeElements;
-  var getOutgoers$1 = getOutgoers;
-  var SourceHandle = _SourceHandle;
-  var TargetHandle = _TargetHandle;
-
   exports.SourceHandle = SourceHandle;
   exports.TargetHandle = TargetHandle;
   exports.default = ReactGraph;
-  exports.getOutgoers = getOutgoers$1;
-  exports.isEdge = isEdge$1;
-  exports.isNode = isNode$1;
-  exports.removeElements = removeElements$1;
+  exports.getOutgoers = getOutgoers;
+  exports.isEdge = isEdge;
+  exports.isNode = isNode;
+  exports.removeElements = removeElements;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -42089,30 +42089,54 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.TargetHandle = exports.SourceHandle = exports.getOutgoers = exports.removeElements = exports.isEdge = exports.isNode = void 0;
+Object.defineProperty(exports, "SourceHandle", {
+  enumerable: true,
+  get: function () {
+    return _SourceHandle.default;
+  }
+});
+Object.defineProperty(exports, "TargetHandle", {
+  enumerable: true,
+  get: function () {
+    return _TargetHandle.default;
+  }
+});
+Object.defineProperty(exports, "isNode", {
+  enumerable: true,
+  get: function () {
+    return _graphUtils.isNode;
+  }
+});
+Object.defineProperty(exports, "isEdge", {
+  enumerable: true,
+  get: function () {
+    return _graphUtils.isEdge;
+  }
+});
+Object.defineProperty(exports, "removeElements", {
+  enumerable: true,
+  get: function () {
+    return _graphUtils.removeElements;
+  }
+});
+Object.defineProperty(exports, "getOutgoers", {
+  enumerable: true,
+  get: function () {
+    return _graphUtils.getOutgoers;
+  }
+});
+exports.default = void 0;
 
 var _ReactGraph = _interopRequireDefault(require("./ReactGraph"));
 
-var _SourceHandle2 = _interopRequireDefault(require("./NodeRenderer/HandleTypes/SourceHandle"));
+var _SourceHandle = _interopRequireDefault(require("./NodeRenderer/HandleTypes/SourceHandle"));
 
-var _TargetHandle2 = _interopRequireDefault(require("./NodeRenderer/HandleTypes/TargetHandle"));
+var _TargetHandle = _interopRequireDefault(require("./NodeRenderer/HandleTypes/TargetHandle"));
 
 var _graphUtils = require("./graph-utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var isNode = _graphUtils.isNode;
-exports.isNode = isNode;
-var isEdge = _graphUtils.isEdge;
-exports.isEdge = isEdge;
-var removeElements = _graphUtils.removeElements;
-exports.removeElements = removeElements;
-var getOutgoers = _graphUtils.getOutgoers;
-exports.getOutgoers = getOutgoers;
-var SourceHandle = _SourceHandle2.default;
-exports.SourceHandle = SourceHandle;
-var TargetHandle = _TargetHandle2.default;
-exports.TargetHandle = TargetHandle;
 var _default = _ReactGraph.default;
 exports.default = _default;
 },{"./ReactGraph":"../src/ReactGraph/index.js","./NodeRenderer/HandleTypes/SourceHandle":"../src/NodeRenderer/HandleTypes/SourceHandle.js","./NodeRenderer/HandleTypes/TargetHandle":"../src/NodeRenderer/HandleTypes/TargetHandle.js","./graph-utils":"../src/graph-utils.js"}],"SimpleGraph.js":[function(require,module,exports) {
@@ -42512,7 +42536,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62831" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54380" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
