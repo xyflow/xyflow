@@ -112,13 +112,19 @@ class App extends PureComponent {
     }));
   }
 
+  onConnect(params) {
+    this.setState(prevState => ({
+      elements: prevState.elements.concat(params)
+    }));
+  }
+
   render() {
     return (
       <Graph
         elements={this.state.elements}
         onElementClick={element => this.onElementClick(element)}
         onElementsRemove={elements => this.onElementsRemove(elements)}
-        onConnect={params => console.log(params)}
+        onConnect={params => this.onConnect(params)}
         onNodeDragStop={node => console.log('drag stop', node)}
         style={{ width: '100%', height: '100%' }}
         onLoad={graphInstance => this.onLoad(graphInstance)}

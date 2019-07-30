@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Consumer } from '../GraphContext';
+import ConnectorEdge from '../ConnectorEdge';
 
 class EdgeRenderer extends PureComponent {
   renderEdge(e, nodes, onElementClick) {
@@ -30,7 +31,7 @@ class EdgeRenderer extends PureComponent {
   }
 
   render() {
-    const { width, height } = this.props;
+    const { width, height, onElementClick } = this.props;
 
     if (!width) {
       return null;
@@ -38,7 +39,7 @@ class EdgeRenderer extends PureComponent {
 
     return (
       <Consumer>
-        {({ state, onElementClick }) => (
+        {({ state }) => (
           <svg
             width={width}
             height={height}
@@ -49,6 +50,13 @@ class EdgeRenderer extends PureComponent {
             >
               {state.edges.map(e => this.renderEdge(e, state.nodes, onElementClick))}
             </g>
+            {state.isConnecting && (
+              <ConnectorEdge
+                nodes={state.nodes}
+                connectionSourceId={state.connectionSourceId}
+                connectionPosition={state.connectionPosition}
+              />
+            )}
           </svg>
         )}
       </Consumer>

@@ -88,6 +88,7 @@ const GraphView = memo((props) => {
         width={state.width}
         height={state.height}
         edgeTypes={props.edgeTypes}
+        onElementClick={props.onElementClick}
       />
       {shiftPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}

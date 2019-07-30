@@ -37695,7 +37695,7 @@ module.exports = isEqual;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.reducer = exports.initialState = exports.REMOVE_NODES = exports.SET_SELECTED_ELEMENTS = exports.SET_NODES_SELECTION = exports.SET_SELECTION = exports.UPDATE_SELECTION = exports.ZOOM_OUT = exports.ZOOM_IN = exports.FIT_VIEW = exports.INIT_D3 = exports.UPDATE_SIZE = exports.UPDATE_TRANSFORM = exports.UPDATE_NODE_POS = exports.UPDATE_NODE_DATA = exports.SET_NODES = exports.SET_EDGES = void 0;
+exports.reducer = exports.initialState = exports.SET_CONNECTION_POS = exports.SET_CONNECTING = exports.REMOVE_NODES = exports.SET_SELECTED_ELEMENTS = exports.SET_NODES_SELECTION = exports.SET_SELECTION = exports.UPDATE_SELECTION = exports.ZOOM_OUT = exports.ZOOM_IN = exports.FIT_VIEW = exports.INIT_D3 = exports.UPDATE_SIZE = exports.UPDATE_TRANSFORM = exports.UPDATE_NODE_POS = exports.UPDATE_NODE_DATA = exports.SET_NODES = exports.SET_EDGES = void 0;
 
 var _d3Zoom = require("d3-zoom");
 
@@ -37745,6 +37745,10 @@ var SET_SELECTED_ELEMENTS = 'SET_SELECTED_ELEMENTS';
 exports.SET_SELECTED_ELEMENTS = SET_SELECTED_ELEMENTS;
 var REMOVE_NODES = 'REMOVE_NODES';
 exports.REMOVE_NODES = REMOVE_NODES;
+var SET_CONNECTING = 'SET_CONNECTING';
+exports.SET_CONNECTING = SET_CONNECTING;
+var SET_CONNECTION_POS = 'SET_CONNECTION_POS';
+exports.SET_CONNECTION_POS = SET_CONNECTION_POS;
 var initialState = {
   width: 0,
   height: 0,
@@ -37763,7 +37767,13 @@ var initialState = {
   d3Initialised: false,
   nodesSelectionActive: false,
   selectionActive: false,
-  selection: {}
+  selection: {},
+  isConnecting: false,
+  connectionSourceId: null,
+  connectionPosition: {
+    x: 0,
+    y: 0
+  }
 };
 exports.initialState = initialState;
 
@@ -37875,6 +37885,8 @@ var reducer = function reducer(state, action) {
     case UPDATE_SIZE:
     case SET_SELECTION:
     case SET_SELECTED_ELEMENTS:
+    case SET_CONNECTING:
+    case SET_CONNECTION_POS:
       return _objectSpread({}, state, {}, action.payload);
 
     default:
@@ -37889,7 +37901,7 @@ exports.reducer = reducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateSelection = exports.removeNodes = exports.setSelectedElements = exports.setNodesSelection = exports.setSelection = exports.zoomOut = exports.zoomIn = exports.fitView = exports.initD3 = exports.updateNodePos = exports.updateNodeData = exports.setEdges = exports.setNodes = exports.updateSize = exports.updateTransform = void 0;
+exports.setConnectionPos = exports.setConnecting = exports.updateSelection = exports.removeNodes = exports.setSelectedElements = exports.setNodesSelection = exports.setSelection = exports.zoomOut = exports.zoomIn = exports.fitView = exports.initD3 = exports.updateNodePos = exports.updateNodeData = exports.setEdges = exports.setNodes = exports.updateSize = exports.updateTransform = void 0;
 
 var _index = require("./index");
 
@@ -38063,6 +38075,36 @@ var updateSelection = function updateSelection(selection) {
 };
 
 exports.updateSelection = updateSelection;
+
+var setConnecting = function setConnecting(_ref4) {
+  var isConnecting = _ref4.isConnecting,
+      connectionSourceId = _ref4.connectionSourceId;
+  return {
+    type: _index.SET_CONNECTING,
+    payload: {
+      isConnecting: isConnecting,
+      connectionSourceId: connectionSourceId
+    }
+  };
+};
+
+exports.setConnecting = setConnecting;
+
+var setConnectionPos = function setConnectionPos(_ref5) {
+  var x = _ref5.x,
+      y = _ref5.y;
+  return {
+    type: _index.SET_CONNECTION_POS,
+    payload: {
+      connectionPosition: {
+        x: x,
+        y: y
+      }
+    }
+  };
+};
+
+exports.setConnectionPos = setConnectionPos;
 },{"./index":"../src/state/index.js"}],"../src/GraphContext/index.js":[function(require,module,exports) {
 "use strict";
 
@@ -38241,7 +38283,123 @@ function (_PureComponent) {
 
 var _default = NodeRenderer;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js"}],"../src/EdgeRenderer/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
+var define;
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+		// register as 'classnames', consistent with npm package name
+		define('classnames', [], function () {
+			return classNames;
+		});
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+},{}],"../src/ConnectorEdge/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var _default = function _default(props) {
+  var _useState = (0, _react.useState)(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      sourceNode = _useState2[0],
+      setSourceNode = _useState2[1];
+
+  (0, _react.useEffect)(function () {
+    setSourceNode(props.nodes.find(function (n) {
+      return n.id === props.connectionSourceId;
+    }));
+  }, []);
+
+  if (!sourceNode) {
+    return null;
+  }
+
+  var style = props.style || {};
+  var className = (0, _classnames.default)('react-graph__edge', 'connector', props.className);
+  var sourceHandle = sourceNode.__rg.handleBounds.source;
+  var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
+  var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
+  var sourceX = sourceNode.__rg.position.x + sourceHandleX;
+  var sourceY = sourceNode.__rg.position.y + sourceHandleY;
+  var targetX = props.connectionPosition.x;
+  var targetY = props.connectionPosition.y;
+  var yOffset = Math.abs(targetY - sourceY) / 2;
+  var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+  var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
+  return _react.default.createElement("path", _extends({
+    className: className,
+    d: dAttr
+  }, style));
+};
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js"}],"../src/EdgeRenderer/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38252,6 +38410,10 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _GraphContext = require("../GraphContext");
+
+var _ConnectorEdge = _interopRequireDefault(require("../ConnectorEdge"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -38320,15 +38482,15 @@ function (_PureComponent) {
 
       var _this$props = this.props,
           width = _this$props.width,
-          height = _this$props.height;
+          height = _this$props.height,
+          onElementClick = _this$props.onElementClick;
 
       if (!width) {
         return null;
       }
 
       return _react.default.createElement(_GraphContext.Consumer, null, function (_ref) {
-        var state = _ref.state,
-            onElementClick = _ref.onElementClick;
+        var state = _ref.state;
         return _react.default.createElement("svg", {
           width: width,
           height: height,
@@ -38337,7 +38499,11 @@ function (_PureComponent) {
           transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
         }, state.edges.map(function (e) {
           return _this.renderEdge(e, state.nodes, onElementClick);
-        })));
+        })), state.isConnecting && _react.default.createElement(_ConnectorEdge.default, {
+          nodes: state.nodes,
+          connectionSourceId: state.connectionSourceId,
+          connectionPosition: state.connectionPosition
+        }));
       });
     }
   }]);
@@ -38347,7 +38513,7 @@ function (_PureComponent) {
 
 var _default = EdgeRenderer;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectorEdge":"../src/ConnectorEdge/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40972,7 +41138,8 @@ var GraphView = (0, _react.memo)(function (props) {
   }), _react.default.createElement(_EdgeRenderer.default, {
     width: state.width,
     height: state.height,
-    edgeTypes: props.edgeTypes
+    edgeTypes: props.edgeTypes,
+    onElementClick: props.onElementClick
   }), shiftPressed && _react.default.createElement(_UserSelection.default, null), state.nodesSelectionActive && _react.default.createElement(_NodesSelection.default, null), _react.default.createElement("div", {
     className: "react-graph__zoompane",
     onClick: function onClick() {
@@ -41040,62 +41207,7 @@ var _default = (0, _react.memo)(function (props) {
 });
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../hooks":"../src/hooks.js","../state/actions":"../src/state/actions.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
-var define;
-/*!
-  Copyright (c) 2017 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
-
-(function () {
-	'use strict';
-
-	var hasOwn = {}.hasOwnProperty;
-
-	function classNames () {
-		var classes = [];
-
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
-
-			var argType = typeof arg;
-
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg) && arg.length) {
-				var inner = classNames.apply(null, arg);
-				if (inner) {
-					classes.push(inner);
-				}
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(' ');
-	}
-
-	if (typeof module !== 'undefined' && module.exports) {
-		classNames.default = classNames;
-		module.exports = classNames;
-	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-		// register as 'classnames', consistent with npm package name
-		define('classnames', [], function () {
-			return classNames;
-		});
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
-},{}],"../src/NodeRenderer/NodeIdContext.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../hooks":"../src/hooks.js","../state/actions":"../src/state/actions.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js"}],"../src/NodeRenderer/NodeIdContext.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41126,6 +41238,10 @@ var _classnames = _interopRequireDefault(require("classnames"));
 
 var _NodeIdContext = require("../NodeIdContext");
 
+var _GraphContext = require("../../GraphContext");
+
+var _actions = require("../../state/actions");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -41136,14 +41252,23 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
-function _onDragStart(evt, nodeId) {
-  evt.dataTransfer.setData("text/plain", nodeId);
+function _onDragStart(evt, nodeId, dispatch) {
+  evt.dataTransfer.setData("text/plain", nodeId); // dispatch(setConnecting({ isConnecting: true, connectionSourceId: nodeId }));
+}
+
+function onDragStop(evt, dispatch) {// dispatch(setConnecting({ isConnecting: false }));
+}
+
+function _onDrag(evt, dispatch) {// dispatch(setConnectionPos({ x: evt.clientX, y: evt.clientY }));
 }
 
 var _default = (0, _react.memo)(function (_ref) {
   var source = _ref.source,
       target = _ref.target,
       rest = _objectWithoutProperties(_ref, ["source", "target"]);
+
+  var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
+      dispatch = _useContext.dispatch;
 
   var handleClasses = (0, _classnames.default)('react-graph__handle', rest.className, {
     source: source,
@@ -41162,14 +41287,20 @@ var _default = (0, _react.memo)(function (_ref) {
     }, rest, {
       draggable: true,
       onDragStart: function onDragStart(evt) {
-        return _onDragStart(evt, nodeId);
+        return _onDragStart(evt, nodeId, dispatch);
+      },
+      onDrag: function onDrag(evt) {
+        return _onDrag(evt, dispatch);
+      },
+      onDragEnd: function onDragEnd(evt) {
+        return onDragStop(evt, dispatch);
       }
     }));
   });
 });
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/HandleTypes/TargetHandle.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js","../../GraphContext":"../src/GraphContext/index.js","../../state/actions":"../src/state/actions.js"}],"../src/NodeRenderer/HandleTypes/TargetHandle.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41370,7 +41501,7 @@ var isHandle = function isHandle(e) {
   return e.target.className && e.target.className.includes('source');
 };
 
-var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds) {
+var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k) {
   var handle = nodeElement.querySelector(sel);
 
   if (!handle) {
@@ -41378,11 +41509,13 @@ var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds) {
   }
 
   var bounds = handle.getBoundingClientRect();
+  var unscaledWith = Math.round(bounds.width * (1 / k));
+  var unscaledHeight = Math.round(bounds.height * (1 / k));
   return {
-    x: bounds.x - parentBounds.x,
-    y: bounds.y - parentBounds.y,
-    width: bounds.width,
-    height: bounds.height
+    x: (bounds.x - parentBounds.x) * (1 / k),
+    y: (bounds.y - parentBounds.y) * (1 / k),
+    width: unscaledWith,
+    height: unscaledHeight
   };
 };
 
@@ -41432,8 +41565,8 @@ var _default = function _default(NodeComponent) {
       var unscaledWith = Math.round(bounds.width * (1 / k));
       var unscaledHeight = Math.round(bounds.height * (1 / k));
       var handleBounds = {
-        source: getHandleBounds('.source', nodeElement.current, bounds),
-        target: getHandleBounds('.target', nodeElement.current, bounds)
+        source: getHandleBounds('.source', nodeElement.current, bounds, k),
+        target: getHandleBounds('.target', nodeElement.current, bounds, k)
       };
       dispatch((0, _actions.updateNodeData)(id, {
         width: unscaledWith,
@@ -41915,8 +42048,7 @@ function (_PureComponent) {
         className: "react-graph"
       }, _react.default.createElement(_GraphContext.Provider, {
         nodes: nodes,
-        edges: edges,
-        onElementClick: onElementClick
+        edges: edges
       }, _react.default.createElement(_GraphView.default, {
         onLoad: onLoad,
         onMove: onMove,
@@ -42267,6 +42399,15 @@ function (_PureComponent) {
       });
     }
   }, {
+    key: "onConnect",
+    value: function onConnect(params) {
+      this.setState(function (prevState) {
+        return {
+          elements: prevState.elements.concat(params)
+        };
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
@@ -42280,7 +42421,7 @@ function (_PureComponent) {
           return _this2.onElementsRemove(elements);
         },
         onConnect: function onConnect(params) {
-          return console.log(params);
+          return _this2.onConnect(params);
         },
         onNodeDragStop: function onNodeDragStop(node) {
           return console.log('drag stop', node);
@@ -42375,7 +42516,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61136" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50947" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

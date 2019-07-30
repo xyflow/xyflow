@@ -2,7 +2,8 @@ import {
   UPDATE_TRANSFORM, UPDATE_SIZE, SET_NODES, SET_EDGES,
   UPDATE_NODE_DATA, UPDATE_NODE_POS, INIT_D3, FIT_VIEW,
   UPDATE_SELECTION, SET_SELECTION, SET_NODES_SELECTION,
-  SET_SELECTED_ELEMENTS, REMOVE_NODES, ZOOM_IN, ZOOM_OUT
+  SET_SELECTED_ELEMENTS, REMOVE_NODES, ZOOM_IN, ZOOM_OUT,
+  SET_CONNECTING, SET_CONNECTION_POS
 } from './index';
 
 export const updateTransform = (transform) => {
@@ -90,7 +91,7 @@ export const removeNodes = (ids) => {
   const idArray = Array.isArray(ids) ? ids : [ids];
 
   return { type: REMOVE_NODES, payload: { ids: idArray } };
-}
+};
 
 export const updateSelection = (selection) => {
   return {
@@ -100,3 +101,11 @@ export const updateSelection = (selection) => {
     }
   };
 };
+
+export const setConnecting = ({ isConnecting, connectionSourceId }) => {
+  return { type: SET_CONNECTING, payload: { isConnecting, connectionSourceId }};
+};
+
+export const setConnectionPos = ({ x, y }) => {
+  return { type: SET_CONNECTION_POS, payload: { connectionPosition: { x, y } } };
+}

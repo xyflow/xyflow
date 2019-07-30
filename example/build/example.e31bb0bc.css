@@ -62,6 +62,10 @@
             animation: dashdraw 0.5s linear infinite;
   }
 
+.react-graph__edge.connector {
+    pointer-events: none;
+  }
+
 @-webkit-keyframes dashdraw {
   from {stroke-dashoffset: 10}
 }

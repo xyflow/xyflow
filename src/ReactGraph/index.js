@@ -37,7 +37,7 @@ class ReactGraph extends PureComponent {
 
     return (
       <div style={style} className="react-graph">
-        <Provider nodes={nodes} edges={edges} onElementClick={onElementClick}>
+        <Provider nodes={nodes} edges={edges}>
           <GraphView
             onLoad={onLoad}
             onMove={onMove}

@@ -59,6 +59,10 @@
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }
+
+  &.connector {
+    pointer-events: none;
+  }
 }
 
 @keyframes dashdraw {

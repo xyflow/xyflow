@@ -10,7 +10,7 @@ import { Provider } from '../NodeIdContext';
 const isInput = e => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 const isHandle = e => e.target.className && e.target.className.includes('source');
 
-const getHandleBounds = (sel, nodeElement, parentBounds) => {
+const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   const handle = nodeElement.querySelector(sel);
 
   if (!handle) {
@@ -18,11 +18,14 @@ const getHandleBounds = (sel, nodeElement, parentBounds) => {
   }
 
   const bounds = handle.getBoundingClientRect();
+  const unscaledWith = Math.round(bounds.width * (1 / k));
+  const unscaledHeight = Math.round(bounds.height * (1 / k));
+
   return {
-    x: bounds.x - parentBounds.x,
-    y: bounds.y - parentBounds.y,
-    width: bounds.width,
-    height: bounds.height
+    x: (bounds.x - parentBounds.x) * (1 / k),
+    y: (bounds.y - parentBounds.y) * (1 / k),
+    width: unscaledWith,
+    height: unscaledHeight
   };
 };
 
@@ -49,8 +52,8 @@ export default NodeComponent => memo((props) => {
     const unscaledWith = Math.round(bounds.width * (1 / k));
     const unscaledHeight = Math.round(bounds.height * (1 / k));
     const handleBounds = {
-      source: getHandleBounds('.source', nodeElement.current, bounds),
-      target: getHandleBounds('.target', nodeElement.current, bounds)
+      source: getHandleBounds('.source', nodeElement.current, bounds, k),
+      target: getHandleBounds('.target', nodeElement.current, bounds, k)
     };
 
     dispatch(updateNodeData(id, { width: unscaledWith, height: unscaledHeight, handleBounds }));
