@@ -49,14 +49,15 @@ class EdgeRenderer extends PureComponent {
               transform={`translate(${state.transform[0]},${state.transform[1]}) scale(${state.transform[2]})`}
             >
               {state.edges.map(e => this.renderEdge(e, state.nodes, onElementClick))}
+              {state.isConnecting && (
+                <ConnectorEdge
+                  nodes={state.nodes}
+                  connectionSourceId={state.connectionSourceId}
+                  connectionPosition={state.connectionPosition}
+                  transform={state.transform}
+                />
+              )}
             </g>
-            {state.isConnecting && (
-              <ConnectorEdge
-                nodes={state.nodes}
-                connectionSourceId={state.connectionSourceId}
-                connectionPosition={state.connectionPosition}
-              />
-            )}
           </svg>
         )}
       </Consumer>

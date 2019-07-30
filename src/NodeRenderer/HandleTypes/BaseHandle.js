@@ -1,12 +1,12 @@
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext } from 'react';
 import cx from 'classnames';
 
-import { Consumer } from '../NodeIdContext'
+import NodeIdContext from '../NodeIdContext'
 import { GraphContext } from '../../GraphContext';
 import { setConnecting, setConnectionPos } from '../../state/actions';
 
 function onDragStart(evt, nodeId, dispatch) {
-  evt.dataTransfer.setData("text/plain", nodeId);
+  evt.dataTransfer.setData('text/plain', nodeId);
 
   // dispatch(setConnecting({ isConnecting: true, connectionSourceId: nodeId }));
 }
@@ -19,11 +19,12 @@ function onDrag(evt, dispatch) {
   // dispatch(setConnectionPos({ x: evt.clientX, y: evt.clientY }));
 }
 
-export default memo(({ source, target, ...rest }) => {
-  const { dispatch } = useContext(GraphContext)
+export default memo(({ source, target, className = null, ...rest }) => {
+  const nodeId = useContext(NodeIdContext);
+  const { dispatch } = useContext(GraphContext);
   const handleClasses = cx(
     'react-graph__handle',
-    rest.className,
+    className,
     { source, target }
   );
 
@@ -37,17 +38,12 @@ export default memo(({ source, target, ...rest }) => {
   }
 
   return (
-    <Consumer>
-      {nodeId => (
-        <div
-          className={handleClasses}
-          {...rest}
-          draggable
-          onDragStart={evt => onDragStart(evt, nodeId, dispatch)}
-          onDrag={evt => onDrag(evt, dispatch)}
-          onDragEnd={evt => onDragStop(evt, dispatch)}
-        />
-      )}
-    </Consumer>
+    <div
+      draggable
+      onDragStart={evt => onDragStart(evt, nodeId, dispatch)}
+      onDragEnd={evt => onDragStop(evt, dispatch)}
+      className={handleClasses}
+      {...rest}
+    />
   );
 });

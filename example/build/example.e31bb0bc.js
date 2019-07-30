@@ -37986,9 +37986,11 @@ var initD3 = function initD3(_ref) {
 
 exports.initD3 = initD3;
 
-var fitView = function fitView(_ref2) {
-  var _ref2$padding = _ref2.padding,
+var fitView = function fitView() {
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref2$padding = _ref2.padding,
       padding = _ref2$padding === void 0 ? 0 : _ref2$padding;
+
   return {
     type: _index.FIT_VIEW,
     payload: {
@@ -38387,8 +38389,8 @@ var _default = function _default(props) {
   var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
   var sourceX = sourceNode.__rg.position.x + sourceHandleX;
   var sourceY = sourceNode.__rg.position.y + sourceHandleY;
-  var targetX = props.connectionPosition.x;
-  var targetY = props.connectionPosition.y;
+  var targetX = props.connectionPosition.x * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
+  var targetY = props.connectionPosition.y * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
   var yOffset = Math.abs(targetY - sourceY) / 2;
   var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
   var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
@@ -38499,11 +38501,12 @@ function (_PureComponent) {
           transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
         }, state.edges.map(function (e) {
           return _this.renderEdge(e, state.nodes, onElementClick);
-        })), state.isConnecting && _react.default.createElement(_ConnectorEdge.default, {
+        }), state.isConnecting && _react.default.createElement(_ConnectorEdge.default, {
           nodes: state.nodes,
           connectionSourceId: state.connectionSourceId,
-          connectionPosition: state.connectionPosition
-        }));
+          connectionPosition: state.connectionPosition,
+          transform: state.transform
+        })));
       });
     }
   }]);
@@ -41213,11 +41216,12 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.Consumer = exports.Provider = void 0;
+exports.default = exports.Consumer = exports.Provider = exports.NodeIdContext = void 0;
 
 var _react = require("react");
 
 var NodeIdContext = (0, _react.createContext)(null);
+exports.NodeIdContext = NodeIdContext;
 var Provider = NodeIdContext.Provider;
 exports.Provider = Provider;
 var Consumer = NodeIdContext.Consumer;
@@ -41236,7 +41240,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _classnames = _interopRequireDefault(require("classnames"));
 
-var _NodeIdContext = require("../NodeIdContext");
+var _NodeIdContext = _interopRequireDefault(require("../NodeIdContext"));
 
 var _GraphContext = require("../../GraphContext");
 
@@ -41253,24 +41257,28 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
 function _onDragStart(evt, nodeId, dispatch) {
-  evt.dataTransfer.setData("text/plain", nodeId); // dispatch(setConnecting({ isConnecting: true, connectionSourceId: nodeId }));
+  evt.dataTransfer.setData('text/plain', nodeId); // dispatch(setConnecting({ isConnecting: true, connectionSourceId: nodeId }));
 }
 
 function onDragStop(evt, dispatch) {// dispatch(setConnecting({ isConnecting: false }));
 }
 
-function _onDrag(evt, dispatch) {// dispatch(setConnectionPos({ x: evt.clientX, y: evt.clientY }));
+function onDrag(evt, dispatch) {// dispatch(setConnectionPos({ x: evt.clientX, y: evt.clientY }));
 }
 
 var _default = (0, _react.memo)(function (_ref) {
   var source = _ref.source,
       target = _ref.target,
-      rest = _objectWithoutProperties(_ref, ["source", "target"]);
+      _ref$className = _ref.className,
+      className = _ref$className === void 0 ? null : _ref$className,
+      rest = _objectWithoutProperties(_ref, ["source", "target", "className"]);
+
+  var nodeId = (0, _react.useContext)(_NodeIdContext.default);
 
   var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
       dispatch = _useContext.dispatch;
 
-  var handleClasses = (0, _classnames.default)('react-graph__handle', rest.className, {
+  var handleClasses = (0, _classnames.default)('react-graph__handle', className, {
     source: source,
     target: target
   });
@@ -41281,22 +41289,16 @@ var _default = (0, _react.memo)(function (_ref) {
     }, rest));
   }
 
-  return _react.default.createElement(_NodeIdContext.Consumer, null, function (nodeId) {
-    return _react.default.createElement("div", _extends({
-      className: handleClasses
-    }, rest, {
-      draggable: true,
-      onDragStart: function onDragStart(evt) {
-        return _onDragStart(evt, nodeId, dispatch);
-      },
-      onDrag: function onDrag(evt) {
-        return _onDrag(evt, dispatch);
-      },
-      onDragEnd: function onDragEnd(evt) {
-        return onDragStop(evt, dispatch);
-      }
-    }));
-  });
+  return _react.default.createElement("div", _extends({
+    draggable: true,
+    onDragStart: function onDragStart(evt) {
+      return _onDragStart(evt, nodeId, dispatch);
+    },
+    onDragEnd: function onDragEnd(evt) {
+      return onDragStop(evt, dispatch);
+    },
+    className: handleClasses
+  }, rest));
 });
 
 exports.default = _default;
@@ -41521,7 +41523,7 @@ var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k
 
 var onDragOver = function onDragOver(evt) {
   evt.preventDefault();
-  evt.dataTransfer.dropEffect = "move";
+  evt.dataTransfer.dropEffect = 'move';
 };
 
 var _default = function _default(NodeComponent) {
@@ -41632,12 +41634,6 @@ var _default = function _default(NodeComponent) {
     var onDrop = function onDrop(evt) {
       evt.preventDefault();
       var source = evt.dataTransfer.getData('text/plain');
-
-      if (source === id) {
-        console.warn('You can\'t connect a node with itself.');
-        return false;
-      }
-
       onConnect({
         source: source,
         target: id
@@ -42516,7 +42512,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50947" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62831" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

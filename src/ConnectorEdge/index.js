@@ -20,8 +20,8 @@ export default (props) => {
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;
   const sourceY = sourceNode.__rg.position.y + sourceHandleY;
 
-  const targetX = props.connectionPosition.x;
-  const targetY = props.connectionPosition.y;
+  const targetX = (props.connectionPosition.x * (1 / props.transform[2])) - (props.transform[0] * (1 / props.transform[2]));
+  const targetY = (props.connectionPosition.y * (1 / props.transform[2])) - (props.transform[1] * (1 / props.transform[2]));
 
   const yOffset = Math.abs(targetY - sourceY) / 2;
   const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;

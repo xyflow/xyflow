@@ -55,7 +55,7 @@ export const initD3 = ({ zoom, selection }) => {
   };
 };
 
-export const fitView = ({ padding = 0 }) => {
+export const fitView = ({ padding = 0 } = {}) => {
   return { type: FIT_VIEW, payload: { padding } };
 };
 
@@ -65,7 +65,7 @@ export const zoomIn = () => {
 
 export const zoomOut = () => {
   return { type: ZOOM_OUT };
-}
+};
 
 export const setSelection = (isActive) => {
   return { type: SET_SELECTION, payload: { selectionActive: isActive } };
@@ -107,5 +107,8 @@ export const setConnecting = ({ isConnecting, connectionSourceId }) => {
 };
 
 export const setConnectionPos = ({ x, y }) => {
-  return { type: SET_CONNECTION_POS, payload: { connectionPosition: { x, y } } };
-}
+  return {
+    type: SET_CONNECTION_POS,
+    payload: { connectionPosition: { x, y } }
+  };
+};

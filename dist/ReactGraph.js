@@ -29905,6 +29905,8 @@
   var SET_NODES_SELECTION = 'SET_NODES_SELECTION';
   var SET_SELECTED_ELEMENTS = 'SET_SELECTED_ELEMENTS';
   var REMOVE_NODES = 'REMOVE_NODES';
+  var SET_CONNECTING = 'SET_CONNECTING';
+  var SET_CONNECTION_POS = 'SET_CONNECTION_POS';
   var initialState = {
     width: 0,
     height: 0,
@@ -29923,7 +29925,13 @@
     d3Initialised: false,
     nodesSelectionActive: false,
     selectionActive: false,
-    selection: {}
+    selection: {},
+    isConnecting: false,
+    connectionSourceId: null,
+    connectionPosition: {
+      x: 0,
+      y: 0
+    }
   };
   var reducer = function reducer(state, action) {
     switch (action.type) {
@@ -30031,6 +30039,8 @@
       case UPDATE_SIZE:
       case SET_SELECTION:
       case SET_SELECTED_ELEMENTS:
+      case SET_CONNECTING:
+      case SET_CONNECTION_POS:
         return _objectSpread2({}, state, {}, action.payload);
 
       default:
@@ -30098,9 +30108,11 @@
       }
     };
   };
-  var fitView = function fitView(_ref2) {
-    var _ref2$padding = _ref2.padding,
+  var fitView = function fitView() {
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref2$padding = _ref2.padding,
         padding = _ref2$padding === void 0 ? 0 : _ref2$padding;
+
     return {
       type: FIT_VIEW,
       payload: {
@@ -30258,6 +30270,89 @@
     return NodeRenderer;
   }(React.PureComponent);
 
+  var classnames = createCommonjsModule(function (module) {
+  /*!
+    Copyright (c) 2017 Jed Watson.
+    Licensed under the MIT License (MIT), see
+    http://jedwatson.github.io/classnames
+  */
+  /* global define */
+
+  (function () {
+
+  	var hasOwn = {}.hasOwnProperty;
+
+  	function classNames () {
+  		var classes = [];
+
+  		for (var i = 0; i < arguments.length; i++) {
+  			var arg = arguments[i];
+  			if (!arg) continue;
+
+  			var argType = typeof arg;
+
+  			if (argType === 'string' || argType === 'number') {
+  				classes.push(arg);
+  			} else if (Array.isArray(arg) && arg.length) {
+  				var inner = classNames.apply(null, arg);
+  				if (inner) {
+  					classes.push(inner);
+  				}
+  			} else if (argType === 'object') {
+  				for (var key in arg) {
+  					if (hasOwn.call(arg, key) && arg[key]) {
+  						classes.push(key);
+  					}
+  				}
+  			}
+  		}
+
+  		return classes.join(' ');
+  	}
+
+  	if ( module.exports) {
+  		classNames.default = classNames;
+  		module.exports = classNames;
+  	} else {
+  		window.classNames = classNames;
+  	}
+  }());
+  });
+
+  var ConnectorEdge = (function (props) {
+    var _useState = React.useState(null),
+        _useState2 = _slicedToArray(_useState, 2),
+        sourceNode = _useState2[0],
+        setSourceNode = _useState2[1];
+
+    React.useEffect(function () {
+      setSourceNode(props.nodes.find(function (n) {
+        return n.id === props.connectionSourceId;
+      }));
+    }, []);
+
+    if (!sourceNode) {
+      return null;
+    }
+
+    var style = props.style || {};
+    var className = classnames('react-graph__edge', 'connector', props.className);
+    var sourceHandle = sourceNode.__rg.handleBounds.source;
+    var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
+    var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
+    var sourceX = sourceNode.__rg.position.x + sourceHandleX;
+    var sourceY = sourceNode.__rg.position.y + sourceHandleY;
+    var targetX = props.connectionPosition.x * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
+    var targetY = props.connectionPosition.y * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
+    return React__default.createElement("path", _extends({
+      className: className,
+      d: dAttr
+    }, style));
+  });
+
   var EdgeRenderer =
   /*#__PURE__*/
   function (_PureComponent) {
@@ -30303,15 +30398,15 @@
 
         var _this$props = this.props,
             width = _this$props.width,
-            height = _this$props.height;
+            height = _this$props.height,
+            onElementClick = _this$props.onElementClick;
 
         if (!width) {
           return null;
         }
 
         return React__default.createElement(Consumer, null, function (_ref) {
-          var state = _ref.state,
-              onElementClick = _ref.onElementClick;
+          var state = _ref.state;
           return React__default.createElement("svg", {
             width: width,
             height: height,
@@ -30320,6 +30415,11 @@
             transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
           }, state.edges.map(function (e) {
             return _this.renderEdge(e, state.nodes, onElementClick);
+          }), state.isConnecting && React__default.createElement(ConnectorEdge, {
+            nodes: state.nodes,
+            connectionSourceId: state.connectionSourceId,
+            connectionPosition: state.connectionPosition,
+            transform: state.transform
           })));
         });
       }
@@ -32831,7 +32931,8 @@
     }), React__default.createElement(EdgeRenderer, {
       width: state.width,
       height: state.height,
-      edgeTypes: props.edgeTypes
+      edgeTypes: props.edgeTypes,
+      onElementClick: props.onElementClick
     }), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
       className: "react-graph__zoompane",
       onClick: function onClick() {
@@ -32870,69 +32971,30 @@
     return null;
   });
 
-  var classnames = createCommonjsModule(function (module) {
-  /*!
-    Copyright (c) 2017 Jed Watson.
-    Licensed under the MIT License (MIT), see
-    http://jedwatson.github.io/classnames
-  */
-  /* global define */
-
-  (function () {
-
-  	var hasOwn = {}.hasOwnProperty;
-
-  	function classNames () {
-  		var classes = [];
-
-  		for (var i = 0; i < arguments.length; i++) {
-  			var arg = arguments[i];
-  			if (!arg) continue;
-
-  			var argType = typeof arg;
-
-  			if (argType === 'string' || argType === 'number') {
-  				classes.push(arg);
-  			} else if (Array.isArray(arg) && arg.length) {
-  				var inner = classNames.apply(null, arg);
-  				if (inner) {
-  					classes.push(inner);
-  				}
-  			} else if (argType === 'object') {
-  				for (var key in arg) {
-  					if (hasOwn.call(arg, key) && arg[key]) {
-  						classes.push(key);
-  					}
-  				}
-  			}
-  		}
-
-  		return classes.join(' ');
-  	}
-
-  	if ( module.exports) {
-  		classNames.default = classNames;
-  		module.exports = classNames;
-  	} else {
-  		window.classNames = classNames;
-  	}
-  }());
-  });
-
   var NodeIdContext = React.createContext(null);
   var Provider$1 = NodeIdContext.Provider;
   var Consumer$1 = NodeIdContext.Consumer;
 
-  function _onDragStart(evt, nodeId) {
-    evt.dataTransfer.setData("text/plain", nodeId);
+  function _onDragStart(evt, nodeId, dispatch) {
+    evt.dataTransfer.setData('text/plain', nodeId); // dispatch(setConnecting({ isConnecting: true, connectionSourceId: nodeId }));
+  }
+
+  function onDragStop(evt, dispatch) {// dispatch(setConnecting({ isConnecting: false }));
   }
 
   var BaseHandle = React.memo(function (_ref) {
     var source = _ref.source,
         target = _ref.target,
-        rest = _objectWithoutProperties(_ref, ["source", "target"]);
+        _ref$className = _ref.className,
+        className = _ref$className === void 0 ? null : _ref$className,
+        rest = _objectWithoutProperties(_ref, ["source", "target", "className"]);
 
-    var handleClasses = classnames('react-graph__handle', rest.className, {
+    var nodeId = React.useContext(NodeIdContext);
+
+    var _useContext = React.useContext(GraphContext),
+        dispatch = _useContext.dispatch;
+
+    var handleClasses = classnames('react-graph__handle', className, {
       source: source,
       target: target
     });
@@ -32943,16 +33005,16 @@
       }, rest));
     }
 
-    return React__default.createElement(Consumer$1, null, function (nodeId) {
-      return React__default.createElement("div", _extends({
-        className: handleClasses
-      }, rest, {
-        draggable: true,
-        onDragStart: function onDragStart(evt) {
-          return _onDragStart(evt, nodeId);
-        }
-      }));
-    });
+    return React__default.createElement("div", _extends({
+      draggable: true,
+      onDragStart: function onDragStart(evt) {
+        return _onDragStart(evt, nodeId);
+      },
+      onDragEnd: function onDragEnd(evt) {
+        return onDragStop();
+      },
+      className: handleClasses
+    }, rest));
   });
 
   var _TargetHandle = (function (props) {
@@ -33018,7 +33080,7 @@
     return e.target.className && e.target.className.includes('source');
   };
 
-  var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds) {
+  var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k) {
     var handle = nodeElement.querySelector(sel);
 
     if (!handle) {
@@ -33026,17 +33088,19 @@
     }
 
     var bounds = handle.getBoundingClientRect();
+    var unscaledWith = Math.round(bounds.width * (1 / k));
+    var unscaledHeight = Math.round(bounds.height * (1 / k));
     return {
-      x: bounds.x - parentBounds.x,
-      y: bounds.y - parentBounds.y,
-      width: bounds.width,
-      height: bounds.height
+      x: (bounds.x - parentBounds.x) * (1 / k),
+      y: (bounds.y - parentBounds.y) * (1 / k),
+      width: unscaledWith,
+      height: unscaledHeight
     };
   };
 
   var onDragOver = function onDragOver(evt) {
     evt.preventDefault();
-    evt.dataTransfer.dropEffect = "move";
+    evt.dataTransfer.dropEffect = 'move';
   };
 
   var wrapNode = (function (NodeComponent) {
@@ -33080,8 +33144,8 @@
         var unscaledWith = Math.round(bounds.width * (1 / k));
         var unscaledHeight = Math.round(bounds.height * (1 / k));
         var handleBounds = {
-          source: getHandleBounds('.source', nodeElement.current, bounds),
-          target: getHandleBounds('.target', nodeElement.current, bounds)
+          source: getHandleBounds('.source', nodeElement.current, bounds, k),
+          target: getHandleBounds('.target', nodeElement.current, bounds, k)
         };
         dispatch(updateNodeData(id, {
           width: unscaledWith,
@@ -33147,12 +33211,6 @@
       var onDrop = function onDrop(evt) {
         evt.preventDefault();
         var source = evt.dataTransfer.getData('text/plain');
-
-        if (source === id) {
-          console.warn('You can\'t connect a node with itself.');
-          return false;
-        }
-
         onConnect({
           source: source,
           target: id
@@ -33324,7 +33382,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #555;\n  }\n\n.react-graph__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-graph__handle.source {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n    cursor: crosshair;\n  }\n\n.react-graph__handle.target {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
+  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #555;\n  }\n\n.react-graph__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-graph__edge.connector {\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-graph__handle.source {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n    cursor: crosshair;\n  }\n\n.react-graph__handle.target {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
   styleInject(css);
 
   var ReactGraph =
@@ -33367,8 +33425,7 @@
           className: "react-graph"
         }, React__default.createElement(Provider, {
           nodes: nodes,
-          edges: edges,
-          onElementClick: onElementClick
+          edges: edges
         }, React__default.createElement(GraphView$1, {
           onLoad: onLoad,
           onMove: onMove,
