@@ -30400,7 +30400,7 @@
 
     var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes["default"];
     return React__default.createElement(EdgeComponent, {
-      key: "".concat(e.source, "-").concat(e.target),
+      key: e.id,
       id: e.id,
       type: e.type,
       sourceNode: sourceNode,

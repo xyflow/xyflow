@@ -38453,7 +38453,7 @@ function renderEdge(e, props, graphContext) {
 
   var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
   return _react.default.createElement(EdgeComponent, {
-    key: "".concat(e.source, "-").concat(e.target),
+    key: e.id,
     id: e.id,
     type: e.type,
     sourceNode: sourceNode,
@@ -42638,7 +42638,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53462" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61736" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -23,7 +23,6 @@ function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
         const targetId = elementBelow.getAttribute('data-nodeid');
         onConnect({ source: nodeId, target: targetId });
       }
-
     }
 
     dispatch(setConnecting({ connectionSourceId: false }));
