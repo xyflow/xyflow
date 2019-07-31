@@ -18,7 +18,12 @@
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "@storybook/addon-actions": "^5.1.10",
+    "@storybook/addon-links": "^5.1.10",
+    "@storybook/addons": "^5.1.10",
+    "@storybook/react": "^5.1.10",
     "autoprefixer": "^9.6.1",
+    "babel-loader": "^8.0.6",
     "babel-preset-react-app": "^9.0.0",
     "husky": "^3.0.0",
     "parcel-bundler": "^1.12.3",
@@ -40,7 +45,9 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build"
+    "dev": "parcel example/index.html -d example/build",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "husky": {
     "hooks": {}
