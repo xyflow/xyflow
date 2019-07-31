@@ -6,6 +6,7 @@
   "main": "dist/ReactGraph.js",
   "private": true,
   "dependencies": {
+    "@welldone-software/why-did-you-render": "^3.2.3",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.7.3",

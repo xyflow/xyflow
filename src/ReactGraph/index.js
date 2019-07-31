@@ -1,5 +1,10 @@
 import React, { PureComponent } from 'react';
 
+if (process.env.NODE_ENV !== 'production') {
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  whyDidYouRender(React);
+}
+
 import { parseElements, separateElements } from '../graph-utils';
 import GraphView from '../GraphView';
 import GlobalKeyHandler from '../GlobalKeyHandler';

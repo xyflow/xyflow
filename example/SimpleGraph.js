@@ -3,13 +3,13 @@ import React, { PureComponent } from 'react';
 import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle } from '../src';
 // import Graph from '../dist/ReactGraph';
 
-const SpecialNode = ({ data, onChange, styles }) => (
+const SpecialNode = ({ data, styles }) => (
   <div
     style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
   >
     <TargetHandle style={{ left: 10, background: '#999' }} />
     <div>I am <strong>special</strong>!<br />{data.label}</div>
-    <select onChange={(e) => onChange(e.target.value, data)}>
+    <select onChange={(e) => data.onChange(e.target.value, data)}>
       <option value="1">1</option>
       <option value="2">2</option>
       <option value="3">3</option>
@@ -48,7 +48,7 @@ class App extends PureComponent {
         { id: '3', data: { label: '3 I bring my own style' }, position: { x: 100, y: 200 }, style: { background: '#eee', color: '#222', border: '1px solid #bbb' } },
         { id: '4', type: 'output', data: { label: '4 nody nodes' }, position: { x: 50, y: 300 } },
         { id: '5', type: 'default', data: { label: '5 Another node'}, position: { x: 400, y: 300 } },
-        { id: '6', type: 'special', onChange, data: { label: '6 no option selected' }, position: { x: 425, y: 375 } },
+        { id: '6', type: 'special', data: { onChange, label: '6 no option selected' }, position: { x: 425, y: 375 } },
         { id: '7', type: 'output', data: { label: '7 output' }, position: { x: 250, y: 500 } },
         { source: '1', target: '2', animated: true },
         { source: '2', target: '3' },

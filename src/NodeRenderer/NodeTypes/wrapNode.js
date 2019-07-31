@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useContext, useState, memo } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 import cx from 'classnames';
 
-import { GraphContext } from '../../GraphContext';
 import { updateNodeData, updateNodePos, setSelectedElements } from '../../state/actions';
 import { isNode } from '../../graph-utils';
 import { Provider } from '../NodeIdContext';
@@ -60,36 +59,38 @@ const onDrag = (evt, { dispatch, id, offset, transform }) => {
   }));
 };
 
-const onNodeClick = (evt, { onClick, dispatch, data, id, type, position }) => {
+const onNodeClick = (evt, { onClick, dispatch, id, type, position, data }) => {
   if (isInput(evt)) {
     return false;
   }
 
-  dispatch(setSelectedElements({ data, id }));
-  onClick({ id, type, data, position });
+  const node = { id, type, position, data }
+
+  dispatch(setSelectedElements(node));
+  onClick(node);
 };
 
-const onStop = ({ onNodeDragStop, id, type, data, position }) => {
+const onStop = ({ onNodeDragStop, id, type, position, data }) => {
   onNodeDragStop({
-    id,
-    type,
-    data,
-    position
+    id, type, position, data
   });
 };
 
 export default NodeComponent => memo((props) => {
   const nodeElement = useRef(null);
-  const { state, dispatch } = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const {
-    data, onClick, type, id, __rg, onNodeDragStop
+    id, type, data, transform, xPos, yPos, selectedElements,
+    dispatch, getNodeById, onClick, onNodeDragStop
   } = props;
-  const { position } = __rg;
-  const [ x, y, k ] = state.transform;
-  const selected = state.selectedElements.filter(isNode).map(e => e.id).includes(id);
+
+  console.log('render node', id);
+
+  const position = { x: xPos, y: yPos };
+  const [ x, y, k ] = transform;
+  const selected = selectedElements.filter(isNode).map(e => e.id).includes(id);
   const nodeClasses = cx('react-graph__node', { selected });
-  const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${position.x}px,${position.y}px)` };
+  const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
   useEffect(() => {
     const bounds = nodeElement.current.getBoundingClientRect();
@@ -105,16 +106,16 @@ export default NodeComponent => memo((props) => {
 
   return (
     <ReactDraggable.DraggableCore
-      onStart={evt => onStart(evt, { setOffset, transform: state.transform, position })}
-      onDrag={evt => onDrag(evt, { dispatch, id, offset, transform: state.transform })}
-      onStop={() => onStop({ onNodeDragStop, id, type, data, position })}
-      scale={state.transform[2]}
+      onStart={evt => onStart(evt, { setOffset, transform, position })}
+      onDrag={evt => onDrag(evt, { dispatch, id, offset, transform })}
+      onStop={() => onStop({ onNodeDragStop, id, type, position, data })}
+      scale={transform[2]}
     >
       <div
         className={nodeClasses}
         ref={nodeElement}
         style={nodeStyle}
-        onClick={evt => onNodeClick(evt, { onClick, dispatch, data, id, type, position })}
+        onClick={evt => onNodeClick(evt, { getNodeById, onClick, dispatch, id, type, position, data })}
       >
         <Provider value={id}>
           <NodeComponent {...props} selected={selected} />
@@ -122,4 +123,5 @@ export default NodeComponent => memo((props) => {
       </div>
     </ReactDraggable.DraggableCore>
   );
-});
+}
+);

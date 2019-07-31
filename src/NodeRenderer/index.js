@@ -1,44 +1,51 @@
-import React, { PureComponent } from 'react';
+import React, { memo, useContext } from 'react';
 
-import { Consumer } from '../GraphContext';
+import { GraphContext } from '../GraphContext';
 
-class NodeRenderer extends PureComponent {
+function renderNode(d, props, graphContext) {
+  const nodeType = d.type || 'default';
 
-  renderNode(d) {
-    const nodeType = d.type || 'default';
-    if (!this.props.nodeTypes[nodeType]) {
-      console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
-    }
-
-    const NodeComponent = this.props.nodeTypes[nodeType] || this.props.nodeTypes.default;
-
-    return (
-      <NodeComponent
-        key={d.id}
-        onClick={this.props.onElementClick}
-        onNodeDragStop={this.props.onNodeDragStop}
-        onConnect={this.props.onConnect}
-        {...d}
-      />
-    );
+  if (!props.nodeTypes[nodeType]) {
+    console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
   }
 
-  render() {
-    return (
-      <Consumer>
-        {({ state }) => (
-          <div
-            className="react-graph__nodes"
-            style={{
-              transform: `translate(${state.transform[0]}px,${state.transform[1]}px) scale(${state.transform[2]})`
-            }}
-          >
-            {state.nodes.map(d => this.renderNode(d))}
-          </div>
-        )}
-      </Consumer>
-    );
-  }
+  const NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes.default;
+
+  return (
+    <NodeComponent
+      key={d.id}
+      id={d.id}
+      type={d.type}
+      data={d.data}
+      xPos={d.__rg.position.x}
+      yPos={d.__rg.position.y}
+      onClick={props.onElementClick}
+      onNodeDragStop={props.onNodeDragStop}
+      dispatch={graphContext.dispatch}
+      transform={graphContext.state.transform}
+      getNodeById={graphContext.getNodeById}
+      selectedElements={graphContext.state.selectedElements}
+    />
+  );
 }
+
+const NodeRenderer = memo((props) => {
+  const graphContext = useContext(GraphContext);
+  const { transform, nodes } = graphContext.state;
+
+  return (
+    <div
+      className="react-graph__nodes"
+      style={{
+        transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`
+      }}
+    >
+      {nodes.map(d => renderNode(d, props, graphContext))}
+    </div>
+  );
+});
+
+NodeRenderer.displayName = 'NodeRenderer';
+NodeRenderer.whyDidYouRender = false;
 
 export default NodeRenderer;
