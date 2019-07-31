@@ -8,7 +8,7 @@ import { isNode } from '../../graph-utils';
 import { Provider } from '../NodeIdContext';
 
 const isInput = e => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
-const isHandle = e => e.target.className && e.target.className.includes && e.target.className.includes('source');
+const isHandle = e => e.target.className && e.target.className.includes && (e.target.className.includes('source') || e.target.className.includes('target'));
 
 const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   const handle = nodeElement.querySelector(sel);

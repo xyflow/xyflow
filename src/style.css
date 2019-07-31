@@ -116,6 +116,7 @@
   &.target {
     left: 50%;
     top: 0;
+    cursor: crosshair;
     transform: translate(-50%, 0);
   }
 }

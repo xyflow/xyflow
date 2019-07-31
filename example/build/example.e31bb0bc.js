@@ -41281,7 +41281,11 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
-function _onMouseDown(evt, nodeId, dispatch, onConnect) {
+function _onMouseDown(evt, _ref) {
+  var nodeId = _ref.nodeId,
+      dispatch = _ref.dispatch,
+      onConnect = _ref.onConnect,
+      isTarget = _ref.isTarget;
   var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
   var connectionPosition = {
     x: evt.clientX - containerBounds.x,
@@ -41302,12 +41306,20 @@ function _onMouseDown(evt, nodeId, dispatch, onConnect) {
   function onMouseUp(evt) {
     var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
 
-    if (elementBelow && elementBelow.classList.contains('target')) {
-      var targetId = elementBelow.getAttribute('data-nodeid');
-      onConnect({
-        source: nodeId,
-        target: targetId
-      });
+    if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
+      if (isTarget) {
+        var sourceId = elementBelow.getAttribute('data-nodeid');
+        onConnect({
+          source: sourceId,
+          target: nodeId
+        });
+      } else {
+        var targetId = elementBelow.getAttribute('data-nodeid');
+        onConnect({
+          source: nodeId,
+          target: targetId
+        });
+      }
     }
 
     dispatch((0, _actions.setConnecting)({
@@ -41321,12 +41333,12 @@ function _onMouseDown(evt, nodeId, dispatch, onConnect) {
   document.addEventListener('mouseup', onMouseUp);
 }
 
-var _default = (0, _react.memo)(function (_ref) {
-  var source = _ref.source,
-      target = _ref.target,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? null : _ref$className,
-      rest = _objectWithoutProperties(_ref, ["source", "target", "className"]);
+var _default = (0, _react.memo)(function (_ref2) {
+  var source = _ref2.source,
+      target = _ref2.target,
+      _ref2$className = _ref2.className,
+      className = _ref2$className === void 0 ? null : _ref2$className,
+      rest = _objectWithoutProperties(_ref2, ["source", "target", "className"]);
 
   var nodeId = (0, _react.useContext)(_NodeIdContext.default);
 
@@ -41338,19 +41350,16 @@ var _default = (0, _react.memo)(function (_ref) {
     source: source,
     target: target
   });
-
-  if (target) {
-    return _react.default.createElement("div", _extends({
-      "data-nodeid": nodeId,
-      className: handleClasses
-    }, rest));
-  }
-
   return _react.default.createElement("div", _extends({
     "data-nodeid": nodeId,
     className: handleClasses,
     onMouseDown: function onMouseDown(evt) {
-      return _onMouseDown(evt, nodeId, dispatch, onConnect);
+      return _onMouseDown(evt, {
+        nodeId: nodeId,
+        dispatch: dispatch,
+        onConnect: onConnect,
+        isTarget: target
+      });
     }
   }, rest));
 });
@@ -41554,7 +41563,7 @@ var isInput = function isInput(e) {
 };
 
 var isHandle = function isHandle(e) {
-  return e.target.className && e.target.className.includes && e.target.className.includes('source');
+  return e.target.className && e.target.className.includes && (e.target.className.includes('source') || e.target.className.includes('target'));
 };
 
 var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k) {
