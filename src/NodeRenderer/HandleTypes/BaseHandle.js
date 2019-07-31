@@ -6,11 +6,12 @@ import { GraphContext } from '../../GraphContext';
 import { setConnecting, setConnectionPos } from '../../state/actions';
 
 function onMouseDown(evt, nodeId, dispatch, onConnect) {
-  const connectionPosition = { x: evt.clientX, y: evt.clientY };
+  const containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
+  const connectionPosition = { x: evt.clientX - containerBounds.x, y: evt.clientY - containerBounds.y };
   dispatch(setConnecting({ connectionPosition, connectionSourceId: nodeId }))
 
   function onMouseMove(evt) {
-    dispatch(setConnectionPos({ x: evt.clientX, y: evt.clientY }));
+    dispatch(setConnectionPos({ x: evt.clientX - containerBounds.x, y: evt.clientY - containerBounds.y }));
   }
 
   function onMouseUp(evt) {
@@ -46,7 +47,7 @@ export default memo(({ source, target, className = null, ...rest }) => {
         className={handleClasses}
         {...rest}
       />
-    )
+    );
   }
 
   return (

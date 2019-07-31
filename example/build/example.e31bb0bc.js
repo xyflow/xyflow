@@ -41282,9 +41282,10 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
 function _onMouseDown(evt, nodeId, dispatch, onConnect) {
+  var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
   var connectionPosition = {
-    x: evt.clientX,
-    y: evt.clientY
+    x: evt.clientX - containerBounds.x,
+    y: evt.clientY - containerBounds.y
   };
   dispatch((0, _actions.setConnecting)({
     connectionPosition: connectionPosition,
@@ -41293,8 +41294,8 @@ function _onMouseDown(evt, nodeId, dispatch, onConnect) {
 
   function onMouseMove(evt) {
     dispatch((0, _actions.setConnectionPos)({
-      x: evt.clientX,
-      y: evt.clientY
+      x: evt.clientX - containerBounds.x,
+      y: evt.clientY - containerBounds.y
     }));
   }
 
@@ -41574,11 +41575,6 @@ var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k
   };
 };
 
-var onDragOver = function onDragOver(evt) {
-  evt.preventDefault();
-  evt.dataTransfer.dropEffect = 'move';
-};
-
 var _default = function _default(NodeComponent) {
   return (0, _react.memo)(function (props) {
     var nodeElement = (0, _react.useRef)(null);
@@ -41690,7 +41686,6 @@ var _default = function _default(NodeComponent) {
       onStop: onStop,
       scale: k
     }, _react.default.createElement("div", {
-      onDragOver: onDragOver,
       className: nodeClasses,
       ref: nodeElement,
       style: {

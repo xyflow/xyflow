@@ -33025,9 +33025,10 @@
   var Consumer$1 = NodeIdContext.Consumer;
 
   function _onMouseDown(evt, nodeId, dispatch, onConnect) {
+    var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
     var connectionPosition = {
-      x: evt.clientX,
-      y: evt.clientY
+      x: evt.clientX - containerBounds.x,
+      y: evt.clientY - containerBounds.y
     };
     dispatch(setConnecting({
       connectionPosition: connectionPosition,
@@ -33036,8 +33037,8 @@
 
     function onMouseMove(evt) {
       dispatch(setConnectionPos({
-        x: evt.clientX,
-        y: evt.clientY
+        x: evt.clientX - containerBounds.x,
+        y: evt.clientY - containerBounds.y
       }));
     }
 
@@ -33178,11 +33179,6 @@
     };
   };
 
-  var onDragOver = function onDragOver(evt) {
-    evt.preventDefault();
-    evt.dataTransfer.dropEffect = 'move';
-  };
-
   var wrapNode = (function (NodeComponent) {
     return React.memo(function (props) {
       var nodeElement = React.useRef(null);
@@ -33294,7 +33290,6 @@
         onStop: onStop,
         scale: k
       }, React__default.createElement("div", {
-        onDragOver: onDragOver,
         className: nodeClasses,
         ref: nodeElement,
         style: {
