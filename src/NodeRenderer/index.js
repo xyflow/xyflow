@@ -32,13 +32,12 @@ function renderNode(d, props, graphContext) {
 const NodeRenderer = memo((props) => {
   const graphContext = useContext(GraphContext);
   const { transform, nodes } = graphContext.state;
+  const transformStyle = { transform : `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})` };
 
   return (
     <div
       className="react-graph__nodes"
-      style={{
-        transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`
-      }}
+      style={transformStyle}
     >
       {nodes.map(d => renderNode(d, props, graphContext))}
     </div>

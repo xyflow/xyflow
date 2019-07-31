@@ -1,8 +1,6 @@
-import React, { memo, useContext } from 'react';
+import React, { memo } from 'react';
 import cx from 'classnames';
 
-import NodeIdContext from '../NodeIdContext'
-import { GraphContext } from '../../GraphContext';
 import { setConnecting, setConnectionPos } from '../../state/actions';
 
 function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
@@ -37,9 +35,7 @@ function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
   document.addEventListener('mouseup', onMouseUp)
 }
 
-export default memo(({ source, target, className = null, ...rest }) => {
-  const nodeId = useContext(NodeIdContext);
-  const { dispatch, onConnect } = useContext(GraphContext);
+export default memo(({ source, target, nodeId, onConnect, dispatch, className = null, ...rest }) => {
   const handleClasses = cx(
     'react-graph__handle',
     className,
