@@ -9,7 +9,8 @@ export const GraphContext = createContext({});
 
 export const Provider = (props) => {
   const {
-    children
+    children,
+    onConnect
   } = props;
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -42,6 +43,7 @@ export const Provider = (props) => {
 
   const graphContext = {
     state,
+    onConnect,
     dispatch
   };
 

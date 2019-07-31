@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Consumer } from '../GraphContext';
-import ConnectorEdge from '../ConnectorEdge';
+import ConnectionLine from '../ConnectionLine';
 
 class EdgeRenderer extends PureComponent {
   renderEdge(e, nodes, onElementClick) {
@@ -31,7 +31,10 @@ class EdgeRenderer extends PureComponent {
   }
 
   render() {
-    const { width, height, onElementClick } = this.props;
+    const {
+      width, height, onElementClick,
+      connectionLineStyle, connectionLineType
+    } = this.props;
 
     if (!width) {
       return null;
@@ -49,12 +52,14 @@ class EdgeRenderer extends PureComponent {
               transform={`translate(${state.transform[0]},${state.transform[1]}) scale(${state.transform[2]})`}
             >
               {state.edges.map(e => this.renderEdge(e, state.nodes, onElementClick))}
-              {state.isConnecting && (
-                <ConnectorEdge
+              {state.connectionSourceId && (
+                <ConnectionLine
                   nodes={state.nodes}
                   connectionSourceId={state.connectionSourceId}
                   connectionPosition={state.connectionPosition}
                   transform={state.transform}
+                  connectionLineStyle={connectionLineStyle}
+                  connectionLineType={connectionLineType}
                 />
               )}
             </g>

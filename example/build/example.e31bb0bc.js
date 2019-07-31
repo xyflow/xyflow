@@ -37768,7 +37768,6 @@ var initialState = {
   nodesSelectionActive: false,
   selectionActive: false,
   selection: {},
-  isConnecting: false,
   connectionSourceId: null,
   connectionPosition: {
     x: 0,
@@ -37878,6 +37877,17 @@ var reducer = function reducer(state, action) {
         });
       }
 
+    case SET_CONNECTING:
+      {
+        if (!action.payload.connectionPosition) {
+          return _objectSpread({}, state, {
+            connectionSourceId: action.payload.connectionSourceId
+          });
+        }
+
+        return _objectSpread({}, state, {}, action.payload);
+      }
+
     case SET_NODES:
     case SET_EDGES:
     case UPDATE_TRANSFORM:
@@ -37885,7 +37895,6 @@ var reducer = function reducer(state, action) {
     case UPDATE_SIZE:
     case SET_SELECTION:
     case SET_SELECTED_ELEMENTS:
-    case SET_CONNECTING:
     case SET_CONNECTION_POS:
       return _objectSpread({}, state, {}, action.payload);
 
@@ -38079,13 +38088,14 @@ var updateSelection = function updateSelection(selection) {
 exports.updateSelection = updateSelection;
 
 var setConnecting = function setConnecting(_ref4) {
-  var isConnecting = _ref4.isConnecting,
-      connectionSourceId = _ref4.connectionSourceId;
+  var connectionSourceId = _ref4.connectionSourceId,
+      _ref4$connectionPosit = _ref4.connectionPosition,
+      connectionPosition = _ref4$connectionPosit === void 0 ? false : _ref4$connectionPosit;
   return {
     type: _index.SET_CONNECTING,
     payload: {
-      isConnecting: isConnecting,
-      connectionSourceId: connectionSourceId
+      connectionSourceId: connectionSourceId,
+      connectionPosition: connectionPosition
     }
   };
 };
@@ -38147,7 +38157,8 @@ var GraphContext = (0, _react.createContext)({});
 exports.GraphContext = GraphContext;
 
 var Provider = function Provider(props) {
-  var children = props.children;
+  var children = props.children,
+      onConnect = props.onConnect;
 
   var _useReducer = (0, _react.useReducer)(_state.reducer, _state.initialState),
       _useReducer2 = _slicedToArray(_useReducer, 2),
@@ -38181,6 +38192,7 @@ var Provider = function Provider(props) {
   });
   var graphContext = {
     state: state,
+    onConnect: onConnect,
     dispatch: dispatch
   };
   return _react.default.createElement(GraphContext.Provider, {
@@ -38340,7 +38352,7 @@ var define;
 	}
 }());
 
-},{}],"../src/ConnectorEdge/index.js":[function(require,module,exports) {
+},{}],"../src/ConnectionLine/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38382,8 +38394,8 @@ var _default = function _default(props) {
     return null;
   }
 
-  var style = props.style || {};
-  var className = (0, _classnames.default)('react-graph__edge', 'connector', props.className);
+  var style = props.connectionLineStyle || {};
+  var className = (0, _classnames.default)('react-graph__edge', 'connection', props.className);
   var sourceHandle = sourceNode.__rg.handleBounds.source;
   var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
   var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
@@ -38391,13 +38403,21 @@ var _default = function _default(props) {
   var sourceY = sourceNode.__rg.position.y + sourceHandleY;
   var targetX = props.connectionPosition.x * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
   var targetY = props.connectionPosition.y * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
-  var yOffset = Math.abs(targetY - sourceY) / 2;
-  var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-  var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
-  return _react.default.createElement("path", _extends({
-    className: className,
+  var dAttr = '';
+
+  if (props.connectionLineType === 'bezier') {
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
+  } else {
+    dAttr = "M".concat(sourceX, ",").concat(sourceY, " ").concat(targetX, ",").concat(targetY);
+  }
+
+  return _react.default.createElement("g", {
+    className: className
+  }, _react.default.createElement("path", _extends({
     d: dAttr
-  }, style));
+  }, style)));
 };
 
 exports.default = _default;
@@ -38413,7 +38433,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _GraphContext = require("../GraphContext");
 
-var _ConnectorEdge = _interopRequireDefault(require("../ConnectorEdge"));
+var _ConnectionLine = _interopRequireDefault(require("../ConnectionLine"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38485,7 +38505,9 @@ function (_PureComponent) {
       var _this$props = this.props,
           width = _this$props.width,
           height = _this$props.height,
-          onElementClick = _this$props.onElementClick;
+          onElementClick = _this$props.onElementClick,
+          connectionLineStyle = _this$props.connectionLineStyle,
+          connectionLineType = _this$props.connectionLineType;
 
       if (!width) {
         return null;
@@ -38501,11 +38523,13 @@ function (_PureComponent) {
           transform: "translate(".concat(state.transform[0], ",").concat(state.transform[1], ") scale(").concat(state.transform[2], ")")
         }, state.edges.map(function (e) {
           return _this.renderEdge(e, state.nodes, onElementClick);
-        }), state.isConnecting && _react.default.createElement(_ConnectorEdge.default, {
+        }), state.connectionSourceId && _react.default.createElement(_ConnectionLine.default, {
           nodes: state.nodes,
           connectionSourceId: state.connectionSourceId,
           connectionPosition: state.connectionPosition,
-          transform: state.transform
+          transform: state.transform,
+          connectionLineStyle: connectionLineStyle,
+          connectionLineType: connectionLineType
         })));
       });
     }
@@ -38516,7 +38540,7 @@ function (_PureComponent) {
 
 var _default = EdgeRenderer;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectorEdge":"../src/ConnectorEdge/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectionLine":"../src/ConnectionLine/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41136,13 +41160,14 @@ var GraphView = (0, _react.memo)(function (props) {
   }, _react.default.createElement(_NodeRenderer.default, {
     nodeTypes: props.nodeTypes,
     onElementClick: props.onElementClick,
-    onNodeDragStop: props.onNodeDragStop,
-    onConnect: props.onConnect
+    onNodeDragStop: props.onNodeDragStop
   }), _react.default.createElement(_EdgeRenderer.default, {
     width: state.width,
     height: state.height,
     edgeTypes: props.edgeTypes,
-    onElementClick: props.onElementClick
+    onElementClick: props.onElementClick,
+    connectionLineType: props.connectionLineType,
+    connectionLineStyle: props.connectionLineStyle
   }), shiftPressed && _react.default.createElement(_UserSelection.default, null), state.nodesSelectionActive && _react.default.createElement(_NodesSelection.default, null), _react.default.createElement("div", {
     className: "react-graph__zoompane",
     onClick: function onClick() {
@@ -41256,14 +41281,43 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
-function _onDragStart(evt, nodeId, dispatch) {
-  evt.dataTransfer.setData('text/plain', nodeId); // dispatch(setConnecting({ isConnecting: true, connectionSourceId: nodeId }));
-}
+function _onMouseDown(evt, nodeId, dispatch, onConnect) {
+  var connectionPosition = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  dispatch((0, _actions.setConnecting)({
+    connectionPosition: connectionPosition,
+    connectionSourceId: nodeId
+  }));
 
-function onDragStop(evt, dispatch) {// dispatch(setConnecting({ isConnecting: false }));
-}
+  function onMouseMove(evt) {
+    dispatch((0, _actions.setConnectionPos)({
+      x: evt.clientX,
+      y: evt.clientY
+    }));
+  }
 
-function onDrag(evt, dispatch) {// dispatch(setConnectionPos({ x: evt.clientX, y: evt.clientY }));
+  function onMouseUp(evt) {
+    var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
+
+    if (elementBelow && elementBelow.classList.contains('target')) {
+      var targetId = elementBelow.getAttribute('data-nodeid');
+      onConnect({
+        source: nodeId,
+        target: targetId
+      });
+    }
+
+    dispatch((0, _actions.setConnecting)({
+      connectionSourceId: false
+    }));
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 }
 
 var _default = (0, _react.memo)(function (_ref) {
@@ -41276,7 +41330,8 @@ var _default = (0, _react.memo)(function (_ref) {
   var nodeId = (0, _react.useContext)(_NodeIdContext.default);
 
   var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
-      dispatch = _useContext.dispatch;
+      dispatch = _useContext.dispatch,
+      onConnect = _useContext.onConnect;
 
   var handleClasses = (0, _classnames.default)('react-graph__handle', className, {
     source: source,
@@ -41285,19 +41340,17 @@ var _default = (0, _react.memo)(function (_ref) {
 
   if (target) {
     return _react.default.createElement("div", _extends({
+      "data-nodeid": nodeId,
       className: handleClasses
     }, rest));
   }
 
   return _react.default.createElement("div", _extends({
-    draggable: true,
-    onDragStart: function onDragStart(evt) {
-      return _onDragStart(evt, nodeId, dispatch);
-    },
-    onDragEnd: function onDragEnd(evt) {
-      return onDragStop(evt, dispatch);
-    },
-    className: handleClasses
+    "data-nodeid": nodeId,
+    className: handleClasses,
+    onMouseDown: function onMouseDown(evt) {
+      return _onMouseDown(evt, nodeId, dispatch, onConnect);
+    }
   }, rest));
 });
 
@@ -41500,7 +41553,7 @@ var isInput = function isInput(e) {
 };
 
 var isHandle = function isHandle(e) {
-  return e.target.className && e.target.className.includes('source');
+  return e.target.className && e.target.className.includes && e.target.className.includes('source');
 };
 
 var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k) {
@@ -41547,7 +41600,6 @@ var _default = function _default(NodeComponent) {
         type = props.type,
         id = props.id,
         __rg = props.__rg,
-        onConnect = props.onConnect,
         onNodeDragStop = props.onNodeDragStop;
     var position = __rg.position;
 
@@ -41631,15 +41683,6 @@ var _default = function _default(NodeComponent) {
       });
     };
 
-    var onDrop = function onDrop(evt) {
-      evt.preventDefault();
-      var source = evt.dataTransfer.getData('text/plain');
-      onConnect({
-        source: source,
-        target: id
-      });
-    };
-
     return _react.default.createElement(_reactDraggable.default.DraggableCore, {
       grid: [1, 1],
       onStart: onStart,
@@ -41647,7 +41690,6 @@ var _default = function _default(NodeComponent) {
       onStop: onStop,
       scale: k
     }, _react.default.createElement("div", {
-      onDrop: onDrop,
       onDragOver: onDragOver,
       className: nodeClasses,
       ref: nodeElement,
@@ -42033,7 +42075,9 @@ function (_PureComponent) {
           elements = _this$props.elements,
           onElementsRemove = _this$props.onElementsRemove,
           onConnect = _this$props.onConnect,
-          onNodeDragStop = _this$props.onNodeDragStop;
+          onNodeDragStop = _this$props.onNodeDragStop,
+          connectionLineType = _this$props.connectionLineType,
+          connectionLineStyle = _this$props.connectionLineStyle;
 
       var _elements$map$reduce = elements.map(_graphUtils.parseElements).reduce(_graphUtils.separateElements, {}),
           nodes = _elements$map$reduce.nodes,
@@ -42044,16 +42088,18 @@ function (_PureComponent) {
         className: "react-graph"
       }, _react.default.createElement(_GraphContext.Provider, {
         nodes: nodes,
-        edges: edges
+        edges: edges,
+        onConnect: onConnect
       }, _react.default.createElement(_GraphView.default, {
         onLoad: onLoad,
         onMove: onMove,
         onChange: onChange,
         onElementClick: onElementClick,
-        onConnect: onConnect,
         onNodeDragStop: onNodeDragStop,
         nodeTypes: this.nodeTypes,
-        edgeTypes: this.edgeTypes
+        edgeTypes: this.edgeTypes,
+        connectionLineType: connectionLineType,
+        connectionLineStyle: connectionLineStyle
       }), _react.default.createElement(_GlobalKeyHandler.default, {
         onElementsRemove: onElementsRemove
       }), children));
@@ -42079,7 +42125,9 @@ ReactGraph.defaultProps = {
   edgeTypes: {
     default: _BezierEdge.default,
     straight: _StraightEdge.default
-  }
+  },
+  connectionLineType: 'bezier',
+  connectionLineStyle: {}
 };
 var _default = ReactGraph;
 exports.default = _default;
@@ -42247,7 +42295,7 @@ function (_PureComponent) {
         id: '1',
         type: 'input',
         data: {
-          label: 'Tests'
+          label: '1 Tests'
         },
         position: {
           x: 250,
@@ -42256,7 +42304,7 @@ function (_PureComponent) {
       }, {
         id: '2',
         data: {
-          label: 'This is a node This is a node This is a node This is a node'
+          label: '2 This is a node This is a node This is a node This is a node'
         },
         position: {
           x: 100,
@@ -42265,7 +42313,7 @@ function (_PureComponent) {
       }, {
         id: '3',
         data: {
-          label: 'I bring my own style'
+          label: '3 I bring my own style'
         },
         position: {
           x: 100,
@@ -42280,7 +42328,7 @@ function (_PureComponent) {
         id: '4',
         type: 'output',
         data: {
-          label: 'nody nodes'
+          label: '4 nody nodes'
         },
         position: {
           x: 50,
@@ -42290,7 +42338,7 @@ function (_PureComponent) {
         id: '5',
         type: 'default',
         data: {
-          label: 'Another node'
+          label: '5 Another node'
         },
         position: {
           x: 400,
@@ -42301,7 +42349,7 @@ function (_PureComponent) {
         type: 'special',
         onChange: onChange,
         data: {
-          label: 'no option selected'
+          label: '6 no option selected'
         },
         position: {
           x: 425,
@@ -42311,7 +42359,7 @@ function (_PureComponent) {
         id: '7',
         type: 'output',
         data: {
-          label: 'output'
+          label: '7 output'
         },
         position: {
           x: 250,
@@ -42421,6 +42469,7 @@ function (_PureComponent) {
   }, {
     key: "onConnect",
     value: function onConnect(params) {
+      console.log('connect', params);
       this.setState(function (prevState) {
         return {
           elements: prevState.elements.concat(params)
@@ -42458,7 +42507,12 @@ function (_PureComponent) {
         },
         nodeTypes: {
           special: SpecialNode
-        }
+        },
+        connectionLineStyle: {
+          stroke: '#ddd',
+          strokeWidth: 2
+        },
+        connectionLineType: "bezier"
       }, _react.default.createElement("button", {
         type: "button",
         onClick: function onClick() {
@@ -42536,7 +42590,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54380" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55285" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

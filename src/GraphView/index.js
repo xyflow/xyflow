@@ -83,13 +83,14 @@ const GraphView = memo((props) => {
         nodeTypes={props.nodeTypes}
         onElementClick={props.onElementClick}
         onNodeDragStop={props.onNodeDragStop}
-        onConnect={props.onConnect}
       />
       <EdgeRenderer
         width={state.width}
         height={state.height}
         edgeTypes={props.edgeTypes}
         onElementClick={props.onElementClick}
+        connectionLineType={props.connectionLineType}
+        connectionLineStyle={props.connectionLineStyle}
       />
       {shiftPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}

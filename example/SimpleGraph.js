@@ -43,13 +43,13 @@ class App extends PureComponent {
     this.state = {
       graphLoaded: false,
       elements: [
-        { id: '1', type: 'input', data: { label: 'Tests' }, position: { x: 250, y: 5 } },
-        { id: '2', data: { label: 'This is a node This is a node This is a node This is a node' }, position: { x: 100, y: 100 } },
-        { id: '3', data: { label: 'I bring my own style' }, position: { x: 100, y: 200 }, style: { background: '#eee', color: '#222', border: '1px solid #bbb' } },
-        { id: '4', type: 'output', data: { label: 'nody nodes' }, position: { x: 50, y: 300 } },
-        { id: '5', type: 'default', data: { label: 'Another node'}, position: { x: 400, y: 300 } },
-        { id: '6', type: 'special', onChange, data: { label: 'no option selected' }, position: { x: 425, y: 375 } },
-        { id: '7', type: 'output', data: { label: 'output' }, position: { x: 250, y: 500 } },
+        { id: '1', type: 'input', data: { label: '1 Tests' }, position: { x: 250, y: 5 } },
+        { id: '2', data: { label: '2 This is a node This is a node This is a node This is a node' }, position: { x: 100, y: 100 } },
+        { id: '3', data: { label: '3 I bring my own style' }, position: { x: 100, y: 200 }, style: { background: '#eee', color: '#222', border: '1px solid #bbb' } },
+        { id: '4', type: 'output', data: { label: '4 nody nodes' }, position: { x: 50, y: 300 } },
+        { id: '5', type: 'default', data: { label: '5 Another node'}, position: { x: 400, y: 300 } },
+        { id: '6', type: 'special', onChange, data: { label: '6 no option selected' }, position: { x: 425, y: 375 } },
+        { id: '7', type: 'output', data: { label: '7 output' }, position: { x: 250, y: 500 } },
         { source: '1', target: '2', animated: true },
         { source: '2', target: '3' },
         { source: '3', target: '4' },
@@ -113,6 +113,7 @@ class App extends PureComponent {
   }
 
   onConnect(params) {
+    console.log('connect', params);
     this.setState(prevState => ({
       elements: prevState.elements.concat(params)
     }));
@@ -132,6 +133,8 @@ class App extends PureComponent {
         nodeTypes={{
           special: SpecialNode
         }}
+        connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
+        connectionLineType="bezier"
       >
         <button
           type="button"

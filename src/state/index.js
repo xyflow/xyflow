@@ -37,7 +37,6 @@ export const initialState = {
   selectionActive: false,
   selection: {},
 
-  isConnecting: false,
   connectionSourceId: null,
   connectionPosition: { x: 0, y: 0 }
 };
@@ -125,6 +124,13 @@ export const reducer = (state, action) => {
 
       return { ...state, nodes: nextNodes, edges: nextEdges };
     }
+    case SET_CONNECTING: {
+      if (!action.payload.connectionPosition) {
+        return { ...state, connectionSourceId: action.payload.connectionSourceId };
+      }
+
+      return { ...state, ...action.payload };
+    }
     case SET_NODES:
     case SET_EDGES:
     case UPDATE_TRANSFORM:
@@ -132,7 +138,6 @@ export const reducer = (state, action) => {
     case UPDATE_SIZE:
     case SET_SELECTION:
     case SET_SELECTED_ELEMENTS:
-    case SET_CONNECTING:
     case SET_CONNECTION_POS:
       return { ...state, ...action.payload };
     default:

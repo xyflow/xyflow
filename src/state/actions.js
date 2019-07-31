@@ -102,8 +102,8 @@ export const updateSelection = (selection) => {
   };
 };
 
-export const setConnecting = ({ isConnecting, connectionSourceId }) => {
-  return { type: SET_CONNECTING, payload: { isConnecting, connectionSourceId }};
+export const setConnecting = ({ connectionSourceId, connectionPosition = false}) => {
+  return { type: SET_CONNECTING, payload: { connectionSourceId, connectionPosition }};
 };
 
 export const setConnectionPos = ({ x, y }) => {

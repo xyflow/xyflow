@@ -8,7 +8,7 @@ import { isNode } from '../../graph-utils';
 import { Provider } from '../NodeIdContext';
 
 const isInput = e => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
-const isHandle = e => e.target.className && e.target.className.includes('source');
+const isHandle = e => e.target.className && e.target.className.includes && e.target.className.includes('source');
 
 const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   const handle = nodeElement.querySelector(sel);
@@ -40,7 +40,7 @@ export default NodeComponent => memo((props) => {
   const { state, dispatch } = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const {
-    data, onClick, type, id, __rg, onConnect, onNodeDragStop
+    data, onClick, type, id, __rg, onNodeDragStop
   } = props;
   const { position } = __rg;
   const [ x, y, k ] = state.transform;
@@ -104,14 +104,6 @@ export default NodeComponent => memo((props) => {
     });
   }
 
-  const onDrop = (evt) => {
-    evt.preventDefault();
-
-    const source = evt.dataTransfer.getData('text/plain');
-
-    onConnect({ source, target: id });
-  };
-
   return (
     <ReactDraggable.DraggableCore
       grid={[1, 1]}
@@ -121,7 +113,6 @@ export default NodeComponent => memo((props) => {
       scale={k}
     >
       <div
-        onDrop={onDrop}
         onDragOver={onDragOver}
         className={nodeClasses}
         ref={nodeElement}

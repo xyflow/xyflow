@@ -62,7 +62,8 @@
             animation: dashdraw 0.5s linear infinite;
   }
 
-.react-graph__edge.connector {
+.react-graph__edge.connection {
+    stroke: '#ddd';
     pointer-events: none;
   }
 

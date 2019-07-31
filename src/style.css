@@ -60,7 +60,8 @@
     animation: dashdraw 0.5s linear infinite;
   }
 
-  &.connector {
+  &.connection {
+    stroke: '#ddd';
     pointer-events: none;
   }
 }
