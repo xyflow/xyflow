@@ -20,9 +20,12 @@ export const Provider = (props) => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
 
       if (existingNode) {
+        const data = !isEqual(existingNode.data, propNode.data) ?
+          { ...existingNode.data, ...propNode.data } : existingNode.data;
+
         return {
           ...existingNode,
-          data: { ...existingNode.data, ...propNode.data }
+          data
         };
       }
 

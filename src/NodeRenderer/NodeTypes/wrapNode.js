@@ -76,52 +76,56 @@ const onStop = ({ onNodeDragStop, id, type, position, data }) => {
   });
 };
 
-export default NodeComponent => memo((props) => {
-  const nodeElement = useRef(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const {
-    id, type, data, transform, xPos, yPos, selectedElements,
-    dispatch, getNodeById, onClick, onNodeDragStop
-  } = props;
+export default NodeComponent => {
+  const WrappedComp = memo((props) => {
+    const nodeElement = useRef(null);
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const {
+      id, type, data, transform, xPos, yPos, selectedElements,
+      dispatch, getNodeById, onClick, onNodeDragStop
+    } = props;
 
-  console.log('render node', id);
+    const position = { x: xPos, y: yPos };
+    const [ x, y, k ] = transform;
+    const selected = selectedElements.filter(isNode).map(e => e.id).includes(id);
+    const nodeClasses = cx('react-graph__node', { selected });
+    const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
-  const position = { x: xPos, y: yPos };
-  const [ x, y, k ] = transform;
-  const selected = selectedElements.filter(isNode).map(e => e.id).includes(id);
-  const nodeClasses = cx('react-graph__node', { selected });
-  const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
+    useEffect(() => {
+      const bounds = nodeElement.current.getBoundingClientRect();
+      const unscaledWith = Math.round(bounds.width * (1 / k));
+      const unscaledHeight = Math.round(bounds.height * (1 / k));
+      const handleBounds = {
+        source: getHandleBounds('.source', nodeElement.current, bounds, k),
+        target: getHandleBounds('.target', nodeElement.current, bounds, k)
+      };
 
-  useEffect(() => {
-    const bounds = nodeElement.current.getBoundingClientRect();
-    const unscaledWith = Math.round(bounds.width * (1 / k));
-    const unscaledHeight = Math.round(bounds.height * (1 / k));
-    const handleBounds = {
-      source: getHandleBounds('.source', nodeElement.current, bounds, k),
-      target: getHandleBounds('.target', nodeElement.current, bounds, k)
-    };
+      dispatch(updateNodeData(id, { width: unscaledWith, height: unscaledHeight, handleBounds }));
+    }, []);
 
-    dispatch(updateNodeData(id, { width: unscaledWith, height: unscaledHeight, handleBounds }));
-  }, []);
-
-  return (
-    <ReactDraggable.DraggableCore
-      onStart={evt => onStart(evt, { setOffset, transform, position })}
-      onDrag={evt => onDrag(evt, { dispatch, id, offset, transform })}
-      onStop={() => onStop({ onNodeDragStop, id, type, position, data })}
-      scale={transform[2]}
-    >
-      <div
-        className={nodeClasses}
-        ref={nodeElement}
-        style={nodeStyle}
-        onClick={evt => onNodeClick(evt, { getNodeById, onClick, dispatch, id, type, position, data })}
+    return (
+      <ReactDraggable.DraggableCore
+        onStart={evt => onStart(evt, { setOffset, transform, position })}
+        onDrag={evt => onDrag(evt, { dispatch, id, offset, transform })}
+        onStop={() => onStop({ onNodeDragStop, id, type, position, data })}
+        scale={transform[2]}
       >
-        <Provider value={id}>
-          <NodeComponent {...props} selected={selected} />
-        </Provider>
-      </div>
-    </ReactDraggable.DraggableCore>
-  );
-}
-);
+        <div
+          className={nodeClasses}
+          ref={nodeElement}
+          style={nodeStyle}
+          onClick={evt => onNodeClick(evt, { getNodeById, onClick, dispatch, id, type, position, data })}
+        >
+          <Provider value={id}>
+            <NodeComponent {...props} selected={selected} />
+          </Provider>
+        </div>
+      </ReactDraggable.DraggableCore>
+    );
+  });
+
+  WrappedComp.displayName = 'Wrapped Node';
+  WrappedComp.whyDidYouRender = false;
+
+  return WrappedComp;
+};

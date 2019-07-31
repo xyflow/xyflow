@@ -18,6 +18,8 @@ const SpecialNode = ({ data, styles }) => (
   </div>
 );
 
+const onNodeDragStop = node => console.log('drag stop', node);
+
 class App extends PureComponent {
   constructor() {
     super();
@@ -58,6 +60,9 @@ class App extends PureComponent {
         { source: '6', target: '7', style: { stroke: '#FFCC00' }},
       ]
     };
+
+    this.onElementClick = this.onElementClick.bind(this);
+    this.onConnect = this.onConnect.bind(this);
   }
 
   onLoad(graphInstance) {
@@ -123,10 +128,10 @@ class App extends PureComponent {
     return (
       <Graph
         elements={this.state.elements}
-        onElementClick={element => this.onElementClick(element)}
+        onElementClick={this.onElementClick}
         onElementsRemove={elements => this.onElementsRemove(elements)}
-        onConnect={params => this.onConnect(params)}
-        onNodeDragStop={node => console.log('drag stop', node)}
+        onConnect={this.onConnect}
+        onNodeDragStop={onNodeDragStop}
         style={{ width: '100%', height: '100%' }}
         onLoad={graphInstance => this.onLoad(graphInstance)}
         onChange={(elements) => this.onChange(elements)}

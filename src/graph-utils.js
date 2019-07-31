@@ -27,7 +27,7 @@ let internalNodeId = 0;
 
 const getId = () => internalNodeId++;
 
-export const parseElements = e => {
+export const parseElements = (e) => {
   e.type = e.type || 'default';
   e.id = e.id ? e.id : getId();
 
@@ -35,15 +35,15 @@ export const parseElements = e => {
     return e;
   }
 
-  return {
-    ...e,
-    id: e.id.toString(),
-    __rg: {
-      position: e.position,
-      width: null,
-      height: null
-    }
-  }
+  e.id = e.id.toString();
+  e.__rg = {
+    position: e.position,
+    width: null,
+    height: null,
+    handleBounds : {}
+  };
+
+  return { ...e };
 };
 
 export const separateElements = (res, element) => {

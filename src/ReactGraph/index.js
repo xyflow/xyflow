@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
+import isEqual from 'lodash.isequal';
 
 if (process.env.NODE_ENV !== 'production') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React);
 }
 
-import { parseElements, separateElements } from '../graph-utils';
+import { parseElements, isNode, isEdge } from '../graph-utils';
 import GraphView from '../GraphView';
 import GlobalKeyHandler from '../GlobalKeyHandler';
 import { Provider } from '../GraphContext';
@@ -27,23 +28,42 @@ class ReactGraph extends PureComponent {
 
     this.nodeTypes = createNodeTypes(props.nodeTypes);
     this.edgeTypes = createEdgeTypes(props.edgeTypes);
+
+    this.state = {
+      nodes: [],
+      edges: []
+    };
+  }
+
+  componentDidMount() {
+    this.updateElements(this.props.elements);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.elements, this.props.elements)) {
+      this.updateElements(this.props.elements);
+    }
+  }
+
+  updateElements(elements) {
+    const parsedElements = elements.map(parseElements);
+
+    this.setState({
+      nodes: parsedElements.filter(isNode),
+      edges: parsedElements.filter(isEdge),
+    });
   }
 
   render() {
     const {
       style, onElementClick, children, onLoad,
-      onMove, onChange, elements, onElementsRemove,
-      onConnect, onNodeDragStop, connectionLineType,
-      connectionLineStyle
+      onMove, onChange, onElementsRemove, onConnect, onNodeDragStop,
+      connectionLineType, connectionLineStyle
     } = this.props;
-
-    const { nodes, edges } = elements
-      .map(parseElements)
-      .reduce(separateElements, {});
 
     return (
       <div style={style} className="react-graph">
-        <Provider nodes={nodes} edges={edges} onConnect={onConnect}>
+        <Provider nodes={this.state.nodes} edges={this.state.edges} onConnect={onConnect}>
           <GraphView
             onLoad={onLoad}
             onMove={onMove}
