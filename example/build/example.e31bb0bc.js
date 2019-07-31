@@ -41584,6 +41584,80 @@ var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k
   };
 };
 
+var _onStart = function onStart(evt, _ref) {
+  var setOffset = _ref.setOffset,
+      position = _ref.position,
+      transform = _ref.transform;
+
+  if (isInput(evt) || isHandle(evt)) {
+    return false;
+  }
+
+  var scaledClient = {
+    x: evt.clientX * (1 / [transform[2]]),
+    y: evt.clientY * (1 / [transform[2]])
+  };
+  var offsetX = scaledClient.x - position.x - [transform[0]];
+  var offsetY = scaledClient.y - position.y - [transform[1]];
+  setOffset({
+    x: offsetX,
+    y: offsetY
+  });
+};
+
+var _onDrag = function onDrag(evt, _ref2) {
+  var dispatch = _ref2.dispatch,
+      id = _ref2.id,
+      offset = _ref2.offset,
+      transform = _ref2.transform;
+  var scaledClient = {
+    x: evt.clientX * (1 / [transform[2]]),
+    y: evt.clientY * (1 / [transform[2]])
+  };
+  dispatch((0, _actions.updateNodePos)(id, {
+    x: scaledClient.x - [transform[0]] - offset.x,
+    y: scaledClient.y - [transform[1]] - offset.y
+  }));
+};
+
+var onNodeClick = function onNodeClick(evt, _ref3) {
+  var onClick = _ref3.onClick,
+      dispatch = _ref3.dispatch,
+      data = _ref3.data,
+      id = _ref3.id,
+      type = _ref3.type,
+      position = _ref3.position;
+
+  if (isInput(evt)) {
+    return false;
+  }
+
+  dispatch((0, _actions.setSelectedElements)({
+    data: data,
+    id: id
+  }));
+  onClick({
+    id: id,
+    type: type,
+    data: data,
+    position: position
+  });
+};
+
+var _onStop = function onStop(_ref4) {
+  var onNodeDragStop = _ref4.onNodeDragStop,
+      id = _ref4.id,
+      type = _ref4.type,
+      data = _ref4.data,
+      position = _ref4.position;
+  onNodeDragStop({
+    id: id,
+    type: type,
+    data: data,
+    position: position
+  });
+};
+
 var _default = function _default(NodeComponent) {
   return (0, _react.memo)(function (props) {
     var nodeElement = (0, _react.useRef)(null);
@@ -41601,7 +41675,7 @@ var _default = function _default(NodeComponent) {
         setOffset = _useState2[1];
 
     var data = props.data,
-        onClick = props.onClick,
+        _onClick = props.onClick,
         type = props.type,
         id = props.id,
         __rg = props.__rg,
@@ -41619,6 +41693,10 @@ var _default = function _default(NodeComponent) {
     var nodeClasses = (0, _classnames.default)('react-graph__node', {
       selected: selected
     });
+    var nodeStyle = {
+      zIndex: selected ? 10 : 3,
+      transform: "translate(".concat(position.x, "px,").concat(position.y, "px)")
+    };
     (0, _react.useEffect)(function () {
       var bounds = nodeElement.current.getBoundingClientRect();
       var unscaledWith = Math.round(bounds.width * (1 / k));
@@ -41633,75 +41711,46 @@ var _default = function _default(NodeComponent) {
         handleBounds: handleBounds
       }));
     }, []);
-
-    var onStart = function onStart(evt) {
-      if (isInput(evt) || isHandle(evt)) {
-        return false;
-      }
-
-      var scaledClient = {
-        x: evt.clientX * (1 / k),
-        y: evt.clientY * (1 / k)
-      };
-      var offsetX = scaledClient.x - position.x - x;
-      var offsetY = scaledClient.y - position.y - y;
-      setOffset({
-        x: offsetX,
-        y: offsetY
-      });
-    };
-
-    var onDrag = function onDrag(evt) {
-      var scaledClient = {
-        x: evt.clientX * (1 / k),
-        y: evt.clientY * (1 / k)
-      };
-      dispatch((0, _actions.updateNodePos)(id, {
-        x: scaledClient.x - x - offset.x,
-        y: scaledClient.y - y - offset.y
-      }));
-    };
-
-    var onNodeClick = function onNodeClick(evt) {
-      if (isInput(evt)) {
-        return false;
-      }
-
-      dispatch((0, _actions.setSelectedElements)({
-        data: data,
-        id: id
-      }));
-      onClick({
-        id: id,
-        type: type,
-        data: data,
-        position: position
-      });
-    };
-
-    var onStop = function onStop() {
-      onNodeDragStop({
-        id: id,
-        type: type,
-        data: data,
-        position: position
-      });
-    };
-
     return _react.default.createElement(_reactDraggable.default.DraggableCore, {
-      grid: [1, 1],
-      onStart: onStart,
-      onDrag: onDrag,
-      onStop: onStop,
-      scale: k
+      onStart: function onStart(evt) {
+        return _onStart(evt, {
+          setOffset: setOffset,
+          transform: state.transform,
+          position: position
+        });
+      },
+      onDrag: function onDrag(evt) {
+        return _onDrag(evt, {
+          dispatch: dispatch,
+          id: id,
+          offset: offset,
+          transform: state.transform
+        });
+      },
+      onStop: function onStop() {
+        return _onStop({
+          onNodeDragStop: onNodeDragStop,
+          id: id,
+          type: type,
+          data: data,
+          position: position
+        });
+      },
+      scale: state.transform[2]
     }, _react.default.createElement("div", {
       className: nodeClasses,
       ref: nodeElement,
-      style: {
-        zIndex: selected ? 10 : 3,
-        transform: "translate(".concat(position.x, "px,").concat(position.y, "px)")
-      },
-      onClick: onNodeClick
+      style: nodeStyle,
+      onClick: function onClick(evt) {
+        return onNodeClick(evt, {
+          onClick: _onClick,
+          dispatch: dispatch,
+          data: data,
+          id: id,
+          type: type,
+          position: position
+        });
+      }
     }, _react.default.createElement(_NodeIdContext.Provider, {
       value: id
     }, _react.default.createElement(NodeComponent, _extends({}, props, {

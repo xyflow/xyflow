@@ -33,6 +33,51 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   };
 };
 
+const onStart = (evt, { setOffset, position, transform }) => {
+  if (isInput(evt) || isHandle(evt)) {
+    return false;
+  }
+
+  const scaledClient = {
+    x: evt.clientX * (1 / [transform[2]]),
+    y: evt.clientY * (1 / [transform[2]])
+  }
+  const offsetX = scaledClient.x - position.x - [transform[0]];
+  const offsetY = scaledClient.y - position.y - [transform[1]];
+
+  setOffset({ x: offsetX, y: offsetY });
+};
+
+const onDrag = (evt, { dispatch, id, offset, transform }) => {
+  const scaledClient = {
+    x: evt.clientX * (1 / [transform[2]]),
+    y: evt.clientY * (1 / [transform[2]])
+  };
+
+  dispatch(updateNodePos(id, {
+    x: scaledClient.x - [transform[0]] - offset.x,
+    y: scaledClient.y - [transform[1]] - offset.y
+  }));
+};
+
+const onNodeClick = (evt, { onClick, dispatch, data, id, type, position }) => {
+  if (isInput(evt)) {
+    return false;
+  }
+
+  dispatch(setSelectedElements({ data, id }));
+  onClick({ id, type, data, position });
+};
+
+const onStop = ({ onNodeDragStop, id, type, data, position }) => {
+  onNodeDragStop({
+    id,
+    type,
+    data,
+    position
+  });
+};
+
 export default NodeComponent => memo((props) => {
   const nodeElement = useRef(null);
   const { state, dispatch } = useContext(GraphContext);
@@ -44,6 +89,7 @@ export default NodeComponent => memo((props) => {
   const [ x, y, k ] = state.transform;
   const selected = state.selectedElements.filter(isNode).map(e => e.id).includes(id);
   const nodeClasses = cx('react-graph__node', { selected });
+  const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${position.x}px,${position.y}px)` };
 
   useEffect(() => {
     const bounds = nodeElement.current.getBoundingClientRect();
@@ -57,64 +103,18 @@ export default NodeComponent => memo((props) => {
     dispatch(updateNodeData(id, { width: unscaledWith, height: unscaledHeight, handleBounds }));
   }, []);
 
-  const onStart = (evt) => {
-    if (isInput(evt) || isHandle(evt)) {
-      return false;
-    }
-
-    const scaledClient = {
-      x: evt.clientX * (1 / k),
-      y: evt.clientY * (1 / k)
-    }
-    const offsetX = scaledClient.x - position.x - x;
-    const offsetY = scaledClient.y - position.y - y;
-
-    setOffset({ x: offsetX, y: offsetY });
-  };
-
-  const onDrag = (evt) => {
-    const scaledClient = {
-      x: evt.clientX * (1 / k),
-      y: evt.clientY * (1 / k)
-    };
-
-    dispatch(updateNodePos(id, {
-      x: scaledClient.x - x - offset.x,
-      y: scaledClient.y - y - offset.y
-    }));
-  };
-
-  const onNodeClick = (evt) => {
-    if (isInput(evt)) {
-      return false;
-    }
-
-    dispatch(setSelectedElements({ data, id }));
-    onClick({ id, type, data, position });
-  };
-
-  const onStop = () => {
-    onNodeDragStop({
-      id,
-      type,
-      data,
-      position
-    });
-  }
-
   return (
     <ReactDraggable.DraggableCore
-      grid={[1, 1]}
-      onStart={onStart}
-      onDrag={onDrag}
-      onStop={onStop}
-      scale={k}
+      onStart={evt => onStart(evt, { setOffset, transform: state.transform, position })}
+      onDrag={evt => onDrag(evt, { dispatch, id, offset, transform: state.transform })}
+      onStop={() => onStop({ onNodeDragStop, id, type, data, position })}
+      scale={state.transform[2]}
     >
       <div
         className={nodeClasses}
         ref={nodeElement}
-        style={{ zIndex: selected ? 10 : 3, transform: `translate(${position.x}px,${position.y}px)` }}
-        onClick={onNodeClick}
+        style={nodeStyle}
+        onClick={evt => onNodeClick(evt, { onClick, dispatch, data, id, type, position })}
       >
         <Provider value={id}>
           <NodeComponent {...props} selected={selected} />
