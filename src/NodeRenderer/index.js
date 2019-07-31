@@ -25,6 +25,7 @@ function renderNode(d, props, graphContext) {
       transform={graphContext.state.transform}
       getNodeById={graphContext.getNodeById}
       selectedElements={graphContext.state.selectedElements}
+      style={d.style}
     />
   );
 }

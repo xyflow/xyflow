@@ -23,15 +23,13 @@ export const removeElements = (elements, elementsToRemove) => {
   });
 };
 
-let internalNodeId = 0;
+const getEdgeId = (e) => `react-graph__edge-${e.source}-${e.target}`;
 
-const getId = () => internalNodeId++;
-
-export const parseElements = (e) => {
+export const parseElement = (e) => {
   e.type = e.type || 'default';
-  e.id = e.id ? e.id : getId();
 
   if (isEdge(e)) {
+    e.id = e.id ? e.id.toString() : getEdgeId(e);
     return e;
   }
 
@@ -132,5 +130,6 @@ export default {
   separateElements,
   getBoundingBox,
   graphPosToZoomedPos,
-  getConnectedEdges
+  getConnectedEdges,
+  parseElement
 };

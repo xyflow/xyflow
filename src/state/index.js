@@ -1,4 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
+import isEqual from 'lodash.isequal';
 
 import { getBoundingBox, getNodesInside, getConnectedEdges } from '../graph-utils';
 
@@ -101,10 +102,13 @@ export const reducer = (state, action) => {
       const selectedNodes = getNodesInside(state.nodes, action.payload.selection, state.transform);
       const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
 
+      const nextSelectedElements =  [...selectedNodes, ...selectedEdges];
+      const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
+
       return {
         ...state,
         ...action.payload,
-        selectedElements: [...selectedNodes, ...selectedEdges]
+        selectedElements: selectedElementsUpdated ? nextSelectedElements: state.selectedElements
       };
     }
     case SET_NODES_SELECTION: {

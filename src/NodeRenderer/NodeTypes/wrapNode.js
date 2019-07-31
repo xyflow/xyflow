@@ -66,7 +66,7 @@ const onNodeClick = (evt, { onClick, dispatch, id, type, position, data }) => {
 
   const node = { id, type, position, data }
 
-  dispatch(setSelectedElements(node));
+  dispatch(setSelectedElements({ id, type }));
   onClick(node);
 };
 

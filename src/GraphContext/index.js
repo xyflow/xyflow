@@ -1,14 +1,16 @@
-import React, { createContext, useEffect, useReducer, useRef } from 'react';
+import React, { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 
 import { reducer, initialState } from '../state';
 import { setNodes, setEdges } from '../state/actions';
+import { parseElement, isNode, isEdge } from '../graph-utils';
 
 export const GraphContext = createContext({});
 
 export const Provider = (props) => {
   const {
+    elements,
     children,
     onConnect
   } = props;
@@ -16,7 +18,10 @@ export const Provider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const nextNodes = props.nodes.map(propNode => {
+    const nodes = elements.filter(isNode);
+    const edges = elements.filter(isEdge).map(parseElement);
+
+    const nextNodes = nodes.map(propNode => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
 
       if (existingNode) {
@@ -29,21 +34,20 @@ export const Provider = (props) => {
         };
       }
 
-      return propNode;
+      return parseElement(propNode);
     });
 
     const nodesChanged = !isEqual(state.nodes, nextNodes);
-    const edgesChanged = !isEqual(state.edges, props.edges);
+    const edgesChanged = !isEqual(state.edges, edges);
 
     if (nodesChanged) {
       dispatch(setNodes(nextNodes));
     }
 
     if (edgesChanged) {
-      dispatch(setEdges(props.edges));
+      dispatch(setEdges(edges));
     }
   });
-
 
   const graphContext = {
     state,
@@ -63,11 +67,9 @@ export const Provider = (props) => {
 export const { Consumer } = GraphContext;
 
 Provider.propTypes = {
-  nodes: PropTypes.arrayOf(PropTypes.object),
-  edges: PropTypes.arrayOf(PropTypes.object)
+  elements: PropTypes.arrayOf(PropTypes.object)
 };
 
 Provider.defaultProps = {
-  nodes: [],
-  edges: []
+  elements: [],
 };

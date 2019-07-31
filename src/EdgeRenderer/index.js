@@ -21,6 +21,7 @@ function renderEdge(e, props, graphContext) {
   return (
     <EdgeComponent
       key={`${e.source}-${e.target}`}
+      id={e.id}
       type={e.type}
       sourceNode={sourceNode}
       targetNode={targetNode}

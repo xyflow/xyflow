@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export default (props) => {
+export default memo((props) => {
   const { targetNode, sourceNode } = props;
   const style = props.style || {};
 
@@ -26,4 +26,4 @@ export default (props) => {
       d={dAttr}
     />
   );
-};
+});
