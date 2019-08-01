@@ -41313,7 +41313,7 @@ function _onMouseDown(evt, _ref) {
   document.addEventListener('mouseup', onMouseUp);
 }
 
-var _default = (0, _react.memo)(function (_ref2) {
+var BaseHandle = (0, _react.memo)(function (_ref2) {
   var source = _ref2.source,
       target = _ref2.target,
       nodeId = _ref2.nodeId,
@@ -41340,7 +41340,9 @@ var _default = (0, _react.memo)(function (_ref2) {
     }
   }, rest));
 });
-
+BaseHandle.displayName = 'BaseHandle';
+BaseHandle.whyDidYouRender = false;
+var _default = BaseHandle;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../../state/actions":"../src/state/actions.js"}],"../src/NodeRenderer/NodeIdContext.js":[function(require,module,exports) {
 "use strict";
@@ -41382,7 +41384,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-var _default = (0, _react.memo)(function (props) {
+var TargetHandle = (0, _react.memo)(function (props) {
   var nodeId = (0, _react.useContext)(_NodeIdContext.default);
 
   var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
@@ -41396,7 +41398,9 @@ var _default = (0, _react.memo)(function (props) {
     onConnect: onConnect
   }, props));
 });
-
+TargetHandle.displayName = 'TargetHandle';
+TargetHandle.whyDidYouRender = false;
+var _default = TargetHandle;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../../GraphContext":"../src/GraphContext/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/HandleTypes/SourceHandle.js":[function(require,module,exports) {
 "use strict";
@@ -42659,7 +42663,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57289" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65016" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

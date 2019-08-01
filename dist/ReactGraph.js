@@ -33111,6 +33111,8 @@
       }
     }, rest));
   });
+  BaseHandle.displayName = 'BaseHandle';
+  BaseHandle.whyDidYouRender = false;
 
   var NodeIdContext = React.createContext(null);
   var Provider$1 = NodeIdContext.Provider;
@@ -33130,6 +33132,8 @@
       onConnect: onConnect
     }, props));
   });
+  TargetHandle.displayName = 'TargetHandle';
+  TargetHandle.whyDidYouRender = false;
 
   var SourceHandle = React.memo(function (props) {
     var nodeId = React.useContext(NodeIdContext);
@@ -33395,7 +33399,7 @@
       })))));
     });
     WrappedComp.displayName = 'Wrapped Node';
-    WrappedComp.whyDidYouRender = true;
+    WrappedComp.whyDidYouRender = false;
     return WrappedComp;
   });
 

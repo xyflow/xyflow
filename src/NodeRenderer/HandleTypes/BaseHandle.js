@@ -34,7 +34,7 @@ function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
   document.addEventListener('mouseup', onMouseUp)
 }
 
-export default memo(({ source, target, nodeId, onConnect, dispatch, className = null, ...rest }) => {
+const BaseHandle = memo(({ source, target, nodeId, onConnect, dispatch, className = null, ...rest }) => {
   const handleClasses = cx(
     'react-graph__handle',
     className,
@@ -50,3 +50,8 @@ export default memo(({ source, target, nodeId, onConnect, dispatch, className = 
     />
   );
 });
+
+BaseHandle.displayName = 'BaseHandle';
+BaseHandle.whyDidYouRender = false;
+
+export default BaseHandle;
