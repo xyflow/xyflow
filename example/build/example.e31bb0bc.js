@@ -37879,6 +37879,17 @@ var reducer = function reducer(state, action) {
           selectedNodesBbox: selectedNodesBbox
         });
       }
+
+    case SET_SELECTED_ELEMENTS:
+      {
+        var _selectedElementsUpdated = !(0, _lodash.default)(action.payload.selectedElements, state.selectedElements);
+
+        var selectedElements = _selectedElementsUpdated ? action.payload.selectedElements : state.selectedElements;
+        return _objectSpread({}, state, {
+          selectedElements: selectedElements,
+          odesSelectionActive: false
+        });
+      }
     // unused
 
     case REMOVE_NODES:
@@ -37913,7 +37924,6 @@ var reducer = function reducer(state, action) {
     case INIT_D3:
     case UPDATE_SIZE:
     case SET_SELECTION:
-    case SET_SELECTED_ELEMENTS:
     case SET_CONNECTION_POS:
       return _objectSpread({}, state, {}, action.payload);
 
@@ -38075,8 +38085,7 @@ var setSelectedElements = function setSelectedElements(elements) {
   return {
     type: _index.SET_SELECTED_ELEMENTS,
     payload: {
-      selectedElements: elementsArray,
-      nodesSelectionActive: false
+      selectedElements: elementsArray
     }
   };
 };
@@ -41778,7 +41787,7 @@ var _default = function _default(NodeComponent) {
     })))));
   });
   WrappedComp.displayName = 'Wrapped Node';
-  WrappedComp.whyDidYouRender = false;
+  WrappedComp.whyDidYouRender = true;
   return WrappedComp;
 };
 
@@ -42650,7 +42659,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53734" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57289" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

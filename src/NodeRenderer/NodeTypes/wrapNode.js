@@ -125,7 +125,7 @@ export default NodeComponent => {
   });
 
   WrappedComp.displayName = 'Wrapped Node';
-  WrappedComp.whyDidYouRender = false;
+  WrappedComp.whyDidYouRender = true;
 
   return WrappedComp;
 };

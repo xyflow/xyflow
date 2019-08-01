@@ -81,8 +81,7 @@ export const setSelectedElements = (elements) => {
   return {
     type: SET_SELECTED_ELEMENTS,
     payload: {
-      selectedElements: elementsArray,
-      nodesSelectionActive: false
+      selectedElements: elementsArray
     }
   };
 };

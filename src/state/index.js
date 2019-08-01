@@ -120,6 +120,12 @@ export const reducer = (state, action) => {
 
       return { ...state, ...action.payload, selectedNodesBbox };
     }
+    case SET_SELECTED_ELEMENTS: {
+      const selectedElementsUpdated = !isEqual(action.payload.selectedElements, state.selectedElements);
+      const selectedElements = selectedElementsUpdated ? action.payload.selectedElements : state.selectedElements;
+
+      return { ...state, selectedElements, odesSelectionActive: false };
+    }
     // unused
     case REMOVE_NODES: {
       const { ids } = action.payload;
@@ -141,7 +147,6 @@ export const reducer = (state, action) => {
     case INIT_D3:
     case UPDATE_SIZE:
     case SET_SELECTION:
-    case SET_SELECTED_ELEMENTS:
     case SET_CONNECTION_POS:
       return { ...state, ...action.payload };
     default:

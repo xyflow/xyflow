@@ -30003,6 +30003,17 @@
             selectedNodesBbox: selectedNodesBbox
           });
         }
+
+      case SET_SELECTED_ELEMENTS:
+        {
+          var _selectedElementsUpdated = !lodash_isequal(action.payload.selectedElements, state.selectedElements);
+
+          var selectedElements = _selectedElementsUpdated ? action.payload.selectedElements : state.selectedElements;
+          return _objectSpread2({}, state, {
+            selectedElements: selectedElements,
+            odesSelectionActive: false
+          });
+        }
       // unused
 
       case REMOVE_NODES:
@@ -30037,7 +30048,6 @@
       case INIT_D3:
       case UPDATE_SIZE:
       case SET_SELECTION:
-      case SET_SELECTED_ELEMENTS:
       case SET_CONNECTION_POS:
         return _objectSpread2({}, state, {}, action.payload);
 
@@ -30152,8 +30162,7 @@
     return {
       type: SET_SELECTED_ELEMENTS,
       payload: {
-        selectedElements: elementsArray,
-        nodesSelectionActive: false
+        selectedElements: elementsArray
       }
     };
   };
@@ -33386,7 +33395,7 @@
       })))));
     });
     WrappedComp.displayName = 'Wrapped Node';
-    WrappedComp.whyDidYouRender = false;
+    WrappedComp.whyDidYouRender = true;
     return WrappedComp;
   });
 
