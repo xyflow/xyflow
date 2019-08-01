@@ -37,7 +37,7 @@ class ReactGraph extends PureComponent {
 
     return (
       <div style={style} className="react-graph">
-        <Provider elements={elements} onConnect={onConnect}>
+        <Provider elements={elements}>
           <GraphView
             onLoad={onLoad}
             onMove={onMove}
@@ -48,6 +48,7 @@ class ReactGraph extends PureComponent {
             edgeTypes={this.edgeTypes}
             connectionLineType={connectionLineType}
             connectionLineStyle={connectionLineStyle}
+            onConnect={onConnect}
           />
           <GlobalKeyHandler
             onElementsRemove={onElementsRemove}

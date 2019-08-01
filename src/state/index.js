@@ -18,8 +18,6 @@ export const SET_SELECTION = 'SET_SELECTION';
 export const SET_NODES_SELECTION = 'SET_NODES_SELECTION';
 export const SET_SELECTED_ELEMENTS = 'SET_SELECTED_ELEMENTS';
 export const REMOVE_NODES = 'REMOVE_NODES';
-export const SET_CONNECTING = 'SET_CONNECTING';
-export const SET_CONNECTION_POS = 'SET_CONNECTION_POS';
 
 export const initialState = {
   width: 0,
@@ -36,10 +34,7 @@ export const initialState = {
 
   nodesSelectionActive: false,
   selectionActive: false,
-  selection: {},
-
-  connectionSourceId: null,
-  connectionPosition: { x: 0, y: 0 }
+  selection: {}
 };
 
 export const reducer = (state, action) => {
@@ -134,20 +129,12 @@ export const reducer = (state, action) => {
 
       return { ...state, nodes: nextNodes, edges: nextEdges };
     }
-    case SET_CONNECTING: {
-      if (!action.payload.connectionPosition) {
-        return { ...state, connectionSourceId: action.payload.connectionSourceId };
-      }
-
-      return { ...state, ...action.payload };
-    }
     case SET_NODES:
     case SET_EDGES:
     case UPDATE_TRANSFORM:
     case INIT_D3:
     case UPDATE_SIZE:
     case SET_SELECTION:
-    case SET_CONNECTION_POS:
       return { ...state, ...action.payload };
     default:
       return state;

@@ -2,17 +2,18 @@ import React, { memo, useContext } from 'react';
 
 import BaseHandle from './BaseHandle';
 import NodeIdContext from '../NodeIdContext'
-import { GraphContext } from '../../GraphContext';
+import { ConnectionContext } from '../../ConnectionContext';
 
 export default memo((props) => {
   const nodeId = useContext(NodeIdContext);
-  const { dispatch, onConnect } = useContext(GraphContext);
+  const { setPosition, setSourceId, onConnect } = useContext(ConnectionContext);
 
   return (
     <BaseHandle
       source
       nodeId={nodeId}
-      dispatch={dispatch}
+      setPosition={setPosition}
+      setSourceId={setSourceId}
       onConnect={onConnect}
       {...props}
     />

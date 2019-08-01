@@ -1,8 +1,8 @@
 import React, { memo, useContext } from 'react';
 
 import { GraphContext } from '../GraphContext';
+import { ConnectionContext } from '../ConnectionContext';
 import ConnectionLine from '../ConnectionLine';
-
 
 function getEdgePositions(sourceNode, targetNode) {
   const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
@@ -73,6 +73,7 @@ function renderEdge(e, props, graphContext) {
 
 const EdgeRenderer = memo((props) => {
   const graphContext = useContext(GraphContext);
+  const { position, sourceId : connectionSourceId } = useContext(ConnectionContext);
   const {
     width, height, connectionLineStyle, connectionLineType
   } = props;
@@ -81,7 +82,7 @@ const EdgeRenderer = memo((props) => {
     return null;
   }
 
-  const { transform, edges, nodes, connectionSourceId, connectionPosition } = graphContext.state;
+  const { transform, edges, nodes } = graphContext.state;
   const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
 
   return (
@@ -96,7 +97,8 @@ const EdgeRenderer = memo((props) => {
           <ConnectionLine
             nodes={nodes}
             connectionSourceId={connectionSourceId}
-            connectionPosition={connectionPosition}
+            connectionPositionX={position.x}
+            connectionPositionY={position.y}
             transform={transform}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}

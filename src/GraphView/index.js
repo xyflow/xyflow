@@ -3,6 +3,7 @@ import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import ReactSizeMe from 'react-sizeme';
 
+import { Provider } from '../ConnectionContext';
 import { GraphContext } from '../GraphContext';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
@@ -10,7 +11,7 @@ import UserSelection from '../UserSelection';
 import NodesSelection from '../NodesSelection';
 import {
   updateTransform, updateSize, initD3, fitView,
-  zoomIn, zoomOut, setNodesSelection, setConnectionPos
+  zoomIn, zoomOut, setNodesSelection
 } from '../state/actions';
 import { useKeyPress } from '../hooks';
 
@@ -79,19 +80,21 @@ const GraphView = memo((props) => {
 
   return (
     <div className="react-graph__renderer">
-      <NodeRenderer
-        nodeTypes={props.nodeTypes}
-        onElementClick={props.onElementClick}
-        onNodeDragStop={props.onNodeDragStop}
-      />
-      <EdgeRenderer
-        width={state.width}
-        height={state.height}
-        edgeTypes={props.edgeTypes}
-        onElementClick={props.onElementClick}
-        connectionLineType={props.connectionLineType}
-        connectionLineStyle={props.connectionLineStyle}
-      />
+      <Provider onConnect={props.onConnect}>
+        <NodeRenderer
+          nodeTypes={props.nodeTypes}
+          onElementClick={props.onElementClick}
+          onNodeDragStop={props.onNodeDragStop}
+        />
+        <EdgeRenderer
+          width={state.width}
+          height={state.height}
+          edgeTypes={props.edgeTypes}
+          onElementClick={props.onElementClick}
+          connectionLineType={props.connectionLineType}
+          connectionLineStyle={props.connectionLineStyle}
+        />
+      </Provider>
       {shiftPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}
       <div

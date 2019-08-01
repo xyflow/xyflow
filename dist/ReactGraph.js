@@ -27915,6 +27915,39 @@
 
   var reactSizeme = withSize;
 
+  var ConnectionContext = React.createContext({});
+  var Provider = React.memo(function (_ref) {
+    var onConnect = _ref.onConnect,
+        children = _ref.children;
+
+    var _useState = React.useState(null),
+        _useState2 = _slicedToArray(_useState, 2),
+        sourceId = _useState2[0],
+        setSourceId = _useState2[1];
+
+    var _useState3 = React.useState({
+      x: 0,
+      y: 0
+    }),
+        _useState4 = _slicedToArray(_useState3, 2),
+        position = _useState4[0],
+        setPosition = _useState4[1];
+
+    var connectionContext = {
+      sourceId: sourceId,
+      setSourceId: setSourceId,
+      position: position,
+      setPosition: setPosition,
+      onConnect: onConnect
+    };
+    return React__default.createElement(ConnectionContext.Provider, {
+      value: connectionContext
+    }, children);
+  });
+  Provider.displayName = 'ConnectionProvider';
+  Provider.whyDidYouRender = false;
+  var Consumer = ConnectionContext.Consumer;
+
   var lodash_isequal = createCommonjsModule(function (module, exports) {
   /**
    * Lodash (Custom Build) <https://lodash.com/>
@@ -29892,8 +29925,6 @@
   var SET_NODES_SELECTION = 'SET_NODES_SELECTION';
   var SET_SELECTED_ELEMENTS = 'SET_SELECTED_ELEMENTS';
   var REMOVE_NODES = 'REMOVE_NODES';
-  var SET_CONNECTING = 'SET_CONNECTING';
-  var SET_CONNECTION_POS = 'SET_CONNECTION_POS';
   var initialState = {
     width: 0,
     height: 0,
@@ -29912,12 +29943,7 @@
     d3Initialised: false,
     nodesSelectionActive: false,
     selectionActive: false,
-    selection: {},
-    connectionSourceId: null,
-    connectionPosition: {
-      x: 0,
-      y: 0
-    }
+    selection: {}
   };
   var reducer = function reducer(state, action) {
     switch (action.type) {
@@ -30031,24 +30057,12 @@
           });
         }
 
-      case SET_CONNECTING:
-        {
-          if (!action.payload.connectionPosition) {
-            return _objectSpread2({}, state, {
-              connectionSourceId: action.payload.connectionSourceId
-            });
-          }
-
-          return _objectSpread2({}, state, {}, action.payload);
-        }
-
       case SET_NODES:
       case SET_EDGES:
       case UPDATE_TRANSFORM:
       case INIT_D3:
       case UPDATE_SIZE:
       case SET_SELECTION:
-      case SET_CONNECTION_POS:
         return _objectSpread2({}, state, {}, action.payload);
 
       default:
@@ -30174,34 +30188,9 @@
       }
     };
   };
-  var setConnecting = function setConnecting(_ref4) {
-    var connectionSourceId = _ref4.connectionSourceId,
-        _ref4$connectionPosit = _ref4.connectionPosition,
-        connectionPosition = _ref4$connectionPosit === void 0 ? false : _ref4$connectionPosit;
-    return {
-      type: SET_CONNECTING,
-      payload: {
-        connectionSourceId: connectionSourceId,
-        connectionPosition: connectionPosition
-      }
-    };
-  };
-  var setConnectionPos = function setConnectionPos(_ref5) {
-    var x = _ref5.x,
-        y = _ref5.y;
-    return {
-      type: SET_CONNECTION_POS,
-      payload: {
-        connectionPosition: {
-          x: x,
-          y: y
-        }
-      }
-    };
-  };
 
   var GraphContext = React.createContext({});
-  var Provider = function Provider(props) {
+  var Provider$1 = function Provider(props) {
     var elements = props.elements,
         children = props.children,
         onConnect = props.onConnect;
@@ -30248,11 +30237,11 @@
       value: graphContext
     }, children);
   };
-  var Consumer = GraphContext.Consumer;
-  Provider.propTypes = {
+  var Consumer$1 = GraphContext.Consumer;
+  Provider$1.propTypes = {
     elements: PropTypes$1.arrayOf(PropTypes$1.object)
   };
-  Provider.defaultProps = {
+  Provider$1.defaultProps = {
     elements: []
   };
 
@@ -30371,8 +30360,8 @@
     var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
     var sourceX = sourceNode.__rg.position.x + sourceHandleX;
     var sourceY = sourceNode.__rg.position.y + sourceHandleY;
-    var targetX = props.connectionPosition.x * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
-    var targetY = props.connectionPosition.y * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
+    var targetX = props.connectionPositionX * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
+    var targetY = props.connectionPositionY * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
     var dAttr = '';
 
     if (props.connectionLineType === 'bezier') {
@@ -30454,6 +30443,11 @@
 
   var EdgeRenderer = React.memo(function (props) {
     var graphContext = React.useContext(GraphContext);
+
+    var _useContext = React.useContext(ConnectionContext),
+        position = _useContext.position,
+        connectionSourceId = _useContext.sourceId;
+
     var width = props.width,
         height = props.height,
         connectionLineStyle = props.connectionLineStyle,
@@ -30466,9 +30460,7 @@
     var _graphContext$state = graphContext.state,
         transform = _graphContext$state.transform,
         edges = _graphContext$state.edges,
-        nodes = _graphContext$state.nodes,
-        connectionSourceId = _graphContext$state.connectionSourceId,
-        connectionPosition = _graphContext$state.connectionPosition;
+        nodes = _graphContext$state.nodes;
     var transformStyle = "translate(".concat(transform[0], ",").concat(transform[1], ") scale(").concat(transform[2], ")");
     return React__default.createElement("svg", {
       width: width,
@@ -30481,7 +30473,8 @@
     }), connectionSourceId && React__default.createElement(ConnectionLine, {
       nodes: nodes,
       connectionSourceId: connectionSourceId,
-      connectionPosition: connectionPosition,
+      connectionPositionX: position.x,
+      connectionPositionY: position.y,
       transform: transform,
       connectionLineStyle: connectionLineStyle,
       connectionLineType: connectionLineType
@@ -32983,6 +32976,8 @@
     });
     return React__default.createElement("div", {
       className: "react-graph__renderer"
+    }, React__default.createElement(Provider, {
+      onConnect: props.onConnect
     }, React__default.createElement(NodeRenderer, {
       nodeTypes: props.nodeTypes,
       onElementClick: props.onElementClick,
@@ -32994,7 +32989,7 @@
       onElementClick: props.onElementClick,
       connectionLineType: props.connectionLineType,
       connectionLineStyle: props.connectionLineStyle
-    }), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
+    })), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
       className: "react-graph__zoompane",
       onClick: function onClick() {
         return dispatch(setNodesSelection({
@@ -33034,24 +33029,22 @@
 
   function _onMouseDown(evt, _ref) {
     var nodeId = _ref.nodeId,
-        dispatch = _ref.dispatch,
+        setSourceId = _ref.setSourceId,
+        setPosition = _ref.setPosition,
         onConnect = _ref.onConnect,
         isTarget = _ref.isTarget;
     var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
-    var connectionPosition = {
+    setPosition({
       x: evt.clientX - containerBounds.x,
       y: evt.clientY - containerBounds.y
-    };
-    dispatch(setConnecting({
-      connectionPosition: connectionPosition,
-      connectionSourceId: nodeId
-    }));
+    });
+    setSourceId(nodeId);
 
     function onMouseMove(evt) {
-      dispatch(setConnectionPos({
+      setPosition({
         x: evt.clientX - containerBounds.x,
         y: evt.clientY - containerBounds.y
-      }));
+      });
     }
 
     function onMouseUp(evt) {
@@ -33073,9 +33066,7 @@
         }
       }
 
-      dispatch(setConnecting({
-        connectionSourceId: false
-      }));
+      setSourceId(null);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     }
@@ -33089,10 +33080,11 @@
         target = _ref2.target,
         nodeId = _ref2.nodeId,
         onConnect = _ref2.onConnect,
-        dispatch = _ref2.dispatch,
+        setSourceId = _ref2.setSourceId,
+        setPosition = _ref2.setPosition,
         _ref2$className = _ref2.className,
         className = _ref2$className === void 0 ? null : _ref2$className,
-        rest = _objectWithoutProperties(_ref2, ["source", "target", "nodeId", "onConnect", "dispatch", "className"]);
+        rest = _objectWithoutProperties(_ref2, ["source", "target", "nodeId", "onConnect", "setSourceId", "setPosition", "className"]);
 
     var handleClasses = classnames('react-graph__handle', className, {
       source: source,
@@ -33104,7 +33096,8 @@
       onMouseDown: function onMouseDown(evt) {
         return _onMouseDown(evt, {
           nodeId: nodeId,
-          dispatch: dispatch,
+          setSourceId: setSourceId,
+          setPosition: setPosition,
           onConnect: onConnect,
           isTarget: target
         });
@@ -33115,20 +33108,22 @@
   BaseHandle.whyDidYouRender = false;
 
   var NodeIdContext = React.createContext(null);
-  var Provider$1 = NodeIdContext.Provider;
-  var Consumer$1 = NodeIdContext.Consumer;
+  var Provider$2 = NodeIdContext.Provider;
+  var Consumer$2 = NodeIdContext.Consumer;
 
   var TargetHandle = React.memo(function (props) {
     var nodeId = React.useContext(NodeIdContext);
 
-    var _useContext = React.useContext(GraphContext),
-        dispatch = _useContext.dispatch,
+    var _useContext = React.useContext(ConnectionContext),
+        setPosition = _useContext.setPosition,
+        setSourceId = _useContext.setSourceId,
         onConnect = _useContext.onConnect;
 
     return React__default.createElement(BaseHandle, _extends({
       target: true,
       nodeId: nodeId,
-      dispatch: dispatch,
+      setPosition: setPosition,
+      setSourceId: setSourceId,
       onConnect: onConnect
     }, props));
   });
@@ -33138,14 +33133,16 @@
   var SourceHandle = React.memo(function (props) {
     var nodeId = React.useContext(NodeIdContext);
 
-    var _useContext = React.useContext(GraphContext),
-        dispatch = _useContext.dispatch,
+    var _useContext = React.useContext(ConnectionContext),
+        setPosition = _useContext.setPosition,
+        setSourceId = _useContext.setSourceId,
         onConnect = _useContext.onConnect;
 
     return React__default.createElement(BaseHandle, _extends({
       source: true,
       nodeId: nodeId,
-      dispatch: dispatch,
+      setPosition: setPosition,
+      setSourceId: setSourceId,
       onConnect: onConnect
     }, props));
   });
@@ -33392,7 +33389,7 @@
             data: data
           });
         }
-      }, React__default.createElement(Provider$1, {
+      }, React__default.createElement(Provider$2, {
         value: id
       }, React__default.createElement(NodeComponent, _extends({}, props, {
         selected: selected
@@ -33577,9 +33574,8 @@
         return React__default.createElement("div", {
           style: style,
           className: "react-graph"
-        }, React__default.createElement(Provider, {
-          elements: elements,
-          onConnect: onConnect
+        }, React__default.createElement(Provider$1, {
+          elements: elements
         }, React__default.createElement(GraphView$1, {
           onLoad: onLoad,
           onMove: onMove,
@@ -33589,7 +33585,8 @@
           nodeTypes: this.nodeTypes,
           edgeTypes: this.edgeTypes,
           connectionLineType: connectionLineType,
-          connectionLineStyle: connectionLineStyle
+          connectionLineStyle: connectionLineStyle,
+          onConnect: onConnect
         }), React__default.createElement(GlobalKeyHandler, {
           onElementsRemove: onElementsRemove
         }), children));

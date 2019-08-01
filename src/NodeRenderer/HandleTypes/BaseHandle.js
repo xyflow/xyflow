@@ -1,15 +1,20 @@
 import React, { memo } from 'react';
 import cx from 'classnames';
 
-import { setConnecting, setConnectionPos } from '../../state/actions';
-
-function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
+function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarget }) {
   const containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
-  const connectionPosition = { x: evt.clientX - containerBounds.x, y: evt.clientY - containerBounds.y };
-  dispatch(setConnecting({ connectionPosition, connectionSourceId: nodeId }))
+
+  setPosition({
+    x: evt.clientX - containerBounds.x,
+    y: evt.clientY - containerBounds.y,
+  });
+  setSourceId(nodeId);
 
   function onMouseMove(evt) {
-    dispatch(setConnectionPos({ x: evt.clientX - containerBounds.x, y: evt.clientY - containerBounds.y }));
+    setPosition({
+      x: evt.clientX - containerBounds.x,
+      y: evt.clientY - containerBounds.y,
+    });
   }
 
   function onMouseUp(evt) {
@@ -25,7 +30,7 @@ function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
       }
     }
 
-    dispatch(setConnecting({ connectionSourceId: false }));
+    setSourceId(null);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   }
@@ -34,7 +39,7 @@ function onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget }) {
   document.addEventListener('mouseup', onMouseUp)
 }
 
-const BaseHandle = memo(({ source, target, nodeId, onConnect, dispatch, className = null, ...rest }) => {
+const BaseHandle = memo(({ source, target, nodeId, onConnect, setSourceId, setPosition, className = null, ...rest }) => {
   const handleClasses = cx(
     'react-graph__handle',
     className,
@@ -45,7 +50,7 @@ const BaseHandle = memo(({ source, target, nodeId, onConnect, dispatch, classNam
     <div
       data-nodeid={nodeId}
       className={handleClasses}
-      onMouseDown={evt => onMouseDown(evt, { nodeId, dispatch, onConnect, isTarget: target })}
+      onMouseDown={evt => onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarget: target })}
       {...rest}
     />
   );

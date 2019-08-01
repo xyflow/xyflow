@@ -7,7 +7,6 @@ export default (props) => {
     setSourceNode(props.nodes.find(n => n.id === props.connectionSourceId));
   }, []);
 
-
   if (!sourceNode) {
     return null;
   }
@@ -21,8 +20,8 @@ export default (props) => {
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;
   const sourceY = sourceNode.__rg.position.y + sourceHandleY;
 
-  const targetX = (props.connectionPosition.x * (1 / props.transform[2])) - (props.transform[0] * (1 / props.transform[2]));
-  const targetY = (props.connectionPosition.y * (1 / props.transform[2])) - (props.transform[1] * (1 / props.transform[2]));
+  const targetX = (props.connectionPositionX * (1 / props.transform[2])) - (props.transform[0] * (1 / props.transform[2]));
+  const targetY = (props.connectionPositionY * (1 / props.transform[2])) - (props.transform[1] * (1 / props.transform[2]));
 
   let dAttr = '';
 

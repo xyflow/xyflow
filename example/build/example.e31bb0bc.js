@@ -35671,7 +35671,62 @@ withSize.withSize = withSize;
 module.exports = withSize;
 
 
-},{"element-resize-detector":"../node_modules/element-resize-detector/src/element-resize-detector.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-dom":"../node_modules/react-dom/index.js","invariant":"../node_modules/invariant/browser.js","throttle-debounce":"../node_modules/throttle-debounce/dist/index.esm.js","shallowequal":"../node_modules/shallowequal/index.js"}],"../node_modules/lodash.isequal/index.js":[function(require,module,exports) {
+},{"element-resize-detector":"../node_modules/element-resize-detector/src/element-resize-detector.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-dom":"../node_modules/react-dom/index.js","invariant":"../node_modules/invariant/browser.js","throttle-debounce":"../node_modules/throttle-debounce/dist/index.esm.js","shallowequal":"../node_modules/shallowequal/index.js"}],"../src/ConnectionContext/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Consumer = exports.Provider = exports.ConnectionContext = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var ConnectionContext = (0, _react.createContext)({});
+exports.ConnectionContext = ConnectionContext;
+var Provider = (0, _react.memo)(function (_ref) {
+  var onConnect = _ref.onConnect,
+      children = _ref.children;
+
+  var _useState = (0, _react.useState)(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      sourceId = _useState2[0],
+      setSourceId = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({
+    x: 0,
+    y: 0
+  }),
+      _useState4 = _slicedToArray(_useState3, 2),
+      position = _useState4[0],
+      setPosition = _useState4[1];
+
+  var connectionContext = {
+    sourceId: sourceId,
+    setSourceId: setSourceId,
+    position: position,
+    setPosition: setPosition,
+    onConnect: onConnect
+  };
+  return _react.default.createElement(ConnectionContext.Provider, {
+    value: connectionContext
+  }, children);
+});
+exports.Provider = Provider;
+Provider.displayName = 'ConnectionProvider';
+Provider.whyDidYouRender = false;
+var Consumer = ConnectionContext.Consumer;
+exports.Consumer = Consumer;
+},{"react":"../node_modules/react/index.js"}],"../node_modules/lodash.isequal/index.js":[function(require,module,exports) {
 var global = arguments[3];
 
 /**
@@ -37708,7 +37763,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.reducer = exports.initialState = exports.SET_CONNECTION_POS = exports.SET_CONNECTING = exports.REMOVE_NODES = exports.SET_SELECTED_ELEMENTS = exports.SET_NODES_SELECTION = exports.SET_SELECTION = exports.UPDATE_SELECTION = exports.ZOOM_OUT = exports.ZOOM_IN = exports.FIT_VIEW = exports.INIT_D3 = exports.UPDATE_SIZE = exports.UPDATE_TRANSFORM = exports.UPDATE_NODE_POS = exports.UPDATE_NODE_DATA = exports.SET_NODES = exports.SET_EDGES = void 0;
+exports.reducer = exports.initialState = exports.REMOVE_NODES = exports.SET_SELECTED_ELEMENTS = exports.SET_NODES_SELECTION = exports.SET_SELECTION = exports.UPDATE_SELECTION = exports.ZOOM_OUT = exports.ZOOM_IN = exports.FIT_VIEW = exports.INIT_D3 = exports.UPDATE_SIZE = exports.UPDATE_TRANSFORM = exports.UPDATE_NODE_POS = exports.UPDATE_NODE_DATA = exports.SET_NODES = exports.SET_EDGES = void 0;
 
 var _d3Zoom = require("d3-zoom");
 
@@ -37762,10 +37817,6 @@ var SET_SELECTED_ELEMENTS = 'SET_SELECTED_ELEMENTS';
 exports.SET_SELECTED_ELEMENTS = SET_SELECTED_ELEMENTS;
 var REMOVE_NODES = 'REMOVE_NODES';
 exports.REMOVE_NODES = REMOVE_NODES;
-var SET_CONNECTING = 'SET_CONNECTING';
-exports.SET_CONNECTING = SET_CONNECTING;
-var SET_CONNECTION_POS = 'SET_CONNECTION_POS';
-exports.SET_CONNECTION_POS = SET_CONNECTION_POS;
 var initialState = {
   width: 0,
   height: 0,
@@ -37784,12 +37835,7 @@ var initialState = {
   d3Initialised: false,
   nodesSelectionActive: false,
   selectionActive: false,
-  selection: {},
-  connectionSourceId: null,
-  connectionPosition: {
-    x: 0,
-    y: 0
-  }
+  selection: {}
 };
 exports.initialState = initialState;
 
@@ -37907,24 +37953,12 @@ var reducer = function reducer(state, action) {
         });
       }
 
-    case SET_CONNECTING:
-      {
-        if (!action.payload.connectionPosition) {
-          return _objectSpread({}, state, {
-            connectionSourceId: action.payload.connectionSourceId
-          });
-        }
-
-        return _objectSpread({}, state, {}, action.payload);
-      }
-
     case SET_NODES:
     case SET_EDGES:
     case UPDATE_TRANSFORM:
     case INIT_D3:
     case UPDATE_SIZE:
     case SET_SELECTION:
-    case SET_CONNECTION_POS:
       return _objectSpread({}, state, {}, action.payload);
 
     default:
@@ -37939,7 +37973,7 @@ exports.reducer = reducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setConnectionPos = exports.setConnecting = exports.updateSelection = exports.removeNodes = exports.setSelectedElements = exports.setNodesSelection = exports.setSelection = exports.zoomOut = exports.zoomIn = exports.fitView = exports.initD3 = exports.updateNodePos = exports.updateNodeData = exports.setEdges = exports.setNodes = exports.updateSize = exports.updateTransform = void 0;
+exports.updateSelection = exports.removeNodes = exports.setSelectedElements = exports.setNodesSelection = exports.setSelection = exports.zoomOut = exports.zoomIn = exports.fitView = exports.initD3 = exports.updateNodePos = exports.updateNodeData = exports.setEdges = exports.setNodes = exports.updateSize = exports.updateTransform = void 0;
 
 var _index = require("./index");
 
@@ -38114,37 +38148,6 @@ var updateSelection = function updateSelection(selection) {
 };
 
 exports.updateSelection = updateSelection;
-
-var setConnecting = function setConnecting(_ref4) {
-  var connectionSourceId = _ref4.connectionSourceId,
-      _ref4$connectionPosit = _ref4.connectionPosition,
-      connectionPosition = _ref4$connectionPosit === void 0 ? false : _ref4$connectionPosit;
-  return {
-    type: _index.SET_CONNECTING,
-    payload: {
-      connectionSourceId: connectionSourceId,
-      connectionPosition: connectionPosition
-    }
-  };
-};
-
-exports.setConnecting = setConnecting;
-
-var setConnectionPos = function setConnectionPos(_ref5) {
-  var x = _ref5.x,
-      y = _ref5.y;
-  return {
-    type: _index.SET_CONNECTION_POS,
-    payload: {
-      connectionPosition: {
-        x: x,
-        y: y
-      }
-    }
-  };
-};
-
-exports.setConnectionPos = setConnectionPos;
 },{"./index":"../src/state/index.js"}],"../src/GraphContext/index.js":[function(require,module,exports) {
 "use strict";
 
@@ -38405,8 +38408,8 @@ var _default = function _default(props) {
   var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
   var sourceX = sourceNode.__rg.position.x + sourceHandleX;
   var sourceY = sourceNode.__rg.position.y + sourceHandleY;
-  var targetX = props.connectionPosition.x * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
-  var targetY = props.connectionPosition.y * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
+  var targetX = props.connectionPositionX * (1 / props.transform[2]) - props.transform[0] * (1 / props.transform[2]);
+  var targetY = props.connectionPositionY * (1 / props.transform[2]) - props.transform[1] * (1 / props.transform[2]);
   var dAttr = '';
 
   if (props.connectionLineType === 'bezier') {
@@ -38436,6 +38439,8 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _GraphContext = require("../GraphContext");
+
+var _ConnectionContext = require("../ConnectionContext");
 
 var _ConnectionLine = _interopRequireDefault(require("../ConnectionLine"));
 
@@ -38507,6 +38512,11 @@ function renderEdge(e, props, graphContext) {
 
 var EdgeRenderer = (0, _react.memo)(function (props) {
   var graphContext = (0, _react.useContext)(_GraphContext.GraphContext);
+
+  var _useContext = (0, _react.useContext)(_ConnectionContext.ConnectionContext),
+      position = _useContext.position,
+      connectionSourceId = _useContext.sourceId;
+
   var width = props.width,
       height = props.height,
       connectionLineStyle = props.connectionLineStyle,
@@ -38519,9 +38529,7 @@ var EdgeRenderer = (0, _react.memo)(function (props) {
   var _graphContext$state = graphContext.state,
       transform = _graphContext$state.transform,
       edges = _graphContext$state.edges,
-      nodes = _graphContext$state.nodes,
-      connectionSourceId = _graphContext$state.connectionSourceId,
-      connectionPosition = _graphContext$state.connectionPosition;
+      nodes = _graphContext$state.nodes;
   var transformStyle = "translate(".concat(transform[0], ",").concat(transform[1], ") scale(").concat(transform[2], ")");
   return _react.default.createElement("svg", {
     width: width,
@@ -38534,7 +38542,8 @@ var EdgeRenderer = (0, _react.memo)(function (props) {
   }), connectionSourceId && _react.default.createElement(_ConnectionLine.default, {
     nodes: nodes,
     connectionSourceId: connectionSourceId,
-    connectionPosition: connectionPosition,
+    connectionPositionX: position.x,
+    connectionPositionY: position.y,
     transform: transform,
     connectionLineStyle: connectionLineStyle,
     connectionLineType: connectionLineType
@@ -38542,7 +38551,7 @@ var EdgeRenderer = (0, _react.memo)(function (props) {
 });
 var _default = EdgeRenderer;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectionLine":"../src/ConnectionLine/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectionContext":"../src/ConnectionContext/index.js","../ConnectionLine":"../src/ConnectionLine/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41077,6 +41086,8 @@ var _d3Selection = require("d3-selection");
 
 var _reactSizeme = _interopRequireDefault(require("react-sizeme"));
 
+var _ConnectionContext = require("../ConnectionContext");
+
 var _GraphContext = require("../GraphContext");
 
 var _NodeRenderer = _interopRequireDefault(require("../NodeRenderer"));
@@ -41159,6 +41170,8 @@ var GraphView = (0, _react.memo)(function (props) {
   });
   return _react.default.createElement("div", {
     className: "react-graph__renderer"
+  }, _react.default.createElement(_ConnectionContext.Provider, {
+    onConnect: props.onConnect
   }, _react.default.createElement(_NodeRenderer.default, {
     nodeTypes: props.nodeTypes,
     onElementClick: props.onElementClick,
@@ -41170,7 +41183,7 @@ var GraphView = (0, _react.memo)(function (props) {
     onElementClick: props.onElementClick,
     connectionLineType: props.connectionLineType,
     connectionLineStyle: props.connectionLineStyle
-  }), shiftPressed && _react.default.createElement(_UserSelection.default, null), state.nodesSelectionActive && _react.default.createElement(_NodesSelection.default, null), _react.default.createElement("div", {
+  })), shiftPressed && _react.default.createElement(_UserSelection.default, null), state.nodesSelectionActive && _react.default.createElement(_NodesSelection.default, null), _react.default.createElement("div", {
     className: "react-graph__zoompane",
     onClick: function onClick() {
       return dispatch((0, _actions.setNodesSelection)({
@@ -41186,7 +41199,7 @@ var _default = _reactSizeme.default.withSize({
 })(GraphView);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","d3-zoom":"../node_modules/d3-zoom/src/index.js","d3-selection":"../node_modules/d3-selection/src/index.js","react-sizeme":"../node_modules/react-sizeme/dist/react-sizeme.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer":"../src/NodeRenderer/index.js","../EdgeRenderer":"../src/EdgeRenderer/index.js","../UserSelection":"../src/UserSelection/index.js","../NodesSelection":"../src/NodesSelection/index.js","../state/actions":"../src/state/actions.js","../hooks":"../src/hooks.js"}],"../src/GlobalKeyHandler/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","d3-zoom":"../node_modules/d3-zoom/src/index.js","d3-selection":"../node_modules/d3-selection/src/index.js","react-sizeme":"../node_modules/react-sizeme/dist/react-sizeme.js","../ConnectionContext":"../src/ConnectionContext/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer":"../src/NodeRenderer/index.js","../EdgeRenderer":"../src/EdgeRenderer/index.js","../UserSelection":"../src/UserSelection/index.js","../NodesSelection":"../src/NodesSelection/index.js","../state/actions":"../src/state/actions.js","../hooks":"../src/hooks.js"}],"../src/GlobalKeyHandler/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41249,8 +41262,6 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _classnames = _interopRequireDefault(require("classnames"));
 
-var _actions = require("../../state/actions");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -41263,24 +41274,22 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 function _onMouseDown(evt, _ref) {
   var nodeId = _ref.nodeId,
-      dispatch = _ref.dispatch,
+      setSourceId = _ref.setSourceId,
+      setPosition = _ref.setPosition,
       onConnect = _ref.onConnect,
       isTarget = _ref.isTarget;
   var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
-  var connectionPosition = {
+  setPosition({
     x: evt.clientX - containerBounds.x,
     y: evt.clientY - containerBounds.y
-  };
-  dispatch((0, _actions.setConnecting)({
-    connectionPosition: connectionPosition,
-    connectionSourceId: nodeId
-  }));
+  });
+  setSourceId(nodeId);
 
   function onMouseMove(evt) {
-    dispatch((0, _actions.setConnectionPos)({
+    setPosition({
       x: evt.clientX - containerBounds.x,
       y: evt.clientY - containerBounds.y
-    }));
+    });
   }
 
   function onMouseUp(evt) {
@@ -41302,9 +41311,7 @@ function _onMouseDown(evt, _ref) {
       }
     }
 
-    dispatch((0, _actions.setConnecting)({
-      connectionSourceId: false
-    }));
+    setSourceId(null);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   }
@@ -41318,10 +41325,11 @@ var BaseHandle = (0, _react.memo)(function (_ref2) {
       target = _ref2.target,
       nodeId = _ref2.nodeId,
       onConnect = _ref2.onConnect,
-      dispatch = _ref2.dispatch,
+      setSourceId = _ref2.setSourceId,
+      setPosition = _ref2.setPosition,
       _ref2$className = _ref2.className,
       className = _ref2$className === void 0 ? null : _ref2$className,
-      rest = _objectWithoutProperties(_ref2, ["source", "target", "nodeId", "onConnect", "dispatch", "className"]);
+      rest = _objectWithoutProperties(_ref2, ["source", "target", "nodeId", "onConnect", "setSourceId", "setPosition", "className"]);
 
   var handleClasses = (0, _classnames.default)('react-graph__handle', className, {
     source: source,
@@ -41333,7 +41341,8 @@ var BaseHandle = (0, _react.memo)(function (_ref2) {
     onMouseDown: function onMouseDown(evt) {
       return _onMouseDown(evt, {
         nodeId: nodeId,
-        dispatch: dispatch,
+        setSourceId: setSourceId,
+        setPosition: setPosition,
         onConnect: onConnect,
         isTarget: target
       });
@@ -41344,7 +41353,7 @@ BaseHandle.displayName = 'BaseHandle';
 BaseHandle.whyDidYouRender = false;
 var _default = BaseHandle;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../../state/actions":"../src/state/actions.js"}],"../src/NodeRenderer/NodeIdContext.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js"}],"../src/NodeRenderer/NodeIdContext.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41374,7 +41383,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _BaseHandle = _interopRequireDefault(require("./BaseHandle"));
 
-var _GraphContext = require("../../GraphContext");
+var _ConnectionContext = require("../../ConnectionContext");
 
 var _NodeIdContext = _interopRequireDefault(require("../NodeIdContext"));
 
@@ -41387,14 +41396,16 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 var TargetHandle = (0, _react.memo)(function (props) {
   var nodeId = (0, _react.useContext)(_NodeIdContext.default);
 
-  var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
-      dispatch = _useContext.dispatch,
+  var _useContext = (0, _react.useContext)(_ConnectionContext.ConnectionContext),
+      setPosition = _useContext.setPosition,
+      setSourceId = _useContext.setSourceId,
       onConnect = _useContext.onConnect;
 
   return _react.default.createElement(_BaseHandle.default, _extends({
     target: true,
     nodeId: nodeId,
-    dispatch: dispatch,
+    setPosition: setPosition,
+    setSourceId: setSourceId,
     onConnect: onConnect
   }, props));
 });
@@ -41402,7 +41413,7 @@ TargetHandle.displayName = 'TargetHandle';
 TargetHandle.whyDidYouRender = false;
 var _default = TargetHandle;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../../GraphContext":"../src/GraphContext/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/HandleTypes/SourceHandle.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../../ConnectionContext":"../src/ConnectionContext/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/HandleTypes/SourceHandle.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41416,7 +41427,7 @@ var _BaseHandle = _interopRequireDefault(require("./BaseHandle"));
 
 var _NodeIdContext = _interopRequireDefault(require("../NodeIdContext"));
 
-var _GraphContext = require("../../GraphContext");
+var _ConnectionContext = require("../../ConnectionContext");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41427,20 +41438,22 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 var _default = (0, _react.memo)(function (props) {
   var nodeId = (0, _react.useContext)(_NodeIdContext.default);
 
-  var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
-      dispatch = _useContext.dispatch,
+  var _useContext = (0, _react.useContext)(_ConnectionContext.ConnectionContext),
+      setPosition = _useContext.setPosition,
+      setSourceId = _useContext.setSourceId,
       onConnect = _useContext.onConnect;
 
   return _react.default.createElement(_BaseHandle.default, _extends({
     source: true,
     nodeId: nodeId,
-    dispatch: dispatch,
+    setPosition: setPosition,
+    setSourceId: setSourceId,
     onConnect: onConnect
   }, props));
 });
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js","../../GraphContext":"../src/GraphContext/index.js"}],"../src/NodeRenderer/NodeTypes/DefaultNode.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js","../../ConnectionContext":"../src/ConnectionContext/index.js"}],"../src/NodeRenderer/NodeTypes/DefaultNode.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41791,7 +41804,7 @@ var _default = function _default(NodeComponent) {
     })))));
   });
   WrappedComp.displayName = 'Wrapped Node';
-  WrappedComp.whyDidYouRender = true;
+  WrappedComp.whyDidYouRender = false;
   return WrappedComp;
 };
 
@@ -42162,8 +42175,7 @@ function (_PureComponent) {
         style: style,
         className: "react-graph"
       }, _react.default.createElement(_GraphContext.Provider, {
-        elements: elements,
-        onConnect: onConnect
+        elements: elements
       }, _react.default.createElement(_GraphView.default, {
         onLoad: onLoad,
         onMove: onMove,
@@ -42173,7 +42185,8 @@ function (_PureComponent) {
         nodeTypes: this.nodeTypes,
         edgeTypes: this.edgeTypes,
         connectionLineType: connectionLineType,
-        connectionLineStyle: connectionLineStyle
+        connectionLineStyle: connectionLineStyle,
+        onConnect: onConnect
       }), _react.default.createElement(_GlobalKeyHandler.default, {
         onElementsRemove: onElementsRemove
       }), children));
@@ -42663,7 +42676,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65016" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55193" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
