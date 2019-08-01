@@ -17,14 +17,15 @@ function renderEdge(e, props, graphContext) {
   }
 
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
+  const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
+  const hasTargetHandle = !!sourceNode.__rg.handleBounds.target;
+
 
   return (
     <EdgeComponent
       key={e.id}
       id={e.id}
       type={e.type}
-      sourceNode={sourceNode}
-      targetNode={targetNode}
       onClick={props.onElementClick}
       selectedElements={graphContext.state.selectedElements}
       dispatch={graphContext.dispatch}
@@ -34,8 +35,22 @@ function renderEdge(e, props, graphContext) {
       target={e.target}
       sourceNodeX={sourceNode.__rg.position.x}
       sourceNodeY={sourceNode.__rg.position.y}
+      sourceNodeWidth={sourceNode.__rg.width}
+      sourceNodeHeight={sourceNode.__rg.height}
       targetNodeX={targetNode.__rg.position.x}
-      targeteNodeY={targetNode.__rg.position.y}
+      targetNodeY={targetNode.__rg.position.y}
+      targetNodeWidth={targetNode.__rg.width}
+      targetNodeHeight={targetNode.__rg.height}
+      hasSourceHandle={hasSourceHandle}
+      hasTargetHandle={hasTargetHandle}
+      sourceHandleX={sourceNode.__rg.handleBounds.source.x}
+      sourceHandleY={sourceNode.__rg.handleBounds.source.y}
+      sourceHandleWidth={sourceNode.__rg.handleBounds.source.width}
+      sourceHandleHeight={sourceNode.__rg.handleBounds.source.height}
+      targetHandleX={targetNode.__rg.handleBounds.target.x}
+      targetHandleY={targetNode.__rg.handleBounds.target.y}
+      targetHandleWidth={targetNode.__rg.handleBounds.target.width}
+      targetHandleHeight={targetNode.__rg.handleBounds.target.height}
     />
   );
 }

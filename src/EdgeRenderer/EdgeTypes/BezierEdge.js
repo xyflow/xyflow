@@ -1,20 +1,24 @@
 import React, { memo } from 'react';
 
 export default memo((props) => {
-  const { targetNode, sourceNode } = props;
-  const style = props.style || {};
+  const {
+    sourceNodeX, sourceNodeY, sourceNodeWidth, sourceNodeHeight,
+    targetNodeX, targetNodeY, targetNodeWidth, targetNodeHeight,
+    sourceHandleX, sourceHandleY, sourceHandleWidth, sourceHandleHeight,
+    targetHandleX, targetHandleY, targetHandleWidth, targetHandleHeight,
+    hasSourceHandle, hasTargetHandle, style = {}
+  } = props;
 
-  const sourceHandle = sourceNode.__rg.handleBounds.source;
-  const sourceHandleX = sourceHandle ? sourceHandle.x + (sourceHandle.width / 2) : sourceNode.__rg.width / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + (sourceHandle.height / 2) : sourceNode.__rg.height;
-  const sourceX = sourceNode.__rg.position.x + sourceHandleX;
-  const sourceY = sourceNode.__rg.position.y + sourceHandleY;
 
-  const targetHandle = targetNode.__rg.handleBounds.target;
-  const targetHandleX = targetHandle ? targetHandle.x + (targetHandle.width / 2) : targetNode.__rg.width / 2;
-  const targetHandleY = targetHandle ? targetHandle.y + (targetHandle.height / 2) : 0;
-  const targetX = targetNode.__rg.position.x + targetHandleX;
-  const targetY = targetNode.__rg.position.y + targetHandleY;
+  const _sourceHandleX = hasSourceHandle ? sourceHandleX + (sourceHandleWidth / 2) : sourceNodeWidth / 2;
+  const _sourceHandleY = hasSourceHandle ? sourceHandleY + (sourceHandleHeight / 2) : sourceNodeHeight;
+  const sourceX = sourceNodeX + _sourceHandleX;
+  const sourceY = sourceNodeY + _sourceHandleY;
+
+  const _targetHandleX = hasTargetHandle ? targetHandleX + (targetHandleWidth / 2) : targetNodeWidth / 2;
+  const _targetHandleY = hasTargetHandle ? targetHandleY + (targetHandleHeight / 2) : 0;
+  const targetX = targetNodeX + _targetHandleX;
+  const targetY = targetNodeY + _targetHandleY;
 
   const yOffset = Math.abs(targetY - sourceY) / 2;
   const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;

@@ -30399,12 +30399,12 @@
     }
 
     var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes["default"];
+    var hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
+    var hasTargetHandle = !!sourceNode.__rg.handleBounds.target;
     return React__default.createElement(EdgeComponent, {
       key: e.id,
       id: e.id,
       type: e.type,
-      sourceNode: sourceNode,
-      targetNode: targetNode,
       onClick: props.onElementClick,
       selectedElements: graphContext.state.selectedElements,
       dispatch: graphContext.dispatch,
@@ -30414,8 +30414,22 @@
       target: e.target,
       sourceNodeX: sourceNode.__rg.position.x,
       sourceNodeY: sourceNode.__rg.position.y,
+      sourceNodeWidth: sourceNode.__rg.width,
+      sourceNodeHeight: sourceNode.__rg.height,
       targetNodeX: targetNode.__rg.position.x,
-      targeteNodeY: targetNode.__rg.position.y
+      targetNodeY: targetNode.__rg.position.y,
+      targetNodeWidth: targetNode.__rg.width,
+      targetNodeHeight: targetNode.__rg.height,
+      hasSourceHandle: hasSourceHandle,
+      hasTargetHandle: hasTargetHandle,
+      sourceHandleX: sourceNode.__rg.handleBounds.source.x,
+      sourceHandleY: sourceNode.__rg.handleBounds.source.y,
+      sourceHandleWidth: sourceNode.__rg.handleBounds.source.width,
+      sourceHandleHeight: sourceNode.__rg.handleBounds.source.height,
+      targetHandleX: targetNode.__rg.handleBounds.target.x,
+      targetHandleY: targetNode.__rg.handleBounds.target.y,
+      targetHandleWidth: targetNode.__rg.handleBounds.target.width,
+      targetHandleHeight: targetNode.__rg.handleBounds.target.height
     });
   }
 
@@ -33382,19 +33396,40 @@
   }
 
   var BezierEdge = React.memo(function (props) {
-    var targetNode = props.targetNode,
-        sourceNode = props.sourceNode;
-    var style = props.style || {};
-    var sourceHandle = sourceNode.__rg.handleBounds.source;
-    var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
-    var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
-    var sourceX = sourceNode.__rg.position.x + sourceHandleX;
-    var sourceY = sourceNode.__rg.position.y + sourceHandleY;
-    var targetHandle = targetNode.__rg.handleBounds.target;
-    var targetHandleX = targetHandle ? targetHandle.x + targetHandle.width / 2 : targetNode.__rg.width / 2;
-    var targetHandleY = targetHandle ? targetHandle.y + targetHandle.height / 2 : 0;
-    var targetX = targetNode.__rg.position.x + targetHandleX;
-    var targetY = targetNode.__rg.position.y + targetHandleY;
+    var sourceNodeX = props.sourceNodeX,
+        sourceNodeY = props.sourceNodeY,
+        sourceNodeWidth = props.sourceNodeWidth,
+        sourceNodeHeight = props.sourceNodeHeight,
+        targetNodeX = props.targetNodeX,
+        targetNodeY = props.targetNodeY,
+        targetNodeWidth = props.targetNodeWidth,
+        targetNodeHeight = props.targetNodeHeight,
+        sourceHandleX = props.sourceHandleX,
+        sourceHandleY = props.sourceHandleY,
+        sourceHandleWidth = props.sourceHandleWidth,
+        sourceHandleHeight = props.sourceHandleHeight,
+        targetHandleX = props.targetHandleX,
+        targetHandleY = props.targetHandleY,
+        targetHandleWidth = props.targetHandleWidth,
+        targetHandleHeight = props.targetHandleHeight,
+        hasSourceHandle = props.hasSourceHandle,
+        hasTargetHandle = props.hasTargetHandle,
+        _props$style = props.style,
+        style = _props$style === void 0 ? {} : _props$style;
+
+    var _sourceHandleX = hasSourceHandle ? sourceHandleX + sourceHandleWidth / 2 : sourceNodeWidth / 2;
+
+    var _sourceHandleY = hasSourceHandle ? sourceHandleY + sourceHandleHeight / 2 : sourceNodeHeight;
+
+    var sourceX = sourceNodeX + _sourceHandleX;
+    var sourceY = sourceNodeY + _sourceHandleY;
+
+    var _targetHandleX = hasTargetHandle ? targetHandleX + targetHandleWidth / 2 : targetNodeWidth / 2;
+
+    var _targetHandleY = hasTargetHandle ? targetHandleY + targetHandleHeight / 2 : 0;
+
+    var targetX = targetNodeX + _targetHandleX;
+    var targetY = targetNodeY + _targetHandleY;
     var yOffset = Math.abs(targetY - sourceY) / 2;
     var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
     var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
@@ -33404,17 +33439,36 @@
   });
 
   var StraightEdge = React.memo(function (props) {
-    var targetNode = props.targetNode,
-        sourceNode = props.sourceNode;
-    var style = props.style || {};
-    var sourceHandle = sourceNode.__rg.handleBounds.source;
-    var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
-    var sourceX = sourceNode.__rg.position.x + sourceHandleX;
-    var sourceY = sourceNode.__rg.position.y + sourceNode.__rg.height;
-    var targetHandle = targetNode.__rg.handleBounds.target;
-    var targetHandleX = targetHandle ? targetHandle.x + targetHandle.width / 2 : targetNode.__rg.width / 2;
-    var targetX = targetNode.__rg.position.x + targetHandleX;
-    var targetY = targetNode.__rg.position.y;
+    var sourceNodeX = props.sourceNodeX,
+        sourceNodeY = props.sourceNodeY,
+        sourceNodeWidth = props.sourceNodeWidth,
+        sourceNodeHeight = props.sourceNodeHeight,
+        targetNodeX = props.targetNodeX,
+        targetNodeY = props.targetNodeY,
+        targetNodeWidth = props.targetNodeWidth,
+        targetNodeHeight = props.targetNodeHeight,
+        sourceHandleX = props.sourceHandleX,
+        sourceHandleY = props.sourceHandleY,
+        sourceHandleWidth = props.sourceHandleWidth,
+        sourceHandleHeight = props.sourceHandleHeight,
+        targetHandleX = props.targetHandleX,
+        targetHandleY = props.targetHandleY,
+        targetHandleWidth = props.targetHandleWidth,
+        targetHandleHeight = props.targetHandleHeight,
+        hasSourceHandle = props.hasSourceHandle,
+        hasTargetHandle = props.hasTargetHandle,
+        _props$style = props.style,
+        style = _props$style === void 0 ? {} : _props$style;
+
+    var _sourceHandleX = hasSourceHandle ? sourceHandleX + sourceHandleWidth / 2 : sourceNodeWidth / 2;
+
+    var sourceX = sourceNodeX + _sourceHandleX;
+    var sourceY = sourceNodeY + sourceNodeHeight;
+
+    var _targetHandleX = hasTargetHandle ? targetHandleX + targetHandleWidth / 2 : targetNodeWidth / 2;
+
+    var targetX = targetNodeX + _targetHandleX;
+    var targetY = targetNodeY;
     return React__default.createElement("path", _extends({}, style, {
       d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
     }));
