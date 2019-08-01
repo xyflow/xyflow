@@ -3,6 +3,38 @@ import React, { memo, useContext } from 'react';
 import { GraphContext } from '../GraphContext';
 import ConnectionLine from '../ConnectionLine';
 
+
+function getEdgePositions(sourceNode, targetNode) {
+  const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
+  const hasTargetHandle = !!targetNode.__rg.handleBounds.target;
+
+  const sourceHandleX = hasSourceHandle ?
+    sourceNode.__rg.handleBounds.source.x + (sourceNode.__rg.handleBounds.source.width / 2) :
+    sourceNode.__rg.width / 2;
+
+  const sourceHandleY = hasSourceHandle ?
+    sourceNode.__rg.handleBounds.source.y + (sourceNode.__rg.handleBounds.source.height / 2) :
+    sourceNode.__rg.height;
+
+  const sourceX = sourceNode.__rg.position.x + sourceHandleX;
+  const sourceY = sourceNode.__rg.position.y + sourceHandleY;
+
+  const targetHandleX = hasTargetHandle ?
+    targetNode.__rg.handleBounds.target.x + (targetNode.__rg.handleBounds.target.width / 2) :
+    targetNode.__rg.width / 2;
+
+  const targetHandleY = hasTargetHandle ?
+    targetNode.__rg.handleBounds.target.y + (targetNode.__rg.handleBounds.target.height / 2) :
+    0;
+
+  const targetX = targetNode.__rg.position.x + targetHandleX;
+  const targetY = targetNode.__rg.position.y + targetHandleY;
+
+  return {
+    sourceX, sourceY, targetX, targetY
+  };
+}
+
 function renderEdge(e, props, graphContext) {
   const edgeType = e.type || 'default';
   const sourceNode = graphContext.state.nodes.find(n => n.id === e.source);
@@ -17,9 +49,7 @@ function renderEdge(e, props, graphContext) {
   }
 
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
-  const hasTargetHandle = !!sourceNode.__rg.handleBounds.target;
-
+  const { sourceX, sourceY, targetX, targetY } = getEdgePositions(sourceNode, targetNode);
 
   return (
     <EdgeComponent
@@ -33,24 +63,10 @@ function renderEdge(e, props, graphContext) {
       style={e.style}
       source={e.source}
       target={e.target}
-      sourceNodeX={sourceNode.__rg.position.x}
-      sourceNodeY={sourceNode.__rg.position.y}
-      sourceNodeWidth={sourceNode.__rg.width}
-      sourceNodeHeight={sourceNode.__rg.height}
-      targetNodeX={targetNode.__rg.position.x}
-      targetNodeY={targetNode.__rg.position.y}
-      targetNodeWidth={targetNode.__rg.width}
-      targetNodeHeight={targetNode.__rg.height}
-      hasSourceHandle={hasSourceHandle}
-      hasTargetHandle={hasTargetHandle}
-      sourceHandleX={sourceNode.__rg.handleBounds.source.x}
-      sourceHandleY={sourceNode.__rg.handleBounds.source.y}
-      sourceHandleWidth={sourceNode.__rg.handleBounds.source.width}
-      sourceHandleHeight={sourceNode.__rg.handleBounds.source.height}
-      targetHandleX={targetNode.__rg.handleBounds.target.x}
-      targetHandleY={targetNode.__rg.handleBounds.target.y}
-      targetHandleWidth={targetNode.__rg.handleBounds.target.width}
-      targetHandleHeight={targetNode.__rg.handleBounds.target.height}
+      sourceX={sourceX}
+      sourceY={sourceY}
+      targetX={targetX}
+      targetY={targetY}
     />
   );
 }

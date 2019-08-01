@@ -38434,6 +38434,25 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
+function getEdgePositions(sourceNode, targetNode) {
+  var hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
+  var hasTargetHandle = !!targetNode.__rg.handleBounds.target;
+  var sourceHandleX = hasSourceHandle ? sourceNode.__rg.handleBounds.source.x + sourceNode.__rg.handleBounds.source.width / 2 : sourceNode.__rg.width / 2;
+  var sourceHandleY = hasSourceHandle ? sourceNode.__rg.handleBounds.source.y + sourceNode.__rg.handleBounds.source.height / 2 : sourceNode.__rg.height;
+  var sourceX = sourceNode.__rg.position.x + sourceHandleX;
+  var sourceY = sourceNode.__rg.position.y + sourceHandleY;
+  var targetHandleX = hasTargetHandle ? targetNode.__rg.handleBounds.target.x + targetNode.__rg.handleBounds.target.width / 2 : targetNode.__rg.width / 2;
+  var targetHandleY = hasTargetHandle ? targetNode.__rg.handleBounds.target.y + targetNode.__rg.handleBounds.target.height / 2 : 0;
+  var targetX = targetNode.__rg.position.x + targetHandleX;
+  var targetY = targetNode.__rg.position.y + targetHandleY;
+  return {
+    sourceX: sourceX,
+    sourceY: sourceY,
+    targetX: targetX,
+    targetY: targetY
+  };
+}
+
 function renderEdge(e, props, graphContext) {
   var edgeType = e.type || 'default';
   var sourceNode = graphContext.state.nodes.find(function (n) {
@@ -38452,8 +38471,13 @@ function renderEdge(e, props, graphContext) {
   }
 
   var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  var hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
-  var hasTargetHandle = !!sourceNode.__rg.handleBounds.target;
+
+  var _getEdgePositions = getEdgePositions(sourceNode, targetNode),
+      sourceX = _getEdgePositions.sourceX,
+      sourceY = _getEdgePositions.sourceY,
+      targetX = _getEdgePositions.targetX,
+      targetY = _getEdgePositions.targetY;
+
   return _react.default.createElement(EdgeComponent, {
     key: e.id,
     id: e.id,
@@ -38465,24 +38489,10 @@ function renderEdge(e, props, graphContext) {
     style: e.style,
     source: e.source,
     target: e.target,
-    sourceNodeX: sourceNode.__rg.position.x,
-    sourceNodeY: sourceNode.__rg.position.y,
-    sourceNodeWidth: sourceNode.__rg.width,
-    sourceNodeHeight: sourceNode.__rg.height,
-    targetNodeX: targetNode.__rg.position.x,
-    targetNodeY: targetNode.__rg.position.y,
-    targetNodeWidth: targetNode.__rg.width,
-    targetNodeHeight: targetNode.__rg.height,
-    hasSourceHandle: hasSourceHandle,
-    hasTargetHandle: hasTargetHandle,
-    sourceHandleX: sourceNode.__rg.handleBounds.source.x,
-    sourceHandleY: sourceNode.__rg.handleBounds.source.y,
-    sourceHandleWidth: sourceNode.__rg.handleBounds.source.width,
-    sourceHandleHeight: sourceNode.__rg.handleBounds.source.height,
-    targetHandleX: targetNode.__rg.handleBounds.target.x,
-    targetHandleY: targetNode.__rg.handleBounds.target.y,
-    targetHandleWidth: targetNode.__rg.handleBounds.target.width,
-    targetHandleHeight: targetNode.__rg.handleBounds.target.height
+    sourceX: sourceX,
+    sourceY: sourceY,
+    targetX: targetX,
+    targetY: targetY
   });
 }
 
@@ -41826,40 +41836,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var _default = (0, _react.memo)(function (props) {
-  var sourceNodeX = props.sourceNodeX,
-      sourceNodeY = props.sourceNodeY,
-      sourceNodeWidth = props.sourceNodeWidth,
-      sourceNodeHeight = props.sourceNodeHeight,
-      targetNodeX = props.targetNodeX,
-      targetNodeY = props.targetNodeY,
-      targetNodeWidth = props.targetNodeWidth,
-      targetNodeHeight = props.targetNodeHeight,
-      sourceHandleX = props.sourceHandleX,
-      sourceHandleY = props.sourceHandleY,
-      sourceHandleWidth = props.sourceHandleWidth,
-      sourceHandleHeight = props.sourceHandleHeight,
-      targetHandleX = props.targetHandleX,
-      targetHandleY = props.targetHandleY,
-      targetHandleWidth = props.targetHandleWidth,
-      targetHandleHeight = props.targetHandleHeight,
-      hasSourceHandle = props.hasSourceHandle,
-      hasTargetHandle = props.hasTargetHandle,
+  var sourceX = props.sourceX,
+      sourceY = props.sourceY,
+      targetX = props.targetX,
+      targetY = props.targetY,
       _props$style = props.style,
       style = _props$style === void 0 ? {} : _props$style;
-
-  var _sourceHandleX = hasSourceHandle ? sourceHandleX + sourceHandleWidth / 2 : sourceNodeWidth / 2;
-
-  var _sourceHandleY = hasSourceHandle ? sourceHandleY + sourceHandleHeight / 2 : sourceNodeHeight;
-
-  var sourceX = sourceNodeX + _sourceHandleX;
-  var sourceY = sourceNodeY + _sourceHandleY;
-
-  var _targetHandleX = hasTargetHandle ? targetHandleX + targetHandleWidth / 2 : targetNodeWidth / 2;
-
-  var _targetHandleY = hasTargetHandle ? targetHandleY + targetHandleHeight / 2 : 0;
-
-  var targetX = targetNodeX + _targetHandleX;
-  var targetY = targetNodeY + _targetHandleY;
   var yOffset = Math.abs(targetY - sourceY) / 2;
   var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
   var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
@@ -41884,36 +41866,12 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var _default = (0, _react.memo)(function (props) {
-  var sourceNodeX = props.sourceNodeX,
-      sourceNodeY = props.sourceNodeY,
-      sourceNodeWidth = props.sourceNodeWidth,
-      sourceNodeHeight = props.sourceNodeHeight,
-      targetNodeX = props.targetNodeX,
-      targetNodeY = props.targetNodeY,
-      targetNodeWidth = props.targetNodeWidth,
-      targetNodeHeight = props.targetNodeHeight,
-      sourceHandleX = props.sourceHandleX,
-      sourceHandleY = props.sourceHandleY,
-      sourceHandleWidth = props.sourceHandleWidth,
-      sourceHandleHeight = props.sourceHandleHeight,
-      targetHandleX = props.targetHandleX,
-      targetHandleY = props.targetHandleY,
-      targetHandleWidth = props.targetHandleWidth,
-      targetHandleHeight = props.targetHandleHeight,
-      hasSourceHandle = props.hasSourceHandle,
-      hasTargetHandle = props.hasTargetHandle,
+  var sourceX = props.sourceX,
+      sourceY = props.sourceY,
+      targetX = props.targetX,
+      targetY = props.targetY,
       _props$style = props.style,
       style = _props$style === void 0 ? {} : _props$style;
-
-  var _sourceHandleX = hasSourceHandle ? sourceHandleX + sourceHandleWidth / 2 : sourceNodeWidth / 2;
-
-  var sourceX = sourceNodeX + _sourceHandleX;
-  var sourceY = sourceNodeY + sourceNodeHeight;
-
-  var _targetHandleX = hasTargetHandle ? targetHandleX + targetHandleWidth / 2 : targetNodeWidth / 2;
-
-  var targetX = targetNodeX + _targetHandleX;
-  var targetY = targetNodeY;
   return _react.default.createElement("path", _extends({}, style, {
     d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
   }));
@@ -42692,7 +42650,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55563" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53734" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
