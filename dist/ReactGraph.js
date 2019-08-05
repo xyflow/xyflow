@@ -30070,20 +30070,6 @@
     }
   };
 
-  var updateTransform = function updateTransform(transform) {
-    return {
-      type: UPDATE_TRANSFORM,
-      payload: {
-        transform: [transform.x, transform.y, transform.k]
-      }
-    };
-  };
-  var updateSize = function updateSize(size) {
-    return {
-      type: UPDATE_SIZE,
-      payload: size
-    };
-  };
   var setNodes = function setNodes(nodes) {
     return {
       type: SET_NODES,
@@ -30118,40 +30104,6 @@
       }
     };
   };
-  var initD3 = function initD3(_ref) {
-    var zoom = _ref.zoom,
-        selection = _ref.selection;
-    return {
-      type: INIT_D3,
-      payload: {
-        d3Zoom: zoom,
-        d3Selection: selection,
-        d3Initialised: true
-      }
-    };
-  };
-  var fitView = function fitView() {
-    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        _ref2$padding = _ref2.padding,
-        padding = _ref2$padding === void 0 ? 0 : _ref2$padding;
-
-    return {
-      type: FIT_VIEW,
-      payload: {
-        padding: padding
-      }
-    };
-  };
-  var zoomIn = function zoomIn() {
-    return {
-      type: ZOOM_IN
-    };
-  };
-  var zoomOut = function zoomOut() {
-    return {
-      type: ZOOM_OUT
-    };
-  };
   var setSelection = function setSelection(isActive) {
     return {
       type: SET_SELECTION,
@@ -30160,9 +30112,9 @@
       }
     };
   };
-  var setNodesSelection = function setNodesSelection(_ref3) {
-    var isActive = _ref3.isActive,
-        selection = _ref3.selection;
+  var setNodesSelection = function setNodesSelection(_ref) {
+    var isActive = _ref.isActive,
+        selection = _ref.selection;
     return {
       type: SET_NODES_SELECTION,
       payload: {
@@ -30172,11 +30124,10 @@
     };
   };
   var setSelectedElements = function setSelectedElements(elements) {
-    var elementsArray = Array.isArray(elements) ? elements : [elements];
     return {
       type: SET_SELECTED_ELEMENTS,
       payload: {
-        selectedElements: elementsArray
+        selectedElements: Array.isArray(elements) ? elements : [elements]
       }
     };
   };
@@ -32878,6 +32829,55 @@
       }
     })));
   });
+
+  var updateTransform = function updateTransform(transform) {
+    return {
+      type: UPDATE_TRANSFORM,
+      payload: {
+        transform: [transform.x, transform.y, transform.k]
+      }
+    };
+  };
+  var updateSize = function updateSize(size) {
+    return {
+      type: UPDATE_SIZE,
+      payload: size
+    };
+  };
+  var initD3 = function initD3(_ref) {
+    var zoom = _ref.zoom,
+        selection = _ref.selection;
+    return {
+      type: INIT_D3,
+      payload: {
+        d3Zoom: zoom,
+        d3Selection: selection,
+        d3Initialised: true
+      }
+    };
+  };
+  var fitView = function fitView() {
+    var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref2$padding = _ref2.padding,
+        padding = _ref2$padding === void 0 ? 0 : _ref2$padding;
+
+    return {
+      type: FIT_VIEW,
+      payload: {
+        padding: padding
+      }
+    };
+  };
+  var zoomIn = function zoomIn() {
+    return {
+      type: ZOOM_IN
+    };
+  };
+  var zoomOut = function zoomOut() {
+    return {
+      type: ZOOM_OUT
+    };
+  };
 
   function useKeyPress(targetKey) {
     var _useState = React.useState(false),

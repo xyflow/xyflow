@@ -9,10 +9,11 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../UserSelection';
 import NodesSelection from '../NodesSelection';
+import { setNodesSelection } from '../state/actions';
 import {
   updateTransform, updateSize, initD3, fitView,
-  zoomIn, zoomOut, setNodesSelection
-} from '../state/actions';
+  zoomIn, zoomOut
+} from '../state/view-actions';
 import { useKeyPress } from '../hooks';
 
 const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);

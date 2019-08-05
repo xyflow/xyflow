@@ -37973,29 +37973,9 @@ exports.reducer = reducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateSelection = exports.removeNodes = exports.setSelectedElements = exports.setNodesSelection = exports.setSelection = exports.zoomOut = exports.zoomIn = exports.fitView = exports.initD3 = exports.updateNodePos = exports.updateNodeData = exports.setEdges = exports.setNodes = exports.updateSize = exports.updateTransform = void 0;
+exports.updateSelection = exports.removeNodes = exports.setSelectedElements = exports.setNodesSelection = exports.setSelection = exports.updateNodePos = exports.updateNodeData = exports.setEdges = exports.setNodes = void 0;
 
 var _index = require("./index");
-
-var updateTransform = function updateTransform(transform) {
-  return {
-    type: _index.UPDATE_TRANSFORM,
-    payload: {
-      transform: [transform.x, transform.y, transform.k]
-    }
-  };
-};
-
-exports.updateTransform = updateTransform;
-
-var updateSize = function updateSize(size) {
-  return {
-    type: _index.UPDATE_SIZE,
-    payload: size
-  };
-};
-
-exports.updateSize = updateSize;
 
 var setNodes = function setNodes(nodes) {
   return {
@@ -38043,52 +38023,6 @@ var updateNodePos = function updateNodePos(id, pos) {
 
 exports.updateNodePos = updateNodePos;
 
-var initD3 = function initD3(_ref) {
-  var zoom = _ref.zoom,
-      selection = _ref.selection;
-  return {
-    type: _index.INIT_D3,
-    payload: {
-      d3Zoom: zoom,
-      d3Selection: selection,
-      d3Initialised: true
-    }
-  };
-};
-
-exports.initD3 = initD3;
-
-var fitView = function fitView() {
-  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      _ref2$padding = _ref2.padding,
-      padding = _ref2$padding === void 0 ? 0 : _ref2$padding;
-
-  return {
-    type: _index.FIT_VIEW,
-    payload: {
-      padding: padding
-    }
-  };
-};
-
-exports.fitView = fitView;
-
-var zoomIn = function zoomIn() {
-  return {
-    type: _index.ZOOM_IN
-  };
-};
-
-exports.zoomIn = zoomIn;
-
-var zoomOut = function zoomOut() {
-  return {
-    type: _index.ZOOM_OUT
-  };
-};
-
-exports.zoomOut = zoomOut;
-
 var setSelection = function setSelection(isActive) {
   return {
     type: _index.SET_SELECTION,
@@ -38100,9 +38034,9 @@ var setSelection = function setSelection(isActive) {
 
 exports.setSelection = setSelection;
 
-var setNodesSelection = function setNodesSelection(_ref3) {
-  var isActive = _ref3.isActive,
-      selection = _ref3.selection;
+var setNodesSelection = function setNodesSelection(_ref) {
+  var isActive = _ref.isActive,
+      selection = _ref.selection;
   return {
     type: _index.SET_NODES_SELECTION,
     payload: {
@@ -38115,11 +38049,10 @@ var setNodesSelection = function setNodesSelection(_ref3) {
 exports.setNodesSelection = setNodesSelection;
 
 var setSelectedElements = function setSelectedElements(elements) {
-  var elementsArray = Array.isArray(elements) ? elements : [elements];
   return {
     type: _index.SET_SELECTED_ELEMENTS,
     payload: {
-      selectedElements: elementsArray
+      selectedElements: Array.isArray(elements) ? elements : [elements]
     }
   };
 };
@@ -38127,11 +38060,10 @@ var setSelectedElements = function setSelectedElements(elements) {
 exports.setSelectedElements = setSelectedElements;
 
 var removeNodes = function removeNodes(ids) {
-  var idArray = Array.isArray(ids) ? ids : [ids];
   return {
     type: _index.REMOVE_NODES,
     payload: {
-      ids: idArray
+      ids: Array.isArray(ids) ? ids : [ids]
     }
   };
 };
@@ -41020,7 +40952,82 @@ var _default = (0, _react.memo)(function () {
 });
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-draggable":"../node_modules/react-draggable/dist/react-draggable.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js","../state/actions":"../src/state/actions.js"}],"../src/hooks.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-draggable":"../node_modules/react-draggable/dist/react-draggable.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js","../state/actions":"../src/state/actions.js"}],"../src/state/view-actions.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.zoomOut = exports.zoomIn = exports.fitView = exports.initD3 = exports.updateSize = exports.updateTransform = void 0;
+
+var _index = require("./index");
+
+var updateTransform = function updateTransform(transform) {
+  return {
+    type: _index.UPDATE_TRANSFORM,
+    payload: {
+      transform: [transform.x, transform.y, transform.k]
+    }
+  };
+};
+
+exports.updateTransform = updateTransform;
+
+var updateSize = function updateSize(size) {
+  return {
+    type: _index.UPDATE_SIZE,
+    payload: size
+  };
+};
+
+exports.updateSize = updateSize;
+
+var initD3 = function initD3(_ref) {
+  var zoom = _ref.zoom,
+      selection = _ref.selection;
+  return {
+    type: _index.INIT_D3,
+    payload: {
+      d3Zoom: zoom,
+      d3Selection: selection,
+      d3Initialised: true
+    }
+  };
+};
+
+exports.initD3 = initD3;
+
+var fitView = function fitView() {
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref2$padding = _ref2.padding,
+      padding = _ref2$padding === void 0 ? 0 : _ref2$padding;
+
+  return {
+    type: _index.FIT_VIEW,
+    payload: {
+      padding: padding
+    }
+  };
+};
+
+exports.fitView = fitView;
+
+var zoomIn = function zoomIn() {
+  return {
+    type: _index.ZOOM_IN
+  };
+};
+
+exports.zoomIn = zoomIn;
+
+var zoomOut = function zoomOut() {
+  return {
+    type: _index.ZOOM_OUT
+  };
+};
+
+exports.zoomOut = zoomOut;
+},{"./index":"../src/state/index.js"}],"../src/hooks.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41100,6 +41107,8 @@ var _NodesSelection = _interopRequireDefault(require("../NodesSelection"));
 
 var _actions = require("../state/actions");
 
+var _viewActions = require("../state/view-actions");
+
 var _hooks = require("../hooks");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -41117,7 +41126,7 @@ var GraphView = (0, _react.memo)(function (props) {
   var shiftPressed = (0, _hooks.useKeyPress)('Shift');
   (0, _react.useEffect)(function () {
     var selection = (0, _d3Selection.select)(zoomPane.current).call(d3ZoomInstance);
-    dispatch((0, _actions.initD3)({
+    dispatch((0, _viewActions.initD3)({
       zoom: d3ZoomInstance,
       selection: selection
     }));
@@ -41131,7 +41140,7 @@ var GraphView = (0, _react.memo)(function (props) {
           return false;
         }
 
-        dispatch((0, _actions.updateTransform)(_d3Selection.event.transform));
+        dispatch((0, _viewActions.updateTransform)(_d3Selection.event.transform));
         props.onMove();
       });
 
@@ -41143,7 +41152,7 @@ var GraphView = (0, _react.memo)(function (props) {
     }
   }, [shiftPressed]);
   (0, _react.useEffect)(function () {
-    return dispatch((0, _actions.updateSize)(props.size));
+    return dispatch((0, _viewActions.updateSize)(props.size));
   }, [props.size.width, props.size.height]);
   (0, _react.useEffect)(function () {
     if (state.d3Initialised) {
@@ -41151,13 +41160,13 @@ var GraphView = (0, _react.memo)(function (props) {
         nodes: state.nodes,
         edges: state.edges,
         fitView: function fitView(opts) {
-          return dispatch((0, _actions.fitView)(opts));
+          return dispatch((0, _viewActions.fitView)(opts));
         },
         zoomIn: function zoomIn() {
-          return dispatch((0, _actions.zoomIn)());
+          return dispatch((0, _viewActions.zoomIn)());
         },
         zoomOut: function zoomOut() {
-          return dispatch((0, _actions.zoomOut)());
+          return dispatch((0, _viewActions.zoomOut)());
         }
       });
     }
@@ -41199,7 +41208,7 @@ var _default = _reactSizeme.default.withSize({
 })(GraphView);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","d3-zoom":"../node_modules/d3-zoom/src/index.js","d3-selection":"../node_modules/d3-selection/src/index.js","react-sizeme":"../node_modules/react-sizeme/dist/react-sizeme.js","../ConnectionContext":"../src/ConnectionContext/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer":"../src/NodeRenderer/index.js","../EdgeRenderer":"../src/EdgeRenderer/index.js","../UserSelection":"../src/UserSelection/index.js","../NodesSelection":"../src/NodesSelection/index.js","../state/actions":"../src/state/actions.js","../hooks":"../src/hooks.js"}],"../src/GlobalKeyHandler/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","d3-zoom":"../node_modules/d3-zoom/src/index.js","d3-selection":"../node_modules/d3-selection/src/index.js","react-sizeme":"../node_modules/react-sizeme/dist/react-sizeme.js","../ConnectionContext":"../src/ConnectionContext/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer":"../src/NodeRenderer/index.js","../EdgeRenderer":"../src/EdgeRenderer/index.js","../UserSelection":"../src/UserSelection/index.js","../NodesSelection":"../src/NodesSelection/index.js","../state/actions":"../src/state/actions.js","../state/view-actions":"../src/state/view-actions.js","../hooks":"../src/hooks.js"}],"../src/GlobalKeyHandler/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
