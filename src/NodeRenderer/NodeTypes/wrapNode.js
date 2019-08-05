@@ -92,17 +92,16 @@ export default NodeComponent => {
     } = props;
 
     const position = { x: xPos, y: yPos };
-    const [ x, y, k ] = transform;
     const nodeClasses = cx('react-graph__node', { selected });
     const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
     useEffect(() => {
       const bounds = nodeElement.current.getBoundingClientRect();
-      const unscaledWith = Math.round(bounds.width * (1 / k));
-      const unscaledHeight = Math.round(bounds.height * (1 / k));
+      const unscaledWith = Math.round(bounds.width * (1 / transform[2]));
+      const unscaledHeight = Math.round(bounds.height * (1 / transform[2]));
       const handleBounds = {
-        source: getHandleBounds('.source', nodeElement.current, bounds, k),
-        target: getHandleBounds('.target', nodeElement.current, bounds, k)
+        source: getHandleBounds('.source', nodeElement.current, bounds, transform[2]),
+        target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
       };
 
       dispatch(updateNodeData(id, { width: unscaledWith, height: unscaledHeight, handleBounds }));
@@ -110,7 +109,7 @@ export default NodeComponent => {
 
     return (
       <ReactDraggable.DraggableCore
-        onStart={evt => onStart(evt, { setOffset,transform, position })}
+        onStart={evt => onStart(evt, { setOffset, transform, position })}
         onDrag={evt => onDrag(evt, { dispatch, setDragging, id, offset, transform })}
         onStop={() => onStop({ onNodeDragStop, isDragging, setDragging, id, type, position, data })}
         scale={transform[2]}

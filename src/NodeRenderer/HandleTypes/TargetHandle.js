@@ -21,6 +21,6 @@ const TargetHandle = memo((props) => {
 });
 
 TargetHandle.displayName = 'TargetHandle';
-TargetHandle.whyDidYouRender = false;
+TargetHandle.whyDidYouRender = true;
 
 export default TargetHandle;

@@ -39,7 +39,10 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
   document.addEventListener('mouseup', onMouseUp)
 }
 
-const BaseHandle = memo(({ source, target, nodeId, onConnect, setSourceId, setPosition, className = null, ...rest }) => {
+const BaseHandle = memo(({
+  source, target, nodeId, onConnect,
+  setSourceId, setPosition, className, ...rest
+}) => {
   const handleClasses = cx(
     'react-graph__handle',
     className,

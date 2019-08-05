@@ -35710,13 +35710,15 @@ var Provider = (0, _react.memo)(function (_ref) {
       position = _useState4[0],
       setPosition = _useState4[1];
 
-  var connectionContext = {
-    sourceId: sourceId,
-    setSourceId: setSourceId,
-    position: position,
-    setPosition: setPosition,
-    onConnect: onConnect
-  };
+  var connectionContext = (0, _react.useMemo)(function () {
+    return {
+      sourceId: sourceId,
+      setSourceId: setSourceId,
+      position: position,
+      setPosition: setPosition,
+      onConnect: onConnect
+    };
+  }, [sourceId, position]);
   return _react.default.createElement(ConnectionContext.Provider, {
     value: connectionContext
   }, children);
@@ -41346,8 +41348,7 @@ var BaseHandle = (0, _react.memo)(function (_ref2) {
       onConnect = _ref2.onConnect,
       setSourceId = _ref2.setSourceId,
       setPosition = _ref2.setPosition,
-      _ref2$className = _ref2.className,
-      className = _ref2$className === void 0 ? null : _ref2$className,
+      className = _ref2.className,
       rest = _objectWithoutProperties(_ref2, ["source", "target", "nodeId", "onConnect", "setSourceId", "setPosition", "className"]);
 
   var handleClasses = (0, _classnames.default)('react-graph__handle', className, {
@@ -41429,7 +41430,7 @@ var TargetHandle = (0, _react.memo)(function (props) {
   }, props));
 });
 TargetHandle.displayName = 'TargetHandle';
-TargetHandle.whyDidYouRender = false;
+TargetHandle.whyDidYouRender = true;
 var _default = TargetHandle;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../../ConnectionContext":"../src/ConnectionContext/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/HandleTypes/SourceHandle.js":[function(require,module,exports) {
@@ -41758,12 +41759,6 @@ var _default = function _default(NodeComponent) {
       x: xPos,
       y: yPos
     };
-
-    var _transform = _slicedToArray(transform, 3),
-        x = _transform[0],
-        y = _transform[1],
-        k = _transform[2];
-
     var nodeClasses = (0, _classnames.default)('react-graph__node', {
       selected: selected
     });
@@ -41773,11 +41768,11 @@ var _default = function _default(NodeComponent) {
     };
     (0, _react.useEffect)(function () {
       var bounds = nodeElement.current.getBoundingClientRect();
-      var unscaledWith = Math.round(bounds.width * (1 / k));
-      var unscaledHeight = Math.round(bounds.height * (1 / k));
+      var unscaledWith = Math.round(bounds.width * (1 / transform[2]));
+      var unscaledHeight = Math.round(bounds.height * (1 / transform[2]));
       var handleBounds = {
-        source: getHandleBounds('.source', nodeElement.current, bounds, k),
-        target: getHandleBounds('.target', nodeElement.current, bounds, k)
+        source: getHandleBounds('.source', nodeElement.current, bounds, transform[2]),
+        target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
       };
       dispatch((0, _actions.updateNodeData)(id, {
         width: unscaledWith,

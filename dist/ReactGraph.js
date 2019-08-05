@@ -27933,13 +27933,15 @@
         position = _useState4[0],
         setPosition = _useState4[1];
 
-    var connectionContext = {
-      sourceId: sourceId,
-      setSourceId: setSourceId,
-      position: position,
-      setPosition: setPosition,
-      onConnect: onConnect
-    };
+    var connectionContext = React.useMemo(function () {
+      return {
+        sourceId: sourceId,
+        setSourceId: setSourceId,
+        position: position,
+        setPosition: setPosition,
+        onConnect: onConnect
+      };
+    }, [sourceId, position]);
     return React__default.createElement(ConnectionContext.Provider, {
       value: connectionContext
     }, children);
@@ -33088,8 +33090,7 @@
         onConnect = _ref2.onConnect,
         setSourceId = _ref2.setSourceId,
         setPosition = _ref2.setPosition,
-        _ref2$className = _ref2.className,
-        className = _ref2$className === void 0 ? null : _ref2$className,
+        className = _ref2.className,
         rest = _objectWithoutProperties(_ref2, ["source", "target", "nodeId", "onConnect", "setSourceId", "setPosition", "className"]);
 
     var handleClasses = classnames('react-graph__handle', className, {
@@ -33134,7 +33135,7 @@
     }, props));
   });
   TargetHandle.displayName = 'TargetHandle';
-  TargetHandle.whyDidYouRender = false;
+  TargetHandle.whyDidYouRender = true;
 
   var SourceHandle = React.memo(function (props) {
     var nodeId = React.useContext(NodeIdContext);
@@ -33339,12 +33340,6 @@
         x: xPos,
         y: yPos
       };
-
-      var _transform = _slicedToArray(transform, 3),
-          x = _transform[0],
-          y = _transform[1],
-          k = _transform[2];
-
       var nodeClasses = classnames('react-graph__node', {
         selected: selected
       });
@@ -33354,11 +33349,11 @@
       };
       React.useEffect(function () {
         var bounds = nodeElement.current.getBoundingClientRect();
-        var unscaledWith = Math.round(bounds.width * (1 / k));
-        var unscaledHeight = Math.round(bounds.height * (1 / k));
+        var unscaledWith = Math.round(bounds.width * (1 / transform[2]));
+        var unscaledHeight = Math.round(bounds.height * (1 / transform[2]));
         var handleBounds = {
-          source: getHandleBounds('.source', nodeElement.current, bounds, k),
-          target: getHandleBounds('.target', nodeElement.current, bounds, k)
+          source: getHandleBounds('.source', nodeElement.current, bounds, transform[2]),
+          target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
         };
         dispatch(updateNodeData(id, {
           width: unscaledWith,
