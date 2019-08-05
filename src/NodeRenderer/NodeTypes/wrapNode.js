@@ -31,7 +31,7 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   };
 };
 
-const onStart = (evt, { setOffset, position, transform }) => {
+const onStart = (evt, { dispatch, setOffset, onClick, id, type, data, position, transform }) => {
   if (isInput(evt) || isHandle(evt)) {
     return false;
   }
@@ -42,8 +42,11 @@ const onStart = (evt, { setOffset, position, transform }) => {
   }
   const offsetX = scaledClient.x - position.x - [transform[0]];
   const offsetY = scaledClient.y - position.y - [transform[1]];
+  const node = { id, type, position, data }
 
+  dispatch(setSelectedElements({ id, type }));
   setOffset({ x: offsetX, y: offsetY });
+  onClick(node);
 };
 
 const onDrag = (evt, { dispatch, setDragging, id, offset, transform }) => {
@@ -57,17 +60,6 @@ const onDrag = (evt, { dispatch, setDragging, id, offset, transform }) => {
     x: scaledClient.x - [transform[0]] - offset.x,
     y: scaledClient.y - [transform[1]] - offset.y
   }));
-};
-
-const onNodeClick = (evt, { onClick, dispatch, id, type, position, data }) => {
-  if (isInput(evt)) {
-    return false;
-  }
-
-  const node = { id, type, position, data }
-
-  dispatch(setSelectedElements({ id, type }));
-  onClick(node);
 };
 
 const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, data }) => {
@@ -88,7 +80,7 @@ export default NodeComponent => {
     const [isDragging, setDragging] = useState(false);
     const {
       id, type, data, transform, xPos, yPos, selected,
-      dispatch, getNodeById, onClick, onNodeDragStop
+      dispatch, onClick, onNodeDragStop, style
     } = props;
 
     const position = { x: xPos, y: yPos };
@@ -109,7 +101,7 @@ export default NodeComponent => {
 
     return (
       <ReactDraggable.DraggableCore
-        onStart={evt => onStart(evt, { setOffset, transform, position })}
+        onStart={evt => onStart(evt, { dispatch, onClick, id, type, data, setOffset, transform, position })}
         onDrag={evt => onDrag(evt, { dispatch, setDragging, id, offset, transform })}
         onStop={() => onStop({ onNodeDragStop, isDragging, setDragging, id, type, position, data })}
         scale={transform[2]}
@@ -118,10 +110,15 @@ export default NodeComponent => {
           className={nodeClasses}
           ref={nodeElement}
           style={nodeStyle}
-          onClick={evt => onNodeClick(evt, { getNodeById, onClick, dispatch, id, type, position, data })}
         >
           <Provider value={id}>
-            <NodeComponent {...props} selected={selected} />
+            <NodeComponent
+              id={id}
+              data={data}
+              type={type}
+              style={style}
+              selected={selected}
+            />
           </Provider>
         </div>
       </ReactDraggable.DraggableCore>

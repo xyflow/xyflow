@@ -41606,8 +41606,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -41643,7 +41641,12 @@ var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k
 };
 
 var _onStart = function onStart(evt, _ref) {
-  var setOffset = _ref.setOffset,
+  var dispatch = _ref.dispatch,
+      setOffset = _ref.setOffset,
+      onClick = _ref.onClick,
+      id = _ref.id,
+      type = _ref.type,
+      data = _ref.data,
       position = _ref.position,
       transform = _ref.transform;
 
@@ -41657,10 +41660,21 @@ var _onStart = function onStart(evt, _ref) {
   };
   var offsetX = scaledClient.x - position.x - [transform[0]];
   var offsetY = scaledClient.y - position.y - [transform[1]];
+  var node = {
+    id: id,
+    type: type,
+    position: position,
+    data: data
+  };
+  dispatch((0, _actions.setSelectedElements)({
+    id: id,
+    type: type
+  }));
   setOffset({
     x: offsetX,
     y: offsetY
   });
+  onClick(node);
 };
 
 var _onDrag = function onDrag(evt, _ref2) {
@@ -41680,39 +41694,14 @@ var _onDrag = function onDrag(evt, _ref2) {
   }));
 };
 
-var onNodeClick = function onNodeClick(evt, _ref3) {
-  var onClick = _ref3.onClick,
-      dispatch = _ref3.dispatch,
+var _onStop = function onStop(_ref3) {
+  var onNodeDragStop = _ref3.onNodeDragStop,
+      setDragging = _ref3.setDragging,
+      isDragging = _ref3.isDragging,
       id = _ref3.id,
       type = _ref3.type,
       position = _ref3.position,
       data = _ref3.data;
-
-  if (isInput(evt)) {
-    return false;
-  }
-
-  var node = {
-    id: id,
-    type: type,
-    position: position,
-    data: data
-  };
-  dispatch((0, _actions.setSelectedElements)({
-    id: id,
-    type: type
-  }));
-  onClick(node);
-};
-
-var _onStop = function onStop(_ref4) {
-  var onNodeDragStop = _ref4.onNodeDragStop,
-      setDragging = _ref4.setDragging,
-      isDragging = _ref4.isDragging,
-      id = _ref4.id,
-      type = _ref4.type,
-      position = _ref4.position,
-      data = _ref4.data;
 
   if (!isDragging) {
     return false;
@@ -41752,9 +41741,9 @@ var _default = function _default(NodeComponent) {
         yPos = props.yPos,
         selected = props.selected,
         dispatch = props.dispatch,
-        getNodeById = props.getNodeById,
-        _onClick = props.onClick,
-        onNodeDragStop = props.onNodeDragStop;
+        onClick = props.onClick,
+        onNodeDragStop = props.onNodeDragStop,
+        style = props.style;
     var position = {
       x: xPos,
       y: yPos
@@ -41783,6 +41772,11 @@ var _default = function _default(NodeComponent) {
     return _react.default.createElement(_reactDraggable.default.DraggableCore, {
       onStart: function onStart(evt) {
         return _onStart(evt, {
+          dispatch: dispatch,
+          onClick: onClick,
+          id: id,
+          type: type,
+          data: data,
           setOffset: setOffset,
           transform: transform,
           position: position
@@ -41812,23 +41806,16 @@ var _default = function _default(NodeComponent) {
     }, _react.default.createElement("div", {
       className: nodeClasses,
       ref: nodeElement,
-      style: nodeStyle,
-      onClick: function onClick(evt) {
-        return onNodeClick(evt, {
-          getNodeById: getNodeById,
-          onClick: _onClick,
-          dispatch: dispatch,
-          id: id,
-          type: type,
-          position: position,
-          data: data
-        });
-      }
+      style: nodeStyle
     }, _react.default.createElement(_NodeIdContext.Provider, {
       value: id
-    }, _react.default.createElement(NodeComponent, _extends({}, props, {
+    }, _react.default.createElement(NodeComponent, {
+      id: id,
+      data: data,
+      type: type,
+      style: style,
       selected: selected
-    })))));
+    }))));
   });
   WrappedComp.displayName = 'Wrapped Node';
   WrappedComp.whyDidYouRender = false;
