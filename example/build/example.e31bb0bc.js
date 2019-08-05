@@ -41647,6 +41647,7 @@ var _onStart = function onStart(evt, _ref) {
 
 var _onDrag = function onDrag(evt, _ref2) {
   var dispatch = _ref2.dispatch,
+      setDragging = _ref2.setDragging,
       id = _ref2.id,
       offset = _ref2.offset,
       transform = _ref2.transform;
@@ -41654,6 +41655,7 @@ var _onDrag = function onDrag(evt, _ref2) {
     x: evt.clientX * (1 / [transform[2]]),
     y: evt.clientY * (1 / [transform[2]])
   };
+  setDragging(true);
   dispatch((0, _actions.updateNodePos)(id, {
     x: scaledClient.x - [transform[0]] - offset.x,
     y: scaledClient.y - [transform[1]] - offset.y
@@ -41687,10 +41689,18 @@ var onNodeClick = function onNodeClick(evt, _ref3) {
 
 var _onStop = function onStop(_ref4) {
   var onNodeDragStop = _ref4.onNodeDragStop,
+      setDragging = _ref4.setDragging,
+      isDragging = _ref4.isDragging,
       id = _ref4.id,
       type = _ref4.type,
       position = _ref4.position,
       data = _ref4.data;
+
+  if (!isDragging) {
+    return false;
+  }
+
+  setDragging(false);
   onNodeDragStop({
     id: id,
     type: type,
@@ -41710,6 +41720,11 @@ var _default = function _default(NodeComponent) {
         _useState2 = _slicedToArray(_useState, 2),
         offset = _useState2[0],
         setOffset = _useState2[1];
+
+    var _useState3 = (0, _react.useState)(false),
+        _useState4 = _slicedToArray(_useState3, 2),
+        isDragging = _useState4[0],
+        setDragging = _useState4[1];
 
     var id = props.id,
         type = props.type,
@@ -41767,6 +41782,7 @@ var _default = function _default(NodeComponent) {
       onDrag: function onDrag(evt) {
         return _onDrag(evt, {
           dispatch: dispatch,
+          setDragging: setDragging,
           id: id,
           offset: offset,
           transform: transform
@@ -41775,6 +41791,8 @@ var _default = function _default(NodeComponent) {
       onStop: function onStop() {
         return _onStop({
           onNodeDragStop: onNodeDragStop,
+          isDragging: isDragging,
+          setDragging: setDragging,
           id: id,
           type: type,
           position: position,
@@ -42312,7 +42330,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-// import Graph from '../dist/ReactGraph';
+// import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle } from '../dist/ReactGraph';
 var SpecialNode = function SpecialNode(_ref) {
   var data = _ref.data,
       styles = _ref.styles;
@@ -42676,7 +42694,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55193" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57447" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

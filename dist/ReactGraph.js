@@ -33239,6 +33239,7 @@
 
   var _onDrag = function onDrag(evt, _ref2) {
     var dispatch = _ref2.dispatch,
+        setDragging = _ref2.setDragging,
         id = _ref2.id,
         offset = _ref2.offset,
         transform = _ref2.transform;
@@ -33246,6 +33247,7 @@
       x: evt.clientX * (1 / [transform[2]]),
       y: evt.clientY * (1 / [transform[2]])
     };
+    setDragging(true);
     dispatch(updateNodePos(id, {
       x: scaledClient.x - [transform[0]] - offset.x,
       y: scaledClient.y - [transform[1]] - offset.y
@@ -33279,10 +33281,18 @@
 
   var _onStop = function onStop(_ref4) {
     var onNodeDragStop = _ref4.onNodeDragStop,
+        setDragging = _ref4.setDragging,
+        isDragging = _ref4.isDragging,
         id = _ref4.id,
         type = _ref4.type,
         position = _ref4.position,
         data = _ref4.data;
+
+    if (!isDragging) {
+      return false;
+    }
+
+    setDragging(false);
     onNodeDragStop({
       id: id,
       type: type,
@@ -33302,6 +33312,11 @@
           _useState2 = _slicedToArray(_useState, 2),
           offset = _useState2[0],
           setOffset = _useState2[1];
+
+      var _useState3 = React.useState(false),
+          _useState4 = _slicedToArray(_useState3, 2),
+          isDragging = _useState4[0],
+          setDragging = _useState4[1];
 
       var id = props.id,
           type = props.type,
@@ -33359,6 +33374,7 @@
         onDrag: function onDrag(evt) {
           return _onDrag(evt, {
             dispatch: dispatch,
+            setDragging: setDragging,
             id: id,
             offset: offset,
             transform: transform
@@ -33367,6 +33383,8 @@
         onStop: function onStop() {
           return _onStop({
             onNodeDragStop: onNodeDragStop,
+            isDragging: isDragging,
+            setDragging: setDragging,
             id: id,
             type: type,
             position: position,

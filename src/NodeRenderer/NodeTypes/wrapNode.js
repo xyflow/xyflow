@@ -47,12 +47,13 @@ const onStart = (evt, { setOffset, position, transform }) => {
   setOffset({ x: offsetX, y: offsetY });
 };
 
-const onDrag = (evt, { dispatch, id, offset, transform }) => {
+const onDrag = (evt, { dispatch, setDragging, id, offset, transform }) => {
   const scaledClient = {
     x: evt.clientX * (1 / [transform[2]]),
     y: evt.clientY * (1 / [transform[2]])
   };
 
+  setDragging(true);
   dispatch(updateNodePos(id, {
     x: scaledClient.x - [transform[0]] - offset.x,
     y: scaledClient.y - [transform[1]] - offset.y
@@ -70,7 +71,12 @@ const onNodeClick = (evt, { onClick, dispatch, id, type, position, data }) => {
   onClick(node);
 };
 
-const onStop = ({ onNodeDragStop, id, type, position, data }) => {
+const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, data }) => {
+  if (!isDragging) {
+    return false;
+  }
+
+  setDragging(false);
   onNodeDragStop({
     id, type, position, data
   });
@@ -80,6 +86,7 @@ export default NodeComponent => {
   const WrappedComp = memo((props) => {
     const nodeElement = useRef(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setDragging] = useState(false);
     const {
       id, type, data, transform, xPos, yPos, selectedElements,
       dispatch, getNodeById, onClick, onNodeDragStop
@@ -105,9 +112,9 @@ export default NodeComponent => {
 
     return (
       <ReactDraggable.DraggableCore
-        onStart={evt => onStart(evt, { setOffset, transform, position })}
-        onDrag={evt => onDrag(evt, { dispatch, id, offset, transform })}
-        onStop={() => onStop({ onNodeDragStop, id, type, position, data })}
+        onStart={evt => onStart(evt, { setOffset,transform, position })}
+        onDrag={evt => onDrag(evt, { dispatch, setDragging, id, offset, transform })}
+        onStop={() => onStop({ onNodeDragStop, isDragging, setDragging, id, type, position, data })}
         scale={transform[2]}
       >
         <div
