@@ -33623,6 +33623,10 @@
     connectionLineStyle: {}
   };
 
+  var isFunction = function isFunction(obj) {
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+  };
+
   var baseStyle = {
     position: 'absolute',
     zIndex: 5,
@@ -33656,6 +33660,9 @@
       height: state.height
     };
     var scaleFactor = width / state.width;
+    var nodeColorFunc = isFunction(nodeColor) ? nodeColor : function () {
+      return nodeColor;
+    };
     React.useEffect(function () {
       if (canvasNode) {
         var ctx = canvasNode.current.getContext('2d');
@@ -33668,7 +33675,7 @@
           var transformY = state.transform[1];
           var x = pos.x * state.transform[2] + transformX;
           var y = pos.y * state.transform[2] + transformY;
-          ctx.fillStyle = nodeColor;
+          ctx.fillStyle = nodeColorFunc(n);
           ctx.fillRect(x * scaleFactor, y * scaleFactor, n.__rg.width * scaleFactor * state.transform[2], n.__rg.height * scaleFactor * state.transform[2]);
         });
       }

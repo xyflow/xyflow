@@ -165,6 +165,11 @@ class App extends PureComponent {
       >
         <MiniMap
           style={{ position: 'absolute', right: 10, bottom: 10 }}
+          nodeColor={n => {
+            if (n.type === 'input') return 'blue'
+            if (n.type === 'output') return 'green'
+            return 'red';
+          }}
         />
         <button
           type="button"

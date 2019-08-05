@@ -1,6 +1,7 @@
 import React, { useRef, useContext, useEffect } from 'react';
 import classnames from 'classnames';
 
+import { isFunction } from '../../utils'
 import { getNodesInside } from '../../graph-utils';
 import { GraphContext } from '../../GraphContext';
 
@@ -21,6 +22,7 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
   const height = (state.height / (state.width || 1)) * width;
   const bbox = { x: 0, y: 0, width: state.width, height: state.height };
   const scaleFactor = width / state.width;
+  const nodeColorFunc = isFunction(nodeColor) ? nodeColor : () => nodeColor;
 
   useEffect(() => {
     if (canvasNode) {
@@ -37,7 +39,8 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
         const x = (pos.x * state.transform[2]) + transformX;
         const y = (pos.y * state.transform[2]) + transformY;
 
-        ctx.fillStyle = nodeColor;
+        ctx.fillStyle = nodeColorFunc(n);
+
         ctx.fillRect(
           (x * scaleFactor),
           (y * scaleFactor),
