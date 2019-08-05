@@ -3,6 +3,7 @@ import React, { memo, useContext } from 'react';
 import { GraphContext } from '../GraphContext';
 import { ConnectionContext } from '../ConnectionContext';
 import ConnectionLine from '../ConnectionLine';
+import { isEdge } from '../graph-utils';
 
 function getEdgePositions(sourceNode, targetNode) {
   const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
@@ -50,6 +51,9 @@ function renderEdge(e, props, graphContext) {
 
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
   const { sourceX, sourceY, targetX, targetY } = getEdgePositions(sourceNode, targetNode);
+  const selected = graphContext.state.selectedElements
+    .filter(isEdge)
+    .find(elm => elm.source === e.source && elm.target === e.target);
 
   return (
     <EdgeComponent
@@ -57,7 +61,7 @@ function renderEdge(e, props, graphContext) {
       id={e.id}
       type={e.type}
       onClick={props.onElementClick}
-      selectedElements={graphContext.state.selectedElements}
+      selected={selected}
       dispatch={graphContext.dispatch}
       animated={e.animated}
       style={e.style}

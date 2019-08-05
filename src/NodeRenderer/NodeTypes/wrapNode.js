@@ -3,7 +3,6 @@ import ReactDraggable from 'react-draggable';
 import cx from 'classnames';
 
 import { updateNodeData, updateNodePos, setSelectedElements } from '../../state/actions';
-import { isNode } from '../../graph-utils';
 import { Provider } from '../NodeIdContext';
 
 const isInput = e => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
@@ -88,13 +87,12 @@ export default NodeComponent => {
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setDragging] = useState(false);
     const {
-      id, type, data, transform, xPos, yPos, selectedElements,
+      id, type, data, transform, xPos, yPos, selected,
       dispatch, getNodeById, onClick, onNodeDragStop
     } = props;
 
     const position = { x: xPos, y: yPos };
     const [ x, y, k ] = transform;
-    const selected = selectedElements.filter(isNode).map(e => e.id).includes(id);
     const nodeClasses = cx('react-graph__node', { selected });
     const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 

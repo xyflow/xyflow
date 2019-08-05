@@ -30204,6 +30204,9 @@
     }
 
     var NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes["default"];
+    var selected = graphContext.state.selectedElements.filter(isNode).map(function (e) {
+      return e.id;
+    }).includes(d.id);
     return React__default.createElement(NodeComponent, {
       key: d.id,
       id: d.id,
@@ -30216,7 +30219,7 @@
       dispatch: graphContext.dispatch,
       transform: graphContext.state.transform,
       getNodeById: graphContext.getNodeById,
-      selectedElements: graphContext.state.selectedElements,
+      selected: selected,
       style: d.style
     });
   }
@@ -30374,12 +30377,15 @@
         targetX = _getEdgePositions.targetX,
         targetY = _getEdgePositions.targetY;
 
+    var selected = graphContext.state.selectedElements.filter(isEdge).find(function (elm) {
+      return elm.source === e.source && elm.target === e.target;
+    });
     return React__default.createElement(EdgeComponent, {
       key: e.id,
       id: e.id,
       type: e.type,
       onClick: props.onElementClick,
-      selectedElements: graphContext.state.selectedElements,
+      selected: selected,
       dispatch: graphContext.dispatch,
       animated: e.animated,
       style: e.style,
@@ -33324,7 +33330,7 @@
           transform = props.transform,
           xPos = props.xPos,
           yPos = props.yPos,
-          selectedElements = props.selectedElements,
+          selected = props.selected,
           dispatch = props.dispatch,
           getNodeById = props.getNodeById,
           _onClick = props.onClick,
@@ -33339,9 +33345,6 @@
           y = _transform[1],
           k = _transform[2];
 
-      var selected = selectedElements.filter(isNode).map(function (e) {
-        return e.id;
-      }).includes(id);
       var nodeClasses = classnames('react-graph__node', {
         selected: selected
       });
@@ -33471,13 +33474,8 @@
           animated = props.animated,
           type = props.type,
           dispatch = props.dispatch,
-          selectedElements = props.selectedElements,
+          selected = props.selected,
           _onClick = props.onClick;
-      var selected = selectedElements.filter(function (e) {
-        return isEdge(e);
-      }).find(function (e) {
-        return e.source === source && e.target === target;
-      });
       var edgeClasses = classnames('react-graph__edge', {
         selected: selected,
         animated: animated

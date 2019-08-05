@@ -1,6 +1,7 @@
 import React, { memo, useContext } from 'react';
 
 import { GraphContext } from '../GraphContext';
+import { isNode } from '../graph-utils';
 
 function renderNode(d, props, graphContext) {
   const nodeType = d.type || 'default';
@@ -10,6 +11,10 @@ function renderNode(d, props, graphContext) {
   }
 
   const NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes.default;
+  const selected = graphContext.state.selectedElements
+    .filter(isNode)
+    .map(e => e.id)
+    .includes(d.id);
 
   return (
     <NodeComponent
@@ -24,7 +29,7 @@ function renderNode(d, props, graphContext) {
       dispatch={graphContext.dispatch}
       transform={graphContext.state.transform}
       getNodeById={graphContext.getNodeById}
-      selectedElements={graphContext.state.selectedElements}
+      selected={selected}
       style={d.style}
     />
   );

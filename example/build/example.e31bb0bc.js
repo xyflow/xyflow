@@ -38190,6 +38190,8 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _GraphContext = require("../GraphContext");
 
+var _graphUtils = require("../graph-utils");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function renderNode(d, props, graphContext) {
@@ -38200,6 +38202,9 @@ function renderNode(d, props, graphContext) {
   }
 
   var NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes.default;
+  var selected = graphContext.state.selectedElements.filter(_graphUtils.isNode).map(function (e) {
+    return e.id;
+  }).includes(d.id);
   return _react.default.createElement(NodeComponent, {
     key: d.id,
     id: d.id,
@@ -38212,7 +38217,7 @@ function renderNode(d, props, graphContext) {
     dispatch: graphContext.dispatch,
     transform: graphContext.state.transform,
     getNodeById: graphContext.getNodeById,
-    selectedElements: graphContext.state.selectedElements,
+    selected: selected,
     style: d.style
   });
 }
@@ -38236,7 +38241,7 @@ NodeRenderer.displayName = 'NodeRenderer';
 NodeRenderer.whyDidYouRender = false;
 var _default = NodeRenderer;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js"}],"../node_modules/classnames/index.js":[function(require,module,exports) {
 var define;
 /*!
   Copyright (c) 2017 Jed Watson.
@@ -38376,6 +38381,8 @@ var _ConnectionContext = require("../ConnectionContext");
 
 var _ConnectionLine = _interopRequireDefault(require("../ConnectionLine"));
 
+var _graphUtils = require("../graph-utils");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -38424,12 +38431,15 @@ function renderEdge(e, props, graphContext) {
       targetX = _getEdgePositions.targetX,
       targetY = _getEdgePositions.targetY;
 
+  var selected = graphContext.state.selectedElements.filter(_graphUtils.isEdge).find(function (elm) {
+    return elm.source === e.source && elm.target === e.target;
+  });
   return _react.default.createElement(EdgeComponent, {
     key: e.id,
     id: e.id,
     type: e.type,
     onClick: props.onElementClick,
-    selectedElements: graphContext.state.selectedElements,
+    selected: selected,
     dispatch: graphContext.dispatch,
     animated: e.animated,
     style: e.style,
@@ -38483,7 +38493,7 @@ var EdgeRenderer = (0, _react.memo)(function (props) {
 });
 var _default = EdgeRenderer;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectionContext":"../src/ConnectionContext/index.js","../ConnectionLine":"../src/ConnectionLine/index.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../GraphContext":"../src/GraphContext/index.js","../ConnectionContext":"../src/ConnectionContext/index.js","../ConnectionLine":"../src/ConnectionLine/index.js","../graph-utils":"../src/graph-utils.js"}],"../src/UserSelection/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41589,8 +41599,6 @@ var _classnames = _interopRequireDefault(require("classnames"));
 
 var _actions = require("../../state/actions");
 
-var _graphUtils = require("../../graph-utils");
-
 var _NodeIdContext = require("../NodeIdContext");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -41741,7 +41749,7 @@ var _default = function _default(NodeComponent) {
         transform = props.transform,
         xPos = props.xPos,
         yPos = props.yPos,
-        selectedElements = props.selectedElements,
+        selected = props.selected,
         dispatch = props.dispatch,
         getNodeById = props.getNodeById,
         _onClick = props.onClick,
@@ -41756,9 +41764,6 @@ var _default = function _default(NodeComponent) {
         y = _transform[1],
         k = _transform[2];
 
-    var selected = selectedElements.filter(_graphUtils.isNode).map(function (e) {
-      return e.id;
-    }).includes(id);
     var nodeClasses = (0, _classnames.default)('react-graph__node', {
       selected: selected
     });
@@ -41836,7 +41841,7 @@ var _default = function _default(NodeComponent) {
 };
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-draggable":"../node_modules/react-draggable/dist/react-draggable.js","classnames":"../node_modules/classnames/index.js","../../state/actions":"../src/state/actions.js","../../graph-utils":"../src/graph-utils.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/utils.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-draggable":"../node_modules/react-draggable/dist/react-draggable.js","classnames":"../node_modules/classnames/index.js","../../state/actions":"../src/state/actions.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/utils.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41945,8 +41950,6 @@ var _classnames = _interopRequireDefault(require("classnames"));
 
 var _actions = require("../../state/actions");
 
-var _graphUtils = require("../../graph-utils");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -41962,13 +41965,8 @@ var _default = function _default(EdgeComponent) {
         animated = props.animated,
         type = props.type,
         dispatch = props.dispatch,
-        selectedElements = props.selectedElements,
+        selected = props.selected,
         _onClick = props.onClick;
-    var selected = selectedElements.filter(function (e) {
-      return (0, _graphUtils.isEdge)(e);
-    }).find(function (e) {
-      return e.source === source && e.target === target;
-    });
     var edgeClasses = (0, _classnames.default)('react-graph__edge', {
       selected: selected,
       animated: animated
@@ -41999,7 +41997,7 @@ var _default = function _default(EdgeComponent) {
 };
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../../state/actions":"../src/state/actions.js","../../graph-utils":"../src/graph-utils.js"}],"../src/EdgeRenderer/utils.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../../state/actions":"../src/state/actions.js"}],"../src/EdgeRenderer/utils.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
