@@ -12,7 +12,7 @@ const baseStyle = {
   width: 200,
 };
 
-export default ({ style, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }) => {
+export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }) => {
   const canvasNode = useRef(null);
   const { state } = useContext(GraphContext);
   const mapClasses = classnames('react-graph__minimap', className);
