@@ -41,9 +41,9 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
         ctx.fillRect(
           (x * scaleFactor),
           (y * scaleFactor),
-          n.__rg.width * scaleFactor,
-          n.__rg.height * scaleFactor)
-        ;
+          n.__rg.width * scaleFactor * state.transform[2],
+          n.__rg.height * scaleFactor * state.transform[2]
+        );
       });
     }
   }, [nodePositions, state.transform, height])

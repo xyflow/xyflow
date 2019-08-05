@@ -33631,7 +33631,8 @@
     width: 200
   };
   var index = (function (_ref) {
-    var style = _ref.style,
+    var _ref$style = _ref.style,
+        style = _ref$style === void 0 ? {} : _ref$style,
         className = _ref.className,
         _ref$bgColor = _ref.bgColor,
         bgColor = _ref$bgColor === void 0 ? '#f8f8f8' : _ref$bgColor,
@@ -33668,7 +33669,7 @@
           var x = pos.x * state.transform[2] + transformX;
           var y = pos.y * state.transform[2] + transformY;
           ctx.fillStyle = nodeColor;
-          ctx.fillRect(x * scaleFactor, y * scaleFactor, n.__rg.width * scaleFactor, n.__rg.height * scaleFactor);
+          ctx.fillRect(x * scaleFactor, y * scaleFactor, n.__rg.width * scaleFactor * state.transform[2], n.__rg.height * scaleFactor * state.transform[2]);
         });
       }
     }, [nodePositions, state.transform, height]);
