@@ -32887,6 +32887,10 @@
     };
   };
 
+  var isInput = function isInput(target) {
+    return ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName);
+  };
+
   function useKeyPress(targetKey) {
     var _useState = React.useState(false),
         _useState2 = _slicedToArray(_useState, 2),
@@ -32894,17 +32898,19 @@
         setKeyPressed = _useState2[1];
 
     function downHandler(_ref) {
-      var key = _ref.key;
+      var key = _ref.key,
+          target = _ref.target;
 
-      if (key === targetKey) {
+      if (key === targetKey && !isInput(target)) {
         setKeyPressed(true);
       }
     }
 
     var upHandler = function upHandler(_ref2) {
-      var key = _ref2.key;
+      var key = _ref2.key,
+          target = _ref2.target;
 
-      if (key === targetKey) {
+      if (key === targetKey && !isInput(target)) {
         setKeyPressed(false);
       }
     };
@@ -33197,7 +33203,7 @@
     }, React__default.createElement(TargetHandle, null), data.label);
   });
 
-  var isInput = function isInput(e) {
+  var isInput$1 = function isInput(e) {
     return ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
   };
 
@@ -33233,7 +33239,7 @@
         position = _ref.position,
         transform = _ref.transform;
 
-    if (isInput(evt) || isHandle(evt)) {
+    if (isInput$1(evt) || isHandle(evt)) {
       return false;
     }
 
@@ -33447,7 +33453,7 @@
     }));
   });
 
-  var isInput$1 = function isInput(e) {
+  var isInput$2 = function isInput(e) {
     return ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
   };
 
@@ -33467,7 +33473,7 @@
       return React__default.createElement("g", {
         className: edgeClasses,
         onClick: function onClick(e) {
-          if (isInput$1(e)) {
+          if (isInput$2(e)) {
             return false;
           }
 

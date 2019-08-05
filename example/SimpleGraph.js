@@ -18,26 +18,45 @@ const SpecialNode = ({ data, styles }) => (
   </div>
 );
 
+const InputNode = ({ data, styles }) => (
+  <div
+    style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
+  >
+    <TargetHandle style={{ left: 10, background: '#999' }} />
+    <div>{data.input}</div>
+    <input onChange={(e) => data.onChange(e.target.value, data)} />
+    <SourceHandle style={{ left: 10, background: '#999' }} />
+  </div>
+);
+
 const onNodeDragStop = node => console.log('drag stop', node);
 
 class App extends PureComponent {
   constructor() {
     super();
 
-    const onChange = (id, d) => {
+    const onChange = (option, d) => {
       this.setState(prevState => (
         {elements: prevState.elements.map(e => {
-          if (isEdge(e)) {
+          if (isEdge(e) || e.id !== '6') {
             return e;
           }
 
-          return {
-            ...e,
-            data: {
-              ...e.data,
-              label: '6' === e.id ? `option ${id} selected` : e.data.label
-            }
-          };
+          return { ...e, data: { ...e.data, label: `Option ${option} selected.` } };
+        })}
+      ));
+    }
+
+    const onChangeInput = (input, d) => {
+      this.setState(prevState => (
+        {elements: prevState.elements.map(e => {
+          if (isEdge(e) || e.id !== '8') {
+            return e;
+          }
+
+          if (e.id === '8') {
+            return { ...e, data: { ...e.data, input: input || 'write something' } };
+          }
         })}
       ));
     }
@@ -52,7 +71,9 @@ class App extends PureComponent {
         { id: '5', type: 'default', data: { label: '5 Another node'}, position: { x: 400, y: 300 } },
         { id: '6', type: 'special', data: { onChange, label: '6 no option selected' }, position: { x: 425, y: 375 } },
         { id: '7', type: 'output', data: { label: '7 output' }, position: { x: 250, y: 500 } },
+        { id: '8', type: 'text', data: { onChange: onChangeInput, input: 'write something' }, position: { x: 300, y: 100 } },
         { source: '1', target: '2', animated: true },
+        { source: '1', target: '8', animated: true },
         { source: '2', target: '3' },
         { source: '3', target: '4' },
         { source: '3', target: '5' },
@@ -136,7 +157,8 @@ class App extends PureComponent {
         onLoad={graphInstance => this.onLoad(graphInstance)}
         onChange={(elements) => this.onChange(elements)}
         nodeTypes={{
-          special: SpecialNode
+          special: SpecialNode,
+          text: InputNode
         }}
         connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
         connectionLineType="bezier"

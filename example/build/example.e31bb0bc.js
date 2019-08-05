@@ -41057,6 +41057,10 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+var isInput = function isInput(target) {
+  return ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName);
+};
+
 function useKeyPress(targetKey) {
   var _useState = (0, _react.useState)(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -41064,17 +41068,19 @@ function useKeyPress(targetKey) {
       setKeyPressed = _useState2[1];
 
   function downHandler(_ref) {
-    var key = _ref.key;
+    var key = _ref.key,
+        target = _ref.target;
 
-    if (key === targetKey) {
+    if (key === targetKey && !isInput(target)) {
       setKeyPressed(true);
     }
   }
 
   var upHandler = function upHandler(_ref2) {
-    var key = _ref2.key;
+    var key = _ref2.key,
+        target = _ref2.target;
 
-    if (key === targetKey) {
+    if (key === targetKey && !isInput(target)) {
       setKeyPressed(false);
     }
   };
@@ -42448,6 +42454,32 @@ var SpecialNode = function SpecialNode(_ref) {
   }));
 };
 
+var InputNode = function InputNode(_ref2) {
+  var data = _ref2.data,
+      styles = _ref2.styles;
+  return _react.default.createElement("div", {
+    style: _objectSpread({
+      background: '#FFCC00',
+      padding: 10,
+      borderRadius: 2
+    }, styles)
+  }, _react.default.createElement(_src.TargetHandle, {
+    style: {
+      left: 10,
+      background: '#999'
+    }
+  }), _react.default.createElement("div", null, data.input), _react.default.createElement("input", {
+    onChange: function onChange(e) {
+      return data.onChange(e.target.value, data);
+    }
+  }), _react.default.createElement(_src.SourceHandle, {
+    style: {
+      left: 10,
+      background: '#999'
+    }
+  }));
+};
+
 var onNodeDragStop = function onNodeDragStop(node) {
   return console.log('drag stop', node);
 };
@@ -42464,19 +42496,39 @@ function (_PureComponent) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this));
 
-    var onChange = function onChange(id, d) {
+    var onChange = function onChange(option, d) {
       _this.setState(function (prevState) {
         return {
           elements: prevState.elements.map(function (e) {
-            if ((0, _src.isEdge)(e)) {
+            if ((0, _src.isEdge)(e) || e.id !== '6') {
               return e;
             }
 
             return _objectSpread({}, e, {
               data: _objectSpread({}, e.data, {
-                label: '6' === e.id ? "option ".concat(id, " selected") : e.data.label
+                label: "Option ".concat(option, " selected.")
               })
             });
+          })
+        };
+      });
+    };
+
+    var onChangeInput = function onChangeInput(input, d) {
+      _this.setState(function (prevState) {
+        return {
+          elements: prevState.elements.map(function (e) {
+            if ((0, _src.isEdge)(e) || e.id !== '8') {
+              return e;
+            }
+
+            if (e.id === '8') {
+              return _objectSpread({}, e, {
+                data: _objectSpread({}, e.data, {
+                  input: input || 'write something'
+                })
+              });
+            }
           })
         };
       });
@@ -42559,8 +42611,23 @@ function (_PureComponent) {
           y: 500
         }
       }, {
+        id: '8',
+        type: 'text',
+        data: {
+          onChange: onChangeInput,
+          input: 'write something'
+        },
+        position: {
+          x: 300,
+          y: 100
+        }
+      }, {
         source: '1',
         target: '2',
+        animated: true
+      }, {
+        source: '1',
+        target: '8',
         animated: true
       }, {
         source: '2',
@@ -42695,7 +42762,8 @@ function (_PureComponent) {
           return _this2.onChange(elements);
         },
         nodeTypes: {
-          special: SpecialNode
+          special: SpecialNode,
+          text: InputNode
         },
         connectionLineStyle: {
           stroke: '#ddd',
@@ -42785,7 +42853,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50661" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54719" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

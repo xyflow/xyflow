@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 
+const isInput = target => ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName);
+
 export function useKeyPress(targetKey) {
   const [keyPressed, setKeyPressed] = useState(false);
 
-  function downHandler({ key }) {
-    if (key === targetKey) {
+  function downHandler({ key, target }) {
+    if (key === targetKey && !isInput(target)) {
       setKeyPressed(true);
     }
   }
 
-  const upHandler = ({ key }) => {
-    if (key === targetKey) {
+  const upHandler = ({ key, target }) => {
+    if (key === targetKey && !isInput(target)) {
       setKeyPressed(false);
     }
   };
