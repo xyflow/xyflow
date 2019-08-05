@@ -33617,6 +33617,67 @@
     connectionLineStyle: {}
   };
 
+  var baseStyle = {
+    position: 'absolute',
+    zIndex: 5,
+    bottom: 10,
+    right: 10,
+    width: 200
+  };
+  var index = (function (_ref) {
+    var style = _ref.style,
+        className = _ref.className,
+        _ref$bgColor = _ref.bgColor,
+        bgColor = _ref$bgColor === void 0 ? '#f8f8f8' : _ref$bgColor,
+        _ref$nodeColor = _ref.nodeColor,
+        nodeColor = _ref$nodeColor === void 0 ? '#ddd' : _ref$nodeColor;
+    var canvasNode = React.useRef(null);
+
+    var _useContext = React.useContext(GraphContext),
+        state = _useContext.state;
+
+    var mapClasses = classnames('react-graph__minimap', className);
+    var nodePositions = state.nodes.map(function (n) {
+      return n.__rg.position;
+    });
+    var width = style.width || baseStyle.width;
+    var height = state.height / (state.width || 1) * width;
+    var bbox = {
+      x: 0,
+      y: 0,
+      width: state.width,
+      height: state.height
+    };
+    var scaleFactor = width / state.width;
+    React.useEffect(function () {
+      if (canvasNode) {
+        var ctx = canvasNode.current.getContext('2d');
+        var nodesInside = getNodesInside(state.nodes, bbox, state.transform);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, width, height);
+        nodesInside.forEach(function (n) {
+          var pos = n.__rg.position;
+          var transformX = state.transform[0];
+          var transformY = state.transform[1];
+          var x = pos.x * state.transform[2] + transformX;
+          var y = pos.y * state.transform[2] + transformY;
+          ctx.fillStyle = nodeColor;
+          ctx.fillRect(x * scaleFactor, y * scaleFactor, n.__rg.width * scaleFactor, n.__rg.height * scaleFactor);
+        });
+      }
+    }, [nodePositions, state.transform, height]);
+    return React__default.createElement("canvas", {
+      style: _objectSpread2({}, baseStyle, {}, style, {
+        height: height
+      }),
+      width: width,
+      height: height,
+      className: mapClasses,
+      ref: canvasNode
+    });
+  });
+
+  exports.MiniMap = index;
   exports.SourceHandle = SourceHandle;
   exports.TargetHandle = TargetHandle;
   exports.default = ReactGraph;

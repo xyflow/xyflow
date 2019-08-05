@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle } from '../src';
+import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle, MiniMap } from '../src';
 // import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle } from '../dist/ReactGraph';
 
 const SpecialNode = ({ data, styles }) => (
@@ -141,10 +141,13 @@ class App extends PureComponent {
         connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
         connectionLineType="bezier"
       >
+        <MiniMap
+          style={{ position: 'absolute', right: 10, bottom: 10 }}
+        />
         <button
           type="button"
           onClick={() => this.onAdd()}
-          style={{ position: 'absolute', right: '10px', bottom: '10px', zIndex: 4 }}
+          style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
         >
           add
         </button>

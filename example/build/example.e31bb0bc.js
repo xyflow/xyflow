@@ -42225,7 +42225,95 @@ ReactGraph.defaultProps = {
 };
 var _default = ReactGraph;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@welldone-software/why-did-you-render":"../node_modules/@welldone-software/why-did-you-render/dist/umd/whyDidYouRender.min.js","../GraphView":"../src/GraphView/index.js","../GlobalKeyHandler":"../src/GlobalKeyHandler/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer/NodeTypes/DefaultNode":"../src/NodeRenderer/NodeTypes/DefaultNode.js","../NodeRenderer/NodeTypes/InputNode":"../src/NodeRenderer/NodeTypes/InputNode.js","../NodeRenderer/NodeTypes/OutputNode":"../src/NodeRenderer/NodeTypes/OutputNode.js","../NodeRenderer/utils":"../src/NodeRenderer/utils.js","../EdgeRenderer/EdgeTypes/BezierEdge":"../src/EdgeRenderer/EdgeTypes/BezierEdge.js","../EdgeRenderer/EdgeTypes/StraightEdge":"../src/EdgeRenderer/EdgeTypes/StraightEdge.js","../EdgeRenderer/utils":"../src/EdgeRenderer/utils.js","../style.css":"../src/style.css"}],"../src/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@welldone-software/why-did-you-render":"../node_modules/@welldone-software/why-did-you-render/dist/umd/whyDidYouRender.min.js","../GraphView":"../src/GraphView/index.js","../GlobalKeyHandler":"../src/GlobalKeyHandler/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer/NodeTypes/DefaultNode":"../src/NodeRenderer/NodeTypes/DefaultNode.js","../NodeRenderer/NodeTypes/InputNode":"../src/NodeRenderer/NodeTypes/InputNode.js","../NodeRenderer/NodeTypes/OutputNode":"../src/NodeRenderer/NodeTypes/OutputNode.js","../NodeRenderer/utils":"../src/NodeRenderer/utils.js","../EdgeRenderer/EdgeTypes/BezierEdge":"../src/EdgeRenderer/EdgeTypes/BezierEdge.js","../EdgeRenderer/EdgeTypes/StraightEdge":"../src/EdgeRenderer/EdgeTypes/StraightEdge.js","../EdgeRenderer/utils":"../src/EdgeRenderer/utils.js","../style.css":"../src/style.css"}],"../src/Plugins/MiniMap/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _graphUtils = require("../../graph-utils");
+
+var _GraphContext = require("../../GraphContext");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { keys.push.apply(keys, Object.getOwnPropertySymbols(object)); } if (enumerableOnly) keys = keys.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var baseStyle = {
+  position: 'absolute',
+  zIndex: 5,
+  bottom: 10,
+  right: 10,
+  width: 200
+};
+
+var _default = function _default(_ref) {
+  var style = _ref.style,
+      className = _ref.className,
+      _ref$bgColor = _ref.bgColor,
+      bgColor = _ref$bgColor === void 0 ? '#f8f8f8' : _ref$bgColor,
+      _ref$nodeColor = _ref.nodeColor,
+      nodeColor = _ref$nodeColor === void 0 ? '#ddd' : _ref$nodeColor;
+  var canvasNode = (0, _react.useRef)(null);
+
+  var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
+      state = _useContext.state;
+
+  var mapClasses = (0, _classnames.default)('react-graph__minimap', className);
+  var nodePositions = state.nodes.map(function (n) {
+    return n.__rg.position;
+  });
+  var width = style.width || baseStyle.width;
+  var height = state.height / (state.width || 1) * width;
+  var bbox = {
+    x: 0,
+    y: 0,
+    width: state.width,
+    height: state.height
+  };
+  var scaleFactor = width / state.width;
+  (0, _react.useEffect)(function () {
+    if (canvasNode) {
+      var ctx = canvasNode.current.getContext('2d');
+      var nodesInside = (0, _graphUtils.getNodesInside)(state.nodes, bbox, state.transform);
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, width, height);
+      nodesInside.forEach(function (n) {
+        var pos = n.__rg.position;
+        var transformX = state.transform[0];
+        var transformY = state.transform[1];
+        var x = pos.x * state.transform[2] + transformX;
+        var y = pos.y * state.transform[2] + transformY;
+        ctx.fillStyle = nodeColor;
+        ctx.fillRect(x * scaleFactor, y * scaleFactor, n.__rg.width * scaleFactor, n.__rg.height * scaleFactor);
+      });
+    }
+  }, [nodePositions, state.transform, height]);
+  return _react.default.createElement("canvas", {
+    style: _objectSpread({}, baseStyle, {}, style, {
+      height: height
+    }),
+    width: width,
+    height: height,
+    className: mapClasses,
+    ref: canvasNode
+  });
+};
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","classnames":"../node_modules/classnames/index.js","../../graph-utils":"../src/graph-utils.js","../../GraphContext":"../src/GraphContext/index.js"}],"../src/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42241,6 +42329,12 @@ Object.defineProperty(exports, "TargetHandle", {
   enumerable: true,
   get: function () {
     return _TargetHandle.default;
+  }
+});
+Object.defineProperty(exports, "MiniMap", {
+  enumerable: true,
+  get: function () {
+    return _MiniMap.default;
   }
 });
 Object.defineProperty(exports, "isNode", {
@@ -42275,13 +42369,15 @@ var _SourceHandle = _interopRequireDefault(require("./NodeRenderer/HandleTypes/S
 
 var _TargetHandle = _interopRequireDefault(require("./NodeRenderer/HandleTypes/TargetHandle"));
 
+var _MiniMap = _interopRequireDefault(require("./Plugins/MiniMap"));
+
 var _graphUtils = require("./graph-utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = _ReactGraph.default;
 exports.default = _default;
-},{"./ReactGraph":"../src/ReactGraph/index.js","./NodeRenderer/HandleTypes/SourceHandle":"../src/NodeRenderer/HandleTypes/SourceHandle.js","./NodeRenderer/HandleTypes/TargetHandle":"../src/NodeRenderer/HandleTypes/TargetHandle.js","./graph-utils":"../src/graph-utils.js"}],"SimpleGraph.js":[function(require,module,exports) {
+},{"./ReactGraph":"../src/ReactGraph/index.js","./NodeRenderer/HandleTypes/SourceHandle":"../src/NodeRenderer/HandleTypes/SourceHandle.js","./NodeRenderer/HandleTypes/TargetHandle":"../src/NodeRenderer/HandleTypes/TargetHandle.js","./Plugins/MiniMap":"../src/Plugins/MiniMap/index.js","./graph-utils":"../src/graph-utils.js"}],"SimpleGraph.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42606,15 +42702,21 @@ function (_PureComponent) {
           strokeWidth: 2
         },
         connectionLineType: "bezier"
-      }, _react.default.createElement("button", {
+      }, _react.default.createElement(_src.MiniMap, {
+        style: {
+          position: 'absolute',
+          right: 10,
+          bottom: 10
+        }
+      }), _react.default.createElement("button", {
         type: "button",
         onClick: function onClick() {
           return _this2.onAdd();
         },
         style: {
           position: 'absolute',
-          right: '10px',
-          bottom: '10px',
+          right: 10,
+          top: 10,
           zIndex: 4
         }
       }, "add"), this.state.graphLoaded && _react.default.createElement("div", {
@@ -42683,7 +42785,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57447" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50661" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
