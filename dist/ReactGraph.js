@@ -30145,8 +30145,7 @@
   var GraphContext = React.createContext({});
   var Provider$1 = function Provider(props) {
     var elements = props.elements,
-        children = props.children,
-        onConnect = props.onConnect;
+        children = props.children;
 
     var _useReducer = React.useReducer(reducer, initialState),
         _useReducer2 = _slicedToArray(_useReducer, 2),
@@ -30181,11 +30180,12 @@
         dispatch(setEdges(edges));
       }
     });
-    var graphContext = {
-      state: state,
-      dispatch: dispatch,
-      onConnect: onConnect
-    };
+    var graphContext = React.useMemo(function () {
+      return {
+        state: state,
+        dispatch: dispatch
+      };
+    }, [state]);
     return React__default.createElement(GraphContext.Provider, {
       value: graphContext
     }, children);
@@ -33135,7 +33135,7 @@
     }, props));
   });
   TargetHandle.displayName = 'TargetHandle';
-  TargetHandle.whyDidYouRender = true;
+  TargetHandle.whyDidYouRender = false;
 
   var SourceHandle = React.memo(function (props) {
     var nodeId = React.useContext(NodeIdContext);

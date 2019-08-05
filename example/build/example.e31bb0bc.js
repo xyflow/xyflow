@@ -38125,8 +38125,7 @@ exports.GraphContext = GraphContext;
 
 var Provider = function Provider(props) {
   var elements = props.elements,
-      children = props.children,
-      onConnect = props.onConnect;
+      children = props.children;
 
   var _useReducer = (0, _react.useReducer)(_state.reducer, _state.initialState),
       _useReducer2 = _slicedToArray(_useReducer, 2),
@@ -38161,11 +38160,12 @@ var Provider = function Provider(props) {
       dispatch((0, _actions.setEdges)(edges));
     }
   });
-  var graphContext = {
-    state: state,
-    dispatch: dispatch,
-    onConnect: onConnect
-  };
+  var graphContext = (0, _react.useMemo)(function () {
+    return {
+      state: state,
+      dispatch: dispatch
+    };
+  }, [state]);
   return _react.default.createElement(GraphContext.Provider, {
     value: graphContext
   }, children);
@@ -41430,7 +41430,7 @@ var TargetHandle = (0, _react.memo)(function (props) {
   }, props));
 });
 TargetHandle.displayName = 'TargetHandle';
-TargetHandle.whyDidYouRender = true;
+TargetHandle.whyDidYouRender = false;
 var _default = TargetHandle;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","./BaseHandle":"../src/NodeRenderer/HandleTypes/BaseHandle.js","../../ConnectionContext":"../src/ConnectionContext/index.js","../NodeIdContext":"../src/NodeRenderer/NodeIdContext.js"}],"../src/NodeRenderer/HandleTypes/SourceHandle.js":[function(require,module,exports) {

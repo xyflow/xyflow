@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from 'react';
+import React, { createContext, useEffect, useReducer, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 
@@ -12,7 +12,6 @@ export const Provider = (props) => {
   const {
     elements,
     children,
-    onConnect
   } = props;
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -49,11 +48,10 @@ export const Provider = (props) => {
     }
   });
 
-  const graphContext = {
+  const graphContext = useMemo(() => ({
     state,
-    dispatch,
-    onConnect,
-  };
+    dispatch
+  }), [state]);
 
   return (
     <GraphContext.Provider
