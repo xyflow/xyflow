@@ -26,22 +26,25 @@ export const removeElements = (elements, elementsToRemove) => {
 const getEdgeId = (e) => `react-graph__edge-${e.source}-${e.target}`;
 
 export const parseElement = (e) => {
-  e.type = e.type || 'default';
-
   if (isEdge(e)) {
-    e.id = e.id ? e.id.toString() : getEdgeId(e);
-    return e;
+    return {
+      ...e,
+      type: e.type || 'default',
+      id: e.id ? e.id.toString() : getEdgeId(e)
+    };
   }
 
-  e.id = e.id.toString();
-  e.__rg = {
-    position: e.position,
-    width: null,
-    height: null,
-    handleBounds : {}
+  return {
+    ...e,
+    id: e.id.toString(),
+    type: e.type || 'default',
+    __rg: {
+      position: e.position,
+      width: null,
+      height: null,
+      handleBounds : {}
+    }
   };
-
-  return { ...e };
 };
 
 export const separateElements = (res, element) => {

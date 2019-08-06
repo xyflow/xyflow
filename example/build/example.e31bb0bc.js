@@ -37639,21 +37639,23 @@ var getEdgeId = function getEdgeId(e) {
 };
 
 var parseElement = function parseElement(e) {
-  e.type = e.type || 'default';
-
   if (isEdge(e)) {
-    e.id = e.id ? e.id.toString() : getEdgeId(e);
-    return e;
+    return _objectSpread({}, e, {
+      type: e.type || 'default',
+      id: e.id ? e.id.toString() : getEdgeId(e)
+    });
   }
 
-  e.id = e.id.toString();
-  e.__rg = {
-    position: e.position,
-    width: null,
-    height: null,
-    handleBounds: {}
-  };
-  return _objectSpread({}, e);
+  return _objectSpread({}, e, {
+    id: e.id.toString(),
+    type: e.type || 'default',
+    __rg: {
+      position: e.position,
+      width: null,
+      height: null,
+      handleBounds: {}
+    }
+  });
 };
 
 exports.parseElement = parseElement;
@@ -42916,7 +42918,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61389" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52012" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -29835,21 +29835,23 @@
   };
 
   var parseElement = function parseElement(e) {
-    e.type = e.type || 'default';
-
     if (isEdge(e)) {
-      e.id = e.id ? e.id.toString() : getEdgeId(e);
-      return e;
+      return _objectSpread2({}, e, {
+        type: e.type || 'default',
+        id: e.id ? e.id.toString() : getEdgeId(e)
+      });
     }
 
-    e.id = e.id.toString();
-    e.__rg = {
-      position: e.position,
-      width: null,
-      height: null,
-      handleBounds: {}
-    };
-    return _objectSpread2({}, e);
+    return _objectSpread2({}, e, {
+      id: e.id.toString(),
+      type: e.type || 'default',
+      __rg: {
+        position: e.position,
+        width: null,
+        height: null,
+        handleBounds: {}
+      }
+    });
   };
   var getBoundingBox = function getBoundingBox(nodes) {
     var bbox = nodes.reduce(function (res, node) {
