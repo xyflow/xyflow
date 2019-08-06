@@ -41924,6 +41924,35 @@ var _default = (0, _react.memo)(function (props) {
 });
 
 exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"../src/EdgeRenderer/EdgeTypes/StepEdge.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+var _default = (0, _react.memo)(function (props) {
+  var sourceX = props.sourceX,
+      sourceY = props.sourceY,
+      targetX = props.targetX,
+      targetY = props.targetY,
+      _props$style = props.style,
+      style = _props$style === void 0 ? {} : _props$style;
+  var yOffset = Math.abs(targetY - sourceY) / 2;
+  var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+  return _react.default.createElement("path", _extends({}, style, {
+    d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(sourceX, ",").concat(centerY, "L ").concat(targetX, ",").concat(centerY, "L ").concat(targetX, ",").concat(targetY)
+  }));
+});
+
+exports.default = _default;
 },{"react":"../node_modules/react/index.js"}],"../src/EdgeRenderer/EdgeTypes/wrapEdge.js":[function(require,module,exports) {
 "use strict";
 
@@ -42120,6 +42149,8 @@ var _BezierEdge = _interopRequireDefault(require("../EdgeRenderer/EdgeTypes/Bezi
 
 var _StraightEdge = _interopRequireDefault(require("../EdgeRenderer/EdgeTypes/StraightEdge"));
 
+var _StepEdge = _interopRequireDefault(require("../EdgeRenderer/EdgeTypes/StepEdge"));
+
 var _utils2 = require("../EdgeRenderer/utils");
 
 require("../style.css");
@@ -42224,14 +42255,15 @@ ReactGraph.defaultProps = {
   },
   edgeTypes: {
     default: _BezierEdge.default,
-    straight: _StraightEdge.default
+    straight: _StraightEdge.default,
+    step: _StepEdge.default
   },
   connectionLineType: 'bezier',
   connectionLineStyle: {}
 };
 var _default = ReactGraph;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@welldone-software/why-did-you-render":"../node_modules/@welldone-software/why-did-you-render/dist/umd/whyDidYouRender.min.js","../GraphView":"../src/GraphView/index.js","../GlobalKeyHandler":"../src/GlobalKeyHandler/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer/NodeTypes/DefaultNode":"../src/NodeRenderer/NodeTypes/DefaultNode.js","../NodeRenderer/NodeTypes/InputNode":"../src/NodeRenderer/NodeTypes/InputNode.js","../NodeRenderer/NodeTypes/OutputNode":"../src/NodeRenderer/NodeTypes/OutputNode.js","../NodeRenderer/utils":"../src/NodeRenderer/utils.js","../EdgeRenderer/EdgeTypes/BezierEdge":"../src/EdgeRenderer/EdgeTypes/BezierEdge.js","../EdgeRenderer/EdgeTypes/StraightEdge":"../src/EdgeRenderer/EdgeTypes/StraightEdge.js","../EdgeRenderer/utils":"../src/EdgeRenderer/utils.js","../style.css":"../src/style.css"}],"../src/utils.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@welldone-software/why-did-you-render":"../node_modules/@welldone-software/why-did-you-render/dist/umd/whyDidYouRender.min.js","../GraphView":"../src/GraphView/index.js","../GlobalKeyHandler":"../src/GlobalKeyHandler/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer/NodeTypes/DefaultNode":"../src/NodeRenderer/NodeTypes/DefaultNode.js","../NodeRenderer/NodeTypes/InputNode":"../src/NodeRenderer/NodeTypes/InputNode.js","../NodeRenderer/NodeTypes/OutputNode":"../src/NodeRenderer/NodeTypes/OutputNode.js","../NodeRenderer/utils":"../src/NodeRenderer/utils.js","../EdgeRenderer/EdgeTypes/BezierEdge":"../src/EdgeRenderer/EdgeTypes/BezierEdge.js","../EdgeRenderer/EdgeTypes/StraightEdge":"../src/EdgeRenderer/EdgeTypes/StraightEdge.js","../EdgeRenderer/EdgeTypes/StepEdge":"../src/EdgeRenderer/EdgeTypes/StepEdge.js","../EdgeRenderer/utils":"../src/EdgeRenderer/utils.js","../style.css":"../src/style.css"}],"../src/utils.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42653,7 +42685,8 @@ function (_PureComponent) {
         target: '3'
       }, {
         source: '3',
-        target: '4'
+        target: '4',
+        type: 'step'
       }, {
         source: '3',
         target: '5'
@@ -42877,7 +42910,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52817" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60610" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

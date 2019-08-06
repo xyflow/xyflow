@@ -33453,6 +33453,20 @@
     }));
   });
 
+  var StepEdge = React.memo(function (props) {
+    var sourceX = props.sourceX,
+        sourceY = props.sourceY,
+        targetX = props.targetX,
+        targetY = props.targetY,
+        _props$style = props.style,
+        style = _props$style === void 0 ? {} : _props$style;
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    return React__default.createElement("path", _extends({}, style, {
+      d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(sourceX, ",").concat(centerY, "L ").concat(targetX, ",").concat(centerY, "L ").concat(targetX, ",").concat(targetY)
+    }));
+  });
+
   var isInput$2 = function isInput(e) {
     return ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
   };
@@ -33617,7 +33631,8 @@
     },
     edgeTypes: {
       "default": BezierEdge,
-      straight: StraightEdge
+      straight: StraightEdge,
+      step: StepEdge
     },
     connectionLineType: 'bezier',
     connectionLineStyle: {}

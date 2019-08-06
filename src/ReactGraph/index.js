@@ -16,6 +16,7 @@ import { createNodeTypes } from '../NodeRenderer/utils';
 
 import BezierEdge from '../EdgeRenderer/EdgeTypes/BezierEdge';
 import StraightEdge from '../EdgeRenderer/EdgeTypes/StraightEdge';
+import StepEdge from '../EdgeRenderer/EdgeTypes/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 
 import '../style.css';
@@ -75,7 +76,8 @@ ReactGraph.defaultProps = {
   },
   edgeTypes: {
     default: BezierEdge,
-    straight: StraightEdge
+    straight: StraightEdge,
+    step: StepEdge
   },
   connectionLineType: 'bezier',
   connectionLineStyle: {}
