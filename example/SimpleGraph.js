@@ -77,7 +77,7 @@ class App extends PureComponent {
         { source: '2', target: '3' },
         { source: '3', target: '4', type: 'step' },
         { source: '3', target: '5' },
-        { source: '5', target: '6', type: 'straight', animated: true, style: { stroke: '#FFCC00' } },
+        { source: '5', target: '6', type: 'step', animated: true, style: { stroke: '#FFCC00' } },
         { source: '6', target: '7', style: { stroke: '#FFCC00' }},
       ]
     };
@@ -166,9 +166,11 @@ class App extends PureComponent {
         <MiniMap
           style={{ position: 'absolute', right: 10, bottom: 10 }}
           nodeColor={n => {
-            if (n.type === 'input') return 'blue'
-            if (n.type === 'output') return 'green'
-            return 'red';
+            if (n.type === 'input') return 'blue';
+            if (n.type === 'output') return 'green';
+            if (n.type === 'default') return 'red';
+
+            return '#FFCC00';
           }}
         />
         <button

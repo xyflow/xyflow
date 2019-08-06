@@ -27,7 +27,7 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
   useEffect(() => {
     if (canvasNode) {
       const ctx = canvasNode.current.getContext('2d');
-      const nodesInside = getNodesInside(state.nodes, bbox, state.transform);
+      const nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
 
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);

@@ -102,7 +102,7 @@ export const graphPosToZoomedPos = (pos, transform) => {
   };
 }
 
-export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
+export const getNodesInside = (nodes, bbox, transform = [0, 0, 1], partially = false) => {
   return nodes.
     filter(n => {
       const bboxPos = {
@@ -112,10 +112,14 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
       const bboxWidth = bbox.width * (1 / transform[2]);
       const bboxHeight = bbox.height * (1 / transform[2]);
       const { position, width, height } = n.__rg;
+      const nodeWidth = partially ? -width : width;
+      const nodeHeight = partially ? 0 : height;
+      const offsetX = partially ? width : 0;
+      const offsetY = partially ? height : 0;
 
       return (
-        (position.x > bboxPos.x && (position.x + width) < (bboxPos.x + bboxWidth)) &&
-        (position.y > bboxPos.y && (position.y + height) < (bboxPos.y + bboxHeight))
+        (position.x + offsetX > bboxPos.x && (position.x + nodeWidth) < (bboxPos.x + bboxWidth)) &&
+        (position.y + offsetY > bboxPos.y && (position.y + nodeHeight) < (bboxPos.y + bboxHeight))
       );
     });
 };
@@ -123,7 +127,7 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1]) => {
 export const getConnectedEdges = (nodes, edges) => {
   const nodeIds = nodes.map(n => n.id);
   return edges.filter(e => nodeIds.includes(e.source) || nodeIds.includes(e.target))
-}
+};
 
 export default {
   isEdge,

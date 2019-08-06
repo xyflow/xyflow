@@ -29889,6 +29889,7 @@
   };
   var getNodesInside = function getNodesInside(nodes, bbox) {
     var transform = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [0, 0, 1];
+    var partially = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     return nodes.filter(function (n) {
       var bboxPos = {
         x: (bbox.x - transform[0]) * (1 / transform[2]),
@@ -29900,7 +29901,11 @@
           position = _n$__rg.position,
           width = _n$__rg.width,
           height = _n$__rg.height;
-      return position.x > bboxPos.x && position.x + width < bboxPos.x + bboxWidth && position.y > bboxPos.y && position.y + height < bboxPos.y + bboxHeight;
+      var nodeWidth = partially ? -width : width;
+      var nodeHeight = partially ? 0 : height;
+      var offsetX = partially ? width : 0;
+      var offsetY = partially ? height : 0;
+      return position.x + offsetX > bboxPos.x && position.x + nodeWidth < bboxPos.x + bboxWidth && position.y + offsetY > bboxPos.y && position.y + nodeHeight < bboxPos.y + bboxHeight;
     });
   };
   var getConnectedEdges = function getConnectedEdges(nodes, edges) {
@@ -33681,7 +33686,7 @@
     React.useEffect(function () {
       if (canvasNode) {
         var ctx = canvasNode.current.getContext('2d');
-        var nodesInside = getNodesInside(state.nodes, bbox, state.transform);
+        var nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, width, height);
         nodesInside.forEach(function (n) {
