@@ -30622,6 +30622,5468 @@ var global = arguments[3];
 !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self).whyDidYouRender=t()}(this,function(){"use strict";function e(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}function t(e,t,r){return t in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e}function r(e,t){var r=Object.keys(e);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(e);t&&(n=n.filter(function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable})),r.push.apply(r,n)}return r}function n(e){for(var n=1;n<arguments.length;n++){var o=null!=arguments[n]?arguments[n]:{};n%2?r(o,!0).forEach(function(r){t(e,r,o[r])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(o)):r(o).forEach(function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(o,t))})}return e}function o(e){return(o=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)})(e)}function a(e,t){return(a=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e})(e,t)}function i(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}function u(e,t,r){return(u="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(e,t,r){var n=function(e,t){for(;!Object.prototype.hasOwnProperty.call(e,t)&&null!==(e=o(e)););return e}(e,t);if(n){var a=Object.getOwnPropertyDescriptor(n,t);return a.get?a.get.call(r):a.value}})(e,t,r||e)}function c(e){return function(e){if(Array.isArray(e)){for(var t=0,r=new Array(e.length);t<e.length;t++)r[t]=e[t];return r}}(e)||function(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)}(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance")}()}var f="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};function s(e,t){return e(t={exports:{}},t.exports),t.exports}var l="object"==typeof f&&f&&f.Object===Object&&f,p="object"==typeof self&&self&&self.Object===Object&&self,v=l||p||Function("return this")(),h=v.Symbol,d=Object.prototype,y=d.hasOwnProperty,b=d.toString,_=h?h.toStringTag:void 0;var g=function(e){var t=y.call(e,_),r=e[_];try{e[_]=void 0;var n=!0}catch(e){}var o=b.call(e);return n&&(t?e[_]=r:delete e[_]),o},m=Object.prototype.toString;var j=function(e){return m.call(e)},O="[object Null]",w="[object Undefined]",D=h?h.toStringTag:void 0;var E=function(e){return null==e?void 0===e?w:O:D&&D in Object(e)?g(e):j(e)};var S=function(e){var t=typeof e;return null!=e&&("object"==t||"function"==t)},R="[object AsyncFunction]",P="[object Function]",k="[object GeneratorFunction]",x="[object Proxy]";var N,T=function(e){if(!S(e))return!1;var t=E(e);return t==P||t==k||t==R||t==x},A=v["__core-js_shared__"],C=(N=/[^.]+$/.exec(A&&A.keys&&A.keys.IE_PROTO||""))?"Symbol(src)_1."+N:"";var Y=function(e){return!!C&&C in e},z=Function.prototype.toString;var L=function(e){if(null!=e){try{return z.call(e)}catch(e){}try{return e+""}catch(e){}}return""},W=/^\[object .+?Constructor\]$/,M=Function.prototype,F=Object.prototype,H=M.toString,I=F.hasOwnProperty,$=RegExp("^"+H.call(I).replace(/[\\^$.*+?()[\]{}|]/g,"\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,"$1.*?")+"$");var U=function(e){return!(!S(e)||Y(e))&&(T(e)?$:W).test(L(e))};var V=function(e,t){return null==e?void 0:e[t]};var B=function(e,t){var r=V(e,t);return U(r)?r:void 0},q=function(){try{var e=B(Object,"defineProperty");return e({},"",{}),e}catch(e){}}();var G=function(e,t,r){"__proto__"==t&&q?q(e,t,{configurable:!0,enumerable:!0,value:r,writable:!0}):e[t]=r};var J=function(e){return function(t,r,n){for(var o=-1,a=Object(t),i=n(t),u=i.length;u--;){var c=i[e?u:++o];if(!1===r(a[c],c,a))break}return t}}();var K=function(e,t){for(var r=-1,n=Array(e);++r<e;)n[r]=t(r);return n};var Q=function(e){return null!=e&&"object"==typeof e},X="[object Arguments]";var Z=function(e){return Q(e)&&E(e)==X},ee=Object.prototype,te=ee.hasOwnProperty,re=ee.propertyIsEnumerable,ne=Z(function(){return arguments}())?Z:function(e){return Q(e)&&te.call(e,"callee")&&!re.call(e,"callee")},oe=Array.isArray;var ae=function(){return!1},ie=s(function(e,t){var r=t&&!t.nodeType&&t,n=r&&e&&!e.nodeType&&e,o=n&&n.exports===r?v.Buffer:void 0,a=(o?o.isBuffer:void 0)||ae;e.exports=a}),ue=9007199254740991,ce=/^(?:0|[1-9]\d*)$/;var fe=function(e,t){var r=typeof e;return!!(t=null==t?ue:t)&&("number"==r||"symbol"!=r&&ce.test(e))&&e>-1&&e%1==0&&e<t},se=9007199254740991;var le=function(e){return"number"==typeof e&&e>-1&&e%1==0&&e<=se},pe={};pe["[object Float32Array]"]=pe["[object Float64Array]"]=pe["[object Int8Array]"]=pe["[object Int16Array]"]=pe["[object Int32Array]"]=pe["[object Uint8Array]"]=pe["[object Uint8ClampedArray]"]=pe["[object Uint16Array]"]=pe["[object Uint32Array]"]=!0,pe["[object Arguments]"]=pe["[object Array]"]=pe["[object ArrayBuffer]"]=pe["[object Boolean]"]=pe["[object DataView]"]=pe["[object Date]"]=pe["[object Error]"]=pe["[object Function]"]=pe["[object Map]"]=pe["[object Number]"]=pe["[object Object]"]=pe["[object RegExp]"]=pe["[object Set]"]=pe["[object String]"]=pe["[object WeakMap]"]=!1;var ve=function(e){return Q(e)&&le(e.length)&&!!pe[E(e)]};var he=function(e){return function(t){return e(t)}},de=s(function(e,t){var r=t&&!t.nodeType&&t,n=r&&e&&!e.nodeType&&e,o=n&&n.exports===r&&l.process,a=function(){try{var e=n&&n.require&&n.require("util").types;return e||o&&o.binding&&o.binding("util")}catch(e){}}();e.exports=a}),ye=de&&de.isTypedArray,be=ye?he(ye):ve,_e=Object.prototype.hasOwnProperty;var ge=function(e,t){var r=oe(e),n=!r&&ne(e),o=!r&&!n&&ie(e),a=!r&&!n&&!o&&be(e),i=r||n||o||a,u=i?K(e.length,String):[],c=u.length;for(var f in e)!t&&!_e.call(e,f)||i&&("length"==f||o&&("offset"==f||"parent"==f)||a&&("buffer"==f||"byteLength"==f||"byteOffset"==f)||fe(f,c))||u.push(f);return u},me=Object.prototype;var je=function(e){var t=e&&e.constructor;return e===("function"==typeof t&&t.prototype||me)};var Oe=function(e,t){return function(r){return e(t(r))}},we=Oe(Object.keys,Object),De=Object.prototype.hasOwnProperty;var Ee=function(e){if(!je(e))return we(e);var t=[];for(var r in Object(e))De.call(e,r)&&"constructor"!=r&&t.push(r);return t};var Se=function(e){return null!=e&&le(e.length)&&!T(e)};var Re=function(e){return Se(e)?ge(e):Ee(e)};var Pe=function(e,t){return e&&J(e,t,Re)};var ke=function(){this.__data__=[],this.size=0};var xe=function(e,t){return e===t||e!=e&&t!=t};var Ne=function(e,t){for(var r=e.length;r--;)if(xe(e[r][0],t))return r;return-1},Te=Array.prototype.splice;var Ae=function(e){var t=this.__data__,r=Ne(t,e);return!(r<0||(r==t.length-1?t.pop():Te.call(t,r,1),--this.size,0))};var Ce=function(e){var t=this.__data__,r=Ne(t,e);return r<0?void 0:t[r][1]};var Ye=function(e){return Ne(this.__data__,e)>-1};var ze=function(e,t){var r=this.__data__,n=Ne(r,e);return n<0?(++this.size,r.push([e,t])):r[n][1]=t,this};function Le(e){var t=-1,r=null==e?0:e.length;for(this.clear();++t<r;){var n=e[t];this.set(n[0],n[1])}}Le.prototype.clear=ke,Le.prototype.delete=Ae,Le.prototype.get=Ce,Le.prototype.has=Ye,Le.prototype.set=ze;var We=Le;var Me=function(){this.__data__=new We,this.size=0};var Fe=function(e){var t=this.__data__,r=t.delete(e);return this.size=t.size,r};var He=function(e){return this.__data__.get(e)};var Ie=function(e){return this.__data__.has(e)},$e=B(v,"Map"),Ue=B(Object,"create");var Ve=function(){this.__data__=Ue?Ue(null):{},this.size=0};var Be=function(e){var t=this.has(e)&&delete this.__data__[e];return this.size-=t?1:0,t},qe="__lodash_hash_undefined__",Ge=Object.prototype.hasOwnProperty;var Je=function(e){var t=this.__data__;if(Ue){var r=t[e];return r===qe?void 0:r}return Ge.call(t,e)?t[e]:void 0},Ke=Object.prototype.hasOwnProperty;var Qe=function(e){var t=this.__data__;return Ue?void 0!==t[e]:Ke.call(t,e)},Xe="__lodash_hash_undefined__";var Ze=function(e,t){var r=this.__data__;return this.size+=this.has(e)?0:1,r[e]=Ue&&void 0===t?Xe:t,this};function et(e){var t=-1,r=null==e?0:e.length;for(this.clear();++t<r;){var n=e[t];this.set(n[0],n[1])}}et.prototype.clear=Ve,et.prototype.delete=Be,et.prototype.get=Je,et.prototype.has=Qe,et.prototype.set=Ze;var tt=et;var rt=function(){this.size=0,this.__data__={hash:new tt,map:new($e||We),string:new tt}};var nt=function(e){var t=typeof e;return"string"==t||"number"==t||"symbol"==t||"boolean"==t?"__proto__"!==e:null===e};var ot=function(e,t){var r=e.__data__;return nt(t)?r["string"==typeof t?"string":"hash"]:r.map};var at=function(e){var t=ot(this,e).delete(e);return this.size-=t?1:0,t};var it=function(e){return ot(this,e).get(e)};var ut=function(e){return ot(this,e).has(e)};var ct=function(e,t){var r=ot(this,e),n=r.size;return r.set(e,t),this.size+=r.size==n?0:1,this};function ft(e){var t=-1,r=null==e?0:e.length;for(this.clear();++t<r;){var n=e[t];this.set(n[0],n[1])}}ft.prototype.clear=rt,ft.prototype.delete=at,ft.prototype.get=it,ft.prototype.has=ut,ft.prototype.set=ct;var st=ft,lt=200;var pt=function(e,t){var r=this.__data__;if(r instanceof We){var n=r.__data__;if(!$e||n.length<lt-1)return n.push([e,t]),this.size=++r.size,this;r=this.__data__=new st(n)}return r.set(e,t),this.size=r.size,this};function vt(e){var t=this.__data__=new We(e);this.size=t.size}vt.prototype.clear=Me,vt.prototype.delete=Fe,vt.prototype.get=He,vt.prototype.has=Ie,vt.prototype.set=pt;var ht=vt,dt="__lodash_hash_undefined__";var yt=function(e){return this.__data__.set(e,dt),this};var bt=function(e){return this.__data__.has(e)};function _t(e){var t=-1,r=null==e?0:e.length;for(this.__data__=new st;++t<r;)this.add(e[t])}_t.prototype.add=_t.prototype.push=yt,_t.prototype.has=bt;var gt=_t;var mt=function(e,t){for(var r=-1,n=null==e?0:e.length;++r<n;)if(t(e[r],r,e))return!0;return!1};var jt=function(e,t){return e.has(t)},Ot=1,wt=2;var Dt=function(e,t,r,n,o,a){var i=r&Ot,u=e.length,c=t.length;if(u!=c&&!(i&&c>u))return!1;var f=a.get(e);if(f&&a.get(t))return f==t;var s=-1,l=!0,p=r&wt?new gt:void 0;for(a.set(e,t),a.set(t,e);++s<u;){var v=e[s],h=t[s];if(n)var d=i?n(h,v,s,t,e,a):n(v,h,s,e,t,a);if(void 0!==d){if(d)continue;l=!1;break}if(p){if(!mt(t,function(e,t){if(!jt(p,t)&&(v===e||o(v,e,r,n,a)))return p.push(t)})){l=!1;break}}else if(v!==h&&!o(v,h,r,n,a)){l=!1;break}}return a.delete(e),a.delete(t),l},Et=v.Uint8Array;var St=function(e){var t=-1,r=Array(e.size);return e.forEach(function(e,n){r[++t]=[n,e]}),r};var Rt=function(e){var t=-1,r=Array(e.size);return e.forEach(function(e){r[++t]=e}),r},Pt=1,kt=2,xt="[object Boolean]",Nt="[object Date]",Tt="[object Error]",At="[object Map]",Ct="[object Number]",Yt="[object RegExp]",zt="[object Set]",Lt="[object String]",Wt="[object Symbol]",Mt="[object ArrayBuffer]",Ft="[object DataView]",Ht=h?h.prototype:void 0,It=Ht?Ht.valueOf:void 0;var $t=function(e,t,r,n,o,a,i){switch(r){case Ft:if(e.byteLength!=t.byteLength||e.byteOffset!=t.byteOffset)return!1;e=e.buffer,t=t.buffer;case Mt:return!(e.byteLength!=t.byteLength||!a(new Et(e),new Et(t)));case xt:case Nt:case Ct:return xe(+e,+t);case Tt:return e.name==t.name&&e.message==t.message;case Yt:case Lt:return e==t+"";case At:var u=St;case zt:var c=n&Pt;if(u||(u=Rt),e.size!=t.size&&!c)return!1;var f=i.get(e);if(f)return f==t;n|=kt,i.set(e,t);var s=Dt(u(e),u(t),n,o,a,i);return i.delete(e),s;case Wt:if(It)return It.call(e)==It.call(t)}return!1};var Ut=function(e,t){for(var r=-1,n=t.length,o=e.length;++r<n;)e[o+r]=t[r];return e};var Vt=function(e,t,r){var n=t(e);return oe(e)?n:Ut(n,r(e))};var Bt=function(e,t){for(var r=-1,n=null==e?0:e.length,o=0,a=[];++r<n;){var i=e[r];t(i,r,e)&&(a[o++]=i)}return a};var qt=function(){return[]},Gt=Object.prototype.propertyIsEnumerable,Jt=Object.getOwnPropertySymbols,Kt=Jt?function(e){return null==e?[]:(e=Object(e),Bt(Jt(e),function(t){return Gt.call(e,t)}))}:qt;var Qt=function(e){return Vt(e,Re,Kt)},Xt=1,Zt=Object.prototype.hasOwnProperty;var er=function(e,t,r,n,o,a){var i=r&Xt,u=Qt(e),c=u.length;if(c!=Qt(t).length&&!i)return!1;for(var f=c;f--;){var s=u[f];if(!(i?s in t:Zt.call(t,s)))return!1}var l=a.get(e);if(l&&a.get(t))return l==t;var p=!0;a.set(e,t),a.set(t,e);for(var v=i;++f<c;){var h=e[s=u[f]],d=t[s];if(n)var y=i?n(d,h,s,t,e,a):n(h,d,s,e,t,a);if(!(void 0===y?h===d||o(h,d,r,n,a):y)){p=!1;break}v||(v="constructor"==s)}if(p&&!v){var b=e.constructor,_=t.constructor;b!=_&&"constructor"in e&&"constructor"in t&&!("function"==typeof b&&b instanceof b&&"function"==typeof _&&_ instanceof _)&&(p=!1)}return a.delete(e),a.delete(t),p},tr=B(v,"DataView"),rr=B(v,"Promise"),nr=B(v,"Set"),or=B(v,"WeakMap"),ar=L(tr),ir=L($e),ur=L(rr),cr=L(nr),fr=L(or),sr=E;(tr&&"[object DataView]"!=sr(new tr(new ArrayBuffer(1)))||$e&&"[object Map]"!=sr(new $e)||rr&&"[object Promise]"!=sr(rr.resolve())||nr&&"[object Set]"!=sr(new nr)||or&&"[object WeakMap]"!=sr(new or))&&(sr=function(e){var t=E(e),r="[object Object]"==t?e.constructor:void 0,n=r?L(r):"";if(n)switch(n){case ar:return"[object DataView]";case ir:return"[object Map]";case ur:return"[object Promise]";case cr:return"[object Set]";case fr:return"[object WeakMap]"}return t});var lr=sr,pr=1,vr="[object Arguments]",hr="[object Array]",dr="[object Object]",yr=Object.prototype.hasOwnProperty;var br=function(e,t,r,n,o,a){var i=oe(e),u=oe(t),c=i?hr:lr(e),f=u?hr:lr(t),s=(c=c==vr?dr:c)==dr,l=(f=f==vr?dr:f)==dr,p=c==f;if(p&&ie(e)){if(!ie(t))return!1;i=!0,s=!1}if(p&&!s)return a||(a=new ht),i||be(e)?Dt(e,t,r,n,o,a):$t(e,t,c,r,n,o,a);if(!(r&pr)){var v=s&&yr.call(e,"__wrapped__"),h=l&&yr.call(t,"__wrapped__");if(v||h){var d=v?e.value():e,y=h?t.value():t;return a||(a=new ht),o(d,y,r,n,a)}}return!!p&&(a||(a=new ht),er(e,t,r,n,o,a))};var _r=function e(t,r,n,o,a){return t===r||(null==t||null==r||!Q(t)&&!Q(r)?t!=t&&r!=r:br(t,r,n,o,e,a))},gr=1,mr=2;var jr=function(e,t,r,n){var o=r.length,a=o,i=!n;if(null==e)return!a;for(e=Object(e);o--;){var u=r[o];if(i&&u[2]?u[1]!==e[u[0]]:!(u[0]in e))return!1}for(;++o<a;){var c=(u=r[o])[0],f=e[c],s=u[1];if(i&&u[2]){if(void 0===f&&!(c in e))return!1}else{var l=new ht;if(n)var p=n(f,s,c,e,t,l);if(!(void 0===p?_r(s,f,gr|mr,n,l):p))return!1}}return!0};var Or=function(e){return e==e&&!S(e)};var wr=function(e){for(var t=Re(e),r=t.length;r--;){var n=t[r],o=e[n];t[r]=[n,o,Or(o)]}return t};var Dr=function(e,t){return function(r){return null!=r&&r[e]===t&&(void 0!==t||e in Object(r))}};var Er=function(e){var t=wr(e);return 1==t.length&&t[0][2]?Dr(t[0][0],t[0][1]):function(r){return r===e||jr(r,e,t)}},Sr="[object Symbol]";var Rr=function(e){return"symbol"==typeof e||Q(e)&&E(e)==Sr},Pr=/\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,kr=/^\w*$/;var xr=function(e,t){if(oe(e))return!1;var r=typeof e;return!("number"!=r&&"symbol"!=r&&"boolean"!=r&&null!=e&&!Rr(e))||kr.test(e)||!Pr.test(e)||null!=t&&e in Object(t)},Nr="Expected a function";function Tr(e,t){if("function"!=typeof e||null!=t&&"function"!=typeof t)throw new TypeError(Nr);var r=function(){var n=arguments,o=t?t.apply(this,n):n[0],a=r.cache;if(a.has(o))return a.get(o);var i=e.apply(this,n);return r.cache=a.set(o,i)||a,i};return r.cache=new(Tr.Cache||st),r}Tr.Cache=st;var Ar=Tr,Cr=500;var Yr=/[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g,zr=/\\(\\)?/g,Lr=function(e){var t=Ar(e,function(e){return r.size===Cr&&r.clear(),e}),r=t.cache;return t}(function(e){var t=[];return 46===e.charCodeAt(0)&&t.push(""),e.replace(Yr,function(e,r,n,o){t.push(n?o.replace(zr,"$1"):r||e)}),t});var Wr=function(e,t){for(var r=-1,n=null==e?0:e.length,o=Array(n);++r<n;)o[r]=t(e[r],r,e);return o},Mr=1/0,Fr=h?h.prototype:void 0,Hr=Fr?Fr.toString:void 0;var Ir=function e(t){if("string"==typeof t)return t;if(oe(t))return Wr(t,e)+"";if(Rr(t))return Hr?Hr.call(t):"";var r=t+"";return"0"==r&&1/t==-Mr?"-0":r};var $r=function(e){return null==e?"":Ir(e)};var Ur=function(e,t){return oe(e)?e:xr(e,t)?[e]:Lr($r(e))},Vr=1/0;var Br=function(e){if("string"==typeof e||Rr(e))return e;var t=e+"";return"0"==t&&1/e==-Vr?"-0":t};var qr=function(e,t){for(var r=0,n=(t=Ur(t,e)).length;null!=e&&r<n;)e=e[Br(t[r++])];return r&&r==n?e:void 0};var Gr=function(e,t,r){var n=null==e?void 0:qr(e,t);return void 0===n?r:n};var Jr=function(e,t){return null!=e&&t in Object(e)};var Kr=function(e,t,r){for(var n=-1,o=(t=Ur(t,e)).length,a=!1;++n<o;){var i=Br(t[n]);if(!(a=null!=e&&r(e,i)))break;e=e[i]}return a||++n!=o?a:!!(o=null==e?0:e.length)&&le(o)&&fe(i,o)&&(oe(e)||ne(e))};var Qr=function(e,t){return null!=e&&Kr(e,t,Jr)},Xr=1,Zr=2;var en=function(e,t){return xr(e)&&Or(t)?Dr(Br(e),t):function(r){var n=Gr(r,e);return void 0===n&&n===t?Qr(r,e):_r(t,n,Xr|Zr)}};var tn=function(e){return e};var rn=function(e){return function(t){return null==t?void 0:t[e]}};var nn=function(e){return function(t){return qr(t,e)}};var on=function(e){return xr(e)?rn(Br(e)):nn(e)};var an=function(e){return"function"==typeof e?e:null==e?tn:"object"==typeof e?oe(e)?en(e[0],e[1]):Er(e):on(e)};var un=function(e,t){var r={};return t=an(t),Pe(e,function(e,n,o){G(r,n,t(e,n,o))}),r};var cn=function(e,t,r){switch(r.length){case 0:return e.call(t);case 1:return e.call(t,r[0]);case 2:return e.call(t,r[0],r[1]);case 3:return e.call(t,r[0],r[1],r[2])}return e.apply(t,r)},fn=Math.max;var sn=function(e,t,r){return t=fn(void 0===t?e.length-1:t,0),function(){for(var n=arguments,o=-1,a=fn(n.length-t,0),i=Array(a);++o<a;)i[o]=n[t+o];o=-1;for(var u=Array(t+1);++o<t;)u[o]=n[o];return u[t]=r(i),cn(e,this,u)}};var ln=function(e){return function(){return e}},pn=q?function(e,t){return q(e,"toString",{configurable:!0,enumerable:!1,value:ln(t),writable:!0})}:tn,vn=800,hn=16,dn=Date.now;var yn=function(e){var t=0,r=0;return function(){var n=dn(),o=hn-(n-r);if(r=n,o>0){if(++t>=vn)return arguments[0]}else t=0;return e.apply(void 0,arguments)}}(pn);var bn=function(e,t){return yn(sn(e,t,tn),e+"")};var _n=function(e,t,r){if(!S(r))return!1;var n=typeof t;return!!("number"==n?Se(r)&&fe(t,r.length):"string"==n&&t in r)&&xe(r[t],e)};var gn=function(e){var t=[];if(null!=e)for(var r in Object(e))t.push(r);return t},mn=Object.prototype.hasOwnProperty;var jn=function(e){if(!S(e))return gn(e);var t=je(e),r=[];for(var n in e)("constructor"!=n||!t&&mn.call(e,n))&&r.push(n);return r};var On,wn=function(e){return Se(e)?ge(e,!0):jn(e)},Dn=Object.prototype,En=Dn.hasOwnProperty,Sn=bn(function(e,t){e=Object(e);var r=-1,n=t.length,o=n>2?t[2]:void 0;for(o&&_n(t[0],t[1],o)&&(n=1);++r<n;)for(var a=t[r],i=wn(a),u=-1,c=i.length;++u<c;){var f=i[u],s=e[f];(void 0===s||xe(s,Dn[f])&&!En.call(e,f))&&(e[f]=a[f])}return e}),Rn={different:"different",deepEquals:"deepEquals",date:"date",regex:"regex",reactElement:"reactElement",function:"function"},Pn="http://bit.ly/wdyr02",kn="http://bit.ly/wdyr3",xn=(t(On={},Rn.different,"different objects."),t(On,Rn.deepEquals,"different objects that are equal by value."),t(On,Rn.date,"different date objects with the same value."),t(On,Rn.regex,"different regular expressions with the same value."),t(On,Rn.reactElement,"different React elements with the same displayName."),t(On,Rn.function,"different functions with the same name."),On),Nn=!1;function Tn(e){var r=e.Component,n=e.displayName,o=e.hookName,a=e.prefixMessage,i=e.diffObjType,u=e.differences,c=e.values,f=e.options;u&&u.length>0?(f.consoleLog(t({},n,r),"".concat(a," of ").concat(i," changes:")),u.forEach(function(e){var r=e.pathString,n=e.diffType,a=e.prevValue,u=e.nextValue;f.consoleGroup("%c".concat("hook"===i?"[hook ".concat(o," result]"):"".concat(i,"."),"%c").concat(r,"%c"),"color:".concat(f.diffNameColor,";"),"color:".concat(f.diffPathColor,";"),"color:default;"),f.consoleLog("".concat(xn[n]," (more info at ").concat(o?kn:Pn,")")),f.consoleLog(t({},"prev ".concat(r),a),"!==",t({},"next ".concat(r),u)),f.consoleGroupEnd()})):u&&(f.consoleLog(t({},n,r),"".concat(a," the ").concat(i," object itself changed but its values are all equal."),"props"===i?"This could have been avoided by making the component pure, or by preventing its father from re-rendering.":"This usually means this component called setState when no changes in its state actually occurred.","More info at ".concat(Pn)),f.consoleLog("prev ".concat(i,":"),c.prev," !== ",c.next,":next ".concat(i)))}function An(e){var r=e.Component,n=e.displayName,o=e.hookName,a=e.prevProps,i=e.prevState,u=e.prevHook,c=e.nextProps,f=e.nextState,s=e.nextHook,l=e.reason,p=e.options;if(function(e,t,r){return!(Nn||!r.logOnDifferentValues&&(!t.whyDidYouRender||!t.whyDidYouRender.logOnDifferentValues)&&(e.propsDifferences&&e.propsDifferences.some(function(e){return e.diffType===Rn.different})||e.stateDifferences&&e.stateDifferences.some(function(e){return e.diffType===Rn.different})||e.hookDifferences&&e.hookDifferences.some(function(e){return e.diffType===Rn.different})))}(l,r,p)){p.consoleGroup("%c".concat(n),"color: ".concat(p.titleColor,";"));var v="Re-rendered because";l.propsDifferences&&(Tn({Component:r,displayName:n,prefixMessage:v,diffObjType:"props",differences:l.propsDifferences,values:{prev:a,next:c},options:p}),v="And because"),l.stateDifferences&&Tn({Component:r,displayName:n,prefixMessage:v,diffObjType:"state",differences:l.stateDifferences,values:{prev:i,next:f},options:p}),l.hookDifferences&&Tn({Component:r,displayName:n,prefixMessage:v,diffObjType:"hook",differences:l.hookDifferences,values:{prev:u,next:s},hookName:o,options:p}),l.propsDifferences||l.stateDifferences||l.hookDifferences||p.consoleLog(t({},n,r),"Re-rendered although props and state objects are the same.","This usually means there was a call to this.forceUpdate() inside the component.","more info at ".concat(Pn)),p.consoleGroupEnd()}}var Cn=function(){};function Yn(){var e,t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},r=console.group,o=console.groupEnd;return t.collapseGroups?r=console.groupCollapsed:t.onlyLogs&&(r=console.log,o=Cn),n({include:null,exclude:null,notifier:t.notifier||((e="hotReloadBufferMs"in t?t.hotReloadBufferMs:500)&&module&&module.hot&&module.hot.addStatusHandler&&module.hot.addStatusHandler(function(t){"idle"===t&&(Nn=!0,setTimeout(function(){Nn=!1},e))}),An),onlyLogs:!1,consoleLog:console.log,consoleGroup:r,consoleGroupEnd:o,logOnDifferentValues:!1,trackHooks:!0,titleColor:"#058",diffNameColor:"blue",diffPathColor:"red"},t)}var zn="[object String]";var Ln=function(e){return"string"==typeof e||!oe(e)&&Q(e)&&E(e)==zn};function Wn(e){return e.displayName||e.name||e.type&&Wn(e.type)||(Ln(e)?e:void 0)}var Mn=function(e,t,r,n){var o=-1,a=null==e?0:e.length;for(n&&a&&(r=e[++o]);++o<a;)r=t(r,e[o],o,e);return r};var Fn=function(e,t){return function(r,n){if(null==r)return r;if(!Se(r))return e(r,n);for(var o=r.length,a=t?o:-1,i=Object(r);(t?a--:++a<o)&&!1!==n(i[a],a,i););return r}}(Pe);var Hn=function(e,t,r,n,o){return o(e,function(e,o,a){r=n?(n=!1,e):t(r,e,o,a)}),r};var In=function(e,t,r){var n=oe(e)?Mn:Hn,o=arguments.length<3;return n(e,an(t),r,o,Fn)},$n=Object.prototype.hasOwnProperty;var Un=function(e,t){return null!=e&&$n.call(e,t)};var Vn=function(e,t){return null!=e&&Kr(e,t,Un)},Bn="[object RegExp]";var qn=function(e){return Q(e)&&E(e)==Bn},Gn=de&&de.isRegExp,Jn=Gn?he(Gn):qn,Kn="[object Date]";var Qn=function(e){return Q(e)&&E(e)==Kn},Xn=de&&de.isDate,Zn=Xn?he(Xn):Qn,eo=Oe(Object.getPrototypeOf,Object),to="[object Object]",ro=Function.prototype,no=Object.prototype,oo=ro.toString,ao=no.hasOwnProperty,io=oo.call(Object);var uo=function(e){if(!Q(e)||E(e)!=to)return!1;var t=eo(e);if(null===t)return!0;var r=ao.call(t,"constructor")&&t.constructor;return"function"==typeof r&&r instanceof r&&oo.call(r)==io},co="undefined"!=typeof Element,fo="function"==typeof Symbol&&Symbol.for?Symbol.for("react.element"):60103,so=function(e){return e.$$typeof===fo};function lo(e,t,r,n,o){return r.push({diffType:o,pathString:n,prevValue:e,nextValue:t}),o!==Rn.different}function po(e,t,r){try{var n=[];return function e(t,r,n){var o=arguments.length>3&&void 0!==arguments[3]?arguments[3]:"";if(t===r)return!0;if(!t||!r)return lo(t,r,n,o,Rn.different);if(oe(t)&&oe(r)){var a=t.length;if(a!==r.length)return lo(t,r,n,o,Rn.different);for(var i=!0,u=a;0!=u--;)e(t[u],r[u],n,"".concat(o,"[").concat(u,"]"))||(i=!1);return lo(t,r,n,o,i?Rn.deepEquals:Rn.different)}if(Zn(t)&&Zn(r))return t.getTime()===r.getTime()?lo(t,r,n,o,Rn.date):lo(t,r,n,o,Rn.different);if(Jn(t)&&Jn(r))return t.toString()===r.toString()?lo(t,r,n,o,Rn.regex):lo(t,r,n,o,Rn.different);if(co&&t instanceof Element&&r instanceof Element)return lo(t,r,n,o,Rn.different);if(so(t)&&so(r))return t.type!==r.type?lo(t,r,n,o,Rn.different):lo(t,r,n,o,e(t.props,r.props,n,"".concat(o,".props"))?Rn.reactElement:Rn.different);if(T(t)&&T(r))return t.name===r.name?lo(t,r,n,o,Rn.function):lo(t,r,n,o,Rn.different);if(uo(t)&&uo(r)){var c=Re(t),f=c.length;if(f!==Re(r).length)return lo(t,r,n,o,Rn.different);for(var s=f;0!=s--;)if(!Vn(r,c[s]))return lo(t,r,n,o,Rn.different);for(var l=!0,p=f;0!=p--;){var v=c[p];e(t[v],r[v],n,"".concat(o,".").concat(v))||(l=!1)}return lo(t,r,n,o,l?Rn.deepEquals:Rn.different)}return lo(t,r,n,o,Rn.different)}(e,t,n,r),n}catch(e){if(e.message&&e.message.match(/stack|recursion/i)||-2146828260===e.number)return console.warn("Warning: why-did-you-render couldn't handle circular references in props.",e.name,e.message),!1;throw e}}var vo={};function ho(e,t){var r=(arguments.length>2&&void 0!==arguments[2]?arguments[2]:{}).shallow;if(e===t)return!1;if(!(void 0===r||r))return po(e,t);var o=e||vo,a=t||vo,i=Object.keys(n({},o,{},a));return In(i,function(e,t){var r=po(o[t],a[t],t);return r&&(e=[].concat(c(e),c(r))),e},[])}function yo(e,t,r,n,o,a){return{propsDifferences:ho(e,n),stateDifferences:ho(t,o),hookDifferences:ho(r,a,{shallow:!1})}}function bo(e){var t=e.Component,r=e.displayName,n=e.hookName,o=e.prevProps,a=e.prevState,i=e.prevHook,u=e.nextProps,c=e.nextState,f=e.nextHook;return{Component:t,displayName:r,hookName:n,prevProps:o,prevState:a,prevHook:i,nextProps:u,nextState:c,nextHook:f,options:e.options,reason:yo(o,a,i,u,c,f)}}function _o(e,t,r){return!function(e,t){return t.exclude&&t.exclude.length>0&&t.exclude.some(function(t){return t.test(e)})}(t,r)&&!(!e.whyDidYouRender&&!function(e,t){return t.include&&t.include.length>0&&t.include.some(function(t){return t.test(e)})}(t,r))}var go=2;var mo="function"==typeof Symbol&&Symbol.for?Symbol.for("react.memo"):60115;function jo(t,r,n,c){var f=function(n){function f(e,r){var n;!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,f),(n=function(e,t){return!t||"object"!=typeof t&&"function"!=typeof t?i(e):t}(this,o(f).call(this,e,r)))._WDYR={renderNumber:0};var a=u(o(f.prototype),"render",i(n))||n.render;return a!==t.prototype.render&&(n.render=function(){return f.prototype.render.apply(i(n)),a()}),n}var s,l,p;return function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&a(e,t)}(f,t),s=f,(l=[{key:"render",value:function(){return this._WDYR.renderNumber++,"isStrictMode"in this._WDYR||(this._WDYR.isStrictMode=function(e){for(var t=e._reactInternalFiber;t;){if(t.mode&go)return!0;t=t.return}return!1}(this)),this._WDYR.isStrictMode&&this._WDYR.renderNumber%2==1||(this._WDYR.prevProps&&c.notifier(bo({Component:t,displayName:r,prevProps:this._WDYR.prevProps,prevState:this._WDYR.prevState,nextProps:this.props,nextState:this.state,options:c})),this._WDYR.prevProps=this.props,this._WDYR.prevState=this.state),u(o(f.prototype),"render",this)?u(o(f.prototype),"render",this).call(this):null}}])&&e(s.prototype,l),p&&e(s,p),f}();return f.displayName=r,Sn(f,t),f}function Oo(e,t,r,n,o){var a=t.path,i=r,u=n.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner.current;if(!u)return i;var c=u.type.ComponentForHooksTracking||u.type,f=Wn(c);if(!_o(c,f,o))return i;var s=n.useRef(),l=s.current;if(s.current=i,l){var p=bo({Component:c,displayName:f,hookName:e,prevHook:a?Gr(l,a):l,nextHook:a?Gr(i,a):i,options:o});p.reason.hookDifferences&&o.notifier(p)}return s.current}function wo(e,t,r,n,o){return t.$$typeof===mo?function(e,t,r,n){var o=e.type;function a(a){var i=r.useRef(),u=i.current;if(i.current=a,u){var c=bo({Component:e,displayName:t,prevProps:u,nextProps:a,options:n});c.reason.propsDifferences&&c.reason.propsDifferences.length>0&&n.notifier(c)}return o(a)}a.displayName=Wn(o),a.ComponentForHooksTracking=e,Sn(a,o);var i=r.memo(a,e.compare);return i.displayName=t,Sn(i,e),i}(t,r,n,o):t.prototype&&t.prototype.isReactComponent?jo(t,r,0,o):function(e,t,r,n){function o(o){var a=r.useRef(),i=a.current;if(a.current=o,i){var u=bo({Component:e,displayName:t,prevProps:i,nextProps:o,options:n});u.reason.propsDifferences&&n.notifier(u)}return e(o)}return o.displayName=t,o.ComponentForHooksTracking=e,Sn(o,e),o}(t,r,n,o)}function Do(e,t,r,n,o){if(e.has(t))return e.get(t);var a=wo(0,t,r,n,o);return e.set(t,a),a}var Eo={useState:{path:"0"},useReducer:{path:"0"},useContext:!0,useMemo:!0};function So(e,t){var r,o=Yn(t),a=e.createElement,i=e.createFactory,u=new WeakMap;if(e.createElement=function(t){for(var r=null,n=null,i=null,c=arguments.length,f=new Array(c>1?c-1:0),s=1;s<c;s++)f[s-1]=arguments[s];try{if(r=("function"==typeof t||t.$$typeof===mo)&&_o(t,Wn(t),o))return n=t&&t.whyDidYouRender&&t.whyDidYouRender.customName||Wn(t),i=Do(u,t,n,e,o),a.apply(e,[i].concat(f))}catch(e){o.consoleLog("whyDidYouRender error. Please file a bug at https://github.com/welldone-software/why-did-you-render/issues.",{errorInfo:{error:e,componentNameOrComponent:t,rest:f,options:o,isShouldTrack:r,displayName:n,WDYRPatchedComponent:i}})}return a.apply(e,[t].concat(f))},Object.assign(e.createElement,a),e.createFactory=function(t){var r=e.createElement.bind(null,t);return r.type=t,r},Object.assign(e.createFactory,i),o.trackHooks){var c=un(Eo,function(t,n){return function(){var a=r[n];if(!a)throw new Error("[WhyDidYouRender] A problem with React Hooks patching occurred.");var i=a.apply(void 0,arguments);return t&&Oo(n,!0===t?{}:t,i,e,o),i}});Object.defineProperty(e.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher,"current",{set:function(e){r=e&&n({},e,{},e.origHooks)},get:function(){return r&&n({},r,{},c,{origHooks:r})}})}return e.__REVERT_WHY_DID_YOU_RENDER__=function(){Object.assign(e,{createElement:a,createFactory:i}),u=null,Object.defineProperty(e.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentDispatcher,"current",{writable:!0,value:r}),delete e.__REVERT_WHY_DID_YOU_RENDER__},e}return So.defaultNotifier=An,So});
 
 
+},{}],"../node_modules/element-resize-detector/src/collection-utils.js":[function(require,module,exports) {
+"use strict";
+
+var utils = module.exports = {};
+
+/**
+ * Loops through the collection and calls the callback for each element. if the callback returns truthy, the loop is broken and returns the same value.
+ * @public
+ * @param {*} collection The collection to loop through. Needs to have a length property set and have indices set from 0 to length - 1.
+ * @param {function} callback The callback to be called for each element. The element will be given as a parameter to the callback. If this callback returns truthy, the loop is broken and the same value is returned.
+ * @returns {*} The value that a callback has returned (if truthy). Otherwise nothing.
+ */
+utils.forEach = function(collection, callback) {
+    for(var i = 0; i < collection.length; i++) {
+        var result = callback(collection[i]);
+        if(result) {
+            return result;
+        }
+    }
+};
+
+},{}],"../node_modules/element-resize-detector/src/element-utils.js":[function(require,module,exports) {
+"use strict";
+
+module.exports = function(options) {
+    var getState = options.stateHandler.getState;
+
+    /**
+     * Tells if the element has been made detectable and ready to be listened for resize events.
+     * @public
+     * @param {element} The element to check.
+     * @returns {boolean} True or false depending on if the element is detectable or not.
+     */
+    function isDetectable(element) {
+        var state = getState(element);
+        return state && !!state.isDetectable;
+    }
+
+    /**
+     * Marks the element that it has been made detectable and ready to be listened for resize events.
+     * @public
+     * @param {element} The element to mark.
+     */
+    function markAsDetectable(element) {
+        getState(element).isDetectable = true;
+    }
+
+    /**
+     * Tells if the element is busy or not.
+     * @public
+     * @param {element} The element to check.
+     * @returns {boolean} True or false depending on if the element is busy or not.
+     */
+    function isBusy(element) {
+        return !!getState(element).busy;
+    }
+
+    /**
+     * Marks the object is busy and should not be made detectable.
+     * @public
+     * @param {element} element The element to mark.
+     * @param {boolean} busy If the element is busy or not.
+     */
+    function markBusy(element, busy) {
+        getState(element).busy = !!busy;
+    }
+
+    return {
+        isDetectable: isDetectable,
+        markAsDetectable: markAsDetectable,
+        isBusy: isBusy,
+        markBusy: markBusy
+    };
+};
+
+},{}],"../node_modules/element-resize-detector/src/listener-handler.js":[function(require,module,exports) {
+"use strict";
+
+module.exports = function(idHandler) {
+    var eventListeners = {};
+
+    /**
+     * Gets all listeners for the given element.
+     * @public
+     * @param {element} element The element to get all listeners for.
+     * @returns All listeners for the given element.
+     */
+    function getListeners(element) {
+        var id = idHandler.get(element);
+
+        if (id === undefined) {
+            return [];
+        }
+
+        return eventListeners[id] || [];
+    }
+
+    /**
+     * Stores the given listener for the given element. Will not actually add the listener to the element.
+     * @public
+     * @param {element} element The element that should have the listener added.
+     * @param {function} listener The callback that the element has added.
+     */
+    function addListener(element, listener) {
+        var id = idHandler.get(element);
+
+        if(!eventListeners[id]) {
+            eventListeners[id] = [];
+        }
+
+        eventListeners[id].push(listener);
+    }
+
+    function removeListener(element, listener) {
+        var listeners = getListeners(element);
+        for (var i = 0, len = listeners.length; i < len; ++i) {
+            if (listeners[i] === listener) {
+              listeners.splice(i, 1);
+              break;
+            }
+        }
+    }
+
+    function removeAllListeners(element) {
+      var listeners = getListeners(element);
+      if (!listeners) { return; }
+      listeners.length = 0;
+    }
+
+    return {
+        get: getListeners,
+        add: addListener,
+        removeListener: removeListener,
+        removeAllListeners: removeAllListeners
+    };
+};
+
+},{}],"../node_modules/element-resize-detector/src/id-generator.js":[function(require,module,exports) {
+"use strict";
+
+module.exports = function() {
+    var idCount = 1;
+
+    /**
+     * Generates a new unique id in the context.
+     * @public
+     * @returns {number} A unique id in the context.
+     */
+    function generate() {
+        return idCount++;
+    }
+
+    return {
+        generate: generate
+    };
+};
+
+},{}],"../node_modules/element-resize-detector/src/id-handler.js":[function(require,module,exports) {
+"use strict";
+
+module.exports = function(options) {
+    var idGenerator     = options.idGenerator;
+    var getState        = options.stateHandler.getState;
+
+    /**
+     * Gets the resize detector id of the element.
+     * @public
+     * @param {element} element The target element to get the id of.
+     * @returns {string|number|null} The id of the element. Null if it has no id.
+     */
+    function getId(element) {
+        var state = getState(element);
+
+        if (state && state.id !== undefined) {
+            return state.id;
+        }
+
+        return null;
+    }
+
+    /**
+     * Sets the resize detector id of the element. Requires the element to have a resize detector state initialized.
+     * @public
+     * @param {element} element The target element to set the id of.
+     * @returns {string|number|null} The id of the element.
+     */
+    function setId(element) {
+        var state = getState(element);
+
+        if (!state) {
+            throw new Error("setId required the element to have a resize detection state.");
+        }
+
+        var id = idGenerator.generate();
+
+        state.id = id;
+
+        return id;
+    }
+
+    return {
+        get: getId,
+        set: setId
+    };
+};
+
+},{}],"../node_modules/element-resize-detector/src/reporter.js":[function(require,module,exports) {
+"use strict";
+
+/* global console: false */
+
+/**
+ * Reporter that handles the reporting of logs, warnings and errors.
+ * @public
+ * @param {boolean} quiet Tells if the reporter should be quiet or not.
+ */
+module.exports = function(quiet) {
+    function noop() {
+        //Does nothing.
+    }
+
+    var reporter = {
+        log: noop,
+        warn: noop,
+        error: noop
+    };
+
+    if(!quiet && window.console) {
+        var attachFunction = function(reporter, name) {
+            //The proxy is needed to be able to call the method with the console context,
+            //since we cannot use bind.
+            reporter[name] = function reporterProxy() {
+                var f = console[name];
+                if (f.apply) { //IE9 does not support console.log.apply :)
+                    f.apply(console, arguments);
+                } else {
+                    for (var i = 0; i < arguments.length; i++) {
+                        f(arguments[i]);
+                    }
+                }
+            };
+        };
+
+        attachFunction(reporter, "log");
+        attachFunction(reporter, "warn");
+        attachFunction(reporter, "error");
+    }
+
+    return reporter;
+};
+},{}],"../node_modules/element-resize-detector/src/browser-detector.js":[function(require,module,exports) {
+"use strict";
+
+var detector = module.exports = {};
+
+detector.isIE = function(version) {
+    function isAnyIeVersion() {
+        var agent = navigator.userAgent.toLowerCase();
+        return agent.indexOf("msie") !== -1 || agent.indexOf("trident") !== -1 || agent.indexOf(" edge/") !== -1;
+    }
+
+    if(!isAnyIeVersion()) {
+        return false;
+    }
+
+    if(!version) {
+        return true;
+    }
+
+    //Shamelessly stolen from https://gist.github.com/padolsey/527683
+    var ieVersion = (function(){
+        var undef,
+            v = 3,
+            div = document.createElement("div"),
+            all = div.getElementsByTagName("i");
+
+        do {
+            div.innerHTML = "<!--[if gt IE " + (++v) + "]><i></i><![endif]-->";
+        }
+        while (all[0]);
+
+        return v > 4 ? v : undef;
+    }());
+
+    return version === ieVersion;
+};
+
+detector.isLegacyOpera = function() {
+    return !!window.opera;
+};
+
+},{}],"../node_modules/batch-processor/src/utils.js":[function(require,module,exports) {
+"use strict";
+
+var utils = module.exports = {};
+
+utils.getOption = getOption;
+
+function getOption(options, name, defaultValue) {
+    var value = options[name];
+
+    if((value === undefined || value === null) && defaultValue !== undefined) {
+        return defaultValue;
+    }
+
+    return value;
+}
+
+},{}],"../node_modules/process/browser.js":[function(require,module,exports) {
+
+// shim for using process in browser
+var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+  throw new Error('setTimeout has not been defined');
+}
+
+function defaultClearTimeout() {
+  throw new Error('clearTimeout has not been defined');
+}
+
+(function () {
+  try {
+    if (typeof setTimeout === 'function') {
+      cachedSetTimeout = setTimeout;
+    } else {
+      cachedSetTimeout = defaultSetTimout;
+    }
+  } catch (e) {
+    cachedSetTimeout = defaultSetTimout;
+  }
+
+  try {
+    if (typeof clearTimeout === 'function') {
+      cachedClearTimeout = clearTimeout;
+    } else {
+      cachedClearTimeout = defaultClearTimeout;
+    }
+  } catch (e) {
+    cachedClearTimeout = defaultClearTimeout;
+  }
+})();
+
+function runTimeout(fun) {
+  if (cachedSetTimeout === setTimeout) {
+    //normal enviroments in sane situations
+    return setTimeout(fun, 0);
+  } // if setTimeout wasn't available but was latter defined
+
+
+  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+    cachedSetTimeout = setTimeout;
+    return setTimeout(fun, 0);
+  }
+
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedSetTimeout(fun, 0);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+      return cachedSetTimeout.call(null, fun, 0);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+      return cachedSetTimeout.call(this, fun, 0);
+    }
+  }
+}
+
+function runClearTimeout(marker) {
+  if (cachedClearTimeout === clearTimeout) {
+    //normal enviroments in sane situations
+    return clearTimeout(marker);
+  } // if clearTimeout wasn't available but was latter defined
+
+
+  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+    cachedClearTimeout = clearTimeout;
+    return clearTimeout(marker);
+  }
+
+  try {
+    // when when somebody has screwed with setTimeout but no I.E. maddness
+    return cachedClearTimeout(marker);
+  } catch (e) {
+    try {
+      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+      return cachedClearTimeout.call(null, marker);
+    } catch (e) {
+      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+      // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+      return cachedClearTimeout.call(this, marker);
+    }
+  }
+}
+
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+  if (!draining || !currentQueue) {
+    return;
+  }
+
+  draining = false;
+
+  if (currentQueue.length) {
+    queue = currentQueue.concat(queue);
+  } else {
+    queueIndex = -1;
+  }
+
+  if (queue.length) {
+    drainQueue();
+  }
+}
+
+function drainQueue() {
+  if (draining) {
+    return;
+  }
+
+  var timeout = runTimeout(cleanUpNextTick);
+  draining = true;
+  var len = queue.length;
+
+  while (len) {
+    currentQueue = queue;
+    queue = [];
+
+    while (++queueIndex < len) {
+      if (currentQueue) {
+        currentQueue[queueIndex].run();
+      }
+    }
+
+    queueIndex = -1;
+    len = queue.length;
+  }
+
+  currentQueue = null;
+  draining = false;
+  runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+  var args = new Array(arguments.length - 1);
+
+  if (arguments.length > 1) {
+    for (var i = 1; i < arguments.length; i++) {
+      args[i - 1] = arguments[i];
+    }
+  }
+
+  queue.push(new Item(fun, args));
+
+  if (queue.length === 1 && !draining) {
+    runTimeout(drainQueue);
+  }
+}; // v8 likes predictible objects
+
+
+function Item(fun, array) {
+  this.fun = fun;
+  this.array = array;
+}
+
+Item.prototype.run = function () {
+  this.fun.apply(null, this.array);
+};
+
+process.title = 'browser';
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) {
+  return [];
+};
+
+process.binding = function (name) {
+  throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () {
+  return '/';
+};
+
+process.chdir = function (dir) {
+  throw new Error('process.chdir is not supported');
+};
+
+process.umask = function () {
+  return 0;
+};
+},{}],"../node_modules/batch-processor/src/batch-processor.js":[function(require,module,exports) {
+var process = require("process");
+"use strict";
+
+var utils = require("./utils");
+
+module.exports = function batchProcessorMaker(options) {
+    options             = options || {};
+    var reporter        = options.reporter;
+    var asyncProcess    = utils.getOption(options, "async", true);
+    var autoProcess     = utils.getOption(options, "auto", true);
+
+    if(autoProcess && !asyncProcess) {
+        reporter && reporter.warn("Invalid options combination. auto=true and async=false is invalid. Setting async=true.");
+        asyncProcess = true;
+    }
+
+    var batch = Batch();
+    var asyncFrameHandler;
+    var isProcessing = false;
+
+    function addFunction(level, fn) {
+        if(!isProcessing && autoProcess && asyncProcess && batch.size() === 0) {
+            // Since this is async, it is guaranteed to be executed after that the fn is added to the batch.
+            // This needs to be done before, since we're checking the size of the batch to be 0.
+            processBatchAsync();
+        }
+
+        batch.add(level, fn);
+    }
+
+    function processBatch() {
+        // Save the current batch, and create a new batch so that incoming functions are not added into the currently processing batch.
+        // Continue processing until the top-level batch is empty (functions may be added to the new batch while processing, and so on).
+        isProcessing = true;
+        while (batch.size()) {
+            var processingBatch = batch;
+            batch = Batch();
+            processingBatch.process();
+        }
+        isProcessing = false;
+    }
+
+    function forceProcessBatch(localAsyncProcess) {
+        if (isProcessing) {
+            return;
+        }
+
+        if(localAsyncProcess === undefined) {
+            localAsyncProcess = asyncProcess;
+        }
+
+        if(asyncFrameHandler) {
+            cancelFrame(asyncFrameHandler);
+            asyncFrameHandler = null;
+        }
+
+        if(localAsyncProcess) {
+            processBatchAsync();
+        } else {
+            processBatch();
+        }
+    }
+
+    function processBatchAsync() {
+        asyncFrameHandler = requestFrame(processBatch);
+    }
+
+    function clearBatch() {
+        batch           = {};
+        batchSize       = 0;
+        topLevel        = 0;
+        bottomLevel     = 0;
+    }
+
+    function cancelFrame(listener) {
+        // var cancel = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame || window.clearTimeout;
+        var cancel = clearTimeout;
+        return cancel(listener);
+    }
+
+    function requestFrame(callback) {
+        // var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function(fn) { return window.setTimeout(fn, 20); };
+        var raf = function(fn) { return setTimeout(fn, 0); };
+        return raf(callback);
+    }
+
+    return {
+        add: addFunction,
+        force: forceProcessBatch
+    };
+};
+
+function Batch() {
+    var batch       = {};
+    var size        = 0;
+    var topLevel    = 0;
+    var bottomLevel = 0;
+
+    function add(level, fn) {
+        if(!fn) {
+            fn = level;
+            level = 0;
+        }
+
+        if(level > topLevel) {
+            topLevel = level;
+        } else if(level < bottomLevel) {
+            bottomLevel = level;
+        }
+
+        if(!batch[level]) {
+            batch[level] = [];
+        }
+
+        batch[level].push(fn);
+        size++;
+    }
+
+    function process() {
+        for(var level = bottomLevel; level <= topLevel; level++) {
+            var fns = batch[level];
+
+            for(var i = 0; i < fns.length; i++) {
+                var fn = fns[i];
+                fn();
+            }
+        }
+    }
+
+    function getSize() {
+        return size;
+    }
+
+    return {
+        add: add,
+        process: process,
+        size: getSize
+    };
+}
+
+},{"./utils":"../node_modules/batch-processor/src/utils.js","process":"../node_modules/process/browser.js"}],"../node_modules/element-resize-detector/src/state-handler.js":[function(require,module,exports) {
+"use strict";
+
+var prop = "_erd";
+
+function initState(element) {
+    element[prop] = {};
+    return getState(element);
+}
+
+function getState(element) {
+    return element[prop];
+}
+
+function cleanState(element) {
+    delete element[prop];
+}
+
+module.exports = {
+    initState: initState,
+    getState: getState,
+    cleanState: cleanState
+};
+
+},{}],"../node_modules/element-resize-detector/src/detection-strategy/object.js":[function(require,module,exports) {
+/**
+ * Resize detection strategy that injects objects to elements in order to detect resize events.
+ * Heavily inspired by: http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
+ */
+
+"use strict";
+
+var browserDetector = require("../browser-detector");
+
+module.exports = function(options) {
+    options             = options || {};
+    var reporter        = options.reporter;
+    var batchProcessor  = options.batchProcessor;
+    var getState        = options.stateHandler.getState;
+
+    if(!reporter) {
+        throw new Error("Missing required dependency: reporter.");
+    }
+
+    /**
+     * Adds a resize event listener to the element.
+     * @public
+     * @param {element} element The element that should have the listener added.
+     * @param {function} listener The listener callback to be called for each resize event of the element. The element will be given as a parameter to the listener callback.
+     */
+    function addListener(element, listener) {
+        if(!getObject(element)) {
+            throw new Error("Element is not detectable by this strategy.");
+        }
+
+        function listenerProxy() {
+            listener(element);
+        }
+
+        if(browserDetector.isIE(8)) {
+            //IE 8 does not support object, but supports the resize event directly on elements.
+            getState(element).object = {
+                proxy: listenerProxy
+            };
+            element.attachEvent("onresize", listenerProxy);
+        } else {
+            var object = getObject(element);
+            object.contentDocument.defaultView.addEventListener("resize", listenerProxy);
+        }
+    }
+
+    /**
+     * Makes an element detectable and ready to be listened for resize events. Will call the callback when the element is ready to be listened for resize changes.
+     * @private
+     * @param {object} options Optional options object.
+     * @param {element} element The element to make detectable
+     * @param {function} callback The callback to be called when the element is ready to be listened for resize changes. Will be called with the element as first parameter.
+     */
+    function makeDetectable(options, element, callback) {
+        if (!callback) {
+            callback = element;
+            element = options;
+            options = null;
+        }
+
+        options = options || {};
+        var debug = options.debug;
+
+        function injectObject(element, callback) {
+            var OBJECT_STYLE = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;";
+
+            //The target element needs to be positioned (everything except static) so the absolute positioned object will be positioned relative to the target element.
+
+            // Position altering may be performed directly or on object load, depending on if style resolution is possible directly or not.
+            var positionCheckPerformed = false;
+
+            // The element may not yet be attached to the DOM, and therefore the style object may be empty in some browsers.
+            // Since the style object is a reference, it will be updated as soon as the element is attached to the DOM.
+            var style = window.getComputedStyle(element);
+            var width = element.offsetWidth;
+            var height = element.offsetHeight;
+
+            getState(element).startSize = {
+                width: width,
+                height: height
+            };
+
+            function mutateDom() {
+                function alterPositionStyles() {
+                    if(style.position === "static") {
+                        element.style.position = "relative";
+
+                        var removeRelativeStyles = function(reporter, element, style, property) {
+                            function getNumericalValue(value) {
+                                return value.replace(/[^-\d\.]/g, "");
+                            }
+
+                            var value = style[property];
+
+                            if(value !== "auto" && getNumericalValue(value) !== "0") {
+                                reporter.warn("An element that is positioned static has style." + property + "=" + value + " which is ignored due to the static positioning. The element will need to be positioned relative, so the style." + property + " will be set to 0. Element: ", element);
+                                element.style[property] = 0;
+                            }
+                        };
+
+                        //Check so that there are no accidental styles that will make the element styled differently now that is is relative.
+                        //If there are any, set them to 0 (this should be okay with the user since the style properties did nothing before [since the element was positioned static] anyway).
+                        removeRelativeStyles(reporter, element, style, "top");
+                        removeRelativeStyles(reporter, element, style, "right");
+                        removeRelativeStyles(reporter, element, style, "bottom");
+                        removeRelativeStyles(reporter, element, style, "left");
+                    }
+                }
+
+                function onObjectLoad() {
+                    // The object has been loaded, which means that the element now is guaranteed to be attached to the DOM.
+                    if (!positionCheckPerformed) {
+                        alterPositionStyles();
+                    }
+
+                    /*jshint validthis: true */
+
+                    function getDocument(element, callback) {
+                        //Opera 12 seem to call the object.onload before the actual document has been created.
+                        //So if it is not present, poll it with an timeout until it is present.
+                        //TODO: Could maybe be handled better with object.onreadystatechange or similar.
+                        if(!element.contentDocument) {
+                            setTimeout(function checkForObjectDocument() {
+                                getDocument(element, callback);
+                            }, 100);
+
+                            return;
+                        }
+
+                        callback(element.contentDocument);
+                    }
+
+                    //Mutating the object element here seems to fire another load event.
+                    //Mutating the inner document of the object element is fine though.
+                    var objectElement = this;
+
+                    //Create the style element to be added to the object.
+                    getDocument(objectElement, function onObjectDocumentReady(objectDocument) {
+                        //Notify that the element is ready to be listened to.
+                        callback(element);
+                    });
+                }
+
+                // The element may be detached from the DOM, and some browsers does not support style resolving of detached elements.
+                // The alterPositionStyles needs to be delayed until we know the element has been attached to the DOM (which we are sure of when the onObjectLoad has been fired), if style resolution is not possible.
+                if (style.position !== "") {
+                    alterPositionStyles(style);
+                    positionCheckPerformed = true;
+                }
+
+                //Add an object element as a child to the target element that will be listened to for resize events.
+                var object = document.createElement("object");
+                object.style.cssText = OBJECT_STYLE;
+                object.tabIndex = -1;
+                object.type = "text/html";
+                object.setAttribute("aria-hidden", "true");
+                object.onload = onObjectLoad;
+
+                //Safari: This must occur before adding the object to the DOM.
+                //IE: Does not like that this happens before, even if it is also added after.
+                if(!browserDetector.isIE()) {
+                    object.data = "about:blank";
+                }
+
+                element.appendChild(object);
+                getState(element).object = object;
+
+                //IE: This must occur after adding the object to the DOM.
+                if(browserDetector.isIE()) {
+                    object.data = "about:blank";
+                }
+            }
+
+            if(batchProcessor) {
+                batchProcessor.add(mutateDom);
+            } else {
+                mutateDom();
+            }
+        }
+
+        if(browserDetector.isIE(8)) {
+            //IE 8 does not support objects properly. Luckily they do support the resize event.
+            //So do not inject the object and notify that the element is already ready to be listened to.
+            //The event handler for the resize event is attached in the utils.addListener instead.
+            callback(element);
+        } else {
+            injectObject(element, callback);
+        }
+    }
+
+    /**
+     * Returns the child object of the target element.
+     * @private
+     * @param {element} element The target element.
+     * @returns The object element of the target.
+     */
+    function getObject(element) {
+        return getState(element).object;
+    }
+
+    function uninstall(element) {
+        if(browserDetector.isIE(8)) {
+            element.detachEvent("onresize", getState(element).object.proxy);
+        } else {
+            element.removeChild(getObject(element));
+        }
+        delete getState(element).object;
+    }
+
+    return {
+        makeDetectable: makeDetectable,
+        addListener: addListener,
+        uninstall: uninstall
+    };
+};
+
+},{"../browser-detector":"../node_modules/element-resize-detector/src/browser-detector.js"}],"../node_modules/element-resize-detector/src/detection-strategy/scroll.js":[function(require,module,exports) {
+/**
+ * Resize detection strategy that injects divs to elements in order to detect resize events on scroll events.
+ * Heavily inspired by: https://github.com/marcj/css-element-queries/blob/master/src/ResizeSensor.js
+ */
+
+"use strict";
+
+var forEach = require("../collection-utils").forEach;
+
+module.exports = function(options) {
+    options             = options || {};
+    var reporter        = options.reporter;
+    var batchProcessor  = options.batchProcessor;
+    var getState        = options.stateHandler.getState;
+    var hasState        = options.stateHandler.hasState;
+    var idHandler       = options.idHandler;
+
+    if (!batchProcessor) {
+        throw new Error("Missing required dependency: batchProcessor");
+    }
+
+    if (!reporter) {
+        throw new Error("Missing required dependency: reporter.");
+    }
+
+    //TODO: Could this perhaps be done at installation time?
+    var scrollbarSizes = getScrollbarSizes();
+
+    // Inject the scrollbar styling that prevents them from appearing sometimes in Chrome.
+    // The injected container needs to have a class, so that it may be styled with CSS (pseudo elements).
+    var styleId = "erd_scroll_detection_scrollbar_style";
+    var detectionContainerClass = "erd_scroll_detection_container";
+    injectScrollStyle(styleId, detectionContainerClass);
+
+    function getScrollbarSizes() {
+        var width = 500;
+        var height = 500;
+
+        var child = document.createElement("div");
+        child.style.cssText = "position: absolute; width: " + width*2 + "px; height: " + height*2 + "px; visibility: hidden; margin: 0; padding: 0;";
+
+        var container = document.createElement("div");
+        container.style.cssText = "position: absolute; width: " + width + "px; height: " + height + "px; overflow: scroll; visibility: none; top: " + -width*3 + "px; left: " + -height*3 + "px; visibility: hidden; margin: 0; padding: 0;";
+
+        container.appendChild(child);
+
+        document.body.insertBefore(container, document.body.firstChild);
+
+        var widthSize = width - container.clientWidth;
+        var heightSize = height - container.clientHeight;
+
+        document.body.removeChild(container);
+
+        return {
+            width: widthSize,
+            height: heightSize
+        };
+    }
+
+    function injectScrollStyle(styleId, containerClass) {
+        function injectStyle(style, method) {
+            method = method || function (element) {
+                document.head.appendChild(element);
+            };
+
+            var styleElement = document.createElement("style");
+            styleElement.innerHTML = style;
+            styleElement.id = styleId;
+            method(styleElement);
+            return styleElement;
+        }
+
+        if (!document.getElementById(styleId)) {
+            var containerAnimationClass = containerClass + "_animation";
+            var containerAnimationActiveClass = containerClass + "_animation_active";
+            var style = "/* Created by the element-resize-detector library. */\n";
+            style += "." + containerClass + " > div::-webkit-scrollbar { display: none; }\n\n";
+            style += "." + containerAnimationActiveClass + " { -webkit-animation-duration: 0.1s; animation-duration: 0.1s; -webkit-animation-name: " + containerAnimationClass + "; animation-name: " + containerAnimationClass + "; }\n";
+            style += "@-webkit-keyframes " + containerAnimationClass +  " { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }\n";
+            style += "@keyframes " + containerAnimationClass +          " { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }";
+            injectStyle(style);
+        }
+    }
+
+    function addAnimationClass(element) {
+        element.className += " " + detectionContainerClass + "_animation_active";
+    }
+
+    function addEvent(el, name, cb) {
+        if (el.addEventListener) {
+            el.addEventListener(name, cb);
+        } else if(el.attachEvent) {
+            el.attachEvent("on" + name, cb);
+        } else {
+            return reporter.error("[scroll] Don't know how to add event listeners.");
+        }
+    }
+
+    function removeEvent(el, name, cb) {
+        if (el.removeEventListener) {
+            el.removeEventListener(name, cb);
+        } else if(el.detachEvent) {
+            el.detachEvent("on" + name, cb);
+        } else {
+            return reporter.error("[scroll] Don't know how to remove event listeners.");
+        }
+    }
+
+    function getExpandElement(element) {
+        return getState(element).container.childNodes[0].childNodes[0].childNodes[0];
+    }
+
+    function getShrinkElement(element) {
+        return getState(element).container.childNodes[0].childNodes[0].childNodes[1];
+    }
+
+    /**
+     * Adds a resize event listener to the element.
+     * @public
+     * @param {element} element The element that should have the listener added.
+     * @param {function} listener The listener callback to be called for each resize event of the element. The element will be given as a parameter to the listener callback.
+     */
+    function addListener(element, listener) {
+        var listeners = getState(element).listeners;
+
+        if (!listeners.push) {
+            throw new Error("Cannot add listener to an element that is not detectable.");
+        }
+
+        getState(element).listeners.push(listener);
+    }
+
+    /**
+     * Makes an element detectable and ready to be listened for resize events. Will call the callback when the element is ready to be listened for resize changes.
+     * @private
+     * @param {object} options Optional options object.
+     * @param {element} element The element to make detectable
+     * @param {function} callback The callback to be called when the element is ready to be listened for resize changes. Will be called with the element as first parameter.
+     */
+    function makeDetectable(options, element, callback) {
+        if (!callback) {
+            callback = element;
+            element = options;
+            options = null;
+        }
+
+        options = options || {};
+
+        function debug() {
+            if (options.debug) {
+                var args = Array.prototype.slice.call(arguments);
+                args.unshift(idHandler.get(element), "Scroll: ");
+                if (reporter.log.apply) {
+                    reporter.log.apply(null, args);
+                } else {
+                    for (var i = 0; i < args.length; i++) {
+                        reporter.log(args[i]);
+                    }
+                }
+            }
+        }
+
+        function isDetached(element) {
+            function isInDocument(element) {
+                return element === element.ownerDocument.body || element.ownerDocument.body.contains(element);
+            }
+
+            if (!isInDocument(element)) {
+                return true;
+            }
+
+            // FireFox returns null style in hidden iframes. See https://github.com/wnr/element-resize-detector/issues/68 and https://bugzilla.mozilla.org/show_bug.cgi?id=795520
+            if (window.getComputedStyle(element) === null) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function isUnrendered(element) {
+            // Check the absolute positioned container since the top level container is display: inline.
+            var container = getState(element).container.childNodes[0];
+            var style = window.getComputedStyle(container);
+            return !style.width || style.width.indexOf("px") === -1; //Can only compute pixel value when rendered.
+        }
+
+        function getStyle() {
+            // Some browsers only force layouts when actually reading the style properties of the style object, so make sure that they are all read here,
+            // so that the user of the function can be sure that it will perform the layout here, instead of later (important for batching).
+            var elementStyle            = window.getComputedStyle(element);
+            var style                   = {};
+            style.position              = elementStyle.position;
+            style.width                 = element.offsetWidth;
+            style.height                = element.offsetHeight;
+            style.top                   = elementStyle.top;
+            style.right                 = elementStyle.right;
+            style.bottom                = elementStyle.bottom;
+            style.left                  = elementStyle.left;
+            style.widthCSS              = elementStyle.width;
+            style.heightCSS             = elementStyle.height;
+            return style;
+        }
+
+        function storeStartSize() {
+            var style = getStyle();
+            getState(element).startSize = {
+                width: style.width,
+                height: style.height
+            };
+            debug("Element start size", getState(element).startSize);
+        }
+
+        function initListeners() {
+            getState(element).listeners = [];
+        }
+
+        function storeStyle() {
+            debug("storeStyle invoked.");
+            if (!getState(element)) {
+                debug("Aborting because element has been uninstalled");
+                return;
+            }
+
+            var style = getStyle();
+            getState(element).style = style;
+        }
+
+        function storeCurrentSize(element, width, height) {
+            getState(element).lastWidth = width;
+            getState(element).lastHeight  = height;
+        }
+
+        function getExpandChildElement(element) {
+            return getExpandElement(element).childNodes[0];
+        }
+
+        function getWidthOffset() {
+            return 2 * scrollbarSizes.width + 1;
+        }
+
+        function getHeightOffset() {
+            return 2 * scrollbarSizes.height + 1;
+        }
+
+        function getExpandWidth(width) {
+            return width + 10 + getWidthOffset();
+        }
+
+        function getExpandHeight(height) {
+            return height + 10 + getHeightOffset();
+        }
+
+        function getShrinkWidth(width) {
+            return width * 2 + getWidthOffset();
+        }
+
+        function getShrinkHeight(height) {
+            return height * 2 + getHeightOffset();
+        }
+
+        function positionScrollbars(element, width, height) {
+            var expand          = getExpandElement(element);
+            var shrink          = getShrinkElement(element);
+            var expandWidth     = getExpandWidth(width);
+            var expandHeight    = getExpandHeight(height);
+            var shrinkWidth     = getShrinkWidth(width);
+            var shrinkHeight    = getShrinkHeight(height);
+            expand.scrollLeft   = expandWidth;
+            expand.scrollTop    = expandHeight;
+            shrink.scrollLeft   = shrinkWidth;
+            shrink.scrollTop    = shrinkHeight;
+        }
+
+        function injectContainerElement() {
+            var container = getState(element).container;
+
+            if (!container) {
+                container                   = document.createElement("div");
+                container.className         = detectionContainerClass;
+                container.style.cssText     = "visibility: hidden; display: inline; width: 0px; height: 0px; z-index: -1; overflow: hidden; margin: 0; padding: 0;";
+                getState(element).container = container;
+                addAnimationClass(container);
+                element.appendChild(container);
+
+                var onAnimationStart = function () {
+                    getState(element).onRendered && getState(element).onRendered();
+                };
+
+                addEvent(container, "animationstart", onAnimationStart);
+
+                // Store the event handler here so that they may be removed when uninstall is called.
+                // See uninstall function for an explanation why it is needed.
+                getState(element).onAnimationStart = onAnimationStart;
+            }
+
+            return container;
+        }
+
+        function injectScrollElements() {
+            function alterPositionStyles() {
+                var style = getState(element).style;
+
+                if(style.position === "static") {
+                    element.style.position = "relative";
+
+                    var removeRelativeStyles = function(reporter, element, style, property) {
+                        function getNumericalValue(value) {
+                            return value.replace(/[^-\d\.]/g, "");
+                        }
+
+                        var value = style[property];
+
+                        if(value !== "auto" && getNumericalValue(value) !== "0") {
+                            reporter.warn("An element that is positioned static has style." + property + "=" + value + " which is ignored due to the static positioning. The element will need to be positioned relative, so the style." + property + " will be set to 0. Element: ", element);
+                            element.style[property] = 0;
+                        }
+                    };
+
+                    //Check so that there are no accidental styles that will make the element styled differently now that is is relative.
+                    //If there are any, set them to 0 (this should be okay with the user since the style properties did nothing before [since the element was positioned static] anyway).
+                    removeRelativeStyles(reporter, element, style, "top");
+                    removeRelativeStyles(reporter, element, style, "right");
+                    removeRelativeStyles(reporter, element, style, "bottom");
+                    removeRelativeStyles(reporter, element, style, "left");
+                }
+            }
+
+            function getLeftTopBottomRightCssText(left, top, bottom, right) {
+                left = (!left ? "0" : (left + "px"));
+                top = (!top ? "0" : (top + "px"));
+                bottom = (!bottom ? "0" : (bottom + "px"));
+                right = (!right ? "0" : (right + "px"));
+
+                return "left: " + left + "; top: " + top + "; right: " + right + "; bottom: " + bottom + ";";
+            }
+
+            debug("Injecting elements");
+
+            if (!getState(element)) {
+                debug("Aborting because element has been uninstalled");
+                return;
+            }
+
+            alterPositionStyles();
+
+            var rootContainer = getState(element).container;
+
+            if (!rootContainer) {
+                rootContainer = injectContainerElement();
+            }
+
+            // Due to this WebKit bug https://bugs.webkit.org/show_bug.cgi?id=80808 (currently fixed in Blink, but still present in WebKit browsers such as Safari),
+            // we need to inject two containers, one that is width/height 100% and another that is left/top -1px so that the final container always is 1x1 pixels bigger than
+            // the targeted element.
+            // When the bug is resolved, "containerContainer" may be removed.
+
+            // The outer container can occasionally be less wide than the targeted when inside inline elements element in WebKit (see https://bugs.webkit.org/show_bug.cgi?id=152980).
+            // This should be no problem since the inner container either way makes sure the injected scroll elements are at least 1x1 px.
+
+            var scrollbarWidth          = scrollbarSizes.width;
+            var scrollbarHeight         = scrollbarSizes.height;
+            var containerContainerStyle = "position: absolute; flex: none; overflow: hidden; z-index: -1; visibility: hidden; width: 100%; height: 100%; left: 0px; top: 0px;";
+            var containerStyle          = "position: absolute; flex: none; overflow: hidden; z-index: -1; visibility: hidden; " + getLeftTopBottomRightCssText(-(1 + scrollbarWidth), -(1 + scrollbarHeight), -scrollbarHeight, -scrollbarWidth);
+            var expandStyle             = "position: absolute; flex: none; overflow: scroll; z-index: -1; visibility: hidden; width: 100%; height: 100%;";
+            var shrinkStyle             = "position: absolute; flex: none; overflow: scroll; z-index: -1; visibility: hidden; width: 100%; height: 100%;";
+            var expandChildStyle        = "position: absolute; left: 0; top: 0;";
+            var shrinkChildStyle        = "position: absolute; width: 200%; height: 200%;";
+
+            var containerContainer      = document.createElement("div");
+            var container               = document.createElement("div");
+            var expand                  = document.createElement("div");
+            var expandChild             = document.createElement("div");
+            var shrink                  = document.createElement("div");
+            var shrinkChild             = document.createElement("div");
+
+            // Some browsers choke on the resize system being rtl, so force it to ltr. https://github.com/wnr/element-resize-detector/issues/56
+            // However, dir should not be set on the top level container as it alters the dimensions of the target element in some browsers.
+            containerContainer.dir              = "ltr";
+
+            containerContainer.style.cssText    = containerContainerStyle;
+            containerContainer.className        = detectionContainerClass;
+            container.className                 = detectionContainerClass;
+            container.style.cssText             = containerStyle;
+            expand.style.cssText                = expandStyle;
+            expandChild.style.cssText           = expandChildStyle;
+            shrink.style.cssText                = shrinkStyle;
+            shrinkChild.style.cssText           = shrinkChildStyle;
+
+            expand.appendChild(expandChild);
+            shrink.appendChild(shrinkChild);
+            container.appendChild(expand);
+            container.appendChild(shrink);
+            containerContainer.appendChild(container);
+            rootContainer.appendChild(containerContainer);
+
+            function onExpandScroll() {
+                getState(element).onExpand && getState(element).onExpand();
+            }
+
+            function onShrinkScroll() {
+                getState(element).onShrink && getState(element).onShrink();
+            }
+
+            addEvent(expand, "scroll", onExpandScroll);
+            addEvent(shrink, "scroll", onShrinkScroll);
+
+            // Store the event handlers here so that they may be removed when uninstall is called.
+            // See uninstall function for an explanation why it is needed.
+            getState(element).onExpandScroll = onExpandScroll;
+            getState(element).onShrinkScroll = onShrinkScroll;
+        }
+
+        function registerListenersAndPositionElements() {
+            function updateChildSizes(element, width, height) {
+                var expandChild             = getExpandChildElement(element);
+                var expandWidth             = getExpandWidth(width);
+                var expandHeight            = getExpandHeight(height);
+                expandChild.style.width     = expandWidth + "px";
+                expandChild.style.height    = expandHeight + "px";
+            }
+
+            function updateDetectorElements(done) {
+                var width           = element.offsetWidth;
+                var height          = element.offsetHeight;
+
+                debug("Storing current size", width, height);
+
+                // Store the size of the element sync here, so that multiple scroll events may be ignored in the event listeners.
+                // Otherwise the if-check in handleScroll is useless.
+                storeCurrentSize(element, width, height);
+
+                // Since we delay the processing of the batch, there is a risk that uninstall has been called before the batch gets to execute.
+                // Since there is no way to cancel the fn executions, we need to add an uninstall guard to all fns of the batch.
+
+                batchProcessor.add(0, function performUpdateChildSizes() {
+                    if (!getState(element)) {
+                        debug("Aborting because element has been uninstalled");
+                        return;
+                    }
+
+                    if (!areElementsInjected()) {
+                        debug("Aborting because element container has not been initialized");
+                        return;
+                    }
+
+                    if (options.debug) {
+                        var w = element.offsetWidth;
+                        var h = element.offsetHeight;
+
+                        if (w !== width || h !== height) {
+                            reporter.warn(idHandler.get(element), "Scroll: Size changed before updating detector elements.");
+                        }
+                    }
+
+                    updateChildSizes(element, width, height);
+                });
+
+                batchProcessor.add(1, function updateScrollbars() {
+                    if (!getState(element)) {
+                        debug("Aborting because element has been uninstalled");
+                        return;
+                    }
+
+                    if (!areElementsInjected()) {
+                        debug("Aborting because element container has not been initialized");
+                        return;
+                    }
+
+                    positionScrollbars(element, width, height);
+                });
+
+                if (done) {
+                    batchProcessor.add(2, function () {
+                        if (!getState(element)) {
+                            debug("Aborting because element has been uninstalled");
+                            return;
+                        }
+
+                        if (!areElementsInjected()) {
+                          debug("Aborting because element container has not been initialized");
+                          return;
+                        }
+
+                        done();
+                    });
+                }
+            }
+
+            function areElementsInjected() {
+                return !!getState(element).container;
+            }
+
+            function notifyListenersIfNeeded() {
+                function isFirstNotify() {
+                    return getState(element).lastNotifiedWidth === undefined;
+                }
+
+                debug("notifyListenersIfNeeded invoked");
+
+                var state = getState(element);
+
+                // Don't notify the if the current size is the start size, and this is the first notification.
+                if (isFirstNotify() && state.lastWidth === state.startSize.width && state.lastHeight === state.startSize.height) {
+                    return debug("Not notifying: Size is the same as the start size, and there has been no notification yet.");
+                }
+
+                // Don't notify if the size already has been notified.
+                if (state.lastWidth === state.lastNotifiedWidth && state.lastHeight === state.lastNotifiedHeight) {
+                    return debug("Not notifying: Size already notified");
+                }
+
+
+                debug("Current size not notified, notifying...");
+                state.lastNotifiedWidth = state.lastWidth;
+                state.lastNotifiedHeight = state.lastHeight;
+                forEach(getState(element).listeners, function (listener) {
+                    listener(element);
+                });
+            }
+
+            function handleRender() {
+                debug("startanimation triggered.");
+
+                if (isUnrendered(element)) {
+                    debug("Ignoring since element is still unrendered...");
+                    return;
+                }
+
+                debug("Element rendered.");
+                var expand = getExpandElement(element);
+                var shrink = getShrinkElement(element);
+                if (expand.scrollLeft === 0 || expand.scrollTop === 0 || shrink.scrollLeft === 0 || shrink.scrollTop === 0) {
+                    debug("Scrollbars out of sync. Updating detector elements...");
+                    updateDetectorElements(notifyListenersIfNeeded);
+                }
+            }
+
+            function handleScroll() {
+                debug("Scroll detected.");
+
+                if (isUnrendered(element)) {
+                    // Element is still unrendered. Skip this scroll event.
+                    debug("Scroll event fired while unrendered. Ignoring...");
+                    return;
+                }
+
+                var width = element.offsetWidth;
+                var height = element.offsetHeight;
+
+                if (width !== getState(element).lastWidth || height !== getState(element).lastHeight) {
+                    debug("Element size changed.");
+                    updateDetectorElements(notifyListenersIfNeeded);
+                } else {
+                    debug("Element size has not changed (" + width + "x" + height + ").");
+                }
+            }
+
+            debug("registerListenersAndPositionElements invoked.");
+
+            if (!getState(element)) {
+                debug("Aborting because element has been uninstalled");
+                return;
+            }
+
+            getState(element).onRendered = handleRender;
+            getState(element).onExpand = handleScroll;
+            getState(element).onShrink = handleScroll;
+
+            var style = getState(element).style;
+            updateChildSizes(element, style.width, style.height);
+        }
+
+        function finalizeDomMutation() {
+            debug("finalizeDomMutation invoked.");
+
+            if (!getState(element)) {
+                debug("Aborting because element has been uninstalled");
+                return;
+            }
+
+            var style = getState(element).style;
+            storeCurrentSize(element, style.width, style.height);
+            positionScrollbars(element, style.width, style.height);
+        }
+
+        function ready() {
+            callback(element);
+        }
+
+        function install() {
+            debug("Installing...");
+            initListeners();
+            storeStartSize();
+
+            batchProcessor.add(0, storeStyle);
+            batchProcessor.add(1, injectScrollElements);
+            batchProcessor.add(2, registerListenersAndPositionElements);
+            batchProcessor.add(3, finalizeDomMutation);
+            batchProcessor.add(4, ready);
+        }
+
+        debug("Making detectable...");
+
+        if (isDetached(element)) {
+            debug("Element is detached");
+
+            injectContainerElement();
+
+            debug("Waiting until element is attached...");
+
+            getState(element).onRendered = function () {
+                debug("Element is now attached");
+                install();
+            };
+        } else {
+            install();
+        }
+    }
+
+    function uninstall(element) {
+        var state = getState(element);
+
+        if (!state) {
+            // Uninstall has been called on a non-erd element.
+            return;
+        }
+
+        // Uninstall may have been called in the following scenarios:
+        // (1) Right between the sync code and async batch (here state.busy = true, but nothing have been registered or injected).
+        // (2) In the ready callback of the last level of the batch by another element (here, state.busy = true, but all the stuff has been injected).
+        // (3) After the installation process (here, state.busy = false and all the stuff has been injected).
+        // So to be on the safe side, let's check for each thing before removing.
+
+        // We need to remove the event listeners, because otherwise the event might fire on an uninstall element which results in an error when trying to get the state of the element.
+        state.onExpandScroll && removeEvent(getExpandElement(element), "scroll", state.onExpandScroll);
+        state.onShrinkScroll && removeEvent(getShrinkElement(element), "scroll", state.onShrinkScroll);
+        state.onAnimationStart && removeEvent(state.container, "animationstart", state.onAnimationStart);
+
+        state.container && element.removeChild(state.container);
+    }
+
+    return {
+        makeDetectable: makeDetectable,
+        addListener: addListener,
+        uninstall: uninstall
+    };
+};
+
+},{"../collection-utils":"../node_modules/element-resize-detector/src/collection-utils.js"}],"../node_modules/element-resize-detector/src/element-resize-detector.js":[function(require,module,exports) {
+"use strict";
+
+var forEach                 = require("./collection-utils").forEach;
+var elementUtilsMaker       = require("./element-utils");
+var listenerHandlerMaker    = require("./listener-handler");
+var idGeneratorMaker        = require("./id-generator");
+var idHandlerMaker          = require("./id-handler");
+var reporterMaker           = require("./reporter");
+var browserDetector         = require("./browser-detector");
+var batchProcessorMaker     = require("batch-processor");
+var stateHandler            = require("./state-handler");
+
+//Detection strategies.
+var objectStrategyMaker     = require("./detection-strategy/object.js");
+var scrollStrategyMaker     = require("./detection-strategy/scroll.js");
+
+function isCollection(obj) {
+    return Array.isArray(obj) || obj.length !== undefined;
+}
+
+function toArray(collection) {
+    if (!Array.isArray(collection)) {
+        var array = [];
+        forEach(collection, function (obj) {
+            array.push(obj);
+        });
+        return array;
+    } else {
+        return collection;
+    }
+}
+
+function isElement(obj) {
+    return obj && obj.nodeType === 1;
+}
+
+/**
+ * @typedef idHandler
+ * @type {object}
+ * @property {function} get Gets the resize detector id of the element.
+ * @property {function} set Generate and sets the resize detector id of the element.
+ */
+
+/**
+ * @typedef Options
+ * @type {object}
+ * @property {boolean} callOnAdd    Determines if listeners should be called when they are getting added.
+                                    Default is true. If true, the listener is guaranteed to be called when it has been added.
+                                    If false, the listener will not be guarenteed to be called when it has been added (does not prevent it from being called).
+ * @property {idHandler} idHandler  A custom id handler that is responsible for generating, setting and retrieving id's for elements.
+                                    If not provided, a default id handler will be used.
+ * @property {reporter} reporter    A custom reporter that handles reporting logs, warnings and errors.
+                                    If not provided, a default id handler will be used.
+                                    If set to false, then nothing will be reported.
+ * @property {boolean} debug        If set to true, the the system will report debug messages as default for the listenTo method.
+ */
+
+/**
+ * Creates an element resize detector instance.
+ * @public
+ * @param {Options?} options Optional global options object that will decide how this instance will work.
+ */
+module.exports = function(options) {
+    options = options || {};
+
+    //idHandler is currently not an option to the listenTo function, so it should not be added to globalOptions.
+    var idHandler;
+
+    if (options.idHandler) {
+        // To maintain compatability with idHandler.get(element, readonly), make sure to wrap the given idHandler
+        // so that readonly flag always is true when it's used here. This may be removed next major version bump.
+        idHandler = {
+            get: function (element) { return options.idHandler.get(element, true); },
+            set: options.idHandler.set
+        };
+    } else {
+        var idGenerator = idGeneratorMaker();
+        var defaultIdHandler = idHandlerMaker({
+            idGenerator: idGenerator,
+            stateHandler: stateHandler
+        });
+        idHandler = defaultIdHandler;
+    }
+
+    //reporter is currently not an option to the listenTo function, so it should not be added to globalOptions.
+    var reporter = options.reporter;
+
+    if(!reporter) {
+        //If options.reporter is false, then the reporter should be quiet.
+        var quiet = reporter === false;
+        reporter = reporterMaker(quiet);
+    }
+
+    //batchProcessor is currently not an option to the listenTo function, so it should not be added to globalOptions.
+    var batchProcessor = getOption(options, "batchProcessor", batchProcessorMaker({ reporter: reporter }));
+
+    //Options to be used as default for the listenTo function.
+    var globalOptions = {};
+    globalOptions.callOnAdd     = !!getOption(options, "callOnAdd", true);
+    globalOptions.debug         = !!getOption(options, "debug", false);
+
+    var eventListenerHandler    = listenerHandlerMaker(idHandler);
+    var elementUtils            = elementUtilsMaker({
+        stateHandler: stateHandler
+    });
+
+    //The detection strategy to be used.
+    var detectionStrategy;
+    var desiredStrategy = getOption(options, "strategy", "object");
+    var strategyOptions = {
+        reporter: reporter,
+        batchProcessor: batchProcessor,
+        stateHandler: stateHandler,
+        idHandler: idHandler
+    };
+
+    if(desiredStrategy === "scroll") {
+        if (browserDetector.isLegacyOpera()) {
+            reporter.warn("Scroll strategy is not supported on legacy Opera. Changing to object strategy.");
+            desiredStrategy = "object";
+        } else if (browserDetector.isIE(9)) {
+            reporter.warn("Scroll strategy is not supported on IE9. Changing to object strategy.");
+            desiredStrategy = "object";
+        }
+    }
+
+    if(desiredStrategy === "scroll") {
+        detectionStrategy = scrollStrategyMaker(strategyOptions);
+    } else if(desiredStrategy === "object") {
+        detectionStrategy = objectStrategyMaker(strategyOptions);
+    } else {
+        throw new Error("Invalid strategy name: " + desiredStrategy);
+    }
+
+    //Calls can be made to listenTo with elements that are still being installed.
+    //Also, same elements can occur in the elements list in the listenTo function.
+    //With this map, the ready callbacks can be synchronized between the calls
+    //so that the ready callback can always be called when an element is ready - even if
+    //it wasn't installed from the function itself.
+    var onReadyCallbacks = {};
+
+    /**
+     * Makes the given elements resize-detectable and starts listening to resize events on the elements. Calls the event callback for each event for each element.
+     * @public
+     * @param {Options?} options Optional options object. These options will override the global options. Some options may not be overriden, such as idHandler.
+     * @param {element[]|element} elements The given array of elements to detect resize events of. Single element is also valid.
+     * @param {function} listener The callback to be executed for each resize event for each element.
+     */
+    function listenTo(options, elements, listener) {
+        function onResizeCallback(element) {
+            var listeners = eventListenerHandler.get(element);
+            forEach(listeners, function callListenerProxy(listener) {
+                listener(element);
+            });
+        }
+
+        function addListener(callOnAdd, element, listener) {
+            eventListenerHandler.add(element, listener);
+
+            if(callOnAdd) {
+                listener(element);
+            }
+        }
+
+        //Options object may be omitted.
+        if(!listener) {
+            listener = elements;
+            elements = options;
+            options = {};
+        }
+
+        if(!elements) {
+            throw new Error("At least one element required.");
+        }
+
+        if(!listener) {
+            throw new Error("Listener required.");
+        }
+
+        if (isElement(elements)) {
+            // A single element has been passed in.
+            elements = [elements];
+        } else if (isCollection(elements)) {
+            // Convert collection to array for plugins.
+            // TODO: May want to check so that all the elements in the collection are valid elements.
+            elements = toArray(elements);
+        } else {
+            return reporter.error("Invalid arguments. Must be a DOM element or a collection of DOM elements.");
+        }
+
+        var elementsReady = 0;
+
+        var callOnAdd = getOption(options, "callOnAdd", globalOptions.callOnAdd);
+        var onReadyCallback = getOption(options, "onReady", function noop() {});
+        var debug = getOption(options, "debug", globalOptions.debug);
+
+        forEach(elements, function attachListenerToElement(element) {
+            if (!stateHandler.getState(element)) {
+                stateHandler.initState(element);
+                idHandler.set(element);
+            }
+
+            var id = idHandler.get(element);
+
+            debug && reporter.log("Attaching listener to element", id, element);
+
+            if(!elementUtils.isDetectable(element)) {
+                debug && reporter.log(id, "Not detectable.");
+                if(elementUtils.isBusy(element)) {
+                    debug && reporter.log(id, "System busy making it detectable");
+
+                    //The element is being prepared to be detectable. Do not make it detectable.
+                    //Just add the listener, because the element will soon be detectable.
+                    addListener(callOnAdd, element, listener);
+                    onReadyCallbacks[id] = onReadyCallbacks[id] || [];
+                    onReadyCallbacks[id].push(function onReady() {
+                        elementsReady++;
+
+                        if(elementsReady === elements.length) {
+                            onReadyCallback();
+                        }
+                    });
+                    return;
+                }
+
+                debug && reporter.log(id, "Making detectable...");
+                //The element is not prepared to be detectable, so do prepare it and add a listener to it.
+                elementUtils.markBusy(element, true);
+                return detectionStrategy.makeDetectable({ debug: debug }, element, function onElementDetectable(element) {
+                    debug && reporter.log(id, "onElementDetectable");
+
+                    if (stateHandler.getState(element)) {
+                        elementUtils.markAsDetectable(element);
+                        elementUtils.markBusy(element, false);
+                        detectionStrategy.addListener(element, onResizeCallback);
+                        addListener(callOnAdd, element, listener);
+
+                        // Since the element size might have changed since the call to "listenTo", we need to check for this change,
+                        // so that a resize event may be emitted.
+                        // Having the startSize object is optional (since it does not make sense in some cases such as unrendered elements), so check for its existance before.
+                        // Also, check the state existance before since the element may have been uninstalled in the installation process.
+                        var state = stateHandler.getState(element);
+                        if (state && state.startSize) {
+                            var width = element.offsetWidth;
+                            var height = element.offsetHeight;
+                            if (state.startSize.width !== width || state.startSize.height !== height) {
+                                onResizeCallback(element);
+                            }
+                        }
+
+                        if(onReadyCallbacks[id]) {
+                            forEach(onReadyCallbacks[id], function(callback) {
+                                callback();
+                            });
+                        }
+                    } else {
+                        // The element has been unisntalled before being detectable.
+                        debug && reporter.log(id, "Element uninstalled before being detectable.");
+                    }
+
+                    delete onReadyCallbacks[id];
+
+                    elementsReady++;
+                    if(elementsReady === elements.length) {
+                        onReadyCallback();
+                    }
+                });
+            }
+
+            debug && reporter.log(id, "Already detecable, adding listener.");
+
+            //The element has been prepared to be detectable and is ready to be listened to.
+            addListener(callOnAdd, element, listener);
+            elementsReady++;
+        });
+
+        if(elementsReady === elements.length) {
+            onReadyCallback();
+        }
+    }
+
+    function uninstall(elements) {
+        if(!elements) {
+            return reporter.error("At least one element is required.");
+        }
+
+        if (isElement(elements)) {
+            // A single element has been passed in.
+            elements = [elements];
+        } else if (isCollection(elements)) {
+            // Convert collection to array for plugins.
+            // TODO: May want to check so that all the elements in the collection are valid elements.
+            elements = toArray(elements);
+        } else {
+            return reporter.error("Invalid arguments. Must be a DOM element or a collection of DOM elements.");
+        }
+
+        forEach(elements, function (element) {
+            eventListenerHandler.removeAllListeners(element);
+            detectionStrategy.uninstall(element);
+            stateHandler.cleanState(element);
+        });
+    }
+
+    return {
+        listenTo: listenTo,
+        removeListener: eventListenerHandler.removeListener,
+        removeAllListeners: eventListenerHandler.removeAllListeners,
+        uninstall: uninstall
+    };
+};
+
+function getOption(options, name, defaultValue) {
+    var value = options[name];
+
+    if((value === undefined || value === null) && defaultValue !== undefined) {
+        return defaultValue;
+    }
+
+    return value;
+}
+
+},{"./collection-utils":"../node_modules/element-resize-detector/src/collection-utils.js","./element-utils":"../node_modules/element-resize-detector/src/element-utils.js","./listener-handler":"../node_modules/element-resize-detector/src/listener-handler.js","./id-generator":"../node_modules/element-resize-detector/src/id-generator.js","./id-handler":"../node_modules/element-resize-detector/src/id-handler.js","./reporter":"../node_modules/element-resize-detector/src/reporter.js","./browser-detector":"../node_modules/element-resize-detector/src/browser-detector.js","batch-processor":"../node_modules/batch-processor/src/batch-processor.js","./state-handler":"../node_modules/element-resize-detector/src/state-handler.js","./detection-strategy/object.js":"../node_modules/element-resize-detector/src/detection-strategy/object.js","./detection-strategy/scroll.js":"../node_modules/element-resize-detector/src/detection-strategy/scroll.js"}],"../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
+/** @license React v16.8.6
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+
+if ("development" !== "production") {
+  (function () {
+    'use strict';
+
+    Object.defineProperty(exports, '__esModule', {
+      value: true
+    }); // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+    // nor polyfill, then a plain number is used for performance.
+
+    var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+    var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+    var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+    var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+    var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+    var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+    var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+    var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace;
+    var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+    var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+    var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+    var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+    var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+    var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+
+    function isValidElementType(type) {
+      return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+      type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE);
+    }
+    /**
+     * Forked from fbjs/warning:
+     * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
+     *
+     * Only change is we use console.warn instead of console.error,
+     * and do nothing when 'console' is not supported.
+     * This really simplifies the code.
+     * ---
+     * Similar to invariant but only logs a warning if the condition is not met.
+     * This can be used to log issues in development environments in critical
+     * paths. Removing the logging code for production environments will keep the
+     * same logic and follow the same code paths.
+     */
+
+
+    var lowPriorityWarning = function () {};
+
+    {
+      var printWarning = function (format) {
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        var argIndex = 0;
+        var message = 'Warning: ' + format.replace(/%s/g, function () {
+          return args[argIndex++];
+        });
+
+        if (typeof console !== 'undefined') {
+          console.warn(message);
+        }
+
+        try {
+          // --- Welcome to debugging React ---
+          // This error was thrown as a convenience so that you can use this stack
+          // to find the callsite that caused this warning to fire.
+          throw new Error(message);
+        } catch (x) {}
+      };
+
+      lowPriorityWarning = function (condition, format) {
+        if (format === undefined) {
+          throw new Error('`lowPriorityWarning(condition, format, ...args)` requires a warning ' + 'message argument');
+        }
+
+        if (!condition) {
+          for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+            args[_key2 - 2] = arguments[_key2];
+          }
+
+          printWarning.apply(undefined, [format].concat(args));
+        }
+      };
+    }
+    var lowPriorityWarning$1 = lowPriorityWarning;
+
+    function typeOf(object) {
+      if (typeof object === 'object' && object !== null) {
+        var $$typeof = object.$$typeof;
+
+        switch ($$typeof) {
+          case REACT_ELEMENT_TYPE:
+            var type = object.type;
+
+            switch (type) {
+              case REACT_ASYNC_MODE_TYPE:
+              case REACT_CONCURRENT_MODE_TYPE:
+              case REACT_FRAGMENT_TYPE:
+              case REACT_PROFILER_TYPE:
+              case REACT_STRICT_MODE_TYPE:
+              case REACT_SUSPENSE_TYPE:
+                return type;
+
+              default:
+                var $$typeofType = type && type.$$typeof;
+
+                switch ($$typeofType) {
+                  case REACT_CONTEXT_TYPE:
+                  case REACT_FORWARD_REF_TYPE:
+                  case REACT_PROVIDER_TYPE:
+                    return $$typeofType;
+
+                  default:
+                    return $$typeof;
+                }
+
+            }
+
+          case REACT_LAZY_TYPE:
+          case REACT_MEMO_TYPE:
+          case REACT_PORTAL_TYPE:
+            return $$typeof;
+        }
+      }
+
+      return undefined;
+    } // AsyncMode is deprecated along with isAsyncMode
+
+
+    var AsyncMode = REACT_ASYNC_MODE_TYPE;
+    var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+    var ContextConsumer = REACT_CONTEXT_TYPE;
+    var ContextProvider = REACT_PROVIDER_TYPE;
+    var Element = REACT_ELEMENT_TYPE;
+    var ForwardRef = REACT_FORWARD_REF_TYPE;
+    var Fragment = REACT_FRAGMENT_TYPE;
+    var Lazy = REACT_LAZY_TYPE;
+    var Memo = REACT_MEMO_TYPE;
+    var Portal = REACT_PORTAL_TYPE;
+    var Profiler = REACT_PROFILER_TYPE;
+    var StrictMode = REACT_STRICT_MODE_TYPE;
+    var Suspense = REACT_SUSPENSE_TYPE;
+    var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+    function isAsyncMode(object) {
+      {
+        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+          hasWarnedAboutDeprecatedIsAsyncMode = true;
+          lowPriorityWarning$1(false, 'The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+        }
+      }
+      return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+    }
+
+    function isConcurrentMode(object) {
+      return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+    }
+
+    function isContextConsumer(object) {
+      return typeOf(object) === REACT_CONTEXT_TYPE;
+    }
+
+    function isContextProvider(object) {
+      return typeOf(object) === REACT_PROVIDER_TYPE;
+    }
+
+    function isElement(object) {
+      return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+    }
+
+    function isForwardRef(object) {
+      return typeOf(object) === REACT_FORWARD_REF_TYPE;
+    }
+
+    function isFragment(object) {
+      return typeOf(object) === REACT_FRAGMENT_TYPE;
+    }
+
+    function isLazy(object) {
+      return typeOf(object) === REACT_LAZY_TYPE;
+    }
+
+    function isMemo(object) {
+      return typeOf(object) === REACT_MEMO_TYPE;
+    }
+
+    function isPortal(object) {
+      return typeOf(object) === REACT_PORTAL_TYPE;
+    }
+
+    function isProfiler(object) {
+      return typeOf(object) === REACT_PROFILER_TYPE;
+    }
+
+    function isStrictMode(object) {
+      return typeOf(object) === REACT_STRICT_MODE_TYPE;
+    }
+
+    function isSuspense(object) {
+      return typeOf(object) === REACT_SUSPENSE_TYPE;
+    }
+
+    exports.typeOf = typeOf;
+    exports.AsyncMode = AsyncMode;
+    exports.ConcurrentMode = ConcurrentMode;
+    exports.ContextConsumer = ContextConsumer;
+    exports.ContextProvider = ContextProvider;
+    exports.Element = Element;
+    exports.ForwardRef = ForwardRef;
+    exports.Fragment = Fragment;
+    exports.Lazy = Lazy;
+    exports.Memo = Memo;
+    exports.Portal = Portal;
+    exports.Profiler = Profiler;
+    exports.StrictMode = StrictMode;
+    exports.Suspense = Suspense;
+    exports.isValidElementType = isValidElementType;
+    exports.isAsyncMode = isAsyncMode;
+    exports.isConcurrentMode = isConcurrentMode;
+    exports.isContextConsumer = isContextConsumer;
+    exports.isContextProvider = isContextProvider;
+    exports.isElement = isElement;
+    exports.isForwardRef = isForwardRef;
+    exports.isFragment = isFragment;
+    exports.isLazy = isLazy;
+    exports.isMemo = isMemo;
+    exports.isPortal = isPortal;
+    exports.isProfiler = isProfiler;
+    exports.isStrictMode = isStrictMode;
+    exports.isSuspense = isSuspense;
+  })();
+}
+},{}],"../node_modules/react-is/index.js":[function(require,module,exports) {
+'use strict';
+
+if ("development" === 'production') {
+  module.exports = require('./cjs/react-is.production.min.js');
+} else {
+  module.exports = require('./cjs/react-is.development.js');
+}
+},{"./cjs/react-is.development.js":"../node_modules/react-is/cjs/react-is.development.js"}],"../node_modules/prop-types/factoryWithTypeCheckers.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+
+var ReactIs = require('react-is');
+
+var assign = require('object-assign');
+
+var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+
+var checkPropTypes = require('./checkPropTypes');
+
+var has = Function.call.bind(Object.prototype.hasOwnProperty);
+
+var printWarning = function () {};
+
+if ("development" !== 'production') {
+  printWarning = function (text) {
+    var message = 'Warning: ' + text;
+
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
+
+module.exports = function (isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+
+  var ANONYMOUS = '<<anonymous>>'; // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    elementType: createElementTypeTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker
+  };
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+
+  /*eslint-disable no-self-compare*/
+
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+
+
+  function PropTypeError(message) {
+    this.message = message;
+    this.stack = '';
+  } // Make `instanceof Error` still work for returned errors.
+
+
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if ("development" !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          var err = new Error('Calling PropTypes validators directly is not supported by the `prop-types` package. ' + 'Use `PropTypes.checkPropTypes()` to call them. ' + 'Read more at http://fb.me/use-check-prop-types');
+          err.name = 'Invariant Violation';
+          throw err;
+        } else if ("development" !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+
+          if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
+          manualPropTypeWarningCount < 3) {
+            printWarning('You are manually calling a React.PropTypes validation ' + 'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' + 'and will throw in the standalone `prop-types` package. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.');
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+
+      var propValue = props[propName];
+
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+
+      if (!ReactIs.isValidElementType(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      if ("development" !== 'production') {
+        if (arguments.length > 1) {
+          printWarning('Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' + 'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).');
+        } else {
+          printWarning('Invalid argument supplied to oneOf, expected an array.');
+        }
+      }
+
+      return emptyFunctionThatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+        var type = getPreciseType(value);
+
+        if (type === 'symbol') {
+          return String(value);
+        }
+
+        return value;
+      });
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+
+      for (var key in propValue) {
+        if (has(propValue, key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      "development" !== 'production' ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunctionThatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+
+      if (typeof checker !== 'function') {
+        printWarning('Invalid argument supplied to oneOfType. Expected an array of check functions, but ' + 'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.');
+        return emptyFunctionThatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
+          return null;
+        }
+      }
+
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+
+        if (!checker) {
+          continue;
+        }
+
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+
+        if (error) {
+          return error;
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      } // We need to check all keys in case some are required but missing from
+      // props.
+
+
+      var allKeys = assign({}, props[propName], shapeTypes);
+
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+
+        if (!checker) {
+          return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' + '\nBad object: ' + JSON.stringify(props[propName], null, '  ') + '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
+        }
+
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+
+        if (error) {
+          return error;
+        }
+      }
+
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+
+      case 'boolean':
+        return !propValue;
+
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    } // falsy value can't be a Symbol
+
+
+    if (!propValue) {
+      return false;
+    } // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+
+
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    } // Fallback for non-spec compliant Symbols which are polyfilled.
+
+
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  } // Equivalent of `typeof` but with special handling for array and regexp.
+
+
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+
+    return propType;
+  } // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+
+
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+
+    var propType = getPropType(propValue);
+
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+
+    return propType;
+  } // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+
+
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+
+      default:
+        return type;
+    }
+  } // Returns class name of the object, if any.
+
+
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes;
+  ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+  return ReactPropTypes;
+};
+},{"react-is":"../node_modules/react-is/index.js","object-assign":"../node_modules/object-assign/index.js","./lib/ReactPropTypesSecret":"../node_modules/prop-types/lib/ReactPropTypesSecret.js","./checkPropTypes":"../node_modules/prop-types/checkPropTypes.js"}],"../node_modules/prop-types/index.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+if ("development" !== 'production') {
+  var ReactIs = require('react-is'); // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+
+
+  var throwOnDirectAccess = true;
+  module.exports = require('./factoryWithTypeCheckers')(ReactIs.isElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = require('./factoryWithThrowingShims')();
+}
+},{"react-is":"../node_modules/react-is/index.js","./factoryWithTypeCheckers":"../node_modules/prop-types/factoryWithTypeCheckers.js"}],"../node_modules/invariant/browser.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var invariant = function (condition, format, a, b, c, d, e, f) {
+  if ("development" !== 'production') {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  }
+
+  if (!condition) {
+    var error;
+
+    if (format === undefined) {
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+
+    throw error;
+  }
+};
+
+module.exports = invariant;
+},{}],"../node_modules/throttle-debounce/dist/index.esm.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.throttle = throttle;
+exports.debounce = debounce;
+
+/* eslint-disable no-undefined,no-param-reassign,no-shadow */
+
+/**
+ * Throttle execution of a function. Especially useful for rate limiting
+ * execution of handlers on events like resize and scroll.
+ *
+ * @param  {Number}    delay          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
+ * @param  {Boolean}   [noTrailing]   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
+ *                                    throttled-function is being called. If noTrailing is false or unspecified, callback will be executed one final time
+ *                                    after the last throttled-function call. (After the throttled-function has not been called for `delay` milliseconds,
+ *                                    the internal counter is reset)
+ * @param  {Function}  callback       A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
+ *                                    to `callback` when the throttled-function is executed.
+ * @param  {Boolean}   [debounceMode] If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
+ *                                    schedule `callback` to execute after `delay` ms.
+ *
+ * @return {Function}  A new, throttled, function.
+ */
+function throttle(delay, noTrailing, callback, debounceMode) {
+  /*
+   * After wrapper has stopped being called, this timeout ensures that
+   * `callback` is executed at the proper times in `throttle` and `end`
+   * debounce modes.
+   */
+  var timeoutID;
+  var cancelled = false; // Keep track of the last time `callback` was executed.
+
+  var lastExec = 0; // Function to clear existing timeout
+
+  function clearExistingTimeout() {
+    if (timeoutID) {
+      clearTimeout(timeoutID);
+    }
+  } // Function to cancel next exec
+
+
+  function cancel() {
+    clearExistingTimeout();
+    cancelled = true;
+  } // `noTrailing` defaults to falsy.
+
+
+  if (typeof noTrailing !== 'boolean') {
+    debounceMode = callback;
+    callback = noTrailing;
+    noTrailing = undefined;
+  }
+  /*
+   * The `wrapper` function encapsulates all of the throttling / debouncing
+   * functionality and when executed will limit the rate at which `callback`
+   * is executed.
+   */
+
+
+  function wrapper() {
+    var self = this;
+    var elapsed = Date.now() - lastExec;
+    var args = arguments;
+
+    if (cancelled) {
+      return;
+    } // Execute `callback` and update the `lastExec` timestamp.
+
+
+    function exec() {
+      lastExec = Date.now();
+      callback.apply(self, args);
+    }
+    /*
+     * If `debounceMode` is true (at begin) this is used to clear the flag
+     * to allow future `callback` executions.
+     */
+
+
+    function clear() {
+      timeoutID = undefined;
+    }
+
+    if (debounceMode && !timeoutID) {
+      /*
+       * Since `wrapper` is being called for the first time and
+       * `debounceMode` is true (at begin), execute `callback`.
+       */
+      exec();
+    }
+
+    clearExistingTimeout();
+
+    if (debounceMode === undefined && elapsed > delay) {
+      /*
+       * In throttle mode, if `delay` time has been exceeded, execute
+       * `callback`.
+       */
+      exec();
+    } else if (noTrailing !== true) {
+      /*
+       * In trailing throttle mode, since `delay` time has not been
+       * exceeded, schedule `callback` to execute `delay` ms after most
+       * recent execution.
+       *
+       * If `debounceMode` is true (at begin), schedule `clear` to execute
+       * after `delay` ms.
+       *
+       * If `debounceMode` is false (at end), schedule `callback` to
+       * execute after `delay` ms.
+       */
+      timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
+    }
+  }
+
+  wrapper.cancel = cancel; // Return the wrapper function.
+
+  return wrapper;
+}
+/* eslint-disable no-undefined */
+
+/**
+ * Debounce execution of a function. Debouncing, unlike throttling,
+ * guarantees that a function is only executed a single time, either at the
+ * very beginning of a series of calls, or at the very end.
+ *
+ * @param  {Number}   delay         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
+ * @param  {Boolean}  [atBegin]     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
+ *                                  after the last debounced-function call. If atBegin is true, callback will be executed only at the first debounced-function call.
+ *                                  (After the throttled-function has not been called for `delay` milliseconds, the internal counter is reset).
+ * @param  {Function} callback      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
+ *                                  to `callback` when the debounced-function is executed.
+ *
+ * @return {Function} A new, debounced function.
+ */
+
+
+function debounce(delay, atBegin, callback) {
+  return callback === undefined ? throttle(delay, atBegin, false) : throttle(delay, callback, atBegin !== false);
+}
+},{}],"../node_modules/shallowequal/index.js":[function(require,module,exports) {
+//
+
+module.exports = function shallowEqual(objA, objB, compare, compareContext) {
+  var ret = compare ? compare.call(compareContext, objA, objB) : void 0;
+
+  if (ret !== void 0) {
+    return !!ret;
+  }
+
+  if (objA === objB) {
+    return true;
+  }
+
+  if (typeof objA !== "object" || !objA || typeof objB !== "object" || !objB) {
+    return false;
+  }
+
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
+
+  // Test for A's keys different from B.
+  for (var idx = 0; idx < keysA.length; idx++) {
+    var key = keysA[idx];
+
+    if (!bHasOwnProperty(key)) {
+      return false;
+    }
+
+    var valueA = objA[key];
+    var valueB = objB[key];
+
+    ret = compare ? compare.call(compareContext, valueA, valueB, key) : void 0;
+
+    if (ret === false || (ret === void 0 && valueA !== valueB)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+},{}],"../node_modules/react-sizeme/dist/react-sizeme.js":[function(require,module,exports) {
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var createResizeDetector = _interopDefault(require('element-resize-detector'));
+var React = require('react');
+var React__default = _interopDefault(React);
+var PropTypes = _interopDefault(require('prop-types'));
+var ReactDOM = _interopDefault(require('react-dom'));
+var invariant = _interopDefault(require('invariant'));
+var throttleDebounce = require('throttle-debounce');
+var isShallowEqual = _interopDefault(require('shallowequal'));
+
+var instances = {};
+
+// Lazily require to not cause bug
+// https://github.com/ctrlplusb/react-sizeme/issues/6
+function resizeDetector() {
+  var strategy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'scroll';
+
+  if (!instances[strategy]) {
+    instances[strategy] = createResizeDetector({
+      strategy: strategy
+    });
+  }
+
+  return instances[strategy];
+}
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+var objectWithoutProperties = function (obj, keys) {
+  var target = {};
+
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
+};
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
+/* eslint-disable react/no-multi-comp */
+
+var errMsg = 'react-sizeme: an error occurred whilst stopping to listen to node size changes';
+
+var defaultConfig = {
+  monitorWidth: true,
+  monitorHeight: false,
+  monitorPosition: false,
+  refreshRate: 16,
+  refreshMode: 'throttle',
+  noPlaceholder: false,
+  resizeDetectorStrategy: 'scroll'
+};
+
+function getDisplayName(WrappedComponent) {
+  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+}
+
+/**
+ * This is a utility wrapper component that will allow our higher order
+ * component to get a ref handle on our wrapped components html.
+ * @see https://gist.github.com/jimfb/32b587ee6177665fb4cf
+ */
+
+var ReferenceWrapper = function (_Component) {
+  inherits(ReferenceWrapper, _Component);
+
+  function ReferenceWrapper() {
+    classCallCheck(this, ReferenceWrapper);
+    return possibleConstructorReturn(this, (ReferenceWrapper.__proto__ || Object.getPrototypeOf(ReferenceWrapper)).apply(this, arguments));
+  }
+
+  createClass(ReferenceWrapper, [{
+    key: 'render',
+    value: function render() {
+      return React.Children.only(this.props.children);
+    }
+  }]);
+  return ReferenceWrapper;
+}(React.Component);
+
+ReferenceWrapper.displayName = 'SizeMeReferenceWrapper';
+
+ReferenceWrapper.propTypes = { children: PropTypes.element.isRequired };
+
+function Placeholder(_ref) {
+  var className = _ref.className,
+      style = _ref.style;
+
+  // Lets create the props for the temp element.
+  var phProps = {};
+
+  // We will use any provided className/style or else make the temp
+  // container take the full available space.
+  if (!className && !style) {
+    phProps.style = { width: '100%', height: '100%' };
+  } else {
+    if (className) {
+      phProps.className = className;
+    }
+    if (style) {
+      phProps.style = style;
+    }
+  }
+
+  return React__default.createElement('div', phProps);
+}
+Placeholder.displayName = 'SizeMePlaceholder';
+Placeholder.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.object
+
+  /**
+   * As we need to maintain a ref on the root node that is rendered within our
+   * SizeMe component we need to wrap our entire render in a sub component.
+   * Without this, we lose the DOM ref after the placeholder is removed from
+   * the render and the actual component is rendered.
+   * It took me forever to figure this out, so tread extra careful on this one!
+   */
+};var renderWrapper = function renderWrapper(WrappedComponent) {
+  function SizeMeRenderer(props) {
+    var explicitRef = props.explicitRef,
+        className = props.className,
+        style = props.style,
+        size = props.size,
+        disablePlaceholder = props.disablePlaceholder,
+        onSize = props.onSize,
+        restProps = objectWithoutProperties(props, ['explicitRef', 'className', 'style', 'size', 'disablePlaceholder', 'onSize']);
+
+
+    var noSizeData = size == null || size.width == null && size.height == null && size.position == null;
+
+    var renderPlaceholder = noSizeData && !disablePlaceholder;
+
+    var renderProps = {
+      className: className,
+      style: style
+    };
+
+    if (size != null) {
+      renderProps.size = size;
+    }
+
+    var toRender = renderPlaceholder ? React__default.createElement(Placeholder, { className: className, style: style }) : React__default.createElement(WrappedComponent, _extends({}, renderProps, restProps));
+
+    return React__default.createElement(
+      ReferenceWrapper,
+      { ref: explicitRef },
+      toRender
+    );
+  }
+
+  SizeMeRenderer.displayName = 'SizeMeRenderer(' + getDisplayName(WrappedComponent) + ')';
+
+  SizeMeRenderer.propTypes = {
+    explicitRef: PropTypes.func.isRequired,
+    className: PropTypes.string,
+    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    size: PropTypes.shape({
+      width: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
+      height: PropTypes.number // eslint-disable-line react/no-unused-prop-types
+    }),
+    disablePlaceholder: PropTypes.bool,
+    onSize: PropTypes.func
+  };
+
+  return SizeMeRenderer;
+};
+
+/**
+ * :: config -> Component -> WrappedComponent
+ *
+ * Higher order component that allows the wrapped component to become aware
+ * of it's size, by receiving it as an object within it's props.
+ *
+ * @param  monitorWidth
+ *   Default true, whether changes in the element's width should be monitored,
+ *   causing a size property to be broadcast.
+ * @param  monitorHeight
+ *   Default false, whether changes in the element's height should be monitored,
+ *   causing a size property to be broadcast.
+ *
+ * @return The wrapped component.
+ */
+function withSize() {
+  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultConfig;
+  var _config$monitorWidth = config.monitorWidth,
+      monitorWidth = _config$monitorWidth === undefined ? defaultConfig.monitorWidth : _config$monitorWidth,
+      _config$monitorHeight = config.monitorHeight,
+      monitorHeight = _config$monitorHeight === undefined ? defaultConfig.monitorHeight : _config$monitorHeight,
+      _config$monitorPositi = config.monitorPosition,
+      monitorPosition = _config$monitorPositi === undefined ? defaultConfig.monitorPosition : _config$monitorPositi,
+      _config$refreshRate = config.refreshRate,
+      refreshRate = _config$refreshRate === undefined ? defaultConfig.refreshRate : _config$refreshRate,
+      _config$refreshMode = config.refreshMode,
+      refreshMode = _config$refreshMode === undefined ? defaultConfig.refreshMode : _config$refreshMode,
+      _config$noPlaceholder = config.noPlaceholder,
+      noPlaceholder = _config$noPlaceholder === undefined ? defaultConfig.noPlaceholder : _config$noPlaceholder,
+      _config$resizeDetecto = config.resizeDetectorStrategy,
+      resizeDetectorStrategy = _config$resizeDetecto === undefined ? defaultConfig.resizeDetectorStrategy : _config$resizeDetecto;
+
+
+  invariant(monitorWidth || monitorHeight || monitorPosition, 'You have to monitor at least one of the width, height, or position when using "sizeMe"');
+
+  invariant(refreshRate >= 16, "It is highly recommended that you don't put your refreshRate lower than " + '16 as this may cause layout thrashing.');
+
+  invariant(refreshMode === 'throttle' || refreshMode === 'debounce', 'The refreshMode should have a value of "throttle" or "debounce"');
+
+  var refreshDelayStrategy = refreshMode === 'throttle' ? throttleDebounce.throttle : throttleDebounce.debounce;
+
+  return function WrapComponent(WrappedComponent) {
+    var SizeMeRenderWrapper = renderWrapper(WrappedComponent);
+
+    var SizeAwareComponent = function (_React$Component) {
+      inherits(SizeAwareComponent, _React$Component);
+
+      function SizeAwareComponent() {
+        var _ref2;
+
+        var _temp, _this2, _ret;
+
+        classCallCheck(this, SizeAwareComponent);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this2 = possibleConstructorReturn(this, (_ref2 = SizeAwareComponent.__proto__ || Object.getPrototypeOf(SizeAwareComponent)).call.apply(_ref2, [this].concat(args))), _this2), _this2.domEl = null, _this2.state = {
+          width: undefined,
+          height: undefined,
+          position: undefined
+        }, _this2.uninstall = function () {
+          if (_this2.domEl) {
+            try {
+              _this2.detector.uninstall(_this2.domEl);
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.warn(errMsg);
+            }
+            _this2.domEl = null;
+          }
+        }, _this2.determineStrategy = function (props) {
+          if (props.onSize) {
+            if (!_this2.callbackState) {
+              _this2.callbackState = _extends({}, _this2.state);
+            }
+            _this2.strategy = 'callback';
+          } else {
+            _this2.strategy = 'render';
+          }
+        }, _this2.strategisedSetState = function (state) {
+          if (_this2.strategy === 'callback') {
+            _this2.callbackState = state;
+            _this2.props.onSize(state);
+          }
+          _this2.setState(state);
+        }, _this2.strategisedGetState = function () {
+          return _this2.strategy === 'callback' ? _this2.callbackState : _this2.state;
+        }, _this2.refCallback = function (element) {
+          _this2.element = element;
+        }, _this2.hasSizeChanged = function (current, next) {
+          var c = current;
+          var n = next;
+          var cp = c.position || {};
+          var np = n.position || {};
+
+          return monitorWidth && c.width !== n.width || monitorHeight && c.height !== n.height || monitorPosition && (cp.top !== np.top || cp.left !== np.left || cp.bottom !== np.bottom || cp.right !== np.right);
+        }, _this2.checkIfSizeChanged = refreshDelayStrategy(refreshRate, function (el) {
+          var _el$getBoundingClient = el.getBoundingClientRect(),
+              width = _el$getBoundingClient.width,
+              height = _el$getBoundingClient.height,
+              right = _el$getBoundingClient.right,
+              left = _el$getBoundingClient.left,
+              top = _el$getBoundingClient.top,
+              bottom = _el$getBoundingClient.bottom;
+
+          var next = {
+            width: monitorWidth ? width : null,
+            height: monitorHeight ? height : null,
+            position: monitorPosition ? { right: right, left: left, top: top, bottom: bottom } : null
+          };
+
+          if (_this2.hasSizeChanged(_this2.strategisedGetState(), next)) {
+            _this2.strategisedSetState(next);
+          }
+        }), _temp), possibleConstructorReturn(_this2, _ret);
+      }
+
+      createClass(SizeAwareComponent, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+          this.detector = resizeDetector(resizeDetectorStrategy);
+          this.determineStrategy(this.props);
+          this.handleDOMNode();
+        }
+      }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+          this.determineStrategy(this.props);
+          this.handleDOMNode();
+        }
+      }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+          // Change our size checker to a noop just in case we have some
+          // late running events.
+          this.hasSizeChanged = function () {
+            return undefined;
+          };
+          this.checkIfSizeChanged = function () {
+            return undefined;
+          };
+          this.uninstall();
+        }
+      }, {
+        key: 'handleDOMNode',
+        value: function handleDOMNode() {
+          var found = this.element && ReactDOM.findDOMNode(this.element);
+
+          if (!found) {
+            // If we previously had a dom node then we need to ensure that
+            // we remove any existing listeners to avoid memory leaks.
+            this.uninstall();
+            return;
+          }
+
+          if (!this.domEl) {
+            this.domEl = found;
+            this.detector.listenTo(this.domEl, this.checkIfSizeChanged);
+          } else if (!this.domEl.isSameNode(found)) {
+            this.uninstall();
+            this.domEl = found;
+            this.detector.listenTo(this.domEl, this.checkIfSizeChanged);
+          }
+        }
+      }, {
+        key: 'render',
+        value: function render() {
+          var disablePlaceholder = withSize.enableSSRBehaviour || withSize.noPlaceholders || noPlaceholder || this.strategy === 'callback';
+
+          var size = _extends({}, this.state);
+
+          return React__default.createElement(SizeMeRenderWrapper, _extends({
+            explicitRef: this.refCallback,
+            size: this.strategy === 'callback' ? null : size,
+            disablePlaceholder: disablePlaceholder
+          }, this.props));
+        }
+      }]);
+      return SizeAwareComponent;
+    }(React__default.Component);
+
+    SizeAwareComponent.displayName = 'SizeMe(' + getDisplayName(WrappedComponent) + ')';
+    SizeAwareComponent.propTypes = {
+      onSize: PropTypes.func
+    };
+
+
+    SizeAwareComponent.WrappedComponent = WrappedComponent;
+
+    return SizeAwareComponent;
+  };
+}
+
+/**
+ * Allow SizeMe to run within SSR environments.  This is a "global" behaviour
+ * flag that should be set within the initialisation phase of your application.
+ *
+ * Warning: don't set this flag unless you need to as using it may cause
+ * extra render cycles to happen within your components depending on the logic
+ * contained within them around the usage of the `size` data.
+ *
+ * DEPRECATED: Please use the global noPlaceholders
+ */
+withSize.enableSSRBehaviour = false;
+
+/**
+ * Global configuration allowing to disable placeholder rendering for all
+ * sizeMe components.
+ */
+withSize.noPlaceholders = false;
+
+var SizeMe = function (_Component) {
+  inherits(SizeMe, _Component);
+
+  function SizeMe(props) {
+    classCallCheck(this, SizeMe);
+
+    var _this = possibleConstructorReturn(this, (SizeMe.__proto__ || Object.getPrototypeOf(SizeMe)).call(this, props));
+
+    _initialiseProps.call(_this);
+
+    var children = props.children,
+        render = props.render,
+        sizeMeConfig = objectWithoutProperties(props, ['children', 'render']);
+
+    _this.createComponent(sizeMeConfig);
+    _this.state = {
+      size: {
+        width: undefined,
+        height: undefined
+      }
+    };
+    return _this;
+  }
+
+  createClass(SizeMe, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps) {
+      var _props = this.props,
+          prevChildren = _props.children,
+          prevRender = _props.render,
+          currentSizeMeConfig = objectWithoutProperties(_props, ['children', 'render']);
+      var nextChildren = prevProps.children,
+          nextRender = prevProps.render,
+          prevSizeMeConfig = objectWithoutProperties(prevProps, ['children', 'render']);
+
+      if (!isShallowEqual(currentSizeMeConfig, prevSizeMeConfig)) {
+        this.createComponent(currentSizeMeConfig);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var SizeAware = this.SizeAware;
+
+      var render = this.props.children || this.props.render;
+      return React__default.createElement(
+        SizeAware,
+        { onSize: this.onSize },
+        render({ size: this.state.size })
+      );
+    }
+  }]);
+  return SizeMe;
+}(React.Component);
+
+SizeMe.propTypes = {
+  children: PropTypes.func,
+  render: PropTypes.func
+};
+SizeMe.defaultProps = {
+  children: undefined,
+  render: undefined
+};
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.createComponent = function (config) {
+    _this2.SizeAware = withSize(config)(function (_ref) {
+      var children = _ref.children;
+      return children;
+    });
+  };
+
+  this.onSize = function (size) {
+    return _this2.setState({ size: size });
+  };
+};
+
+withSize.SizeMe = SizeMe;
+withSize.withSize = withSize;
+
+module.exports = withSize;
+
+
+},{"element-resize-detector":"../node_modules/element-resize-detector/src/element-resize-detector.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-dom":"../node_modules/react-dom/index.js","invariant":"../node_modules/invariant/browser.js","throttle-debounce":"../node_modules/throttle-debounce/dist/index.esm.js","shallowequal":"../node_modules/shallowequal/index.js"}],"../src/ConnectionContext/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Consumer = exports.Provider = exports.ConnectionContext = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var ConnectionContext = (0, _react.createContext)({});
+exports.ConnectionContext = ConnectionContext;
+var Provider = (0, _react.memo)(function (_ref) {
+  var onConnect = _ref.onConnect,
+      children = _ref.children;
+
+  var _useState = (0, _react.useState)(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      sourceId = _useState2[0],
+      setSourceId = _useState2[1];
+
+  var _useState3 = (0, _react.useState)({
+    x: 0,
+    y: 0
+  }),
+      _useState4 = _slicedToArray(_useState3, 2),
+      position = _useState4[0],
+      setPosition = _useState4[1];
+
+  var connectionContext = (0, _react.useMemo)(function () {
+    return {
+      sourceId: sourceId,
+      setSourceId: setSourceId,
+      position: position,
+      setPosition: setPosition,
+      onConnect: onConnect
+    };
+  }, [sourceId, position]);
+  return _react.default.createElement(ConnectionContext.Provider, {
+    value: connectionContext
+  }, children);
+});
+exports.Provider = Provider;
+Provider.displayName = 'ConnectionProvider';
+Provider.whyDidYouRender = false;
+var Consumer = ConnectionContext.Consumer;
+exports.Consumer = Consumer;
+},{"react":"../node_modules/react/index.js"}],"../node_modules/lodash.isequal/index.js":[function(require,module,exports) {
+var global = arguments[3];
+
+/**
+ * Lodash (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    asyncTag = '[object AsyncFunction]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    nullTag = '[object Null]',
+    objectTag = '[object Object]',
+    promiseTag = '[object Promise]',
+    proxyTag = '[object Proxy]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]',
+    undefinedTag = '[object Undefined]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Detect free variable `process` from Node.js. */
+var freeProcess = moduleExports && freeGlobal.process;
+
+/** Used to access faster Node.js helpers. */
+var nodeUtil = (function() {
+  try {
+    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+  } catch (e) {}
+}());
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function arrayFilter(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+    if (predicate(value, index, array)) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+}
+
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype,
+    funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined,
+    Symbol = root.Symbol,
+    Uint8Array = root.Uint8Array,
+    propertyIsEnumerable = objectProto.propertyIsEnumerable,
+    splice = arrayProto.splice,
+    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols,
+    nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
+    nativeKeys = overArg(Object.keys, Object);
+
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView'),
+    Map = getNative(root, 'Map'),
+    Promise = getNative(root, 'Promise'),
+    Set = getNative(root, 'Set'),
+    WeakMap = getNative(root, 'WeakMap'),
+    nativeCreate = getNative(Object, 'create');
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView),
+    mapCtorString = toSource(Map),
+    promiseCtorString = toSource(Promise),
+    setCtorString = toSource(Set),
+    weakMapCtorString = toSource(WeakMap);
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+}
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd(value) {
+  this.__data__.set(value, HASH_UNDEFINED);
+  return this;
+}
+
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+// Add methods to `SetCache`.
+SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+SetCache.prototype.has = setCacheHas;
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = new ListCache;
+  this.size = 0;
+}
+
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache) {
+    var pairs = data.__data__;
+    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys(value, inherited) {
+  var isArr = isArray(value),
+      isArg = !isArr && isArguments(value),
+      isBuff = !isArr && !isArg && isBuffer(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments(value) {
+  return isObjectLike(value) && baseGetTag(value) == argsTag;
+}
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Unordered comparison
+ *  2 - Partial comparison
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual(value, other, bitmask, customizer, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+}
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+  var objIsArr = isArray(object),
+      othIsArr = isArray(other),
+      objTag = objIsArr ? arrayTag : getTag(object),
+      othTag = othIsArr ? arrayTag : getTag(other);
+
+  objTag = objTag == argsTag ? objectTag : objTag;
+  othTag = othTag == argsTag ? objectTag : othTag;
+
+  var objIsObj = objTag == objectTag,
+      othIsObj = othTag == objectTag,
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && isBuffer(object)) {
+    if (!isBuffer(other)) {
+      return false;
+    }
+    objIsArr = true;
+    objIsObj = false;
+  }
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+  }
+  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+}
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+}
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(array);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var index = -1,
+      result = true,
+      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+  stack.set(array, other);
+  stack.set(other, array);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (seen) {
+      if (!arraySome(other, function(othValue, othIndex) {
+            if (!cacheHas(seen, othIndex) &&
+                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              return seen.push(othIndex);
+            }
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  stack['delete'](other);
+  return result;
+}
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+  switch (tag) {
+    case dataViewTag:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag:
+    case dateTag:
+    case numberTag:
+      // Coerce booleans to `1` or `0` and dates to milliseconds.
+      // Invalid dates are coerced to `NaN`.
+      return eq(+object, +other);
+
+    case errorTag:
+      return object.name == other.name && object.message == other.message;
+
+    case regexpTag:
+    case stringTag:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+      // for more details.
+      return object == (other + '');
+
+    case mapTag:
+      var convert = mapToArray;
+
+    case setTag:
+      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+      convert || (convert = setToArray);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= COMPARE_UNORDERED_FLAG;
+
+      // Recursively compare objects (susceptible to call stack limits).
+      stack.set(object, other);
+      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+      stack['delete'](object);
+      return result;
+
+    case symbolTag:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      objProps = getAllKeys(object),
+      objLength = objProps.length,
+      othProps = getAllKeys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+      return false;
+    }
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(object);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var result = true;
+  stack.set(object, other);
+  stack.set(other, object);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  stack['delete'](other);
+  return result;
+}
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys(object) {
+  return baseGetAllKeys(object, keys, getSymbols);
+}
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+  if (object == null) {
+    return [];
+  }
+  object = Object(object);
+  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+    return propertyIsEnumerable.call(object, symbol);
+  });
+};
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map && getTag(new Map) != mapTag) ||
+    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+    (Set && getTag(new Set) != setTag) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+  getTag = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return !!length &&
+    (typeof value == 'number' || reIsUint.test(value)) &&
+    (value > -1 && value % 1 == 0 && value < length);
+}
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+/**
+ * Checks if `value` is a buffer.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+ * @example
+ *
+ * _.isBuffer(new Buffer(2));
+ * // => true
+ *
+ * _.isBuffer(new Uint8Array(2));
+ * // => false
+ */
+var isBuffer = nativeIsBuffer || stubFalse;
+
+/**
+ * Performs a deep comparison between two values to determine if they are
+ * equivalent.
+ *
+ * **Note:** This method supports comparing arrays, array buffers, booleans,
+ * date objects, error objects, maps, numbers, `Object` objects, regexes,
+ * sets, strings, symbols, and typed arrays. `Object` objects are compared
+ * by their own, not inherited, enumerable properties. Functions and DOM
+ * nodes are compared by strict equality, i.e. `===`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.isEqual(object, other);
+ * // => true
+ *
+ * object === other;
+ * // => false
+ */
+function isEqual(value, other) {
+  return baseIsEqual(value, other);
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+module.exports = isEqual;
+
 },{}],"../node_modules/d3-dispatch/src/dispatch.js":[function(require,module,exports) {
 "use strict";
 
@@ -36979,5469 +42441,7 @@ var _transform = _interopRequireWildcard(require("./transform"));
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./zoom":"../node_modules/d3-zoom/src/zoom.js","./transform":"../node_modules/d3-zoom/src/transform.js"}],"../node_modules/element-resize-detector/src/collection-utils.js":[function(require,module,exports) {
-"use strict";
-
-var utils = module.exports = {};
-
-/**
- * Loops through the collection and calls the callback for each element. if the callback returns truthy, the loop is broken and returns the same value.
- * @public
- * @param {*} collection The collection to loop through. Needs to have a length property set and have indices set from 0 to length - 1.
- * @param {function} callback The callback to be called for each element. The element will be given as a parameter to the callback. If this callback returns truthy, the loop is broken and the same value is returned.
- * @returns {*} The value that a callback has returned (if truthy). Otherwise nothing.
- */
-utils.forEach = function(collection, callback) {
-    for(var i = 0; i < collection.length; i++) {
-        var result = callback(collection[i]);
-        if(result) {
-            return result;
-        }
-    }
-};
-
-},{}],"../node_modules/element-resize-detector/src/element-utils.js":[function(require,module,exports) {
-"use strict";
-
-module.exports = function(options) {
-    var getState = options.stateHandler.getState;
-
-    /**
-     * Tells if the element has been made detectable and ready to be listened for resize events.
-     * @public
-     * @param {element} The element to check.
-     * @returns {boolean} True or false depending on if the element is detectable or not.
-     */
-    function isDetectable(element) {
-        var state = getState(element);
-        return state && !!state.isDetectable;
-    }
-
-    /**
-     * Marks the element that it has been made detectable and ready to be listened for resize events.
-     * @public
-     * @param {element} The element to mark.
-     */
-    function markAsDetectable(element) {
-        getState(element).isDetectable = true;
-    }
-
-    /**
-     * Tells if the element is busy or not.
-     * @public
-     * @param {element} The element to check.
-     * @returns {boolean} True or false depending on if the element is busy or not.
-     */
-    function isBusy(element) {
-        return !!getState(element).busy;
-    }
-
-    /**
-     * Marks the object is busy and should not be made detectable.
-     * @public
-     * @param {element} element The element to mark.
-     * @param {boolean} busy If the element is busy or not.
-     */
-    function markBusy(element, busy) {
-        getState(element).busy = !!busy;
-    }
-
-    return {
-        isDetectable: isDetectable,
-        markAsDetectable: markAsDetectable,
-        isBusy: isBusy,
-        markBusy: markBusy
-    };
-};
-
-},{}],"../node_modules/element-resize-detector/src/listener-handler.js":[function(require,module,exports) {
-"use strict";
-
-module.exports = function(idHandler) {
-    var eventListeners = {};
-
-    /**
-     * Gets all listeners for the given element.
-     * @public
-     * @param {element} element The element to get all listeners for.
-     * @returns All listeners for the given element.
-     */
-    function getListeners(element) {
-        var id = idHandler.get(element);
-
-        if (id === undefined) {
-            return [];
-        }
-
-        return eventListeners[id] || [];
-    }
-
-    /**
-     * Stores the given listener for the given element. Will not actually add the listener to the element.
-     * @public
-     * @param {element} element The element that should have the listener added.
-     * @param {function} listener The callback that the element has added.
-     */
-    function addListener(element, listener) {
-        var id = idHandler.get(element);
-
-        if(!eventListeners[id]) {
-            eventListeners[id] = [];
-        }
-
-        eventListeners[id].push(listener);
-    }
-
-    function removeListener(element, listener) {
-        var listeners = getListeners(element);
-        for (var i = 0, len = listeners.length; i < len; ++i) {
-            if (listeners[i] === listener) {
-              listeners.splice(i, 1);
-              break;
-            }
-        }
-    }
-
-    function removeAllListeners(element) {
-      var listeners = getListeners(element);
-      if (!listeners) { return; }
-      listeners.length = 0;
-    }
-
-    return {
-        get: getListeners,
-        add: addListener,
-        removeListener: removeListener,
-        removeAllListeners: removeAllListeners
-    };
-};
-
-},{}],"../node_modules/element-resize-detector/src/id-generator.js":[function(require,module,exports) {
-"use strict";
-
-module.exports = function() {
-    var idCount = 1;
-
-    /**
-     * Generates a new unique id in the context.
-     * @public
-     * @returns {number} A unique id in the context.
-     */
-    function generate() {
-        return idCount++;
-    }
-
-    return {
-        generate: generate
-    };
-};
-
-},{}],"../node_modules/element-resize-detector/src/id-handler.js":[function(require,module,exports) {
-"use strict";
-
-module.exports = function(options) {
-    var idGenerator     = options.idGenerator;
-    var getState        = options.stateHandler.getState;
-
-    /**
-     * Gets the resize detector id of the element.
-     * @public
-     * @param {element} element The target element to get the id of.
-     * @returns {string|number|null} The id of the element. Null if it has no id.
-     */
-    function getId(element) {
-        var state = getState(element);
-
-        if (state && state.id !== undefined) {
-            return state.id;
-        }
-
-        return null;
-    }
-
-    /**
-     * Sets the resize detector id of the element. Requires the element to have a resize detector state initialized.
-     * @public
-     * @param {element} element The target element to set the id of.
-     * @returns {string|number|null} The id of the element.
-     */
-    function setId(element) {
-        var state = getState(element);
-
-        if (!state) {
-            throw new Error("setId required the element to have a resize detection state.");
-        }
-
-        var id = idGenerator.generate();
-
-        state.id = id;
-
-        return id;
-    }
-
-    return {
-        get: getId,
-        set: setId
-    };
-};
-
-},{}],"../node_modules/element-resize-detector/src/reporter.js":[function(require,module,exports) {
-"use strict";
-
-/* global console: false */
-
-/**
- * Reporter that handles the reporting of logs, warnings and errors.
- * @public
- * @param {boolean} quiet Tells if the reporter should be quiet or not.
- */
-module.exports = function(quiet) {
-    function noop() {
-        //Does nothing.
-    }
-
-    var reporter = {
-        log: noop,
-        warn: noop,
-        error: noop
-    };
-
-    if(!quiet && window.console) {
-        var attachFunction = function(reporter, name) {
-            //The proxy is needed to be able to call the method with the console context,
-            //since we cannot use bind.
-            reporter[name] = function reporterProxy() {
-                var f = console[name];
-                if (f.apply) { //IE9 does not support console.log.apply :)
-                    f.apply(console, arguments);
-                } else {
-                    for (var i = 0; i < arguments.length; i++) {
-                        f(arguments[i]);
-                    }
-                }
-            };
-        };
-
-        attachFunction(reporter, "log");
-        attachFunction(reporter, "warn");
-        attachFunction(reporter, "error");
-    }
-
-    return reporter;
-};
-},{}],"../node_modules/element-resize-detector/src/browser-detector.js":[function(require,module,exports) {
-"use strict";
-
-var detector = module.exports = {};
-
-detector.isIE = function(version) {
-    function isAnyIeVersion() {
-        var agent = navigator.userAgent.toLowerCase();
-        return agent.indexOf("msie") !== -1 || agent.indexOf("trident") !== -1 || agent.indexOf(" edge/") !== -1;
-    }
-
-    if(!isAnyIeVersion()) {
-        return false;
-    }
-
-    if(!version) {
-        return true;
-    }
-
-    //Shamelessly stolen from https://gist.github.com/padolsey/527683
-    var ieVersion = (function(){
-        var undef,
-            v = 3,
-            div = document.createElement("div"),
-            all = div.getElementsByTagName("i");
-
-        do {
-            div.innerHTML = "<!--[if gt IE " + (++v) + "]><i></i><![endif]-->";
-        }
-        while (all[0]);
-
-        return v > 4 ? v : undef;
-    }());
-
-    return version === ieVersion;
-};
-
-detector.isLegacyOpera = function() {
-    return !!window.opera;
-};
-
-},{}],"../node_modules/batch-processor/src/utils.js":[function(require,module,exports) {
-"use strict";
-
-var utils = module.exports = {};
-
-utils.getOption = getOption;
-
-function getOption(options, name, defaultValue) {
-    var value = options[name];
-
-    if((value === undefined || value === null) && defaultValue !== undefined) {
-        return defaultValue;
-    }
-
-    return value;
-}
-
-},{}],"../node_modules/process/browser.js":[function(require,module,exports) {
-
-// shim for using process in browser
-var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-  throw new Error('setTimeout has not been defined');
-}
-
-function defaultClearTimeout() {
-  throw new Error('clearTimeout has not been defined');
-}
-
-(function () {
-  try {
-    if (typeof setTimeout === 'function') {
-      cachedSetTimeout = setTimeout;
-    } else {
-      cachedSetTimeout = defaultSetTimout;
-    }
-  } catch (e) {
-    cachedSetTimeout = defaultSetTimout;
-  }
-
-  try {
-    if (typeof clearTimeout === 'function') {
-      cachedClearTimeout = clearTimeout;
-    } else {
-      cachedClearTimeout = defaultClearTimeout;
-    }
-  } catch (e) {
-    cachedClearTimeout = defaultClearTimeout;
-  }
-})();
-
-function runTimeout(fun) {
-  if (cachedSetTimeout === setTimeout) {
-    //normal enviroments in sane situations
-    return setTimeout(fun, 0);
-  } // if setTimeout wasn't available but was latter defined
-
-
-  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-    cachedSetTimeout = setTimeout;
-    return setTimeout(fun, 0);
-  }
-
-  try {
-    // when when somebody has screwed with setTimeout but no I.E. maddness
-    return cachedSetTimeout(fun, 0);
-  } catch (e) {
-    try {
-      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-      return cachedSetTimeout.call(null, fun, 0);
-    } catch (e) {
-      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-      return cachedSetTimeout.call(this, fun, 0);
-    }
-  }
-}
-
-function runClearTimeout(marker) {
-  if (cachedClearTimeout === clearTimeout) {
-    //normal enviroments in sane situations
-    return clearTimeout(marker);
-  } // if clearTimeout wasn't available but was latter defined
-
-
-  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-    cachedClearTimeout = clearTimeout;
-    return clearTimeout(marker);
-  }
-
-  try {
-    // when when somebody has screwed with setTimeout but no I.E. maddness
-    return cachedClearTimeout(marker);
-  } catch (e) {
-    try {
-      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-      return cachedClearTimeout.call(null, marker);
-    } catch (e) {
-      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-      // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-      return cachedClearTimeout.call(this, marker);
-    }
-  }
-}
-
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-  if (!draining || !currentQueue) {
-    return;
-  }
-
-  draining = false;
-
-  if (currentQueue.length) {
-    queue = currentQueue.concat(queue);
-  } else {
-    queueIndex = -1;
-  }
-
-  if (queue.length) {
-    drainQueue();
-  }
-}
-
-function drainQueue() {
-  if (draining) {
-    return;
-  }
-
-  var timeout = runTimeout(cleanUpNextTick);
-  draining = true;
-  var len = queue.length;
-
-  while (len) {
-    currentQueue = queue;
-    queue = [];
-
-    while (++queueIndex < len) {
-      if (currentQueue) {
-        currentQueue[queueIndex].run();
-      }
-    }
-
-    queueIndex = -1;
-    len = queue.length;
-  }
-
-  currentQueue = null;
-  draining = false;
-  runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-  var args = new Array(arguments.length - 1);
-
-  if (arguments.length > 1) {
-    for (var i = 1; i < arguments.length; i++) {
-      args[i - 1] = arguments[i];
-    }
-  }
-
-  queue.push(new Item(fun, args));
-
-  if (queue.length === 1 && !draining) {
-    runTimeout(drainQueue);
-  }
-}; // v8 likes predictible objects
-
-
-function Item(fun, array) {
-  this.fun = fun;
-  this.array = array;
-}
-
-Item.prototype.run = function () {
-  this.fun.apply(null, this.array);
-};
-
-process.title = 'browser';
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) {
-  return [];
-};
-
-process.binding = function (name) {
-  throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () {
-  return '/';
-};
-
-process.chdir = function (dir) {
-  throw new Error('process.chdir is not supported');
-};
-
-process.umask = function () {
-  return 0;
-};
-},{}],"../node_modules/batch-processor/src/batch-processor.js":[function(require,module,exports) {
-var process = require("process");
-"use strict";
-
-var utils = require("./utils");
-
-module.exports = function batchProcessorMaker(options) {
-    options             = options || {};
-    var reporter        = options.reporter;
-    var asyncProcess    = utils.getOption(options, "async", true);
-    var autoProcess     = utils.getOption(options, "auto", true);
-
-    if(autoProcess && !asyncProcess) {
-        reporter && reporter.warn("Invalid options combination. auto=true and async=false is invalid. Setting async=true.");
-        asyncProcess = true;
-    }
-
-    var batch = Batch();
-    var asyncFrameHandler;
-    var isProcessing = false;
-
-    function addFunction(level, fn) {
-        if(!isProcessing && autoProcess && asyncProcess && batch.size() === 0) {
-            // Since this is async, it is guaranteed to be executed after that the fn is added to the batch.
-            // This needs to be done before, since we're checking the size of the batch to be 0.
-            processBatchAsync();
-        }
-
-        batch.add(level, fn);
-    }
-
-    function processBatch() {
-        // Save the current batch, and create a new batch so that incoming functions are not added into the currently processing batch.
-        // Continue processing until the top-level batch is empty (functions may be added to the new batch while processing, and so on).
-        isProcessing = true;
-        while (batch.size()) {
-            var processingBatch = batch;
-            batch = Batch();
-            processingBatch.process();
-        }
-        isProcessing = false;
-    }
-
-    function forceProcessBatch(localAsyncProcess) {
-        if (isProcessing) {
-            return;
-        }
-
-        if(localAsyncProcess === undefined) {
-            localAsyncProcess = asyncProcess;
-        }
-
-        if(asyncFrameHandler) {
-            cancelFrame(asyncFrameHandler);
-            asyncFrameHandler = null;
-        }
-
-        if(localAsyncProcess) {
-            processBatchAsync();
-        } else {
-            processBatch();
-        }
-    }
-
-    function processBatchAsync() {
-        asyncFrameHandler = requestFrame(processBatch);
-    }
-
-    function clearBatch() {
-        batch           = {};
-        batchSize       = 0;
-        topLevel        = 0;
-        bottomLevel     = 0;
-    }
-
-    function cancelFrame(listener) {
-        // var cancel = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame || window.clearTimeout;
-        var cancel = clearTimeout;
-        return cancel(listener);
-    }
-
-    function requestFrame(callback) {
-        // var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function(fn) { return window.setTimeout(fn, 20); };
-        var raf = function(fn) { return setTimeout(fn, 0); };
-        return raf(callback);
-    }
-
-    return {
-        add: addFunction,
-        force: forceProcessBatch
-    };
-};
-
-function Batch() {
-    var batch       = {};
-    var size        = 0;
-    var topLevel    = 0;
-    var bottomLevel = 0;
-
-    function add(level, fn) {
-        if(!fn) {
-            fn = level;
-            level = 0;
-        }
-
-        if(level > topLevel) {
-            topLevel = level;
-        } else if(level < bottomLevel) {
-            bottomLevel = level;
-        }
-
-        if(!batch[level]) {
-            batch[level] = [];
-        }
-
-        batch[level].push(fn);
-        size++;
-    }
-
-    function process() {
-        for(var level = bottomLevel; level <= topLevel; level++) {
-            var fns = batch[level];
-
-            for(var i = 0; i < fns.length; i++) {
-                var fn = fns[i];
-                fn();
-            }
-        }
-    }
-
-    function getSize() {
-        return size;
-    }
-
-    return {
-        add: add,
-        process: process,
-        size: getSize
-    };
-}
-
-},{"./utils":"../node_modules/batch-processor/src/utils.js","process":"../node_modules/process/browser.js"}],"../node_modules/element-resize-detector/src/state-handler.js":[function(require,module,exports) {
-"use strict";
-
-var prop = "_erd";
-
-function initState(element) {
-    element[prop] = {};
-    return getState(element);
-}
-
-function getState(element) {
-    return element[prop];
-}
-
-function cleanState(element) {
-    delete element[prop];
-}
-
-module.exports = {
-    initState: initState,
-    getState: getState,
-    cleanState: cleanState
-};
-
-},{}],"../node_modules/element-resize-detector/src/detection-strategy/object.js":[function(require,module,exports) {
-/**
- * Resize detection strategy that injects objects to elements in order to detect resize events.
- * Heavily inspired by: http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
- */
-
-"use strict";
-
-var browserDetector = require("../browser-detector");
-
-module.exports = function(options) {
-    options             = options || {};
-    var reporter        = options.reporter;
-    var batchProcessor  = options.batchProcessor;
-    var getState        = options.stateHandler.getState;
-
-    if(!reporter) {
-        throw new Error("Missing required dependency: reporter.");
-    }
-
-    /**
-     * Adds a resize event listener to the element.
-     * @public
-     * @param {element} element The element that should have the listener added.
-     * @param {function} listener The listener callback to be called for each resize event of the element. The element will be given as a parameter to the listener callback.
-     */
-    function addListener(element, listener) {
-        if(!getObject(element)) {
-            throw new Error("Element is not detectable by this strategy.");
-        }
-
-        function listenerProxy() {
-            listener(element);
-        }
-
-        if(browserDetector.isIE(8)) {
-            //IE 8 does not support object, but supports the resize event directly on elements.
-            getState(element).object = {
-                proxy: listenerProxy
-            };
-            element.attachEvent("onresize", listenerProxy);
-        } else {
-            var object = getObject(element);
-            object.contentDocument.defaultView.addEventListener("resize", listenerProxy);
-        }
-    }
-
-    /**
-     * Makes an element detectable and ready to be listened for resize events. Will call the callback when the element is ready to be listened for resize changes.
-     * @private
-     * @param {object} options Optional options object.
-     * @param {element} element The element to make detectable
-     * @param {function} callback The callback to be called when the element is ready to be listened for resize changes. Will be called with the element as first parameter.
-     */
-    function makeDetectable(options, element, callback) {
-        if (!callback) {
-            callback = element;
-            element = options;
-            options = null;
-        }
-
-        options = options || {};
-        var debug = options.debug;
-
-        function injectObject(element, callback) {
-            var OBJECT_STYLE = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;";
-
-            //The target element needs to be positioned (everything except static) so the absolute positioned object will be positioned relative to the target element.
-
-            // Position altering may be performed directly or on object load, depending on if style resolution is possible directly or not.
-            var positionCheckPerformed = false;
-
-            // The element may not yet be attached to the DOM, and therefore the style object may be empty in some browsers.
-            // Since the style object is a reference, it will be updated as soon as the element is attached to the DOM.
-            var style = window.getComputedStyle(element);
-            var width = element.offsetWidth;
-            var height = element.offsetHeight;
-
-            getState(element).startSize = {
-                width: width,
-                height: height
-            };
-
-            function mutateDom() {
-                function alterPositionStyles() {
-                    if(style.position === "static") {
-                        element.style.position = "relative";
-
-                        var removeRelativeStyles = function(reporter, element, style, property) {
-                            function getNumericalValue(value) {
-                                return value.replace(/[^-\d\.]/g, "");
-                            }
-
-                            var value = style[property];
-
-                            if(value !== "auto" && getNumericalValue(value) !== "0") {
-                                reporter.warn("An element that is positioned static has style." + property + "=" + value + " which is ignored due to the static positioning. The element will need to be positioned relative, so the style." + property + " will be set to 0. Element: ", element);
-                                element.style[property] = 0;
-                            }
-                        };
-
-                        //Check so that there are no accidental styles that will make the element styled differently now that is is relative.
-                        //If there are any, set them to 0 (this should be okay with the user since the style properties did nothing before [since the element was positioned static] anyway).
-                        removeRelativeStyles(reporter, element, style, "top");
-                        removeRelativeStyles(reporter, element, style, "right");
-                        removeRelativeStyles(reporter, element, style, "bottom");
-                        removeRelativeStyles(reporter, element, style, "left");
-                    }
-                }
-
-                function onObjectLoad() {
-                    // The object has been loaded, which means that the element now is guaranteed to be attached to the DOM.
-                    if (!positionCheckPerformed) {
-                        alterPositionStyles();
-                    }
-
-                    /*jshint validthis: true */
-
-                    function getDocument(element, callback) {
-                        //Opera 12 seem to call the object.onload before the actual document has been created.
-                        //So if it is not present, poll it with an timeout until it is present.
-                        //TODO: Could maybe be handled better with object.onreadystatechange or similar.
-                        if(!element.contentDocument) {
-                            setTimeout(function checkForObjectDocument() {
-                                getDocument(element, callback);
-                            }, 100);
-
-                            return;
-                        }
-
-                        callback(element.contentDocument);
-                    }
-
-                    //Mutating the object element here seems to fire another load event.
-                    //Mutating the inner document of the object element is fine though.
-                    var objectElement = this;
-
-                    //Create the style element to be added to the object.
-                    getDocument(objectElement, function onObjectDocumentReady(objectDocument) {
-                        //Notify that the element is ready to be listened to.
-                        callback(element);
-                    });
-                }
-
-                // The element may be detached from the DOM, and some browsers does not support style resolving of detached elements.
-                // The alterPositionStyles needs to be delayed until we know the element has been attached to the DOM (which we are sure of when the onObjectLoad has been fired), if style resolution is not possible.
-                if (style.position !== "") {
-                    alterPositionStyles(style);
-                    positionCheckPerformed = true;
-                }
-
-                //Add an object element as a child to the target element that will be listened to for resize events.
-                var object = document.createElement("object");
-                object.style.cssText = OBJECT_STYLE;
-                object.tabIndex = -1;
-                object.type = "text/html";
-                object.setAttribute("aria-hidden", "true");
-                object.onload = onObjectLoad;
-
-                //Safari: This must occur before adding the object to the DOM.
-                //IE: Does not like that this happens before, even if it is also added after.
-                if(!browserDetector.isIE()) {
-                    object.data = "about:blank";
-                }
-
-                element.appendChild(object);
-                getState(element).object = object;
-
-                //IE: This must occur after adding the object to the DOM.
-                if(browserDetector.isIE()) {
-                    object.data = "about:blank";
-                }
-            }
-
-            if(batchProcessor) {
-                batchProcessor.add(mutateDom);
-            } else {
-                mutateDom();
-            }
-        }
-
-        if(browserDetector.isIE(8)) {
-            //IE 8 does not support objects properly. Luckily they do support the resize event.
-            //So do not inject the object and notify that the element is already ready to be listened to.
-            //The event handler for the resize event is attached in the utils.addListener instead.
-            callback(element);
-        } else {
-            injectObject(element, callback);
-        }
-    }
-
-    /**
-     * Returns the child object of the target element.
-     * @private
-     * @param {element} element The target element.
-     * @returns The object element of the target.
-     */
-    function getObject(element) {
-        return getState(element).object;
-    }
-
-    function uninstall(element) {
-        if(browserDetector.isIE(8)) {
-            element.detachEvent("onresize", getState(element).object.proxy);
-        } else {
-            element.removeChild(getObject(element));
-        }
-        delete getState(element).object;
-    }
-
-    return {
-        makeDetectable: makeDetectable,
-        addListener: addListener,
-        uninstall: uninstall
-    };
-};
-
-},{"../browser-detector":"../node_modules/element-resize-detector/src/browser-detector.js"}],"../node_modules/element-resize-detector/src/detection-strategy/scroll.js":[function(require,module,exports) {
-/**
- * Resize detection strategy that injects divs to elements in order to detect resize events on scroll events.
- * Heavily inspired by: https://github.com/marcj/css-element-queries/blob/master/src/ResizeSensor.js
- */
-
-"use strict";
-
-var forEach = require("../collection-utils").forEach;
-
-module.exports = function(options) {
-    options             = options || {};
-    var reporter        = options.reporter;
-    var batchProcessor  = options.batchProcessor;
-    var getState        = options.stateHandler.getState;
-    var hasState        = options.stateHandler.hasState;
-    var idHandler       = options.idHandler;
-
-    if (!batchProcessor) {
-        throw new Error("Missing required dependency: batchProcessor");
-    }
-
-    if (!reporter) {
-        throw new Error("Missing required dependency: reporter.");
-    }
-
-    //TODO: Could this perhaps be done at installation time?
-    var scrollbarSizes = getScrollbarSizes();
-
-    // Inject the scrollbar styling that prevents them from appearing sometimes in Chrome.
-    // The injected container needs to have a class, so that it may be styled with CSS (pseudo elements).
-    var styleId = "erd_scroll_detection_scrollbar_style";
-    var detectionContainerClass = "erd_scroll_detection_container";
-    injectScrollStyle(styleId, detectionContainerClass);
-
-    function getScrollbarSizes() {
-        var width = 500;
-        var height = 500;
-
-        var child = document.createElement("div");
-        child.style.cssText = "position: absolute; width: " + width*2 + "px; height: " + height*2 + "px; visibility: hidden; margin: 0; padding: 0;";
-
-        var container = document.createElement("div");
-        container.style.cssText = "position: absolute; width: " + width + "px; height: " + height + "px; overflow: scroll; visibility: none; top: " + -width*3 + "px; left: " + -height*3 + "px; visibility: hidden; margin: 0; padding: 0;";
-
-        container.appendChild(child);
-
-        document.body.insertBefore(container, document.body.firstChild);
-
-        var widthSize = width - container.clientWidth;
-        var heightSize = height - container.clientHeight;
-
-        document.body.removeChild(container);
-
-        return {
-            width: widthSize,
-            height: heightSize
-        };
-    }
-
-    function injectScrollStyle(styleId, containerClass) {
-        function injectStyle(style, method) {
-            method = method || function (element) {
-                document.head.appendChild(element);
-            };
-
-            var styleElement = document.createElement("style");
-            styleElement.innerHTML = style;
-            styleElement.id = styleId;
-            method(styleElement);
-            return styleElement;
-        }
-
-        if (!document.getElementById(styleId)) {
-            var containerAnimationClass = containerClass + "_animation";
-            var containerAnimationActiveClass = containerClass + "_animation_active";
-            var style = "/* Created by the element-resize-detector library. */\n";
-            style += "." + containerClass + " > div::-webkit-scrollbar { display: none; }\n\n";
-            style += "." + containerAnimationActiveClass + " { -webkit-animation-duration: 0.1s; animation-duration: 0.1s; -webkit-animation-name: " + containerAnimationClass + "; animation-name: " + containerAnimationClass + "; }\n";
-            style += "@-webkit-keyframes " + containerAnimationClass +  " { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }\n";
-            style += "@keyframes " + containerAnimationClass +          " { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }";
-            injectStyle(style);
-        }
-    }
-
-    function addAnimationClass(element) {
-        element.className += " " + detectionContainerClass + "_animation_active";
-    }
-
-    function addEvent(el, name, cb) {
-        if (el.addEventListener) {
-            el.addEventListener(name, cb);
-        } else if(el.attachEvent) {
-            el.attachEvent("on" + name, cb);
-        } else {
-            return reporter.error("[scroll] Don't know how to add event listeners.");
-        }
-    }
-
-    function removeEvent(el, name, cb) {
-        if (el.removeEventListener) {
-            el.removeEventListener(name, cb);
-        } else if(el.detachEvent) {
-            el.detachEvent("on" + name, cb);
-        } else {
-            return reporter.error("[scroll] Don't know how to remove event listeners.");
-        }
-    }
-
-    function getExpandElement(element) {
-        return getState(element).container.childNodes[0].childNodes[0].childNodes[0];
-    }
-
-    function getShrinkElement(element) {
-        return getState(element).container.childNodes[0].childNodes[0].childNodes[1];
-    }
-
-    /**
-     * Adds a resize event listener to the element.
-     * @public
-     * @param {element} element The element that should have the listener added.
-     * @param {function} listener The listener callback to be called for each resize event of the element. The element will be given as a parameter to the listener callback.
-     */
-    function addListener(element, listener) {
-        var listeners = getState(element).listeners;
-
-        if (!listeners.push) {
-            throw new Error("Cannot add listener to an element that is not detectable.");
-        }
-
-        getState(element).listeners.push(listener);
-    }
-
-    /**
-     * Makes an element detectable and ready to be listened for resize events. Will call the callback when the element is ready to be listened for resize changes.
-     * @private
-     * @param {object} options Optional options object.
-     * @param {element} element The element to make detectable
-     * @param {function} callback The callback to be called when the element is ready to be listened for resize changes. Will be called with the element as first parameter.
-     */
-    function makeDetectable(options, element, callback) {
-        if (!callback) {
-            callback = element;
-            element = options;
-            options = null;
-        }
-
-        options = options || {};
-
-        function debug() {
-            if (options.debug) {
-                var args = Array.prototype.slice.call(arguments);
-                args.unshift(idHandler.get(element), "Scroll: ");
-                if (reporter.log.apply) {
-                    reporter.log.apply(null, args);
-                } else {
-                    for (var i = 0; i < args.length; i++) {
-                        reporter.log(args[i]);
-                    }
-                }
-            }
-        }
-
-        function isDetached(element) {
-            function isInDocument(element) {
-                return element === element.ownerDocument.body || element.ownerDocument.body.contains(element);
-            }
-
-            if (!isInDocument(element)) {
-                return true;
-            }
-
-            // FireFox returns null style in hidden iframes. See https://github.com/wnr/element-resize-detector/issues/68 and https://bugzilla.mozilla.org/show_bug.cgi?id=795520
-            if (window.getComputedStyle(element) === null) {
-                return true;
-            }
-
-            return false;
-        }
-
-        function isUnrendered(element) {
-            // Check the absolute positioned container since the top level container is display: inline.
-            var container = getState(element).container.childNodes[0];
-            var style = window.getComputedStyle(container);
-            return !style.width || style.width.indexOf("px") === -1; //Can only compute pixel value when rendered.
-        }
-
-        function getStyle() {
-            // Some browsers only force layouts when actually reading the style properties of the style object, so make sure that they are all read here,
-            // so that the user of the function can be sure that it will perform the layout here, instead of later (important for batching).
-            var elementStyle            = window.getComputedStyle(element);
-            var style                   = {};
-            style.position              = elementStyle.position;
-            style.width                 = element.offsetWidth;
-            style.height                = element.offsetHeight;
-            style.top                   = elementStyle.top;
-            style.right                 = elementStyle.right;
-            style.bottom                = elementStyle.bottom;
-            style.left                  = elementStyle.left;
-            style.widthCSS              = elementStyle.width;
-            style.heightCSS             = elementStyle.height;
-            return style;
-        }
-
-        function storeStartSize() {
-            var style = getStyle();
-            getState(element).startSize = {
-                width: style.width,
-                height: style.height
-            };
-            debug("Element start size", getState(element).startSize);
-        }
-
-        function initListeners() {
-            getState(element).listeners = [];
-        }
-
-        function storeStyle() {
-            debug("storeStyle invoked.");
-            if (!getState(element)) {
-                debug("Aborting because element has been uninstalled");
-                return;
-            }
-
-            var style = getStyle();
-            getState(element).style = style;
-        }
-
-        function storeCurrentSize(element, width, height) {
-            getState(element).lastWidth = width;
-            getState(element).lastHeight  = height;
-        }
-
-        function getExpandChildElement(element) {
-            return getExpandElement(element).childNodes[0];
-        }
-
-        function getWidthOffset() {
-            return 2 * scrollbarSizes.width + 1;
-        }
-
-        function getHeightOffset() {
-            return 2 * scrollbarSizes.height + 1;
-        }
-
-        function getExpandWidth(width) {
-            return width + 10 + getWidthOffset();
-        }
-
-        function getExpandHeight(height) {
-            return height + 10 + getHeightOffset();
-        }
-
-        function getShrinkWidth(width) {
-            return width * 2 + getWidthOffset();
-        }
-
-        function getShrinkHeight(height) {
-            return height * 2 + getHeightOffset();
-        }
-
-        function positionScrollbars(element, width, height) {
-            var expand          = getExpandElement(element);
-            var shrink          = getShrinkElement(element);
-            var expandWidth     = getExpandWidth(width);
-            var expandHeight    = getExpandHeight(height);
-            var shrinkWidth     = getShrinkWidth(width);
-            var shrinkHeight    = getShrinkHeight(height);
-            expand.scrollLeft   = expandWidth;
-            expand.scrollTop    = expandHeight;
-            shrink.scrollLeft   = shrinkWidth;
-            shrink.scrollTop    = shrinkHeight;
-        }
-
-        function injectContainerElement() {
-            var container = getState(element).container;
-
-            if (!container) {
-                container                   = document.createElement("div");
-                container.className         = detectionContainerClass;
-                container.style.cssText     = "visibility: hidden; display: inline; width: 0px; height: 0px; z-index: -1; overflow: hidden; margin: 0; padding: 0;";
-                getState(element).container = container;
-                addAnimationClass(container);
-                element.appendChild(container);
-
-                var onAnimationStart = function () {
-                    getState(element).onRendered && getState(element).onRendered();
-                };
-
-                addEvent(container, "animationstart", onAnimationStart);
-
-                // Store the event handler here so that they may be removed when uninstall is called.
-                // See uninstall function for an explanation why it is needed.
-                getState(element).onAnimationStart = onAnimationStart;
-            }
-
-            return container;
-        }
-
-        function injectScrollElements() {
-            function alterPositionStyles() {
-                var style = getState(element).style;
-
-                if(style.position === "static") {
-                    element.style.position = "relative";
-
-                    var removeRelativeStyles = function(reporter, element, style, property) {
-                        function getNumericalValue(value) {
-                            return value.replace(/[^-\d\.]/g, "");
-                        }
-
-                        var value = style[property];
-
-                        if(value !== "auto" && getNumericalValue(value) !== "0") {
-                            reporter.warn("An element that is positioned static has style." + property + "=" + value + " which is ignored due to the static positioning. The element will need to be positioned relative, so the style." + property + " will be set to 0. Element: ", element);
-                            element.style[property] = 0;
-                        }
-                    };
-
-                    //Check so that there are no accidental styles that will make the element styled differently now that is is relative.
-                    //If there are any, set them to 0 (this should be okay with the user since the style properties did nothing before [since the element was positioned static] anyway).
-                    removeRelativeStyles(reporter, element, style, "top");
-                    removeRelativeStyles(reporter, element, style, "right");
-                    removeRelativeStyles(reporter, element, style, "bottom");
-                    removeRelativeStyles(reporter, element, style, "left");
-                }
-            }
-
-            function getLeftTopBottomRightCssText(left, top, bottom, right) {
-                left = (!left ? "0" : (left + "px"));
-                top = (!top ? "0" : (top + "px"));
-                bottom = (!bottom ? "0" : (bottom + "px"));
-                right = (!right ? "0" : (right + "px"));
-
-                return "left: " + left + "; top: " + top + "; right: " + right + "; bottom: " + bottom + ";";
-            }
-
-            debug("Injecting elements");
-
-            if (!getState(element)) {
-                debug("Aborting because element has been uninstalled");
-                return;
-            }
-
-            alterPositionStyles();
-
-            var rootContainer = getState(element).container;
-
-            if (!rootContainer) {
-                rootContainer = injectContainerElement();
-            }
-
-            // Due to this WebKit bug https://bugs.webkit.org/show_bug.cgi?id=80808 (currently fixed in Blink, but still present in WebKit browsers such as Safari),
-            // we need to inject two containers, one that is width/height 100% and another that is left/top -1px so that the final container always is 1x1 pixels bigger than
-            // the targeted element.
-            // When the bug is resolved, "containerContainer" may be removed.
-
-            // The outer container can occasionally be less wide than the targeted when inside inline elements element in WebKit (see https://bugs.webkit.org/show_bug.cgi?id=152980).
-            // This should be no problem since the inner container either way makes sure the injected scroll elements are at least 1x1 px.
-
-            var scrollbarWidth          = scrollbarSizes.width;
-            var scrollbarHeight         = scrollbarSizes.height;
-            var containerContainerStyle = "position: absolute; flex: none; overflow: hidden; z-index: -1; visibility: hidden; width: 100%; height: 100%; left: 0px; top: 0px;";
-            var containerStyle          = "position: absolute; flex: none; overflow: hidden; z-index: -1; visibility: hidden; " + getLeftTopBottomRightCssText(-(1 + scrollbarWidth), -(1 + scrollbarHeight), -scrollbarHeight, -scrollbarWidth);
-            var expandStyle             = "position: absolute; flex: none; overflow: scroll; z-index: -1; visibility: hidden; width: 100%; height: 100%;";
-            var shrinkStyle             = "position: absolute; flex: none; overflow: scroll; z-index: -1; visibility: hidden; width: 100%; height: 100%;";
-            var expandChildStyle        = "position: absolute; left: 0; top: 0;";
-            var shrinkChildStyle        = "position: absolute; width: 200%; height: 200%;";
-
-            var containerContainer      = document.createElement("div");
-            var container               = document.createElement("div");
-            var expand                  = document.createElement("div");
-            var expandChild             = document.createElement("div");
-            var shrink                  = document.createElement("div");
-            var shrinkChild             = document.createElement("div");
-
-            // Some browsers choke on the resize system being rtl, so force it to ltr. https://github.com/wnr/element-resize-detector/issues/56
-            // However, dir should not be set on the top level container as it alters the dimensions of the target element in some browsers.
-            containerContainer.dir              = "ltr";
-
-            containerContainer.style.cssText    = containerContainerStyle;
-            containerContainer.className        = detectionContainerClass;
-            container.className                 = detectionContainerClass;
-            container.style.cssText             = containerStyle;
-            expand.style.cssText                = expandStyle;
-            expandChild.style.cssText           = expandChildStyle;
-            shrink.style.cssText                = shrinkStyle;
-            shrinkChild.style.cssText           = shrinkChildStyle;
-
-            expand.appendChild(expandChild);
-            shrink.appendChild(shrinkChild);
-            container.appendChild(expand);
-            container.appendChild(shrink);
-            containerContainer.appendChild(container);
-            rootContainer.appendChild(containerContainer);
-
-            function onExpandScroll() {
-                getState(element).onExpand && getState(element).onExpand();
-            }
-
-            function onShrinkScroll() {
-                getState(element).onShrink && getState(element).onShrink();
-            }
-
-            addEvent(expand, "scroll", onExpandScroll);
-            addEvent(shrink, "scroll", onShrinkScroll);
-
-            // Store the event handlers here so that they may be removed when uninstall is called.
-            // See uninstall function for an explanation why it is needed.
-            getState(element).onExpandScroll = onExpandScroll;
-            getState(element).onShrinkScroll = onShrinkScroll;
-        }
-
-        function registerListenersAndPositionElements() {
-            function updateChildSizes(element, width, height) {
-                var expandChild             = getExpandChildElement(element);
-                var expandWidth             = getExpandWidth(width);
-                var expandHeight            = getExpandHeight(height);
-                expandChild.style.width     = expandWidth + "px";
-                expandChild.style.height    = expandHeight + "px";
-            }
-
-            function updateDetectorElements(done) {
-                var width           = element.offsetWidth;
-                var height          = element.offsetHeight;
-
-                debug("Storing current size", width, height);
-
-                // Store the size of the element sync here, so that multiple scroll events may be ignored in the event listeners.
-                // Otherwise the if-check in handleScroll is useless.
-                storeCurrentSize(element, width, height);
-
-                // Since we delay the processing of the batch, there is a risk that uninstall has been called before the batch gets to execute.
-                // Since there is no way to cancel the fn executions, we need to add an uninstall guard to all fns of the batch.
-
-                batchProcessor.add(0, function performUpdateChildSizes() {
-                    if (!getState(element)) {
-                        debug("Aborting because element has been uninstalled");
-                        return;
-                    }
-
-                    if (!areElementsInjected()) {
-                        debug("Aborting because element container has not been initialized");
-                        return;
-                    }
-
-                    if (options.debug) {
-                        var w = element.offsetWidth;
-                        var h = element.offsetHeight;
-
-                        if (w !== width || h !== height) {
-                            reporter.warn(idHandler.get(element), "Scroll: Size changed before updating detector elements.");
-                        }
-                    }
-
-                    updateChildSizes(element, width, height);
-                });
-
-                batchProcessor.add(1, function updateScrollbars() {
-                    if (!getState(element)) {
-                        debug("Aborting because element has been uninstalled");
-                        return;
-                    }
-
-                    if (!areElementsInjected()) {
-                        debug("Aborting because element container has not been initialized");
-                        return;
-                    }
-
-                    positionScrollbars(element, width, height);
-                });
-
-                if (done) {
-                    batchProcessor.add(2, function () {
-                        if (!getState(element)) {
-                            debug("Aborting because element has been uninstalled");
-                            return;
-                        }
-
-                        if (!areElementsInjected()) {
-                          debug("Aborting because element container has not been initialized");
-                          return;
-                        }
-
-                        done();
-                    });
-                }
-            }
-
-            function areElementsInjected() {
-                return !!getState(element).container;
-            }
-
-            function notifyListenersIfNeeded() {
-                function isFirstNotify() {
-                    return getState(element).lastNotifiedWidth === undefined;
-                }
-
-                debug("notifyListenersIfNeeded invoked");
-
-                var state = getState(element);
-
-                // Don't notify the if the current size is the start size, and this is the first notification.
-                if (isFirstNotify() && state.lastWidth === state.startSize.width && state.lastHeight === state.startSize.height) {
-                    return debug("Not notifying: Size is the same as the start size, and there has been no notification yet.");
-                }
-
-                // Don't notify if the size already has been notified.
-                if (state.lastWidth === state.lastNotifiedWidth && state.lastHeight === state.lastNotifiedHeight) {
-                    return debug("Not notifying: Size already notified");
-                }
-
-
-                debug("Current size not notified, notifying...");
-                state.lastNotifiedWidth = state.lastWidth;
-                state.lastNotifiedHeight = state.lastHeight;
-                forEach(getState(element).listeners, function (listener) {
-                    listener(element);
-                });
-            }
-
-            function handleRender() {
-                debug("startanimation triggered.");
-
-                if (isUnrendered(element)) {
-                    debug("Ignoring since element is still unrendered...");
-                    return;
-                }
-
-                debug("Element rendered.");
-                var expand = getExpandElement(element);
-                var shrink = getShrinkElement(element);
-                if (expand.scrollLeft === 0 || expand.scrollTop === 0 || shrink.scrollLeft === 0 || shrink.scrollTop === 0) {
-                    debug("Scrollbars out of sync. Updating detector elements...");
-                    updateDetectorElements(notifyListenersIfNeeded);
-                }
-            }
-
-            function handleScroll() {
-                debug("Scroll detected.");
-
-                if (isUnrendered(element)) {
-                    // Element is still unrendered. Skip this scroll event.
-                    debug("Scroll event fired while unrendered. Ignoring...");
-                    return;
-                }
-
-                var width = element.offsetWidth;
-                var height = element.offsetHeight;
-
-                if (width !== getState(element).lastWidth || height !== getState(element).lastHeight) {
-                    debug("Element size changed.");
-                    updateDetectorElements(notifyListenersIfNeeded);
-                } else {
-                    debug("Element size has not changed (" + width + "x" + height + ").");
-                }
-            }
-
-            debug("registerListenersAndPositionElements invoked.");
-
-            if (!getState(element)) {
-                debug("Aborting because element has been uninstalled");
-                return;
-            }
-
-            getState(element).onRendered = handleRender;
-            getState(element).onExpand = handleScroll;
-            getState(element).onShrink = handleScroll;
-
-            var style = getState(element).style;
-            updateChildSizes(element, style.width, style.height);
-        }
-
-        function finalizeDomMutation() {
-            debug("finalizeDomMutation invoked.");
-
-            if (!getState(element)) {
-                debug("Aborting because element has been uninstalled");
-                return;
-            }
-
-            var style = getState(element).style;
-            storeCurrentSize(element, style.width, style.height);
-            positionScrollbars(element, style.width, style.height);
-        }
-
-        function ready() {
-            callback(element);
-        }
-
-        function install() {
-            debug("Installing...");
-            initListeners();
-            storeStartSize();
-
-            batchProcessor.add(0, storeStyle);
-            batchProcessor.add(1, injectScrollElements);
-            batchProcessor.add(2, registerListenersAndPositionElements);
-            batchProcessor.add(3, finalizeDomMutation);
-            batchProcessor.add(4, ready);
-        }
-
-        debug("Making detectable...");
-
-        if (isDetached(element)) {
-            debug("Element is detached");
-
-            injectContainerElement();
-
-            debug("Waiting until element is attached...");
-
-            getState(element).onRendered = function () {
-                debug("Element is now attached");
-                install();
-            };
-        } else {
-            install();
-        }
-    }
-
-    function uninstall(element) {
-        var state = getState(element);
-
-        if (!state) {
-            // Uninstall has been called on a non-erd element.
-            return;
-        }
-
-        // Uninstall may have been called in the following scenarios:
-        // (1) Right between the sync code and async batch (here state.busy = true, but nothing have been registered or injected).
-        // (2) In the ready callback of the last level of the batch by another element (here, state.busy = true, but all the stuff has been injected).
-        // (3) After the installation process (here, state.busy = false and all the stuff has been injected).
-        // So to be on the safe side, let's check for each thing before removing.
-
-        // We need to remove the event listeners, because otherwise the event might fire on an uninstall element which results in an error when trying to get the state of the element.
-        state.onExpandScroll && removeEvent(getExpandElement(element), "scroll", state.onExpandScroll);
-        state.onShrinkScroll && removeEvent(getShrinkElement(element), "scroll", state.onShrinkScroll);
-        state.onAnimationStart && removeEvent(state.container, "animationstart", state.onAnimationStart);
-
-        state.container && element.removeChild(state.container);
-    }
-
-    return {
-        makeDetectable: makeDetectable,
-        addListener: addListener,
-        uninstall: uninstall
-    };
-};
-
-},{"../collection-utils":"../node_modules/element-resize-detector/src/collection-utils.js"}],"../node_modules/element-resize-detector/src/element-resize-detector.js":[function(require,module,exports) {
-"use strict";
-
-var forEach                 = require("./collection-utils").forEach;
-var elementUtilsMaker       = require("./element-utils");
-var listenerHandlerMaker    = require("./listener-handler");
-var idGeneratorMaker        = require("./id-generator");
-var idHandlerMaker          = require("./id-handler");
-var reporterMaker           = require("./reporter");
-var browserDetector         = require("./browser-detector");
-var batchProcessorMaker     = require("batch-processor");
-var stateHandler            = require("./state-handler");
-
-//Detection strategies.
-var objectStrategyMaker     = require("./detection-strategy/object.js");
-var scrollStrategyMaker     = require("./detection-strategy/scroll.js");
-
-function isCollection(obj) {
-    return Array.isArray(obj) || obj.length !== undefined;
-}
-
-function toArray(collection) {
-    if (!Array.isArray(collection)) {
-        var array = [];
-        forEach(collection, function (obj) {
-            array.push(obj);
-        });
-        return array;
-    } else {
-        return collection;
-    }
-}
-
-function isElement(obj) {
-    return obj && obj.nodeType === 1;
-}
-
-/**
- * @typedef idHandler
- * @type {object}
- * @property {function} get Gets the resize detector id of the element.
- * @property {function} set Generate and sets the resize detector id of the element.
- */
-
-/**
- * @typedef Options
- * @type {object}
- * @property {boolean} callOnAdd    Determines if listeners should be called when they are getting added.
-                                    Default is true. If true, the listener is guaranteed to be called when it has been added.
-                                    If false, the listener will not be guarenteed to be called when it has been added (does not prevent it from being called).
- * @property {idHandler} idHandler  A custom id handler that is responsible for generating, setting and retrieving id's for elements.
-                                    If not provided, a default id handler will be used.
- * @property {reporter} reporter    A custom reporter that handles reporting logs, warnings and errors.
-                                    If not provided, a default id handler will be used.
-                                    If set to false, then nothing will be reported.
- * @property {boolean} debug        If set to true, the the system will report debug messages as default for the listenTo method.
- */
-
-/**
- * Creates an element resize detector instance.
- * @public
- * @param {Options?} options Optional global options object that will decide how this instance will work.
- */
-module.exports = function(options) {
-    options = options || {};
-
-    //idHandler is currently not an option to the listenTo function, so it should not be added to globalOptions.
-    var idHandler;
-
-    if (options.idHandler) {
-        // To maintain compatability with idHandler.get(element, readonly), make sure to wrap the given idHandler
-        // so that readonly flag always is true when it's used here. This may be removed next major version bump.
-        idHandler = {
-            get: function (element) { return options.idHandler.get(element, true); },
-            set: options.idHandler.set
-        };
-    } else {
-        var idGenerator = idGeneratorMaker();
-        var defaultIdHandler = idHandlerMaker({
-            idGenerator: idGenerator,
-            stateHandler: stateHandler
-        });
-        idHandler = defaultIdHandler;
-    }
-
-    //reporter is currently not an option to the listenTo function, so it should not be added to globalOptions.
-    var reporter = options.reporter;
-
-    if(!reporter) {
-        //If options.reporter is false, then the reporter should be quiet.
-        var quiet = reporter === false;
-        reporter = reporterMaker(quiet);
-    }
-
-    //batchProcessor is currently not an option to the listenTo function, so it should not be added to globalOptions.
-    var batchProcessor = getOption(options, "batchProcessor", batchProcessorMaker({ reporter: reporter }));
-
-    //Options to be used as default for the listenTo function.
-    var globalOptions = {};
-    globalOptions.callOnAdd     = !!getOption(options, "callOnAdd", true);
-    globalOptions.debug         = !!getOption(options, "debug", false);
-
-    var eventListenerHandler    = listenerHandlerMaker(idHandler);
-    var elementUtils            = elementUtilsMaker({
-        stateHandler: stateHandler
-    });
-
-    //The detection strategy to be used.
-    var detectionStrategy;
-    var desiredStrategy = getOption(options, "strategy", "object");
-    var strategyOptions = {
-        reporter: reporter,
-        batchProcessor: batchProcessor,
-        stateHandler: stateHandler,
-        idHandler: idHandler
-    };
-
-    if(desiredStrategy === "scroll") {
-        if (browserDetector.isLegacyOpera()) {
-            reporter.warn("Scroll strategy is not supported on legacy Opera. Changing to object strategy.");
-            desiredStrategy = "object";
-        } else if (browserDetector.isIE(9)) {
-            reporter.warn("Scroll strategy is not supported on IE9. Changing to object strategy.");
-            desiredStrategy = "object";
-        }
-    }
-
-    if(desiredStrategy === "scroll") {
-        detectionStrategy = scrollStrategyMaker(strategyOptions);
-    } else if(desiredStrategy === "object") {
-        detectionStrategy = objectStrategyMaker(strategyOptions);
-    } else {
-        throw new Error("Invalid strategy name: " + desiredStrategy);
-    }
-
-    //Calls can be made to listenTo with elements that are still being installed.
-    //Also, same elements can occur in the elements list in the listenTo function.
-    //With this map, the ready callbacks can be synchronized between the calls
-    //so that the ready callback can always be called when an element is ready - even if
-    //it wasn't installed from the function itself.
-    var onReadyCallbacks = {};
-
-    /**
-     * Makes the given elements resize-detectable and starts listening to resize events on the elements. Calls the event callback for each event for each element.
-     * @public
-     * @param {Options?} options Optional options object. These options will override the global options. Some options may not be overriden, such as idHandler.
-     * @param {element[]|element} elements The given array of elements to detect resize events of. Single element is also valid.
-     * @param {function} listener The callback to be executed for each resize event for each element.
-     */
-    function listenTo(options, elements, listener) {
-        function onResizeCallback(element) {
-            var listeners = eventListenerHandler.get(element);
-            forEach(listeners, function callListenerProxy(listener) {
-                listener(element);
-            });
-        }
-
-        function addListener(callOnAdd, element, listener) {
-            eventListenerHandler.add(element, listener);
-
-            if(callOnAdd) {
-                listener(element);
-            }
-        }
-
-        //Options object may be omitted.
-        if(!listener) {
-            listener = elements;
-            elements = options;
-            options = {};
-        }
-
-        if(!elements) {
-            throw new Error("At least one element required.");
-        }
-
-        if(!listener) {
-            throw new Error("Listener required.");
-        }
-
-        if (isElement(elements)) {
-            // A single element has been passed in.
-            elements = [elements];
-        } else if (isCollection(elements)) {
-            // Convert collection to array for plugins.
-            // TODO: May want to check so that all the elements in the collection are valid elements.
-            elements = toArray(elements);
-        } else {
-            return reporter.error("Invalid arguments. Must be a DOM element or a collection of DOM elements.");
-        }
-
-        var elementsReady = 0;
-
-        var callOnAdd = getOption(options, "callOnAdd", globalOptions.callOnAdd);
-        var onReadyCallback = getOption(options, "onReady", function noop() {});
-        var debug = getOption(options, "debug", globalOptions.debug);
-
-        forEach(elements, function attachListenerToElement(element) {
-            if (!stateHandler.getState(element)) {
-                stateHandler.initState(element);
-                idHandler.set(element);
-            }
-
-            var id = idHandler.get(element);
-
-            debug && reporter.log("Attaching listener to element", id, element);
-
-            if(!elementUtils.isDetectable(element)) {
-                debug && reporter.log(id, "Not detectable.");
-                if(elementUtils.isBusy(element)) {
-                    debug && reporter.log(id, "System busy making it detectable");
-
-                    //The element is being prepared to be detectable. Do not make it detectable.
-                    //Just add the listener, because the element will soon be detectable.
-                    addListener(callOnAdd, element, listener);
-                    onReadyCallbacks[id] = onReadyCallbacks[id] || [];
-                    onReadyCallbacks[id].push(function onReady() {
-                        elementsReady++;
-
-                        if(elementsReady === elements.length) {
-                            onReadyCallback();
-                        }
-                    });
-                    return;
-                }
-
-                debug && reporter.log(id, "Making detectable...");
-                //The element is not prepared to be detectable, so do prepare it and add a listener to it.
-                elementUtils.markBusy(element, true);
-                return detectionStrategy.makeDetectable({ debug: debug }, element, function onElementDetectable(element) {
-                    debug && reporter.log(id, "onElementDetectable");
-
-                    if (stateHandler.getState(element)) {
-                        elementUtils.markAsDetectable(element);
-                        elementUtils.markBusy(element, false);
-                        detectionStrategy.addListener(element, onResizeCallback);
-                        addListener(callOnAdd, element, listener);
-
-                        // Since the element size might have changed since the call to "listenTo", we need to check for this change,
-                        // so that a resize event may be emitted.
-                        // Having the startSize object is optional (since it does not make sense in some cases such as unrendered elements), so check for its existance before.
-                        // Also, check the state existance before since the element may have been uninstalled in the installation process.
-                        var state = stateHandler.getState(element);
-                        if (state && state.startSize) {
-                            var width = element.offsetWidth;
-                            var height = element.offsetHeight;
-                            if (state.startSize.width !== width || state.startSize.height !== height) {
-                                onResizeCallback(element);
-                            }
-                        }
-
-                        if(onReadyCallbacks[id]) {
-                            forEach(onReadyCallbacks[id], function(callback) {
-                                callback();
-                            });
-                        }
-                    } else {
-                        // The element has been unisntalled before being detectable.
-                        debug && reporter.log(id, "Element uninstalled before being detectable.");
-                    }
-
-                    delete onReadyCallbacks[id];
-
-                    elementsReady++;
-                    if(elementsReady === elements.length) {
-                        onReadyCallback();
-                    }
-                });
-            }
-
-            debug && reporter.log(id, "Already detecable, adding listener.");
-
-            //The element has been prepared to be detectable and is ready to be listened to.
-            addListener(callOnAdd, element, listener);
-            elementsReady++;
-        });
-
-        if(elementsReady === elements.length) {
-            onReadyCallback();
-        }
-    }
-
-    function uninstall(elements) {
-        if(!elements) {
-            return reporter.error("At least one element is required.");
-        }
-
-        if (isElement(elements)) {
-            // A single element has been passed in.
-            elements = [elements];
-        } else if (isCollection(elements)) {
-            // Convert collection to array for plugins.
-            // TODO: May want to check so that all the elements in the collection are valid elements.
-            elements = toArray(elements);
-        } else {
-            return reporter.error("Invalid arguments. Must be a DOM element or a collection of DOM elements.");
-        }
-
-        forEach(elements, function (element) {
-            eventListenerHandler.removeAllListeners(element);
-            detectionStrategy.uninstall(element);
-            stateHandler.cleanState(element);
-        });
-    }
-
-    return {
-        listenTo: listenTo,
-        removeListener: eventListenerHandler.removeListener,
-        removeAllListeners: eventListenerHandler.removeAllListeners,
-        uninstall: uninstall
-    };
-};
-
-function getOption(options, name, defaultValue) {
-    var value = options[name];
-
-    if((value === undefined || value === null) && defaultValue !== undefined) {
-        return defaultValue;
-    }
-
-    return value;
-}
-
-},{"./collection-utils":"../node_modules/element-resize-detector/src/collection-utils.js","./element-utils":"../node_modules/element-resize-detector/src/element-utils.js","./listener-handler":"../node_modules/element-resize-detector/src/listener-handler.js","./id-generator":"../node_modules/element-resize-detector/src/id-generator.js","./id-handler":"../node_modules/element-resize-detector/src/id-handler.js","./reporter":"../node_modules/element-resize-detector/src/reporter.js","./browser-detector":"../node_modules/element-resize-detector/src/browser-detector.js","batch-processor":"../node_modules/batch-processor/src/batch-processor.js","./state-handler":"../node_modules/element-resize-detector/src/state-handler.js","./detection-strategy/object.js":"../node_modules/element-resize-detector/src/detection-strategy/object.js","./detection-strategy/scroll.js":"../node_modules/element-resize-detector/src/detection-strategy/scroll.js"}],"../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
-/** @license React v16.8.6
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-'use strict';
-
-if ("development" !== "production") {
-  (function () {
-    'use strict';
-
-    Object.defineProperty(exports, '__esModule', {
-      value: true
-    }); // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-    // nor polyfill, then a plain number is used for performance.
-
-    var hasSymbol = typeof Symbol === 'function' && Symbol.for;
-    var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
-    var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
-    var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
-    var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
-    var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
-    var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
-    var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace;
-    var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
-    var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
-    var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
-    var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
-    var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
-    var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
-
-    function isValidElementType(type) {
-      return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-      type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE);
-    }
-    /**
-     * Forked from fbjs/warning:
-     * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
-     *
-     * Only change is we use console.warn instead of console.error,
-     * and do nothing when 'console' is not supported.
-     * This really simplifies the code.
-     * ---
-     * Similar to invariant but only logs a warning if the condition is not met.
-     * This can be used to log issues in development environments in critical
-     * paths. Removing the logging code for production environments will keep the
-     * same logic and follow the same code paths.
-     */
-
-
-    var lowPriorityWarning = function () {};
-
-    {
-      var printWarning = function (format) {
-        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
-        }
-
-        var argIndex = 0;
-        var message = 'Warning: ' + format.replace(/%s/g, function () {
-          return args[argIndex++];
-        });
-
-        if (typeof console !== 'undefined') {
-          console.warn(message);
-        }
-
-        try {
-          // --- Welcome to debugging React ---
-          // This error was thrown as a convenience so that you can use this stack
-          // to find the callsite that caused this warning to fire.
-          throw new Error(message);
-        } catch (x) {}
-      };
-
-      lowPriorityWarning = function (condition, format) {
-        if (format === undefined) {
-          throw new Error('`lowPriorityWarning(condition, format, ...args)` requires a warning ' + 'message argument');
-        }
-
-        if (!condition) {
-          for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-            args[_key2 - 2] = arguments[_key2];
-          }
-
-          printWarning.apply(undefined, [format].concat(args));
-        }
-      };
-    }
-    var lowPriorityWarning$1 = lowPriorityWarning;
-
-    function typeOf(object) {
-      if (typeof object === 'object' && object !== null) {
-        var $$typeof = object.$$typeof;
-
-        switch ($$typeof) {
-          case REACT_ELEMENT_TYPE:
-            var type = object.type;
-
-            switch (type) {
-              case REACT_ASYNC_MODE_TYPE:
-              case REACT_CONCURRENT_MODE_TYPE:
-              case REACT_FRAGMENT_TYPE:
-              case REACT_PROFILER_TYPE:
-              case REACT_STRICT_MODE_TYPE:
-              case REACT_SUSPENSE_TYPE:
-                return type;
-
-              default:
-                var $$typeofType = type && type.$$typeof;
-
-                switch ($$typeofType) {
-                  case REACT_CONTEXT_TYPE:
-                  case REACT_FORWARD_REF_TYPE:
-                  case REACT_PROVIDER_TYPE:
-                    return $$typeofType;
-
-                  default:
-                    return $$typeof;
-                }
-
-            }
-
-          case REACT_LAZY_TYPE:
-          case REACT_MEMO_TYPE:
-          case REACT_PORTAL_TYPE:
-            return $$typeof;
-        }
-      }
-
-      return undefined;
-    } // AsyncMode is deprecated along with isAsyncMode
-
-
-    var AsyncMode = REACT_ASYNC_MODE_TYPE;
-    var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-    var ContextConsumer = REACT_CONTEXT_TYPE;
-    var ContextProvider = REACT_PROVIDER_TYPE;
-    var Element = REACT_ELEMENT_TYPE;
-    var ForwardRef = REACT_FORWARD_REF_TYPE;
-    var Fragment = REACT_FRAGMENT_TYPE;
-    var Lazy = REACT_LAZY_TYPE;
-    var Memo = REACT_MEMO_TYPE;
-    var Portal = REACT_PORTAL_TYPE;
-    var Profiler = REACT_PROFILER_TYPE;
-    var StrictMode = REACT_STRICT_MODE_TYPE;
-    var Suspense = REACT_SUSPENSE_TYPE;
-    var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
-
-    function isAsyncMode(object) {
-      {
-        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-          hasWarnedAboutDeprecatedIsAsyncMode = true;
-          lowPriorityWarning$1(false, 'The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
-        }
-      }
-      return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-    }
-
-    function isConcurrentMode(object) {
-      return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-    }
-
-    function isContextConsumer(object) {
-      return typeOf(object) === REACT_CONTEXT_TYPE;
-    }
-
-    function isContextProvider(object) {
-      return typeOf(object) === REACT_PROVIDER_TYPE;
-    }
-
-    function isElement(object) {
-      return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-    }
-
-    function isForwardRef(object) {
-      return typeOf(object) === REACT_FORWARD_REF_TYPE;
-    }
-
-    function isFragment(object) {
-      return typeOf(object) === REACT_FRAGMENT_TYPE;
-    }
-
-    function isLazy(object) {
-      return typeOf(object) === REACT_LAZY_TYPE;
-    }
-
-    function isMemo(object) {
-      return typeOf(object) === REACT_MEMO_TYPE;
-    }
-
-    function isPortal(object) {
-      return typeOf(object) === REACT_PORTAL_TYPE;
-    }
-
-    function isProfiler(object) {
-      return typeOf(object) === REACT_PROFILER_TYPE;
-    }
-
-    function isStrictMode(object) {
-      return typeOf(object) === REACT_STRICT_MODE_TYPE;
-    }
-
-    function isSuspense(object) {
-      return typeOf(object) === REACT_SUSPENSE_TYPE;
-    }
-
-    exports.typeOf = typeOf;
-    exports.AsyncMode = AsyncMode;
-    exports.ConcurrentMode = ConcurrentMode;
-    exports.ContextConsumer = ContextConsumer;
-    exports.ContextProvider = ContextProvider;
-    exports.Element = Element;
-    exports.ForwardRef = ForwardRef;
-    exports.Fragment = Fragment;
-    exports.Lazy = Lazy;
-    exports.Memo = Memo;
-    exports.Portal = Portal;
-    exports.Profiler = Profiler;
-    exports.StrictMode = StrictMode;
-    exports.Suspense = Suspense;
-    exports.isValidElementType = isValidElementType;
-    exports.isAsyncMode = isAsyncMode;
-    exports.isConcurrentMode = isConcurrentMode;
-    exports.isContextConsumer = isContextConsumer;
-    exports.isContextProvider = isContextProvider;
-    exports.isElement = isElement;
-    exports.isForwardRef = isForwardRef;
-    exports.isFragment = isFragment;
-    exports.isLazy = isLazy;
-    exports.isMemo = isMemo;
-    exports.isPortal = isPortal;
-    exports.isProfiler = isProfiler;
-    exports.isStrictMode = isStrictMode;
-    exports.isSuspense = isSuspense;
-  })();
-}
-},{}],"../node_modules/react-is/index.js":[function(require,module,exports) {
-'use strict';
-
-if ("development" === 'production') {
-  module.exports = require('./cjs/react-is.production.min.js');
-} else {
-  module.exports = require('./cjs/react-is.development.js');
-}
-},{"./cjs/react-is.development.js":"../node_modules/react-is/cjs/react-is.development.js"}],"../node_modules/prop-types/factoryWithTypeCheckers.js":[function(require,module,exports) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-'use strict';
-
-var ReactIs = require('react-is');
-
-var assign = require('object-assign');
-
-var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
-
-var checkPropTypes = require('./checkPropTypes');
-
-var has = Function.call.bind(Object.prototype.hasOwnProperty);
-
-var printWarning = function () {};
-
-if ("development" !== 'production') {
-  printWarning = function (text) {
-    var message = 'Warning: ' + text;
-
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-}
-
-function emptyFunctionThatReturnsNull() {
-  return null;
-}
-
-module.exports = function (isValidElement, throwOnDirectAccess) {
-  /* global Symbol */
-  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-
-  /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */
-
-  function getIteratorFn(maybeIterable) {
-    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
-  /**
-   * Collection of methods that allow declaration and validation of props that are
-   * supplied to React components. Example usage:
-   *
-   *   var Props = require('ReactPropTypes');
-   *   var MyArticle = React.createClass({
-   *     propTypes: {
-   *       // An optional string prop named "description".
-   *       description: Props.string,
-   *
-   *       // A required enum prop named "category".
-   *       category: Props.oneOf(['News','Photos']).isRequired,
-   *
-   *       // A prop named "dialog" that requires an instance of Dialog.
-   *       dialog: Props.instanceOf(Dialog).isRequired
-   *     },
-   *     render: function() { ... }
-   *   });
-   *
-   * A more formal specification of how these methods are used:
-   *
-   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-   *   decl := ReactPropTypes.{type}(.isRequired)?
-   *
-   * Each and every declaration produces a function with the same signature. This
-   * allows the creation of custom validation functions. For example:
-   *
-   *  var MyLink = React.createClass({
-   *    propTypes: {
-   *      // An optional string or URI prop named "href".
-   *      href: function(props, propName, componentName) {
-   *        var propValue = props[propName];
-   *        if (propValue != null && typeof propValue !== 'string' &&
-   *            !(propValue instanceof URI)) {
-   *          return new Error(
-   *            'Expected a string or an URI for ' + propName + ' in ' +
-   *            componentName
-   *          );
-   *        }
-   *      }
-   *    },
-   *    render: function() {...}
-   *  });
-   *
-   * @internal
-   */
-
-
-  var ANONYMOUS = '<<anonymous>>'; // Important!
-  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
-
-  var ReactPropTypes = {
-    array: createPrimitiveTypeChecker('array'),
-    bool: createPrimitiveTypeChecker('boolean'),
-    func: createPrimitiveTypeChecker('function'),
-    number: createPrimitiveTypeChecker('number'),
-    object: createPrimitiveTypeChecker('object'),
-    string: createPrimitiveTypeChecker('string'),
-    symbol: createPrimitiveTypeChecker('symbol'),
-    any: createAnyTypeChecker(),
-    arrayOf: createArrayOfTypeChecker,
-    element: createElementTypeChecker(),
-    elementType: createElementTypeTypeChecker(),
-    instanceOf: createInstanceTypeChecker,
-    node: createNodeChecker(),
-    objectOf: createObjectOfTypeChecker,
-    oneOf: createEnumTypeChecker,
-    oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker,
-    exact: createStrictShapeTypeChecker
-  };
-  /**
-   * inlined Object.is polyfill to avoid requiring consumers ship their own
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-   */
-
-  /*eslint-disable no-self-compare*/
-
-  function is(x, y) {
-    // SameValue algorithm
-    if (x === y) {
-      // Steps 1-5, 7-10
-      // Steps 6.b-6.e: +0 != -0
-      return x !== 0 || 1 / x === 1 / y;
-    } else {
-      // Step 6.a: NaN == NaN
-      return x !== x && y !== y;
-    }
-  }
-  /*eslint-enable no-self-compare*/
-
-  /**
-   * We use an Error-like object for backward compatibility as people may call
-   * PropTypes directly and inspect their output. However, we don't use real
-   * Errors anymore. We don't inspect their stack anyway, and creating them
-   * is prohibitively expensive if they are created too often, such as what
-   * happens in oneOfType() for any type before the one that matched.
-   */
-
-
-  function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-  } // Make `instanceof Error` still work for returned errors.
-
-
-  PropTypeError.prototype = Error.prototype;
-
-  function createChainableTypeChecker(validate) {
-    if ("development" !== 'production') {
-      var manualPropTypeCallCache = {};
-      var manualPropTypeWarningCount = 0;
-    }
-
-    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-      componentName = componentName || ANONYMOUS;
-      propFullName = propFullName || propName;
-
-      if (secret !== ReactPropTypesSecret) {
-        if (throwOnDirectAccess) {
-          // New behavior only for users of `prop-types` package
-          var err = new Error('Calling PropTypes validators directly is not supported by the `prop-types` package. ' + 'Use `PropTypes.checkPropTypes()` to call them. ' + 'Read more at http://fb.me/use-check-prop-types');
-          err.name = 'Invariant Violation';
-          throw err;
-        } else if ("development" !== 'production' && typeof console !== 'undefined') {
-          // Old behavior for people using React.PropTypes
-          var cacheKey = componentName + ':' + propName;
-
-          if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
-          manualPropTypeWarningCount < 3) {
-            printWarning('You are manually calling a React.PropTypes validation ' + 'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' + 'and will throw in the standalone `prop-types` package. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.');
-            manualPropTypeCallCache[cacheKey] = true;
-            manualPropTypeWarningCount++;
-          }
-        }
-      }
-
-      if (props[propName] == null) {
-        if (isRequired) {
-          if (props[propName] === null) {
-            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-          }
-
-          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-        }
-
-        return null;
-      } else {
-        return validate(props, propName, componentName, location, propFullName);
-      }
-    }
-
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-    return chainedCheckType;
-  }
-
-  function createPrimitiveTypeChecker(expectedType) {
-    function validate(props, propName, componentName, location, propFullName, secret) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-
-      if (propType !== expectedType) {
-        // `propValue` being instance of, say, date/regexp, pass the 'object'
-        // check, but we can offer a more precise error message here rather than
-        // 'of type `object`'.
-        var preciseType = getPreciseType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
-  }
-
-  function createArrayOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-      }
-
-      var propValue = props[propName];
-
-      if (!Array.isArray(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-      }
-
-      for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
-
-        if (error instanceof Error) {
-          return error;
-        }
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-
-      if (!isValidElement(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-
-      if (!ReactIs.isValidElementType(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createInstanceTypeChecker(expectedClass) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!(props[propName] instanceof expectedClass)) {
-        var expectedClassName = expectedClass.name || ANONYMOUS;
-        var actualClassName = getClassName(props[propName]);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createEnumTypeChecker(expectedValues) {
-    if (!Array.isArray(expectedValues)) {
-      if ("development" !== 'production') {
-        if (arguments.length > 1) {
-          printWarning('Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' + 'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).');
-        } else {
-          printWarning('Invalid argument supplied to oneOf, expected an array.');
-        }
-      }
-
-      return emptyFunctionThatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-
-      for (var i = 0; i < expectedValues.length; i++) {
-        if (is(propValue, expectedValues[i])) {
-          return null;
-        }
-      }
-
-      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
-        var type = getPreciseType(value);
-
-        if (type === 'symbol') {
-          return String(value);
-        }
-
-        return value;
-      });
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createObjectOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-      }
-
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-      }
-
-      for (var key in propValue) {
-        if (has(propValue, key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-
-          if (error instanceof Error) {
-            return error;
-          }
-        }
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createUnionTypeChecker(arrayOfTypeCheckers) {
-    if (!Array.isArray(arrayOfTypeCheckers)) {
-      "development" !== 'production' ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-      return emptyFunctionThatReturnsNull;
-    }
-
-    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-      var checker = arrayOfTypeCheckers[i];
-
-      if (typeof checker !== 'function') {
-        printWarning('Invalid argument supplied to oneOfType. Expected an array of check functions, but ' + 'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.');
-        return emptyFunctionThatReturnsNull;
-      }
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-        var checker = arrayOfTypeCheckers[i];
-
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
-          return null;
-        }
-      }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createNodeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!isNode(props[propName])) {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-
-      for (var key in shapeTypes) {
-        var checker = shapeTypes[key];
-
-        if (!checker) {
-          continue;
-        }
-
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-
-        if (error) {
-          return error;
-        }
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function createStrictShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      } // We need to check all keys in case some are required but missing from
-      // props.
-
-
-      var allKeys = assign({}, props[propName], shapeTypes);
-
-      for (var key in allKeys) {
-        var checker = shapeTypes[key];
-
-        if (!checker) {
-          return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' + '\nBad object: ' + JSON.stringify(props[propName], null, '  ') + '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
-        }
-
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-
-        if (error) {
-          return error;
-        }
-      }
-
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function isNode(propValue) {
-    switch (typeof propValue) {
-      case 'number':
-      case 'string':
-      case 'undefined':
-        return true;
-
-      case 'boolean':
-        return !propValue;
-
-      case 'object':
-        if (Array.isArray(propValue)) {
-          return propValue.every(isNode);
-        }
-
-        if (propValue === null || isValidElement(propValue)) {
-          return true;
-        }
-
-        var iteratorFn = getIteratorFn(propValue);
-
-        if (iteratorFn) {
-          var iterator = iteratorFn.call(propValue);
-          var step;
-
-          if (iteratorFn !== propValue.entries) {
-            while (!(step = iterator.next()).done) {
-              if (!isNode(step.value)) {
-                return false;
-              }
-            }
-          } else {
-            // Iterator will provide entry [k,v] tuples rather than values.
-            while (!(step = iterator.next()).done) {
-              var entry = step.value;
-
-              if (entry) {
-                if (!isNode(entry[1])) {
-                  return false;
-                }
-              }
-            }
-          }
-        } else {
-          return false;
-        }
-
-        return true;
-
-      default:
-        return false;
-    }
-  }
-
-  function isSymbol(propType, propValue) {
-    // Native Symbol.
-    if (propType === 'symbol') {
-      return true;
-    } // falsy value can't be a Symbol
-
-
-    if (!propValue) {
-      return false;
-    } // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-
-
-    if (propValue['@@toStringTag'] === 'Symbol') {
-      return true;
-    } // Fallback for non-spec compliant Symbols which are polyfilled.
-
-
-    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-      return true;
-    }
-
-    return false;
-  } // Equivalent of `typeof` but with special handling for array and regexp.
-
-
-  function getPropType(propValue) {
-    var propType = typeof propValue;
-
-    if (Array.isArray(propValue)) {
-      return 'array';
-    }
-
-    if (propValue instanceof RegExp) {
-      // Old webkits (at least until Android 4.0) return 'function' rather than
-      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-      // passes PropTypes.object.
-      return 'object';
-    }
-
-    if (isSymbol(propType, propValue)) {
-      return 'symbol';
-    }
-
-    return propType;
-  } // This handles more types than `getPropType`. Only used for error messages.
-  // See `createPrimitiveTypeChecker`.
-
-
-  function getPreciseType(propValue) {
-    if (typeof propValue === 'undefined' || propValue === null) {
-      return '' + propValue;
-    }
-
-    var propType = getPropType(propValue);
-
-    if (propType === 'object') {
-      if (propValue instanceof Date) {
-        return 'date';
-      } else if (propValue instanceof RegExp) {
-        return 'regexp';
-      }
-    }
-
-    return propType;
-  } // Returns a string that is postfixed to a warning about an invalid type.
-  // For example, "undefined" or "of type array"
-
-
-  function getPostfixForTypeWarning(value) {
-    var type = getPreciseType(value);
-
-    switch (type) {
-      case 'array':
-      case 'object':
-        return 'an ' + type;
-
-      case 'boolean':
-      case 'date':
-      case 'regexp':
-        return 'a ' + type;
-
-      default:
-        return type;
-    }
-  } // Returns class name of the object, if any.
-
-
-  function getClassName(propValue) {
-    if (!propValue.constructor || !propValue.constructor.name) {
-      return ANONYMOUS;
-    }
-
-    return propValue.constructor.name;
-  }
-
-  ReactPropTypes.checkPropTypes = checkPropTypes;
-  ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
-  ReactPropTypes.PropTypes = ReactPropTypes;
-  return ReactPropTypes;
-};
-},{"react-is":"../node_modules/react-is/index.js","object-assign":"../node_modules/object-assign/index.js","./lib/ReactPropTypesSecret":"../node_modules/prop-types/lib/ReactPropTypesSecret.js","./checkPropTypes":"../node_modules/prop-types/checkPropTypes.js"}],"../node_modules/prop-types/index.js":[function(require,module,exports) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-if ("development" !== 'production') {
-  var ReactIs = require('react-is'); // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-
-
-  var throwOnDirectAccess = true;
-  module.exports = require('./factoryWithTypeCheckers')(ReactIs.isElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = require('./factoryWithThrowingShims')();
-}
-},{"react-is":"../node_modules/react-is/index.js","./factoryWithTypeCheckers":"../node_modules/prop-types/factoryWithTypeCheckers.js"}],"../node_modules/invariant/browser.js":[function(require,module,exports) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-'use strict';
-/**
- * Use invariant() to assert state which your program assumes to be true.
- *
- * Provide sprintf-style format (only %s is supported) and arguments
- * to provide information about what broke and what you were
- * expecting.
- *
- * The invariant message will be stripped in production, but the invariant
- * will remain to ensure logic does not differ in production.
- */
-
-var invariant = function (condition, format, a, b, c, d, e, f) {
-  if ("development" !== 'production') {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  }
-
-  if (!condition) {
-    var error;
-
-    if (format === undefined) {
-      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-    } else {
-      var args = [a, b, c, d, e, f];
-      var argIndex = 0;
-      error = new Error(format.replace(/%s/g, function () {
-        return args[argIndex++];
-      }));
-      error.name = 'Invariant Violation';
-    }
-
-    error.framesToPop = 1; // we don't care about invariant's own frame
-
-    throw error;
-  }
-};
-
-module.exports = invariant;
-},{}],"../node_modules/throttle-debounce/dist/index.esm.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.throttle = throttle;
-exports.debounce = debounce;
-
-/* eslint-disable no-undefined,no-param-reassign,no-shadow */
-
-/**
- * Throttle execution of a function. Especially useful for rate limiting
- * execution of handlers on events like resize and scroll.
- *
- * @param  {Number}    delay          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
- * @param  {Boolean}   [noTrailing]   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
- *                                    throttled-function is being called. If noTrailing is false or unspecified, callback will be executed one final time
- *                                    after the last throttled-function call. (After the throttled-function has not been called for `delay` milliseconds,
- *                                    the internal counter is reset)
- * @param  {Function}  callback       A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
- *                                    to `callback` when the throttled-function is executed.
- * @param  {Boolean}   [debounceMode] If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
- *                                    schedule `callback` to execute after `delay` ms.
- *
- * @return {Function}  A new, throttled, function.
- */
-function throttle(delay, noTrailing, callback, debounceMode) {
-  /*
-   * After wrapper has stopped being called, this timeout ensures that
-   * `callback` is executed at the proper times in `throttle` and `end`
-   * debounce modes.
-   */
-  var timeoutID;
-  var cancelled = false; // Keep track of the last time `callback` was executed.
-
-  var lastExec = 0; // Function to clear existing timeout
-
-  function clearExistingTimeout() {
-    if (timeoutID) {
-      clearTimeout(timeoutID);
-    }
-  } // Function to cancel next exec
-
-
-  function cancel() {
-    clearExistingTimeout();
-    cancelled = true;
-  } // `noTrailing` defaults to falsy.
-
-
-  if (typeof noTrailing !== 'boolean') {
-    debounceMode = callback;
-    callback = noTrailing;
-    noTrailing = undefined;
-  }
-  /*
-   * The `wrapper` function encapsulates all of the throttling / debouncing
-   * functionality and when executed will limit the rate at which `callback`
-   * is executed.
-   */
-
-
-  function wrapper() {
-    var self = this;
-    var elapsed = Date.now() - lastExec;
-    var args = arguments;
-
-    if (cancelled) {
-      return;
-    } // Execute `callback` and update the `lastExec` timestamp.
-
-
-    function exec() {
-      lastExec = Date.now();
-      callback.apply(self, args);
-    }
-    /*
-     * If `debounceMode` is true (at begin) this is used to clear the flag
-     * to allow future `callback` executions.
-     */
-
-
-    function clear() {
-      timeoutID = undefined;
-    }
-
-    if (debounceMode && !timeoutID) {
-      /*
-       * Since `wrapper` is being called for the first time and
-       * `debounceMode` is true (at begin), execute `callback`.
-       */
-      exec();
-    }
-
-    clearExistingTimeout();
-
-    if (debounceMode === undefined && elapsed > delay) {
-      /*
-       * In throttle mode, if `delay` time has been exceeded, execute
-       * `callback`.
-       */
-      exec();
-    } else if (noTrailing !== true) {
-      /*
-       * In trailing throttle mode, since `delay` time has not been
-       * exceeded, schedule `callback` to execute `delay` ms after most
-       * recent execution.
-       *
-       * If `debounceMode` is true (at begin), schedule `clear` to execute
-       * after `delay` ms.
-       *
-       * If `debounceMode` is false (at end), schedule `callback` to
-       * execute after `delay` ms.
-       */
-      timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
-    }
-  }
-
-  wrapper.cancel = cancel; // Return the wrapper function.
-
-  return wrapper;
-}
-/* eslint-disable no-undefined */
-
-/**
- * Debounce execution of a function. Debouncing, unlike throttling,
- * guarantees that a function is only executed a single time, either at the
- * very beginning of a series of calls, or at the very end.
- *
- * @param  {Number}   delay         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
- * @param  {Boolean}  [atBegin]     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
- *                                  after the last debounced-function call. If atBegin is true, callback will be executed only at the first debounced-function call.
- *                                  (After the throttled-function has not been called for `delay` milliseconds, the internal counter is reset).
- * @param  {Function} callback      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
- *                                  to `callback` when the debounced-function is executed.
- *
- * @return {Function} A new, debounced function.
- */
-
-
-function debounce(delay, atBegin, callback) {
-  return callback === undefined ? throttle(delay, atBegin, false) : throttle(delay, callback, atBegin !== false);
-}
-},{}],"../node_modules/shallowequal/index.js":[function(require,module,exports) {
-//
-
-module.exports = function shallowEqual(objA, objB, compare, compareContext) {
-  var ret = compare ? compare.call(compareContext, objA, objB) : void 0;
-
-  if (ret !== void 0) {
-    return !!ret;
-  }
-
-  if (objA === objB) {
-    return true;
-  }
-
-  if (typeof objA !== "object" || !objA || typeof objB !== "object" || !objB) {
-    return false;
-  }
-
-  var keysA = Object.keys(objA);
-  var keysB = Object.keys(objB);
-
-  if (keysA.length !== keysB.length) {
-    return false;
-  }
-
-  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
-
-  // Test for A's keys different from B.
-  for (var idx = 0; idx < keysA.length; idx++) {
-    var key = keysA[idx];
-
-    if (!bHasOwnProperty(key)) {
-      return false;
-    }
-
-    var valueA = objA[key];
-    var valueB = objB[key];
-
-    ret = compare ? compare.call(compareContext, valueA, valueB, key) : void 0;
-
-    if (ret === false || (ret === void 0 && valueA !== valueB)) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-},{}],"../node_modules/react-sizeme/dist/react-sizeme.js":[function(require,module,exports) {
-'use strict';
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var createResizeDetector = _interopDefault(require('element-resize-detector'));
-var React = require('react');
-var React__default = _interopDefault(React);
-var PropTypes = _interopDefault(require('prop-types'));
-var ReactDOM = _interopDefault(require('react-dom'));
-var invariant = _interopDefault(require('invariant'));
-var throttleDebounce = require('throttle-debounce');
-var isShallowEqual = _interopDefault(require('shallowequal'));
-
-var instances = {};
-
-// Lazily require to not cause bug
-// https://github.com/ctrlplusb/react-sizeme/issues/6
-function resizeDetector() {
-  var strategy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'scroll';
-
-  if (!instances[strategy]) {
-    instances[strategy] = createResizeDetector({
-      strategy: strategy
-    });
-  }
-
-  return instances[strategy];
-}
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-var objectWithoutProperties = function (obj, keys) {
-  var target = {};
-
-  for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;
-    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-    target[i] = obj[i];
-  }
-
-  return target;
-};
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-/* eslint-disable react/no-multi-comp */
-
-var errMsg = 'react-sizeme: an error occurred whilst stopping to listen to node size changes';
-
-var defaultConfig = {
-  monitorWidth: true,
-  monitorHeight: false,
-  monitorPosition: false,
-  refreshRate: 16,
-  refreshMode: 'throttle',
-  noPlaceholder: false,
-  resizeDetectorStrategy: 'scroll'
-};
-
-function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
-
-/**
- * This is a utility wrapper component that will allow our higher order
- * component to get a ref handle on our wrapped components html.
- * @see https://gist.github.com/jimfb/32b587ee6177665fb4cf
- */
-
-var ReferenceWrapper = function (_Component) {
-  inherits(ReferenceWrapper, _Component);
-
-  function ReferenceWrapper() {
-    classCallCheck(this, ReferenceWrapper);
-    return possibleConstructorReturn(this, (ReferenceWrapper.__proto__ || Object.getPrototypeOf(ReferenceWrapper)).apply(this, arguments));
-  }
-
-  createClass(ReferenceWrapper, [{
-    key: 'render',
-    value: function render() {
-      return React.Children.only(this.props.children);
-    }
-  }]);
-  return ReferenceWrapper;
-}(React.Component);
-
-ReferenceWrapper.displayName = 'SizeMeReferenceWrapper';
-
-ReferenceWrapper.propTypes = { children: PropTypes.element.isRequired };
-
-function Placeholder(_ref) {
-  var className = _ref.className,
-      style = _ref.style;
-
-  // Lets create the props for the temp element.
-  var phProps = {};
-
-  // We will use any provided className/style or else make the temp
-  // container take the full available space.
-  if (!className && !style) {
-    phProps.style = { width: '100%', height: '100%' };
-  } else {
-    if (className) {
-      phProps.className = className;
-    }
-    if (style) {
-      phProps.style = style;
-    }
-  }
-
-  return React__default.createElement('div', phProps);
-}
-Placeholder.displayName = 'SizeMePlaceholder';
-Placeholder.propTypes = {
-  className: PropTypes.string,
-  style: PropTypes.object
-
-  /**
-   * As we need to maintain a ref on the root node that is rendered within our
-   * SizeMe component we need to wrap our entire render in a sub component.
-   * Without this, we lose the DOM ref after the placeholder is removed from
-   * the render and the actual component is rendered.
-   * It took me forever to figure this out, so tread extra careful on this one!
-   */
-};var renderWrapper = function renderWrapper(WrappedComponent) {
-  function SizeMeRenderer(props) {
-    var explicitRef = props.explicitRef,
-        className = props.className,
-        style = props.style,
-        size = props.size,
-        disablePlaceholder = props.disablePlaceholder,
-        onSize = props.onSize,
-        restProps = objectWithoutProperties(props, ['explicitRef', 'className', 'style', 'size', 'disablePlaceholder', 'onSize']);
-
-
-    var noSizeData = size == null || size.width == null && size.height == null && size.position == null;
-
-    var renderPlaceholder = noSizeData && !disablePlaceholder;
-
-    var renderProps = {
-      className: className,
-      style: style
-    };
-
-    if (size != null) {
-      renderProps.size = size;
-    }
-
-    var toRender = renderPlaceholder ? React__default.createElement(Placeholder, { className: className, style: style }) : React__default.createElement(WrappedComponent, _extends({}, renderProps, restProps));
-
-    return React__default.createElement(
-      ReferenceWrapper,
-      { ref: explicitRef },
-      toRender
-    );
-  }
-
-  SizeMeRenderer.displayName = 'SizeMeRenderer(' + getDisplayName(WrappedComponent) + ')';
-
-  SizeMeRenderer.propTypes = {
-    explicitRef: PropTypes.func.isRequired,
-    className: PropTypes.string,
-    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    size: PropTypes.shape({
-      width: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
-      height: PropTypes.number // eslint-disable-line react/no-unused-prop-types
-    }),
-    disablePlaceholder: PropTypes.bool,
-    onSize: PropTypes.func
-  };
-
-  return SizeMeRenderer;
-};
-
-/**
- * :: config -> Component -> WrappedComponent
- *
- * Higher order component that allows the wrapped component to become aware
- * of it's size, by receiving it as an object within it's props.
- *
- * @param  monitorWidth
- *   Default true, whether changes in the element's width should be monitored,
- *   causing a size property to be broadcast.
- * @param  monitorHeight
- *   Default false, whether changes in the element's height should be monitored,
- *   causing a size property to be broadcast.
- *
- * @return The wrapped component.
- */
-function withSize() {
-  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultConfig;
-  var _config$monitorWidth = config.monitorWidth,
-      monitorWidth = _config$monitorWidth === undefined ? defaultConfig.monitorWidth : _config$monitorWidth,
-      _config$monitorHeight = config.monitorHeight,
-      monitorHeight = _config$monitorHeight === undefined ? defaultConfig.monitorHeight : _config$monitorHeight,
-      _config$monitorPositi = config.monitorPosition,
-      monitorPosition = _config$monitorPositi === undefined ? defaultConfig.monitorPosition : _config$monitorPositi,
-      _config$refreshRate = config.refreshRate,
-      refreshRate = _config$refreshRate === undefined ? defaultConfig.refreshRate : _config$refreshRate,
-      _config$refreshMode = config.refreshMode,
-      refreshMode = _config$refreshMode === undefined ? defaultConfig.refreshMode : _config$refreshMode,
-      _config$noPlaceholder = config.noPlaceholder,
-      noPlaceholder = _config$noPlaceholder === undefined ? defaultConfig.noPlaceholder : _config$noPlaceholder,
-      _config$resizeDetecto = config.resizeDetectorStrategy,
-      resizeDetectorStrategy = _config$resizeDetecto === undefined ? defaultConfig.resizeDetectorStrategy : _config$resizeDetecto;
-
-
-  invariant(monitorWidth || monitorHeight || monitorPosition, 'You have to monitor at least one of the width, height, or position when using "sizeMe"');
-
-  invariant(refreshRate >= 16, "It is highly recommended that you don't put your refreshRate lower than " + '16 as this may cause layout thrashing.');
-
-  invariant(refreshMode === 'throttle' || refreshMode === 'debounce', 'The refreshMode should have a value of "throttle" or "debounce"');
-
-  var refreshDelayStrategy = refreshMode === 'throttle' ? throttleDebounce.throttle : throttleDebounce.debounce;
-
-  return function WrapComponent(WrappedComponent) {
-    var SizeMeRenderWrapper = renderWrapper(WrappedComponent);
-
-    var SizeAwareComponent = function (_React$Component) {
-      inherits(SizeAwareComponent, _React$Component);
-
-      function SizeAwareComponent() {
-        var _ref2;
-
-        var _temp, _this2, _ret;
-
-        classCallCheck(this, SizeAwareComponent);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this2 = possibleConstructorReturn(this, (_ref2 = SizeAwareComponent.__proto__ || Object.getPrototypeOf(SizeAwareComponent)).call.apply(_ref2, [this].concat(args))), _this2), _this2.domEl = null, _this2.state = {
-          width: undefined,
-          height: undefined,
-          position: undefined
-        }, _this2.uninstall = function () {
-          if (_this2.domEl) {
-            try {
-              _this2.detector.uninstall(_this2.domEl);
-            } catch (err) {
-              // eslint-disable-next-line no-console
-              console.warn(errMsg);
-            }
-            _this2.domEl = null;
-          }
-        }, _this2.determineStrategy = function (props) {
-          if (props.onSize) {
-            if (!_this2.callbackState) {
-              _this2.callbackState = _extends({}, _this2.state);
-            }
-            _this2.strategy = 'callback';
-          } else {
-            _this2.strategy = 'render';
-          }
-        }, _this2.strategisedSetState = function (state) {
-          if (_this2.strategy === 'callback') {
-            _this2.callbackState = state;
-            _this2.props.onSize(state);
-          }
-          _this2.setState(state);
-        }, _this2.strategisedGetState = function () {
-          return _this2.strategy === 'callback' ? _this2.callbackState : _this2.state;
-        }, _this2.refCallback = function (element) {
-          _this2.element = element;
-        }, _this2.hasSizeChanged = function (current, next) {
-          var c = current;
-          var n = next;
-          var cp = c.position || {};
-          var np = n.position || {};
-
-          return monitorWidth && c.width !== n.width || monitorHeight && c.height !== n.height || monitorPosition && (cp.top !== np.top || cp.left !== np.left || cp.bottom !== np.bottom || cp.right !== np.right);
-        }, _this2.checkIfSizeChanged = refreshDelayStrategy(refreshRate, function (el) {
-          var _el$getBoundingClient = el.getBoundingClientRect(),
-              width = _el$getBoundingClient.width,
-              height = _el$getBoundingClient.height,
-              right = _el$getBoundingClient.right,
-              left = _el$getBoundingClient.left,
-              top = _el$getBoundingClient.top,
-              bottom = _el$getBoundingClient.bottom;
-
-          var next = {
-            width: monitorWidth ? width : null,
-            height: monitorHeight ? height : null,
-            position: monitorPosition ? { right: right, left: left, top: top, bottom: bottom } : null
-          };
-
-          if (_this2.hasSizeChanged(_this2.strategisedGetState(), next)) {
-            _this2.strategisedSetState(next);
-          }
-        }), _temp), possibleConstructorReturn(_this2, _ret);
-      }
-
-      createClass(SizeAwareComponent, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-          this.detector = resizeDetector(resizeDetectorStrategy);
-          this.determineStrategy(this.props);
-          this.handleDOMNode();
-        }
-      }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate() {
-          this.determineStrategy(this.props);
-          this.handleDOMNode();
-        }
-      }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-          // Change our size checker to a noop just in case we have some
-          // late running events.
-          this.hasSizeChanged = function () {
-            return undefined;
-          };
-          this.checkIfSizeChanged = function () {
-            return undefined;
-          };
-          this.uninstall();
-        }
-      }, {
-        key: 'handleDOMNode',
-        value: function handleDOMNode() {
-          var found = this.element && ReactDOM.findDOMNode(this.element);
-
-          if (!found) {
-            // If we previously had a dom node then we need to ensure that
-            // we remove any existing listeners to avoid memory leaks.
-            this.uninstall();
-            return;
-          }
-
-          if (!this.domEl) {
-            this.domEl = found;
-            this.detector.listenTo(this.domEl, this.checkIfSizeChanged);
-          } else if (!this.domEl.isSameNode(found)) {
-            this.uninstall();
-            this.domEl = found;
-            this.detector.listenTo(this.domEl, this.checkIfSizeChanged);
-          }
-        }
-      }, {
-        key: 'render',
-        value: function render() {
-          var disablePlaceholder = withSize.enableSSRBehaviour || withSize.noPlaceholders || noPlaceholder || this.strategy === 'callback';
-
-          var size = _extends({}, this.state);
-
-          return React__default.createElement(SizeMeRenderWrapper, _extends({
-            explicitRef: this.refCallback,
-            size: this.strategy === 'callback' ? null : size,
-            disablePlaceholder: disablePlaceholder
-          }, this.props));
-        }
-      }]);
-      return SizeAwareComponent;
-    }(React__default.Component);
-
-    SizeAwareComponent.displayName = 'SizeMe(' + getDisplayName(WrappedComponent) + ')';
-    SizeAwareComponent.propTypes = {
-      onSize: PropTypes.func
-    };
-
-
-    SizeAwareComponent.WrappedComponent = WrappedComponent;
-
-    return SizeAwareComponent;
-  };
-}
-
-/**
- * Allow SizeMe to run within SSR environments.  This is a "global" behaviour
- * flag that should be set within the initialisation phase of your application.
- *
- * Warning: don't set this flag unless you need to as using it may cause
- * extra render cycles to happen within your components depending on the logic
- * contained within them around the usage of the `size` data.
- *
- * DEPRECATED: Please use the global noPlaceholders
- */
-withSize.enableSSRBehaviour = false;
-
-/**
- * Global configuration allowing to disable placeholder rendering for all
- * sizeMe components.
- */
-withSize.noPlaceholders = false;
-
-var SizeMe = function (_Component) {
-  inherits(SizeMe, _Component);
-
-  function SizeMe(props) {
-    classCallCheck(this, SizeMe);
-
-    var _this = possibleConstructorReturn(this, (SizeMe.__proto__ || Object.getPrototypeOf(SizeMe)).call(this, props));
-
-    _initialiseProps.call(_this);
-
-    var children = props.children,
-        render = props.render,
-        sizeMeConfig = objectWithoutProperties(props, ['children', 'render']);
-
-    _this.createComponent(sizeMeConfig);
-    _this.state = {
-      size: {
-        width: undefined,
-        height: undefined
-      }
-    };
-    return _this;
-  }
-
-  createClass(SizeMe, [{
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate(prevProps) {
-      var _props = this.props,
-          prevChildren = _props.children,
-          prevRender = _props.render,
-          currentSizeMeConfig = objectWithoutProperties(_props, ['children', 'render']);
-      var nextChildren = prevProps.children,
-          nextRender = prevProps.render,
-          prevSizeMeConfig = objectWithoutProperties(prevProps, ['children', 'render']);
-
-      if (!isShallowEqual(currentSizeMeConfig, prevSizeMeConfig)) {
-        this.createComponent(currentSizeMeConfig);
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var SizeAware = this.SizeAware;
-
-      var render = this.props.children || this.props.render;
-      return React__default.createElement(
-        SizeAware,
-        { onSize: this.onSize },
-        render({ size: this.state.size })
-      );
-    }
-  }]);
-  return SizeMe;
-}(React.Component);
-
-SizeMe.propTypes = {
-  children: PropTypes.func,
-  render: PropTypes.func
-};
-SizeMe.defaultProps = {
-  children: undefined,
-  render: undefined
-};
-
-var _initialiseProps = function _initialiseProps() {
-  var _this2 = this;
-
-  this.createComponent = function (config) {
-    _this2.SizeAware = withSize(config)(function (_ref) {
-      var children = _ref.children;
-      return children;
-    });
-  };
-
-  this.onSize = function (size) {
-    return _this2.setState({ size: size });
-  };
-};
-
-withSize.SizeMe = SizeMe;
-withSize.withSize = withSize;
-
-module.exports = withSize;
-
-
-},{"element-resize-detector":"../node_modules/element-resize-detector/src/element-resize-detector.js","react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-dom":"../node_modules/react-dom/index.js","invariant":"../node_modules/invariant/browser.js","throttle-debounce":"../node_modules/throttle-debounce/dist/index.esm.js","shallowequal":"../node_modules/shallowequal/index.js"}],"../src/ConnectionContext/index.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Consumer = exports.Provider = exports.ConnectionContext = void 0;
-
-var _react = _interopRequireWildcard(require("react"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-var ConnectionContext = (0, _react.createContext)({});
-exports.ConnectionContext = ConnectionContext;
-var Provider = (0, _react.memo)(function (_ref) {
-  var onConnect = _ref.onConnect,
-      children = _ref.children;
-
-  var _useState = (0, _react.useState)(null),
-      _useState2 = _slicedToArray(_useState, 2),
-      sourceId = _useState2[0],
-      setSourceId = _useState2[1];
-
-  var _useState3 = (0, _react.useState)({
-    x: 0,
-    y: 0
-  }),
-      _useState4 = _slicedToArray(_useState3, 2),
-      position = _useState4[0],
-      setPosition = _useState4[1];
-
-  var connectionContext = (0, _react.useMemo)(function () {
-    return {
-      sourceId: sourceId,
-      setSourceId: setSourceId,
-      position: position,
-      setPosition: setPosition,
-      onConnect: onConnect
-    };
-  }, [sourceId, position]);
-  return _react.default.createElement(ConnectionContext.Provider, {
-    value: connectionContext
-  }, children);
-});
-exports.Provider = Provider;
-Provider.displayName = 'ConnectionProvider';
-Provider.whyDidYouRender = false;
-var Consumer = ConnectionContext.Consumer;
-exports.Consumer = Consumer;
-},{"react":"../node_modules/react/index.js"}],"../node_modules/lodash.isequal/index.js":[function(require,module,exports) {
-var global = arguments[3];
-
-/**
- * Lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright JS Foundation and other contributors <https://js.foundation/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/** Used as the size to enable large array optimizations. */
-var LARGE_ARRAY_SIZE = 200;
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    asyncTag = '[object AsyncFunction]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    nullTag = '[object Null]',
-    objectTag = '[object Object]',
-    promiseTag = '[object Promise]',
-    proxyTag = '[object Proxy]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    symbolTag = '[object Symbol]',
-    undefinedTag = '[object Undefined]',
-    weakMapTag = '[object WeakMap]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
-
-/**
- * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
- */
-var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-/** Used to detect host constructors (Safari). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/** Used to identify `toStringTag` values of typed arrays. */
-var typedArrayTags = {};
-typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-typedArrayTags[uint32Tag] = true;
-typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-typedArrayTags[errorTag] = typedArrayTags[funcTag] =
-typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-typedArrayTags[setTag] = typedArrayTags[stringTag] =
-typedArrayTags[weakMapTag] = false;
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-/** Detect free variable `exports`. */
-var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Detect free variable `process` from Node.js. */
-var freeProcess = moduleExports && freeGlobal.process;
-
-/** Used to access faster Node.js helpers. */
-var nodeUtil = (function() {
-  try {
-    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-  } catch (e) {}
-}());
-
-/* Node.js helper references. */
-var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-
-/**
- * A specialized version of `_.filter` for arrays without support for
- * iteratee shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {Array} Returns the new filtered array.
- */
-function arrayFilter(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      resIndex = 0,
-      result = [];
-
-  while (++index < length) {
-    var value = array[index];
-    if (predicate(value, index, array)) {
-      result[resIndex++] = value;
-    }
-  }
-  return result;
-}
-
-/**
- * Appends the elements of `values` to `array`.
- *
- * @private
- * @param {Array} array The array to modify.
- * @param {Array} values The values to append.
- * @returns {Array} Returns `array`.
- */
-function arrayPush(array, values) {
-  var index = -1,
-      length = values.length,
-      offset = array.length;
-
-  while (++index < length) {
-    array[offset + index] = values[index];
-  }
-  return array;
-}
-
-/**
- * A specialized version of `_.some` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {boolean} Returns `true` if any element passes the predicate check,
- *  else `false`.
- */
-function arraySome(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (predicate(array[index], index, array)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * The base implementation of `_.times` without support for iteratee shorthands
- * or max array length checks.
- *
- * @private
- * @param {number} n The number of times to invoke `iteratee`.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the array of results.
- */
-function baseTimes(n, iteratee) {
-  var index = -1,
-      result = Array(n);
-
-  while (++index < n) {
-    result[index] = iteratee(index);
-  }
-  return result;
-}
-
-/**
- * The base implementation of `_.unary` without support for storing metadata.
- *
- * @private
- * @param {Function} func The function to cap arguments for.
- * @returns {Function} Returns the new capped function.
- */
-function baseUnary(func) {
-  return function(value) {
-    return func(value);
-  };
-}
-
-/**
- * Checks if a `cache` value for `key` exists.
- *
- * @private
- * @param {Object} cache The cache to query.
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function cacheHas(cache, key) {
-  return cache.has(key);
-}
-
-/**
- * Gets the value at `key` of `object`.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {string} key The key of the property to get.
- * @returns {*} Returns the property value.
- */
-function getValue(object, key) {
-  return object == null ? undefined : object[key];
-}
-
-/**
- * Converts `map` to its key-value pairs.
- *
- * @private
- * @param {Object} map The map to convert.
- * @returns {Array} Returns the key-value pairs.
- */
-function mapToArray(map) {
-  var index = -1,
-      result = Array(map.size);
-
-  map.forEach(function(value, key) {
-    result[++index] = [key, value];
-  });
-  return result;
-}
-
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-/**
- * Converts `set` to an array of its values.
- *
- * @private
- * @param {Object} set The set to convert.
- * @returns {Array} Returns the values.
- */
-function setToArray(set) {
-  var index = -1,
-      result = Array(set.size);
-
-  set.forEach(function(value) {
-    result[++index] = value;
-  });
-  return result;
-}
-
-/** Used for built-in method references. */
-var arrayProto = Array.prototype,
-    funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to detect methods masquerading as native. */
-var maskSrcKey = (function() {
-  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-  return uid ? ('Symbol(src)_1.' + uid) : '';
-}());
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/** Built-in value references. */
-var Buffer = moduleExports ? root.Buffer : undefined,
-    Symbol = root.Symbol,
-    Uint8Array = root.Uint8Array,
-    propertyIsEnumerable = objectProto.propertyIsEnumerable,
-    splice = arrayProto.splice,
-    symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeGetSymbols = Object.getOwnPropertySymbols,
-    nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined,
-    nativeKeys = overArg(Object.keys, Object);
-
-/* Built-in method references that are verified to be native. */
-var DataView = getNative(root, 'DataView'),
-    Map = getNative(root, 'Map'),
-    Promise = getNative(root, 'Promise'),
-    Set = getNative(root, 'Set'),
-    WeakMap = getNative(root, 'WeakMap'),
-    nativeCreate = getNative(Object, 'create');
-
-/** Used to detect maps, sets, and weakmaps. */
-var dataViewCtorString = toSource(DataView),
-    mapCtorString = toSource(Map),
-    promiseCtorString = toSource(Promise),
-    setCtorString = toSource(Set),
-    weakMapCtorString = toSource(WeakMap);
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-/**
- * Creates a hash object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Hash(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the hash.
- *
- * @private
- * @name clear
- * @memberOf Hash
- */
-function hashClear() {
-  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-  this.size = 0;
-}
-
-/**
- * Removes `key` and its value from the hash.
- *
- * @private
- * @name delete
- * @memberOf Hash
- * @param {Object} hash The hash to modify.
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function hashDelete(key) {
-  var result = this.has(key) && delete this.__data__[key];
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-/**
- * Gets the hash value for `key`.
- *
- * @private
- * @name get
- * @memberOf Hash
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function hashGet(key) {
-  var data = this.__data__;
-  if (nativeCreate) {
-    var result = data[key];
-    return result === HASH_UNDEFINED ? undefined : result;
-  }
-  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-}
-
-/**
- * Checks if a hash value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Hash
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function hashHas(key) {
-  var data = this.__data__;
-  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
-}
-
-/**
- * Sets the hash `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Hash
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the hash instance.
- */
-function hashSet(key, value) {
-  var data = this.__data__;
-  this.size += this.has(key) ? 0 : 1;
-  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-  return this;
-}
-
-// Add methods to `Hash`.
-Hash.prototype.clear = hashClear;
-Hash.prototype['delete'] = hashDelete;
-Hash.prototype.get = hashGet;
-Hash.prototype.has = hashHas;
-Hash.prototype.set = hashSet;
-
-/**
- * Creates an list cache object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function ListCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the list cache.
- *
- * @private
- * @name clear
- * @memberOf ListCache
- */
-function listCacheClear() {
-  this.__data__ = [];
-  this.size = 0;
-}
-
-/**
- * Removes `key` and its value from the list cache.
- *
- * @private
- * @name delete
- * @memberOf ListCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function listCacheDelete(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    return false;
-  }
-  var lastIndex = data.length - 1;
-  if (index == lastIndex) {
-    data.pop();
-  } else {
-    splice.call(data, index, 1);
-  }
-  --this.size;
-  return true;
-}
-
-/**
- * Gets the list cache value for `key`.
- *
- * @private
- * @name get
- * @memberOf ListCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function listCacheGet(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  return index < 0 ? undefined : data[index][1];
-}
-
-/**
- * Checks if a list cache value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf ListCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function listCacheHas(key) {
-  return assocIndexOf(this.__data__, key) > -1;
-}
-
-/**
- * Sets the list cache `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf ListCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the list cache instance.
- */
-function listCacheSet(key, value) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    ++this.size;
-    data.push([key, value]);
-  } else {
-    data[index][1] = value;
-  }
-  return this;
-}
-
-// Add methods to `ListCache`.
-ListCache.prototype.clear = listCacheClear;
-ListCache.prototype['delete'] = listCacheDelete;
-ListCache.prototype.get = listCacheGet;
-ListCache.prototype.has = listCacheHas;
-ListCache.prototype.set = listCacheSet;
-
-/**
- * Creates a map cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function MapCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the map.
- *
- * @private
- * @name clear
- * @memberOf MapCache
- */
-function mapCacheClear() {
-  this.size = 0;
-  this.__data__ = {
-    'hash': new Hash,
-    'map': new (Map || ListCache),
-    'string': new Hash
-  };
-}
-
-/**
- * Removes `key` and its value from the map.
- *
- * @private
- * @name delete
- * @memberOf MapCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function mapCacheDelete(key) {
-  var result = getMapData(this, key)['delete'](key);
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-/**
- * Gets the map value for `key`.
- *
- * @private
- * @name get
- * @memberOf MapCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function mapCacheGet(key) {
-  return getMapData(this, key).get(key);
-}
-
-/**
- * Checks if a map value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf MapCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function mapCacheHas(key) {
-  return getMapData(this, key).has(key);
-}
-
-/**
- * Sets the map `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf MapCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the map cache instance.
- */
-function mapCacheSet(key, value) {
-  var data = getMapData(this, key),
-      size = data.size;
-
-  data.set(key, value);
-  this.size += data.size == size ? 0 : 1;
-  return this;
-}
-
-// Add methods to `MapCache`.
-MapCache.prototype.clear = mapCacheClear;
-MapCache.prototype['delete'] = mapCacheDelete;
-MapCache.prototype.get = mapCacheGet;
-MapCache.prototype.has = mapCacheHas;
-MapCache.prototype.set = mapCacheSet;
-
-/**
- *
- * Creates an array cache object to store unique values.
- *
- * @private
- * @constructor
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var index = -1,
-      length = values == null ? 0 : values.length;
-
-  this.__data__ = new MapCache;
-  while (++index < length) {
-    this.add(values[index]);
-  }
-}
-
-/**
- * Adds `value` to the array cache.
- *
- * @private
- * @name add
- * @memberOf SetCache
- * @alias push
- * @param {*} value The value to cache.
- * @returns {Object} Returns the cache instance.
- */
-function setCacheAdd(value) {
-  this.__data__.set(value, HASH_UNDEFINED);
-  return this;
-}
-
-/**
- * Checks if `value` is in the array cache.
- *
- * @private
- * @name has
- * @memberOf SetCache
- * @param {*} value The value to search for.
- * @returns {number} Returns `true` if `value` is found, else `false`.
- */
-function setCacheHas(value) {
-  return this.__data__.has(value);
-}
-
-// Add methods to `SetCache`.
-SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-SetCache.prototype.has = setCacheHas;
-
-/**
- * Creates a stack cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Stack(entries) {
-  var data = this.__data__ = new ListCache(entries);
-  this.size = data.size;
-}
-
-/**
- * Removes all key-value entries from the stack.
- *
- * @private
- * @name clear
- * @memberOf Stack
- */
-function stackClear() {
-  this.__data__ = new ListCache;
-  this.size = 0;
-}
-
-/**
- * Removes `key` and its value from the stack.
- *
- * @private
- * @name delete
- * @memberOf Stack
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function stackDelete(key) {
-  var data = this.__data__,
-      result = data['delete'](key);
-
-  this.size = data.size;
-  return result;
-}
-
-/**
- * Gets the stack value for `key`.
- *
- * @private
- * @name get
- * @memberOf Stack
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function stackGet(key) {
-  return this.__data__.get(key);
-}
-
-/**
- * Checks if a stack value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Stack
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function stackHas(key) {
-  return this.__data__.has(key);
-}
-
-/**
- * Sets the stack `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Stack
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the stack cache instance.
- */
-function stackSet(key, value) {
-  var data = this.__data__;
-  if (data instanceof ListCache) {
-    var pairs = data.__data__;
-    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
-      pairs.push([key, value]);
-      this.size = ++data.size;
-      return this;
-    }
-    data = this.__data__ = new MapCache(pairs);
-  }
-  data.set(key, value);
-  this.size = data.size;
-  return this;
-}
-
-// Add methods to `Stack`.
-Stack.prototype.clear = stackClear;
-Stack.prototype['delete'] = stackDelete;
-Stack.prototype.get = stackGet;
-Stack.prototype.has = stackHas;
-Stack.prototype.set = stackSet;
-
-/**
- * Creates an array of the enumerable property names of the array-like `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @param {boolean} inherited Specify returning inherited property names.
- * @returns {Array} Returns the array of property names.
- */
-function arrayLikeKeys(value, inherited) {
-  var isArr = isArray(value),
-      isArg = !isArr && isArguments(value),
-      isBuff = !isArr && !isArg && isBuffer(value),
-      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
-      skipIndexes = isArr || isArg || isBuff || isType,
-      result = skipIndexes ? baseTimes(value.length, String) : [],
-      length = result.length;
-
-  for (var key in value) {
-    if ((inherited || hasOwnProperty.call(value, key)) &&
-        !(skipIndexes && (
-           // Safari 9 has enumerable `arguments.length` in strict mode.
-           key == 'length' ||
-           // Node.js 0.10 has enumerable non-index properties on buffers.
-           (isBuff && (key == 'offset' || key == 'parent')) ||
-           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-           // Skip index properties.
-           isIndex(key, length)
-        ))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-/**
- * Gets the index at which the `key` is found in `array` of key-value pairs.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} key The key to search for.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function assocIndexOf(array, key) {
-  var length = array.length;
-  while (length--) {
-    if (eq(array[length][0], key)) {
-      return length;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
- * `keysFunc` and `symbolsFunc` to get the enumerable property names and
- * symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @param {Function} symbolsFunc The function to get the symbols of `object`.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-  var result = keysFunc(object);
-  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
-}
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-/**
- * The base implementation of `_.isArguments`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- */
-function baseIsArguments(value) {
-  return isObjectLike(value) && baseGetTag(value) == argsTag;
-}
-
-/**
- * The base implementation of `_.isEqual` which supports partial comparisons
- * and tracks traversed objects.
- *
- * @private
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @param {boolean} bitmask The bitmask flags.
- *  1 - Unordered comparison
- *  2 - Partial comparison
- * @param {Function} [customizer] The function to customize comparisons.
- * @param {Object} [stack] Tracks traversed `value` and `other` objects.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- */
-function baseIsEqual(value, other, bitmask, customizer, stack) {
-  if (value === other) {
-    return true;
-  }
-  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
-    return value !== value && other !== other;
-  }
-  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-}
-
-/**
- * A specialized version of `baseIsEqual` for arrays and objects which performs
- * deep comparisons and tracks traversed objects enabling objects with circular
- * references to be compared.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} [stack] Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-  var objIsArr = isArray(object),
-      othIsArr = isArray(other),
-      objTag = objIsArr ? arrayTag : getTag(object),
-      othTag = othIsArr ? arrayTag : getTag(other);
-
-  objTag = objTag == argsTag ? objectTag : objTag;
-  othTag = othTag == argsTag ? objectTag : othTag;
-
-  var objIsObj = objTag == objectTag,
-      othIsObj = othTag == objectTag,
-      isSameTag = objTag == othTag;
-
-  if (isSameTag && isBuffer(object)) {
-    if (!isBuffer(other)) {
-      return false;
-    }
-    objIsArr = true;
-    objIsObj = false;
-  }
-  if (isSameTag && !objIsObj) {
-    stack || (stack = new Stack);
-    return (objIsArr || isTypedArray(object))
-      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
-      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-  }
-  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-
-    if (objIsWrapped || othIsWrapped) {
-      var objUnwrapped = objIsWrapped ? object.value() : object,
-          othUnwrapped = othIsWrapped ? other.value() : other;
-
-      stack || (stack = new Stack);
-      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-    }
-  }
-  if (!isSameTag) {
-    return false;
-  }
-  stack || (stack = new Stack);
-  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-}
-
-/**
- * The base implementation of `_.isNative` without bad shim checks.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- */
-function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
-    return false;
-  }
-  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-/**
- * The base implementation of `_.isTypedArray` without Node.js optimizations.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- */
-function baseIsTypedArray(value) {
-  return isObjectLike(value) &&
-    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-}
-
-/**
- * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function baseKeys(object) {
-  if (!isPrototype(object)) {
-    return nativeKeys(object);
-  }
-  var result = [];
-  for (var key in Object(object)) {
-    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-/**
- * A specialized version of `baseIsEqualDeep` for arrays with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Array} array The array to compare.
- * @param {Array} other The other array to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `array` and `other` objects.
- * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
- */
-function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      arrLength = array.length,
-      othLength = other.length;
-
-  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-    return false;
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(array);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var index = -1,
-      result = true,
-      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
-
-  stack.set(array, other);
-  stack.set(other, array);
-
-  // Ignore non-index properties.
-  while (++index < arrLength) {
-    var arrValue = array[index],
-        othValue = other[index];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, arrValue, index, other, array, stack)
-        : customizer(arrValue, othValue, index, array, other, stack);
-    }
-    if (compared !== undefined) {
-      if (compared) {
-        continue;
-      }
-      result = false;
-      break;
-    }
-    // Recursively compare arrays (susceptible to call stack limits).
-    if (seen) {
-      if (!arraySome(other, function(othValue, othIndex) {
-            if (!cacheHas(seen, othIndex) &&
-                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-              return seen.push(othIndex);
-            }
-          })) {
-        result = false;
-        break;
-      }
-    } else if (!(
-          arrValue === othValue ||
-            equalFunc(arrValue, othValue, bitmask, customizer, stack)
-        )) {
-      result = false;
-      break;
-    }
-  }
-  stack['delete'](array);
-  stack['delete'](other);
-  return result;
-}
-
-/**
- * A specialized version of `baseIsEqualDeep` for comparing objects of
- * the same `toStringTag`.
- *
- * **Note:** This function only supports comparing values with tags of
- * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {string} tag The `toStringTag` of the objects to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-  switch (tag) {
-    case dataViewTag:
-      if ((object.byteLength != other.byteLength) ||
-          (object.byteOffset != other.byteOffset)) {
-        return false;
-      }
-      object = object.buffer;
-      other = other.buffer;
-
-    case arrayBufferTag:
-      if ((object.byteLength != other.byteLength) ||
-          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
-        return false;
-      }
-      return true;
-
-    case boolTag:
-    case dateTag:
-    case numberTag:
-      // Coerce booleans to `1` or `0` and dates to milliseconds.
-      // Invalid dates are coerced to `NaN`.
-      return eq(+object, +other);
-
-    case errorTag:
-      return object.name == other.name && object.message == other.message;
-
-    case regexpTag:
-    case stringTag:
-      // Coerce regexes to strings and treat strings, primitives and objects,
-      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
-      // for more details.
-      return object == (other + '');
-
-    case mapTag:
-      var convert = mapToArray;
-
-    case setTag:
-      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
-      convert || (convert = setToArray);
-
-      if (object.size != other.size && !isPartial) {
-        return false;
-      }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(object);
-      if (stacked) {
-        return stacked == other;
-      }
-      bitmask |= COMPARE_UNORDERED_FLAG;
-
-      // Recursively compare objects (susceptible to call stack limits).
-      stack.set(object, other);
-      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-      stack['delete'](object);
-      return result;
-
-    case symbolTag:
-      if (symbolValueOf) {
-        return symbolValueOf.call(object) == symbolValueOf.call(other);
-      }
-  }
-  return false;
-}
-
-/**
- * A specialized version of `baseIsEqualDeep` for objects with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      objProps = getAllKeys(object),
-      objLength = objProps.length,
-      othProps = getAllKeys(other),
-      othLength = othProps.length;
-
-  if (objLength != othLength && !isPartial) {
-    return false;
-  }
-  var index = objLength;
-  while (index--) {
-    var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
-      return false;
-    }
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(object);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var result = true;
-  stack.set(object, other);
-  stack.set(other, object);
-
-  var skipCtor = isPartial;
-  while (++index < objLength) {
-    key = objProps[index];
-    var objValue = object[key],
-        othValue = other[key];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, objValue, key, other, object, stack)
-        : customizer(objValue, othValue, key, object, other, stack);
-    }
-    // Recursively compare objects (susceptible to call stack limits).
-    if (!(compared === undefined
-          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
-          : compared
-        )) {
-      result = false;
-      break;
-    }
-    skipCtor || (skipCtor = key == 'constructor');
-  }
-  if (result && !skipCtor) {
-    var objCtor = object.constructor,
-        othCtor = other.constructor;
-
-    // Non `Object` object instances with different constructors are not equal.
-    if (objCtor != othCtor &&
-        ('constructor' in object && 'constructor' in other) &&
-        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-      result = false;
-    }
-  }
-  stack['delete'](object);
-  stack['delete'](other);
-  return result;
-}
-
-/**
- * Creates an array of own enumerable property names and symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function getAllKeys(object) {
-  return baseGetAllKeys(object, keys, getSymbols);
-}
-
-/**
- * Gets the data for `map`.
- *
- * @private
- * @param {Object} map The map to query.
- * @param {string} key The reference key.
- * @returns {*} Returns the map data.
- */
-function getMapData(map, key) {
-  var data = map.__data__;
-  return isKeyable(key)
-    ? data[typeof key == 'string' ? 'string' : 'hash']
-    : data.map;
-}
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-/**
- * Creates an array of the own enumerable symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of symbols.
- */
-var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
-  if (object == null) {
-    return [];
-  }
-  object = Object(object);
-  return arrayFilter(nativeGetSymbols(object), function(symbol) {
-    return propertyIsEnumerable.call(object, symbol);
-  });
-};
-
-/**
- * Gets the `toStringTag` of `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-var getTag = baseGetTag;
-
-// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
-    (Map && getTag(new Map) != mapTag) ||
-    (Promise && getTag(Promise.resolve()) != promiseTag) ||
-    (Set && getTag(new Set) != setTag) ||
-    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
-  getTag = function(value) {
-    var result = baseGetTag(value),
-        Ctor = result == objectTag ? value.constructor : undefined,
-        ctorString = Ctor ? toSource(Ctor) : '';
-
-    if (ctorString) {
-      switch (ctorString) {
-        case dataViewCtorString: return dataViewTag;
-        case mapCtorString: return mapTag;
-        case promiseCtorString: return promiseTag;
-        case setCtorString: return setTag;
-        case weakMapCtorString: return weakMapTag;
-      }
-    }
-    return result;
-  };
-}
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  length = length == null ? MAX_SAFE_INTEGER : length;
-  return !!length &&
-    (typeof value == 'number' || reIsUint.test(value)) &&
-    (value > -1 && value % 1 == 0 && value < length);
-}
-
-/**
- * Checks if `value` is suitable for use as unique object key.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
- */
-function isKeyable(value) {
-  var type = typeof value;
-  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-    ? (value !== '__proto__')
-    : (value === null);
-}
-
-/**
- * Checks if `func` has its source masked.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is masked, else `false`.
- */
-function isMasked(func) {
-  return !!maskSrcKey && (maskSrcKey in func);
-}
-
-/**
- * Checks if `value` is likely a prototype object.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
- */
-function isPrototype(value) {
-  var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-  return value === proto;
-}
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
-
-/**
- * Converts `func` to its source code.
- *
- * @private
- * @param {Function} func The function to convert.
- * @returns {string} Returns the source code.
- */
-function toSource(func) {
-  if (func != null) {
-    try {
-      return funcToString.call(func);
-    } catch (e) {}
-    try {
-      return (func + '');
-    } catch (e) {}
-  }
-  return '';
-}
-
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-/**
- * Checks if `value` is likely an `arguments` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- *  else `false`.
- * @example
- *
- * _.isArguments(function() { return arguments; }());
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-    !propertyIsEnumerable.call(value, 'callee');
-};
-
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
-
-/**
- * Checks if `value` is a buffer.
- *
- * @static
- * @memberOf _
- * @since 4.3.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
- * @example
- *
- * _.isBuffer(new Buffer(2));
- * // => true
- *
- * _.isBuffer(new Uint8Array(2));
- * // => false
- */
-var isBuffer = nativeIsBuffer || stubFalse;
-
-/**
- * Performs a deep comparison between two values to determine if they are
- * equivalent.
- *
- * **Note:** This method supports comparing arrays, array buffers, booleans,
- * date objects, error objects, maps, numbers, `Object` objects, regexes,
- * sets, strings, symbols, and typed arrays. `Object` objects are compared
- * by their own, not inherited, enumerable properties. Functions and DOM
- * nodes are compared by strict equality, i.e. `===`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.isEqual(object, other);
- * // => true
- *
- * object === other;
- * // => false
- */
-function isEqual(value, other) {
-  return baseIsEqual(value, other);
-}
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-/**
- * Checks if `value` is classified as a typed array.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- * @example
- *
- * _.isTypedArray(new Uint8Array);
- * // => true
- *
- * _.isTypedArray([]);
- * // => false
- */
-var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-
-/**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
- *
- * _.keys('hi');
- * // => ['0', '1']
- */
-function keys(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-}
-
-/**
- * This method returns a new empty array.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {Array} Returns the new empty array.
- * @example
- *
- * var arrays = _.times(2, _.stubArray);
- *
- * console.log(arrays);
- * // => [[], []]
- *
- * console.log(arrays[0] === arrays[1]);
- * // => false
- */
-function stubArray() {
-  return [];
-}
-
-/**
- * This method returns `false`.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {boolean} Returns `false`.
- * @example
- *
- * _.times(2, _.stubFalse);
- * // => [false, false]
- */
-function stubFalse() {
-  return false;
-}
-
-module.exports = isEqual;
-
-},{}],"../src/graph-utils.js":[function(require,module,exports) {
+},{"./zoom":"../node_modules/d3-zoom/src/zoom.js","./transform":"../node_modules/d3-zoom/src/transform.js"}],"../src/graph-utils.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45918,13 +45918,13 @@ var zoomOut = function zoomOut() {
 };
 
 exports.zoomOut = zoomOut;
-},{"./index":"../src/state/index.js"}],"../src/hooks.js":[function(require,module,exports) {
+},{"./index":"../src/state/index.js"}],"../src/hooks/useKeyPress.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useKeyPress = useKeyPress;
+exports.default = useKeyPress;
 
 var _react = require("react");
 
@@ -45974,7 +45974,66 @@ function useKeyPress(targetKey) {
   }, []);
   return keyPressed;
 }
-},{"react":"../node_modules/react/index.js"}],"../src/GraphView/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"../src/hooks/useD3Zoom.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = useD3Zoom;
+
+var _react = require("react");
+
+var d3Zoom = _interopRequireWildcard(require("d3-zoom"));
+
+var _d3Selection = require("d3-selection");
+
+var _viewActions = require("../state/view-actions");
+
+var _GraphContext = require("../GraphContext");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+var d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
+
+function useD3Zoom(zoomPane, onMove, shiftPressed) {
+  var _useContext = (0, _react.useContext)(_GraphContext.GraphContext),
+      state = _useContext.state,
+      dispatch = _useContext.dispatch;
+
+  (0, _react.useEffect)(function () {
+    var selection = (0, _d3Selection.select)(zoomPane.current).call(d3ZoomInstance);
+    dispatch((0, _viewActions.initD3)({
+      zoom: d3ZoomInstance,
+      selection: selection
+    }));
+  }, []);
+  (0, _react.useEffect)(function () {
+    if (shiftPressed) {
+      d3ZoomInstance.on('zoom', null);
+    } else {
+      d3ZoomInstance.on('zoom', function () {
+        if (_d3Selection.event.sourceEvent && _d3Selection.event.sourceEvent.target !== zoomPane.current) {
+          return false;
+        }
+
+        dispatch((0, _viewActions.updateTransform)(_d3Selection.event.transform));
+        onMove();
+      });
+
+      if (state.d3Selection) {
+        // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
+        var graphTransform = d3Zoom.zoomIdentity.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
+        state.d3Selection.call(state.d3Zoom.transform, graphTransform);
+      }
+    }
+
+    return function () {
+      d3ZoomInstance.on('zoom', null);
+    };
+  }, [shiftPressed]);
+}
+},{"react":"../node_modules/react/index.js","d3-zoom":"../node_modules/d3-zoom/src/index.js","d3-selection":"../node_modules/d3-selection/src/index.js","../state/view-actions":"../src/state/view-actions.js","../GraphContext":"../src/GraphContext/index.js"}],"../src/GraphView/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45983,10 +46042,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
-
-var d3Zoom = _interopRequireWildcard(require("d3-zoom"));
-
-var _d3Selection = require("d3-selection");
 
 var _reactSizeme = _interopRequireDefault(require("react-sizeme"));
 
@@ -46006,13 +46061,14 @@ var _actions = require("../state/actions");
 
 var _viewActions = require("../state/view-actions");
 
-var _hooks = require("../hooks");
+var _useKeyPress = _interopRequireDefault(require("../hooks/useKeyPress"));
+
+var _useD3Zoom = _interopRequireDefault(require("../hooks/useD3Zoom"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-var d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
 var GraphView = (0, _react.memo)(function (props) {
   var zoomPane = (0, _react.useRef)(null);
 
@@ -46020,34 +46076,8 @@ var GraphView = (0, _react.memo)(function (props) {
       state = _useContext.state,
       dispatch = _useContext.dispatch;
 
-  var shiftPressed = (0, _hooks.useKeyPress)('Shift');
-  (0, _react.useEffect)(function () {
-    var selection = (0, _d3Selection.select)(zoomPane.current).call(d3ZoomInstance);
-    dispatch((0, _viewActions.initD3)({
-      zoom: d3ZoomInstance,
-      selection: selection
-    }));
-  }, []);
-  (0, _react.useEffect)(function () {
-    if (shiftPressed) {
-      d3ZoomInstance.on('zoom', null);
-    } else {
-      d3ZoomInstance.on('zoom', function () {
-        if (_d3Selection.event.sourceEvent && _d3Selection.event.sourceEvent.target !== zoomPane.current) {
-          return false;
-        }
-
-        dispatch((0, _viewActions.updateTransform)(_d3Selection.event.transform));
-        props.onMove();
-      });
-
-      if (state.d3Selection) {
-        // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
-        var graphTransform = d3Zoom.zoomIdentity.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
-        state.d3Selection.call(state.d3Zoom.transform, graphTransform);
-      }
-    }
-  }, [shiftPressed]);
+  var shiftPressed = (0, _useKeyPress.default)('Shift');
+  (0, _useD3Zoom.default)(zoomPane, props.onMove, shiftPressed);
   (0, _react.useEffect)(function () {
     return dispatch((0, _viewActions.updateSize)(props.size));
   }, [props.size.width, props.size.height]);
@@ -46068,12 +46098,6 @@ var GraphView = (0, _react.memo)(function (props) {
       });
     }
   }, [state.d3Initialised]);
-  (0, _react.useEffect)(function () {
-    props.onChange({
-      nodes: state.nodes,
-      edges: state.edges
-    });
-  });
   return _react.default.createElement("div", {
     className: "react-graph__renderer"
   }, _react.default.createElement(_ConnectionContext.Provider, {
@@ -46105,7 +46129,7 @@ var _default = _reactSizeme.default.withSize({
 })(GraphView);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","d3-zoom":"../node_modules/d3-zoom/src/index.js","d3-selection":"../node_modules/d3-selection/src/index.js","react-sizeme":"../node_modules/react-sizeme/dist/react-sizeme.js","../ConnectionContext":"../src/ConnectionContext/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer":"../src/NodeRenderer/index.js","../EdgeRenderer":"../src/EdgeRenderer/index.js","../UserSelection":"../src/UserSelection/index.js","../NodesSelection":"../src/NodesSelection/index.js","../state/actions":"../src/state/actions.js","../state/view-actions":"../src/state/view-actions.js","../hooks":"../src/hooks.js"}],"../src/GlobalKeyHandler/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-sizeme":"../node_modules/react-sizeme/dist/react-sizeme.js","../ConnectionContext":"../src/ConnectionContext/index.js","../GraphContext":"../src/GraphContext/index.js","../NodeRenderer":"../src/NodeRenderer/index.js","../EdgeRenderer":"../src/EdgeRenderer/index.js","../UserSelection":"../src/UserSelection/index.js","../NodesSelection":"../src/NodesSelection/index.js","../state/actions":"../src/state/actions.js","../state/view-actions":"../src/state/view-actions.js","../hooks/useKeyPress":"../src/hooks/useKeyPress.js","../hooks/useD3Zoom":"../src/hooks/useD3Zoom.js"}],"../src/GlobalKeyHandler/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46115,13 +46139,15 @@ exports.default = void 0;
 
 var _react = require("react");
 
-var _hooks = require("../hooks");
+var _useKeyPress = _interopRequireDefault(require("../hooks/useKeyPress"));
 
 var _actions = require("../state/actions");
 
 var _GraphContext = require("../GraphContext");
 
 var _graphUtils = require("../graph-utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -46136,7 +46162,7 @@ var _default = (0, _react.memo)(function (props) {
       state = _useContext.state,
       dispatch = _useContext.dispatch;
 
-  var removePressed = (0, _hooks.useKeyPress)('Backspace');
+  var removePressed = (0, _useKeyPress.default)('Backspace');
   (0, _react.useEffect)(function () {
     if (removePressed && state.selectedElements.length) {
       var elementsToRemove = state.selectedElements; // we also want to remove the edges if only one node is selected
@@ -46156,7 +46182,7 @@ var _default = (0, _react.memo)(function (props) {
 });
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../hooks":"../src/hooks.js","../state/actions":"../src/state/actions.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js"}],"../src/NodeRenderer/HandleTypes/BaseHandle.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../hooks/useKeyPress":"../src/hooks/useKeyPress.js","../state/actions":"../src/state/actions.js","../GraphContext":"../src/GraphContext/index.js","../graph-utils":"../src/graph-utils.js"}],"../src/NodeRenderer/HandleTypes/BaseHandle.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47057,7 +47083,6 @@ var ReactGraph = function ReactGraph(props) {
       children = props.children,
       onLoad = props.onLoad,
       onMove = props.onMove,
-      onChange = props.onChange,
       onElementsRemove = props.onElementsRemove,
       onConnect = props.onConnect,
       onNodeDragStop = props.onNodeDragStop,
@@ -47071,7 +47096,6 @@ var ReactGraph = function ReactGraph(props) {
   }, _react.default.createElement(_GraphView.default, {
     onLoad: onLoad,
     onMove: onMove,
-    onChange: onChange,
     onElementClick: onElementClick,
     onNodeDragStop: onNodeDragStop,
     nodeTypes: nodeTypes,
@@ -47092,7 +47116,6 @@ ReactGraph.defaultProps = {
   onConnect: function onConnect() {},
   onLoad: function onLoad() {},
   onMove: function onMove() {},
-  onChange: function onChange() {},
   nodeTypes: {
     input: _InputNode.default,
     default: _DefaultNode.default,
@@ -47570,14 +47593,6 @@ function (_PureComponent) {
       });
     }
   }, {
-    key: "onChange",
-    value: function onChange(elements) {
-      if (!this.graphInstance) {
-        return false;
-      } // console.log('graph changed', elements);
-
-    }
-  }, {
     key: "onFitView",
     value: function onFitView() {
       this.graphInstance.fitView();
@@ -47654,9 +47669,6 @@ function (_PureComponent) {
         },
         onLoad: function onLoad(graphInstance) {
           return _this2.onLoad(graphInstance);
-        },
-        onChange: function onChange(elements) {
-          return _this2.onChange(elements);
         },
         nodeTypes: {
           special: SpecialNode,
@@ -47760,7 +47772,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56024" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65263" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -1,6 +1,4 @@
 import React, { useEffect, useContext, useRef, memo } from 'react';
-import * as d3Zoom from 'd3-zoom';
-import { select, event } from 'd3-selection';
 import ReactSizeMe from 'react-sizeme';
 
 import { Provider } from '../ConnectionContext';
@@ -10,49 +8,16 @@ import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../UserSelection';
 import NodesSelection from '../NodesSelection';
 import { setNodesSelection } from '../state/actions';
-import {
-  updateTransform, updateSize, initD3, fitView,
-  zoomIn, zoomOut
-} from '../state/view-actions';
-import { useKeyPress } from '../hooks';
-
-const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
+import { updateSize, fitView, zoomIn, zoomOut } from '../state/view-actions';
+import useKeyPress from '../hooks/useKeyPress';
+import useD3Zoom from '../hooks/useD3Zoom';
 
 const GraphView = memo((props) => {
   const zoomPane = useRef(null);
   const { state, dispatch } = useContext(GraphContext);
   const shiftPressed = useKeyPress('Shift');
 
-  useEffect(() => {
-    const selection = select(zoomPane.current).call(d3ZoomInstance);
-    dispatch(initD3({ zoom: d3ZoomInstance, selection }));
-  }, []);
-
-  useEffect(() => {
-    if (shiftPressed) {
-      d3ZoomInstance.on('zoom', null);
-    } else {
-      d3ZoomInstance.on('zoom', () => {
-        if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
-          return false;
-        }
-
-        dispatch(updateTransform(event.transform));
-
-        props.onMove();
-      });
-
-      if (state.d3Selection) {
-        // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
-        const graphTransform = d3Zoom.zoomIdentity
-            .translate(state.transform[0], state.transform[1])
-            .scale(state.transform[2]);
-
-        state.d3Selection.call(state.d3Zoom.transform, graphTransform);
-      }
-    }
-
-  }, [shiftPressed]);
+  useD3Zoom(zoomPane, props.onMove, shiftPressed);
 
   useEffect(
     () => dispatch(updateSize(props.size)),
@@ -70,13 +35,6 @@ const GraphView = memo((props) => {
       });
     }
   }, [state.d3Initialised]);
-
-  useEffect(() => {
-    props.onChange({
-      nodes: state.nodes,
-      edges: state.edges,
-    });
-  });
 
   return (
     <div className="react-graph__renderer">

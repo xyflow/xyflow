@@ -97,13 +97,6 @@ class App extends PureComponent {
     });
   }
 
-  onChange(elements) {
-    if (!this.graphInstance) {
-      return false;
-    }
-    // console.log('graph changed', elements);
-  }
-
   onFitView() {
     this.graphInstance.fitView();
   }
@@ -155,7 +148,6 @@ class App extends PureComponent {
         onNodeDragStop={onNodeDragStop}
         style={{ width: '100%', height: '100%' }}
         onLoad={graphInstance => this.onLoad(graphInstance)}
-        onChange={(elements) => this.onChange(elements)}
         nodeTypes={{
           special: SpecialNode,
           text: InputNode

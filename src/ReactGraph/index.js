@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 
 if (process.env.NODE_ENV !== 'production') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -26,8 +26,8 @@ const ReactGraph = (props) => {
   const edgeTypes = useMemo(() => createEdgeTypes(props.edgeTypes), []);
 
   const {
-    style, onElementClick, elements, children, onLoad,
-    onMove, onChange, onElementsRemove, onConnect,
+    style, onElementClick, elements, children,
+    onLoad, onMove, onElementsRemove, onConnect,
     onNodeDragStop, connectionLineType, connectionLineStyle
   } = props;
 
@@ -37,7 +37,6 @@ const ReactGraph = (props) => {
         <GraphView
           onLoad={onLoad}
           onMove={onMove}
-          onChange={onChange}
           onElementClick={onElementClick}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypes}
@@ -64,7 +63,6 @@ ReactGraph.defaultProps = {
   onConnect: () => {},
 	onLoad: () => {},
   onMove: () => {},
-  onChange: () => {},
   nodeTypes: {
     input: InputNode,
     default: DefaultNode,

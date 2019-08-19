@@ -1,6 +1,6 @@
 import { useEffect, useContext, memo } from 'react';
 
-import { useKeyPress } from '../hooks';
+import useKeyPress from '../hooks/useKeyPress';
 import { setNodesSelection } from '../state/actions';
 import { GraphContext } from '../GraphContext';
 import { isEdge, getConnectedEdges } from '../graph-utils';

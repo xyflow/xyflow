@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 const isInput = target => ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName);
 
-export function useKeyPress(targetKey) {
+export default function useKeyPress(targetKey) {
   const [keyPressed, setKeyPressed] = useState(false);
 
   function downHandler({ key, target }) {
