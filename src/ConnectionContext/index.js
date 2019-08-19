@@ -4,7 +4,7 @@ export const ConnectionContext = createContext({});
 
 export const Provider = memo(({ onConnect, children }) => {
   const [sourceId, setSourceId] = useState(null);
-  const [position, setPosition] = useState({ x:0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const connectionContext = useMemo(() => ({
     sourceId,
@@ -12,7 +12,7 @@ export const Provider = memo(({ onConnect, children }) => {
     position,
     setPosition,
     onConnect
-  }), [sourceId, position]);
+  }), [sourceId, position.x, position.y]);
 
   return (
     <ConnectionContext.Provider value={connectionContext}>

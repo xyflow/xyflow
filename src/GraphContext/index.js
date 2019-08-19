@@ -8,12 +8,10 @@ import { parseElement, isNode, isEdge } from '../graph-utils';
 
 export const GraphContext = createContext({});
 
-export const Provider = (props) => {
-  const {
-    elements,
-    children,
-  } = props;
-
+export const Provider = ({
+  elements,
+  children,
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -63,6 +61,8 @@ export const Provider = (props) => {
 };
 
 export const { Consumer } = GraphContext;
+
+Provider.displayName = 'GraphProvider';
 
 Provider.propTypes = {
   elements: PropTypes.arrayOf(PropTypes.object)

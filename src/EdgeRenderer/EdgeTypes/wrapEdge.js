@@ -2,8 +2,7 @@ import React, {  memo } from 'react';
 import cx from 'classnames';
 
 import { setSelectedElements } from '../../state/actions';
-
-const isInput = e => ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
+import { isInputNode } from '../../utils';
 
 export default EdgeComponent => {
   const WrappedEdge = memo((props) => {
@@ -17,7 +16,7 @@ export default EdgeComponent => {
       <g
         className={edgeClasses}
         onClick={(e) => {
-          if (isInput(e)) {
+          if (isInputNode(e)) {
             return false;
           }
 
