@@ -33884,6 +33884,8 @@
         onElementClick = _ref.onElementClick,
         elements = _ref.elements,
         children = _ref.children,
+        nodeTypes = _ref.nodeTypes,
+        edgeTypes = _ref.edgeTypes,
         onLoad = _ref.onLoad,
         onMove = _ref.onMove,
         onElementsRemove = _ref.onElementsRemove,
@@ -33891,11 +33893,11 @@
         onNodeDragStop = _ref.onNodeDragStop,
         connectionLineType = _ref.connectionLineType,
         connectionLineStyle = _ref.connectionLineStyle;
-    var nodeTypes = React.useMemo(function () {
-      return createNodeTypes(props.nodeTypes);
+    var nodeTypesParsed = React.useMemo(function () {
+      return createNodeTypes(nodeTypes);
     }, []);
-    var edgeTypes = React.useMemo(function () {
-      return createEdgeTypes(props.edgeTypes);
+    var edgeTypesParsed = React.useMemo(function () {
+      return createEdgeTypes(edgeTypes);
     }, []);
     return React__default.createElement("div", {
       style: style,
@@ -33907,8 +33909,8 @@
       onMove: onMove,
       onElementClick: onElementClick,
       onNodeDragStop: onNodeDragStop,
-      nodeTypes: nodeTypes,
-      edgeTypes: edgeTypes,
+      nodeTypes: nodeTypesParsed,
+      edgeTypes: edgeTypesParsed,
       connectionLineType: connectionLineType,
       connectionLineStyle: connectionLineStyle,
       onConnect: onConnect

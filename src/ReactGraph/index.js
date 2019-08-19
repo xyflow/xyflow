@@ -23,11 +23,11 @@ import '../style.css';
 
 const ReactGraph = ({
   style, onElementClick, elements, children,
-  onLoad, onMove, onElementsRemove, onConnect,
-  onNodeDragStop, connectionLineType, connectionLineStyle
+  nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove,
+  onConnect, onNodeDragStop, connectionLineType, connectionLineStyle
 }) => {
-  const nodeTypes = useMemo(() => createNodeTypes(props.nodeTypes), []);
-  const edgeTypes = useMemo(() => createEdgeTypes(props.edgeTypes), []);
+  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
+  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
 
   return (
     <div style={style} className="react-graph">
@@ -37,8 +37,8 @@ const ReactGraph = ({
           onMove={onMove}
           onElementClick={onElementClick}
           onNodeDragStop={onNodeDragStop}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
+          nodeTypes={nodeTypesParsed}
+          edgeTypes={edgeTypesParsed}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           onConnect={onConnect}
