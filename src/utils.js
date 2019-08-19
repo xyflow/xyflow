@@ -2,9 +2,7 @@ export const isFunction = obj => !!(obj && obj.constructor && obj.call && obj.ap
 
 export const isInputNode = e => e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 
-export const getDimensions = (node) => {
-  return {
-    width: node.offsetWidth,
-    height: node.offsetHeight
-  };
-};
+export const getDimensions = (node = {}) => ({
+  width: node.offsetWidth,
+  height: node.offsetHeight
+});

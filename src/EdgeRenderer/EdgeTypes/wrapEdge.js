@@ -5,32 +5,33 @@ import { setSelectedElements } from '../../state/actions';
 import { isInputNode } from '../../utils';
 
 export default EdgeComponent => {
-  const WrappedEdge = memo((props) => {
+  const EdgeWrapper = memo((props) => {
     const {
       source, target, animated, type,
       dispatch, selected, onClick
     } = props;
-    const edgeClasses = cx('react-graph__edge', { selected, animated: animated });
+    const edgeClasses = cx('react-graph__edge', { selected, animated });
+    const onEdgeClick = (evt) => {
+      if (isInputNode(evt)) {
+        return false;
+      }
+
+      dispatch(setSelectedElements({ source, target }));
+      onClick({ source, target, type });
+    };
 
     return (
       <g
         className={edgeClasses}
-        onClick={(e) => {
-          if (isInputNode(e)) {
-            return false;
-          }
-
-          dispatch(setSelectedElements({ source, target }));
-          onClick({ source, target, type });
-        }}
+        onClick={onEdgeClick}
       >
         <EdgeComponent {...props} />
       </g>
     );
   });
 
-  WrappedEdge.displayName = 'Wrapped Edge';
-  WrappedEdge.whyDidYouRender = false;
+  EdgeWrapper.displayName = 'EdgeWrapper';
+  EdgeWrapper.whyDidYouRender = false;
 
-  return WrappedEdge;
+  return EdgeWrapper;
 };
