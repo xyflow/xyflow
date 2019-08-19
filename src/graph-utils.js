@@ -26,14 +26,14 @@ export const removeElements = (elements, elementsToRemove) => {
 const getEdgeId = (e) => `react-graph__edge-${e.source}-${e.target}`;
 
 const pointToRendererPoint = ({ x, y }, transform) => {
-  const rendererX = x * (1 / [transform[2]]) - transform[0];
-  const rendererY = y * (1 / [transform[2]]) - transform[1];
+  const rendererX = (x - transform[0]) * (1 / [transform[2]]);
+  const rendererY = (y - transform[1]) * (1 / [transform[2]]);
 
   return {
     x: rendererX,
     y: rendererY
   };
-}
+};
 
 export const parseElement = (e, transform) => {
   if (isEdge(e)) {

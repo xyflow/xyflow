@@ -37641,8 +37641,8 @@ var getEdgeId = function getEdgeId(e) {
 var pointToRendererPoint = function pointToRendererPoint(_ref, transform) {
   var x = _ref.x,
       y = _ref.y;
-  var rendererX = x * (1 / [transform[2]]) - transform[0];
-  var rendererY = y * (1 / [transform[2]]) - transform[1];
+  var rendererX = (x - transform[0]) * (1 / [transform[2]]);
+  var rendererY = (y - transform[1]) * (1 / [transform[2]]);
   return {
     x: rendererX,
     y: rendererY
