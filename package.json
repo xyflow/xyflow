@@ -43,7 +43,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build"
+    "dev": "parcel example/index.html -d example/build",
+    "build:example": "parcel build example/index.html -d example/build"
   },
   "husky": {
     "hooks": {}
