@@ -1,4 +1,4 @@
-import React, { useMemo, memo } from 'react';
+import React, { useMemo } from 'react';
 
 if (process.env.NODE_ENV !== 'production') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -21,15 +21,13 @@ import { createEdgeTypes } from '../EdgeRenderer/utils';
 
 import '../style.css';
 
-const ReactGraph = (props) => {
+const ReactGraph = ({
+  style, onElementClick, elements, children,
+  onLoad, onMove, onElementsRemove, onConnect,
+  onNodeDragStop, connectionLineType, connectionLineStyle
+}) => {
   const nodeTypes = useMemo(() => createNodeTypes(props.nodeTypes), []);
   const edgeTypes = useMemo(() => createEdgeTypes(props.edgeTypes), []);
-
-  const {
-    style, onElementClick, elements, children,
-    onLoad, onMove, onElementsRemove, onConnect,
-    onNodeDragStop, connectionLineType, connectionLineStyle
-  } = props;
 
   return (
     <div style={style} className="react-graph">

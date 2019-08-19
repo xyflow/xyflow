@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useRef, memo } from 'react';
-import ReactSizeMe from 'react-sizeme';
 
 import { Provider } from '../ConnectionContext';
 import { GraphContext } from '../GraphContext';
@@ -11,18 +10,28 @@ import { setNodesSelection } from '../state/actions';
 import { updateSize, fitView, zoomIn, zoomOut } from '../state/view-actions';
 import useKeyPress from '../hooks/useKeyPress';
 import useD3Zoom from '../hooks/useD3Zoom';
+import { getDimensions } from '../utils';
 
 const GraphView = memo((props) => {
-  const zoomPane = useRef(null);
+  const zoomPane = useRef();
+  const rendererNode = useRef();
   const { state, dispatch } = useContext(GraphContext);
   const shiftPressed = useKeyPress('Shift');
+  const updateDimensions = () => {
+    const size = getDimensions(rendererNode.current);
+    dispatch(updateSize(size));
+  };
+
+  useEffect(() => {
+    updateDimensions();
+    window.onresize = updateDimensions;
+
+    return () => {
+      window.onresize = null;
+    };
+  }, []);
 
   useD3Zoom(zoomPane, props.onMove, shiftPressed);
-
-  useEffect(
-    () => dispatch(updateSize(props.size)),
-    [props.size.width, props.size.height]
-  );
 
   useEffect(() => {
     if (state.d3Initialised) {
@@ -37,7 +46,7 @@ const GraphView = memo((props) => {
   }, [state.d3Initialised]);
 
   return (
-    <div className="react-graph__renderer">
+    <div className="react-graph__renderer" ref={rendererNode}>
       <Provider onConnect={props.onConnect}>
         <NodeRenderer
           nodeTypes={props.nodeTypes}
@@ -64,4 +73,6 @@ const GraphView = memo((props) => {
   );
 });
 
-export default ReactSizeMe.withSize({ monitorHeight: true })(GraphView);
+GraphView.displayName = 'GraphView';
+
+export default GraphView;

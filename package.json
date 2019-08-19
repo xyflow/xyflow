@@ -14,7 +14,6 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-draggable": "^3.3.0",
-    "react-sizeme": "^2.6.7",
     "scheduler": "^0.15.0"
   },
   "devDependencies": {
