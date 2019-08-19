@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { unstable_trace as trace } from "scheduler/tracing";
 
 import SimpleGraph from './SimpleGraph';
 
-ReactDOM.render(
-  <SimpleGraph />,
-  document.getElementById('root')
+trace('initial render', performance.now(), () =>
+  render(<SimpleGraph />, document.getElementById('root'))
 );

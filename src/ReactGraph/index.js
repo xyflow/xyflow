@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useMemo } from 'react';
 
 if (process.env.NODE_ENV !== 'production') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -21,45 +21,41 @@ import { createEdgeTypes } from '../EdgeRenderer/utils';
 
 import '../style.css';
 
-class ReactGraph extends PureComponent {
-  constructor(props) {
-    super(props);
+const ReactGraph = (props) => {
+  const nodeTypes = useMemo(() => createNodeTypes(props.nodeTypes), []);
+  const edgeTypes = useMemo(() => createEdgeTypes(props.edgeTypes), []);
 
-    this.nodeTypes = createNodeTypes(props.nodeTypes);
-    this.edgeTypes = createEdgeTypes(props.edgeTypes);
-  }
+  const {
+    style, onElementClick, elements, children, onLoad,
+    onMove, onChange, onElementsRemove, onConnect,
+    onNodeDragStop, connectionLineType, connectionLineStyle
+  } = props;
 
-  render() {
-    const {
-      style, onElementClick, elements, children, onLoad,
-      onMove, onChange, onElementsRemove, onConnect, onNodeDragStop,
-      connectionLineType, connectionLineStyle
-    } = this.props;
+  return (
+    <div style={style} className="react-graph">
+      <Provider elements={elements}>
+        <GraphView
+          onLoad={onLoad}
+          onMove={onMove}
+          onChange={onChange}
+          onElementClick={onElementClick}
+          onNodeDragStop={onNodeDragStop}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          connectionLineType={connectionLineType}
+          connectionLineStyle={connectionLineStyle}
+          onConnect={onConnect}
+        />
+        <GlobalKeyHandler
+          onElementsRemove={onElementsRemove}
+        />
+        {children}
+      </Provider>
+    </div>
+  );
+};
 
-    return (
-      <div style={style} className="react-graph">
-        <Provider elements={elements}>
-          <GraphView
-            onLoad={onLoad}
-            onMove={onMove}
-            onChange={onChange}
-            onElementClick={onElementClick}
-            onNodeDragStop={onNodeDragStop}
-            nodeTypes={this.nodeTypes}
-            edgeTypes={this.edgeTypes}
-            connectionLineType={connectionLineType}
-            connectionLineStyle={connectionLineStyle}
-            onConnect={onConnect}
-          />
-          <GlobalKeyHandler
-            onElementsRemove={onElementsRemove}
-          />
-          {children}
-        </Provider>
-      </div>
-    );
-  }
-}
+ReactGraph.displayName = 'ReactGraph';
 
 ReactGraph.defaultProps = {
   onElementClick: () => {},

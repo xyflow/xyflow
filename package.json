@@ -11,9 +11,11 @@
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.7.3",
     "lodash.isequal": "^4.5.0",
-    "react": "^16.8.6",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-draggable": "^3.3.0",
-    "react-sizeme": "^2.6.7"
+    "react-sizeme": "^2.6.7",
+    "scheduler": "^0.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
@@ -25,7 +27,6 @@
     "husky": "^3.0.0",
     "parcel-bundler": "^1.12.3",
     "postcss-nested": "^4.1.2",
-    "react-dom": "^16.8.6",
     "rollup": "^1.16.2",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.3",
@@ -36,7 +37,8 @@
     "rollup-plugin-serve": "^1.0.1"
   },
   "peerDependencies": {
-    "react": "^16.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.6",
     "prop-types": "^15.0.0-0"
   },
   "scripts": {
