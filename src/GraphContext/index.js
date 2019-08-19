@@ -18,7 +18,7 @@ export const Provider = (props) => {
 
   useEffect(() => {
     const nodes = elements.filter(isNode);
-    const edges = elements.filter(isEdge).map(parseElement);
+    const edges = elements.filter(isEdge).map(parseElement, state.transform);
 
     const nextNodes = nodes.map(propNode => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
@@ -33,7 +33,7 @@ export const Provider = (props) => {
         };
       }
 
-      return parseElement(propNode);
+      return parseElement(propNode, state.transform);
     });
 
     const nodesChanged = !isEqual(state.nodes, nextNodes);

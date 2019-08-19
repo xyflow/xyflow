@@ -29834,7 +29834,18 @@
     return "react-graph__edge-".concat(e.source, "-").concat(e.target);
   };
 
-  var parseElement = function parseElement(e) {
+  var pointToRendererPoint = function pointToRendererPoint(_ref, transform) {
+    var x = _ref.x,
+        y = _ref.y;
+    var rendererX = x * (1 / [transform[2]]) - transform[0];
+    var rendererY = y * (1 / [transform[2]]) - transform[1];
+    return {
+      x: rendererX,
+      y: rendererY
+    };
+  };
+
+  var parseElement = function parseElement(e, transform) {
     if (isEdge(e)) {
       return _objectSpread2({}, e, {
         type: e.type || 'default',
@@ -29846,7 +29857,7 @@
       id: e.id.toString(),
       type: e.type || 'default',
       __rg: {
-        position: e.position,
+        position: pointToRendererPoint(e.position, transform),
         width: null,
         height: null,
         handleBounds: {}
@@ -30161,7 +30172,7 @@
 
     React.useEffect(function () {
       var nodes = elements.filter(isNode);
-      var edges = elements.filter(isEdge).map(parseElement);
+      var edges = elements.filter(isEdge).map(parseElement, state.transform);
       var nextNodes = nodes.map(function (propNode) {
         var existingNode = state.nodes.find(function (n) {
           return n.id === propNode.id;
@@ -30174,7 +30185,7 @@
           });
         }
 
-        return parseElement(propNode);
+        return parseElement(propNode, state.transform);
       });
       var nodesChanged = !lodash_isequal(state.nodes, nextNodes);
       var edgesChanged = !lodash_isequal(state.edges, edges);

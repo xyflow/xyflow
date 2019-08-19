@@ -37638,7 +37638,18 @@ var getEdgeId = function getEdgeId(e) {
   return "react-graph__edge-".concat(e.source, "-").concat(e.target);
 };
 
-var parseElement = function parseElement(e) {
+var pointToRendererPoint = function pointToRendererPoint(_ref, transform) {
+  var x = _ref.x,
+      y = _ref.y;
+  var rendererX = x * (1 / [transform[2]]) - transform[0];
+  var rendererY = y * (1 / [transform[2]]) - transform[1];
+  return {
+    x: rendererX,
+    y: rendererY
+  };
+};
+
+var parseElement = function parseElement(e, transform) {
   if (isEdge(e)) {
     return _objectSpread({}, e, {
       type: e.type || 'default',
@@ -37650,7 +37661,7 @@ var parseElement = function parseElement(e) {
     id: e.id.toString(),
     type: e.type || 'default',
     __rg: {
-      position: e.position,
+      position: pointToRendererPoint(e.position, transform),
       width: null,
       height: null,
       handleBounds: {}
@@ -38141,7 +38152,7 @@ var Provider = function Provider(props) {
 
   (0, _react.useEffect)(function () {
     var nodes = elements.filter(_graphUtils.isNode);
-    var edges = elements.filter(_graphUtils.isEdge).map(_graphUtils.parseElement);
+    var edges = elements.filter(_graphUtils.isEdge).map(_graphUtils.parseElement, state.transform);
     var nextNodes = nodes.map(function (propNode) {
       var existingNode = state.nodes.find(function (n) {
         return n.id === propNode.id;
@@ -38154,7 +38165,7 @@ var Provider = function Provider(props) {
         });
       }
 
-      return (0, _graphUtils.parseElement)(propNode);
+      return (0, _graphUtils.parseElement)(propNode, state.transform);
     });
     var nodesChanged = !(0, _lodash.default)(state.nodes, nextNodes);
     var edgesChanged = !(0, _lodash.default)(state.edges, edges);
@@ -42750,7 +42761,7 @@ function (_PureComponent) {
       this.setState(function (prevState) {
         return _objectSpread({}, prevState, {
           elements: prevState.elements.concat({
-            id: prevState.elements.length + 1,
+            id: (prevState.elements.length + 1).toString(),
             data: {
               label: 'Added node'
             },
@@ -42918,7 +42929,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52012" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61901" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

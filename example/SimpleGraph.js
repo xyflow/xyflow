@@ -112,7 +112,7 @@ class App extends PureComponent {
     this.setState(prevState => ({
       ...prevState,
       elements: prevState.elements.concat({
-        id: prevState.elements.length + 1,
+        id: (prevState.elements.length + 1).toString(),
         data: { label: 'Added node' },
         position: { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }
       })

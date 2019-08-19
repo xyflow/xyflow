@@ -25,7 +25,17 @@ export const removeElements = (elements, elementsToRemove) => {
 
 const getEdgeId = (e) => `react-graph__edge-${e.source}-${e.target}`;
 
-export const parseElement = (e) => {
+const pointToRendererPoint = ({ x, y }, transform) => {
+  const rendererX = x * (1 / [transform[2]]) - transform[0];
+  const rendererY = y * (1 / [transform[2]]) - transform[1];
+
+  return {
+    x: rendererX,
+    y: rendererY
+  };
+}
+
+export const parseElement = (e, transform) => {
   if (isEdge(e)) {
     return {
       ...e,
@@ -39,7 +49,7 @@ export const parseElement = (e) => {
     id: e.id.toString(),
     type: e.type || 'default',
     __rg: {
-      position: e.position,
+      position: pointToRendererPoint(e.position, transform),
       width: null,
       height: null,
       handleBounds : {}
