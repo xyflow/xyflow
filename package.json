@@ -10,7 +10,7 @@
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.7.3",
-    "lodash.isequal": "^4.5.0",
+    "fast-deep-equal": "^3.0.0-beta.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-draggable": "^3.3.0",

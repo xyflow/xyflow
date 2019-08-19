@@ -1,5 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
-import isEqual from 'lodash.isequal';
+import isEqual from 'fast-deep-equal';
 
 import { getBoundingBox, getNodesInside, getConnectedEdges } from '../graph-utils';
 

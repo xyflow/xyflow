@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useReducer, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
+import isEqual from 'fast-deep-equal';
 
 import { reducer, initialState } from '../state';
 import { setNodes, setEdges } from '../state/actions';
