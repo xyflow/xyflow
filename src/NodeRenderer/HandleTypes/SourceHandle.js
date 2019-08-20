@@ -1,12 +1,16 @@
 import React, { memo, useContext } from 'react';
+import { useStoreActions, useStoreState } from 'easy-peasy';
 
 import BaseHandle from './BaseHandle';
 import NodeIdContext from '../NodeIdContext'
-import { ConnectionContext } from '../../ConnectionContext';
 
-export default memo((props) => {
+const SourceHandle = memo((props) => {
   const nodeId = useContext(NodeIdContext);
-  const { setPosition, setSourceId, onConnect } = useContext(ConnectionContext);
+  const { setPosition, setSourceId } = useStoreActions(a => ({
+    setPosition: a.setConnectionPosition,
+    setSourceId: a.setConnectionSourceId
+  }));
+  const onConnect = useStoreState(s => s.onConnect);
 
   return (
     <BaseHandle
@@ -19,3 +23,7 @@ export default memo((props) => {
     />
   );
 });
+
+SourceHandle.displayName = 'SourceHandle';
+
+export default SourceHandle;

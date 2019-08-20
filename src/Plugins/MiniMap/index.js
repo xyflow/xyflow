@@ -1,22 +1,26 @@
-import React, { useRef, useContext, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { useStoreState } from 'easy-peasy';
 import classnames from 'classnames';
 
 import { isFunction } from '../../utils'
 import { getNodesInside } from '../../graph-utils';
-import { GraphContext } from '../../GraphContext';
 
 const baseStyle = {
   position: 'absolute',
   zIndex: 5,
   bottom: 10,
   right: 10,
-  width: 200,
+  width: 200
 };
 
 export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }) => {
   const canvasNode = useRef(null);
-  const { state } = useContext(GraphContext);
-  const mapClasses = classnames('react-graph__minimap', className);
+  const state = useStoreState(s => ({
+    width: s.width,
+    height: s.height,
+    nodes: s.nodes,
+    transform: s.transform,
+  }));  const mapClasses = classnames('react-graph__minimap', className);
   const nodePositions = state.nodes.map(n => n.__rg.position);
   const width = style.width || baseStyle.width;
   const height = (state.height / (state.width || 1)) * width;

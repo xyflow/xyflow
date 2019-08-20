@@ -1,12 +1,12 @@
-import { useEffect, useContext, memo } from 'react';
+import { useEffect, memo } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import useKeyPress from '../hooks/useKeyPress';
-import { setNodesSelection } from '../state/actions';
-import { GraphContext } from '../GraphContext';
 import { isEdge, getConnectedEdges } from '../graph-utils';
 
 export default memo((props) => {
-  const { state, dispatch } = useContext(GraphContext);
+  const state = useStoreState(s => ({ selectedElements: s.selectedElements, edges: s.edges }))
+  const setNodesSelection = useStoreActions(a => a.setNodesSelection);
   const removePressed = useKeyPress('Backspace');
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default memo((props) => {
       }
 
       props.onElementsRemove(elementsToRemove);
-      dispatch(setNodesSelection({ isActive: false }));
+      setNodesSelection({ isActive: false });
     }
   }, [removePressed])
 

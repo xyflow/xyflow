@@ -1,4 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
+import isEqual from 'fast-deep-equal';
+import { StoreProvider } from 'easy-peasy';
 
 if (process.env.NODE_ENV !== 'production') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -7,7 +9,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 import GraphView from '../GraphView';
 import GlobalKeyHandler from '../GlobalKeyHandler';
-import { Provider } from '../GraphContext';
 
 import DefaultNode from '../NodeRenderer/NodeTypes/DefaultNode';
 import InputNode from '../NodeRenderer/NodeTypes/InputNode';
@@ -18,6 +19,8 @@ import BezierEdge from '../EdgeRenderer/EdgeTypes/BezierEdge';
 import StraightEdge from '../EdgeRenderer/EdgeTypes/StraightEdge';
 import StepEdge from '../EdgeRenderer/EdgeTypes/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
+import store from '../store';
+import ElementUpdater from './ElementUpdater';
 
 import '../style.css';
 
@@ -31,7 +34,8 @@ const ReactGraph = ({
 
   return (
     <div style={style} className="react-graph">
-      <Provider elements={elements}>
+      <StoreProvider store={store}>
+        <ElementUpdater elements={elements} onConnect={onConnect} />
         <GraphView
           onLoad={onLoad}
           onMove={onMove}
@@ -41,13 +45,12 @@ const ReactGraph = ({
           edgeTypes={edgeTypesParsed}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          onConnect={onConnect}
         />
         <GlobalKeyHandler
           onElementsRemove={onElementsRemove}
         />
         {children}
-      </Provider>
+      </StoreProvider>
     </div>
   );
 };

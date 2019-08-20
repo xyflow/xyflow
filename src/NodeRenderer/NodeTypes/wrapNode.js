@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 import cx from 'classnames';
 
-import { updateNodeData, updateNodePos, setSelectedElements } from '../../state/actions';
 import { getDimensions, isInputNode } from '../../utils';
 import { Provider } from '../NodeIdContext';
+import store from '../../store';
 
 const isHandle = e => (
   e.target.className &&
@@ -29,7 +29,7 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   };
 };
 
-const onStart = (evt, { dispatch, setOffset, onClick, id, type, data, position, transform }) => {
+const onStart = (evt, { setOffset, onClick, id, type, data, position, transform }) => {
   if (isInputNode(evt) || isHandle(evt)) {
     return false;
   }
@@ -42,22 +42,22 @@ const onStart = (evt, { dispatch, setOffset, onClick, id, type, data, position,
   const offsetY = scaledClient.y - position.y - transform[1];
   const node = { id, type, position, data };
 
-  dispatch(setSelectedElements({ id, type }));
+  store.dispatch.setSelectedElements({ id, type });
   setOffset({ x: offsetX, y: offsetY });
   onClick(node);
 };
 
-const onDrag = (evt, { dispatch, setDragging, id, offset, transform }) => {
+const onDrag = (evt, { setDragging, id, offset, transform }) => {
   const scaledClient = {
     x: evt.clientX * (1 / transform[2]),
     y: evt.clientY * (1 / transform[2])
   };
 
   setDragging(true);
-  dispatch(updateNodePos(id, {
+  store.dispatch.updateNodePos({ id, pos: {
     x: scaledClient.x - transform[0] - offset.x,
     y: scaledClient.y - transform[1] - offset.y
-  }));
+  }});
 };
 
 const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, data }) => {
@@ -78,7 +78,7 @@ export default NodeComponent => {
     const [isDragging, setDragging] = useState(false);
     const {
       id, type, data, transform, xPos, yPos, selected,
-      dispatch, onClick, onNodeDragStop, style
+      onClick, onNodeDragStop, style
     } = props;
 
     const position = { x: xPos, y: yPos };
@@ -93,13 +93,13 @@ export default NodeComponent => {
         target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
       };
 
-      dispatch(updateNodeData(id, { ...dimensions, handleBounds }));
+      store.dispatch.updateNodeData({ id, ...dimensions, handleBounds });
     }, []);
 
     return (
       <ReactDraggable.DraggableCore
-        onStart={evt => onStart(evt, { dispatch, onClick, id, type, data, setOffset, transform, position })}
-        onDrag={evt => onDrag(evt, { dispatch, setDragging, id, offset, transform })}
+        onStart={evt => onStart(evt, { onClick, id, type, data, setOffset, transform, position })}
+        onDrag={evt => onDrag(evt, { setDragging, id, offset, transform })}
         onStop={() => onStop({ onNodeDragStop, isDragging, setDragging, id, type, position, data })}
         scale={transform[2]}
       >

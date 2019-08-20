@@ -1,3 +1,6 @@
+import { zoomIdentity } from 'd3-zoom';
+import store from './store';
+
 export const isEdge = element => element.source && element.target;
 
 export const isNode = element => !element.source && !element.target;
@@ -142,11 +145,37 @@ export const getConnectedEdges = (nodes, edges) => {
   return edges.filter(e => nodeIds.includes(e.source) || nodeIds.includes(e.target))
 };
 
+export const fitView = ({ padding = 0 } = {}) => {
+  const state = store.getState();
+  const bounds = getBoundingBox(state.nodes);
+  const maxBoundsSize = Math.max(bounds.width, bounds.height);
+  const k = Math.min(state.width, state.height) / (maxBoundsSize + (maxBoundsSize * padding));
+  const boundsCenterX = bounds.x + (bounds.width / 2);
+  const boundsCenterY = bounds.y + (bounds.height / 2);
+  const transform = [(state.width / 2) - (boundsCenterX * k), (state.height / 2) - (boundsCenterY * k)];
+  const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
+
+  state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
+};
+
+export const zoomIn = () => {
+  const state = store.getState();
+  state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] + 0.2);
+};
+
+export const zoomOut = () => {
+  const state = store.getState();
+  state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] - 0.2);
+};
+
 export default {
   isEdge,
   separateElements,
   getBoundingBox,
   graphPosToZoomedPos,
   getConnectedEdges,
-  parseElement
+  parseElement,
+  fitView,
+  zoomIn,
+  zoomOut
 };
