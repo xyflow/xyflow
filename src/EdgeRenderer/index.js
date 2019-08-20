@@ -1,7 +1,6 @@
-import React, { memo, useContext } from 'react';
+import React, { memo } from 'react';
+import { useStoreState } from 'easy-peasy';
 
-import { GraphContext } from '../GraphContext';
-import { ConnectionContext } from '../ConnectionContext';
 import ConnectionLine from '../ConnectionLine';
 import { isEdge } from '../graph-utils';
 
@@ -36,10 +35,10 @@ function getEdgePositions(sourceNode, targetNode) {
   };
 }
 
-function renderEdge(e, props, graphContext) {
+function renderEdge(e, props, state) {
   const edgeType = e.type || 'default';
-  const sourceNode = graphContext.state.nodes.find(n => n.id === e.source);
-  const targetNode = graphContext.state.nodes.find(n => n.id === e.target);
+  const sourceNode = state.nodes.find(n => n.id === e.source);
+  const targetNode = state.nodes.find(n => n.id === e.target);
 
   if (!sourceNode) {
     throw new Error(`couldn't create edge for source id: ${e.source}`);
@@ -51,7 +50,7 @@ function renderEdge(e, props, graphContext) {
 
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
   const { sourceX, sourceY, targetX, targetY } = getEdgePositions(sourceNode, targetNode);
-  const selected = graphContext.state.selectedElements
+  const selected = state.selectedElements
     .filter(isEdge)
     .find(elm => elm.source === e.source && elm.target === e.target);
 
@@ -62,7 +61,6 @@ function renderEdge(e, props, graphContext) {
       type={e.type}
       onClick={props.onElementClick}
       selected={selected}
-      dispatch={graphContext.dispatch}
       animated={e.animated}
       style={e.style}
       source={e.source}
@@ -76,8 +74,14 @@ function renderEdge(e, props, graphContext) {
 }
 
 const EdgeRenderer = memo((props) => {
-  const graphContext = useContext(GraphContext);
-  const { position, sourceId : connectionSourceId } = useContext(ConnectionContext);
+  const state = useStoreState(s => ({
+    nodes: s.nodes,
+    edges: s.edges,
+    transform: s.transform,
+    selectedElements: s.selectedElements,
+    connectionSourceId: s.connectionSourceId,
+    position: s.connectionPosition
+  }));
   const {
     width, height, connectionLineStyle, connectionLineType
   } = props;
@@ -86,7 +90,7 @@ const EdgeRenderer = memo((props) => {
     return null;
   }
 
-  const { transform, edges, nodes } = graphContext.state;
+  const { transform, edges, nodes, connectionSourceId, position } = state;
   const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
 
   return (
@@ -96,7 +100,7 @@ const EdgeRenderer = memo((props) => {
       className="react-graph__edges"
     >
       <g transform={transformStyle}>
-        {edges.map(e => renderEdge(e, props, graphContext))}
+        {edges.map(e => renderEdge(e, props, state))}
         {connectionSourceId && (
           <ConnectionLine
             nodes={nodes}
@@ -112,5 +116,7 @@ const EdgeRenderer = memo((props) => {
     </svg>
   );
 });
+
+EdgeRenderer.displayName = 'EdgeRenderer';
 
 export default EdgeRenderer;

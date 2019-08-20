@@ -1,18 +1,26 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
-
-import { updateTransform, initD3 } from '../state/view-actions';
-import { GraphContext } from '../GraphContext';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
 const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
 
 export default function useD3Zoom(zoomPane, onMove, shiftPressed) {
-  const { state, dispatch } = useContext(GraphContext);
+  const state = useStoreState(s => ({
+    transform: s.transform,
+    d3Selection: s.d3Selection,
+    d3Zoom: s.d3Zoom,
+    edges: s.edged,
+    d3Initialised: s.d3Initialised,
+    nodesSelectionActive: s.nodesSelectionActive
+  }));
+
+  const initD3 = useStoreActions(actions => actions.initD3);
+  const updateTransform = useStoreActions(actions => actions.updateTransform);
 
   useEffect(() => {
     const selection = select(zoomPane.current).call(d3ZoomInstance);
-    dispatch(initD3({ zoom: d3ZoomInstance, selection }));
+    initD3({ zoom: d3ZoomInstance, selection });
   }, []);
 
   useEffect(() => {
@@ -24,7 +32,7 @@ export default function useD3Zoom(zoomPane, onMove, shiftPressed) {
           return false;
         }
 
-        dispatch(updateTransform(event.transform));
+        updateTransform(event.transform);
 
         onMove();
       });

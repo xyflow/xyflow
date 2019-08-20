@@ -1,9 +1,8 @@
-import React, { useContext, useState, memo } from 'react';
+import React, { useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
-import { GraphContext } from '../GraphContext';
 import { isNode } from '../graph-utils';
-import {  updateNodePos } from '../state/actions';
 
 function getStartPositions(elements) {
   return elements
@@ -21,10 +20,14 @@ function getStartPositions(elements) {
 }
 
 export default memo(() => {
-  const graphContext = useContext(GraphContext);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState({});
-  const { state, dispatch } = graphContext;
+  const state = useStoreState(s => ({
+    transform: s.transform,
+    selectedNodesBbox: s.selectedNodesBbox,
+    selectedElements: s.selectedElements
+  }));
+  const updateNodePos = useStoreActions(a => a.updateNodePos);
   const [x, y, k] = state.transform;
   const position = state.selectedNodesBbox;
 
@@ -48,10 +51,10 @@ export default memo(() => {
     };
 
     state.selectedElements.filter(isNode).forEach(node => {
-      dispatch(updateNodePos(node.id, {
+      updateNodePos({ id: node.id, pos: {
         x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x ,
         y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
-      }));
+      }});
     });
   };
 
@@ -59,7 +62,7 @@ export default memo(() => {
     <div
       className="react-graph__nodesselection"
       style={{
-        transform: `translate(${state.transform[0]}px,${state.transform[1]}px) scale(${state.transform[2]})`
+        transform: `translate(${x}px,${y}px) scale(${k})`
       }}
     >
       <ReactDraggable

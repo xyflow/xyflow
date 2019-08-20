@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState, useContext, memo } from 'react';
-
-import { GraphContext } from '../GraphContext';
-import { updateSelection, setSelection, setNodesSelection } from '../state/actions';
+import React, { useEffect, useRef, useState, memo } from 'react';
+import { useStoreActions } from 'easy-peasy';
 
 const initialRect = {
   startX: 0,
@@ -25,7 +23,9 @@ function getMousePosition(evt) {
 export default memo(() => {
   const selectionPane = useRef(null);
   const [rect, setRect] = useState(initialRect);
-  const { dispatch } = useContext(GraphContext);
+  const setSelection = useStoreActions(a => a.setSelection);
+  const updateSelection = useStoreActions(a => a.updateSelection);
+  const setNodesSelection = useStoreActions(a => a.setNodesSelection);
 
   useEffect(() => {
     function onMouseDown(evt) {
@@ -40,7 +40,7 @@ export default memo(() => {
         draw: true
       }));
 
-      dispatch(setSelection(true));
+      setSelection(true);
     }
 
     function onMouseMove(evt) {
@@ -60,7 +60,7 @@ export default memo(() => {
           height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY,
         };
 
-        dispatch(updateSelection(nextRect));
+        updateSelection(nextRect);
 
         return nextRect;
       });
@@ -68,8 +68,8 @@ export default memo(() => {
 
     function onMouseUp() {
       setRect((currentRect) => {
-        dispatch(setNodesSelection({ isActive: true, selection: currentRect }));
-        dispatch(setSelection(false));
+        setNodesSelection({ isActive: true, selection: currentRect });
+        setSelection(false);
 
         return {
           ...currentRect,

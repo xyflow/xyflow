@@ -1,14 +1,14 @@
 import React, {  memo } from 'react';
 import cx from 'classnames';
 
-import { setSelectedElements } from '../../state/actions';
 import { isInputNode } from '../../utils';
+import store from '../../store';
 
 export default EdgeComponent => {
   const EdgeWrapper = memo((props) => {
     const {
       source, target, animated, type,
-      dispatch, selected, onClick
+      selected, onClick
     } = props;
     const edgeClasses = cx('react-graph__edge', { selected, animated });
     const onEdgeClick = (evt) => {
@@ -16,7 +16,7 @@ export default EdgeComponent => {
         return false;
       }
 
-      dispatch(setSelectedElements({ source, target }));
+      store.dispatch.setSelectedElements({ source, target });
       onClick({ source, target, type });
     };
 

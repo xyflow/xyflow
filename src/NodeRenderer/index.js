@@ -1,9 +1,9 @@
-import React, { memo, useContext } from 'react';
+import React, { memo } from 'react';
+import { useStoreState } from 'easy-peasy';
 
-import { GraphContext } from '../GraphContext';
 import { isNode } from '../graph-utils';
 
-function renderNode(d, props, graphContext) {
+function renderNode(d, props, state) {
   const nodeType = d.type || 'default';
 
   if (!props.nodeTypes[nodeType]) {
@@ -11,7 +11,7 @@ function renderNode(d, props, graphContext) {
   }
 
   const NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes.default;
-  const selected = graphContext.state.selectedElements
+  const selected = state.selectedElements
     .filter(isNode)
     .map(e => e.id)
     .includes(d.id);
@@ -26,9 +26,7 @@ function renderNode(d, props, graphContext) {
       yPos={d.__rg.position.y}
       onClick={props.onElementClick}
       onNodeDragStop={props.onNodeDragStop}
-      dispatch={graphContext.dispatch}
-      transform={graphContext.state.transform}
-      getNodeById={graphContext.getNodeById}
+      transform={state.transform}
       selected={selected}
       style={d.style}
     />
@@ -36,8 +34,13 @@ function renderNode(d, props, graphContext) {
 }
 
 const NodeRenderer = memo((props) => {
-  const graphContext = useContext(GraphContext);
-  const { transform, nodes } = graphContext.state;
+  const state = useStoreState(s => ({
+    nodes: s.nodes,
+    transform: s.transform,
+    selectedElements: s.selectedElements
+  }));
+
+  const { transform, nodes } = state;
   const transformStyle = { transform : `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})` };
 
   return (
@@ -45,7 +48,7 @@ const NodeRenderer = memo((props) => {
       className="react-graph__nodes"
       style={transformStyle}
     >
-      {nodes.map(d => renderNode(d, props, graphContext))}
+      {nodes.map(d => renderNode(d, props, state))}
     </div>
   );
 });
