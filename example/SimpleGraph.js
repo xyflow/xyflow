@@ -81,7 +81,7 @@ class App extends PureComponent {
         { source: '3', target: '4', type: 'step' },
         { source: '3', target: '5' },
         { source: '5', target: '6__b' },
-        { source: '5', target: '6', type: 'step', animated: true, style: { stroke: '#FFCC00' } },
+        { source: '5', target: '6__a', type: 'step', animated: true, style: { stroke: '#FFCC00' } },
         { source: '6', target: '7', style: { stroke: '#FFCC00' }},
       ]
     };
