@@ -1,10 +1,11 @@
 import React, { memo, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 
 import BaseHandle from './BaseHandle';
 import NodeIdContext from '../NodeIdContext'
 
-const TargetHandle = memo((props) => {
+const Handle = memo((props) => {
   const nodeId = useContext(NodeIdContext);
   const { setPosition, setSourceId } = useStoreActions(a => ({
     setPosition: a.setConnectionPosition,
@@ -14,8 +15,6 @@ const TargetHandle = memo((props) => {
 
   return (
     <BaseHandle
-      type="target"
-      position="top"
       nodeId={nodeId}
       setPosition={setPosition}
       setSourceId={setSourceId}
@@ -25,7 +24,16 @@ const TargetHandle = memo((props) => {
   );
 });
 
-TargetHandle.displayName = 'TargetHandle';
-TargetHandle.whyDidYouRender = false;
+Handle.displayName = 'Handle';
 
-export default TargetHandle;
+Handle.propTypes = {
+  type: PropTypes.oneOf(['source', 'target']),
+  position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+};
+
+Handle.defaultProps = {
+  type: 'source',
+  position: 'top'
+};
+
+export default Handle;

@@ -1,21 +1,21 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle, MiniMap } from '../src';
-// import Graph, { isEdge, removeElements, getOutgoers, SourceHandle, TargetHandle } from '../dist/ReactGraph';
+import Graph, { isEdge, removeElements, getOutgoers, Handle, MiniMap } from '../src';
+// import Graph, { isEdge, removeElements, getOutgoers, Handle } from '../dist/ReactGraph';
 
 const SpecialNode = ({ data, styles }) => (
   <div
     style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
   >
-    <TargetHandle id="a" style={{ left: 10, background: '#999' }} />
-    <TargetHandle id="b" style={{ left: 30, background: '#999' }} />
+    <Handle type="target" position="top" id="a" style={{ left: 10, background: '#999' }} />
+    <Handle type="target" position="top" id="b" style={{ left: 30, background: '#999' }} />
     <div>I am <strong>special</strong>!<br />{data.label}</div>
     <select onChange={(e) => data.onChange(e.target.value, data)}>
       <option value="1">1</option>
       <option value="2">2</option>
       <option value="3">3</option>
     </select>
-    <SourceHandle style={{ left: 10, background: '#999' }} />
+    <Handle type="source" position="bottom" style={{ left: 10, background: '#999' }} />
   </div>
 );
 
@@ -23,10 +23,10 @@ const InputNode = ({ data, styles }) => (
   <div
     style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
   >
-    <TargetHandle style={{ left: 10, background: '#999' }} />
+    <Handle type="target" position="left" style={{ background: '#999' }} />
     <div>{data.input}</div>
     <input onChange={(e) => data.onChange(e.target.value, data)} />
-    <SourceHandle style={{ left: 10, background: '#999' }} />
+    <Handle type="source" position="right" style={{ background: '#999' }} />
   </div>
 );
 
@@ -72,9 +72,11 @@ class App extends PureComponent {
         { id: '5', type: 'default', data: { label: '5 Another node'}, position: { x: 400, y: 300 } },
         { id: '6', type: 'special', data: { onChange, label: '6 no option selected' }, position: { x: 425, y: 375 } },
         { id: '7', type: 'output', data: { label: '7 output' }, position: { x: 250, y: 500 } },
-        { id: '8', type: 'text', data: { onChange: onChangeInput, input: 'write something' }, position: { x: 300, y: 100 } },
+        { id: '8', type: 'text', data: { onChange: onChangeInput, input: 'write something' }, position: { x: 350, y: 100 } },
+        { id: '9', type: 'text', data: { label: 'right' }, position: { x: 600, y: 100 } },
         { source: '1', target: '2', animated: true },
         { source: '1', target: '8', animated: true },
+        { source: '8', target: '9', animated: true },
         { source: '2', target: '3' },
         { source: '3', target: '4', type: 'step' },
         { source: '3', target: '5' },

@@ -4,52 +4,74 @@ import { useStoreState } from 'easy-peasy';
 import ConnectionLine from '../ConnectionLine';
 import { isEdge } from '../graph-utils';
 
-function getEdgePositions({ sourceNode, targetNode, sourceHandleId, targetHandleId }) {
-  const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
-  const hasTargetHandle = !!targetNode.__rg.handleBounds.target;
-
-  let sourceHandle = null;
-  let targetHandle = null;
-
-  if (hasSourceHandle) {
-    // there is no sourceHandleId when there are no multiple handles/ handles with ids
-    // so we just pick the first one
-    if (sourceNode.__rg.handleBounds.source.length === 1 || !sourceHandleId) {
-      sourceHandle = sourceNode.__rg.handleBounds.source[0];
-    } else if (sourceHandleId) {
-      sourceHandle = sourceNode.__rg.handleBounds.source.find(d => d.id === sourceHandleId);
+function getHandlePosition(position, node, handle = null) {
+  if (!handle) {
+    switch (position) {
+      case 'top': return {
+        x: node.__rg.width / 2,
+        y: 0
+      };
+      case 'right': return {
+        x: node.__rg.width,
+        y: node.__rg.height / 2
+      };
+      case 'bottom': return {
+        x: node.__rg.width / 2,
+        y: node.__rg.height
+      };
+      case 'left': return {
+        x: 0,
+        y: node.__rg.height / 2
+      };
     }
   }
 
-  if (hasTargetHandle) {
-    if (targetNode.__rg.handleBounds.target.length === 1 || !targetHandleId) {
-      targetHandle = targetNode.__rg.handleBounds.target[0];
-    } else if (targetHandleId) {
-      targetHandle = targetNode.__rg.handleBounds.target.find(d => d.id === targetHandleId);
-    }
+  switch (position) {
+    case 'top': return {
+      x: handle.x + (handle.width / 2),
+      y: handle.y
+    };
+    case 'right': return {
+      x: handle.x + handle.width,
+      y: handle.y + (handle.height / 2)
+    };
+    case 'bottom': return {
+      x: handle.x + (handle.width / 2),
+      y: handle.y + handle.height
+    };
+    case 'left': return {
+      x: handle.x,
+      y: handle.y + (handle.height / 2)
+    };
+  }
+}
+
+function getHandle(bounds, handleId) {
+  let handle = null;
+
+  if (!bounds) {
+    return null;
   }
 
-  const sourceHandleX = hasSourceHandle ?
-    sourceHandle.x + (sourceHandle.width / 2) :
-    sourceNode.__rg.width / 2;
+  // there is no handleId when there are no multiple handles/ handles with ids
+  // so we just pick the first one
+  if (bounds.length === 1 || !handleId) {
+    handle = bounds[0];
+  } else if (handleId) {
+    handle = bounds.find(d => d.id === handleId);
+  }
 
-  const sourceHandleY = hasSourceHandle ?
-    sourceHandle.y + (sourceHandle.height / 2) :
-    sourceNode.__rg.height;
+  return handle;
+}
 
-  const sourceX = sourceNode.__rg.position.x + sourceHandleX;
-  const sourceY = sourceNode.__rg.position.y + sourceHandleY;
+function getEdgePositions({ sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition }) {
+  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle)
+  const sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;
+  const sourceY = sourceNode.__rg.position.y + sourceHandlePos.y;
 
-  const targetHandleX = hasTargetHandle ?
-    targetHandle.x + (targetHandle.width / 2) :
-    targetNode.__rg.width / 2;
-
-  const targetHandleY = hasTargetHandle ?
-    targetHandle.y + (targetHandle.height / 2) :
-    0;
-
-  const targetX = targetNode.__rg.position.x + targetHandleX;
-  const targetY = targetNode.__rg.position.y + targetHandleY;
+  const targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
+  const targetX = targetNode.__rg.position.x + targetHandlePos.x;
+  const targetY = targetNode.__rg.position.y + targetHandlePos.y;
 
   return {
     sourceX, sourceY, targetX, targetY
@@ -80,7 +102,15 @@ function renderEdge(e, props, state) {
   }
 
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  const { sourceX, sourceY, targetX, targetY } = getEdgePositions({ sourceNode, targetNode, sourceHandleId, targetHandleId });
+  const sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
+  const targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
+  const sourcePosition = sourceHandle ? sourceHandle.position : 'bottom';
+  const targetPosition = targetHandle ? targetHandle.position : 'top';
+
+  const { sourceX, sourceY, targetX, targetY } = getEdgePositions({
+    sourceNode, sourceHandle, sourcePosition,
+    targetNode, targetHandle, targetPosition
+  });
   const selected = state.selectedElements
     .filter(isEdge)
     .find(elm => elm.source === sourceId && elm.target === targetId);
@@ -102,6 +132,8 @@ function renderEdge(e, props, state) {
       sourceY={sourceY}
       targetX={targetX}
       targetY={targetY}
+      sourcePosition={sourcePosition}
+      targetPosition={targetPosition}
     />
   );
 }
