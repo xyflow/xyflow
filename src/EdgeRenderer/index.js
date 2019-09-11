@@ -4,27 +4,48 @@ import { useStoreState } from 'easy-peasy';
 import ConnectionLine from '../ConnectionLine';
 import { isEdge } from '../graph-utils';
 
-function getEdgePositions(sourceNode, targetNode) {
+function getEdgePositions({ sourceNode, targetNode, sourceHandleId, targetHandleId }) {
   const hasSourceHandle = !!sourceNode.__rg.handleBounds.source;
   const hasTargetHandle = !!targetNode.__rg.handleBounds.target;
 
+  let sourceHandle = null;
+  let targetHandle = null;
+
+  if (hasSourceHandle) {
+    // there is no sourceHandleId when there are no multiple handles/ handles with ids
+    // so we just pick the first one
+    if (sourceNode.__rg.handleBounds.source.length === 1 || !sourceHandleId) {
+      sourceHandle = sourceNode.__rg.handleBounds.source[0];
+    } else if (sourceHandleId) {
+      sourceHandle = sourceNode.__rg.handleBounds.source.find(d => d.id === sourceHandleId);
+    }
+  }
+
+  if (hasTargetHandle) {
+    if (targetNode.__rg.handleBounds.target.length === 1 || !targetHandleId) {
+      targetHandle = targetNode.__rg.handleBounds.target[0];
+    } else if (targetHandleId) {
+      targetHandle = targetNode.__rg.handleBounds.target.find(d => d.id === targetHandleId);
+    }
+  }
+
   const sourceHandleX = hasSourceHandle ?
-    sourceNode.__rg.handleBounds.source.x + (sourceNode.__rg.handleBounds.source.width / 2) :
+    sourceHandle.x + (sourceHandle.width / 2) :
     sourceNode.__rg.width / 2;
 
   const sourceHandleY = hasSourceHandle ?
-    sourceNode.__rg.handleBounds.source.y + (sourceNode.__rg.handleBounds.source.height / 2) :
+    sourceHandle.y + (sourceHandle.height / 2) :
     sourceNode.__rg.height;
 
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;
   const sourceY = sourceNode.__rg.position.y + sourceHandleY;
 
   const targetHandleX = hasTargetHandle ?
-    targetNode.__rg.handleBounds.target.x + (targetNode.__rg.handleBounds.target.width / 2) :
+    targetHandle.x + (targetHandle.width / 2) :
     targetNode.__rg.width / 2;
 
   const targetHandleY = hasTargetHandle ?
-    targetNode.__rg.handleBounds.target.y + (targetNode.__rg.handleBounds.target.height / 2) :
+    targetHandle.y + (targetHandle.height / 2) :
     0;
 
   const targetX = targetNode.__rg.position.x + targetHandleX;
@@ -37,22 +58,32 @@ function getEdgePositions(sourceNode, targetNode) {
 
 function renderEdge(e, props, state) {
   const edgeType = e.type || 'default';
-  const sourceNode = state.nodes.find(n => n.id === e.source);
-  const targetNode = state.nodes.find(n => n.id === e.target);
+
+  const hasSourceHandleId = e.source.includes('__');
+  const hasTargetHandleId = e.target.includes('__');
+
+  const sourceId = hasSourceHandleId ? e.source.split('__')[0] : e.source;
+  const targetId = hasTargetHandleId ? e.target.split('__')[0] : e.target;
+
+  const sourceHandleId = hasSourceHandleId ? e.source.split('__')[1] : null;
+  const targetHandleId = hasTargetHandleId ? e.target.split('__')[1] : null;
+
+  const sourceNode = state.nodes.find(n => n.id === sourceId);
+  const targetNode = state.nodes.find(n => n.id === targetId);
 
   if (!sourceNode) {
-    throw new Error(`couldn't create edge for source id: ${e.source}`);
+    throw new Error(`couldn't create edge for source id: ${sourceId}`);
   }
 
   if (!targetNode) {
-    throw new Error(`couldn't create edge for target id: ${e.target}`);
+    throw new Error(`couldn't create edge for target id: ${targetId}`);
   }
 
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  const { sourceX, sourceY, targetX, targetY } = getEdgePositions(sourceNode, targetNode);
+  const { sourceX, sourceY, targetX, targetY } = getEdgePositions({ sourceNode, targetNode, sourceHandleId, targetHandleId });
   const selected = state.selectedElements
     .filter(isEdge)
-    .find(elm => elm.source === e.source && elm.target === e.target);
+    .find(elm => elm.source === sourceId && elm.target === targetId);
 
   return (
     <EdgeComponent
@@ -63,8 +94,10 @@ function renderEdge(e, props, state) {
       selected={selected}
       animated={e.animated}
       style={e.style}
-      source={e.source}
-      target={e.target}
+      source={sourceId}
+      target={targetId}
+      sourceHandleId={sourceHandleId}
+      targetHandleId={targetHandleId}
       sourceX={sourceX}
       sourceY={sourceY}
       targetX={targetX}

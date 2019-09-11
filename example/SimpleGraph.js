@@ -7,7 +7,8 @@ const SpecialNode = ({ data, styles }) => (
   <div
     style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
   >
-    <TargetHandle style={{ left: 10, background: '#999' }} />
+    <TargetHandle id="a" style={{ left: 10, background: '#999' }} />
+    <TargetHandle id="b" style={{ left: 30, background: '#999' }} />
     <div>I am <strong>special</strong>!<br />{data.label}</div>
     <select onChange={(e) => data.onChange(e.target.value, data)}>
       <option value="1">1</option>
@@ -77,6 +78,7 @@ class App extends PureComponent {
         { source: '2', target: '3' },
         { source: '3', target: '4', type: 'step' },
         { source: '3', target: '5' },
+        { source: '5', target: '6__b' },
         { source: '5', target: '6', type: 'step', animated: true, style: { stroke: '#FFCC00' } },
         { source: '6', target: '7', style: { stroke: '#FFCC00' }},
       ]
