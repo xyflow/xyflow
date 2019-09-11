@@ -104,20 +104,32 @@
   width: 10px;
   height: 8px;
   background: rgba(255, 255, 255, 0.4);
+  cursor: crosshair;
 
-  &.source {
+  &.bottom {
     top: auto;
     left: 50%;
     bottom: 0;
     transform: translate(-50%, 0);
-    cursor: crosshair;
   }
 
-  &.target {
+  &.top {
     left: 50%;
     top: 0;
-    cursor: crosshair;
     transform: translate(-50%, 0);
+  }
+
+  &.left {
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+
+  }
+
+  &.right {
+    right: 0;
+    top: 50%;
+    transform: translate(0, -50%);
   }
 }
 

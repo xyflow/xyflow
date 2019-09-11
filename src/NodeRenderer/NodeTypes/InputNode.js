@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SourceHandle from '../HandleTypes/SourceHandle';
+import Handle from '../HandleTypes/Handle';
 
 const nodeStyles = {
   background: '#9999ff',
@@ -15,6 +15,6 @@ export default ({ data, style }) => (
     className="react-graph__node-inner"
   >
     {data.label}
-    <SourceHandle />
+    <Handle type="source" position="bottom" />
   </div>
 );

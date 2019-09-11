@@ -40,23 +40,26 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
 }
 
 const BaseHandle = memo(({
-  source, target, nodeId, onConnect,
+  type, nodeId, onConnect, position,
   setSourceId, setPosition, className,
   id = false, ...rest
 }) => {
+  const isTarget = type === 'target';
   const handleClasses = cx(
     'react-graph__handle',
     className,
-    { source, target }
+    position,
+    { source: !isTarget, target: isTarget }
   );
 
-  const handleId = id ? `${nodeId}__${id}` : nodeId;
+  const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
 
   return (
     <div
-      data-nodeid={handleId}
+      data-nodeid={nodeIdWithHandleId}
+      data-handlepos={position}
       className={handleClasses}
-      onMouseDown={evt => onMouseDown(evt, { nodeId: handleId, setSourceId, setPosition, onConnect, isTarget: target })}
+      onMouseDown={evt => onMouseDown(evt, { nodeId: nodeIdWithHandleId, setSourceId, setPosition, onConnect, isTarget })}
       {...rest}
     />
   );

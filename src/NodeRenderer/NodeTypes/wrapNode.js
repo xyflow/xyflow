@@ -23,6 +23,7 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
     const bounds = handle.getBoundingClientRect();
     const dimensions = getDimensions(handle);
     const nodeIdAttr = handle.getAttribute('data-nodeid');
+    const handlePosition = handle.getAttribute('data-handlepos');
     const nodeIdSplitted = nodeIdAttr.split('__');
 
     let handleId = null;
@@ -33,6 +34,7 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
 
     return {
       id: handleId,
+      position: handlePosition,
       x: (bounds.x - parentBounds.x) * (1 / k),
       y: (bounds.y - parentBounds.y) * (1 / k),
       ...dimensions

@@ -1,7 +1,6 @@
 import React from 'react';
 
-import TargetHandle from '../HandleTypes/TargetHandle';
-import SourceHandle from '../HandleTypes/SourceHandle';
+import Handle from '../HandleTypes/Handle';
 
 const nodeStyles = {
   background: '#ff6060',
@@ -12,8 +11,8 @@ const nodeStyles = {
 
 export default ({ data, style }) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <TargetHandle />
+    <Handle type="target" position="top" />
     {data.label}
-    <SourceHandle />
+    <Handle type="source" position="bottom" />
   </div>
 );

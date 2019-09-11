@@ -14,7 +14,8 @@ const SourceHandle = memo((props) => {
 
   return (
     <BaseHandle
-      source
+      type="source"
+      position="bottom"
       nodeId={nodeId}
       setPosition={setPosition}
       setSourceId={setSourceId}
