@@ -3,8 +3,13 @@ import cx from 'classnames';
 
 export default (props) => {
   const [sourceNode, setSourceNode] = useState(null);
+  const hasHandleId = props.connectionSourceId.includes('__');
+  const sourceIdSplitted = props.connectionSourceId.split('__');
+  const nodeId = sourceIdSplitted[0];
+  const handleId = hasHandleId ? sourceIdSplitted[1] : null;
+
   useEffect(() => {
-    setSourceNode(props.nodes.find(n => n.id === props.connectionSourceId));
+    setSourceNode(props.nodes.find(n => n.id === nodeId));
   }, []);
 
   if (!sourceNode) {
@@ -14,7 +19,7 @@ export default (props) => {
   const style = props.connectionLineStyle || {};
   const className = cx('react-graph__edge', 'connection', props.className);
 
-  const sourceHandle = sourceNode.__rg.handleBounds.source;
+  const sourceHandle = handleId ? sourceNode.__rg.handleBounds.source.find(d => d.id === handleId) : sourceNode.__rg.handleBounds.source[0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + (sourceHandle.width / 2) : sourceNode.__rg.width / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + (sourceHandle.height / 2) : sourceNode.__rg.height;
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;

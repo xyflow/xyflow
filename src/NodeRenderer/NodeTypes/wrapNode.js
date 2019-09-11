@@ -13,20 +13,31 @@ const isHandle = e => (
 );
 
 const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
-  const handle = nodeElement.querySelector(sel);
+  const handles = nodeElement.querySelectorAll(sel);
 
-  if (!handle) {
+  if (!handles || !handles.length) {
     return null;
   }
 
-  const bounds = handle.getBoundingClientRect();
-  const dimensions = getDimensions(handle);
+  return [].map.call(handles, (handle) => {
+    const bounds = handle.getBoundingClientRect();
+    const dimensions = getDimensions(handle);
+    const nodeIdAttr = handle.getAttribute('data-nodeid');
+    const nodeIdSplitted = nodeIdAttr.split('__');
 
-  return {
-    x: (bounds.x - parentBounds.x) * (1 / k),
-    y: (bounds.y - parentBounds.y) * (1 / k),
-    ...dimensions
-  };
+    let handleId = null;
+
+    if (nodeIdSplitted) {
+      handleId = nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted;
+    }
+
+    return {
+      id: handleId,
+      x: (bounds.x - parentBounds.x) * (1 / k),
+      y: (bounds.y - parentBounds.y) * (1 / k),
+      ...dimensions
+    };
+  });
 };
 
 const onStart = (evt, { setOffset, onClick, id, type, data, position, transform }) => {
@@ -92,7 +103,6 @@ export default NodeComponent => {
         source: getHandleBounds('.source', nodeElement.current, bounds, transform[2]),
         target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
       };
-
       store.dispatch.updateNodeData({ id, ...dimensions, handleBounds });
     }, []);
 
