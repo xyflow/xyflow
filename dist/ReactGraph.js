@@ -34328,18 +34328,58 @@
         zIndex: selected ? 10 : 3,
         transform: "translate(".concat(xPos, "px,").concat(yPos, "px)")
       };
-      React.useEffect(function () {
+
+      var updateNode = function updateNode() {
+        var storeState = store.getState();
         var bounds = nodeElement.current.getBoundingClientRect();
         var dimensions = getDimensions(nodeElement.current);
         var handleBounds = {
-          source: getHandleBounds('.source', nodeElement.current, bounds, transform[2]),
-          target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
+          source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
+          target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2])
         };
         store.dispatch.updateNodeData(_objectSpread2$1({
           id: id
         }, dimensions, {
           handleBounds: handleBounds
         }));
+      };
+
+      React.useEffect(function () {
+        updateNode();
+
+        if (ResizeObserver) {
+          var _resizeObserver = new ResizeObserver(function (entries) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = entries[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var entry = _step.value;
+                updateNode();
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                  _iterator["return"]();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+          });
+
+          _resizeObserver.observe(nodeElement.current);
+        }
+
+        return function () {
+          resizeObserver.unobserve(nodeElement.current);
+        };
       }, []);
       return React__default.createElement(reactDraggable.DraggableCore, {
         onStart: function onStart(evt) {
