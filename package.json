@@ -37,12 +37,12 @@
     "rollup-plugin-serve": "^1.0.1"
   },
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.6",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "prop-types": "^15.0.0-0"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c --environment NODE_ENV:production",
     "watch": "rollup -w -c",
     "dev": "parcel example/index.html -d example/build",
     "build:example": "parcel build example/index.html -d example/build"

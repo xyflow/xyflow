@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import Graph, { isEdge, removeElements, getOutgoers, Handle, MiniMap } from '../src';
-// import Graph, { isEdge, removeElements, getOutgoers, Handle } from '../dist/ReactGraph';
+// import Graph, { isEdge, removeElements, getOutgoers, Handle, MiniMap } from '../dist/ReactGraph';
 
 const SpecialNode = ({ data, styles }) => (
   <div
