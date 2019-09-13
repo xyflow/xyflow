@@ -98,14 +98,33 @@ export default NodeComponent => {
     const nodeClasses = cx('react-graph__node', { selected });
     const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
-    useEffect(() => {
+    const updateNode = () => {
+      const storeState = store.getState()
       const bounds = nodeElement.current.getBoundingClientRect();
       const dimensions = getDimensions(nodeElement.current);
       const handleBounds = {
-        source: getHandleBounds('.source', nodeElement.current, bounds, transform[2]),
-        target: getHandleBounds('.target', nodeElement.current, bounds, transform[2])
+        source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
+        target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2])
       };
       store.dispatch.updateNodeData({ id, ...dimensions, handleBounds });
+    }
+
+    useEffect(() => {
+      updateNode();
+
+      if (ResizeObserver) {
+        const resizeObserver = new ResizeObserver(entries => {
+          for (let entry of entries) {
+            updateNode();
+          }
+        });
+
+        resizeObserver.observe(nodeElement.current);
+      }
+
+      return () => {
+        resizeObserver.unobserve(nodeElement.current);
+      }
     }, []);
 
     return (
