@@ -1,5 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
-import isEqual from 'fast-deep-equal';
+import React, { useMemo } from 'react';
 import { StoreProvider } from 'easy-peasy';
 
 if (process.env.NODE_ENV !== 'production') {
