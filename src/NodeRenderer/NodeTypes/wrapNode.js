@@ -12,6 +12,8 @@ const isHandle = e => (
   (e.target.className.includes('source') || e.target.className.includes('target'))
 );
 
+const hasResizeObserver = !!window.ResizeObserver;
+
 const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   const handles = nodeElement.querySelectorAll(sel);
 
@@ -112,8 +114,10 @@ export default NodeComponent => {
     useEffect(() => {
       updateNode();
 
-      if (ResizeObserver) {
-        const resizeObserver = new ResizeObserver(entries => {
+      let resizeObserver = null;
+
+      if (hasResizeObserver) {
+        resizeObserver = new ResizeObserver(entries => {
           for (let entry of entries) {
             updateNode();
           }
@@ -123,7 +127,9 @@ export default NodeComponent => {
       }
 
       return () => {
-        resizeObserver.unobserve(nodeElement.current);
+        if (hasResizeObserver && resizeObserver) {
+          resizeObserver.unobserve(nodeElement.current);
+        }
       }
     }, []);
 

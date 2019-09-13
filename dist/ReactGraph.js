@@ -34185,6 +34185,8 @@
     return e.target.className && e.target.className.includes && (e.target.className.includes('source') || e.target.className.includes('target'));
   };
 
+  var hasResizeObserver = !!window.ResizeObserver;
+
   var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k) {
     var handles = nodeElement.querySelectorAll(sel);
 
@@ -34346,9 +34348,10 @@
 
       React.useEffect(function () {
         updateNode();
+        var resizeObserver = null;
 
-        if (ResizeObserver) {
-          var _resizeObserver = new ResizeObserver(function (entries) {
+        if (hasResizeObserver) {
+          resizeObserver = new ResizeObserver(function (entries) {
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -34373,12 +34376,13 @@
               }
             }
           });
-
-          _resizeObserver.observe(nodeElement.current);
+          resizeObserver.observe(nodeElement.current);
         }
 
         return function () {
-          resizeObserver.unobserve(nodeElement.current);
+          if (hasResizeObserver && resizeObserver) {
+            resizeObserver.unobserve(nodeElement.current);
+          }
         };
       }, []);
       return React__default.createElement(reactDraggable.DraggableCore, {
