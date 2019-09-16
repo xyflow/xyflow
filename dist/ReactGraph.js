@@ -34094,7 +34094,10 @@
   var Consumer = NodeIdContext.Consumer;
   Provider.displayName = 'NodeIdProvider';
 
-  var Handle = React.memo(function (props) {
+  var Handle = React.memo(function (_ref) {
+    var onConnect = _ref.onConnect,
+        rest = _objectWithoutProperties(_ref, ["onConnect"]);
+
     var nodeId = React.useContext(NodeIdContext);
 
     var _useStoreActions = useStoreActions(function (a) {
@@ -34106,24 +34109,32 @@
         setPosition = _useStoreActions.setPosition,
         setSourceId = _useStoreActions.setSourceId;
 
-    var onConnect = useStoreState(function (s) {
+    var onConnectAction = useStoreState(function (s) {
       return s.onConnect;
     });
+
+    var onConnectExtended = function onConnectExtended(params) {
+      onConnectAction(params);
+      onConnect(params);
+    };
+
     return React__default.createElement(BaseHandle, _extends$1({
       nodeId: nodeId,
       setPosition: setPosition,
       setSourceId: setSourceId,
-      onConnect: onConnect
-    }, props));
+      onConnect: onConnectExtended
+    }, rest));
   });
   Handle.displayName = 'Handle';
   Handle.propTypes = {
     type: PropTypes.oneOf(['source', 'target']),
-    position: PropTypes.oneOf(['top', 'right', 'bottom', 'left'])
+    position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    onConnect: PropTypes.func
   };
   Handle.defaultProps = {
     type: 'source',
-    position: 'top'
+    position: 'top',
+    onConnect: function onConnect() {}
   };
 
   var nodeStyles = {

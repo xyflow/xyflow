@@ -5,21 +5,25 @@ import { useStoreActions, useStoreState } from 'easy-peasy';
 import BaseHandle from './BaseHandle';
 import NodeIdContext from '../NodeIdContext'
 
-const Handle = memo((props) => {
+const Handle = memo(({ onConnect, ...rest }) => {
   const nodeId = useContext(NodeIdContext);
   const { setPosition, setSourceId } = useStoreActions(a => ({
     setPosition: a.setConnectionPosition,
     setSourceId: a.setConnectionSourceId
   }));
-  const onConnect = useStoreState(s => s.onConnect);
+  const onConnectAction = useStoreState(s => s.onConnect);
+  const onConnectExtended = (params) => {
+    onConnectAction(params);
+    onConnect(params);
+  };
 
   return (
     <BaseHandle
       nodeId={nodeId}
       setPosition={setPosition}
       setSourceId={setSourceId}
-      onConnect={onConnect}
-      {...props}
+      onConnect={onConnectExtended}
+      {...rest}
     />
   );
 });
@@ -29,11 +33,13 @@ Handle.displayName = 'Handle';
 Handle.propTypes = {
   type: PropTypes.oneOf(['source', 'target']),
   position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
+  onConnect: PropTypes.func
 };
 
 Handle.defaultProps = {
   type: 'source',
-  position: 'top'
+  position: 'top',
+  onConnect: () => {}
 };
 
 export default Handle;
