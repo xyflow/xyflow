@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Handle } from '../../src';
+import { Handle } from '../../../src';
 
 export default ({ data, styles }) => {
   return (

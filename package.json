@@ -24,6 +24,7 @@
     "autoprefixer": "^9.6.1",
     "babel-loader": "^8.0.6",
     "babel-preset-react-app": "^9.0.0",
+    "cypress": "^3.4.1",
     "husky": "^3.0.0",
     "parcel-bundler": "^1.12.3",
     "postcss-nested": "^4.1.2",
@@ -44,8 +45,9 @@
   "scripts": {
     "build": "rollup -c --environment NODE_ENV:production",
     "watch": "rollup -w -c",
-    "dev": "parcel example/index.html -d example/build",
-    "build:example": "parcel build example/index.html -d example/build"
+    "dev": "parcel examples/*.html -d examples/build",
+    "build:example": "parcel build examples/*.html -d examples/build",
+    "cypress": "cypress open"
   },
   "husky": {
     "hooks": {}

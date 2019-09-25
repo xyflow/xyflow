@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, removeElements, getOutgoers, MiniMap } from '../../src';
+import Graph, { isEdge, removeElements, getOutgoers, MiniMap } from '../../../src';
 
 import SpecialNode from './SpecialNode';
 import InputNode from './InputNode';
