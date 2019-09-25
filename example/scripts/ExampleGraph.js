@@ -1,45 +1,9 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, removeElements, getOutgoers, Handle, MiniMap } from '../src';
-// import Graph, { isEdge, removeElements, getOutgoers, Handle, MiniMap } from '../dist/ReactGraph';
+import Graph, { isEdge, removeElements, getOutgoers, MiniMap } from '../../src';
 
-const SpecialNode = ({ data, styles }) => (
-  <div
-    style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
-  >
-    <Handle
-      type="target"
-      position="top"
-      id="a"
-      style={{ left: 10, background: '#999' }}
-      onConnect={params => console.log('handle onConnect', params)}
-    />
-    <Handle
-      type="target"
-      position="top"
-      id="b"
-      style={{ left: 30, background: '#999' }}
-    />
-    <div>I am <strong>special</strong>!<br />{data.label}</div>
-    <select onChange={(e) => data.onChange(e.target.value, data)}>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-    </select>
-    <Handle type="source" position="bottom" style={{ left: 10, background: '#999' }} />
-  </div>
-);
-
-const InputNode = ({ data, styles }) => (
-  <div
-    style={{ background: '#FFCC00', padding: 10, borderRadius: 2, ...styles }}
-  >
-    <Handle type="target" position="left" style={{ background: '#999' }} />
-    <div>{data.input}</div>
-    <input onChange={(e) => data.onChange(e.target.value, data)} />
-    <Handle type="source" position="right" style={{ background: '#999' }} />
-  </div>
-);
+import SpecialNode from './SpecialNode';
+import InputNode from './InputNode';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 
@@ -54,7 +18,13 @@ class App extends PureComponent {
             return e;
           }
 
-          return { ...e, data: { ...e.data, label: `Option ${option} selected.` } };
+          return {
+            ...e,
+            data: {
+              ...e.data,
+              label: `Option ${option} selected.`
+            }
+          };
         })}
       ));
     }
@@ -67,7 +37,13 @@ class App extends PureComponent {
           }
 
           if (e.id === '8') {
-            return { ...e, data: { ...e.data, input: input || 'write something' } };
+            return {
+              ...e,
+              data: {
+                ...e.data,
+                input: input || 'write something'
+              }
+            };
           }
         })}
       ));
