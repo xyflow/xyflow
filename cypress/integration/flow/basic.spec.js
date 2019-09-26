@@ -1,6 +1,6 @@
 describe('Basic Flow Rendering', () => {
   it('renders a flow with three nodes', () => {
-    cy.visit('/basic.html');
+    cy.visit('/index.html');
 
     cy.get('.react-graph__renderer');
     cy.get('.react-graph__node').should('have.length', 3);

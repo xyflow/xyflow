@@ -35,7 +35,9 @@
     "rollup-plugin-livereload": "^1.0.1",
     "rollup-plugin-node-resolve": "^5.1.0",
     "rollup-plugin-postcss": "^2.0.3",
-    "rollup-plugin-serve": "^1.0.1"
+    "rollup-plugin-serve": "^1.0.1",
+    "start-server-and-test": "^1.10.2",
+    "wait-on": "^3.3.0"
   },
   "peerDependencies": {
     "react": "^16.9.0",
@@ -47,8 +49,10 @@
     "watch": "rollup -w -c",
     "dev": "parcel examples/*.html -d examples/build",
     "build:example": "parcel build examples/*.html -d examples/build",
-    "cypress": "cypress open",
-    "test": "cypress run"
+    "dev:wait": "start-server-and-test dev http-get://localhost:1234/index.html",
+    "cy:run": "cypress run",
+    "cypress": "npm run dev:wait cypress open",
+    "test": "npm run dev:wait cy:run"
   },
   "husky": {
     "hooks": {}
