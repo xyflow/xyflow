@@ -45169,8 +45169,7 @@ var _default = function _default(_ref) {
   var data = _ref.data,
       style = _ref.style;
   return _react.default.createElement("div", {
-    style: _objectSpread({}, nodeStyles, {}, style),
-    className: "react-graph__node-inner"
+    style: _objectSpread({}, nodeStyles, {}, style)
   }, data.label, _react.default.createElement(_Handle.default, {
     type: "source",
     position: "bottom"
@@ -46364,7 +46363,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52266" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64998" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

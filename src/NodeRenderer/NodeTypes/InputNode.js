@@ -10,10 +10,7 @@ const nodeStyles = {
 };
 
 export default ({ data, style }) => (
-  <div
-    style={{ ...nodeStyles, ...style }}
-    className="react-graph__node-inner"
-  >
+  <div style={{ ...nodeStyles, ...style }}>
     {data.label}
     <Handle type="source" position="bottom" />
   </div>

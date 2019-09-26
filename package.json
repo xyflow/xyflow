@@ -47,7 +47,8 @@
     "watch": "rollup -w -c",
     "dev": "parcel examples/*.html -d examples/build",
     "build:example": "parcel build examples/*.html -d examples/build",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "test": "cypress run"
   },
   "husky": {
     "hooks": {}

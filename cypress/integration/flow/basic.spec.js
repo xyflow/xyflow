@@ -7,8 +7,16 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-graph__edge').should('have.length', 2);
   });
 
+  it('all nodes have handles', () => {
+    cy.get('.react-graph__node').children('div').children('.react-graph__handle');
+  });
+
   it('selects a node', () => {
     cy.get('.react-graph__node:first').click().should('have.class', 'selected');
+  });
+
+  it('selects an edge', () => {
+    cy.get('.react-graph__edge:first').click().should('have.class', 'selected');
   });
 
   it('drags a node', () => {
@@ -19,5 +27,13 @@ describe('Basic Flow Rendering', () => {
         const styleAfterDrag = $el.css('transform');
         expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
       });
+  });
+
+  it('removes a node', () => {
+    cy.get('.react-graph__node:last').click();
+    cy.get('body').type('{backspace}');
+
+    cy.get('.react-graph__node').should('have.length', 2);
+    cy.get('.react-graph__edge').should('have.length', 1);
   });
 });
