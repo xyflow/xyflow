@@ -25,8 +25,8 @@ export default (props) => {
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;
   const sourceY = sourceNode.__rg.position.y + sourceHandleY;
 
-  const targetX = (props.connectionPositionX * (1 / props.transform[2])) - (props.transform[0] * (1 / props.transform[2]));
-  const targetY = (props.connectionPositionY * (1 / props.transform[2])) - (props.transform[1] * (1 / props.transform[2]));
+  const targetX = (props.connectionPositionX - props.transform[0]) * (1 / props.transform[2]);
+  const targetY = (props.connectionPositionY - props.transform[1]) * (1 / props.transform[2]);
 
   let dAttr = '';
 
