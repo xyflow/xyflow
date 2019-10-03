@@ -24,7 +24,7 @@ const GraphView = memo((props) => {
   const updateSize = useStoreActions(actions => actions.updateSize);
   const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
 
-  const shiftPressed = useKeyPress('Shift');
+  const selectionKeyPressed = useKeyPress(props.selectionKey);
   const updateDimensions = () => {
     const size = getDimensions(rendererNode.current);
     updateSize(size);
@@ -39,7 +39,7 @@ const GraphView = memo((props) => {
     };
   }, []);
 
-  useD3Zoom(zoomPane, props.onMove, shiftPressed);
+  useD3Zoom(zoomPane, props.onMove, selectionKeyPressed);
 
   useEffect(() => {
     if (state.d3Initialised) {
@@ -66,7 +66,7 @@ const GraphView = memo((props) => {
         connectionLineType={props.connectionLineType}
         connectionLineStyle={props.connectionLineStyle}
       />
-      {shiftPressed && <UserSelection />}
+      {selectionKeyPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}
       <div
         className="react-graph__zoompane"
