@@ -15,6 +15,24 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-graph__node:first').click().should('have.class', 'selected');
   });
 
+  it('deselects node', () => {
+    cy.get('.react-graph__renderer').click(0, 0);
+    cy.get('.react-graph__node:first').should('not.have.class', 'selected');
+  });
+
+  it('select all nodes', () => {
+    // @FIX: why is there no selection__pane visible?
+    // https://docs.cypress.io/api/commands/type.html#Do-a-shift-click
+    cy.get('body')
+      .type('{shift}', { release: false })
+      .get('.react-graph__selectionpane')
+      .trigger('mousedown', 'topLeft', { which: 1, force: true })
+      .trigger('mousemove', 'bottomRight', { which: 1 })
+      .trigger('mouseup', 'bottomRight', { force: true });
+
+      cy.get('.react-graph__node').should('have.class', 'selected');
+  });
+
   it('selects an edge', () => {
     cy.get('.react-graph__edge:first').click().should('have.class', 'selected');
   });
