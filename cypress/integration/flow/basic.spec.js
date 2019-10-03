@@ -3,7 +3,7 @@ describe('Basic Flow Rendering', () => {
     cy.visit('/index.html');
 
     cy.get('.react-graph__renderer');
-    cy.get('.react-graph__node').should('have.length', 3);
+    cy.get('.react-graph__node').should('have.length', 4);
     cy.get('.react-graph__edge').should('have.length', 2);
   });
 
@@ -16,7 +16,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('deselects node', () => {
-    cy.get('.react-graph__renderer').click(0, 0);
+    cy.get('.react-graph__renderer').click('bottomRight');
     cy.get('.react-graph__node:first').should('not.have.class', 'selected');
   });
 
@@ -30,7 +30,7 @@ describe('Basic Flow Rendering', () => {
       .trigger('mousemove', 'bottomRight', { which: 1 })
       .trigger('mouseup', 'bottomRight', { force: true });
 
-      cy.get('.react-graph__node').should('have.class', 'selected');
+    cy.get('.react-graph__node').should('have.class', 'selected');
   });
 
   it('selects an edge', () => {
@@ -48,10 +48,25 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('removes a node', () => {
-    cy.get('.react-graph__node:last').click();
+    cy.get('.react-graph__node').contains('Node 2').click();
     cy.get('body').type('{backspace}');
 
-    cy.get('.react-graph__node').should('have.length', 2);
+    cy.get('.react-graph__node').should('have.length', 3);
     cy.get('.react-graph__edge').should('have.length', 1);
   });
+
+  it('connect nodes', () => {
+    cy.get('.react-graph__node')
+      .contains('Node 3')
+      .find('.react-graph__handle.source')
+      .trigger('mousedown', { which: 1 });
+
+    cy.get('.react-graph__node')
+      .contains('Node 4')
+      .find('.react-graph__handle.target')
+      .trigger('mousemove', { which: 1 })
+      .trigger('mouseup', { force: true });
+
+    cy.get('.react-graph__edge').should('have.length', 2);
+  })
 });
