@@ -13,7 +13,7 @@ import { fitView, zoomIn, zoomOut } from '../graph-utils';
 const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,
   onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle,
-  selectionKey
+  selectionKeyCode
 }) => {
   const zoomPane = useRef();
   const rendererNode = useRef();
@@ -28,7 +28,7 @@ const GraphView = memo(({
   const updateSize = useStoreActions(actions => actions.updateSize);
   const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
 
-  const selectionKeyPressed = useKeyPress(selectionKey);
+  const selectionKeyPressed = useKeyPress(selectionKeyCode);
   const updateDimensions = () => {
     const size = getDimensions(rendererNode.current);
     updateSize(size);

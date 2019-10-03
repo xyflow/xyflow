@@ -2,17 +2,18 @@ import { useState, useEffect } from 'react';
 
 import { isInputNode } from '../utils';
 
-export default function useKeyPress(targetKey) {
+export default function useKeyPress(keyCode) {
   const [keyPressed, setKeyPressed] = useState(false);
 
-  function downHandler({ key, target }) {
-    if (key === targetKey && !isInputNode(target)) {
+  function downHandler(evt) {
+    console.log(keyCode, evt.keyCode);
+    if (evt.keyCode === keyCode && !isInputNode(evt.target)) {
       setKeyPressed(true);
     }
   }
 
-  const upHandler = ({ key, target }) => {
-    if (key === targetKey && !isInputNode(target)) {
+  const upHandler = (evt) => {
+    if (evt.keyCode === keyCode && !isInputNode(evt.target)) {
       setKeyPressed(false);
     }
   };

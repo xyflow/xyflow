@@ -27,7 +27,7 @@ const ReactGraph = ({
   style, onElementClick, elements, children,
   nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove,
   onConnect, onNodeDragStop, connectionLineType, connectionLineStyle,
-  deleteKey, selectionKey
+  deleteKeyCode, selectionKeyCode
 }) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -45,11 +45,11 @@ const ReactGraph = ({
           edgeTypes={edgeTypesParsed}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          selectionKey={selectionKey}
+          selectionKeyCode={selectionKeyCode}
         />
         <GlobalKeyHandler
           onElementsRemove={onElementsRemove}
-          deleteKey={deleteKey}
+          deleteKeyCode={deleteKeyCode}
         />
         {children}
       </StoreProvider>
@@ -78,8 +78,8 @@ ReactGraph.defaultProps = {
   },
   connectionLineType: 'bezier',
   connectionLineStyle: {},
-  deleteKey: 'Backspace',
-  selectionKey: 'Shift'
+  deleteKeyCode: 8,
+  selectionKeyCode: 16
 };
 
 export default ReactGraph;

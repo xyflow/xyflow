@@ -20,17 +20,21 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-graph__node:first').should('not.have.class', 'selected');
   });
 
-  it('select all nodes', () => {
-    // @FIX: why is there no selection__pane visible?
-    // https://docs.cypress.io/api/commands/type.html#Do-a-shift-click
+  it('selects all nodes', () => {
     cy.get('body')
-      .type('{shift}', { release: false })
+      .type('{Shift}', { release: false })
       .get('.react-graph__selectionpane')
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
       .trigger('mousemove', 'bottomRight', { which: 1 })
-      .trigger('mouseup', 'bottomRight', { force: true });
+      .trigger('mouseup', 'bottomRight', { force: true })
+      .get('.react-graph__node')
+      .should('have.class', 'selected')
+      .get('.react-graph__nodesselection-rect');
+  });
 
-    cy.get('.react-graph__node').should('have.class', 'selected');
+  it('remove selection', () => {
+    cy.get('.react-graph__renderer').click('bottomRight');
+    cy.get('.react-graph__nodesselection-rect').should('not.exist');
   });
 
   it('selects an edge', () => {
@@ -55,7 +59,7 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-graph__edge').should('have.length', 1);
   });
 
-  it('connect nodes', () => {
+  it('connects nodes', () => {
     cy.get('.react-graph__node')
       .contains('Node 3')
       .find('.react-graph__handle.source')

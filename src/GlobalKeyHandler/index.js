@@ -4,13 +4,13 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 import useKeyPress from '../hooks/useKeyPress';
 import { isEdge, getConnectedEdges } from '../graph-utils';
 
-export default memo(({ deleteKey, onElementsRemove }) => {
+export default memo(({ deleteKeyCode, onElementsRemove }) => {
   const state = useStoreState(s => ({ selectedElements: s.selectedElements, edges: s.edges }))
   const setNodesSelection = useStoreActions(a => a.setNodesSelection);
-  const removePressed = useKeyPress(deleteKey);
+  const deleteKeyPressed = useKeyPress(deleteKeyCode);
 
   useEffect(() => {
-    if (removePressed && state.selectedElements.length) {
+    if (deleteKeyPressed && state.selectedElements.length) {
       let elementsToRemove = state.selectedElements;
 
       // we also want to remove the edges if only one node is selected
@@ -22,7 +22,7 @@ export default memo(({ deleteKey, onElementsRemove }) => {
       onElementsRemove(elementsToRemove);
       setNodesSelection({ isActive: false });
     }
-  }, [removePressed])
+  }, [deleteKeyPressed])
 
   return null;
 });
