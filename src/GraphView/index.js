@@ -10,7 +10,11 @@ import useD3Zoom from '../hooks/useD3Zoom';
 import { getDimensions } from '../utils';
 import { fitView, zoomIn, zoomOut } from '../graph-utils';
 
-const GraphView = memo((props) => {
+const GraphView = memo(({
+  nodeTypes, edgeTypes, onMove, onLoad,
+  onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle,
+  selectionKey
+}) => {
   const zoomPane = useRef();
   const rendererNode = useRef();
   const state = useStoreState(s => ({
@@ -24,7 +28,7 @@ const GraphView = memo((props) => {
   const updateSize = useStoreActions(actions => actions.updateSize);
   const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
 
-  const selectionKeyPressed = useKeyPress(props.selectionKey);
+  const selectionKeyPressed = useKeyPress(selectionKey);
   const updateDimensions = () => {
     const size = getDimensions(rendererNode.current);
     updateSize(size);
@@ -39,11 +43,11 @@ const GraphView = memo((props) => {
     };
   }, []);
 
-  useD3Zoom(zoomPane, props.onMove, selectionKeyPressed);
+  useD3Zoom(zoomPane, onMove, selectionKeyPressed);
 
   useEffect(() => {
     if (state.d3Initialised) {
-      props.onLoad({
+      onLoad({
         fitView,
         zoomIn,
         zoomOut
@@ -54,17 +58,17 @@ const GraphView = memo((props) => {
   return (
     <div className="react-graph__renderer" ref={rendererNode}>
       <NodeRenderer
-        nodeTypes={props.nodeTypes}
-        onElementClick={props.onElementClick}
-        onNodeDragStop={props.onNodeDragStop}
+        nodeTypes={nodeTypes}
+        onElementClick={onElementClick}
+        onNodeDragStop={onNodeDragStop}
       />
       <EdgeRenderer
         width={state.width}
         height={state.height}
-        edgeTypes={props.edgeTypes}
-        onElementClick={props.onElementClick}
-        connectionLineType={props.connectionLineType}
-        connectionLineStyle={props.connectionLineStyle}
+        edgeTypes={edgeTypes}
+        onElementClick={onElementClick}
+        connectionLineType={connectionLineType}
+        connectionLineStyle={connectionLineStyle}
       />
       {selectionKeyPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}
