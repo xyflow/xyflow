@@ -51,7 +51,7 @@
     "build:example": "parcel build examples/*.html -d examples/build",
     "dev:wait": "start-server-and-test dev http-get://localhost:1234/index.html",
     "cy:run": "cypress run",
-    "cy:open": "cypress run",
+    "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
     "test": "npm run dev:wait cy:run"
   },
