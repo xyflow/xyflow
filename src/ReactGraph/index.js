@@ -26,7 +26,8 @@ import '../style.css';
 const ReactGraph = ({
   style, onElementClick, elements, children,
   nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove,
-  onConnect, onNodeDragStop, connectionLineType, connectionLineStyle
+  onConnect, onNodeDragStop, connectionLineType, connectionLineStyle,
+  deleteKey
 }) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -47,6 +48,7 @@ const ReactGraph = ({
         />
         <GlobalKeyHandler
           onElementsRemove={onElementsRemove}
+          deleteKey={deleteKey}
         />
         {children}
       </StoreProvider>
@@ -74,7 +76,8 @@ ReactGraph.defaultProps = {
     step: StepEdge
   },
   connectionLineType: 'bezier',
-  connectionLineStyle: {}
+  connectionLineStyle: {},
+  deleteKey: 'Backspace'
 };
 
 export default ReactGraph;
