@@ -60,19 +60,6 @@ export const parseElement = (e, transform) => {
   };
 };
 
-export const separateElements = (res, element) => {
-  res.edges = res.edges ? res.edges : [];
-  res.nodes = res.nodes ? res.nodes : [];
-
-  if (isEdge(element)) {
-    res.edges.push(element);
-  } else {
-    res.nodes.push(element);
-  }
-
-  return res;
-};
-
 export const getBoundingBox = (nodes) => {
   const bbox = nodes.reduce((res, node) => {
     const { position } = node.__rg;
@@ -142,7 +129,7 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1], partially = f
 
 export const getConnectedEdges = (nodes, edges) => {
   const nodeIds = nodes.map(n => n.id);
-  return edges.filter(e => nodeIds.includes(e.source) || nodeIds.includes(e.target))
+  return edges.filter(e => nodeIds.includes(e.source) || nodeIds.includes(e.target));
 };
 
 export const fitView = ({ padding = 0 } = {}) => {
@@ -170,7 +157,6 @@ export const zoomOut = () => {
 
 export default {
   isEdge,
-  separateElements,
   getBoundingBox,
   graphPosToZoomedPos,
   getConnectedEdges,
