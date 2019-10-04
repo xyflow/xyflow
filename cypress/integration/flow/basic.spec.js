@@ -80,14 +80,31 @@ describe('Basic Flow Rendering', () => {
 
     const newPosition = {
       clientX: Cypress.config('viewportWidth') * 0.6,
-      clientY: Cypress.config('viewportHeight') * 0.6
+      clientY: Cypress.config('viewportHeight') * 0.7
     };
+
+    const styleBeforeDrag = Cypress.$('.react-graph__nodes').css('transform');
 
     cy.window().then((win) => {
       cy.get('.react-graph__zoompane')
         .trigger('mousedown', { which: 1, view: win })
         .trigger('mousemove', newPosition)
-        .trigger('mouseup', { force: true, view: win });
+        .trigger('mouseup', { force: true, view: win })
+        .then(() => {
+          const styleAfterDrag = Cypress.$('.react-graph__nodes').css('transform');
+          expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
+        });
     });
+  });
+
+  it('zooms the pane', () => {
+    const styleBeforeZoom = Cypress.$('.react-graph__nodes').css('transform');
+
+    cy.get('.react-graph__zoompane')
+      .trigger('wheel','topLeft', { deltaY: -200 })
+      .then(() => {
+        const styleAfterZoom = Cypress.$('.react-graph__nodes').css('transform');
+        expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
+      });
   });
 });
