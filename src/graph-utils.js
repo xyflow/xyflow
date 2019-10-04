@@ -129,6 +129,7 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1], partially = f
 
 export const getConnectedEdges = (nodes, edges) => {
   const nodeIds = nodes.map(n => n.id);
+
   return edges.filter(e => {
     const hasSourceHandleId = e.source.includes('__');
     const hasTargetHandleId = e.target.includes('__');

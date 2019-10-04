@@ -6,7 +6,6 @@ export default function useKeyPress(keyCode) {
   const [keyPressed, setKeyPressed] = useState(false);
 
   function downHandler(evt) {
-    console.log(keyCode, evt.keyCode);
     if (evt.keyCode === keyCode && !isInputNode(evt.target)) {
       setKeyPressed(true);
     }
