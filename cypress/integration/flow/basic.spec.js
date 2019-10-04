@@ -22,7 +22,7 @@ describe('Basic Flow Rendering', () => {
 
   it('selects all nodes', () => {
     cy.get('body')
-      .type('{Shift}', { release: false })
+      .type('{shift}', { release: false })
       .get('.react-graph__selectionpane')
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
       .trigger('mousemove', 'bottomRight', { which: 1 })
@@ -68,9 +68,26 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-graph__node')
       .contains('Node 4')
       .find('.react-graph__handle.target')
-      .trigger('mousemove', { which: 1 })
+      .trigger('mousemove')
       .trigger('mouseup', { force: true });
 
     cy.get('.react-graph__edge').should('have.length', 2);
-  })
+  });
+
+  it('drags the pane', () => {
+    // for d3 we have to pass the window to the event
+    // https://github.com/cypress-io/cypress/issues/3441
+
+    const newPosition = {
+      clientX: Cypress.config('viewportWidth') * 0.6,
+      clientY: Cypress.config('viewportHeight') * 0.6
+    };
+
+    cy.window().then((win) => {
+      cy.get('.react-graph__zoompane')
+        .trigger('mousedown', { which: 1, view: win })
+        .trigger('mousemove', newPosition)
+        .trigger('mouseup', { force: true, view: win });
+    });
+  });
 });
