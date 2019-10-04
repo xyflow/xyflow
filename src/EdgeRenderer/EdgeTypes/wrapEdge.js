@@ -7,8 +7,8 @@ import store from '../../store';
 export default EdgeComponent => {
   const EdgeWrapper = memo((props) => {
     const {
-      source, target, animated, type,
-      selected, onClick
+      id, source, target, type,
+      animated, selected, onClick
     } = props;
     const edgeClasses = cx('react-graph__edge', { selected, animated });
     const onEdgeClick = (evt) => {
@@ -16,8 +16,8 @@ export default EdgeComponent => {
         return false;
       }
 
-      store.dispatch.setSelectedElements({ source, target });
-      onClick({ source, target, type });
+      store.dispatch.setSelectedElements({ id, source, target });
+      onClick({ id, source, target, type });
     };
 
     return (

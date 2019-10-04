@@ -15,7 +15,7 @@ export const getOutgoers = (node, elements) => {
 };
 
 export const removeElements = (elements, elementsToRemove) => {
-  const nodeIdsToRemove = elementsToRemove.filter(isNode).map(n => n.id);
+  const nodeIdsToRemove = elementsToRemove.map(n => n.id);
 
   return elements.filter(e => {
     return (

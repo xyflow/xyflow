@@ -5,9 +5,6 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-graph__renderer');
     cy.get('.react-graph__node').should('have.length', 4);
     cy.get('.react-graph__edge').should('have.length', 2);
-  });
-
-  it('all nodes have handles', () => {
     cy.get('.react-graph__node').children('div').children('.react-graph__handle');
   });
 
@@ -18,6 +15,15 @@ describe('Basic Flow Rendering', () => {
   it('deselects node', () => {
     cy.get('.react-graph__renderer').click('bottomRight');
     cy.get('.react-graph__node:first').should('not.have.class', 'selected');
+  });
+
+  it('selects an edge', () => {
+    cy.get('.react-graph__edge:first').click().should('have.class', 'selected');
+  });
+
+  it('deselects edge', () => {
+    cy.get('.react-graph__renderer').click('bottomRight');
+    cy.get('.react-graph__edge:first').should('not.have.class', 'selected');
   });
 
   it('selects all nodes', () => {
@@ -32,7 +38,7 @@ describe('Basic Flow Rendering', () => {
       .get('.react-graph__nodesselection-rect');
   });
 
-  it('remove selection', () => {
+  it('removes selection', () => {
     cy.get('.react-graph__renderer').click('bottomRight');
     cy.get('.react-graph__nodesselection-rect').should('not.exist');
   });
@@ -72,6 +78,13 @@ describe('Basic Flow Rendering', () => {
       .trigger('mouseup', { force: true });
 
     cy.get('.react-graph__edge').should('have.length', 2);
+  });
+
+  it('removes an edge', () => {
+    cy.get('.react-graph__edge:first').click();
+    cy.get('body').type('{backspace}');
+
+    cy.get('.react-graph__edge').should('have.length', 1);
   });
 
   it('drags the pane', () => {

@@ -15,8 +15,8 @@ class App extends PureComponent {
         { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
         { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
         { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
-        { source: '1', target: '2', animated: true },
-        { source: '1', target: '3' },
+        { id: 'e1-2', source: '1', target: '2', animated: true },
+        { id: 'e1-3', source: '1', target: '3' },
       ]
     };
 
