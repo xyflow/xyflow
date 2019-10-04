@@ -129,7 +129,15 @@ export const getNodesInside = (nodes, bbox, transform = [0, 0, 1], partially = f
 
 export const getConnectedEdges = (nodes, edges) => {
   const nodeIds = nodes.map(n => n.id);
-  return edges.filter(e => nodeIds.includes(e.source) || nodeIds.includes(e.target));
+  return edges.filter(e => {
+    const hasSourceHandleId = e.source.includes('__');
+    const hasTargetHandleId = e.target.includes('__');
+
+    const sourceId = hasSourceHandleId ? e.source.split('__')[0] : e.source;
+    const targetId = hasTargetHandleId ? e.target.split('__')[0] : e.target;
+
+    return nodeIds.includes(sourceId) || nodeIds.includes(targetId);
+  });
 };
 
 export const fitView = ({ padding = 0 } = {}) => {
