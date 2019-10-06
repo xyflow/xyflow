@@ -1,10 +1,10 @@
-import { useEffect, memo } from 'react';
+import { useEffect } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 
 import { parseElement, isNode, isEdge } from '../graph-utils';
 
-const ElementUpdater = (props) => {
+const useElementUpdater = ({ elements }) => {
   const state = useStoreState(s => ({
     nodes: s.nodes,
     edges: s.edges,
@@ -13,11 +13,10 @@ const ElementUpdater = (props) => {
 
   const setNodes = useStoreActions(a => a.setNodes);
   const setEdges = useStoreActions(a => a.setEdges);
-  const setOnConnect = useStoreActions(a => a.setOnConnect);
 
   useEffect(() => {
-    const nodes = props.elements.filter(isNode);
-    const edges = props.elements.filter(isEdge).map(parseElement);
+    const nodes = elements.filter(isNode);
+    const edges = elements.filter(isEdge).map(parseElement);
 
     const nextNodes = nodes.map(propNode => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
@@ -47,13 +46,7 @@ const ElementUpdater = (props) => {
     }
   });
 
-  useEffect(() => {
-    setOnConnect(props.onConnect);
-  }, []);
-
   return null;
 };
 
-ElementUpdater.displayName = 'ElementUpdater';
-
-export default memo(ElementUpdater);
+export default useElementUpdater;

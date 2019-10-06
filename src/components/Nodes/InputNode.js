@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Handle from '../HandleTypes/Handle';
+import Handle from '../../components/Handle';
 
 const nodeStyles = {
-  background: '#55dd99',
+  background: '#9999ff',
   padding: 10,
   borderRadius: 5,
   width: 150
@@ -11,7 +11,7 @@ const nodeStyles = {
 
 export default ({ data, style }) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <Handle type="target" position="top" />
     {data.label}
+    <Handle type="source" position="bottom" />
   </div>
 );

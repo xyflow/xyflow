@@ -3,17 +3,20 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import UserSelection from '../UserSelection';
-import NodesSelection from '../NodesSelection';
-import useKeyPress from '../hooks/useKeyPress';
-import useD3Zoom from '../hooks/useD3Zoom';
-import { getDimensions } from '../utils';
-import { fitView, zoomIn, zoomOut } from '../graph-utils';
+import UserSelection from '../../components/UserSelection';
+import NodesSelection from '../../components/NodesSelection';
+import useKeyPress from '../../hooks/useKeyPress';
+import useD3Zoom from '../../hooks/useD3Zoom';
+import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
+import useElementUpdater from '../../hooks/useElementUpdater'
+import { getDimensions } from '../../utils';
+import { fitView, zoomIn, zoomOut } from '../../graph-utils';
 
 const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,
   onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle,
-  selectionKeyCode
+  selectionKeyCode, onElementsRemove, deleteKeyCode, elements,
+  onConnect
 }) => {
   const zoomPane = useRef();
   const rendererNode = useRef();
@@ -27,8 +30,11 @@ const GraphView = memo(({
   }));
   const updateSize = useStoreActions(actions => actions.updateSize);
   const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
-
+  const setOnConnect = useStoreActions(a => a.setOnConnect);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
+
+  const onZoomPaneClick = () => setNodesSelection({ isActive: false });
+
   const updateDimensions = () => {
     const size = getDimensions(rendererNode.current);
     updateSize(size);
@@ -36,6 +42,7 @@ const GraphView = memo(({
 
   useEffect(() => {
     updateDimensions();
+    setOnConnect(onConnect);
     window.onresize = updateDimensions;
 
     return () => {
@@ -54,6 +61,9 @@ const GraphView = memo(({
       });
     }
   }, [state.d3Initialised]);
+
+  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
+  useElementUpdater({ elements });
 
   return (
     <div className="react-graph__renderer" ref={rendererNode}>
@@ -74,7 +84,7 @@ const GraphView = memo(({
       {state.nodesSelectionActive && <NodesSelection />}
       <div
         className="react-graph__zoompane"
-        onClick={() => setNodesSelection({ isActive: false })}
+        onClick={onZoomPaneClick}
         ref={zoomPane}
       />
     </div>

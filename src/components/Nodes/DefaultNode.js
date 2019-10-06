@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Handle from '../HandleTypes/Handle';
+import Handle from '../../components/Handle';
 
 const nodeStyles = {
   background: '#ff6060',

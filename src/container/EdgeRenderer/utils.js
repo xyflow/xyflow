@@ -1,6 +1,6 @@
-import StraightEdge from './EdgeTypes/StraightEdge';
-import BezierEdge from './EdgeTypes/BezierEdge';
-import wrapEdge from './EdgeTypes/wrapEdge';
+import StraightEdge from '../../components/Edges/StraightEdge';
+import BezierEdge from '../../components/Edges/BezierEdge';
+import wrapEdge from '../../components/Edges/wrapEdge';
 
 export function createEdgeTypes(edgeTypes) {
   const standardTypes = {

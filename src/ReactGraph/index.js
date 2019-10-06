@@ -6,28 +6,26 @@ if (process.env.NODE_ENV !== 'production') {
   whyDidYouRender(React);
 }
 
-import GraphView from '../GraphView';
-import GlobalKeyHandler from '../GlobalKeyHandler';
+import GraphView from '../container/GraphView';
 
-import DefaultNode from '../NodeRenderer/NodeTypes/DefaultNode';
-import InputNode from '../NodeRenderer/NodeTypes/InputNode';
-import OutputNode from '../NodeRenderer/NodeTypes/OutputNode';
-import { createNodeTypes } from '../NodeRenderer/utils';
+import DefaultNode from '../components/Nodes/DefaultNode';
+import InputNode from '../components/Nodes/InputNode';
+import OutputNode from '../components/Nodes/OutputNode';
+import { createNodeTypes } from '../container/NodeRenderer/utils';
 
-import BezierEdge from '../EdgeRenderer/EdgeTypes/BezierEdge';
-import StraightEdge from '../EdgeRenderer/EdgeTypes/StraightEdge';
-import StepEdge from '../EdgeRenderer/EdgeTypes/StepEdge';
-import { createEdgeTypes } from '../EdgeRenderer/utils';
+import BezierEdge from '../components/Edges/BezierEdge';
+import StraightEdge from '../components/Edges/StraightEdge';
+import StepEdge from '../components/Edges/StepEdge';
+import { createEdgeTypes } from '../container/EdgeRenderer/utils';
 import store from '../store';
-import ElementUpdater from './ElementUpdater';
 
 import '../style.css';
 
 const ReactGraph = ({
   style, onElementClick, elements, children,
-  nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove,
-  onConnect, onNodeDragStop, connectionLineType, connectionLineStyle,
-  deleteKeyCode, selectionKeyCode
+  nodeTypes, edgeTypes, onLoad, onMove,
+  onElementsRemove, onConnect, onNodeDragStop, connectionLineType,
+  connectionLineStyle, deleteKeyCode, selectionKeyCode
 }) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -35,7 +33,6 @@ const ReactGraph = ({
   return (
     <div style={style} className="react-graph">
       <StoreProvider store={store}>
-        <ElementUpdater elements={elements} onConnect={onConnect} />
         <GraphView
           onLoad={onLoad}
           onMove={onMove}
@@ -46,10 +43,10 @@ const ReactGraph = ({
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           selectionKeyCode={selectionKeyCode}
-        />
-        <GlobalKeyHandler
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
+          elements={elements}
+          onConnect={onConnect}
         />
         {children}
       </StoreProvider>

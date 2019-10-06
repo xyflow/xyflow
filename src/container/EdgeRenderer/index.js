@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import { useStoreState } from 'easy-peasy';
 
-import ConnectionLine from '../ConnectionLine';
-import { isEdge } from '../graph-utils';
+import ConnectionLine from '../../components/ConnectionLine';
+import { isEdge } from '../../graph-utils';
 
 function getHandlePosition(position, node, handle = null) {
   if (!handle) {

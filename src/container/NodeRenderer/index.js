@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useStoreState } from 'easy-peasy';
 
-import { isNode } from '../graph-utils';
+import { isNode } from '../../graph-utils';
 
 function renderNode(d, props, state) {
   const nodeType = d.type || 'default';

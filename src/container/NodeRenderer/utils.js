@@ -1,7 +1,7 @@
-import DefaultNode from './NodeTypes/DefaultNode';
-import InputNode from './NodeTypes/InputNode';
-import OutputNode from './NodeTypes/OutputNode';
-import wrapNode from './NodeTypes/wrapNode';
+import DefaultNode from '../../components/Nodes/DefaultNode';
+import InputNode from '../../components/Nodes/InputNode';
+import OutputNode from '../../components/Nodes/OutputNode';
+import wrapNode from '../../components/Nodes/wrapNode';
 
 export function createNodeTypes(nodeTypes) {
   const standardTypes = {

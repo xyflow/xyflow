@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 
 import BaseHandle from './BaseHandle';
-import NodeIdContext from '../NodeIdContext'
+import NodeIdContext from '../../contexts/NodeIdContext'
 
 const Handle = memo(({ onConnect, ...rest }) => {
   const nodeId = useContext(NodeIdContext);

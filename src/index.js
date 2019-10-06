@@ -2,8 +2,8 @@ import ReactGraph from './ReactGraph';
 
 export default ReactGraph;
 
-export { default as Handle } from './NodeRenderer/HandleTypes/Handle';
-export { default as MiniMap } from './Plugins/MiniMap';
+export { default as Handle } from './components/Handle';
+export { default as MiniMap } from './plugins/MiniMap';
 
 export {
   isNode,

@@ -3,7 +3,7 @@ import ReactDraggable from 'react-draggable';
 import cx from 'classnames';
 
 import { getDimensions, isInputNode } from '../../utils';
-import { Provider } from '../NodeIdContext';
+import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
 
 const isHandle = e => (

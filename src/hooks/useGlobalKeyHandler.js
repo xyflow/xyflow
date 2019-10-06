@@ -1,10 +1,10 @@
-import { useEffect, memo } from 'react';
+import { useEffect } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
-import useKeyPress from '../hooks/useKeyPress';
+import useKeyPress from './useKeyPress';
 import { isEdge, getConnectedEdges } from '../graph-utils';
 
-export default memo(({ deleteKeyCode, onElementsRemove }) => {
+export default ({ deleteKeyCode, onElementsRemove }) => {
   const state = useStoreState(s => ({ selectedElements: s.selectedElements, edges: s.edges }))
   const setNodesSelection = useStoreActions(a => a.setNodesSelection);
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
@@ -25,4 +25,4 @@ export default memo(({ deleteKeyCode, onElementsRemove }) => {
   }, [deleteKeyPressed])
 
   return null;
-});
+};
