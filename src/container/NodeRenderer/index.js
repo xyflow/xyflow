@@ -45,7 +45,7 @@ const NodeRenderer = memo((props) => {
 
   return (
     <div
-      className="react-graph__nodes"
+      className="react-flow__nodes"
       style={transformStyle}
     >
       {nodes.map(d => renderNode(d, props, state))}

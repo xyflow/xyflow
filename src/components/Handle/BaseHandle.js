@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import cx from 'classnames';
 
 function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarget }) {
-  const containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
+  const containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
 
   setPosition({
     x: evt.clientX - containerBounds.x,
@@ -46,7 +46,7 @@ const BaseHandle = memo(({
 }) => {
   const isTarget = type === 'target';
   const handleClasses = cx(
-    'react-graph__handle',
+    'react-flow__handle',
     className,
     position,
     { source: !isTarget, target: isTarget }

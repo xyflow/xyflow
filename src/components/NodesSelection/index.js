@@ -60,7 +60,7 @@ export default memo(() => {
 
   return (
     <div
-      className="react-graph__nodesselection"
+      className="react-flow__nodesselection"
       style={{
         transform: `translate(${x}px,${y}px) scale(${k})`
       }}
@@ -71,7 +71,7 @@ export default memo(() => {
         onDrag={onDrag}
       >
         <div
-          className="react-graph__nodesselection-rect"
+          className="react-flow__nodesselection-rect"
           style={{
             width: state.selectedNodesBbox.width,
             height: state.selectedNodesBbox.height,

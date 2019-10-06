@@ -6,22 +6,22 @@ if (process.env.NODE_ENV !== 'production') {
   whyDidYouRender(React);
 }
 
-import GraphView from '../container/GraphView';
+import GraphView from '../GraphView';
 
-import DefaultNode from '../components/Nodes/DefaultNode';
-import InputNode from '../components/Nodes/InputNode';
-import OutputNode from '../components/Nodes/OutputNode';
-import { createNodeTypes } from '../container/NodeRenderer/utils';
+import DefaultNode from '../../components/Nodes/DefaultNode';
+import InputNode from '../../components/Nodes/InputNode';
+import OutputNode from '../../components/Nodes/OutputNode';
+import { createNodeTypes } from '../NodeRenderer/utils';
 
-import BezierEdge from '../components/Edges/BezierEdge';
-import StraightEdge from '../components/Edges/StraightEdge';
-import StepEdge from '../components/Edges/StepEdge';
-import { createEdgeTypes } from '../container/EdgeRenderer/utils';
-import store from '../store';
+import BezierEdge from '../../components/Edges/BezierEdge';
+import StraightEdge from '../../components/Edges/StraightEdge';
+import StepEdge from '../../components/Edges/StepEdge';
+import { createEdgeTypes } from '../EdgeRenderer/utils';
+import store from '../../store';
 
-import '../style.css';
+import '../../style.css';
 
-const ReactGraph = ({
+const Editor = ({
   style, onElementClick, elements, children,
   nodeTypes, edgeTypes, onLoad, onMove,
   onElementsRemove, onConnect, onNodeDragStop, connectionLineType,
@@ -31,7 +31,7 @@ const ReactGraph = ({
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
 
   return (
-    <div style={style} className="react-graph">
+    <div style={style} className="react-flow">
       <StoreProvider store={store}>
         <GraphView
           onLoad={onLoad}
@@ -54,9 +54,9 @@ const ReactGraph = ({
   );
 };
 
-ReactGraph.displayName = 'ReactGraph';
+Editor.displayName = 'Editor';
 
-ReactGraph.defaultProps = {
+Editor.defaultProps = {
   onElementClick: () => {},
   onElementsRemove: () => {},
   onNodeDragStop: () => {},
@@ -79,4 +79,4 @@ ReactGraph.defaultProps = {
   selectionKeyCode: 16
 };
 
-export default ReactGraph;
+export default Editor;

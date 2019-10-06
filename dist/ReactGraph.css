@@ -1,17 +1,17 @@
-.react-graph {
+.react-flow {
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
 }
 
-.react-graph__renderer {
+.react-flow__renderer {
   width: 100%;
   height: 100%;
   position: absolute;
 }
 
-.react-graph__zoompane {
+.react-flow__zoompane {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -20,7 +20,7 @@
   z-index: 1;
 }
 
-.react-graph__selectionpane {
+.react-flow__selectionpane {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -29,7 +29,7 @@
   z-index: 2;
 }
 
-.react-graph__selection {
+.react-flow__selection {
   position: absolute;
   top: 0;
   left: 0;
@@ -37,7 +37,7 @@
   border: 1px dotted rgba(0, 89, 220, 0.8);
 }
 
-.react-graph__edges {
+.react-flow__edges {
   position: absolute;
   top: 0;
   left: 0;
@@ -45,18 +45,18 @@
   z-index: 2;
 }
 
-.react-graph__edge {
+.react-flow__edge {
   fill: none;
   stroke: #333;
   stroke-width: 2;
   pointer-events: all;
 }
 
-.react-graph__edge.selected {
+.react-flow__edge.selected {
     stroke: #ff5050;
   }
 
-.react-graph__nodes {
+.react-flow__nodes {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -65,7 +65,7 @@
   transform-origin: 0 0;
 }
 
-.react-graph__node {
+.react-flow__node {
   position: absolute;
   color: #222;
   font-family: sans-serif;
@@ -81,15 +81,15 @@
   transform-origin: 0 0;
 }
 
-.react-graph__node:hover > * {
+.react-flow__node:hover > * {
     box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
   }
 
-.react-graph__node.selected > * {
+.react-flow__node.selected > * {
     box-shadow: 0 0 0 2px #000;
   }
 
-.react-graph__handle {
+.react-flow__handle {
   position: absolute;
   width: 12px;
   height: 12px;
@@ -99,7 +99,7 @@
   border-radius: 50%;
 }
 
-.react-graph__nodesselection {
+.react-flow__nodesselection {
   z-index: 3;
   position: absolute;
   width: 100%;
@@ -110,7 +110,7 @@
   pointer-events: none;
 }
 
-.react-graph__nodesselection-rect {
+.react-flow__nodesselection-rect {
     position: absolute;
     background: rgba(0, 89, 220, 0.08);
     border: 1px dotted rgba(0, 89, 220, 0.8);

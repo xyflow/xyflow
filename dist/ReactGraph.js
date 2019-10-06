@@ -6168,7 +6168,7 @@
   };
 
   var getEdgeId = function getEdgeId(e) {
-    return "react-graph__edge-".concat(e.source, "-").concat(e.target);
+    return "react-flow__edge-".concat(e.source, "-").concat(e.target);
   };
 
   var pointToRendererPoint = function pointToRendererPoint(_ref, transform) {
@@ -6330,7 +6330,7 @@
       transform: "translate(".concat(transform[0], "px,").concat(transform[1], "px) scale(").concat(transform[2], ")")
     };
     return React__default.createElement("div", {
-      className: "react-graph__nodes",
+      className: "react-flow__nodes",
       style: transformStyle
     }, nodes.map(function (d) {
       return renderNode(d, props, state);
@@ -6419,7 +6419,7 @@
     }
 
     var style = props.connectionLineStyle || {};
-    var className = classnames('react-graph__edge', 'connection', props.className);
+    var className = classnames('react-flow__edge', 'connection', props.className);
     var sourceHandle = handleId ? sourceNode.__rg.handleBounds.source.find(function (d) {
       return d.id === handleId;
     }) : sourceNode.__rg.handleBounds.source[0];
@@ -6640,7 +6640,7 @@
     return React__default.createElement("svg", {
       width: width,
       height: height,
-      className: "react-graph__edges"
+      className: "react-flow__edges"
     }, React__default.createElement("g", {
       transform: transformStyle
     }, edges.map(function (e) {
@@ -6668,7 +6668,7 @@
   };
 
   function getMousePosition(evt) {
-    var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
+    var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
     return {
       x: evt.clientX - containerBounds.left,
       y: evt.clientY - containerBounds.top
@@ -6752,10 +6752,10 @@
       };
     }, []);
     return React__default.createElement("div", {
-      className: "react-graph__selectionpane",
+      className: "react-flow__selectionpane",
       ref: selectionPane
     }, (rect.draw || rect.fixed) && React__default.createElement("div", {
-      className: "react-graph__selection",
+      className: "react-flow__selection",
       style: {
         width: rect.width,
         height: rect.height,
@@ -33788,7 +33788,7 @@
     };
 
     return React__default.createElement("div", {
-      className: "react-graph__nodesselection",
+      className: "react-flow__nodesselection",
       style: {
         transform: "translate(".concat(x, "px,").concat(y, "px) scale(").concat(k, ")")
       }
@@ -33797,7 +33797,7 @@
       onStart: onStart,
       onDrag: onDrag
     }, React__default.createElement("div", {
-      className: "react-graph__nodesselection-rect",
+      className: "react-flow__nodesselection-rect",
       style: {
         width: state.selectedNodesBbox.width,
         height: state.selectedNodesBbox.height,
@@ -33951,7 +33951,7 @@
       }
     }, [state.d3Initialised]);
     return React__default.createElement("div", {
-      className: "react-graph__renderer",
+      className: "react-flow__renderer",
       ref: rendererNode
     }, React__default.createElement(NodeRenderer, {
       nodeTypes: props.nodeTypes,
@@ -33965,7 +33965,7 @@
       connectionLineType: props.connectionLineType,
       connectionLineStyle: props.connectionLineStyle
     }), shiftPressed && React__default.createElement(UserSelection, null), state.nodesSelectionActive && React__default.createElement(NodesSelection, null), React__default.createElement("div", {
-      className: "react-graph__zoompane",
+      className: "react-flow__zoompane",
       onClick: function onClick() {
         return setNodesSelection({
           isActive: false
@@ -34011,7 +34011,7 @@
         setPosition = _ref.setPosition,
         onConnect = _ref.onConnect,
         isTarget = _ref.isTarget;
-    var containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
+    var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
     setPosition({
       x: evt.clientX - containerBounds.x,
       y: evt.clientY - containerBounds.y
@@ -34066,7 +34066,7 @@
         rest = _objectWithoutProperties(_ref2, ["type", "nodeId", "onConnect", "position", "setSourceId", "setPosition", "className", "id"]);
 
     var isTarget = type === 'target';
-    var handleClasses = classnames('react-graph__handle', className, position, {
+    var handleClasses = classnames('react-flow__handle', className, position, {
       source: !isTarget,
       target: isTarget
     });
@@ -34168,7 +34168,7 @@
         style = _ref.style;
     return React__default.createElement("div", {
       style: _objectSpread2$1({}, nodeStyles$1, {}, style),
-      className: "react-graph__node-inner"
+      className: "react-flow__node-inner"
     }, data.label, React__default.createElement(Handle, {
       type: "source",
       position: "bottom"
@@ -34334,7 +34334,7 @@
         x: xPos,
         y: yPos
       };
-      var nodeClasses = classnames('react-graph__node', {
+      var nodeClasses = classnames('react-flow__node', {
         selected: selected
       });
       var nodeStyle = {
@@ -34522,7 +34522,7 @@
           type = props.type,
           selected = props.selected,
           onClick = props.onClick;
-      var edgeClasses = classnames('react-graph__edge', {
+      var edgeClasses = classnames('react-flow__edge', {
         selected: selected,
         animated: animated
       });
@@ -34648,7 +34648,7 @@
     }
   }
 
-  var css = ".react-graph {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-graph__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-graph__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-graph__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-graph__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-graph__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-graph__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-graph__edge.selected {\n    stroke: #555;\n  }\n\n.react-graph__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-graph__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-graph__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-graph__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-graph__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-graph__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-graph__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n  cursor: crosshair;\n}\n\n.react-graph__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-graph__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-graph__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n\n  }\n\n.react-graph__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-graph__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-graph__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
+  var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n  cursor: crosshair;\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
   styleInject(css);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -34679,7 +34679,7 @@
     }, []);
     return React__default.createElement("div", {
       style: style,
-      className: "react-graph"
+      className: "react-flow"
     }, React__default.createElement(StoreProvider, {
       store: store
     }, React__default.createElement(ElementUpdater$1, {
@@ -34745,7 +34745,7 @@
         transform: s.transform
       };
     });
-    var mapClasses = classnames('react-graph__minimap', className);
+    var mapClasses = classnames('react-flow__minimap', className);
     var nodePositions = state.nodes.map(function (n) {
       return n.__rg.position;
     });

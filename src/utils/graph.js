@@ -26,7 +26,7 @@ export const removeElements = (elements, elementsToRemove) => {
   });
 };
 
-const getEdgeId = (e) => `react-graph__edge-${e.source}-${e.target}`;
+const getEdgeId = (e) => `react-flow__edge-${e.source}-${e.target}`;
 
 const pointToRendererPoint = ({ x, y }, transform) => {
   const rendererX = (x - transform[0]) * (1 / [transform[2]]);

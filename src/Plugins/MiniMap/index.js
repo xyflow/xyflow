@@ -20,7 +20,7 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
     height: s.height,
     nodes: s.nodes,
     transform: s.transform,
-  }));  const mapClasses = classnames('react-graph__minimap', className);
+  }));  const mapClasses = classnames('react-flow__minimap', className);
   const nodePositions = state.nodes.map(n => n.__rg.position);
   const width = style.width || baseStyle.width;
   const height = (state.height / (state.width || 1)) * width;

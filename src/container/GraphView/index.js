@@ -66,7 +66,7 @@ const GraphView = memo(({
   useElementUpdater({ elements });
 
   return (
-    <div className="react-graph__renderer" ref={rendererNode}>
+    <div className="react-flow__renderer" ref={rendererNode}>
       <NodeRenderer
         nodeTypes={nodeTypes}
         onElementClick={onElementClick}
@@ -83,7 +83,7 @@ const GraphView = memo(({
       {selectionKeyPressed && <UserSelection />}
       {state.nodesSelectionActive && <NodesSelection />}
       <div
-        className="react-graph__zoompane"
+        className="react-flow__zoompane"
         onClick={onZoomPaneClick}
         ref={zoomPane}
       />

@@ -97,7 +97,7 @@ export default NodeComponent => {
     } = props;
 
     const position = { x: xPos, y: yPos };
-    const nodeClasses = cx('react-graph__node', { selected });
+    const nodeClasses = cx('react-flow__node', { selected });
     const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
     const updateNode = () => {

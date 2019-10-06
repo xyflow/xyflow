@@ -2,55 +2,55 @@ describe('Basic Flow Rendering', () => {
   it('renders a flow with three nodes', () => {
     cy.visit('/index.html');
 
-    cy.get('.react-graph__renderer');
-    cy.get('.react-graph__node').should('have.length', 4);
-    cy.get('.react-graph__edge').should('have.length', 2);
-    cy.get('.react-graph__node').children('div').children('.react-graph__handle');
+    cy.get('.react-flow__renderer');
+    cy.get('.react-flow__node').should('have.length', 4);
+    cy.get('.react-flow__edge').should('have.length', 2);
+    cy.get('.react-flow__node').children('div').children('.react-flow__handle');
   });
 
   it('selects a node', () => {
-    cy.get('.react-graph__node:first').click().should('have.class', 'selected');
+    cy.get('.react-flow__node:first').click().should('have.class', 'selected');
   });
 
   it('deselects node', () => {
-    cy.get('.react-graph__renderer').click('bottomRight');
-    cy.get('.react-graph__node:first').should('not.have.class', 'selected');
+    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__node:first').should('not.have.class', 'selected');
   });
 
   it('selects an edge', () => {
-    cy.get('.react-graph__edge:first').click().should('have.class', 'selected');
+    cy.get('.react-flow__edge:first').click().should('have.class', 'selected');
   });
 
   it('deselects edge', () => {
-    cy.get('.react-graph__renderer').click('bottomRight');
-    cy.get('.react-graph__edge:first').should('not.have.class', 'selected');
+    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__edge:first').should('not.have.class', 'selected');
   });
 
   it('selects all nodes', () => {
     cy.get('body')
       .type('{shift}', { release: false })
-      .get('.react-graph__selectionpane')
+      .get('.react-flow__selectionpane')
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
       .trigger('mousemove', 'bottomRight', { which: 1 })
       .trigger('mouseup', 'bottomRight', { force: true })
-      .get('.react-graph__node')
+      .get('.react-flow__node')
       .should('have.class', 'selected')
-      .get('.react-graph__nodesselection-rect');
+      .get('.react-flow__nodesselection-rect');
   });
 
   it('removes selection', () => {
-    cy.get('.react-graph__renderer').click('bottomRight');
-    cy.get('.react-graph__nodesselection-rect').should('not.exist');
+    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__nodesselection-rect').should('not.exist');
   });
 
   it('selects an edge', () => {
-    cy.get('.react-graph__edge:first').click().should('have.class', 'selected');
+    cy.get('.react-flow__edge:first').click().should('have.class', 'selected');
   });
 
   it('drags a node', () => {
-    const styleBeforeDrag = Cypress.$('.react-graph__node:first').css('transform');
+    const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-    cy.drag('.react-graph__node:first', { x: 500, y: 25 })
+    cy.drag('.react-flow__node:first', { x: 500, y: 25 })
       .then($el => {
         const styleAfterDrag = $el.css('transform');
         expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
@@ -58,33 +58,33 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('removes a node', () => {
-    cy.get('.react-graph__node').contains('Node 2').click();
+    cy.get('.react-flow__node').contains('Node 2').click();
     cy.get('body').type('{backspace}');
 
-    cy.get('.react-graph__node').should('have.length', 3);
-    cy.get('.react-graph__edge').should('have.length', 1);
+    cy.get('.react-flow__node').should('have.length', 3);
+    cy.get('.react-flow__edge').should('have.length', 1);
   });
 
   it('connects nodes', () => {
-    cy.get('.react-graph__node')
+    cy.get('.react-flow__node')
       .contains('Node 3')
-      .find('.react-graph__handle.source')
+      .find('.react-flow__handle.source')
       .trigger('mousedown', { which: 1 });
 
-    cy.get('.react-graph__node')
+    cy.get('.react-flow__node')
       .contains('Node 4')
-      .find('.react-graph__handle.target')
+      .find('.react-flow__handle.target')
       .trigger('mousemove')
       .trigger('mouseup', { force: true });
 
-    cy.get('.react-graph__edge').should('have.length', 2);
+    cy.get('.react-flow__edge').should('have.length', 2);
   });
 
   it('removes an edge', () => {
-    cy.get('.react-graph__edge:first').click();
+    cy.get('.react-flow__edge:first').click();
     cy.get('body').type('{backspace}');
 
-    cy.get('.react-graph__edge').should('have.length', 1);
+    cy.get('.react-flow__edge').should('have.length', 1);
   });
 
   it('drags the pane', () => {
@@ -96,27 +96,27 @@ describe('Basic Flow Rendering', () => {
       clientY: Cypress.config('viewportHeight') * 0.7
     };
 
-    const styleBeforeDrag = Cypress.$('.react-graph__nodes').css('transform');
+    const styleBeforeDrag = Cypress.$('.react-flow__nodes').css('transform');
 
     cy.window().then((win) => {
-      cy.get('.react-graph__zoompane')
+      cy.get('.react-flow__zoompane')
         .trigger('mousedown', { which: 1, view: win })
         .trigger('mousemove', newPosition)
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
-          const styleAfterDrag = Cypress.$('.react-graph__nodes').css('transform');
+          const styleAfterDrag = Cypress.$('.react-flow__nodes').css('transform');
           expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
         });
     });
   });
 
   it('zooms the pane', () => {
-    const styleBeforeZoom = Cypress.$('.react-graph__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
-    cy.get('.react-graph__zoompane')
+    cy.get('.react-flow__zoompane')
       .trigger('wheel','topLeft', { deltaY: -200 })
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-graph__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
       });
   });

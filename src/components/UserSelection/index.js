@@ -12,7 +12,7 @@ const initialRect = {
 };
 
 function getMousePosition(evt) {
-  const containerBounds = document.querySelector('.react-graph').getBoundingClientRect();
+  const containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
 
   return {
     x: evt.clientX - containerBounds.left,
@@ -91,12 +91,12 @@ export default memo(() => {
 
   return (
     <div
-      className="react-graph__selectionpane"
+      className="react-flow__selectionpane"
       ref={selectionPane}
     >
       {(rect.draw || rect.fixed) && (
         <div
-          className="react-graph__selection"
+          className="react-flow__selection"
           style={{
             width: rect.width,
             height: rect.height,

@@ -17,7 +17,7 @@ export default (props) => {
   }
 
   const style = props.connectionLineStyle || {};
-  const className = cx('react-graph__edge', 'connection', props.className);
+  const className = cx('react-flow__edge', 'connection', props.className);
 
   const sourceHandle = handleId ? sourceNode.__rg.handleBounds.source.find(d => d.id === handleId) : sourceNode.__rg.handleBounds.source[0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + (sourceHandle.width / 2) : sourceNode.__rg.width / 2;

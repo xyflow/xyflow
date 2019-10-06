@@ -162,7 +162,7 @@ const EdgeRenderer = memo((props) => {
     <svg
       width={width}
       height={height}
-      className="react-graph__edges"
+      className="react-flow__edges"
     >
       <g transform={transformStyle}>
         {edges.map(e => renderEdge(e, props, state))}

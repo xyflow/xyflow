@@ -10,7 +10,7 @@ export default EdgeComponent => {
       id, source, target, type,
       animated, selected, onClick
     } = props;
-    const edgeClasses = cx('react-graph__edge', { selected, animated });
+    const edgeClasses = cx('react-flow__edge', { selected, animated });
     const onEdgeClick = (evt) => {
       if (isInputNode(evt)) {
         return false;
