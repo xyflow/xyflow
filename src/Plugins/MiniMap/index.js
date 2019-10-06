@@ -3,7 +3,7 @@ import { useStoreState } from 'easy-peasy';
 import classnames from 'classnames';
 
 import { isFunction } from '../../utils'
-import { getNodesInside } from '../../graph-utils';
+import { getNodesInside } from '../../utils/graph';
 
 const baseStyle = {
   position: 'absolute',

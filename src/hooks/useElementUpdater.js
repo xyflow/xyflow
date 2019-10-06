@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 
-import { parseElement, isNode, isEdge } from '../graph-utils';
+import { parseElement, isNode, isEdge } from '../utils/graph';
 
 const useElementUpdater = ({ elements }) => {
   const state = useStoreState(s => ({

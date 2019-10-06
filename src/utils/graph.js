@@ -1,5 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
-import store from './store';
+import store from '../store';
 
 export const isEdge = element => element.source && element.target;
 

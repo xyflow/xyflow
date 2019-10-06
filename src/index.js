@@ -10,4 +10,4 @@ export {
   isEdge,
   removeElements,
   getOutgoers
-} from './graph-utils';
+} from './utils/graph';

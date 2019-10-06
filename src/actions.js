@@ -1,7 +1,7 @@
 import { action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 
-import { getBoundingBox, getNodesInside, getConnectedEdges } from './graph-utils';
+import { getBoundingBox, getNodesInside, getConnectedEdges } from './utils/graph';
 
 export default {
   setOnConnect: action((state, onConnect) => {

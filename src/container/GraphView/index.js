@@ -10,7 +10,7 @@ import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater'
 import { getDimensions } from '../../utils';
-import { fitView, zoomIn, zoomOut } from '../../graph-utils';
+import { fitView, zoomIn, zoomOut } from '../../utils/graph';
 
 const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,

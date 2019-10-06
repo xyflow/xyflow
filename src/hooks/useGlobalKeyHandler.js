@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import useKeyPress from './useKeyPress';
-import { isEdge, getConnectedEdges } from '../graph-utils';
+import { isEdge, getConnectedEdges } from '../utils/graph';
 
 export default ({ deleteKeyCode, onElementsRemove }) => {
   const state = useStoreState(s => ({ selectedElements: s.selectedElements, edges: s.edges }))
