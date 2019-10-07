@@ -26,8 +26,6 @@ export const removeElements = (elements, elementsToRemove) => {
   });
 };
 
-const getEdgeId = (e) => `react-flow__edge-${e.source}-${e.target}`;
-
 const pointToRendererPoint = ({ x, y }, transform) => {
   const rendererX = (x - transform[0]) * (1 / [transform[2]]);
   const rendererY = (y - transform[1]) * (1 / [transform[2]]);
@@ -39,11 +37,15 @@ const pointToRendererPoint = ({ x, y }, transform) => {
 };
 
 export const parseElement = (e, transform) => {
+  if (!e.id) {
+    throw new Error('All elements (nodes and edges) need to have an id.',)
+  }
+
   if (isEdge(e)) {
     return {
       ...e,
-      type: e.type || 'default',
-      id: e.id ? e.id.toString() : getEdgeId(e)
+      id: e.id.toString(),
+      type: e.type || 'default'
     };
   }
 
