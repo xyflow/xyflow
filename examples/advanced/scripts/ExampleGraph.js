@@ -146,6 +146,7 @@ class App extends PureComponent {
         connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
         connectionLineType="bezier"
         gridColor="#aaa"
+        gridGap={16}
       >
         <MiniMap
           style={{ position: 'absolute', right: 10, bottom: 10 }}

@@ -17,7 +17,7 @@ const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,
   onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle,
   selectionKeyCode, onElementsRemove, deleteKeyCode, elements,
-  onConnect, gridColor
+  onConnect, gridColor, showGrid, gridGap
 }) => {
   const zoomPane = useRef();
   const rendererNode = useRef();
@@ -68,7 +68,7 @@ const GraphView = memo(({
 
   return (
     <div className="react-flow__renderer" ref={rendererNode}>
-      <GridRenderer strokeColor={gridColor} />
+      {showGrid && <GridRenderer gap={gridGap} strokeColor={gridColor} />}
       <NodeRenderer
         nodeTypes={nodeTypes}
         onElementClick={onElementClick}

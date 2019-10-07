@@ -9169,7 +9169,9 @@
         deleteKeyCode = _ref.deleteKeyCode,
         elements = _ref.elements,
         onConnect = _ref.onConnect,
-        gridColor = _ref.gridColor;
+        gridColor = _ref.gridColor,
+        showGrid = _ref.showGrid,
+        gridGap = _ref.gridGap;
     var zoomPane = React.useRef();
     var rendererNode = React.useRef();
     var state = useStoreState(function (s) {
@@ -9232,7 +9234,8 @@
     return React__default.createElement("div", {
       className: "react-flow__renderer",
       ref: rendererNode
-    }, React__default.createElement(GridRenderer, {
+    }, showGrid && React__default.createElement(GridRenderer, {
+      gap: gridGap,
       strokeColor: gridColor
     }), React__default.createElement(NodeRenderer, {
       nodeTypes: nodeTypes,
@@ -9929,7 +9932,9 @@
         connectionLineStyle = _ref.connectionLineStyle,
         deleteKeyCode = _ref.deleteKeyCode,
         selectionKeyCode = _ref.selectionKeyCode,
-        gridColor = _ref.gridColor;
+        gridColor = _ref.gridColor,
+        showGrid = _ref.showGrid,
+        gridGap = _ref.gridGap;
     var nodeTypesParsed = React.useMemo(function () {
       return createNodeTypes(nodeTypes);
     }, []);
@@ -9955,7 +9960,9 @@
       deleteKeyCode: deleteKeyCode,
       elements: elements,
       onConnect: onConnect,
-      gridColor: gridColor
+      gridColor: gridColor,
+      gridGap: gridGap,
+      showGrid: showGrid
     }), children));
   };
 
@@ -9981,7 +9988,9 @@
     connectionLineStyle: {},
     deleteKeyCode: 8,
     selectionKeyCode: 16,
-    gridColor: '#999'
+    gridColor: '#999',
+    gridGap: 24,
+    showGrid: true
   };
 
   var baseStyle = {
