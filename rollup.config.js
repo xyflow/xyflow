@@ -11,36 +11,35 @@ import pkg from './package.json';
 const isProd = process.env.NODE_ENV === 'production';
 
 export default [{
-		input: 'src/index.js',
-		external: ['react', 'react-dom', 'prop-types'],
-		onwarn(warning, rollupWarn) {
-			if (warning.code !== 'CIRCULAR_DEPENDENCY') {
-				rollupWarn(warning);
-			}
-		},
-		output: {
-			name: 'ReactFlow',
-			file: pkg.browser,
-			format: 'umd',
-			sourcemap: isProd,
-			globals: {
-				react: 'React',
-				'react-dom': 'ReactDOM',
-				'prop-types': 'PropTypes'
-			}
-		},
-		plugins: [
-			bundleSize(),
-			postcss(),
-			resolve(),
-			babel({
-				exclude: 'node_modules/**'
-			}),
-			commonjs({
-				include: /node_modules/
-			}),
-			visualizer(),
-			isProd && uglify()
-		]
-	}
+	input: 'src/index.js',
+	external: ['react', 'react-dom', 'prop-types'],
+	onwarn(warning, rollupWarn) {
+		if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+			rollupWarn(warning);
+		}
+	},
+	output: {
+		name: 'ReactFlow',
+		file: pkg.browser,
+		format: 'umd',
+		sourcemap: isProd,
+		globals: {
+			react: 'React',
+			'react-dom': 'ReactDOM',
+			'prop-types': 'PropTypes'
+		}
+	},
+	plugins: [
+		bundleSize(),
+		postcss(),
+		resolve(),
+		babel({
+			exclude: 'node_modules/**'
+		}),
+		commonjs({
+			include: /node_modules/
+		}),
+		visualizer(),
+		isProd && uglify()
+	]}
 ];
