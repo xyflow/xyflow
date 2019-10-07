@@ -16,7 +16,7 @@ export default [{
 			}
 		},
 		output: {
-			name: 'ReactGraph',
+			name: 'ReactFlow',
 			file: pkg.browser,
 			format: 'umd',
 			sourcemaps: true,

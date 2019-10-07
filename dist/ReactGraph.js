@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('react-dom'), require('prop-types')) :
   typeof define === 'function' && define.amd ? define(['exports', 'react', 'react-dom', 'prop-types'], factory) :
-  (global = global || self, factory(global.ReactGraph = {}, global.React, global.ReactDOM, global.PropTypes));
+  (global = global || self, factory(global.ReactFlow = {}, global.React, global.ReactDOM, global.PropTypes));
 }(this, function (exports, React, reactDom, PropTypes) { 'use strict';
 
   var React__default = 'default' in React ? React['default'] : React;
@@ -9207,7 +9207,15 @@
       x: evt.clientX - containerBounds.x,
       y: evt.clientY - containerBounds.y
     });
-    setSourceId(nodeId); // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
+    setSourceId(nodeId);
+
+    function resetRecentHandle() {
+      if (recentHoveredHandle) {
+        recentHoveredHandle.classList.remove('valid');
+        recentHoveredHandle.classList.remove('connecting');
+      }
+    } // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
+
 
     function checkElementBelowIsValid(evt) {
       var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
@@ -9257,12 +9265,7 @@
           isHoveringHandle = _checkElementBelowIsV.isHoveringHandle;
 
       if (!isHoveringHandle) {
-        if (recentHoveredHandle) {
-          recentHoveredHandle.classList.remove('valid');
-          recentHoveredHandle.classList.remove('connecting');
-        }
-
-        return false;
+        return resetRecentHandle();
       }
 
       var isOwnHandle = connection.source === connection.target;
@@ -9283,10 +9286,7 @@
         onConnect(connection);
       }
 
-      if (recentHoveredHandle) {
-        recentHoveredHandle.classList.remove('valid');
-      }
-
+      resetRecentHandle();
       setSourceId(null);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
