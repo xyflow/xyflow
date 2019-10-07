@@ -150,3 +150,18 @@
     pointer-events: all;
   }
 }
+
+.react-flow__controls-button {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.react-flow__controls-button:hover {
+  background: #eee;
+}
