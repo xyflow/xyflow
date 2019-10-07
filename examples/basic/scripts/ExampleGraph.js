@@ -4,6 +4,9 @@ import Graph, { removeElements, getOutgoers } from '../../../src';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 
+let edgeId = 0;
+const getEdgeId = () => `edge__${edgeId++}`;
+
 class App extends PureComponent {
   constructor() {
     super();
@@ -47,7 +50,7 @@ class App extends PureComponent {
   onConnect(params) {
     console.log('connect', params);
     this.setState(prevState => ({
-      elements: prevState.elements.concat(params)
+      elements: prevState.elements.concat({ id: getEdgeId(), ...params })
     }));
   }
 
