@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { StoreProvider } from 'easy-peasy';
 
 if (process.env.NODE_ENV !== 'production') {
@@ -59,6 +60,24 @@ const ReactFlow = ({
 };
 
 ReactFlow.displayName = 'ReactFlow';
+
+ReactFlow.propTypes = {
+  onElementClick: PropTypes.func,
+  onElementsRemove: PropTypes.func,
+  onNodeDragStop: PropTypes.func,
+  onConnect: PropTypes.func,
+	onLoad: PropTypes.func,
+  onMove: PropTypes.func,
+  nodeTypes: PropTypes.object,
+  edgeTypes: PropTypes.object,
+  connectionLineType: PropTypes.string,
+  connectionLineStyle: PropTypes.object,
+  deleteKeyCode: PropTypes.number,
+  selectionKeyCode: PropTypes.number,
+  gridColor: PropTypes.string,
+  gridGap: PropTypes.number,
+  showGrid: PropTypes.bool
+};
 
 ReactFlow.defaultProps = {
   onElementClick: () => {},
