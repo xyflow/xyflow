@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
 import cx from 'classnames';
 
-import { getDimensions, isInputNode } from '../../utils';
+import { getDimensions, inInputDOMNode } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
 
@@ -45,7 +45,7 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
 };
 
 const onStart = (evt, { setOffset, onClick, id, type, data, position, transform }) => {
-  if (isInputNode(evt) || isHandle(evt)) {
+  if (inInputDOMNode(evt) || isHandle(evt)) {
     return false;
   }
 

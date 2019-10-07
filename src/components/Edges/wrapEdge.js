@@ -1,7 +1,7 @@
 import React, {  memo } from 'react';
 import cx from 'classnames';
 
-import { isInputNode } from '../../utils';
+import { inInputDOMNode } from '../../utils';
 import store from '../../store';
 
 export default EdgeComponent => {
@@ -12,7 +12,7 @@ export default EdgeComponent => {
     } = props;
     const edgeClasses = cx('react-flow__edge', { selected, animated });
     const onEdgeClick = (evt) => {
-      if (isInputNode(evt)) {
+      if (inInputDOMNode(evt)) {
         return false;
       }
 

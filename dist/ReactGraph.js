@@ -33810,7 +33810,7 @@
   var isFunction = function isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
   };
-  var isInputNode = function isInputNode(e) {
+  var inInputDOMNode = function inInputDOMNode(e) {
     return e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
   };
   var getDimensions = function getDimensions() {
@@ -33831,7 +33831,7 @@
       var key = _ref.key,
           target = _ref.target;
 
-      if (key === targetKey && !isInputNode(target)) {
+      if (key === targetKey && !inInputDOMNode(target)) {
         setKeyPressed(true);
       }
     }
@@ -33840,7 +33840,7 @@
       var key = _ref2.key,
           target = _ref2.target;
 
-      if (key === targetKey && !isInputNode(target)) {
+      if (key === targetKey && !inInputDOMNode(target)) {
         setKeyPressed(false);
       }
     };
@@ -34235,7 +34235,7 @@
         position = _ref.position,
         transform = _ref.transform;
 
-    if (isInputNode(evt) || isHandle(evt)) {
+    if (inInputDOMNode(evt) || isHandle(evt)) {
       return false;
     }
 
@@ -34528,7 +34528,7 @@
       });
 
       var onEdgeClick = function onEdgeClick(evt) {
-        if (isInputNode(evt)) {
+        if (inInputDOMNode(evt)) {
           return false;
         }
 
