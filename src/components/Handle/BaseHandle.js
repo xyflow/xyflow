@@ -11,6 +11,13 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
   });
   setSourceId(nodeId);
 
+  function resetRecentHandle() {
+    if (recentHoveredHandle) {
+      recentHoveredHandle.classList.remove('valid');
+      recentHoveredHandle.classList.remove('connecting');
+    }
+  }
+
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
   function checkElementBelowIsValid(evt) {
     const elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
@@ -51,11 +58,7 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
     const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(evt);
 
     if (!isHoveringHandle) {
-      if (recentHoveredHandle) {
-        recentHoveredHandle.classList.remove('valid');
-        recentHoveredHandle.classList.remove('connecting');
-      }
-      return false;
+      return resetRecentHandle();
     }
 
     const isOwnHandle = connection.source === connection.target;
@@ -74,11 +77,9 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
       onConnect(connection);
     }
 
-    if (recentHoveredHandle) {
-      recentHoveredHandle.classList.remove('valid');
-    }
-
+    resetRecentHandle();
     setSourceId(null);
+
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   }
