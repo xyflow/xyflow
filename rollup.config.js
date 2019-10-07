@@ -3,12 +3,13 @@ import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
+import visualizer from 'rollup-plugin-visualizer';
 
 import pkg from './package.json';
 
 export default [{
 		input: 'src/index.js',
-		external: ['react', 'prop-types'],
+		external: ['react', 'react-dom', 'prop-types'],
 		onwarn(warning, rollupWarn) {
 			if (warning.code !== 'CIRCULAR_DEPENDENCY') {
 				rollupWarn(warning);
@@ -21,6 +22,7 @@ export default [{
 			sourcemaps: true,
 			globals: {
 				react: 'React',
+				'react-dom': 'ReactDOM',
 				'prop-types': 'PropTypes'
 			}
 		},
@@ -33,28 +35,8 @@ export default [{
 			}),
 			commonjs({
 				include: /node_modules/
-			})
+			}),
+			visualizer()
 		]
 	}
 ];
-
-
-
-// 	{
-// 		input: 'src/index.js',
-// 		external: ['react', 'prop-types', 'react-draggable', 'react-sizeme'],
-// 		output: [{
-// 				file: pkg.module,
-// 				format: 'es',
-// 				globals: {
-// 					react: 'React',
-// 					'react-draggable': 'ReactDraggable',
-// 					'react-sizeme': 'ReactSizeme'
-// 				}
-// 		}],
-// 		plugins: [
-// 			babel({
-// 				exclude: 'node_modules/**'
-// 			})
-// 		]
-// }
