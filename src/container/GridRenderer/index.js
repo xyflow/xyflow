@@ -9,7 +9,7 @@ const baseStyles = {
 };
 
 const GridRenderer = memo(({
-  gap = 24, strokeColor = '#999', strokeWidth = 0.1, styles,
+  gap = 24, strokeColor = '#999', strokeWidth = 0.1, style,
   className
 }) => {
   const {
@@ -36,7 +36,7 @@ const GridRenderer = memo(({
     <svg
       width={width}
       height={height}
-      style={{ ...baseStyles, ...styles }}
+      style={{ ...baseStyles, ...style }}
       className={gridClasses}
     >
       <path
