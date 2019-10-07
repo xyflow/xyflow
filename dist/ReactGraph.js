@@ -6530,7 +6530,7 @@
         strokeColor = _ref$strokeColor === void 0 ? '#999' : _ref$strokeColor,
         _ref$strokeWidth = _ref.strokeWidth,
         strokeWidth = _ref$strokeWidth === void 0 ? 0.1 : _ref$strokeWidth,
-        styles = _ref.styles,
+        style = _ref.style,
         className = _ref.className;
 
     var _useStoreState = useStoreState(function (s) {
@@ -6563,7 +6563,7 @@
     return React__default.createElement("svg", {
       width: width,
       height: height,
-      style: _objectSpread2$1({}, baseStyles, {}, styles),
+      style: _objectSpread2$1({}, baseStyles, {}, style),
       className: gridClasses
     }, React__default.createElement("path", {
       fill: "none",
@@ -9168,7 +9168,8 @@
         onElementsRemove = _ref.onElementsRemove,
         deleteKeyCode = _ref.deleteKeyCode,
         elements = _ref.elements,
-        onConnect = _ref.onConnect;
+        onConnect = _ref.onConnect,
+        gridColor = _ref.gridColor;
     var zoomPane = React.useRef();
     var rendererNode = React.useRef();
     var state = useStoreState(function (s) {
@@ -9231,7 +9232,9 @@
     return React__default.createElement("div", {
       className: "react-flow__renderer",
       ref: rendererNode
-    }, React__default.createElement(GridRenderer, null), React__default.createElement(NodeRenderer, {
+    }, React__default.createElement(GridRenderer, {
+      strokeColor: gridColor
+    }), React__default.createElement(NodeRenderer, {
       nodeTypes: nodeTypes,
       onElementClick: onElementClick,
       onNodeDragStop: onNodeDragStop
@@ -9925,7 +9928,8 @@
         connectionLineType = _ref.connectionLineType,
         connectionLineStyle = _ref.connectionLineStyle,
         deleteKeyCode = _ref.deleteKeyCode,
-        selectionKeyCode = _ref.selectionKeyCode;
+        selectionKeyCode = _ref.selectionKeyCode,
+        gridColor = _ref.gridColor;
     var nodeTypesParsed = React.useMemo(function () {
       return createNodeTypes(nodeTypes);
     }, []);
@@ -9950,7 +9954,8 @@
       onElementsRemove: onElementsRemove,
       deleteKeyCode: deleteKeyCode,
       elements: elements,
-      onConnect: onConnect
+      onConnect: onConnect,
+      gridColor: gridColor
     }), children));
   };
 
@@ -9975,7 +9980,8 @@
     connectionLineType: 'bezier',
     connectionLineStyle: {},
     deleteKeyCode: 8,
-    selectionKeyCode: 16
+    selectionKeyCode: 16,
+    gridColor: '#999'
   };
 
   var baseStyle = {

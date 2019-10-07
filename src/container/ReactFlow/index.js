@@ -25,7 +25,7 @@ const ReactFlow = ({
   style, onElementClick, elements, children,
   nodeTypes, edgeTypes, onLoad, onMove,
   onElementsRemove, onConnect, onNodeDragStop, connectionLineType,
-  connectionLineStyle, deleteKeyCode, selectionKeyCode
+  connectionLineStyle, deleteKeyCode, selectionKeyCode, gridColor
 }) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -47,6 +47,7 @@ const ReactFlow = ({
           deleteKeyCode={deleteKeyCode}
           elements={elements}
           onConnect={onConnect}
+          gridColor={gridColor}
         />
         {children}
       </StoreProvider>
@@ -76,7 +77,8 @@ ReactFlow.defaultProps = {
   connectionLineType: 'bezier',
   connectionLineStyle: {},
   deleteKeyCode: 8,
-  selectionKeyCode: 16
+  selectionKeyCode: 16,
+  gridColor: '#999'
 };
 
 export default ReactFlow;
