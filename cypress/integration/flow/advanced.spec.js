@@ -8,6 +8,13 @@ describe('Advanced Flow Rendering', () => {
     cy.get('.react-flow__edge').should('have.length', 9);
   });
 
+  it('renders a grid', () => {
+    cy.get('.react-flow__grid');
+
+    const gridStroke = Cypress.$('.react-flow__grid path').attr('stroke');
+    expect(gridStroke).to.equal('#aaa');
+  });
+
   it('connects nodes', () => {
     cy.get('.react-flow__node')
       .contains('1 Tests')

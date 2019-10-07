@@ -8,6 +8,10 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-flow__node').children('div').children('.react-flow__handle');
   });
 
+  it('does not render a grid', () => {
+    cy.get('.react-flow__grid').should('not.exist');
+  });
+
   it('selects a node', () => {
     cy.get('.react-flow__node:first').click().should('have.class', 'selected');
   });
