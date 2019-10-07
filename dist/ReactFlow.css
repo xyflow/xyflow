@@ -47,14 +47,33 @@
 
 .react-flow__edge {
   fill: none;
-  stroke: #333;
+  stroke: #bbb;
   stroke-width: 2;
   pointer-events: all;
 }
 
 .react-flow__edge.selected {
-    stroke: #ff5050;
+    stroke: #555;
   }
+
+.react-flow__edge.animated {
+    stroke-dasharray: 5;
+    -webkit-animation: dashdraw 0.5s linear infinite;
+            animation: dashdraw 0.5s linear infinite;
+  }
+
+.react-flow__edge.connection {
+    stroke: '#ddd';
+    pointer-events: none;
+  }
+
+@-webkit-keyframes dashdraw {
+  from {stroke-dashoffset: 10}
+}
+
+@keyframes dashdraw {
+  from {stroke-dashoffset: 10}
+}
 
 .react-flow__nodes {
   width: 100%;
@@ -86,18 +105,42 @@
   }
 
 .react-flow__node.selected > * {
-    box-shadow: 0 0 0 2px #000;
+    box-shadow: 0 0 0 2px #555;
   }
 
 .react-flow__handle {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  transform: translate(-50%, -50%);
-  background: #222;
-  left: 50%;
-  border-radius: 50%;
+  width: 10px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: crosshair;
 }
+
+.react-flow__handle.bottom {
+    top: auto;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0);
+  }
+
+.react-flow__handle.top {
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
+  }
+
+.react-flow__handle.left {
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+
+  }
+
+.react-flow__handle.right {
+    right: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
 
 .react-flow__nodesselection {
   z-index: 3;
@@ -114,4 +157,20 @@
     position: absolute;
     background: rgba(0, 89, 220, 0.08);
     border: 1px dotted rgba(0, 89, 220, 0.8);
+    pointer-events: all;
   }
+
+.react-flow__controls-button {
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.react-flow__controls-button:hover {
+  background: #eee;
+}

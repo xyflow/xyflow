@@ -1,9 +1,9 @@
 {
   "name": "react-flow",
   "version": "1.0.0",
-  "module": "dist/ReactGraph.esm.js",
-  "browser": "dist/ReactGraph.js",
-  "main": "dist/ReactGraph.js",
+  "module": "dist/ReactFlow.esm.js",
+  "browser": "dist/ReactFlow.js",
+  "main": "dist/ReactFlow.js",
   "private": true,
   "dependencies": {
     "@welldone-software/why-did-you-render": "^3.3.6",

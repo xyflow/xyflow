@@ -31,7 +31,9 @@ export default [{
 	},
 	plugins: [
 		bundleSize(),
-		postcss(),
+		postcss({
+			extract: isProd
+		}),
 		resolve(),
 		babel({
 			exclude: 'node_modules/**'
