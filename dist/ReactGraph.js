@@ -6518,6 +6518,62 @@
   });
   EdgeRenderer.displayName = 'EdgeRenderer';
 
+  var baseStyles = {
+    position: 'absolute',
+    top: 0,
+    left: 0
+  };
+  var GridRenderer = React.memo(function (_ref) {
+    var _ref$gap = _ref.gap,
+        gap = _ref$gap === void 0 ? 24 : _ref$gap,
+        _ref$strokeColor = _ref.strokeColor,
+        strokeColor = _ref$strokeColor === void 0 ? '#999' : _ref$strokeColor,
+        _ref$strokeWidth = _ref.strokeWidth,
+        strokeWidth = _ref$strokeWidth === void 0 ? 0.1 : _ref$strokeWidth,
+        styles = _ref.styles,
+        className = _ref.className;
+
+    var _useStoreState = useStoreState(function (s) {
+      return s;
+    }),
+        width = _useStoreState.width,
+        height = _useStoreState.height,
+        _useStoreState$transf = _slicedToArray(_useStoreState.transform, 3),
+        x = _useStoreState$transf[0],
+        y = _useStoreState$transf[1],
+        scale = _useStoreState$transf[2];
+
+    var gridClasses = classnames('react-flow__grid', className);
+    var scaledGap = gap * scale;
+    var xStart = x % scaledGap;
+    var yStart = y % scaledGap;
+    var lineCountX = Math.ceil(width / scaledGap) + 1;
+    var lineCountY = Math.ceil(height / scaledGap) + 1;
+    var xValues = Array.from({
+      length: lineCountX
+    }, function (_, index) {
+      return "M".concat(index * scaledGap + xStart, " 0 V").concat(height);
+    });
+    var yValues = Array.from({
+      length: lineCountY
+    }, function (_, index) {
+      return "M0 ".concat(index * scaledGap + yStart, " H").concat(width);
+    });
+    var path = [].concat(_toConsumableArray(xValues), _toConsumableArray(yValues)).join(' ');
+    return React__default.createElement("svg", {
+      width: width,
+      height: height,
+      style: _objectSpread2$1({}, baseStyles, {}, styles),
+      className: gridClasses
+    }, React__default.createElement("path", {
+      fill: "none",
+      stroke: strokeColor,
+      strokeWidth: strokeWidth,
+      d: path
+    }));
+  });
+  GridRenderer.displayName = 'GridRenderer';
+
   var initialRect = {
     startX: 0,
     startY: 0,
@@ -9175,7 +9231,7 @@
     return React__default.createElement("div", {
       className: "react-flow__renderer",
       ref: rendererNode
-    }, React__default.createElement(NodeRenderer, {
+    }, React__default.createElement(GridRenderer, null), React__default.createElement(NodeRenderer, {
       nodeTypes: nodeTypes,
       onElementClick: onElementClick,
       onNodeDragStop: onNodeDragStop
@@ -9845,7 +9901,7 @@
     }
   }
 
-  var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n  cursor: crosshair;\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }";
+  var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n  cursor: crosshair;\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls-button {\n  background: #f8f8f8;\n  border: 1px solid #eee;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 24px;\n  height: 24px;\n  cursor: pointer;\n}\n\n.react-flow__controls-button:hover {\n  background: #eee;\n}";
   styleInject(css);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -9990,6 +10046,32 @@
     });
   });
 
+  var baseStyle$1 = {
+    position: 'absolute',
+    zIndex: 5,
+    bottom: 10,
+    left: 10
+  };
+  var index$1 = (function (_ref) {
+    var style = _ref.style,
+        className = _ref.className;
+    var mapClasses = classnames('react-flow__controls', className);
+    return React__default.createElement("div", {
+      className: mapClasses,
+      style: _objectSpread2$1({}, baseStyle$1, {}, style)
+    }, React__default.createElement("div", {
+      className: "react-flow__controls-button react-flow__controls-zoomin",
+      onClick: zoomIn
+    }, "+"), React__default.createElement("div", {
+      className: "react-flow__controls-button  react-flow__controls-zoomout",
+      onClick: zoomOut
+    }, "-"), React__default.createElement("div", {
+      className: "react-flow__controls-button  react-flow__controls-fitview",
+      onClick: fitView
+    }, "@"));
+  });
+
+  exports.Controls = index$1;
   exports.Handle = Handle;
   exports.MiniMap = index;
   exports.default = ReactFlow;
