@@ -4,8 +4,11 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
+import { uglify } from 'rollup-plugin-uglify';
 
 import pkg from './package.json';
+
+const isProd = process.env.NODE_ENV === 'production';
 
 export default [{
 		input: 'src/index.js',
@@ -19,7 +22,7 @@ export default [{
 			name: 'ReactFlow',
 			file: pkg.browser,
 			format: 'umd',
-			sourcemaps: true,
+			sourcemap: isProd,
 			globals: {
 				react: 'React',
 				'react-dom': 'ReactDOM',
@@ -36,7 +39,8 @@ export default [{
 			commonjs({
 				include: /node_modules/
 			}),
-			visualizer()
+			visualizer(),
+			isProd && uglify()
 		]
 	}
 ];
