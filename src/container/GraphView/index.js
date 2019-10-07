@@ -3,6 +3,7 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
+import GridRenderer from '../GridRenderer';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
 import useKeyPress from '../../hooks/useKeyPress';
@@ -67,6 +68,7 @@ const GraphView = memo(({
 
   return (
     <div className="react-flow__renderer" ref={rendererNode}>
+      <GridRenderer />
       <NodeRenderer
         nodeTypes={nodeTypes}
         onElementClick={onElementClick}
