@@ -26,7 +26,11 @@ export default ({ data, styles }) => {
         <option value="2">2</option>
         <option value="3">3</option>
       </select>
-      <Handle type="source" position="bottom" style={{ left: 10, background: '#999' }} />
+      <Handle
+        type="source"
+        position="bottom"
+        style={{ left: 10, background: '#999' }}
+      />
     </div>
   );
 };

@@ -9,6 +9,11 @@ export default({ data, styles }) => (
     <Handle type="target" position="left" style={{ background: '#999' }} />
     <div>{data.input}</div>
     <input onChange={(e) => data.onChange(e.target.value, data)} />
-    <Handle type="source" position="right" style={{ background: '#999' }} />
+    <Handle
+      type="source"
+      position="right"
+      style={{ background: '#999' }}
+      isValidConnection={connection => +connection.target % 2 === 0}
+    />
   </div>
 );

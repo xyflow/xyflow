@@ -33,13 +33,15 @@ Handle.displayName = 'Handle';
 Handle.propTypes = {
   type: PropTypes.oneOf(['source', 'target']),
   position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
-  onConnect: PropTypes.func
+  onConnect: PropTypes.func,
+  isValidConnection: PropTypes.func
 };
 
 Handle.defaultProps = {
   type: 'source',
   position: 'top',
-  onConnect: () => {}
+  onConnect: () => {},
+  isValidConnection: () => true
 };
 
 export default Handle;

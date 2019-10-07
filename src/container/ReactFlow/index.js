@@ -21,7 +21,7 @@ import store from '../../store';
 
 import '../../style.css';
 
-const Editor = ({
+const ReactFlow = ({
   style, onElementClick, elements, children,
   nodeTypes, edgeTypes, onLoad, onMove,
   onElementsRemove, onConnect, onNodeDragStop, connectionLineType,
@@ -54,9 +54,9 @@ const Editor = ({
   );
 };
 
-Editor.displayName = 'Editor';
+ReactFlow.displayName = 'ReactFlow';
 
-Editor.defaultProps = {
+ReactFlow.defaultProps = {
   onElementClick: () => {},
   onElementsRemove: () => {},
   onNodeDragStop: () => {},
@@ -79,4 +79,4 @@ Editor.defaultProps = {
   selectionKeyCode: 16
 };
 
-export default Editor;
+export default ReactFlow;

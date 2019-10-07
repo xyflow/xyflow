@@ -1,4 +1,4 @@
-import ReactFlow from './container/Editor';
+import ReactFlow from './container/ReactFlow';
 
 export default ReactFlow;
 
