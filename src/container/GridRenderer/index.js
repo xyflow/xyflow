@@ -1,13 +1,24 @@
-import React, {memo} from 'react';
-import {useStoreState} from 'easy-peasy';
+import React, { memo } from 'react';
+import { useStoreState } from 'easy-peasy';
+import classnames from 'classnames';
 
-const GridRenderer = memo(({gap = 32}) => {
+const baseStyles = {
+  position: 'absolute',
+  top: 0,
+  left: 0
+};
+
+const GridRenderer = memo(({
+  gap = 24, strokeColor = '#999', strokeWidth = 0.1, styles,
+  className
+}) => {
   const {
     width,
     height,
     transform: [x, y, scale],
   } = useStoreState(s => s);
 
+  const gridClasses = classnames('react-flow__grid', className);
   const scaledGap = gap * scale;
 
   const xStart = x % scaledGap;
@@ -22,8 +33,18 @@ const GridRenderer = memo(({gap = 32}) => {
   const path = [...xValues, ...yValues].join(' ');
 
   return (
-    <svg width={width} height={height} style={{position: 'absolute', top: 0, left: 0}}>
-      <path fill="none" stroke="black" strokeWidth={.1} d={path} />
+    <svg
+      width={width}
+      height={height}
+      style={{ ...baseStyles, ...styles }}
+      className={gridClasses}
+    >
+      <path
+        fill="none"
+        stroke={strokeColor}
+        strokeWidth={strokeWidth}
+        d={path}
+      />
     </svg>
   );
 });
