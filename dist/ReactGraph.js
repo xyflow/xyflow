@@ -9199,38 +9199,92 @@
         setSourceId = _ref.setSourceId,
         setPosition = _ref.setPosition,
         onConnect = _ref.onConnect,
-        isTarget = _ref.isTarget;
+        isTarget = _ref.isTarget,
+        isValidConnection = _ref.isValidConnection;
     var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
+    var recentHoveredHandle = null;
     setPosition({
       x: evt.clientX - containerBounds.x,
       y: evt.clientY - containerBounds.y
     });
-    setSourceId(nodeId);
+    setSourceId(nodeId); // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
+
+    function checkElementBelowIsValid(evt) {
+      var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
+      var result = {
+        elementBelow: elementBelow,
+        isValid: false,
+        connection: null,
+        isHoveringHandle: false
+      };
+
+      if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
+        var connection = null;
+
+        if (isTarget) {
+          var sourceId = elementBelow.getAttribute('data-nodeid');
+          connection = {
+            source: sourceId,
+            target: nodeId
+          };
+        } else {
+          var targetId = elementBelow.getAttribute('data-nodeid');
+          connection = {
+            source: nodeId,
+            target: targetId
+          };
+        }
+
+        var isValid = isValidConnection(connection);
+        result.connection = connection;
+        result.isValid = isValid;
+        result.isHoveringHandle = true;
+      }
+
+      return result;
+    }
 
     function onMouseMove(evt) {
       setPosition({
         x: evt.clientX - containerBounds.x,
         y: evt.clientY - containerBounds.y
       });
+
+      var _checkElementBelowIsV = checkElementBelowIsValid(evt),
+          connection = _checkElementBelowIsV.connection,
+          elementBelow = _checkElementBelowIsV.elementBelow,
+          isValid = _checkElementBelowIsV.isValid,
+          isHoveringHandle = _checkElementBelowIsV.isHoveringHandle;
+
+      if (!isHoveringHandle) {
+        if (recentHoveredHandle) {
+          recentHoveredHandle.classList.remove('valid');
+          recentHoveredHandle.classList.remove('connecting');
+        }
+
+        return false;
+      }
+
+      var isOwnHandle = connection.source === connection.target;
+
+      if (!isOwnHandle) {
+        recentHoveredHandle = elementBelow;
+        elementBelow.classList.add('connecting');
+        elementBelow.classList.toggle('valid', isValid);
+      }
     }
 
     function onMouseUp(evt) {
-      var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
+      var _checkElementBelowIsV2 = checkElementBelowIsValid(evt),
+          connection = _checkElementBelowIsV2.connection,
+          isValid = _checkElementBelowIsV2.isValid;
 
-      if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
-        if (isTarget) {
-          var sourceId = elementBelow.getAttribute('data-nodeid');
-          onConnect({
-            source: sourceId,
-            target: nodeId
-          });
-        } else {
-          var targetId = elementBelow.getAttribute('data-nodeid');
-          onConnect({
-            source: nodeId,
-            target: targetId
-          });
-        }
+      if (isValid) {
+        onConnect(connection);
+      }
+
+      if (recentHoveredHandle) {
+        recentHoveredHandle.classList.remove('valid');
       }
 
       setSourceId(null);
@@ -9252,7 +9306,8 @@
         className = _ref2.className,
         _ref2$id = _ref2.id,
         id = _ref2$id === void 0 ? false : _ref2$id,
-        rest = _objectWithoutProperties(_ref2, ["type", "nodeId", "onConnect", "position", "setSourceId", "setPosition", "className", "id"]);
+        isValidConnection = _ref2.isValidConnection,
+        rest = _objectWithoutProperties(_ref2, ["type", "nodeId", "onConnect", "position", "setSourceId", "setPosition", "className", "id", "isValidConnection"]);
 
     var isTarget = type === 'target';
     var handleClasses = classnames('react-flow__handle', className, position, {
@@ -9270,7 +9325,8 @@
           setSourceId: setSourceId,
           setPosition: setPosition,
           onConnect: onConnect,
-          isTarget: isTarget
+          isTarget: isTarget,
+          isValidConnection: isValidConnection
         });
       }
     }, rest));
@@ -9318,12 +9374,16 @@
   Handle.propTypes = {
     type: PropTypes.oneOf(['source', 'target']),
     position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
-    onConnect: PropTypes.func
+    onConnect: PropTypes.func,
+    isValidConnection: PropTypes.func
   };
   Handle.defaultProps = {
     type: 'source',
     position: 'top',
-    onConnect: function onConnect() {}
+    onConnect: function onConnect() {},
+    isValidConnection: function isValidConnection() {
+      return true;
+    }
   };
 
   var nodeStyles = {
@@ -9794,7 +9854,7 @@
     whyDidYouRender(React__default);
   }
 
-  var Editor = function Editor(_ref) {
+  var ReactFlow = function ReactFlow(_ref) {
     var style = _ref.style,
         onElementClick = _ref.onElementClick,
         elements = _ref.elements,
@@ -9838,8 +9898,8 @@
     }), children));
   };
 
-  Editor.displayName = 'Editor';
-  Editor.defaultProps = {
+  ReactFlow.displayName = 'ReactFlow';
+  ReactFlow.defaultProps = {
     onElementClick: function onElementClick() {},
     onElementsRemove: function onElementsRemove() {},
     onNodeDragStop: function onNodeDragStop() {},
@@ -9932,7 +9992,7 @@
 
   exports.Handle = Handle;
   exports.MiniMap = index;
-  exports.default = Editor;
+  exports.default = ReactFlow;
   exports.getOutgoers = getOutgoers;
   exports.isEdge = isEdge;
   exports.isNode = isNode;
