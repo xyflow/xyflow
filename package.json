@@ -15,7 +15,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-draggable": "^4.0.3",
-    "scheduler": "^0.15.0"
+    "scheduler": "^0.16.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
