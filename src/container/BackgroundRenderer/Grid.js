@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import PropTypes from 'prop-types';
 import { useStoreState } from 'easy-peasy';
 import classnames from 'classnames';
 
@@ -8,8 +9,8 @@ const baseStyles = {
   left: 0
 };
 
-const GridRenderer = memo(({
-  gap = 24, strokeColor = '#999', strokeWidth = 0.1, style,
+const Grid = memo(({
+  gap, strokeColor, strokeWidth, style,
   className
 }) => {
   const {
@@ -49,6 +50,22 @@ const GridRenderer = memo(({
   );
 });
 
-GridRenderer.displayName = 'GridRenderer';
+Grid.displayName = 'Grid';
 
-export default GridRenderer;
+Grid.propTypes = {
+  gap: PropTypes.number,
+  strokeColor: PropTypes.string,
+  strokeWidth: PropTypes.number,
+  style: PropTypes.object,
+  className: PropTypes.string
+};
+
+Grid.defaultProps = {
+  gap: 24,
+  strokeColor: '#999',
+  strokeWidth:0.1,
+  style: {},
+  className: null
+};
+
+export default Grid;

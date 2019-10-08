@@ -3,7 +3,7 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import GridRenderer from '../GridRenderer';
+import BackgroundRenderer from '../BackgroundRenderer';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
 import useKeyPress from '../../hooks/useKeyPress';
@@ -17,7 +17,8 @@ const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,
   onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle,
   selectionKeyCode, onElementsRemove, deleteKeyCode, elements,
-  onConnect, gridColor, showGrid, gridGap
+  showBackground, backgroundGap, backgroundColor, backgroundType,
+  onConnect
 }) => {
   const zoomPane = useRef();
   const rendererNode = useRef();
@@ -68,7 +69,13 @@ const GraphView = memo(({
 
   return (
     <div className="react-flow__renderer" ref={rendererNode}>
-      {showGrid && <GridRenderer gap={gridGap} strokeColor={gridColor} />}
+      {showBackground && (
+        <BackgroundRenderer
+          gap={backgroundGap}
+          strokeColor={backgroundColor}
+          backgroundType={backgroundType}
+        />
+      )}
       <NodeRenderer
         nodeTypes={nodeTypes}
         onElementClick={onElementClick}

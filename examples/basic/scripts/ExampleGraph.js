@@ -64,7 +64,6 @@ class App extends PureComponent {
         onConnect={this.onConnect}
         onNodeDragStop={onNodeDragStop}
         style={{ width: '100%', height: '100%' }}
-        showGrid={false}
       />
     );
   }

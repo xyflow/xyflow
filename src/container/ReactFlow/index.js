@@ -26,8 +26,8 @@ const ReactFlow = ({
   style, onElementClick, elements, children,
   nodeTypes, edgeTypes, onLoad, onMove,
   onElementsRemove, onConnect, onNodeDragStop, connectionLineType,
-  connectionLineStyle, deleteKeyCode, selectionKeyCode, gridColor,
-  showGrid, gridGap
+  connectionLineStyle, deleteKeyCode, selectionKeyCode,
+  showBackground, backgroundGap, backgroundType, backgroundColor
 }) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -49,9 +49,10 @@ const ReactFlow = ({
           deleteKeyCode={deleteKeyCode}
           elements={elements}
           onConnect={onConnect}
-          gridColor={gridColor}
-          gridGap={gridGap}
-          showGrid={showGrid}
+          backgroundColor={backgroundColor}
+          backgroundGap={backgroundGap}
+          showBackground={showBackground}
+          backgroundType={backgroundType}
         />
         {children}
       </StoreProvider>
@@ -76,7 +77,8 @@ ReactFlow.propTypes = {
   selectionKeyCode: PropTypes.number,
   gridColor: PropTypes.string,
   gridGap: PropTypes.number,
-  showGrid: PropTypes.bool
+  showBackground: PropTypes.bool,
+  backgroundType: PropTypes.oneOf(['grid'])
 };
 
 ReactFlow.defaultProps = {
@@ -100,9 +102,10 @@ ReactFlow.defaultProps = {
   connectionLineStyle: {},
   deleteKeyCode: 8,
   selectionKeyCode: 16,
-  gridColor: '#999',
-  gridGap: 24,
-  showGrid: true
+  backgroundColor: '#999',
+  backgroundGap: 24,
+  showBackground: true,
+  backgroundType: 'grid'
 };
 
 export default ReactFlow;
