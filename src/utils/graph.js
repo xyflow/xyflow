@@ -182,14 +182,3 @@ export const zoomOut = () => {
   const state = store.getState();
   state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] - 0.2);
 };
-
-export default {
-  isEdge,
-  getBoundingBox,
-  graphPosToZoomedPos,
-  getConnectedEdges,
-  parseElement,
-  fitView,
-  zoomIn,
-  zoomOut
-};
