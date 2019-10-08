@@ -44,6 +44,7 @@ export default [{
 		file: pkg.browser,
 		format: 'umd',
 		sourcemap: isProd,
+		exports: 'named',
 		globals: {
 			react: 'React'
 		}
@@ -55,7 +56,7 @@ export default [{
 	onwarn,
 	output: {
 		file: pkg.module,
-		format: 'esm',
+		format: 'esm'
 	},
 	plugins: [
 		bundleSize(),
