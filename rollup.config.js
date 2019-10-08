@@ -49,6 +49,33 @@ export default [{
 		}
 	},
 	plugins
+}, {
+	input: 'src/index.js',
+	external,
+	onwarn,
+	output: {
+		name: 'ReactFlow',
+		file: pkg.module,
+		format: 'es',
+		sourcemap: isProd,
+		globals: {
+			react: 'React',
+			'react-dom': 'ReactDOM',
+			'prop-types': 'PropTypes'
+		}
+	},
+	plugins: [
+		bundleSize(),
+		postcss(),
+		resolve(),
+		babel({
+			exclude: 'node_modules/**'
+		}),
+		commonjs({
+			include: /node_modules/
+		}),
+		svg()
+	]
 }];
 
 // }, {
