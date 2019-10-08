@@ -3,7 +3,10 @@ import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 
-const d3ZoomInstance = d3Zoom.zoom().scaleExtent([0.5, 2]);
+const d3ZoomInstance = d3Zoom
+  .zoom()
+  .scaleExtent([0.5, 2])
+  .filter(() => !event.button);
 
 export default function useD3Zoom(zoomPane, onMove, shiftPressed) {
   const state = useStoreState(s => ({
