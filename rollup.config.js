@@ -29,8 +29,7 @@ const plugins = [
 		include: /node_modules/
 	}),
 	svg(),
-	visualizer(),
-	isProd && terser()
+	visualizer()
 ];
 
 export default [{
@@ -55,9 +54,9 @@ export default [{
 	onwarn,
 	output: {
 		name: 'ReactFlow',
-		file: pkg.module,
+		file: pkg.main,
 		format: 'es',
-		sourcemap: isProd,
+		sourcemap: false,
 		globals: {
 			react: 'React',
 			'react-dom': 'ReactDOM',

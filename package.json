@@ -1,9 +1,8 @@
 {
   "name": "react-flow",
   "version": "1.0.0",
-  "browser": "dist/ReactFlow.min.js",
-  "main": "dist/ReactFlow.min.js",
-  "module": "dist/ReactFlow.es.js",
+  "browser": "dist/ReactFlow.js",
+  "main": "dist/ReactFlow.es.js",
   "private": true,
   "dependencies": {
     "@welldone-software/why-did-you-render": "^3.3.7",
