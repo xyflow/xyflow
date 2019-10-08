@@ -36,6 +36,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-serve": "^1.0.1",
+    "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-visualizer": "^2.6.0",
     "start-server-and-test": "^1.10.4",

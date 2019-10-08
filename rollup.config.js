@@ -5,6 +5,8 @@ import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
 import { uglify } from 'rollup-plugin-uglify';
+import svg from 'rollup-plugin-svg'
+
 
 import pkg from './package.json';
 
@@ -41,6 +43,7 @@ export default [{
 		commonjs({
 			include: /node_modules/
 		}),
+		svg(),
 		visualizer(),
 		isProd && uglify()
 	]}
