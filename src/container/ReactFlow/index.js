@@ -8,12 +8,10 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 import GraphView from '../GraphView';
-
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
-
 import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';

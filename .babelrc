@@ -8,14 +8,5 @@
     ],
     "@babel/preset-react"
   ],
-  "env": {
-    "test": {
-      "presets": [
-        [
-          "react-app"
-        ]
-      ]
-    }
-  },
   "plugins": []
 }

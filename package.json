@@ -2,8 +2,8 @@
   "name": "react-flow",
   "version": "1.0.0",
   "module": "dist/ReactFlow.esm.js",
-  "browser": "dist/ReactFlow.js",
-  "main": "dist/ReactFlow.js",
+  "browser": "dist/ReactFlow.min.js",
+  "main": "dist/ReactFlow.min.js",
   "private": true,
   "dependencies": {
     "@welldone-software/why-did-you-render": "^3.3.7",
@@ -37,6 +37,7 @@
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-svg": "^2.0.0",
+    "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-visualizer": "^2.6.0",
     "start-server-and-test": "^1.10.4",

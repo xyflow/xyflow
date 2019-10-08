@@ -4,9 +4,8 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
-import { uglify } from 'rollup-plugin-uglify';
-import svg from 'rollup-plugin-svg'
-
+import { terser } from 'rollup-plugin-terser';
+import svg from 'rollup-plugin-svg';
 
 import pkg from './package.json';
 
@@ -45,6 +44,6 @@ export default [{
 		}),
 		svg(),
 		visualizer(),
-		isProd && uglify()
+		isProd && terser()
 	]}
 ];

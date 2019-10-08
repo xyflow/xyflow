@@ -160,17 +160,30 @@
     pointer-events: all;
   }
 
-.react-flow__controls-button {
-  background: #f8f8f8;
-  border: 1px solid #eee;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
+.react-flow__controls {
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);
 }
 
+.react-flow__controls-button {
+    background: #fefefe;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    padding: 5px;
+  }
+
+.react-flow__controls-button img {
+      width: 100%;
+    }
+
 .react-flow__controls-button:hover {
-  background: #eee;
-}
+      background: #f4f4f4;
+    }
