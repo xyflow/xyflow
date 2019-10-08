@@ -1,5 +1,23 @@
 language: node_js
+
 node_js:
-  - "lts/*"
-  - "node"
-script: npm test
+  - 10
+
+addons:
+  apt:
+    packages:
+      - libgconf-2-4
+
+cache:
+  directories:
+    - ~/.npm
+    - ~/.cache
+
+install:
+  - npm ci
+
+before_script:
+  - npm run dev -- --silent &
+
+script:
+  - npm run cy:run
