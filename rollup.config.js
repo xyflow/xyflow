@@ -35,7 +35,7 @@ const plugins = [
 
 export default [{
 	input: 'src/index.js',
-	external: external,
+	external,
 	onwarn,
 	output: {
 		name: 'ReactFlow',
