@@ -3,8 +3,7 @@ import ReactFlow from './container/ReactFlow';
 export default ReactFlow;
 
 export { default as Handle } from './components/Handle';
-export { default as MiniMap } from './plugins/MiniMap';
-export { default as Controls } from './plugins/Controls';
+export { MiniMap, Controls } from './plugins';
 
 export {
   isNode,
