@@ -1,6 +1,7 @@
 {
   "name": "react-flow",
   "version": "1.0.0",
+  "root": "dist",
   "browser": "dist/ReactFlow.min.js",
   "main": "dist/ReactFlow.min.js",
   "private": true,
