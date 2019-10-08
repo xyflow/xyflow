@@ -10,5 +10,6 @@ export {
   isNode,
   isEdge,
   removeElements,
+  addEdge,
   getOutgoers
 } from './utils/graph';

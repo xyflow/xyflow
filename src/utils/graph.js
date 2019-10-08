@@ -1,5 +1,7 @@
 import { zoomIdentity } from 'd3-zoom';
+
 import store from '../store';
+import { isDefined } from './index';
 
 export const isEdge = element => element.source && element.target;
 
@@ -14,7 +16,7 @@ export const getOutgoers = (node, elements) => {
   return elements.filter(e => outgoerIds.includes(e.id));
 };
 
-export const removeElements = (elements, elementsToRemove) => {
+export const removeElements = (elementsToRemove, elements) => {
   const nodeIdsToRemove = elementsToRemove.map(n => n.id);
 
   return elements.filter(e => {
@@ -25,6 +27,21 @@ export const removeElements = (elements, elementsToRemove) => {
     );
   });
 };
+
+function getEdgeId(params) {
+  return `reactflow__edge-${params.source}-${params.target}`;
+}
+
+export const addEdge = (edgeParams, elements) => {
+  if (!edgeParams.source || !edgeParams.target) {
+    throw new Error('Can not create edge. An edge needs a source and a target');
+  }
+
+  return elements.concat({
+    ...edgeParams,
+    id: isDefined(edgeParams.id) ? edgeParams.id : getEdgeId(edgeParams)
+  });
+}
 
 const pointToRendererPoint = ({ x, y }, transform) => {
   const rendererX = (x - transform[0]) * (1 / [transform[2]]);

@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { removeElements, getOutgoers } from '../../../src';
+import Graph, { removeElements, addEdge, getOutgoers } from '../../../src';
 
 const onNodeDragStop = node => console.log('drag stop', node);
-
-let edgeId = 0;
-const getEdgeId = () => `edge__${edgeId++}`;
 
 class App extends PureComponent {
   constructor() {
@@ -22,9 +19,6 @@ class App extends PureComponent {
         { id: 'e1-3', source: '1', target: '3' },
       ]
     };
-
-    this.onElementClick = this.onElementClick.bind(this);
-    this.onConnect = this.onConnect.bind(this);
   }
 
   onLoad(graphInstance) {
@@ -43,14 +37,14 @@ class App extends PureComponent {
 
   onElementsRemove(elementsToRemove) {
     this.setState(prevState => ({
-      elements: removeElements(prevState.elements, elementsToRemove)
+      elements: removeElements(elementsToRemove, prevState.elements)
     }));
   }
 
   onConnect(params) {
     console.log('connect', params);
     this.setState(prevState => ({
-      elements: prevState.elements.concat({ id: getEdgeId(), ...params })
+      elements: addEdge(params, prevState.elements)
     }));
   }
 
@@ -59,9 +53,9 @@ class App extends PureComponent {
       <Graph
         elements={this.state.elements}
         onLoad={graphInstance => this.onLoad(graphInstance)}
-        onElementClick={this.onElementClick}
+        onElementClick={element => this.onElementClick(element)}
         onElementsRemove={elements => this.onElementsRemove(elements)}
-        onConnect={this.onConnect}
+        onConnect={params => this.onConnect(params)}
         onNodeDragStop={onNodeDragStop}
         style={{ width: '100%', height: '100%' }}
         showBackground={false}
