@@ -1,8 +1,9 @@
 {
   "name": "react-flow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "browser": "dist/ReactFlow.js",
-  "main": "dist/ReactFlow.es.js",
+  "main": "dist/ReactFlow.js",
+  "module": "dist/ReactFlow.esm.js",
   "private": true,
   "dependencies": {
     "@welldone-software/why-did-you-render": "^3.3.7",
@@ -11,8 +12,6 @@
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.1.0",
     "fast-deep-equal": "^3.0.0-beta.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
     "react-draggable": "^4.0.3",
     "scheduler": "^0.16.2"
   },

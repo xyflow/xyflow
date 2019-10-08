@@ -9546,4 +9546,3 @@ var index$1 = (function (_ref) {
 
 export default ReactFlow;
 export { index$1 as Controls, Handle, index as MiniMap, addEdge, getOutgoers, isEdge, isNode, removeElements };
-//# sourceMappingURL=ReactFlow.es.js.map

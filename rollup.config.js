@@ -4,7 +4,6 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
-import { terser } from 'rollup-plugin-terser';
 import svg from 'rollup-plugin-svg';
 
 import pkg from './package.json';
@@ -53,15 +52,8 @@ export default [{
 	external,
 	onwarn,
 	output: {
-		name: 'ReactFlow',
-		file: pkg.main,
-		format: 'es',
-		sourcemap: false,
-		globals: {
-			react: 'React',
-			'react-dom': 'ReactDOM',
-			'prop-types': 'PropTypes'
-		}
+		file: pkg.module,
+		format: 'esm',
 	},
 	plugins: [
 		bundleSize(),
