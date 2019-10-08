@@ -14,7 +14,7 @@
     "fast-deep-equal": "^3.0.0-beta.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-draggable": "^3.3.2",
+    "react-draggable": "^4.0.3",
     "scheduler": "^0.15.0"
   },
   "devDependencies": {
