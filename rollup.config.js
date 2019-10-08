@@ -5,11 +5,14 @@ import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
 import svg from 'rollup-plugin-svg';
+import replace from 'rollup-plugin-replace';
 
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
-const external = ['react', 'react-dom', 'prop-types'];
+const input = 'src/index.js';
+const processEnv = isProd ? 'production' : 'development';
+const external = ['react'];
 const onwarn = (warning, rollupWarn) => {
 	if (warning.code !== 'CIRCULAR_DEPENDENCY') {
 		rollupWarn(warning);
@@ -23,14 +26,17 @@ const plugins = [
 		exclude: 'node_modules/**'
 	}),
 	commonjs({
-		include: /node_modules/
+		include: 'node_modules/**'
 	}),
 	svg(),
-	visualizer()
+	visualizer(),
+	replace({
+		'process.env.NODE_ENV': JSON.stringify(processEnv)
+	})
 ];
 
 export default [{
-	input: 'src/index.js',
+	input,
 	external,
 	onwarn,
 	output: {
@@ -39,14 +45,12 @@ export default [{
 		format: 'umd',
 		sourcemap: isProd,
 		globals: {
-			react: 'React',
-			'react-dom': 'ReactDOM',
-			'prop-types': 'PropTypes'
+			react: 'React'
 		}
 	},
 	plugins
 }, {
-	input: 'src/index.js',
+	input,
 	external,
 	onwarn,
 	output: {
@@ -61,26 +65,8 @@ export default [{
 			exclude: 'node_modules/**'
 		}),
 		commonjs({
-			include: /node_modules/
+			include: 'node_modules/**'
 		}),
 		svg()
 	]
 }];
-
-// }, {
-// 	input: 'src/plugins/index.js',
-// 	external: external,
-// 	onwarn,
-// 	output: {
-// 		name: 'ReactFlow Plugins',
-// 		file: 'dist/plugins/index.js',
-// 		format: 'umd',
-// 		sourcemap: isProd,
-// 		globals: {
-// 			react: 'React',
-// 			'react-dom': 'ReactDOM',
-// 			'prop-types': 'PropTypes'
-// 		}
-// 	},
-// 	plugins
-// }];
