@@ -49,20 +49,22 @@ export default [{
 		}
 	},
 	plugins
-}, {
-	input: 'src/plugins/index.js',
-	external: external,
-	onwarn,
-	output: {
-		name: 'ReactFlow Plugins',
-		file: 'dist/plugins/index.js',
-		format: 'umd',
-		sourcemap: isProd,
-		globals: {
-			react: 'React',
-			'react-dom': 'ReactDOM',
-			'prop-types': 'PropTypes'
-		}
-	},
-	plugins
 }];
+
+// }, {
+// 	input: 'src/plugins/index.js',
+// 	external: external,
+// 	onwarn,
+// 	output: {
+// 		name: 'ReactFlow Plugins',
+// 		file: 'dist/plugins/index.js',
+// 		format: 'umd',
+// 		sourcemap: isProd,
+// 		globals: {
+// 			react: 'React',
+// 			'react-dom': 'ReactDOM',
+// 			'prop-types': 'PropTypes'
+// 		}
+// 	},
+// 	plugins
+// }];
