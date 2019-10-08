@@ -17,9 +17,7 @@ const onwarn = (warning, rollupWarn) => {
 };
 const plugins = [
 	bundleSize(),
-	postcss({
-		extract: isProd
-	}),
+	postcss(),
 	resolve(),
 	babel({
 		exclude: 'node_modules/**'
