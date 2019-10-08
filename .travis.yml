@@ -17,7 +17,7 @@ install:
   - npm ci
 
 before_script:
-  - npm run dev -- --silent &
+  - npm run dev &
 
 script:
   - npm run cy:run
