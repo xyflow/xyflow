@@ -6,6 +6,7 @@ import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
 import replace from 'rollup-plugin-replace';
 import svgr from '@svgr/rollup';
+import typescript from 'rollup-plugin-typescript2'
 
 import pkg from './package.json';
 
@@ -13,7 +14,8 @@ const isProd = process.env.NODE_ENV === 'production';
 const processEnv = isProd ? 'production' : 'development';
 
 export default [{
-	input: 'src/index.js',
+	input: 'src/index.ts',
+	external: ['react', 'react-dom'],
 	onwarn(warning, rollupWarn) {
 		if (warning.code !== 'CIRCULAR_DEPENDENCY') {
 			rollupWarn(warning);
@@ -30,7 +32,6 @@ export default [{
 		sourcemap: true,
 		exports: 'named'
 	}],
-	external: ['react'],
 	plugins: [
 		bundleSize(),
 		postcss(),
@@ -42,6 +43,9 @@ export default [{
 			'process.env.NODE_ENV': JSON.stringify(processEnv)
 		}),
 		svgr(),
+		typescript({
+      clean: true
+    }),
 		resolve(),
 		commonjs({
 			include: 'node_modules/**'
