@@ -58,7 +58,7 @@ class App extends PureComponent {
         onConnect={params => this.onConnect(params)}
         onNodeDragStop={onNodeDragStop}
         style={{ width: '100%', height: '100%' }}
-        showBackground={false}
+        backgroundType="lines"
       />
     );
   }

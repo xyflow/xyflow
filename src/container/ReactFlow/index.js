@@ -76,7 +76,7 @@ ReactFlow.propTypes = {
   gridColor: PropTypes.string,
   gridGap: PropTypes.number,
   showBackground: PropTypes.bool,
-  backgroundType: PropTypes.oneOf(['grid'])
+  backgroundType: PropTypes.oneOf(['lines', 'dots'])
 };
 
 ReactFlow.defaultProps = {
@@ -103,7 +103,7 @@ ReactFlow.defaultProps = {
   backgroundColor: '#999',
   backgroundGap: 24,
   showBackground: true,
-  backgroundType: 'grid'
+  backgroundType: 'dots'
 };
 
 export default ReactFlow;
