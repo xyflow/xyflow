@@ -17,6 +17,7 @@ install:
   - npm ci
 
 before_script:
+  - cd example && npm i
   - npm run dev &
 
 script:
