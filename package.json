@@ -1,7 +1,6 @@
 {
   "name": "react-flow",
   "version": "1.0.1",
-  "browser": "dist/ReactFlow.js",
   "main": "dist/ReactFlow.js",
   "module": "dist/ReactFlow.esm.js",
   "private": true,
@@ -19,6 +18,7 @@
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
+    "@svgr/rollup": "^4.3.3",
     "autoprefixer": "^9.6.4",
     "babel-loader": "^8.0.6",
     "babel-preset-react-app": "^9.0.2",
@@ -35,6 +35,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-livereload": "^1.0.4",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^1.0.1",

@@ -6,68 +6,44 @@ import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
 import svg from 'rollup-plugin-svg';
 import replace from 'rollup-plugin-replace';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
-const input = 'src/index.js';
 const processEnv = isProd ? 'production' : 'development';
-const external = ['react'];
-const onwarn = (warning, rollupWarn) => {
-	if (warning.code !== 'CIRCULAR_DEPENDENCY') {
-		rollupWarn(warning);
-	}
-};
-const plugins = [
-	bundleSize(),
-	postcss(),
-	resolve(),
-	babel({
-		exclude: 'node_modules/**'
-	}),
-	commonjs({
-		include: 'node_modules/**'
-	}),
-	svg(),
-	visualizer(),
-	replace({
-		'process.env.NODE_ENV': JSON.stringify(processEnv)
-	})
-];
 
 export default [{
-	input,
-	external,
-	onwarn,
-	output: {
-		name: 'ReactFlow',
-		file: pkg.browser,
-		format: 'umd',
-		sourcemap: isProd,
-		exports: 'named',
-		globals: {
-			react: 'React'
+	input: 'src/index.js',
+	onwarn(warning, rollupWarn) {
+		if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+			rollupWarn(warning);
 		}
 	},
-	plugins
-}, {
-	input,
-	external,
-	onwarn,
-	output: {
+	output: [{
+		file: pkg.main,
+		format: 'cjs',
+		sourcemap: true
+	}, {
 		file: pkg.module,
-		format: 'esm'
-	},
+		format: 'es',
+		sourcemap: true
+	}],
 	plugins: [
+		peerDepsExternal(),
 		bundleSize(),
 		postcss(),
-		resolve(),
 		babel({
 			exclude: 'node_modules/**'
 		}),
+		visualizer(),
+		replace({
+			'process.env.NODE_ENV': JSON.stringify(processEnv)
+		}),
+		svg(),
+		resolve(),
 		commonjs({
 			include: 'node_modules/**'
 		}),
-		svg()
 	]
 }];
