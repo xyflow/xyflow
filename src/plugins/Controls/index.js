@@ -2,9 +2,9 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
-import plusIcon from '../../../assets/icons/plus.svg';
-import minusIcon from '../../../assets/icons/minus.svg';
-import fitviewIcon from '../../../assets/icons/fitview.svg';
+import PlusIcon from '../../../assets/icons/plus.svg';
+import MinusIcon from '../../../assets/icons/minus.svg';
+import FitviewIcon from '../../../assets/icons/fitview.svg';
 
 const baseStyle = {
   position: 'absolute',
@@ -28,19 +28,19 @@ export default ({ style, className }) => {
         className="react-flow__controls-button react-flow__controls-zoomin"
         onClick={zoomIn}
       >
-        <img src={plusIcon} />
+        <PlusIcon />
       </div>
       <div
         className="react-flow__controls-button  react-flow__controls-zoomout"
         onClick={zoomOut}
       >
-        <img src={minusIcon} />
+        <MinusIcon />
       </div>
       <div
         className="react-flow__controls-button  react-flow__controls-fitview"
         onClick={fitView}
       >
-        <img src={fitviewIcon} />
+        <FitviewIcon />
       </div>
     </div>
   );

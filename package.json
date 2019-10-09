@@ -5,6 +5,7 @@
   "module": "dist/ReactFlow.esm.js",
   "private": true,
   "dependencies": {
+    "@svgr/rollup": "^4.3.3",
     "@welldone-software/why-did-you-render": "^3.3.7",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.0",
@@ -36,7 +37,6 @@
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^1.0.1",
-    "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-visualizer": "^2.6.0",
@@ -48,7 +48,7 @@
   },
   "scripts": {
     "build": "rollup -c --environment NODE_ENV:production",
-    "watch": "rollup -w -c",
+    "start": "rollup -w -c",
     "dev": "cd example && npm start",
     "build:example": "cd example && npm run build",
     "dev:wait": "start-server-and-test dev http-get://localhost:3000",

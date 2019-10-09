@@ -4,8 +4,8 @@ import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
-import svg from 'rollup-plugin-svg';
 import replace from 'rollup-plugin-replace';
+import svgr from '@svgr/rollup';
 
 import pkg from './package.json';
 
@@ -30,7 +30,7 @@ export default [{
 		sourcemap: true,
 		exports: 'named'
 	}],
-	external: ['react', 'react-dom'],
+	external: ['react'],
 	plugins: [
 		bundleSize(),
 		postcss(),
@@ -41,7 +41,7 @@ export default [{
 		replace({
 			'process.env.NODE_ENV': JSON.stringify(processEnv)
 		}),
-		svg(),
+		svgr(),
 		resolve(),
 		commonjs({
 			include: 'node_modules/**'
