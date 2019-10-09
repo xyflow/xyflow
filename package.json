@@ -50,7 +50,7 @@
     "build": "rollup -c --environment NODE_ENV:production",
     "start": "rollup -w -c",
     "dev": "cd example && npm start",
-    "build:example": "npm install && cd example && npm run build",
+    "build:example": "npm install && cd example && npm install && npm run build",
     "dev:wait": "start-server-and-test dev http-get://localhost:3000",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
