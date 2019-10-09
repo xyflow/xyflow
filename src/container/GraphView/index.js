@@ -72,7 +72,7 @@ const GraphView = memo(({
       {showBackground && (
         <BackgroundRenderer
           gap={backgroundGap}
-          strokeColor={backgroundColor}
+          color={backgroundColor}
           backgroundType={backgroundType}
         />
       )}

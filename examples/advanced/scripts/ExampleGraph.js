@@ -141,7 +141,7 @@ class App extends PureComponent {
         }}
         connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
         connectionLineType="bezier"
-        backgroundColor="#aaa"
+        backgroundColor="#888"
         backgroundGap={16}
       >
         <MiniMap

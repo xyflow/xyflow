@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import Grid from './Grid';
 
 const bgComponents = {
-  grid: Grid
+  lines: Grid,
+  dots: Grid
 };
 
 const BackgroundRenderer = memo(({
@@ -17,11 +18,11 @@ const BackgroundRenderer = memo(({
 BackgroundRenderer.displayName = 'BackgroundRenderer';
 
 BackgroundRenderer.propTypes = {
-  backgroundType: PropTypes.oneOf(['grid'])
+  backgroundType: PropTypes.oneOf(['lines', 'dots'])
 };
 
 BackgroundRenderer.defaultProps = {
-  backgroundType: 'grid'
+  backgroundType: 'dots'
 };
 
 export default BackgroundRenderer;

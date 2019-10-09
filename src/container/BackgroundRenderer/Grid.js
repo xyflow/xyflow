@@ -1,18 +1,40 @@
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 import PropTypes from 'prop-types';
-import { useStoreState } from 'easy-peasy';
+import {useStoreState} from 'easy-peasy';
 import classnames from 'classnames';
 
 const baseStyles = {
   position: 'absolute',
   top: 0,
-  left: 0
+  left: 0,
 };
 
-const Grid = memo(({
-  gap, strokeColor, strokeWidth, style,
-  className
-}) => {
+const createGridLines = (width, height, xOffset, yOffset, gap) => {
+  const lineCountX = Math.ceil(width / gap) + 1;
+  const lineCountY = Math.ceil(height / gap) + 1;
+
+  const xValues = Array.from({length: lineCountX}, (_, i) => `M${i * gap + xOffset} 0 V${height}`);
+  const yValues = Array.from({length: lineCountY}, (_, i) => `M0 ${i * gap + yOffset} H${width}`);
+
+  return [...xValues, ...yValues].join(' ');
+};
+
+const createGridDots = (width, height, xOffset, yOffset, gap, size) => {
+  const lineCountX = Math.ceil(width / gap) + 1;
+  const lineCountY = Math.ceil(height / gap) + 1;
+  
+  const values = Array.from({length: lineCountX}, (_, col) => {
+    const x = col * gap + xOffset;
+    return Array.from({length: lineCountY},(_,row)=>{
+      const y = row * gap + yOffset;
+      return `M${x} ${y-size} l${size} ${size} l${-size} ${size} l${-size} ${-size}z`
+    }).join(' ');
+  });
+
+  return values.join(' ');
+};
+
+const Grid = memo(({gap, color, size, style, className, gridStyle}) => {
   const {
     width,
     height,
@@ -22,30 +44,19 @@ const Grid = memo(({
   const gridClasses = classnames('react-flow__grid', className);
   const scaledGap = gap * scale;
 
-  const xStart = x % scaledGap;
-  const yStart = y % scaledGap;
+  const xOffset = x % scaledGap;
+  const yOffset = y % scaledGap;
+  const isLines = gridStyle === 'lines';
+  const path = isLines
+    ? createGridLines(width, height, xOffset, yOffset, scaledGap)
+    : createGridDots(width, height, xOffset, yOffset, scaledGap, size);
 
-  const lineCountX = Math.ceil(width / scaledGap) + 1;
-  const lineCountY = Math.ceil(height / scaledGap) + 1;
-
-  const xValues = Array.from({length: lineCountX}, (_, index) => `M${index * scaledGap + xStart} 0 V${height}`);
-  const yValues = Array.from({length: lineCountY}, (_, index) => `M0 ${index * scaledGap + yStart} H${width}`);
-
-  const path = [...xValues, ...yValues].join(' ');
+  const fill = isLines ? 'none' : color;
+  const stroke = isLines ? color : 'none';
 
   return (
-    <svg
-      width={width}
-      height={height}
-      style={{ ...baseStyles, ...style }}
-      className={gridClasses}
-    >
-      <path
-        fill="none"
-        stroke={strokeColor}
-        strokeWidth={strokeWidth}
-        d={path}
-      />
+    <svg width={width} height={height} style={{...baseStyles, ...style}} className={gridClasses}>
+      <path fill={fill} stroke={stroke} strokeWidth={size} d={path} />
     </svg>
   );
 });
@@ -54,18 +65,20 @@ Grid.displayName = 'Grid';
 
 Grid.propTypes = {
   gap: PropTypes.number,
-  strokeColor: PropTypes.string,
-  strokeWidth: PropTypes.number,
+  color: PropTypes.string,
+  size: PropTypes.number,
   style: PropTypes.object,
-  className: PropTypes.string
+  className: PropTypes.string,
+  gridStyle: PropTypes.oneOf(['lines', 'dots']),
 };
 
 Grid.defaultProps = {
   gap: 24,
-  strokeColor: '#999',
-  strokeWidth:0.1,
+  color: '#999',
+  size: .5,
   style: {},
-  className: null
+  className: null,
+  gridStyle: 'dots',
 };
 
 export default Grid;
