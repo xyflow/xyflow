@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { isEdge, removeElements, addEdge, getOutgoers, MiniMap, Controls } from '../../../src';
+import Graph, { isEdge, removeElements, addEdge, getOutgoers, MiniMap, Controls } from 'react-flow';
 
 import SpecialNode from './SpecialNode';
 import InputNode from './InputNode';
@@ -44,6 +44,8 @@ class App extends PureComponent {
                 input: input || 'write something'
               }
             };
+          } else {
+            return e;
           }
         })}
       ));

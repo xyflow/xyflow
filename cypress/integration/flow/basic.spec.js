@@ -1,6 +1,6 @@
 describe('Basic Flow Rendering', () => {
   it('renders a flow with three nodes', () => {
-    cy.visit('/index.html');
+    cy.visit('/basic');
 
     cy.get('.react-flow__renderer');
     cy.get('.react-flow__node').should('have.length', 4);

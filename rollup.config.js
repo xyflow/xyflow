@@ -6,7 +6,6 @@ import bundleSize from 'rollup-plugin-bundle-size';
 import visualizer from 'rollup-plugin-visualizer';
 import svg from 'rollup-plugin-svg';
 import replace from 'rollup-plugin-replace';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 import pkg from './package.json';
 
@@ -23,14 +22,16 @@ export default [{
 	output: [{
 		file: pkg.main,
 		format: 'cjs',
-		sourcemap: true
+		sourcemap: true,
+		exports: 'named'
 	}, {
 		file: pkg.module,
-		format: 'es',
-		sourcemap: true
+		format: 'esm',
+		sourcemap: true,
+		exports: 'named'
 	}],
+	external: ['react', 'react-dom'],
 	plugins: [
-		peerDepsExternal(),
 		bundleSize(),
 		postcss(),
 		babel({

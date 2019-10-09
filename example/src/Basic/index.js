@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { removeElements, addEdge, getOutgoers } from '../../../src';
+import Graph, { removeElements, addEdge, getOutgoers } from 'react-flow';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 

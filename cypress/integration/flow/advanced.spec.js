@@ -1,6 +1,6 @@
 describe('Advanced Flow Rendering', () => {
   it('renders a flow with sone nodes', () => {
-    cy.visit('/advanced.html');
+    cy.visit('/');
 
     cy.get('.react-flow__renderer');
 

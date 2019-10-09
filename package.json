@@ -23,11 +23,9 @@
     "babel-preset-react-app": "^9.0.2",
     "cypress": "^3.4.1",
     "husky": "^3.0.8",
-    "parcel-bundler": "^1.12.4",
     "postcss-nested": "^4.1.2",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2",
     "rollup": "^1.23.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.3",
@@ -46,16 +44,14 @@
     "wait-on": "^3.3.0"
   },
   "peerDependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "prop-types": "^15.0.0-0"
+    "react": "^16.9.0"
   },
   "scripts": {
     "build": "rollup -c --environment NODE_ENV:production",
     "watch": "rollup -w -c",
-    "dev": "parcel examples/*.html -d examples/build",
-    "build:example": "parcel build examples/*.html -d examples/build",
-    "dev:wait": "start-server-and-test dev http-get://localhost:1234/index.html",
+    "dev": "cd example && npm start",
+    "build:example": "cd example && npm run build",
+    "dev:wait": "start-server-and-test dev http-get://localhost:3000",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
