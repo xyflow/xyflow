@@ -18,7 +18,7 @@
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-react": "^7.6.3",
     "autoprefixer": "^9.6.4",
     "babel-loader": "^8.0.6",
     "babel-preset-react-app": "^9.0.2",
