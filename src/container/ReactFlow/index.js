@@ -100,7 +100,7 @@ ReactFlow.defaultProps = {
   connectionLineStyle: {},
   deleteKeyCode: 8,
   selectionKeyCode: 16,
-  backgroundColor: '#999',
+  backgroundColor: '#eee',
   backgroundGap: 24,
   showBackground: true,
   backgroundType: 'dots'

@@ -12,7 +12,13 @@ const BackgroundRenderer = memo(({
   backgroundType, ...rest
 }) => {
   const BackgroundComponent = bgComponents[backgroundType];
-  return <BackgroundComponent {...rest} />
+
+  return (
+    <BackgroundComponent
+      backgroundType={backgroundType}
+      {...rest}
+    />
+  );
 });
 
 BackgroundRenderer.displayName = 'BackgroundRenderer';

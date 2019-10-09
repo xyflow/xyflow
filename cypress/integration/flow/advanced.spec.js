@@ -11,8 +11,8 @@ describe('Advanced Flow Rendering', () => {
   it('renders a grid', () => {
     cy.get('.react-flow__grid');
 
-    const gridStroke = Cypress.$('.react-flow__grid path').attr('stroke');
-    expect(gridStroke).to.equal('#aaa');
+    const gridStroke = Cypress.$('.react-flow__grid path').attr('fill');
+    expect(gridStroke).to.equal('#888');
   });
 
   it('connects nodes', () => {

@@ -8,8 +8,11 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-flow__node').children('div').children('.react-flow__handle');
   });
 
-  it('does not render a grid', () => {
-    cy.get('.react-flow__grid').should('not.exist');
+  it('renders a grid', () => {
+    cy.get('.react-flow__grid');
+
+    const gridStroke = Cypress.$('.react-flow__grid path').attr('stroke');
+    expect(gridStroke).to.equal('#eee');
   });
 
   it('selects a node', () => {

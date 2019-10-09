@@ -22,7 +22,7 @@ const createGridLines = (width, height, xOffset, yOffset, gap) => {
 const createGridDots = (width, height, xOffset, yOffset, gap, size) => {
   const lineCountX = Math.ceil(width / gap) + 1;
   const lineCountY = Math.ceil(height / gap) + 1;
-  
+
   const values = Array.from({length: lineCountX}, (_, col) => {
     const x = col * gap + xOffset;
     return Array.from({length: lineCountY},(_,row)=>{
@@ -34,7 +34,7 @@ const createGridDots = (width, height, xOffset, yOffset, gap, size) => {
   return values.join(' ');
 };
 
-const Grid = memo(({gap, color, size, style, className, gridStyle}) => {
+const Grid = memo(({gap, color, size, style, className, backgroundType}) => {
   const {
     width,
     height,
@@ -46,7 +46,7 @@ const Grid = memo(({gap, color, size, style, className, gridStyle}) => {
 
   const xOffset = x % scaledGap;
   const yOffset = y % scaledGap;
-  const isLines = gridStyle === 'lines';
+  const isLines = backgroundType === 'lines';
   const path = isLines
     ? createGridLines(width, height, xOffset, yOffset, scaledGap)
     : createGridDots(width, height, xOffset, yOffset, scaledGap, size);
@@ -69,16 +69,16 @@ Grid.propTypes = {
   size: PropTypes.number,
   style: PropTypes.object,
   className: PropTypes.string,
-  gridStyle: PropTypes.oneOf(['lines', 'dots']),
+  backgroundType: PropTypes.oneOf(['lines', 'dots']),
 };
 
 Grid.defaultProps = {
   gap: 24,
-  color: '#999',
+  color: '#aaa',
   size: .5,
   style: {},
   className: null,
-  gridStyle: 'dots',
+  backgroundType: 'dots',
 };
 
 export default Grid;
