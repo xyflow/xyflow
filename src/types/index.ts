@@ -33,6 +33,8 @@ export interface Node {
 export interface Edge {
   id: ElementId,
   type?: string,
+  source: ElementId,
+  target: ElementId
 };
 
 export interface EdgeProps {

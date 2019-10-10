@@ -49,7 +49,7 @@ export interface StoreModel {
 
   setNodesSelection: Action<StoreModel, any>;
 
-  setSelectedElements: Action<StoreModel, Elements>
+  setSelectedElements: Action<StoreModel, Elements|Node|Edge>
 
   updateSelection: Action<StoreModel, any>;
 
