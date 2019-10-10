@@ -8,7 +8,7 @@ if (nodeEnv !== 'production') {
   whyDidYouRender(React);
 }
 
-import { ReactFlowProps } from '../../types';
+import { Elements } from '../../types';
 import GraphView from '../GraphView';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
@@ -21,6 +21,35 @@ import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
 
 import '../../style.css';
+
+export interface ReactFlowProps {
+  elements: Elements,
+  style?: React.CSSProperties,
+  className?: string,
+  children?: React.ReactNode[],
+  onElementClick?: () => void,
+  onElementsRemove?: () => void,
+  onNodeDragStop?: () => void,
+  onConnect?: () => void,
+	onLoad?: () => void,
+  onMove?: () => void,
+  nodeTypes?: {
+    [key: string]: React.ReactNode
+  },
+  edgeTypes?: {
+    [key: string]: React.ReactNode
+  },
+  connectionLineType?: string,
+  connectionLineStyle?: React.CSSProperties,
+  deleteKeyCode?: number,
+  selectionKeyCode?: number,
+  gridColor?: string,
+  gridGap?: number,
+  showBackground?: boolean,
+  backgroundGap?: number,
+  backgroundColor?: string,
+  backgroundType?: 'lines' | 'dots'
+};
 
 const ReactFlow = ({
   style, onElementClick, elements, children,

@@ -6230,6 +6230,40 @@ var NodeRenderer = memo(function (props) {
 NodeRenderer.displayName = 'NodeRenderer';
 NodeRenderer.whyDidYouRender = false;
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
 function unwrapExports (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
@@ -6287,52 +6321,39 @@ var classnames = createCommonjsModule(function (module) {
 }());
 });
 
-var ConnectionLine = (function (props) {
-  var _useState = useState(null),
-      _useState2 = _slicedToArray(_useState, 2),
-      sourceNode = _useState2[0],
-      setSourceNode = _useState2[1];
-
-  var hasHandleId = props.connectionSourceId.includes('__');
-  var sourceIdSplitted = props.connectionSourceId.split('__');
-  var nodeId = sourceIdSplitted[0];
-  var handleId = hasHandleId ? sourceIdSplitted[1] : null;
-  useEffect(function () {
-    setSourceNode(props.nodes.find(function (n) {
-      return n.id === nodeId;
-    }));
-  }, []);
-
-  if (!sourceNode) {
-    return null;
-  }
-
-  var style = props.connectionLineStyle || {};
-  var className = classnames('react-flow__edge', 'connection', props.className);
-  var sourceHandle = handleId ? sourceNode.__rg.handleBounds.source.find(function (d) {
-    return d.id === handleId;
-  }) : sourceNode.__rg.handleBounds.source[0];
-  var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
-  var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
-  var sourceX = sourceNode.__rg.position.x + sourceHandleX;
-  var sourceY = sourceNode.__rg.position.y + sourceHandleY;
-  var targetX = (props.connectionPositionX - props.transform[0]) * (1 / props.transform[2]);
-  var targetY = (props.connectionPositionY - props.transform[1]) * (1 / props.transform[2]);
-  var dAttr = '';
-
-  if (props.connectionLineType === 'bezier') {
-    var yOffset = Math.abs(targetY - sourceY) / 2;
-    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-    dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
-  } else {
-    dAttr = "M".concat(sourceX, ",").concat(sourceY, " ").concat(targetX, ",").concat(targetY);
-  }
-
-  return React.createElement("g", {
-    className: className
-  }, React.createElement("path", _extends$1({
-    d: dAttr
-  }, style)));
+var ConnectionLine = (function (_a) {
+    var connectionSourceId = _a.connectionSourceId, _b = _a.connectionLineStyle, connectionLineStyle = _b === void 0 ? {} : _b, connectionPositionX = _a.connectionPositionX, connectionPositionY = _a.connectionPositionY, connectionLineType = _a.connectionLineType, _c = _a.nodes, nodes = _c === void 0 ? [] : _c, className = _a.className, transform = _a.transform;
+    var _d = useState(null), sourceNode = _d[0], setSourceNode = _d[1];
+    var hasHandleId = connectionSourceId.includes('__');
+    var sourceIdSplitted = connectionSourceId.split('__');
+    var nodeId = sourceIdSplitted[0];
+    var handleId = hasHandleId ? sourceIdSplitted[1] : null;
+    useEffect(function () {
+        var nextSourceNode = nodes.find(function (n) { return n.id === nodeId; }) || null;
+        setSourceNode(nextSourceNode);
+    }, []);
+    if (!sourceNode) {
+        return null;
+    }
+    var edgeClasses = classnames('react-flow__edge', 'connection', className);
+    var sourceHandle = handleId ? sourceNode.__rg.handleBounds.source.find(function (d) { return d.id === handleId; }) : sourceNode.__rg.handleBounds.source[0];
+    var sourceHandleX = sourceHandle ? sourceHandle.x + (sourceHandle.width / 2) : sourceNode.__rg.width / 2;
+    var sourceHandleY = sourceHandle ? sourceHandle.y + (sourceHandle.height / 2) : sourceNode.__rg.height;
+    var sourceX = sourceNode.__rg.position.x + sourceHandleX;
+    var sourceY = sourceNode.__rg.position.y + sourceHandleY;
+    var targetX = (connectionPositionX - transform[0]) * (1 / transform[2]);
+    var targetY = (connectionPositionY - transform[1]) * (1 / transform[2]);
+    var dAttr = '';
+    if (connectionLineType === 'bezier') {
+        var yOffset = Math.abs(targetY - sourceY) / 2;
+        var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+        dAttr = "M" + sourceX + "," + sourceY + " C" + sourceX + "," + centerY + " " + targetX + "," + centerY + " " + targetX + "," + targetY;
+    }
+    else {
+        dAttr = "M" + sourceX + "," + sourceY + " " + targetX + "," + targetY;
+    }
+    return (React.createElement("g", { className: edgeClasses },
+        React.createElement("path", __assign({ d: dAttr }, connectionLineStyle))));
 });
 
 function getHandlePosition(position, node) {
@@ -9388,40 +9409,6 @@ var NodesSelection = memo(function () {
     }
   })));
 });
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-}
 
 var GridType;
 (function (GridType) {

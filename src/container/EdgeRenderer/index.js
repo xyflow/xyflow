@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useStoreState } from 'easy-peasy';
 
-import ConnectionLine from '../../components/ConnectionLine';
+import ConnectionLine from '../../components/ConnectionLine/index.tsx';
 import { isEdge } from '../../utils/graph';
 
 function getHandlePosition(position, node, handle = null) {
