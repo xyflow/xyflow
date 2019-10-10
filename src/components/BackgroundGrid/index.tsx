@@ -1,6 +1,7 @@
 import React, {memo} from 'react';
-import {useStoreState} from 'easy-peasy';
 import classnames from 'classnames';
+
+import { useStoreState } from '../../store/hooks';
 
 export enum GridType {
   Lines = 'lines',

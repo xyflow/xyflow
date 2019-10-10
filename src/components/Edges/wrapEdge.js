@@ -2,7 +2,7 @@ import React, {  memo } from 'react';
 import cx from 'classnames';
 
 import { inInputDOMNode } from '../../utils';
-import store from '../../store';
+import store from '../../store/index.ts';
 
 export default EdgeComponent => {
   const EdgeWrapper = memo((props) => {

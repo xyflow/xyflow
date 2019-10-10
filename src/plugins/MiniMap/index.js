@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { useStoreState } from 'easy-peasy';
 import classnames from 'classnames';
 
+import { useStoreState } from '../../store/hooks.ts';
 import { isFunction } from '../../utils'
 import { getNodesInside } from '../../utils/graph';
 

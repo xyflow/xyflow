@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { getDimensions, inInputDOMNode } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
-import store from '../../store';
+import store from '../../store/index.ts';
 
 const isHandle = e => (
   e.target.className &&

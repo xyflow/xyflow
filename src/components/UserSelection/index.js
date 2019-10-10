@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, memo } from 'react';
-import { useStoreActions } from 'easy-peasy';
+
+import { useStoreActions } from '../../store/hooks.ts';
 
 const initialRect = {
   startX: 0,

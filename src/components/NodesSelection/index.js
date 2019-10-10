@@ -1,7 +1,7 @@
 import React, { useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 
+import { useStoreState, useStoreActions } from '../../store/hooks.ts';
 import { isNode } from '../../utils/graph';
 
 function getStartPositions(elements) {

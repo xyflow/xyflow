@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
-import { useStoreState, useStoreActions } from 'easy-peasy';
+
+import { useStoreState, useStoreActions } from '../store/hooks.ts';
 
 const d3ZoomInstance = d3Zoom
   .zoom()

@@ -1,12 +1,23 @@
 import React, { memo, useContext } from 'react';
-import PropTypes from 'prop-types';
-import { useStoreActions, useStoreState } from 'easy-peasy';
 
+import { useStoreActions, useStoreState } from '../../store/hooks';
 import BaseHandle from './BaseHandle';
 import NodeIdContext from '../../contexts/NodeIdContext'
 
-const Handle = memo(({ onConnect, ...rest }) => {
-  const nodeId = useContext(NodeIdContext);
+import { HandleType, ElementId, Position } from '../../types';
+
+interface HandleProps {
+  type: HandleType,
+  position: Position,
+  onConnect: (any) => void,
+  isValidConnection: () => boolean
+};
+
+const Handle = memo(({
+  onConnect, type = 'source', position = 'top', isValidConnection = () => true,
+  ...rest
+}: HandleProps) => {
+  const nodeId: ElementId = useContext(NodeIdContext);
   const { setPosition, setSourceId } = useStoreActions(a => ({
     setPosition: a.setConnectionPosition,
     setSourceId: a.setConnectionSourceId
@@ -23,25 +34,14 @@ const Handle = memo(({ onConnect, ...rest }) => {
       setPosition={setPosition}
       setSourceId={setSourceId}
       onConnect={onConnectExtended}
+      type={type}
+      position={position}
+      isValidConnection={isValidConnection}
       {...rest}
     />
   );
 });
 
 Handle.displayName = 'Handle';
-
-Handle.propTypes = {
-  type: PropTypes.oneOf(['source', 'target']),
-  position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
-  onConnect: PropTypes.func,
-  isValidConnection: PropTypes.func
-};
-
-Handle.defaultProps = {
-  type: 'source',
-  position: 'top',
-  onConnect: () => {},
-  isValidConnection: () => true
-};
 
 export default Handle;

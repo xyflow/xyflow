@@ -1,21 +1,43 @@
 import React, { memo } from 'react';
 import cx from 'classnames';
 
+import { HandleType, ElementId, Position, XYPosition } from '../../types';
+
+interface BaseHandleProps {
+  type: HandleType,
+  nodeId: ElementId,
+  onConnect: (any) => void,
+  position: Position,
+  setSourceId: (nodeId: ElementId) => void,
+  setPosition: (pos: XYPosition) => void,
+  isValidConnection: () => boolean
+  id?: ElementId | boolean,
+  className?: string
+};
+
 function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarget, isValidConnection }) {
-  const containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
+  const reactFlowNode = document.querySelector('.react-flow');
+
+  if (!reactFlowNode) {
+    return null;
+  }
+
+  const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle = null;
 
   setPosition({
-    x: evt.clientX - containerBounds.x,
-    y: evt.clientY - containerBounds.y,
+    x: evt.clientX - containerBounds.left,
+    y: evt.clientY - containerBounds.top,
   });
   setSourceId(nodeId);
 
   function resetRecentHandle() {
-    if (recentHoveredHandle) {
-      recentHoveredHandle.classList.remove('valid');
-      recentHoveredHandle.classList.remove('connecting');
+    if (!recentHoveredHandle) {
+      return false;
     }
+
+    recentHoveredHandle.classList.remove('valid');
+    recentHoveredHandle.classList.remove('connecting');
   }
 
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
@@ -24,12 +46,12 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
     const result = {
       elementBelow,
       isValid: false,
-      connection: null,
+      connection: { source: null, target: null },
       isHoveringHandle: false
     };
 
     if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
-      let connection = null;
+      let connection = { source: null, target: null };
 
       if (isTarget) {
         const sourceId = elementBelow.getAttribute('data-nodeid');
@@ -51,8 +73,8 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
 
   function onMouseMove(evt) {
     setPosition({
-      x: evt.clientX - containerBounds.x,
-      y: evt.clientY - containerBounds.y,
+      x: evt.clientX - containerBounds.left,
+      y: evt.clientY - containerBounds.top,
     });
 
     const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(evt);
@@ -92,7 +114,7 @@ const BaseHandle = memo(({
   type, nodeId, onConnect, position,
   setSourceId, setPosition, className,
   id = false, isValidConnection, ...rest
-}) => {
+}: BaseHandleProps) => {
   const isTarget = type === 'target';
   const handleClasses = cx(
     'react-flow__handle',
@@ -118,6 +140,5 @@ const BaseHandle = memo(({
 });
 
 BaseHandle.displayName = 'BaseHandle';
-BaseHandle.whyDidYouRender = false;
 
 export default BaseHandle;

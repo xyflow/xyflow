@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 
+import { useStoreState, useStoreActions } from '../store/hooks.ts';
 import { parseElement, isNode, isEdge } from '../utils/graph';
 
 const useElementUpdater = ({ elements }) => {

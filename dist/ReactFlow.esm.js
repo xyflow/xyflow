@@ -732,7 +732,7 @@ function verifyMinified() {}
 
 var configDefaults = {
   useProxies: typeof Proxy !== "undefined" && typeof Reflect !== "undefined",
-  autoFreeze: typeof process !== "undefined" ? "development" !== "production" : verifyMinified.name === "verifyMinified",
+  autoFreeze: typeof process !== "undefined" ? "production" !== "production" : verifyMinified.name === "verifyMinified",
   onAssign: null,
   onDelete: null,
   onCopy: null
@@ -1408,29 +1408,6 @@ function createStore(reducer, preloadedState, enhancer) {
   }, _ref2[result] = observable, _ref2;
 }
 
-/**
- * Prints a warning in the console if it exists.
- *
- * @param {String} message The warning message.
- * @returns {void}
- */
-function warning(message) {
-  /* eslint-disable no-console */
-  if (typeof console !== 'undefined' && typeof console.error === 'function') {
-    console.error(message);
-  }
-  /* eslint-enable no-console */
-
-
-  try {
-    // This error was thrown as a convenience so that if you enable
-    // "break on all exceptions" in your console,
-    // it would pause the execution at this line.
-    throw new Error(message);
-  } catch (e) {} // eslint-disable-line no-empty
-
-}
-
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -1556,17 +1533,6 @@ function applyMiddleware() {
       });
     };
   };
-}
-
-/*
- * This is a dummy function to check if the function name has been altered by minification.
- * If the function has been minified and NODE_ENV !== 'production', warn the user.
- */
-
-function isCrushed() {}
-
-if ( typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  warning('You are currently using minified code outside of NODE_ENV === "production". ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) ' + 'to ensure you have the correct code for your production build.');
 }
 
 function createThunkMiddleware(extraArgument) {
@@ -1925,6 +1891,24 @@ function createStoreActionsHook(Context) {
   };
 }
 var useStoreActions = createStoreActionsHook(StoreContext);
+function createStoreDispatchHook(Context) {
+  return function useStoreDispatch() {
+    var store = useContext(Context);
+    return store.dispatch;
+  };
+}
+var useStoreDispatch = createStoreDispatchHook(StoreContext);
+function useStore() {
+  return useContext(StoreContext);
+}
+function createTypedHooks() {
+  return {
+    useStoreActions: useStoreActions,
+    useStoreDispatch: useStoreDispatch,
+    useStoreState: useStoreState,
+    useStore: useStore
+  };
+}
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -2219,9 +2203,6 @@ function createStoreInternals(_ref) {
                   try {
                     storeState = references.getState();
                   } catch (err) {
-                    {
-                      console.warn('Invalid access attempt to a computed property');
-                    }
 
                     return undefined;
                   }
@@ -2489,7 +2470,7 @@ function createStore$1(model, options) {
 
   return Object.assign(store, {
     addModel: function addModel(key, modelForKey) {
-      if (modelDefinition[key] && "development" !== 'production') {
+      if (modelDefinition[key] && "production" !== 'production') {
         // eslint-disable-next-line no-console
         console.warn("easy-peasy: The store model already contains a model definition for \"" + key + "\"");
         store.removeModel(key);
@@ -2516,10 +2497,6 @@ function createStore$1(model, options) {
     },
     removeModel: function removeModel(key) {
       if (!modelDefinition[key]) {
-        {
-          // eslint-disable-next-line no-console
-          console.warn("easy-peasy: The store model does not contain a model definition for \"" + key + "\"");
-        }
 
         return;
       }
@@ -2545,6 +2522,10 @@ var StoreProvider = function StoreProvider(_ref) {
 
 setAutoFreeze(false);
 
+var typedHooks = createTypedHooks();
+var useStoreActions$1 = typedHooks.useStoreActions;
+var useStoreState$1 = typedHooks.useStoreState;
+
 function _defineProperty$1(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -2558,24 +2539,6 @@ function _defineProperty$1(obj, key, value) {
   }
 
   return obj;
-}
-
-function _extends$1() {
-  _extends$1 = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends$1.apply(this, arguments);
 }
 
 function ownKeys$2(object, enumerableOnly) {
@@ -2606,42 +2569,6 @@ function _objectSpread2$1(target) {
       ownKeys$2(source).forEach(function (key) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
       });
-    }
-  }
-
-  return target;
-}
-
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
     }
   }
 
@@ -5834,6 +5761,52 @@ function zoom() {
   return zoom;
 }
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
 // do not edit .js files directly - edit src/index.jst
 
 
@@ -5878,119 +5851,100 @@ var fastDeepEqual = function equal(a, b) {
   return a!==a && b!==b;
 };
 
-var actions = {
-  setOnConnect: action(function (state, onConnect) {
-    state.onConnect = onConnect;
-  }),
-  setNodes: action(function (state, nodes) {
-    state.nodes = nodes;
-  }),
-  setEdges: action(function (state, edges) {
-    state.edges = edges;
-  }),
-  updateNodeData: action(function (state, _ref) {
-    var id = _ref.id,
-        data = _objectWithoutProperties(_ref, ["id"]);
-
-    state.nodes.forEach(function (n) {
-      if (n.id === id) {
-        n.__rg = _objectSpread2$1({}, n.__rg, {}, data);
-      }
-    });
-  }),
-  updateNodePos: action(function (state, _ref2) {
-    var id = _ref2.id,
-        pos = _ref2.pos;
-    state.nodes.forEach(function (n) {
-      if (n.id === id) {
-        n.__rg = _objectSpread2$1({}, n.__rg, {
-          position: pos
-        });
-      }
-    });
-  }),
-  setSelection: action(function (state, isActive) {
-    state.selectionActive = isActive;
-  }),
-  setNodesSelection: action(function (state, _ref3) {
-    var isActive = _ref3.isActive,
-        selection = _ref3.selection;
-
-    if (!isActive) {
-      state.nodesSelectionActive = false;
-      state.selectedElements = [];
-      return;
-    }
-
-    var selectedNodes = getNodesInside(state.nodes, selection, state.transform);
-    var selectedNodesBbox = getBoundingBox(selectedNodes);
-    state.selection = selection;
-    state.nodesSelectionActive = true;
-    state.selectedNodesBbox = selectedNodesBbox;
-    state.nodesSelectionActive = true;
-  }),
-  setSelectedElements: action(function (state, elements) {
-    var selectedElementsArr = Array.isArray(elements) ? elements : [elements];
-    var selectedElementsUpdated = !fastDeepEqual(selectedElementsArr, state.selectedElements);
-    var selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
-    state.selectedElements = selectedElements;
-  }),
-  updateSelection: action(function (state, selection) {
-    var selectedNodes = getNodesInside(state.nodes, selection, state.transform);
-    var selectedEdges = getConnectedEdges(selectedNodes, state.edges);
-    var nextSelectedElements = [].concat(_toConsumableArray(selectedNodes), _toConsumableArray(selectedEdges));
-    var selectedElementsUpdated = !fastDeepEqual(nextSelectedElements, state.selectedElements);
-    state.selection = selection;
-    state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
-  }),
-  updateTransform: action(function (state, transform) {
-    state.transform = [transform.x, transform.y, transform.k];
-  }),
-  updateSize: action(function (state, size) {
-    state.width = size.width;
-    state.height = size.height;
-  }),
-  initD3: action(function (state, _ref4) {
-    var zoom = _ref4.zoom,
-        selection = _ref4.selection;
-    state.d3Zoom = zoom;
-    state.d3Selection = selection;
-    state.d3Initialised = true;
-  }),
-  setConnectionPosition: action(function (state, position) {
-    state.connectionPosition = position;
-  }),
-  setConnectionSourceId: action(function (state, sourceId) {
-    state.connectionSourceId = sourceId;
-  })
-};
-
-var store = createStore$1(_objectSpread2$1({
-  width: 0,
-  height: 0,
-  transform: [0, 0, 1],
-  nodes: [],
-  edges: [],
-  selectedElements: [],
-  selectedNodesBbox: {
-    x: 0,
-    y: 0,
+var storeModel = {
     width: 0,
-    height: 0
-  },
-  d3Zoom: null,
-  d3Selection: null,
-  d3Initialised: false,
-  nodesSelectionActive: false,
-  selectionActive: false,
-  selection: {},
-  connectionSourceId: null,
-  connectionPosition: {
-    x: 0,
-    y: 0
-  },
-  onConnect: function onConnect() {}
-}, actions));
+    height: 0,
+    transform: [0, 0, 1],
+    nodes: [],
+    edges: [],
+    selectedElements: [],
+    selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+    d3Zoom: null,
+    d3Selection: null,
+    d3Initialised: false,
+    nodesSelectionActive: false,
+    selectionActive: false,
+    selection: {},
+    connectionSourceId: null,
+    connectionPosition: { x: 0, y: 0 },
+    onConnect: function () { },
+    setOnConnect: action(function (state, onConnect) {
+        state.onConnect = onConnect;
+    }),
+    setNodes: action(function (state, nodes) {
+        state.nodes = nodes;
+    }),
+    setEdges: action(function (state, edges) {
+        state.edges = edges;
+    }),
+    updateNodeData: action(function (state, _a) {
+        var id = _a.id, data = __rest(_a, ["id"]);
+        state.nodes.forEach(function (n) {
+            if (n.id === id) {
+                n.__rg = __assign(__assign({}, n.__rg), data);
+            }
+        });
+    }),
+    updateNodePos: action(function (state, _a) {
+        var id = _a.id, pos = _a.pos;
+        state.nodes.forEach(function (n) {
+            if (n.id === id) {
+                n.__rg = __assign(__assign({}, n.__rg), { position: pos });
+            }
+        });
+    }),
+    setSelection: action(function (state, isActive) {
+        state.selectionActive = isActive;
+    }),
+    setNodesSelection: action(function (state, _a) {
+        var isActive = _a.isActive, selection = _a.selection;
+        if (!isActive) {
+            state.nodesSelectionActive = false;
+            state.selectedElements = [];
+            return;
+        }
+        var selectedNodes = getNodesInside(state.nodes, selection, state.transform);
+        var selectedNodesBbox = getBoundingBox(selectedNodes);
+        state.selection = selection;
+        state.nodesSelectionActive = true;
+        state.selectedNodesBbox = selectedNodesBbox;
+        state.nodesSelectionActive = true;
+    }),
+    setSelectedElements: action(function (state, elements) {
+        var selectedElementsArr = Array.isArray(elements) ? elements : [elements];
+        var selectedElementsUpdated = !fastDeepEqual(selectedElementsArr, state.selectedElements);
+        var selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
+        state.selectedElements = selectedElements;
+    }),
+    updateSelection: action(function (state, selection) {
+        var selectedNodes = getNodesInside(state.nodes, selection, state.transform);
+        var selectedEdges = getConnectedEdges(selectedNodes, state.edges);
+        var nextSelectedElements = __spreadArrays(selectedNodes, selectedEdges);
+        var selectedElementsUpdated = !fastDeepEqual(nextSelectedElements, state.selectedElements);
+        state.selection = selection;
+        state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
+    }),
+    updateTransform: action(function (state, transform) {
+        state.transform = [transform.x, transform.y, transform.k];
+    }),
+    updateSize: action(function (state, size) {
+        state.width = size.width;
+        state.height = size.height;
+    }),
+    initD3: action(function (state, _a) {
+        var zoom = _a.zoom, selection = _a.selection;
+        state.d3Zoom = zoom;
+        state.d3Selection = selection;
+        state.d3Initialised = true;
+    }),
+    setConnectionPosition: action(function (state, position) {
+        state.connectionPosition = position;
+    }),
+    setConnectionSourceId: action(function (state, sourceId) {
+        state.connectionSourceId = sourceId;
+    })
+};
+var store = createStore$1(storeModel);
 
 var isFunction = function isFunction(obj) {
   return !!(obj && obj.constructor && obj.call && obj.apply);
@@ -6206,7 +6160,7 @@ function renderNode(d, props, state) {
 }
 
 var NodeRenderer = memo(function (props) {
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       nodes: s.nodes,
       transform: s.transform,
@@ -6227,40 +6181,6 @@ var NodeRenderer = memo(function (props) {
 });
 NodeRenderer.displayName = 'NodeRenderer';
 NodeRenderer.whyDidYouRender = false;
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-}
 
 function unwrapExports (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -6520,7 +6440,7 @@ function renderEdge(e, props, state) {
 }
 
 var EdgeRenderer = memo(function (props) {
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       nodes: s.nodes,
       edges: s.edges,
@@ -6591,13 +6511,13 @@ var UserSelection = memo(function () {
       rect = _useState2[0],
       setRect = _useState2[1];
 
-  var setSelection = useStoreActions(function (a) {
+  var setSelection = useStoreActions$1(function (a) {
     return a.setSelection;
   });
-  var updateSelection = useStoreActions(function (a) {
+  var updateSelection = useStoreActions$1(function (a) {
     return a.updateSelection;
   });
-  var setNodesSelection = useStoreActions(function (a) {
+  var setNodesSelection = useStoreActions$1(function (a) {
     return a.setNodesSelection;
   });
   useEffect(function () {
@@ -6672,360 +6592,6 @@ var UserSelection = memo(function () {
   }));
 });
 
-var reactIs_development = createCommonjsModule(function (module, exports) {
-
-
-
-{
-  (function() {
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-// nor polyfill, then a plain number is used for performance.
-var hasSymbol = typeof Symbol === 'function' && Symbol.for;
-var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
-var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
-var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
-var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
-var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
-var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
-var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
-// (unstable) APIs that have been removed. Can we remove the symbols?
-
-var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
-var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
-var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
-var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
-var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
-var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
-var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
-var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
-var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
-var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
-
-function isValidElementType(type) {
-  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE);
-}
-
-/**
- * Forked from fbjs/warning:
- * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
- *
- * Only change is we use console.warn instead of console.error,
- * and do nothing when 'console' is not supported.
- * This really simplifies the code.
- * ---
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
-var lowPriorityWarningWithoutStack = function () {};
-
-{
-  var printWarning = function (format) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-
-    if (typeof console !== 'undefined') {
-      console.warn(message);
-    }
-
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  lowPriorityWarningWithoutStack = function (condition, format) {
-    if (format === undefined) {
-      throw new Error('`lowPriorityWarningWithoutStack(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (!condition) {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
-      }
-
-      printWarning.apply(void 0, [format].concat(args));
-    }
-  };
-}
-
-var lowPriorityWarningWithoutStack$1 = lowPriorityWarningWithoutStack;
-
-function typeOf(object) {
-  if (typeof object === 'object' && object !== null) {
-    var $$typeof = object.$$typeof;
-
-    switch ($$typeof) {
-      case REACT_ELEMENT_TYPE:
-        var type = object.type;
-
-        switch (type) {
-          case REACT_ASYNC_MODE_TYPE:
-          case REACT_CONCURRENT_MODE_TYPE:
-          case REACT_FRAGMENT_TYPE:
-          case REACT_PROFILER_TYPE:
-          case REACT_STRICT_MODE_TYPE:
-          case REACT_SUSPENSE_TYPE:
-            return type;
-
-          default:
-            var $$typeofType = type && type.$$typeof;
-
-            switch ($$typeofType) {
-              case REACT_CONTEXT_TYPE:
-              case REACT_FORWARD_REF_TYPE:
-              case REACT_PROVIDER_TYPE:
-                return $$typeofType;
-
-              default:
-                return $$typeof;
-            }
-
-        }
-
-      case REACT_LAZY_TYPE:
-      case REACT_MEMO_TYPE:
-      case REACT_PORTAL_TYPE:
-        return $$typeof;
-    }
-  }
-
-  return undefined;
-} // AsyncMode is deprecated along with isAsyncMode
-
-var AsyncMode = REACT_ASYNC_MODE_TYPE;
-var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-var ContextConsumer = REACT_CONTEXT_TYPE;
-var ContextProvider = REACT_PROVIDER_TYPE;
-var Element = REACT_ELEMENT_TYPE;
-var ForwardRef = REACT_FORWARD_REF_TYPE;
-var Fragment = REACT_FRAGMENT_TYPE;
-var Lazy = REACT_LAZY_TYPE;
-var Memo = REACT_MEMO_TYPE;
-var Portal = REACT_PORTAL_TYPE;
-var Profiler = REACT_PROFILER_TYPE;
-var StrictMode = REACT_STRICT_MODE_TYPE;
-var Suspense = REACT_SUSPENSE_TYPE;
-var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
-
-function isAsyncMode(object) {
-  {
-    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-      hasWarnedAboutDeprecatedIsAsyncMode = true;
-      lowPriorityWarningWithoutStack$1(false, 'The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
-    }
-  }
-
-  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-}
-function isConcurrentMode(object) {
-  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-}
-function isContextConsumer(object) {
-  return typeOf(object) === REACT_CONTEXT_TYPE;
-}
-function isContextProvider(object) {
-  return typeOf(object) === REACT_PROVIDER_TYPE;
-}
-function isElement(object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-}
-function isForwardRef(object) {
-  return typeOf(object) === REACT_FORWARD_REF_TYPE;
-}
-function isFragment(object) {
-  return typeOf(object) === REACT_FRAGMENT_TYPE;
-}
-function isLazy(object) {
-  return typeOf(object) === REACT_LAZY_TYPE;
-}
-function isMemo(object) {
-  return typeOf(object) === REACT_MEMO_TYPE;
-}
-function isPortal(object) {
-  return typeOf(object) === REACT_PORTAL_TYPE;
-}
-function isProfiler(object) {
-  return typeOf(object) === REACT_PROFILER_TYPE;
-}
-function isStrictMode(object) {
-  return typeOf(object) === REACT_STRICT_MODE_TYPE;
-}
-function isSuspense(object) {
-  return typeOf(object) === REACT_SUSPENSE_TYPE;
-}
-
-exports.typeOf = typeOf;
-exports.AsyncMode = AsyncMode;
-exports.ConcurrentMode = ConcurrentMode;
-exports.ContextConsumer = ContextConsumer;
-exports.ContextProvider = ContextProvider;
-exports.Element = Element;
-exports.ForwardRef = ForwardRef;
-exports.Fragment = Fragment;
-exports.Lazy = Lazy;
-exports.Memo = Memo;
-exports.Portal = Portal;
-exports.Profiler = Profiler;
-exports.StrictMode = StrictMode;
-exports.Suspense = Suspense;
-exports.isValidElementType = isValidElementType;
-exports.isAsyncMode = isAsyncMode;
-exports.isConcurrentMode = isConcurrentMode;
-exports.isContextConsumer = isContextConsumer;
-exports.isContextProvider = isContextProvider;
-exports.isElement = isElement;
-exports.isForwardRef = isForwardRef;
-exports.isFragment = isFragment;
-exports.isLazy = isLazy;
-exports.isMemo = isMemo;
-exports.isPortal = isPortal;
-exports.isProfiler = isProfiler;
-exports.isStrictMode = isStrictMode;
-exports.isSuspense = isSuspense;
-  })();
-}
-});
-
-unwrapExports(reactIs_development);
-var reactIs_development_1 = reactIs_development.typeOf;
-var reactIs_development_2 = reactIs_development.AsyncMode;
-var reactIs_development_3 = reactIs_development.ConcurrentMode;
-var reactIs_development_4 = reactIs_development.ContextConsumer;
-var reactIs_development_5 = reactIs_development.ContextProvider;
-var reactIs_development_6 = reactIs_development.Element;
-var reactIs_development_7 = reactIs_development.ForwardRef;
-var reactIs_development_8 = reactIs_development.Fragment;
-var reactIs_development_9 = reactIs_development.Lazy;
-var reactIs_development_10 = reactIs_development.Memo;
-var reactIs_development_11 = reactIs_development.Portal;
-var reactIs_development_12 = reactIs_development.Profiler;
-var reactIs_development_13 = reactIs_development.StrictMode;
-var reactIs_development_14 = reactIs_development.Suspense;
-var reactIs_development_15 = reactIs_development.isValidElementType;
-var reactIs_development_16 = reactIs_development.isAsyncMode;
-var reactIs_development_17 = reactIs_development.isConcurrentMode;
-var reactIs_development_18 = reactIs_development.isContextConsumer;
-var reactIs_development_19 = reactIs_development.isContextProvider;
-var reactIs_development_20 = reactIs_development.isElement;
-var reactIs_development_21 = reactIs_development.isForwardRef;
-var reactIs_development_22 = reactIs_development.isFragment;
-var reactIs_development_23 = reactIs_development.isLazy;
-var reactIs_development_24 = reactIs_development.isMemo;
-var reactIs_development_25 = reactIs_development.isPortal;
-var reactIs_development_26 = reactIs_development.isProfiler;
-var reactIs_development_27 = reactIs_development.isStrictMode;
-var reactIs_development_28 = reactIs_development.isSuspense;
-
-var reactIs = createCommonjsModule(function (module) {
-
-{
-  module.exports = reactIs_development;
-}
-});
-
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (err) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (getOwnPropertySymbols) {
-			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -7037,672 +6603,53 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 var ReactPropTypesSecret_1 = ReactPropTypesSecret;
 
-var printWarning = function() {};
+function emptyFunction() {}
+function emptyFunctionWithReset() {}
+emptyFunctionWithReset.resetWarningCache = emptyFunction;
 
-{
-  var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
-  var loggedTypeFailures = {};
-  var has$1 = Function.call.bind(Object.prototype.hasOwnProperty);
-
-  printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
+var factoryWithThrowingShims = function() {
+  function shim(props, propName, componentName, location, propFullName, secret) {
+    if (secret === ReactPropTypesSecret_1) {
+      // It is still safe when called from React.
+      return;
     }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-}
-
-/**
- * Assert that the values match with the type specs.
- * Error messages are memorized and will only be shown once.
- *
- * @param {object} typeSpecs Map of name to a ReactPropType
- * @param {object} values Runtime values that need to be type-checked
- * @param {string} location e.g. "prop", "context", "child context"
- * @param {string} componentName Name of the component for error messages.
- * @param {?Function} getStack Returns the component stack.
- * @private
- */
-function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-  {
-    for (var typeSpecName in typeSpecs) {
-      if (has$1(typeSpecs, typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          if (typeof typeSpecs[typeSpecName] !== 'function') {
-            var err = Error(
-              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
-              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
-            );
-            err.name = 'Invariant Violation';
-            throw err;
-          }
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
-        } catch (ex) {
-          error = ex;
-        }
-        if (error && !(error instanceof Error)) {
-          printWarning(
-            (componentName || 'React class') + ': type specification of ' +
-            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
-            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
-            'You may have forgotten to pass an argument to the type checker ' +
-            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
-            'shape all require an argument).'
-          );
-        }
-        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures[error.message] = true;
-
-          var stack = getStack ? getStack() : '';
-
-          printWarning(
-            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
-          );
-        }
-      }
-    }
-  }
-}
-
-/**
- * Resets warning cache when testing.
- *
- * @private
- */
-checkPropTypes.resetWarningCache = function() {
-  {
-    loggedTypeFailures = {};
-  }
-};
-
-var checkPropTypes_1 = checkPropTypes;
-
-var has$2 = Function.call.bind(Object.prototype.hasOwnProperty);
-var printWarning$1 = function() {};
-
-{
-  printWarning$1 = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-}
-
-function emptyFunctionThatReturnsNull() {
-  return null;
-}
-
-var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
-  /* global Symbol */
-  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-
-  /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */
-  function getIteratorFn(maybeIterable) {
-    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-    if (typeof iteratorFn === 'function') {
-      return iteratorFn;
-    }
-  }
-
-  /**
-   * Collection of methods that allow declaration and validation of props that are
-   * supplied to React components. Example usage:
-   *
-   *   var Props = require('ReactPropTypes');
-   *   var MyArticle = React.createClass({
-   *     propTypes: {
-   *       // An optional string prop named "description".
-   *       description: Props.string,
-   *
-   *       // A required enum prop named "category".
-   *       category: Props.oneOf(['News','Photos']).isRequired,
-   *
-   *       // A prop named "dialog" that requires an instance of Dialog.
-   *       dialog: Props.instanceOf(Dialog).isRequired
-   *     },
-   *     render: function() { ... }
-   *   });
-   *
-   * A more formal specification of how these methods are used:
-   *
-   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-   *   decl := ReactPropTypes.{type}(.isRequired)?
-   *
-   * Each and every declaration produces a function with the same signature. This
-   * allows the creation of custom validation functions. For example:
-   *
-   *  var MyLink = React.createClass({
-   *    propTypes: {
-   *      // An optional string or URI prop named "href".
-   *      href: function(props, propName, componentName) {
-   *        var propValue = props[propName];
-   *        if (propValue != null && typeof propValue !== 'string' &&
-   *            !(propValue instanceof URI)) {
-   *          return new Error(
-   *            'Expected a string or an URI for ' + propName + ' in ' +
-   *            componentName
-   *          );
-   *        }
-   *      }
-   *    },
-   *    render: function() {...}
-   *  });
-   *
-   * @internal
-   */
-
-  var ANONYMOUS = '<<anonymous>>';
-
-  // Important!
-  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+    var err = new Error(
+      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+      'Use PropTypes.checkPropTypes() to call them. ' +
+      'Read more at http://fb.me/use-check-prop-types'
+    );
+    err.name = 'Invariant Violation';
+    throw err;
+  }  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  }  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
   var ReactPropTypes = {
-    array: createPrimitiveTypeChecker('array'),
-    bool: createPrimitiveTypeChecker('boolean'),
-    func: createPrimitiveTypeChecker('function'),
-    number: createPrimitiveTypeChecker('number'),
-    object: createPrimitiveTypeChecker('object'),
-    string: createPrimitiveTypeChecker('string'),
-    symbol: createPrimitiveTypeChecker('symbol'),
+    array: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
 
-    any: createAnyTypeChecker(),
-    arrayOf: createArrayOfTypeChecker,
-    element: createElementTypeChecker(),
-    elementType: createElementTypeTypeChecker(),
-    instanceOf: createInstanceTypeChecker,
-    node: createNodeChecker(),
-    objectOf: createObjectOfTypeChecker,
-    oneOf: createEnumTypeChecker,
-    oneOfType: createUnionTypeChecker,
-    shape: createShapeTypeChecker,
-    exact: createStrictShapeTypeChecker,
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    elementType: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim,
+    exact: getShim,
+
+    checkPropTypes: emptyFunctionWithReset,
+    resetWarningCache: emptyFunction
   };
 
-  /**
-   * inlined Object.is polyfill to avoid requiring consumers ship their own
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-   */
-  /*eslint-disable no-self-compare*/
-  function is(x, y) {
-    // SameValue algorithm
-    if (x === y) {
-      // Steps 1-5, 7-10
-      // Steps 6.b-6.e: +0 != -0
-      return x !== 0 || 1 / x === 1 / y;
-    } else {
-      // Step 6.a: NaN == NaN
-      return x !== x && y !== y;
-    }
-  }
-  /*eslint-enable no-self-compare*/
-
-  /**
-   * We use an Error-like object for backward compatibility as people may call
-   * PropTypes directly and inspect their output. However, we don't use real
-   * Errors anymore. We don't inspect their stack anyway, and creating them
-   * is prohibitively expensive if they are created too often, such as what
-   * happens in oneOfType() for any type before the one that matched.
-   */
-  function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-  }
-  // Make `instanceof Error` still work for returned errors.
-  PropTypeError.prototype = Error.prototype;
-
-  function createChainableTypeChecker(validate) {
-    {
-      var manualPropTypeCallCache = {};
-      var manualPropTypeWarningCount = 0;
-    }
-    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-      componentName = componentName || ANONYMOUS;
-      propFullName = propFullName || propName;
-
-      if (secret !== ReactPropTypesSecret_1) {
-        if (throwOnDirectAccess) {
-          // New behavior only for users of `prop-types` package
-          var err = new Error(
-            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-            'Use `PropTypes.checkPropTypes()` to call them. ' +
-            'Read more at http://fb.me/use-check-prop-types'
-          );
-          err.name = 'Invariant Violation';
-          throw err;
-        } else if ( typeof console !== 'undefined') {
-          // Old behavior for people using React.PropTypes
-          var cacheKey = componentName + ':' + propName;
-          if (
-            !manualPropTypeCallCache[cacheKey] &&
-            // Avoid spamming the console because they are often not actionable except for lib authors
-            manualPropTypeWarningCount < 3
-          ) {
-            printWarning$1(
-              'You are manually calling a React.PropTypes validation ' +
-              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
-              'and will throw in the standalone `prop-types` package. ' +
-              'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
-            );
-            manualPropTypeCallCache[cacheKey] = true;
-            manualPropTypeWarningCount++;
-          }
-        }
-      }
-      if (props[propName] == null) {
-        if (isRequired) {
-          if (props[propName] === null) {
-            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-          }
-          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-        }
-        return null;
-      } else {
-        return validate(props, propName, componentName, location, propFullName);
-      }
-    }
-
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-
-    return chainedCheckType;
-  }
-
-  function createPrimitiveTypeChecker(expectedType) {
-    function validate(props, propName, componentName, location, propFullName, secret) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== expectedType) {
-        // `propValue` being instance of, say, date/regexp, pass the 'object'
-        // check, but we can offer a more precise error message here rather than
-        // 'of type `object`'.
-        var preciseType = getPreciseType(propValue);
-
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
-  }
-
-  function createArrayOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-      }
-      var propValue = props[propName];
-      if (!Array.isArray(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-      }
-      for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1);
-        if (error instanceof Error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!isValidElement(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createElementTypeTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!reactIs.isValidElementType(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createInstanceTypeChecker(expectedClass) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!(props[propName] instanceof expectedClass)) {
-        var expectedClassName = expectedClass.name || ANONYMOUS;
-        var actualClassName = getClassName(props[propName]);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createEnumTypeChecker(expectedValues) {
-    if (!Array.isArray(expectedValues)) {
-      {
-        if (arguments.length > 1) {
-          printWarning$1(
-            'Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' +
-            'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).'
-          );
-        } else {
-          printWarning$1('Invalid argument supplied to oneOf, expected an array.');
-        }
-      }
-      return emptyFunctionThatReturnsNull;
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      for (var i = 0; i < expectedValues.length; i++) {
-        if (is(propValue, expectedValues[i])) {
-          return null;
-        }
-      }
-
-      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
-        var type = getPreciseType(value);
-        if (type === 'symbol') {
-          return String(value);
-        }
-        return value;
-      });
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createObjectOfTypeChecker(typeChecker) {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (typeof typeChecker !== 'function') {
-        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-      }
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-      }
-      for (var key in propValue) {
-        if (has$2(propValue, key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
-          if (error instanceof Error) {
-            return error;
-          }
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createUnionTypeChecker(arrayOfTypeCheckers) {
-    if (!Array.isArray(arrayOfTypeCheckers)) {
-       printWarning$1('Invalid argument supplied to oneOfType, expected an instance of array.') ;
-      return emptyFunctionThatReturnsNull;
-    }
-
-    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-      var checker = arrayOfTypeCheckers[i];
-      if (typeof checker !== 'function') {
-        printWarning$1(
-          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
-        );
-        return emptyFunctionThatReturnsNull;
-      }
-    }
-
-    function validate(props, propName, componentName, location, propFullName) {
-      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-        var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1) == null) {
-          return null;
-        }
-      }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createNodeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      if (!isNode(props[propName])) {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      for (var key in shapeTypes) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
-  function createStrictShapeTypeChecker(shapeTypes) {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      var propType = getPropType(propValue);
-      if (propType !== 'object') {
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-      }
-      // We need to check all keys in case some are required but missing from
-      // props.
-      var allKeys = objectAssign({}, props[propName], shapeTypes);
-      for (var key in allKeys) {
-        var checker = shapeTypes[key];
-        if (!checker) {
-          return new PropTypeError(
-            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
-            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
-            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
-          );
-        }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
-        if (error) {
-          return error;
-        }
-      }
-      return null;
-    }
-
-    return createChainableTypeChecker(validate);
-  }
-
-  function isNode(propValue) {
-    switch (typeof propValue) {
-      case 'number':
-      case 'string':
-      case 'undefined':
-        return true;
-      case 'boolean':
-        return !propValue;
-      case 'object':
-        if (Array.isArray(propValue)) {
-          return propValue.every(isNode);
-        }
-        if (propValue === null || isValidElement(propValue)) {
-          return true;
-        }
-
-        var iteratorFn = getIteratorFn(propValue);
-        if (iteratorFn) {
-          var iterator = iteratorFn.call(propValue);
-          var step;
-          if (iteratorFn !== propValue.entries) {
-            while (!(step = iterator.next()).done) {
-              if (!isNode(step.value)) {
-                return false;
-              }
-            }
-          } else {
-            // Iterator will provide entry [k,v] tuples rather than values.
-            while (!(step = iterator.next()).done) {
-              var entry = step.value;
-              if (entry) {
-                if (!isNode(entry[1])) {
-                  return false;
-                }
-              }
-            }
-          }
-        } else {
-          return false;
-        }
-
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  function isSymbol(propType, propValue) {
-    // Native Symbol.
-    if (propType === 'symbol') {
-      return true;
-    }
-
-    // falsy value can't be a Symbol
-    if (!propValue) {
-      return false;
-    }
-
-    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-    if (propValue['@@toStringTag'] === 'Symbol') {
-      return true;
-    }
-
-    // Fallback for non-spec compliant Symbols which are polyfilled.
-    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // Equivalent of `typeof` but with special handling for array and regexp.
-  function getPropType(propValue) {
-    var propType = typeof propValue;
-    if (Array.isArray(propValue)) {
-      return 'array';
-    }
-    if (propValue instanceof RegExp) {
-      // Old webkits (at least until Android 4.0) return 'function' rather than
-      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-      // passes PropTypes.object.
-      return 'object';
-    }
-    if (isSymbol(propType, propValue)) {
-      return 'symbol';
-    }
-    return propType;
-  }
-
-  // This handles more types than `getPropType`. Only used for error messages.
-  // See `createPrimitiveTypeChecker`.
-  function getPreciseType(propValue) {
-    if (typeof propValue === 'undefined' || propValue === null) {
-      return '' + propValue;
-    }
-    var propType = getPropType(propValue);
-    if (propType === 'object') {
-      if (propValue instanceof Date) {
-        return 'date';
-      } else if (propValue instanceof RegExp) {
-        return 'regexp';
-      }
-    }
-    return propType;
-  }
-
-  // Returns a string that is postfixed to a warning about an invalid type.
-  // For example, "undefined" or "of type array"
-  function getPostfixForTypeWarning(value) {
-    var type = getPreciseType(value);
-    switch (type) {
-      case 'array':
-      case 'object':
-        return 'an ' + type;
-      case 'boolean':
-      case 'date':
-      case 'regexp':
-        return 'a ' + type;
-      default:
-        return type;
-    }
-  }
-
-  // Returns class name of the object, if any.
-  function getClassName(propValue) {
-    if (!propValue.constructor || !propValue.constructor.name) {
-      return ANONYMOUS;
-    }
-    return propValue.constructor.name;
-  }
-
-  ReactPropTypes.checkPropTypes = checkPropTypes_1;
-  ReactPropTypes.resetWarningCache = checkPropTypes_1.resetWarningCache;
   ReactPropTypes.PropTypes = ReactPropTypes;
 
   return ReactPropTypes;
@@ -7717,12 +6664,9 @@ var propTypes = createCommonjsModule(function (module) {
  */
 
 {
-  var ReactIs = reactIs;
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
+  // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = factoryWithTypeCheckers(ReactIs.isElement, throwOnDirectAccess);
+  module.exports = factoryWithThrowingShims();
 }
 });
 
@@ -9339,14 +8283,14 @@ var NodesSelection = memo(function () {
       startPositions = _useState4[0],
       setStartPositions = _useState4[1];
 
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       transform: s.transform,
       selectedNodesBbox: s.selectedNodesBbox,
       selectedElements: s.selectedElements
     };
   });
-  var updateNodePos = useStoreActions(function (a) {
+  var updateNodePos = useStoreActions$1(function (a) {
     return a.updateNodePos;
   });
 
@@ -9439,7 +8383,7 @@ var createGridDots = function (width, height, xOffset, yOffset, gap, size) {
 };
 var Grid = memo(function (_a) {
     var _b = _a.gap, gap = _b === void 0 ? 24 : _b, _c = _a.color, color = _c === void 0 ? '#aaa' : _c, _d = _a.size, size = _d === void 0 ? 0.5 : _d, _e = _a.style, style = _e === void 0 ? {} : _e, _f = _a.className, className = _f === void 0 ? null : _f, _g = _a.backgroundType, backgroundType = _g === void 0 ? GridType.Dots : _g;
-    var _h = useStoreState(function (s) { return s; }), width = _h.width, height = _h.height, _j = _h.transform, x = _j[0], y = _j[1], scale = _j[2];
+    var _h = useStoreState$1(function (s) { return s; }), width = _h.width, height = _h.height, _j = _h.transform, x = _j[0], y = _j[1], scale = _j[2];
     var gridClasses = classnames('react-flow__grid', className);
     var scaledGap = gap * scale;
     var xOffset = x % scaledGap;
@@ -9488,7 +8432,7 @@ var d3ZoomInstance = zoom().scaleExtent([0.5, 2]).filter(function () {
   return !event.button;
 });
 function useD3Zoom(zoomPane, onMove, shiftPressed) {
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       transform: s.transform,
       d3Selection: s.d3Selection,
@@ -9498,10 +8442,10 @@ function useD3Zoom(zoomPane, onMove, shiftPressed) {
       nodesSelectionActive: s.nodesSelectionActive
     };
   });
-  var initD3 = useStoreActions(function (actions) {
+  var initD3 = useStoreActions$1(function (actions) {
     return actions.initD3;
   });
-  var updateTransform = useStoreActions(function (actions) {
+  var updateTransform = useStoreActions$1(function (actions) {
     return actions.updateTransform;
   });
   useEffect(function () {
@@ -9540,13 +8484,13 @@ function useD3Zoom(zoomPane, onMove, shiftPressed) {
 var useGlobalKeyHandler = (function (_ref) {
   var deleteKeyCode = _ref.deleteKeyCode,
       onElementsRemove = _ref.onElementsRemove;
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       selectedElements: s.selectedElements,
       edges: s.edges
     };
   });
-  var setNodesSelection = useStoreActions(function (a) {
+  var setNodesSelection = useStoreActions$1(function (a) {
     return a.setNodesSelection;
   });
   var deleteKeyPressed = useKeyPress(deleteKeyCode);
@@ -9570,17 +8514,17 @@ var useGlobalKeyHandler = (function (_ref) {
 
 var useElementUpdater = function useElementUpdater(_ref) {
   var elements = _ref.elements;
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       nodes: s.nodes,
       edges: s.edges,
       transform: s.transform
     };
   });
-  var setNodes = useStoreActions(function (a) {
+  var setNodes = useStoreActions$1(function (a) {
     return a.setNodes;
   });
-  var setEdges = useStoreActions(function (a) {
+  var setEdges = useStoreActions$1(function (a) {
     return a.setEdges;
   });
   useEffect(function () {
@@ -9634,7 +8578,7 @@ var GraphView = memo(function (_ref) {
       onConnect = _ref.onConnect;
   var zoomPane = useRef();
   var rendererNode = useRef();
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       width: s.width,
       height: s.height,
@@ -9644,13 +8588,13 @@ var GraphView = memo(function (_ref) {
       nodesSelectionActive: s.nodesSelectionActive
     };
   });
-  var updateSize = useStoreActions(function (actions) {
+  var updateSize = useStoreActions$1(function (actions) {
     return actions.updateSize;
   });
-  var setNodesSelection = useStoreActions(function (actions) {
+  var setNodesSelection = useStoreActions$1(function (actions) {
     return actions.setNodesSelection;
   });
-  var setOnConnect = useStoreActions(function (a) {
+  var setOnConnect = useStoreActions$1(function (a) {
     return a.setOnConnect;
   });
   var selectionKeyPressed = useKeyPress(selectionKeyCode);
@@ -9717,197 +8661,113 @@ var GraphView = memo(function (_ref) {
 });
 GraphView.displayName = 'GraphView';
 
-function _onMouseDown(evt, _ref) {
-  var nodeId = _ref.nodeId,
-      setSourceId = _ref.setSourceId,
-      setPosition = _ref.setPosition,
-      onConnect = _ref.onConnect,
-      isTarget = _ref.isTarget,
-      isValidConnection = _ref.isValidConnection;
-  var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
-  var recentHoveredHandle = null;
-  setPosition({
-    x: evt.clientX - containerBounds.x,
-    y: evt.clientY - containerBounds.y
-  });
-  setSourceId(nodeId);
-
-  function resetRecentHandle() {
-    if (recentHoveredHandle) {
-      recentHoveredHandle.classList.remove('valid');
-      recentHoveredHandle.classList.remove('connecting');
+function onMouseDown(evt, _a) {
+    var nodeId = _a.nodeId, setSourceId = _a.setSourceId, setPosition = _a.setPosition, onConnect = _a.onConnect, isTarget = _a.isTarget, isValidConnection = _a.isValidConnection;
+    var reactFlowNode = document.querySelector('.react-flow');
+    if (!reactFlowNode) {
+        return null;
     }
-  } // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
-
-
-  function checkElementBelowIsValid(evt) {
-    var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
-    var result = {
-      elementBelow: elementBelow,
-      isValid: false,
-      connection: null,
-      isHoveringHandle: false
-    };
-
-    if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
-      var connection = null;
-
-      if (isTarget) {
-        var sourceId = elementBelow.getAttribute('data-nodeid');
-        connection = {
-          source: sourceId,
-          target: nodeId
-        };
-      } else {
-        var targetId = elementBelow.getAttribute('data-nodeid');
-        connection = {
-          source: nodeId,
-          target: targetId
-        };
-      }
-
-      var isValid = isValidConnection(connection);
-      result.connection = connection;
-      result.isValid = isValid;
-      result.isHoveringHandle = true;
-    }
-
-    return result;
-  }
-
-  function onMouseMove(evt) {
+    var containerBounds = reactFlowNode.getBoundingClientRect();
+    var recentHoveredHandle = null;
     setPosition({
-      x: evt.clientX - containerBounds.x,
-      y: evt.clientY - containerBounds.y
+        x: evt.clientX - containerBounds.left,
+        y: evt.clientY - containerBounds.top,
     });
-
-    var _checkElementBelowIsV = checkElementBelowIsValid(evt),
-        connection = _checkElementBelowIsV.connection,
-        elementBelow = _checkElementBelowIsV.elementBelow,
-        isValid = _checkElementBelowIsV.isValid,
-        isHoveringHandle = _checkElementBelowIsV.isHoveringHandle;
-
-    if (!isHoveringHandle) {
-      return resetRecentHandle();
+    setSourceId(nodeId);
+    function resetRecentHandle() {
+        if (!recentHoveredHandle) {
+            return false;
+        }
+        recentHoveredHandle.classList.remove('valid');
+        recentHoveredHandle.classList.remove('connecting');
     }
-
-    var isOwnHandle = connection.source === connection.target;
-
-    if (!isOwnHandle) {
-      recentHoveredHandle = elementBelow;
-      elementBelow.classList.add('connecting');
-      elementBelow.classList.toggle('valid', isValid);
+    // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
+    function checkElementBelowIsValid(evt) {
+        var elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
+        var result = {
+            elementBelow: elementBelow,
+            isValid: false,
+            connection: { source: null, target: null },
+            isHoveringHandle: false
+        };
+        if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
+            var connection = { source: null, target: null };
+            if (isTarget) {
+                var sourceId = elementBelow.getAttribute('data-nodeid');
+                connection = { source: sourceId, target: nodeId };
+            }
+            else {
+                var targetId = elementBelow.getAttribute('data-nodeid');
+                connection = { source: nodeId, target: targetId };
+            }
+            var isValid = isValidConnection(connection);
+            result.connection = connection;
+            result.isValid = isValid;
+            result.isHoveringHandle = true;
+        }
+        return result;
     }
-  }
-
-  function onMouseUp(evt) {
-    var _checkElementBelowIsV2 = checkElementBelowIsValid(evt),
-        connection = _checkElementBelowIsV2.connection,
-        isValid = _checkElementBelowIsV2.isValid;
-
-    if (isValid) {
-      onConnect(connection);
+    function onMouseMove(evt) {
+        setPosition({
+            x: evt.clientX - containerBounds.left,
+            y: evt.clientY - containerBounds.top,
+        });
+        var _a = checkElementBelowIsValid(evt), connection = _a.connection, elementBelow = _a.elementBelow, isValid = _a.isValid, isHoveringHandle = _a.isHoveringHandle;
+        if (!isHoveringHandle) {
+            return resetRecentHandle();
+        }
+        var isOwnHandle = connection.source === connection.target;
+        if (!isOwnHandle) {
+            recentHoveredHandle = elementBelow;
+            elementBelow.classList.add('connecting');
+            elementBelow.classList.toggle('valid', isValid);
+        }
     }
-
-    resetRecentHandle();
-    setSourceId(null);
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
-
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+    function onMouseUp(evt) {
+        var _a = checkElementBelowIsValid(evt), connection = _a.connection, isValid = _a.isValid;
+        if (isValid) {
+            onConnect(connection);
+        }
+        resetRecentHandle();
+        setSourceId(null);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
 }
-
-var BaseHandle = memo(function (_ref2) {
-  var type = _ref2.type,
-      nodeId = _ref2.nodeId,
-      onConnect = _ref2.onConnect,
-      position = _ref2.position,
-      setSourceId = _ref2.setSourceId,
-      setPosition = _ref2.setPosition,
-      className = _ref2.className,
-      _ref2$id = _ref2.id,
-      id = _ref2$id === void 0 ? false : _ref2$id,
-      isValidConnection = _ref2.isValidConnection,
-      rest = _objectWithoutProperties(_ref2, ["type", "nodeId", "onConnect", "position", "setSourceId", "setPosition", "className", "id", "isValidConnection"]);
-
-  var isTarget = type === 'target';
-  var handleClasses = classnames('react-flow__handle', className, position, {
-    source: !isTarget,
-    target: isTarget
-  });
-  var nodeIdWithHandleId = id ? "".concat(nodeId, "__").concat(id) : nodeId;
-  return React.createElement("div", _extends$1({
-    "data-nodeid": nodeIdWithHandleId,
-    "data-handlepos": position,
-    className: handleClasses,
-    onMouseDown: function onMouseDown(evt) {
-      return _onMouseDown(evt, {
-        nodeId: nodeIdWithHandleId,
-        setSourceId: setSourceId,
-        setPosition: setPosition,
-        onConnect: onConnect,
-        isTarget: isTarget,
-        isValidConnection: isValidConnection
-      });
-    }
-  }, rest));
+var BaseHandle = memo(function (_a) {
+    var type = _a.type, nodeId = _a.nodeId, onConnect = _a.onConnect, position = _a.position, setSourceId = _a.setSourceId, setPosition = _a.setPosition, className = _a.className, _b = _a.id, id = _b === void 0 ? false : _b, isValidConnection = _a.isValidConnection, rest = __rest(_a, ["type", "nodeId", "onConnect", "position", "setSourceId", "setPosition", "className", "id", "isValidConnection"]);
+    var isTarget = type === 'target';
+    var handleClasses = classnames('react-flow__handle', className, position, { source: !isTarget, target: isTarget });
+    var nodeIdWithHandleId = id ? nodeId + "__" + id : nodeId;
+    return (React.createElement("div", __assign({ "data-nodeid": nodeIdWithHandleId, "data-handlepos": position, className: handleClasses, onMouseDown: function (evt) { return onMouseDown(evt, {
+            nodeId: nodeIdWithHandleId, setSourceId: setSourceId, setPosition: setPosition,
+            onConnect: onConnect, isTarget: isTarget, isValidConnection: isValidConnection
+        }); } }, rest)));
 });
 BaseHandle.displayName = 'BaseHandle';
-BaseHandle.whyDidYouRender = false;
 
 var NodeIdContext = createContext(null);
 var Provider = NodeIdContext.Provider;
 var Consumer = NodeIdContext.Consumer;
 Provider.displayName = 'NodeIdProvider';
 
-var Handle = memo(function (_ref) {
-  var onConnect = _ref.onConnect,
-      rest = _objectWithoutProperties(_ref, ["onConnect"]);
-
-  var nodeId = useContext(NodeIdContext);
-
-  var _useStoreActions = useStoreActions(function (a) {
-    return {
-      setPosition: a.setConnectionPosition,
-      setSourceId: a.setConnectionSourceId
+var Handle = memo(function (_a) {
+    var onConnect = _a.onConnect, _b = _a.type, type = _b === void 0 ? 'source' : _b, _c = _a.position, position = _c === void 0 ? 'top' : _c, _d = _a.isValidConnection, isValidConnection = _d === void 0 ? function () { return true; } : _d, rest = __rest(_a, ["onConnect", "type", "position", "isValidConnection"]);
+    var nodeId = useContext(NodeIdContext);
+    var _e = useStoreActions$1(function (a) { return ({
+        setPosition: a.setConnectionPosition,
+        setSourceId: a.setConnectionSourceId
+    }); }), setPosition = _e.setPosition, setSourceId = _e.setSourceId;
+    var onConnectAction = useStoreState$1(function (s) { return s.onConnect; });
+    var onConnectExtended = function (params) {
+        onConnectAction(params);
+        onConnect(params);
     };
-  }),
-      setPosition = _useStoreActions.setPosition,
-      setSourceId = _useStoreActions.setSourceId;
-
-  var onConnectAction = useStoreState(function (s) {
-    return s.onConnect;
-  });
-
-  var onConnectExtended = function onConnectExtended(params) {
-    onConnectAction(params);
-    onConnect(params);
-  };
-
-  return React.createElement(BaseHandle, _extends$1({
-    nodeId: nodeId,
-    setPosition: setPosition,
-    setSourceId: setSourceId,
-    onConnect: onConnectExtended
-  }, rest));
+    return (React.createElement(BaseHandle, __assign({ nodeId: nodeId, setPosition: setPosition, setSourceId: setSourceId, onConnect: onConnectExtended, type: type, position: position, isValidConnection: isValidConnection }, rest)));
 });
 Handle.displayName = 'Handle';
-Handle.propTypes = {
-  type: propTypes.oneOf(['source', 'target']),
-  position: propTypes.oneOf(['top', 'right', 'bottom', 'left']),
-  onConnect: propTypes.func,
-  isValidConnection: propTypes.func
-};
-Handle.defaultProps = {
-  type: 'source',
-  position: 'top',
-  onConnect: function onConnect() {},
-  isValidConnection: function isValidConnection() {
-    return true;
-  }
-};
 
 var nodeStyles = {
   background: '#ff6060',
@@ -10347,10 +9207,6 @@ function styleInject(css, ref) {
 var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n  cursor: crosshair;\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
 styleInject(css);
 
-{
-    var whyDidYouRender = require('@welldone-software/why-did-you-render');
-    whyDidYouRender(React);
-}
 var ReactFlow = function (_a) {
     var style = _a.style, onElementClick = _a.onElementClick, elements = _a.elements, children = _a.children, nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onLoad = _a.onLoad, onMove = _a.onMove, onElementsRemove = _a.onElementsRemove, onConnect = _a.onConnect, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, deleteKeyCode = _a.deleteKeyCode, selectionKeyCode = _a.selectionKeyCode, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundType = _a.backgroundType, backgroundColor = _a.backgroundColor;
     var nodeTypesParsed = useMemo(function () { return createNodeTypes(nodeTypes); }, []);
@@ -10404,7 +9260,7 @@ var index = (function (_ref) {
       _ref$nodeColor = _ref.nodeColor,
       nodeColor = _ref$nodeColor === void 0 ? '#ddd' : _ref$nodeColor;
   var canvasNode = useRef(null);
-  var state = useStoreState(function (s) {
+  var state = useStoreState$1(function (s) {
     return {
       width: s.width,
       height: s.height,
@@ -10456,7 +9312,7 @@ var index = (function (_ref) {
   });
 });
 
-function _extends$2() { _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$2.apply(this, arguments); }
+function _extends$1() { _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1.apply(this, arguments); }
 
 var _ref =
 /*#__PURE__*/
@@ -10465,12 +9321,12 @@ React.createElement("path", {
 });
 
 var SvgPlus = function SvgPlus(props) {
-  return React.createElement("svg", _extends$2({
+  return React.createElement("svg", _extends$1({
     viewBox: "0 0 512 512"
   }, props), _ref);
 };
 
-function _extends$3() { _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$3.apply(this, arguments); }
+function _extends$2() { _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$2.apply(this, arguments); }
 
 var _ref$1 =
 /*#__PURE__*/
@@ -10479,12 +9335,12 @@ React.createElement("path", {
 });
 
 var SvgMinus = function SvgMinus(props) {
-  return React.createElement("svg", _extends$3({
+  return React.createElement("svg", _extends$2({
     viewBox: "0 0 512 512"
   }, props), _ref$1);
 };
 
-function _extends$4() { _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$4.apply(this, arguments); }
+function _extends$3() { _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$3.apply(this, arguments); }
 
 var _ref$2 =
 /*#__PURE__*/
@@ -10493,7 +9349,7 @@ React.createElement("path", {
 });
 
 var SvgFitview = function SvgFitview(props) {
-  return React.createElement("svg", _extends$4({
+  return React.createElement("svg", _extends$3({
     viewBox: "0 0 512 512"
   }, props), _ref$2);
 };

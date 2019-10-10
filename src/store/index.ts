@@ -1,9 +1,91 @@
-import { action } from 'easy-peasy';
+import { createStore, Action, action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 
 import { getBoundingBox, getNodesInside, getConnectedEdges } from '../utils/graph';
+import {
+  ElementId, Elements, Transform, Node,
+  Edge, Rect, Dimensions, XYPosition
+} from '../types';
 
-export default {
+type TransformXYK = {
+  x: number,
+  y: number,
+  k: number
+};
+
+export interface StoreModel {
+  width: number;
+  height: number;
+  transform: Transform;
+  nodes: Node[];
+  edges: Edge[];
+  selectedElements: any[];
+  selectedNodesBbox: Rect;
+
+  d3Zoom: any;
+  d3Selection: any;
+  d3Initialised: boolean;
+
+  nodesSelectionActive: boolean;
+  selectionActive: boolean;
+  selection: any;
+
+  connectionSourceId: ElementId | null;
+  connectionPosition: XYPosition;
+
+  onConnect: (any) => void;
+
+  setOnConnect: Action<StoreModel, any>;
+
+  setNodes: Action<StoreModel, Node[]>;
+
+  setEdges: Action<StoreModel, Edge[]>;
+
+  updateNodeData:  Action<StoreModel, any>;
+
+  updateNodePos: Action<StoreModel, any>;
+
+  setSelection: Action<StoreModel, boolean>;
+
+  setNodesSelection: Action<StoreModel, any>;
+
+  setSelectedElements: Action<StoreModel, Elements>
+
+  updateSelection: Action<StoreModel, any>;
+
+  updateTransform: Action<StoreModel, TransformXYK>;
+
+  updateSize: Action<StoreModel, Dimensions>;
+
+  initD3: Action<StoreModel, any>;
+
+  setConnectionPosition: Action<StoreModel, XYPosition>;
+
+  setConnectionSourceId: Action<StoreModel, ElementId>;
+};
+
+const storeModel: StoreModel = {
+  width: 0,
+  height: 0,
+  transform: [0, 0, 1],
+  nodes: [],
+  edges: [],
+  selectedElements: [],
+  selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+
+  d3Zoom: null,
+  d3Selection: null,
+  d3Initialised: false,
+
+  nodesSelectionActive: false,
+  selectionActive: false,
+  selection: {},
+
+  connectionSourceId: null,
+  connectionPosition: { x: 0, y: 0 },
+
+  onConnect: () => {},
+
   setOnConnect: action((state, onConnect) => {
     state.onConnect = onConnect;
   }),
@@ -100,3 +182,7 @@ export default {
     state.connectionSourceId = sourceId;
   })
 };
+
+const store = createStore(storeModel);
+
+export default store;

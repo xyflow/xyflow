@@ -6,6 +6,23 @@ export type Transform = [number, number, number];
 
 export type Position = 'left' | 'top' | 'right' | 'bottom';
 
+export type XYPosition = {
+  x: number,
+  y: number
+}
+
+export type HandleType = 'source' | 'target';
+
+export interface Dimensions {
+  width: number,
+  height: number
+}
+
+export interface Rect extends Dimensions {
+  x: number,
+  y: number
+};
+
 export interface Node {
   id: ElementId,
   type?: string,

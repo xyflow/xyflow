@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo } from 'react';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 
+import { useStoreState, useStoreActions } from '../../store/hooks.ts';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../../components/UserSelection';

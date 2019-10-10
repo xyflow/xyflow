@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { useStoreState } from 'easy-peasy';
 
+import { useStoreState } from '../../store/hooks.ts';
 import ConnectionLine from '../../components/ConnectionLine/index.tsx';
 import { isEdge } from '../../utils/graph';
 
