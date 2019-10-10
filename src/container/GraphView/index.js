@@ -3,9 +3,9 @@ import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import BackgroundRenderer from '../BackgroundRenderer';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
+import BackgroundGrid from '../../components/BackgroundGrid';
 import useKeyPress from '../../hooks/useKeyPress';
 import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
@@ -70,7 +70,7 @@ const GraphView = memo(({
   return (
     <div className="react-flow__renderer" ref={rendererNode}>
       {showBackground && (
-        <BackgroundRenderer
+        <BackgroundGrid
           gap={backgroundGap}
           color={backgroundColor}
           backgroundType={backgroundType}

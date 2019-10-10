@@ -5,7 +5,7 @@ import classnames from 'classnames';
 export enum GridType {
   Lines = 'lines',
   Dots = 'dots',
-}
+};
 
 interface GridProps {
   gap: number;
@@ -14,7 +14,7 @@ interface GridProps {
   style: React.CSSProperties;
   className: string | null;
   backgroundType: GridType;
-}
+};
 
 const baseStyles: React.CSSProperties = {
   position: 'absolute',

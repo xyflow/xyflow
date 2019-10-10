@@ -1072,6 +1072,7 @@ var createDraft = immer.createDraft.bind(immer);
  */
 
 var finishDraft = immer.finishDraft.bind(immer);
+//# sourceMappingURL=immer.module.js.map
 
 function symbolObservablePonyfill(root) {
 	var result;
@@ -2551,6 +2552,7 @@ var StoreProvider = function StoreProvider(_ref) {
  */
 
 setAutoFreeze(false);
+//# sourceMappingURL=easy-peasy.esm.js.map
 
 function _defineProperty$1(obj, key, value) {
   if (key in obj) {
@@ -6551,6 +6553,113 @@ var EdgeRenderer = React.memo(function (props) {
 });
 EdgeRenderer.displayName = 'EdgeRenderer';
 
+var initialRect = {
+  startX: 0,
+  startY: 0,
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+  draw: false
+};
+
+function getMousePosition(evt) {
+  var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
+  return {
+    x: evt.clientX - containerBounds.left,
+    y: evt.clientY - containerBounds.top
+  };
+}
+
+var UserSelection = React.memo(function () {
+  var selectionPane = React.useRef(null);
+
+  var _useState = React.useState(initialRect),
+      _useState2 = _slicedToArray(_useState, 2),
+      rect = _useState2[0],
+      setRect = _useState2[1];
+
+  var setSelection = useStoreActions(function (a) {
+    return a.setSelection;
+  });
+  var updateSelection = useStoreActions(function (a) {
+    return a.updateSelection;
+  });
+  var setNodesSelection = useStoreActions(function (a) {
+    return a.setNodesSelection;
+  });
+  React.useEffect(function () {
+    function onMouseDown(evt) {
+      var mousePos = getMousePosition(evt);
+      setRect(function (currentRect) {
+        return _objectSpread2$1({}, currentRect, {
+          startX: mousePos.x,
+          startY: mousePos.y,
+          x: mousePos.x,
+          y: mousePos.y,
+          draw: true
+        });
+      });
+      setSelection(true);
+    }
+
+    function onMouseMove(evt) {
+      setRect(function (currentRect) {
+        if (!currentRect.draw) {
+          return currentRect;
+        }
+
+        var mousePos = getMousePosition(evt);
+        var negativeX = mousePos.x < currentRect.startX;
+        var negativeY = mousePos.y < currentRect.startY;
+
+        var nextRect = _objectSpread2$1({}, currentRect, {
+          x: negativeX ? mousePos.x : currentRect.x,
+          y: negativeY ? mousePos.y : currentRect.y,
+          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
+          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY
+        });
+
+        updateSelection(nextRect);
+        return nextRect;
+      });
+    }
+
+    function onMouseUp() {
+      setRect(function (currentRect) {
+        setNodesSelection({
+          isActive: true,
+          selection: currentRect
+        });
+        setSelection(false);
+        return _objectSpread2$1({}, currentRect, {
+          draw: false
+        });
+      });
+    }
+
+    selectionPane.current.addEventListener('mousedown', onMouseDown);
+    selectionPane.current.addEventListener('mousemove', onMouseMove);
+    selectionPane.current.addEventListener('mouseup', onMouseUp);
+    return function () {
+      selectionPane.current.removeEventListener('mousedown', onMouseDown);
+      selectionPane.current.removeEventListener('mousemove', onMouseMove);
+      selectionPane.current.removeEventListener('mouseup', onMouseUp);
+    };
+  }, []);
+  return React__default.createElement("div", {
+    className: "react-flow__selectionpane",
+    ref: selectionPane
+  }, (rect.draw || rect.fixed) && React__default.createElement("div", {
+    className: "react-flow__selection",
+    style: {
+      width: rect.width,
+      height: rect.height,
+      transform: "translate(".concat(rect.x, "px, ").concat(rect.y, "px)")
+    }
+  }));
+});
+
 var reactIs_development = createCommonjsModule(function (module, exports) {
 
 
@@ -7603,229 +7712,6 @@ var propTypes = createCommonjsModule(function (module) {
   var throwOnDirectAccess = true;
   module.exports = factoryWithTypeCheckers(ReactIs.isElement, throwOnDirectAccess);
 }
-});
-
-var baseStyles = {
-  position: 'absolute',
-  top: 0,
-  left: 0
-};
-
-var createGridLines = function createGridLines(width, height, xOffset, yOffset, gap) {
-  var lineCountX = Math.ceil(width / gap) + 1;
-  var lineCountY = Math.ceil(height / gap) + 1;
-  var xValues = Array.from({
-    length: lineCountX
-  }, function (_, i) {
-    return "M".concat(i * gap + xOffset, " 0 V").concat(height);
-  });
-  var yValues = Array.from({
-    length: lineCountY
-  }, function (_, i) {
-    return "M0 ".concat(i * gap + yOffset, " H").concat(width);
-  });
-  return [].concat(_toConsumableArray(xValues), _toConsumableArray(yValues)).join(' ');
-};
-
-var createGridDots = function createGridDots(width, height, xOffset, yOffset, gap, size) {
-  var lineCountX = Math.ceil(width / gap) + 1;
-  var lineCountY = Math.ceil(height / gap) + 1;
-  var values = Array.from({
-    length: lineCountX
-  }, function (_, col) {
-    var x = col * gap + xOffset;
-    return Array.from({
-      length: lineCountY
-    }, function (_, row) {
-      var y = row * gap + yOffset;
-      return "M".concat(x, " ").concat(y - size, " l").concat(size, " ").concat(size, " l").concat(-size, " ").concat(size, " l").concat(-size, " ").concat(-size, "z");
-    }).join(' ');
-  });
-  return values.join(' ');
-};
-
-var Grid = React.memo(function (_ref) {
-  var gap = _ref.gap,
-      color = _ref.color,
-      size = _ref.size,
-      style = _ref.style,
-      className = _ref.className,
-      backgroundType = _ref.backgroundType;
-
-  var _useStoreState = useStoreState(function (s) {
-    return s;
-  }),
-      width = _useStoreState.width,
-      height = _useStoreState.height,
-      _useStoreState$transf = _slicedToArray(_useStoreState.transform, 3),
-      x = _useStoreState$transf[0],
-      y = _useStoreState$transf[1],
-      scale = _useStoreState$transf[2];
-
-  var gridClasses = classnames('react-flow__grid', className);
-  var scaledGap = gap * scale;
-  var xOffset = x % scaledGap;
-  var yOffset = y % scaledGap;
-  var isLines = backgroundType === 'lines';
-  var path = isLines ? createGridLines(width, height, xOffset, yOffset, scaledGap) : createGridDots(width, height, xOffset, yOffset, scaledGap, size);
-  var fill = isLines ? 'none' : color;
-  var stroke = isLines ? color : 'none';
-  return React__default.createElement("svg", {
-    width: width,
-    height: height,
-    style: _objectSpread2$1({}, baseStyles, {}, style),
-    className: gridClasses
-  }, React__default.createElement("path", {
-    fill: fill,
-    stroke: stroke,
-    strokeWidth: size,
-    d: path
-  }));
-});
-Grid.displayName = 'Grid';
-Grid.propTypes = {
-  gap: propTypes.number,
-  color: propTypes.string,
-  size: propTypes.number,
-  style: propTypes.object,
-  className: propTypes.string,
-  backgroundType: propTypes.oneOf(['lines', 'dots'])
-};
-Grid.defaultProps = {
-  gap: 24,
-  color: '#aaa',
-  size: .5,
-  style: {},
-  className: null,
-  backgroundType: 'dots'
-};
-
-var bgComponents = {
-  lines: Grid,
-  dots: Grid
-};
-var BackgroundRenderer = React.memo(function (_ref) {
-  var backgroundType = _ref.backgroundType,
-      rest = _objectWithoutProperties(_ref, ["backgroundType"]);
-
-  var BackgroundComponent = bgComponents[backgroundType];
-  return React__default.createElement(BackgroundComponent, _extends$1({
-    backgroundType: backgroundType
-  }, rest));
-});
-BackgroundRenderer.displayName = 'BackgroundRenderer';
-BackgroundRenderer.propTypes = {
-  backgroundType: propTypes.oneOf(['lines', 'dots'])
-};
-BackgroundRenderer.defaultProps = {
-  backgroundType: 'dots'
-};
-
-var initialRect = {
-  startX: 0,
-  startY: 0,
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  draw: false
-};
-
-function getMousePosition(evt) {
-  var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
-  return {
-    x: evt.clientX - containerBounds.left,
-    y: evt.clientY - containerBounds.top
-  };
-}
-
-var UserSelection = React.memo(function () {
-  var selectionPane = React.useRef(null);
-
-  var _useState = React.useState(initialRect),
-      _useState2 = _slicedToArray(_useState, 2),
-      rect = _useState2[0],
-      setRect = _useState2[1];
-
-  var setSelection = useStoreActions(function (a) {
-    return a.setSelection;
-  });
-  var updateSelection = useStoreActions(function (a) {
-    return a.updateSelection;
-  });
-  var setNodesSelection = useStoreActions(function (a) {
-    return a.setNodesSelection;
-  });
-  React.useEffect(function () {
-    function onMouseDown(evt) {
-      var mousePos = getMousePosition(evt);
-      setRect(function (currentRect) {
-        return _objectSpread2$1({}, currentRect, {
-          startX: mousePos.x,
-          startY: mousePos.y,
-          x: mousePos.x,
-          y: mousePos.y,
-          draw: true
-        });
-      });
-      setSelection(true);
-    }
-
-    function onMouseMove(evt) {
-      setRect(function (currentRect) {
-        if (!currentRect.draw) {
-          return currentRect;
-        }
-
-        var mousePos = getMousePosition(evt);
-        var negativeX = mousePos.x < currentRect.startX;
-        var negativeY = mousePos.y < currentRect.startY;
-
-        var nextRect = _objectSpread2$1({}, currentRect, {
-          x: negativeX ? mousePos.x : currentRect.x,
-          y: negativeY ? mousePos.y : currentRect.y,
-          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
-          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY
-        });
-
-        updateSelection(nextRect);
-        return nextRect;
-      });
-    }
-
-    function onMouseUp() {
-      setRect(function (currentRect) {
-        setNodesSelection({
-          isActive: true,
-          selection: currentRect
-        });
-        setSelection(false);
-        return _objectSpread2$1({}, currentRect, {
-          draw: false
-        });
-      });
-    }
-
-    selectionPane.current.addEventListener('mousedown', onMouseDown);
-    selectionPane.current.addEventListener('mousemove', onMouseMove);
-    selectionPane.current.addEventListener('mouseup', onMouseUp);
-    return function () {
-      selectionPane.current.removeEventListener('mousedown', onMouseDown);
-      selectionPane.current.removeEventListener('mousemove', onMouseMove);
-      selectionPane.current.removeEventListener('mouseup', onMouseUp);
-    };
-  }, []);
-  return React__default.createElement("div", {
-    className: "react-flow__selectionpane",
-    ref: selectionPane
-  }, (rect.draw || rect.fixed) && React__default.createElement("div", {
-    className: "react-flow__selection",
-    style: {
-      width: rect.width,
-      height: rect.height,
-      transform: "translate(".concat(rect.x, "px, ").concat(rect.y, "px)")
-    }
-  }));
 });
 
 var shims = createCommonjsModule(function (module, exports) {
@@ -9510,6 +9396,87 @@ var NodesSelection = React.memo(function () {
   })));
 });
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
+var GridType;
+(function (GridType) {
+    GridType["Lines"] = "lines";
+    GridType["Dots"] = "dots";
+})(GridType || (GridType = {}));
+var baseStyles = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+};
+var createGridLines = function (width, height, xOffset, yOffset, gap) {
+    var lineCountX = Math.ceil(width / gap) + 1;
+    var lineCountY = Math.ceil(height / gap) + 1;
+    var xValues = Array.from({ length: lineCountX }, function (_, i) { return "M" + (i * gap + xOffset) + " 0 V" + height; });
+    var yValues = Array.from({ length: lineCountY }, function (_, i) { return "M0 " + (i * gap + yOffset) + " H" + width; });
+    return __spreadArrays(xValues, yValues).join(' ');
+};
+var createGridDots = function (width, height, xOffset, yOffset, gap, size) {
+    var lineCountX = Math.ceil(width / gap) + 1;
+    var lineCountY = Math.ceil(height / gap) + 1;
+    var values = Array.from({ length: lineCountX }, function (_, col) {
+        var x = col * gap + xOffset;
+        return Array.from({ length: lineCountY }, function (_, row) {
+            var y = row * gap + yOffset;
+            return "M" + x + " " + (y - size) + " l" + size + " " + size + " l" + -size + " " + size + " l" + -size + " " + -size + "z";
+        }).join(' ');
+    });
+    return values.join(' ');
+};
+var Grid = React.memo(function (_a) {
+    var _b = _a.gap, gap = _b === void 0 ? 24 : _b, _c = _a.color, color = _c === void 0 ? '#aaa' : _c, _d = _a.size, size = _d === void 0 ? 0.5 : _d, _e = _a.style, style = _e === void 0 ? {} : _e, _f = _a.className, className = _f === void 0 ? null : _f, _g = _a.backgroundType, backgroundType = _g === void 0 ? GridType.Dots : _g;
+    var _h = useStoreState(function (s) { return s; }), width = _h.width, height = _h.height, _j = _h.transform, x = _j[0], y = _j[1], scale = _j[2];
+    var gridClasses = classnames('react-flow__grid', className);
+    var scaledGap = gap * scale;
+    var xOffset = x % scaledGap;
+    var yOffset = y % scaledGap;
+    var isLines = backgroundType === 'lines';
+    var path = isLines
+        ? createGridLines(width, height, xOffset, yOffset, scaledGap)
+        : createGridDots(width, height, xOffset, yOffset, scaledGap, size);
+    var fill = isLines ? 'none' : color;
+    var stroke = isLines ? color : 'none';
+    return (React__default.createElement("svg", { width: width, height: height, style: __assign(__assign({}, baseStyles), style), className: gridClasses },
+        React__default.createElement("path", { fill: fill, stroke: stroke, strokeWidth: size, d: path })));
+});
+Grid.displayName = 'Grid';
+
 function useKeyPress(keyCode) {
   var _useState = React.useState(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -9749,7 +9716,7 @@ var GraphView = React.memo(function (_ref) {
   return React__default.createElement("div", {
     className: "react-flow__renderer",
     ref: rendererNode
-  }, showBackground && React__default.createElement(BackgroundRenderer, {
+  }, showBackground && React__default.createElement(Grid, {
     gap: backgroundGap,
     color: backgroundColor,
     backgroundType: backgroundType
