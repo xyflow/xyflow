@@ -1072,7 +1072,6 @@ var createDraft = immer.createDraft.bind(immer);
  */
 
 var finishDraft = immer.finishDraft.bind(immer);
-//# sourceMappingURL=immer.module.js.map
 
 function symbolObservablePonyfill(root) {
 	var result;
@@ -2552,7 +2551,6 @@ var StoreProvider = function StoreProvider(_ref) {
  */
 
 setAutoFreeze(false);
-//# sourceMappingURL=easy-peasy.esm.js.map
 
 function _defineProperty$1(obj, key, value) {
   if (key in obj) {
@@ -10242,56 +10240,32 @@ function createNodeTypes(nodeTypes) {
   return _objectSpread2$1({}, standardTypes, {}, specialTypes);
 }
 
-var BezierEdge = React.memo(function (_ref) {
-  var sourceX = _ref.sourceX,
-      sourceY = _ref.sourceY,
-      targetX = _ref.targetX,
-      targetY = _ref.targetY,
-      sourcePosition = _ref.sourcePosition,
-      targetPosition = _ref.targetPosition,
-      _ref$style = _ref.style,
-      style = _ref$style === void 0 ? {} : _ref$style;
-  var yOffset = Math.abs(targetY - sourceY) / 2;
-  var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-  var dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(centerY, " ").concat(targetX, ",").concat(centerY, " ").concat(targetX, ",").concat(targetY);
-
-  if (['left', 'right'].includes(sourcePosition) && ['left', 'right'].includes(targetPosition)) {
-    var xOffset = Math.abs(targetX - sourceX) / 2;
-    var centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
-    dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(centerX, ",").concat(sourceY, " ").concat(centerX, ",").concat(targetY, " ").concat(targetX, ",").concat(targetY);
-  } else if (['left', 'right'].includes(sourcePosition) || ['left', 'right'].includes(targetPosition)) {
-    dAttr = "M".concat(sourceX, ",").concat(sourceY, " C").concat(sourceX, ",").concat(targetY, " ").concat(sourceX, ",").concat(targetY, " ").concat(targetX, ",").concat(targetY);
-  }
-
-  return React__default.createElement("path", _extends$1({}, style, {
-    d: dAttr
-  }));
+var BezierEdge = React.memo(function (_a) {
+    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.sourcePosition, sourcePosition = _b === void 0 ? 'bottom' : _b, _c = _a.targetPosition, targetPosition = _c === void 0 ? 'top' : _c, _d = _a.style, style = _d === void 0 ? {} : _d;
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    var dAttr = "M" + sourceX + "," + sourceY + " C" + sourceX + "," + centerY + " " + targetX + "," + centerY + " " + targetX + "," + targetY;
+    if (['left', 'right'].includes(sourcePosition) && ['left', 'right'].includes(targetPosition)) {
+        var xOffset = Math.abs(targetX - sourceX) / 2;
+        var centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+        dAttr = "M" + sourceX + "," + sourceY + " C" + centerX + "," + sourceY + " " + centerX + "," + targetY + " " + targetX + "," + targetY;
+    }
+    else if (['left', 'right'].includes(sourcePosition) || ['left', 'right'].includes(targetPosition)) {
+        dAttr = "M" + sourceX + "," + sourceY + " C" + sourceX + "," + targetY + " " + sourceX + "," + targetY + " " + targetX + "," + targetY;
+    }
+    return (React__default.createElement("path", __assign({}, style, { d: dAttr })));
 });
 
-var StraightEdge = React.memo(function (props) {
-  var sourceX = props.sourceX,
-      sourceY = props.sourceY,
-      targetX = props.targetX,
-      targetY = props.targetY,
-      _props$style = props.style,
-      style = _props$style === void 0 ? {} : _props$style;
-  return React__default.createElement("path", _extends$1({}, style, {
-    d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(targetX, ",").concat(targetY)
-  }));
+var StraightEdge = React.memo(function (_a) {
+    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.style, style = _b === void 0 ? {} : _b;
+    return (React__default.createElement("path", __assign({}, style, { d: "M " + sourceX + "," + sourceY + "L " + targetX + "," + targetY })));
 });
 
-var StepEdge = React.memo(function (props) {
-  var sourceX = props.sourceX,
-      sourceY = props.sourceY,
-      targetX = props.targetX,
-      targetY = props.targetY,
-      _props$style = props.style,
-      style = _props$style === void 0 ? {} : _props$style;
-  var yOffset = Math.abs(targetY - sourceY) / 2;
-  var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-  return React__default.createElement("path", _extends$1({}, style, {
-    d: "M ".concat(sourceX, ",").concat(sourceY, "L ").concat(sourceX, ",").concat(centerY, "L ").concat(targetX, ",").concat(centerY, "L ").concat(targetX, ",").concat(targetY)
-  }));
+var StepEdge = React.memo(function (_a) {
+    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.style, style = _b === void 0 ? {} : _b;
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    return (React__default.createElement("path", __assign({}, style, { d: "M " + sourceX + "," + sourceY + "L " + sourceX + "," + centerY + "L " + targetX + "," + centerY + "L " + targetX + "," + targetY })));
 });
 
 var wrapEdge = (function (EdgeComponent) {
