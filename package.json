@@ -45,7 +45,7 @@
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-visualizer": "^2.6.0",
     "start-server-and-test": "^1.10.5",
-    "typescript": "^3.6.3",
+    "typescript": "^3.6.4",
     "wait-on": "^3.3.0"
   },
   "peerDependencies": {
