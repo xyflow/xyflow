@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
 
-export default memo((props) => {
-  const {
-    sourceX, sourceY, targetX, targetY, style = {}
-  } = props;
+import { EdgeProps } from '../../types';
 
+export default memo(({
+  sourceX, sourceY, targetX, targetY, style = {}
+}: EdgeProps) => {
   return (
     <path
       {...style}

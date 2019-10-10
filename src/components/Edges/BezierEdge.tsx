@@ -1,9 +1,11 @@
 import React, { memo } from 'react';
 
+import { EdgeBezierProps } from '../../types';
+
 export default memo(({
   sourceX, sourceY, targetX, targetY,
-  sourcePosition, targetPosition, style = {}
-}) => {
+  sourcePosition = 'bottom', targetPosition = 'top', style = {}
+}: EdgeBezierProps) => {
   const yOffset = Math.abs(targetY - sourceY) / 2;
   const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 

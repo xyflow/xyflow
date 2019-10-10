@@ -5,13 +5,13 @@ import { ElementId, Node, Transform } from '../../types';
 
 interface ConnectionLineProps {
   connectionSourceId: ElementId;
-  connectionLineStyle: React.SVGAttributes<{}>;
   connectionPositionX: number;
   connectionPositionY: number;
   connectionLineType: string;
   nodes: Node[];
   transform: Transform;
-  className?: string | null;
+  connectionLineStyle?: React.SVGAttributes<{}>;
+  className?: string;
 };
 
 export default ({
