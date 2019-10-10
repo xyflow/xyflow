@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { StoreProvider } from 'easy-peasy';
 
-if (process.env.NODE_ENV !== 'production') {
+const nodeEnv: string = (process.env.NODE_ENV as string);
+
+if (nodeEnv !== 'production') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
   whyDidYouRender(React);
 }
 
+import { ReactFlowProps } from '../../types';
 import GraphView from '../GraphView';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
@@ -26,7 +28,7 @@ const ReactFlow = ({
   onElementsRemove, onConnect, onNodeDragStop, connectionLineType,
   connectionLineStyle, deleteKeyCode, selectionKeyCode,
   showBackground, backgroundGap, backgroundType, backgroundColor
-}) => {
+}: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
 
@@ -59,25 +61,6 @@ const ReactFlow = ({
 };
 
 ReactFlow.displayName = 'ReactFlow';
-
-ReactFlow.propTypes = {
-  onElementClick: PropTypes.func,
-  onElementsRemove: PropTypes.func,
-  onNodeDragStop: PropTypes.func,
-  onConnect: PropTypes.func,
-	onLoad: PropTypes.func,
-  onMove: PropTypes.func,
-  nodeTypes: PropTypes.object,
-  edgeTypes: PropTypes.object,
-  connectionLineType: PropTypes.string,
-  connectionLineStyle: PropTypes.object,
-  deleteKeyCode: PropTypes.number,
-  selectionKeyCode: PropTypes.number,
-  gridColor: PropTypes.string,
-  gridGap: PropTypes.number,
-  showBackground: PropTypes.bool,
-  backgroundType: PropTypes.oneOf(['lines', 'dots'])
-};
 
 ReactFlow.defaultProps = {
   onElementClick: () => {},
