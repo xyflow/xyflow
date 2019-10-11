@@ -16,7 +16,7 @@
     "scheduler": "^0.16.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.3",
+    "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "@types/d3": "^5.7.2",
