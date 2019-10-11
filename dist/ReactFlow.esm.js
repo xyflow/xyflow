@@ -1065,6 +1065,7 @@ var createDraft = immer.createDraft.bind(immer);
  */
 
 var finishDraft = immer.finishDraft.bind(immer);
+//# sourceMappingURL=immer.module.js.map
 
 function symbolObservablePonyfill(root) {
 	var result;
@@ -2562,6 +2563,7 @@ var StoreProvider = function StoreProvider(_ref) {
  */
 
 setAutoFreeze(false);
+//# sourceMappingURL=easy-peasy.esm.js.map
 
 var typedHooks = createTypedHooks();
 var useStoreActions$1 = typedHooks.useStoreActions;
@@ -9771,12 +9773,12 @@ var Consumer = NodeIdContext.Consumer;
 Provider.displayName = 'NodeIdProvider';
 
 var Handle = memo(function (_a) {
-    var onConnect = _a.onConnect, _b = _a.type, type = _b === void 0 ? 'source' : _b, _c = _a.position, position = _c === void 0 ? 'top' : _c, _d = _a.isValidConnection, isValidConnection = _d === void 0 ? function () { return true; } : _d, rest = __rest(_a, ["onConnect", "type", "position", "isValidConnection"]);
+    var _b = _a.onConnect, onConnect = _b === void 0 ? function () { } : _b, _c = _a.type, type = _c === void 0 ? 'source' : _c, _d = _a.position, position = _d === void 0 ? 'top' : _d, _e = _a.isValidConnection, isValidConnection = _e === void 0 ? function () { return true; } : _e, rest = __rest(_a, ["onConnect", "type", "position", "isValidConnection"]);
     var nodeId = useContext(NodeIdContext);
-    var _e = useStoreActions$1(function (a) { return ({
+    var _f = useStoreActions$1(function (a) { return ({
         setPosition: a.setConnectionPosition,
         setSourceId: a.setConnectionSourceId
-    }); }), setPosition = _e.setPosition, setSourceId = _e.setSourceId;
+    }); }), setPosition = _f.setPosition, setSourceId = _f.setSourceId;
     var onConnectAction = useStoreState$1(function (s) { return s.onConnect; });
     var onConnectExtended = function (params) {
         onConnectAction(params);

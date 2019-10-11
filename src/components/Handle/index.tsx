@@ -14,7 +14,7 @@ interface HandleProps {
 };
 
 const Handle = memo(({
-  onConnect, type = 'source', position = 'top', isValidConnection = () => true,
+  onConnect = () => {}, type = 'source', position = 'top', isValidConnection = () => true,
   ...rest
 }: HandleProps) => {
   const nodeId: ElementId = useContext(NodeIdContext);
