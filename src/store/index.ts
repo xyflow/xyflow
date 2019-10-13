@@ -18,6 +18,11 @@ type NodeUpdate = {
   pos: XYPosition
 };
 
+type SelectionUpdate = {
+  isActive: boolean,
+  selection: any;
+}
+
 export interface StoreModel {
   width: number;
   height: number;
@@ -52,11 +57,11 @@ export interface StoreModel {
 
   setSelection: Action<StoreModel, boolean>;
 
-  setNodesSelection: Action<StoreModel, any>;
+  setNodesSelection: Action<StoreModel, SelectionUpdate>;
 
   setSelectedElements: Action<StoreModel, Elements|Node|Edge>
 
-  updateSelection: Action<StoreModel, any>;
+  updateSelection: Action<StoreModel, Rect>;
 
   updateTransform: Action<StoreModel, TransformXYK>;
 

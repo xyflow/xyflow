@@ -3,7 +3,7 @@ import React, { useEffect, useRef, memo } from 'react';
 import { useStoreState, useStoreActions } from '../../store/hooks.ts';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import UserSelection from '../../components/UserSelection';
+import UserSelection from '../../components/UserSelection/index.tsx';
 import NodesSelection from '../../components/NodesSelection';
 import BackgroundGrid from '../../components/BackgroundGrid';
 import useKeyPress from '../../hooks/useKeyPress';
