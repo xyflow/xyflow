@@ -25,9 +25,10 @@ export interface Rect extends Dimensions {
 
 export interface Node {
   id: ElementId,
+  position?: XYPosition,
   type?: string,
   __rg?: any,
-  data?: any
+  data?: any,
 };
 
 export interface Edge {
