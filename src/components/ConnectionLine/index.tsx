@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, SVGAttributes } from 'react';
 import cx from 'classnames';
 
 import { ElementId, Node, Transform } from '../../types';
@@ -7,10 +7,10 @@ interface ConnectionLineProps {
   connectionSourceId: ElementId;
   connectionPositionX: number;
   connectionPositionY: number;
-  connectionLineType: string;
+  connectionLineType?: string | null;
   nodes: Node[];
   transform: Transform;
-  connectionLineStyle?: React.SVGAttributes<{}>;
+  connectionLineStyle?: SVGAttributes<{}>;
   className?: string;
 };
 

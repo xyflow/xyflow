@@ -1,6 +1,6 @@
-import StraightEdge from '../../components/Edges/StraightEdge.tsx';
-import BezierEdge from '../../components/Edges/BezierEdge.tsx';
-import wrapEdge from '../../components/Edges/wrapEdge.tsx';
+import StraightEdge from '../../components/Edges/StraightEdge';
+import BezierEdge from '../../components/Edges/BezierEdge';
+import wrapEdge from '../../components/Edges/wrapEdge';
 
 export function createEdgeTypes(edgeTypes) {
   const standardTypes = {
@@ -12,7 +12,7 @@ export function createEdgeTypes(edgeTypes) {
     .keys(edgeTypes)
     .filter(k => !['default', 'bezier'].includes(k))
     .reduce((res, key) => {
-      res[key] = wrapEdge(edgeTypes[key] ||BezierEdge);
+      res[key] = wrapEdge(edgeTypes[key] || BezierEdge);
 
       return res;
     }, {});

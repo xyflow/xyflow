@@ -1,10 +1,27 @@
-import React, { memo } from 'react';
+import React, { memo, SVGAttributes } from 'react';
 
-import { useStoreState } from '../../store/hooks.ts';
-import ConnectionLine from '../../components/ConnectionLine/index.tsx';
+import { useStoreState } from '../../store/hooks';
+import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
+import { Position, Node, ElementId } from '../../types';
 
-function getHandlePosition(position, node, handle = null) {
+interface EdgeRendererProps {
+  width: number,
+  height: number,
+  connectionLineStyle?: SVGAttributes<{}>,
+  connectionLineType?: string
+};
+
+interface HandleElement {
+  height: number;
+  id?: ElementId;
+  position: Position;
+  width: number;
+  x: number;
+  y: number;
+};
+
+function getHandlePosition(position: Position, node: Node, handle: any = null) {
   if (!handle) {
     switch (position) {
       case 'top': return {
@@ -24,6 +41,8 @@ function getHandlePosition(position, node, handle = null) {
         y: node.__rg.height / 2
       };
     }
+
+    return null;
   }
 
   switch (position) {
@@ -46,7 +65,7 @@ function getHandlePosition(position, node, handle = null) {
   }
 }
 
-function getHandle(bounds, handleId) {
+function getHandle(bounds, handleId): HandleElement | null {
   let handle = null;
 
   if (!bounds) {
@@ -138,7 +157,9 @@ function renderEdge(e, props, state) {
   );
 }
 
-const EdgeRenderer = memo((props) => {
+const EdgeRenderer = memo(({
+  width, height, connectionLineStyle, connectionLineType, ...rest
+}: EdgeRendererProps) => {
   const state = useStoreState(s => ({
     nodes: s.nodes,
     edges: s.edges,
@@ -147,10 +168,6 @@ const EdgeRenderer = memo((props) => {
     connectionSourceId: s.connectionSourceId,
     position: s.connectionPosition
   }));
-  const {
-    width, height, connectionLineStyle, connectionLineType
-  } = props;
-
   if (!width) {
     return null;
   }
@@ -165,7 +182,7 @@ const EdgeRenderer = memo((props) => {
       className="react-flow__edges"
     >
       <g transform={transformStyle}>
-        {edges.map(e => renderEdge(e, props, state))}
+        {edges.map(e => renderEdge(e, { width, height, connectionLineStyle, connectionLineType, ...rest }, state))}
         {connectionSourceId && (
           <ConnectionLine
             nodes={nodes}
