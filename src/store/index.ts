@@ -20,8 +20,13 @@ type NodeUpdate = {
 
 type SelectionUpdate = {
   isActive: boolean,
-  selection: any;
-}
+  selection?: any;
+};
+
+type D3Init = {
+  zoom: any,
+  selection: any
+};
 
 export interface StoreModel {
   width: number;
@@ -67,7 +72,7 @@ export interface StoreModel {
 
   updateSize: Action<StoreModel, Dimensions>;
 
-  initD3: Action<StoreModel, any>;
+  initD3: Action<StoreModel, D3Init>;
 
   setConnectionPosition: Action<StoreModel, XYPosition>;
 

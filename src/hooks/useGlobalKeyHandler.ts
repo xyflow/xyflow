@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useStoreState, useStoreActions } from '../store/hooks.ts';
+import { useStoreState, useStoreActions } from '../store/hooks';
 import useKeyPress from './useKeyPress';
 import { isEdge, getConnectedEdges } from '../utils/graph';
 

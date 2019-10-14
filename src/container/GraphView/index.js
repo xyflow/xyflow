@@ -6,10 +6,10 @@ import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../../components/UserSelection/index.tsx';
 import NodesSelection from '../../components/NodesSelection';
 import BackgroundGrid from '../../components/BackgroundGrid';
-import useKeyPress from '../../hooks/useKeyPress';
-import useD3Zoom from '../../hooks/useD3Zoom';
-import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
-import useElementUpdater from '../../hooks/useElementUpdater'
+import useKeyPress from '../../hooks/useKeyPress.ts';
+import useD3Zoom from '../../hooks/useD3Zoom.ts';
+import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler.ts';
+import useElementUpdater from '../../hooks/useElementUpdater.ts'
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
 
@@ -65,7 +65,7 @@ const GraphView = memo(({
   }, [state.d3Initialised]);
 
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
-  useElementUpdater({ elements });
+  useElementUpdater(elements);
 
   return (
     <div className="react-flow__renderer" ref={rendererNode}>
