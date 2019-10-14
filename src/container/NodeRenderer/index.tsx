@@ -1,8 +1,8 @@
-import React, { memo } from 'react';
+import React, { memo, ComponentType } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import { isNode } from '../../utils/graph';
-import { Node, Transform, NodeTypesType } from '../../types';
+import { Node, Transform, NodeTypesType, NodeComponentProps, } from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -23,7 +23,7 @@ function renderNode(node: Node, props: NodeRendererProps, state: NodeRendererSta
     console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
   }
 
-  const NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes.default;
+  const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<NodeComponentProps>;
   const selected = state.selectedElements
     .filter(isNode)
     .map((e: Node) => e.id)

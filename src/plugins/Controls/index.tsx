@@ -43,7 +43,7 @@ export default ({ style, className }: ControlProps) => {
       </div>
       <div
         className="react-flow__controls-button  react-flow__controls-fitview"
-        onClick={fitView}
+        onClick={() => fitView()}
       >
         <FitviewIcon />
       </div>

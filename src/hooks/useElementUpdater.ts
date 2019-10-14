@@ -16,8 +16,8 @@ const useElementUpdater = (elements: Elements) => {
   const setEdges = useStoreActions(a => a.setEdges);
 
   useEffect(() => {
-    const nodes: Node[] = elements.filter(isNode);
-    const edges: Edge[] = elements.filter(isEdge).map(parseElement);
+    const nodes = elements.filter(isNode) as Node[];
+    const edges = elements.filter(isEdge).map(parseElement) as Edge[];
 
     const nextNodes = nodes.map(propNode => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);

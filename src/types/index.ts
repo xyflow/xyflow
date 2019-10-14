@@ -72,3 +72,16 @@ export interface NodeProps {
   selected: boolean;
   style?: CSSProperties;
 };
+
+export interface NodeComponentProps {
+  id: ElementId,
+  type: string;
+  data: any;
+  transform: Transform;
+  xPos: number;
+  yPos: number;
+  selected: boolean;
+  onClick: () => any;
+  onNodeDragStop: () => any;
+  style: CSSProperties;
+};

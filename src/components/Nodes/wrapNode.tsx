@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo, CSSProperties } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
@@ -6,20 +6,7 @@ import { ResizeObserver } from 'resize-observer';
 import { getDimensions, inInputDOMNode } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
-import { ElementId, Transform } from '../../types';
-
-interface NodeComponentProps {
-  id: ElementId,
-  type: string;
-  data: any;
-  transform: Transform;
-  xPos: number;
-  yPos: number;
-  selected: boolean;
-  onClick: () => any;
-  onNodeDragStop: () => any;
-  style: CSSProperties;
-}
+import { NodeComponentProps } from '../../types';
 
 const isHandle = (e) => (
   e.target.className &&

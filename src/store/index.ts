@@ -13,9 +13,19 @@ type TransformXYK = {
   k: number
 };
 
-type NodeUpdate = {
+type NodePosUpdate = {
   id: ElementId,
   pos: XYPosition
+};
+
+type NodeUpdate = {
+  id: ElementId,
+  width: number,
+  height: number,
+  handleBounds: {
+    source: ElementId,
+    target: ElementId
+  }
 };
 
 type SelectionUpdate = {
@@ -58,9 +68,9 @@ export interface StoreModel {
 
   setEdges: Action<StoreModel, Edge[]>;
 
-  updateNodeData:  Action<StoreModel, any>;
+  updateNodeData:  Action<StoreModel, NodeUpdate>;
 
-  updateNodePos: Action<StoreModel, NodeUpdate>;
+  updateNodePos: Action<StoreModel, NodePosUpdate>;
 
   setSelection: Action<StoreModel, boolean>;
 
