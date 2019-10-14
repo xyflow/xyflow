@@ -1,11 +1,21 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, CSSProperties } from 'react';
 import classnames from 'classnames';
 
-import { useStoreState } from '../../store/hooks.ts';
+import { useStoreState } from '../../store/hooks';
 import { isFunction } from '../../utils'
 import { getNodesInside } from '../../utils/graph';
+import { Node } from '../../types';
 
-const baseStyle = {
+type StringFunc = (Node) => string;
+
+interface MiniMapProps {
+  style?: CSSProperties;
+  className?: string;
+  bgColor?: string;
+  nodeColor?: string | StringFunc;
+};
+
+const baseStyle: CSSProperties = {
   position: 'absolute',
   zIndex: 5,
   bottom: 10,
@@ -13,7 +23,9 @@ const baseStyle = {
   width: 200
 };
 
-export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }) => {
+export default (
+  { style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }: MiniMapProps
+) => {
   const canvasNode = useRef(null);
   const state = useStoreState(s => ({
     width: s.width,
@@ -22,14 +34,14 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
     transform: s.transform,
   }));  const mapClasses = classnames('react-flow__minimap', className);
   const nodePositions = state.nodes.map(n => n.__rg.position);
-  const width = style.width || baseStyle.width;
+  const width: number = +(style.width || baseStyle.width || 0);
   const height = (state.height / (state.width || 1)) * width;
   const bbox = { x: 0, y: 0, width: state.width, height: state.height };
   const scaleFactor = width / state.width;
-  const nodeColorFunc = isFunction(nodeColor) ? nodeColor : () => nodeColor;
+  const nodeColorFunc = (isFunction(nodeColor) ? nodeColor: () => nodeColor) as StringFunc;
 
   useEffect(() => {
-    if (canvasNode) {
+    if (canvasNode && canvasNode.current) {
       const ctx = canvasNode.current.getContext('2d');
       const nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
 
@@ -53,7 +65,7 @@ export default ({ style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd'
         );
       });
     }
-  }, [nodePositions, state.transform, height])
+  }, [canvasNode.current, nodePositions, state.transform, height])
 
   return (
     <canvas

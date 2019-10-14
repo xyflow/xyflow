@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import classnames from 'classnames';
 
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
-import PlusIcon from '../../../assets/icons/plus.svg';
+import PlusIcon from '../../../assets/icons/plus.svg';
 import MinusIcon from '../../../assets/icons/minus.svg';
 import FitviewIcon from '../../../assets/icons/fitview.svg';
 
-const baseStyle = {
+const baseStyle: CSSProperties = {
   position: 'absolute',
   zIndex: 5,
   bottom: 10,
   left: 10,
 };
 
-export default ({ style, className }) => {
-  const mapClasses = classnames('react-flow__controls', className);
+interface ControlProps {
+  style?: CSSProperties;
+  className?: string
+};
+
+export default ({ style, className }: ControlProps) => {
+  const mapClasses: string = classnames('react-flow__controls', className);
 
   return (
     <div
