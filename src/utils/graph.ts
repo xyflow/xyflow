@@ -44,8 +44,8 @@ export const addEdge = (edgeParams, elements) => {
 }
 
 const pointToRendererPoint = ({ x, y }, transform) => {
-  const rendererX = (x - transform[0]) * (1 / [transform[2]]);
-  const rendererY = (y - transform[1]) * (1 / [transform[2]]);
+  const rendererX = (x - transform[0]) * (1 / transform[2]);
+  const rendererY = (y - transform[1]) * (1 / transform[2]);
 
   return {
     x: rendererX,

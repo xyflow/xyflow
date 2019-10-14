@@ -4,7 +4,7 @@ export const isDefined = obj => typeof obj !== 'undefined';
 
 export const inInputDOMNode = e => e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
 
-export const getDimensions = (node = {}) => ({
+export const getDimensions = (node: HTMLDivElement) => ({
   width: node.offsetWidth,
   height: node.offsetHeight
 });
