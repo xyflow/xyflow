@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "@svgr/rollup": "^4.3.3",
-    "@welldone-software/why-did-you-render": "^3.3.7",
+    "@welldone-software/why-did-you-render": "^3.3.8",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.0",
     "d3-zoom": "^1.8.3",
