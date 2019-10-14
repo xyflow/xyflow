@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 export type ElementId = string;
 
 export type Elements = Array<Node | Edge>;
@@ -49,4 +51,12 @@ export interface EdgeProps {
 export interface EdgeBezierProps extends EdgeProps{
   sourcePosition: Position,
   targetPosition: Position
+};
+
+export interface NodeProps {
+  id: ElementId,
+  type: string,
+  data: any;
+  selected: boolean;
+  style?: CSSProperties;
 };

@@ -1,9 +1,11 @@
 import { createContext } from 'react';
 
-export const NodeIdContext = createContext(null);
+import { ElementId } from '../types';
+
+type ContextProps = ElementId | null;
+
+export const NodeIdContext = createContext<Partial<ContextProps>>(null);
 export const Provider = NodeIdContext.Provider;
 export const Consumer = NodeIdContext.Consumer;
-
-Provider.displayName = 'NodeIdProvider';
 
 export default NodeIdContext;

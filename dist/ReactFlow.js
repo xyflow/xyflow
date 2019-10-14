@@ -2625,68 +2625,6 @@ function _objectSpread2$1(target) {
   return target;
 }
 
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
-}
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  }
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-}
-
-function _iterableToArrayLimit(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
-
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
-}
-
 var noop = {value: function() {}};
 
 function dispatch() {
@@ -6536,110 +6474,77 @@ var EdgeRenderer = React.memo(function (props) {
 EdgeRenderer.displayName = 'EdgeRenderer';
 
 var initialRect = {
-  startX: 0,
-  startY: 0,
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  draw: false
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    draw: false
 };
-
 function getMousePosition(evt) {
-  var containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
-  return {
-    x: evt.clientX - containerBounds.left,
-    y: evt.clientY - containerBounds.top
-  };
-}
-
-var UserSelection = React.memo(function () {
-  var selectionPane = React.useRef(null);
-
-  var _useState = React.useState(initialRect),
-      _useState2 = _slicedToArray(_useState, 2),
-      rect = _useState2[0],
-      setRect = _useState2[1];
-
-  var setSelection = useStoreActions$1(function (a) {
-    return a.setSelection;
-  });
-  var updateSelection = useStoreActions$1(function (a) {
-    return a.updateSelection;
-  });
-  var setNodesSelection = useStoreActions$1(function (a) {
-    return a.setNodesSelection;
-  });
-  React.useEffect(function () {
-    function onMouseDown(evt) {
-      var mousePos = getMousePosition(evt);
-      setRect(function (currentRect) {
-        return _objectSpread2$1({}, currentRect, {
-          startX: mousePos.x,
-          startY: mousePos.y,
-          x: mousePos.x,
-          y: mousePos.y,
-          draw: true
-        });
-      });
-      setSelection(true);
+    var reactFlowNode = document.querySelector('.react-flow');
+    if (!reactFlowNode) {
+        return false;
     }
-
-    function onMouseMove(evt) {
-      setRect(function (currentRect) {
-        if (!currentRect.draw) {
-          return currentRect;
-        }
-
-        var mousePos = getMousePosition(evt);
-        var negativeX = mousePos.x < currentRect.startX;
-        var negativeY = mousePos.y < currentRect.startY;
-
-        var nextRect = _objectSpread2$1({}, currentRect, {
-          x: negativeX ? mousePos.x : currentRect.x,
-          y: negativeY ? mousePos.y : currentRect.y,
-          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
-          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY
-        });
-
-        updateSelection(nextRect);
-        return nextRect;
-      });
-    }
-
-    function onMouseUp() {
-      setRect(function (currentRect) {
-        setNodesSelection({
-          isActive: true,
-          selection: currentRect
-        });
-        setSelection(false);
-        return _objectSpread2$1({}, currentRect, {
-          draw: false
-        });
-      });
-    }
-
-    selectionPane.current.addEventListener('mousedown', onMouseDown);
-    selectionPane.current.addEventListener('mousemove', onMouseMove);
-    selectionPane.current.addEventListener('mouseup', onMouseUp);
-    return function () {
-      selectionPane.current.removeEventListener('mousedown', onMouseDown);
-      selectionPane.current.removeEventListener('mousemove', onMouseMove);
-      selectionPane.current.removeEventListener('mouseup', onMouseUp);
+    var containerBounds = reactFlowNode.getBoundingClientRect();
+    return {
+        x: evt.clientX - containerBounds.left,
+        y: evt.clientY - containerBounds.top,
     };
-  }, []);
-  return React__default.createElement("div", {
-    className: "react-flow__selectionpane",
-    ref: selectionPane
-  }, (rect.draw || rect.fixed) && React__default.createElement("div", {
-    className: "react-flow__selection",
-    style: {
-      width: rect.width,
-      height: rect.height,
-      transform: "translate(".concat(rect.x, "px, ").concat(rect.y, "px)")
-    }
-  }));
+}
+var UserSelection = React.memo(function () {
+    var selectionPane = React.useRef(null);
+    var _a = React.useState(initialRect), rect = _a[0], setRect = _a[1];
+    var setSelection = useStoreActions$1(function (a) { return a.setSelection; });
+    var updateSelection = useStoreActions$1(function (a) { return a.updateSelection; });
+    var setNodesSelection = useStoreActions$1(function (a) { return a.setNodesSelection; });
+    React.useEffect(function () {
+        function onMouseDown(evt) {
+            var mousePos = getMousePosition(evt);
+            if (!mousePos) {
+                return false;
+            }
+            setRect(function (currentRect) { return (__assign(__assign({}, currentRect), { startX: mousePos.x, startY: mousePos.y, x: mousePos.x, y: mousePos.y, draw: true })); });
+            setSelection(true);
+        }
+        function onMouseMove(evt) {
+            setRect(function (currentRect) {
+                if (!currentRect.draw) {
+                    return currentRect;
+                }
+                var mousePos = getMousePosition(evt);
+                if (!mousePos) {
+                    return currentRect;
+                }
+                var negativeX = mousePos.x < currentRect.startX;
+                var negativeY = mousePos.y < currentRect.startY;
+                var nextRect = __assign(__assign({}, currentRect), { x: negativeX ? mousePos.x : currentRect.x, y: negativeY ? mousePos.y : currentRect.y, width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX, height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY });
+                updateSelection(nextRect);
+                return nextRect;
+            });
+        }
+        function onMouseUp() {
+            setRect(function (currentRect) {
+                setNodesSelection({ isActive: true, selection: currentRect });
+                setSelection(false);
+                return __assign(__assign({}, currentRect), { draw: false });
+            });
+        }
+        selectionPane.current.addEventListener('mousedown', onMouseDown);
+        selectionPane.current.addEventListener('mousemove', onMouseMove);
+        selectionPane.current.addEventListener('mouseup', onMouseUp);
+        return function () {
+            selectionPane.current.removeEventListener('mousedown', onMouseDown);
+            selectionPane.current.removeEventListener('mousemove', onMouseMove);
+            selectionPane.current.removeEventListener('mouseup', onMouseUp);
+        };
+    }, []);
+    return (React__default.createElement("div", { className: "react-flow__selectionpane", ref: selectionPane }, rect.draw && (React__default.createElement("div", { className: "react-flow__selection", style: {
+            width: rect.width,
+            height: rect.height,
+            transform: "translate(" + rect.x + "px, " + rect.y + "px)"
+        } }))));
 });
 
 var reactIs_development = createCommonjsModule(function (module, exports) {
@@ -9285,97 +9190,63 @@ reactDraggable.default = default_1;
 reactDraggable.DraggableCore = DraggableCore;
 
 function getStartPositions(elements) {
-  return elements.filter(isNode).reduce(function (res, node) {
-    var startPosition = {
-      x: node.__rg.position.x || node.position.x,
-      y: node.__rg.position.y || node.position.x
-    };
-    res[node.id] = startPosition;
-    return res;
-  }, {});
+    return elements
+        .filter(isNode)
+        .reduce(function (res, node) {
+        var startPosition = {
+            x: node.__rg.position.x || node.position.x,
+            y: node.__rg.position.y || node.position.x
+        };
+        res[node.id] = startPosition;
+        return res;
+    }, {});
 }
-
 var NodesSelection = React.memo(function () {
-  var _useState = React.useState({
-    x: 0,
-    y: 0
-  }),
-      _useState2 = _slicedToArray(_useState, 2),
-      offset = _useState2[0],
-      setOffset = _useState2[1];
-
-  var _useState3 = React.useState({}),
-      _useState4 = _slicedToArray(_useState3, 2),
-      startPositions = _useState4[0],
-      setStartPositions = _useState4[1];
-
-  var state = useStoreState$1(function (s) {
-    return {
-      transform: s.transform,
-      selectedNodesBbox: s.selectedNodesBbox,
-      selectedElements: s.selectedElements
+    var _a = React.useState({ x: 0, y: 0 }), offset = _a[0], setOffset = _a[1];
+    var _b = React.useState({}), startPositions = _b[0], setStartPositions = _b[1];
+    var state = useStoreState$1(function (s) { return ({
+        transform: s.transform,
+        selectedNodesBbox: s.selectedNodesBbox,
+        selectedElements: s.selectedElements
+    }); });
+    var updateNodePos = useStoreActions$1(function (a) { return a.updateNodePos; });
+    var _c = state.transform, x = _c[0], y = _c[1], k = _c[2];
+    var position = state.selectedNodesBbox;
+    var onStart = function (evt) {
+        var scaledClient = {
+            x: evt.clientX * (1 / k),
+            y: evt.clientY * (1 / k)
+        };
+        var offsetX = scaledClient.x - position.x - x;
+        var offsetY = scaledClient.y - position.y - y;
+        var startPositions = getStartPositions(state.selectedElements);
+        setOffset({ x: offsetX, y: offsetY });
+        setStartPositions(startPositions);
     };
-  });
-  var updateNodePos = useStoreActions$1(function (a) {
-    return a.updateNodePos;
-  });
-
-  var _state$transform = _slicedToArray(state.transform, 3),
-      x = _state$transform[0],
-      y = _state$transform[1],
-      k = _state$transform[2];
-
-  var position = state.selectedNodesBbox;
-
-  var onStart = function onStart(evt) {
-    var scaledClient = {
-      x: evt.clientX * (1 / k),
-      y: evt.clientY * (1 / k)
+    var onDrag = function (evt) {
+        var scaledClient = {
+            x: evt.clientX * (1 / k),
+            y: evt.clientY * (1 / k)
+        };
+        state.selectedElements
+            .filter(isNode)
+            .forEach(function (node) {
+            updateNodePos({ id: node.id, pos: {
+                    x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x,
+                    y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
+                } });
+        });
     };
-    var offsetX = scaledClient.x - position.x - x;
-    var offsetY = scaledClient.y - position.y - y;
-    var startPositions = getStartPositions(state.selectedElements);
-    setOffset({
-      x: offsetX,
-      y: offsetY
-    });
-    setStartPositions(startPositions);
-  };
-
-  var onDrag = function onDrag(evt) {
-    var scaledClient = {
-      x: evt.clientX * (1 / k),
-      y: evt.clientY * (1 / k)
-    };
-    state.selectedElements.filter(isNode).forEach(function (node) {
-      updateNodePos({
-        id: node.id,
-        pos: {
-          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x,
-          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
-        }
-      });
-    });
-  };
-
-  return React__default.createElement("div", {
-    className: "react-flow__nodesselection",
-    style: {
-      transform: "translate(".concat(x, "px,").concat(y, "px) scale(").concat(k, ")")
-    }
-  }, React__default.createElement(reactDraggable, {
-    scale: k,
-    onStart: onStart,
-    onDrag: onDrag
-  }, React__default.createElement("div", {
-    className: "react-flow__nodesselection-rect",
-    style: {
-      width: state.selectedNodesBbox.width,
-      height: state.selectedNodesBbox.height,
-      top: state.selectedNodesBbox.y,
-      left: state.selectedNodesBbox.x
-    }
-  })));
+    return (React__default.createElement("div", { className: "react-flow__nodesselection", style: {
+            transform: "translate(" + x + "px," + y + "px) scale(" + k + ")"
+        } },
+        React__default.createElement(reactDraggable, { scale: k, onStart: onStart, onDrag: onDrag },
+            React__default.createElement("div", { className: "react-flow__nodesselection-rect", style: {
+                    width: state.selectedNodesBbox.width,
+                    height: state.selectedNodesBbox.height,
+                    top: state.selectedNodesBbox.y,
+                    left: state.selectedNodesBbox.x
+                } }))));
 });
 
 var GridType;
@@ -9425,163 +9296,119 @@ var Grid = React.memo(function (_a) {
 });
 Grid.displayName = 'Grid';
 
-function useKeyPress(keyCode) {
-  var _useState = React.useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
-      keyPressed = _useState2[0],
-      setKeyPressed = _useState2[1];
-
-  function downHandler(evt) {
-    if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
-      setKeyPressed(true);
-    }
-  }
-
-  var upHandler = function upHandler(evt) {
-    if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
-      setKeyPressed(false);
-    }
-  };
-
-  React.useEffect(function () {
-    window.addEventListener('keydown', downHandler);
-    window.addEventListener('keyup', upHandler);
-    return function () {
-      window.removeEventListener('keydown', downHandler);
-      window.removeEventListener('keyup', upHandler);
-    };
-  }, []);
-  return keyPressed;
-}
-
-var d3ZoomInstance = zoom().scaleExtent([0.5, 2]).filter(function () {
-  return !event.button;
-});
-function useD3Zoom(zoomPane, onMove, shiftPressed) {
-  var state = useStoreState$1(function (s) {
-    return {
-      transform: s.transform,
-      d3Selection: s.d3Selection,
-      d3Zoom: s.d3Zoom,
-      edges: s.edged,
-      d3Initialised: s.d3Initialised,
-      nodesSelectionActive: s.nodesSelectionActive
-    };
-  });
-  var initD3 = useStoreActions$1(function (actions) {
-    return actions.initD3;
-  });
-  var updateTransform = useStoreActions$1(function (actions) {
-    return actions.updateTransform;
-  });
-  React.useEffect(function () {
-    var selection = select(zoomPane.current).call(d3ZoomInstance);
-    initD3({
-      zoom: d3ZoomInstance,
-      selection: selection
-    });
-  }, []);
-  React.useEffect(function () {
-    if (shiftPressed) {
-      d3ZoomInstance.on('zoom', null);
-    } else {
-      d3ZoomInstance.on('zoom', function () {
-        if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
-          return false;
+var useKeyPress = (function (keyCode) {
+    var _a = React.useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
+    function downHandler(evt) {
+        if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
+            setKeyPressed(true);
         }
-
-        updateTransform(event.transform);
-        onMove();
-      });
-
-      if (state.d3Selection) {
-        // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
-        var graphTransform = identity$1.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
-        state.d3Selection.call(state.d3Zoom.transform, graphTransform);
-      }
     }
-
-    return function () {
-      d3ZoomInstance.on('zoom', null);
+    var upHandler = function (evt) {
+        if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
+            setKeyPressed(false);
+        }
     };
-  }, [shiftPressed]);
-}
-
-var useGlobalKeyHandler = (function (_ref) {
-  var deleteKeyCode = _ref.deleteKeyCode,
-      onElementsRemove = _ref.onElementsRemove;
-  var state = useStoreState$1(function (s) {
-    return {
-      selectedElements: s.selectedElements,
-      edges: s.edges
-    };
-  });
-  var setNodesSelection = useStoreActions$1(function (a) {
-    return a.setNodesSelection;
-  });
-  var deleteKeyPressed = useKeyPress(deleteKeyCode);
-  React.useEffect(function () {
-    if (deleteKeyPressed && state.selectedElements.length) {
-      var elementsToRemove = state.selectedElements; // we also want to remove the edges if only one node is selected
-
-      if (state.selectedElements.length === 1 && !isEdge(state.selectedElements[0])) {
-        var connectedEdges = getConnectedEdges(state.selectedElements, state.edges);
-        elementsToRemove = [].concat(_toConsumableArray(state.selectedElements), _toConsumableArray(connectedEdges));
-      }
-
-      onElementsRemove(elementsToRemove);
-      setNodesSelection({
-        isActive: false
-      });
-    }
-  }, [deleteKeyPressed]);
-  return null;
+    React.useEffect(function () {
+        window.addEventListener('keydown', downHandler);
+        window.addEventListener('keyup', upHandler);
+        return function () {
+            window.removeEventListener('keydown', downHandler);
+            window.removeEventListener('keyup', upHandler);
+        };
+    }, []);
+    return keyPressed;
 });
 
-var useElementUpdater = function useElementUpdater(_ref) {
-  var elements = _ref.elements;
-  var state = useStoreState$1(function (s) {
-    return {
-      nodes: s.nodes,
-      edges: s.edges,
-      transform: s.transform
-    };
-  });
-  var setNodes = useStoreActions$1(function (a) {
-    return a.setNodes;
-  });
-  var setEdges = useStoreActions$1(function (a) {
-    return a.setEdges;
-  });
-  React.useEffect(function () {
-    var nodes = elements.filter(isNode);
-    var edges = elements.filter(isEdge).map(parseElement);
-    var nextNodes = nodes.map(function (propNode) {
-      var existingNode = state.nodes.find(function (n) {
-        return n.id === propNode.id;
-      });
+var d3ZoomInstance = zoom()
+    .scaleExtent([0.5, 2])
+    .filter(function () { return !event.button; });
+var useD3Zoom = (function (zoomPane, onMove, shiftPressed) {
+    var state = useStoreState$1(function (s) { return ({
+        transform: s.transform,
+        d3Selection: s.d3Selection,
+        d3Zoom: s.d3Zoom,
+    }); });
+    var initD3 = useStoreActions$1(function (actions) { return actions.initD3; });
+    var updateTransform = useStoreActions$1(function (actions) { return actions.updateTransform; });
+    React.useEffect(function () {
+        var selection = select(zoomPane.current).call(d3ZoomInstance);
+        initD3({ zoom: d3ZoomInstance, selection: selection });
+    }, []);
+    React.useEffect(function () {
+        if (shiftPressed) {
+            d3ZoomInstance.on('zoom', null);
+        }
+        else {
+            d3ZoomInstance.on('zoom', function () {
+                if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
+                    return false;
+                }
+                updateTransform(event.transform);
+                onMove();
+            });
+            if (state.d3Selection) {
+                // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
+                var graphTransform = identity$1
+                    .translate(state.transform[0], state.transform[1])
+                    .scale(state.transform[2]);
+                state.d3Selection.call(state.d3Zoom.transform, graphTransform);
+            }
+        }
+        return function () {
+            d3ZoomInstance.on('zoom', null);
+        };
+    }, [shiftPressed]);
+});
 
-      if (existingNode) {
-        var data = !fastDeepEqual(existingNode.data, propNode.data) ? _objectSpread2$1({}, existingNode.data, {}, propNode.data) : existingNode.data;
-        return _objectSpread2$1({}, existingNode, {
-          data: data
+var useGlobalKeyHandler = (function (_a) {
+    var deleteKeyCode = _a.deleteKeyCode, onElementsRemove = _a.onElementsRemove;
+    var state = useStoreState$1(function (s) { return ({ selectedElements: s.selectedElements, edges: s.edges }); });
+    var setNodesSelection = useStoreActions$1(function (a) { return a.setNodesSelection; });
+    var deleteKeyPressed = useKeyPress(deleteKeyCode);
+    React.useEffect(function () {
+        if (deleteKeyPressed && state.selectedElements.length) {
+            var elementsToRemove = state.selectedElements;
+            // we also want to remove the edges if only one node is selected
+            if (state.selectedElements.length === 1 && !isEdge(state.selectedElements[0])) {
+                var connectedEdges = getConnectedEdges(state.selectedElements, state.edges);
+                elementsToRemove = __spreadArrays(state.selectedElements, connectedEdges);
+            }
+            onElementsRemove(elementsToRemove);
+            setNodesSelection({ isActive: false });
+        }
+    }, [deleteKeyPressed]);
+    return null;
+});
+
+var useElementUpdater = function (elements) {
+    var state = useStoreState$1(function (s) { return ({
+        nodes: s.nodes,
+        edges: s.edges,
+        transform: s.transform
+    }); });
+    var setNodes = useStoreActions$1(function (a) { return a.setNodes; });
+    var setEdges = useStoreActions$1(function (a) { return a.setEdges; });
+    React.useEffect(function () {
+        var nodes = elements.filter(isNode);
+        var edges = elements.filter(isEdge).map(parseElement);
+        var nextNodes = nodes.map(function (propNode) {
+            var existingNode = state.nodes.find(function (n) { return n.id === propNode.id; });
+            if (existingNode) {
+                var data = !fastDeepEqual(existingNode.data, propNode.data) ? __assign(__assign({}, existingNode.data), propNode.data) : existingNode.data;
+                return __assign(__assign({}, existingNode), { data: data });
+            }
+            return parseElement(propNode, state.transform);
         });
-      }
-
-      return parseElement(propNode, state.transform);
+        var nodesChanged = !fastDeepEqual(state.nodes, nextNodes);
+        var edgesChanged = !fastDeepEqual(state.edges, edges);
+        if (nodesChanged) {
+            setNodes(nextNodes);
+        }
+        if (edgesChanged) {
+            setEdges(edges);
+        }
     });
-    var nodesChanged = !fastDeepEqual(state.nodes, nextNodes);
-    var edgesChanged = !fastDeepEqual(state.edges, edges);
-
-    if (nodesChanged) {
-      setNodes(nextNodes);
-    }
-
-    if (edgesChanged) {
-      setEdges(edges);
-    }
-  });
-  return null;
+    return null;
 };
 
 var GraphView = React.memo(function (_ref) {
@@ -9658,9 +9485,7 @@ var GraphView = React.memo(function (_ref) {
     onElementsRemove: onElementsRemove,
     deleteKeyCode: deleteKeyCode
   });
-  useElementUpdater({
-    elements: elements
-  });
+  useElementUpdater(elements);
   return React__default.createElement("div", {
     className: "react-flow__renderer",
     ref: rendererNode
@@ -9777,7 +9602,6 @@ BaseHandle.displayName = 'BaseHandle';
 var NodeIdContext = React.createContext(null);
 var Provider = NodeIdContext.Provider;
 var Consumer = NodeIdContext.Consumer;
-Provider.displayName = 'NodeIdProvider';
 
 var Handle = React.memo(function (_a) {
     var _b = _a.onConnect, onConnect = _b === void 0 ? function () { } : _b, _c = _a.type, type = _c === void 0 ? 'source' : _c, _d = _a.position, position = _d === void 0 ? 'top' : _d, _e = _a.isValidConnection, isValidConnection = _e === void 0 ? function () { return true; } : _e, rest = __rest(_a, ["onConnect", "type", "position", "isValidConnection"]);
@@ -9796,312 +9620,405 @@ var Handle = React.memo(function (_a) {
 Handle.displayName = 'Handle';
 
 var nodeStyles = {
-  background: '#ff6060',
-  padding: 10,
-  borderRadius: 5,
-  width: 150
+    background: '#ff6060',
+    padding: 10,
+    borderRadius: 5,
+    width: 150
 };
-var DefaultNode = (function (_ref) {
-  var data = _ref.data,
-      style = _ref.style;
-  return React__default.createElement("div", {
-    style: _objectSpread2$1({}, nodeStyles, {}, style)
-  }, React__default.createElement(Handle, {
-    type: "target",
-    position: "top"
-  }), data.label, React__default.createElement(Handle, {
-    type: "source",
-    position: "bottom"
-  }));
+var DefaultNode = (function (_a) {
+    var data = _a.data, style = _a.style;
+    return (React__default.createElement("div", { style: __assign(__assign({}, nodeStyles), style) },
+        React__default.createElement(Handle, { type: "target", position: "top" }),
+        data.label,
+        React__default.createElement(Handle, { type: "source", position: "bottom" })));
 });
 
 var nodeStyles$1 = {
-  background: '#9999ff',
-  padding: 10,
-  borderRadius: 5,
-  width: 150
+    background: '#9999ff',
+    padding: 10,
+    borderRadius: 5,
+    width: 150
 };
-var InputNode = (function (_ref) {
-  var data = _ref.data,
-      style = _ref.style;
-  return React__default.createElement("div", {
-    style: _objectSpread2$1({}, nodeStyles$1, {}, style)
-  }, data.label, React__default.createElement(Handle, {
-    type: "source",
-    position: "bottom"
-  }));
+var InputNode = (function (_a) {
+    var data = _a.data, style = _a.style;
+    return (React__default.createElement("div", { style: __assign(__assign({}, nodeStyles$1), style) },
+        data.label,
+        React__default.createElement(Handle, { type: "source", position: "bottom" })));
 });
 
 var nodeStyles$2 = {
-  background: '#55dd99',
-  padding: 10,
-  borderRadius: 5,
-  width: 150
+    background: '#55dd99',
+    padding: 10,
+    borderRadius: 5,
+    width: 150
 };
-var OutputNode = (function (_ref) {
-  var data = _ref.data,
-      style = _ref.style;
-  return React__default.createElement("div", {
-    style: _objectSpread2$1({}, nodeStyles$2, {}, style)
-  }, React__default.createElement(Handle, {
-    type: "target",
-    position: "top"
-  }), data.label);
+var OutputNode = (function (_a) {
+    var data = _a.data, style = _a.style;
+    return (React__default.createElement("div", { style: __assign(__assign({}, nodeStyles$2), style) },
+        React__default.createElement(Handle, { type: "target", position: "top" }),
+        data.label));
 });
 
-var isHandle = function isHandle(e) {
-  return e.target.className && e.target.className.includes && (e.target.className.includes('source') || e.target.className.includes('target'));
-};
-
-var hasResizeObserver = !!window.ResizeObserver;
-
-var getHandleBounds = function getHandleBounds(sel, nodeElement, parentBounds, k) {
-  var handles = nodeElement.querySelectorAll(sel);
-
-  if (!handles || !handles.length) {
-    return null;
-  }
-
-  return [].map.call(handles, function (handle) {
-    var bounds = handle.getBoundingClientRect();
-    var dimensions = getDimensions(handle);
-    var nodeIdAttr = handle.getAttribute('data-nodeid');
-    var handlePosition = handle.getAttribute('data-handlepos');
-    var nodeIdSplitted = nodeIdAttr.split('__');
-    var handleId = null;
-
-    if (nodeIdSplitted) {
-      handleId = nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted;
+var ContentRect_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var ContentRect = function (target) {
+    if ('getBBox' in target) {
+        var box = target.getBBox();
+        return Object.freeze({
+            height: box.height,
+            left: 0,
+            top: 0,
+            width: box.width,
+        });
     }
-
-    return _objectSpread2$1({
-      id: handleId,
-      position: handlePosition,
-      x: (bounds.x - parentBounds.x) * (1 / k),
-      y: (bounds.y - parentBounds.y) * (1 / k)
-    }, dimensions);
-  });
-};
-
-var _onStart = function onStart(evt, _ref) {
-  var setOffset = _ref.setOffset,
-      onClick = _ref.onClick,
-      id = _ref.id,
-      type = _ref.type,
-      data = _ref.data,
-      position = _ref.position,
-      transform = _ref.transform;
-
-  if (inInputDOMNode(evt) || isHandle(evt)) {
-    return false;
-  }
-
-  var scaledClient = {
-    x: evt.clientX * (1 / [transform[2]]),
-    y: evt.clientY * (1 / [transform[2]])
-  };
-  var offsetX = scaledClient.x - position.x - transform[0];
-  var offsetY = scaledClient.y - position.y - transform[1];
-  var node = {
-    id: id,
-    type: type,
-    position: position,
-    data: data
-  };
-  store.dispatch.setSelectedElements({
-    id: id,
-    type: type
-  });
-  setOffset({
-    x: offsetX,
-    y: offsetY
-  });
-  onClick(node);
-};
-
-var _onDrag = function onDrag(evt, _ref2) {
-  var setDragging = _ref2.setDragging,
-      id = _ref2.id,
-      offset = _ref2.offset,
-      transform = _ref2.transform;
-  var scaledClient = {
-    x: evt.clientX * (1 / transform[2]),
-    y: evt.clientY * (1 / transform[2])
-  };
-  setDragging(true);
-  store.dispatch.updateNodePos({
-    id: id,
-    pos: {
-      x: scaledClient.x - transform[0] - offset.x,
-      y: scaledClient.y - transform[1] - offset.y
+    else { // if (target instanceof HTMLElement) { // also includes all other non-SVGGraphicsElements
+        var styles = window.getComputedStyle(target);
+        return Object.freeze({
+            height: parseFloat(styles.height || '0'),
+            left: parseFloat(styles.paddingLeft || '0'),
+            top: parseFloat(styles.paddingTop || '0'),
+            width: parseFloat(styles.width || '0'),
+        });
     }
-  });
 };
+exports.ContentRect = ContentRect;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQ29udGVudFJlY3QuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvQ29udGVudFJlY3QudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFPQSxJQUFNLFdBQVcsR0FBRyxVQUFDLE1BQWU7SUFDaEMsSUFBSSxTQUFTLElBQUssTUFBNkIsRUFBRTtRQUM3QyxJQUFNLEdBQUcsR0FBSSxNQUE2QixDQUFDLE9BQU8sRUFBRSxDQUFDO1FBQ3JELE9BQU8sTUFBTSxDQUFDLE1BQU0sQ0FBQztZQUNqQixNQUFNLEVBQUUsR0FBRyxDQUFDLE1BQU07WUFDbEIsSUFBSSxFQUFFLENBQUM7WUFDUCxHQUFHLEVBQUUsQ0FBQztZQUNOLEtBQUssRUFBRSxHQUFHLENBQUMsS0FBSztTQUNuQixDQUFDLENBQUM7S0FDTjtTQUFNLEVBQUUsMEZBQTBGO1FBQy9GLElBQU0sTUFBTSxHQUFHLE1BQU0sQ0FBQyxnQkFBZ0IsQ0FBQyxNQUFNLENBQUMsQ0FBQztRQUMvQyxPQUFPLE1BQU0sQ0FBQyxNQUFNLENBQUM7WUFDakIsTUFBTSxFQUFFLFVBQVUsQ0FBQyxNQUFNLENBQUMsTUFBTSxJQUFJLEdBQUcsQ0FBQztZQUN4QyxJQUFJLEVBQUUsVUFBVSxDQUFDLE1BQU0sQ0FBQyxXQUFXLElBQUksR0FBRyxDQUFDO1lBQzNDLEdBQUcsRUFBRSxVQUFVLENBQUMsTUFBTSxDQUFDLFVBQVUsSUFBSSxHQUFHLENBQUM7WUFDekMsS0FBSyxFQUFFLFVBQVUsQ0FBQyxNQUFNLENBQUMsS0FBSyxJQUFJLEdBQUcsQ0FBQztTQUN6QyxDQUFDLENBQUM7S0FDTjtBQUNMLENBQUMsQ0FBQztBQUVPLGtDQUFXIn0=
+});
 
-var _onStop = function onStop(_ref3) {
-  var onNodeDragStop = _ref3.onNodeDragStop,
-      setDragging = _ref3.setDragging,
-      isDragging = _ref3.isDragging,
-      id = _ref3.id,
-      type = _ref3.type,
-      position = _ref3.position,
-      data = _ref3.data;
+unwrapExports(ContentRect_1);
+var ContentRect_2 = ContentRect_1.ContentRect;
 
-  if (!isDragging) {
-    return false;
-  }
+var ResizeObservation_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
 
-  setDragging(false);
-  onNodeDragStop({
-    id: id,
-    type: type,
-    position: position,
-    data: data
-  });
-};
-
-var wrapNode = (function (NodeComponent) {
-  var NodeWrapper = React.memo(function (props) {
-    var nodeElement = React.useRef(null);
-
-    var _useState = React.useState({
-      x: 0,
-      y: 0
-    }),
-        _useState2 = _slicedToArray(_useState, 2),
-        offset = _useState2[0],
-        setOffset = _useState2[1];
-
-    var _useState3 = React.useState(false),
-        _useState4 = _slicedToArray(_useState3, 2),
-        isDragging = _useState4[0],
-        setDragging = _useState4[1];
-
-    var id = props.id,
-        type = props.type,
-        data = props.data,
-        transform = props.transform,
-        xPos = props.xPos,
-        yPos = props.yPos,
-        selected = props.selected,
-        onClick = props.onClick,
-        onNodeDragStop = props.onNodeDragStop,
-        style = props.style;
-    var position = {
-      x: xPos,
-      y: yPos
-    };
-    var nodeClasses = classnames('react-flow__node', {
-      selected: selected
+var ResizeObservation = /** @class */ (function () {
+    function ResizeObservation(target) {
+        this.target = target;
+        this.$$broadcastWidth = this.$$broadcastHeight = 0;
+    }
+    Object.defineProperty(ResizeObservation.prototype, "broadcastWidth", {
+        get: function () {
+            return this.$$broadcastWidth;
+        },
+        enumerable: true,
+        configurable: true
     });
-    var nodeStyle = {
-      zIndex: selected ? 10 : 3,
-      transform: "translate(".concat(xPos, "px,").concat(yPos, "px)")
+    Object.defineProperty(ResizeObservation.prototype, "broadcastHeight", {
+        get: function () {
+            return this.$$broadcastHeight;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ResizeObservation.prototype.isActive = function () {
+        var cr = ContentRect_1.ContentRect(this.target);
+        return !!cr
+            && (cr.width !== this.broadcastWidth
+                || cr.height !== this.broadcastHeight);
     };
+    return ResizeObservation;
+}());
+exports.ResizeObservation = ResizeObservation;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmVzaXplT2JzZXJ2YXRpb24uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvUmVzaXplT2JzZXJ2YXRpb24udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSw2Q0FBNEM7QUFFNUM7SUFlSSwyQkFBWSxNQUFlO1FBQ3ZCLElBQUksQ0FBQyxNQUFNLEdBQUcsTUFBTSxDQUFDO1FBQ3JCLElBQUksQ0FBQyxnQkFBZ0IsR0FBRyxJQUFJLENBQUMsaUJBQWlCLEdBQUcsQ0FBQyxDQUFDO0lBQ3ZELENBQUM7SUFWRCxzQkFBVyw2Q0FBYzthQUF6QjtZQUNJLE9BQU8sSUFBSSxDQUFDLGdCQUFnQixDQUFDO1FBQ2pDLENBQUM7OztPQUFBO0lBQ0Qsc0JBQVcsOENBQWU7YUFBMUI7WUFDSSxPQUFPLElBQUksQ0FBQyxpQkFBaUIsQ0FBQztRQUNsQyxDQUFDOzs7T0FBQTtJQU9NLG9DQUFRLEdBQWY7UUFDSSxJQUFNLEVBQUUsR0FBRyx5QkFBVyxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsQ0FBQztRQUVwQyxPQUFPLENBQUMsQ0FBQyxFQUFFO2VBQ0osQ0FDQyxFQUFFLENBQUMsS0FBSyxLQUFLLElBQUksQ0FBQyxjQUFjO21CQUM3QixFQUFFLENBQUMsTUFBTSxLQUFLLElBQUksQ0FBQyxlQUFlLENBQ3hDLENBQUM7SUFDVixDQUFDO0lBQ0wsd0JBQUM7QUFBRCxDQUFDLEFBN0JELElBNkJDO0FBRVEsOENBQWlCIn0=
+});
 
-    var updateNode = function updateNode() {
-      var storeState = store.getState();
-      var bounds = nodeElement.current.getBoundingClientRect();
-      var dimensions = getDimensions(nodeElement.current);
-      var handleBounds = {
-        source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
-        target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2])
-      };
-      store.dispatch.updateNodeData(_objectSpread2$1({
-        id: id
-      }, dimensions, {
-        handleBounds: handleBounds
-      }));
-    };
+unwrapExports(ResizeObservation_1);
+var ResizeObservation_2 = ResizeObservation_1.ResizeObservation;
 
-    React.useEffect(function () {
-      updateNode();
-      var resizeObserver = null;
+var ResizeObserverEntry_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
 
-      if (hasResizeObserver) {
-        resizeObserver = new ResizeObserver(function (entries) {
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+var ResizeObserverEntry = /** @class */ (function () {
+    function ResizeObserverEntry(target) {
+        this.target = target;
+        this.contentRect = ContentRect_1.ContentRect(target);
+    }
+    return ResizeObserverEntry;
+}());
+exports.ResizeObserverEntry = ResizeObserverEntry;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmVzaXplT2JzZXJ2ZXJFbnRyeS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9SZXNpemVPYnNlcnZlckVudHJ5LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsNkNBQTRDO0FBRTVDO0lBR0ksNkJBQVksTUFBZTtRQUN2QixJQUFJLENBQUMsTUFBTSxHQUFHLE1BQU0sQ0FBQztRQUNyQixJQUFJLENBQUMsV0FBVyxHQUFHLHlCQUFXLENBQUMsTUFBTSxDQUFDLENBQUM7SUFDM0MsQ0FBQztJQUNMLDBCQUFDO0FBQUQsQ0FBQyxBQVBELElBT0M7QUFFUSxrREFBbUIifQ==
+});
 
-          try {
-            for (var _iterator = entries[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var entry = _step.value;
-              updateNode();
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-                _iterator["return"]();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
-          }
-        });
-        resizeObserver.observe(nodeElement.current);
-      }
+unwrapExports(ResizeObserverEntry_1);
+var ResizeObserverEntry_2 = ResizeObserverEntry_1.ResizeObserverEntry;
 
-      return function () {
-        if (hasResizeObserver && resizeObserver) {
-          resizeObserver.unobserve(nodeElement.current);
+var ResizeObserver_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+
+
+var resizeObservers = [];
+var ResizeObserver = /** @class */ (function () {
+    function ResizeObserver(callback) {
+        /** @internal */
+        this.$$observationTargets = [];
+        /** @internal */
+        this.$$activeTargets = [];
+        /** @internal */
+        this.$$skippedTargets = [];
+        var message = callbackGuard(callback);
+        if (message) {
+            throw TypeError(message);
         }
-      };
-    }, []);
-    return React__default.createElement(reactDraggable.DraggableCore, {
-      onStart: function onStart(evt) {
-        return _onStart(evt, {
-          onClick: onClick,
-          id: id,
-          type: type,
-          data: data,
-          setOffset: setOffset,
-          transform: transform,
-          position: position
+        this.$$callback = callback;
+        resizeObservers.push(this);
+    }
+    ResizeObserver.prototype.observe = function (target) {
+        var message = targetGuard('observe', target);
+        if (message) {
+            throw TypeError(message);
+        }
+        var index = findTargetIndex(this.$$observationTargets, target);
+        if (index > 0) {
+            return;
+        }
+        this.$$observationTargets.push(new ResizeObservation_1.ResizeObservation(target));
+        startLoop();
+    };
+    ResizeObserver.prototype.unobserve = function (target) {
+        var message = targetGuard('unobserve', target);
+        if (message) {
+            throw TypeError(message);
+        }
+        var index = findTargetIndex(this.$$observationTargets, target);
+        if (index < 0) {
+            return;
+        }
+        this.$$observationTargets.splice(index, 1);
+        checkStopLoop();
+    };
+    ResizeObserver.prototype.disconnect = function () {
+        this.$$observationTargets = [];
+        this.$$activeTargets = [];
+    };
+    return ResizeObserver;
+}());
+exports.ResizeObserver = ResizeObserver;
+function callbackGuard(callback) {
+    if (typeof (callback) === 'undefined') {
+        return "Failed to construct 'ResizeObserver': 1 argument required, but only 0 present.";
+    }
+    if (typeof (callback) !== 'function') {
+        return "Failed to construct 'ResizeObserver': The callback provided as parameter 1 is not a function.";
+    }
+}
+function targetGuard(functionName, target) {
+    if (typeof (target) === 'undefined') {
+        return "Failed to execute '" + functionName + "' on 'ResizeObserver': 1 argument required, but only 0 present.";
+    }
+    if (!(target instanceof window.Element)) {
+        return "Failed to execute '" + functionName + "' on 'ResizeObserver': parameter 1 is not of type 'Element'.";
+    }
+}
+function findTargetIndex(collection, target) {
+    for (var index = 0; index < collection.length; index += 1) {
+        if (collection[index].target === target) {
+            return index;
+        }
+    }
+    return -1;
+}
+var gatherActiveObservationsAtDepth = function (depth) {
+    resizeObservers.forEach(function (ro) {
+        ro.$$activeTargets = [];
+        ro.$$skippedTargets = [];
+        ro.$$observationTargets.forEach(function (ot) {
+            if (ot.isActive()) {
+                var targetDepth = calculateDepthForNode(ot.target);
+                if (targetDepth > depth) {
+                    ro.$$activeTargets.push(ot);
+                }
+                else {
+                    ro.$$skippedTargets.push(ot);
+                }
+            }
         });
-      },
-      onDrag: function onDrag(evt) {
-        return _onDrag(evt, {
-          setDragging: setDragging,
-          id: id,
-          offset: offset,
-          transform: transform
+    });
+};
+var hasActiveObservations = function () {
+    return resizeObservers.some(function (ro) { return !!ro.$$activeTargets.length; });
+};
+var hasSkippedObservations = function () {
+    return resizeObservers.some(function (ro) { return !!ro.$$skippedTargets.length; });
+};
+var broadcastActiveObservations = function () {
+    var shallowestTargetDepth = Infinity;
+    resizeObservers.forEach(function (ro) {
+        if (!ro.$$activeTargets.length) {
+            return;
+        }
+        var entries = [];
+        ro.$$activeTargets.forEach(function (obs) {
+            var entry = new ResizeObserverEntry_1.ResizeObserverEntry(obs.target);
+            entries.push(entry);
+            obs.$$broadcastWidth = entry.contentRect.width;
+            obs.$$broadcastHeight = entry.contentRect.height;
+            var targetDepth = calculateDepthForNode(obs.target);
+            if (targetDepth < shallowestTargetDepth) {
+                shallowestTargetDepth = targetDepth;
+            }
         });
-      },
-      onStop: function onStop() {
-        return _onStop({
-          onNodeDragStop: onNodeDragStop,
-          isDragging: isDragging,
-          setDragging: setDragging,
-          id: id,
-          type: type,
-          position: position,
-          data: data
+        ro.$$callback(entries, ro);
+        ro.$$activeTargets = [];
+    });
+    return shallowestTargetDepth;
+};
+var deliverResizeLoopErrorNotification = function () {
+    var errorEvent = new window.ErrorEvent('ResizeLoopError', {
+        message: 'ResizeObserver loop completed with undelivered notifications.',
+    });
+    window.dispatchEvent(errorEvent);
+};
+var calculateDepthForNode = function (target) {
+    var depth = 0;
+    while (target.parentNode) {
+        target = target.parentNode;
+        depth += 1;
+    }
+    return depth;
+};
+var notificationIteration = function () {
+    var depth = 0;
+    gatherActiveObservationsAtDepth(depth);
+    while (hasActiveObservations()) {
+        depth = broadcastActiveObservations();
+        gatherActiveObservationsAtDepth(depth);
+    }
+    if (hasSkippedObservations()) {
+        deliverResizeLoopErrorNotification();
+    }
+};
+var animationFrameCancelToken;
+var startLoop = function () {
+    if (animationFrameCancelToken)
+        return;
+    runLoop();
+};
+var runLoop = function () {
+    animationFrameCancelToken = window.requestAnimationFrame(function () {
+        notificationIteration();
+        runLoop();
+    });
+};
+var checkStopLoop = function () {
+    if (animationFrameCancelToken && !resizeObservers.some(function (ro) { return !!ro.$$observationTargets.length; })) {
+        window.cancelAnimationFrame(animationFrameCancelToken);
+        animationFrameCancelToken = undefined;
+    }
+};
+var install = function () {
+    return window.ResizeObserver = ResizeObserver;
+};
+exports.install = install;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmVzaXplT2JzZXJ2ZXIuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvUmVzaXplT2JzZXJ2ZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSx5REFBd0Q7QUFFeEQsNkRBQTREO0FBRTVELElBQU0sZUFBZSxHQUFHLEVBQXNCLENBQUM7QUFFL0M7SUFVSSx3QkFBWSxRQUFnQztRQVA1QyxnQkFBZ0I7UUFDVCx5QkFBb0IsR0FBRyxFQUF5QixDQUFDO1FBQ3hELGdCQUFnQjtRQUNULG9CQUFlLEdBQUcsRUFBeUIsQ0FBQztRQUNuRCxnQkFBZ0I7UUFDVCxxQkFBZ0IsR0FBRyxFQUF5QixDQUFDO1FBR2hELElBQU0sT0FBTyxHQUFHLGFBQWEsQ0FBQyxRQUFRLENBQUMsQ0FBQztRQUN4QyxJQUFJLE9BQU8sRUFBRTtZQUNULE1BQU0sU0FBUyxDQUFDLE9BQU8sQ0FBQyxDQUFDO1NBQzVCO1FBQ0QsSUFBSSxDQUFDLFVBQVUsR0FBRyxRQUFRLENBQUM7UUFDM0IsZUFBZSxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsQ0FBQztJQUMvQixDQUFDO0lBRU0sZ0NBQU8sR0FBZCxVQUFlLE1BQWU7UUFDMUIsSUFBTSxPQUFPLEdBQUcsV0FBVyxDQUFDLFNBQVMsRUFBRSxNQUFNLENBQUMsQ0FBQztRQUMvQyxJQUFJLE9BQU8sRUFBRTtZQUNULE1BQU0sU0FBUyxDQUFDLE9BQU8sQ0FBQyxDQUFDO1NBQzVCO1FBQ0QsSUFBTSxLQUFLLEdBQUcsZUFBZSxDQUFDLElBQUksQ0FBQyxvQkFBb0IsRUFBRSxNQUFNLENBQUMsQ0FBQztRQUNqRSxJQUFJLEtBQUssR0FBRyxDQUFDLEVBQUU7WUFDWCxPQUFPO1NBQ1Y7UUFDRCxJQUFJLENBQUMsb0JBQW9CLENBQUMsSUFBSSxDQUFDLElBQUkscUNBQWlCLENBQUMsTUFBTSxDQUFDLENBQUMsQ0FBQztRQUM5RCxTQUFTLEVBQUUsQ0FBQztJQUNoQixDQUFDO0lBRU0sa0NBQVMsR0FBaEIsVUFB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
+});
+
+unwrapExports(ResizeObserver_1);
+var ResizeObserver_2 = ResizeObserver_1.ResizeObserver;
+var ResizeObserver_3 = ResizeObserver_1.install;
+
+var isHandle = function (e) { return (e.target.className &&
+    e.target.className.includes &&
+    (e.target.className.includes('source') || e.target.className.includes('target'))); };
+var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
+    var handles = nodeElement.querySelectorAll(selector);
+    if (!handles || !handles.length) {
+        return null;
+    }
+    return [].map.call(handles, function (handle) {
+        var bounds = handle.getBoundingClientRect();
+        var dimensions = getDimensions(handle);
+        var nodeIdAttr = handle.getAttribute('data-nodeid');
+        var handlePosition = handle.getAttribute('data-handlepos');
+        var nodeIdSplitted = nodeIdAttr.split('__');
+        var handleId = null;
+        if (nodeIdSplitted) {
+            handleId = nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted;
+        }
+        return __assign({ id: handleId, position: handlePosition, x: (bounds.x - parentBounds.x) * (1 / k), y: (bounds.y - parentBounds.y) * (1 / k) }, dimensions);
+    });
+};
+var onStart = function (evt, _a) {
+    var setOffset = _a.setOffset, onClick = _a.onClick, id = _a.id, type = _a.type, data = _a.data, position = _a.position, transform = _a.transform;
+    if (!inInputDOMNode(evt) && !isHandle(evt)) {
+        var scaledClient = {
+            x: evt.clientX * (1 / transform[2]),
+            y: evt.clientY * (1 / transform[2])
+        };
+        var offsetX = scaledClient.x - position.x - transform[0];
+        var offsetY = scaledClient.y - position.y - transform[1];
+        var node = { id: id, type: type, position: position, data: data };
+        store.dispatch.setSelectedElements({ id: id, type: type });
+        setOffset({ x: offsetX, y: offsetY });
+        onClick(node);
+    }
+};
+var onDrag = function (evt, _a) {
+    var setDragging = _a.setDragging, id = _a.id, offset = _a.offset, transform = _a.transform;
+    var scaledClient = {
+        x: evt.clientX * (1 / transform[2]),
+        y: evt.clientY * (1 / transform[2])
+    };
+    setDragging(true);
+    store.dispatch.updateNodePos({ id: id, pos: {
+            x: scaledClient.x - transform[0] - offset.x,
+            y: scaledClient.y - transform[1] - offset.y
+        } });
+};
+var onStop = function (_a) {
+    var onNodeDragStop = _a.onNodeDragStop, setDragging = _a.setDragging, isDragging = _a.isDragging, id = _a.id, type = _a.type, position = _a.position, data = _a.data;
+    if (isDragging) {
+        setDragging(false);
+        onNodeDragStop({
+            id: id, type: type, position: position, data: data
         });
-      },
-      scale: transform[2]
-    }, React__default.createElement("div", {
-      className: nodeClasses,
-      ref: nodeElement,
-      style: nodeStyle
-    }, React__default.createElement(Provider, {
-      value: id
-    }, React__default.createElement(NodeComponent, {
-      id: id,
-      data: data,
-      type: type,
-      style: style,
-      selected: selected
-    }))));
-  });
-  NodeWrapper.displayName = 'NodeWrapper';
-  NodeWrapper.whyDidYouRender = false;
-  return NodeWrapper;
+    }
+};
+var wrapNode = (function (NodeComponent) {
+    var NodeWrapper = React.memo(function (_a) {
+        var id = _a.id, type = _a.type, data = _a.data, transform = _a.transform, xPos = _a.xPos, yPos = _a.yPos, selected = _a.selected, onClick = _a.onClick, onNodeDragStop = _a.onNodeDragStop, style = _a.style;
+        var nodeElement = React.useRef(null);
+        var _b = React.useState({ x: 0, y: 0 }), offset = _b[0], setOffset = _b[1];
+        var _c = React.useState(false), isDragging = _c[0], setDragging = _c[1];
+        var position = { x: xPos, y: yPos };
+        var nodeClasses = classnames('react-flow__node', { selected: selected });
+        var nodeStyle = { zIndex: selected ? 10 : 3, transform: "translate(" + xPos + "px," + yPos + "px)" };
+        var updateNode = function () {
+            if (!nodeElement.current) {
+                return false;
+            }
+            var storeState = store.getState();
+            var bounds = nodeElement.current.getBoundingClientRect();
+            var dimensions = getDimensions(nodeElement.current);
+            var handleBounds = {
+                source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
+                target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2])
+            };
+            store.dispatch.updateNodeData(__assign(__assign({ id: id }, dimensions), { handleBounds: handleBounds }));
+        };
+        React.useEffect(function () {
+            if (nodeElement.current) {
+                updateNode();
+                var resizeObserver_1 = new ResizeObserver_2(function (entries) {
+                    for (var _i = 0, entries_1 = entries; _i < entries_1.length; _i++) {
+                        var _ = entries_1[_i];
+                        updateNode();
+                    }
+                });
+                resizeObserver_1.observe(nodeElement.current);
+                return function () {
+                    if (resizeObserver_1 && nodeElement.current) {
+                        resizeObserver_1.unobserve(nodeElement.current);
+                    }
+                };
+            }
+        }, [nodeElement.current]);
+        return (React__default.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, { onClick: onClick, id: id, type: type, data: data, setOffset: setOffset, transform: transform, position: position }); }, onDrag: function (evt) { return onDrag(evt, { setDragging: setDragging, id: id, offset: offset, transform: transform }); }, onStop: function () { return onStop({ onNodeDragStop: onNodeDragStop, isDragging: isDragging, setDragging: setDragging, id: id, type: type, position: position, data: data }); }, scale: transform[2] },
+            React__default.createElement("div", { className: nodeClasses, ref: nodeElement, style: nodeStyle },
+                React__default.createElement(Provider, { value: id },
+                    React__default.createElement(NodeComponent, { id: id, data: data, type: type, style: style, selected: selected })))));
+    });
+    NodeWrapper.displayName = 'NodeWrapper';
+    return NodeWrapper;
 });
 
 function createNodeTypes(nodeTypes) {
@@ -10251,71 +10168,46 @@ ReactFlow.defaultProps = {
 };
 
 var baseStyle = {
-  position: 'absolute',
-  zIndex: 5,
-  bottom: 10,
-  right: 10,
-  width: 200
+    position: 'absolute',
+    zIndex: 5,
+    bottom: 10,
+    right: 10,
+    width: 200
 };
-var index = (function (_ref) {
-  var _ref$style = _ref.style,
-      style = _ref$style === void 0 ? {} : _ref$style,
-      className = _ref.className,
-      _ref$bgColor = _ref.bgColor,
-      bgColor = _ref$bgColor === void 0 ? '#f8f8f8' : _ref$bgColor,
-      _ref$nodeColor = _ref.nodeColor,
-      nodeColor = _ref$nodeColor === void 0 ? '#ddd' : _ref$nodeColor;
-  var canvasNode = React.useRef(null);
-  var state = useStoreState$1(function (s) {
-    return {
-      width: s.width,
-      height: s.height,
-      nodes: s.nodes,
-      transform: s.transform
-    };
-  });
-  var mapClasses = classnames('react-flow__minimap', className);
-  var nodePositions = state.nodes.map(function (n) {
-    return n.__rg.position;
-  });
-  var width = style.width || baseStyle.width;
-  var height = state.height / (state.width || 1) * width;
-  var bbox = {
-    x: 0,
-    y: 0,
-    width: state.width,
-    height: state.height
-  };
-  var scaleFactor = width / state.width;
-  var nodeColorFunc = isFunction(nodeColor) ? nodeColor : function () {
-    return nodeColor;
-  };
-  React.useEffect(function () {
-    if (canvasNode) {
-      var ctx = canvasNode.current.getContext('2d');
-      var nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, width, height);
-      nodesInside.forEach(function (n) {
-        var pos = n.__rg.position;
-        var transformX = state.transform[0];
-        var transformY = state.transform[1];
-        var x = pos.x * state.transform[2] + transformX;
-        var y = pos.y * state.transform[2] + transformY;
-        ctx.fillStyle = nodeColorFunc(n);
-        ctx.fillRect(x * scaleFactor, y * scaleFactor, n.__rg.width * scaleFactor * state.transform[2], n.__rg.height * scaleFactor * state.transform[2]);
-      });
-    }
-  }, [nodePositions, state.transform, height]);
-  return React__default.createElement("canvas", {
-    style: _objectSpread2$1({}, baseStyle, {}, style, {
-      height: height
-    }),
-    width: width,
-    height: height,
-    className: mapClasses,
-    ref: canvasNode
-  });
+var index = (function (_a) {
+    var _b = _a.style, style = _b === void 0 ? {} : _b, className = _a.className, _c = _a.bgColor, bgColor = _c === void 0 ? '#f8f8f8' : _c, _d = _a.nodeColor, nodeColor = _d === void 0 ? '#ddd' : _d;
+    var canvasNode = React.useRef(null);
+    var state = useStoreState$1(function (s) { return ({
+        width: s.width,
+        height: s.height,
+        nodes: s.nodes,
+        transform: s.transform,
+    }); });
+    var mapClasses = classnames('react-flow__minimap', className);
+    var nodePositions = state.nodes.map(function (n) { return n.__rg.position; });
+    var width = +(style.width || baseStyle.width || 0);
+    var height = (state.height / (state.width || 1)) * width;
+    var bbox = { x: 0, y: 0, width: state.width, height: state.height };
+    var scaleFactor = width / state.width;
+    var nodeColorFunc = (isFunction(nodeColor) ? nodeColor : function () { return nodeColor; });
+    React.useEffect(function () {
+        if (canvasNode && canvasNode.current) {
+            var ctx_1 = canvasNode.current.getContext('2d');
+            var nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
+            ctx_1.fillStyle = bgColor;
+            ctx_1.fillRect(0, 0, width, height);
+            nodesInside.forEach(function (n) {
+                var pos = n.__rg.position;
+                var transformX = state.transform[0];
+                var transformY = state.transform[1];
+                var x = (pos.x * state.transform[2]) + transformX;
+                var y = (pos.y * state.transform[2]) + transformY;
+                ctx_1.fillStyle = nodeColorFunc(n);
+                ctx_1.fillRect((x * scaleFactor), (y * scaleFactor), n.__rg.width * scaleFactor * state.transform[2], n.__rg.height * scaleFactor * state.transform[2]);
+            });
+        }
+    }, [canvasNode.current, nodePositions, state.transform, height]);
+    return (React__default.createElement("canvas", { style: __assign(__assign(__assign({}, baseStyle), style), { height: height }), width: width, height: height, className: mapClasses, ref: canvasNode }));
 });
 
 function _extends$1() { _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1.apply(this, arguments); }
@@ -10361,28 +10253,21 @@ var SvgFitview = function SvgFitview(props) {
 };
 
 var baseStyle$1 = {
-  position: 'absolute',
-  zIndex: 5,
-  bottom: 10,
-  left: 10
+    position: 'absolute',
+    zIndex: 5,
+    bottom: 10,
+    left: 10,
 };
-var index$1 = (function (_ref) {
-  var style = _ref.style,
-      className = _ref.className;
-  var mapClasses = classnames('react-flow__controls', className);
-  return React__default.createElement("div", {
-    className: mapClasses,
-    style: _objectSpread2$1({}, baseStyle$1, {}, style)
-  }, React__default.createElement("div", {
-    className: "react-flow__controls-button react-flow__controls-zoomin",
-    onClick: zoomIn
-  }, React__default.createElement(SvgPlus, null)), React__default.createElement("div", {
-    className: "react-flow__controls-button  react-flow__controls-zoomout",
-    onClick: zoomOut
-  }, React__default.createElement(SvgMinus, null)), React__default.createElement("div", {
-    className: "react-flow__controls-button  react-flow__controls-fitview",
-    onClick: fitView
-  }, React__default.createElement(SvgFitview, null)));
+var index$1 = (function (_a) {
+    var style = _a.style, className = _a.className;
+    var mapClasses = classnames('react-flow__controls', className);
+    return (React__default.createElement("div", { className: mapClasses, style: __assign(__assign({}, baseStyle$1), style) },
+        React__default.createElement("div", { className: "react-flow__controls-button react-flow__controls-zoomin", onClick: zoomIn },
+            React__default.createElement(SvgPlus, null)),
+        React__default.createElement("div", { className: "react-flow__controls-button  react-flow__controls-zoomout", onClick: zoomOut },
+            React__default.createElement(SvgMinus, null)),
+        React__default.createElement("div", { className: "react-flow__controls-button  react-flow__controls-fitview", onClick: fitView },
+            React__default.createElement(SvgFitview, null))));
 });
 
 exports.Controls = index$1;

@@ -9,15 +9,15 @@ import { HandleType, ElementId, Position } from '../../types';
 interface HandleProps {
   type: HandleType,
   position: Position,
-  onConnect: (any) => void,
-  isValidConnection: () => boolean
+  onConnect?: (any) => void,
+  isValidConnection?: () => boolean
 };
 
 const Handle = memo(({
   onConnect = () => {}, type = 'source', position = 'top', isValidConnection = () => true,
   ...rest
 }: HandleProps) => {
-  const nodeId: ElementId = useContext(NodeIdContext);
+  const nodeId = useContext(NodeIdContext) as ElementId;
   const { setPosition, setSourceId } = useStoreActions(a => ({
     setPosition: a.setConnectionPosition,
     setSourceId: a.setConnectionSourceId

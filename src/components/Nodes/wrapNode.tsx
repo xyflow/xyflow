@@ -1,21 +1,34 @@
-import React, { useEffect, useRef, useState, memo } from 'react';
-import ReactDraggable from 'react-draggable';
+import React, { useEffect, useRef, useState, memo, CSSProperties } from 'react';
+import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
+import { ResizeObserver } from 'resize-observer';
 
 import { getDimensions, inInputDOMNode } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
-import store from '../../store/index.ts';
+import store from '../../store';
+import { ElementId, Transform } from '../../types';
 
-const isHandle = e => (
+interface NodeComponentProps {
+  id: ElementId,
+  type: string;
+  data: any;
+  transform: Transform;
+  xPos: number;
+  yPos: number;
+  selected: boolean;
+  onClick: () => any;
+  onNodeDragStop: () => any;
+  style: CSSProperties;
+}
+
+const isHandle = (e) => (
   e.target.className &&
   e.target.className.includes &&
   (e.target.className.includes('source') || e.target.className.includes('target'))
 );
 
-const hasResizeObserver = !!window.ResizeObserver;
-
-const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
-  const handles = nodeElement.querySelectorAll(sel);
+const getHandleBounds = (selector: string, nodeElement: any, parentBounds: any, k: number) => {
+  const handles = nodeElement.querySelectorAll(selector);
 
   if (!handles || !handles.length) {
     return null;
@@ -44,25 +57,23 @@ const getHandleBounds = (sel, nodeElement, parentBounds, k) => {
   });
 };
 
-const onStart = (evt, { setOffset, onClick, id, type, data, position, transform }) => {
-  if (inInputDOMNode(evt) || isHandle(evt)) {
-    return false;
+const onStart = (evt, { setOffset, onClick, id, type, data, position, transform }): void => {
+  if (!inInputDOMNode(evt) && !isHandle(evt)) {
+    const scaledClient = {
+      x: evt.clientX * (1 / transform[2]),
+      y: evt.clientY * (1 / transform[2])
+    };
+    const offsetX = scaledClient.x - position.x - transform[0];
+    const offsetY = scaledClient.y - position.y - transform[1];
+    const node = { id, type, position, data };
+
+    store.dispatch.setSelectedElements({ id, type });
+    setOffset({ x: offsetX, y: offsetY });
+    onClick(node);
   }
-
-  const scaledClient = {
-    x: evt.clientX * (1 / [transform[2]]),
-    y: evt.clientY * (1 / [transform[2]])
-  };
-  const offsetX = scaledClient.x - position.x - transform[0];
-  const offsetY = scaledClient.y - position.y - transform[1];
-  const node = { id, type, position, data };
-
-  store.dispatch.setSelectedElements({ id, type });
-  setOffset({ x: offsetX, y: offsetY });
-  onClick(node);
 };
 
-const onDrag = (evt, { setDragging, id, offset, transform }) => {
+const onDrag = (evt, { setDragging, id, offset, transform }): void => {
   const scaledClient = {
     x: evt.clientX * (1 / transform[2]),
     y: evt.clientY * (1 / transform[2])
@@ -75,32 +86,34 @@ const onDrag = (evt, { setDragging, id, offset, transform }) => {
   }});
 };
 
-const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, data }) => {
-  if (!isDragging) {
-    return false;
+const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, data }): void => {
+  if (isDragging) {
+    setDragging(false);
+    onNodeDragStop({
+      id, type, position, data
+    });
   }
-
-  setDragging(false);
-  onNodeDragStop({
-    id, type, position, data
-  });
 };
 
 export default NodeComponent => {
-  const NodeWrapper = memo((props) => {
-    const nodeElement = useRef(null);
+  const NodeWrapper = memo(({
+    id, type, data, transform,
+    xPos, yPos, selected, onClick,
+    onNodeDragStop, style
+  }: NodeComponentProps) => {
+    const nodeElement = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setDragging] = useState(false);
-    const {
-      id, type, data, transform, xPos, yPos, selected,
-      onClick, onNodeDragStop, style
-    } = props;
 
     const position = { x: xPos, y: yPos };
     const nodeClasses = cx('react-flow__node', { selected });
     const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
     const updateNode = () => {
+      if (!nodeElement.current) {
+        return false;
+      }
+
       const storeState = store.getState()
       const bounds = nodeElement.current.getBoundingClientRect();
       const dimensions = getDimensions(nodeElement.current);
@@ -109,32 +122,30 @@ export default NodeComponent => {
         target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2])
       };
       store.dispatch.updateNodeData({ id, ...dimensions, handleBounds });
-    }
+    };
 
     useEffect(() => {
-      updateNode();
+      if (nodeElement.current) {
+        updateNode();
 
-      let resizeObserver = null;
-
-      if (hasResizeObserver) {
-        resizeObserver = new ResizeObserver(entries => {
-          for (let entry of entries) {
+        const resizeObserver = new ResizeObserver(entries => {
+          for (let _ of entries) {
             updateNode();
           }
         });
 
         resizeObserver.observe(nodeElement.current);
-      }
 
-      return () => {
-        if (hasResizeObserver && resizeObserver) {
-          resizeObserver.unobserve(nodeElement.current);
+        return () => {
+          if (resizeObserver && nodeElement.current) {
+            resizeObserver.unobserve(nodeElement.current);
+          }
         }
       }
-    }, []);
+    }, [nodeElement.current]);
 
     return (
-      <ReactDraggable.DraggableCore
+      <DraggableCore
         onStart={evt => onStart(evt, { onClick, id, type, data, setOffset, transform, position })}
         onDrag={evt => onDrag(evt, { setDragging, id, offset, transform })}
         onStop={() => onStop({ onNodeDragStop, isDragging, setDragging, id, type, position, data })}
@@ -155,12 +166,11 @@ export default NodeComponent => {
             />
           </Provider>
         </div>
-      </ReactDraggable.DraggableCore>
+      </DraggableCore>
     );
   });
 
   NodeWrapper.displayName = 'NodeWrapper';
-  NodeWrapper.whyDidYouRender = false;
 
   return NodeWrapper;
 };
