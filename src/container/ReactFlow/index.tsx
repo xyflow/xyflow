@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, CSSProperties, ReactNode, SVGAttributes } from 'react';
 import { StoreProvider } from 'easy-peasy';
 
 const nodeEnv: string = (process.env.NODE_ENV as string);
@@ -8,7 +8,6 @@ if (nodeEnv !== 'production') {
   whyDidYouRender(React);
 }
 
-import { Elements } from '../../types';
 import GraphView from '../GraphView';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
@@ -19,36 +18,31 @@ import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
+import { Elements, NodeTypesType, EdgeTypesType, GridType } from '../../types';
 
 import '../../style.css';
 
 export interface ReactFlowProps {
   elements: Elements,
-  style?: React.CSSProperties,
+  style?: CSSProperties,
   className?: string,
-  children?: React.ReactNode[],
-  onElementClick?: () => void,
-  onElementsRemove?: () => void,
-  onNodeDragStop?: () => void,
-  onConnect?: () => void,
-	onLoad?: () => void,
-  onMove?: () => void,
-  nodeTypes?: {
-    [key: string]: React.ReactNode
-  },
-  edgeTypes?: {
-    [key: string]: React.ReactNode
-  },
-  connectionLineType?: string,
-  connectionLineStyle?: React.CSSProperties,
-  deleteKeyCode?: number,
-  selectionKeyCode?: number,
-  gridColor?: string,
-  gridGap?: number,
-  showBackground?: boolean,
-  backgroundGap?: number,
-  backgroundColor?: string,
-  backgroundType?: 'lines' | 'dots'
+  children?: ReactNode[],
+  onElementClick: () => void,
+  onElementsRemove: () => void,
+  onNodeDragStop: () => void,
+  onConnect: () => void,
+	onLoad: (any) => void,
+  onMove: () => void,
+  nodeTypes: NodeTypesType,
+  edgeTypes: EdgeTypesType,
+  connectionLineType: string,
+  connectionLineStyle: SVGAttributes<{}>,
+  deleteKeyCode: number,
+  selectionKeyCode: number,
+  showBackground: boolean,
+  backgroundGap: number,
+  backgroundColor: string,
+  backgroundType: GridType
 };
 
 const ReactFlow = ({
@@ -115,7 +109,7 @@ ReactFlow.defaultProps = {
   backgroundColor: '#eee',
   backgroundGap: 24,
   showBackground: true,
-  backgroundType: 'dots'
+  backgroundType: GridType.Dots
 };
 
 export default ReactFlow;

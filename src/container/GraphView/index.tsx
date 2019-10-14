@@ -1,17 +1,38 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo, SVGAttributes } from 'react';
 
-import { useStoreState, useStoreActions } from '../../store/hooks.ts';
+import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import UserSelection from '../../components/UserSelection/index.tsx';
+import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
 import BackgroundGrid from '../../components/BackgroundGrid';
-import useKeyPress from '../../hooks/useKeyPress.ts';
-import useD3Zoom from '../../hooks/useD3Zoom.ts';
-import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler.ts';
-import useElementUpdater from '../../hooks/useElementUpdater.ts'
+import useKeyPress from '../../hooks/useKeyPress';
+import useD3Zoom from '../../hooks/useD3Zoom';
+import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
+import useElementUpdater from '../../hooks/useElementUpdater'
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
+import { Elements, NodeTypesType, EdgeTypesType, GridType } from '../../types'
+
+export interface GraphViewProps {
+  elements: Elements,
+  onElementClick: () => void,
+  onElementsRemove: () => void,
+  onNodeDragStop: () => void,
+  onConnect: () => void,
+	onLoad: (any) => void,
+  onMove: () => void,
+  selectionKeyCode: number,
+  nodeTypes: NodeTypesType,
+  edgeTypes: EdgeTypesType,
+  connectionLineType: string,
+  connectionLineStyle: SVGAttributes<{}>,
+  deleteKeyCode: number,
+  showBackground: boolean,
+  backgroundGap: number,
+  backgroundColor: string,
+  backgroundType: GridType,
+};
 
 const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,
@@ -19,9 +40,9 @@ const GraphView = memo(({
   selectionKeyCode, onElementsRemove, deleteKeyCode, elements,
   showBackground, backgroundGap, backgroundColor, backgroundType,
   onConnect
-}) => {
-  const zoomPane = useRef();
-  const rendererNode = useRef();
+}: GraphViewProps) => {
+  const zoomPane = useRef<HTMLDivElement>(null);
+  const rendererNode = useRef<HTMLDivElement>(null);
   const state = useStoreState(s => ({
     width: s.width,
     height: s.height,

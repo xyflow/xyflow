@@ -28,6 +28,8 @@ type D3Init = {
   selection: any
 };
 
+type OnConnectUpdate = () => void;
+
 export interface StoreModel {
   width: number;
   height: number;
@@ -50,7 +52,7 @@ export interface StoreModel {
 
   onConnect: (any) => void;
 
-  setOnConnect: Action<StoreModel, any>;
+  setOnConnect: Action<StoreModel, OnConnectUpdate>;
 
   setNodes: Action<StoreModel, Node[]>;
 

@@ -1,10 +1,23 @@
 import React, { memo } from 'react';
 
-import { useStoreState } from '../../store/hooks.ts';
+import { useStoreState } from '../../store/hooks';
 import { isNode } from '../../utils/graph';
+import { Node, Transform, NodeTypesType } from '../../types';
 
-function renderNode(d, props, state) {
-  const nodeType = d.type || 'default';
+interface NodeRendererProps {
+  nodeTypes: NodeTypesType;
+  onElementClick: () => void;
+  onNodeDragStop: () => void;
+};
+
+interface NodeRendererState {
+  nodes: Node[];
+  transform: Transform;
+  selectedElements: any;
+};
+
+function renderNode(node: Node, props: NodeRendererProps, state: NodeRendererState) {
+  const nodeType = node.type || 'default';
 
   if (!props.nodeTypes[nodeType]) {
     console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
@@ -13,28 +26,28 @@ function renderNode(d, props, state) {
   const NodeComponent = props.nodeTypes[nodeType] || props.nodeTypes.default;
   const selected = state.selectedElements
     .filter(isNode)
-    .map(e => e.id)
-    .includes(d.id);
+    .map((e: Node) => e.id)
+    .includes(node.id);
 
   return (
     <NodeComponent
-      key={d.id}
-      id={d.id}
-      type={d.type}
-      data={d.data}
-      xPos={d.__rg.position.x}
-      yPos={d.__rg.position.y}
+      key={node.id}
+      id={node.id}
+      type={node.type}
+      data={node.data}
+      xPos={node.__rg.position.x}
+      yPos={node.__rg.position.y}
       onClick={props.onElementClick}
       onNodeDragStop={props.onNodeDragStop}
       transform={state.transform}
       selected={selected}
-      style={d.style}
+      style={node.style}
     />
   );
 }
 
-const NodeRenderer = memo((props) => {
-  const state = useStoreState(s => ({
+const NodeRenderer = memo((props: NodeRendererProps) => {
+  const state: NodeRendererState = useStoreState(s => ({
     nodes: s.nodes,
     transform: s.transform,
     selectedElements: s.selectedElements
@@ -48,12 +61,11 @@ const NodeRenderer = memo((props) => {
       className="react-flow__nodes"
       style={transformStyle}
     >
-      {nodes.map(d => renderNode(d, props, state))}
+      {nodes.map(node => renderNode(node, props, state))}
     </div>
   );
 });
 
 NodeRenderer.displayName = 'NodeRenderer';
-NodeRenderer.whyDidYouRender = false;
 
 export default NodeRenderer;

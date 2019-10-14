@@ -1065,7 +1065,6 @@ var createDraft = immer.createDraft.bind(immer);
  */
 
 var finishDraft = immer.finishDraft.bind(immer);
-//# sourceMappingURL=immer.module.js.map
 
 function symbolObservablePonyfill(root) {
 	var result;
@@ -2563,7 +2562,6 @@ var StoreProvider = function StoreProvider(_ref) {
  */
 
 setAutoFreeze(false);
-//# sourceMappingURL=easy-peasy.esm.js.map
 
 var typedHooks = createTypedHooks();
 var useStoreActions$1 = typedHooks.useStoreActions;
@@ -6255,214 +6253,124 @@ var ConnectionLine = (function (_a) {
         React.createElement("path", __assign({ d: dAttr }, connectionLineStyle))));
 });
 
-function getHandlePosition(position, node) {
-  var handle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-
-  if (!handle) {
+function getHandlePosition(position, node, handle) {
+    if (handle === void 0) { handle = null; }
+    if (!handle) {
+        switch (position) {
+            case 'top': return {
+                x: node.__rg.width / 2,
+                y: 0
+            };
+            case 'right': return {
+                x: node.__rg.width,
+                y: node.__rg.height / 2
+            };
+            case 'bottom': return {
+                x: node.__rg.width / 2,
+                y: node.__rg.height
+            };
+            case 'left': return {
+                x: 0,
+                y: node.__rg.height / 2
+            };
+        }
+        return null;
+    }
     switch (position) {
-      case 'top':
-        return {
-          x: node.__rg.width / 2,
-          y: 0
+        case 'top': return {
+            x: handle.x + (handle.width / 2),
+            y: handle.y
         };
-
-      case 'right':
-        return {
-          x: node.__rg.width,
-          y: node.__rg.height / 2
+        case 'right': return {
+            x: handle.x + handle.width,
+            y: handle.y + (handle.height / 2)
         };
-
-      case 'bottom':
-        return {
-          x: node.__rg.width / 2,
-          y: node.__rg.height
+        case 'bottom': return {
+            x: handle.x + (handle.width / 2),
+            y: handle.y + handle.height
         };
-
-      case 'left':
-        return {
-          x: 0,
-          y: node.__rg.height / 2
+        case 'left': return {
+            x: handle.x,
+            y: handle.y + (handle.height / 2)
         };
     }
-  }
-
-  switch (position) {
-    case 'top':
-      return {
-        x: handle.x + handle.width / 2,
-        y: handle.y
-      };
-
-    case 'right':
-      return {
-        x: handle.x + handle.width,
-        y: handle.y + handle.height / 2
-      };
-
-    case 'bottom':
-      return {
-        x: handle.x + handle.width / 2,
-        y: handle.y + handle.height
-      };
-
-    case 'left':
-      return {
-        x: handle.x,
-        y: handle.y + handle.height / 2
-      };
-  }
 }
-
 function getHandle(bounds, handleId) {
-  var handle = null;
-
-  if (!bounds) {
-    return null;
-  } // there is no handleId when there are no multiple handles/ handles with ids
-  // so we just pick the first one
-
-
-  if (bounds.length === 1 || !handleId) {
-    handle = bounds[0];
-  } else if (handleId) {
-    handle = bounds.find(function (d) {
-      return d.id === handleId;
-    });
-  }
-
-  return handle;
+    var handle = null;
+    if (!bounds) {
+        return null;
+    }
+    // there is no handleId when there are no multiple handles/ handles with ids
+    // so we just pick the first one
+    if (bounds.length === 1 || !handleId) {
+        handle = bounds[0];
+    }
+    else if (handleId) {
+        handle = bounds.find(function (d) { return d.id === handleId; });
+    }
+    return handle;
 }
-
-function getEdgePositions(_ref) {
-  var sourceNode = _ref.sourceNode,
-      sourceHandle = _ref.sourceHandle,
-      sourcePosition = _ref.sourcePosition,
-      targetNode = _ref.targetNode,
-      targetHandle = _ref.targetHandle,
-      targetPosition = _ref.targetPosition;
-  var sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  var sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;
-  var sourceY = sourceNode.__rg.position.y + sourceHandlePos.y;
-  var targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
-  var targetX = targetNode.__rg.position.x + targetHandlePos.x;
-  var targetY = targetNode.__rg.position.y + targetHandlePos.y;
-  return {
-    sourceX: sourceX,
-    sourceY: sourceY,
-    targetX: targetX,
-    targetY: targetY
-  };
-}
-
-function renderEdge(e, props, state) {
-  var edgeType = e.type || 'default';
-  var hasSourceHandleId = e.source.includes('__');
-  var hasTargetHandleId = e.target.includes('__');
-  var sourceId = hasSourceHandleId ? e.source.split('__')[0] : e.source;
-  var targetId = hasTargetHandleId ? e.target.split('__')[0] : e.target;
-  var sourceHandleId = hasSourceHandleId ? e.source.split('__')[1] : null;
-  var targetHandleId = hasTargetHandleId ? e.target.split('__')[1] : null;
-  var sourceNode = state.nodes.find(function (n) {
-    return n.id === sourceId;
-  });
-  var targetNode = state.nodes.find(function (n) {
-    return n.id === targetId;
-  });
-
-  if (!sourceNode) {
-    throw new Error("couldn't create edge for source id: ".concat(sourceId));
-  }
-
-  if (!targetNode) {
-    throw new Error("couldn't create edge for target id: ".concat(targetId));
-  }
-
-  var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes["default"];
-  var sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
-  var targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
-  var sourcePosition = sourceHandle ? sourceHandle.position : 'bottom';
-  var targetPosition = targetHandle ? targetHandle.position : 'top';
-
-  var _getEdgePositions = getEdgePositions({
-    sourceNode: sourceNode,
-    sourceHandle: sourceHandle,
-    sourcePosition: sourcePosition,
-    targetNode: targetNode,
-    targetHandle: targetHandle,
-    targetPosition: targetPosition
-  }),
-      sourceX = _getEdgePositions.sourceX,
-      sourceY = _getEdgePositions.sourceY,
-      targetX = _getEdgePositions.targetX,
-      targetY = _getEdgePositions.targetY;
-
-  var selected = state.selectedElements.filter(isEdge).find(function (elm) {
-    return elm.source === sourceId && elm.target === targetId;
-  });
-  return React.createElement(EdgeComponent, {
-    key: e.id,
-    id: e.id,
-    type: e.type,
-    onClick: props.onElementClick,
-    selected: selected,
-    animated: e.animated,
-    style: e.style,
-    source: sourceId,
-    target: targetId,
-    sourceHandleId: sourceHandleId,
-    targetHandleId: targetHandleId,
-    sourceX: sourceX,
-    sourceY: sourceY,
-    targetX: targetX,
-    targetY: targetY,
-    sourcePosition: sourcePosition,
-    targetPosition: targetPosition
-  });
-}
-
-var EdgeRenderer = memo(function (props) {
-  var state = useStoreState$1(function (s) {
+function getEdgePositions(_a) {
+    var sourceNode = _a.sourceNode, sourceHandle = _a.sourceHandle, sourcePosition = _a.sourcePosition, targetNode = _a.targetNode, targetHandle = _a.targetHandle, targetPosition = _a.targetPosition;
+    var sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
+    var sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;
+    var sourceY = sourceNode.__rg.position.y + sourceHandlePos.y;
+    var targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
+    var targetX = targetNode.__rg.position.x + targetHandlePos.x;
+    var targetY = targetNode.__rg.position.y + targetHandlePos.y;
     return {
-      nodes: s.nodes,
-      edges: s.edges,
-      transform: s.transform,
-      selectedElements: s.selectedElements,
-      connectionSourceId: s.connectionSourceId,
-      position: s.connectionPosition
+        sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY
     };
-  });
-  var width = props.width,
-      height = props.height,
-      connectionLineStyle = props.connectionLineStyle,
-      connectionLineType = props.connectionLineType;
-
-  if (!width) {
-    return null;
-  }
-
-  var transform = state.transform,
-      edges = state.edges,
-      nodes = state.nodes,
-      connectionSourceId = state.connectionSourceId,
-      position = state.position;
-  var transformStyle = "translate(".concat(transform[0], ",").concat(transform[1], ") scale(").concat(transform[2], ")");
-  return React.createElement("svg", {
-    width: width,
-    height: height,
-    className: "react-flow__edges"
-  }, React.createElement("g", {
-    transform: transformStyle
-  }, edges.map(function (e) {
-    return renderEdge(e, props, state);
-  }), connectionSourceId && React.createElement(ConnectionLine, {
-    nodes: nodes,
-    connectionSourceId: connectionSourceId,
-    connectionPositionX: position.x,
-    connectionPositionY: position.y,
-    transform: transform,
-    connectionLineStyle: connectionLineStyle,
-    connectionLineType: connectionLineType
-  })));
+}
+function renderEdge(e, props, state) {
+    var edgeType = e.type || 'default';
+    var hasSourceHandleId = e.source.includes('__');
+    var hasTargetHandleId = e.target.includes('__');
+    var sourceId = hasSourceHandleId ? e.source.split('__')[0] : e.source;
+    var targetId = hasTargetHandleId ? e.target.split('__')[0] : e.target;
+    var sourceHandleId = hasSourceHandleId ? e.source.split('__')[1] : null;
+    var targetHandleId = hasTargetHandleId ? e.target.split('__')[1] : null;
+    var sourceNode = state.nodes.find(function (n) { return n.id === sourceId; });
+    var targetNode = state.nodes.find(function (n) { return n.id === targetId; });
+    if (!sourceNode) {
+        throw new Error("couldn't create edge for source id: " + sourceId);
+    }
+    if (!targetNode) {
+        throw new Error("couldn't create edge for target id: " + targetId);
+    }
+    var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
+    var sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
+    var targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
+    var sourcePosition = sourceHandle ? sourceHandle.position : 'bottom';
+    var targetPosition = targetHandle ? targetHandle.position : 'top';
+    var _a = getEdgePositions({
+        sourceNode: sourceNode, sourceHandle: sourceHandle, sourcePosition: sourcePosition,
+        targetNode: targetNode, targetHandle: targetHandle, targetPosition: targetPosition
+    }), sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY;
+    var selected = state.selectedElements
+        .filter(isEdge)
+        .find(function (elm) { return elm.source === sourceId && elm.target === targetId; });
+    return (React.createElement(EdgeComponent, { key: e.id, id: e.id, type: e.type, onClick: props.onElementClick, selected: selected, animated: e.animated, style: e.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition }));
+}
+var EdgeRenderer = memo(function (_a) {
+    var width = _a.width, height = _a.height, connectionLineStyle = _a.connectionLineStyle, connectionLineType = _a.connectionLineType, rest = __rest(_a, ["width", "height", "connectionLineStyle", "connectionLineType"]);
+    var state = useStoreState$1(function (s) { return ({
+        nodes: s.nodes,
+        edges: s.edges,
+        transform: s.transform,
+        selectedElements: s.selectedElements,
+        connectionSourceId: s.connectionSourceId,
+        position: s.connectionPosition
+    }); });
+    if (!width) {
+        return null;
+    }
+    var transform = state.transform, edges = state.edges, nodes = state.nodes, connectionSourceId = state.connectionSourceId, position = state.position;
+    var transformStyle = "translate(" + transform[0] + "," + transform[1] + ") scale(" + transform[2] + ")";
+    return (React.createElement("svg", { width: width, height: height, className: "react-flow__edges" },
+        React.createElement("g", { transform: transformStyle },
+            edges.map(function (e) { return renderEdge(e, __assign({ width: width, height: height, connectionLineStyle: connectionLineStyle, connectionLineType: connectionLineType }, rest), state); }),
+            connectionSourceId && (React.createElement(ConnectionLine, { nodes: nodes, connectionSourceId: connectionSourceId, connectionPositionX: position.x, connectionPositionY: position.y, transform: transform, connectionLineStyle: connectionLineStyle, connectionLineType: connectionLineType })))));
 });
 EdgeRenderer.displayName = 'EdgeRenderer';
 
@@ -9675,7 +9583,7 @@ var ContentRect = function (target) {
     }
 };
 exports.ContentRect = ContentRect;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQ29udGVudFJlY3QuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvQ29udGVudFJlY3QudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFPQSxJQUFNLFdBQVcsR0FBRyxVQUFDLE1BQWU7SUFDaEMsSUFBSSxTQUFTLElBQUssTUFBNkIsRUFBRTtRQUM3QyxJQUFNLEdBQUcsR0FBSSxNQUE2QixDQUFDLE9BQU8sRUFBRSxDQUFDO1FBQ3JELE9BQU8sTUFBTSxDQUFDLE1BQU0sQ0FBQztZQUNqQixNQUFNLEVBQUUsR0FBRyxDQUFDLE1BQU07WUFDbEIsSUFBSSxFQUFFLENBQUM7WUFDUCxHQUFHLEVBQUUsQ0FBQztZQUNOLEtBQUssRUFBRSxHQUFHLENBQUMsS0FBSztTQUNuQixDQUFDLENBQUM7S0FDTjtTQUFNLEVBQUUsMEZBQTBGO1FBQy9GLElBQU0sTUFBTSxHQUFHLE1BQU0sQ0FBQyxnQkFBZ0IsQ0FBQyxNQUFNLENBQUMsQ0FBQztRQUMvQyxPQUFPLE1BQU0sQ0FBQyxNQUFNLENBQUM7WUFDakIsTUFBTSxFQUFFLFVBQVUsQ0FBQyxNQUFNLENBQUMsTUFBTSxJQUFJLEdBQUcsQ0FBQztZQUN4QyxJQUFJLEVBQUUsVUFBVSxDQUFDLE1BQU0sQ0FBQyxXQUFXLElBQUksR0FBRyxDQUFDO1lBQzNDLEdBQUcsRUFBRSxVQUFVLENBQUMsTUFBTSxDQUFDLFVBQVUsSUFBSSxHQUFHLENBQUM7WUFDekMsS0FBSyxFQUFFLFVBQVUsQ0FBQyxNQUFNLENBQUMsS0FBSyxJQUFJLEdBQUcsQ0FBQztTQUN6QyxDQUFDLENBQUM7S0FDTjtBQUNMLENBQUMsQ0FBQztBQUVPLGtDQUFXIn0=
+
 });
 
 unwrapExports(ContentRect_1);
@@ -9712,7 +9620,7 @@ var ResizeObservation = /** @class */ (function () {
     return ResizeObservation;
 }());
 exports.ResizeObservation = ResizeObservation;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmVzaXplT2JzZXJ2YXRpb24uanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvUmVzaXplT2JzZXJ2YXRpb24udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSw2Q0FBNEM7QUFFNUM7SUFlSSwyQkFBWSxNQUFlO1FBQ3ZCLElBQUksQ0FBQyxNQUFNLEdBQUcsTUFBTSxDQUFDO1FBQ3JCLElBQUksQ0FBQyxnQkFBZ0IsR0FBRyxJQUFJLENBQUMsaUJBQWlCLEdBQUcsQ0FBQyxDQUFDO0lBQ3ZELENBQUM7SUFWRCxzQkFBVyw2Q0FBYzthQUF6QjtZQUNJLE9BQU8sSUFBSSxDQUFDLGdCQUFnQixDQUFDO1FBQ2pDLENBQUM7OztPQUFBO0lBQ0Qsc0JBQVcsOENBQWU7YUFBMUI7WUFDSSxPQUFPLElBQUksQ0FBQyxpQkFBaUIsQ0FBQztRQUNsQyxDQUFDOzs7T0FBQTtJQU9NLG9DQUFRLEdBQWY7UUFDSSxJQUFNLEVBQUUsR0FBRyx5QkFBVyxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsQ0FBQztRQUVwQyxPQUFPLENBQUMsQ0FBQyxFQUFFO2VBQ0osQ0FDQyxFQUFFLENBQUMsS0FBSyxLQUFLLElBQUksQ0FBQyxjQUFjO21CQUM3QixFQUFFLENBQUMsTUFBTSxLQUFLLElBQUksQ0FBQyxlQUFlLENBQ3hDLENBQUM7SUFDVixDQUFDO0lBQ0wsd0JBQUM7QUFBRCxDQUFDLEFBN0JELElBNkJDO0FBRVEsOENBQWlCIn0=
+
 });
 
 unwrapExports(ResizeObservation_1);
@@ -9729,7 +9637,7 @@ var ResizeObserverEntry = /** @class */ (function () {
     return ResizeObserverEntry;
 }());
 exports.ResizeObserverEntry = ResizeObserverEntry;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmVzaXplT2JzZXJ2ZXJFbnRyeS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9SZXNpemVPYnNlcnZlckVudHJ5LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsNkNBQTRDO0FBRTVDO0lBR0ksNkJBQVksTUFBZTtRQUN2QixJQUFJLENBQUMsTUFBTSxHQUFHLE1BQU0sQ0FBQztRQUNyQixJQUFJLENBQUMsV0FBVyxHQUFHLHlCQUFXLENBQUMsTUFBTSxDQUFDLENBQUM7SUFDM0MsQ0FBQztJQUNMLDBCQUFDO0FBQUQsQ0FBQyxBQVBELElBT0M7QUFFUSxrREFBbUIifQ==
+
 });
 
 unwrapExports(ResizeObserverEntry_1);
@@ -9902,7 +9810,7 @@ var install = function () {
     return window.ResizeObserver = ResizeObserver;
 };
 exports.install = install;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmVzaXplT2JzZXJ2ZXIuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvUmVzaXplT2JzZXJ2ZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSx5REFBd0Q7QUFFeEQsNkRBQTREO0FBRTVELElBQU0sZUFBZSxHQUFHLEVBQXNCLENBQUM7QUFFL0M7SUFVSSx3QkFBWSxRQUFnQztRQVA1QyxnQkFBZ0I7UUFDVCx5QkFBb0IsR0FBRyxFQUF5QixDQUFDO1FBQ3hELGdCQUFnQjtRQUNULG9CQUFlLEdBQUcsRUFBeUIsQ0FBQztRQUNuRCxnQkFBZ0I7UUFDVCxxQkFBZ0IsR0FBRyxFQUF5QixDQUFDO1FBR2hELElBQU0sT0FBTyxHQUFHLGFBQWEsQ0FBQyxRQUFRLENBQUMsQ0FBQztRQUN4QyxJQUFJLE9BQU8sRUFBRTtZQUNULE1BQU0sU0FBUyxDQUFDLE9BQU8sQ0FBQyxDQUFDO1NBQzVCO1FBQ0QsSUFBSSxDQUFDLFVBQVUsR0FBRyxRQUFRLENBQUM7UUFDM0IsZUFBZSxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsQ0FBQztJQUMvQixDQUFDO0lBRU0sZ0NBQU8sR0FBZCxVQUFlLE1BQWU7UUFDMUIsSUFBTSxPQUFPLEdBQUcsV0FBVyxDQUFDLFNBQVMsRUFBRSxNQUFNLENBQUMsQ0FBQztRQUMvQyxJQUFJLE9BQU8sRUFBRTtZQUNULE1BQU0sU0FBUyxDQUFDLE9BQU8sQ0FBQyxDQUFDO1NBQzVCO1FBQ0QsSUFBTSxLQUFLLEdBQUcsZUFBZSxDQUFDLElBQUksQ0FBQyxvQkFBb0IsRUFBRSxNQUFNLENBQUMsQ0FBQztRQUNqRSxJQUFJLEtBQUssR0FBRyxDQUFDLEVBQUU7WUFDWCxPQUFPO1NBQ1Y7UUFDRCxJQUFJLENBQUMsb0JBQW9CLENBQUMsSUFBSSxDQUFDLElBQUkscUNBQWlCLENBQUMsTUFBTSxDQUFDLENBQUMsQ0FBQztRQUM5RCxTQUFTLEVBQUUsQ0FBQztJQUNoQixDQUFDO0lBRU0sa0NBQVMsR0FBaEIsVUFB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
+
 });
 
 unwrapExports(ResizeObserver_1);
@@ -10076,17 +9984,18 @@ var wrapEdge = (function (EdgeComponent) {
 });
 
 function createEdgeTypes(edgeTypes) {
-  var standardTypes = {
-    "default": wrapEdge(edgeTypes["default"] || BezierEdge),
-    straight: wrapEdge(edgeTypes.bezier || StraightEdge)
-  };
-  var specialTypes = Object.keys(edgeTypes).filter(function (k) {
-    return !['default', 'bezier'].includes(k);
-  }).reduce(function (res, key) {
-    res[key] = wrapEdge(edgeTypes[key] || BezierEdge);
-    return res;
-  }, {});
-  return _objectSpread2$1({}, standardTypes, {}, specialTypes);
+    var standardTypes = {
+        default: wrapEdge(edgeTypes.default || BezierEdge),
+        straight: wrapEdge(edgeTypes.bezier || StraightEdge)
+    };
+    var specialTypes = Object
+        .keys(edgeTypes)
+        .filter(function (k) { return !['default', 'bezier'].includes(k); })
+        .reduce(function (res, key) {
+        res[key] = wrapEdge(edgeTypes[key] || BezierEdge);
+        return res;
+    }, {});
+    return __assign(__assign({}, standardTypes), specialTypes);
 }
 
 function styleInject(css, ref) {

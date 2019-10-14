@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, SVGAttributes } from 'react';
 
 export type ElementId = string;
 
@@ -11,9 +11,18 @@ export type Position = 'left' | 'top' | 'right' | 'bottom';
 export type XYPosition = {
   x: number,
   y: number
-}
+};
+
+export enum GridType {
+  Lines = 'lines',
+  Dots = 'dots',
+};
 
 export type HandleType = 'source' | 'target';
+
+export type NodeTypesType = { [key: string]: React.ReactNode };
+
+export type EdgeTypesType = NodeTypesType;
 
 export interface Dimensions {
   width: number,
@@ -31,13 +40,16 @@ export interface Node {
   type?: string,
   __rg?: any,
   data?: any,
+  style?: CSSProperties
 };
 
 export interface Edge {
   id: ElementId,
   type?: string,
   source: ElementId,
-  target: ElementId
+  target: ElementId,
+  style?: SVGAttributes<{}>
+  animated?: boolean
 };
 
 export interface EdgeProps {
@@ -45,7 +57,7 @@ export interface EdgeProps {
   sourceY: number,
   targetX: number,
   targetY: number,
-  style?: React.SVGAttributes<{}>
+  style?: SVGAttributes<{}>
 };
 
 export interface EdgeBezierProps extends EdgeProps{

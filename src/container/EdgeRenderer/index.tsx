@@ -3,13 +3,24 @@ import React, { memo, SVGAttributes } from 'react';
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
-import { Position, Node, ElementId } from '../../types';
+import { XYPosition, Position, Edge, Node, ElementId, Transform } from '../../types';
 
 interface EdgeRendererProps {
-  width: number,
-  height: number,
-  connectionLineStyle?: SVGAttributes<{}>,
-  connectionLineType?: string
+  width: number;
+  height: number;
+  edgeTypes: any;
+  connectionLineStyle?: SVGAttributes<{}>;
+  connectionLineType?: string;
+  onElementClick?: () => void;
+};
+
+interface EdgeRendererState {
+  nodes: Node[];
+  edges: Edge[];
+  transform: Transform;
+  selectedElements: any;
+  connectionSourceId: ElementId | null;
+  position: XYPosition;
 };
 
 interface HandleElement {
@@ -97,17 +108,17 @@ function getEdgePositions({ sourceNode, sourceHandle, sourcePosition, targetNode
   };
 }
 
-function renderEdge(e, props, state) {
-  const edgeType = e.type || 'default';
+function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererState) {
+  const edgeType = edge.type || 'default';
 
-  const hasSourceHandleId = e.source.includes('__');
-  const hasTargetHandleId = e.target.includes('__');
+  const hasSourceHandleId = edge.source.includes('__');
+  const hasTargetHandleId = edge.target.includes('__');
 
-  const sourceId = hasSourceHandleId ? e.source.split('__')[0] : e.source;
-  const targetId = hasTargetHandleId ? e.target.split('__')[0] : e.target;
+  const sourceId = hasSourceHandleId ? edge.source.split('__')[0] : edge.source;
+  const targetId = hasTargetHandleId ? edge.target.split('__')[0] : edge.target;
 
-  const sourceHandleId = hasSourceHandleId ? e.source.split('__')[1] : null;
-  const targetHandleId = hasTargetHandleId ? e.target.split('__')[1] : null;
+  const sourceHandleId = hasSourceHandleId ? edge.source.split('__')[1] : null;
+  const targetHandleId = hasTargetHandleId ? edge.target.split('__')[1] : null;
 
   const sourceNode = state.nodes.find(n => n.id === sourceId);
   const targetNode = state.nodes.find(n => n.id === targetId);
@@ -136,13 +147,13 @@ function renderEdge(e, props, state) {
 
   return (
     <EdgeComponent
-      key={e.id}
-      id={e.id}
-      type={e.type}
+      key={edge.id}
+      id={edge.id}
+      type={edge.type}
       onClick={props.onElementClick}
       selected={selected}
-      animated={e.animated}
-      style={e.style}
+      animated={edge.animated}
+      style={edge.style}
       source={sourceId}
       target={targetId}
       sourceHandleId={sourceHandleId}
@@ -160,7 +171,7 @@ function renderEdge(e, props, state) {
 const EdgeRenderer = memo(({
   width, height, connectionLineStyle, connectionLineType, ...rest
 }: EdgeRendererProps) => {
-  const state = useStoreState(s => ({
+  const state: EdgeRendererState = useStoreState(s => ({
     nodes: s.nodes,
     edges: s.edges,
     transform: s.transform,

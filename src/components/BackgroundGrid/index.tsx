@@ -2,19 +2,15 @@ import React, {memo} from 'react';
 import classnames from 'classnames';
 
 import { useStoreState } from '../../store/hooks';
-
-export enum GridType {
-  Lines = 'lines',
-  Dots = 'dots',
-};
+import { GridType } from '../../types';
 
 interface GridProps {
-  gap: number;
-  color: string;
-  size: number;
-  style: React.CSSProperties;
-  className: string | null;
-  backgroundType: GridType;
+  backgroundType?: GridType;
+  gap?: number;
+  color?: string;
+  size?: number;
+  style?: React.CSSProperties;
+  className?: string | null;
 };
 
 const baseStyles: React.CSSProperties = {
