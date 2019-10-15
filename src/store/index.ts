@@ -1,9 +1,118 @@
-import { action } from 'easy-peasy';
+import { createStore, Action, action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
+import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { getBoundingBox, getNodesInside, getConnectedEdges } from '../utils/graph';
+import {
+  ElementId, Elements, Transform, Node,
+  Edge, Rect, Dimensions, XYPosition,
+  OnConnectFunc, SelectionRect, HandleElement
+} from '../types';
 
-export default {
+type TransformXYK = {
+  x: number,
+  y: number,
+  k: number
+};
+
+type NodePosUpdate = {
+  id: ElementId,
+  pos: XYPosition
+};
+
+type NodeUpdate = {
+  id: ElementId,
+  width: number,
+  height: number,
+  handleBounds: {
+    source: HandleElement,
+    target: HandleElement
+  }
+};
+
+type SelectionUpdate = {
+  isActive: boolean;
+  selection?: SelectionRect;
+};
+
+type D3Init = {
+  zoom: ZoomBehavior<Element, unknown>;
+  selection: D3Selection<Element, unknown, null, undefined>;
+};
+
+export interface StoreModel {
+  width: number;
+  height: number;
+  transform: Transform;
+  nodes: Node[];
+  edges: Edge[];
+  selectedElements: Elements;
+  selectedNodesBbox: Rect;
+
+  d3Zoom: ZoomBehavior<Element, unknown>;
+  d3Selection: D3Selection<Element, unknown, null, undefined>;
+  d3Initialised: boolean;
+
+  nodesSelectionActive: boolean;
+  selectionActive: boolean;
+  selection: SelectionRect | null;
+
+  connectionSourceId: ElementId | null;
+  connectionPosition: XYPosition;
+
+  onConnect: OnConnectFunc;
+
+  setOnConnect: Action<StoreModel, OnConnectFunc>;
+
+  setNodes: Action<StoreModel, Node[]>;
+
+  setEdges: Action<StoreModel, Edge[]>;
+
+  updateNodeData:  Action<StoreModel, NodeUpdate>;
+
+  updateNodePos: Action<StoreModel, NodePosUpdate>;
+
+  setSelection: Action<StoreModel, boolean>;
+
+  setNodesSelection: Action<StoreModel, SelectionUpdate>;
+
+  setSelectedElements: Action<StoreModel, Elements | Node | Edge>
+
+  updateSelection: Action<StoreModel, SelectionRect>;
+
+  updateTransform: Action<StoreModel, TransformXYK>;
+
+  updateSize: Action<StoreModel, Dimensions>;
+
+  initD3: Action<StoreModel, D3Init>;
+
+  setConnectionPosition: Action<StoreModel, XYPosition>;
+
+  setConnectionSourceId: Action<StoreModel, ElementId>;
+};
+
+const storeModel: StoreModel = {
+  width: 0,
+  height: 0,
+  transform: [0, 0, 1],
+  nodes: [],
+  edges: [],
+  selectedElements: [],
+  selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+
+  d3Zoom: null,
+  d3Selection: null,
+  d3Initialised: false,
+
+  nodesSelectionActive: false,
+  selectionActive: false,
+  selection: null,
+
+  connectionSourceId: null,
+  connectionPosition: { x: 0, y: 0 },
+
+  onConnect: () => {},
+
   setOnConnect: action((state, onConnect) => {
     state.onConnect = onConnect;
   }),
@@ -100,3 +209,7 @@ export default {
     state.connectionSourceId = sourceId;
   })
 };
+
+const store = createStore(storeModel);
+
+export default store;

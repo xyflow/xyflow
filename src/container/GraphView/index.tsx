@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, memo } from 'react';
-import { useStoreState, useStoreActions } from 'easy-peasy';
+import React, { useEffect, useRef, memo, SVGAttributes } from 'react';
 
+import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../../components/UserSelection';
@@ -12,6 +12,27 @@ import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater'
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types'
+
+export interface GraphViewProps {
+  elements: Elements,
+  onElementClick: () => void,
+  onElementsRemove: (elements: Elements) => void,
+  onNodeDragStop: () => void,
+  onConnect: () => void,
+	onLoad: OnLoadFunc,
+  onMove: () => void,
+  selectionKeyCode: number,
+  nodeTypes: NodeTypesType,
+  edgeTypes: EdgeTypesType,
+  connectionLineType: string,
+  connectionLineStyle: SVGAttributes<{}>,
+  deleteKeyCode: number,
+  showBackground: boolean,
+  backgroundGap: number,
+  backgroundColor: string,
+  backgroundType: GridType,
+};
 
 const GraphView = memo(({
   nodeTypes, edgeTypes, onMove, onLoad,
@@ -19,9 +40,9 @@ const GraphView = memo(({
   selectionKeyCode, onElementsRemove, deleteKeyCode, elements,
   showBackground, backgroundGap, backgroundColor, backgroundType,
   onConnect
-}) => {
-  const zoomPane = useRef();
-  const rendererNode = useRef();
+}: GraphViewProps) => {
+  const zoomPane = useRef<HTMLDivElement>(null);
+  const rendererNode = useRef<HTMLDivElement>(null);
   const state = useStoreState(s => ({
     width: s.width,
     height: s.height,
@@ -65,7 +86,7 @@ const GraphView = memo(({
   }, [state.d3Initialised]);
 
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
-  useElementUpdater({ elements });
+  useElementUpdater(elements);
 
   return (
     <div className="react-flow__renderer" ref={rendererNode}>

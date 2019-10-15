@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 
+import { useStoreState, useStoreActions } from '../store/hooks';
 import { parseElement, isNode, isEdge } from '../utils/graph';
+import { Elements, Node, Edge } from '../types';
 
-const useElementUpdater = ({ elements }) => {
+const useElementUpdater = (elements: Elements): void => {
   const state = useStoreState(s => ({
     nodes: s.nodes,
     edges: s.edges,
@@ -15,10 +16,10 @@ const useElementUpdater = ({ elements }) => {
   const setEdges = useStoreActions(a => a.setEdges);
 
   useEffect(() => {
-    const nodes = elements.filter(isNode);
-    const edges = elements.filter(isEdge).map(parseElement);
+    const nodes = elements.filter(isNode) as Node[];
+    const edges = elements.filter(isEdge).map(e => parseElement(e)) as Edge[];
 
-    const nextNodes = nodes.map(propNode => {
+    const nextNodes = nodes.map((propNode) => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
 
       if (existingNode) {
@@ -32,10 +33,10 @@ const useElementUpdater = ({ elements }) => {
       }
 
       return parseElement(propNode, state.transform);
-    });
+    }) as Node[];
 
-    const nodesChanged = !isEqual(state.nodes, nextNodes);
-    const edgesChanged = !isEqual(state.edges, edges);
+    const nodesChanged: boolean = !isEqual(state.nodes, nextNodes);
+    const edgesChanged: boolean = !isEqual(state.edges, edges);
 
     if (nodesChanged) {
       setNodes(nextNodes);

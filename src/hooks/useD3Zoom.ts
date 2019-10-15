@@ -1,21 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, MutableRefObject } from 'react';
 import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
-import { useStoreState, useStoreActions } from 'easy-peasy';
+
+import { useStoreState, useStoreActions } from '../store/hooks';
 
 const d3ZoomInstance = d3Zoom
   .zoom()
   .scaleExtent([0.5, 2])
   .filter(() => !event.button);
 
-export default function useD3Zoom(zoomPane, onMove, shiftPressed) {
+export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, shiftPressed: boolean): void => {
   const state = useStoreState(s => ({
     transform: s.transform,
     d3Selection: s.d3Selection,
     d3Zoom: s.d3Zoom,
-    edges: s.edged,
-    d3Initialised: s.d3Initialised,
-    nodesSelectionActive: s.nodesSelectionActive
   }));
 
   const initD3 = useStoreActions(actions => actions.initD3);

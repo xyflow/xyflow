@@ -1,13 +1,14 @@
 import React, { useState, memo } from 'react';
 import ReactDraggable from 'react-draggable';
-import { useStoreState, useStoreActions } from 'easy-peasy';
 
+import { useStoreState, useStoreActions } from '../../store/hooks';
 import { isNode } from '../../utils/graph';
+import { Node, Elements, XYPosition } from '../../types';
 
-function getStartPositions(elements) {
+function getStartPositions(elements: Elements) {
   return elements
     .filter(isNode)
-    .reduce((res, node) => {
+    .reduce((res, node: Node) => {
       const startPosition = {
         x: node.__rg.position.x || node.position.x,
         y: node.__rg.position.y || node.position.x
@@ -31,31 +32,33 @@ export default memo(() => {
   const [x, y, k] = state.transform;
   const position = state.selectedNodesBbox;
 
-  const onStart = (evt) => {
-    const scaledClient = {
+  const onStart = (evt: MouseEvent) => {
+    const scaledClient: XYPosition = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     };
-    const offsetX = scaledClient.x - position.x - x;
-    const offsetY = scaledClient.y - position.y - y;
+    const offsetX: number = scaledClient.x - position.x - x;
+    const offsetY: number = scaledClient.y - position.y - y;
     const startPositions = getStartPositions(state.selectedElements);
 
     setOffset({ x: offsetX, y: offsetY });
     setStartPositions(startPositions);
   };
 
-  const onDrag = (evt) => {
-    const scaledClient = {
+  const onDrag = (evt: MouseEvent) => {
+    const scaledClient: XYPosition = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     };
 
-    state.selectedElements.filter(isNode).forEach(node => {
-      updateNodePos({ id: node.id, pos: {
-        x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x ,
-        y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
-      }});
-    });
+    state.selectedElements
+      .filter(isNode)
+      .forEach((node: Node) => {
+        updateNodePos({ id: node.id, pos: {
+          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x ,
+          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
+        }});
+      });
   };
 
   return (
@@ -67,8 +70,8 @@ export default memo(() => {
     >
       <ReactDraggable
         scale={k}
-        onStart={onStart}
-        onDrag={onDrag}
+        onStart={(evt: MouseEvent) => onStart(evt)}
+        onDrag={(evt: MouseEvent) => onDrag(evt)}
       >
         <div
           className="react-flow__nodesselection-rect"

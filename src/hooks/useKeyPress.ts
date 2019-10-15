@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 
-import { inInputDOMNode } from '../utils';
+import { isInputDOMNode } from '../utils';
 
-export default function useKeyPress(keyCode) {
+export default (keyCode: number) => {
   const [keyPressed, setKeyPressed] = useState(false);
 
-  function downHandler(evt) {
-    if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
+  function downHandler(evt: KeyboardEvent) {
+    if (evt.keyCode === keyCode && !isInputDOMNode(evt)) {
       setKeyPressed(true);
     }
   }
 
-  const upHandler = (evt) => {
-    if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
+  const upHandler = (evt: KeyboardEvent) => {
+    if (evt.keyCode === keyCode && !isInputDOMNode(evt)) {
       setKeyPressed(false);
     }
   };
@@ -20,6 +20,7 @@ export default function useKeyPress(keyCode) {
   useEffect(() => {
     window.addEventListener('keydown', downHandler);
     window.addEventListener('keyup', upHandler);
+
     return () => {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);

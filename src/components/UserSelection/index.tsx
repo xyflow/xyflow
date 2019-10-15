@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState, memo } from 'react';
-import { useStoreActions } from 'easy-peasy';
+import React, { useEffect, useRef, useState, memo, MouseEvent } from 'react';
 
-const initialRect = {
+import { useStoreActions } from '../../store/hooks';
+import { SelectionRect } from '../../types';
+
+const initialRect: SelectionRect = {
   startX: 0,
   startY: 0,
   x: 0,
@@ -11,8 +13,13 @@ const initialRect = {
   draw: false
 };
 
-function getMousePosition(evt) {
-  const containerBounds = document.querySelector('.react-flow').getBoundingClientRect();
+function getMousePosition(evt: MouseEvent) {
+  const reactFlowNode = document.querySelector('.react-flow');
+  if (!reactFlowNode) {
+    return false;
+  }
+
+  const containerBounds = reactFlowNode.getBoundingClientRect();
 
   return {
     x: evt.clientX - containerBounds.left,
@@ -28,8 +35,11 @@ export default memo(() => {
   const setNodesSelection = useStoreActions(a => a.setNodesSelection);
 
   useEffect(() => {
-    function onMouseDown(evt) {
+    function onMouseDown(evt: MouseEvent) {
       const mousePos = getMousePosition(evt);
+      if (!mousePos) {
+        return false;
+      }
 
       setRect((currentRect) => ({
         ...currentRect,
@@ -43,13 +53,17 @@ export default memo(() => {
       setSelection(true);
     }
 
-    function onMouseMove(evt) {
+    function onMouseMove(evt: MouseEvent) {
       setRect((currentRect) => {
         if (!currentRect.draw) {
           return currentRect;
         }
 
         const mousePos = getMousePosition(evt);
+        if (!mousePos) {
+          return currentRect;
+        }
+
         const negativeX = mousePos.x < currentRect.startX;
         const negativeY = mousePos.y < currentRect.startY;
         const nextRect = {
@@ -94,7 +108,7 @@ export default memo(() => {
       className="react-flow__selectionpane"
       ref={selectionPane}
     >
-      {(rect.draw || rect.fixed) && (
+      {rect.draw && (
         <div
           className="react-flow__selection"
           style={{
