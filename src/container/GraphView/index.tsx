@@ -12,7 +12,7 @@ import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater'
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
-import { Elements, NodeTypesType, EdgeTypesType, GridType } from '../../types'
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types'
 
 export interface GraphViewProps {
   elements: Elements,
@@ -20,7 +20,7 @@ export interface GraphViewProps {
   onElementsRemove: () => void,
   onNodeDragStop: () => void,
   onConnect: () => void,
-	onLoad: (any) => void,
+	onLoad: OnLoadFunc,
   onMove: () => void,
   selectionKeyCode: number,
   nodeTypes: NodeTypesType,

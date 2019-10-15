@@ -6,11 +6,11 @@ import { isFunction } from '../../utils'
 import { getNodesInside } from '../../utils/graph';
 import { Node } from '../../types';
 
-type StringFunc = (Node) => string;
+type StringFunc = (node: Node) => string;
 
 interface MiniMapProps {
   style?: CSSProperties;
-  className?: string;
+  className?: string | null;
   bgColor?: string;
   nodeColor?: string | StringFunc;
 };
@@ -32,7 +32,8 @@ export default (
     height: s.height,
     nodes: s.nodes,
     transform: s.transform,
-  }));  const mapClasses = classnames('react-flow__minimap', className);
+  }));
+  const mapClasses = classnames('react-flow__minimap', className);
   const nodePositions = state.nodes.map(n => n.__rg.position);
   const width: number = +(style.width || baseStyle.width || 0);
   const height = (state.height / (state.width || 1)) * width;

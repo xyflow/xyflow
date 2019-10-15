@@ -85,3 +85,28 @@ export interface NodeComponentProps {
   onNodeDragStop: () => any;
   style: CSSProperties;
 };
+
+export type FitViewParams = {
+  padding: number
+};
+export type FitViewFunc = (fitViewOptions: FitViewParams) => void;
+
+type OnLoadParams = {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  fitView: FitViewFunc
+};
+
+export type OnLoadFunc = (params: OnLoadParams) => void;
+
+export type OnConnectParams = {
+  source: ElementId;
+  target: ElementId;
+};
+
+export type OnConnectFunc = (params: OnConnectParams) => void;
+
+export type Connection = {
+  source: ElementId;
+  target: ElementId;
+};

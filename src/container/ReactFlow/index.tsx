@@ -18,7 +18,7 @@ import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
-import { Elements, NodeTypesType, EdgeTypesType, GridType } from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types';
 
 import '../../style.css';
 
@@ -31,7 +31,7 @@ export interface ReactFlowProps {
   onElementsRemove: () => void,
   onNodeDragStop: () => void,
   onConnect: () => void,
-	onLoad: (any) => void,
+	onLoad: OnLoadFunc,
   onMove: () => void,
   nodeTypes: NodeTypesType,
   edgeTypes: EdgeTypesType,

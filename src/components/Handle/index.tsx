@@ -4,17 +4,17 @@ import { useStoreActions, useStoreState } from '../../store/hooks';
 import BaseHandle from './BaseHandle';
 import NodeIdContext from '../../contexts/NodeIdContext'
 
-import { HandleType, ElementId, Position } from '../../types';
+import { HandleType, ElementId, Position, OnConnectParams, OnConnectFunc } from '../../types';
 
 interface HandleProps {
   type: HandleType,
   position: Position,
-  onConnect?: (any) => void,
+  onConnect?: OnConnectFunc,
   isValidConnection?: () => boolean
 };
 
 const Handle = memo(({
-  onConnect = () => {}, type = 'source', position = 'top', isValidConnection = () => true,
+  onConnect = _ => {}, type = 'source', position = 'top', isValidConnection = () => true,
   ...rest
 }: HandleProps) => {
   const nodeId = useContext(NodeIdContext) as ElementId;
@@ -23,7 +23,7 @@ const Handle = memo(({
     setSourceId: a.setConnectionSourceId
   }));
   const onConnectAction = useStoreState(s => s.onConnect);
-  const onConnectExtended = (params) => {
+  const onConnectExtended = (params: OnConnectParams) => {
     onConnectAction(params);
     onConnect(params);
   };

@@ -1,21 +1,25 @@
-import React, { memo } from 'react';
+import React, { memo, MouseEvent as ReactMouseEvent } from 'react';
 import cx from 'classnames';
 
-import { HandleType, ElementId, Position, XYPosition } from '../../types';
+import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection } from '../../types';
+
+type ValidConnectionFunc = (connection: Connection) => boolean;
 
 interface BaseHandleProps {
-  type: HandleType,
-  nodeId: ElementId,
-  onConnect: (any) => void,
-  position: Position,
-  setSourceId: (nodeId: ElementId) => void,
-  setPosition: (pos: XYPosition) => void,
-  isValidConnection: () => boolean
-  id?: ElementId | boolean,
-  className?: string
+  type: HandleType;
+  nodeId: ElementId;
+  onConnect: OnConnectFunc;
+  position: Position;
+  setSourceId: (nodeId: ElementId) => void;
+  setPosition: (pos: XYPosition) => void;
+  isValidConnection: ValidConnectionFunc;
+  id?: ElementId | boolean;
+  className?: string;
 };
 
-function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarget, isValidConnection }) {
+function onMouseDown(
+  evt: ReactMouseEvent, nodeId: ElementId, setSourceId: (nodeId: ElementId) => void, setPosition: (pos: XYPosition) => any,
+  onConnect: OnConnectFunc, isTarget: boolean, isValidConnection: ValidConnectionFunc): void {
   const reactFlowNode = document.querySelector('.react-flow');
 
   if (!reactFlowNode) {
@@ -41,7 +45,7 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
   }
 
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
-  function checkElementBelowIsValid(evt) {
+  function checkElementBelowIsValid(evt: MouseEvent) {
     const elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
     const result = {
       elementBelow,
@@ -71,7 +75,7 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
     return result;
   }
 
-  function onMouseMove(evt) {
+  function onMouseMove(evt: MouseEvent) {
     setPosition({
       x: evt.clientX - containerBounds.left,
       y: evt.clientY - containerBounds.top,
@@ -92,7 +96,7 @@ function onMouseDown(evt, { nodeId, setSourceId, setPosition, onConnect, isTarg
     }
   }
 
-  function onMouseUp(evt) {
+  function onMouseUp(evt: MouseEvent) {
     const { connection, isValid } = checkElementBelowIsValid(evt);
 
     if (isValid) {
@@ -130,10 +134,10 @@ const BaseHandle = memo(({
       data-nodeid={nodeIdWithHandleId}
       data-handlepos={position}
       className={handleClasses}
-      onMouseDown={evt => onMouseDown(evt, {
-        nodeId: nodeIdWithHandleId, setSourceId, setPosition,
+      onMouseDown={evt => onMouseDown(evt,
+        nodeIdWithHandleId, setSourceId, setPosition,
         onConnect, isTarget, isValidConnection
-      })}
+      )}
       {...rest}
     />
   );
