@@ -125,3 +125,13 @@ export interface HandleElement {
   width: number;
   height: number;
 };
+
+export interface EdgeWrapperProps {
+  id: ElementId,
+  source: ElementId,
+  target: ElementId,
+  type: any,
+  onClick?: (edge: Edge) => void
+  animated?: boolean,
+  selected?: boolean,
+};

@@ -3,17 +3,7 @@ import cx from 'classnames';
 
 import { isInputDOMNode } from '../../utils';
 import store from '../../store';
-import { ElementId, Edge } from '../../types';
-
-interface EdgeWrapperProps {
-  id: ElementId,
-  source: ElementId,
-  target: ElementId,
-  type: any,
-  onClick?: (edge: Edge) => void
-  animated?: boolean,
-  selected?: boolean,
-};
+import { EdgeWrapperProps } from '../../types';
 
 export default (EdgeComponent: ComponentType<EdgeWrapperProps>) => {
   const EdgeWrapper = memo(({

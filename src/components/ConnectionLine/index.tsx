@@ -1,7 +1,7 @@
 import React, { useEffect, useState, SVGAttributes } from 'react';
 import cx from 'classnames';
 
-import { ElementId, Node, Transform } from '../../types';
+import { ElementId, Node, Transform, HandleElement } from '../../types';
 
 interface ConnectionLineProps {
   connectionSourceId: ElementId;
@@ -35,7 +35,9 @@ export default ({
 
   const edgeClasses: string = cx('react-flow__edge', 'connection', className);
 
-  const sourceHandle = handleId ? sourceNode.__rg.handleBounds.source.find(d => d.id === handleId) : sourceNode.__rg.handleBounds.source[0];
+  const sourceHandle = handleId ?
+    sourceNode.__rg.handleBounds.source.find((d: HandleElement) => d.id === handleId) :
+    sourceNode.__rg.handleBounds.source[0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + (sourceHandle.width / 2) : sourceNode.__rg.width / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + (sourceHandle.height / 2) : sourceNode.__rg.height;
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;

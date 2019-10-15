@@ -5801,7 +5801,7 @@ var storeModel = {
     d3Initialised: false,
     nodesSelectionActive: false,
     selectionActive: false,
-    selection: {},
+    selection: null,
     connectionSourceId: null,
     connectionPosition: { x: 0, y: 0 },
     onConnect: function () { },
@@ -5883,16 +5883,12 @@ var storeModel = {
 };
 var store = createStore$1(storeModel);
 
-var isFunction = function (obj) { return !!(obj && obj.constructor && obj.call && obj.apply); };
-var isDefined = function (obj) { return typeof obj !== 'undefined'; };
-var isInputDOMNode = function (e) { return e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName); };
-var getDimensions = function (node) { return ({
-    width: node.offsetWidth,
-    height: node.offsetHeight
-}); };
-
-var isEdge = function (element) { return element.source && element.target; };
-var isNode = function (element) { return !element.source && !element.target; };
+var isEdge = function (element) {
+    return element.hasOwnProperty('source') && element.hasOwnProperty('target');
+};
+var isNode = function (element) {
+    return !element.hasOwnProperty('source') && !element.hasOwnProperty('target');
+};
 var getOutgoers = function (node, elements) {
     if (!isNode(node)) {
         return [];
@@ -5902,20 +5898,25 @@ var getOutgoers = function (node, elements) {
 };
 var removeElements = function (elementsToRemove, elements) {
     var nodeIdsToRemove = elementsToRemove.map(function (n) { return n.id; });
-    return elements.filter(function (e) {
-        return (!nodeIdsToRemove.includes(e.id) &&
-            !nodeIdsToRemove.includes(e.target) &&
-            !nodeIdsToRemove.includes(e.source));
+    return elements.filter(function (element) {
+        var removeId = nodeIdsToRemove.includes(element.id);
+        var removeEdge = false;
+        if (isEdge(element)) {
+            var edgeElement = element;
+            removeEdge = (nodeIdsToRemove.includes(edgeElement.target) ||
+                nodeIdsToRemove.includes(edgeElement.source));
+        }
+        return removeId || removeEdge;
     });
 };
-function getEdgeId(params) {
-    return "reactflow__edge-" + params.source + "-" + params.target;
+function getEdgeId(edgeParams) {
+    return "reactflow__edge-" + edgeParams.source + "-" + edgeParams.target;
 }
 var addEdge = function (edgeParams, elements) {
     if (!edgeParams.source || !edgeParams.target) {
         throw new Error('Can not create edge. An edge needs a source and a target');
     }
-    return elements.concat(__assign(__assign({}, edgeParams), { id: isDefined(edgeParams.id) ? edgeParams.id : getEdgeId(edgeParams) }));
+    return elements.concat(__assign(__assign({}, edgeParams), { id: typeof edgeParams.id !== 'undefined' ? edgeParams.id : getEdgeId(edgeParams) }));
 };
 var pointToRendererPoint = function (_a, transform) {
     var x = _a.x, y = _a.y;
@@ -5926,15 +5927,16 @@ var pointToRendererPoint = function (_a, transform) {
         y: rendererY
     };
 };
-var parseElement = function (e, transform) {
-    if (!e.id) {
+var parseElement = function (element, transform) {
+    if (!element.id) {
         throw new Error('All elements (nodes and edges) need to have an id.');
     }
-    if (isEdge(e)) {
-        return __assign(__assign({}, e), { id: e.id.toString(), type: e.type || 'default' });
+    if (isEdge(element)) {
+        return __assign(__assign({}, element), { id: element.id.toString(), type: element.type || 'default' });
     }
-    return __assign(__assign({}, e), { id: e.id.toString(), type: e.type || 'default', __rg: {
-            position: pointToRendererPoint(e.position, transform),
+    var nodeElement = element;
+    return __assign(__assign({}, nodeElement), { id: nodeElement.id.toString(), type: nodeElement.type || 'default', __rg: {
+            position: pointToRendererPoint(nodeElement.position, transform),
             width: null,
             height: null,
             handleBounds: {}
@@ -5974,8 +5976,8 @@ var getBoundingBox = function (nodes) {
 var getNodesInside = function (nodes, bbox, transform, partially) {
     if (transform === void 0) { transform = [0, 0, 1]; }
     if (partially === void 0) { partially = false; }
-    return nodes.
-        filter(function (n) {
+    return nodes
+        .filter(function (n) {
         var bboxPos = {
             x: (bbox.x - transform[0]) * (1 / transform[2]),
             y: (bbox.y - transform[1]) * (1 / transform[2])
@@ -6002,7 +6004,7 @@ var getConnectedEdges = function (nodes, edges) {
     });
 };
 var fitView = function (_a) {
-    var _b = (_a === void 0 ? {} : _a).padding, padding = _b === void 0 ? 0 : _b;
+    var padding = (_a === void 0 ? { padding: 0 } : _a).padding;
     var state = store.getState();
     var bounds = getBoundingBox(state.nodes);
     var maxBoundsSize = Math.max(bounds.width, bounds.height);
@@ -6195,8 +6197,7 @@ function getHandle(bounds, handleId) {
     }
     return handle;
 }
-function getEdgePositions(_a) {
-    var sourceNode = _a.sourceNode, sourceHandle = _a.sourceHandle, sourcePosition = _a.sourcePosition, targetNode = _a.targetNode, targetHandle = _a.targetHandle, targetPosition = _a.targetPosition;
+function getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition) {
     var sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
     var sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;
     var sourceY = sourceNode.__rg.position.y + sourceHandlePos.y;
@@ -6228,10 +6229,7 @@ function renderEdge(edge, props, state) {
     var targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
     var sourcePosition = sourceHandle ? sourceHandle.position : 'bottom';
     var targetPosition = targetHandle ? targetHandle.position : 'top';
-    var _a = getEdgePositions({
-        sourceNode: sourceNode, sourceHandle: sourceHandle, sourcePosition: sourcePosition,
-        targetNode: targetNode, targetHandle: targetHandle, targetPosition: targetPosition
-    }), sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY;
+    var _a = getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition), sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY;
     var selected = state.selectedElements
         .filter(isEdge)
         .find(function (elm) { return elm.source === sourceId && elm.target === targetId; });
@@ -9026,7 +9024,7 @@ var NodesSelection = React.memo(function () {
     return (React__default.createElement("div", { className: "react-flow__nodesselection", style: {
             transform: "translate(" + x + "px," + y + "px) scale(" + k + ")"
         } },
-        React__default.createElement(reactDraggable, { scale: k, onStart: onStart, onDrag: onDrag },
+        React__default.createElement(reactDraggable, { scale: k, onStart: function (evt) { return onStart(evt); }, onDrag: function (evt) { return onDrag(evt); } },
             React__default.createElement("div", { className: "react-flow__nodesselection-rect", style: {
                     width: state.selectedNodesBbox.width,
                     height: state.selectedNodesBbox.height,
@@ -9083,15 +9081,24 @@ var Grid = React.memo(function (_a) {
 });
 Grid.displayName = 'Grid';
 
+var isInputDOMNode = function (e) {
+    var target = e.target;
+    return e && target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName);
+};
+var getDimensions = function (node) { return ({
+    width: node.offsetWidth,
+    height: node.offsetHeight
+}); };
+
 var useKeyPress = (function (keyCode) {
     var _a = React.useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
     function downHandler(evt) {
-        if (evt.keyCode === keyCode && !isInputDOMNode(evt.target)) {
+        if (evt.keyCode === keyCode && !isInputDOMNode(evt)) {
             setKeyPressed(true);
         }
     }
     var upHandler = function (evt) {
-        if (evt.keyCode === keyCode && !isInputDOMNode(evt.target)) {
+        if (evt.keyCode === keyCode && !isInputDOMNode(evt)) {
             setKeyPressed(false);
         }
     };
@@ -9157,7 +9164,8 @@ var useGlobalKeyHandler = (function (_a) {
             var elementsToRemove = state.selectedElements;
             // we also want to remove the edges if only one node is selected
             if (state.selectedElements.length === 1 && !isEdge(state.selectedElements[0])) {
-                var connectedEdges = getConnectedEdges(state.selectedElements, state.edges);
+                var node = state.selectedElements[0];
+                var connectedEdges = getConnectedEdges([node], state.edges);
                 elementsToRemove = __spreadArrays(state.selectedElements, connectedEdges);
             }
             onElementsRemove(elementsToRemove);
@@ -9177,7 +9185,7 @@ var useElementUpdater = function (elements) {
     var setEdges = useStoreActions$1(function (a) { return a.setEdges; });
     React.useEffect(function () {
         var nodes = elements.filter(isNode);
-        var edges = elements.filter(isEdge).map(parseElement);
+        var edges = elements.filter(isEdge).map(function (e) { return parseElement(e); });
         var nextNodes = nodes.map(function (propNode) {
             var existingNode = state.nodes.find(function (n) { return n.id === propNode.id; });
             if (existingNode) {
@@ -9249,8 +9257,7 @@ var GraphView = React.memo(function (_a) {
 });
 GraphView.displayName = 'GraphView';
 
-function onMouseDown(evt, _a) {
-    var nodeId = _a.nodeId, setSourceId = _a.setSourceId, setPosition = _a.setPosition, onConnect = _a.onConnect, isTarget = _a.isTarget, isValidConnection = _a.isValidConnection;
+function onMouseDown(evt, nodeId, setSourceId, setPosition, onConnect, isTarget, isValidConnection) {
     var reactFlowNode = document.querySelector('.react-flow');
     if (!reactFlowNode) {
         return null;
@@ -9329,10 +9336,7 @@ var BaseHandle = React.memo(function (_a) {
     var isTarget = type === 'target';
     var handleClasses = classnames('react-flow__handle', className, position, { source: !isTarget, target: isTarget });
     var nodeIdWithHandleId = id ? nodeId + "__" + id : nodeId;
-    return (React__default.createElement("div", __assign({ "data-nodeid": nodeIdWithHandleId, "data-handlepos": position, className: handleClasses, onMouseDown: function (evt) { return onMouseDown(evt, {
-            nodeId: nodeIdWithHandleId, setSourceId: setSourceId, setPosition: setPosition,
-            onConnect: onConnect, isTarget: isTarget, isValidConnection: isValidConnection
-        }); } }, rest)));
+    return (React__default.createElement("div", __assign({ "data-nodeid": nodeIdWithHandleId, "data-handlepos": position, className: handleClasses, onMouseDown: function (evt) { return onMouseDown(evt, nodeIdWithHandleId, setSourceId, setPosition, onConnect, isTarget, isValidConnection); } }, rest)));
 });
 BaseHandle.displayName = 'BaseHandle';
 
@@ -9341,7 +9345,7 @@ var Provider = NodeIdContext.Provider;
 var Consumer = NodeIdContext.Consumer;
 
 var Handle = React.memo(function (_a) {
-    var _b = _a.onConnect, onConnect = _b === void 0 ? function () { } : _b, _c = _a.type, type = _c === void 0 ? 'source' : _c, _d = _a.position, position = _d === void 0 ? 'top' : _d, _e = _a.isValidConnection, isValidConnection = _e === void 0 ? function () { return true; } : _e, rest = __rest(_a, ["onConnect", "type", "position", "isValidConnection"]);
+    var _b = _a.onConnect, onConnect = _b === void 0 ? function (_) { } : _b, _c = _a.type, type = _c === void 0 ? 'source' : _c, _d = _a.position, position = _d === void 0 ? 'top' : _d, _e = _a.isValidConnection, isValidConnection = _e === void 0 ? function () { return true; } : _e, rest = __rest(_a, ["onConnect", "type", "position", "isValidConnection"]);
     var nodeId = React.useContext(NodeIdContext);
     var _f = useStoreActions$1(function (a) { return ({
         setPosition: a.setConnectionPosition,
@@ -9653,9 +9657,12 @@ unwrapExports(ResizeObserver_1);
 var ResizeObserver_2 = ResizeObserver_1.ResizeObserver;
 var ResizeObserver_3 = ResizeObserver_1.install;
 
-var isHandle = function (e) { return (e.target.className &&
-    e.target.className.includes &&
-    (e.target.className.includes('source') || e.target.className.includes('target'))); };
+var isHandle = function (evt) {
+    var target = evt.target;
+    return (target.className &&
+        target.className.includes &&
+        (target.className.includes('source') || target.className.includes('target')));
+};
 var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
     var handles = nodeElement.querySelectorAll(selector);
     if (!handles || !handles.length) {
@@ -9669,13 +9676,12 @@ var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
         var nodeIdSplitted = nodeIdAttr.split('__');
         var handleId = null;
         if (nodeIdSplitted) {
-            handleId = nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted;
+            handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted);
         }
-        return __assign({ id: handleId, position: handlePosition, x: (bounds.x - parentBounds.x) * (1 / k), y: (bounds.y - parentBounds.y) * (1 / k) }, dimensions);
+        return __assign({ id: handleId, position: handlePosition, x: (bounds.left - parentBounds.left) * (1 / k), y: (bounds.top - parentBounds.top) * (1 / k) }, dimensions);
     });
 };
-var onStart = function (evt, _a) {
-    var setOffset = _a.setOffset, onClick = _a.onClick, id = _a.id, type = _a.type, data = _a.data, position = _a.position, transform = _a.transform;
+var onStart = function (evt, onClick, id, type, data, setOffset, transform, position) {
     if (!isInputDOMNode(evt) && !isHandle(evt)) {
         var scaledClient = {
             x: evt.clientX * (1 / transform[2]),
@@ -9689,8 +9695,7 @@ var onStart = function (evt, _a) {
         onClick(node);
     }
 };
-var onDrag = function (evt, _a) {
-    var setDragging = _a.setDragging, id = _a.id, offset = _a.offset, transform = _a.transform;
+var onDrag = function (evt, setDragging, id, offset, transform) {
     var scaledClient = {
         x: evt.clientX * (1 / transform[2]),
         y: evt.clientY * (1 / transform[2])
@@ -9701,8 +9706,7 @@ var onDrag = function (evt, _a) {
             y: scaledClient.y - transform[1] - offset.y
         } });
 };
-var onStop = function (_a) {
-    var onNodeDragStop = _a.onNodeDragStop, setDragging = _a.setDragging, isDragging = _a.isDragging, id = _a.id, type = _a.type, position = _a.position, data = _a.data;
+var onStop = function (onNodeDragStop, isDragging, setDragging, id, type, position, data) {
     if (isDragging) {
         setDragging(false);
         onNodeDragStop({
@@ -9749,7 +9753,7 @@ var wrapNode = (function (NodeComponent) {
                 };
             }
         }, [nodeElement.current]);
-        return (React__default.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, { onClick: onClick, id: id, type: type, data: data, setOffset: setOffset, transform: transform, position: position }); }, onDrag: function (evt) { return onDrag(evt, { setDragging: setDragging, id: id, offset: offset, transform: transform }); }, onStop: function () { return onStop({ onNodeDragStop: onNodeDragStop, isDragging: isDragging, setDragging: setDragging, id: id, type: type, position: position, data: data }); }, scale: transform[2] },
+        return (React__default.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, onClick, id, type, data, setOffset, transform, position); }, onDrag: function (evt) { return onDrag(evt, setDragging, id, offset, transform); }, onStop: function () { return onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data); }, scale: transform[2] },
             React__default.createElement("div", { className: nodeClasses, ref: nodeElement, style: nodeStyle },
                 React__default.createElement(Provider, { value: id },
                     React__default.createElement(NodeComponent, { id: id, data: data, type: type, style: style, selected: selected })))));
@@ -9760,15 +9764,15 @@ var wrapNode = (function (NodeComponent) {
 
 function createNodeTypes(nodeTypes) {
     var standardTypes = {
-        input: wrapNode(nodeTypes.input || InputNode),
-        default: wrapNode(nodeTypes.default || DefaultNode),
-        output: wrapNode(nodeTypes.output || OutputNode)
+        input: wrapNode((nodeTypes.input || InputNode)),
+        default: wrapNode((nodeTypes.default || DefaultNode)),
+        output: wrapNode((nodeTypes.output || OutputNode))
     };
     var specialTypes = Object
         .keys(nodeTypes)
         .filter(function (k) { return !['input', 'default', 'output'].includes(k); })
         .reduce(function (res, key) {
-        res[key] = wrapNode(nodeTypes[key] || DefaultNode);
+        res[key] = wrapNode((nodeTypes[key] || DefaultNode));
         return res;
     }, {});
     return __assign(__assign({}, standardTypes), specialTypes);
@@ -9822,14 +9826,14 @@ var wrapEdge = (function (EdgeComponent) {
 
 function createEdgeTypes(edgeTypes) {
     var standardTypes = {
-        default: wrapEdge(edgeTypes.default || BezierEdge),
-        straight: wrapEdge(edgeTypes.bezier || StraightEdge)
+        default: wrapEdge((edgeTypes.default || BezierEdge)),
+        straight: wrapEdge((edgeTypes.bezier || StraightEdge))
     };
     var specialTypes = Object
         .keys(edgeTypes)
         .filter(function (k) { return !['default', 'bezier'].includes(k); })
         .reduce(function (res, key) {
-        res[key] = wrapEdge(edgeTypes[key] || BezierEdge);
+        res[key] = wrapEdge((edgeTypes[key] || BezierEdge));
         return res;
     }, {});
     return __assign(__assign({}, standardTypes), specialTypes);
@@ -9928,7 +9932,7 @@ var index = (function (_a) {
     var height = (state.height / (state.width || 1)) * width;
     var bbox = { x: 0, y: 0, width: state.width, height: state.height };
     var scaleFactor = width / state.width;
-    var nodeColorFunc = (isFunction(nodeColor) ? nodeColor : function () { return nodeColor; });
+    var nodeColorFunc = (nodeColor instanceof Function ? nodeColor : function () { return nodeColor; });
     React.useEffect(function () {
         if (canvasNode && canvasNode.current) {
             var ctx_1 = canvasNode.current.getContext('2d');
