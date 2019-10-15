@@ -21,19 +21,13 @@ export const getOutgoers = (node: Node, elements: Elements): Elements => {
 export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {
   const nodeIdsToRemove = elementsToRemove.map(n => n.id);
 
-  return elements.filter(element => {
-    const removeId = nodeIdsToRemove.includes(element.id);
-    let removeEdge = false;
-
-    if (isEdge(element)) {
-      const edgeElement = element as Edge;
-      removeEdge = (
-        nodeIdsToRemove.includes(edgeElement.target) ||
-        nodeIdsToRemove.includes(edgeElement.source)
-      );
-    };
-
-    return removeId || removeEdge;
+  return elements.filter((element) => {
+    const edgeElement = element as Edge;
+    return !(
+      nodeIdsToRemove.includes(element.id) ||
+      nodeIdsToRemove.includes(edgeElement.target) ||
+      nodeIdsToRemove.includes(edgeElement.source)
+    );
   });
 };
 
