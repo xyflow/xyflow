@@ -17,6 +17,13 @@ interface BaseHandleProps {
   className?: string;
 };
 
+type Result = {
+  elementBelow: Element;
+  isValid: boolean;
+  connection: Connection;
+  isHoveringHandle: boolean;
+};
+
 function onMouseDown(
   evt: ReactMouseEvent, nodeId: ElementId, setSourceId: (nodeId: ElementId) => void, setPosition: (pos: XYPosition) => any,
   onConnect: OnConnectFunc, isTarget: boolean, isValidConnection: ValidConnectionFunc): void {
@@ -27,7 +34,7 @@ function onMouseDown(
   }
 
   const containerBounds = reactFlowNode.getBoundingClientRect();
-  let recentHoveredHandle = null;
+  let recentHoveredHandle: Element = null;
 
   setPosition({
     x: evt.clientX - containerBounds.left,
@@ -47,7 +54,7 @@ function onMouseDown(
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
   function checkElementBelowIsValid(evt: MouseEvent) {
     const elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
-    const result = {
+    const result: Result = {
       elementBelow,
       isValid: false,
       connection: { source: null, target: null },
@@ -55,7 +62,7 @@ function onMouseDown(
     };
 
     if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
-      let connection = { source: null, target: null };
+      let connection: Connection = { source: null, target: null };
 
       if (isTarget) {
         const sourceId = elementBelow.getAttribute('data-nodeid');

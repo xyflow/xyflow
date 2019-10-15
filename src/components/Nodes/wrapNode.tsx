@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo } from 'react';
+import React, { useEffect, useRef, useState, memo, ComponentType } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';

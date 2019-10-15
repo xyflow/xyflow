@@ -34,6 +34,12 @@ export interface Rect extends Dimensions {
   y: number
 };
 
+export interface SelectionRect extends Rect {
+  startX: number;
+  startY: number;
+  draw: boolean
+};
+
 export interface Node {
   id: ElementId,
   position?: XYPosition,

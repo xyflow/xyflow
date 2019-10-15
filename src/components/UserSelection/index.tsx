@@ -1,13 +1,7 @@
 import React, { useEffect, useRef, useState, memo, MouseEvent } from 'react';
 
 import { useStoreActions } from '../../store/hooks';
-import { Rect } from '../../types';
-
-interface SelectionRect extends Rect {
-  startX: number;
-  startY: number;
-  draw: boolean
-}
+import { SelectionRect } from '../../types';
 
 const initialRect: SelectionRect = {
   startX: 0,

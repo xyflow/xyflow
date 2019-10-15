@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, MutableRefObject } from 'react';
 import * as d3Zoom from 'd3-zoom';
 import { select, event } from 'd3-selection';
 
@@ -9,7 +9,7 @@ const d3ZoomInstance = d3Zoom
   .scaleExtent([0.5, 2])
   .filter(() => !event.button);
 
-export default (zoomPane, onMove, shiftPressed) => {
+export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, shiftPressed: boolean) => {
   const state = useStoreState(s => ({
     transform: s.transform,
     d3Selection: s.d3Selection,

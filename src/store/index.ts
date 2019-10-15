@@ -1,10 +1,12 @@
 import { createStore, Action, action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
+import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { getBoundingBox, getNodesInside, getConnectedEdges } from '../utils/graph';
 import {
   ElementId, Elements, Transform, Node,
-  Edge, Rect, Dimensions, XYPosition
+  Edge, Rect, Dimensions, XYPosition,
+  OnConnectFunc, SelectionRect
 } from '../types';
 
 type TransformXYK = {
@@ -29,16 +31,14 @@ type NodeUpdate = {
 };
 
 type SelectionUpdate = {
-  isActive: boolean,
-  selection?: any;
+  isActive: boolean;
+  selection?: SelectionRect;
 };
 
 type D3Init = {
-  zoom: any,
-  selection: any
+  zoom: ZoomBehavior<Element, unknown>;
+  selection: D3Selection<Element, unknown, null, undefined>;
 };
-
-type OnConnectUpdate = () => void;
 
 export interface StoreModel {
   width: number;
@@ -46,23 +46,23 @@ export interface StoreModel {
   transform: Transform;
   nodes: Node[];
   edges: Edge[];
-  selectedElements: any[];
+  selectedElements: Elements | Node | Edge;
   selectedNodesBbox: Rect;
 
-  d3Zoom: any;
-  d3Selection: any;
+  d3Zoom: ZoomBehavior<Element, unknown>;
+  d3Selection: D3Selection<Element, unknown, null, undefined>;
   d3Initialised: boolean;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
-  selection: any;
+  selection: SelectionRect | null;
 
   connectionSourceId: ElementId | null;
   connectionPosition: XYPosition;
 
-  onConnect: (any) => void;
+  onConnect: OnConnectFunc;
 
-  setOnConnect: Action<StoreModel, OnConnectUpdate>;
+  setOnConnect: Action<StoreModel, OnConnectFunc>;
 
   setNodes: Action<StoreModel, Node[]>;
 
@@ -78,7 +78,7 @@ export interface StoreModel {
 
   setSelectedElements: Action<StoreModel, Elements|Node|Edge>
 
-  updateSelection: Action<StoreModel, Rect>;
+  updateSelection: Action<StoreModel, SelectionRect>;
 
   updateTransform: Action<StoreModel, TransformXYK>;
 
@@ -106,7 +106,7 @@ const storeModel: StoreModel = {
 
   nodesSelectionActive: false,
   selectionActive: false,
-  selection: {},
+  selection: null,
 
   connectionSourceId: null,
   connectionPosition: { x: 0, y: 0 },
