@@ -26,7 +26,8 @@ type Result = {
 
 function onMouseDown(
   evt: ReactMouseEvent, nodeId: ElementId, setSourceId: (nodeId: ElementId) => void, setPosition: (pos: XYPosition) => any,
-  onConnect: OnConnectFunc, isTarget: boolean, isValidConnection: ValidConnectionFunc): void {
+  onConnect: OnConnectFunc, isTarget: boolean, isValidConnection: ValidConnectionFunc
+): void {
   const reactFlowNode = document.querySelector('.react-flow');
 
   if (!reactFlowNode) {

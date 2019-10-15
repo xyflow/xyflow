@@ -8656,18 +8656,19 @@ var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
     });
 };
 var onStart = function (evt, onClick, id, type, data, setOffset, transform, position) {
-    if (!isInputDOMNode(evt) && !isHandle(evt)) {
-        var scaledClient = {
-            x: evt.clientX * (1 / transform[2]),
-            y: evt.clientY * (1 / transform[2])
-        };
-        var offsetX = scaledClient.x - position.x - transform[0];
-        var offsetY = scaledClient.y - position.y - transform[1];
-        var node = { id: id, type: type, position: position, data: data };
-        store.dispatch.setSelectedElements({ id: id, type: type });
-        setOffset({ x: offsetX, y: offsetY });
-        onClick(node);
+    if (isInputDOMNode(evt) || isHandle(evt)) {
+        return false;
     }
+    var scaledClient = {
+        x: evt.clientX * (1 / transform[2]),
+        y: evt.clientY * (1 / transform[2])
+    };
+    var offsetX = scaledClient.x - position.x - transform[0];
+    var offsetY = scaledClient.y - position.y - transform[1];
+    var node = { id: id, type: type, position: position, data: data };
+    store.dispatch.setSelectedElements({ id: id, type: type });
+    setOffset({ x: offsetX, y: offsetY });
+    onClick(node);
 };
 var onDrag = function (evt, setDragging, id, offset, transform) {
     var scaledClient = {
