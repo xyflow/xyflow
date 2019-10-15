@@ -53,20 +53,22 @@ const getHandleBounds = (
 const onStart = (
   evt: MouseEvent, onClick: (node: Node) => void, id: ElementId, type: string,
   data: any, setOffset: (pos: XYPosition) => void, transform: Transform, position: XYPosition
-): void => {
-  if (!isInputDOMNode(evt) && !isHandle(evt)) {
-    const scaledClient: XYPosition = {
-      x: evt.clientX * (1 / transform[2]),
-      y: evt.clientY * (1 / transform[2])
-    };
-    const offsetX = scaledClient.x - position.x - transform[0];
-    const offsetY = scaledClient.y - position.y - transform[1];
-    const node = { id, type, position, data };
-
-    store.dispatch.setSelectedElements({ id, type });
-    setOffset({ x: offsetX, y: offsetY });
-    onClick(node);
+): false | void => {
+  if (isInputDOMNode(evt) || isHandle(evt)) {
+    return false;
   }
+
+  const scaledClient: XYPosition = {
+    x: evt.clientX * (1 / transform[2]),
+    y: evt.clientY * (1 / transform[2])
+  };
+  const offsetX = scaledClient.x - position.x - transform[0];
+  const offsetY = scaledClient.y - position.y - transform[1];
+  const node = { id, type, position, data };
+
+  store.dispatch.setSelectedElements({ id, type });
+  setOffset({ x: offsetX, y: offsetY });
+  onClick(node);
 };
 
 const onDrag = (
