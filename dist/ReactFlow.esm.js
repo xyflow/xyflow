@@ -5878,7 +5878,7 @@ var store = createStore$1(storeModel);
 
 var isFunction = function (obj) { return !!(obj && obj.constructor && obj.call && obj.apply); };
 var isDefined = function (obj) { return typeof obj !== 'undefined'; };
-var inInputDOMNode = function (e) { return e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName); };
+var isInputDOMNode = function (e) { return e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName); };
 var getDimensions = function (node) { return ({
     width: node.offsetWidth,
     height: node.offsetHeight
@@ -9079,12 +9079,12 @@ Grid.displayName = 'Grid';
 var useKeyPress = (function (keyCode) {
     var _a = useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
     function downHandler(evt) {
-        if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
+        if (evt.keyCode === keyCode && !isInputDOMNode(evt.target)) {
             setKeyPressed(true);
         }
     }
     var upHandler = function (evt) {
-        if (evt.keyCode === keyCode && !inInputDOMNode(evt.target)) {
+        if (evt.keyCode === keyCode && !isInputDOMNode(evt.target)) {
             setKeyPressed(false);
         }
     };
@@ -9669,7 +9669,7 @@ var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
 };
 var onStart = function (evt, _a) {
     var setOffset = _a.setOffset, onClick = _a.onClick, id = _a.id, type = _a.type, data = _a.data, position = _a.position, transform = _a.transform;
-    if (!inInputDOMNode(evt) && !isHandle(evt)) {
+    if (!isInputDOMNode(evt) && !isHandle(evt)) {
         var scaledClient = {
             x: evt.clientX * (1 / transform[2]),
             y: evt.clientY * (1 / transform[2])
@@ -9800,7 +9800,7 @@ var wrapEdge = (function (EdgeComponent) {
         var id = _a.id, source = _a.source, target = _a.target, type = _a.type, animated = _a.animated, selected = _a.selected, onClick = _a.onClick, rest = __rest(_a, ["id", "source", "target", "type", "animated", "selected", "onClick"]);
         var edgeClasses = classnames('react-flow__edge', { selected: selected, animated: animated });
         var onEdgeClick = function (evt) {
-            if (inInputDOMNode(evt)) {
+            if (isInputDOMNode(evt)) {
                 return false;
             }
             store.dispatch.setSelectedElements({ id: id, source: source, target: target });

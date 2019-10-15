@@ -32,7 +32,7 @@ export default memo(() => {
   const [x, y, k] = state.transform;
   const position = state.selectedNodesBbox;
 
-  const onStart = (evt) => {
+  const onStart = (evt: MouseEvent) => {
     const scaledClient: XYPosition = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
@@ -45,8 +45,8 @@ export default memo(() => {
     setStartPositions(startPositions);
   };
 
-  const onDrag = (evt) => {
-    const scaledClient : XYPosition = {
+  const onDrag = (evt: MouseEvent) => {
+    const scaledClient: XYPosition = {
       x: evt.clientX * (1 / k),
       y: evt.clientY * (1 / k)
     };
@@ -70,8 +70,8 @@ export default memo(() => {
     >
       <ReactDraggable
         scale={k}
-        onStart={onStart}
-        onDrag={onDrag}
+        onStart={(evt: MouseEvent) => onStart(evt)}
+        onDrag={(evt: MouseEvent) => onDrag(evt)}
       >
         <div
           className="react-flow__nodesselection-rect"

@@ -1,52 +1,61 @@
 import React, { useEffect, useRef, useState, memo, ComponentType } from 'react';
-import { DraggableCore } from 'react-draggable';
+import { DraggableCore, DraggableEvent } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
 
-import { getDimensions, inInputDOMNode } from '../../utils';
+import { getDimensions, isInputDOMNode } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
-import { NodeComponentProps } from '../../types';
+import { NodeComponentProps, Node, XYPosition, HandleElement, Position, Transform, ElementId } from '../../types';
 
-const isHandle = (e) => (
-  e.target.className &&
-  e.target.className.includes &&
-  (e.target.className.includes('source') || e.target.className.includes('target'))
-);
+const isHandle = (evt: MouseEvent | DraggableEvent) => {
+  const target = evt.target as HTMLElement;
 
-const getHandleBounds = (selector: string, nodeElement: any, parentBounds: any, k: number) => {
+  return (
+    target.className &&
+    target.className.includes &&
+    (target.className.includes('source') || target.className.includes('target'))
+  );
+};
+
+const getHandleBounds = (
+  selector: string, nodeElement: HTMLDivElement, parentBounds: ClientRect | DOMRect, k: number
+): HandleElement => {
   const handles = nodeElement.querySelectorAll(selector);
 
   if (!handles || !handles.length) {
     return null;
   }
 
-  return [].map.call(handles, (handle) => {
+  return [].map.call(handles, (handle: HTMLDivElement): HandleElement => {
     const bounds = handle.getBoundingClientRect();
     const dimensions = getDimensions(handle);
     const nodeIdAttr = handle.getAttribute('data-nodeid');
-    const handlePosition = handle.getAttribute('data-handlepos');
+    const handlePosition = handle.getAttribute('data-handlepos') as unknown as Position;
     const nodeIdSplitted = nodeIdAttr.split('__');
 
     let handleId = null;
 
     if (nodeIdSplitted) {
-      handleId = nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted;
+      handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted) as string;
     }
 
     return {
       id: handleId,
       position: handlePosition,
-      x: (bounds.x - parentBounds.x) * (1 / k),
-      y: (bounds.y - parentBounds.y) * (1 / k),
+      x: (bounds.left - parentBounds.left) * (1 / k),
+      y: (bounds.top - parentBounds.top) * (1 / k),
       ...dimensions
     };
   });
 };
 
-const onStart = (evt, { setOffset, onClick, id, type, data, position, transform }): void => {
-  if (!inInputDOMNode(evt) && !isHandle(evt)) {
-    const scaledClient = {
+const onStart = (
+  evt: MouseEvent, onClick: (node: Node) => void, id: ElementId, type: string,
+  data: any, setOffset: (pos: XYPosition) => void, transform: Transform, position: XYPosition
+): void => {
+  if (!isInputDOMNode(evt) && !isHandle(evt)) {
+    const scaledClient: XYPosition = {
       x: evt.clientX * (1 / transform[2]),
       y: evt.clientY * (1 / transform[2])
     };
@@ -60,7 +69,10 @@ const onStart = (evt, { setOffset, onClick, id, type, data, position, transform 
   }
 };
 
-const onDrag = (evt, { setDragging, id, offset, transform }): void => {
+const onDrag = (
+  evt: MouseEvent, setDragging: (isDragging: boolean) => void, id: ElementId, offset: XYPosition,
+  transform: Transform
+): void => {
   const scaledClient = {
     x: evt.clientX * (1 / transform[2]),
     y: evt.clientY * (1 / transform[2])
@@ -73,7 +85,10 @@ const onDrag = (evt, { setDragging, id, offset, transform }): void => {
   }});
 };
 
-const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, data }): void => {
+const onStop = (
+  onNodeDragStop: (params: Node) => void, isDragging: boolean, setDragging: (isDragging: boolean) => void, id: ElementId,
+  type: string, position: XYPosition, data: any
+): void => {
   if (isDragging) {
     setDragging(false);
     onNodeDragStop({
@@ -82,7 +97,7 @@ const onStop = ({ onNodeDragStop, setDragging, isDragging, id, type, position, d
   }
 };
 
-export default NodeComponent => {
+export default (NodeComponent: ComponentType<NodeComponentProps>) => {
   const NodeWrapper = memo(({
     id, type, data, transform,
     xPos, yPos, selected, onClick,
@@ -133,9 +148,9 @@ export default NodeComponent => {
 
     return (
       <DraggableCore
-        onStart={evt => onStart(evt, { onClick, id, type, data, setOffset, transform, position })}
-        onDrag={evt => onDrag(evt, { setDragging, id, offset, transform })}
-        onStop={() => onStop({ onNodeDragStop, isDragging, setDragging, id, type, position, data })}
+        onStart={evt => onStart(evt as MouseEvent, onClick, id, type, data, setOffset, transform, position)}
+        onDrag={evt => onDrag(evt as MouseEvent, setDragging, id, offset, transform)}
+        onStop={() => onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data)}
         scale={transform[2]}
       >
         <div

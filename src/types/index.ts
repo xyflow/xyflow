@@ -83,13 +83,13 @@ export interface NodeComponentProps {
   id: ElementId,
   type: string;
   data: any;
-  transform: Transform;
-  xPos: number;
-  yPos: number;
-  selected: boolean;
-  onClick: () => any;
-  onNodeDragStop: () => any;
-  style: CSSProperties;
+  selected?: boolean;
+  transform?: Transform;
+  xPos?: number;
+  yPos?: number;
+  onClick?: () => any;
+  onNodeDragStop?: () => any;
+  style?: CSSProperties;
 };
 
 export type FitViewParams = {
@@ -115,4 +115,13 @@ export type OnConnectFunc = (params: OnConnectParams) => void;
 export type Connection = {
   source: ElementId;
   target: ElementId;
+};
+
+export interface HandleElement {
+  id?: ElementId;
+  position: Position;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };

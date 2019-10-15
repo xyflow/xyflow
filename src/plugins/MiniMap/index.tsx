@@ -2,7 +2,6 @@ import React, { useRef, useEffect, CSSProperties } from 'react';
 import classnames from 'classnames';
 
 import { useStoreState } from '../../store/hooks';
-import { isFunction } from '../../utils'
 import { getNodesInside } from '../../utils/graph';
 import { Node } from '../../types';
 
@@ -39,7 +38,7 @@ export default (
   const height = (state.height / (state.width || 1)) * width;
   const bbox = { x: 0, y: 0, width: state.width, height: state.height };
   const scaleFactor = width / state.width;
-  const nodeColorFunc = (isFunction(nodeColor) ? nodeColor: () => nodeColor) as StringFunc;
+  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor: () => nodeColor) as StringFunc;
 
   useEffect(() => {
     if (canvasNode && canvasNode.current) {

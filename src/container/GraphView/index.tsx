@@ -17,7 +17,7 @@ import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '..
 export interface GraphViewProps {
   elements: Elements,
   onElementClick: () => void,
-  onElementsRemove: () => void,
+  onElementsRemove: (elements: Elements) => void,
   onNodeDragStop: () => void,
   onConnect: () => void,
 	onLoad: OnLoadFunc,

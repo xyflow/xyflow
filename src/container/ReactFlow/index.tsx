@@ -28,7 +28,7 @@ export interface ReactFlowProps {
   className?: string,
   children?: ReactNode[],
   onElementClick: () => void,
-  onElementsRemove: () => void,
+  onElementsRemove: (elements: Elements) => void,
   onNodeDragStop: () => void,
   onConnect: () => void,
 	onLoad: OnLoadFunc,

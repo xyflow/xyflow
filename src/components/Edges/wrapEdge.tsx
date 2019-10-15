@@ -1,29 +1,29 @@
-import React, { memo } from 'react';
+import React, { memo, MouseEvent, ComponentType } from 'react';
 import cx from 'classnames';
 
-import { inInputDOMNode } from '../../utils';
+import { isInputDOMNode } from '../../utils';
 import store from '../../store';
-import { ElementId } from '../../types';
+import { ElementId, Edge } from '../../types';
 
 interface EdgeWrapperProps {
   id: ElementId,
   source: ElementId,
   target: ElementId,
   type: any,
-  onClick: (any) => void
+  onClick?: (edge: Edge) => void
   animated?: boolean,
   selected?: boolean,
 };
 
-export default EdgeComponent => {
+export default (EdgeComponent: ComponentType<EdgeWrapperProps>) => {
   const EdgeWrapper = memo(({
     id, source, target, type,
     animated, selected, onClick,
     ...rest
   }: EdgeWrapperProps) => {
     const edgeClasses = cx('react-flow__edge', { selected, animated });
-    const onEdgeClick = (evt) => {
-      if (inInputDOMNode(evt)) {
+    const onEdgeClick = (evt: MouseEvent) => {
+      if (isInputDOMNode(evt)) {
         return false;
       }
 

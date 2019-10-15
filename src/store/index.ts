@@ -6,7 +6,7 @@ import { getBoundingBox, getNodesInside, getConnectedEdges } from '../utils/grap
 import {
   ElementId, Elements, Transform, Node,
   Edge, Rect, Dimensions, XYPosition,
-  OnConnectFunc, SelectionRect
+  OnConnectFunc, SelectionRect, HandleElement
 } from '../types';
 
 type TransformXYK = {
@@ -25,8 +25,8 @@ type NodeUpdate = {
   width: number,
   height: number,
   handleBounds: {
-    source: ElementId,
-    target: ElementId
+    source: HandleElement,
+    target: HandleElement
   }
 };
 
@@ -46,7 +46,7 @@ export interface StoreModel {
   transform: Transform;
   nodes: Node[];
   edges: Edge[];
-  selectedElements: Elements | Node | Edge;
+  selectedElements: Elements;
   selectedNodesBbox: Rect;
 
   d3Zoom: ZoomBehavior<Element, unknown>;
@@ -76,7 +76,7 @@ export interface StoreModel {
 
   setNodesSelection: Action<StoreModel, SelectionUpdate>;
 
-  setSelectedElements: Action<StoreModel, Elements|Node|Edge>
+  setSelectedElements: Action<StoreModel, Elements | Node | Edge>
 
   updateSelection: Action<StoreModel, SelectionRect>;
 

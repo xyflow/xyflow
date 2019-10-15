@@ -9,7 +9,7 @@ const d3ZoomInstance = d3Zoom
   .scaleExtent([0.5, 2])
   .filter(() => !event.button);
 
-export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, shiftPressed: boolean) => {
+export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, shiftPressed: boolean): void => {
   const state = useStoreState(s => ({
     transform: s.transform,
     d3Selection: s.d3Selection,

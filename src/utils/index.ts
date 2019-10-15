@@ -1,8 +1,10 @@
-export const isFunction = obj => !!(obj && obj.constructor && obj.call && obj.apply);
+import { DraggableEvent } from 'react-draggable';
+import { MouseEvent as ReactMouseEvent } from 'react';
 
-export const isDefined = obj => typeof obj !== 'undefined';
-
-export const inInputDOMNode = e => e && e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.nodeName);
+export const isInputDOMNode = (e: ReactMouseEvent | DraggableEvent | KeyboardEvent) => {
+  const target = e.target as HTMLElement;
+  return e && target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName);
+};
 
 export const getDimensions = (node: HTMLDivElement) => ({
   width: node.offsetWidth,

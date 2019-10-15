@@ -5,7 +5,7 @@ import { useStoreState, useStoreActions } from '../store/hooks';
 import { parseElement, isNode, isEdge } from '../utils/graph';
 import { Elements, Node, Edge } from '../types';
 
-const useElementUpdater = (elements: Elements) => {
+const useElementUpdater = (elements: Elements): void => {
   const state = useStoreState(s => ({
     nodes: s.nodes,
     edges: s.edges,
@@ -17,9 +17,9 @@ const useElementUpdater = (elements: Elements) => {
 
   useEffect(() => {
     const nodes = elements.filter(isNode) as Node[];
-    const edges = elements.filter(isEdge).map(parseElement) as Edge[];
+    const edges = elements.filter(isEdge).map(e => parseElement(e)) as Edge[];
 
-    const nextNodes = nodes.map(propNode => {
+    const nextNodes = nodes.map((propNode) => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
 
       if (existingNode) {
@@ -33,7 +33,7 @@ const useElementUpdater = (elements: Elements) => {
       }
 
       return parseElement(propNode, state.transform);
-    });
+    }) as Node[];
 
     const nodesChanged: boolean = !isEqual(state.nodes, nextNodes);
     const edgesChanged: boolean = !isEqual(state.edges, edges);

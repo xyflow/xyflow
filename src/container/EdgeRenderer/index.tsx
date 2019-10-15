@@ -3,7 +3,7 @@ import React, { memo, SVGAttributes } from 'react';
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
-import { XYPosition, Position, Edge, Node, ElementId, Transform } from '../../types';
+import { XYPosition, Position, Edge, Node, ElementId, Transform, HandleElement } from '../../types';
 
 interface EdgeRendererProps {
   width: number;
@@ -23,16 +23,14 @@ interface EdgeRendererState {
   position: XYPosition;
 };
 
-interface HandleElement {
-  height: number;
-  id?: ElementId;
-  position: Position;
-  width: number;
-  x: number;
-  y: number;
+interface EdgePositions {
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
 };
 
-function getHandlePosition(position: Position, node: Node, handle: any = null) {
+function getHandlePosition(position: Position, node: Node, handle: any | null = null): XYPosition {
   if (!handle) {
     switch (position) {
       case 'top': return {
@@ -76,7 +74,7 @@ function getHandlePosition(position: Position, node: Node, handle: any = null) {
   }
 }
 
-function getHandle(bounds, handleId): HandleElement | null {
+function getHandle(bounds: HandleElement[], handleId: ElementId): HandleElement | null {
   let handle = null;
 
   if (!bounds) {
@@ -94,7 +92,10 @@ function getHandle(bounds, handleId): HandleElement | null {
   return handle;
 }
 
-function getEdgePositions({ sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition }) {
+function getEdgePositions(
+  sourceNode: Node, sourceHandle: HandleElement, sourcePosition: Position,
+  targetNode: Node, targetHandle: HandleElement, targetPosition: Position
+): EdgePositions {
   const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle)
   const sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;
   const sourceY = sourceNode.__rg.position.y + sourceHandlePos.y;
@@ -137,13 +138,13 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererSta
   const sourcePosition = sourceHandle ? sourceHandle.position : 'bottom';
   const targetPosition = targetHandle ? targetHandle.position : 'top';
 
-  const { sourceX, sourceY, targetX, targetY } = getEdgePositions({
+  const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
     sourceNode, sourceHandle, sourcePosition,
     targetNode, targetHandle, targetPosition
-  });
+  );
   const selected = state.selectedElements
     .filter(isEdge)
-    .find(elm => elm.source === sourceId && elm.target === targetId);
+    .find((elm: Edge) => elm.source === sourceId && elm.target === targetId);
 
   return (
     <EdgeComponent
@@ -193,7 +194,7 @@ const EdgeRenderer = memo(({
       className="react-flow__edges"
     >
       <g transform={transformStyle}>
-        {edges.map(e => renderEdge(e, { width, height, connectionLineStyle, connectionLineType, ...rest }, state))}
+        {edges.map((e: Edge) => renderEdge(e, { width, height, connectionLineStyle, connectionLineType, ...rest }, state))}
         {connectionSourceId && (
           <ConnectionLine
             nodes={nodes}

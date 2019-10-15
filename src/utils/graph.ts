@@ -1,7 +1,6 @@
 import { zoomIdentity } from 'd3-zoom';
 
 import store from '../store';
-import { isDefined } from './index';
 import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams } from '../types';
 
 export const isEdge = (element: Node | Edge): boolean =>
@@ -49,7 +48,7 @@ export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
 
   return elements.concat({
     ...edgeParams,
-    id: isDefined(edgeParams.id) ? edgeParams.id : getEdgeId(edgeParams)
+    id: typeof edgeParams.id !== 'undefined' ? edgeParams.id : getEdgeId(edgeParams)
   });
 }
 
@@ -63,7 +62,7 @@ const pointToRendererPoint = ({ x, y }: XYPosition, transform: Transform): XYPos
   };
 };
 
-export const parseElement = (element: Node | Edge, transform: Transform): Node | Edge => {
+export const parseElement = (element: Node | Edge, transform?: Transform): Node | Edge => {
   if (!element.id) {
     throw new Error('All elements (nodes and edges) need to have an id.',)
   }
