@@ -2,7 +2,7 @@ version: 1
 update_configs:
   - package_manager: "javascript"
     directory: "/"
-    update_schedule: "daily"
+    update_schedule: "weekly"
     automerged_updates:
       - match:
           dependency_type: "all"
