@@ -1,26 +1,25 @@
-import React, { useRef, useEffect, CSSProperties } from 'react';
+import React, {useRef, useEffect, CSSProperties} from 'react';
 import classnames from 'classnames';
 
-import { useStoreState } from '../../store/hooks';
-import { getNodesInside } from '../../utils/graph';
-import { Node } from '../../types';
+import {useStoreState} from '../../store/hooks';
+import {getNodesInside} from '../../utils/graph';
+import {Node} from '../../types';
 
 type StringFunc = (node: Node) => string;
 
-interface MiniMapProps {
-  style?: CSSProperties;
-  className?: string | null;
+interface MiniMapProps extends React.HTMLAttributes<HTMLCanvasElement> {
   bgColor?: string;
-  nodeColor?: string | StringFunc;
-};
+  nodeColor?: string | StringFunc;
+}
 
 const baseStyle: CSSProperties = {
   position: 'absolute',
   zIndex: 5,
   bottom: 10,
   right: 10,
-  width: 200
+  width: 200,
 };
+
 
 export default (
   { style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }: MiniMapProps
@@ -34,11 +33,11 @@ export default (
   }));
   const mapClasses = classnames('react-flow__minimap', className);
   const nodePositions = state.nodes.map(n => n.__rg.position);
-  const width: number = +(style.width || baseStyle.width || 0);
-  const height = (state.height / (state.width || 1)) * width;
-  const bbox = { x: 0, y: 0, width: state.width, height: state.height };
+  const width: number = +(style.width || baseStyle.width || 0);
+  const height = (state.height / (state.width || 1)) * width;
+  const bbox = {x: 0, y: 0, width: state.width, height: state.height};
   const scaleFactor = width / state.width;
-  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor: () => nodeColor) as StringFunc;
+  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
 
   useEffect(() => {
     if (!canvasNode || !canvasNode.current) {
@@ -72,14 +71,14 @@ export default (
         n.__rg.height * scaleFactor * state.transform[2]
       );
     });
-  }, [canvasNode.current, nodePositions, state.transform, height])
+  }, [canvasNode.current, nodePositions, state.transform, height]);
 
   return (
     <canvas
       style={{
         ...baseStyle,
         ...style,
-        height
+        height,
       }}
       width={width}
       height={height}
@@ -87,4 +86,4 @@ export default (
       ref={canvasNode}
     />
   );
-}
+};

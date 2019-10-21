@@ -4,13 +4,11 @@ import classnames from 'classnames';
 import { useStoreState } from '../../store/hooks';
 import { GridType } from '../../types';
 
-interface GridProps {
+interface GridProps extends React.HTMLAttributes<SVGElement> {
   backgroundType?: GridType;
   gap?: number;
   color?: string;
   size?: number;
-  style?: React.CSSProperties;
-  className?: string | null;
 };
 
 const baseStyles: React.CSSProperties = {
