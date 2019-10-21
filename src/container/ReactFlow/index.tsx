@@ -47,6 +47,8 @@ export interface ReactFlowProps
   backgroundGap: number;
   backgroundColor: string;
   backgroundType: GridType;
+  snapToGrid: boolean;
+  snapGrid: [16, 16];
 }
 
 const ReactFlow = ({
@@ -69,6 +71,8 @@ const ReactFlow = ({
   backgroundGap,
   backgroundType,
   backgroundColor,
+  snapToGrid,
+  snapGrid,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -94,6 +98,8 @@ const ReactFlow = ({
           backgroundGap={backgroundGap}
           showBackground={showBackground}
           backgroundType={backgroundType}
+          snapToGrid={snapToGrid}
+          snapGrid={snapGrid}
         />
         {children}
       </StoreProvider>
@@ -128,6 +134,8 @@ ReactFlow.defaultProps = {
   backgroundGap: 24,
   showBackground: true,
   backgroundType: GridType.Dots,
+  snapToGrid: false,
+  snapGrid: [16, 16],
 };
 
 export default ReactFlow;

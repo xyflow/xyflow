@@ -52,6 +52,11 @@ type D3Init = {
   selection: D3Selection<Element, unknown, null, undefined>;
 };
 
+type SetSnapGrid = {
+  snapToGrid: boolean;
+  snapGrid: [number, number];
+};
+
 export interface StoreModel {
   width: number;
   height: number;
@@ -71,6 +76,9 @@ export interface StoreModel {
 
   connectionSourceId: ElementId | null;
   connectionPosition: XYPosition;
+
+  snapToGrid: boolean;
+  snapGrid: [number, number];
 
   onConnect: OnConnectFunc;
 
@@ -98,6 +106,8 @@ export interface StoreModel {
 
   initD3: Action<StoreModel, D3Init>;
 
+  setSnapGrid: Action<StoreModel, SetSnapGrid>;
+
   setConnectionPosition: Action<StoreModel, XYPosition>;
 
   setConnectionSourceId: Action<StoreModel, ElementId | null>;
@@ -122,6 +132,9 @@ const storeModel: StoreModel = {
 
   connectionSourceId: null,
   connectionPosition: { x: 0, y: 0 },
+
+  snapGrid: [16, 16],
+  snapToGrid: true,
 
   onConnect: () => {},
 
@@ -149,11 +162,23 @@ const storeModel: StoreModel = {
   }),
 
   updateNodePos: action((state, { id, pos }) => {
+    let position: XYPosition = pos;
+
+    if (state.snapToGrid) {
+      const transformedGridSizeX = state.snapGrid[0] * state.transform[2];
+      const transformedGridSizeY = state.snapGrid[1] * state.transform[2];
+
+      position = {
+        x: transformedGridSizeX * Math.round(pos.x / transformedGridSizeX),
+        y: transformedGridSizeY * Math.round(pos.y / transformedGridSizeY),
+      };
+    }
+
     state.nodes.forEach(n => {
       if (n.id === id) {
         n.__rg = {
           ...n.__rg,
-          position: pos,
+          position,
         };
       }
     });
@@ -237,6 +262,11 @@ const storeModel: StoreModel = {
 
   setConnectionSourceId: action((state, sourceId) => {
     state.connectionSourceId = sourceId;
+  }),
+
+  setSnapGrid: action((state, { snapToGrid, snapGrid }) => {
+    state.snapToGrid = snapToGrid;
+    state.snapGrid = snapGrid;
   }),
 };
 

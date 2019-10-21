@@ -27,6 +27,10 @@ declare type D3Init = {
     zoom: ZoomBehavior<Element, unknown>;
     selection: D3Selection<Element, unknown, null, undefined>;
 };
+declare type SetSnapGrid = {
+    snapToGrid: boolean;
+    snapGrid: [number, number];
+};
 export interface StoreModel {
     width: number;
     height: number;
@@ -43,6 +47,8 @@ export interface StoreModel {
     selection: SelectionRect | null;
     connectionSourceId: ElementId | null;
     connectionPosition: XYPosition;
+    snapToGrid: boolean;
+    snapGrid: [number, number];
     onConnect: OnConnectFunc;
     setOnConnect: Action<StoreModel, OnConnectFunc>;
     setNodes: Action<StoreModel, Node[]>;
@@ -56,6 +62,7 @@ export interface StoreModel {
     updateTransform: Action<StoreModel, TransformXYK>;
     updateSize: Action<StoreModel, Dimensions>;
     initD3: Action<StoreModel, D3Init>;
+    setSnapGrid: Action<StoreModel, SetSnapGrid>;
     setConnectionPosition: Action<StoreModel, XYPosition>;
     setConnectionSourceId: Action<StoreModel, ElementId | null>;
 }
@@ -76,6 +83,8 @@ declare const store: {
         selection: SelectionRect | null;
         connectionSourceId: string | null;
         connectionPosition: XYPosition;
+        snapToGrid: boolean;
+        snapGrid: [number, number];
         onConnect: OnConnectFunc;
     }, "1">;
     subscribe: (listener: () => void) => import("redux").Unsubscribe;
@@ -95,6 +104,8 @@ declare const store: {
         selection: SelectionRect | null;
         connectionSourceId: string | null;
         connectionPosition: XYPosition;
+        snapToGrid: boolean;
+        snapGrid: [number, number];
         onConnect: OnConnectFunc;
     }, "1">, import("redux").AnyAction>) => void;
     dispatch: import("easy-peasy").Dispatch<StoreModel, import("redux").Action<any>>;
@@ -119,6 +130,7 @@ declare const store: {
         updateTransform: Action<StoreModel, TransformXYK>;
         updateSize: Action<StoreModel, Dimensions>;
         initD3: Action<StoreModel, D3Init>;
+        setSnapGrid: Action<StoreModel, SetSnapGrid>;
         setConnectionPosition: Action<StoreModel, XYPosition>;
         setConnectionSourceId: Action<StoreModel, string | null>;
     }, "1">;

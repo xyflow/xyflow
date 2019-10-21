@@ -38,6 +38,8 @@ export interface GraphViewProps {
   backgroundGap: number;
   backgroundColor: string;
   backgroundType: GridType;
+  snapToGrid: boolean;
+  snapGrid: [number, number];
 }
 
 const GraphView = memo(
@@ -59,6 +61,8 @@ const GraphView = memo(
     backgroundColor,
     backgroundType,
     onConnect,
+    snapToGrid,
+    snapGrid,
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -75,6 +79,8 @@ const GraphView = memo(
       actions => actions.setNodesSelection
     );
     const setOnConnect = useStoreActions(a => a.setOnConnect);
+    const setSnapGrid = useStoreActions(actions => actions.setSnapGrid);
+
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
     const onZoomPaneClick = () => setNodesSelection({ isActive: false });
@@ -109,6 +115,10 @@ const GraphView = memo(
         });
       }
     }, [state.d3Initialised]);
+
+    useEffect(() => {
+      setSnapGrid({ snapToGrid, snapGrid });
+    }, [snapToGrid]);
 
     useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
     useElementUpdater(elements);

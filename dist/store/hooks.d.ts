@@ -39,6 +39,10 @@ export declare const useStoreActions: <Result>(mapActions: (actions: import("eas
         zoom: import("d3-zoom").ZoomBehavior<Element, unknown>;
         selection: import("d3-selection").Selection<Element, unknown, null, undefined>;
     }>;
+    setSnapGrid: import("easy-peasy").Action<StoreModel, {
+        snapToGrid: boolean;
+        snapGrid: [number, number];
+    }>;
     setConnectionPosition: import("easy-peasy").Action<StoreModel, import("../types").XYPosition>;
     setConnectionSourceId: import("easy-peasy").Action<StoreModel, string | null>;
 }, "1">) => Result) => Result;
@@ -59,5 +63,7 @@ export declare const useStoreState: <Result>(mapState: (state: import("easy-peas
     selection: import("../types").SelectionRect | null;
     connectionSourceId: string | null;
     connectionPosition: import("../types").XYPosition;
+    snapToGrid: boolean;
+    snapGrid: [number, number];
     onConnect: import("../types").OnConnectFunc;
 }, "1">) => Result, dependencies?: any[] | undefined) => Result;

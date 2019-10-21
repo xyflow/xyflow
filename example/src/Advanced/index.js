@@ -14,7 +14,7 @@ class App extends PureComponent {
     const onChange = (option, d) => {
       this.setState(prevState => (
         {elements: prevState.elements.map(e => {
-          if (isEdge(e) || e.id !== '6') {
+          if (isEdge(e) || e.id !== '6') {
             return e;
           }
 
@@ -32,7 +32,7 @@ class App extends PureComponent {
     const onChangeInput = (input, d) => {
       this.setState(prevState => (
         {elements: prevState.elements.map(e => {
-          if (isEdge(e) || e.id !== '8') {
+          if (isEdge(e) || e.id !== '8') {
             return e;
           }
 
@@ -41,7 +41,7 @@ class App extends PureComponent {
               ...e,
               data: {
                 ...e.data,
-                input: input || 'write something'
+                input: input || 'write something'
               }
             };
           } else {
@@ -145,6 +145,8 @@ class App extends PureComponent {
         connectionLineType="bezier"
         backgroundColor="#888"
         backgroundGap={16}
+        snapToGrid={true}
+        snapGrid={[16, 16]}
       >
         <MiniMap
           style={{ position: 'absolute', right: 10, bottom: 10 }}

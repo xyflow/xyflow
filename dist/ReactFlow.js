@@ -5763,6 +5763,8 @@ var storeModel = {
     selection: null,
     connectionSourceId: null,
     connectionPosition: { x: 0, y: 0 },
+    snapGrid: [16, 16],
+    snapToGrid: true,
     onConnect: function () { },
     setOnConnect: action(function (state, onConnect) {
         state.onConnect = onConnect;
@@ -5783,9 +5785,18 @@ var storeModel = {
     }),
     updateNodePos: action(function (state, _a) {
         var id = _a.id, pos = _a.pos;
+        var position = pos;
+        if (state.snapToGrid) {
+            var transformedGridSizeX = state.snapGrid[0] * state.transform[2];
+            var transformedGridSizeY = state.snapGrid[1] * state.transform[2];
+            position = {
+                x: transformedGridSizeX * Math.round(pos.x / transformedGridSizeX),
+                y: transformedGridSizeY * Math.round(pos.y / transformedGridSizeY),
+            };
+        }
         state.nodes.forEach(function (n) {
             if (n.id === id) {
-                n.__rg = __assign(__assign({}, n.__rg), { position: pos });
+                n.__rg = __assign(__assign({}, n.__rg), { position: position });
             }
         });
     }),
@@ -5842,6 +5853,11 @@ var storeModel = {
     }),
     setConnectionSourceId: action(function (state, sourceId) {
         state.connectionSourceId = sourceId;
+    }),
+    setSnapGrid: action(function (state, _a) {
+        var snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid;
+        state.snapToGrid = snapToGrid;
+        state.snapGrid = snapGrid;
     }),
 };
 var store = createStore$1(storeModel);
@@ -8260,7 +8276,7 @@ var useElementUpdater = function (elements) {
 };
 
 var GraphView = React.memo(function (_a) {
-    var nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onMove = _a.onMove, onLoad = _a.onLoad, onElementClick = _a.onElementClick, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, selectionKeyCode = _a.selectionKeyCode, onElementsRemove = _a.onElementsRemove, deleteKeyCode = _a.deleteKeyCode, elements = _a.elements, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundColor = _a.backgroundColor, backgroundType = _a.backgroundType, onConnect = _a.onConnect;
+    var nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onMove = _a.onMove, onLoad = _a.onLoad, onElementClick = _a.onElementClick, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, selectionKeyCode = _a.selectionKeyCode, onElementsRemove = _a.onElementsRemove, deleteKeyCode = _a.deleteKeyCode, elements = _a.elements, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundColor = _a.backgroundColor, backgroundType = _a.backgroundType, onConnect = _a.onConnect, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid;
     var zoomPane = React.useRef(null);
     var rendererNode = React.useRef(null);
     var state = useStoreState$1(function (s) { return ({
@@ -8274,6 +8290,7 @@ var GraphView = React.memo(function (_a) {
     var updateSize = useStoreActions$1(function (actions) { return actions.updateSize; });
     var setNodesSelection = useStoreActions$1(function (actions) { return actions.setNodesSelection; });
     var setOnConnect = useStoreActions$1(function (a) { return a.setOnConnect; });
+    var setSnapGrid = useStoreActions$1(function (actions) { return actions.setSnapGrid; });
     var selectionKeyPressed = useKeyPress(selectionKeyCode);
     var onZoomPaneClick = function () { return setNodesSelection({ isActive: false }); };
     var updateDimensions = function () {
@@ -8301,6 +8318,9 @@ var GraphView = React.memo(function (_a) {
             });
         }
     }, [state.d3Initialised]);
+    React.useEffect(function () {
+        setSnapGrid({ snapToGrid: snapToGrid, snapGrid: snapGrid });
+    }, [snapToGrid]);
     useGlobalKeyHandler({ onElementsRemove: onElementsRemove, deleteKeyCode: deleteKeyCode });
     useElementUpdater(elements);
     return (React__default.createElement("div", { className: "react-flow__renderer", ref: rendererNode },
@@ -8955,12 +8975,12 @@ var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;
 styleInject(css);
 
 var ReactFlow = function (_a) {
-    var style = _a.style, onElementClick = _a.onElementClick, elements = _a.elements, children = _a.children, nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onLoad = _a.onLoad, onMove = _a.onMove, onElementsRemove = _a.onElementsRemove, onConnect = _a.onConnect, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, deleteKeyCode = _a.deleteKeyCode, selectionKeyCode = _a.selectionKeyCode, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundType = _a.backgroundType, backgroundColor = _a.backgroundColor;
+    var style = _a.style, onElementClick = _a.onElementClick, elements = _a.elements, children = _a.children, nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onLoad = _a.onLoad, onMove = _a.onMove, onElementsRemove = _a.onElementsRemove, onConnect = _a.onConnect, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, deleteKeyCode = _a.deleteKeyCode, selectionKeyCode = _a.selectionKeyCode, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundType = _a.backgroundType, backgroundColor = _a.backgroundColor, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid;
     var nodeTypesParsed = React.useMemo(function () { return createNodeTypes(nodeTypes); }, []);
     var edgeTypesParsed = React.useMemo(function () { return createEdgeTypes(edgeTypes); }, []);
     return (React__default.createElement("div", { style: style, className: "react-flow" },
         React__default.createElement(StoreProvider, { store: store },
-            React__default.createElement(GraphView, { onLoad: onLoad, onMove: onMove, onElementClick: onElementClick, onNodeDragStop: onNodeDragStop, nodeTypes: nodeTypesParsed, edgeTypes: edgeTypesParsed, connectionLineType: connectionLineType, connectionLineStyle: connectionLineStyle, selectionKeyCode: selectionKeyCode, onElementsRemove: onElementsRemove, deleteKeyCode: deleteKeyCode, elements: elements, onConnect: onConnect, backgroundColor: backgroundColor, backgroundGap: backgroundGap, showBackground: showBackground, backgroundType: backgroundType }),
+            React__default.createElement(GraphView, { onLoad: onLoad, onMove: onMove, onElementClick: onElementClick, onNodeDragStop: onNodeDragStop, nodeTypes: nodeTypesParsed, edgeTypes: edgeTypesParsed, connectionLineType: connectionLineType, connectionLineStyle: connectionLineStyle, selectionKeyCode: selectionKeyCode, onElementsRemove: onElementsRemove, deleteKeyCode: deleteKeyCode, elements: elements, onConnect: onConnect, backgroundColor: backgroundColor, backgroundGap: backgroundGap, showBackground: showBackground, backgroundType: backgroundType, snapToGrid: snapToGrid, snapGrid: snapGrid }),
             children)));
 };
 ReactFlow.displayName = 'ReactFlow';
@@ -8989,6 +9009,8 @@ ReactFlow.defaultProps = {
     backgroundGap: 24,
     showBackground: true,
     backgroundType: GridType.Dots,
+    snapToGrid: false,
+    snapGrid: [16, 16],
 };
 
 var baseStyle = {
