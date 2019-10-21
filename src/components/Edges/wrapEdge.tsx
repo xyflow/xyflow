@@ -3,18 +3,28 @@ import cx from 'classnames';
 
 import { isInputDOMNode } from '../../utils';
 import store from '../../store';
-import { EdgeWrapperProps } from '../../types';
+import { ElementId, Edge, EdgeCompProps } from '../../types';
 
-export default (EdgeComponent: ComponentType<EdgeWrapperProps>) => {
+interface EdgeWrapperProps {
+  id: ElementId,
+  source: ElementId,
+  target: ElementId,
+  type: any,
+  onClick: (edge: Edge) => void
+  animated: boolean,
+  selected: boolean,
+};
+
+export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
   const EdgeWrapper = memo(({
     id, source, target, type,
     animated, selected, onClick,
     ...rest
   }: EdgeWrapperProps) => {
     const edgeClasses = cx('react-flow__edge', { selected, animated });
-    const onEdgeClick = (evt: MouseEvent) => {
+    const onEdgeClick = (evt: MouseEvent): void => {
       if (isInputDOMNode(evt)) {
-        return false;
+        return;
       }
 
       store.dispatch.setSelectedElements({ id, source, target });

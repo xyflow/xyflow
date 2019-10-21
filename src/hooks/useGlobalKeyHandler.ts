@@ -30,6 +30,4 @@ export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
       setNodesSelection({ isActive: false });
     }
   }, [deleteKeyPressed])
-
-  return null;
 };

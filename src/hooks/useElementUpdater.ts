@@ -46,8 +46,6 @@ const useElementUpdater = (elements: Elements): void => {
       setEdges(edges);
     }
   });
-
-  return null;
 };
 
 export default useElementUpdater;

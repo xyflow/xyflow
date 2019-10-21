@@ -9,7 +9,9 @@ const d3ZoomInstance = d3Zoom
   .scaleExtent([0.5, 2])
   .filter(() => !event.button);
 
-export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, shiftPressed: boolean): void => {
+export default (
+  zoomPane: MutableRefObject<Element | null>, onMove: () => void, shiftPressed: boolean
+): void => {
   const state = useStoreState(s => ({
     transform: s.transform,
     d3Selection: s.d3Selection,
@@ -20,8 +22,10 @@ export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, 
   const updateTransform = useStoreActions(actions => actions.updateTransform);
 
   useEffect(() => {
-    const selection = select(zoomPane.current).call(d3ZoomInstance);
-    initD3({ zoom: d3ZoomInstance, selection });
+    if (zoomPane.current) {
+      const selection = select(zoomPane.current).call(d3ZoomInstance);
+      initD3({ zoom: d3ZoomInstance, selection });
+    }
   }, []);
 
   useEffect(() => {
@@ -30,7 +34,7 @@ export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, 
     } else {
       d3ZoomInstance.on('zoom', () => {
         if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
-          return false;
+          return;
         }
 
         updateTransform(event.transform);
@@ -38,7 +42,7 @@ export default (zoomPane: MutableRefObject<HTMLDivElement>, onMove: () => void, 
         onMove();
       });
 
-      if (state.d3Selection) {
+      if (state.d3Selection && state.d3Zoom) {
         // we need to restore the graph transform otherwise d3 zoom transform and graph transform are not synced
         const graphTransform = d3Zoom.zoomIdentity
             .translate(state.transform[0], state.transform[1])

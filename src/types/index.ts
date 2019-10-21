@@ -42,7 +42,7 @@ export interface SelectionRect extends Rect {
 
 export interface Node {
   id: ElementId,
-  position?: XYPosition,
+  position: XYPosition,
   type?: string,
   __rg?: any,
   data?: any,
@@ -87,7 +87,7 @@ export interface NodeComponentProps {
   transform?: Transform;
   xPos?: number;
   yPos?: number;
-  onClick?: () => any;
+  onClick?: (node: Node) => void | undefined;
   onNodeDragStop?: () => any;
   style?: CSSProperties;
 };
@@ -105,20 +105,15 @@ type OnLoadParams = {
 
 export type OnLoadFunc = (params: OnLoadParams) => void;
 
-export type OnConnectParams = {
-  source: ElementId;
-  target: ElementId;
-};
-
-export type OnConnectFunc = (params: OnConnectParams) => void;
-
 export type Connection = {
-  source: ElementId;
-  target: ElementId;
+  source: ElementId | null;
+  target: ElementId | null;
 };
+
+export type OnConnectFunc = (params: Connection) => void;
 
 export interface HandleElement {
-  id?: ElementId;
+  id?: ElementId | null;
   position: Position;
   x: number;
   y: number;
@@ -126,7 +121,7 @@ export interface HandleElement {
   height: number;
 };
 
-export interface EdgeWrapperProps {
+export interface EdgeCompProps {
   id: ElementId,
   source: ElementId,
   target: ElementId,
