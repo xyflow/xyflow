@@ -9,7 +9,7 @@ const useElementUpdater = (elements: Elements): void => {
   const state = useStoreState(s => ({
     nodes: s.nodes,
     edges: s.edges,
-    transform: s.transform
+    transform: s.transform,
   }));
 
   const setNodes = useStoreActions(a => a.setNodes);
@@ -19,16 +19,17 @@ const useElementUpdater = (elements: Elements): void => {
     const nodes = elements.filter(isNode) as Node[];
     const edges = elements.filter(isEdge).map(e => parseElement(e)) as Edge[];
 
-    const nextNodes = nodes.map((propNode) => {
+    const nextNodes = nodes.map(propNode => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
 
       if (existingNode) {
-        const data = !isEqual(existingNode.data, propNode.data) ?
-          { ...existingNode.data, ...propNode.data } : existingNode.data;
+        const data = !isEqual(existingNode.data, propNode.data)
+          ? { ...existingNode.data, ...propNode.data }
+          : existingNode.data;
 
         return {
           ...existingNode,
-          data
+          data,
         };
       }
 
@@ -46,8 +47,6 @@ const useElementUpdater = (elements: Elements): void => {
       setEdges(edges);
     }
   });
-
-  return null;
 };
 
 export default useElementUpdater;

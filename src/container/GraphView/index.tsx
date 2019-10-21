@@ -9,117 +9,153 @@ import BackgroundGrid from '../../components/BackgroundGrid';
 import useKeyPress from '../../hooks/useKeyPress';
 import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
-import useElementUpdater from '../../hooks/useElementUpdater'
+import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
-import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types'
+import {
+  Elements,
+  NodeTypesType,
+  EdgeTypesType,
+  GridType,
+  OnLoadFunc,
+} from '../../types';
 
 export interface GraphViewProps {
-  elements: Elements,
-  onElementClick: () => void,
-  onElementsRemove: (elements: Elements) => void,
-  onNodeDragStop: () => void,
-  onConnect: () => void,
-	onLoad: OnLoadFunc,
-  onMove: () => void,
-  selectionKeyCode: number,
-  nodeTypes: NodeTypesType,
-  edgeTypes: EdgeTypesType,
-  connectionLineType: string,
-  connectionLineStyle: SVGAttributes<{}>,
-  deleteKeyCode: number,
-  showBackground: boolean,
-  backgroundGap: number,
-  backgroundColor: string,
-  backgroundType: GridType,
-};
+  elements: Elements;
+  onElementClick: () => void;
+  onElementsRemove: (elements: Elements) => void;
+  onNodeDragStop: () => void;
+  onConnect: () => void;
+  onLoad: OnLoadFunc;
+  onMove: () => void;
+  selectionKeyCode: number;
+  nodeTypes: NodeTypesType;
+  edgeTypes: EdgeTypesType;
+  connectionLineType: string;
+  connectionLineStyle: SVGAttributes<{}>;
+  deleteKeyCode: number;
+  showBackground: boolean;
+  backgroundGap: number;
+  backgroundColor: string;
+  backgroundType: GridType;
+  snapToGrid: boolean;
+  snapGrid: [number, number];
+}
 
-const GraphView = memo(({
-  nodeTypes, edgeTypes, onMove, onLoad,
-  onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle,
-  selectionKeyCode, onElementsRemove, deleteKeyCode, elements,
-  showBackground, backgroundGap, backgroundColor, backgroundType,
-  onConnect
-}: GraphViewProps) => {
-  const zoomPane = useRef<HTMLDivElement>(null);
-  const rendererNode = useRef<HTMLDivElement>(null);
-  const state = useStoreState(s => ({
-    width: s.width,
-    height: s.height,
-    nodes: s.nodes,
-    edges: s.edges,
-    d3Initialised: s.d3Initialised,
-    nodesSelectionActive: s.nodesSelectionActive
-  }));
-  const updateSize = useStoreActions(actions => actions.updateSize);
-  const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
-  const setOnConnect = useStoreActions(a => a.setOnConnect);
-  const selectionKeyPressed = useKeyPress(selectionKeyCode);
+const GraphView = memo(
+  ({
+    nodeTypes,
+    edgeTypes,
+    onMove,
+    onLoad,
+    onElementClick,
+    onNodeDragStop,
+    connectionLineType,
+    connectionLineStyle,
+    selectionKeyCode,
+    onElementsRemove,
+    deleteKeyCode,
+    elements,
+    showBackground,
+    backgroundGap,
+    backgroundColor,
+    backgroundType,
+    onConnect,
+    snapToGrid,
+    snapGrid,
+  }: GraphViewProps) => {
+    const zoomPane = useRef<HTMLDivElement>(null);
+    const rendererNode = useRef<HTMLDivElement>(null);
+    const state = useStoreState(s => ({
+      width: s.width,
+      height: s.height,
+      nodes: s.nodes,
+      edges: s.edges,
+      d3Initialised: s.d3Initialised,
+      nodesSelectionActive: s.nodesSelectionActive,
+    }));
+    const updateSize = useStoreActions(actions => actions.updateSize);
+    const setNodesSelection = useStoreActions(
+      actions => actions.setNodesSelection
+    );
+    const setOnConnect = useStoreActions(a => a.setOnConnect);
+    const setSnapGrid = useStoreActions(actions => actions.setSnapGrid);
 
-  const onZoomPaneClick = () => setNodesSelection({ isActive: false });
+    const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  const updateDimensions = () => {
-    const size = getDimensions(rendererNode.current);
-    updateSize(size);
-  };
+    const onZoomPaneClick = () => setNodesSelection({ isActive: false });
 
-  useEffect(() => {
-    updateDimensions();
-    setOnConnect(onConnect);
-    window.onresize = updateDimensions;
+    const updateDimensions = () => {
+      if (!rendererNode.current) {
+        return;
+      }
 
-    return () => {
-      window.onresize = null;
+      const size = getDimensions(rendererNode.current);
+      updateSize(size);
     };
-  }, []);
 
-  useD3Zoom(zoomPane, onMove, selectionKeyPressed);
+    useEffect(() => {
+      updateDimensions();
+      setOnConnect(onConnect);
+      window.onresize = updateDimensions;
 
-  useEffect(() => {
-    if (state.d3Initialised) {
-      onLoad({
-        fitView,
-        zoomIn,
-        zoomOut
-      });
-    }
-  }, [state.d3Initialised]);
+      return () => {
+        window.onresize = null;
+      };
+    }, []);
 
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
-  useElementUpdater(elements);
+    useD3Zoom(zoomPane, onMove, selectionKeyPressed);
 
-  return (
-    <div className="react-flow__renderer" ref={rendererNode}>
-      {showBackground && (
-        <BackgroundGrid
-          gap={backgroundGap}
-          color={backgroundColor}
-          backgroundType={backgroundType}
+    useEffect(() => {
+      if (state.d3Initialised) {
+        onLoad({
+          fitView,
+          zoomIn,
+          zoomOut,
+        });
+      }
+    }, [state.d3Initialised]);
+
+    useEffect(() => {
+      setSnapGrid({ snapToGrid, snapGrid });
+    }, [snapToGrid]);
+
+    useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
+    useElementUpdater(elements);
+
+    return (
+      <div className="react-flow__renderer" ref={rendererNode}>
+        {showBackground && (
+          <BackgroundGrid
+            gap={backgroundGap}
+            color={backgroundColor}
+            backgroundType={backgroundType}
+          />
+        )}
+        <NodeRenderer
+          nodeTypes={nodeTypes}
+          onElementClick={onElementClick}
+          onNodeDragStop={onNodeDragStop}
         />
-      )}
-      <NodeRenderer
-        nodeTypes={nodeTypes}
-        onElementClick={onElementClick}
-        onNodeDragStop={onNodeDragStop}
-      />
-      <EdgeRenderer
-        width={state.width}
-        height={state.height}
-        edgeTypes={edgeTypes}
-        onElementClick={onElementClick}
-        connectionLineType={connectionLineType}
-        connectionLineStyle={connectionLineStyle}
-      />
-      {selectionKeyPressed && <UserSelection />}
-      {state.nodesSelectionActive && <NodesSelection />}
-      <div
-        className="react-flow__zoompane"
-        onClick={onZoomPaneClick}
-        ref={zoomPane}
-      />
-    </div>
-  );
-});
+        <EdgeRenderer
+          width={state.width}
+          height={state.height}
+          edgeTypes={edgeTypes}
+          onElementClick={onElementClick}
+          connectionLineType={connectionLineType}
+          connectionLineStyle={connectionLineStyle}
+        />
+        {selectionKeyPressed && <UserSelection />}
+        {state.nodesSelectionActive && <NodesSelection />}
+        <div
+          className="react-flow__zoompane"
+          onClick={onZoomPaneClick}
+          ref={zoomPane}
+        />
+      </div>
+    );
+  }
+);
 
 GraphView.displayName = 'GraphView';
 

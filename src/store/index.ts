@@ -2,32 +2,44 @@ import { createStore, Action, action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
-import { getBoundingBox, getNodesInside, getConnectedEdges } from '../utils/graph';
 import {
-  ElementId, Elements, Transform, Node,
-  Edge, Rect, Dimensions, XYPosition,
-  OnConnectFunc, SelectionRect, HandleElement
+  getBoundingBox,
+  getNodesInside,
+  getConnectedEdges,
+} from '../utils/graph';
+import {
+  ElementId,
+  Elements,
+  Transform,
+  Node,
+  Edge,
+  Rect,
+  Dimensions,
+  XYPosition,
+  OnConnectFunc,
+  SelectionRect,
+  HandleElement,
 } from '../types';
 
 type TransformXYK = {
-  x: number,
-  y: number,
-  k: number
+  x: number;
+  y: number;
+  k: number;
 };
 
 type NodePosUpdate = {
-  id: ElementId,
-  pos: XYPosition
+  id: ElementId;
+  pos: XYPosition;
 };
 
 type NodeUpdate = {
-  id: ElementId,
-  width: number,
-  height: number,
+  id: ElementId;
+  width: number;
+  height: number;
   handleBounds: {
-    source: HandleElement,
-    target: HandleElement
-  }
+    source: HandleElement[] | null;
+    target: HandleElement[] | null;
+  };
 };
 
 type SelectionUpdate = {
@@ -40,6 +52,11 @@ type D3Init = {
   selection: D3Selection<Element, unknown, null, undefined>;
 };
 
+type SetSnapGrid = {
+  snapToGrid: boolean;
+  snapGrid: [number, number];
+};
+
 export interface StoreModel {
   width: number;
   height: number;
@@ -49,16 +66,19 @@ export interface StoreModel {
   selectedElements: Elements;
   selectedNodesBbox: Rect;
 
-  d3Zoom: ZoomBehavior<Element, unknown>;
-  d3Selection: D3Selection<Element, unknown, null, undefined>;
+  d3Zoom: ZoomBehavior<Element, unknown> | null;
+  d3Selection: D3Selection<Element, unknown, null, undefined> | null;
   d3Initialised: boolean;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
-  selection: SelectionRect | null;
+  selection: SelectionRect | null;
 
-  connectionSourceId: ElementId | null;
+  connectionSourceId: ElementId | null;
   connectionPosition: XYPosition;
+
+  snapToGrid: boolean;
+  snapGrid: [number, number];
 
   onConnect: OnConnectFunc;
 
@@ -68,7 +88,7 @@ export interface StoreModel {
 
   setEdges: Action<StoreModel, Edge[]>;
 
-  updateNodeData:  Action<StoreModel, NodeUpdate>;
+  updateNodeData: Action<StoreModel, NodeUpdate>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
 
@@ -76,7 +96,7 @@ export interface StoreModel {
 
   setNodesSelection: Action<StoreModel, SelectionUpdate>;
 
-  setSelectedElements: Action<StoreModel, Elements | Node | Edge>
+  setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
 
   updateSelection: Action<StoreModel, SelectionRect>;
 
@@ -86,10 +106,12 @@ export interface StoreModel {
 
   initD3: Action<StoreModel, D3Init>;
 
+  setSnapGrid: Action<StoreModel, SetSnapGrid>;
+
   setConnectionPosition: Action<StoreModel, XYPosition>;
 
-  setConnectionSourceId: Action<StoreModel, ElementId>;
-};
+  setConnectionSourceId: Action<StoreModel, ElementId | null>;
+}
 
 const storeModel: StoreModel = {
   width: 0,
@@ -111,6 +133,9 @@ const storeModel: StoreModel = {
   connectionSourceId: null,
   connectionPosition: { x: 0, y: 0 },
 
+  snapGrid: [16, 16],
+  snapToGrid: true,
+
   onConnect: () => {},
 
   setOnConnect: action((state, onConnect) => {
@@ -126,22 +151,34 @@ const storeModel: StoreModel = {
   }),
 
   updateNodeData: action((state, { id, ...data }) => {
-    state.nodes.forEach((n) => {
+    state.nodes.forEach(n => {
       if (n.id === id) {
         n.__rg = {
           ...n.__rg,
-          ...data
+          ...data,
         };
       }
     });
   }),
 
   updateNodePos: action((state, { id, pos }) => {
-    state.nodes.forEach((n) => {
+    let position: XYPosition = pos;
+
+    if (state.snapToGrid) {
+      const transformedGridSizeX = state.snapGrid[0] * state.transform[2];
+      const transformedGridSizeY = state.snapGrid[1] * state.transform[2];
+
+      position = {
+        x: transformedGridSizeX * Math.round(pos.x / transformedGridSizeX),
+        y: transformedGridSizeY * Math.round(pos.y / transformedGridSizeY),
+      };
+    }
+
+    state.nodes.forEach(n => {
       if (n.id === id) {
         n.__rg = {
           ...n.__rg,
-          position: pos
+          position,
         };
       }
     });
@@ -152,13 +189,17 @@ const storeModel: StoreModel = {
   }),
 
   setNodesSelection: action((state, { isActive, selection }) => {
-    if (!isActive) {
+    if (!isActive || typeof selection === 'undefined') {
       state.nodesSelectionActive = false;
       state.selectedElements = [];
 
       return;
     }
-    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
+    const selectedNodes = getNodesInside(
+      state.nodes,
+      selection,
+      state.transform
+    );
     const selectedNodesBbox = getBoundingBox(selectedNodes);
 
     state.selection = selection;
@@ -169,21 +210,35 @@ const storeModel: StoreModel = {
 
   setSelectedElements: action((state, elements) => {
     const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
-    const selectedElementsUpdated = !isEqual(selectedElementsArr, state.selectedElements);
-    const selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
+    const selectedElementsUpdated = !isEqual(
+      selectedElementsArr,
+      state.selectedElements
+    );
+    const selectedElements = selectedElementsUpdated
+      ? selectedElementsArr
+      : state.selectedElements;
 
     state.selectedElements = selectedElements;
   }),
 
   updateSelection: action((state, selection) => {
-    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
+    const selectedNodes = getNodesInside(
+      state.nodes,
+      selection,
+      state.transform
+    );
     const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
 
-    const nextSelectedElements =  [...selectedNodes, ...selectedEdges];
-    const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
+    const nextSelectedElements = [...selectedNodes, ...selectedEdges];
+    const selectedElementsUpdated = !isEqual(
+      nextSelectedElements,
+      state.selectedElements
+    );
 
     state.selection = selection;
-    state.selectedElements = selectedElementsUpdated ? nextSelectedElements: state.selectedElements
+    state.selectedElements = selectedElementsUpdated
+      ? nextSelectedElements
+      : state.selectedElements;
   }),
 
   updateTransform: action((state, transform) => {
@@ -207,7 +262,12 @@ const storeModel: StoreModel = {
 
   setConnectionSourceId: action((state, sourceId) => {
     state.connectionSourceId = sourceId;
-  })
+  }),
+
+  setSnapGrid: action((state, { snapToGrid, snapGrid }) => {
+    state.snapToGrid = snapToGrid;
+    state.snapGrid = snapGrid;
+  }),
 };
 
 const store = createStore(storeModel);

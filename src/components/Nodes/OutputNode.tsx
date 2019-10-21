@@ -7,7 +7,7 @@ const nodeStyles: CSSProperties = {
   background: '#55dd99',
   padding: 10,
   borderRadius: 5,
-  width: 150
+  width: 150,
 };
 
 export default ({ data, style }: NodeProps) => (

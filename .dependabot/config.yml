@@ -1,9 +1,10 @@
 version: 1
 update_configs:
-  - package_manager: "javascript"
-    directory: "/"
-    update_schedule: "weekly"
+  - package_manager: 'javascript'
+    directory: '/'
+    update_schedule: 'weekly'
+    target_branch: 'develop'
     automerged_updates:
       - match:
-          dependency_type: "all"
-          update_type: "semver:minor"
+          dependency_type: 'all'
+          update_type: 'semver:minor'

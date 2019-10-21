@@ -5,28 +5,30 @@ import { useStoreState, useStoreActions } from '../../store/hooks';
 import { isNode } from '../../utils/graph';
 import { Node, Elements, XYPosition } from '../../types';
 
-function getStartPositions(elements: Elements) {
-  return elements
-    .filter(isNode)
-    .reduce((res, node: Node) => {
-      const startPosition = {
-        x: node.__rg.position.x || node.position.x,
-        y: node.__rg.position.y || node.position.x
-      };
+type StartPositions = { [key: string]: XYPosition };
 
-      res[node.id] = startPosition;
+function getStartPositions(elements: Elements): StartPositions {
+  const startPositions: StartPositions = {};
 
-      return res;
-  }, {});
+  return (elements.filter(isNode) as Node[]).reduce((res, node) => {
+    const startPosition = {
+      x: node.__rg.position.x || node.position.x,
+      y: node.__rg.position.y || node.position.x,
+    };
+
+    res[node.id] = startPosition;
+
+    return res;
+  }, startPositions);
 }
 
 export default memo(() => {
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [startPositions, setStartPositions] = useState({});
+  const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
+  const [startPositions, setStartPositions] = useState<StartPositions>({});
   const state = useStoreState(s => ({
     transform: s.transform,
     selectedNodesBbox: s.selectedNodesBbox,
-    selectedElements: s.selectedElements
+    selectedElements: s.selectedElements,
   }));
   const updateNodePos = useStoreActions(a => a.updateNodePos);
   const [x, y, k] = state.transform;
@@ -35,43 +37,55 @@ export default memo(() => {
   const onStart = (evt: MouseEvent) => {
     const scaledClient: XYPosition = {
       x: evt.clientX * (1 / k),
-      y: evt.clientY * (1 / k)
+      y: evt.clientY * (1 / k),
     };
     const offsetX: number = scaledClient.x - position.x - x;
     const offsetY: number = scaledClient.y - position.y - y;
-    const startPositions = getStartPositions(state.selectedElements);
+    const nextStartPositions = getStartPositions(state.selectedElements);
 
-    setOffset({ x: offsetX, y: offsetY });
-    setStartPositions(startPositions);
+    if (nextStartPositions) {
+      setOffset({ x: offsetX, y: offsetY });
+      setStartPositions(nextStartPositions);
+    }
   };
 
   const onDrag = (evt: MouseEvent) => {
     const scaledClient: XYPosition = {
       x: evt.clientX * (1 / k),
-      y: evt.clientY * (1 / k)
+      y: evt.clientY * (1 / k),
     };
 
-    state.selectedElements
-      .filter(isNode)
-      .forEach((node: Node) => {
-        updateNodePos({ id: node.id, pos: {
-          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - x ,
-          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - y
-        }});
-      });
+    (state.selectedElements.filter(isNode) as Node[]).forEach(node => {
+      const pos: XYPosition = {
+        x:
+          startPositions[node.id].x +
+          scaledClient.x -
+          position.x -
+          offset.x -
+          x,
+        y:
+          startPositions[node.id].y +
+          scaledClient.y -
+          position.y -
+          offset.y -
+          y,
+      };
+
+      updateNodePos({ id: node.id, pos });
+    });
   };
 
   return (
     <div
       className="react-flow__nodesselection"
       style={{
-        transform: `translate(${x}px,${y}px) scale(${k})`
+        transform: `translate(${x}px,${y}px) scale(${k})`,
       }}
     >
       <ReactDraggable
         scale={k}
-        onStart={(evt: MouseEvent) => onStart(evt)}
-        onDrag={(evt: MouseEvent) => onDrag(evt)}
+        onStart={evt => onStart(evt as MouseEvent)}
+        onDrag={evt => onDrag(evt as MouseEvent)}
       >
         <div
           className="react-flow__nodesselection-rect"
@@ -79,7 +93,7 @@ export default memo(() => {
             width: state.selectedNodesBbox.width,
             height: state.selectedNodesBbox.height,
             top: state.selectedNodesBbox.y,
-            left: state.selectedNodesBbox.x
+            left: state.selectedNodesBbox.x,
           }}
         />
       </ReactDraggable>

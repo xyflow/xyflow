@@ -7,16 +7,22 @@ interface ConnectionLineProps {
   connectionSourceId: ElementId;
   connectionPositionX: number;
   connectionPositionY: number;
-  connectionLineType?: string | null;
+  connectionLineType?: string | null;
   nodes: Node[];
   transform: Transform;
   connectionLineStyle?: SVGAttributes<{}>;
   className?: string;
-};
+}
 
 export default ({
-  connectionSourceId, connectionLineStyle = {}, connectionPositionX, connectionPositionY,
-  connectionLineType, nodes = [], className, transform
+  connectionSourceId,
+  connectionLineStyle = {},
+  connectionPositionX,
+  connectionPositionY,
+  connectionLineType,
+  nodes = [],
+  className,
+  transform,
 }: ConnectionLineProps) => {
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const hasHandleId = connectionSourceId.includes('__');
@@ -25,7 +31,7 @@ export default ({
   const handleId = hasHandleId ? sourceIdSplitted[1] : null;
 
   useEffect(() => {
-    const nextSourceNode = nodes.find(n => n.id === nodeId) || null;
+    const nextSourceNode = nodes.find(n => n.id === nodeId) || null;
     setSourceNode(nextSourceNode);
   }, []);
 
@@ -35,11 +41,17 @@ export default ({
 
   const edgeClasses: string = cx('react-flow__edge', 'connection', className);
 
-  const sourceHandle = handleId ?
-    sourceNode.__rg.handleBounds.source.find((d: HandleElement) => d.id === handleId) :
-    sourceNode.__rg.handleBounds.source[0];
-  const sourceHandleX = sourceHandle ? sourceHandle.x + (sourceHandle.width / 2) : sourceNode.__rg.width / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + (sourceHandle.height / 2) : sourceNode.__rg.height;
+  const sourceHandle = handleId
+    ? sourceNode.__rg.handleBounds.source.find(
+        (d: HandleElement) => d.id === handleId
+      )
+    : sourceNode.__rg.handleBounds.source[0];
+  const sourceHandleX = sourceHandle
+    ? sourceHandle.x + sourceHandle.width / 2
+    : sourceNode.__rg.width / 2;
+  const sourceHandleY = sourceHandle
+    ? sourceHandle.y + sourceHandle.height / 2
+    : sourceNode.__rg.height;
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;
   const sourceY = sourceNode.__rg.position.y + sourceHandleY;
 
@@ -58,10 +70,7 @@ export default ({
 
   return (
     <g className={edgeClasses}>
-      <path
-        d={dAttr}
-        {...connectionLineStyle}
-      />
+      <path d={dAttr} {...connectionLineStyle} />
     </g>
   );
 };

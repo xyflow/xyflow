@@ -1,0 +1,14 @@
+import { Node, Edge, XYPosition, Rect, FitViewParams } from '../types';
+export declare const isEdge: (element: Node | Edge) => boolean;
+export declare const isNode: (element: Node | Edge) => boolean;
+export declare const getOutgoers: (node: Node, elements: (Node | Edge)[]) => (Node | Edge)[];
+export declare const removeElements: (elementsToRemove: (Node | Edge)[], elements: (Node | Edge)[]) => (Node | Edge)[];
+export declare const addEdge: (edgeParams: Edge, elements: (Node | Edge)[]) => (Node | Edge)[];
+export declare const parseElement: (element: Node | Edge, transform?: [number, number, number]) => Node | Edge;
+export declare const getBoundingBox: (nodes: Node[]) => Rect;
+export declare const graphPosToZoomedPos: (pos: XYPosition, transform: [number, number, number]) => XYPosition;
+export declare const getNodesInside: (nodes: Node[], bbox: Rect, transform?: [number, number, number], partially?: boolean) => Node[];
+export declare const getConnectedEdges: (nodes: Node[], edges: Edge[]) => Edge[];
+export declare const fitView: ({ padding }?: FitViewParams) => void;
+export declare const zoomIn: () => void;
+export declare const zoomOut: () => void;

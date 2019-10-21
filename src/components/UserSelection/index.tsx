@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo, MouseEvent } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 
 import { useStoreActions } from '../../store/hooks';
 import { SelectionRect } from '../../types';
@@ -10,7 +10,7 @@ const initialRect: SelectionRect = {
   y: 0,
   width: 0,
   height: 0,
-  draw: false
+  draw: false,
 };
 
 function getMousePosition(evt: MouseEvent) {
@@ -28,33 +28,33 @@ function getMousePosition(evt: MouseEvent) {
 }
 
 export default memo(() => {
-  const selectionPane = useRef(null);
+  const selectionPane = useRef<HTMLDivElement>(null);
   const [rect, setRect] = useState(initialRect);
   const setSelection = useStoreActions(a => a.setSelection);
   const updateSelection = useStoreActions(a => a.updateSelection);
   const setNodesSelection = useStoreActions(a => a.setNodesSelection);
 
   useEffect(() => {
-    function onMouseDown(evt: MouseEvent) {
+    function onMouseDown(evt: MouseEvent): void {
       const mousePos = getMousePosition(evt);
       if (!mousePos) {
-        return false;
+        return;
       }
 
-      setRect((currentRect) => ({
+      setRect(currentRect => ({
         ...currentRect,
         startX: mousePos.x,
         startY: mousePos.y,
         x: mousePos.x,
         y: mousePos.y,
-        draw: true
+        draw: true,
       }));
 
       setSelection(true);
     }
 
-    function onMouseMove(evt: MouseEvent) {
-      setRect((currentRect) => {
+    function onMouseMove(evt: MouseEvent): void {
+      setRect(currentRect => {
         if (!currentRect.draw) {
           return currentRect;
         }
@@ -70,8 +70,12 @@ export default memo(() => {
           ...currentRect,
           x: negativeX ? mousePos.x : currentRect.x,
           y: negativeY ? mousePos.y : currentRect.y,
-          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
-          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY,
+          width: negativeX
+            ? currentRect.startX - mousePos.x
+            : mousePos.x - currentRect.startX,
+          height: negativeY
+            ? currentRect.startY - mousePos.y
+            : mousePos.y - currentRect.startY,
         };
 
         updateSelection(nextRect);
@@ -81,40 +85,44 @@ export default memo(() => {
     }
 
     function onMouseUp() {
-      setRect((currentRect) => {
+      setRect(currentRect => {
         setNodesSelection({ isActive: true, selection: currentRect });
         setSelection(false);
 
         return {
           ...currentRect,
-          draw: false
+          draw: false,
         };
       });
     }
 
-    selectionPane.current.addEventListener('mousedown', onMouseDown);
-    selectionPane.current.addEventListener('mousemove', onMouseMove);
-    selectionPane.current.addEventListener('mouseup', onMouseUp);
+    if (selectionPane.current) {
+      selectionPane.current.addEventListener('mousedown', onMouseDown);
+      selectionPane.current.addEventListener('mousemove', onMouseMove);
+      selectionPane.current.addEventListener('mouseup', onMouseUp);
 
-    return () => {
-      selectionPane.current.removeEventListener('mousedown', onMouseDown);
-      selectionPane.current.removeEventListener('mousemove', onMouseMove);
-      selectionPane.current.removeEventListener('mouseup', onMouseUp);
-    };
-  }, []);
+      return () => {
+        if (!selectionPane.current) {
+          return;
+        }
+        selectionPane.current.removeEventListener('mousedown', onMouseDown);
+        selectionPane.current.removeEventListener('mousemove', onMouseMove);
+        selectionPane.current.removeEventListener('mouseup', onMouseUp);
+      };
+    }
+
+    return;
+  }, [selectionPane.current]);
 
   return (
-    <div
-      className="react-flow__selectionpane"
-      ref={selectionPane}
-    >
+    <div className="react-flow__selectionpane" ref={selectionPane}>
       {rect.draw && (
         <div
           className="react-flow__selection"
           style={{
             width: rect.width,
             height: rect.height,
-            transform: `translate(${rect.x}px, ${rect.y}px)`
+            transform: `translate(${rect.x}px, ${rect.y}px)`,
           }}
         />
       )}
