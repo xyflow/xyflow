@@ -32,7 +32,7 @@
     "postcss-nested": "^4.1.2",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
-    "rollup": "^1.24.0",
+    "rollup": "^1.25.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",
