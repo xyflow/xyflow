@@ -25,8 +25,8 @@ type NodeUpdate = {
   width: number,
   height: number,
   handleBounds: {
-    source: HandleElement,
-    target: HandleElement
+    source: HandleElement[] | null,
+    target: HandleElement[] | null
   }
 };
 
@@ -49,8 +49,8 @@ export interface StoreModel {
   selectedElements: Elements;
   selectedNodesBbox: Rect;
 
-  d3Zoom: ZoomBehavior<Element, unknown>;
-  d3Selection: D3Selection<Element, unknown, null, undefined>;
+  d3Zoom: ZoomBehavior<Element, unknown> | null;
+  d3Selection: D3Selection<Element, unknown, null, undefined> | null;
   d3Initialised: boolean;
 
   nodesSelectionActive: boolean;
@@ -88,7 +88,7 @@ export interface StoreModel {
 
   setConnectionPosition: Action<StoreModel, XYPosition>;
 
-  setConnectionSourceId: Action<StoreModel, ElementId>;
+  setConnectionSourceId: Action<StoreModel, ElementId | null>;
 };
 
 const storeModel: StoreModel = {
@@ -152,7 +152,7 @@ const storeModel: StoreModel = {
   }),
 
   setNodesSelection: action((state, { isActive, selection }) => {
-    if (!isActive) {
+    if (!isActive || typeof selection === 'undefined') {
       state.nodesSelectionActive = false;
       state.selectedElements = [];
 

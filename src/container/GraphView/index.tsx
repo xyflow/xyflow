@@ -59,6 +59,10 @@ const GraphView = memo(({
   const onZoomPaneClick = () => setNodesSelection({ isActive: false });
 
   const updateDimensions = () => {
+    if (!rendererNode.current) {
+      return;
+    }
+
     const size = getDimensions(rendererNode.current);
     updateSize(size);
   };

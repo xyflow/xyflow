@@ -33,7 +33,7 @@ function renderNode(node: Node, props: NodeRendererProps, state: NodeRendererSta
     <NodeComponent
       key={node.id}
       id={node.id}
-      type={node.type}
+      type={nodeType}
       data={node.data}
       xPos={node.__rg.position.x}
       yPos={node.__rg.position.y}

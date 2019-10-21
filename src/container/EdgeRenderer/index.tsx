@@ -50,8 +50,6 @@ function getHandlePosition(position: Position, node: Node, handle: any | null =
         y: node.__rg.height / 2
       };
     }
-
-    return null;
   }
 
   switch (position) {
@@ -74,7 +72,7 @@ function getHandlePosition(position: Position, node: Node, handle: any | null =
   }
 }
 
-function getHandle(bounds: HandleElement[], handleId: ElementId): HandleElement | null {
+function getHandle(bounds: HandleElement[], handleId: ElementId | null): HandleElement | null | undefined {
   let handle = null;
 
   if (!bounds) {
@@ -93,8 +91,8 @@ function getHandle(bounds: HandleElement[], handleId: ElementId): HandleElement 
 }
 
 function getEdgePositions(
-  sourceNode: Node, sourceHandle: HandleElement, sourcePosition: Position,
-  targetNode: Node, targetHandle: HandleElement, targetPosition: Position
+  sourceNode: Node, sourceHandle: HandleElement | unknown, sourcePosition: Position,
+  targetNode: Node, targetHandle: HandleElement | unknown, targetPosition: Position
 ): EdgePositions {
   const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle)
   const sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;

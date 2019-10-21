@@ -13,6 +13,7 @@ export function createNodeTypes(nodeTypes: NodeTypesType): NodeTypesType {
     output: wrapNode((nodeTypes.output || OutputNode) as ComponentType<NodeComponentProps>)
   };
 
+  const wrappedTypes = {} as NodeTypesType;
   const specialTypes: NodeTypesType = Object
     .keys(nodeTypes)
     .filter(k => !['input', 'default', 'output'].includes(k))
@@ -20,7 +21,7 @@ export function createNodeTypes(nodeTypes: NodeTypesType): NodeTypesType {
       res[key] = wrapNode((nodeTypes[key] || DefaultNode) as ComponentType<NodeComponentProps>);
 
       return res;
-    }, {});
+    }, wrappedTypes);
 
   return {
     ...standardTypes,

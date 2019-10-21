@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo, ComponentType } from 'react';
+import React, { useEffect, useRef, useState, memo, ComponentType, CSSProperties } from 'react';
 import { DraggableCore, DraggableEvent } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
@@ -6,7 +6,20 @@ import { ResizeObserver } from 'resize-observer';
 import { getDimensions, isInputDOMNode } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
-import { NodeComponentProps, Node, XYPosition, HandleElement, Position, Transform, ElementId } from '../../types';
+import { Node, XYPosition, HandleElement, Position, Transform, ElementId, NodeComponentProps } from '../../types';
+
+interface WrapNodeProps {
+  id: ElementId;
+  type: string;
+  data: any;
+  selected: boolean;
+  transform: Transform;
+  xPos: number;
+  yPos: number;
+  onClick: (node: Node) => void | undefined;
+  onNodeDragStop: (node: Node) => void;
+  style?: CSSProperties;
+}
 
 const isHandle = (evt: MouseEvent | DraggableEvent) => {
   const target = evt.target as HTMLElement;
@@ -20,19 +33,21 @@ const isHandle = (evt: MouseEvent | DraggableEvent) => {
 
 const getHandleBounds = (
   selector: string, nodeElement: HTMLDivElement, parentBounds: ClientRect | DOMRect, k: number
-): HandleElement => {
+): HandleElement[] | null => {
   const handles = nodeElement.querySelectorAll(selector);
 
   if (!handles || !handles.length) {
     return null;
   }
 
-  return [].map.call(handles, (handle: HTMLDivElement): HandleElement => {
+  const handlesArray = Array.from(handles) as HTMLDivElement[];
+
+  return handlesArray.map((handle): HandleElement => {
     const bounds = handle.getBoundingClientRect();
     const dimensions = getDimensions(handle);
     const nodeIdAttr = handle.getAttribute('data-nodeid');
     const handlePosition = handle.getAttribute('data-handlepos') as unknown as Position;
-    const nodeIdSplitted = nodeIdAttr.split('__');
+    const nodeIdSplitted = nodeIdAttr ? nodeIdAttr.split('__') : null;
 
     let handleId = null;
 
@@ -66,7 +81,7 @@ const onStart = (
   const offsetY = scaledClient.y - position.y - transform[1];
   const node = { id, type, position, data };
 
-  store.dispatch.setSelectedElements({ id, type });
+  store.dispatch.setSelectedElements({ id, type } as Node);
   setOffset({ x: offsetX, y: offsetY });
   onClick(node);
 };
@@ -95,7 +110,7 @@ const onStop = (
     setDragging(false);
     onNodeDragStop({
       id, type, position, data
-    });
+    } as Node);
   }
 };
 
@@ -104,7 +119,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     id, type, data, transform,
     xPos, yPos, selected, onClick,
     onNodeDragStop, style
-  }: NodeComponentProps) => {
+  }: WrapNodeProps) => {
     const nodeElement = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setDragging] = useState(false);
@@ -113,9 +128,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const nodeClasses = cx('react-flow__node', { selected });
     const nodeStyle = { zIndex: selected ? 10 : 3, transform: `translate(${xPos}px,${yPos}px)` };
 
-    const updateNode = () => {
+    const updateNode = (): void => {
       if (!nodeElement.current) {
-        return false;
+        return;
       }
 
       const storeState = store.getState()
@@ -146,6 +161,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           }
         }
       }
+
+      return;
     }, [nodeElement.current]);
 
     return (

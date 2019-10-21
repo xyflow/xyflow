@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { isInputDOMNode } from '../utils';
 
-export default (keyCode: number) => {
+export default (keyCode: number): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
   function downHandler(evt: KeyboardEvent) {

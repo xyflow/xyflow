@@ -4,13 +4,14 @@ import cx from 'classnames';
 import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
+type SetSourceIdFunc = (nodeId: ElementId | null) => void
 
 interface BaseHandleProps {
   type: HandleType;
   nodeId: ElementId;
   onConnect: OnConnectFunc;
   position: Position;
-  setSourceId: (nodeId: ElementId) => void;
+  setSourceId: SetSourceIdFunc;
   setPosition: (pos: XYPosition) => void;
   isValidConnection: ValidConnectionFunc;
   id?: ElementId | boolean;
@@ -18,24 +19,24 @@ interface BaseHandleProps {
 };
 
 type Result = {
-  elementBelow: Element;
+  elementBelow: Element | null;
   isValid: boolean;
   connection: Connection;
   isHoveringHandle: boolean;
 };
 
 function onMouseDown(
-  evt: ReactMouseEvent, nodeId: ElementId, setSourceId: (nodeId: ElementId) => void, setPosition: (pos: XYPosition) => any,
+  evt: ReactMouseEvent, nodeId: ElementId, setSourceId: SetSourceIdFunc, setPosition: (pos: XYPosition) => any,
   onConnect: OnConnectFunc, isTarget: boolean, isValidConnection: ValidConnectionFunc
 ): void {
   const reactFlowNode = document.querySelector('.react-flow');
 
   if (!reactFlowNode) {
-    return null;
+    return;
   }
 
   const containerBounds = reactFlowNode.getBoundingClientRect();
-  let recentHoveredHandle: Element = null;
+  let recentHoveredHandle: Element;
 
   setPosition({
     x: evt.clientX - containerBounds.left,
@@ -43,9 +44,9 @@ function onMouseDown(
   });
   setSourceId(nodeId);
 
-  function resetRecentHandle() {
+  function resetRecentHandle(): void {
     if (!recentHoveredHandle) {
-      return false;
+      return;
     }
 
     recentHoveredHandle.classList.remove('valid');
@@ -55,6 +56,7 @@ function onMouseDown(
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
   function checkElementBelowIsValid(evt: MouseEvent) {
     const elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
+
     const result: Result = {
       elementBelow,
       isValid: false,
@@ -97,7 +99,7 @@ function onMouseDown(
 
     const isOwnHandle = connection.source === connection.target;
 
-    if (!isOwnHandle) {
+    if (!isOwnHandle && elementBelow) {
       recentHoveredHandle = elementBelow;
       elementBelow.classList.add('connecting');
       elementBelow.classList.toggle('valid', isValid);

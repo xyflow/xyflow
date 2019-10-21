@@ -14,7 +14,7 @@ export const getOutgoers = (node: Node, elements: Elements): Elements => {
     return [];
   }
 
-  const outgoerIds = elements.filter((e: Edge) => e.source === node.id).map((e: Edge) => e.target);
+  const outgoerIds = (elements as Edge[]).filter(e => e.source === node.id).map(e => e.target);
   return elements.filter(e => outgoerIds.includes(e.id));
 };
 
@@ -56,7 +56,7 @@ const pointToRendererPoint = ({ x, y }: XYPosition, transform: Transform): XYPos
   };
 };
 
-export const parseElement = (element: Node | Edge, transform?: Transform): Node | Edge => {
+export const parseElement = (element: Node | Edge, transform: Transform = [0, 0, 1]): Node | Edge => {
   if (!element.id) {
     throw new Error('All elements (nodes and edges) need to have an id.',)
   }
@@ -167,6 +167,12 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
 
 export const fitView = ({ padding }: FitViewParams = { padding: 0 }): void => {
   const state = store.getState();
+
+  if (!state.d3Selection || !state.d3Zoom) {
+    return;
+  }
+
+
   const bounds = getBoundingBox(state.nodes);
   const maxBoundsSize = Math.max(bounds.width, bounds.height);
   const k = Math.min(state.width, state.height) / (maxBoundsSize + (maxBoundsSize * padding));
@@ -180,10 +186,20 @@ export const fitView = ({ padding }: FitViewParams = { padding: 0 }): void => {
 
 export const zoomIn = (): void => {
   const state = store.getState();
+
+  if (!state.d3Zoom || !state.d3Selection) {
+    return;
+  }
+
   state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] + 0.2);
 };
 
 export const zoomOut = (): void => {
   const state = store.getState();
+
+  if (!state.d3Zoom || !state.d3Selection) {
+    return;
+  }
+
   state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] - 0.2);
 };

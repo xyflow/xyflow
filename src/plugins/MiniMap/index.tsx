@@ -25,7 +25,7 @@ const baseStyle: CSSProperties = {
 export default (
   { style = {}, className, bgColor = '#f8f8f8', nodeColor = '#ddd' }: MiniMapProps
 ) => {
-  const canvasNode = useRef(null);
+  const canvasNode = useRef<HTMLCanvasElement>(null);
   const state = useStoreState(s => ({
     width: s.width,
     height: s.height,
@@ -41,30 +41,37 @@ export default (
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor: () => nodeColor) as StringFunc;
 
   useEffect(() => {
-    if (canvasNode && canvasNode.current) {
-      const ctx = canvasNode.current.getContext('2d');
-      const nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
-
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, width, height);
-
-      nodesInside.forEach((n) => {
-        const pos = n.__rg.position;
-        const transformX = state.transform[0];
-        const transformY = state.transform[1];
-        const x = (pos.x * state.transform[2]) + transformX;
-        const y = (pos.y * state.transform[2]) + transformY;
-
-        ctx.fillStyle = nodeColorFunc(n);
-
-        ctx.fillRect(
-          (x * scaleFactor),
-          (y * scaleFactor),
-          n.__rg.width * scaleFactor * state.transform[2],
-          n.__rg.height * scaleFactor * state.transform[2]
-        );
-      });
+    if (!canvasNode || !canvasNode.current) {
+      return;
     }
+
+    const ctx = canvasNode.current.getContext('2d');
+
+    if (!ctx) {
+      return;
+    }
+
+    const nodesInside = getNodesInside(state.nodes, bbox, state.transform, true);
+
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, width, height);
+
+    nodesInside.forEach((n) => {
+      const pos = n.__rg.position;
+      const transformX = state.transform[0];
+      const transformY = state.transform[1];
+      const x = (pos.x * state.transform[2]) + transformX;
+      const y = (pos.y * state.transform[2]) + transformY;
+
+      ctx.fillStyle = nodeColorFunc(n);
+
+      ctx.fillRect(
+        (x * scaleFactor),
+        (y * scaleFactor),
+        n.__rg.width * scaleFactor * state.transform[2],
+        n.__rg.height * scaleFactor * state.transform[2]
+      );
+    });
   }, [canvasNode.current, nodePositions, state.transform, height])
 
   return (
