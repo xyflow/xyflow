@@ -126,44 +126,17 @@ export const parseElement = (
 };
 
 export const getBoundingBox = (nodes: Node[]): Rect => {
-  const bbox = nodes.reduce(
-    (res, node) => {
-      const { position } = node.__rg;
-      const x2 = position.x + node.__rg.width;
-      const y2 = position.y + node.__rg.height;
-
-      if (position.x < res.minX) {
-        res.minX = position.x;
-      }
-
-      if (x2 > res.maxX) {
-        res.maxX = x2;
-      }
-
-      if (position.y < res.minY) {
-        res.minY = position.y;
-      }
-
-      if (y2 > res.maxY) {
-        res.maxY = y2;
-      }
-
-      return res;
-    },
-    {
-      minX: Number.MAX_VALUE,
-      minY: Number.MAX_VALUE,
-      maxX: 0,
-      maxY: 0,
-    }
+  const { x, y, x2, y2 } = nodes.reduce(
+    ({ x, y, x2, y2 }, { __rg: { position, width, height } }) => ({
+      x: Math.min(x, position.x),
+      y: Math.min(y, position.y),
+      x2: Math.max(x2, position.x + width),
+      y2: Math.max(y2, position.y + height),
+    }),
+    { x: Infinity, y: Infinity, x2: 0, y2: 0 }
   );
 
-  return {
-    x: bbox.minX,
-    y: bbox.minY,
-    width: bbox.maxX - bbox.minX,
-    height: bbox.maxY - bbox.minY,
-  };
+  return { x, y, width: x2 - x, height: y2 - y };
 };
 
 export const graphPosToZoomedPos = (
