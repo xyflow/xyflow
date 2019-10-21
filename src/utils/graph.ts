@@ -65,20 +65,33 @@ export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
 
 const pointToRendererPoint = (
   { x, y }: XYPosition,
-  transform: Transform
+  transform: Transform,
+  snapToGrid: boolean,
+  snapGrid: [number, number]
 ): XYPosition => {
-  const rendererX = (x - transform[0]) * (1 / transform[2]);
-  const rendererY = (y - transform[1]) * (1 / transform[2]);
-
-  return {
-    x: rendererX,
-    y: rendererY,
+  let position: XYPosition = {
+    x: (x - transform[0]) * (1 / transform[2]),
+    y: (y - transform[1]) * (1 / transform[2]),
   };
+
+  if (snapToGrid) {
+    const transformedGridSizeX = snapGrid[0] * transform[2];
+    const transformedGridSizeY = snapGrid[1] * transform[2];
+
+    position = {
+      x: transformedGridSizeX * Math.round(position.x / transformedGridSizeX),
+      y: transformedGridSizeY * Math.round(position.y / transformedGridSizeY),
+    };
+  }
+
+  return position;
 };
 
 export const parseElement = (
   element: Node | Edge,
-  transform: Transform = [0, 0, 1]
+  transform: Transform,
+  snapToGrid: boolean,
+  snapGrid: [number, number]
 ): Node | Edge => {
   if (!element.id) {
     throw new Error('All elements (nodes and edges) need to have an id.');
@@ -99,7 +112,12 @@ export const parseElement = (
     id: nodeElement.id.toString(),
     type: nodeElement.type || 'default',
     __rg: {
-      position: pointToRendererPoint(nodeElement.position, transform),
+      position: pointToRendererPoint(
+        nodeElement.position,
+        transform,
+        snapToGrid,
+        snapGrid
+      ),
       width: null,
       height: null,
       handleBounds: {},

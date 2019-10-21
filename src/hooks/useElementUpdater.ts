@@ -10,6 +10,8 @@ const useElementUpdater = (elements: Elements): void => {
     nodes: s.nodes,
     edges: s.edges,
     transform: s.transform,
+    snapToGrid: s.snapToGrid,
+    snapGrid: s.snapGrid,
   }));
 
   const setNodes = useStoreActions(a => a.setNodes);
@@ -17,7 +19,11 @@ const useElementUpdater = (elements: Elements): void => {
 
   useEffect(() => {
     const nodes = elements.filter(isNode) as Node[];
-    const edges = elements.filter(isEdge).map(e => parseElement(e)) as Edge[];
+    const edges = elements
+      .filter(isEdge)
+      .map(e =>
+        parseElement(e, state.transform, state.snapToGrid, state.snapGrid)
+      ) as Edge[];
 
     const nextNodes = nodes.map(propNode => {
       const existingNode = state.nodes.find(n => n.id === propNode.id);
@@ -33,7 +39,12 @@ const useElementUpdater = (elements: Elements): void => {
         };
       }
 
-      return parseElement(propNode, state.transform);
+      return parseElement(
+        propNode,
+        state.transform,
+        state.snapToGrid,
+        state.snapGrid
+      );
     }) as Node[];
 
     const nodesChanged: boolean = !isEqual(state.nodes, nextNodes);

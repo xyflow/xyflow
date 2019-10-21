@@ -5897,17 +5897,23 @@ var addEdge = function (edgeParams, elements) {
             ? edgeParams.id
             : getEdgeId(edgeParams) }));
 };
-var pointToRendererPoint = function (_a, transform) {
+var pointToRendererPoint = function (_a, transform, snapToGrid, snapGrid) {
     var x = _a.x, y = _a.y;
-    var rendererX = (x - transform[0]) * (1 / transform[2]);
-    var rendererY = (y - transform[1]) * (1 / transform[2]);
-    return {
-        x: rendererX,
-        y: rendererY,
+    var position = {
+        x: (x - transform[0]) * (1 / transform[2]),
+        y: (y - transform[1]) * (1 / transform[2]),
     };
+    if (snapToGrid) {
+        var transformedGridSizeX = snapGrid[0] * transform[2];
+        var transformedGridSizeY = snapGrid[1] * transform[2];
+        position = {
+            x: transformedGridSizeX * Math.round(position.x / transformedGridSizeX),
+            y: transformedGridSizeY * Math.round(position.y / transformedGridSizeY),
+        };
+    }
+    return position;
 };
-var parseElement = function (element, transform) {
-    if (transform === void 0) { transform = [0, 0, 1]; }
+var parseElement = function (element, transform, snapToGrid, snapGrid) {
     if (!element.id) {
         throw new Error('All elements (nodes and edges) need to have an id.');
     }
@@ -5916,7 +5922,7 @@ var parseElement = function (element, transform) {
     }
     var nodeElement = element;
     return __assign(__assign({}, nodeElement), { id: nodeElement.id.toString(), type: nodeElement.type || 'default', __rg: {
-            position: pointToRendererPoint(nodeElement.position, transform),
+            position: pointToRendererPoint(nodeElement.position, transform, snapToGrid, snapGrid),
             width: null,
             height: null,
             handleBounds: {},
@@ -8249,12 +8255,18 @@ var useElementUpdater = function (elements) {
         nodes: s.nodes,
         edges: s.edges,
         transform: s.transform,
+        snapToGrid: s.snapToGrid,
+        snapGrid: s.snapGrid,
     }); });
     var setNodes = useStoreActions$1(function (a) { return a.setNodes; });
     var setEdges = useStoreActions$1(function (a) { return a.setEdges; });
     React.useEffect(function () {
         var nodes = elements.filter(isNode);
-        var edges = elements.filter(isEdge).map(function (e) { return parseElement(e); });
+        var edges = elements
+            .filter(isEdge)
+            .map(function (e) {
+            return parseElement(e, state.transform, state.snapToGrid, state.snapGrid);
+        });
         var nextNodes = nodes.map(function (propNode) {
             var existingNode = state.nodes.find(function (n) { return n.id === propNode.id; });
             if (existingNode) {
@@ -8262,7 +8274,7 @@ var useElementUpdater = function (elements) {
                     ? __assign(__assign({}, existingNode.data), propNode.data) : existingNode.data;
                 return __assign(__assign({}, existingNode), { data: data });
             }
-            return parseElement(propNode, state.transform);
+            return parseElement(propNode, state.transform, state.snapToGrid, state.snapGrid);
         });
         var nodesChanged = !fastDeepEqual(state.nodes, nextNodes);
         var edgesChanged = !fastDeepEqual(state.edges, edges);
