@@ -12,5 +12,5 @@ interface WrapNodeProps {
     onNodeDragStop: (node: Node) => void;
     style?: CSSProperties;
 }
-declare const _default: (NodeComponent: React.ComponentType<NodeComponentProps>) => React.MemoExoticComponent<({ id, type, data, transform, xPos, yPos, selected, onClick, onNodeDragStop, style }: WrapNodeProps) => JSX.Element>;
+declare const _default: (NodeComponent: React.ComponentType<NodeComponentProps>) => React.MemoExoticComponent<({ id, type, data, transform, xPos, yPos, selected, onClick, onNodeDragStop, style, }: WrapNodeProps) => JSX.Element>;
 export default _default;

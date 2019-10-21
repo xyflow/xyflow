@@ -30,6 +30,7 @@
     "cypress": "^3.4.1",
     "husky": "^3.0.9",
     "postcss-nested": "^4.1.2",
+    "prettier": "1.18.2",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "rollup": "^1.25.1",

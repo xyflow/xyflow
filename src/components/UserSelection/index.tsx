@@ -10,7 +10,7 @@ const initialRect: SelectionRect = {
   y: 0,
   width: 0,
   height: 0,
-  draw: false
+  draw: false,
 };
 
 function getMousePosition(evt: MouseEvent) {
@@ -41,20 +41,20 @@ export default memo(() => {
         return;
       }
 
-      setRect((currentRect) => ({
+      setRect(currentRect => ({
         ...currentRect,
         startX: mousePos.x,
         startY: mousePos.y,
         x: mousePos.x,
         y: mousePos.y,
-        draw: true
+        draw: true,
       }));
 
       setSelection(true);
     }
 
     function onMouseMove(evt: MouseEvent): void {
-      setRect((currentRect) => {
+      setRect(currentRect => {
         if (!currentRect.draw) {
           return currentRect;
         }
@@ -70,8 +70,12 @@ export default memo(() => {
           ...currentRect,
           x: negativeX ? mousePos.x : currentRect.x,
           y: negativeY ? mousePos.y : currentRect.y,
-          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
-          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY,
+          width: negativeX
+            ? currentRect.startX - mousePos.x
+            : mousePos.x - currentRect.startX,
+          height: negativeY
+            ? currentRect.startY - mousePos.y
+            : mousePos.y - currentRect.startY,
         };
 
         updateSelection(nextRect);
@@ -81,13 +85,13 @@ export default memo(() => {
     }
 
     function onMouseUp() {
-      setRect((currentRect) => {
+      setRect(currentRect => {
         setNodesSelection({ isActive: true, selection: currentRect });
         setSelection(false);
 
         return {
           ...currentRect,
-          draw: false
+          draw: false,
         };
       });
     }
@@ -111,17 +115,14 @@ export default memo(() => {
   }, [selectionPane.current]);
 
   return (
-    <div
-      className="react-flow__selectionpane"
-      ref={selectionPane}
-    >
+    <div className="react-flow__selectionpane" ref={selectionPane}>
       {rect.draw && (
         <div
           className="react-flow__selection"
           style={{
             width: rect.width,
             height: rect.height,
-            transform: `translate(${rect.x}px, ${rect.y}px)`
+            transform: `translate(${rect.x}px, ${rect.y}px)`,
           }}
         />
       )}

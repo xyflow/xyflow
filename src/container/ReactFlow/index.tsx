@@ -1,5 +1,5 @@
-import React, {useMemo, CSSProperties, ReactNode, SVGAttributes} from 'react';
-import {StoreProvider} from 'easy-peasy';
+import React, { useMemo, SVGAttributes, HTMLAttributes } from 'react';
+import { StoreProvider } from 'easy-peasy';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
 
@@ -12,17 +12,24 @@ import GraphView from '../GraphView';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
-import {createNodeTypes} from '../NodeRenderer/utils';
+import { createNodeTypes } from '../NodeRenderer/utils';
 import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
-import {createEdgeTypes} from '../EdgeRenderer/utils';
+import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
-import {Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc} from '../../types';
+import {
+  Elements,
+  NodeTypesType,
+  EdgeTypesType,
+  GridType,
+  OnLoadFunc,
+} from '../../types';
 
 import '../../style.css';
 
-export interface ReactFlowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onLoad'> {
+export interface ReactFlowProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
   onElementClick: () => void;
   onElementsRemove: (elements: Elements) => void;

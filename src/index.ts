@@ -10,5 +10,5 @@ export {
   isEdge,
   removeElements,
   addEdge,
-  getOutgoers
+  getOutgoers,
 } from './utils/graph';

@@ -28,4 +28,4 @@ export default (keyCode: number): boolean => {
   }, []);
 
   return keyPressed;
-}
+};

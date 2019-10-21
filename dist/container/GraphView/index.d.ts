@@ -19,5 +19,5 @@ export interface GraphViewProps {
     backgroundColor: string;
     backgroundType: GridType;
 }
-declare const GraphView: React.MemoExoticComponent<({ nodeTypes, edgeTypes, onMove, onLoad, onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle, selectionKeyCode, onElementsRemove, deleteKeyCode, elements, showBackground, backgroundGap, backgroundColor, backgroundType, onConnect }: GraphViewProps) => JSX.Element>;
+declare const GraphView: React.MemoExoticComponent<({ nodeTypes, edgeTypes, onMove, onLoad, onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle, selectionKeyCode, onElementsRemove, deleteKeyCode, elements, showBackground, backgroundGap, backgroundColor, backgroundType, onConnect, }: GraphViewProps) => JSX.Element>;
 export default GraphView;
