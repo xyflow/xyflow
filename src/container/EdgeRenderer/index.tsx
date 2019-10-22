@@ -3,7 +3,7 @@ import React, { memo, SVGAttributes } from 'react';
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
-import { XYPosition, Position, Edge, Node, ElementId, Transform, HandleElement } from '../../types';
+import { XYPosition, Position, Edge, Node, ElementId, HandleElement, Elements } from '../../types';
 
 interface EdgeRendererProps {
   width: number;
@@ -12,15 +12,6 @@ interface EdgeRendererProps {
   connectionLineStyle?: SVGAttributes<{}>;
   connectionLineType?: string;
   onElementClick?: () => void;
-}
-
-interface EdgeRendererState {
-  nodes: Node[];
-  edges: Edge[];
-  transform: Transform;
-  selectedElements: any;
-  connectionSourceId: ElementId | null;
-  position: XYPosition;
 }
 
 interface EdgePositions {
@@ -122,20 +113,12 @@ function getEdgePositions(
   };
 }
 
-function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererState) {
-  const edgeType = edge.type || 'default';
+function renderEdge(edge: Edge, props: EdgeRendererProps, nodes: Node[], selectedElements: Elements) {
+  const [sourceId, sourceHandleId] = edge.source.split('__');
+  const [targetId, targetHandleId] = edge.target.split('__');
 
-  const hasSourceHandleId = edge.source.includes('__');
-  const hasTargetHandleId = edge.target.includes('__');
-
-  const sourceId = hasSourceHandleId ? edge.source.split('__')[0] : edge.source;
-  const targetId = hasTargetHandleId ? edge.target.split('__')[0] : edge.target;
-
-  const sourceHandleId = hasSourceHandleId ? edge.source.split('__')[1] : null;
-  const targetHandleId = hasTargetHandleId ? edge.target.split('__')[1] : null;
-
-  const sourceNode = state.nodes.find(n => n.id === sourceId);
-  const targetNode = state.nodes.find(n => n.id === targetId);
+  const sourceNode = nodes.find(n => n.id === sourceId);
+  const targetNode = nodes.find(n => n.id === targetId);
 
   if (!sourceNode) {
     throw new Error(`couldn't create edge for source id: ${sourceId}`);
@@ -144,7 +127,7 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererSta
   if (!targetNode) {
     throw new Error(`couldn't create edge for target id: ${targetId}`);
   }
-
+  const edgeType = edge.type || 'default';
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
   const sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
   const targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
@@ -159,9 +142,10 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererSta
     targetHandle,
     targetPosition
   );
-  const selected = state.selectedElements
-    .filter(isEdge)
-    .find((elm: Edge) => elm.source === sourceId && elm.target === targetId);
+
+  const isSelected = (selectedElements as Edge[]).some(
+    elm => isEdge(elm) && elm.source === sourceId && elm.target === targetId
+  );
 
   return (
     <EdgeComponent
@@ -169,7 +153,7 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererSta
       id={edge.id}
       type={edge.type}
       onClick={props.onElementClick}
-      selected={selected}
+      selected={isSelected}
       animated={edge.animated}
       style={edge.style}
       source={sourceId}
@@ -186,44 +170,35 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, state: EdgeRendererSta
   );
 }
 
-const EdgeRenderer = memo(({ width, height, connectionLineStyle, connectionLineType, ...rest }: EdgeRendererProps) => {
-  const state: EdgeRendererState = useStoreState(s => ({
-    nodes: s.nodes,
-    edges: s.edges,
-    transform: s.transform,
-    selectedElements: s.selectedElements,
-    connectionSourceId: s.connectionSourceId,
-    position: s.connectionPosition,
-  }));
+const EdgeRenderer = memo((props: EdgeRendererProps) => {
+  const {
+    transform,
+    edges,
+    nodes,
+    connectionSourceId,
+    connectionPosition: { x, y },
+    selectedElements,
+  } = useStoreState(s => s);
+
+  const { width, height, connectionLineStyle, connectionLineType } = props;
+
   if (!width) {
     return null;
   }
 
-  const { transform, edges, nodes, connectionSourceId, position } = state;
-  const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
+  const [tx, ty, tScale] = transform;
+  const transformStyle = `translate(${tx},${ty}) scale(${tScale})`;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <g transform={transformStyle}>
-        {edges.map((e: Edge) =>
-          renderEdge(
-            e,
-            {
-              width,
-              height,
-              connectionLineStyle,
-              connectionLineType,
-              ...rest,
-            },
-            state
-          )
-        )}
+        {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements))}
         {connectionSourceId && (
           <ConnectionLine
             nodes={nodes}
             connectionSourceId={connectionSourceId}
-            connectionPositionX={position.x}
-            connectionPositionY={position.y}
+            connectionPositionX={x}
+            connectionPositionY={y}
             transform={transform}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}
