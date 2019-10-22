@@ -1,6 +1,6 @@
 # :ocean: React Flow
 
-React library for rendering an interactive node-based flow editor
+React library for building node-based flow editors.
 
 # Installation
 
@@ -29,3 +29,8 @@ npm install github:wbkd/react-flow
 - `backgroundType`: background type = `dots` or `lines`
 - `snapToGrid`: boolean
 - `snapGrid`: [x, y] array
+
+# Plugins
+
+- Mini map
+- Controls: zoom & fit view
