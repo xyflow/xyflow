@@ -1,16 +1,7 @@
 import { zoomIdentity } from 'd3-zoom';
 
 import store from '../store';
-import {
-  ElementId,
-  Node,
-  Edge,
-  Elements,
-  Transform,
-  XYPosition,
-  Rect,
-  FitViewParams,
-} from '../types';
+import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box } from '../types';
 
 export const isEdge = (element: Node | Edge): boolean =>
   element.hasOwnProperty('source') && element.hasOwnProperty('target');
@@ -23,16 +14,11 @@ export const getOutgoers = (node: Node, elements: Elements): Elements => {
     return [];
   }
 
-  const outgoerIds = (elements as Edge[])
-    .filter(e => e.source === node.id)
-    .map(e => e.target);
+  const outgoerIds = (elements as Edge[]).filter(e => e.source === node.id).map(e => e.target);
   return elements.filter(e => outgoerIds.includes(e.id));
 };
 
-export const removeElements = (
-  elementsToRemove: Elements,
-  elements: Elements
-): Elements => {
+export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {
   const nodeIdsToRemove = elementsToRemove.map(n => n.id);
 
   return elements.filter(element => {
@@ -56,10 +42,7 @@ export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
 
   return elements.concat({
     ...edgeParams,
-    id:
-      typeof edgeParams.id !== 'undefined'
-        ? edgeParams.id
-        : getEdgeId(edgeParams),
+    id: typeof edgeParams.id !== 'undefined' ? edgeParams.id : getEdgeId(edgeParams),
   });
 };
 
@@ -112,12 +95,7 @@ export const parseElement = (
     id: nodeElement.id.toString(),
     type: nodeElement.type || 'default',
     __rg: {
-      position: pointToRendererPoint(
-        nodeElement.position,
-        transform,
-        snapToGrid,
-        snapGrid
-      ),
+      position: pointToRendererPoint(nodeElement.position, transform, snapToGrid, snapGrid),
       width: null,
       height: null,
       handleBounds: {},
@@ -125,51 +103,41 @@ export const parseElement = (
   };
 };
 
-export const getBoundingBox = (nodes: Node[]): Rect => {
-  const bbox = nodes.reduce(
-    (res, node) => {
-      const { position } = node.__rg;
-      const x2 = position.x + node.__rg.width;
-      const y2 = position.y + node.__rg.height;
+const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
+  x: Math.min(box1.x, box2.x),
+  y: Math.min(box1.y, box2.y),
+  x2: Math.max(box1.x2, box2.x2),
+  y2: Math.max(box1.y2, box2.y2),
+});
 
-      if (position.x < res.minX) {
-        res.minX = position.x;
-      }
+const rectToBox = ({ x, y, width, height }: Rect): Box => ({
+  x,
+  y,
+  x2: x + width,
+  y2: y + height,
+});
 
-      if (x2 > res.maxX) {
-        res.maxX = x2;
-      }
+const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
+  x,
+  y,
+  width: x2 - x,
+  height: y2 - y,
+});
 
-      if (position.y < res.minY) {
-        res.minY = position.y;
-      }
+export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
+  boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
 
-      if (y2 > res.maxY) {
-        res.maxY = y2;
-      }
-
-      return res;
-    },
-    {
-      minX: Number.MAX_VALUE,
-      minY: Number.MAX_VALUE,
-      maxX: 0,
-      maxY: 0,
-    }
+export const getRectOfNodes = (nodes: Node[]): Rect => {
+  const box = nodes.reduce(
+    (currBox, { __rg: { position, width, height } }) =>
+      getBoundsOfBoxes(currBox, rectToBox({ ...position, width, height })),
+    { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
-  return {
-    x: bbox.minX,
-    y: bbox.minY,
-    width: bbox.maxX - bbox.minX,
-    height: bbox.maxY - bbox.minY,
-  };
+  return boxToRect(box);
 };
 
-export const graphPosToZoomedPos = (
-  pos: XYPosition,
-  transform: Transform
-): XYPosition => {
+export const graphPosToZoomedPos = (pos: XYPosition, transform: Transform): XYPosition => {
   return {
     x: pos.x * transform[2] + transform[0],
     y: pos.y * transform[2] + transform[1],
@@ -178,29 +146,25 @@ export const graphPosToZoomedPos = (
 
 export const getNodesInside = (
   nodes: Node[],
-  bbox: Rect,
-  transform: Transform = [0, 0, 1],
+  rect: Rect,
+  [tx, ty, tScale]: Transform = [0, 0, 1],
   partially: boolean = false
 ): Node[] => {
-  return nodes.filter(n => {
-    const bboxPos = {
-      x: (bbox.x - transform[0]) * (1 / transform[2]),
-      y: (bbox.y - transform[1]) * (1 / transform[2]),
-    };
-    const bboxWidth = bbox.width * (1 / transform[2]);
-    const bboxHeight = bbox.height * (1 / transform[2]);
-    const { position, width, height } = n.__rg;
-    const nodeWidth = partially ? -width : width;
-    const nodeHeight = partially ? 0 : height;
-    const offsetX = partially ? width : 0;
-    const offsetY = partially ? height : 0;
-
-    return (
-      position.x + offsetX > bboxPos.x &&
-      position.x + nodeWidth < bboxPos.x + bboxWidth &&
-      (position.y + offsetY > bboxPos.y &&
-        position.y + nodeHeight < bboxPos.y + bboxHeight)
-    );
+  const rBox = rectToBox({
+    x: (rect.x - tx) / tScale,
+    y: (rect.y - ty) / tScale,
+    width: rect.width / tScale,
+    height: rect.height / tScale,
+  });
+  return nodes.filter(({ __rg: { position, width, height } }) => {
+    const nBox = rectToBox({ ...position, width, height });
+    const overlappingArea =
+      (Math.max(rBox.x, nBox.x) - Math.min(rBox.x2, nBox.x2)) * (Math.max(rBox.y, nBox.y) - Math.min(rBox.y2, nBox.y2));
+    if (partially) {
+      return overlappingArea > 0;
+    }
+    const area = width * height;
+    return overlappingArea === area;
   });
 };
 
@@ -225,20 +189,13 @@ export const fitView = ({ padding }: FitViewParams = { padding: 0 }): void => {
     return;
   }
 
-  const bounds = getBoundingBox(state.nodes);
+  const bounds = getRectOfNodes(state.nodes);
   const maxBoundsSize = Math.max(bounds.width, bounds.height);
-  const k =
-    Math.min(state.width, state.height) /
-    (maxBoundsSize + maxBoundsSize * padding);
+  const k = Math.min(state.width, state.height) / (maxBoundsSize + maxBoundsSize * padding);
   const boundsCenterX = bounds.x + bounds.width / 2;
   const boundsCenterY = bounds.y + bounds.height / 2;
-  const transform = [
-    state.width / 2 - boundsCenterX * k,
-    state.height / 2 - boundsCenterY * k,
-  ];
-  const fittedTransform = zoomIdentity
-    .translate(transform[0], transform[1])
-    .scale(k);
+  const transform = [state.width / 2 - boundsCenterX * k, state.height / 2 - boundsCenterY * k];
+  const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
 
   state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
 };

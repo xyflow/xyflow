@@ -149,7 +149,7 @@ class App extends PureComponent {
         snapGrid={[16, 16]}
       >
         <MiniMap
-          style={{ position: 'absolute', right: 10, bottom: 10 }}
+          style={{ position: 'absolute', right: 10, bottom: 10, backgroundColor: '#f8f8f8'}}
           nodeColor={n => {
             if (n.type === 'input') return 'blue';
             if (n.type === 'output') return 'green';

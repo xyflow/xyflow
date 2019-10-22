@@ -1,15 +1,21 @@
-import React, { useRef, useEffect, CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 import classnames from 'classnames';
 
 import { useStoreState } from '../../store/hooks';
-import { getNodesInside } from '../../utils/graph';
-import { Node } from '../../types';
+import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
+import { Node, Rect } from '../../types';
 
 type StringFunc = (node: Node) => string;
 
-interface MiniMapProps extends React.HTMLAttributes<HTMLCanvasElement> {
-  bgColor?: string;
-  nodeColor?: string | StringFunc;
+interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
+  nodeColor: string | StringFunc;
+  nodeBorderRadius: number;
+  maskColor: string;
+}
+interface MiniMapNodeProps {
+  node: Node;
+  color: string;
+  borderRadius: number;
 }
 
 const baseStyle: CSSProperties = {
@@ -18,81 +24,97 @@ const baseStyle: CSSProperties = {
   bottom: 10,
   right: 10,
   width: 200,
+  height: 150,
+};
+
+const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
+  const {
+    position: { x, y },
+    width,
+    height,
+  } = node.__rg;
+  const { background, backgroundColor } = node.style || {};
+  const fill = (background || backgroundColor || color) as string;
+  return (
+    <rect
+      className="react-flow__minimap-node"
+      x={x}
+      y={y}
+      rx={borderRadius}
+      ry={borderRadius}
+      width={width}
+      height={height}
+      fill={fill}
+    />
+  );
 };
 
 export default ({
-  style = {},
+  style = { backgroundColor: '#f8f8f8' },
   className,
-  bgColor = '#f8f8f8',
   nodeColor = '#ddd',
+  nodeBorderRadius = 5,
+  maskColor = 'rgba(10, 10, 10, .25)',
 }: MiniMapProps) => {
-  const canvasNode = useRef<HTMLCanvasElement>(null);
-  const state = useStoreState(s => ({
-    width: s.width,
-    height: s.height,
-    nodes: s.nodes,
-    transform: s.transform,
+  const state = useStoreState(({ width, height, nodes, transform: [tX, tY, tScale] }) => ({
+    width,
+    height,
+    nodes,
+    tX,
+    tY,
+    tScale,
   }));
+
   const mapClasses = classnames('react-flow__minimap', className);
-  const nodePositions = state.nodes.map(n => n.__rg.position);
-  const width: number = +(style.width || baseStyle.width || 0);
-  const height = (state.height / (state.width || 1)) * width;
-  const bbox = { x: 0, y: 0, width: state.width, height: state.height };
-  const scaleFactor = width / state.width;
-  const nodeColorFunc = (nodeColor instanceof Function
-    ? nodeColor
-    : () => nodeColor) as StringFunc;
+  const elementWidth = (style.width || baseStyle.width)! as number;
+  const elementHeight = (style.height || baseStyle.height)! as number;
+  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
+  const hasNodes = state.nodes && state.nodes.length;
 
-  useEffect(() => {
-    if (!canvasNode || !canvasNode.current) {
-      return;
-    }
+  const bb = getRectOfNodes(state.nodes);
+  const viewBB: Rect = {
+    x: -state.tX / state.tScale,
+    y: -state.tY / state.tScale,
+    width: state.width / state.tScale,
+    height: state.height / state.tScale,
+  };
 
-    const ctx = canvasNode.current.getContext('2d');
+  const boundingRect = hasNodes ? getBoundsofRects(bb, viewBB) : viewBB;
 
-    if (!ctx) {
-      return;
-    }
+  const scaledWidth = boundingRect.width / elementWidth;
+  const scaledHeight = boundingRect.height / elementHeight;
+  const viewScale = Math.max(scaledWidth, scaledHeight);
+  const viewWidth = viewScale * elementWidth;
+  const viewHeight = viewScale * elementHeight;
 
-    const nodesInside = getNodesInside(
-      state.nodes,
-      bbox,
-      state.transform,
-      true
-    );
+  const offset = 5 * viewScale;
 
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, width, height);
-
-    nodesInside.forEach(n => {
-      const pos = n.__rg.position;
-      const transformX = state.transform[0];
-      const transformY = state.transform[1];
-      const x = pos.x * state.transform[2] + transformX;
-      const y = pos.y * state.transform[2] + transformY;
-
-      ctx.fillStyle = nodeColorFunc(n);
-
-      ctx.fillRect(
-        x * scaleFactor,
-        y * scaleFactor,
-        n.__rg.width * scaleFactor * state.transform[2],
-        n.__rg.height * scaleFactor * state.transform[2]
-      );
-    });
-  }, [canvasNode.current, nodePositions, state.transform, height]);
+  const x = boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset;
+  const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
+  const width = viewWidth + offset * 2;
+  const height = viewHeight + offset * 2;
 
   return (
-    <canvas
+    <svg
+      width={elementWidth}
+      height={elementHeight}
+      viewBox={`${x} ${y} ${width} ${height}`}
       style={{
         ...baseStyle,
         ...style,
-        height,
       }}
-      width={width}
-      height={height}
       className={mapClasses}
-      ref={canvasNode}
-    />
+    >
+      {state.nodes.map(node => (
+        <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} borderRadius={nodeBorderRadius} />
+      ))}
+      <path
+        className="react-flow__minimap-mask"
+        d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
+        M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
+        fill={maskColor}
+        fillRule="evenodd"
+      />
+    </svg>
   );
 };

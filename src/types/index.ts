@@ -29,9 +29,11 @@ export interface Dimensions {
   height: number;
 }
 
-export interface Rect extends Dimensions {
-  x: number;
-  y: number;
+export interface Rect extends Dimensions, XYPosition {}
+
+export interface Box extends XYPosition {
+  x2: number;
+  y2: number;
 }
 
 export interface SelectionRect extends Rect {
@@ -112,13 +114,9 @@ export type Connection = {
 
 export type OnConnectFunc = (params: Connection) => void;
 
-export interface HandleElement {
+export interface HandleElement extends XYPosition, Dimensions {
   id?: ElementId | null;
   position: Position;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
 }
 
 export interface EdgeCompProps {
