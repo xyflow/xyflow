@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import Graph, { removeElements, addEdge, getOutgoers } from 'react-flow';
+import Graph, { removeElements, addEdge, getOutgoers, MiniMap } from 'react-flow';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 
@@ -68,6 +68,7 @@ class App extends PureComponent {
         style={{ width: '100%', height: '100%' }}
         backgroundType="lines"
       >
+      <MiniMap />
       <button
         type="button"
         onClick={() => this.onAdd()}

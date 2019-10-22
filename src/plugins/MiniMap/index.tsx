@@ -69,6 +69,7 @@ export default ({
   const elementWidth = (style.width || baseStyle.width)! as number;
   const elementHeight = (style.height || baseStyle.height)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
+  const hasNodes = state.nodes && state.nodes.length;
 
   const bb = getRectOfNodes(state.nodes);
   const viewBB: Rect = {
@@ -78,7 +79,7 @@ export default ({
     height: state.height / state.tScale,
   };
 
-  const boundingRect = getBoundsofRects(bb, viewBB);
+  const boundingRect = hasNodes ? getBoundsofRects(bb, viewBB) : viewBB;
 
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
