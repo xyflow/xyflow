@@ -10,7 +10,7 @@ npm install github:wbkd/react-flow
 
 # Usage
 
-This is a very basic example of how to use react-flow. There are more advanced examples in the [example](/example) folder.
+This is a very basic example of how to use react-flow. There are more advanced examples in the [example](/example/src) folder.
 
 ```javascript
 import React from 'react';
@@ -22,7 +22,11 @@ const elements = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
 ];
 
-const BasicGraph = () => <Graph elements={elements} style={{ width: '100%', height: '100%' }} />;
+const graphStyles = { width: '100%', height: '100%' };
+
+const BasicGraph = () => (
+  <Graph elements={elements} style={graphStyles} />
+);
 ```
 
 # Props
