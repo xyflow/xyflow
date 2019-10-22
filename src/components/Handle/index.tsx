@@ -23,7 +23,7 @@ const Handle = memo(
   ({
     onConnect = _ => {},
     type = 'source',
-    position = 'top',
+    position = Position.Top,
     isValidConnection = () => true,
     ...rest
   }: HandleProps) => {

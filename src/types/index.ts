@@ -6,7 +6,12 @@ export type Elements = Array<Node | Edge>;
 
 export type Transform = [number, number, number];
 
-export type Position = 'left' | 'top' | 'right' | 'bottom';
+export enum Position {
+  Left = 'left',
+  Top = 'top',
+  Right = 'right',
+  Bottom = 'bottom',
+}
 
 export type XYPosition = {
   x: number;
