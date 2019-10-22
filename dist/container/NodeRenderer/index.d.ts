@@ -4,6 +4,7 @@ interface NodeRendererProps {
     nodeTypes: NodeTypesType;
     onElementClick: () => void;
     onNodeDragStop: () => void;
+    onlyRenderVisibleNodes?: boolean;
 }
-declare const NodeRenderer: React.MemoExoticComponent<(props: NodeRendererProps) => JSX.Element>;
+declare const NodeRenderer: React.MemoExoticComponent<({ onlyRenderVisibleNodes, ...props }: NodeRendererProps) => JSX.Element>;
 export default NodeRenderer;

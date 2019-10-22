@@ -48,7 +48,8 @@ export interface ReactFlowProps
   backgroundColor: string;
   backgroundType: GridType;
   snapToGrid: boolean;
-  snapGrid: [16, 16];
+  snapGrid: [number, number];
+  onlyRenderVisibleNodes: boolean
 }
 
 const ReactFlow = ({
@@ -73,6 +74,7 @@ const ReactFlow = ({
   backgroundColor,
   snapToGrid,
   snapGrid,
+  onlyRenderVisibleNodes
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -100,6 +102,7 @@ const ReactFlow = ({
           backgroundType={backgroundType}
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
+          onlyRenderVisibleNodes={onlyRenderVisibleNodes}
         />
         {children}
       </StoreProvider>
@@ -136,6 +139,7 @@ ReactFlow.defaultProps = {
   backgroundType: GridType.Dots,
   snapToGrid: false,
   snapGrid: [16, 16],
+  onlyRenderVisibleNodes: true
 };
 
 export default ReactFlow;
