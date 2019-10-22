@@ -31,9 +31,7 @@ export const removeElements = (elementsToRemove: Elements, elements: Elements): 
   });
 };
 
-function getEdgeId(edgeParams: Edge): ElementId {
-  return `reactflow__edge-${edgeParams.source}-${edgeParams.target}`;
-}
+const getEdgeId = ({ source, target }: Edge): ElementId => `reactflow__edge-${source}-${target}`;
 
 export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
   if (!edgeParams.source || !edgeParams.target) {
@@ -48,20 +46,20 @@ export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
 
 const pointToRendererPoint = (
   { x, y }: XYPosition,
-  transform: Transform,
+  [tx, ty, tScale]: Transform,
   snapToGrid: boolean,
-  snapGrid: [number, number]
+  [snapX, snapY]: [number, number]
 ): XYPosition => {
-  let position: XYPosition = {
-    x: (x - transform[0]) * (1 / transform[2]),
-    y: (y - transform[1]) * (1 / transform[2]),
+  const position: XYPosition = {
+    x: (x - tx) / tScale,
+    y: (y - ty) / tScale,
   };
 
   if (snapToGrid) {
-    const transformedGridSizeX = snapGrid[0] * transform[2];
-    const transformedGridSizeY = snapGrid[1] * transform[2];
+    const transformedGridSizeX = snapX * tScale;
+    const transformedGridSizeY = snapY * tScale;
 
-    position = {
+    return {
       x: transformedGridSizeX * Math.round(position.x / transformedGridSizeX),
       y: transformedGridSizeY * Math.round(position.y / transformedGridSizeY),
     };
@@ -137,12 +135,10 @@ export const getRectOfNodes = (nodes: Node[]): Rect => {
   return boxToRect(box);
 };
 
-export const graphPosToZoomedPos = (pos: XYPosition, transform: Transform): XYPosition => {
-  return {
-    x: pos.x * transform[2] + transform[0],
-    y: pos.y * transform[2] + transform[1],
-  };
-};
+export const graphPosToZoomedPos = ({ x, y }: XYPosition, [tx, ty, tScale]: Transform): XYPosition => ({
+  x: x * tScale + tx,
+  y: y * tScale + ty,
+});
 
 export const getNodesInside = (
   nodes: Node[],
@@ -172,50 +168,38 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
   const nodeIds = nodes.map(n => n.id);
 
   return edges.filter(e => {
-    const hasSourceHandleId = e.source.includes('__');
-    const hasTargetHandleId = e.target.includes('__');
-
-    const sourceId = hasSourceHandleId ? e.source.split('__')[0] : e.source;
-    const targetId = hasTargetHandleId ? e.target.split('__')[0] : e.target;
+    const sourceId = e.source.split('__')[0];
+    const targetId = e.target.split('__')[0];
 
     return nodeIds.includes(sourceId) || nodeIds.includes(targetId);
   });
 };
 
 export const fitView = ({ padding }: FitViewParams = { padding: 0 }): void => {
-  const state = store.getState();
+  const { nodes, width, height, d3Selection, d3Zoom } = store.getState();
 
-  if (!state.d3Selection || !state.d3Zoom) {
+  if (!d3Selection || !d3Zoom) {
     return;
   }
 
-  const bounds = getRectOfNodes(state.nodes);
+  const bounds = getRectOfNodes(nodes);
   const maxBoundsSize = Math.max(bounds.width, bounds.height);
-  const k = Math.min(state.width, state.height) / (maxBoundsSize + maxBoundsSize * padding);
+  const k = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
   const boundsCenterX = bounds.x + bounds.width / 2;
   const boundsCenterY = bounds.y + bounds.height / 2;
-  const transform = [state.width / 2 - boundsCenterX * k, state.height / 2 - boundsCenterY * k];
+  const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
   const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
 
-  state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
+  d3Selection.call(d3Zoom.transform, fittedTransform);
 };
 
-export const zoomIn = (): void => {
-  const state = store.getState();
-
-  if (!state.d3Zoom || !state.d3Selection) {
-    return;
+const zoom = (amount: number): void => {
+  const { d3Zoom, d3Selection, transform } = store.getState();
+  if (d3Zoom && d3Selection) {
+    d3Zoom.scaleTo(d3Selection, transform[2] + amount);
   }
-
-  state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] + 0.2);
 };
 
-export const zoomOut = (): void => {
-  const state = store.getState();
+export const zoomIn = (): void => zoom(0.2);
 
-  if (!state.d3Zoom || !state.d3Selection) {
-    return;
-  }
-
-  state.d3Zoom.scaleTo(state.d3Selection, state.transform[2] - 0.2);
-};
+export const zoomOut = (): void => zoom(-0.2);
