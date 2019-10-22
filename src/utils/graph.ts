@@ -129,16 +129,8 @@ export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
 
 export const getRectOfNodes = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
-    (
-      currBox,
-      {
-        __rg: {
-          position: { x, y },
-          width,
-          height,
-        },
-      }
-    ) => getBoundsOfBoxes(currBox, rectToBox({ x, y, width, height })),
+    (currBox, { __rg: { position, width, height } }) =>
+      getBoundsOfBoxes(currBox, rectToBox({ ...position, width, height })),
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
