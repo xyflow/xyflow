@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 
 import Handle from '../../components/Handle';
-import { NodeProps } from '../../types';
+import { NodeProps, Position } from '../../types';
 
 const nodeStyles: CSSProperties = {
   background: '#ff6060',
@@ -12,8 +12,8 @@ const nodeStyles: CSSProperties = {
 
 export default ({ data, style }: NodeProps) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <Handle type="target" position="top" />
+    <Handle type="target" position={Position.Top} />
     {data.label}
-    <Handle type="source" position="bottom" />
+    <Handle type="source" position={Position.Bottom} />
   </div>
 );
