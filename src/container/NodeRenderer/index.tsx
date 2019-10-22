@@ -8,6 +8,7 @@ interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   onElementClick: () => void;
   onNodeDragStop: () => void;
+  skipInvisible?: boolean;
 }
 
 function renderNode(node: Node, props: NodeRendererProps, transform: Transform, selectedElements: Elements) {
@@ -36,7 +37,7 @@ function renderNode(node: Node, props: NodeRendererProps, transform: Transform, 
   );
 }
 
-const NodeRenderer = memo((props: NodeRendererProps) => {
+const NodeRenderer = memo(({ skipInvisible = true, ...props }: NodeRendererProps) => {
   const { nodes, transform, selectedElements, width, height } = useStoreState(s => s);
 
   const [tx, ty, tScale] = transform;
@@ -44,11 +45,11 @@ const NodeRenderer = memo((props: NodeRendererProps) => {
     transform: `translate(${tx}px,${ty}px) scale(${tScale})`,
   };
 
+  const renderNodes = skipInvisible ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true) : nodes;
+
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true).map(node =>
-        renderNode(node, props, transform, selectedElements)
-      )}
+      {renderNodes.map(node => renderNode(node, props, transform, selectedElements))}
     </div>
   );
 });
