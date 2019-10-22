@@ -9,10 +9,13 @@ type StringFunc = (node: Node) => string;
 
 interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
   nodeColor: string | StringFunc;
+  nodeBorderRadius: number;
+  maskColor: string;
 }
 interface MiniMapNodeProps {
   node: Node;
   color: string;
+  borderRadius: number;
 }
 
 const baseStyle: CSSProperties = {
@@ -24,7 +27,7 @@ const baseStyle: CSSProperties = {
   height: 150,
 };
 
-const MiniMapNode = ({ node, color }: MiniMapNodeProps) => {
+const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
   const {
     position: { x, y },
     width,
@@ -32,10 +35,27 @@ const MiniMapNode = ({ node, color }: MiniMapNodeProps) => {
   } = node.__rg;
   const { background, backgroundColor } = node.style || {};
   const fill = (background || backgroundColor || color) as string;
-  return <rect x={x} y={y} rx={5} ry={5} width={width} height={height} fill={fill} />;
+  return (
+    <rect
+      className="react-flow__minimap-node"
+      x={x}
+      y={y}
+      rx={borderRadius}
+      ry={borderRadius}
+      width={width}
+      height={height}
+      fill={fill}
+    />
+  );
 };
 
-export default ({ style = { backgroundColor: '#f8f8f8' }, className, nodeColor = '#ddd' }: MiniMapProps) => {
+export default ({
+  style = { backgroundColor: '#f8f8f8' },
+  className,
+  nodeColor = '#ddd',
+  nodeBorderRadius = 5,
+  maskColor = 'rgba(10, 10, 10, .25)',
+}: MiniMapProps) => {
   const state = useStoreState(({ width, height, nodes, transform: [tX, tY, tScale] }) => ({
     width,
     height,
@@ -85,12 +105,13 @@ export default ({ style = { backgroundColor: '#f8f8f8' }, className, nodeColor =
       className={mapClasses}
     >
       {state.nodes.map(node => (
-        <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} />
+        <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} borderRadius={nodeBorderRadius} />
       ))}
       <path
+        className="react-flow__minimap-mask"
         d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
-        fill="rgba(0,0,0,.2)"
+        fill={maskColor}
         fillRule="evenodd"
       />
     </svg>
