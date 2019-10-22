@@ -1,16 +1,7 @@
 import { zoomIdentity } from 'd3-zoom';
 
 import store from '../store';
-import {
-  ElementId,
-  Node,
-  Edge,
-  Elements,
-  Transform,
-  XYPosition,
-  Rect,
-  FitViewParams,
-} from '../types';
+import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box } from '../types';
 
 export const isEdge = (element: Node | Edge): boolean =>
   element.hasOwnProperty('source') && element.hasOwnProperty('target');
@@ -23,16 +14,11 @@ export const getOutgoers = (node: Node, elements: Elements): Elements => {
     return [];
   }
 
-  const outgoerIds = (elements as Edge[])
-    .filter(e => e.source === node.id)
-    .map(e => e.target);
+  const outgoerIds = (elements as Edge[]).filter(e => e.source === node.id).map(e => e.target);
   return elements.filter(e => outgoerIds.includes(e.id));
 };
 
-export const removeElements = (
-  elementsToRemove: Elements,
-  elements: Elements
-): Elements => {
+export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {
   const nodeIdsToRemove = elementsToRemove.map(n => n.id);
 
   return elements.filter(element => {
@@ -56,10 +42,7 @@ export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
 
   return elements.concat({
     ...edgeParams,
-    id:
-      typeof edgeParams.id !== 'undefined'
-        ? edgeParams.id
-        : getEdgeId(edgeParams),
+    id: typeof edgeParams.id !== 'undefined' ? edgeParams.id : getEdgeId(edgeParams),
   });
 };
 
@@ -112,12 +95,7 @@ export const parseElement = (
     id: nodeElement.id.toString(),
     type: nodeElement.type || 'default',
     __rg: {
-      position: pointToRendererPoint(
-        nodeElement.position,
-        transform,
-        snapToGrid,
-        snapGrid
-      ),
+      position: pointToRendererPoint(nodeElement.position, transform, snapToGrid, snapGrid),
       width: null,
       height: null,
       handleBounds: {},
@@ -125,24 +103,49 @@ export const parseElement = (
   };
 };
 
-export const getBoundingBox = (nodes: Node[]): Rect => {
-  const { x, y, x2, y2 } = nodes.reduce(
-    ({ x, y, x2, y2 }, { __rg: { position, width, height } }) => ({
-      x: Math.min(x, position.x),
-      y: Math.min(y, position.y),
-      x2: Math.max(x2, position.x + width),
-      y2: Math.max(y2, position.y + height),
-    }),
+const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
+  x: Math.min(box1.x, box2.x),
+  y: Math.min(box1.y, box2.y),
+  x2: Math.max(box1.x2, box2.x2),
+  y2: Math.max(box1.y2, box2.y2),
+});
+
+const rectToBox = ({ x, y, width, height }: Rect): Box => ({
+  x,
+  y,
+  x2: x + width,
+  y2: y + height,
+});
+
+const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
+  x,
+  y,
+  width: x2 - x,
+  height: y2 - y,
+});
+
+export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
+  boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
+
+export const getRectOfNodes = (nodes: Node[]): Rect => {
+  const box = nodes.reduce(
+    (
+      currBox,
+      {
+        __rg: {
+          position: { x, y },
+          width,
+          height,
+        },
+      }
+    ) => getBoundsOfBoxes(currBox, rectToBox({ x, y, width, height })),
     { x: Infinity, y: Infinity, x2: 0, y2: 0 }
   );
 
-  return { x, y, width: x2 - x, height: y2 - y };
+  return boxToRect(box);
 };
 
-export const graphPosToZoomedPos = (
-  pos: XYPosition,
-  transform: Transform
-): XYPosition => {
+export const graphPosToZoomedPos = (pos: XYPosition, transform: Transform): XYPosition => {
   return {
     x: pos.x * transform[2] + transform[0],
     y: pos.y * transform[2] + transform[1],
@@ -171,8 +174,7 @@ export const getNodesInside = (
     return (
       position.x + offsetX > bboxPos.x &&
       position.x + nodeWidth < bboxPos.x + bboxWidth &&
-      (position.y + offsetY > bboxPos.y &&
-        position.y + nodeHeight < bboxPos.y + bboxHeight)
+      (position.y + offsetY > bboxPos.y && position.y + nodeHeight < bboxPos.y + bboxHeight)
     );
   });
 };
@@ -198,20 +200,13 @@ export const fitView = ({ padding }: FitViewParams = { padding: 0 }): void => {
     return;
   }
 
-  const bounds = getBoundingBox(state.nodes);
+  const bounds = getRectOfNodes(state.nodes);
   const maxBoundsSize = Math.max(bounds.width, bounds.height);
-  const k =
-    Math.min(state.width, state.height) /
-    (maxBoundsSize + maxBoundsSize * padding);
+  const k = Math.min(state.width, state.height) / (maxBoundsSize + maxBoundsSize * padding);
   const boundsCenterX = bounds.x + bounds.width / 2;
   const boundsCenterY = bounds.y + bounds.height / 2;
-  const transform = [
-    state.width / 2 - boundsCenterX * k,
-    state.height / 2 - boundsCenterY * k,
-  ];
-  const fittedTransform = zoomIdentity
-    .translate(transform[0], transform[1])
-    .scale(k);
+  const transform = [state.width / 2 - boundsCenterX * k, state.height / 2 - boundsCenterY * k];
+  const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
 
   state.d3Selection.call(state.d3Zoom.transform, fittedTransform);
 };

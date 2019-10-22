@@ -3,9 +3,9 @@ import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import {
-  getBoundingBox,
   getNodesInside,
   getConnectedEdges,
+  getRectOfNodes,
 } from '../utils/graph';
 import {
   ElementId,
@@ -200,7 +200,7 @@ const storeModel: StoreModel = {
       selection,
       state.transform
     );
-    const selectedNodesBbox = getBoundingBox(selectedNodes);
+    const selectedNodesBbox = getRectOfNodes(selectedNodes);
 
     state.selection = selection;
     state.nodesSelectionActive = true;

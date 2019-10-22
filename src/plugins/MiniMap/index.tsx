@@ -2,8 +2,8 @@ import React, { CSSProperties } from 'react';
 import classnames from 'classnames';
 
 import { useStoreState } from '../../store/hooks';
-import { getBoundingBox } from '../../utils/graph';
-import { Node } from '../../types';
+import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
+import { Node, Rect } from '../../types';
 
 type StringFunc = (node: Node) => string;
 
@@ -36,38 +36,63 @@ const MiniMapNode = ({ node, color }: MiniMapNodeProps) => {
 };
 
 export default ({ style = { backgroundColor: '#f8f8f8' }, className, nodeColor = '#ddd' }: MiniMapProps) => {
-  const {
+  const state = useStoreState(({ width, height, nodes, transform: [tX, tY, tScale] }) => ({
     width,
     height,
     nodes,
-    transform: [viewX, viewY, scale],
-  } = useStoreState(s => s);
+    tX,
+    tY,
+    tScale,
+  }));
 
   const mapClasses = classnames('react-flow__minimap', className);
-  const elementWidth = (style.width || baseStyle.width)!;
-  const elementHeight = (style.height || baseStyle.height)!;
+  const elementWidth = (style.width || baseStyle.width)! as number;
+  const elementHeight = (style.height || baseStyle.height)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
 
-  const bb = getBoundingBox(nodes);
+  const bb = getRectOfNodes(state.nodes);
+  const viewBB: Rect = {
+    x: -state.tX / state.tScale,
+    y: -state.tY / state.tScale,
+    width: state.width / state.tScale,
+    height: state.height / state.tScale,
+  };
+
+  const boundingRect = getBoundsofRects(bb, viewBB);
+
+  const scaledWidth = boundingRect.width / elementWidth;
+  const scaledHeight = boundingRect.height / elementHeight;
+  const viewScale = Math.max(scaledWidth, scaledHeight);
+  const viewWidth = viewScale * elementWidth;
+  const viewHeight = viewScale * elementHeight;
+
+  const offset = 5 * viewScale;
+
+  const x = boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset;
+  const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
+  const width = viewWidth + offset * 2;
+  const height = viewHeight + offset * 2;
+
   return (
     <svg
       width={elementWidth}
       height={elementHeight}
-      viewBox={`${bb.x} ${bb.y} ${bb.width} ${bb.height}`}
+      viewBox={`${x} ${y} ${width} ${height}`}
       style={{
         ...baseStyle,
         ...style,
       }}
       className={mapClasses}
     >
-      {nodes.map(node => (
+      {state.nodes.map(node => (
         <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} />
       ))}
-      <mask id="mapClip">
-        <rect x="-100%" y="-100%" width="200%" height="200%" fill="white" />
-        <rect x={-viewX / scale} y={-viewY / scale} width={width / scale} height={height / scale} fill="black" />
-      </mask>
-      <rect x="-100%" y="-100%" width="200%" height="200%" fill="rgba(0,0,0,.2)" mask="url(#mapClip)" />
+      <path
+        d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
+        M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
+        fill="rgba(0,0,0,.2)"
+        fillRule="evenodd"
+      />
     </svg>
   );
 };
