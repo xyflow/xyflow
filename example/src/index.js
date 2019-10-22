@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Advanced from './Advanced';
+import CustomNodes from './CustomNodes';
 import Basic from './Basic';
 import Empty from './Empty';
 
@@ -18,7 +18,7 @@ ReactDOM.render((
         <Empty />
       </Route>
       <Route path="/">
-        <Advanced />
+        <CustomNodes />
       </Route>
     </Switch>
   </Router>
