@@ -146,28 +146,25 @@ export const graphPosToZoomedPos = (pos: XYPosition, transform: Transform): XYPo
 
 export const getNodesInside = (
   nodes: Node[],
-  bbox: Rect,
-  transform: Transform = [0, 0, 1],
+  rect: Rect,
+  [tx, ty, tScale]: Transform = [0, 0, 1],
   partially: boolean = false
 ): Node[] => {
-  return nodes.filter(n => {
-    const bboxPos = {
-      x: (bbox.x - transform[0]) * (1 / transform[2]),
-      y: (bbox.y - transform[1]) * (1 / transform[2]),
-    };
-    const bboxWidth = bbox.width * (1 / transform[2]);
-    const bboxHeight = bbox.height * (1 / transform[2]);
-    const { position, width, height } = n.__rg;
-    const nodeWidth = partially ? -width : width;
-    const nodeHeight = partially ? 0 : height;
-    const offsetX = partially ? width : 0;
-    const offsetY = partially ? height : 0;
-
-    return (
-      position.x + offsetX > bboxPos.x &&
-      position.x + nodeWidth < bboxPos.x + bboxWidth &&
-      (position.y + offsetY > bboxPos.y && position.y + nodeHeight < bboxPos.y + bboxHeight)
-    );
+  const rBox = rectToBox({
+    x: (rect.x - tx) / tScale,
+    y: (rect.y - ty) / tScale,
+    width: rect.width / tScale,
+    height: rect.height / tScale,
+  });
+  return nodes.filter(({ __rg: { position, width, height } }) => {
+    const nBox = rectToBox({ ...position, width, height });
+    const overlappingArea =
+      (Math.max(rBox.x, nBox.x) - Math.min(rBox.x2, nBox.x2)) * (Math.max(rBox.y, nBox.y) - Math.min(rBox.y2, nBox.y2));
+    if (partially) {
+      return overlappingArea > 0;
+    }
+    const area = width * height;
+    return overlappingArea === area;
   });
 };
 
