@@ -139,7 +139,7 @@ export const getRectOfNodes = (nodes: Node[]): Rect => {
         },
       }
     ) => getBoundsOfBoxes(currBox, rectToBox({ x, y, width, height })),
-    { x: Infinity, y: Infinity, x2: 0, y2: 0 }
+    { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
   return boxToRect(box);
