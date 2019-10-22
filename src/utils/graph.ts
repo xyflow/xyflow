@@ -157,10 +157,10 @@ export const getNodesInside = (
     const overlappingArea =
       (Math.max(rBox.x, nBox.x) - Math.min(rBox.x2, nBox.x2)) * (Math.max(rBox.y, nBox.y) - Math.min(rBox.y2, nBox.y2));
     if (partially) {
-      return overlappingArea > 0;
+      return overlappingArea >= 0;
     }
     const area = width * height;
-    return overlappingArea === area;
+    return overlappingArea >= area;
   });
 };
 

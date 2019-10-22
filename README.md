@@ -1,11 +1,32 @@
 # :ocean: React Flow
 
-React library for rendering an interactive node-based flow editor
+React library for building node-based graphs.
 
 # Installation
 
 ```
 npm install github:wbkd/react-flow
+```
+
+# Usage
+
+This is a very basic example of how to use react-flow. There are more advanced examples in the [example](/example/src) folder.
+
+```javascript
+import React from 'react';
+import Graph from 'react-flow';
+
+const elements = [
+  { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
+  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
+  { id: 'e1-2', source: '1', target: '2', animated: true },
+];
+
+const graphStyles = { width: '100%', height: '100%' };
+
+const BasicGraph = () => (
+  <Graph elements={elements} style={graphStyles} />
+);
 ```
 
 # Props
@@ -29,3 +50,8 @@ npm install github:wbkd/react-flow
 - `backgroundType`: background type = `dots` or `lines`
 - `snapToGrid`: boolean
 - `snapGrid`: [x, y] array
+
+# Plugins
+
+- Mini map
+- Controls: zoom & fit view

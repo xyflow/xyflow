@@ -20,10 +20,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
     backgroundColor: string;
     backgroundType: GridType;
     snapToGrid: boolean;
-    snapGrid: [16, 16];
+    snapGrid: [number, number];
+    onlyRenderVisibleNodes: boolean;
 }
 declare const ReactFlow: {
-    ({ style, onElementClick, elements, children, nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove, onConnect, onNodeDragStop, connectionLineType, connectionLineStyle, deleteKeyCode, selectionKeyCode, showBackground, backgroundGap, backgroundType, backgroundColor, snapToGrid, snapGrid, }: ReactFlowProps): JSX.Element;
+    ({ style, onElementClick, elements, children, nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove, onConnect, onNodeDragStop, connectionLineType, connectionLineStyle, deleteKeyCode, selectionKeyCode, showBackground, backgroundGap, backgroundType, backgroundColor, snapToGrid, snapGrid, onlyRenderVisibleNodes }: ReactFlowProps): JSX.Element;
     displayName: string;
     defaultProps: {
         onElementClick: () => void;
@@ -52,6 +53,7 @@ declare const ReactFlow: {
         backgroundType: GridType;
         snapToGrid: boolean;
         snapGrid: number[];
+        onlyRenderVisibleNodes: boolean;
     };
 };
 export default ReactFlow;

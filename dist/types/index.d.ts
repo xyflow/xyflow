@@ -2,7 +2,12 @@ import { CSSProperties, SVGAttributes } from 'react';
 export declare type ElementId = string;
 export declare type Elements = Array<Node | Edge>;
 export declare type Transform = [number, number, number];
-export declare type Position = 'left' | 'top' | 'right' | 'bottom';
+export declare enum Position {
+    Left = "left",
+    Top = "top",
+    Right = "right",
+    Bottom = "bottom"
+}
 export declare type XYPosition = {
     x: number;
     y: number;

@@ -40,6 +40,7 @@ export interface GraphViewProps {
   backgroundType: GridType;
   snapToGrid: boolean;
   snapGrid: [number, number];
+  onlyRenderVisibleNodes: boolean
 }
 
 const GraphView = memo(
@@ -63,6 +64,7 @@ const GraphView = memo(
     onConnect,
     snapToGrid,
     snapGrid,
+    onlyRenderVisibleNodes
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -136,6 +138,7 @@ const GraphView = memo(
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}
           onNodeDragStop={onNodeDragStop}
+          onlyRenderVisibleNodes={onlyRenderVisibleNodes}
         />
         <EdgeRenderer
           width={state.width}
