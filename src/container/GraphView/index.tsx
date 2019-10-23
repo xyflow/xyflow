@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, memo, SVGAttributes } from 'react';
+import classnames from 'classnames';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
@@ -77,8 +78,8 @@ const GraphView = memo(
     const setOnConnect = useStoreActions(a => a.setOnConnect);
     const setSnapGrid = useStoreActions(actions => actions.setSnapGrid);
     const setInteractive = useStoreActions(actions => actions.setInteractive);
-
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
+    const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
 
     const onZoomPaneClick = () => setNodesSelection({ isActive: false });
 
@@ -125,7 +126,7 @@ const GraphView = memo(
     useElementUpdater(elements);
 
     return (
-      <div className="react-flow__renderer" ref={rendererNode}>
+      <div className={rendererClasses} ref={rendererNode}>
         {showBackground && (
           <BackgroundGrid gap={backgroundGap} color={backgroundColor} backgroundType={backgroundType} />
         )}
