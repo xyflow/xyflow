@@ -2,7 +2,7 @@
 
 # :ocean: React Flow
 
-React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with  plugins like a MiniMap and a Controls Panel.
+React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with  plugins like a MiniMap and a Controls Panel. Check out the [demo](https://react-flow.netlify.com/) graph.
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -16,6 +16,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Plugins](#plugins)
   - [Minimap](#minimap)
   - [Controls](#controls)
+- [Examples](#examples)
 
 ## Installation
 
@@ -194,3 +195,12 @@ const GraphWithControls = () => (
 
 - `style`: css properties
 - `className`: class name
+
+## Examples
+
+You can find all examples in the [example](example) folder. They are also deployt:
+
+- [basic](https://react-flow.netlify.com/basic)
+- [empty](https://react-flow.netlify.com/empty)
+- [basic](https://react-flow.netlify.com/basic)
+- [custom nodes](https://react-flow.netlify.com/)
