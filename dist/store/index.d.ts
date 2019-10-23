@@ -49,6 +49,7 @@ export interface StoreModel {
     connectionPosition: XYPosition;
     snapToGrid: boolean;
     snapGrid: [number, number];
+    isInteractive: boolean;
     onConnect: OnConnectFunc;
     setOnConnect: Action<StoreModel, OnConnectFunc>;
     setNodes: Action<StoreModel, Node[]>;
@@ -65,6 +66,7 @@ export interface StoreModel {
     setSnapGrid: Action<StoreModel, SetSnapGrid>;
     setConnectionPosition: Action<StoreModel, XYPosition>;
     setConnectionSourceId: Action<StoreModel, ElementId | null>;
+    setInteractive: Action<StoreModel, boolean>;
 }
 declare const store: {
     getState: () => import("easy-peasy").IntermediateStateMapper<{
@@ -85,6 +87,7 @@ declare const store: {
         connectionPosition: XYPosition;
         snapToGrid: boolean;
         snapGrid: [number, number];
+        isInteractive: boolean;
         onConnect: OnConnectFunc;
     }, "1">;
     subscribe: (listener: () => void) => import("redux").Unsubscribe;
@@ -106,6 +109,7 @@ declare const store: {
         connectionPosition: XYPosition;
         snapToGrid: boolean;
         snapGrid: [number, number];
+        isInteractive: boolean;
         onConnect: OnConnectFunc;
     }, "1">, import("redux").AnyAction>) => void;
     dispatch: import("easy-peasy").Dispatch<StoreModel, import("redux").Action<any>>;
@@ -133,6 +137,7 @@ declare const store: {
         setSnapGrid: Action<StoreModel, SetSnapGrid>;
         setConnectionPosition: Action<StoreModel, XYPosition>;
         setConnectionSourceId: Action<StoreModel, string | null>;
+        setInteractive: Action<StoreModel, boolean>;
     }, "1">;
     getListeners: () => import("easy-peasy").ListenerMapper<{
         selectedNodesBbox: Rect;

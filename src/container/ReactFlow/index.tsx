@@ -18,18 +18,11 @@ import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
-import {
-  Elements,
-  NodeTypesType,
-  EdgeTypesType,
-  GridType,
-  OnLoadFunc,
-} from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types';
 
 import '../../style.css';
 
-export interface ReactFlowProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
+export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
   onElementClick: () => void;
   onElementsRemove: (elements: Elements) => void;
@@ -49,7 +42,8 @@ export interface ReactFlowProps
   backgroundType: GridType;
   snapToGrid: boolean;
   snapGrid: [number, number];
-  onlyRenderVisibleNodes: boolean
+  onlyRenderVisibleNodes: boolean;
+  isInteractive: boolean;
 }
 
 const ReactFlow = ({
@@ -74,7 +68,8 @@ const ReactFlow = ({
   backgroundColor,
   snapToGrid,
   snapGrid,
-  onlyRenderVisibleNodes
+  onlyRenderVisibleNodes,
+  isInteractive,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -103,6 +98,7 @@ const ReactFlow = ({
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
+          isInteractive={isInteractive}
         />
         {children}
       </StoreProvider>
@@ -139,7 +135,8 @@ ReactFlow.defaultProps = {
   backgroundType: GridType.Dots,
   snapToGrid: false,
   snapGrid: [16, 16],
-  onlyRenderVisibleNodes: true
+  onlyRenderVisibleNodes: true,
+  isInteractive: true,
 };
 
 export default ReactFlow;

@@ -113,7 +113,13 @@ function getEdgePositions(
   };
 }
 
-function renderEdge(edge: Edge, props: EdgeRendererProps, nodes: Node[], selectedElements: Elements) {
+function renderEdge(
+  edge: Edge,
+  props: EdgeRendererProps,
+  nodes: Node[],
+  selectedElements: Elements,
+  isInteractive: boolean
+) {
   const [sourceId, sourceHandleId] = edge.source.split('__');
   const [targetId, targetHandleId] = edge.target.split('__');
 
@@ -128,7 +134,7 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, nodes: Node[], selecte
     throw new Error(`couldn't create edge for target id: ${targetId}`);
   }
 
-  if (!sourceNode.__rg.width || !sourceNode.__rg.height) {
+  if (!sourceNode.__rg.width || !sourceNode.__rg.height) {
     return null;
   }
 
@@ -171,6 +177,7 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, nodes: Node[], selecte
       targetY={targetY}
       sourcePosition={sourcePosition}
       targetPosition={targetPosition}
+      isInteractive={isInteractive}
     />
   );
 }
@@ -183,7 +190,16 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
     connectionSourceId,
     connectionPosition: { x, y },
     selectedElements,
-  } = useStoreState(s => s);
+    isInteractive,
+  } = useStoreState(s => ({
+    transform: s.transform,
+    edges: s.edges,
+    nodes: s.nodes,
+    connectionSourceId: s.connectionSourceId,
+    connectionPosition: s.connectionPosition,
+    selectedElements: s.selectedElements,
+    isInteractive: s.isInteractive,
+  }));
 
   const { width, height, connectionLineStyle, connectionLineType } = props;
 
@@ -197,7 +213,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <g transform={transformStyle}>
-        {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements))}
+        {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements, isInteractive))}
         {connectionSourceId && (
           <ConnectionLine
             nodes={nodes}
@@ -207,6 +223,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
             transform={transform}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}
+            isInteractive={isInteractive}
           />
         )}
       </g>

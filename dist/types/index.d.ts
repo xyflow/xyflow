@@ -82,6 +82,19 @@ export interface NodeComponentProps {
     onNodeDragStop?: () => any;
     style?: CSSProperties;
 }
+export interface WrapNodeProps {
+    id: ElementId;
+    type: string;
+    data: any;
+    selected: boolean;
+    transform: Transform;
+    xPos: number;
+    yPos: number;
+    isInteractive: boolean;
+    onClick: (node: Node) => void | undefined;
+    onNodeDragStop: (node: Node) => void;
+    style?: CSSProperties;
+}
 export declare type FitViewParams = {
     padding: number;
 };

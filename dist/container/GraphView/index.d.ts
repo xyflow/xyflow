@@ -21,6 +21,7 @@ export interface GraphViewProps {
     snapToGrid: boolean;
     snapGrid: [number, number];
     onlyRenderVisibleNodes: boolean;
+    isInteractive: boolean;
 }
-declare const GraphView: React.MemoExoticComponent<({ nodeTypes, edgeTypes, onMove, onLoad, onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle, selectionKeyCode, onElementsRemove, deleteKeyCode, elements, showBackground, backgroundGap, backgroundColor, backgroundType, onConnect, snapToGrid, snapGrid, onlyRenderVisibleNodes }: GraphViewProps) => JSX.Element>;
+declare const GraphView: React.MemoExoticComponent<({ nodeTypes, edgeTypes, onMove, onLoad, onElementClick, onNodeDragStop, connectionLineType, connectionLineStyle, selectionKeyCode, onElementsRemove, deleteKeyCode, elements, showBackground, backgroundGap, backgroundColor, backgroundType, onConnect, snapToGrid, snapGrid, onlyRenderVisibleNodes, isInteractive, }: GraphViewProps) => JSX.Element>;
 export default GraphView;

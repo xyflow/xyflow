@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, memo, SVGAttributes } from 'react';
+import classnames from 'classnames';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
@@ -12,13 +13,7 @@ import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
-import {
-  Elements,
-  NodeTypesType,
-  EdgeTypesType,
-  GridType,
-  OnLoadFunc,
-} from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types';
 
 export interface GraphViewProps {
   elements: Elements;
@@ -40,7 +35,8 @@ export interface GraphViewProps {
   backgroundType: GridType;
   snapToGrid: boolean;
   snapGrid: [number, number];
-  onlyRenderVisibleNodes: boolean
+  onlyRenderVisibleNodes: boolean;
+  isInteractive: boolean;
 }
 
 const GraphView = memo(
@@ -64,7 +60,8 @@ const GraphView = memo(
     onConnect,
     snapToGrid,
     snapGrid,
-    onlyRenderVisibleNodes
+    onlyRenderVisibleNodes,
+    isInteractive,
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -77,13 +74,12 @@ const GraphView = memo(
       nodesSelectionActive: s.nodesSelectionActive,
     }));
     const updateSize = useStoreActions(actions => actions.updateSize);
-    const setNodesSelection = useStoreActions(
-      actions => actions.setNodesSelection
-    );
+    const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
     const setOnConnect = useStoreActions(a => a.setOnConnect);
     const setSnapGrid = useStoreActions(actions => actions.setSnapGrid);
-
+    const setInteractive = useStoreActions(actions => actions.setInteractive);
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
+    const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
 
     const onZoomPaneClick = () => setNodesSelection({ isActive: false });
 
@@ -122,17 +118,17 @@ const GraphView = memo(
       setSnapGrid({ snapToGrid, snapGrid });
     }, [snapToGrid]);
 
+    useEffect(() => {
+      setInteractive(isInteractive);
+    }, [isInteractive]);
+
     useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
     useElementUpdater(elements);
 
     return (
-      <div className="react-flow__renderer" ref={rendererNode}>
+      <div className={rendererClasses} ref={rendererNode}>
         {showBackground && (
-          <BackgroundGrid
-            gap={backgroundGap}
-            color={backgroundColor}
-            backgroundType={backgroundType}
-          />
+          <BackgroundGrid gap={backgroundGap} color={backgroundColor} backgroundType={backgroundType} />
         )}
         <NodeRenderer
           nodeTypes={nodeTypes}
@@ -148,13 +144,9 @@ const GraphView = memo(
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
         />
-        {selectionKeyPressed && <UserSelection />}
+        {selectionKeyPressed && <UserSelection isInteractive={isInteractive} />}
         {state.nodesSelectionActive && <NodesSelection />}
-        <div
-          className="react-flow__zoompane"
-          onClick={onZoomPaneClick}
-          ref={zoomPane}
-        />
+        <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
       </div>
     );
   }
