@@ -6350,6 +6350,10 @@ var UserSelection = React.memo(function () {
     var setSelection = useStoreActions$1(function (a) { return a.setSelection; });
     var updateSelection = useStoreActions$1(function (a) { return a.updateSelection; });
     var setNodesSelection = useStoreActions$1(function (a) { return a.setNodesSelection; });
+    var isInteractive = useStoreState$1(function (s) { return s.isInteractive; });
+    if (!isInteractive) {
+        return null;
+    }
     React.useEffect(function () {
         function onMouseDown(evt) {
             var mousePos = getMousePosition(evt);
@@ -6370,11 +6374,7 @@ var UserSelection = React.memo(function () {
                 }
                 var negativeX = mousePos.x < currentRect.startX;
                 var negativeY = mousePos.y < currentRect.startY;
-                var nextRect = __assign(__assign({}, currentRect), { x: negativeX ? mousePos.x : currentRect.x, y: negativeY ? mousePos.y : currentRect.y, width: negativeX
-                        ? currentRect.startX - mousePos.x
-                        : mousePos.x - currentRect.startX, height: negativeY
-                        ? currentRect.startY - mousePos.y
-                        : mousePos.y - currentRect.startY });
+                var nextRect = __assign(__assign({}, currentRect), { x: negativeX ? mousePos.x : currentRect.x, y: negativeY ? mousePos.y : currentRect.y, width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX, height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY });
                 updateSelection(nextRect);
                 return nextRect;
             });
