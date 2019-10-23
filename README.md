@@ -1,29 +1,29 @@
+![react-flow](https://user-images.githubusercontent.com/2857535/67417109-516ef000-f5c8-11e9-938a-c2121d3ebbe4.png)
+
 # :ocean: React Flow
 
-React library for building node-based graphs.
-
-![react-flow](https://user-images.githubusercontent.com/2857535/67416769-b413bc00-f5c7-11e9-8890-b01bea761971.png)
+React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with  plugins like a MiniMap and a Controls Panel.
 
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Props](#props)
-  - [Nodes](#nodes)
-    - [Props](#props)
-    - [Node Types / Custom Nodes](#node-types--custom-nodes)
-  - [Edges](#nodes)
-    - [Props](#props)
-    - [Edge Types / Custom Edges](#edge-types--custom-edges)
+- [Props](#props)
+- [Nodes](#nodes)
+  - [Props](#props-1)
+  - [Node Types / Custom Nodes](#node-types--custom-nodes)
+- [Edges](#nodes)
+  - [Props](#props-2)
+  - [Edge Types / Custom Edges](#edge-types--custom-edges)
 - [Plugins](#plugins)
   - [Minimap](#minimap)
   - [Controls](#controls)
 
-# Installation
+## Installation
 
 ```
 npm install github:wbkd/react-flow
 ```
 
-# Usage
+## Usage
 
 This is a very basic example of how to use react-flow. There are more advanced examples in the [example](/example/src) folder.
 
@@ -148,9 +148,9 @@ edgeTypes={{
 You can now use type `special` for an edge.
 The `straight`, `default` and `step` types will be still available except you overwrite one of them.
 
-# Plugins
+## Plugins
 
-## MiniMap
+### MiniMap
 
 You can use the MiniMap plugin by passing it as a children of you graph:
 
@@ -166,7 +166,7 @@ const GraphWithMiniMap = () => (
 );
 ```
 
-**Props**
+#### Props
 
 - `nodeColor`: string | function - if you pass a color as a string all nodes will get that color. If you pass a function you can return a color depending on the node.
 - `nodeBorderRadius`: number
@@ -174,7 +174,7 @@ const GraphWithMiniMap = () => (
 - `style`: css properties
 - `className`: class name
 
-## Controls
+### Controls
 
 The control panel contains a zoom-in, zoom-out and a fit-view button. You can use it by passing it as children to your graph:
 
@@ -190,7 +190,7 @@ const GraphWithControls = () => (
 );
 ```
 
-**Props**
+#### Props
 
 - `style`: css properties
 - `className`: class name
