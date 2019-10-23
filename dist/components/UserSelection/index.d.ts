@@ -1,3 +1,6 @@
 import React from 'react';
-declare const _default: React.MemoExoticComponent<() => JSX.Element | null>;
+declare type UserSelectionProps = {
+    isInteractive: boolean;
+};
+declare const _default: React.MemoExoticComponent<({ isInteractive }: UserSelectionProps) => JSX.Element | null>;
 export default _default;

@@ -149,6 +149,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       onNodeDragStop,
       style,
       isInteractive,
+      sourcePosition,
+      targetPosition,
     }: WrapNodeProps) => {
       const nodeElement = useRef<HTMLDivElement>(null);
       const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -208,7 +210,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         >
           <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
             <Provider value={id}>
-              <NodeComponent id={id} data={data} type={type} style={style} selected={selected} />
+              <NodeComponent
+                id={id}
+                data={data}
+                type={type}
+                style={style}
+                selected={selected}
+                sourcePosition={sourcePosition}
+                targetPosition={targetPosition}
+              />
             </Provider>
           </div>
         </DraggableCore>

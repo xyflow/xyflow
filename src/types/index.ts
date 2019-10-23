@@ -54,6 +54,8 @@ export interface Node {
   __rg?: any;
   data?: any;
   style?: CSSProperties;
+  targetPosition?: Position;
+  sourcePosition?: Position;
 }
 
 export interface Edge {
@@ -83,6 +85,8 @@ export interface NodeProps {
   type: string;
   data: any;
   selected: boolean;
+  targetPosition?: Position;
+  sourcePosition?: Position;
   style?: CSSProperties;
 }
 
@@ -94,6 +98,8 @@ export interface NodeComponentProps {
   transform?: Transform;
   xPos?: number;
   yPos?: number;
+  targetPosition?: Position;
+  sourcePosition?: Position;
   onClick?: (node: Node) => void | undefined;
   onNodeDragStop?: () => any;
   style?: CSSProperties;
@@ -111,6 +117,8 @@ export interface WrapNodeProps {
   onClick: (node: Node) => void | undefined;
   onNodeDragStop: (node: Node) => void;
   style?: CSSProperties;
+  sourcePosition?: Position;
+  targetPosition?: Position;
 }
 
 export type FitViewParams = {
