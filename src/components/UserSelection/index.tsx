@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState, memo } from 'react';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
+import { useStoreActions } from '../../store/hooks';
 import { SelectionRect } from '../../types';
+
+type UserSelectionProps = {
+  isInteractive: boolean;
+};
 
 const initialRect: SelectionRect = {
   startX: 0,
@@ -27,13 +31,12 @@ function getMousePosition(evt: MouseEvent) {
   };
 }
 
-export default memo(() => {
+export default memo(({ isInteractive }: UserSelectionProps) => {
   const selectionPane = useRef<HTMLDivElement>(null);
   const [rect, setRect] = useState(initialRect);
   const setSelection = useStoreActions(a => a.setSelection);
   const updateSelection = useStoreActions(a => a.updateSelection);
   const setNodesSelection = useStoreActions(a => a.setNodesSelection);
-  const isInteractive = useStoreState(s => s.isInteractive);
 
   if (!isInteractive) {
     return null;

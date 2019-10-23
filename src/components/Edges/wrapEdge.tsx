@@ -13,23 +13,15 @@ interface EdgeWrapperProps {
   onClick: (edge: Edge) => void;
   animated: boolean;
   selected: boolean;
+  isInteractive: boolean;
 }
 
 export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
   const EdgeWrapper = memo(
-    ({
-      id,
-      source,
-      target,
-      type,
-      animated,
-      selected,
-      onClick,
-      ...rest
-    }: EdgeWrapperProps) => {
+    ({ id, source, target, type, animated, selected, onClick, isInteractive, ...rest }: EdgeWrapperProps) => {
       const edgeClasses = cx('react-flow__edge', { selected, animated });
       const onEdgeClick = (evt: MouseEvent): void => {
-        if (isInputDOMNode(evt)) {
+        if (isInputDOMNode(evt) || !isInteractive) {
           return;
         }
 

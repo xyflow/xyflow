@@ -30,11 +30,12 @@ const EmptyGraph = () => {
         style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
       >
         <label>
-          {isInteractive ? 'interactive' : 'inactive'}
+          interactive
           <input
             type="checkbox"
             checked={isInteractive}
             onChange={onToggleInteractive}
+            className="react-flow__interactive"
           />
         </label>
       </div>

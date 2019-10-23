@@ -144,7 +144,7 @@ const GraphView = memo(
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
         />
-        {selectionKeyPressed && <UserSelection />}
+        {selectionKeyPressed && <UserSelection isInteractive={isInteractive} />}
         {state.nodesSelectionActive && <NodesSelection />}
         <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
       </div>

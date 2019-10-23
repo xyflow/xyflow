@@ -84,10 +84,14 @@
 .is-interactive {
   .react-flow__node {
     cursor: grab;
+
+    &:hover > * {
+      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
+    }
   }
 
-  .react-flow__node:hover > * {
-    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
+  .react-flow__handle {
+    cursor: crosshair;
   }
 }
 
@@ -111,7 +115,6 @@
   width: 10px;
   height: 8px;
   background: rgba(255, 255, 255, 0.4);
-  cursor: crosshair;
 
   &.bottom {
     top: auto;
