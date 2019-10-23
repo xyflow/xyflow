@@ -31,7 +31,7 @@ const BasicGraph = () => (
 
 # Props
 
-- `elements`: array of [nodes](#nodes) and [edges](#edges) (required)
+- `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
 - `onElementClick`: element click handler
 - `onElementsRemove`: element remove handler
 - `onNodeDragStop`: node drag stop handler
@@ -59,10 +59,10 @@ There are three different [node types](#node-types) (`default`, `input`, `output
 
 Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }`
 
-*Node Props*
+**Node Props**
 
-- `id`: string (required)
-- `position`: { x: number, y: number } (required)
+- `id`: string *(required)*
+- `position`: { x: number, y: number } *(required)*
 - `data`: {} (required if you are using a standard type, otherwise depends on your implementation)
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `style`: css properties
@@ -73,11 +73,11 @@ There are three [edge types](#edge-types) (`straight`, `default`, `step`) you ca
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true }`
 
-*Edge Props*
+**Edge Props**
 
-- `id`: string (required)
-- `source`: string (required)
-- `target`: string (required)
+- `id`: string *(required)*
+- `source`: string *(required)*
+- `target`: string *(required)*
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `animated`: boolean
 - `style`: css properties
@@ -149,7 +149,7 @@ const GraphWithMiniMap = () => (
 );
 ```
 
-*Props*
+**Props**
 
 - `nodeColor`: string | function - if you pass a color as a string all nodes will get that color. If you pass a function you can return a color depending on the node.
 - `nodeBorderRadius`: number
@@ -159,9 +159,21 @@ const GraphWithMiniMap = () => (
 
 ## Controls
 
-The control panel contains a zoom-in, zoom-out and a fit-view button.
+The control panel contains a zoom-in, zoom-out and a fit-view button. You can use it by passing it as children to your graph:
 
-*Props*
+```javascript
+import Graph, { Controls } from 'react-flow';
+
+const GraphWithControls = () => (
+  <Graph
+    elements={elements}
+  >
+    <Controls />
+  </Graph>
+);
+```
+
+**Props**
 
 - `style`: css properties
 - `className`: class name
