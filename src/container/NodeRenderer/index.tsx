@@ -2,7 +2,7 @@ import React, { memo, ComponentType } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import { getNodesInside } from '../../utils/graph';
-import { Node, Transform, NodeTypesType, NodeComponentProps, Elements } from '../../types';
+import { Node, Transform, NodeTypesType, WrapNodeProps, Elements } from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -11,9 +11,15 @@ interface NodeRendererProps {
   onlyRenderVisibleNodes?: boolean;
 }
 
-function renderNode(node: Node, props: NodeRendererProps, transform: Transform, selectedElements: Elements) {
+function renderNode(
+  node: Node,
+  props: NodeRendererProps,
+  transform: Transform,
+  selectedElements: Elements,
+  isInteractive: boolean
+) {
   const nodeType = node.type || 'default';
-  const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<NodeComponentProps>;
+  const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
   if (!props.nodeTypes[nodeType]) {
     console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
   }
@@ -33,23 +39,33 @@ function renderNode(node: Node, props: NodeRendererProps, transform: Transform, 
       transform={transform}
       selected={isSelected}
       style={node.style}
+      isInteractive={isInteractive}
     />
   );
 }
 
 const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRendererProps) => {
-  const { nodes, transform, selectedElements, width, height } = useStoreState(s => s);
+  const { nodes, transform, selectedElements, width, height, isInteractive } = useStoreState(s => ({
+    nodes: s.nodes,
+    transform: s.transform,
+    selectedElements: s.selectedElements,
+    width: s.width,
+    height: s.height,
+    isInteractive: s.isInteractive,
+  }));
 
   const [tx, ty, tScale] = transform;
   const transformStyle = {
     transform: `translate(${tx}px,${ty}px) scale(${tScale})`,
   };
 
-  const renderNodes = onlyRenderVisibleNodes ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true) : nodes;
+  const renderNodes = onlyRenderVisibleNodes
+    ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
+    : nodes;
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {renderNodes.map(node => renderNode(node, props, transform, selectedElements))}
+      {renderNodes.map(node => renderNode(node, props, transform, selectedElements, isInteractive))}
     </div>
   );
 });

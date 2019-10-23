@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  memo,
-  ComponentType,
-  CSSProperties,
-} from 'react';
+import React, { useEffect, useRef, useState, memo, ComponentType } from 'react';
 import { DraggableCore, DraggableEvent } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
@@ -21,20 +14,8 @@ import {
   Transform,
   ElementId,
   NodeComponentProps,
+  WrapNodeProps,
 } from '../../types';
-
-interface WrapNodeProps {
-  id: ElementId;
-  type: string;
-  data: any;
-  selected: boolean;
-  transform: Transform;
-  xPos: number;
-  yPos: number;
-  onClick: (node: Node) => void | undefined;
-  onNodeDragStop: (node: Node) => void;
-  style?: CSSProperties;
-}
 
 const isHandle = (evt: MouseEvent | DraggableEvent) => {
   const target = evt.target as HTMLElement;
@@ -65,17 +46,13 @@ const getHandleBounds = (
       const bounds = handle.getBoundingClientRect();
       const dimensions = getDimensions(handle);
       const nodeIdAttr = handle.getAttribute('data-nodeid');
-      const handlePosition = (handle.getAttribute(
-        'data-handlepos'
-      ) as unknown) as Position;
+      const handlePosition = (handle.getAttribute('data-handlepos') as unknown) as Position;
       const nodeIdSplitted = nodeIdAttr ? nodeIdAttr.split('__') : null;
 
       let handleId = null;
 
       if (nodeIdSplitted) {
-        handleId = (nodeIdSplitted.length
-          ? nodeIdSplitted[1]
-          : nodeIdSplitted) as string;
+        handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted) as string;
       }
 
       return {
@@ -171,6 +148,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       onClick,
       onNodeDragStop,
       style,
+      isInteractive,
     }: WrapNodeProps) => {
       const nodeElement = useRef<HTMLDivElement>(null);
       const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -192,18 +170,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         const bounds = nodeElement.current.getBoundingClientRect();
         const dimensions = getDimensions(nodeElement.current);
         const handleBounds = {
-          source: getHandleBounds(
-            '.source',
-            nodeElement.current,
-            bounds,
-            storeState.transform[2]
-          ),
-          target: getHandleBounds(
-            '.target',
-            nodeElement.current,
-            bounds,
-            storeState.transform[2]
-          ),
+          source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
+          target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2]),
         };
         store.dispatch.updateNodeData({ id, ...dimensions, handleBounds });
       };
@@ -232,43 +200,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
       return (
         <DraggableCore
-          onStart={evt =>
-            onStart(
-              evt as MouseEvent,
-              onClick,
-              id,
-              type,
-              data,
-              setOffset,
-              transform,
-              position
-            )
-          }
-          onDrag={evt =>
-            onDrag(evt as MouseEvent, setDragging, id, offset, transform)
-          }
-          onStop={() =>
-            onStop(
-              onNodeDragStop,
-              isDragging,
-              setDragging,
-              id,
-              type,
-              position,
-              data
-            )
-          }
+          onStart={evt => onStart(evt as MouseEvent, onClick, id, type, data, setOffset, transform, position)}
+          onDrag={evt => onDrag(evt as MouseEvent, setDragging, id, offset, transform)}
+          onStop={() => onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data)}
           scale={transform[2]}
+          disabled={!isInteractive}
         >
           <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
             <Provider value={id}>
-              <NodeComponent
-                id={id}
-                data={data}
-                type={type}
-                style={style}
-                selected={selected}
-              />
+              <NodeComponent id={id} data={data} type={type} style={style} selected={selected} />
             </Provider>
           </div>
         </DraggableCore>

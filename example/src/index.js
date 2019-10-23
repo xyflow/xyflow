@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import CustomNodes from './CustomNodes';
 import Basic from './Basic';
 import Empty from './Empty';
+import Inactive from './Inactive';
 
 import './index.css';
 
@@ -16,6 +17,9 @@ ReactDOM.render((
       </Route>
       <Route path="/empty">
         <Empty />
+      </Route>
+      <Route path="/inactive">
+        <Inactive />
       </Route>
       <Route path="/">
         <CustomNodes />

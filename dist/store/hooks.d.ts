@@ -45,6 +45,7 @@ export declare const useStoreActions: <Result>(mapActions: (actions: import("eas
     }>;
     setConnectionPosition: import("easy-peasy").Action<StoreModel, import("../types").XYPosition>;
     setConnectionSourceId: import("easy-peasy").Action<StoreModel, string | null>;
+    setInteractive: import("easy-peasy").Action<StoreModel, boolean>;
 }, "1">) => Result) => Result;
 export declare const useStoreDispatch: () => import("easy-peasy").Dispatch<StoreModel, import("redux").Action<any>>;
 export declare const useStoreState: <Result>(mapState: (state: import("easy-peasy").IntermediateStateMapper<{
@@ -65,5 +66,6 @@ export declare const useStoreState: <Result>(mapState: (state: import("easy-peas
     connectionPosition: import("../types").XYPosition;
     snapToGrid: boolean;
     snapGrid: [number, number];
+    isInteractive: boolean;
     onConnect: import("../types").OnConnectFunc;
 }, "1">) => Result, dependencies?: any[] | undefined) => Result;
