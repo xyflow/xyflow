@@ -3,6 +3,10 @@ import React, { useEffect, useRef, useState, memo } from 'react';
 import { useStoreActions } from '../../store/hooks';
 import { SelectionRect } from '../../types';
 
+type UserSelectionProps = {
+  isInteractive: boolean;
+};
+
 const initialRect: SelectionRect = {
   startX: 0,
   startY: 0,
@@ -27,12 +31,16 @@ function getMousePosition(evt: MouseEvent) {
   };
 }
 
-export default memo(() => {
+export default memo(({ isInteractive }: UserSelectionProps) => {
   const selectionPane = useRef<HTMLDivElement>(null);
   const [rect, setRect] = useState(initialRect);
   const setSelection = useStoreActions(a => a.setSelection);
   const updateSelection = useStoreActions(a => a.updateSelection);
   const setNodesSelection = useStoreActions(a => a.setNodesSelection);
+
+  if (!isInteractive) {
+    return null;
+  }
 
   useEffect(() => {
     function onMouseDown(evt: MouseEvent): void {
@@ -70,12 +78,8 @@ export default memo(() => {
           ...currentRect,
           x: negativeX ? mousePos.x : currentRect.x,
           y: negativeY ? mousePos.y : currentRect.y,
-          width: negativeX
-            ? currentRect.startX - mousePos.x
-            : mousePos.x - currentRect.startX,
-          height: negativeY
-            ? currentRect.startY - mousePos.y
-            : mousePos.y - currentRect.startY,
+          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
+          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY,
         };
 
         updateSelection(nextRect);

@@ -2,11 +2,7 @@ import { createStore, Action, action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
-import {
-  getNodesInside,
-  getConnectedEdges,
-  getRectOfNodes,
-} from '../utils/graph';
+import { getNodesInside, getConnectedEdges, getRectOfNodes } from '../utils/graph';
 import {
   ElementId,
   Elements,
@@ -80,6 +76,8 @@ export interface StoreModel {
   snapToGrid: boolean;
   snapGrid: [number, number];
 
+  isInteractive: boolean;
+
   onConnect: OnConnectFunc;
 
   setOnConnect: Action<StoreModel, OnConnectFunc>;
@@ -111,6 +109,8 @@ export interface StoreModel {
   setConnectionPosition: Action<StoreModel, XYPosition>;
 
   setConnectionSourceId: Action<StoreModel, ElementId | null>;
+
+  setInteractive: Action<StoreModel, boolean>;
 }
 
 const storeModel: StoreModel = {
@@ -135,6 +135,8 @@ const storeModel: StoreModel = {
 
   snapGrid: [16, 16],
   snapToGrid: true,
+
+  isInteractive: true,
 
   onConnect: () => {},
 
@@ -195,11 +197,7 @@ const storeModel: StoreModel = {
 
       return;
     }
-    const selectedNodes = getNodesInside(
-      state.nodes,
-      selection,
-      state.transform
-    );
+    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
 
     if (!selectedNodes.length) {
       state.nodesSelectionActive = false;
@@ -218,35 +216,21 @@ const storeModel: StoreModel = {
 
   setSelectedElements: action((state, elements) => {
     const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
-    const selectedElementsUpdated = !isEqual(
-      selectedElementsArr,
-      state.selectedElements
-    );
-    const selectedElements = selectedElementsUpdated
-      ? selectedElementsArr
-      : state.selectedElements;
+    const selectedElementsUpdated = !isEqual(selectedElementsArr, state.selectedElements);
+    const selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
 
     state.selectedElements = selectedElements;
   }),
 
   updateSelection: action((state, selection) => {
-    const selectedNodes = getNodesInside(
-      state.nodes,
-      selection,
-      state.transform
-    );
+    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
     const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
 
     const nextSelectedElements = [...selectedNodes, ...selectedEdges];
-    const selectedElementsUpdated = !isEqual(
-      nextSelectedElements,
-      state.selectedElements
-    );
+    const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
 
     state.selection = selection;
-    state.selectedElements = selectedElementsUpdated
-      ? nextSelectedElements
-      : state.selectedElements;
+    state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
   }),
 
   updateTransform: action((state, transform) => {
@@ -275,6 +259,10 @@ const storeModel: StoreModel = {
   setSnapGrid: action((state, { snapToGrid, snapGrid }) => {
     state.snapToGrid = snapToGrid;
     state.snapGrid = snapGrid;
+  }),
+
+  setInteractive: action((state, isInteractive) => {
+    state.isInteractive = isInteractive;
   }),
 };
 

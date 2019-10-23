@@ -22,9 +22,10 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
     snapToGrid: boolean;
     snapGrid: [number, number];
     onlyRenderVisibleNodes: boolean;
+    isInteractive: boolean;
 }
 declare const ReactFlow: {
-    ({ style, onElementClick, elements, children, nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove, onConnect, onNodeDragStop, connectionLineType, connectionLineStyle, deleteKeyCode, selectionKeyCode, showBackground, backgroundGap, backgroundType, backgroundColor, snapToGrid, snapGrid, onlyRenderVisibleNodes }: ReactFlowProps): JSX.Element;
+    ({ style, onElementClick, elements, children, nodeTypes, edgeTypes, onLoad, onMove, onElementsRemove, onConnect, onNodeDragStop, connectionLineType, connectionLineStyle, deleteKeyCode, selectionKeyCode, showBackground, backgroundGap, backgroundType, backgroundColor, snapToGrid, snapGrid, onlyRenderVisibleNodes, isInteractive, }: ReactFlowProps): JSX.Element;
     displayName: string;
     defaultProps: {
         onElementClick: () => void;
@@ -34,9 +35,9 @@ declare const ReactFlow: {
         onLoad: () => void;
         onMove: () => void;
         nodeTypes: {
-            input: ({ data, style }: import("../../types").NodeProps) => JSX.Element;
-            default: ({ data, style }: import("../../types").NodeProps) => JSX.Element;
-            output: ({ data, style }: import("../../types").NodeProps) => JSX.Element;
+            input: ({ data, style, sourcePosition }: import("../../types").NodeProps) => JSX.Element;
+            default: ({ data, targetPosition, sourcePosition, style }: import("../../types").NodeProps) => JSX.Element;
+            output: ({ data, style, targetPosition }: import("../../types").NodeProps) => JSX.Element;
         };
         edgeTypes: {
             default: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style, }: import("../../types").EdgeBezierProps) => JSX.Element>;
@@ -54,6 +55,7 @@ declare const ReactFlow: {
         snapToGrid: boolean;
         snapGrid: number[];
         onlyRenderVisibleNodes: boolean;
+        isInteractive: boolean;
     };
 };
 export default ReactFlow;

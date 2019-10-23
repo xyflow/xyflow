@@ -2529,6 +2529,63 @@ var StoreProvider = function StoreProvider(_ref) {
 
 setAutoFreeze(false);
 
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var classnames = createCommonjsModule(function (module) {
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else {
+		window.classNames = classNames;
+	}
+}());
+});
+
 var typedHooks = createTypedHooks();
 var useStoreActions$1 = typedHooks.useStoreActions;
 var useStoreState$1 = typedHooks.useStoreState;
@@ -5765,6 +5822,7 @@ var storeModel = {
     connectionPosition: { x: 0, y: 0 },
     snapGrid: [16, 16],
     snapToGrid: true,
+    isInteractive: true,
     onConnect: function () { },
     setOnConnect: action(function (state, onConnect) {
         state.onConnect = onConnect;
@@ -5825,9 +5883,7 @@ var storeModel = {
     setSelectedElements: action(function (state, elements) {
         var selectedElementsArr = Array.isArray(elements) ? elements : [elements];
         var selectedElementsUpdated = !fastDeepEqual(selectedElementsArr, state.selectedElements);
-        var selectedElements = selectedElementsUpdated
-            ? selectedElementsArr
-            : state.selectedElements;
+        var selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
         state.selectedElements = selectedElements;
     }),
     updateSelection: action(function (state, selection) {
@@ -5836,9 +5892,7 @@ var storeModel = {
         var nextSelectedElements = __spreadArrays(selectedNodes, selectedEdges);
         var selectedElementsUpdated = !fastDeepEqual(nextSelectedElements, state.selectedElements);
         state.selection = selection;
-        state.selectedElements = selectedElementsUpdated
-            ? nextSelectedElements
-            : state.selectedElements;
+        state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
     }),
     updateTransform: action(function (state, transform) {
         state.transform = [transform.x, transform.y, transform.k];
@@ -5863,6 +5917,9 @@ var storeModel = {
         var snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid;
         state.snapToGrid = snapToGrid;
         state.snapGrid = snapGrid;
+    }),
+    setInteractive: action(function (state, isInteractive) {
+        state.isInteractive = isInteractive;
     }),
 };
 var store = createStore$1(storeModel);
@@ -6020,7 +6077,7 @@ var zoom$1 = function (amount) {
 var zoomIn = function () { return zoom$1(0.2); };
 var zoomOut = function () { return zoom$1(-0.2); };
 
-function renderNode(node, props, transform, selectedElements) {
+function renderNode(node, props, transform, selectedElements, isInteractive) {
     var nodeType = node.type || 'default';
     var NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default);
     if (!props.nodeTypes[nodeType]) {
@@ -6030,79 +6087,31 @@ function renderNode(node, props, transform, selectedElements) {
         var id = _a.id;
         return id === node.id;
     });
-    return (React__default.createElement(NodeComponent, { key: node.id, id: node.id, type: nodeType, data: node.data, xPos: node.__rg.position.x, yPos: node.__rg.position.y, onClick: props.onElementClick, onNodeDragStop: props.onNodeDragStop, transform: transform, selected: isSelected, style: node.style }));
+    return (React__default.createElement(NodeComponent, { key: node.id, id: node.id, type: nodeType, data: node.data, xPos: node.__rg.position.x, yPos: node.__rg.position.y, onClick: props.onElementClick, onNodeDragStop: props.onNodeDragStop, transform: transform, selected: isSelected, style: node.style, isInteractive: isInteractive, sourcePosition: node.sourcePosition, targetPosition: node.targetPosition }));
 }
 var NodeRenderer = React.memo(function (_a) {
     var _b = _a.onlyRenderVisibleNodes, onlyRenderVisibleNodes = _b === void 0 ? true : _b, props = __rest(_a, ["onlyRenderVisibleNodes"]);
-    var _c = useStoreState$1(function (s) { return s; }), nodes = _c.nodes, transform = _c.transform, selectedElements = _c.selectedElements, width = _c.width, height = _c.height;
+    var _c = useStoreState$1(function (s) { return ({
+        nodes: s.nodes,
+        transform: s.transform,
+        selectedElements: s.selectedElements,
+        width: s.width,
+        height: s.height,
+        isInteractive: s.isInteractive,
+    }); }), nodes = _c.nodes, transform = _c.transform, selectedElements = _c.selectedElements, width = _c.width, height = _c.height, isInteractive = _c.isInteractive;
     var tx = transform[0], ty = transform[1], tScale = transform[2];
     var transformStyle = {
         transform: "translate(" + tx + "px," + ty + "px) scale(" + tScale + ")",
     };
-    var renderNodes = onlyRenderVisibleNodes ? getNodesInside(nodes, { x: 0, y: 0, width: width, height: height }, transform, true) : nodes;
-    return (React__default.createElement("div", { className: "react-flow__nodes", style: transformStyle }, renderNodes.map(function (node) { return renderNode(node, props, transform, selectedElements); })));
+    var renderNodes = onlyRenderVisibleNodes
+        ? getNodesInside(nodes, { x: 0, y: 0, width: width, height: height }, transform, true)
+        : nodes;
+    return (React__default.createElement("div", { className: "react-flow__nodes", style: transformStyle }, renderNodes.map(function (node) { return renderNode(node, props, transform, selectedElements, isInteractive); })));
 });
 NodeRenderer.displayName = 'NodeRenderer';
 
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var classnames = createCommonjsModule(function (module) {
-/*!
-  Copyright (c) 2017 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
-
-(function () {
-
-	var hasOwn = {}.hasOwnProperty;
-
-	function classNames () {
-		var classes = [];
-
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
-
-			var argType = typeof arg;
-
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg) && arg.length) {
-				var inner = classNames.apply(null, arg);
-				if (inner) {
-					classes.push(inner);
-				}
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(' ');
-	}
-
-	if ( module.exports) {
-		classNames.default = classNames;
-		module.exports = classNames;
-	} else {
-		window.classNames = classNames;
-	}
-}());
-});
-
 var ConnectionLine = (function (_a) {
-    var connectionSourceId = _a.connectionSourceId, _b = _a.connectionLineStyle, connectionLineStyle = _b === void 0 ? {} : _b, connectionPositionX = _a.connectionPositionX, connectionPositionY = _a.connectionPositionY, connectionLineType = _a.connectionLineType, _c = _a.nodes, nodes = _c === void 0 ? [] : _c, className = _a.className, transform = _a.transform;
+    var connectionSourceId = _a.connectionSourceId, _b = _a.connectionLineStyle, connectionLineStyle = _b === void 0 ? {} : _b, connectionPositionX = _a.connectionPositionX, connectionPositionY = _a.connectionPositionY, connectionLineType = _a.connectionLineType, _c = _a.nodes, nodes = _c === void 0 ? [] : _c, className = _a.className, transform = _a.transform, isInteractive = _a.isInteractive;
     var _d = React.useState(null), sourceNode = _d[0], setSourceNode = _d[1];
     var hasHandleId = connectionSourceId.includes('__');
     var sourceIdSplitted = connectionSourceId.split('__');
@@ -6112,19 +6121,15 @@ var ConnectionLine = (function (_a) {
         var nextSourceNode = nodes.find(function (n) { return n.id === nodeId; }) || null;
         setSourceNode(nextSourceNode);
     }, []);
-    if (!sourceNode) {
+    if (!sourceNode || !isInteractive) {
         return null;
     }
     var edgeClasses = classnames('react-flow__edge', 'connection', className);
     var sourceHandle = handleId
         ? sourceNode.__rg.handleBounds.source.find(function (d) { return d.id === handleId; })
         : sourceNode.__rg.handleBounds.source[0];
-    var sourceHandleX = sourceHandle
-        ? sourceHandle.x + sourceHandle.width / 2
-        : sourceNode.__rg.width / 2;
-    var sourceHandleY = sourceHandle
-        ? sourceHandle.y + sourceHandle.height / 2
-        : sourceNode.__rg.height;
+    var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
+    var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
     var sourceX = sourceNode.__rg.position.x + sourceHandleX;
     var sourceY = sourceNode.__rg.position.y + sourceHandleY;
     var targetX = (connectionPositionX - transform[0]) * (1 / transform[2]);
@@ -6233,7 +6238,7 @@ function getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, 
         targetY: targetY,
     };
 }
-function renderEdge(edge, props, nodes, selectedElements) {
+function renderEdge(edge, props, nodes, selectedElements, isInteractive) {
     var _a = edge.source.split('__'), sourceId = _a[0], sourceHandleId = _a[1];
     var _b = edge.target.split('__'), targetId = _b[0], targetHandleId = _b[1];
     var sourceNode = nodes.find(function (n) { return n.id === sourceId; });
@@ -6255,10 +6260,18 @@ function renderEdge(edge, props, nodes, selectedElements) {
     var targetPosition = targetHandle ? targetHandle.position : Position.Top;
     var _c = getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition), sourceX = _c.sourceX, sourceY = _c.sourceY, targetX = _c.targetX, targetY = _c.targetY;
     var isSelected = selectedElements.some(function (elm) { return isEdge(elm) && elm.source === sourceId && elm.target === targetId; });
-    return (React__default.createElement(EdgeComponent, { key: edge.id, id: edge.id, type: edge.type, onClick: props.onElementClick, selected: isSelected, animated: edge.animated, style: edge.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition }));
+    return (React__default.createElement(EdgeComponent, { key: edge.id, id: edge.id, type: edge.type, onClick: props.onElementClick, selected: isSelected, animated: edge.animated, style: edge.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition, isInteractive: isInteractive }));
 }
 var EdgeRenderer = React.memo(function (props) {
-    var _a = useStoreState$1(function (s) { return s; }), transform = _a.transform, edges = _a.edges, nodes = _a.nodes, connectionSourceId = _a.connectionSourceId, _b = _a.connectionPosition, x = _b.x, y = _b.y, selectedElements = _a.selectedElements;
+    var _a = useStoreState$1(function (s) { return ({
+        transform: s.transform,
+        edges: s.edges,
+        nodes: s.nodes,
+        connectionSourceId: s.connectionSourceId,
+        connectionPosition: s.connectionPosition,
+        selectedElements: s.selectedElements,
+        isInteractive: s.isInteractive,
+    }); }), transform = _a.transform, edges = _a.edges, nodes = _a.nodes, connectionSourceId = _a.connectionSourceId, _b = _a.connectionPosition, x = _b.x, y = _b.y, selectedElements = _a.selectedElements, isInteractive = _a.isInteractive;
     var width = props.width, height = props.height, connectionLineStyle = props.connectionLineStyle, connectionLineType = props.connectionLineType;
     if (!width) {
         return null;
@@ -6267,8 +6280,8 @@ var EdgeRenderer = React.memo(function (props) {
     var transformStyle = "translate(" + tx + "," + ty + ") scale(" + tScale + ")";
     return (React__default.createElement("svg", { width: width, height: height, className: "react-flow__edges" },
         React__default.createElement("g", { transform: transformStyle },
-            edges.map(function (e) { return renderEdge(e, props, nodes, selectedElements); }),
-            connectionSourceId && (React__default.createElement(ConnectionLine, { nodes: nodes, connectionSourceId: connectionSourceId, connectionPositionX: x, connectionPositionY: y, transform: transform, connectionLineStyle: connectionLineStyle, connectionLineType: connectionLineType })))));
+            edges.map(function (e) { return renderEdge(e, props, nodes, selectedElements, isInteractive); }),
+            connectionSourceId && (React__default.createElement(ConnectionLine, { nodes: nodes, connectionSourceId: connectionSourceId, connectionPositionX: x, connectionPositionY: y, transform: transform, connectionLineStyle: connectionLineStyle, connectionLineType: connectionLineType, isInteractive: isInteractive })))));
 });
 EdgeRenderer.displayName = 'EdgeRenderer';
 
@@ -6292,12 +6305,16 @@ function getMousePosition(evt) {
         y: evt.clientY - containerBounds.top,
     };
 }
-var UserSelection = React.memo(function () {
+var UserSelection = React.memo(function (_a) {
+    var isInteractive = _a.isInteractive;
     var selectionPane = React.useRef(null);
-    var _a = React.useState(initialRect), rect = _a[0], setRect = _a[1];
+    var _b = React.useState(initialRect), rect = _b[0], setRect = _b[1];
     var setSelection = useStoreActions$1(function (a) { return a.setSelection; });
     var updateSelection = useStoreActions$1(function (a) { return a.updateSelection; });
     var setNodesSelection = useStoreActions$1(function (a) { return a.setNodesSelection; });
+    if (!isInteractive) {
+        return null;
+    }
     React.useEffect(function () {
         function onMouseDown(evt) {
             var mousePos = getMousePosition(evt);
@@ -6318,11 +6335,7 @@ var UserSelection = React.memo(function () {
                 }
                 var negativeX = mousePos.x < currentRect.startX;
                 var negativeY = mousePos.y < currentRect.startY;
-                var nextRect = __assign(__assign({}, currentRect), { x: negativeX ? mousePos.x : currentRect.x, y: negativeY ? mousePos.y : currentRect.y, width: negativeX
-                        ? currentRect.startX - mousePos.x
-                        : mousePos.x - currentRect.startX, height: negativeY
-                        ? currentRect.startY - mousePos.y
-                        : mousePos.y - currentRect.startY });
+                var nextRect = __assign(__assign({}, currentRect), { x: negativeX ? mousePos.x : currentRect.x, y: negativeY ? mousePos.y : currentRect.y, width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX, height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY });
                 updateSelection(nextRect);
                 return nextRect;
             });
@@ -8138,7 +8151,7 @@ Grid.displayName = 'Grid';
 
 var isInputDOMNode = function (e) {
     var target = e.target;
-    return (e && target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName));
+    return e && target && ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(target.nodeName);
 };
 var getDimensions = function (node) { return ({
     width: node.offsetWidth,
@@ -8191,8 +8204,7 @@ var useD3Zoom = (function (zoomPane, onMove, shiftPressed) {
         }
         else {
             d3ZoomInstance.on('zoom', function () {
-                if (event.sourceEvent &&
-                    event.sourceEvent.target !== zoomPane.current) {
+                if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
                     return;
                 }
                 updateTransform(event.transform);
@@ -8274,7 +8286,7 @@ var useElementUpdater = function (elements) {
 };
 
 var GraphView = React.memo(function (_a) {
-    var nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onMove = _a.onMove, onLoad = _a.onLoad, onElementClick = _a.onElementClick, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, selectionKeyCode = _a.selectionKeyCode, onElementsRemove = _a.onElementsRemove, deleteKeyCode = _a.deleteKeyCode, elements = _a.elements, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundColor = _a.backgroundColor, backgroundType = _a.backgroundType, onConnect = _a.onConnect, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid, onlyRenderVisibleNodes = _a.onlyRenderVisibleNodes;
+    var nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onMove = _a.onMove, onLoad = _a.onLoad, onElementClick = _a.onElementClick, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, selectionKeyCode = _a.selectionKeyCode, onElementsRemove = _a.onElementsRemove, deleteKeyCode = _a.deleteKeyCode, elements = _a.elements, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundColor = _a.backgroundColor, backgroundType = _a.backgroundType, onConnect = _a.onConnect, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid, onlyRenderVisibleNodes = _a.onlyRenderVisibleNodes, isInteractive = _a.isInteractive;
     var zoomPane = React.useRef(null);
     var rendererNode = React.useRef(null);
     var state = useStoreState$1(function (s) { return ({
@@ -8289,7 +8301,9 @@ var GraphView = React.memo(function (_a) {
     var setNodesSelection = useStoreActions$1(function (actions) { return actions.setNodesSelection; });
     var setOnConnect = useStoreActions$1(function (a) { return a.setOnConnect; });
     var setSnapGrid = useStoreActions$1(function (actions) { return actions.setSnapGrid; });
+    var setInteractive = useStoreActions$1(function (actions) { return actions.setInteractive; });
     var selectionKeyPressed = useKeyPress(selectionKeyCode);
+    var rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
     var onZoomPaneClick = function () { return setNodesSelection({ isActive: false }); };
     var updateDimensions = function () {
         if (!rendererNode.current) {
@@ -8319,13 +8333,16 @@ var GraphView = React.memo(function (_a) {
     React.useEffect(function () {
         setSnapGrid({ snapToGrid: snapToGrid, snapGrid: snapGrid });
     }, [snapToGrid]);
+    React.useEffect(function () {
+        setInteractive(isInteractive);
+    }, [isInteractive]);
     useGlobalKeyHandler({ onElementsRemove: onElementsRemove, deleteKeyCode: deleteKeyCode });
     useElementUpdater(elements);
-    return (React__default.createElement("div", { className: "react-flow__renderer", ref: rendererNode },
+    return (React__default.createElement("div", { className: rendererClasses, ref: rendererNode },
         showBackground && (React__default.createElement(Grid, { gap: backgroundGap, color: backgroundColor, backgroundType: backgroundType })),
         React__default.createElement(NodeRenderer, { nodeTypes: nodeTypes, onElementClick: onElementClick, onNodeDragStop: onNodeDragStop, onlyRenderVisibleNodes: onlyRenderVisibleNodes }),
         React__default.createElement(EdgeRenderer, { width: state.width, height: state.height, edgeTypes: edgeTypes, onElementClick: onElementClick, connectionLineType: connectionLineType, connectionLineStyle: connectionLineStyle }),
-        selectionKeyPressed && React__default.createElement(UserSelection, null),
+        selectionKeyPressed && React__default.createElement(UserSelection, { isInteractive: isInteractive }),
         state.nodesSelectionActive && React__default.createElement(NodesSelection, null),
         React__default.createElement("div", { className: "react-flow__zoompane", onClick: onZoomPaneClick, ref: zoomPane })));
 });
@@ -8448,11 +8465,11 @@ var nodeStyles = {
     width: 150,
 };
 var DefaultNode = (function (_a) {
-    var data = _a.data, style = _a.style;
+    var data = _a.data, _b = _a.targetPosition, targetPosition = _b === void 0 ? Position.Top : _b, _c = _a.sourcePosition, sourcePosition = _c === void 0 ? Position.Bottom : _c, style = _a.style;
     return (React__default.createElement("div", { style: __assign(__assign({}, nodeStyles), style) },
-        React__default.createElement(Handle, { type: "target", position: Position.Top }),
+        React__default.createElement(Handle, { type: "target", position: targetPosition }),
         data.label,
-        React__default.createElement(Handle, { type: "source", position: Position.Bottom })));
+        React__default.createElement(Handle, { type: "source", position: sourcePosition })));
 });
 
 var nodeStyles$1 = {
@@ -8462,10 +8479,10 @@ var nodeStyles$1 = {
     width: 150,
 };
 var InputNode = (function (_a) {
-    var data = _a.data, style = _a.style;
+    var data = _a.data, style = _a.style, _b = _a.sourcePosition, sourcePosition = _b === void 0 ? Position.Bottom : _b;
     return (React__default.createElement("div", { style: __assign(__assign({}, nodeStyles$1), style) },
         data.label,
-        React__default.createElement(Handle, { type: "source", position: Position.Bottom })));
+        React__default.createElement(Handle, { type: "source", position: sourcePosition })));
 });
 
 var nodeStyles$2 = {
@@ -8475,9 +8492,9 @@ var nodeStyles$2 = {
     width: 150,
 };
 var OutputNode = (function (_a) {
-    var data = _a.data, style = _a.style;
+    var data = _a.data, style = _a.style, _b = _a.targetPosition, targetPosition = _b === void 0 ? Position.Top : _b;
     return (React__default.createElement("div", { style: __assign(__assign({}, nodeStyles$2), style) },
-        React__default.createElement(Handle, { type: "target", position: Position.Top }),
+        React__default.createElement(Handle, { type: "target", position: targetPosition }),
         data.label));
 });
 
@@ -8758,9 +8775,7 @@ var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
         var nodeIdSplitted = nodeIdAttr ? nodeIdAttr.split('__') : null;
         var handleId = null;
         if (nodeIdSplitted) {
-            handleId = (nodeIdSplitted.length
-                ? nodeIdSplitted[1]
-                : nodeIdSplitted);
+            handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted);
         }
         return __assign({ id: handleId, position: handlePosition, x: (bounds.left - parentBounds.left) * (1 / k), y: (bounds.top - parentBounds.top) * (1 / k) }, dimensions);
     });
@@ -8807,7 +8822,7 @@ var onStop = function (onNodeDragStop, isDragging, setDragging, id, type, positi
 };
 var wrapNode = (function (NodeComponent) {
     var NodeWrapper = React.memo(function (_a) {
-        var id = _a.id, type = _a.type, data = _a.data, transform = _a.transform, xPos = _a.xPos, yPos = _a.yPos, selected = _a.selected, onClick = _a.onClick, onNodeDragStop = _a.onNodeDragStop, style = _a.style;
+        var id = _a.id, type = _a.type, data = _a.data, transform = _a.transform, xPos = _a.xPos, yPos = _a.yPos, selected = _a.selected, onClick = _a.onClick, onNodeDragStop = _a.onNodeDragStop, style = _a.style, isInteractive = _a.isInteractive, sourcePosition = _a.sourcePosition, targetPosition = _a.targetPosition;
         var nodeElement = React.useRef(null);
         var _b = React.useState({ x: 0, y: 0 }), offset = _b[0], setOffset = _b[1];
         var _c = React.useState(false), isDragging = _c[0], setDragging = _c[1];
@@ -8848,16 +8863,10 @@ var wrapNode = (function (NodeComponent) {
             }
             return;
         }, [nodeElement.current]);
-        return (React__default.createElement(DraggableCore, { onStart: function (evt) {
-                return onStart(evt, onClick, id, type, data, setOffset, transform, position);
-            }, onDrag: function (evt) {
-                return onDrag(evt, setDragging, id, offset, transform);
-            }, onStop: function () {
-                return onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data);
-            }, scale: transform[2] },
+        return (React__default.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, onClick, id, type, data, setOffset, transform, position); }, onDrag: function (evt) { return onDrag(evt, setDragging, id, offset, transform); }, onStop: function () { return onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data); }, scale: transform[2], disabled: !isInteractive },
             React__default.createElement("div", { className: nodeClasses, ref: nodeElement, style: nodeStyle },
                 React__default.createElement(Provider, { value: id },
-                    React__default.createElement(NodeComponent, { id: id, data: data, type: type, style: style, selected: selected })))));
+                    React__default.createElement(NodeComponent, { id: id, data: data, type: type, style: style, selected: selected, sourcePosition: sourcePosition, targetPosition: targetPosition })))));
     });
     NodeWrapper.displayName = 'NodeWrapper';
     return NodeWrapper;
@@ -8910,10 +8919,10 @@ var StepEdge = React.memo(function (_a) {
 
 var wrapEdge = (function (EdgeComponent) {
     var EdgeWrapper = React.memo(function (_a) {
-        var id = _a.id, source = _a.source, target = _a.target, type = _a.type, animated = _a.animated, selected = _a.selected, onClick = _a.onClick, rest = __rest(_a, ["id", "source", "target", "type", "animated", "selected", "onClick"]);
+        var id = _a.id, source = _a.source, target = _a.target, type = _a.type, animated = _a.animated, selected = _a.selected, onClick = _a.onClick, isInteractive = _a.isInteractive, rest = __rest(_a, ["id", "source", "target", "type", "animated", "selected", "onClick", "isInteractive"]);
         var edgeClasses = classnames('react-flow__edge', { selected: selected, animated: animated });
         var onEdgeClick = function (evt) {
-            if (isInputDOMNode(evt)) {
+            if (isInputDOMNode(evt) || !isInteractive) {
                 return;
             }
             store.dispatch.setSelectedElements({ id: id, source: source, target: target });
@@ -8968,16 +8977,16 @@ function styleInject(css, ref) {
   }
 }
 
-var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n@keyframes dashdraw {\n  from {stroke-dashoffset: 10}\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  cursor: -webkit-grab;\n  cursor: grab;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node:hover > * {\n    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n  }\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n  cursor: crosshair;\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
+var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n@keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.is-interactive .react-flow__node {\n    cursor: -webkit-grab;\n    cursor: grab;\n  }\n\n.is-interactive .react-flow__node:hover > * {\n      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n    }\n\n.is-interactive .react-flow__handle {\n    cursor: crosshair;\n  }\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
 styleInject(css);
 
 var ReactFlow = function (_a) {
-    var style = _a.style, onElementClick = _a.onElementClick, elements = _a.elements, children = _a.children, nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onLoad = _a.onLoad, onMove = _a.onMove, onElementsRemove = _a.onElementsRemove, onConnect = _a.onConnect, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, deleteKeyCode = _a.deleteKeyCode, selectionKeyCode = _a.selectionKeyCode, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundType = _a.backgroundType, backgroundColor = _a.backgroundColor, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid, onlyRenderVisibleNodes = _a.onlyRenderVisibleNodes;
+    var style = _a.style, onElementClick = _a.onElementClick, elements = _a.elements, children = _a.children, nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onLoad = _a.onLoad, onMove = _a.onMove, onElementsRemove = _a.onElementsRemove, onConnect = _a.onConnect, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, deleteKeyCode = _a.deleteKeyCode, selectionKeyCode = _a.selectionKeyCode, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundType = _a.backgroundType, backgroundColor = _a.backgroundColor, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid, onlyRenderVisibleNodes = _a.onlyRenderVisibleNodes, isInteractive = _a.isInteractive;
     var nodeTypesParsed = React.useMemo(function () { return createNodeTypes(nodeTypes); }, []);
     var edgeTypesParsed = React.useMemo(function () { return createEdgeTypes(edgeTypes); }, []);
     return (React__default.createElement("div", { style: style, className: "react-flow" },
         React__default.createElement(StoreProvider, { store: store },
-            React__default.createElement(GraphView, { onLoad: onLoad, onMove: onMove, onElementClick: onElementClick, onNodeDragStop: onNodeDragStop, nodeTypes: nodeTypesParsed, edgeTypes: edgeTypesParsed, connectionLineType: connectionLineType, connectionLineStyle: connectionLineStyle, selectionKeyCode: selectionKeyCode, onElementsRemove: onElementsRemove, deleteKeyCode: deleteKeyCode, elements: elements, onConnect: onConnect, backgroundColor: backgroundColor, backgroundGap: backgroundGap, showBackground: showBackground, backgroundType: backgroundType, snapToGrid: snapToGrid, snapGrid: snapGrid, onlyRenderVisibleNodes: onlyRenderVisibleNodes }),
+            React__default.createElement(GraphView, { onLoad: onLoad, onMove: onMove, onElementClick: onElementClick, onNodeDragStop: onNodeDragStop, nodeTypes: nodeTypesParsed, edgeTypes: edgeTypesParsed, connectionLineType: connectionLineType, connectionLineStyle: connectionLineStyle, selectionKeyCode: selectionKeyCode, onElementsRemove: onElementsRemove, deleteKeyCode: deleteKeyCode, elements: elements, onConnect: onConnect, backgroundColor: backgroundColor, backgroundGap: backgroundGap, showBackground: showBackground, backgroundType: backgroundType, snapToGrid: snapToGrid, snapGrid: snapGrid, onlyRenderVisibleNodes: onlyRenderVisibleNodes, isInteractive: isInteractive }),
             children)));
 };
 ReactFlow.displayName = 'ReactFlow';
@@ -9008,7 +9017,8 @@ ReactFlow.defaultProps = {
     backgroundType: GridType.Dots,
     snapToGrid: false,
     snapGrid: [16, 16],
-    onlyRenderVisibleNodes: true
+    onlyRenderVisibleNodes: true,
+    isInteractive: true,
 };
 
 var baseStyle = {

@@ -10,10 +10,10 @@ const nodeStyles: CSSProperties = {
   width: 150,
 };
 
-export default ({ data, style }: NodeProps) => (
+export default ({ data, targetPosition = Position.Top, sourcePosition = Position.Bottom, style }: NodeProps) => (
   <div style={{ ...nodeStyles, ...style }}>
-    <Handle type="target" position={Position.Top} />
+    <Handle type="target" position={targetPosition} />
     {data.label}
-    <Handle type="source" position={Position.Bottom} />
+    <Handle type="source" position={sourcePosition} />
   </div>
 );
