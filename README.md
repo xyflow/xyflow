@@ -40,16 +40,18 @@ const BasicGraph = () => (
 - `onMove`: move handler
 - `nodeTypes`: object with node types
 - `edgeTypes`: object with node types
+- `style`: css style passed to the wrapper
 - `connectionLineType`: connection line type = `straight` or `bezier`
 - `connectionLineStyle`: connection style as svg attributes
-- `deleteKeyCode`: delete key code
-- `selectionKeyCode`: selection key code
-- `showBackground`: boolean
-- `backgroundGap`: gap size
-- `backgroundColor`: color of dots or lines
-- `backgroundType`: background type = `dots` or `lines`
-- `snapToGrid`: boolean
-- `snapGrid`: [x, y] array
+- `deleteKeyCode`: default: `16`
+- `selectionKeyCode`: default: `false`
+- `showBackground`: default: `true`
+- `backgroundGap`: gap size - default: `16`
+- `backgroundColor`: color of dots or lines - default: `#eee`
+- `backgroundType`: background type = `dots` or `lines` - default: `dots`
+- `snapToGrid`: default: `false`
+- `snapGrid`: [x, y] array - default: `[16, 16]`
+- `onlyRenderVisibleNodes`: default: `true`
 
 # Plugins
 

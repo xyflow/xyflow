@@ -7,5 +7,5 @@ interface EdgeRendererProps {
     connectionLineType?: string;
     onElementClick?: () => void;
 }
-declare const EdgeRenderer: React.MemoExoticComponent<({ width, height, connectionLineStyle, connectionLineType, ...rest }: EdgeRendererProps) => JSX.Element | null>;
+declare const EdgeRenderer: React.MemoExoticComponent<(props: EdgeRendererProps) => JSX.Element | null>;
 export default EdgeRenderer;

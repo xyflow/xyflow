@@ -5804,6 +5804,11 @@ var storeModel = {
             return;
         }
         var selectedNodes = getNodesInside(state.nodes, selection, state.transform);
+        if (!selectedNodes.length) {
+            state.nodesSelectionActive = false;
+            state.selectedElements = [];
+            return;
+        }
         var selectedNodesBbox = getRectOfNodes(selectedNodes);
         state.selection = selection;
         state.nodesSelectionActive = true;
@@ -5966,7 +5971,9 @@ var getNodesInside = function (nodes, rect, _a, partially) {
     return nodes.filter(function (_a) {
         var _b = _a.__rg, position = _b.position, width = _b.width, height = _b.height;
         var nBox = rectToBox(__assign(__assign({}, position), { width: width, height: height }));
-        var overlappingArea = (Math.max(rBox.x, nBox.x) - Math.min(rBox.x2, nBox.x2)) * (Math.max(rBox.y, nBox.y) - Math.min(rBox.y2, nBox.y2));
+        var xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
+        var yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
+        var overlappingArea = xOverlap * yOverlap;
         if (partially) {
             return overlappingArea >= 0;
         }
@@ -6219,57 +6226,39 @@ function getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, 
         targetY: targetY,
     };
 }
-function renderEdge(edge, props, state) {
-    var edgeType = edge.type || 'default';
-    var hasSourceHandleId = edge.source.includes('__');
-    var hasTargetHandleId = edge.target.includes('__');
-    var sourceId = hasSourceHandleId ? edge.source.split('__')[0] : edge.source;
-    var targetId = hasTargetHandleId ? edge.target.split('__')[0] : edge.target;
-    var sourceHandleId = hasSourceHandleId ? edge.source.split('__')[1] : null;
-    var targetHandleId = hasTargetHandleId ? edge.target.split('__')[1] : null;
-    var sourceNode = state.nodes.find(function (n) { return n.id === sourceId; });
-    var targetNode = state.nodes.find(function (n) { return n.id === targetId; });
+function renderEdge(edge, props, nodes, selectedElements) {
+    var _a = edge.source.split('__'), sourceId = _a[0], sourceHandleId = _a[1];
+    var _b = edge.target.split('__'), targetId = _b[0], targetHandleId = _b[1];
+    var sourceNode = nodes.find(function (n) { return n.id === sourceId; });
+    var targetNode = nodes.find(function (n) { return n.id === targetId; });
     if (!sourceNode) {
         throw new Error("couldn't create edge for source id: " + sourceId);
     }
     if (!targetNode) {
         throw new Error("couldn't create edge for target id: " + targetId);
     }
+    var edgeType = edge.type || 'default';
     var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
     var sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
     var targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
     var sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
     var targetPosition = targetHandle ? targetHandle.position : Position.Top;
-    var _a = getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition), sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY;
-    var selected = state.selectedElements
-        .filter(isEdge)
-        .find(function (elm) { return elm.source === sourceId && elm.target === targetId; });
-    return (React.createElement(EdgeComponent, { key: edge.id, id: edge.id, type: edge.type, onClick: props.onElementClick, selected: selected, animated: edge.animated, style: edge.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition }));
+    var _c = getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition), sourceX = _c.sourceX, sourceY = _c.sourceY, targetX = _c.targetX, targetY = _c.targetY;
+    var isSelected = selectedElements.some(function (elm) { return isEdge(elm) && elm.source === sourceId && elm.target === targetId; });
+    return (React.createElement(EdgeComponent, { key: edge.id, id: edge.id, type: edge.type, onClick: props.onElementClick, selected: isSelected, animated: edge.animated, style: edge.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition }));
 }
-var EdgeRenderer = memo(function (_a) {
-    var width = _a.width, height = _a.height, connectionLineStyle = _a.connectionLineStyle, connectionLineType = _a.connectionLineType, rest = __rest(_a, ["width", "height", "connectionLineStyle", "connectionLineType"]);
-    var state = useStoreState$1(function (s) { return ({
-        nodes: s.nodes,
-        edges: s.edges,
-        transform: s.transform,
-        selectedElements: s.selectedElements,
-        connectionSourceId: s.connectionSourceId,
-        position: s.connectionPosition,
-    }); });
+var EdgeRenderer = memo(function (props) {
+    var _a = useStoreState$1(function (s) { return s; }), transform = _a.transform, edges = _a.edges, nodes = _a.nodes, connectionSourceId = _a.connectionSourceId, _b = _a.connectionPosition, x = _b.x, y = _b.y, selectedElements = _a.selectedElements;
+    var width = props.width, height = props.height, connectionLineStyle = props.connectionLineStyle, connectionLineType = props.connectionLineType;
     if (!width) {
         return null;
     }
-    var transform = state.transform, edges = state.edges, nodes = state.nodes, connectionSourceId = state.connectionSourceId, position = state.position;
-    var transformStyle = "translate(" + transform[0] + "," + transform[1] + ") scale(" + transform[2] + ")";
+    var tx = transform[0], ty = transform[1], tScale = transform[2];
+    var transformStyle = "translate(" + tx + "," + ty + ") scale(" + tScale + ")";
     return (React.createElement("svg", { width: width, height: height, className: "react-flow__edges" },
         React.createElement("g", { transform: transformStyle },
-            edges.map(function (e) {
-                return renderEdge(e, __assign({ width: width,
-                    height: height,
-                    connectionLineStyle: connectionLineStyle,
-                    connectionLineType: connectionLineType }, rest), state);
-            }),
-            connectionSourceId && (React.createElement(ConnectionLine, { nodes: nodes, connectionSourceId: connectionSourceId, connectionPositionX: position.x, connectionPositionY: position.y, transform: transform, connectionLineStyle: connectionLineStyle, connectionLineType: connectionLineType })))));
+            edges.map(function (e) { return renderEdge(e, props, nodes, selectedElements); }),
+            connectionSourceId && (React.createElement(ConnectionLine, { nodes: nodes, connectionSourceId: connectionSourceId, connectionPositionX: x, connectionPositionY: y, transform: transform, connectionLineStyle: connectionLineStyle, connectionLineType: connectionLineType })))));
 });
 EdgeRenderer.displayName = 'EdgeRenderer';
 
@@ -8041,10 +8030,13 @@ var NodesSelection = memo(function () {
         transform: s.transform,
         selectedNodesBbox: s.selectedNodesBbox,
         selectedElements: s.selectedElements,
+        snapToGrid: s.snapToGrid,
+        snapGrid: s.snapGrid
     }); });
     var updateNodePos = useStoreActions$1(function (a) { return a.updateNodePos; });
     var _c = state.transform, x = _c[0], y = _c[1], k = _c[2];
     var position = state.selectedNodesBbox;
+    var grid = (state.snapToGrid ? state.snapGrid : [1, 1]);
     var onStart = function (evt) {
         var scaledClient = {
             x: evt.clientX * (1 / k),
@@ -8082,7 +8074,7 @@ var NodesSelection = memo(function () {
     return (React.createElement("div", { className: "react-flow__nodesselection", style: {
             transform: "translate(" + x + "px," + y + "px) scale(" + k + ")",
         } },
-        React.createElement(reactDraggable, { scale: k, onStart: function (evt) { return onStart(evt); }, onDrag: function (evt) { return onDrag(evt); } },
+        React.createElement(reactDraggable, { scale: k, grid: grid, onStart: function (evt) { return onStart(evt); }, onDrag: function (evt) { return onDrag(evt); } },
             React.createElement("div", { className: "react-flow__nodesselection-rect", style: {
                     width: state.selectedNodesBbox.width,
                     height: state.selectedNodesBbox.height,

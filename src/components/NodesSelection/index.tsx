@@ -29,10 +29,13 @@ export default memo(() => {
     transform: s.transform,
     selectedNodesBbox: s.selectedNodesBbox,
     selectedElements: s.selectedElements,
+    snapToGrid: s.snapToGrid,
+    snapGrid: s.snapGrid
   }));
   const updateNodePos = useStoreActions(a => a.updateNodePos);
   const [x, y, k] = state.transform;
   const position = state.selectedNodesBbox;
+  const grid = (state.snapToGrid ? state.snapGrid : [1, 1])! as [number, number];
 
   const onStart = (evt: MouseEvent) => {
     const scaledClient: XYPosition = {
@@ -84,6 +87,7 @@ export default memo(() => {
     >
       <ReactDraggable
         scale={k}
+        grid={grid}
         onStart={evt => onStart(evt as MouseEvent)}
         onDrag={evt => onDrag(evt as MouseEvent)}
       >

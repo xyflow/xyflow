@@ -11,7 +11,7 @@ const EmptyGraph = () => {
   const onElementsRemove = (elementsToRemove) =>
     setElements(els => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements(els => addEdge(params, els));
-  const onAdd = () => {
+  const addRandomNode = () => {
     const nodeId = (elements.length + 1).toString();
     const newNode = {
       id: nodeId,
@@ -36,10 +36,10 @@ const EmptyGraph = () => {
     <Controls />
     <button
       type="button"
-      onClick={onAdd}
+      onClick={addRandomNode}
       style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
     >
-      add
+      add node
     </button>
     </Graph>
   );

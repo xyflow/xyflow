@@ -152,10 +152,13 @@ export const getNodesInside = (
     width: rect.width / tScale,
     height: rect.height / tScale,
   });
+
   return nodes.filter(({ __rg: { position, width, height } }) => {
     const nBox = rectToBox({ ...position, width, height });
-    const overlappingArea =
-      (Math.max(rBox.x, nBox.x) - Math.min(rBox.x2, nBox.x2)) * (Math.max(rBox.y, nBox.y) - Math.min(rBox.y2, nBox.y2));
+    const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
+    const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
+    const overlappingArea = xOverlap * yOverlap;
+
     if (partially) {
       return overlappingArea >= 0;
     }
