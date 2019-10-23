@@ -43,8 +43,8 @@ const BasicGraph = () => (
 - `style`: css style passed to the wrapper
 - `connectionLineType`: connection line type = `straight` or `bezier`
 - `connectionLineStyle`: connection style as svg attributes
-- `deleteKeyCode`: default: `16`
-- `selectionKeyCode`: default: `false`
+- `deleteKeyCode`: default: `8` (delete)
+- `selectionKeyCode`: default: `16` (shift)
 - `showBackground`: default: `true`
 - `backgroundGap`: gap size - default: `16`
 - `backgroundColor`: color of dots or lines - default: `#eee`
