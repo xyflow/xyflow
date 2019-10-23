@@ -2,6 +2,21 @@
 
 React library for building node-based graphs.
 
+![react-flow](https://user-images.githubusercontent.com/2857535/67416769-b413bc00-f5c7-11e9-8890-b01bea761971.png)
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Props](#props)
+  - [Nodes](#nodes)
+    - [Props](#props)
+    - [Node Types / Custom Nodes](#node-types--custom-nodes)
+  - [Edges](#nodes)
+    - [Props](#props)
+    - [Edge Types / Custom Edges](#edge-types--custom-edges)
+- [Plugins](#plugins)
+  - [Minimap](#minimap)
+  - [Controls](#controls)
+
 # Installation
 
 ```
@@ -29,7 +44,7 @@ const BasicGraph = () => (
 );
 ```
 
-# Props
+## Props
 
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
 - `onElementClick`: element click handler
@@ -60,7 +75,7 @@ There are three different [node types](#node-types--custom-nodes) (`default`, `i
 
 Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }`
 
-**Node Props**
+### Props
 
 - `id`: string *(required)*
 - `position`: { x: number, y: number } *(required)*
@@ -68,22 +83,7 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `style`: css properties
 
-## Edges
-
-There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges).
-
-Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true }`
-
-**Edge Props**
-
-- `id`: string *(required)*
-- `source`: string *(required)*
-- `target`: string *(required)*
-- `type`: 'input' | 'output' | 'default' or a custom one you implemented
-- `animated`: boolean
-- `style`: css properties
-
-## Node Types / Custom Nodes
+### Node Types / Custom Nodes
 
 The standard node types are `input`, `default` and `output`. The default node types object looks like this:
 
@@ -108,7 +108,23 @@ You can now use type `special` for a node.
 The `default`, `input` and `output` types will be still available except you overwrite one of them.
 You can find an example of how to implement a custom node in [custom nodes example](example/src/CustomNodes).
 
-## Edge Types / Custom Edges
+
+## Edges
+
+There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges).
+
+Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true }`
+
+### Props
+
+- `id`: string *(required)*
+- `source`: string *(required)*
+- `target`: string *(required)*
+- `type`: 'input' | 'output' | 'default' or a custom one you implemented
+- `animated`: boolean
+- `style`: css properties
+
+### Edge Types / Custom Edges
 
 The standard edge types are `straight`, `default` and `step`. The default edge types object looks like this:
 
