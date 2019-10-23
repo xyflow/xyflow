@@ -35,9 +35,9 @@ declare const ReactFlow: {
         onLoad: () => void;
         onMove: () => void;
         nodeTypes: {
-            input: ({ data, style }: import("../../types").NodeProps) => JSX.Element;
-            default: ({ data, style }: import("../../types").NodeProps) => JSX.Element;
-            output: ({ data, style }: import("../../types").NodeProps) => JSX.Element;
+            input: ({ data, style, sourcePosition }: import("../../types").NodeProps) => JSX.Element;
+            default: ({ data, targetPosition, sourcePosition, style }: import("../../types").NodeProps) => JSX.Element;
+            output: ({ data, style, targetPosition }: import("../../types").NodeProps) => JSX.Element;
         };
         edgeTypes: {
             default: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style, }: import("../../types").EdgeBezierProps) => JSX.Element>;

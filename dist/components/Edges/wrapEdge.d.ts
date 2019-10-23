@@ -8,6 +8,7 @@ interface EdgeWrapperProps {
     onClick: (edge: Edge) => void;
     animated: boolean;
     selected: boolean;
+    isInteractive: boolean;
 }
-declare const _default: (EdgeComponent: React.ComponentType<EdgeCompProps>) => React.MemoExoticComponent<({ id, source, target, type, animated, selected, onClick, ...rest }: EdgeWrapperProps) => JSX.Element>;
+declare const _default: (EdgeComponent: React.ComponentType<EdgeCompProps>) => React.MemoExoticComponent<({ id, source, target, type, animated, selected, onClick, isInteractive, ...rest }: EdgeWrapperProps) => JSX.Element>;
 export default _default;

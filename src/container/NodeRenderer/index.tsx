@@ -40,6 +40,8 @@ function renderNode(
       selected={isSelected}
       style={node.style}
       isInteractive={isInteractive}
+      sourcePosition={node.sourcePosition}
+      targetPosition={node.targetPosition}
     />
   );
 }

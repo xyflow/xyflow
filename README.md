@@ -107,7 +107,7 @@ nodeTypes={{
 
 You can now use type `special` for a node.
 The `default`, `input` and `output` types will be still available except you overwrite one of them.
-You can find an example of how to implement a custom node in [custom nodes example](example/src/CustomNodes).
+You can find an example of how to implement a custom node in the [custom node example](example/src/CustomNode).
 
 
 ## Edges
@@ -200,7 +200,8 @@ const GraphWithControls = () => (
 
 You can find all examples in the [example](example) folder. They are also deployt:
 
+- [rich](https://react-flow.netlify.com/rich)
 - [basic](https://react-flow.netlify.com/basic)
 - [empty](https://react-flow.netlify.com/empty)
-- [basic](https://react-flow.netlify.com/basic)
-- [custom nodes](https://react-flow.netlify.com/)
+- [inactive](https://react-flow.netlify.com/inactive)
+- [custom node](https://react-flow.netlify.com/custom-node)
