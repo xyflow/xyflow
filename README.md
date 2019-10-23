@@ -38,8 +38,8 @@ const BasicGraph = () => (
 - `onConnect`: connect handler
 - `onLoad`: editor load handler
 - `onMove`: move handler
-- `nodeTypes`: object with [node types](#node-types)
-- `edgeTypes`: object with [edge types](#edge-types)
+- `nodeTypes`: object with [node types](#node-types--custom-nodes)
+- `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css style passed to the wrapper
 - `connectionLineType`: connection line type = `straight` or `bezier`
 - `connectionLineStyle`: connection style as svg attributes
@@ -55,7 +55,7 @@ const BasicGraph = () => (
 
 ## Nodes
 
-There are three different [node types](#node-types) (`default`, `input`, `output`) you can use. You can also create [custom nodes](#custom-nodes).
+There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. You can also create [custom nodes](#node-types--custom-nodes).
 
 Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }`
 
@@ -63,13 +63,13 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 
 - `id`: string *(required)*
 - `position`: { x: number, y: number } *(required)*
-- `data`: {} (required if you are using a standard type, otherwise depends on your implementation)
+- `data`: {} *(required if you are using a standard type, otherwise depends on your implementation)*
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `style`: css properties
 
 ## Edges
 
-There are three [edge types](#edge-types) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#custom-edges).
+There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges).
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true }`
 
@@ -107,7 +107,7 @@ You can now use type `special` for a node.
 The `default`, `input` and `output` types will be still available except you overwrite one of them.
 You can find an example of how to implement a custom node in [custom nodes example](example/src/CustomNodes).
 
-# Edge Types / Custom Edges
+## Edge Types / Custom Edges
 
 The standard edge types are `straight`, `default` and `step`. The default edge types object looks like this:
 
