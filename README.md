@@ -83,6 +83,8 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `data`: {} *(required if you are using a standard type, otherwise depends on your implementation)*
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `style`: css properties
+- `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
+- `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
 
 ### Node Types / Custom Nodes
 
