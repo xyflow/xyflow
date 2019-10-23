@@ -200,6 +200,14 @@ const storeModel: StoreModel = {
       selection,
       state.transform
     );
+
+    if (!selectedNodes.length) {
+      state.nodesSelectionActive = false;
+      state.selectedElements = [];
+
+      return;
+    }
+
     const selectedNodesBbox = getRectOfNodes(selectedNodes);
 
     state.selection = selection;
