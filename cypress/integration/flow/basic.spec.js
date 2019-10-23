@@ -15,7 +15,7 @@ describe('Basic Graph Rendering', () => {
     expect(gridStroke).to.equal('#eee');
   });
 
-  it('selects a node', () => {
+  it('selects a node by click', () => {
     cy.get('.react-flow__node:first').click().should('have.class', 'selected');
   });
 
@@ -24,13 +24,29 @@ describe('Basic Graph Rendering', () => {
     cy.get('.react-flow__node:first').should('not.have.class', 'selected');
   });
 
-  it('selects an edge', () => {
+  it('selects an edge by click', () => {
     cy.get('.react-flow__edge:first').click().should('have.class', 'selected');
   });
 
   it('deselects edge', () => {
     cy.get('.react-flow__renderer').click('bottomRight');
     cy.get('.react-flow__edge:first').should('not.have.class', 'selected');
+  });
+
+  it('selects one node with a selection', () => {
+    cy.get('body')
+      .type('{shift}', { release: false })
+      .get('.react-flow__selectionpane')
+      .trigger('mousedown', 'topLeft', { which: 1, force: true })
+      .trigger('mousemove', 800, 75, { which: 1 })
+      .trigger('mouseup', 'bottomRight', { force: true })
+      .get('.react-flow__node')
+      .first()
+      .should('have.class', 'selected')
+      .get('.react-flow__node')
+      .last()
+      .should('have.not.class', 'selected')
+      .get('.react-flow__nodesselection-rect');
   });
 
   it('selects all nodes', () => {

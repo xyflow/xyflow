@@ -5990,9 +5990,9 @@ var getConnectedEdges = function (nodes, edges) {
     });
 };
 var fitView = function (_a) {
-    var padding = (_a === void 0 ? { padding: 0 } : _a).padding;
+    var padding = (_a === void 0 ? { padding: 0.1 } : _a).padding;
     var _b = store.getState(), nodes = _b.nodes, width = _b.width, height = _b.height, d3Selection = _b.d3Selection, d3Zoom = _b.d3Zoom;
-    if (!d3Selection || !d3Zoom) {
+    if (!d3Selection || !d3Zoom || !nodes.length) {
         return;
     }
     var bounds = getRectOfNodes(nodes);
@@ -6236,6 +6236,9 @@ function renderEdge(edge, props, nodes, selectedElements) {
     }
     if (!targetNode) {
         throw new Error("couldn't create edge for target id: " + targetId);
+    }
+    if (!sourceNode.__rg.width || !sourceNode.__rg.height) {
+        return null;
     }
     var edgeType = edge.type || 'default';
     var EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
