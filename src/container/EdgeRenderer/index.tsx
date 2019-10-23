@@ -127,6 +127,11 @@ function renderEdge(edge: Edge, props: EdgeRendererProps, nodes: Node[], selecte
   if (!targetNode) {
     throw new Error(`couldn't create edge for target id: ${targetId}`);
   }
+
+  if (!sourceNode.__rg.width || !sourceNode.__rg.height) {
+    return null;
+  }
+
   const edgeType = edge.type || 'default';
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
   const sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
