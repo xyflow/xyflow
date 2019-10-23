@@ -8144,7 +8144,7 @@ Grid.displayName = 'Grid';
 
 var isInputDOMNode = function (e) {
     var target = e.target;
-    return (e && target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.nodeName));
+    return e && target && ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(target.nodeName);
 };
 var getDimensions = function (node) { return ({
     width: node.offsetWidth,
