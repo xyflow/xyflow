@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import Graph, { removeElements, addEdge, MiniMap, Controls } from 'react-flow';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onElementClick = element => console.log('click', element);
-const onLoad = (graph) => console.log('graph loaded:', graph);
+const onLoad = (graph) => {
+  console.log('graph loaded:', graph);
+  graph.fitView();
+};
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Input Node 1' }, position: { x: 250, y: 5 } },
