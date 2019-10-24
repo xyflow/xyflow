@@ -7,6 +7,7 @@ import Rich from './Rich';
 import Basic from './Basic';
 import Empty from './Empty';
 import Inactive from './Inactive';
+import Stress from './Stress';
 
 import './index.css';
 
@@ -24,6 +25,9 @@ ReactDOM.render((
       </Route>
       <Route path="/custom-node">
         <CustomNode />
+      </Route>
+      <Route path="/stress">
+        <Stress />
       </Route>
       <Route path="/">
         <Rich />
