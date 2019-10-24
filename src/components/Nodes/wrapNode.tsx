@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState, memo, ComponentType } from 'react';
-import { DraggableCore, DraggableEvent } from 'react-draggable';
+import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
 
-import { getDimensions, isInputDOMNode } from '../../utils';
+import { getDimensions } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
 import {
@@ -16,16 +16,6 @@ import {
   NodeComponentProps,
   WrapNodeProps,
 } from '../../types';
-
-const isHandle = (evt: MouseEvent | DraggableEvent) => {
-  const target = evt.target as HTMLElement;
-
-  return (
-    target.className &&
-    target.className.includes &&
-    (target.className.includes('source') || target.className.includes('target'))
-  );
-};
 
 const getHandleBounds = (
   selector: string,
@@ -76,10 +66,6 @@ const onStart = (
   transform: Transform,
   position: XYPosition
 ): false | void => {
-  if (isInputDOMNode(evt) || isHandle(evt)) {
-    return false;
-  }
-
   const scaledClient: XYPosition = {
     x: evt.clientX * (1 / transform[2]),
     y: evt.clientY * (1 / transform[2]),
@@ -207,6 +193,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onStop={() => onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data)}
           scale={transform[2]}
           disabled={!isInteractive}
+          cancel=".nodrag"
         >
           <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
             <Provider value={id}>
