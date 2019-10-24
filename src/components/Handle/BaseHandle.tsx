@@ -1,14 +1,7 @@
 import React, { memo, MouseEvent as ReactMouseEvent } from 'react';
 import cx from 'classnames';
 
-import {
-  HandleType,
-  ElementId,
-  Position,
-  XYPosition,
-  OnConnectFunc,
-  Connection,
-} from '../../types';
+import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 type SetSourceIdFunc = (nodeId: ElementId | null) => void;
@@ -76,11 +69,7 @@ function onMouseDown(
       isHoveringHandle: false,
     };
 
-    if (
-      elementBelow &&
-      (elementBelow.classList.contains('target') ||
-        elementBelow.classList.contains('source'))
-    ) {
+    if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
       let connection: Connection = { source: null, target: null };
 
       if (isTarget) {
@@ -107,12 +96,7 @@ function onMouseDown(
       y: evt.clientY - containerBounds.top,
     });
 
-    const {
-      connection,
-      elementBelow,
-      isValid,
-      isHoveringHandle,
-    } = checkElementBelowIsValid(evt);
+    const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(evt);
 
     if (!isHoveringHandle) {
       return resetRecentHandle();
@@ -159,7 +143,7 @@ const BaseHandle = memo(
     ...rest
   }: BaseHandleProps) => {
     const isTarget = type === 'target';
-    const handleClasses = cx('react-flow__handle', className, position, {
+    const handleClasses = cx('react-flow__handle', 'nodrag', className, position, {
       source: !isTarget,
       target: isTarget,
     });
@@ -172,15 +156,7 @@ const BaseHandle = memo(
         data-handlepos={position}
         className={handleClasses}
         onMouseDown={evt =>
-          onMouseDown(
-            evt,
-            nodeIdWithHandleId,
-            setSourceId,
-            setPosition,
-            onConnect,
-            isTarget,
-            isValidConnection
-          )
+          onMouseDown(evt, nodeIdWithHandleId, setSourceId, setPosition, onConnect, isTarget, isValidConnection)
         }
         {...rest}
       />

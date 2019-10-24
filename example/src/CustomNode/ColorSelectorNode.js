@@ -14,7 +14,7 @@ export default ({ data, styles }) => {
         onConnect={params => console.log('handle onConnect', params)}
       />
       <div>Custom Color Picker Node: <strong>{data.color}</strong></div>
-      <input type="color" onChange={data.onChange} defaultValue={data.color}/>
+      <input className="nodrag" type="color" onChange={data.onChange} defaultValue={data.color}/>
       <Handle
         type="source"
         position="right"

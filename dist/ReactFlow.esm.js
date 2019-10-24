@@ -8369,9 +8369,7 @@ function onMouseDown(evt, nodeId, setSourceId, setPosition, onConnect, isTarget,
             connection: { source: null, target: null },
             isHoveringHandle: false,
         };
-        if (elementBelow &&
-            (elementBelow.classList.contains('target') ||
-                elementBelow.classList.contains('source'))) {
+        if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
             var connection = { source: null, target: null };
             if (isTarget) {
                 var sourceId = elementBelow.getAttribute('data-nodeid');
@@ -8420,7 +8418,7 @@ function onMouseDown(evt, nodeId, setSourceId, setPosition, onConnect, isTarget,
 var BaseHandle = memo(function (_a) {
     var type = _a.type, nodeId = _a.nodeId, onConnect = _a.onConnect, position = _a.position, setSourceId = _a.setSourceId, setPosition = _a.setPosition, className = _a.className, _b = _a.id, id = _b === void 0 ? false : _b, isValidConnection = _a.isValidConnection, rest = __rest(_a, ["type", "nodeId", "onConnect", "position", "setSourceId", "setPosition", "className", "id", "isValidConnection"]);
     var isTarget = type === 'target';
-    var handleClasses = classnames('react-flow__handle', className, position, {
+    var handleClasses = classnames('react-flow__handle', 'nodrag', className, position, {
         source: !isTarget,
         target: isTarget,
     });
@@ -8748,12 +8746,6 @@ unwrapExports(ResizeObserver_1);
 var ResizeObserver_2 = ResizeObserver_1.ResizeObserver;
 var ResizeObserver_3 = ResizeObserver_1.install;
 
-var isHandle = function (evt) {
-    var target = evt.target;
-    return (target.className &&
-        target.className.includes &&
-        (target.className.includes('source') || target.className.includes('target')));
-};
 var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
     var handles = nodeElement.querySelectorAll(selector);
     if (!handles || !handles.length) {
@@ -8774,9 +8766,6 @@ var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
     });
 };
 var onStart = function (evt, onClick, id, type, data, setOffset, transform, position) {
-    if (isInputDOMNode(evt) || isHandle(evt)) {
-        return false;
-    }
     var scaledClient = {
         x: evt.clientX * (1 / transform[2]),
         y: evt.clientY * (1 / transform[2]),
@@ -8856,7 +8845,7 @@ var wrapNode = (function (NodeComponent) {
             }
             return;
         }, [nodeElement.current]);
-        return (React.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, onClick, id, type, data, setOffset, transform, position); }, onDrag: function (evt) { return onDrag(evt, setDragging, id, offset, transform); }, onStop: function () { return onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data); }, scale: transform[2], disabled: !isInteractive },
+        return (React.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, onClick, id, type, data, setOffset, transform, position); }, onDrag: function (evt) { return onDrag(evt, setDragging, id, offset, transform); }, onStop: function () { return onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data); }, scale: transform[2], disabled: !isInteractive, cancel: ".nodrag" },
             React.createElement("div", { className: nodeClasses, ref: nodeElement, style: nodeStyle },
                 React.createElement(Provider, { value: id },
                     React.createElement(NodeComponent, { id: id, data: data, type: type, style: style, selected: selected, sourcePosition: sourcePosition, targetPosition: targetPosition })))));
@@ -8914,8 +8903,8 @@ var wrapEdge = (function (EdgeComponent) {
     var EdgeWrapper = memo(function (_a) {
         var id = _a.id, source = _a.source, target = _a.target, type = _a.type, animated = _a.animated, selected = _a.selected, onClick = _a.onClick, isInteractive = _a.isInteractive, rest = __rest(_a, ["id", "source", "target", "type", "animated", "selected", "onClick", "isInteractive"]);
         var edgeClasses = classnames('react-flow__edge', { selected: selected, animated: animated });
-        var onEdgeClick = function (evt) {
-            if (isInputDOMNode(evt) || !isInteractive) {
+        var onEdgeClick = function () {
+            if (!isInteractive) {
                 return;
             }
             store.dispatch.setSelectedElements({ id: id, source: source, target: target });
