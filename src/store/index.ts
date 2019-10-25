@@ -134,7 +134,7 @@ const storeModel: StoreModel = {
   connectionPosition: { x: 0, y: 0 },
 
   snapGrid: [16, 16],
-  snapToGrid: true,
+  snapToGrid: false,
 
   isInteractive: true,
 
