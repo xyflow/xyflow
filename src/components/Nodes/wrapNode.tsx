@@ -141,7 +141,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const nodeElement = useRef<HTMLDivElement>(null);
       const [offset, setOffset] = useState({ x: 0, y: 0 });
       const [isDragging, setDragging] = useState(false);
-
       const position = { x: xPos, y: yPos };
       const nodeClasses = cx('react-flow__node', { selected });
       const nodeStyle = {
@@ -184,7 +183,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         return;
-      }, [nodeElement.current]);
+      }, []);
 
       return (
         <DraggableCore
