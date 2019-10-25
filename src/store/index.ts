@@ -152,6 +152,16 @@ const storeModel: StoreModel = {
   updateNodeDimensions: action((state, { id, nodeElement }) => {
     const bounds = nodeElement.getBoundingClientRect();
     const dimensions = getDimensions(nodeElement);
+    const matchingNode = state.nodes.find(n => n.id === id);
+
+    // only update when size change
+    if (
+      !matchingNode ||
+      (matchingNode.__rg.width === dimensions.width && matchingNode.__rg.height === dimensions.height)
+    ) {
+      return;
+    }
+
     const handleBounds = {
       source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
       target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
