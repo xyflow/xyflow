@@ -2,6 +2,9 @@ import { createStore, Action, action } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
+import { getDimensions } from '../utils';
+import { getHandleBounds } from '../components/Nodes/utils';
+
 import { getNodesInside, getConnectedEdges, getRectOfNodes } from '../utils/graph';
 import {
   ElementId,
@@ -14,7 +17,6 @@ import {
   XYPosition,
   OnConnectFunc,
   SelectionRect,
-  HandleElement,
 } from '../types';
 
 type TransformXYK = {
@@ -28,14 +30,9 @@ type NodePosUpdate = {
   pos: XYPosition;
 };
 
-type NodeUpdate = {
+type NodeDimensionUpdate = {
   id: ElementId;
-  width: number;
-  height: number;
-  handleBounds: {
-    source: HandleElement[] | null;
-    target: HandleElement[] | null;
-  };
+  nodeElement: HTMLDivElement;
 };
 
 type SelectionUpdate = {
@@ -86,7 +83,7 @@ export interface StoreModel {
 
   setEdges: Action<StoreModel, Edge[]>;
 
-  updateNodeData: Action<StoreModel, NodeUpdate>;
+  updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
 
@@ -152,12 +149,20 @@ const storeModel: StoreModel = {
     state.edges = edges;
   }),
 
-  updateNodeData: action((state, { id, ...data }) => {
+  updateNodeDimensions: action((state, { id, nodeElement }) => {
+    const bounds = nodeElement.getBoundingClientRect();
+    const dimensions = getDimensions(nodeElement);
+    const handleBounds = {
+      source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
+      target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
+    };
+
     state.nodes.forEach(n => {
       if (n.id === id) {
         n.__rg = {
           ...n.__rg,
-          ...data,
+          ...dimensions,
+          handleBounds,
         };
       }
     });
