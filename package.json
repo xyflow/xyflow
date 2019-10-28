@@ -12,9 +12,9 @@
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.1.0",
     "fast-deep-equal": "^3.0.0-beta.2",
-    "react-draggable": "^4.0.3",
+    "react-draggable": "^4.1.0",
     "resize-observer": "^1.0.0",
-    "scheduler": "^0.16.2"
+    "scheduler": "^0.17.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
@@ -23,7 +23,7 @@
     "@types/classnames": "^2.2.9",
     "@types/d3": "^5.7.2",
     "@types/react": "^16.9.9",
-    "@types/react-dom": "^16.9.2",
+    "@types/react-dom": "^16.9.3",
     "autoprefixer": "^9.7.0",
     "babel-loader": "^8.0.6",
     "babel-preset-react-app": "^9.0.2",
@@ -32,7 +32,7 @@
     "postcss-nested": "^4.1.2",
     "prettier": "1.18.2",
     "prop-types": "^15.7.2",
-    "react": "^16.10.2",
+    "react": "^16.11.0",
     "rollup": "^1.25.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.3",
