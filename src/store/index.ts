@@ -226,7 +226,6 @@ const storeModel: StoreModel = {
     state.selection = selection;
     state.nodesSelectionActive = true;
     state.selectedNodesBbox = selectedNodesBbox;
-    state.nodesSelectionActive = true;
   }),
 
   setSelectedElements: action((state, elements) => {
