@@ -1,3 +1,7 @@
+/**
+ * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
+ */
+
 import React, { useEffect, useRef, useState, memo } from 'react';
 
 import { useStoreActions } from '../../store/hooks';

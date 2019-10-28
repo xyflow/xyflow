@@ -3,58 +3,9 @@ import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
 
-import { getDimensions } from '../../utils';
 import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
-import {
-  Node,
-  XYPosition,
-  HandleElement,
-  Position,
-  Transform,
-  ElementId,
-  NodeComponentProps,
-  WrapNodeProps,
-} from '../../types';
-
-const getHandleBounds = (
-  selector: string,
-  nodeElement: HTMLDivElement,
-  parentBounds: ClientRect | DOMRect,
-  k: number
-): HandleElement[] | null => {
-  const handles = nodeElement.querySelectorAll(selector);
-
-  if (!handles || !handles.length) {
-    return null;
-  }
-
-  const handlesArray = Array.from(handles) as HTMLDivElement[];
-
-  return handlesArray.map(
-    (handle): HandleElement => {
-      const bounds = handle.getBoundingClientRect();
-      const dimensions = getDimensions(handle);
-      const nodeIdAttr = handle.getAttribute('data-nodeid');
-      const handlePosition = (handle.getAttribute('data-handlepos') as unknown) as Position;
-      const nodeIdSplitted = nodeIdAttr ? nodeIdAttr.split('__') : null;
-
-      let handleId = null;
-
-      if (nodeIdSplitted) {
-        handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted) as string;
-      }
-
-      return {
-        id: handleId,
-        position: handlePosition,
-        x: (bounds.left - parentBounds.left) * (1 / k),
-        y: (bounds.top - parentBounds.top) * (1 / k),
-        ...dimensions,
-      };
-    }
-  );
-};
+import { Node, XYPosition, Transform, ElementId, NodeComponentProps, WrapNodeProps } from '../../types';
 
 const onStart = (
   evt: MouseEvent,
@@ -141,7 +92,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const nodeElement = useRef<HTMLDivElement>(null);
       const [offset, setOffset] = useState({ x: 0, y: 0 });
       const [isDragging, setDragging] = useState(false);
-
       const position = { x: xPos, y: yPos };
       const nodeClasses = cx('react-flow__node', { selected });
       const nodeStyle = {
@@ -154,14 +104,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           return;
         }
 
-        const storeState = store.getState();
-        const bounds = nodeElement.current.getBoundingClientRect();
-        const dimensions = getDimensions(nodeElement.current);
-        const handleBounds = {
-          source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
-          target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2]),
-        };
-        store.dispatch.updateNodeData({ id, ...dimensions, handleBounds });
+        store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current });
       };
 
       useEffect(() => {
@@ -184,7 +127,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         return;
-      }, [nodeElement.current]);
+      }, []);
 
       return (
         <DraggableCore
