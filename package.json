@@ -27,7 +27,7 @@
     "autoprefixer": "^9.7.0",
     "babel-loader": "^8.0.6",
     "babel-preset-react-app": "^9.0.2",
-    "cypress": "^3.5.0",
+    "cypress": "^3.6.1",
     "husky": "^3.0.9",
     "postcss-nested": "^4.2.1",
     "prettier": "1.18.2",
