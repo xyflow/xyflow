@@ -46,7 +46,7 @@
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-typescript2": "^0.24.3",
     "rollup-plugin-uglify": "^6.0.3",
-    "rollup-plugin-visualizer": "^2.6.0",
+    "rollup-plugin-visualizer": "^3.0.6",
     "start-server-and-test": "^1.10.6",
     "typescript": "^3.6.4",
     "wait-on": "^3.3.0"
