@@ -44,7 +44,7 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-terser": "^5.1.2",
-    "rollup-plugin-typescript2": "^0.24.3",
+    "rollup-plugin-typescript2": "^0.26.0",
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-visualizer": "^3.0.6",
     "start-server-and-test": "^1.10.6",
