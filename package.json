@@ -10,7 +10,7 @@
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
-    "easy-peasy": "^3.1.0",
+    "easy-peasy": "^3.3.0",
     "fast-deep-equal": "^3.0.0-beta.2",
     "react-draggable": "^4.1.0",
     "resize-observer": "^1.0.0",
