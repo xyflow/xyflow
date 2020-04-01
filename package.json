@@ -43,7 +43,7 @@
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^1.0.1",
-    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-terser": "^5.3.0",
     "rollup-plugin-typescript2": "^0.26.0",
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-visualizer": "^3.3.1",
