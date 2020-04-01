@@ -5,7 +5,7 @@
   "module": "dist/ReactFlow.esm.js",
   "private": true,
   "dependencies": {
-    "@svgr/rollup": "^4.3.3",
+    "@svgr/rollup": "^5.3.0",
     "@welldone-software/why-did-you-render": "^3.3.9",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.1",
