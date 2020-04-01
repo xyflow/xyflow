@@ -26,7 +26,7 @@
     "@types/react-dom": "^16.9.4",
     "autoprefixer": "^9.7.4",
     "babel-loader": "^8.0.6",
-    "babel-preset-react-app": "^9.0.2",
+    "babel-preset-react-app": "^9.1.2",
     "cypress": "^3.6.1",
     "husky": "^4.2.3",
     "postcss-nested": "^4.2.1",
