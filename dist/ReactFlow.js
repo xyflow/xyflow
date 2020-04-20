@@ -6,7 +6,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = require('react');
 var React__default = _interopDefault(React);
-var reactDom = _interopDefault(require('react-dom'));
+var ReactDOM = _interopDefault(require('react-dom'));
 
 var obj;
 var NOTHING = typeof Symbol !== "undefined" ? Symbol("immer-nothing") : ( obj = {}, obj["immer-nothing"] = true, obj );
@@ -1255,7 +1255,7 @@ function createStore(reducer, preloadedState, enhancer) {
     }
 
     if (isDispatching) {
-      throw new Error('You may not call store.subscribe() while the reducer is executing. ' + 'If you would like to be notified after the store has been updated, subscribe from a ' + 'component and invoke store.getState() in the callback to access the latest state. ' + 'See https://redux.js.org/api-reference/store#subscribe(listener) for more details.');
+      throw new Error('You may not call store.subscribe() while the reducer is executing. ' + 'If you would like to be notified after the store has been updated, subscribe from a ' + 'component and invoke store.getState() in the callback to access the latest state. ' + 'See https://redux.js.org/api-reference/store#subscribelistener for more details.');
     }
 
     var isSubscribed = true;
@@ -1267,13 +1267,14 @@ function createStore(reducer, preloadedState, enhancer) {
       }
 
       if (isDispatching) {
-        throw new Error('You may not unsubscribe from a store listener while the reducer is executing. ' + 'See https://redux.js.org/api-reference/store#subscribe(listener) for more details.');
+        throw new Error('You may not unsubscribe from a store listener while the reducer is executing. ' + 'See https://redux.js.org/api-reference/store#subscribelistener for more details.');
       }
 
       isSubscribed = false;
       ensureCanMutateNextListeners();
       var index = nextListeners.indexOf(listener);
       nextListeners.splice(index, 1);
+      currentListeners = null;
     };
   }
   /**
@@ -1815,6 +1816,120 @@ function isEqual(val1, val2) {
 	return val1 === val2 || (val1 !== val1 && val2 !== val2);
 }
 
+/*!
+ * isobject <https://github.com/jonschlinkert/isobject>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObject(val) {
+  return val != null && typeof val === 'object' && Array.isArray(val) === false;
+}
+
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObjectObject(o) {
+  return isObject(o) === true
+    && Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function isPlainObject$1(o) {
+  var ctor,prot;
+
+  if (isObjectObject(o) === false) return false;
+
+  // If has modified constructor
+  ctor = o.constructor;
+  if (typeof ctor !== 'function') return false;
+
+  // If has modified prototype
+  prot = ctor.prototype;
+  if (isObjectObject(prot) === false) return false;
+
+  // If constructor does not have an Object-specific method
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+
+  // Most likely a plain Object
+  return true;
+}
+
+/**
+ * Returns a function, that, as long as it continues to be invoked, will not
+ * be triggered. The function will be called after it stops being called for
+ * N milliseconds. If `immediate` is passed, trigger the function on the
+ * leading edge, instead of the trailing. The function also has a property 'clear' 
+ * that is a function which will clear the timer to prevent previously scheduled executions. 
+ *
+ * @source underscore.js
+ * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+ * @param {Function} function to wrap
+ * @param {Number} timeout in ms (`100`)
+ * @param {Boolean} whether to execute at the beginning (`false`)
+ * @api public
+ */
+function debounce(func, wait, immediate){
+  var timeout, args, context, timestamp, result;
+  if (null == wait) wait = 100;
+
+  function later() {
+    var last = Date.now() - timestamp;
+
+    if (last < wait && last >= 0) {
+      timeout = setTimeout(later, wait - last);
+    } else {
+      timeout = null;
+      if (!immediate) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+    }
+  }
+  var debounced = function(){
+    context = this;
+    args = arguments;
+    timestamp = Date.now();
+    var callNow = immediate && !timeout;
+    if (!timeout) timeout = setTimeout(later, wait);
+    if (callNow) {
+      result = func.apply(context, args);
+      context = args = null;
+    }
+
+    return result;
+  };
+
+  debounced.clear = function() {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+  
+  debounced.flush = function() {
+    if (timeout) {
+      result = func.apply(context, args);
+      context = args = null;
+      
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+
+  return debounced;
+}
+// Adds compatibility for ES modules
+debounce.debounce = debounce;
+
+var debounce_1 = debounce;
+
 var StoreContext = React.createContext();
 
 // To get around it, we can conditionally useEffect on the server (no-op) and
@@ -1827,7 +1942,7 @@ var StoreContext = React.createContext();
 
 var useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 function createStoreStateHook(Context) {
-  return function useStoreState(mapState) {
+  return function useStoreState(mapState, equalityFn) {
     var store = React.useContext(Context);
     var mapStateRef = React.useRef(mapState);
     var stateRef = React.useRef();
@@ -1843,13 +1958,8 @@ function createStoreStateHook(Context) {
       try {
         stateRef.current = mapState(store.getState());
       } catch (err) {
-        var errorMessage = "An error occurred trying to map state in a useStoreState hook: " + err.message + ".";
 
-        if (subscriptionMapStateError.current) {
-          errorMessage += "\nThis error may be related to the following error:\n" + subscriptionMapStateError.current.stack + "\n\nOriginal stack trace:";
-        }
-
-        throw new Error(errorMessage);
+        throw subscriptionMapStateError.current || err;
       }
     }
 
@@ -1861,8 +1971,9 @@ function createStoreStateHook(Context) {
       var checkMapState = function checkMapState() {
         try {
           var newState = mapStateRef.current(store.getState());
+          var isStateEqual = typeof equalityFn === 'function' ? equalityFn(stateRef.current, newState) : stateRef.current === newState;
 
-          if (newState === stateRef.current) {
+          if (isStateEqual) {
             return;
           }
 
@@ -1908,11 +2019,29 @@ var useStoreDispatch = createStoreDispatchHook(StoreContext);
 function useStore() {
   return React.useContext(StoreContext);
 }
+function createStoreRehydratedHook(Context) {
+  return function useStoreRehydrated() {
+    var store = React.useContext(Context);
+
+    var _useState = React.useState(false),
+        rehydrated = _useState[0],
+        setRehydrated = _useState[1];
+
+    React.useEffect(function () {
+      store.persist.resolveRehydration().then(function () {
+        return setRehydrated(true);
+      });
+    }, []);
+    return rehydrated;
+  };
+}
+var useStoreRehydrated = createStoreRehydratedHook(StoreContext);
 function createTypedHooks() {
   return {
     useStoreActions: useStoreActions,
     useStoreDispatch: useStoreDispatch,
     useStoreState: useStoreState,
+    useStoreRehydrated: useStoreRehydrated,
     useStore: useStore
   };
 }
@@ -1935,38 +2064,46 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
-var actionSymbol = '🙈action🙈';
-var actionOnSymbol = '🙈actionOn🙈';
-var computedSymbol = '🙈computedSymbol🙈';
-var reducerSymbol = '🙈reducer🙈';
-var thunkOnSymbol = '🙈thunkOn🙈';
-var thunkSymbol = '🙈thunk🙈';
+var actionSymbol = 'a';
+var actionOnSymbol = 'aO';
+var computedSymbol = 'c';
+var persistSymbol = 'p';
+var reducerSymbol = 'r';
+var thunkOnSymbol = 'tO';
+var thunkSymbol = 't';
 var action = function action(fn) {
   fn[actionSymbol] = {};
   return fn;
 };
 
-var isStateObject = function isStateObject(x) {
-  return x !== null && typeof x === 'object' && !Array.isArray(x) && x.constructor === Object;
+var deepCloneStateWithoutComputed = function deepCloneStateWithoutComputed(source) {
+  var recursiveClone = function recursiveClone(current) {
+    var next = Object.keys(current).reduce(function (acc, key) {
+      if (Object.getOwnPropertyDescriptor(current, key).get == null) {
+        acc[key] = current[key];
+      }
+
+      return acc;
+    }, {});
+    Object.keys(next).forEach(function (key) {
+      if (isPlainObject$1(next[key])) {
+        next[key] = recursiveClone(next[key]);
+      }
+    });
+    return next;
+  };
+
+  return recursiveClone(source);
 };
-var get$2 = function get(path, target) {
+var isPromise = function isPromise(x) {
+  return x != null && typeof x === 'object' && typeof x.then === 'function';
+};
+function get$2(path, target) {
   return path.reduce(function (acc, cur) {
-    return isStateObject(acc) ? acc[cur] : undefined;
+    return isPlainObject$1(acc) ? acc[cur] : undefined;
   }, target);
-};
-var set$2 = function set(path, target, value) {
-  path.reduce(function (acc, cur, idx) {
-    if (idx + 1 === path.length) {
-      acc[cur] = value;
-    } else {
-      acc[cur] = acc[cur] || {};
-    }
-
-    return acc[cur];
-  }, target);
-};
-
-var newify = function newify(currentPath, currentState, finalValue) {
+}
+function newify(currentPath, currentState, finalValue) {
   if (currentPath.length === 0) {
     return finalValue;
   }
@@ -1982,17 +2119,37 @@ var newify = function newify(currentPath, currentState, finalValue) {
   }
 
   return newState;
+}
+var set$2 = function set(path, target, value) {
+  if (path.length === 0) {
+    if (typeof value === 'object') {
+      Object.keys(target).forEach(function (key) {
+        delete target[key];
+      });
+      Object.keys(value).forEach(function (key) {
+        target[key] = value[key];
+      });
+    }
+
+    return;
+  }
+
+  path.reduce(function (acc, cur, idx) {
+    if (idx + 1 === path.length) {
+      acc[cur] = value;
+    } else {
+      acc[cur] = acc[cur] || {};
+    }
+
+    return acc[cur];
+  }, target);
 };
+function createSimpleProduce(disableImmer) {
+  if (disableImmer === void 0) {
+    disableImmer = false;
+  }
 
-function createStoreInternals(_ref) {
-  var disableImmer = _ref.disableImmer,
-      initialState = _ref.initialState,
-      injections = _ref.injections,
-      model = _ref.model,
-      reducerEnhancer = _ref.reducerEnhancer,
-      references = _ref.references;
-
-  function simpleProduce(path, state, fn) {
+  return function simpleProduce(path, state, fn) {
     if (disableImmer) {
       var _current = get$2(path, state);
 
@@ -2005,256 +2162,515 @@ function createStoreInternals(_ref) {
       return state;
     }
 
-    var draft = createDraft(state);
+    if (path.length === 0) {
+      var _draft = createDraft(state);
 
-    var current = get$2(path, draft);
+      var _result = fn(_draft);
 
-    fn(current);
-    return finishDraft(draft);
-  }
-
-  var defaultState = initialState;
-  var actionCreatorDict = {};
-  var actionCreators = {};
-  var actionReducersDict = {};
-  var actionThunks = {};
-  var computedProperties = [];
-  var customReducers = [];
-  var listenerActionCreators = {};
-  var listenerActionMap = {};
-  var listenerDefinitions = [];
-  var computedState = {
-    isInReducer: false,
-    currentState: defaultState
-  };
-
-  var recursiveExtractDefsFromModel = function recursiveExtractDefsFromModel(current, parentPath) {
-    return Object.keys(current).forEach(function (key) {
-      var value = current[key];
-      var path = [].concat(parentPath, [key]);
-      var meta = {
-        parent: parentPath,
-        path: path
-      };
-
-      var handleValueAsState = function handleValueAsState() {
-        var initialParentRef = get$2(parentPath, initialState);
-
-        if (initialParentRef && key in initialParentRef) {
-          set$2(path, defaultState, initialParentRef[key]);
-        } else {
-          set$2(path, defaultState, value);
-        }
-      };
-
-      if (typeof value === 'function') {
-        if (value[actionSymbol] || value[actionOnSymbol]) {
-          var prefix = value[actionSymbol] ? '@action' : '@actionOn';
-          var type = prefix + "." + path.join('.');
-          var actionMeta = value[actionSymbol] || value[actionOnSymbol];
-          actionMeta.actionName = key;
-          actionMeta.type = type;
-          actionMeta.parent = meta.parent;
-          actionMeta.path = meta.path; // Action Reducer
-
-          actionReducersDict[type] = value; // Action Creator
-
-          var actionCreator = function actionCreator(payload) {
-            var actionDefinition = {
-              type: type,
-              payload: payload
-            };
-
-            if (value[actionOnSymbol] && actionMeta.resolvedTargets) {
-              payload.resolvedTargets = [].concat(actionMeta.resolvedTargets);
-            }
-
-            var result = references.dispatch(actionDefinition);
-            return result;
-          };
-
-          actionCreator.type = type;
-          actionCreatorDict[type] = actionCreator;
-
-          if (key !== 'easyPeasyReplaceState') {
-            if (value[actionOnSymbol]) {
-              listenerDefinitions.push(value);
-              set$2(path, listenerActionCreators, actionCreator);
-            } else {
-              set$2(path, actionCreators, actionCreator);
-            }
-          }
-        } else if (value[thunkSymbol] || value[thunkOnSymbol]) {
-          var _prefix = value[thunkSymbol] ? '@thunk' : '@thunkOn';
-
-          var _type = _prefix + "." + path.join('.');
-
-          var thunkMeta = value[thunkSymbol] || value[thunkOnSymbol];
-          thunkMeta.actionName = key;
-          thunkMeta.type = _type;
-          thunkMeta.parent = meta.parent;
-          thunkMeta.path = meta.path; // Thunk Action
-
-          var thunkHandler = function thunkHandler(payload) {
-            var helpers = {
-              dispatch: references.dispatch,
-              getState: function getState() {
-                return get$2(parentPath, references.getState());
-              },
-              getStoreActions: function getStoreActions() {
-                return actionCreators;
-              },
-              getStoreState: references.getState,
-              injections: injections,
-              meta: meta
-            };
-
-            if (value[thunkOnSymbol] && thunkMeta.resolvedTargets) {
-              payload.resolvedTargets = [].concat(thunkMeta.resolvedTargets);
-            }
-
-            return value(get$2(parentPath, actionCreators), payload, helpers);
-          };
-
-          set$2(path, actionThunks, thunkHandler); // Thunk Action Creator
-
-          var startType = _type + "(start)";
-          var successType = _type + "(success)";
-          var failType = _type + "(fail)";
-
-          var _actionCreator = function _actionCreator(payload) {
-            var dispatchError = function dispatchError(err) {
-              references.dispatch({
-                type: failType,
-                payload: payload,
-                error: err
-              });
-              references.dispatch({
-                type: _type,
-                payload: payload,
-                error: err
-              });
-            };
-
-            var dispatchSuccess = function dispatchSuccess(result) {
-              references.dispatch({
-                type: successType,
-                payload: payload,
-                result: result
-              });
-              references.dispatch({
-                type: _type,
-                payload: payload,
-                result: result
-              });
-            };
-
-            references.dispatch({
-              type: startType,
-              payload: payload
-            });
-
-            try {
-              var result = references.dispatch(function () {
-                return thunkHandler(payload);
-              });
-
-              if (typeof result === 'object' && typeof result.then === 'function') {
-                return result.then(function (resolved) {
-                  dispatchSuccess(resolved);
-                  return resolved;
-                }).catch(function (err) {
-                  dispatchError(err);
-                  throw err;
-                });
-              }
-
-              dispatchSuccess(result);
-              return result;
-            } catch (err) {
-              dispatchError(err);
-              throw err;
-            }
-          };
-
-          _actionCreator.type = _type;
-          _actionCreator.startType = startType;
-          _actionCreator.successType = successType;
-          _actionCreator.failType = failType;
-          actionCreatorDict[_type] = _actionCreator;
-
-          if (value[thunkOnSymbol]) {
-            listenerDefinitions.push(value);
-            set$2(path, listenerActionCreators, _actionCreator);
-          } else {
-            set$2(path, actionCreators, _actionCreator);
-          }
-        } else if (value[computedSymbol]) {
-          var parent = get$2(parentPath, defaultState);
-
-          var computedMeta = value[computedSymbol];
-          var memoisedResultFn = memoizerific(1)(value);
-
-          var createComputedProperty = function createComputedProperty(o) {
-            Object.defineProperty(o, key, {
-              configurable: true,
-              enumerable: true,
-              get: function get$1() {
-                var storeState;
-
-                if (computedState.isInReducer) {
-                  storeState = computedState.currentState;
-                } else if (references.getState == null) {
-                  return undefined;
-                } else {
-                  try {
-                    storeState = references.getState();
-                  } catch (err) {
-
-                    return undefined;
-                  }
-                }
-
-                var state = get$2(parentPath, storeState);
-
-                var inputs = computedMeta.stateResolvers.map(function (resolver) {
-                  return resolver(state, storeState);
-                });
-                return memoisedResultFn.apply(void 0, inputs);
-              }
-            });
-          };
-
-          createComputedProperty(parent);
-          computedProperties.push({
-            key: key,
-            parentPath: parentPath,
-            createComputedProperty: createComputedProperty
-          });
-        } else if (value[reducerSymbol]) {
-          customReducers.push({
-            key: key,
-            parentPath: parentPath,
-            reducer: value
-          });
-        } else {
-          handleValueAsState();
-        }
-      } else if (isStateObject(value)) {
-        var existing = get$2(path, defaultState);
-
-        if (existing == null) {
-          set$2(path, defaultState, {});
-        }
-
-        recursiveExtractDefsFromModel(value, path);
-      } else {
-        handleValueAsState();
+      if (_result) {
+        return isDraft(_result) ? finishDraft(_result) : _result;
       }
+
+      return finishDraft(_draft);
+    }
+
+    var parentPath = path.slice(0, path.length - 1);
+    var draft = createDraft(state);
+    var parent = get$2(parentPath, state);
+    var current = get$2(path, draft);
+    var result = fn(current);
+
+    if (result) {
+      parent[path[path.length - 1]] = result;
+    }
+
+    return finishDraft(draft);
+  };
+}
+
+function createReducer(disableImmer, actionReducersDict, customReducers, computedProperties) {
+  var simpleProduce = createSimpleProduce(disableImmer);
+
+  var runActionReducerAtPath = function runActionReducerAtPath(state, action, actionReducer, path) {
+    return simpleProduce(path, state, function (draft) {
+      return actionReducer(draft, action.payload);
     });
   };
 
-  recursiveExtractDefsFromModel(model, []);
+  var reducerForActions = function reducerForActions(state, action) {
+    var actionReducer = actionReducersDict[action.type];
+
+    if (actionReducer) {
+      var actionMeta = actionReducer[actionSymbol] || actionReducer[actionOnSymbol];
+      return runActionReducerAtPath(state, action, actionReducer, actionMeta.parent);
+    }
+
+    return state;
+  };
+
+  var reducerForCustomReducers = function reducerForCustomReducers(state, action) {
+    return customReducers.reduce(function (acc, _ref) {
+      var parentPath = _ref.parentPath,
+          key = _ref.key,
+          red = _ref.reducer;
+      return simpleProduce(parentPath, acc, function (draft) {
+        draft[key] = red(draft[key], action);
+        return draft;
+      });
+    }, state);
+  };
+
+  var rootReducer = function rootReducer(state, action) {
+    var stateAfterActions = reducerForActions(state, action);
+    var next = customReducers.length > 0 ? reducerForCustomReducers(stateAfterActions, action) : stateAfterActions;
+
+    if (state !== next) {
+      computedProperties.forEach(function (_ref2) {
+        var parentPath = _ref2.parentPath,
+            bindComputedProperty = _ref2.bindComputedProperty;
+        bindComputedProperty(get$2(parentPath, next));
+      });
+    }
+
+    return next;
+  };
+
+  return rootReducer;
+}
+
+var noopStorage = {
+  getItem: function getItem() {
+    return undefined;
+  },
+  setItem: function setItem() {
+    return undefined;
+  },
+  removeItem: function removeItem() {
+    return undefined;
+  }
+};
+var localStorage = typeof window !== 'undefined' && typeof window.localStorage !== 'undefined' ? window.localStorage : noopStorage;
+var sessionStorage = typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined' ? window.sessionStorage : noopStorage;
+
+function createStorageWrapper(storage, transformers) {
+  if (storage === void 0) {
+    storage = sessionStorage;
+  }
+
+  if (transformers === void 0) {
+    transformers = [];
+  }
+
+  if (typeof storage === 'string') {
+    if (storage === 'localStorage') {
+      storage = localStorage;
+    } else if (storage === 'sessionStorage') {
+      storage = sessionStorage;
+    } else {
+
+      storage = noopStorage;
+    }
+  }
+
+  var outTransformers = transformers.reverse();
+
+  var serialize = function serialize(data, key) {
+    var simpleKey = key.substr(key.indexOf('@') + 1);
+    var transformed = transformers.reduce(function (acc, cur) {
+      return cur.in(acc, simpleKey);
+    }, data);
+    return storage === localStorage || storage === sessionStorage ? JSON.stringify({
+      data: transformed
+    }) : transformed;
+  };
+
+  var deserialize = function deserialize(data, key) {
+    var simpleKey = key.substr(key.indexOf('@') + 1);
+    var result = storage === localStorage || storage === sessionStorage ? JSON.parse(data).data : data;
+    return outTransformers.reduce(function (acc, cur) {
+      return cur.out(acc, simpleKey);
+    }, result);
+  };
+
+  var isAsync = isPromise(storage.getItem('_'));
+  return {
+    isAsync: isAsync,
+    getItem: function getItem(key) {
+      if (isAsync) {
+        return storage.getItem(key).then(function (wrapped) {
+          return wrapped != null ? deserialize(wrapped, key) : undefined;
+        });
+      }
+
+      var wrapped = storage.getItem(key);
+      return wrapped != null ? deserialize(wrapped, key) : undefined;
+    },
+    setItem: function setItem(key, data) {
+      return storage.setItem(key, serialize(data, key));
+    },
+    removeItem: function removeItem(key) {
+      return storage.removeItem(key);
+    }
+  };
+}
+
+function extractPersistConfig(path, persistDefinition) {
+  if (persistDefinition === void 0) {
+    persistDefinition = {};
+  }
+
+  return {
+    path: path,
+    config: {
+      blacklist: persistDefinition.blacklist || [],
+      mergeStrategy: persistDefinition.mergeStrategy || 'merge',
+      storage: createStorageWrapper(persistDefinition.storage, persistDefinition.transformers),
+      whitelist: persistDefinition.whitelist || []
+    }
+  };
+}
+
+function resolvePersistTargets(target, whitelist, blacklist) {
+  var targets = Object.keys(target);
+
+  if (whitelist.length > 0) {
+    targets = targets.reduce(function (acc, cur) {
+      if (whitelist.findIndex(function (x) {
+        return x === cur;
+      }) !== -1) {
+        return [].concat(acc, [cur]);
+      }
+
+      return acc;
+    }, []);
+  }
+
+  if (blacklist.length > 0) {
+    targets = targets.reduce(function (acc, cur) {
+      if (blacklist.findIndex(function (x) {
+        return x === cur;
+      }) !== -1) {
+        return acc;
+      }
+
+      return [].concat(acc, [cur]);
+    }, []);
+  }
+
+  return targets;
+}
+
+function createPersistor(persistKey, references) {
+  return debounce_1(function () {
+    references.internals.persistenceConfig.forEach(function (_ref) {
+      var path = _ref.path,
+          config = _ref.config;
+      var storage = config.storage,
+          whitelist = config.whitelist,
+          blacklist = config.blacklist;
+      var state = references.getState();
+      var persistRoot = deepCloneStateWithoutComputed(get$2(path, state));
+      var targets = resolvePersistTargets(persistRoot, whitelist, blacklist);
+      targets.forEach(function (key) {
+        var targetPath = [].concat(path, [key]);
+        storage.setItem(persistKey(targetPath), get$2(targetPath, state));
+      });
+    });
+  }, 1000);
+}
+function createPersistMiddleware(persistor, references) {
+  return function () {
+    return function (next) {
+      return function (action) {
+        var state = next(action);
+
+        if (action && action.type !== '@action.ePRS' && references.internals.persistenceConfig.length > 0) {
+          persistor(state);
+        }
+
+        return state;
+      };
+    };
+  };
+}
+function createPersistenceClearer(persistKey, references) {
+  return function () {
+    return new Promise(function (resolve, reject) {
+      references.internals.persistenceConfig.forEach(function (_ref2) {
+        var path = _ref2.path,
+            config = _ref2.config;
+        var storage = config.storage,
+            whitelist = config.whitelist,
+            blacklist = config.blacklist;
+        var persistRoot = get$2(path, references.getState());
+        var targets = resolvePersistTargets(persistRoot, whitelist, blacklist);
+
+        if (targets.length > 0) {
+          Promise.all(targets.map(function (key) {
+            var targetPath = [].concat(path, [key]);
+            return storage.removeItem(persistKey(targetPath));
+          })).then(function () {
+            return resolve();
+          }, reject);
+        } else {
+          resolve();
+        }
+      });
+    });
+  };
+}
+function rehydrateStateFromPersistIfNeeded(persistKey, replaceState, references) {
+  // If we have any persist configs we will attemp to perform a state rehydration
+  var resolveRehydration = Promise.resolve();
+
+  if (references.internals.persistenceConfig.length > 0) {
+    references.internals.persistenceConfig.forEach(function (persistInstance) {
+      var path = persistInstance.path,
+          config = persistInstance.config;
+      var blacklist = config.blacklist,
+          mergeStrategy = config.mergeStrategy,
+          storage = config.storage,
+          whitelist = config.whitelist;
+      var state = references.internals.defaultState;
+      var persistRoot = deepCloneStateWithoutComputed(get$2(path, state));
+      var targets = resolvePersistTargets(persistRoot, whitelist, blacklist);
+
+      var applyRehydrationStrategy = function applyRehydrationStrategy(originalState, rehydratedState) {
+        if (mergeStrategy === 'overwrite') {
+          set$2(path, originalState, rehydratedState);
+        } else if (mergeStrategy === 'merge') {
+          var target = get$2(path, originalState);
+          Object.keys(rehydratedState).forEach(function (key) {
+            target[key] = rehydratedState[key];
+          });
+        } else if (mergeStrategy === 'mergeDeep') {
+          var _target = get$2(path, originalState);
+
+          var setAt = function setAt(currentTarget, currentNext) {
+            Object.keys(currentNext).forEach(function (key) {
+              var data = currentNext[key];
+
+              if (isPlainObject$1(data)) {
+                if (!isPlainObject$1(currentTarget[key])) {
+                  currentTarget[key] = {};
+                }
+
+                setAt(currentTarget[key], data);
+              } else {
+                currentTarget[key] = data;
+              }
+            });
+          };
+
+          setAt(_target, rehydratedState);
+        }
+      };
+
+      if (storage.isAsync) {
+        var asyncStateResolvers = targets.reduce(function (acc, key) {
+          var targetPath = [].concat(path, [key]);
+          var dataPromise = storage.getItem(persistKey(targetPath));
+
+          if (isPromise(dataPromise)) {
+            acc.push({
+              key: key,
+              dataPromise: dataPromise
+            });
+          }
+
+          return acc;
+        }, []);
+
+        if (asyncStateResolvers.length > 0) {
+          resolveRehydration = Promise.all(asyncStateResolvers.map(function (x) {
+            return x.dataPromise;
+          })).then(function (resolvedData) {
+            var next = resolvedData.reduce(function (acc, cur, idx) {
+              var key = asyncStateResolvers[idx].key;
+
+              if (cur !== undefined) {
+                acc[key] = cur;
+              }
+
+              return acc;
+            }, {});
+
+            if (Object.keys(next).length === 0) {
+              return;
+            }
+
+            applyRehydrationStrategy(state, next);
+            replaceState(state);
+          });
+        }
+      } else {
+        var next = targets.reduce(function (acc, key) {
+          var targetPath = [].concat(path, [key]);
+          var data = storage.getItem(persistKey(targetPath));
+
+          if (data !== undefined) {
+            acc[key] = data;
+          }
+
+          return acc;
+        }, {});
+        applyRehydrationStrategy(state, next);
+        replaceState(state);
+      }
+    });
+  }
+
+  return resolveRehydration;
+}
+
+function createActionCreator(actionDefinition, meta, references) {
+  var prefix = actionDefinition[actionSymbol] ? '@action' : '@actionOn';
+  var type = prefix + "." + meta.path.join('.');
+  var actionMeta = actionDefinition[actionSymbol] || actionDefinition[actionOnSymbol];
+  actionMeta.actionName = meta.key;
+  actionMeta.type = type;
+  actionMeta.parent = meta.parent;
+  actionMeta.path = meta.path;
+
+  var actionCreator = function actionCreator(payload) {
+    var action = {
+      type: type,
+      payload: payload
+    };
+
+    if (actionDefinition[actionOnSymbol] && actionMeta.resolvedTargets) {
+      payload.resolvedTargets = [].concat(actionMeta.resolvedTargets);
+    }
+
+    var result = references.dispatch(action);
+    return result;
+  };
+
+  actionCreator.type = type;
+  return actionCreator;
+}
+
+function createThunkHandler(thunkDefinition, meta, references, injections, actionCreators) {
+  var thunkMeta = thunkDefinition[thunkSymbol] || thunkDefinition[thunkOnSymbol];
+  return function (payload) {
+    var helpers = {
+      dispatch: references.dispatch,
+      getState: function getState() {
+        return get$2(meta.parent, references.getState());
+      },
+      getStoreActions: function getStoreActions() {
+        return actionCreators;
+      },
+      getStoreState: references.getState,
+      injections: injections,
+      meta: meta
+    };
+
+    if (thunkDefinition[thunkOnSymbol] && thunkMeta.resolvedTargets) {
+      payload.resolvedTargets = [].concat(thunkMeta.resolvedTargets);
+    }
+
+    return thunkDefinition(get$2(meta.parent, actionCreators), payload, helpers);
+  };
+}
+function createThunkActionsCreator(thunkDefinition, meta, references, thunkHandler) {
+  var prefix = thunkDefinition[thunkSymbol] ? '@thunk' : '@thunkOn';
+  var type = prefix + "." + meta.path.join('.');
+  var startType = type + "(start)";
+  var successType = type + "(success)";
+  var failType = type + "(fail)";
+  var thunkMeta = thunkDefinition[thunkSymbol] || thunkDefinition[thunkOnSymbol];
+  thunkMeta.type = type;
+  thunkMeta.actionName = meta.key;
+  thunkMeta.parent = meta.parent;
+  thunkMeta.path = meta.path;
+
+  var actionCreator = function actionCreator(payload) {
+    var dispatchError = function dispatchError(err) {
+      references.dispatch({
+        type: failType,
+        payload: payload,
+        error: err
+      });
+      references.dispatch({
+        type: type,
+        payload: payload,
+        error: err
+      });
+    };
+
+    var dispatchSuccess = function dispatchSuccess(result) {
+      references.dispatch({
+        type: successType,
+        payload: payload,
+        result: result
+      });
+      references.dispatch({
+        type: type,
+        payload: payload,
+        result: result
+      });
+    };
+
+    references.dispatch({
+      type: startType,
+      payload: payload
+    });
+
+    try {
+      var result = references.dispatch(function () {
+        return thunkHandler(payload);
+      });
+
+      if (isPromise(result)) {
+        return result.then(function (resolved) {
+          dispatchSuccess(resolved);
+          return resolved;
+        }).catch(function (err) {
+          dispatchError(err);
+          throw err;
+        });
+      }
+
+      dispatchSuccess(result);
+      return result;
+    } catch (err) {
+      dispatchError(err);
+      throw err;
+    }
+  };
+
+  actionCreator.type = type;
+  actionCreator.startType = startType;
+  actionCreator.successType = successType;
+  actionCreator.failType = failType;
+  return actionCreator;
+}
+
+function createListenerMiddleware(references) {
+  return function () {
+    return function (next) {
+      return function (action) {
+        var result = next(action);
+
+        if (action && references.internals.listenerActionMap[action.type] && references.internals.listenerActionMap[action.type].length > 0) {
+          var sourceAction = references.internals.actionCreatorDict[action.type];
+          references.internals.listenerActionMap[action.type].forEach(function (actionCreator) {
+            actionCreator({
+              type: sourceAction ? sourceAction.type : action.type,
+              payload: action.payload,
+              error: action.error,
+              result: action.result
+            });
+          });
+        }
+
+        return result;
+      };
+    };
+  };
+}
+function bindListenerDefinitions(listenerDefinitions, actionCreators, actionCreatorDict, listenerActionMap) {
   listenerDefinitions.forEach(function (listenerActionOrThunk) {
     var listenerMeta = listenerActionOrThunk[actionOnSymbol] || listenerActionOrThunk[thunkOnSymbol];
     var targets = listenerMeta.targetResolver(get$2(listenerMeta.parent, actionCreators), actionCreators);
@@ -2274,55 +2690,193 @@ function createStoreInternals(_ref) {
       listenerActionMap[targetType] = listenerReg;
     });
   });
+}
 
-  var createReducer = function createReducer() {
-    var runActionReducerAtPath = function runActionReducerAtPath(state, action, actionReducer, path) {
-      return simpleProduce(path, state, function (draft) {
-        return actionReducer(draft, action.payload);
-      });
-    };
+function createComputedPropertyBinder(parentPath, key, definition, computedState, references) {
+  var computedMeta = definition[computedSymbol];
+  var memoisedResultFn = memoizerific(1)(definition);
+  return function createComputedProperty(o) {
+    Object.defineProperty(o, key, {
+      configurable: true,
+      enumerable: true,
+      get: function get$1() {
+        var storeState;
 
-    var reducerForActions = function reducerForActions(state, action) {
-      var actionReducer = actionReducersDict[action.type];
+        if (computedState.isInReducer) {
+          storeState = computedState.currentState;
+        } else if (references.getState == null) {
+          return undefined;
+        } else {
+          try {
+            storeState = references.getState();
+          } catch (err) {
 
-      if (actionReducer) {
-        var actionMeta = actionReducer[actionSymbol] || actionReducer[actionOnSymbol];
-        return runActionReducerAtPath(state, action, actionReducer, actionMeta.parent);
-      }
+            return undefined;
+          }
+        }
 
-      return state;
-    };
+        var state = get$2(parentPath, storeState);
 
-    var reducerForCustomReducers = function reducerForCustomReducers(state, action) {
-      return customReducers.reduce(function (acc, _ref2) {
-        var parentPath = _ref2.parentPath,
-            key = _ref2.key,
-            red = _ref2.reducer;
-        return simpleProduce(parentPath, acc, function (draft) {
-          draft[key] = red(draft[key], action);
-          return draft;
+        var inputs = computedMeta.stateResolvers.map(function (resolver) {
+          return resolver(state, storeState);
         });
-      }, state);
-    };
-
-    var rootReducer = function rootReducer(state, action) {
-      var stateAfterActions = reducerForActions(state, action);
-      var next = customReducers.length > 0 ? reducerForCustomReducers(stateAfterActions, action) : stateAfterActions;
-
-      if (state !== next) {
-        computedProperties.forEach(function (_ref3) {
-          var parentPath = _ref3.parentPath,
-              createComputedProperty = _ref3.createComputedProperty;
-          createComputedProperty(get$2(parentPath, next));
-        });
+        return memoisedResultFn.apply(void 0, inputs);
       }
-
-      return next;
+    });
+  };
+}
+function createComputedPropertiesMiddleware(references) {
+  return function (store) {
+    return function (next) {
+      return function (action) {
+        references.internals.computedState.currentState = store.getState();
+        references.internals.computedState.isInReducer = true;
+        return next(action);
+      };
     };
+  };
+}
 
-    return rootReducer;
+function extractDataFromModel(model, initialState, injections, references) {
+  var defaultState = initialState;
+  var actionCreatorDict = {};
+  var actionCreators = {};
+  var actionReducersDict = {};
+  var actionThunks = {};
+  var computedProperties = [];
+  var customReducers = [];
+  var listenerActionCreators = {};
+  var listenerActionMap = {};
+  var listenerDefinitions = [];
+  var persistenceConfig = [];
+  var computedState = {
+    isInReducer: false,
+    currentState: defaultState
   };
 
+  var recursiveExtractFromModel = function recursiveExtractFromModel(current, parentPath) {
+    return Object.keys(current).forEach(function (key) {
+      var value = current[key];
+      var path = [].concat(parentPath, [key]);
+      var meta = {
+        parent: parentPath,
+        path: path,
+        key: key
+      };
+
+      var handleValueAsState = function handleValueAsState() {
+        var initialParentRef = get$2(parentPath, initialState);
+
+        if (initialParentRef && key in initialParentRef) {
+          set$2(path, defaultState, initialParentRef[key]);
+        } else {
+          set$2(path, defaultState, value);
+        }
+      };
+
+      if (key === persistSymbol) {
+        persistenceConfig.push(extractPersistConfig(parentPath, value));
+        return;
+      }
+
+      if (typeof value === 'function') {
+        if (value[actionSymbol] || value[actionOnSymbol]) {
+          var actionReducer = value;
+          var actionCreator = createActionCreator(value, meta, references);
+          actionCreatorDict[actionCreator.type] = actionCreator;
+          actionReducersDict[actionCreator.type] = actionReducer;
+
+          if (meta.key !== 'ePRS') {
+            if (value[actionOnSymbol]) {
+              listenerDefinitions.push(value);
+              set$2(path, listenerActionCreators, actionCreator);
+            } else {
+              set$2(path, actionCreators, actionCreator);
+            }
+          }
+        } else if (value[thunkSymbol] || value[thunkOnSymbol]) {
+          var thunkHandler = createThunkHandler(value, meta, references, injections, actionCreators);
+
+          var _actionCreator = createThunkActionsCreator(value, meta, references, thunkHandler);
+
+          set$2(path, actionThunks, thunkHandler);
+          actionCreatorDict[_actionCreator.type] = _actionCreator;
+
+          if (value[thunkOnSymbol]) {
+            listenerDefinitions.push(value);
+            set$2(path, listenerActionCreators, _actionCreator);
+          } else {
+            set$2(path, actionCreators, _actionCreator);
+          }
+        } else if (value[computedSymbol]) {
+          var parent = get$2(parentPath, defaultState);
+          var bindComputedProperty = createComputedPropertyBinder(parentPath, key, value, computedState, references);
+          bindComputedProperty(parent);
+          computedProperties.push({
+            key: key,
+            parentPath: parentPath,
+            bindComputedProperty: bindComputedProperty
+          });
+        } else if (value[reducerSymbol]) {
+          customReducers.push({
+            key: key,
+            parentPath: parentPath,
+            reducer: value
+          });
+        } else {
+          handleValueAsState();
+        }
+      } else if (isPlainObject$1(value)) {
+        var existing = get$2(path, defaultState);
+
+        if (existing == null) {
+          set$2(path, defaultState, {});
+        }
+
+        recursiveExtractFromModel(value, path);
+      } else {
+        handleValueAsState();
+      }
+    });
+  };
+
+  recursiveExtractFromModel(model, []);
+  bindListenerDefinitions(listenerDefinitions, actionCreators, actionCreatorDict, listenerActionMap);
+  return {
+    actionCreatorDict: actionCreatorDict,
+    actionCreators: actionCreators,
+    actionReducersDict: actionReducersDict,
+    computedProperties: computedProperties,
+    customReducers: customReducers,
+    computedState: computedState,
+    defaultState: defaultState,
+    listenerActionCreators: listenerActionCreators,
+    listenerActionMap: listenerActionMap,
+    persistenceConfig: persistenceConfig
+  };
+}
+
+function createStoreInternals(_ref) {
+  var disableImmer = _ref.disableImmer,
+      initialState = _ref.initialState,
+      injections = _ref.injections,
+      model = _ref.model,
+      reducerEnhancer = _ref.reducerEnhancer,
+      references = _ref.references;
+
+  var _extractDataFromModel = extractDataFromModel(model, initialState, injections, references),
+      actionCreatorDict = _extractDataFromModel.actionCreatorDict,
+      actionCreators = _extractDataFromModel.actionCreators,
+      actionReducersDict = _extractDataFromModel.actionReducersDict,
+      computedState = _extractDataFromModel.computedState,
+      computedProperties = _extractDataFromModel.computedProperties,
+      customReducers = _extractDataFromModel.customReducers,
+      defaultState = _extractDataFromModel.defaultState,
+      listenerActionCreators = _extractDataFromModel.listenerActionCreators,
+      listenerActionMap = _extractDataFromModel.listenerActionMap,
+      persistenceConfig = _extractDataFromModel.persistenceConfig;
+
+  var rootReducer = createReducer(disableImmer, actionReducersDict, customReducers, computedProperties);
   return {
     actionCreatorDict: actionCreatorDict,
     actionCreators: actionCreators,
@@ -2331,7 +2885,8 @@ function createStoreInternals(_ref) {
     defaultState: defaultState,
     listenerActionCreators: listenerActionCreators,
     listenerActionMap: listenerActionMap,
-    reducer: reducerEnhancer(createReducer())
+    persistenceConfig: persistenceConfig,
+    reducer: reducerEnhancer(rootReducer)
   };
 }
 
@@ -2340,6 +2895,7 @@ function createStore$1(model, options) {
     options = {};
   }
 
+  var modelClone = deepCloneStateWithoutComputed(model);
   var _options = options,
       compose$1 = _options.compose,
       _options$devTools = _options.devTools,
@@ -2364,15 +2920,27 @@ function createStore$1(model, options) {
 
   var bindReplaceState = function bindReplaceState(modelDef) {
     return _extends({}, modelDef, {
-      easyPeasyReplaceState: action(function (state, payload) {
+      ePRS: action(function (_, payload) {
         return payload;
       })
     });
   };
 
-  var modelDefinition = bindReplaceState(model);
-  var mockedActions = [];
   var references = {};
+  var modelDefinition = bindReplaceState(modelClone);
+  var mockedActions = [];
+
+  var persistKey = function persistKey(targetPath) {
+    return "[" + storeName + "]@" + targetPath.join('.');
+  };
+
+  var persistor = createPersistor(persistKey, references);
+  var persistMiddleware = createPersistMiddleware(persistor, references);
+  var clearPersistance = createPersistenceClearer(persistKey, references);
+
+  var replaceState = function replaceState(nextState) {
+    return references.internals.actionCreatorDict['@action.ePRS'](nextState);
+  };
 
   var bindStoreInternals = function bindStoreInternals(state) {
     if (state === void 0) {
@@ -2389,30 +2957,6 @@ function createStore$1(model, options) {
     });
   };
 
-  bindStoreInternals(initialState);
-
-  var listenerActionsMiddleware = function listenerActionsMiddleware() {
-    return function (next) {
-      return function (action) {
-        var result = next(action);
-
-        if (action && references.internals.listenerActionMap[action.type] && references.internals.listenerActionMap[action.type].length > 0) {
-          var sourceAction = references.internals.actionCreatorDict[action.type];
-          references.internals.listenerActionMap[action.type].forEach(function (actionCreator) {
-            actionCreator({
-              type: sourceAction ? sourceAction.type : action.type,
-              payload: action.payload,
-              error: action.error,
-              result: action.result
-            });
-          });
-        }
-
-        return result;
-      };
-    };
-  };
-
   var mockActionsMiddleware = function mockActionsMiddleware() {
     return function () {
       return function (action) {
@@ -2425,25 +2969,16 @@ function createStore$1(model, options) {
     };
   };
 
-  var computedPropertiesMiddleware = function computedPropertiesMiddleware(store) {
-    return function (next) {
-      return function (action) {
-        references.internals.computedState.currentState = store.getState();
-        references.internals.computedState.isInReducer = true;
-        return next(action);
-      };
-    };
-  };
-
-  var easyPeasyMiddleware = [computedPropertiesMiddleware, thunk].concat(middleware, [listenerActionsMiddleware]);
+  var composeEnhancers = compose$1 || (devTools && typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+    name: storeName
+  }) : compose);
+  bindStoreInternals(initialState);
+  var easyPeasyMiddleware = [createComputedPropertiesMiddleware(references), thunk].concat(middleware, [createListenerMiddleware(references), persistMiddleware]);
 
   if (mockActions) {
     easyPeasyMiddleware.push(mockActionsMiddleware);
   }
 
-  var composeEnhancers = compose$1 || (devTools && typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-    name: storeName
-  }) : compose);
   var store = createStore(references.internals.reducer, references.internals.defaultState, composeEnhancers.apply(void 0, [applyMiddleware.apply(void 0, easyPeasyMiddleware)].concat(enhancers)));
   store.subscribe(function () {
     references.internals.computedState.isInReducer = false;
@@ -2469,11 +3004,13 @@ function createStore$1(model, options) {
       delete currentState[removeKey];
     }
 
-    bindStoreInternals(store.getState());
+    bindStoreInternals(currentState);
     store.replaceReducer(references.internals.reducer);
-    references.internals.actionCreatorDict['@action.easyPeasyReplaceState'](references.internals.defaultState);
+    replaceState(references.internals.defaultState);
     bindActionCreators();
   };
+
+  var _resolveRehydration = rehydrateStateFromPersistIfNeeded(persistKey, replaceState, references);
 
   return Object.assign(store, {
     addModel: function addModel(key, modelForKey) {
@@ -2498,6 +3035,15 @@ function createStore$1(model, options) {
     getMockedActions: function getMockedActions() {
       return [].concat(mockedActions);
     },
+    persist: {
+      clear: clearPersistance,
+      flush: function flush() {
+        return persistor.flush();
+      },
+      resolveRehydration: function resolveRehydration() {
+        return _resolveRehydration;
+      }
+    },
     reconfigure: function reconfigure(newModel) {
       modelDefinition = bindReplaceState(newModel);
       rebindStore();
@@ -2514,13 +3060,13 @@ function createStore$1(model, options) {
   });
 }
 
-var StoreProvider = function StoreProvider(_ref) {
+function StoreProvider(_ref) {
   var children = _ref.children,
       store = _ref.store;
   return React__default.createElement(StoreContext.Provider, {
     value: store
   }, children);
-};
+}
 
 /**
  * The auto freeze feature of immer doesn't seem to work in our testing. We have
@@ -3381,11 +3927,13 @@ function selection_remove() {
 }
 
 function selection_cloneShallow() {
-  return this.parentNode.insertBefore(this.cloneNode(false), this.nextSibling);
+  var clone = this.cloneNode(false), parent = this.parentNode;
+  return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
 }
 
 function selection_cloneDeep() {
-  return this.parentNode.insertBefore(this.cloneNode(true), this.nextSibling);
+  var clone = this.cloneNode(true), parent = this.parentNode;
+  return parent ? parent.insertBefore(clone, this.nextSibling) : clone;
 }
 
 function selection_clone(deep) {
@@ -5794,6 +6342,7 @@ var fastDeepEqual = function equal(a, b) {
 
     for (i = length; i-- !== 0;) {
       var key = keys[i];
+
       if (!equal(a[key], b[key])) return false;
     }
 
@@ -5802,6 +6351,35 @@ var fastDeepEqual = function equal(a, b) {
 
   // true if both NaN, false otherwise
   return a!==a && b!==b;
+};
+
+var isInputDOMNode = function (e) {
+    var target = e.target;
+    return e && target && ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(target.nodeName);
+};
+var getDimensions = function (node) { return ({
+    width: node.offsetWidth,
+    height: node.offsetHeight,
+}); };
+
+var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
+    var handles = nodeElement.querySelectorAll(selector);
+    if (!handles || !handles.length) {
+        return null;
+    }
+    var handlesArray = Array.from(handles);
+    return handlesArray.map(function (handle) {
+        var bounds = handle.getBoundingClientRect();
+        var dimensions = getDimensions(handle);
+        var nodeIdAttr = handle.getAttribute('data-nodeid');
+        var handlePosition = handle.getAttribute('data-handlepos');
+        var nodeIdSplitted = nodeIdAttr ? nodeIdAttr.split('__') : null;
+        var handleId = null;
+        if (nodeIdSplitted) {
+            handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted);
+        }
+        return __assign({ id: handleId, position: handlePosition, x: (bounds.left - parentBounds.left) * (1 / k), y: (bounds.top - parentBounds.top) * (1 / k) }, dimensions);
+    });
 };
 
 var storeModel = {
@@ -5818,10 +6396,19 @@ var storeModel = {
     nodesSelectionActive: false,
     selectionActive: false,
     selection: null,
+    userSelectionRect: {
+        startX: 0,
+        startY: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        draw: false,
+    },
     connectionSourceId: null,
     connectionPosition: { x: 0, y: 0 },
     snapGrid: [16, 16],
-    snapToGrid: true,
+    snapToGrid: false,
     isInteractive: true,
     onConnect: function () { },
     setOnConnect: action(function (state, onConnect) {
@@ -5833,11 +6420,23 @@ var storeModel = {
     setEdges: action(function (state, edges) {
         state.edges = edges;
     }),
-    updateNodeData: action(function (state, _a) {
-        var id = _a.id, data = __rest(_a, ["id"]);
+    updateNodeDimensions: action(function (state, _a) {
+        var id = _a.id, nodeElement = _a.nodeElement;
+        var bounds = nodeElement.getBoundingClientRect();
+        var dimensions = getDimensions(nodeElement);
+        var matchingNode = state.nodes.find(function (n) { return n.id === id; });
+        // only update when size change
+        if (!matchingNode ||
+            (matchingNode.__rg.width === dimensions.width && matchingNode.__rg.height === dimensions.height)) {
+            return;
+        }
+        var handleBounds = {
+            source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
+            target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
+        };
         state.nodes.forEach(function (n) {
             if (n.id === id) {
-                n.__rg = __assign(__assign({}, n.__rg), data);
+                n.__rg = __assign(__assign(__assign({}, n.__rg), dimensions), { handleBounds: handleBounds });
             }
         });
     }),
@@ -5857,6 +6456,48 @@ var storeModel = {
                 n.__rg = __assign(__assign({}, n.__rg), { position: position });
             }
         });
+    }),
+    setUserSelection: action(function (state, mousePos) {
+        state.userSelectionRect = {
+            width: 0,
+            height: 0,
+            startX: mousePos.x,
+            startY: mousePos.y,
+            x: mousePos.x,
+            y: mousePos.y,
+            draw: true,
+        };
+        state.selectionActive = true;
+    }),
+    updateUserSelection: action(function (state, mousePos) {
+        var startX = state.userSelectionRect.startX || 0;
+        var startY = state.userSelectionRect.startY || 0;
+        var negativeX = mousePos.x < startX;
+        var negativeY = mousePos.y < startY;
+        var nextRect = __assign(__assign({}, state.userSelectionRect), { x: negativeX ? mousePos.x : state.userSelectionRect.x, y: negativeY ? mousePos.y : state.userSelectionRect.y, width: negativeX ? startX - mousePos.x : mousePos.x - startX, height: negativeY ? startY - mousePos.y : mousePos.y - startY });
+        var selectedNodes = getNodesInside(state.nodes, nextRect, state.transform);
+        var selectedEdges = getConnectedEdges(selectedNodes, state.edges);
+        var nextSelectedElements = __spreadArrays(selectedNodes, selectedEdges);
+        var selectedElementsUpdated = !fastDeepEqual(nextSelectedElements, state.selectedElements);
+        state.selection = nextRect;
+        state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
+        state.userSelectionRect = nextRect;
+    }),
+    unsetUserSelection: action(function (state) {
+        var selectedNodes = getNodesInside(state.nodes, state.userSelectionRect, state.transform);
+        if (!selectedNodes.length) {
+            state.selectionActive = false;
+            state.userSelectionRect = __assign(__assign({}, state.userSelectionRect), { draw: false });
+            state.nodesSelectionActive = false;
+            state.selectedElements = [];
+            return;
+        }
+        var selectedNodesBbox = getRectOfNodes(selectedNodes);
+        state.selection = state.userSelectionRect;
+        state.nodesSelectionActive = true;
+        state.selectedNodesBbox = selectedNodesBbox;
+        state.userSelectionRect = __assign(__assign({}, state.userSelectionRect), { draw: false });
+        state.selectionActive = false;
     }),
     setSelection: action(function (state, isActive) {
         state.selectionActive = isActive;
@@ -5878,7 +6519,6 @@ var storeModel = {
         state.selection = selection;
         state.nodesSelectionActive = true;
         state.selectedNodesBbox = selectedNodesBbox;
-        state.nodesSelectionActive = true;
     }),
     setSelectedElements: action(function (state, elements) {
         var selectedElementsArr = Array.isArray(elements) ? elements : [elements];
@@ -6285,19 +6925,13 @@ var EdgeRenderer = React.memo(function (props) {
 });
 EdgeRenderer.displayName = 'EdgeRenderer';
 
-var initialRect = {
-    startX: 0,
-    startY: 0,
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    draw: false,
-};
+/**
+ * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
+ */
 function getMousePosition(evt) {
     var reactFlowNode = document.querySelector('.react-flow');
     if (!reactFlowNode) {
-        return false;
+        return;
     }
     var containerBounds = reactFlowNode.getBoundingClientRect();
     return {
@@ -6305,68 +6939,46 @@ function getMousePosition(evt) {
         y: evt.clientY - containerBounds.top,
     };
 }
+var SelectionRect = function () {
+    var userSelectionRect = useStoreState$1(function (s) { return s.userSelectionRect; });
+    if (!userSelectionRect.draw) {
+        return null;
+    }
+    return (React__default.createElement("div", { className: "react-flow__selection", style: {
+            width: userSelectionRect.width,
+            height: userSelectionRect.height,
+            transform: "translate(" + userSelectionRect.x + "px, " + userSelectionRect.y + "px)",
+        } }));
+};
 var UserSelection = React.memo(function (_a) {
     var isInteractive = _a.isInteractive;
-    var selectionPane = React.useRef(null);
-    var _b = React.useState(initialRect), rect = _b[0], setRect = _b[1];
-    var setSelection = useStoreActions$1(function (a) { return a.setSelection; });
-    var updateSelection = useStoreActions$1(function (a) { return a.updateSelection; });
-    var setNodesSelection = useStoreActions$1(function (a) { return a.setNodesSelection; });
+    var _b = useStoreActions$1(function (a) { return ({
+        setUserSelection: a.setUserSelection,
+        updateUserSelection: a.updateUserSelection,
+        unsetUserSelection: a.unsetUserSelection,
+    }); }), setUserSelection = _b.setUserSelection, updateUserSelection = _b.updateUserSelection, unsetUserSelection = _b.unsetUserSelection;
     if (!isInteractive) {
         return null;
     }
-    React.useEffect(function () {
-        function onMouseDown(evt) {
-            var mousePos = getMousePosition(evt);
-            if (!mousePos) {
-                return;
-            }
-            setRect(function (currentRect) { return (__assign(__assign({}, currentRect), { startX: mousePos.x, startY: mousePos.y, x: mousePos.x, y: mousePos.y, draw: true })); });
-            setSelection(true);
+    function onMouseDown(evt) {
+        var mousePos = getMousePosition(evt);
+        if (!mousePos) {
+            return;
         }
-        function onMouseMove(evt) {
-            setRect(function (currentRect) {
-                if (!currentRect.draw) {
-                    return currentRect;
-                }
-                var mousePos = getMousePosition(evt);
-                if (!mousePos) {
-                    return currentRect;
-                }
-                var negativeX = mousePos.x < currentRect.startX;
-                var negativeY = mousePos.y < currentRect.startY;
-                var nextRect = __assign(__assign({}, currentRect), { x: negativeX ? mousePos.x : currentRect.x, y: negativeY ? mousePos.y : currentRect.y, width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX, height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY });
-                updateSelection(nextRect);
-                return nextRect;
-            });
+        setUserSelection(mousePos);
+    }
+    function onMouseMove(evt) {
+        var mousePos = getMousePosition(evt);
+        if (!mousePos) {
+            return;
         }
-        function onMouseUp() {
-            setRect(function (currentRect) {
-                setNodesSelection({ isActive: true, selection: currentRect });
-                setSelection(false);
-                return __assign(__assign({}, currentRect), { draw: false });
-            });
-        }
-        if (selectionPane.current) {
-            selectionPane.current.addEventListener('mousedown', onMouseDown);
-            selectionPane.current.addEventListener('mousemove', onMouseMove);
-            selectionPane.current.addEventListener('mouseup', onMouseUp);
-            return function () {
-                if (!selectionPane.current) {
-                    return;
-                }
-                selectionPane.current.removeEventListener('mousedown', onMouseDown);
-                selectionPane.current.removeEventListener('mousemove', onMouseMove);
-                selectionPane.current.removeEventListener('mouseup', onMouseUp);
-            };
-        }
-        return;
-    }, [selectionPane.current]);
-    return (React__default.createElement("div", { className: "react-flow__selectionpane", ref: selectionPane }, rect.draw && (React__default.createElement("div", { className: "react-flow__selection", style: {
-            width: rect.width,
-            height: rect.height,
-            transform: "translate(" + rect.x + "px, " + rect.y + "px)",
-        } }))));
+        updateUserSelection(mousePos);
+    }
+    function onMouseUp() {
+        unsetUserSelection();
+    }
+    return (React__default.createElement("div", { className: "react-flow__selectionpane", onMouseDown: onMouseDown, onMouseMove: onMouseMove, onMouseUp: onMouseUp },
+        React__default.createElement(SelectionRect, null)));
 });
 
 /**
@@ -6447,17 +7059,6 @@ var propTypes = createCommonjsModule(function (module) {
 }
 });
 
-var shims = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.findInArray = findInArray;
-exports.isFunction = isFunction;
-exports.isNum = isNum;
-exports.int = int;
-exports.dontSetMe = dontSetMe;
-
 // @credits https://gist.github.com/rogozhnikoff/a43cfed27c41e4e68cdc
 function findInArray(array
 /*: Array<any> | TouchList*/
@@ -6470,7 +7071,6 @@ function findInArray(array
     if (callback.apply(callback, [array[i], i, array])) return array[i];
   }
 }
-
 function isFunction(func
 /*: any*/
 )
@@ -6478,7 +7078,6 @@ function isFunction(func
 {
   return typeof func === 'function' || Object.prototype.toString.call(func) === '[object Function]';
 }
-
 function isNum(num
 /*: any*/
 )
@@ -6486,7 +7085,6 @@ function isNum(num
 {
   return typeof num === 'number' && !isNaN(num);
 }
-
 function int(a
 /*: string*/
 )
@@ -6494,7 +7092,6 @@ function int(a
 {
   return parseInt(a, 10);
 }
-
 function dontSetMe(props
 /*: Object*/
 , propName
@@ -6506,25 +7103,8 @@ function dontSetMe(props
     return new Error(`Invalid prop ${propName} passed to ${componentName} - do not set this, set it on the child.`);
   }
 }
-});
 
-unwrapExports(shims);
-var shims_1 = shims.findInArray;
-var shims_2 = shims.isFunction;
-var shims_3 = shims.isNum;
-var shims_4 = shims.dontSetMe;
-
-var getPrefix_1 = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getPrefix = getPrefix;
-exports.browserPrefixToKey = browserPrefixToKey;
-exports.browserPrefixToStyle = browserPrefixToStyle;
-exports.default = void 0;
 const prefixes = ['Moz', 'Webkit', 'O', 'ms'];
-
 function getPrefix(prop
 /*: string*/
 = 'transform')
@@ -6543,7 +7123,6 @@ function getPrefix(prop
 
   return '';
 }
-
 function browserPrefixToKey(prop
 /*: string*/
 , prefix
@@ -6552,16 +7131,6 @@ function browserPrefixToKey(prop
 /*: string*/
 {
   return prefix ? `${prefix}${kebabToTitleCase(prop)}` : prop;
-}
-
-function browserPrefixToStyle(prop
-/*: string*/
-, prefix
-/*: string*/
-)
-/*: string*/
-{
-  return prefix ? `-${prefix.toLowerCase()}-${prop}` : prop;
 }
 
 function kebabToTitleCase(str
@@ -6589,49 +7158,11 @@ function kebabToTitleCase(str
 // can handle unprefixed `transform`, but not unprefixed `user-select`
 
 
-var _default = getPrefix();
+var browserPrefix = getPrefix();
 
-exports.default = _default;
-});
-
-unwrapExports(getPrefix_1);
-var getPrefix_2 = getPrefix_1.getPrefix;
-var getPrefix_3 = getPrefix_1.browserPrefixToKey;
-var getPrefix_4 = getPrefix_1.browserPrefixToStyle;
-
-var domFns = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.matchesSelector = matchesSelector;
-exports.matchesSelectorAndParentsTo = matchesSelectorAndParentsTo;
-exports.addEvent = addEvent;
-exports.removeEvent = removeEvent;
-exports.outerHeight = outerHeight;
-exports.outerWidth = outerWidth;
-exports.innerHeight = innerHeight;
-exports.innerWidth = innerWidth;
-exports.offsetXYFromParent = offsetXYFromParent;
-exports.createCSSTransform = createCSSTransform;
-exports.createSVGTransform = createSVGTransform;
-exports.getTranslation = getTranslation;
-exports.getTouch = getTouch;
-exports.getTouchIdentifier = getTouchIdentifier;
-exports.addUserSelectStyles = addUserSelectStyles;
-exports.removeUserSelectStyles = removeUserSelectStyles;
-exports.styleHacks = styleHacks;
-exports.addClassName = addClassName;
-exports.removeClassName = removeClassName;
-
-
-
-var _getPrefix = _interopRequireWildcard(getPrefix_1);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+/*:: import type {ControlPosition, PositionOffsetControlPosition, MouseTouchEvent} from './types';*/
 
 let matchesSelectorFunc = '';
-
 function matchesSelector(el
 /*: Node*/
 , selector
@@ -6640,19 +7171,18 @@ function matchesSelector(el
 /*: boolean*/
 {
   if (!matchesSelectorFunc) {
-    matchesSelectorFunc = (0, shims.findInArray)(['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'], function (method) {
+    matchesSelectorFunc = findInArray(['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'], function (method) {
       // $FlowIgnore: Doesn't think elements are indexable
-      return (0, shims.isFunction)(el[method]);
+      return isFunction(el[method]);
     });
   } // Might not be found entirely (not an Element?) - in that case, bail
   // $FlowIgnore: Doesn't think elements are indexable
 
 
-  if (!(0, shims.isFunction)(el[matchesSelectorFunc])) return false; // $FlowIgnore: Doesn't think elements are indexable
+  if (!isFunction(el[matchesSelectorFunc])) return false; // $FlowIgnore: Doesn't think elements are indexable
 
   return el[matchesSelectorFunc](selector);
 } // Works up the tree to the draggable itself attempting to match selector.
-
 
 function matchesSelectorAndParentsTo(el
 /*: Node*/
@@ -6673,7 +7203,6 @@ function matchesSelectorAndParentsTo(el
 
   return false;
 }
-
 function addEvent(el
 /*: ?Node*/
 , event
@@ -6696,7 +7225,6 @@ function addEvent(el
     el['on' + event] = handler;
   }
 }
-
 function removeEvent(el
 /*: ?Node*/
 , event
@@ -6719,7 +7247,6 @@ function removeEvent(el
     el['on' + event] = null;
   }
 }
-
 function outerHeight(node
 /*: HTMLElement*/
 )
@@ -6729,11 +7256,10 @@ function outerHeight(node
   // offsetTop which is including margin. See getBoundPosition
   let height = node.clientHeight;
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  height += (0, shims.int)(computedStyle.borderTopWidth);
-  height += (0, shims.int)(computedStyle.borderBottomWidth);
+  height += int(computedStyle.borderTopWidth);
+  height += int(computedStyle.borderBottomWidth);
   return height;
 }
-
 function outerWidth(node
 /*: HTMLElement*/
 )
@@ -6743,11 +7269,10 @@ function outerWidth(node
   // offsetLeft which is including margin. See getBoundPosition
   let width = node.clientWidth;
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  width += (0, shims.int)(computedStyle.borderLeftWidth);
-  width += (0, shims.int)(computedStyle.borderRightWidth);
+  width += int(computedStyle.borderLeftWidth);
+  width += int(computedStyle.borderRightWidth);
   return width;
 }
-
 function innerHeight(node
 /*: HTMLElement*/
 )
@@ -6755,11 +7280,10 @@ function innerHeight(node
 {
   let height = node.clientHeight;
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  height -= (0, shims.int)(computedStyle.paddingTop);
-  height -= (0, shims.int)(computedStyle.paddingBottom);
+  height -= int(computedStyle.paddingTop);
+  height -= int(computedStyle.paddingBottom);
   return height;
 }
-
 function innerWidth(node
 /*: HTMLElement*/
 )
@@ -6767,16 +7291,17 @@ function innerWidth(node
 {
   let width = node.clientWidth;
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  width -= (0, shims.int)(computedStyle.paddingLeft);
-  width -= (0, shims.int)(computedStyle.paddingRight);
+  width -= int(computedStyle.paddingLeft);
+  width -= int(computedStyle.paddingRight);
   return width;
 } // Get from offsetParent
-
 
 function offsetXYFromParent(evt
 /*: {clientX: number, clientY: number}*/
 , offsetParent
 /*: HTMLElement*/
+, scale
+/*: number*/
 )
 /*: ControlPosition*/
 {
@@ -6785,14 +7310,13 @@ function offsetXYFromParent(evt
     left: 0,
     top: 0
   } : offsetParent.getBoundingClientRect();
-  const x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
-  const y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
+  const x = (evt.clientX + offsetParent.scrollLeft - offsetParentRect.left) / scale;
+  const y = (evt.clientY + offsetParent.scrollTop - offsetParentRect.top) / scale;
   return {
     x,
     y
   };
 }
-
 function createCSSTransform(controlPos
 /*: ControlPosition*/
 , positionOffset
@@ -6802,10 +7326,9 @@ function createCSSTransform(controlPos
 {
   const translation = getTranslation(controlPos, positionOffset, 'px');
   return {
-    [(0, _getPrefix.browserPrefixToKey)('transform', _getPrefix.default)]: translation
+    [browserPrefixToKey('transform', browserPrefix)]: translation
   };
 }
-
 function createSVGTransform(controlPos
 /*: ControlPosition*/
 , positionOffset
@@ -6816,7 +7339,6 @@ function createSVGTransform(controlPos
   const translation = getTranslation(controlPos, positionOffset, '');
   return translation;
 }
-
 function getTranslation({
   x,
   y
@@ -6839,7 +7361,6 @@ function getTranslation({
 
   return translation;
 }
-
 function getTouch(e
 /*: MouseTouchEvent*/
 , identifier
@@ -6847,9 +7368,8 @@ function getTouch(e
 )
 /*: ?{clientX: number, clientY: number}*/
 {
-  return e.targetTouches && (0, shims.findInArray)(e.targetTouches, t => identifier === t.identifier) || e.changedTouches && (0, shims.findInArray)(e.changedTouches, t => identifier === t.identifier);
+  return e.targetTouches && findInArray(e.targetTouches, t => identifier === t.identifier) || e.changedTouches && findInArray(e.changedTouches, t => identifier === t.identifier);
 }
-
 function getTouchIdentifier(e
 /*: MouseTouchEvent*/
 )
@@ -6861,7 +7381,6 @@ function getTouchIdentifier(e
 //
 // Useful for preventing blue highlights all over everything when dragging.
 // Note we're passing `document` b/c we could be iframed
-
 
 function addUserSelectStyles(doc
 /*: ?Document*/
@@ -6880,7 +7399,6 @@ function addUserSelectStyles(doc
 
   if (doc.body) addClassName(doc.body, 'react-draggable-transparent-selection');
 }
-
 function removeUserSelectStyles(doc
 /*: ?Document*/
 ) {
@@ -6896,7 +7414,6 @@ function removeUserSelectStyles(doc
   } catch (e) {// probably IE
   }
 }
-
 function styleHacks(childStyle
 /*: Object*/
 = {})
@@ -6909,7 +7426,6 @@ function styleHacks(childStyle
     ...childStyle
   };
 }
-
 function addClassName(el
 /*: HTMLElement*/
 , className
@@ -6923,7 +7439,6 @@ function addClassName(el
     }
   }
 }
-
 function removeClassName(el
 /*: HTMLElement*/
 , className
@@ -6935,49 +7450,12 @@ function removeClassName(el
     el.className = el.className.replace(new RegExp(`(?:^|\\s)${className}(?!\\S)`, 'g'), '');
   }
 }
-});
 
-unwrapExports(domFns);
-var domFns_1 = domFns.matchesSelector;
-var domFns_2 = domFns.matchesSelectorAndParentsTo;
-var domFns_3 = domFns.addEvent;
-var domFns_4 = domFns.removeEvent;
-var domFns_5 = domFns.outerHeight;
-var domFns_6 = domFns.outerWidth;
-var domFns_7 = domFns.innerHeight;
-var domFns_8 = domFns.innerWidth;
-var domFns_9 = domFns.offsetXYFromParent;
-var domFns_10 = domFns.createCSSTransform;
-var domFns_11 = domFns.createSVGTransform;
-var domFns_12 = domFns.getTranslation;
-var domFns_13 = domFns.getTouch;
-var domFns_14 = domFns.getTouchIdentifier;
-var domFns_15 = domFns.addUserSelectStyles;
-var domFns_16 = domFns.removeUserSelectStyles;
-var domFns_17 = domFns.styleHacks;
-var domFns_18 = domFns.addClassName;
-var domFns_19 = domFns.removeClassName;
+/*:: import type Draggable from '../Draggable';*/
 
-var positionFns = createCommonjsModule(function (module, exports) {
+/*:: import type {Bounds, ControlPosition, DraggableData, MouseTouchEvent} from './types';*/
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getBoundPosition = getBoundPosition;
-exports.snapToGrid = snapToGrid;
-exports.canDragX = canDragX;
-exports.canDragY = canDragY;
-exports.getControlPosition = getControlPosition;
-exports.createCoreData = createCoreData;
-exports.createDraggableData = createDraggableData;
-
-
-
-var _reactDom = _interopRequireDefault(reactDom);
-
-
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/*:: import type DraggableCore from '../DraggableCore';*/
 
 function getBoundPosition(draggable
 /*: Draggable*/
@@ -7018,22 +7496,21 @@ function getBoundPosition(draggable
     const boundNodeStyle = ownerWindow.getComputedStyle(boundNode); // Compute bounds. This is a pain with padding and offsets but this gets it exactly right.
 
     bounds = {
-      left: -node.offsetLeft + (0, shims.int)(boundNodeStyle.paddingLeft) + (0, shims.int)(nodeStyle.marginLeft),
-      top: -node.offsetTop + (0, shims.int)(boundNodeStyle.paddingTop) + (0, shims.int)(nodeStyle.marginTop),
-      right: (0, domFns.innerWidth)(boundNode) - (0, domFns.outerWidth)(node) - node.offsetLeft + (0, shims.int)(boundNodeStyle.paddingRight) - (0, shims.int)(nodeStyle.marginRight),
-      bottom: (0, domFns.innerHeight)(boundNode) - (0, domFns.outerHeight)(node) - node.offsetTop + (0, shims.int)(boundNodeStyle.paddingBottom) - (0, shims.int)(nodeStyle.marginBottom)
+      left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) + int(nodeStyle.marginLeft),
+      top: -node.offsetTop + int(boundNodeStyle.paddingTop) + int(nodeStyle.marginTop),
+      right: innerWidth(boundNode) - outerWidth(node) - node.offsetLeft + int(boundNodeStyle.paddingRight) - int(nodeStyle.marginRight),
+      bottom: innerHeight(boundNode) - outerHeight(node) - node.offsetTop + int(boundNodeStyle.paddingBottom) - int(nodeStyle.marginBottom)
     };
   } // Keep x and y below right and bottom limits...
 
 
-  if ((0, shims.isNum)(bounds.right)) x = Math.min(x, bounds.right);
-  if ((0, shims.isNum)(bounds.bottom)) y = Math.min(y, bounds.bottom); // But above left and top limits.
+  if (isNum(bounds.right)) x = Math.min(x, bounds.right);
+  if (isNum(bounds.bottom)) y = Math.min(y, bounds.bottom); // But above left and top limits.
 
-  if ((0, shims.isNum)(bounds.left)) x = Math.max(x, bounds.left);
-  if ((0, shims.isNum)(bounds.top)) y = Math.max(y, bounds.top);
+  if (isNum(bounds.left)) x = Math.max(x, bounds.left);
+  if (isNum(bounds.top)) y = Math.max(y, bounds.top);
   return [x, y];
 }
-
 function snapToGrid(grid
 /*: [number, number]*/
 , pendingX
@@ -7047,7 +7524,6 @@ function snapToGrid(grid
   const y = Math.round(pendingY / grid[1]) * grid[1];
   return [x, y];
 }
-
 function canDragX(draggable
 /*: Draggable*/
 )
@@ -7055,7 +7531,6 @@ function canDragX(draggable
 {
   return draggable.props.axis === 'both' || draggable.props.axis === 'x';
 }
-
 function canDragY(draggable
 /*: Draggable*/
 )
@@ -7063,7 +7538,6 @@ function canDragY(draggable
 {
   return draggable.props.axis === 'both' || draggable.props.axis === 'y';
 } // Get {x, y} positions from event.
-
 
 function getControlPosition(e
 /*: MouseTouchEvent*/
@@ -7074,15 +7548,14 @@ function getControlPosition(e
 )
 /*: ?ControlPosition*/
 {
-  const touchObj = typeof touchIdentifier === 'number' ? (0, domFns.getTouch)(e, touchIdentifier) : null;
+  const touchObj = typeof touchIdentifier === 'number' ? getTouch(e, touchIdentifier) : null;
   if (typeof touchIdentifier === 'number' && !touchObj) return null; // not the right touch
 
   const node = findDOMNode(draggableCore); // User can provide an offsetParent if desired.
 
   const offsetParent = draggableCore.props.offsetParent || node.offsetParent || node.ownerDocument.body;
-  return (0, domFns.offsetXYFromParent)(touchObj || e, offsetParent);
+  return offsetXYFromParent(touchObj || e, offsetParent, draggableCore.props.scale);
 } // Create an data object exposed by <DraggableCore>'s events
-
 
 function createCoreData(draggable
 /*: DraggableCore*/
@@ -7094,7 +7567,7 @@ function createCoreData(draggable
 /*: DraggableData*/
 {
   const state = draggable.state;
-  const isStart = !(0, shims.isNum)(state.lastX);
+  const isStart = !isNum(state.lastX);
   const node = findDOMNode(draggable);
 
   if (isStart) {
@@ -7122,7 +7595,6 @@ function createCoreData(draggable
   }
 } // Create an data exposed by <Draggable>'s events
 
-
 function createDraggableData(draggable
 /*: Draggable*/
 , coreData
@@ -7142,7 +7614,6 @@ function createDraggableData(draggable
   };
 } // A lot faster than stringify/parse
 
-
 function cloneBounds(bounds
 /*: Bounds*/
 )
@@ -7161,7 +7632,7 @@ function findDOMNode(draggable
 )
 /*: HTMLElement*/
 {
-  const node = _reactDom.default.findDOMNode(draggable);
+  const node = ReactDOM.findDOMNode(draggable);
 
   if (!node) {
     throw new Error('<DraggableCore>: Unmounted during event!');
@@ -7170,56 +7641,15 @@ function findDOMNode(draggable
 
   return node;
 }
-});
-
-unwrapExports(positionFns);
-var positionFns_1 = positionFns.getBoundPosition;
-var positionFns_2 = positionFns.snapToGrid;
-var positionFns_3 = positionFns.canDragX;
-var positionFns_4 = positionFns.canDragY;
-var positionFns_5 = positionFns.getControlPosition;
-var positionFns_6 = positionFns.createCoreData;
-var positionFns_7 = positionFns.createDraggableData;
-
-var log_1 = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = log;
 
 /*eslint no-console:0*/
 function log(...args) {
-  if (process.env.DRAGGABLE_DEBUG) console.log(...args);
 }
-});
 
-unwrapExports(log_1);
+function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/*:: import type {EventHandler, MouseTouchEvent} from './utils/types';*/
 
-var DraggableCore_1 = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _react = _interopRequireDefault(React__default);
-
-var _propTypes = _interopRequireDefault(propTypes);
-
-var _reactDom = _interopRequireDefault(reactDom);
-
-
-
-
-
-
-
-var _log = _interopRequireDefault(log_1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/*:: import type {Element as ReactElement} from 'react';*/
 
 // Simple abstraction for dragging events names.
 const eventsFor = {
@@ -7276,6 +7706,7 @@ let dragEventFor = eventsFor.mouse;
   onDrag: DraggableEventHandler,
   onStop: DraggableEventHandler,
   onMouseDown: (e: MouseEvent) => void,
+  scale: number,
 };*/
 
 //
@@ -7284,11 +7715,11 @@ let dragEventFor = eventsFor.mouse;
 // <DraggableCore> is for advanced usage of <Draggable>. It maintains minimal internal state so it can
 // work well with libraries that require more control over the element.
 //
-class DraggableCore extends _react.default.Component {
+class DraggableCore extends React__default.Component {
   constructor(...args) {
     super(...args);
 
-    _defineProperty(this, "state", {
+    _defineProperty$1(this, "state", {
       dragging: false,
       // Used while dragging to determine deltas.
       lastX: NaN,
@@ -7296,13 +7727,13 @@ class DraggableCore extends _react.default.Component {
       touchIdentifier: null
     });
 
-    _defineProperty(this, "handleDragStart", e => {
+    _defineProperty$1(this, "handleDragStart", e => {
       // Make it possible to attach event handlers on top of this one.
       this.props.onMouseDown(e); // Only accept left-clicks.
 
       if (!this.props.allowAnyClick && typeof e.button === 'number' && e.button !== 0) return false; // Get nodes. Be sure to grab relative document (could be iframed)
 
-      const thisNode = _reactDom.default.findDOMNode(this);
+      const thisNode = ReactDOM.findDOMNode(this);
 
       if (!thisNode || !thisNode.ownerDocument || !thisNode.ownerDocument.body) {
         throw new Error('<DraggableCore> not mounted on DragStart!');
@@ -7312,19 +7743,19 @@ class DraggableCore extends _react.default.Component {
         ownerDocument
       } = thisNode; // Short circuit if handle or cancel prop was provided and selector doesn't match.
 
-      if (this.props.disabled || !(e.target instanceof ownerDocument.defaultView.Node) || this.props.handle && !(0, domFns.matchesSelectorAndParentsTo)(e.target, this.props.handle, thisNode) || this.props.cancel && (0, domFns.matchesSelectorAndParentsTo)(e.target, this.props.cancel, thisNode)) {
+      if (this.props.disabled || !(e.target instanceof ownerDocument.defaultView.Node) || this.props.handle && !matchesSelectorAndParentsTo(e.target, this.props.handle, thisNode) || this.props.cancel && matchesSelectorAndParentsTo(e.target, this.props.cancel, thisNode)) {
         return;
       } // Set touch identifier in component state if this is a touch event. This allows us to
       // distinguish between individual touches on multitouch screens by identifying which
       // touchpoint was set to this element.
 
 
-      const touchIdentifier = (0, domFns.getTouchIdentifier)(e);
+      const touchIdentifier = getTouchIdentifier(e);
       this.setState({
         touchIdentifier
       }); // Get the current drag point from the event. This is used as the offset.
 
-      const position = (0, positionFns.getControlPosition)(e, touchIdentifier, this);
+      const position = getControlPosition(e, touchIdentifier, this);
       if (position == null) return; // not possible but satisfies flow
 
       const {
@@ -7332,15 +7763,14 @@ class DraggableCore extends _react.default.Component {
         y
       } = position; // Create an event object with all the data parents need to make a decision here.
 
-      const coreEvent = (0, positionFns.createCoreData)(this, x, y);
-      (0, _log.default)('DraggableCore: handleDragStart: %j', coreEvent); // Call event handler. If it returns explicit false, cancel.
+      const coreEvent = createCoreData(this, x, y);
 
-      (0, _log.default)('calling', this.props.onStart);
+      log('calling', this.props.onStart);
       const shouldUpdate = this.props.onStart(e, coreEvent);
       if (shouldUpdate === false) return; // Add a style to the body to disable user-select. This prevents text from
       // being selected all over the page.
 
-      if (this.props.enableUserSelectHack) (0, domFns.addUserSelectStyles)(ownerDocument); // Initiate dragging. Set the current x and y as offsets
+      if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument); // Initiate dragging. Set the current x and y as offsets
       // so we know how much we've moved during the drag. This allows us
       // to drag elements around even if they have been moved, without issue.
 
@@ -7352,15 +7782,15 @@ class DraggableCore extends _react.default.Component {
       // this element. We use different events depending on whether or not we have detected that this
       // is a touch-capable device.
 
-      (0, domFns.addEvent)(ownerDocument, dragEventFor.move, this.handleDrag);
-      (0, domFns.addEvent)(ownerDocument, dragEventFor.stop, this.handleDragStop);
+      addEvent(ownerDocument, dragEventFor.move, this.handleDrag);
+      addEvent(ownerDocument, dragEventFor.stop, this.handleDragStop);
     });
 
-    _defineProperty(this, "handleDrag", e => {
+    _defineProperty$1(this, "handleDrag", e => {
       // Prevent scrolling on mobile devices, like ipad/iphone.
       if (e.type === 'touchmove') e.preventDefault(); // Get the current drag point from the event. This is used as the offset.
 
-      const position = (0, positionFns.getControlPosition)(e, this.state.touchIdentifier, this);
+      const position = getControlPosition(e, this.state.touchIdentifier, this);
       if (position == null) return;
       let {
         x,
@@ -7370,14 +7800,13 @@ class DraggableCore extends _react.default.Component {
       if (Array.isArray(this.props.grid)) {
         let deltaX = x - this.state.lastX,
             deltaY = y - this.state.lastY;
-        [deltaX, deltaY] = (0, positionFns.snapToGrid)(this.props.grid, deltaX, deltaY);
+        [deltaX, deltaY] = snapToGrid(this.props.grid, deltaX, deltaY);
         if (!deltaX && !deltaY) return; // skip useless drag
 
         x = this.state.lastX + deltaX, y = this.state.lastY + deltaY;
       }
 
-      const coreEvent = (0, positionFns.createCoreData)(this, x, y);
-      (0, _log.default)('DraggableCore: handleDrag: %j', coreEvent); // Call event handler. If it returns explicit false, trigger end.
+      const coreEvent = createCoreData(this, x, y);
 
       const shouldUpdate = this.props.onDrag(e, coreEvent);
 
@@ -7407,24 +7836,21 @@ class DraggableCore extends _react.default.Component {
       });
     });
 
-    _defineProperty(this, "handleDragStop", e => {
+    _defineProperty$1(this, "handleDragStop", e => {
       if (!this.state.dragging) return;
-      const position = (0, positionFns.getControlPosition)(e, this.state.touchIdentifier, this);
+      const position = getControlPosition(e, this.state.touchIdentifier, this);
       if (position == null) return;
       const {
         x,
         y
       } = position;
-      const coreEvent = (0, positionFns.createCoreData)(this, x, y);
-
-      const thisNode = _reactDom.default.findDOMNode(this);
+      const coreEvent = createCoreData(this, x, y);
+      const thisNode = ReactDOM.findDOMNode(this);
 
       if (thisNode) {
         // Remove user-select hack
-        if (this.props.enableUserSelectHack) (0, domFns.removeUserSelectStyles)(thisNode.ownerDocument);
+        if (this.props.enableUserSelectHack) removeUserSelectStyles(thisNode.ownerDocument);
       }
-
-      (0, _log.default)('DraggableCore: handleDragStop: %j', coreEvent); // Reset the el.
 
       this.setState({
         dragging: false,
@@ -7435,31 +7861,29 @@ class DraggableCore extends _react.default.Component {
       this.props.onStop(e, coreEvent);
 
       if (thisNode) {
-        // Remove event handlers
-        (0, _log.default)('DraggableCore: Removing handlers');
-        (0, domFns.removeEvent)(thisNode.ownerDocument, dragEventFor.move, this.handleDrag);
-        (0, domFns.removeEvent)(thisNode.ownerDocument, dragEventFor.stop, this.handleDragStop);
+        removeEvent(thisNode.ownerDocument, dragEventFor.move, this.handleDrag);
+        removeEvent(thisNode.ownerDocument, dragEventFor.stop, this.handleDragStop);
       }
     });
 
-    _defineProperty(this, "onMouseDown", e => {
+    _defineProperty$1(this, "onMouseDown", e => {
       dragEventFor = eventsFor.mouse; // on touchscreen laptops we could switch back to mouse
 
       return this.handleDragStart(e);
     });
 
-    _defineProperty(this, "onMouseUp", e => {
+    _defineProperty$1(this, "onMouseUp", e => {
       dragEventFor = eventsFor.mouse;
       return this.handleDragStop(e);
     });
 
-    _defineProperty(this, "onTouchStart", e => {
+    _defineProperty$1(this, "onTouchStart", e => {
       // We're on a touch device now, so change the event handlers
       dragEventFor = eventsFor.touch;
       return this.handleDragStart(e);
     });
 
-    _defineProperty(this, "onTouchEnd", e => {
+    _defineProperty$1(this, "onTouchEnd", e => {
       // We're on a touch device now, so change the event handlers
       dragEventFor = eventsFor.touch;
       return this.handleDragStop(e);
@@ -7469,25 +7893,25 @@ class DraggableCore extends _react.default.Component {
   componentWillUnmount() {
     // Remove any leftover event handlers. Remove both touch and mouse handlers in case
     // some browser quirk caused a touch event to fire during a mouse move, or vice versa.
-    const thisNode = _reactDom.default.findDOMNode(this);
+    const thisNode = ReactDOM.findDOMNode(this);
 
     if (thisNode) {
       const {
         ownerDocument
       } = thisNode;
-      (0, domFns.removeEvent)(ownerDocument, eventsFor.mouse.move, this.handleDrag);
-      (0, domFns.removeEvent)(ownerDocument, eventsFor.touch.move, this.handleDrag);
-      (0, domFns.removeEvent)(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
-      (0, domFns.removeEvent)(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
-      if (this.props.enableUserSelectHack) (0, domFns.removeUserSelectStyles)(ownerDocument);
+      removeEvent(ownerDocument, eventsFor.mouse.move, this.handleDrag);
+      removeEvent(ownerDocument, eventsFor.touch.move, this.handleDrag);
+      removeEvent(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
+      removeEvent(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
+      if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument);
     }
   }
 
   render() {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
-    return _react.default.cloneElement(_react.default.Children.only(this.props.children), {
-      style: (0, domFns.styleHacks)(this.props.children.props.style),
+    return React__default.cloneElement(React__default.Children.only(this.props.children), {
+      style: styleHacks(this.props.children.props.style),
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.
       onMouseDown: this.onMouseDown,
@@ -7499,31 +7923,29 @@ class DraggableCore extends _react.default.Component {
 
 }
 
-exports.default = DraggableCore;
+_defineProperty$1(DraggableCore, "displayName", 'DraggableCore');
 
-_defineProperty(DraggableCore, "displayName", 'DraggableCore');
-
-_defineProperty(DraggableCore, "propTypes", {
+_defineProperty$1(DraggableCore, "propTypes", {
   /**
    * `allowAnyClick` allows dragging using any mouse button.
    * By default, we only accept the left button.
    *
    * Defaults to `false`.
    */
-  allowAnyClick: _propTypes.default.bool,
+  allowAnyClick: propTypes.bool,
 
   /**
    * `disabled`, if true, stops the <Draggable> from dragging. All handlers,
    * with the exception of `onMouseDown`, will not fire.
    */
-  disabled: _propTypes.default.bool,
+  disabled: propTypes.bool,
 
   /**
    * By default, we add 'user-select:none' attributes to the document body
    * to prevent ugly text selection during drag. If this is causing problems
    * for your app, set this to `false`.
    */
-  enableUserSelectHack: _propTypes.default.bool,
+  enableUserSelectHack: propTypes.bool,
 
   /**
    * `offsetParent`, if set, uses the passed DOM node to compute drag offsets
@@ -7542,7 +7964,7 @@ _defineProperty(DraggableCore, "propTypes", {
   /**
    * `grid` specifies the x and y that dragging should snap to.
    */
-  grid: _propTypes.default.arrayOf(_propTypes.default.number),
+  grid: propTypes.arrayOf(propTypes.number),
 
   /**
    * `handle` specifies a selector to be used as the handle that initiates drag.
@@ -7564,7 +7986,7 @@ _defineProperty(DraggableCore, "propTypes", {
    *   });
    * ```
    */
-  handle: _propTypes.default.string,
+  handle: propTypes.string,
 
   /**
    * `cancel` specifies a selector to be used to prevent drag initialization.
@@ -7586,41 +8008,46 @@ _defineProperty(DraggableCore, "propTypes", {
    *   });
    * ```
    */
-  cancel: _propTypes.default.string,
+  cancel: propTypes.string,
 
   /**
    * Called when dragging starts.
    * If this function returns the boolean false, dragging will be canceled.
    */
-  onStart: _propTypes.default.func,
+  onStart: propTypes.func,
 
   /**
    * Called while dragging.
    * If this function returns the boolean false, dragging will be canceled.
    */
-  onDrag: _propTypes.default.func,
+  onDrag: propTypes.func,
 
   /**
    * Called when dragging stops.
    * If this function returns the boolean false, the drag will remain active.
    */
-  onStop: _propTypes.default.func,
+  onStop: propTypes.func,
 
   /**
    * A workaround option which can be passed if onMouseDown needs to be accessed,
    * since it'll always be blocked (as there is internal use of onMouseDown)
    */
-  onMouseDown: _propTypes.default.func,
+  onMouseDown: propTypes.func,
+
+  /**
+   * `scale`, if set, applies scaling while dragging an element
+   */
+  scale: propTypes.number,
 
   /**
    * These properties should be defined on the child, not here.
    */
-  className: shims.dontSetMe,
-  style: shims.dontSetMe,
-  transform: shims.dontSetMe
+  className: dontSetMe,
+  style: dontSetMe,
+  transform: dontSetMe
 });
 
-_defineProperty(DraggableCore, "defaultProps", {
+_defineProperty$1(DraggableCore, "defaultProps", {
   allowAnyClick: false,
   // by default only accept left click
   cancel: null,
@@ -7633,47 +8060,43 @@ _defineProperty(DraggableCore, "defaultProps", {
   onStart: function () {},
   onDrag: function () {},
   onStop: function () {},
-  onMouseDown: function () {}
+  onMouseDown: function () {},
+  scale: 1
 });
-});
 
-unwrapExports(DraggableCore_1);
+function _extends$1() { _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1.apply(this, arguments); }
 
-var Draggable_1 = createCommonjsModule(function (module, exports) {
+function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/*:: import type {DraggableEventHandler} from './utils/types';*/
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+/*:: import type {Element as ReactElement} from 'react';*/
 
-var _react = _interopRequireDefault(React__default);
+/*:: type DraggableState = {
+  dragging: boolean,
+  dragged: boolean,
+  x: number, y: number,
+  slackX: number, slackY: number,
+  isElementSVG: boolean,
+  prevPropsPosition: ?ControlPosition,
+};*/
 
-var _propTypes = _interopRequireDefault(propTypes);
-
-var _reactDom = _interopRequireDefault(reactDom);
-
-var _classnames = _interopRequireDefault(classnames);
-
-
-
-
-
-
-
-var _DraggableCore = _interopRequireDefault(DraggableCore_1);
-
-var _log = _interopRequireDefault(log_1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+/*:: export type DraggableProps = {
+  ...$Exact<DraggableCoreProps>,
+  axis: 'both' | 'x' | 'y' | 'none',
+  bounds: DraggableBounds | string | false,
+  defaultClassName: string,
+  defaultClassNameDragging: string,
+  defaultClassNameDragged: string,
+  defaultPosition: ControlPosition,
+  positionOffset: PositionOffsetControlPosition,
+  position: ControlPosition,
+  scale: number
+};*/
 
 //
 // Define <Draggable>
 //
-class Draggable extends _react.default.Component {
+class Draggable extends React__default.Component {
   // React 16.3+
   // Arity (props, state)
   static getDerivedStateFromProps({
@@ -7687,10 +8110,6 @@ class Draggable extends _react.default.Component {
   ) {
     // Set x/y if a new position is provided in props that is different than the previous.
     if (position && (!prevPropsPosition || position.x !== prevPropsPosition.x || position.y !== prevPropsPosition.y)) {
-      (0, _log.default)('Draggable: getDerivedStateFromProps %j', {
-        position,
-        prevPropsPosition
-      });
       return {
         x: position.x,
         y: position.y,
@@ -7707,10 +8126,9 @@ class Draggable extends _react.default.Component {
   ) {
     super(props);
 
-    _defineProperty(this, "onDragStart", (e, coreData) => {
-      (0, _log.default)('Draggable: onDragStart: %j', coreData); // Short-circuit if user's callback killed it.
+    _defineProperty$2(this, "onDragStart", (e, coreData) => {
 
-      const shouldStart = this.props.onStart(e, (0, positionFns.createDraggableData)(this, coreData)); // Kills start event on core as well, so move handlers are never bound.
+      const shouldStart = this.props.onStart(e, createDraggableData(this, coreData)); // Kills start event on core as well, so move handlers are never bound.
 
       if (shouldStart === false) return false;
       this.setState({
@@ -7719,10 +8137,9 @@ class Draggable extends _react.default.Component {
       });
     });
 
-    _defineProperty(this, "onDrag", (e, coreData) => {
+    _defineProperty$2(this, "onDrag", (e, coreData) => {
       if (!this.state.dragging) return false;
-      (0, _log.default)('Draggable: onDrag: %j', coreData);
-      const uiData = (0, positionFns.createDraggableData)(this, coreData);
+      const uiData = createDraggableData(this, coreData);
       const newState
       /*: $Shape<DraggableState>*/
       = {
@@ -7742,7 +8159,7 @@ class Draggable extends _react.default.Component {
         newState.x += this.state.slackX;
         newState.y += this.state.slackY; // Get bound position. This will ceil/floor the x and y within the boundaries.
 
-        const [newStateX, newStateY] = (0, positionFns.getBoundPosition)(this, newState.x, newState.y);
+        const [newStateX, newStateY] = getBoundPosition(this, newState.x, newState.y);
         newState.x = newStateX;
         newState.y = newStateY; // Recalculate slack by noting how much was shaved by the boundPosition handler.
 
@@ -7761,12 +8178,11 @@ class Draggable extends _react.default.Component {
       this.setState(newState);
     });
 
-    _defineProperty(this, "onDragStop", (e, coreData) => {
+    _defineProperty$2(this, "onDragStop", (e, coreData) => {
       if (!this.state.dragging) return false; // Short-circuit if user's callback killed it.
 
-      const shouldStop = this.props.onStop(e, (0, positionFns.createDraggableData)(this, coreData));
+      const shouldStop = this.props.onStop(e, createDraggableData(this, coreData));
       if (shouldStop === false) return false;
-      (0, _log.default)('Draggable: onDragStop: %j', coreData);
       const newState
       /*: $Shape<DraggableState>*/
       = {
@@ -7815,7 +8231,7 @@ class Draggable extends _react.default.Component {
 
   componentDidMount() {
     // Check to see if the element passed is an instanceof SVGElement
-    if (typeof window.SVGElement !== 'undefined' && _reactDom.default.findDOMNode(this) instanceof window.SVGElement) {
+    if (typeof window.SVGElement !== 'undefined' && ReactDOM.findDOMNode(this) instanceof window.SVGElement) {
       this.setState({
         isElementSVG: true
       });
@@ -7852,33 +8268,33 @@ class Draggable extends _react.default.Component {
     const validPosition = position || defaultPosition;
     const transformOpts = {
       // Set left if horizontal drag is enabled
-      x: (0, positionFns.canDragX)(this) && draggable ? this.state.x : validPosition.x,
+      x: canDragX(this) && draggable ? this.state.x : validPosition.x,
       // Set top if vertical drag is enabled
-      y: (0, positionFns.canDragY)(this) && draggable ? this.state.y : validPosition.y
+      y: canDragY(this) && draggable ? this.state.y : validPosition.y
     }; // If this element was SVG, we use the `transform` attribute.
 
     if (this.state.isElementSVG) {
-      svgTransform = (0, domFns.createSVGTransform)(transformOpts, positionOffset);
+      svgTransform = createSVGTransform(transformOpts, positionOffset);
     } else {
       // Add a CSS transform to move the element around. This allows us to move the element around
       // without worrying about whether or not it is relatively or absolutely positioned.
       // If the item you are dragging already has a transform set, wrap it in a <span> so <Draggable>
       // has a clean slate.
-      style = (0, domFns.createCSSTransform)(transformOpts, positionOffset);
+      style = createCSSTransform(transformOpts, positionOffset);
     } // Mark with class while dragging
 
 
-    const className = (0, _classnames.default)(children.props.className || '', defaultClassName, {
+    const className = classnames(children.props.className || '', defaultClassName, {
       [defaultClassNameDragging]: this.state.dragging,
       [defaultClassNameDragged]: this.state.dragged
     }); // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
 
-    return _react.default.createElement(_DraggableCore.default, _extends({}, draggableCoreProps, {
+    return React__default.createElement(DraggableCore, _extends$1({}, draggableCoreProps, {
       onStart: this.onDragStart,
       onDrag: this.onDrag,
       onStop: this.onDragStop
-    }), _react.default.cloneElement(_react.default.Children.only(children), {
+    }), React__default.cloneElement(React__default.Children.only(children), {
       className: className,
       style: { ...children.props.style,
         ...style
@@ -7889,12 +8305,10 @@ class Draggable extends _react.default.Component {
 
 }
 
-exports.default = Draggable;
+_defineProperty$2(Draggable, "displayName", 'Draggable');
 
-_defineProperty(Draggable, "displayName", 'Draggable');
-
-_defineProperty(Draggable, "propTypes", { // Accepts all props <DraggableCore> accepts.
-  ..._DraggableCore.default.propTypes,
+_defineProperty$2(Draggable, "propTypes", { // Accepts all props <DraggableCore> accepts.
+  ...DraggableCore.propTypes,
 
   /**
    * `axis` determines which axis the draggable can move.
@@ -7909,7 +8323,7 @@ _defineProperty(Draggable, "propTypes", { // Accepts all props <DraggableCore> a
    *
    * Defaults to 'both'.
    */
-  axis: _propTypes.default.oneOf(['both', 'x', 'y', 'none']),
+  axis: propTypes.oneOf(['both', 'x', 'y', 'none']),
 
   /**
    * `bounds` determines the range of movement available to the element.
@@ -7937,15 +8351,15 @@ _defineProperty(Draggable, "propTypes", { // Accepts all props <DraggableCore> a
    *   });
    * ```
    */
-  bounds: _propTypes.default.oneOfType([_propTypes.default.shape({
-    left: _propTypes.default.number,
-    right: _propTypes.default.number,
-    top: _propTypes.default.number,
-    bottom: _propTypes.default.number
-  }), _propTypes.default.string, _propTypes.default.oneOf([false])]),
-  defaultClassName: _propTypes.default.string,
-  defaultClassNameDragging: _propTypes.default.string,
-  defaultClassNameDragged: _propTypes.default.string,
+  bounds: propTypes.oneOfType([propTypes.shape({
+    left: propTypes.number,
+    right: propTypes.number,
+    top: propTypes.number,
+    bottom: propTypes.number
+  }), propTypes.string, propTypes.oneOf([false])]),
+  defaultClassName: propTypes.string,
+  defaultClassNameDragging: propTypes.string,
+  defaultClassNameDragged: propTypes.string,
 
   /**
    * `defaultPosition` specifies the x and y that the dragged item should start at
@@ -7964,13 +8378,13 @@ _defineProperty(Draggable, "propTypes", { // Accepts all props <DraggableCore> a
    *      });
    * ```
    */
-  defaultPosition: _propTypes.default.shape({
-    x: _propTypes.default.number,
-    y: _propTypes.default.number
+  defaultPosition: propTypes.shape({
+    x: propTypes.number,
+    y: propTypes.number
   }),
-  positionOffset: _propTypes.default.shape({
-    x: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string]),
-    y: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string])
+  positionOffset: propTypes.shape({
+    x: propTypes.oneOfType([propTypes.number, propTypes.string]),
+    y: propTypes.oneOfType([propTypes.number, propTypes.string])
   }),
 
   /**
@@ -7993,20 +8407,20 @@ _defineProperty(Draggable, "propTypes", { // Accepts all props <DraggableCore> a
    *      });
    * ```
    */
-  position: _propTypes.default.shape({
-    x: _propTypes.default.number,
-    y: _propTypes.default.number
+  position: propTypes.shape({
+    x: propTypes.number,
+    y: propTypes.number
   }),
 
   /**
    * These properties should be defined on the child, not here.
    */
-  className: shims.dontSetMe,
-  style: shims.dontSetMe,
-  transform: shims.dontSetMe
+  className: dontSetMe,
+  style: dontSetMe,
+  transform: dontSetMe
 });
 
-_defineProperty(Draggable, "defaultProps", { ..._DraggableCore.default.defaultProps,
+_defineProperty$2(Draggable, "defaultProps", { ...DraggableCore.defaultProps,
   axis: 'both',
   bounds: false,
   defaultClassName: 'react-draggable',
@@ -8019,28 +8433,17 @@ _defineProperty(Draggable, "defaultProps", { ..._DraggableCore.default.defaultPr
   position: null,
   scale: 1
 });
-});
 
-unwrapExports(Draggable_1);
-
-var Draggable = Draggable_1.default;
-
-// Previous versions of this lib exported <Draggable> as the root export. As to not break
-// them, or TypeScript, we export *both* as the root and as 'default'.
-// See https://github.com/mzabriskie/react-draggable/pull/254
-// and https://github.com/mzabriskie/react-draggable/issues/266
-var reactDraggable = Draggable;
-var default_1 = Draggable;
-var DraggableCore = DraggableCore_1.default;
-reactDraggable.default = default_1;
-reactDraggable.DraggableCore = DraggableCore;
-
-function getStartPositions(elements) {
+/**
+ * The nodes selection rectangle gets displayed when a user
+ * made a selectio  with on or several nodes
+ */
+function getStartPositions(nodes) {
     var startPositions = {};
-    return elements.filter(isNode).reduce(function (res, node) {
+    return nodes.reduce(function (res, node) {
         var startPosition = {
             x: node.__rg.position.x || node.position.x,
-            y: node.__rg.position.y || node.position.x,
+            y: node.__rg.position.y || node.position.y,
         };
         res[node.id] = startPosition;
         return res;
@@ -8054,20 +8457,22 @@ var NodesSelection = React.memo(function () {
         selectedNodesBbox: s.selectedNodesBbox,
         selectedElements: s.selectedElements,
         snapToGrid: s.snapToGrid,
-        snapGrid: s.snapGrid
+        snapGrid: s.snapGrid,
+        nodes: s.nodes,
     }); });
     var updateNodePos = useStoreActions$1(function (a) { return a.updateNodePos; });
-    var _c = state.transform, x = _c[0], y = _c[1], k = _c[2];
+    var _c = state.transform, tx = _c[0], ty = _c[1], tScale = _c[2];
     var position = state.selectedNodesBbox;
     var grid = (state.snapToGrid ? state.snapGrid : [1, 1]);
     var onStart = function (evt) {
         var scaledClient = {
-            x: evt.clientX * (1 / k),
-            y: evt.clientY * (1 / k),
+            x: evt.clientX / tScale,
+            y: evt.clientY / tScale,
         };
-        var offsetX = scaledClient.x - position.x - x;
-        var offsetY = scaledClient.y - position.y - y;
-        var nextStartPositions = getStartPositions(state.selectedElements);
+        var offsetX = scaledClient.x - position.x - tx;
+        var offsetY = scaledClient.y - position.y - ty;
+        var selectedNodes = state.selectedElements.filter(isNode).map(function (selectedNode) { return state.nodes.find(function (node) { return node.id === selectedNode.id; }); });
+        var nextStartPositions = getStartPositions(selectedNodes);
         if (nextStartPositions) {
             setOffset({ x: offsetX, y: offsetY });
             setStartPositions(nextStartPositions);
@@ -8075,29 +8480,21 @@ var NodesSelection = React.memo(function () {
     };
     var onDrag = function (evt) {
         var scaledClient = {
-            x: evt.clientX * (1 / k),
-            y: evt.clientY * (1 / k),
+            x: evt.clientX / tScale,
+            y: evt.clientY / tScale,
         };
         state.selectedElements.filter(isNode).forEach(function (node) {
             var pos = {
-                x: startPositions[node.id].x +
-                    scaledClient.x -
-                    position.x -
-                    offset.x -
-                    x,
-                y: startPositions[node.id].y +
-                    scaledClient.y -
-                    position.y -
-                    offset.y -
-                    y,
+                x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tx,
+                y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - ty,
             };
             updateNodePos({ id: node.id, pos: pos });
         });
     };
     return (React__default.createElement("div", { className: "react-flow__nodesselection", style: {
-            transform: "translate(" + x + "px," + y + "px) scale(" + k + ")",
+            transform: "translate(" + tx + "px," + ty + "px) scale(" + tScale + ")",
         } },
-        React__default.createElement(reactDraggable, { scale: k, grid: grid, onStart: function (evt) { return onStart(evt); }, onDrag: function (evt) { return onDrag(evt); } },
+        React__default.createElement(Draggable, { scale: tScale, grid: grid, onStart: function (evt) { return onStart(evt); }, onDrag: function (evt) { return onDrag(evt); } },
             React__default.createElement("div", { className: "react-flow__nodesselection-rect", style: {
                     width: state.selectedNodesBbox.width,
                     height: state.selectedNodesBbox.height,
@@ -8148,15 +8545,6 @@ var Grid = React.memo(function (_a) {
         React__default.createElement("path", { fill: fill, stroke: stroke, strokeWidth: size, d: path })));
 });
 Grid.displayName = 'Grid';
-
-var isInputDOMNode = function (e) {
-    var target = e.target;
-    return e && target && ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(target.nodeName);
-};
-var getDimensions = function (node) { return ({
-    width: node.offsetWidth,
-    height: node.offsetHeight,
-}); };
 
 var useKeyPress = (function (keyCode) {
     var _a = React.useState(false), keyPressed = _a[0], setKeyPressed = _a[1];
@@ -8753,25 +9141,6 @@ unwrapExports(ResizeObserver_1);
 var ResizeObserver_2 = ResizeObserver_1.ResizeObserver;
 var ResizeObserver_3 = ResizeObserver_1.install;
 
-var getHandleBounds = function (selector, nodeElement, parentBounds, k) {
-    var handles = nodeElement.querySelectorAll(selector);
-    if (!handles || !handles.length) {
-        return null;
-    }
-    var handlesArray = Array.from(handles);
-    return handlesArray.map(function (handle) {
-        var bounds = handle.getBoundingClientRect();
-        var dimensions = getDimensions(handle);
-        var nodeIdAttr = handle.getAttribute('data-nodeid');
-        var handlePosition = handle.getAttribute('data-handlepos');
-        var nodeIdSplitted = nodeIdAttr ? nodeIdAttr.split('__') : null;
-        var handleId = null;
-        if (nodeIdSplitted) {
-            handleId = (nodeIdSplitted.length ? nodeIdSplitted[1] : nodeIdSplitted);
-        }
-        return __assign({ id: handleId, position: handlePosition, x: (bounds.left - parentBounds.left) * (1 / k), y: (bounds.top - parentBounds.top) * (1 / k) }, dimensions);
-    });
-};
 var onStart = function (evt, onClick, id, type, data, setOffset, transform, position) {
     var scaledClient = {
         x: evt.clientX * (1 / transform[2]),
@@ -8825,21 +9194,14 @@ var wrapNode = (function (NodeComponent) {
             if (!nodeElement.current) {
                 return;
             }
-            var storeState = store.getState();
-            var bounds = nodeElement.current.getBoundingClientRect();
-            var dimensions = getDimensions(nodeElement.current);
-            var handleBounds = {
-                source: getHandleBounds('.source', nodeElement.current, bounds, storeState.transform[2]),
-                target: getHandleBounds('.target', nodeElement.current, bounds, storeState.transform[2]),
-            };
-            store.dispatch.updateNodeData(__assign(__assign({ id: id }, dimensions), { handleBounds: handleBounds }));
+            store.dispatch.updateNodeDimensions({ id: id, nodeElement: nodeElement.current });
         };
         React.useEffect(function () {
             if (nodeElement.current) {
                 updateNode();
                 var resizeObserver_1 = new ResizeObserver_2(function (entries) {
                     for (var _i = 0, entries_1 = entries; _i < entries_1.length; _i++) {
-                        var _ = entries_1[_i];
+                        var _1 = entries_1[_i];
                         updateNode();
                     }
                 });
@@ -8851,7 +9213,7 @@ var wrapNode = (function (NodeComponent) {
                 };
             }
             return;
-        }, [nodeElement.current]);
+        }, []);
         return (React__default.createElement(DraggableCore, { onStart: function (evt) { return onStart(evt, onClick, id, type, data, setOffset, transform, position); }, onDrag: function (evt) { return onDrag(evt, setDragging, id, offset, transform); }, onStop: function () { return onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data); }, scale: transform[2], disabled: !isInteractive, cancel: ".nodrag" },
             React__default.createElement("div", { className: nodeClasses, ref: nodeElement, style: nodeStyle },
                 React__default.createElement(Provider, { value: id },
@@ -8966,8 +9328,8 @@ function styleInject(css, ref) {
   }
 }
 
-var css = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n@keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.is-interactive .react-flow__node {\n    cursor: -webkit-grab;\n    cursor: grab;\n  }\n\n.is-interactive .react-flow__node:hover > * {\n      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n    }\n\n.is-interactive .react-flow__handle {\n    cursor: crosshair;\n  }\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
-styleInject(css);
+var css_248z = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n@keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.is-interactive .react-flow__node {\n    cursor: -webkit-grab;\n    cursor: grab;\n  }\n\n.is-interactive .react-flow__node:hover > * {\n      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n    }\n\n.is-interactive .react-flow__handle {\n    cursor: crosshair;\n  }\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
+styleInject(css_248z);
 
 var ReactFlow = function (_a) {
     var style = _a.style, onElementClick = _a.onElementClick, elements = _a.elements, children = _a.children, nodeTypes = _a.nodeTypes, edgeTypes = _a.edgeTypes, onLoad = _a.onLoad, onMove = _a.onMove, onElementsRemove = _a.onElementsRemove, onConnect = _a.onConnect, onNodeDragStop = _a.onNodeDragStop, connectionLineType = _a.connectionLineType, connectionLineStyle = _a.connectionLineStyle, deleteKeyCode = _a.deleteKeyCode, selectionKeyCode = _a.selectionKeyCode, showBackground = _a.showBackground, backgroundGap = _a.backgroundGap, backgroundType = _a.backgroundType, backgroundColor = _a.backgroundColor, snapToGrid = _a.snapToGrid, snapGrid = _a.snapGrid, onlyRenderVisibleNodes = _a.onlyRenderVisibleNodes, isInteractive = _a.isInteractive;
@@ -9066,47 +9428,41 @@ var index = (function (_a) {
         React__default.createElement("path", { className: "react-flow__minimap-mask", d: "M" + (x - offset) + "," + (y - offset) + "h" + (width + offset * 2) + "v" + (height + offset * 2) + "h" + (-width - offset * 2) + "z\n        M" + viewBB.x + "," + viewBB.y + "h" + viewBB.width + "v" + viewBB.height + "h" + -viewBB.width + "z", fill: maskColor, fillRule: "evenodd" })));
 });
 
-function _extends$1() { _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$1.apply(this, arguments); }
+function _extends$2() { _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$2.apply(this, arguments); }
 
-var _ref =
-/*#__PURE__*/
-React__default.createElement("path", {
+var _ref = /*#__PURE__*/React.createElement("path", {
   d: "M416 277.333H277.333V416h-42.666V277.333H96v-42.666h138.667V96h42.666v138.667H416v42.666z"
 });
 
-var SvgPlus = function SvgPlus(props) {
-  return React__default.createElement("svg", _extends$1({
+function SvgPlus(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends$2({
     viewBox: "0 0 512 512"
   }, props), _ref);
-};
-
-function _extends$2() { _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$2.apply(this, arguments); }
-
-var _ref$1 =
-/*#__PURE__*/
-React__default.createElement("path", {
-  d: "M96 235h320v42H96z"
-});
-
-var SvgMinus = function SvgMinus(props) {
-  return React__default.createElement("svg", _extends$2({
-    viewBox: "0 0 512 512"
-  }, props), _ref$1);
-};
+}
 
 function _extends$3() { _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$3.apply(this, arguments); }
 
-var _ref$2 =
-/*#__PURE__*/
-React__default.createElement("path", {
+var _ref$1 = /*#__PURE__*/React.createElement("path", {
+  d: "M96 235h320v42H96z"
+});
+
+function SvgMinus(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends$3({
+    viewBox: "0 0 512 512"
+  }, props), _ref$1);
+}
+
+function _extends$4() { _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends$4.apply(this, arguments); }
+
+var _ref$2 = /*#__PURE__*/React.createElement("path", {
   d: "M96 124.2c0-6.9 5.2-12.2 12.2-12.2H176V64h-66.8C75.7 64 48 90.7 48 124.2V192h48v-67.8zM403.6 64H336v48h67.2c6.9 0 12.8 5.2 12.8 12.2V192h48v-67.8c0-33.5-27-60.2-60.4-60.2zM416 386.8c0 6.9-5.2 12.2-12.2 12.2H336v49h67.8c33.5 0 60.2-27.7 60.2-61.2V320h-48v66.8zM108.2 399c-6.9 0-12.2-5.2-12.2-12.2V320H48v66.8c0 33.5 27.7 61.2 61.2 61.2H176v-49h-67.8z"
 });
 
-var SvgFitview = function SvgFitview(props) {
-  return React__default.createElement("svg", _extends$3({
+function SvgFitview(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends$4({
     viewBox: "0 0 512 512"
   }, props), _ref$2);
-};
+}
 
 var baseStyle$1 = {
     position: 'absolute',

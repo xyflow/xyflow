@@ -30,7 +30,7 @@ function getStartPositions(nodes: Node[]): StartPositions {
 export default memo(() => {
   const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState<StartPositions>({});
-  const state = useStoreState(s => ({
+  const state = useStoreState((s) => ({
     transform: s.transform,
     selectedNodesBbox: s.selectedNodesBbox,
     selectedElements: s.selectedElements,
@@ -38,7 +38,7 @@ export default memo(() => {
     snapGrid: s.snapGrid,
     nodes: s.nodes,
   }));
-  const updateNodePos = useStoreActions(a => a.updateNodePos);
+  const updateNodePos = useStoreActions((a) => a.updateNodePos);
   const [tx, ty, tScale] = state.transform;
   const position = state.selectedNodesBbox;
   const grid = (state.snapToGrid ? state.snapGrid : [1, 1])! as [number, number];
@@ -51,7 +51,7 @@ export default memo(() => {
     const offsetX: number = scaledClient.x - position.x - tx;
     const offsetY: number = scaledClient.y - position.y - ty;
     const selectedNodes = (state.selectedElements.filter(isNode) as Node[]).map(
-      selectedNode => state.nodes.find(node => node.id === selectedNode.id)! as Node
+      (selectedNode) => state.nodes.find((node) => node.id === selectedNode.id)! as Node
     );
 
     const nextStartPositions = getStartPositions(selectedNodes);
@@ -68,7 +68,7 @@ export default memo(() => {
       y: evt.clientY / tScale,
     };
 
-    (state.selectedElements.filter(isNode) as Node[]).forEach(node => {
+    (state.selectedElements.filter(isNode) as Node[]).forEach((node) => {
       const pos: XYPosition = {
         x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tx,
         y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - ty,
@@ -88,8 +88,8 @@ export default memo(() => {
       <ReactDraggable
         scale={tScale}
         grid={grid}
-        onStart={evt => onStart(evt as MouseEvent)}
-        onDrag={evt => onDrag(evt as MouseEvent)}
+        onStart={(evt) => onStart(evt as MouseEvent)}
+        onDrag={(evt) => onDrag(evt as MouseEvent)}
       >
         <div
           className="react-flow__nodesselection-rect"

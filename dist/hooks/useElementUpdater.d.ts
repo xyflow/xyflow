@@ -1,3 +1,3 @@
-import { Node, Edge } from '../types';
-declare const useElementUpdater: (elements: (Node | Edge)[]) => void;
+import { Elements } from '../types';
+declare const useElementUpdater: (elements: Elements) => void;
 export default useElementUpdater;

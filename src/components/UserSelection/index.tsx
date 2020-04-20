@@ -2,29 +2,19 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import React, { useEffect, useRef, useState, memo } from 'react';
+import React, { memo } from 'react';
 
-import { useStoreActions } from '../../store/hooks';
-import { SelectionRect } from '../../types';
+import { useStoreActions, useStoreState } from '../../store/hooks';
+import { XYPosition } from '../../types';
 
 type UserSelectionProps = {
   isInteractive: boolean;
 };
 
-const initialRect: SelectionRect = {
-  startX: 0,
-  startY: 0,
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  draw: false,
-};
-
-function getMousePosition(evt: MouseEvent) {
+function getMousePosition(evt: React.MouseEvent): XYPosition | void {
   const reactFlowNode = document.querySelector('.react-flow');
   if (!reactFlowNode) {
-    return false;
+    return;
   }
 
   const containerBounds = reactFlowNode.getBoundingClientRect();
@@ -35,105 +25,67 @@ function getMousePosition(evt: MouseEvent) {
   };
 }
 
+const SelectionRect = () => {
+  const userSelectionRect = useStoreState((s) => s.userSelectionRect);
+
+  if (!userSelectionRect.draw) {
+    return null;
+  }
+
+  return (
+    <div
+      className="react-flow__selection"
+      style={{
+        width: userSelectionRect.width,
+        height: userSelectionRect.height,
+        transform: `translate(${userSelectionRect.x}px, ${userSelectionRect.y}px)`,
+      }}
+    />
+  );
+};
+
 export default memo(({ isInteractive }: UserSelectionProps) => {
-  const selectionPane = useRef<HTMLDivElement>(null);
-  const [rect, setRect] = useState(initialRect);
-  const setSelection = useStoreActions(a => a.setSelection);
-  const updateSelection = useStoreActions(a => a.updateSelection);
-  const setNodesSelection = useStoreActions(a => a.setNodesSelection);
+  const { setUserSelection, updateUserSelection, unsetUserSelection } = useStoreActions((a) => ({
+    setUserSelection: a.setUserSelection,
+    updateUserSelection: a.updateUserSelection,
+    unsetUserSelection: a.unsetUserSelection,
+  }));
 
   if (!isInteractive) {
     return null;
   }
 
-  useEffect(() => {
-    function onMouseDown(evt: MouseEvent): void {
-      const mousePos = getMousePosition(evt);
-      if (!mousePos) {
-        return;
-      }
-
-      setRect(currentRect => ({
-        ...currentRect,
-        startX: mousePos.x,
-        startY: mousePos.y,
-        x: mousePos.x,
-        y: mousePos.y,
-        draw: true,
-      }));
-
-      setSelection(true);
+  function onMouseDown(evt: React.MouseEvent): void {
+    const mousePos = getMousePosition(evt);
+    if (!mousePos) {
+      return;
     }
 
-    function onMouseMove(evt: MouseEvent): void {
-      setRect(currentRect => {
-        if (!currentRect.draw) {
-          return currentRect;
-        }
+    setUserSelection(mousePos);
+  }
 
-        const mousePos = getMousePosition(evt);
-        if (!mousePos) {
-          return currentRect;
-        }
+  function onMouseMove(evt: React.MouseEvent): void {
+    const mousePos = getMousePosition(evt);
 
-        const negativeX = mousePos.x < currentRect.startX;
-        const negativeY = mousePos.y < currentRect.startY;
-        const nextRect = {
-          ...currentRect,
-          x: negativeX ? mousePos.x : currentRect.x,
-          y: negativeY ? mousePos.y : currentRect.y,
-          width: negativeX ? currentRect.startX - mousePos.x : mousePos.x - currentRect.startX,
-          height: negativeY ? currentRect.startY - mousePos.y : mousePos.y - currentRect.startY,
-        };
-
-        updateSelection(nextRect);
-
-        return nextRect;
-      });
+    if (!mousePos) {
+      return;
     }
 
-    function onMouseUp() {
-      setRect(currentRect => {
-        setNodesSelection({ isActive: true, selection: currentRect });
-        setSelection(false);
+    updateUserSelection(mousePos);
+  }
 
-        return {
-          ...currentRect,
-          draw: false,
-        };
-      });
-    }
-
-    if (selectionPane.current) {
-      selectionPane.current.addEventListener('mousedown', onMouseDown);
-      selectionPane.current.addEventListener('mousemove', onMouseMove);
-      selectionPane.current.addEventListener('mouseup', onMouseUp);
-
-      return () => {
-        if (!selectionPane.current) {
-          return;
-        }
-        selectionPane.current.removeEventListener('mousedown', onMouseDown);
-        selectionPane.current.removeEventListener('mousemove', onMouseMove);
-        selectionPane.current.removeEventListener('mouseup', onMouseUp);
-      };
-    }
-
-    return;
-  }, [selectionPane.current]);
+  function onMouseUp() {
+    unsetUserSelection();
+  }
 
   return (
-    <div className="react-flow__selectionpane" ref={selectionPane}>
-      {rect.draw && (
-        <div
-          className="react-flow__selection"
-          style={{
-            width: rect.width,
-            height: rect.height,
-            transform: `translate(${rect.x}px, ${rect.y}px)`,
-          }}
-        />
-      )}
+    <div
+      className="react-flow__selectionpane"
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+    >
+      <SelectionRect />
     </div>
   );
 });
