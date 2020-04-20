@@ -67,6 +67,8 @@ export interface StoreModel {
   selectionActive: boolean;
   selection: SelectionRect | null;
 
+  userSelectionRect: SelectionRect;
+
   connectionSourceId: ElementId | null;
   connectionPosition: XYPosition;
 
@@ -108,6 +110,10 @@ export interface StoreModel {
   setConnectionSourceId: Action<StoreModel, ElementId | null>;
 
   setInteractive: Action<StoreModel, boolean>;
+
+  setUserSelection: Action<StoreModel, XYPosition>;
+  updateUserSelection: Action<StoreModel, XYPosition>;
+  unsetUserSelection: Action<StoreModel>;
 }
 
 const storeModel: StoreModel = {
@@ -127,6 +133,15 @@ const storeModel: StoreModel = {
   selectionActive: false,
   selection: null,
 
+  userSelectionRect: {
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    draw: false,
+  },
   connectionSourceId: null,
   connectionPosition: { x: 0, y: 0 },
 
@@ -152,7 +167,7 @@ const storeModel: StoreModel = {
   updateNodeDimensions: action((state, { id, nodeElement }) => {
     const bounds = nodeElement.getBoundingClientRect();
     const dimensions = getDimensions(nodeElement);
-    const matchingNode = state.nodes.find(n => n.id === id);
+    const matchingNode = state.nodes.find((n) => n.id === id);
 
     // only update when size change
     if (
@@ -167,7 +182,7 @@ const storeModel: StoreModel = {
       target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
     };
 
-    state.nodes.forEach(n => {
+    state.nodes.forEach((n) => {
       if (n.id === id) {
         n.__rg = {
           ...n.__rg,
@@ -191,7 +206,7 @@ const storeModel: StoreModel = {
       };
     }
 
-    state.nodes.forEach(n => {
+    state.nodes.forEach((n) => {
       if (n.id === id) {
         n.__rg = {
           ...n.__rg,
@@ -199,6 +214,66 @@ const storeModel: StoreModel = {
         };
       }
     });
+  }),
+
+  setUserSelection: action((state, mousePos) => {
+    state.userSelectionRect = {
+      width: 0,
+      height: 0,
+      startX: mousePos.x,
+      startY: mousePos.y,
+      x: mousePos.x,
+      y: mousePos.y,
+      draw: true,
+    };
+    state.selectionActive = true;
+  }),
+
+  updateUserSelection: action((state, mousePos) => {
+    const startX = state.userSelectionRect.startX || 0;
+    const startY = state.userSelectionRect.startY || 0;
+
+    const negativeX = mousePos.x < startX;
+    const negativeY = mousePos.y < startY;
+    const nextRect = {
+      ...state.userSelectionRect,
+      x: negativeX ? mousePos.x : state.userSelectionRect.x,
+      y: negativeY ? mousePos.y : state.userSelectionRect.y,
+      width: negativeX ? startX - mousePos.x : mousePos.x - startX,
+      height: negativeY ? startY - mousePos.y : mousePos.y - startY,
+    };
+
+    const selectedNodes = getNodesInside(state.nodes, nextRect, state.transform);
+    const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
+
+    const nextSelectedElements = [...selectedNodes, ...selectedEdges];
+    const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
+
+    state.selection = nextRect;
+    state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
+    state.userSelectionRect = nextRect;
+  }),
+
+  unsetUserSelection: action((state) => {
+    const selectedNodes = getNodesInside(state.nodes, state.userSelectionRect, state.transform);
+
+    if (!selectedNodes.length) {
+      state.selectionActive = false;
+      state.userSelectionRect = { ...state.userSelectionRect, draw: false };
+      state.nodesSelectionActive = false;
+      state.selectedElements = [];
+
+      return;
+    }
+
+    const selectedNodesBbox = getRectOfNodes(selectedNodes);
+
+    state.selection = state.userSelectionRect;
+    state.nodesSelectionActive = true;
+    state.selectedNodesBbox = selectedNodesBbox;
+
+    state.userSelectionRect = { ...state.userSelectionRect, draw: false };
+    state.selectionActive = false;
   }),
 
   setSelection: action((state, isActive) => {

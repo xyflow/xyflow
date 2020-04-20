@@ -47,6 +47,8 @@ describe('Basic Graph Rendering', () => {
       .last()
       .should('have.not.class', 'selected')
       .get('.react-flow__nodesselection-rect');
+
+    cy.get('body').type('{shift}', { release: true });
   });
 
   it('selects all nodes', () => {
@@ -59,6 +61,8 @@ describe('Basic Graph Rendering', () => {
       .get('.react-flow__node')
       .should('have.class', 'selected')
       .get('.react-flow__nodesselection-rect');
+
+    cy.get('body').type('{shift}', { release: true });
   });
 
   it('removes selection', () => {
@@ -73,11 +77,10 @@ describe('Basic Graph Rendering', () => {
   it('drags a node', () => {
     const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-    cy.drag('.react-flow__node:first', { x: 500, y: 25 })
-      .then($el => {
-        const styleAfterDrag = $el.css('transform');
-        expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
-      });
+    cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el) => {
+      const styleAfterDrag = $el.css('transform');
+      expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
+    });
   });
 
   it('removes a node', () => {
@@ -116,7 +119,7 @@ describe('Basic Graph Rendering', () => {
 
     const newPosition = {
       clientX: Cypress.config('viewportWidth') * 0.6,
-      clientY: Cypress.config('viewportHeight') * 0.7
+      clientY: Cypress.config('viewportHeight') * 0.7,
     };
 
     const styleBeforeDrag = Cypress.$('.react-flow__nodes').css('transform');
@@ -137,7 +140,7 @@ describe('Basic Graph Rendering', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
     cy.get('.react-flow__zoompane')
-      .trigger('wheel','topLeft', { deltaY: -200 })
+      .trigger('wheel', 'topLeft', { deltaY: -200 })
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);

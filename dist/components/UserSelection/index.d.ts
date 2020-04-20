@@ -1,3 +1,6 @@
+/**
+ * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
+ */
 import React from 'react';
 declare type UserSelectionProps = {
     isInteractive: boolean;
