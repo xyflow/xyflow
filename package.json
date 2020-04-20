@@ -24,7 +24,7 @@
     "@types/d3": "^5.7.2",
     "@types/react": "^16.9.31",
     "@types/react-dom": "^16.9.6",
-    "autoprefixer": "^9.7.5",
+    "autoprefixer": "^9.7.6",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
     "cypress": "^4.4.0",
