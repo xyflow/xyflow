@@ -22,7 +22,7 @@
     "@babel/preset-react": "^7.9.4",
     "@types/classnames": "^2.2.10",
     "@types/d3": "^5.7.2",
-    "@types/react": "^16.9.31",
+    "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "autoprefixer": "^9.7.5",
     "babel-loader": "^8.1.0",
