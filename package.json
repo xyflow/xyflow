@@ -12,7 +12,7 @@
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.3.0",
     "fast-deep-equal": "^3.1.1",
-    "react-draggable": "^4.2.0",
+    "react-draggable": "^4.3.1",
     "resize-observer": "^1.0.0",
     "scheduler": "^0.19.1"
   },
