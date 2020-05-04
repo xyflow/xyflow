@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto@1,400;1,700&display=swap');
+
 body {
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
+  color: #111;
 }
 
 html, body {
@@ -8,4 +11,53 @@ html, body {
 
 html, body, #root {
   height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  font-weight: 700;
+}
+
+header nav {
+  font-weight: 400;
+  margin-left: auto;
+}
+
+nav a {
+  margin-left: 10px;
+  text-decoration: none;
+  font-size: 12px;
+  background: rgb(255, 96, 96);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 5px;
+  position: relative;
+}
+
+nav a, nav a:focus, nav a:active {
+  color: #fff;
+}
+
+nav a:hover {
+  color: #fff;
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.12);
+}
+
+nav a.active:before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: white;
+  opacity: 0.5;
+  left:0;
+  top:50%;
+  transform: translateY(-50%);
 }

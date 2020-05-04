@@ -7202,17 +7202,21 @@ function addEvent(el
 /*: string*/
 , handler
 /*: Function*/
+, inputOptions
+/*: Object*/
 )
 /*: void*/
 {
-  if (!el) {
-    return;
-  }
+  if (!el) return;
+  const options = {
+    capture: true,
+    ...inputOptions
+  };
 
-  if (el.attachEvent) {
+  if (el.addEventListener) {
+    el.addEventListener(event, handler, options);
+  } else if (el.attachEvent) {
     el.attachEvent('on' + event, handler);
-  } else if (el.addEventListener) {
-    el.addEventListener(event, handler, true);
   } else {
     // $FlowIgnore: Doesn't think elements are indexable
     el['on' + event] = handler;
@@ -7224,17 +7228,21 @@ function removeEvent(el
 /*: string*/
 , handler
 /*: Function*/
+, inputOptions
+/*: Object*/
 )
 /*: void*/
 {
-  if (!el) {
-    return;
-  }
+  if (!el) return;
+  const options = {
+    capture: true,
+    ...inputOptions
+  };
 
-  if (el.detachEvent) {
+  if (el.removeEventListener) {
+    el.removeEventListener(event, handler, options);
+  } else if (el.detachEvent) {
     el.detachEvent('on' + event, handler);
-  } else if (el.removeEventListener) {
-    el.removeEventListener(event, handler, true);
   } else {
     // $FlowIgnore: Doesn't think elements are indexable
     el['on' + event] = null;
@@ -7395,29 +7403,25 @@ function addUserSelectStyles(doc
 function removeUserSelectStyles(doc
 /*: ?Document*/
 ) {
+  if (!doc) return;
+
   try {
-    if (doc && doc.body) removeClassName(doc.body, 'react-draggable-transparent-selection'); // $FlowIgnore: IE
+    if (doc.body) removeClassName(doc.body, 'react-draggable-transparent-selection'); // $FlowIgnore: IE
 
     if (doc.selection) {
       // $FlowIgnore: IE
       doc.selection.empty();
     } else {
-      window.getSelection().removeAllRanges(); // remove selection caused by scroll
+      // Remove selection caused by scroll, unless it's a focused input
+      // (we use doc.defaultView in case we're in an iframe)
+      const selection = (doc.defaultView || window).getSelection();
+
+      if (selection && selection.type !== 'Caret') {
+        selection.removeAllRanges();
+      }
     }
   } catch (e) {// probably IE
   }
-}
-function styleHacks(childStyle
-/*: Object*/
-= {})
-/*: Object*/
-{
-  // Workaround IE pointer events; see #51
-  // https://github.com/mzabriskie/react-draggable/issues/51#issuecomment-103488278
-  return {
-    touchAction: 'none',
-    ...childStyle
-  };
 }
 function addClassName(el
 /*: HTMLElement*/
@@ -7708,7 +7712,9 @@ let dragEventFor = eventsFor.mouse;
 // <DraggableCore> is for advanced usage of <Draggable>. It maintains minimal internal state so it can
 // work well with libraries that require more control over the element.
 //
-class DraggableCore extends React__default.Component {
+class DraggableCore extends React__default.Component
+/*:: <DraggableCoreProps, DraggableCoreState>*/
+{
   constructor(...args) {
     super(...args);
 
@@ -7719,6 +7725,8 @@ class DraggableCore extends React__default.Component {
       lastY: NaN,
       touchIdentifier: null
     });
+
+    _defineProperty$1(this, "mounted", false);
 
     _defineProperty$1(this, "handleDragStart", e => {
       // Make it possible to attach event handlers on top of this one.
@@ -7738,10 +7746,13 @@ class DraggableCore extends React__default.Component {
 
       if (this.props.disabled || !(e.target instanceof ownerDocument.defaultView.Node) || this.props.handle && !matchesSelectorAndParentsTo(e.target, this.props.handle, thisNode) || this.props.cancel && matchesSelectorAndParentsTo(e.target, this.props.cancel, thisNode)) {
         return;
-      } // Set touch identifier in component state if this is a touch event. This allows us to
+      } // Prevent scrolling on mobile devices, like ipad/iphone.
+      // Important that this is after handle/cancel.
+
+
+      if (e.type === 'touchstart') e.preventDefault(); // Set touch identifier in component state if this is a touch event. This allows us to
       // distinguish between individual touches on multitouch screens by identifying which
       // touchpoint was set to this element.
-
 
       const touchIdentifier = getTouchIdentifier(e);
       this.setState({
@@ -7760,7 +7771,7 @@ class DraggableCore extends React__default.Component {
 
       log('calling', this.props.onStart);
       const shouldUpdate = this.props.onStart(e, coreEvent);
-      if (shouldUpdate === false) return; // Add a style to the body to disable user-select. This prevents text from
+      if (shouldUpdate === false || this.mounted === false) return; // Add a style to the body to disable user-select. This prevents text from
       // being selected all over the page.
 
       if (this.props.enableUserSelectHack) addUserSelectStyles(ownerDocument); // Initiate dragging. Set the current x and y as offsets
@@ -7780,9 +7791,7 @@ class DraggableCore extends React__default.Component {
     });
 
     _defineProperty$1(this, "handleDrag", e => {
-      // Prevent scrolling on mobile devices, like ipad/iphone.
-      if (e.type === 'touchmove') e.preventDefault(); // Get the current drag point from the event. This is used as the offset.
-
+      // Get the current drag point from the event. This is used as the offset.
       const position = getControlPosition(e, this.state.touchIdentifier, this);
       if (position == null) return;
       let {
@@ -7803,7 +7812,7 @@ class DraggableCore extends React__default.Component {
 
       const shouldUpdate = this.props.onDrag(e, coreEvent);
 
-      if (shouldUpdate === false) {
+      if (shouldUpdate === false || this.mounted === false) {
         try {
           // $FlowIgnore
           this.handleDragStop(new MouseEvent('mouseup'));
@@ -7837,7 +7846,10 @@ class DraggableCore extends React__default.Component {
         x,
         y
       } = position;
-      const coreEvent = createCoreData(this, x, y);
+      const coreEvent = createCoreData(this, x, y); // Call event handler
+
+      const shouldContinue = this.props.onStop(e, coreEvent);
+      if (shouldContinue === false || this.mounted === false) return false;
       const thisNode = ReactDOM.findDOMNode(this);
 
       if (thisNode) {
@@ -7849,9 +7861,7 @@ class DraggableCore extends React__default.Component {
         dragging: false,
         lastX: NaN,
         lastY: NaN
-      }); // Call event handler
-
-      this.props.onStop(e, coreEvent);
+      });
 
       if (thisNode) {
         removeEvent(thisNode.ownerDocument, dragEventFor.move, this.handleDrag);
@@ -7883,9 +7893,23 @@ class DraggableCore extends React__default.Component {
     });
   }
 
+  componentDidMount() {
+    this.mounted = true; // Touch handlers must be added with {passive: false} to be cancelable.
+    // https://developers.google.com/web/updates/2017/01/scrolling-intervention
+
+    const thisNode = ReactDOM.findDOMNode(this);
+
+    if (thisNode) {
+      addEvent(thisNode, eventsFor.touch.start, this.onTouchStart, {
+        passive: false
+      });
+    }
+  }
+
   componentWillUnmount() {
-    // Remove any leftover event handlers. Remove both touch and mouse handlers in case
+    this.mounted = false; // Remove any leftover event handlers. Remove both touch and mouse handlers in case
     // some browser quirk caused a touch event to fire during a mouse move, or vice versa.
+
     const thisNode = ReactDOM.findDOMNode(this);
 
     if (thisNode) {
@@ -7896,6 +7920,9 @@ class DraggableCore extends React__default.Component {
       removeEvent(ownerDocument, eventsFor.touch.move, this.handleDrag);
       removeEvent(ownerDocument, eventsFor.mouse.stop, this.handleDragStop);
       removeEvent(ownerDocument, eventsFor.touch.stop, this.handleDragStop);
+      removeEvent(thisNode, eventsFor.touch.start, this.onTouchStart, {
+        passive: false
+      });
       if (this.props.enableUserSelectHack) removeUserSelectStyles(ownerDocument);
     }
   }
@@ -7904,12 +7931,13 @@ class DraggableCore extends React__default.Component {
     // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
     return React__default.cloneElement(React__default.Children.only(this.props.children), {
-      style: styleHacks(this.props.children.props.style),
       // Note: mouseMove handler is attached to document so it will still function
       // when the user drags quickly and leaves the bounds of the element.
       onMouseDown: this.onMouseDown,
-      onTouchStart: this.onTouchStart,
       onMouseUp: this.onMouseUp,
+      // onTouchStart is added on `componentDidMount` so they can be added with
+      // {passive: false}, which allows it to cancel. See 
+      // https://developers.google.com/web/updates/2017/01/scrolling-intervention
       onTouchEnd: this.onTouchEnd
     });
   }
@@ -8089,7 +8117,9 @@ function _defineProperty$2(obj, key, value) { if (key in obj) { Object.definePro
 //
 // Define <Draggable>
 //
-class Draggable extends React__default.Component {
+class Draggable extends React__default.Component
+/*:: <DraggableProps, DraggableState>*/
+{
   // React 16.3+
   // Arity (props, state)
   static getDerivedStateFromProps({
@@ -8174,8 +8204,8 @@ class Draggable extends React__default.Component {
     _defineProperty$2(this, "onDragStop", (e, coreData) => {
       if (!this.state.dragging) return false; // Short-circuit if user's callback killed it.
 
-      const shouldStop = this.props.onStop(e, createDraggableData(this, coreData));
-      if (shouldStop === false) return false;
+      const shouldContinue = this.props.onStop(e, createDraggableData(this, coreData));
+      if (shouldContinue === false) return false;
       const newState
       /*: $Shape<DraggableState>*/
       = {
@@ -8283,7 +8313,7 @@ class Draggable extends React__default.Component {
     }); // Reuse the child provided
     // This makes it flexible to use whatever element is wanted (div, ul, etc)
 
-    return React__default.createElement(DraggableCore, _extends$1({}, draggableCoreProps, {
+    return /*#__PURE__*/React__default.createElement(DraggableCore, _extends$1({}, draggableCoreProps, {
       onStart: this.onDragStart,
       onDrag: this.onDrag,
       onStop: this.onDragStop
