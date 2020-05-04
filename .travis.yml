@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - 10
+  - 10.8
 
 addons:
   apt:
@@ -15,11 +15,12 @@ cache:
 
 install:
   - npm ci
+  - npm run cy:verify
+  - npm run cy:info
 
 before_script:
   - cd example && npm install
   - cd ..
-  - npm run dev &
 
 script:
-  - npm run cy:run
+  - npm run test

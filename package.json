@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "main": "dist/ReactFlow.js",
   "module": "dist/ReactFlow.esm.js",
-  "private": true,
   "dependencies": {
     "@svgr/rollup": "^5.3.0",
     "@welldone-software/why-did-you-render": "^4.1.3",
