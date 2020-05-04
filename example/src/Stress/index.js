@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { removeElements, addEdge, MiniMap } from 'react-flow';
+import Graph, { removeElements, addEdge, MiniMap } from 'react-flow-renderer';
 import { getElements } from './utils';
 
 const onLoad = graph => {

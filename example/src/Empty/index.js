@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { removeElements, addEdge, MiniMap, Controls } from 'react-flow';
+import Graph, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onLoad = graphInstance => console.log('graph loaded:', graphInstance);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { MiniMap, Controls } from 'react-flow';
+import Graph, { MiniMap, Controls } from 'react-flow-renderer';
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },

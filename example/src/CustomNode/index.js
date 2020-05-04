@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import Graph, { isEdge, removeElements, addEdge, MiniMap, Controls } from 'react-flow';
+import Graph, { isEdge, removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
 
 import ColorSelectorNode from './ColorSelectorNode';
 

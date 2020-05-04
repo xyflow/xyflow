@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Handle } from 'react-flow';
+import { Handle } from 'react-flow-renderer';
 
 export default ({ data, styles }) => {
   return (
