@@ -33,7 +33,7 @@
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
-    "rollup": "^2.3.2",
+    "rollup": "^2.7.6",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",
