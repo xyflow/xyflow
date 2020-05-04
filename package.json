@@ -1,8 +1,13 @@
 {
-  "name": "react-flow",
+  "name": "react-flow-renderer",
   "version": "1.0.1",
   "main": "dist/ReactFlow.js",
   "module": "dist/ReactFlow.esm.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git"
+  },
   "dependencies": {
     "@svgr/rollup": "^5.3.0",
     "@welldone-software/why-did-you-render": "^4.1.3",

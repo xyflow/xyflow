@@ -21,7 +21,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 ## Installation
 
 ```
-npm install github:wbkd/react-flow
+npm install react-flow-renderer
 ```
 
 ## Usage
