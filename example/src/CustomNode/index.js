@@ -10,7 +10,7 @@ const onLoad = (graph) => {
   console.log('graph loaded:', graph);
 };
 
-const initBgColor = '#8888e8';
+const initBgColor = '#f0e742';
 
 const CustomNodeGraph = () => {
   const [elements, setElements] = useState([]);
