@@ -15,8 +15,6 @@ cache:
 
 install:
   - npm ci
-  - npm run cy:verify
-  - npm run cy:info
 
 before_script:
   - cd example && npm install
