@@ -30,7 +30,7 @@ This is a very basic example of how to use react-flow. There are more advanced e
 
 ```javascript
 import React from 'react';
-import Graph from 'react-flow-renderer';
+import ReactFlow from 'react-flow-renderer';
 
 const elements = [
   { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -41,7 +41,7 @@ const elements = [
 const graphStyles = { width: '100%', height: '100%' };
 
 const BasicGraph = () => (
-  <Graph elements={elements} style={graphStyles} />
+  <ReactFlow elements={elements} style={graphStyles} />
 );
 ```
 
