@@ -200,10 +200,10 @@ const GraphWithControls = () => (
 
 ## Examples
 
-You can find all examples in the [example](example) folder. They are also deployt:
+You can find all examples in the [example](example) folder or check out the live versions:
 
-- [rich](https://react-flow.netlify.com/rich)
-- [basic](https://react-flow.netlify.com/basic)
-- [empty](https://react-flow.netlify.com/empty)
-- [inactive](https://react-flow.netlify.com/inactive)
-- [custom node](https://react-flow.netlify.com/custom-node)
+- [rich](https://react-flow.netlify.app/rich)
+- [basic](https://react-flow.netlify.app/basic)
+- [empty](https://react-flow.netlify.app/empty)
+- [inactive](https://react-flow.netlify.app/inactive)
+- [custom node](https://react-flow.netlify.app/custom-node)
