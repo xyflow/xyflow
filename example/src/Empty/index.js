@@ -37,7 +37,7 @@ const EmptyGraph = () => {
     <button
       type="button"
       onClick={addRandomNode}
-      style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
+      style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}
     >
       add node
     </button>

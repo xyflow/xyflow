@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, NavLink, withRouter } from 'react-router-dom';
 
 import Rich from './Rich';
 import Basic from './Basic';
@@ -26,7 +26,7 @@ const routes = [{
 }, {
   path: '/stress',
   component: Stress,
-  label: 'StressTest'
+  label: 'Stress'
 }, {
   path: '/empty',
   component: Empty
@@ -37,10 +37,21 @@ const routes = [{
 
 const navLinks = routes.filter(route => route.label);
 
+const SourceDisplay = withRouter(({ location }) => {
+  const route = routes.find(route => route.path === location.pathname);
+  const sourceLink = `https://github.com/wbkd/react-flow/tree/master/example/src/${route.label}/index.js`;
+
+  return (
+    <a className="sourcedisplay" href={sourceLink}>
+     {'<Source />'}
+    </a>
+  );
+});
+
 ReactDOM.render((
   <Router forceRefresh={true}>
     <header>
-      <div>React Flow Examples</div>
+      <a href="https://github.com/wbkd/react-flow">React Flow</a>
       <nav>
         {navLinks.map(route => (
           <NavLink to={route.path} key={route.label} exact>
@@ -49,6 +60,7 @@ ReactDOM.render((
         ))}
       </nav>
     </header>
+    <SourceDisplay />
     <Switch>
       {routes.map(route => (
         <Route exact path={route.path} render={() => <route.component />} key={route.path} />

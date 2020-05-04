@@ -25,6 +25,18 @@ header {
   font-weight: 700;
 }
 
+header a {
+  text-decoration: none;
+}
+
+header a, header a:focus, header a:active, header a:visited {
+  color: #111;
+}
+
+header a:hover {
+  color: #333;
+}
+
 header nav {
   font-weight: 400;
   margin-left: auto;
@@ -41,7 +53,7 @@ nav a {
   position: relative;
 }
 
-nav a, nav a:focus, nav a:active {
+nav a, nav a:focus, nav a:active, nav a:visited {
   color: #fff;
 }
 
@@ -60,4 +72,21 @@ nav a.active:before {
   left:0;
   top:50%;
   transform: translateY(-50%);
+}
+
+.sourcedisplay {
+  position: absolute;
+  top: 45px;
+  right: 15px;
+  z-index: 4;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.sourcedisplay, .sourcedisplay:focus, .sourcedisplay:active, .sourcedisplay:visited {
+  color: #777;
+}
+
+.sourcedisplay:hover {
+  color: #111;
 }
