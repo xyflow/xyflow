@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "main": "dist/ReactFlow.js",
   "module": "dist/ReactFlow.esm.js",
   "license": "MIT",
