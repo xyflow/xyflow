@@ -1,4 +1,4 @@
-![react-flow](https://user-images.githubusercontent.com/2857535/67417109-516ef000-f5c8-11e9-938a-c2121d3ebbe4.png)
+ ![react-flow](https://user-images.githubusercontent.com/2857535/67417109-516ef000-f5c8-11e9-938a-c2121d3ebbe4.png)
 
 # :ocean: React Flow
 
@@ -19,6 +19,8 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Minimap](#minimap)
   - [Controls](#controls)
 - [Examples](#examples)
+- [Development](#development)
+- [Testing](#testing)
 
 # Key Features
 
@@ -243,6 +245,24 @@ You can find all examples in the [example](example) folder or check out the live
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
 - [custom node](https://react-flow.netlify.app/custom-node)
+
+## Development
+
+If you want to contribute or develop some custom features the easiest way is to start the dev server:
+
+```
+npm run dev
+```
+
+This serves the content of the `examples` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
+
+## Testing
+
+Testing is done with cypress. You can find all test in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the test you can do:
+
+```
+npm run test
+```
 
 
 ## Thanks!
