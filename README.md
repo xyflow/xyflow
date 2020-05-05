@@ -13,6 +13,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Edges](#nodes)
   - [Props](#props-2)
   - [Edge Types / Custom Edges](#edge-types--custom-edges)
+- [Helper Functions](#helper-functions)
 - [Plugins](#plugins)
   - [Minimap](#minimap)
   - [Controls](#controls)
@@ -111,7 +112,6 @@ You can now use type `special` for a node.
 The `default`, `input` and `output` types will be still available except you overwrite one of them.
 You can find an example of how to implement a custom node in the [custom node example](example/src/CustomNode).
 
-
 ## Edges
 
 There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges).
@@ -150,6 +150,30 @@ edgeTypes={{
 
 You can now use type `special` for an edge.
 The `straight`, `default` and `step` types will be still available except you overwrite one of them.
+
+## Helper Functions
+
+If you want to remove a node or connect two nodes with each other you need to pass a function to the `onElementsRemove` or the `onConnect`. In order to simplify this process we are exporting some helper functions so that you don't need to implement them by yourself:
+
+```javascript
+import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-renderer';
+```
+
+#### isEdge
+
+`isEdge = (element: Node | Edge): boolean`
+
+#### isNode
+
+`isNode = (element: Node | Edge): boolean`
+
+#### removeElements
+
+`removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
+
+#### addEdge
+
+`addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
 ## Plugins
 
