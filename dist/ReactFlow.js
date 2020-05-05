@@ -9172,9 +9172,10 @@ var ResizeObserver_2 = ResizeObserver_1.ResizeObserver;
 var ResizeObserver_3 = ResizeObserver_1.install;
 
 var onStart = function (evt, onClick, id, type, data, setOffset, transform, position) {
+    var startEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
     var scaledClient = {
-        x: evt.clientX * (1 / transform[2]),
-        y: evt.clientY * (1 / transform[2]),
+        x: startEvt.clientX * (1 / transform[2]),
+        y: startEvt.clientY * (1 / transform[2]),
     };
     var offsetX = scaledClient.x - position.x - transform[0];
     var offsetY = scaledClient.y - position.y - transform[1];
@@ -9184,9 +9185,10 @@ var onStart = function (evt, onClick, id, type, data, setOffset, transform, posi
     onClick(node);
 };
 var onDrag = function (evt, setDragging, id, offset, transform) {
+    var dragEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
     var scaledClient = {
-        x: evt.clientX * (1 / transform[2]),
-        y: evt.clientY * (1 / transform[2]),
+        x: dragEvt.clientX * (1 / transform[2]),
+        y: dragEvt.clientY * (1 / transform[2]),
     };
     setDragging(true);
     store.dispatch.updateNodePos({

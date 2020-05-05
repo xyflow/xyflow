@@ -155,7 +155,7 @@ const BaseHandle = memo(
         data-nodeid={nodeIdWithHandleId}
         data-handlepos={position}
         className={handleClasses}
-        onMouseDown={evt =>
+        onMouseDown={(evt) =>
           onMouseDown(evt, nodeIdWithHandleId, setSourceId, setPosition, onConnect, isTarget, isValidConnection)
         }
         {...rest}

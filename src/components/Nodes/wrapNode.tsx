@@ -8,7 +8,7 @@ import store from '../../store';
 import { Node, XYPosition, Transform, ElementId, NodeComponentProps, WrapNodeProps } from '../../types';
 
 const onStart = (
-  evt: MouseEvent,
+  evt: MouseEvent | TouchEvent,
   onClick: (node: Node) => void,
   id: ElementId,
   type: string,
@@ -17,9 +17,11 @@ const onStart = (
   transform: Transform,
   position: XYPosition
 ): false | void => {
+  const startEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
+
   const scaledClient: XYPosition = {
-    x: evt.clientX * (1 / transform[2]),
-    y: evt.clientY * (1 / transform[2]),
+    x: startEvt.clientX * (1 / transform[2]),
+    y: startEvt.clientY * (1 / transform[2]),
   };
   const offsetX = scaledClient.x - position.x - transform[0];
   const offsetY = scaledClient.y - position.y - transform[1];
@@ -31,15 +33,17 @@ const onStart = (
 };
 
 const onDrag = (
-  evt: MouseEvent,
+  evt: MouseEvent | TouchEvent,
   setDragging: (isDragging: boolean) => void,
   id: ElementId,
   offset: XYPosition,
   transform: Transform
 ): void => {
+  const dragEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
+
   const scaledClient = {
-    x: evt.clientX * (1 / transform[2]),
-    y: evt.clientY * (1 / transform[2]),
+    x: dragEvt.clientX * (1 / transform[2]),
+    y: dragEvt.clientY * (1 / transform[2]),
   };
 
   setDragging(true);
@@ -111,7 +115,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         if (nodeElement.current) {
           updateNode();
 
-          const resizeObserver = new ResizeObserver(entries => {
+          const resizeObserver = new ResizeObserver((entries) => {
             for (let _ of entries) {
               updateNode();
             }
@@ -131,8 +135,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
       return (
         <DraggableCore
-          onStart={evt => onStart(evt as MouseEvent, onClick, id, type, data, setOffset, transform, position)}
-          onDrag={evt => onDrag(evt as MouseEvent, setDragging, id, offset, transform)}
+          onStart={(evt) => onStart(evt as MouseEvent, onClick, id, type, data, setOffset, transform, position)}
+          onDrag={(evt) => onDrag(evt as MouseEvent, setDragging, id, offset, transform)}
           onStop={() => onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data)}
           scale={transform[2]}
           disabled={!isInteractive}
