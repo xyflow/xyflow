@@ -9171,8 +9171,11 @@ unwrapExports(ResizeObserver_1);
 var ResizeObserver_2 = ResizeObserver_1.ResizeObserver;
 var ResizeObserver_3 = ResizeObserver_1.install;
 
+var getMouseEvent = function (evt) {
+    return typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : evt;
+};
 var onStart = function (evt, onClick, id, type, data, setOffset, transform, position) {
-    var startEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
+    var startEvt = getMouseEvent(evt);
     var scaledClient = {
         x: startEvt.clientX * (1 / transform[2]),
         y: startEvt.clientY * (1 / transform[2]),
@@ -9185,7 +9188,7 @@ var onStart = function (evt, onClick, id, type, data, setOffset, transform, posi
     onClick(node);
 };
 var onDrag = function (evt, setDragging, id, offset, transform) {
-    var dragEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
+    var dragEvt = getMouseEvent(evt);
     var scaledClient = {
         x: dragEvt.clientX * (1 / transform[2]),
         y: dragEvt.clientY * (1 / transform[2]),

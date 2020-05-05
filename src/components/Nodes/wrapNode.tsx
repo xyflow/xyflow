@@ -7,6 +7,9 @@ import { Provider } from '../../contexts/NodeIdContext';
 import store from '../../store';
 import { Node, XYPosition, Transform, ElementId, NodeComponentProps, WrapNodeProps } from '../../types';
 
+const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
+  typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : (evt as MouseEvent);
+
 const onStart = (
   evt: MouseEvent | TouchEvent,
   onClick: (node: Node) => void,
@@ -17,7 +20,7 @@ const onStart = (
   transform: Transform,
   position: XYPosition
 ): false | void => {
-  const startEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
+  const startEvt = getMouseEvent(evt);
 
   const scaledClient: XYPosition = {
     x: startEvt.clientX * (1 / transform[2]),
@@ -39,7 +42,7 @@ const onDrag = (
   offset: XYPosition,
   transform: Transform
 ): void => {
-  const dragEvt = evt instanceof TouchEvent ? evt.touches[0] : evt;
+  const dragEvt = getMouseEvent(evt);
 
   const scaledClient = {
     x: dragEvt.clientX * (1 / transform[2]),
