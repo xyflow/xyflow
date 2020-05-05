@@ -175,6 +175,8 @@ import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
+You can use these function to update your state as seen in [this example](/example/src/Rich/index.js#L40-L41).
+
 ## Plugins
 
 ### MiniMap
