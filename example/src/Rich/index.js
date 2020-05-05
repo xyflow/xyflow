@@ -69,7 +69,7 @@ const RichGraph = () => {
       <button
         type="button"
         onClick={addRandomNode}
-        style={{ position: 'absolute', left: 15, top: 10, zIndex: 4 }}
+        style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
       >
         add node
       </button>

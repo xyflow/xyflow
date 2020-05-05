@@ -2,8 +2,9 @@
 
 # :ocean: React Flow
 
-React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with  plugins like a MiniMap and a Controls Panel. Check out the [demo](https://react-flow.netlify.com/) graph.
+React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with plugins like a mini-map and graph controls. You can check out the [examples](https://react-flow.netlify.com/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
 
+- [Key Features](#key-features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Props](#props)
@@ -18,6 +19,15 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Minimap](#minimap)
   - [Controls](#controls)
 - [Examples](#examples)
+
+# Key Features
+
+* **Easy to use:** Seamless zooming & panning behaviour and single and multi-selections of elements
+* **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes and edges
+* **Fast rendering:** only elements that are in the view port are displayed
+* **Utils:** Snap-to-grid behaviour, background styles and graph [helper functions](#helper-functions)
+* **Plugin system:** [Mini map and graph controls](#plugins)
+* **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
 ## Installation
 
@@ -233,3 +243,8 @@ You can find all examples in the [example](example) folder or check out the live
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
 - [custom node](https://react-flow.netlify.app/custom-node)
+
+
+## Thanks!
+
+Special thanks to [Andy Lindemann](https://github.com/AndyLnd) for a lot of helpful contributions!
