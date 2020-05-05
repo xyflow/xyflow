@@ -7,7 +7,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Key Features](#key-features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Props](#props)
+- [ReactFlow Component Props](#reactflow-component-props)
 - [Nodes](#nodes)
   - [Props](#props-1)
   - [Node Types / Custom Nodes](#node-types--custom-nodes)
@@ -58,7 +58,7 @@ const BasicGraph = () => (
 );
 ```
 
-## Props
+## ReactFlow Component Props
 
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
 - `onElementClick`: element click handler
