@@ -2,7 +2,7 @@
 
 # :ocean: React Flow
 
-React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with plugins like a mini-map and graph controls. You can check out the [examples](https://react-flow.netlify.com/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
+React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with plugins like a mini-map and graph controls. Feel free to check out the [examples](https://react-flow.netlify.com/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
 
 - [Key Features](#key-features)
 - [Installation](#installation)
@@ -27,7 +27,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 * **Easy to use:** Seamless zooming & panning behaviour and single and multi-selections of elements
 * **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes and edges
 * **Fast rendering:** only elements that are in the view port are displayed
-* **Utils:** Snap-to-grid behaviour, background styles and graph [helper functions](#helper-functions)
+* **Utils:** Snap-to-grid, background styles and graph [helper functions](#helper-functions)
 * **Plugin system:** [Mini map and graph controls](#plugins)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
@@ -112,7 +112,7 @@ The standard node types are `input`, `default` and `output`. The default node ty
 ```
 
 The keys represent the type names and the values are the node components that gets rendered.
-If you want to introduce a new node type you can pass a node types object like this:
+If you want to introduce a new node type you can pass a `nodeTypes` object to the React Flow component:
 
 ```javascript
 nodeTypes={{
@@ -133,15 +133,15 @@ Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animate
 ### Props
 
 - `id`: string *(required)*
-- `source`: string *(required)*
-- `target`: string *(required)*
+- `source`: string (an id of a node) *(required)*
+- `target`: string (an id of a node) *(required)*
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `animated`: boolean
 - `style`: css properties
 
 ### Edge Types / Custom Edges
 
-The standard edge types are `straight`, `default` and `step`. The default edge types object looks like this:
+The basic edge types are `straight`, `default` and `step`. The default `edgeTypes` object looks like this:
 
 ```javascript
 {
@@ -151,8 +151,8 @@ The standard edge types are `straight`, `default` and `step`. The default edge t
 }
 ```
 
-The keys represents the type name and the value is the edge component.
-If you want to introduce a new edge type you can pass a edge types object like this:
+The keys represents the type names and the values are the edge components.
+If you want to introduce a new edge type you can pass an `edgeTypes` object to the React Flow component:
 
 ```javascript
 edgeTypes={{
@@ -165,7 +165,7 @@ The `straight`, `default` and `step` types will be still available except you ov
 
 ## Helper Functions
 
-If you want to remove a node or connect two nodes with each other you need to pass a function to the `onElementsRemove` or the `onConnect`. In order to simplify this process we are exporting some helper functions so that you don't need to implement them by yourself:
+If you want to remove a node or connect two nodes with each other you need to pass a function to `onElementsRemove` or `onConnect`. In order to simplify this process we are exporting some helper functions so that you don't need to implement them by yourself:
 
 ```javascript
 import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-renderer';
@@ -187,23 +187,23 @@ import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
-You can use these function to update your state as seen in [this example](/example/src/Rich/index.js#L40-L41).
+You can use these function as seen in [this example](/example/src/Rich/index.js#L40-L41) or implement them by yourself to update your elements.
 
 ## Plugins
 
 ### MiniMap
 
-You can use the MiniMap plugin by passing it as a children of you graph:
+You can use the MiniMap plugin by passing it as a children to the React Flow component:
 
 ```javascript
-import Graph, { MiniMap } from 'react-flow';
+import ReactFlow, { MiniMap } from 'react-flow-renderer';
 
 const GraphWithMiniMap = () => (
-  <Graph
+  <ReactFlow
     elements={elements}
   >
     <MiniMap />
-  </Graph>
+  </ReactFlow>
 );
 ```
 
@@ -217,17 +217,17 @@ const GraphWithMiniMap = () => (
 
 ### Controls
 
-The control panel contains a zoom-in, zoom-out and a fit-view button. You can use it by passing it as children to your graph:
+The control panel contains a zoom-in, zoom-out and a fit-view button. You can use it by passing it as a children to your React Flow component:
 
 ```javascript
-import Graph, { Controls } from 'react-flow';
+import ReactFlow, { Controls } from 'react-flow-renderer';
 
 const GraphWithControls = () => (
-  <Graph
+  <ReactFlow
     elements={elements}
   >
     <Controls />
-  </Graph>
+  </ReactFlow>
 );
 ```
 
@@ -242,9 +242,10 @@ You can find all examples in the [example](example) folder or check out the live
 
 - [rich](https://react-flow.netlify.app/rich)
 - [basic](https://react-flow.netlify.app/basic)
+- [custom node](https://react-flow.netlify.app/custom-node)
+- [stress](https://react-flow.netlify.app/stress)
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
-- [custom node](https://react-flow.netlify.app/custom-node)
 
 ## Development
 
@@ -258,7 +259,7 @@ This serves the content of the `examples` folder and watches changes inside the 
 
 ## Testing
 
-Testing is done with cypress. You can find all test in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the test you can do:
+Testing is done with cypress. You can find all test in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the test do:
 
 ```
 npm run test
