@@ -33,7 +33,7 @@ export default ({
   const handleId = hasHandleId ? sourceIdSplitted[1] : null;
 
   useEffect(() => {
-    const nextSourceNode = nodes.find(n => n.id === nodeId) || null;
+    const nextSourceNode = nodes.find((n) => n.id === nodeId) || null;
     setSourceNode(nextSourceNode);
   }, []);
 
@@ -42,10 +42,14 @@ export default ({
   }
 
   const edgeClasses: string = cx('react-flow__edge', 'connection', className);
+  const hasSource = sourceNode.__rg.handleBounds.source !== null;
+
+  // output nodes don't have source handles so we need to use the target one
+  const handleKey = hasSource ? 'source' : 'target';
 
   const sourceHandle = handleId
-    ? sourceNode.__rg.handleBounds.source.find((d: HandleElement) => d.id === handleId)
-    : sourceNode.__rg.handleBounds.source[0];
+    ? sourceNode.__rg.handleBounds[handleKey].find((d: HandleElement) => d.id === handleId)
+    : sourceNode.__rg.handleBounds[handleKey][0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;
