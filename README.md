@@ -242,7 +242,7 @@ const GraphWithControls = () => (
 
 You can find all examples in the [example](example) folder or check out the live versions:
 
-- [rich](https://react-flow.netlify.app/rich)
+- [rich](https://react-flow.netlify.app/)
 - [basic](https://react-flow.netlify.app/basic)
 - [custom node](https://react-flow.netlify.app/custom-node)
 - [stress](https://react-flow.netlify.app/stress)
