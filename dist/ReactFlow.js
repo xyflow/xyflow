@@ -6765,9 +6765,12 @@ var ConnectionLine = (function (_a) {
         return null;
     }
     var edgeClasses = classnames('react-flow__edge', 'connection', className);
+    var hasSource = sourceNode.__rg.handleBounds.source !== null;
+    // output nodes don't have source handles so we need to use the target one
+    var handleKey = hasSource ? 'source' : 'target';
     var sourceHandle = handleId
-        ? sourceNode.__rg.handleBounds.source.find(function (d) { return d.id === handleId; })
-        : sourceNode.__rg.handleBounds.source[0];
+        ? sourceNode.__rg.handleBounds[handleKey].find(function (d) { return d.id === handleId; })
+        : sourceNode.__rg.handleBounds[handleKey][0];
     var sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
     var sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
     var sourceX = sourceNode.__rg.position.x + sourceHandleX;

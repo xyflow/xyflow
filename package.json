@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "dist/ReactFlow.js",
   "module": "dist/ReactFlow.esm.js",
   "license": "MIT",
@@ -32,7 +32,6 @@
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
     "cypress": "^4.5.0",
-    "husky": "^4.2.5",
     "postcss-nested": "^4.2.1",
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
@@ -68,9 +67,6 @@
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
     "test": "npm run dev:wait cy:run"
-  },
-  "husky": {
-    "hooks": {}
   },
   "files": [
     "dist"
