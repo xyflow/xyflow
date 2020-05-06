@@ -31,6 +31,8 @@ React Flow is a library for building node-based graphs. You can easily implement
 * **Plugin system:** [Mini map and graph controls](#plugins)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
+In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass all functions that change the displayed nodes and edges by yourself. You can implement your own ones or use the helper functions that come with the library. 
+
 ## Installation
 
 ```
