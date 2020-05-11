@@ -40,9 +40,9 @@ declare const ReactFlow: {
             output: ({ data, style, targetPosition }: import("../../types").NodeProps) => JSX.Element;
         };
         edgeTypes: {
-            default: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style, }: import("../../types").EdgeBezierProps) => JSX.Element>;
-            straight: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, style }: import("../../types").EdgeProps) => JSX.Element>;
-            step: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, style }: import("../../types").EdgeProps) => JSX.Element>;
+            default: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, label, labelStyle, labelShowBg, labelBgStyle, style, }: import("../../types").EdgeBezierProps) => JSX.Element>;
+            straight: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, style }: import("../../types").EdgeProps) => JSX.Element>;
+            step: React.MemoExoticComponent<({ sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, style }: import("../../types").EdgeProps) => JSX.Element>;
         };
         connectionLineType: string;
         connectionLineStyle: {};
