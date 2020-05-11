@@ -52,7 +52,7 @@
     "rollup-plugin-visualizer": "^4.0.4",
     "start-server-and-test": "^1.11.0",
     "typescript": "^3.8.3",
-    "wait-on": "^4.0.2"
+    "wait-on": "^5.0.0"
   },
   "peerDependencies": {
     "react": "^16.13.1"
