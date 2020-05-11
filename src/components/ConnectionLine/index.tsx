@@ -41,7 +41,7 @@ export default ({
     return null;
   }
 
-  const edgeClasses: string = cx('react-flow__edge', 'connection', className);
+  const edgeClasses: string = cx('react-flow__edge', 'react-flow__connection', className);
   const hasSource = sourceNode.__rg.handleBounds.source !== null;
 
   // output nodes don't have source handles so we need to use the target one

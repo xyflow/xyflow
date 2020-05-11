@@ -52,11 +52,12 @@
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }
+}
 
-  &.connection {
-    stroke: '#ddd';
-    pointer-events: none;
-  }
+.react-flow__connection {
+  fill: none;
+  stroke: '#ddd';
+  pointer-events: none;
 }
 
 .react-flow__edge-path {
