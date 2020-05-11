@@ -9,6 +9,19 @@
     "type": "git",
     "url": "https://github.com/wbkd/react-flow.git"
   },
+  "scripts": {
+    "build": "rollup -c --environment NODE_ENV:production",
+    "start": "rollup -w -c",
+    "dev": "npm run build && npm start & cd example && npm start",
+    "start:examples": "npm run build && cd example && npm start",
+    "dev:wait": "start-server-and-test start:examples http-get://localhost:3000",
+    "build:example": "npm install && npm run build && cd example && npm install && npm run build",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open",
+    "cypress": "npm run dev:wait cy:open",
+    "test": "npm run dev:wait cy:run",
+    "release": "release-it"
+  },
   "dependencies": {
     "@welldone-software/why-did-you-render": "^4.2.0",
     "classnames": "^2.2.6",
@@ -55,18 +68,6 @@
   },
   "peerDependencies": {
     "react": "^16.13.1"
-  },
-  "scripts": {
-    "build": "rollup -c --environment NODE_ENV:production",
-    "start": "rollup -w -c",
-    "dev": "npm run build && npm start & cd example && npm start",
-    "dev:wait": "start-server-and-test dev http-get://localhost:3000",
-    "build:example": "npm install && npm run build && cd example && npm install && npm run build",
-    "cy:run": "cypress run",
-    "cy:open": "cypress open",
-    "cypress": "npm run dev:wait cy:open",
-    "test": "npm run dev:wait cy:run",
-    "release": "release-it"
   },
   "files": [
     "dist"

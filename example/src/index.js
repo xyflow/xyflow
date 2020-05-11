@@ -9,6 +9,7 @@ import Stress from './Stress';
 import Inactive from './Inactive';
 import Empty from './Empty';
 import Edges from './Edges';
+import Horizontal from './Horizontal';
 
 import './index.css';
 
@@ -28,6 +29,10 @@ const routes = [{
   path: '/custom-node',
   component: CustomNode,
   label: 'CustomNode'
+}, {
+  path: '/horizontal',
+  component: Horizontal,
+  label: 'Horizontal'
 }, {
   path: '/stress',
   component: Stress,

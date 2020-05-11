@@ -49,7 +49,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
 const ReactFlow = ({
   style,
   onElementClick,
-  elements,
+  elements = [],
   children,
   nodeTypes,
   edgeTypes,

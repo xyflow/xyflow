@@ -13,7 +13,7 @@ describe('Empty Flow Rendering', () => {
       .get('.react-flow__selectionpane')
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
       .trigger('mousemove', 'bottomRight', { which: 1 })
-      .trigger('mouseup', 'bottomRight', { force: true })
+      .trigger('mouseup', 'bottomRight', { force: true });
   });
 
   it('renders a control panel', () => {
@@ -32,6 +32,10 @@ describe('Empty Flow Rendering', () => {
     cy.get('.react-flow__controls-fitview').click();
   });
 
+  it('uses lock view control', () => {
+    cy.get('.react-flow__controls-interactive').click();
+  });
+
   it('renders an empty mini map', () => {
     cy.get('.react-flow__minimap');
     cy.get('.react-flow__minimap-node').should('not.exist');
@@ -43,10 +47,7 @@ describe('Empty Flow Rendering', () => {
   });
 
   it('connects nodes', () => {
-    cy.get('.react-flow__node')
-      .first()
-      .find('.react-flow__handle.source')
-      .trigger('mousedown', { which: 1 });
+    cy.get('.react-flow__node').first().find('.react-flow__handle.source').trigger('mousedown', { which: 1 });
 
     cy.get('.react-flow__node')
       .last()

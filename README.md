@@ -199,6 +199,7 @@ edgeTypes={{
 
 You can now use type `special` for an edge.
 The `straight`, `default` and `step` types will be still available except you overwrite one of them.
+There is an implementation of a custom edge in the [edges example](/example/src/Edges/index.js).
 
 ## Helper Functions
 
@@ -254,7 +255,7 @@ const GraphWithMiniMap = () => (
 
 ### Controls
 
-The control panel contains a zoom-in, zoom-out and a fit-view button. You can use it by passing it as a children to your React Flow component:
+The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the React Flow component:
 
 ```javascript
 import ReactFlow, { Controls } from 'react-flow-renderer';
@@ -272,6 +273,9 @@ const GraphWithControls = () => (
 
 - `style`: css properties
 - `className`: class name
+- `showZoom`: boolean - default: true
+- `showFitView`: boolean - default: true
+- `showInteractive`: boolean - default: true
 
 ## Examples
 
@@ -280,6 +284,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [rich](https://react-flow.netlify.app/)
 - [basic](https://react-flow.netlify.app/basic)
 - [custom node](https://react-flow.netlify.app/custom-node)
+- [horizontal](https://react-flow.netlify.app/horizontal)
 - [stress](https://react-flow.netlify.app/stress)
 - [edges](https://react-flow.netlify.app/edges)
 - [empty](https://react-flow.netlify.app/empty)
