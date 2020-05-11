@@ -89,6 +89,11 @@ const GraphView = memo(
       }
 
       const size = getDimensions(rendererNode.current);
+
+      if (size.height === 0 || size.width === 0) {
+        throw new Error('The React Flow parent container needs a width and a height to render the graph.');
+      }
+
       updateSize(size);
     };
 
