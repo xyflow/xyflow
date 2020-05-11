@@ -8,6 +8,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Installation](#installation)
 - [Usage](#usage)
 - [ReactFlow Component Props](#reactflow-component-props)
+- [Styling](#styling)
 - [Nodes](#nodes)
   - [Props](#props-1)
   - [Node Types / Custom Nodes](#node-types--custom-nodes)
@@ -84,6 +85,34 @@ const BasicGraph = () => (
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
 - `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
+
+## Styling
+
+There are two ways how you can style the graph and the elements.
+You can create your own CSS rules or pass style properties to the components.
+
+#### Using classnames
+
+Since we are using DOM nodes for rendering the chart you can simply overwrite the styles with your own CSS rules.
+The React Flow wrapper has the className `react-flow`. So if you want to change the graph background for example you can do:
+
+```css
+.react-flow {
+  background: red;
+}
+```
+
+The same applies to the nodes (className: `react-flow__node`) and edges (className: `react-flow__edge`).
+
+
+#### Using properties
+
+You could achieve the same effect by passing a style prop to the React Flow component:
+
+```
+<ReactFlow elements={element} style={{ background: 'red', width: '100%' height: '300px' }}/>
+```
+
 
 ## Nodes
 
