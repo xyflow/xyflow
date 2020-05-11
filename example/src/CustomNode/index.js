@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import Graph, { isEdge, removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { isEdge, removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
 
 import ColorSelectorNode from './ColorSelectorNode';
 
@@ -53,7 +53,7 @@ const CustomNodeGraph = () => {
   const onConnect = (params) => setElements(els => addEdge(params, els));
 
   return (
-    <Graph
+    <ReactFlow
       elements={elements}
       onElementClick={onElementClick}
       onElementsRemove={onElementsRemove}
@@ -79,7 +79,7 @@ const CustomNodeGraph = () => {
         }}
       />
       <Controls />
-    </Graph>
+    </ReactFlow>
   );
 }
 

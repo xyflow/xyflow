@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onLoad = graphInstance => console.log('graph loaded:', graphInstance);
@@ -22,7 +22,7 @@ const EmptyGraph = () => {
   };
 
   return (
-    <Graph
+    <ReactFlow
       elements={elements}
       onLoad={onLoad}
       onElementClick={onElementClick}
@@ -41,7 +41,7 @@ const EmptyGraph = () => {
     >
       add node
     </button>
-    </Graph>
+    </ReactFlow>
   );
 }
 

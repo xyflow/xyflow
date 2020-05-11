@@ -20,7 +20,11 @@ const routes = [{
   path: '/basic',
   component: Basic,
   label: 'Basic'
-},{
+}, {
+  path: '/edges',
+  component: Edges,
+  label: 'Edges'
+}, {
   path: '/custom-node',
   component: CustomNode,
   label: 'CustomNode'
@@ -28,10 +32,6 @@ const routes = [{
   path: '/stress',
   component: Stress,
   label: 'Stress'
-}, {
-  path: '/edges',
-  component: Edges,
-  label: 'Edges'
 }, {
   path: '/empty',
   component: Empty

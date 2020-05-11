@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer';
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -18,7 +18,7 @@ const EmptyGraph = () => {
   };
 
   return (
-    <Graph
+    <ReactFlow
       elements={initialElements}
       style={{ width: '100%', height: '100%' }}
       backgroundType="lines"
@@ -39,7 +39,7 @@ const EmptyGraph = () => {
           />
         </label>
       </div>
-    </Graph>
+    </ReactFlow>
   );
 }
 

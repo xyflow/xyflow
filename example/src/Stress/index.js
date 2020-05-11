@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { removeElements, addEdge, MiniMap } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap } from 'react-flow-renderer';
 import { getElements } from './utils';
 
 const onLoad = graph => {
@@ -17,7 +17,7 @@ const StressGraph = () => {
   const onConnect = (params) => setElements(els => addEdge(params, els));
 
   return (
-    <Graph
+    <ReactFlow
       elements={elements}
       onLoad={onLoad}
       onElementsRemove={onElementsRemove}
@@ -26,7 +26,7 @@ const StressGraph = () => {
       backgroundType="lines"
     >
       <MiniMap />
-    </Graph>
+    </ReactFlow>
   );
 }
 
