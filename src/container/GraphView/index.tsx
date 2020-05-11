@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, SVGAttributes } from 'react';
+import React, { useEffect, useRef, memo, CSSProperties } from 'react';
 import classnames from 'classnames';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -27,7 +27,7 @@ export interface GraphViewProps {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: string;
-  connectionLineStyle: SVGAttributes<{}>;
+  connectionLineStyle: CSSProperties;
   deleteKeyCode: number;
   showBackground: boolean;
   backgroundGap: number;
@@ -65,7 +65,7 @@ const GraphView = memo(
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
-    const state = useStoreState(s => ({
+    const state = useStoreState((s) => ({
       width: s.width,
       height: s.height,
       nodes: s.nodes,
@@ -73,11 +73,11 @@ const GraphView = memo(
       d3Initialised: s.d3Initialised,
       nodesSelectionActive: s.nodesSelectionActive,
     }));
-    const updateSize = useStoreActions(actions => actions.updateSize);
-    const setNodesSelection = useStoreActions(actions => actions.setNodesSelection);
-    const setOnConnect = useStoreActions(a => a.setOnConnect);
-    const setSnapGrid = useStoreActions(actions => actions.setSnapGrid);
-    const setInteractive = useStoreActions(actions => actions.setInteractive);
+    const updateSize = useStoreActions((actions) => actions.updateSize);
+    const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
+    const setOnConnect = useStoreActions((a) => a.setOnConnect);
+    const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
+    const setInteractive = useStoreActions((actions) => actions.setInteractive);
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
     const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
 

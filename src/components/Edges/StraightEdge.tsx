@@ -23,10 +23,10 @@ export default memo(
     ) : null;
 
     return (
-      <g>
+      <>
         <path style={style} className="react-flow__edge-path" d={`M ${sourceX},${sourceY}L ${targetX},${targetY}`} />
         {text}
-      </g>
+      </>
     );
   }
 );

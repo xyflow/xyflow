@@ -1,4 +1,4 @@
-import React, { useMemo, SVGAttributes, HTMLAttributes } from 'react';
+import React, { useMemo, CSSProperties, HTMLAttributes } from 'react';
 import { StoreProvider } from 'easy-peasy';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
@@ -33,7 +33,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: string;
-  connectionLineStyle: SVGAttributes<{}>;
+  connectionLineStyle: CSSProperties;
   deleteKeyCode: number;
   selectionKeyCode: number;
   showBackground: boolean;
