@@ -5,3 +5,4 @@ examples/build
 cypress/videos
 cypress/screenshots
 stats.html
+dist
