@@ -46,16 +46,9 @@
 }
 
 .react-flow__edge {
-  fill: none;
-  stroke: #bbb;
-  stroke-width: 2;
   pointer-events: all;
 
-  &.selected {
-    stroke: #555;
-  }
-
-  &.animated {
+  &.animated path {
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }
@@ -64,6 +57,25 @@
     stroke: '#ddd';
     pointer-events: none;
   }
+}
+
+.react-flow__edge-path {
+  fill: none;
+  stroke: #bbb;
+  stroke-width: 2;
+
+  &.selected {
+    stroke: #555;
+  }
+}
+
+.react-flow__edge-text {
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.react-flow__edge-textbg {
+  fill: white;
 }
 
 @keyframes dashdraw {

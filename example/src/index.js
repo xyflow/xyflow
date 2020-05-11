@@ -8,6 +8,7 @@ import CustomNode from './CustomNode';
 import Stress from './Stress';
 import Inactive from './Inactive';
 import Empty from './Empty';
+import Edges from './Edges';
 
 import './index.css';
 
@@ -28,9 +29,13 @@ const routes = [{
   component: Stress,
   label: 'Stress'
 }, {
+  path: '/edges',
+  component: Edges,
+  label: 'Edges'
+}, {
   path: '/empty',
   component: Empty
-},{
+}, {
   path: '/inactive',
   component: Inactive
 }];

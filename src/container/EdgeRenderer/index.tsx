@@ -83,7 +83,7 @@ function getHandle(bounds: HandleElement[], handleId: ElementId | null): HandleE
   if (bounds.length === 1 || !handleId) {
     handle = bounds[0];
   } else if (handleId) {
-    handle = bounds.find(d => d.id === handleId);
+    handle = bounds.find((d) => d.id === handleId);
   }
 
   return handle;
@@ -123,8 +123,8 @@ function renderEdge(
   const [sourceId, sourceHandleId] = edge.source.split('__');
   const [targetId, targetHandleId] = edge.target.split('__');
 
-  const sourceNode = nodes.find(n => n.id === sourceId);
-  const targetNode = nodes.find(n => n.id === targetId);
+  const sourceNode = nodes.find((n) => n.id === sourceId);
+  const targetNode = nodes.find((n) => n.id === targetId);
 
   if (!sourceNode) {
     throw new Error(`couldn't create edge for source id: ${sourceId}`);
@@ -155,7 +155,7 @@ function renderEdge(
   );
 
   const isSelected = (selectedElements as Edge[]).some(
-    elm => isEdge(elm) && elm.source === sourceId && elm.target === targetId
+    (elm) => isEdge(elm) && elm.source === sourceId && elm.target === targetId
   );
 
   return (
@@ -166,6 +166,10 @@ function renderEdge(
       onClick={props.onElementClick}
       selected={isSelected}
       animated={edge.animated}
+      label={edge.label}
+      labelStyle={edge.labelStyle}
+      labelShowBg={edge.labelShowBg}
+      labelBgStyle={edge.labelBgStyle}
       style={edge.style}
       source={sourceId}
       target={targetId}
@@ -191,7 +195,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
     connectionPosition: { x, y },
     selectedElements,
     isInteractive,
-  } = useStoreState(s => ({
+  } = useStoreState((s) => ({
     transform: s.transform,
     edges: s.edges,
     nodes: s.nodes,

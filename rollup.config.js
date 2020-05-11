@@ -3,52 +3,55 @@ import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
-import visualizer from 'rollup-plugin-visualizer';
 import replace from 'rollup-plugin-replace';
 import svgr from '@svgr/rollup';
-import typescript from 'rollup-plugin-typescript2'
+import typescript from 'rollup-plugin-typescript2';
 
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
 const processEnv = isProd ? 'production' : 'development';
 
-export default [{
-	input: 'src/index.ts',
-	external: ['react', 'react-dom'],
-	onwarn(warning, rollupWarn) {
-		if (warning.code !== 'CIRCULAR_DEPENDENCY') {
-			rollupWarn(warning);
-		}
-	},
-	output: [{
-		file: pkg.main,
-		format: 'cjs',
-		sourcemap: true,
-		exports: 'named'
-	}, {
-		file: pkg.module,
-		format: 'esm',
-		sourcemap: true,
-		exports: 'named'
-	}],
-	plugins: [
-		bundleSize(),
-		postcss(),
-		babel({
-			exclude: 'node_modules/**'
-		}),
-		visualizer(),
-		replace({
-			'process.env.NODE_ENV': JSON.stringify(processEnv)
-		}),
-		svgr(),
-		typescript({
-      clean: true
-    }),
-		resolve(),
-		commonjs({
-			include: 'node_modules/**'
-		}),
-	]
-}];
+export default [
+  {
+    input: 'src/index.ts',
+    external: ['react', 'react-dom'],
+    onwarn(warning, rollupWarn) {
+      if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+        rollupWarn(warning);
+      }
+    },
+    output: [
+      {
+        file: pkg.main,
+        format: 'cjs',
+        sourcemap: true,
+        exports: 'named',
+      },
+      {
+        file: pkg.module,
+        format: 'esm',
+        sourcemap: true,
+        exports: 'named',
+      },
+    ],
+    plugins: [
+      bundleSize(),
+      postcss(),
+      babel({
+        exclude: 'node_modules/**',
+      }),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify(processEnv),
+      }),
+      svgr(),
+      typescript({
+        clean: true,
+      }),
+      resolve(),
+      commonjs({
+        include: 'node_modules/**',
+      }),
+    ],
+  },
+];
