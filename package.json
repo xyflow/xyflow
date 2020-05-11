@@ -26,7 +26,7 @@
     "@svgr/rollup": "^5.4.0",
     "@types/classnames": "^2.2.10",
     "@types/d3": "^5.7.2",
-    "@types/react": "^16.9.34",
+    "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.6",
     "autoprefixer": "^9.7.6",
     "babel-loader": "^8.1.0",
