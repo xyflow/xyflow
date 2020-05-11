@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "@svgr/rollup": "^5.4.0",
     "@types/classnames": "^2.2.10",
