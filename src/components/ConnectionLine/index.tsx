@@ -1,4 +1,4 @@
-import React, { useEffect, useState, SVGAttributes } from 'react';
+import React, { useEffect, useState, CSSProperties } from 'react';
 import cx from 'classnames';
 
 import { ElementId, Node, Transform, HandleElement } from '../../types';
@@ -11,7 +11,7 @@ interface ConnectionLineProps {
   nodes: Node[];
   transform: Transform;
   isInteractive: boolean;
-  connectionLineStyle?: SVGAttributes<{}>;
+  connectionLineStyle?: CSSProperties;
   className?: string;
 }
 
@@ -41,7 +41,7 @@ export default ({
     return null;
   }
 
-  const edgeClasses: string = cx('react-flow__edge', 'react-flow__connection', className);
+  const connectionLineClasses: string = cx('react-flow__connection', className);
   const hasSource = sourceNode.__rg.handleBounds.source !== null;
 
   // output nodes don't have source handles so we need to use the target one
@@ -69,8 +69,8 @@ export default ({
   }
 
   return (
-    <g className={edgeClasses}>
-      <path d={dAttr} {...connectionLineStyle} />
+    <g className={connectionLineClasses}>
+      <path d={dAttr} className="react-flow__connection-path" style={connectionLineStyle} />
     </g>
   );
 };

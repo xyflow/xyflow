@@ -44,10 +44,10 @@ export default memo(
     ) : null;
 
     return (
-      <g>
+      <>
         <path style={style} d={dAttr} className="react-flow__edge-path" />
         {text}
-      </g>
+      </>
     );
   }
 );

@@ -1,4 +1,4 @@
-import React, { memo, SVGAttributes } from 'react';
+import React, { memo, CSSProperties } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
@@ -9,7 +9,7 @@ interface EdgeRendererProps {
   width: number;
   height: number;
   edgeTypes: any;
-  connectionLineStyle?: SVGAttributes<{}>;
+  connectionLineStyle?: CSSProperties;
   connectionLineType?: string;
   onElementClick?: () => void;
 }

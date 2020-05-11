@@ -48,6 +48,12 @@
 .react-flow__edge {
   pointer-events: all;
 
+  &.selected {
+    .react-flow__edge-path {
+      stroke: #555;
+    }
+  }
+
   &.animated path {
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
@@ -55,19 +61,19 @@
 }
 
 .react-flow__connection {
-  fill: none;
-  stroke: '#ddd';
   pointer-events: none;
+}
+
+.react-flow__connection-path {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 2;
 }
 
 .react-flow__edge-path {
   fill: none;
   stroke: #bbb;
   stroke-width: 2;
-
-  &.selected {
-    stroke: #555;
-  }
 }
 
 .react-flow__edge-text {
