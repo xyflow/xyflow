@@ -199,6 +199,7 @@ edgeTypes={{
 
 You can now use type `special` for an edge.
 The `straight`, `default` and `step` types will be still available except you overwrite one of them.
+There is an implementation of a custom edge in the [edges example](/example/src/Edges/index.js).
 
 ## Helper Functions
 
@@ -283,6 +284,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [rich](https://react-flow.netlify.app/)
 - [basic](https://react-flow.netlify.app/basic)
 - [custom node](https://react-flow.netlify.app/custom-node)
+- [horizontal](https://react-flow.netlify.app/horizontal)
 - [stress](https://react-flow.netlify.app/stress)
 - [edges](https://react-flow.netlify.app/edges)
 - [empty](https://react-flow.netlify.app/empty)
