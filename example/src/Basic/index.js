@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Graph, { removeElements, addEdge } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onLoad = graphInstance => console.log('graph loaded:', graphInstance);
@@ -22,7 +22,7 @@ const BasicGraph = () => {
   const onConnect = (params) => setElements(els => addEdge(params, els));
 
   return (
-    <Graph
+    <ReactFlow
       elements={elements}
       onLoad={onLoad}
       onElementClick={onElementClick}

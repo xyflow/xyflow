@@ -93,7 +93,7 @@ You can create your own CSS rules or pass style properties to the components.
 
 #### Using classnames
 
-Since we are using DOM nodes for rendering the chart you can simply overwrite the styles with your own CSS rules.
+Since we are using DOM nodes for rendering the graph you can simply overwrite the styles with your own CSS rules.
 The React Flow wrapper has the className `react-flow`. So if you want to change the graph background for example you can do:
 
 ```css

@@ -51,8 +51,7 @@
     "rollup-plugin-typescript2": "^0.27.0",
     "rollup-plugin-uglify": "^6.0.4",
     "start-server-and-test": "^1.11.0",
-    "typescript": "^3.8.3",
-    "wait-on": "^5.0.0"
+    "typescript": "^3.8.3"
   },
   "peerDependencies": {
     "react": "^16.13.1"
@@ -60,8 +59,7 @@
   "scripts": {
     "build": "rollup -c --environment NODE_ENV:production",
     "start": "rollup -w -c",
-    "waiton:dist": "wait-on dist/ReactFlow.js",
-    "dev": "npm start & npm run waiton:dist && cd example && npm start",
+    "dev": "npm run build && npm start & cd example && npm start",
     "dev:wait": "start-server-and-test dev http-get://localhost:3000",
     "build:example": "npm install && npm run build && cd example && npm install && npm run build",
     "cy:run": "cypress run",
