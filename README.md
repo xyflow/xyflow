@@ -281,6 +281,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [basic](https://react-flow.netlify.app/basic)
 - [custom node](https://react-flow.netlify.app/custom-node)
 - [stress](https://react-flow.netlify.app/stress)
+- [edges](https://react-flow.netlify.app/edges)
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
 
