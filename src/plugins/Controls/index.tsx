@@ -34,12 +34,6 @@ export default ({ style, className }: ControlProps) => {
       }}
     >
       <div
-        className={`react-flow__controls-button react-flow__controls-${isInteractive? 'unlocked' : 'locked' }`}
-        onClick={() => setInteractive(!isInteractive)}
-      >
-        { isInteractive ? <UnlockIcon /> : <LockIcon /> }
-      </div>
-      <div
         className="react-flow__controls-button react-flow__controls-zoomin"
         onClick={zoomIn}
       >
@@ -56,6 +50,12 @@ export default ({ style, className }: ControlProps) => {
         onClick={() => fitView()}
       >
         <FitviewIcon />
+      </div>
+      <div
+        className={`react-flow__controls-button react-flow__controls-${isInteractive? 'unlocked' : 'locked' }`}
+        onClick={() => setInteractive(!isInteractive)}
+      >
+        { isInteractive ? <UnlockIcon /> : <LockIcon /> }
       </div>
     </div>
   );
