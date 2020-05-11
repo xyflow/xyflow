@@ -254,7 +254,7 @@ const GraphWithMiniMap = () => (
 
 ### Controls
 
-The control panel contains a zoom-in, zoom-out and a fit-view button. You can use it by passing it as a children to your React Flow component:
+The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the React Flow component:
 
 ```javascript
 import ReactFlow, { Controls } from 'react-flow-renderer';
@@ -272,6 +272,9 @@ const GraphWithControls = () => (
 
 - `style`: css properties
 - `className`: class name
+- `showZoom`: boolean - default: true
+- `showFitView`: boolean - default: true
+- `showInteractive`: boolean - default: true
 
 ## Examples
 
