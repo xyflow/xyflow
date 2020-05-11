@@ -1,0 +1,9 @@
+.DS_Store
+.cache
+.vscode
+.dependabot
+node_modules
+examples
+cypress
+stats.html
+dist
