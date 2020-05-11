@@ -22,8 +22,7 @@ const initialElements = [
   { id: 'e3-5', source: '4', target: '5', animated: true, label: 'animated styled edge', style: { stroke: 'red' } },
   { id: 'e5-6', source: '5', target: '6', label: 'styled label', labelStyle: { fill: 'red', fontWeight: 700 } },
   { id: 'e5-7', source: '5', target: '7', label: 'label with styled bg', labelBgStyle: { fill: '#eee', fillOpacity: 0.7 } },
-
-]
+];
 
 const EdgesFlow = () => {
   const [elements, setElements] = useState(initialElements);
