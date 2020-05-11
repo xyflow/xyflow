@@ -34,7 +34,7 @@ export default ({ style, className }: ControlProps) => {
       }}
     >
       <div
-        className="react-flow__controls-button react-flow__controls-lock"
+        className={`react-flow__controls-button react-flow__controls-${isInteractive? 'unlocked' : 'locked' }`}
         onClick={() => setInteractive(!isInteractive)}
       >
         { isInteractive ? <UnlockIcon /> : <LockIcon /> }
