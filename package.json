@@ -61,9 +61,10 @@
   "scripts": {
     "build": "rollup -c --environment NODE_ENV:production",
     "start": "rollup -w -c",
-    "dev": "npm start & cd example && npm start",
-    "build:example": "npm install && cd example && npm install && npm run build",
+    "waiton:dist": "wait-on dist/ReactFlow.js",
+    "dev": "npm start & npm run waiton:dist && cd example && npm start",
     "dev:wait": "start-server-and-test dev http-get://localhost:3000",
+    "build:example": "npm install && npm run build && cd example && npm install && npm run build",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
