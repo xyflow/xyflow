@@ -6896,7 +6896,7 @@ function renderEdge(edge, props, nodes, selectedElements, isInteractive) {
     var targetPosition = targetHandle ? targetHandle.position : Position.Top;
     var _c = getEdgePositions(sourceNode, sourceHandle, sourcePosition, targetNode, targetHandle, targetPosition), sourceX = _c.sourceX, sourceY = _c.sourceY, targetX = _c.targetX, targetY = _c.targetY;
     var isSelected = selectedElements.some(function (elm) { return isEdge(elm) && elm.source === sourceId && elm.target === targetId; });
-    return (React__default.createElement(EdgeComponent, { key: edge.id, id: edge.id, type: edge.type, onClick: props.onElementClick, selected: isSelected, animated: edge.animated, style: edge.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition, isInteractive: isInteractive }));
+    return (React__default.createElement(EdgeComponent, { key: edge.id, id: edge.id, type: edge.type, onClick: props.onElementClick, selected: isSelected, animated: edge.animated, label: edge.label, labelStyle: edge.labelStyle, labelShowBg: edge.labelShowBg, labelBgStyle: edge.labelBgStyle, style: edge.style, source: sourceId, target: targetId, sourceHandleId: sourceHandleId, targetHandleId: targetHandleId, sourceX: sourceX, sourceY: sourceY, targetX: targetX, targetY: targetY, sourcePosition: sourcePosition, targetPosition: targetPosition, isInteractive: isInteractive }));
 }
 var EdgeRenderer = memo(function (props) {
     var _a = useStoreState$1(function (s) { return ({
@@ -9270,38 +9270,77 @@ function createNodeTypes(nodeTypes) {
     return __assign(__assign({}, standardTypes), specialTypes);
 }
 
+var textBgPadding = 2;
+var EdgeText = memo(function (_a) {
+    var x = _a.x, y = _a.y, label = _a.label, _b = _a.labelStyle, labelStyle = _b === void 0 ? {} : _b, _c = _a.labelShowBg, labelShowBg = _c === void 0 ? true : _c, _d = _a.labelBgStyle, labelBgStyle = _d === void 0 ? {} : _d;
+    var edgeRef = useRef(null);
+    var _e = useState({ x: 0, y: 0, width: 0, height: 0 }), edgeTextBbox = _e[0], setEdgeTextBbox = _e[1];
+    useEffect(function () {
+        if (edgeRef.current) {
+            var textBbox = edgeRef.current.getBBox();
+            setEdgeTextBbox({
+                x: textBbox.x,
+                y: textBbox.y,
+                width: textBbox.width,
+                height: textBbox.height,
+            });
+        }
+    }, []);
+    if (typeof label === 'undefined' || !label) {
+        return null;
+    }
+    return (React__default.createElement("g", { transform: "translate(" + (x - edgeTextBbox.width / 2) + " " + (y - edgeTextBbox.height / 2) + ")" },
+        labelShowBg && (React__default.createElement("rect", { width: edgeTextBbox.width + 2 * textBgPadding, x: -textBgPadding, y: -textBgPadding, height: edgeTextBbox.height + 2 * textBgPadding, className: "react-flow__edge-textbg", style: labelBgStyle })),
+        React__default.createElement("text", { className: "react-flow__edge-text", y: edgeTextBbox.height / 2, dy: "0.3em", ref: edgeRef, style: labelStyle }, label)));
+});
+
 var BezierEdge = memo(function (_a) {
-    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.sourcePosition, sourcePosition = _b === void 0 ? Position.Bottom : _b, _c = _a.targetPosition, targetPosition = _c === void 0 ? Position.Top : _c, _d = _a.style, style = _d === void 0 ? {} : _d;
+    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.sourcePosition, sourcePosition = _b === void 0 ? Position.Bottom : _b, _c = _a.targetPosition, targetPosition = _c === void 0 ? Position.Top : _c, label = _a.label, labelStyle = _a.labelStyle, labelShowBg = _a.labelShowBg, labelBgStyle = _a.labelBgStyle, _d = _a.style, style = _d === void 0 ? {} : _d;
     var yOffset = Math.abs(targetY - sourceY) / 2;
     var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    var xOffset = Math.abs(targetX - sourceX) / 2;
+    var centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
     var dAttr = "M" + sourceX + "," + sourceY + " C" + sourceX + "," + centerY + " " + targetX + "," + centerY + " " + targetX + "," + targetY;
     var leftAndRight = [Position.Left, Position.Right];
     if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-        var xOffset = Math.abs(targetX - sourceX) / 2;
-        var centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
         dAttr = "M" + sourceX + "," + sourceY + " C" + centerX + "," + sourceY + " " + centerX + "," + targetY + " " + targetX + "," + targetY;
     }
     else if (leftAndRight.includes(sourcePosition) || leftAndRight.includes(targetPosition)) {
         dAttr = "M" + sourceX + "," + sourceY + " C" + sourceX + "," + targetY + " " + sourceX + "," + targetY + " " + targetX + "," + targetY;
     }
-    return React__default.createElement("path", __assign({}, style, { d: dAttr }));
+    var text = label ? (React__default.createElement(EdgeText, { x: centerX, y: centerY, label: label, labelStyle: labelStyle, labelShowBg: labelShowBg, labelBgStyle: labelBgStyle })) : null;
+    return (React__default.createElement("g", null,
+        React__default.createElement("path", { style: style, d: dAttr, className: "react-flow__edge-path" }),
+        text));
 });
 
 var StraightEdge = memo(function (_a) {
-    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.style, style = _b === void 0 ? {} : _b;
-    return (React__default.createElement("path", __assign({}, style, { d: "M " + sourceX + "," + sourceY + "L " + targetX + "," + targetY })));
+    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, label = _a.label, labelStyle = _a.labelStyle, labelShowBg = _a.labelShowBg, labelBgStyle = _a.labelBgStyle, _b = _a.style, style = _b === void 0 ? {} : _b;
+    var yOffset = Math.abs(targetY - sourceY) / 2;
+    var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+    var xOffset = Math.abs(targetX - sourceX) / 2;
+    var centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+    var text = label ? (React__default.createElement(EdgeText, { x: centerX, y: centerY, label: label, labelStyle: labelStyle, labelShowBg: labelShowBg, labelBgStyle: labelBgStyle })) : null;
+    return (React__default.createElement("g", null,
+        React__default.createElement("path", { style: style, className: "react-flow__edge-path", d: "M " + sourceX + "," + sourceY + "L " + targetX + "," + targetY }),
+        text));
 });
 
 var StepEdge = memo(function (_a) {
-    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, _b = _a.style, style = _b === void 0 ? {} : _b;
+    var sourceX = _a.sourceX, sourceY = _a.sourceY, targetX = _a.targetX, targetY = _a.targetY, label = _a.label, labelStyle = _a.labelStyle, labelShowBg = _a.labelShowBg, labelBgStyle = _a.labelBgStyle, _b = _a.style, style = _b === void 0 ? {} : _b;
     var yOffset = Math.abs(targetY - sourceY) / 2;
     var centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-    return (React__default.createElement("path", __assign({}, style, { d: "M " + sourceX + "," + sourceY + "L " + sourceX + "," + centerY + "L " + targetX + "," + centerY + "L " + targetX + "," + targetY })));
+    var xOffset = Math.abs(targetX - sourceX) / 2;
+    var centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+    var text = label ? (React__default.createElement(EdgeText, { x: centerX, y: centerY, label: label, labelStyle: labelStyle, labelShowBg: labelShowBg, labelBgStyle: labelBgStyle })) : null;
+    return (React__default.createElement("g", null,
+        React__default.createElement("path", { style: style, className: "react-flow__edge-path", d: "M " + sourceX + "," + sourceY + "L " + sourceX + "," + centerY + "L " + targetX + "," + centerY + "L " + targetX + "," + targetY }),
+        text));
 });
 
 var wrapEdge = (function (EdgeComponent) {
     var EdgeWrapper = memo(function (_a) {
-        var id = _a.id, source = _a.source, target = _a.target, type = _a.type, animated = _a.animated, selected = _a.selected, onClick = _a.onClick, isInteractive = _a.isInteractive, rest = __rest(_a, ["id", "source", "target", "type", "animated", "selected", "onClick", "isInteractive"]);
+        var id = _a.id, source = _a.source, target = _a.target, type = _a.type, animated = _a.animated, selected = _a.selected, onClick = _a.onClick, isInteractive = _a.isInteractive, label = _a.label, labelStyle = _a.labelStyle, labelShowBg = _a.labelShowBg, labelBgStyle = _a.labelBgStyle, rest = __rest(_a, ["id", "source", "target", "type", "animated", "selected", "onClick", "isInteractive", "label", "labelStyle", "labelShowBg", "labelBgStyle"]);
         var edgeClasses = classnames('react-flow__edge', { selected: selected, animated: animated });
         var onEdgeClick = function () {
             if (!isInteractive) {
@@ -9311,7 +9350,7 @@ var wrapEdge = (function (EdgeComponent) {
             onClick({ id: id, source: source, target: target, type: type });
         };
         return (React__default.createElement("g", { className: edgeClasses, onClick: onEdgeClick },
-            React__default.createElement(EdgeComponent, __assign({ id: id, source: source, target: target, type: type, animated: animated, selected: selected, onClick: onClick }, rest))));
+            React__default.createElement(EdgeComponent, __assign({ id: id, source: source, target: target, type: type, animated: animated, selected: selected, onClick: onClick, label: label, labelStyle: labelStyle, labelShowBg: labelShowBg, labelBgStyle: labelBgStyle }, rest))));
     });
     EdgeWrapper.displayName = 'EdgeWrapper';
     return EdgeWrapper;
@@ -9359,7 +9398,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css_248z = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n  pointer-events: all;\n}\n\n.react-flow__edge.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge.animated {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n@-webkit-keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n@keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.is-interactive .react-flow__node {\n    cursor: -webkit-grab;\n    cursor: grab;\n  }\n\n.is-interactive .react-flow__node:hover > * {\n      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n    }\n\n.is-interactive .react-flow__handle {\n    cursor: crosshair;\n  }\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
+var css_248z = ".react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.react-flow__renderer {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n}\n\n.react-flow__zoompane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 1;\n}\n\n.react-flow__selectionpane {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 2;\n}\n\n.react-flow__selection {\n  position: absolute;\n  top: 0;\n  left: 0;\n  background: rgba(0, 89, 220, 0.08);\n  border: 1px dotted rgba(0, 89, 220, 0.8);\n}\n\n.react-flow__edges {\n  position: absolute;\n  top: 0;\n  left: 0;\n  pointer-events: none;\n  z-index: 2;\n}\n\n.react-flow__edge {\n  pointer-events: all;\n}\n\n.react-flow__edge.animated path {\n    stroke-dasharray: 5;\n    -webkit-animation: dashdraw 0.5s linear infinite;\n            animation: dashdraw 0.5s linear infinite;\n  }\n\n.react-flow__edge.connection {\n    stroke: '#ddd';\n    pointer-events: none;\n  }\n\n.react-flow__edge-path {\n  fill: none;\n  stroke: #bbb;\n  stroke-width: 2;\n}\n\n.react-flow__edge-path.selected {\n    stroke: #555;\n  }\n\n.react-flow__edge-text {\n  font-size: 12px;\n  pointer-events: none;\n}\n\n.react-flow__edge-textbg {\n  fill: white;\n}\n\n@-webkit-keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n@keyframes dashdraw {\n  from {\n    stroke-dashoffset: 10;\n  }\n}\n\n.react-flow__nodes {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: 3;\n  pointer-events: none;\n  transform-origin: 0 0;\n}\n\n.is-interactive .react-flow__node {\n    cursor: -webkit-grab;\n    cursor: grab;\n  }\n\n.is-interactive .react-flow__node:hover > * {\n      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);\n    }\n\n.is-interactive .react-flow__handle {\n    cursor: crosshair;\n  }\n\n.react-flow__node {\n  position: absolute;\n  color: #222;\n  font-family: sans-serif;\n  font-size: 12px;\n  text-align: center;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n  pointer-events: all;\n  transform-origin: 0 0;\n}\n\n.react-flow__node.selected > * {\n    box-shadow: 0 0 0 2px #555;\n  }\n\n.react-flow__handle {\n  position: absolute;\n  width: 10px;\n  height: 8px;\n  background: rgba(255, 255, 255, 0.4);\n}\n\n.react-flow__handle.bottom {\n    top: auto;\n    left: 50%;\n    bottom: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.top {\n    left: 50%;\n    top: 0;\n    transform: translate(-50%, 0);\n  }\n\n.react-flow__handle.left {\n    top: 50%;\n    left: 0;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__handle.right {\n    right: 0;\n    top: 50%;\n    transform: translate(0, -50%);\n  }\n\n.react-flow__nodesselection {\n  z-index: 3;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  transform-origin: left top;\n  pointer-events: none;\n}\n\n.react-flow__nodesselection-rect {\n    position: absolute;\n    background: rgba(0, 89, 220, 0.08);\n    border: 1px dotted rgba(0, 89, 220, 0.8);\n    pointer-events: all;\n  }\n\n.react-flow__controls {\n  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);\n}\n\n.react-flow__controls-button {\n    background: #fefefe;\n    border-bottom: 1px solid #eee;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 16px;\n    height: 16px;\n    cursor: pointer;\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    padding: 5px;\n  }\n\n.react-flow__controls-button svg {\n      width: 100%;\n    }\n\n.react-flow__controls-button:hover {\n      background: #f4f4f4;\n    }\n";
 styleInject(css_248z);
 
 var ReactFlow = function (_a) {

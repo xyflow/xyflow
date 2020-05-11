@@ -31,7 +31,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 * **Plugin system:** [Mini map and graph controls](#plugins)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
-In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass all functions that change the displayed nodes and edges by yourself. You can implement your own ones or use the helper functions that come with the library. 
+In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass all functions that change the displayed nodes and edges by yourself. You can implement your own ones or use the helper functions that come with the library.
 
 ## Installation
 
@@ -130,7 +130,7 @@ You can find an example of how to implement a custom node in the [custom node ex
 
 There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges).
 
-Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true }`
+Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true, label: 'edge label' }`
 
 ### Props
 
@@ -139,7 +139,13 @@ Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animate
 - `target`: string (an id of a node) *(required)*
 - `type`: 'input' | 'output' | 'default' or a custom one you implemented
 - `animated`: boolean
-- `style`: css properties
+- `style`: css properties for the edge line path
+- `label`: string
+- `labelStyle`: css properties for the text
+- `labelShowBg`: boolean - default: `true`
+- `labelBgStyle`: css properties for the text background
+
+You can find an example with lots of different edges in the [edges example](https://react-flow.netlify.app/edges).
 
 ### Edge Types / Custom Edges
 

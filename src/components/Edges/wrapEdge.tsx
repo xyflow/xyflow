@@ -1,4 +1,4 @@
-import React, { memo, ComponentType } from 'react';
+import React, { memo, ComponentType, CSSProperties } from 'react';
 import cx from 'classnames';
 
 import store from '../../store';
@@ -9,6 +9,10 @@ interface EdgeWrapperProps {
   source: ElementId;
   target: ElementId;
   type: any;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle: CSSProperties;
   onClick: (edge: Edge) => void;
   animated: boolean;
   selected: boolean;
@@ -17,7 +21,21 @@ interface EdgeWrapperProps {
 
 export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
   const EdgeWrapper = memo(
-    ({ id, source, target, type, animated, selected, onClick, isInteractive, ...rest }: EdgeWrapperProps) => {
+    ({
+      id,
+      source,
+      target,
+      type,
+      animated,
+      selected,
+      onClick,
+      isInteractive,
+      label,
+      labelStyle,
+      labelShowBg,
+      labelBgStyle,
+      ...rest
+    }: EdgeWrapperProps) => {
       const edgeClasses = cx('react-flow__edge', { selected, animated });
       const onEdgeClick = (): void => {
         if (!isInteractive) {
@@ -38,6 +56,10 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
             animated={animated}
             selected={selected}
             onClick={onClick}
+            label={label}
+            labelStyle={labelStyle}
+            labelShowBg={labelShowBg}
+            labelBgStyle={labelBgStyle}
             {...rest}
           />
         </g>

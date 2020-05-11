@@ -18,13 +18,13 @@ const initialElements = [
     sourcePosition: 'right'
   },
   { id: '4', data: { label: 'Node 4' }, position: { x: 500, y: 200 }, targetPosition: 'left' },
-  { id: '5', type: 'output', data: { label: 'Output Node 5'}, position: { x: 300, y: 300 } },
+  { id: '5', type: 'output', data: { label: 'Output Node 5' }, position: { x: 300, y: 300 } },
   { id: '6', type: 'output', data: { label: 'Output Node 6' }, position: { x: 600, y: 400 } },
-  { id: 'e1-2', source: '1', target: '2', animated: true },
+  { id: 'e1-2', source: '1', target: '2', animated: true, label: 'edge text', labelBgStyle: { fillOpacity: 0.75 } },
   { id: 'e2-3', source: '2', target: '3', animated: true },
   { id: 'e3-4', source: '3', target: '4', animated: true },
   { id: 'e3-5', source: '4', target: '5', animated: true, type: 'step' },
-  { id: 'e5-6b', source: '4', target: '6', type: 'step'  },
+  { id: 'e5-6b', source: '4', target: '6', type: 'step', label: 'styled label', labelStyle: { fill: 'red', fontWeight: 700 } },
 ]
 
 const RichGraph = () => {

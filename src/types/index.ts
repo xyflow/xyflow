@@ -1,4 +1,4 @@
-import { CSSProperties, SVGAttributes } from 'react';
+import { CSSProperties } from 'react';
 
 export type ElementId = string;
 
@@ -63,7 +63,11 @@ export interface Edge {
   type?: string;
   source: ElementId;
   target: ElementId;
-  style?: SVGAttributes<{}>;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
+  style?: CSSProperties;
   animated?: boolean;
 }
 
@@ -72,7 +76,11 @@ export interface EdgeProps {
   sourceY: number;
   targetX: number;
   targetY: number;
-  style?: SVGAttributes<{}>;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
+  style?: CSSProperties;
 }
 
 export interface EdgeBezierProps extends EdgeProps {
@@ -151,7 +159,20 @@ export interface EdgeCompProps {
   source: ElementId;
   target: ElementId;
   type: any;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
   onClick?: (edge: Edge) => void;
   animated?: boolean;
   selected?: boolean;
+}
+
+export interface EdgeTextProps {
+  x: number;
+  y: number;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
 }

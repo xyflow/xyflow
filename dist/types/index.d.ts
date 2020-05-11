@@ -1,4 +1,4 @@
-import { CSSProperties, SVGAttributes } from 'react';
+import { CSSProperties } from 'react';
 export declare type ElementId = string;
 export declare type Elements = Array<Node | Edge>;
 export declare type Transform = [number, number, number];
@@ -51,7 +51,11 @@ export interface Edge {
     type?: string;
     source: ElementId;
     target: ElementId;
-    style?: SVGAttributes<{}>;
+    label?: string;
+    labelStyle?: CSSProperties;
+    labelShowBg?: boolean;
+    labelBgStyle?: CSSProperties;
+    style?: CSSProperties;
     animated?: boolean;
 }
 export interface EdgeProps {
@@ -59,7 +63,11 @@ export interface EdgeProps {
     sourceY: number;
     targetX: number;
     targetY: number;
-    style?: SVGAttributes<{}>;
+    label?: string;
+    labelStyle?: CSSProperties;
+    labelShowBg?: boolean;
+    labelBgStyle?: CSSProperties;
+    style?: CSSProperties;
 }
 export interface EdgeBezierProps extends EdgeProps {
     sourcePosition: Position;
@@ -127,8 +135,20 @@ export interface EdgeCompProps {
     source: ElementId;
     target: ElementId;
     type: any;
+    label?: string;
+    labelStyle?: CSSProperties;
+    labelShowBg?: boolean;
+    labelBgStyle?: CSSProperties;
     onClick?: (edge: Edge) => void;
     animated?: boolean;
     selected?: boolean;
+}
+export interface EdgeTextProps {
+    x: number;
+    y: number;
+    label?: string;
+    labelStyle?: CSSProperties;
+    labelShowBg?: boolean;
+    labelBgStyle?: CSSProperties;
 }
 export {};
