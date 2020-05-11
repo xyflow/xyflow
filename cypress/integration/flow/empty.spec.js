@@ -32,6 +32,14 @@ describe('Empty Flow Rendering', () => {
     cy.get('.react-flow__controls-fitview').click();
   });
 
+  it('uses lock view control', () => {
+    cy.get('.react-flow__controls-unlocked').click();
+    cy.get('.react-flow__controls-unlocked').should('not.exist');
+
+    cy.get('.react-flow__controls-locked').click();
+    cy.get('.react-flow__controls-locked').should('not.exist');
+  })
+
   it('renders an empty mini map', () => {
     cy.get('.react-flow__minimap');
     cy.get('.react-flow__minimap-node').should('not.exist');
