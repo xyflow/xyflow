@@ -56,7 +56,7 @@ const elements = [
 
 const graphStyles = { width: '100%', height: '100%' };
 
-const BasicGraph = () => (
+const BasicFlow = () => (
   <ReactFlow elements={elements} style={graphStyles} />
 );
 ```
@@ -109,8 +109,8 @@ The same applies to the nodes (className: `react-flow__node`) and edges (classNa
 
 You could achieve the same effect by passing a style prop to the React Flow component:
 
-```
-<ReactFlow elements={element} style={{ background: 'red', width: '100%' height: '300px' }}/>
+```javascript
+<ReactFlow elements={element} style={{ background: 'red', width: '100%' height: '300px' }} />
 ```
 
 
@@ -260,7 +260,7 @@ The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock butto
 ```javascript
 import ReactFlow, { Controls } from 'react-flow-renderer';
 
-const GraphWithControls = () => (
+const FlowWithControls = () => (
   <ReactFlow
     elements={elements}
   >
@@ -292,13 +292,15 @@ You can find all examples in the [example](example) folder or check out the live
 
 ## Development
 
-If you want to contribute or develop some custom features the easiest way is to start the dev server:
+First of all you need to install the React Flow dependencies `npm install` and the ones of the examples `cd example && npm install`.
+
+If you want to contribute or develop some custom features the easiest way is to start the dev server.
 
 ```
 npm run dev
 ```
 
-This serves the content of the `examples` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
+This serves the content of the `example` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
 
 ## Testing
 
@@ -307,7 +309,6 @@ Testing is done with cypress. You can find all test in the [`integration/flow`](
 ```
 npm run test
 ```
-
 
 ## Thanks!
 
