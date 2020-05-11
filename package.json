@@ -10,7 +10,7 @@
     "url": "https://github.com/wbkd/react-flow.git"
   },
   "dependencies": {
-    "@welldone-software/why-did-you-render": "^4.1.3",
+    "@welldone-software/why-did-you-render": "^4.2.0",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
