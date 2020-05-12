@@ -119,6 +119,11 @@ nav a.active:before {
   display: none;
 }
 
+.react-flow__node a {
+  font-weight :700;
+  color: #111;
+}
+
 @media screen and (min-width: 768px) {
   nav {
     position: relative;

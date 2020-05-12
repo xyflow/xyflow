@@ -16,7 +16,7 @@ import './index.css';
 const routes = [{
   path: '/',
   component: Rich,
-  label: 'Rich'
+  label: 'Overview'
 }, {
   path: '/basic',
   component: Basic,

@@ -4,8 +4,8 @@ describe('Rich Graph Rendering', () => {
 
     cy.get('.react-flow__renderer');
 
-    cy.get('.react-flow__node').should('have.length', 6);
-    cy.get('.react-flow__edge').should('have.length', 5);
+    cy.get('.react-flow__node').should('have.length', 7);
+    cy.get('.react-flow__edge').should('have.length', 6);
   });
 
   it('renders a grid', () => {
