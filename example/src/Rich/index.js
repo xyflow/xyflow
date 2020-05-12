@@ -10,22 +10,26 @@ const onLoad = (graph) => {
 };
 
 const initialElements = [
-  { id: '1', type: 'input', data: { label: 'Input Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 150, y: 75 } },
+  { id: '1', type: 'input', data: { label: <>Welcome to <strong>React Flow!</strong></> }, position: { x: 250, y: 0 } },
+  { id: '2', data: { label: <>This is a <strong>default node</strong></> }, position: { x: 100, y: 100 } },
   {
-    id: '3', data: { label: 'Node 3 with custom style' }, position: { x: 250, y: 150 },
-    style: { background: '#eee', color: '#222', border: '1px solid #bbb' },
-    sourcePosition: 'right'
+    id: '3', data: { label: <>This one has a <strong>custom style</strong></> }, position: { x: 400, y: 100 },
+    style: { background: '#eee', color: '#222', border: '1px solid #bbb', width: 180 },
   },
-  { id: '4', data: { label: 'Node 4' }, position: { x: 500, y: 200 }, targetPosition: 'left' },
-  { id: '5', type: 'output', data: { label: 'Output Node 5' }, position: { x: 300, y: 300 } },
-  { id: '6', type: 'output', data: { label: 'Output Node 6' }, position: { x: 600, y: 400 } },
-  { id: 'e1-2', source: '1', target: '2', animated: true, label: 'edge text', labelBgStyle: { fillOpacity: 0.75 } },
-  { id: 'e2-3', source: '2', target: '3', animated: true },
-  { id: 'e3-4', source: '3', target: '4', animated: true },
-  { id: 'e3-5', source: '4', target: '5', animated: true, type: 'step' },
-  { id: 'e5-6b', source: '4', target: '6', type: 'step', label: 'styled label', labelStyle: { fill: 'red', fontWeight: 700 } },
-]
+  {
+    id: '4', position: { x: 250, y: 200 },
+    data: { label: <>You can find the docs on <a href="https://github.com/wbkd/react-flow" target="_blank">Github</a></> }
+  },
+  { id: '5', data: { label: <>Or check out the other <strong>examples</strong></> }, position: { x: 250, y: 300 } },
+  { id: '6', type: 'output', data: { label: <>An <strong>output node</strong></> }, position: { x: 100, y: 450 } },
+  { id: '7', type: 'output', data: { label: 'Another output node' }, position: { x: 400, y: 450 } },
+  { id: 'e1-2', source: '1', target: '2', label: 'this is an edge label' },
+  { id: 'e1-3', source: '1', target: '3' },
+  { id: 'e3-4', source: '3', target: '4', animated: true, label: 'animated edge' },
+  { id: 'e4-5', source: '4', target: '5', },
+  { id: 'e5-6', source: '5', target: '6', },
+  { id: 'e5-7', source: '5', target: '7', type: 'step', label: 'a step edge', labelStyle: { fill: 'red', fontWeight: 700 } },
+];
 
 const RichGraph = () => {
   const [elements, setElements] = useState(initialElements);
