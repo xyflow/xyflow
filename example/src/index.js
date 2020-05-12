@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, NavLink, withRouter } from 'react-router-dom';
 
@@ -58,18 +58,27 @@ const SourceDisplay = withRouter(({ location }) => {
   );
 });
 
-ReactDOM.render((
-  <Router forceRefresh={true}>
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState();
+
+  return  (
     <header>
-      <a href="https://github.com/wbkd/react-flow">React Flow</a>
-      <nav>
+      <a className="logo" href="https://github.com/wbkd/react-flow">React Flow</a>
+      <nav className={menuOpen ? 'is-open' : ''}>
         {navLinks.map(route => (
           <NavLink to={route.path} key={route.label} exact>
             {route.label}
           </NavLink>
         ))}
       </nav>
+      <button className="menu" onClick={() => setMenuOpen(!menuOpen)}>Menu</button>
     </header>
+  );
+}
+
+ReactDOM.render((
+  <Router forceRefresh={true}>
+    <Header />
     <SourceDisplay />
     <Switch>
       {routes.map(route => (

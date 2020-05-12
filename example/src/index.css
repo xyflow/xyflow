@@ -23,10 +23,13 @@ header {
   border-bottom: 1px solid #eee;
   display: flex;
   font-weight: 700;
+  align-items: center;
 }
 
-header a {
+.logo {
   text-decoration: none;
+  display: block;
+  line-height: 1;
 }
 
 header a, header a:focus, header a:active, header a:visited {
@@ -37,20 +40,41 @@ header a:hover {
   color: #333;
 }
 
-header nav {
-  font-weight: 400;
+.menu {
   margin-left: auto;
+  background: rgb(255, 96, 96);
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 5px;
+}
+
+nav {
+  font-weight: 400;
+  display: none;
+  position: absolute;
+  width: 94%;
+  top: 46px;
+  z-index: 10;
+  left: 0;
+  padding: 3%;
+  background: rgba(255,255,255,0.9);
+}
+
+nav.is-open {
+  display: block;
 }
 
 nav a {
-  margin-left: 10px;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 14px;
   background: rgb(255, 96, 96);
   color: white;
   padding: 5px 12px;
   border-radius: 5px;
   position: relative;
+  display: block;
+  margin-bottom: 5px;
 }
 
 nav a, nav a:focus, nav a:active, nav a:visited {
@@ -76,7 +100,7 @@ nav a.active:before {
 
 .sourcedisplay {
   position: absolute;
-  top: 45px;
+  top: 50px;
   right: 15px;
   z-index: 4;
   text-decoration: none;
@@ -89,4 +113,35 @@ nav a.active:before {
 
 .sourcedisplay:hover {
   color: #111;
+}
+
+.richexample__add {
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  nav {
+    position: relative;
+    display: block;
+    margin-left: auto;
+    width: auto;
+    padding: 0;
+    top: auto;
+    left: auto;
+  }
+
+  nav a {
+    margin-left: 10px;
+    font-size: 12px;
+    display: inline-block;
+    margin-bottom: 0;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .richexample__add {
+    display: block;
+  }
 }
