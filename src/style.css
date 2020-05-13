@@ -100,20 +100,6 @@
   transform-origin: 0 0;
 }
 
-.is-interactive {
-  .react-flow__node {
-    cursor: grab;
-
-    &:hover > * {
-      box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
-    }
-  }
-
-  .react-flow__handle {
-    cursor: crosshair;
-  }
-}
-
 .react-flow__node {
   position: absolute;
   color: #222;
@@ -123,9 +109,19 @@
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
+  cursor: grab;
 
-  &.selected > * {
+  &.selected > *,
+  &.selected:hover > * {
     box-shadow: 0 0 0 2px #555;
+  }
+
+  &:hover > * {
+    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
+  }
+
+  .react-flow__handle {
+    cursor: crosshair;
   }
 }
 

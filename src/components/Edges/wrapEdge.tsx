@@ -37,6 +37,9 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       ...rest
     }: EdgeWrapperProps) => {
       const edgeClasses = cx('react-flow__edge', { selected, animated });
+      const edgeGroupStyle: CSSProperties = {
+        pointerEvents: isInteractive ? 'all' : 'none',
+      };
       const onEdgeClick = (): void => {
         if (!isInteractive) {
           return;
@@ -47,7 +50,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       };
 
       return (
-        <g className={edgeClasses} onClick={onEdgeClick}>
+        <g className={edgeClasses} onClick={onEdgeClick} style={edgeGroupStyle}>
           <EdgeComponent
             id={id}
             source={source}

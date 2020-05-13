@@ -33,7 +33,7 @@ describe('Empty Flow Rendering', () => {
   });
 
   it('uses lock view control', () => {
-    cy.get('.react-flow__controls-interactive').click();
+    cy.get('.react-flow__controls-interactive');
   });
 
   it('renders an empty mini map', () => {

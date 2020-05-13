@@ -18,7 +18,7 @@ const initialElements = [
   },
   {
     id: '4', position: { x: 250, y: 200 },
-    data: { label: <>You can find the docs on <a href="https://github.com/wbkd/react-flow" target="_blank">Github</a></> }
+    data: { label: <>You can find the docs on <a href="https://github.com/wbkd/react-flow" target="_blank" rel="noopener noreferrer">Github</a></> }
   },
   { id: '5', data: { label: <>Or check out the other <strong>examples</strong></> }, position: { x: 250, y: 300 } },
   { id: '6', type: 'output', data: { label: <>An <strong>output node</strong></> }, position: { x: 100, y: 450 } },

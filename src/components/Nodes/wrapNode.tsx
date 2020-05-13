@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo, ComponentType } from 'react';
+import React, { useEffect, useRef, useState, memo, ComponentType, CSSProperties } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
@@ -101,9 +101,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const [isDragging, setDragging] = useState(false);
       const position = { x: xPos, y: yPos };
       const nodeClasses = cx('react-flow__node', { selected });
-      const nodeStyle = {
+      const nodeStyle: CSSProperties = {
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
+        pointerEvents: isInteractive ? 'all' : 'none',
       };
 
       const updateNode = (): void => {
