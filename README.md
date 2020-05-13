@@ -10,10 +10,11 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [ReactFlow Component Props](#reactflow-component-props)
 - [Styling](#styling)
 - [Nodes](#nodes)
-  - [Props](#props-1)
+  - [Props](#options-1)
   - [Node Types / Custom Nodes](#node-types--custom-nodes)
+- [Handle Component](#handle-component)
 - [Edges](#nodes)
-  - [Props](#props-2)
+  - [Props](#options-2)
   - [Edge Types / Custom Edges](#edge-types--custom-edges)
 - [Helper Functions](#helper-functions)
 - [Plugins](#plugins)
@@ -116,11 +117,11 @@ You could achieve the same effect by passing a style prop to the React Flow comp
 
 ## Nodes
 
-There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. You can also create [custom nodes](#node-types--custom-nodes).
+There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. You can also create [custom nodes](#node-types--custom-nodes). You create nodes by adding them to your `elements` array of the React Flow component.
 
 Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }`
 
-### Props
+### Options
 
 - `id`: string *(required)*
 - `position`: { x: number, y: number } *(required)*
@@ -155,7 +156,7 @@ You can now use type `special` for a node.
 The `default`, `input` and `output` types will be still available except you overwrite one of them.
 You can find an example of how to implement a custom node in the [custom node example](/example/src/CustomNode).
 
-## Handle
+## Handle Component
 
 We export a `Handle` component as a helper for your custom nodes:
 
@@ -190,11 +191,11 @@ You can find an example of how to implement a custom node with multiple handles 
 
 ## Edges
 
-There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges).
+There are three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`) you can use. The default type is `default`. You can also create [custom edges](#edge-types--custom-edges). You create edges by adding them to your `elements` array of the React Flow component.
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true, label: 'edge label' }`
 
-### Props
+### Options
 
 - `id`: string *(required)*
 - `source`: string (an id of a node) *(required)*
