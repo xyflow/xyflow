@@ -153,7 +153,40 @@ nodeTypes={{
 
 You can now use type `special` for a node.
 The `default`, `input` and `output` types will be still available except you overwrite one of them.
-You can find an example of how to implement a custom node in the [custom node example](example/src/CustomNode).
+You can find an example of how to implement a custom node in the [custom node example](/example/src/CustomNode).
+
+## Handle
+
+We export a `Handle` component as a helper for your custom nodes:
+
+```javascript
+import { Handle } from 'react-flow-renderer';
+
+const targetHandleWithValidation = (
+  <Handle
+    type="target"
+    position="left"
+    isValidConnection={(connection) => connection.source === 'some-id'}
+    onConnect={params => console.log('handle onConnect', params)}
+    style={{ background: '#fff' }}
+  />
+);
+
+```
+
+### Props
+
+- `type`: 'source' | 'target'
+- `id`: string - you only need this when you have multiple source or target handles otherwise the node id is used
+- `position`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top' for type target, 'bottom' for type source
+- `onConnect`: function that gets triggered on connect
+- `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - true by default
+- `style`: css properties
+
+### Multiple Handles
+
+If you need multiple source our target handles you can achieve this by creating a custom node. Normally you just use the id of a node for the `source` or `target` of an edge. If you have multiple source or target handles you need to pass an id to these handles. These ids get then added to the node id, so that you can connect to a specific handle. If you have a node with an id = `1` and a handle with an id = `a` you can connect to this handle by using the id = `1__a`.
+You can find an example of how to implement a custom node with multiple handles in the [custom node example](/example/src/CustomNode/ColorSelectorNode.js#L18-L29).
 
 ## Edges
 
@@ -281,7 +314,7 @@ const FlowWithControls = () => (
 
 You can find all examples in the [example](example) folder or check out the live versions:
 
-- [rich](https://react-flow.netlify.app/)
+- [overview](https://react-flow.netlify.app/)
 - [basic](https://react-flow.netlify.app/basic)
 - [custom node](https://react-flow.netlify.app/custom-node)
 - [horizontal](https://react-flow.netlify.app/horizontal)
