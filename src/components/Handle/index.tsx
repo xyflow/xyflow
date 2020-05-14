@@ -16,7 +16,8 @@ interface HandleProps {
   type: HandleType;
   position: Position;
   onConnect?: OnConnectFunc;
-  isValidConnection?: () => boolean;
+  isValidConnection?: (connection: Connection) => boolean;
+  id?: string;
 }
 
 const Handle = memo(
