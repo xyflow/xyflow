@@ -14,14 +14,14 @@ export const getOutgoers = (node: Node, elements: Elements): Elements => {
     return [];
   }
 
-  const outgoerIds = (elements as Edge[]).filter(e => e.source === node.id).map(e => e.target);
-  return elements.filter(e => outgoerIds.includes(e.id));
+  const outgoerIds = (elements as Edge[]).filter((e) => e.source === node.id).map((e) => e.target);
+  return elements.filter((e) => outgoerIds.includes(e.id));
 };
 
 export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {
-  const nodeIdsToRemove = elementsToRemove.map(n => n.id);
+  const nodeIdsToRemove = elementsToRemove.map((n) => n.id);
 
-  return elements.filter(element => {
+  return elements.filter((element) => {
     const edgeElement = element as Edge;
     return !(
       nodeIdsToRemove.includes(element.id) ||
@@ -44,7 +44,7 @@ export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
   });
 };
 
-const pointToRendererPoint = (
+export const pointToRendererPoint = (
   { x, y }: XYPosition,
   [tx, ty, tScale]: Transform,
   snapToGrid: boolean,
@@ -68,12 +68,7 @@ const pointToRendererPoint = (
   return position;
 };
 
-export const parseElement = (
-  element: Node | Edge,
-  transform: Transform,
-  snapToGrid: boolean,
-  snapGrid: [number, number]
-): Node | Edge => {
+export const parseElement = (element: Node | Edge): Node | Edge => {
   if (!element.id) {
     throw new Error('All elements (nodes and edges) need to have an id.');
   }
@@ -93,7 +88,7 @@ export const parseElement = (
     id: nodeElement.id.toString(),
     type: nodeElement.type || 'default',
     __rg: {
-      position: pointToRendererPoint(nodeElement.position, transform, snapToGrid, snapGrid),
+      position: nodeElement.position,
       width: null,
       height: null,
       handleBounds: {},
@@ -168,9 +163,9 @@ export const getNodesInside = (
 };
 
 export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
-  const nodeIds = nodes.map(n => n.id);
+  const nodeIds = nodes.map((n) => n.id);
 
-  return edges.filter(e => {
+  return edges.filter((e) => {
     const sourceId = e.source.split('__')[0];
     const targetId = e.target.split('__')[0];
 
@@ -181,7 +176,7 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
 export const fitView = ({ padding }: FitViewParams = { padding: 0.1 }): void => {
   const { nodes, width, height, d3Selection, d3Zoom } = store.getState();
 
-  if (!d3Selection || !d3Zoom || !nodes.length) {
+  if (!d3Selection || !d3Zoom || !nodes.length) {
     return;
   }
 
