@@ -6,9 +6,7 @@ import CustomEdge from './CustomEdge';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onElementClick = element => console.log('click', element);
-const onLoad = (graph) => {
-  graph.fitView();
-};
+const onLoad = (graph) => graph.fitView();
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Input 1' }, position: { x: 250, y: 0 } },

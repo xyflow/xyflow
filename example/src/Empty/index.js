@@ -6,7 +6,7 @@ const onNodeDragStop = node => console.log('drag stop', node);
 const onLoad = graphInstance => console.log('graph loaded:', graphInstance);
 const onElementClick = element => console.log('click', element);
 
-const EmptyGraph = () => {
+const EmptyFlow = () => {
   const [elements, setElements] = useState([]);
   const onElementsRemove = (elementsToRemove) =>
     setElements(els => removeElements(elementsToRemove, els));
@@ -45,4 +45,4 @@ const EmptyGraph = () => {
   );
 }
 
-export default EmptyGraph;
+export default EmptyFlow;

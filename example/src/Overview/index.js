@@ -31,7 +31,7 @@ const initialElements = [
   { id: 'e5-7', source: '5', target: '7', type: 'step', label: 'a step edge', labelStyle: { fill: 'red', fontWeight: 700 } },
 ];
 
-const RichGraph = () => {
+const OverviewFlow = () => {
   const [elements, setElements] = useState(initialElements);
 
   const addRandomNode = () => {
@@ -82,4 +82,4 @@ const RichGraph = () => {
   );
 }
 
-export default RichGraph;
+export default OverviewFlow;

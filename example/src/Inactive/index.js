@@ -11,7 +11,7 @@ const initialElements = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const EmptyGraph = () => {
+const InactiveFlow = () => {
   const [isInteractive, setIsInteractive] = useState(false);
   const onToggleInteractive = (evt) => {
     setIsInteractive(evt.target.checked);
@@ -43,4 +43,4 @@ const EmptyGraph = () => {
   );
 }
 
-export default EmptyGraph;
+export default InactiveFlow;
