@@ -31,13 +31,13 @@ const BasicFlow = () => {
               x: Math.random() * 400,
               y: Math.random() * 400
             }
-          }
+          };
         }
 
         return el;
-      })
-    })
-  }
+      });
+    });
+  };
 
   return (
     <ReactFlow

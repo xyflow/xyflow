@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, MiniMap } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap, isNode, Controls } from 'react-flow-renderer';
 import { getElements } from './utils';
 
 const onLoad = graph => {
@@ -16,6 +16,24 @@ const StressGraph = () => {
     setElements(els => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements(els => addEdge(params, els));
 
+  const updatePos = () => {
+    setElements(elms => {
+      return elms.map(el => {
+        if (isNode(el)) {
+          return {
+            ...el,
+            position: {
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight
+            }
+          };
+        }
+
+        return el;
+      });
+    });
+  };
+
   return (
     <ReactFlow
       elements={elements}
@@ -25,7 +43,14 @@ const StressGraph = () => {
       style={{ width: '100%', height: '100%' }}
       backgroundType="lines"
     >
+      <button
+        onClick={updatePos}
+        style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
+      >
+        change pos
+      </button>
       <MiniMap />
+      <Controls />
     </ReactFlow>
   );
 }
