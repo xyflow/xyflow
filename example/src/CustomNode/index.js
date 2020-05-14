@@ -6,13 +6,11 @@ import ColorSelectorNode from './ColorSelectorNode';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onElementClick = element => console.log('click', element);
-const onLoad = (graph) => {
-  console.log('graph loaded:', graph);
-};
+const onLoad = (graph) => console.log('graph loaded:', graph);
 
 const initBgColor = '#f0e742';
 
-const CustomNodeGraph = () => {
+const CustomNodeFlow = () => {
   const [elements, setElements] = useState([]);
   const [bgColor, setBgColor] = useState(initBgColor);
 
@@ -83,4 +81,4 @@ const CustomNodeGraph = () => {
   );
 }
 
-export default CustomNodeGraph;
+export default CustomNodeFlow;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, NavLink, withRouter } from 'react-router-dom';
 
-import Rich from './Rich';
+import Overview from './Overview';
 import Basic from './Basic';
 import CustomNode from './CustomNode';
 import Stress from './Stress';
@@ -15,7 +15,7 @@ import './index.css';
 
 const routes = [{
   path: '/',
-  component: Rich,
+  component: Overview,
   label: 'Overview'
 }, {
   path: '/basic',
