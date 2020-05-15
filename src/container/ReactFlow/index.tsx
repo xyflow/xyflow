@@ -18,16 +18,16 @@ import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
-import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc, Node, Edge, Connection } from '../../types';
 
 import '../../style.css';
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
-  onElementClick: () => void;
+  onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
-  onNodeDragStop: () => void;
-  onConnect: () => void;
+  onNodeDragStop: (node: Node) => void;
+  onConnect: (connection: Connection) => void;
   onLoad: OnLoadFunc;
   onMove: () => void;
   nodeTypes: NodeTypesType;

@@ -2,12 +2,12 @@ import React, { memo, ComponentType } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import { getNodesInside } from '../../utils/graph';
-import { Node, Transform, NodeTypesType, WrapNodeProps, Elements } from '../../types';
+import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
-  onElementClick: () => void;
-  onNodeDragStop: () => void;
+  onElementClick: (element: Node | Edge) => void;
+  onNodeDragStop: (node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
 }
 
@@ -47,7 +47,7 @@ function renderNode(
 }
 
 const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRendererProps) => {
-  const { nodes, transform, selectedElements, width, height, isInteractive } = useStoreState(s => ({
+  const { nodes, transform, selectedElements, width, height, isInteractive } = useStoreState((s) => ({
     nodes: s.nodes,
     transform: s.transform,
     selectedElements: s.selectedElements,
@@ -67,7 +67,7 @@ const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRend
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {renderNodes.map(node => renderNode(node, props, transform, selectedElements, isInteractive))}
+      {renderNodes.map((node) => renderNode(node, props, transform, selectedElements, isInteractive))}
     </div>
   );
 });

@@ -60,7 +60,7 @@ const onDrag = (
 };
 
 const onStop = (
-  onNodeDragStop: (params: Node) => void,
+  onNodeDragStop: (node: Node) => void,
   isDragging: boolean,
   setDragging: (isDragging: boolean) => void,
   id: ElementId,
