@@ -11,7 +11,7 @@ interface EdgeRendererProps {
   edgeTypes: any;
   connectionLineStyle?: CSSProperties;
   connectionLineType?: string;
-  onElementClick?: () => void;
+  onElementClick?: (element: Node | Edge) => void;
 }
 
 interface EdgePositions {

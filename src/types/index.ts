@@ -109,7 +109,7 @@ export interface NodeComponentProps {
   targetPosition?: Position;
   sourcePosition?: Position;
   onClick?: (node: Node) => void | undefined;
-  onNodeDragStop?: () => any;
+  onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
 }
 
@@ -147,11 +147,20 @@ export type Connection = {
   target: ElementId | null;
 };
 
-export type OnConnectFunc = (params: Connection) => void;
+export type OnConnectFunc = (connection: Connection) => void;
 
 export interface HandleElement extends XYPosition, Dimensions {
   id?: ElementId | null;
   position: Position;
+}
+
+export interface HandleProps {
+  type: HandleType;
+  position: Position;
+  onConnect?: OnConnectFunc;
+  isValidConnection?: (connection: Connection) => boolean;
+  id?: string;
+  style?: CSSProperties;
 }
 
 export interface EdgeCompProps {

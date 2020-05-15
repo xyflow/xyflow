@@ -13,14 +13,14 @@ import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
-import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc } from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc, Node, Edge, Connection } from '../../types';
 
 export interface GraphViewProps {
   elements: Elements;
-  onElementClick: () => void;
+  onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
-  onNodeDragStop: () => void;
-  onConnect: () => void;
+  onNodeDragStop: (node: Node) => void;
+  onConnect: (conneciton: Connection) => void;
   onLoad: OnLoadFunc;
   onMove: () => void;
   selectionKeyCode: number;

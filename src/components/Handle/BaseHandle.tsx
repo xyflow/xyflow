@@ -1,4 +1,4 @@
-import React, { memo, MouseEvent as ReactMouseEvent } from 'react';
+import React, { memo, MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
 import cx from 'classnames';
 
 import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection } from '../../types';
@@ -16,6 +16,7 @@ interface BaseHandleProps {
   isValidConnection: ValidConnectionFunc;
   id?: ElementId | boolean;
   className?: string;
+  style?: CSSProperties;
 }
 
 type Result = {
