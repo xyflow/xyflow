@@ -28,7 +28,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 
 * **Easy to use:** Seamless zooming & panning behaviour and single and multi-selections of elements
 * **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes with multiple handles and edges
-* **Fast rendering:** Only elements that are in the view port are displayed
+* **Fast rendering:** Only nodes that have changed are re-rendered and only those that are in the viewport are displayed
 * **Utils:** Snap-to-grid, background styles and graph [helper functions](#helper-functions)
 * **Plugin system:** [Mini map and graph controls](#plugins)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
