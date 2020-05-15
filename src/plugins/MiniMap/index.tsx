@@ -4,18 +4,14 @@ import classnames from 'classnames';
 import { useStoreState } from '../../store/hooks';
 import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
 import { Node, Rect } from '../../types';
+import MiniMapNode from './MiniMapNode';
 
 type StringFunc = (node: Node) => string;
 
 interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
-  nodeColor: string | StringFunc;
-  nodeBorderRadius: number;
-  maskColor: string;
-}
-interface MiniMapNodeProps {
-  node: Node;
-  color: string;
-  borderRadius: number;
+  nodeColor?: string | StringFunc;
+  nodeBorderRadius?: number;
+  maskColor?: string;
 }
 
 const baseStyle: CSSProperties = {
@@ -27,29 +23,7 @@ const baseStyle: CSSProperties = {
   height: 150,
 };
 
-const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
-  const {
-    position: { x, y },
-    width,
-    height,
-  } = node.__rg;
-  const { background, backgroundColor } = node.style || {};
-  const fill = (background || backgroundColor || color) as string;
-  return (
-    <rect
-      className="react-flow__minimap-node"
-      x={x}
-      y={y}
-      rx={borderRadius}
-      ry={borderRadius}
-      width={width}
-      height={height}
-      fill={fill}
-    />
-  );
-};
-
-export default ({
+const MiniMap = ({
   style = { backgroundColor: '#f8f8f8' },
   className,
   nodeColor = '#ddd',
@@ -105,7 +79,7 @@ export default ({
       }}
       className={mapClasses}
     >
-      {state.nodes.map(node => (
+      {state.nodes.map((node) => (
         <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} borderRadius={nodeBorderRadius} />
       ))}
       <path
@@ -118,3 +92,7 @@ export default ({
     </svg>
   );
 };
+
+MiniMap.displayName = 'MiniMap';
+
+export default MiniMap;

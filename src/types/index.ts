@@ -13,21 +13,10 @@ export enum Position {
   Bottom = 'bottom',
 }
 
-export type XYPosition = {
+export interface XYPosition {
   x: number;
   y: number;
-};
-
-export enum GridType {
-  Lines = 'lines',
-  Dots = 'dots',
 }
-
-export type HandleType = 'source' | 'target';
-
-export type NodeTypesType = { [key: string]: React.ReactNode };
-
-export type EdgeTypesType = NodeTypesType;
 
 export interface Dimensions {
   width: number;
@@ -39,12 +28,6 @@ export interface Rect extends Dimensions, XYPosition {}
 export interface Box extends XYPosition {
   x2: number;
   y2: number;
-}
-
-export interface SelectionRect extends Rect {
-  startX: number;
-  startY: number;
-  draw: boolean;
 }
 
 export interface Node {
@@ -69,6 +52,23 @@ export interface Edge {
   labelBgStyle?: CSSProperties;
   style?: CSSProperties;
   animated?: boolean;
+}
+
+export enum GridType {
+  Lines = 'lines',
+  Dots = 'dots',
+}
+
+export type HandleType = 'source' | 'target';
+
+export type NodeTypesType = { [key: string]: React.ReactNode };
+
+export type EdgeTypesType = NodeTypesType;
+
+export interface SelectionRect extends Rect {
+  startX: number;
+  startY: number;
+  draw: boolean;
 }
 
 export interface EdgeProps {
@@ -142,10 +142,10 @@ type OnLoadParams = {
 
 export type OnLoadFunc = (params: OnLoadParams) => void;
 
-export type Connection = {
+export interface Connection {
   source: ElementId | null;
   target: ElementId | null;
-};
+}
 
 export type OnConnectFunc = (connection: Connection) => void;
 

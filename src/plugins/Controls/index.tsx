@@ -23,11 +23,10 @@ interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
   showInteractive?: boolean;
 }
 
-export default ({ style, showZoom = true, showFitView = true, showInteractive = true, className }: ControlProps) => {
-  const mapClasses: string = classnames('react-flow__controls', className);
-
+const Controls = ({ style, showZoom = true, showFitView = true, showInteractive = true, className }: ControlProps) => {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { isInteractive } = useStoreState(({ isInteractive }) => ({ isInteractive }));
+  const mapClasses: string = classnames('react-flow__controls', className);
 
   return (
     <div
@@ -63,3 +62,7 @@ export default ({ style, showZoom = true, showFitView = true, showInteractive = 
     </div>
   );
 };
+
+Controls.displayName = 'Controls';
+
+export default Controls;
