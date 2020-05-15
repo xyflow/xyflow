@@ -27,7 +27,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
   onNodeDragStop: (node: Node) => void;
-  onConnect: (connection: Connection) => void;
+  onConnect: (connection: Edge | Connection) => void;
   onLoad: OnLoadFunc;
   onMove: () => void;
   nodeTypes: NodeTypesType;

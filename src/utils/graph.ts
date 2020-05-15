@@ -1,7 +1,7 @@
 import { zoomIdentity } from 'd3-zoom';
 
 import store from '../store';
-import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box } from '../types';
+import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box, Connection } from '../types';
 
 export const isEdge = (element: Node | Edge): boolean =>
   element.hasOwnProperty('source') && element.hasOwnProperty('target');
@@ -31,17 +31,24 @@ export const removeElements = (elementsToRemove: Elements, elements: Elements): 
   });
 };
 
-const getEdgeId = ({ source, target }: Edge): ElementId => `reactflow__edge-${source}-${target}`;
+const getEdgeId = ({ source, target }: Connection): ElementId => `reactflow__edge-${source}-${target}`;
 
-export const addEdge = (edgeParams: Edge, elements: Elements): Elements => {
+export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elements => {
   if (!edgeParams.source || !edgeParams.target) {
     throw new Error('Can not create edge. An edge needs a source and a target');
   }
 
-  return elements.concat({
+  if (edgeParams.hasOwnProperty('id')) {
+    const edge = { ...edgeParams } as Edge;
+    return elements.concat(edge);
+  }
+
+  const edge = {
     ...edgeParams,
-    id: typeof edgeParams.id !== 'undefined' ? edgeParams.id : getEdgeId(edgeParams),
-  });
+    id: getEdgeId(edgeParams),
+  } as Edge;
+
+  return elements.concat(edge);
 };
 
 export const pointToRendererPoint = (

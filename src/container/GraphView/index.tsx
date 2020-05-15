@@ -20,7 +20,7 @@ export interface GraphViewProps {
   onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
   onNodeDragStop: (node: Node) => void;
-  onConnect: (conneciton: Connection) => void;
+  onConnect: (connection: Connection | Edge) => void;
   onLoad: OnLoadFunc;
   onMove: () => void;
   selectionKeyCode: number;
