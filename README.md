@@ -249,11 +249,11 @@ import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-r
 
 #### isEdge
 
-`isEdge = (element: Node | Edge): boolean`
+`isEdge = (element: Node | Edge): element is Edge`
 
 #### isNode
 
-`isNode = (element: Node | Edge): boolean`
+`isNode = (element: Node | Edge): element is Node`
 
 #### removeElements
 

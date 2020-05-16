@@ -3,11 +3,11 @@ import { zoomIdentity } from 'd3-zoom';
 import store from '../store';
 import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box, Connection } from '../types';
 
-export const isEdge = (element: Node | Edge): boolean =>
-  element.hasOwnProperty('source') && element.hasOwnProperty('target');
+export const isEdge = (element: Node | Connection | Edge): element is Edge =>
+  'id' in element && 'source' in element && 'target' in element;
 
-export const isNode = (element: Node | Edge): boolean =>
-  !element.hasOwnProperty('source') && !element.hasOwnProperty('target');
+export const isNode = (element: Node | Connection | Edge): element is Node =>
+  'id' in element && !('source' in element) && !('target' in element);
 
 export const getOutgoers = (node: Node, elements: Elements): Elements => {
   if (!isNode(node)) {
@@ -38,9 +38,8 @@ export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elem
     throw new Error('Can not create edge. An edge needs a source and a target');
   }
 
-  if (edgeParams.hasOwnProperty('id')) {
-    const edge = { ...edgeParams } as Edge;
-    return elements.concat(edge);
+  if (isEdge(edgeParams)) {
+    return elements.concat({ ...edgeParams });
   }
 
   const edge = {
@@ -88,19 +87,17 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
     };
   }
 
-  const nodeElement = element as Node;
-
   return {
-    ...nodeElement,
-    id: nodeElement.id.toString(),
-    type: nodeElement.type || 'default',
+    ...element,
+    id: element.id.toString(),
+    type: element.type || 'default',
     __rg: {
-      position: nodeElement.position,
+      position: element.position,
       width: null,
       height: null,
       handleBounds: {},
     },
-  };
+  } as Node;
 };
 
 const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
