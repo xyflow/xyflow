@@ -29,7 +29,7 @@
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.3.0",
     "fast-deep-equal": "^3.1.1",
-    "react-draggable": "^4.3.1",
+    "react-draggable": "^4.4.2",
     "resize-observer": "^1.0.0"
   },
   "devDependencies": {
