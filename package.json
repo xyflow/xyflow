@@ -23,7 +23,7 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@welldone-software/why-did-you-render": "^4.2.0",
+    "@welldone-software/why-did-you-render": "^4.2.1",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
