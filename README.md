@@ -7,7 +7,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Key Features](#key-features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [ReactFlow Component Props](#reactflow-component-props)
+- [ReactFlow Component Prop Types](#reactflow-component-prop-types)
 - [Styling](#styling)
 - [Nodes](#nodes)
   - [Options](#options-1)
@@ -62,7 +62,7 @@ const BasicFlow = () => (
 );
 ```
 
-## ReactFlow Component Props
+## ReactFlow Component Prop Types
 
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
 - `onElementClick`: element click handler
@@ -249,19 +249,33 @@ import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-r
 
 #### isEdge
 
-`isEdge = (element: Node | Edge): boolean`
+Returns true if element is an edge
+
+`isEdge = (element: Node | Edge): element is Edge`
 
 #### isNode
 
-`isNode = (element: Node | Edge): boolean`
+Returns true if element is a node
+
+`isNode = (element: Node | Edge): element is Node`
 
 #### removeElements
+
+Returns elements without the elements from `elementsToRemove`
 
 `removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
 
 #### addEdge
 
+Returns elements array with added edge
+
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
+
+#### project
+
+Transforms pixel coordinates to the internal React Flow coordinate system
+
+`project = (position: XYPosition): XYPosition`
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 

@@ -49,6 +49,7 @@ const BasicFlow = () => {
       onNodeDragStop={onNodeDragStop}
       style={{ width: '100%', height: '100%' }}
       backgroundType="lines"
+      className="react-flow-basic-example"
     >
       <button
         onClick={updatePos}

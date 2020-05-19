@@ -3,6 +3,7 @@ describe('Basic Graph Rendering', () => {
     cy.visit('/basic');
 
     cy.get('.react-flow__renderer');
+    cy.get('.react-flow-basic-example'); // check if className prop works
     cy.get('.react-flow__node').should('have.length', 4);
     cy.get('.react-flow__edge').should('have.length', 2);
     cy.get('.react-flow__node').children('div').children('.react-flow__handle');

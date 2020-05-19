@@ -1,4 +1,5 @@
 import React, { useMemo, CSSProperties, HTMLAttributes } from 'react';
+import cx from 'classnames';
 import { StoreProvider } from 'easy-peasy';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
@@ -50,6 +51,7 @@ const ReactFlow = ({
   style,
   onElementClick,
   elements = [],
+  className,
   children,
   nodeTypes,
   edgeTypes,
@@ -75,7 +77,7 @@ const ReactFlow = ({
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
 
   return (
-    <div style={style} className="react-flow">
+    <div style={style} className={cx('react-flow', className)}>
       <StoreProvider store={store}>
         <GraphView
           onLoad={onLoad}
@@ -137,6 +139,7 @@ ReactFlow.defaultProps = {
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,
   isInteractive: true,
+  className: '',
 };
 
 export default ReactFlow;

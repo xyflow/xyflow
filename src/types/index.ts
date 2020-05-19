@@ -133,11 +133,13 @@ export type FitViewParams = {
   padding: number;
 };
 export type FitViewFunc = (fitViewOptions: FitViewParams) => void;
+export type ProjectFunc = (position: XYPosition) => XYPosition;
 
 type OnLoadParams = {
   zoomIn: () => void;
   zoomOut: () => void;
   fitView: FitViewFunc;
+  project: ProjectFunc;
 };
 
 export type OnLoadFunc = (params: OnLoadParams) => void;

@@ -23,13 +23,13 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@welldone-software/why-did-you-render": "^4.2.0",
+    "@welldone-software/why-did-you-render": "^4.2.1",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.3.0",
     "fast-deep-equal": "^3.1.1",
-    "react-draggable": "^4.3.1",
+    "react-draggable": "^4.4.2",
     "resize-observer": "^1.0.0"
   },
   "devDependencies": {
@@ -41,7 +41,7 @@
     "@types/d3": "^5.7.2",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
-    "autoprefixer": "^9.7.6",
+    "autoprefixer": "^9.8.0",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
     "cypress": "^4.5.0",
@@ -49,8 +49,8 @@
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "release-it": "^13.5.8",
-    "rollup": "^2.9.1",
+    "release-it": "^13.6.1",
+    "rollup": "^2.10.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",
@@ -61,10 +61,10 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-terser": "^5.3.0",
-    "rollup-plugin-typescript2": "^0.27.0",
+    "rollup-plugin-typescript2": "^0.27.1",
     "rollup-plugin-uglify": "^6.0.4",
     "start-server-and-test": "^1.11.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.2"
   },
   "peerDependencies": {
     "react": "^16.13.1"
