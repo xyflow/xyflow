@@ -6,3 +6,4 @@ cypress/videos
 cypress/screenshots
 dist
 .env
+stats.html
