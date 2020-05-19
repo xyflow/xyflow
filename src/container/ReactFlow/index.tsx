@@ -45,7 +45,6 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
   isInteractive: boolean;
-  className: string;
 }
 
 const ReactFlow = ({
