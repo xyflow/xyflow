@@ -74,6 +74,12 @@ export const pointToRendererPoint = (
   return position;
 };
 
+export const project = (position: XYPosition): XYPosition => {
+  const { transform, snapToGrid, snapGrid } = store.getState();
+
+  return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
+};
+
 export const parseElement = (element: Node | Edge): Node | Edge => {
   if (!element.id) {
     throw new Error('All elements (nodes and edges) need to have an id.');

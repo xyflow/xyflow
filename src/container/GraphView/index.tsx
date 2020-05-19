@@ -12,7 +12,7 @@ import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
-import { fitView, zoomIn, zoomOut } from '../../utils/graph';
+import { fitView, zoomIn, zoomOut, project } from '../../utils/graph';
 import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc, Node, Edge, Connection } from '../../types';
 
 export interface GraphViewProps {
@@ -115,6 +115,7 @@ const GraphView = memo(
           fitView,
           zoomIn,
           zoomOut,
+          project,
         });
       }
     }, [state.d3Initialised]);
