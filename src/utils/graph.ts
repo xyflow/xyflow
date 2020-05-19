@@ -82,6 +82,8 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
   if (isEdge(element)) {
     return {
       ...element,
+      source: element.source.toString(),
+      target: element.target.toString(),
       id: element.id.toString(),
       type: element.type || 'default',
     };
