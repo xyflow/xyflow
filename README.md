@@ -74,6 +74,7 @@ const BasicFlow = () => (
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css style passed to the wrapper
+- `className`: additional class name
 - `connectionLineType`: connection line type = `straight` or `bezier`
 - `connectionLineStyle`: connection style as svg attributes
 - `deleteKeyCode`: default: `8` (delete)
