@@ -16,7 +16,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Edges](#nodes)
   - [Options](#options-2)
   - [Edge Types / Custom Edges](#edge-types--custom-edges)
-- [Components](#plugins)
+- [Components](#components)
   - [Background](#background)
   - [Minimap](#minimap)
   - [Controls](#controls)
