@@ -187,23 +187,13 @@ function renderEdge(
 }
 
 const EdgeRenderer = memo((props: EdgeRendererProps) => {
-  const {
-    transform,
-    edges,
-    nodes,
-    connectionSourceId,
-    connectionPosition: { x, y },
-    selectedElements,
-    isInteractive,
-  } = useStoreState((s) => ({
-    transform: s.transform,
-    edges: s.edges,
-    nodes: s.nodes,
-    connectionSourceId: s.connectionSourceId,
-    connectionPosition: s.connectionPosition,
-    selectedElements: s.selectedElements,
-    isInteractive: s.isInteractive,
-  }));
+  const [tX, tY, tScale] = useStoreState((s) => s.transform);
+  const edges = useStoreState((s) => s.edges);
+  const nodes = useStoreState((s) => s.nodes);
+  const connectionSourceId = useStoreState((s) => s.connectionSourceId);
+  const connectionPosition = useStoreState((s) => s.connectionPosition);
+  const selectedElements = useStoreState((s) => s.selectedElements);
+  const isInteractive = useStoreState((s) => s.isInteractive);
 
   const { width, height, connectionLineStyle, connectionLineType } = props;
 
@@ -211,8 +201,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
     return null;
   }
 
-  const [tx, ty, tScale] = transform;
-  const transformStyle = `translate(${tx},${ty}) scale(${tScale})`;
+  const transformStyle = `translate(${tX},${tY}) scale(${tScale})`;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
@@ -222,9 +211,9 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
           <ConnectionLine
             nodes={nodes}
             connectionSourceId={connectionSourceId}
-            connectionPositionX={x}
-            connectionPositionY={y}
-            transform={transform}
+            connectionPositionX={connectionPosition.x}
+            connectionPositionY={connectionPosition.y}
+            transform={[tX, tY, tScale]}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}
             isInteractive={isInteractive}

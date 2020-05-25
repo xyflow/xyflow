@@ -20,12 +20,11 @@ const InactiveFlow = () => {
   return (
     <ReactFlow
       elements={initialElements}
-      style={{ width: '100%', height: '100%' }}
-      backgroundType="lines"
       isInteractive={isInteractive}
     >
       <MiniMap />
       <Controls />
+
       <div
         style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}
       >

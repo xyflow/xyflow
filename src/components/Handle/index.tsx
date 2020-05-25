@@ -15,10 +15,8 @@ const Handle = memo(
     ...rest
   }: HandleProps) => {
     const nodeId = useContext(NodeIdContext) as ElementId;
-    const { setPosition, setSourceId } = useStoreActions((a) => ({
-      setPosition: a.setConnectionPosition,
-      setSourceId: a.setConnectionSourceId,
-    }));
+    const setPosition = useStoreActions((a) => a.setConnectionPosition);
+    const setSourceId = useStoreActions((a) => a.setConnectionSourceId);
     const onConnectAction = useStoreState((s) => s.onConnect);
     const onConnectExtended = (params: Connection) => {
       onConnectAction(params);

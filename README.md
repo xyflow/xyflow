@@ -2,7 +2,7 @@
 
 # :ocean: React Flow
 
-React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with plugins like a mini-map and graph controls. Feel free to check out the [examples](https://react-flow.netlify.com/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
+React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with components like a mini-map and graph controls. Feel free to check out the [examples](https://react-flow.netlify.com/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
 
 - [Key Features](#key-features)
 - [Installation](#installation)
@@ -16,10 +16,11 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Edges](#nodes)
   - [Options](#options-2)
   - [Edge Types / Custom Edges](#edge-types--custom-edges)
-- [Helper Functions](#helper-functions)
-- [Plugins](#plugins)
+- [Components](#components)
+  - [Background](#background)
   - [Minimap](#minimap)
   - [Controls](#controls)
+- [Helper Functions](#helper-functions)
 - [Examples](#examples)
 - [Development](#development)
 - [Testing](#testing)
@@ -30,7 +31,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 * **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes with multiple handles and edges
 * **Fast rendering:** Only nodes that have changed are re-rendered and only those that are in the viewport are displayed
 * **Utils:** Snap-to-grid, background styles and graph [helper functions](#helper-functions)
-* **Plugin system:** [Mini map and graph controls](#plugins)
+* **Components:** [Background, Minimap and graph controls](#components)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
 In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass the functions to remove an element or connect nodes by yourself. You can implement your own ones or use the helper functions that come with the library.
@@ -81,10 +82,6 @@ const BasicFlow = () => (
 - `connectionLineStyle`: connection style as svg attributes
 - `deleteKeyCode`: default: `8` (delete)
 - `selectionKeyCode`: default: `16` (shift)
-- `showBackground`: default: `true`
-- `backgroundGap`: gap size - default: `16`
-- `backgroundColor`: color of dots or lines - default: `#eee`
-- `backgroundType`: background type = `dots` or `lines` - default: `dots`
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
@@ -242,47 +239,34 @@ Now you could use the new type `special` for an edge.
 The `straight`, `default` and `step` types would still be available unless you overwrote one of them.
 There is an implementation of a custom edge in the [edges example](/example/src/Edges/index.js).
 
-## Helper Functions
+## Components
 
-If you want to remove a node or connect two nodes with each other you need to pass a function to `onElementsRemove` and `onConnect`. In order to simplify this process we export some helper functions so that you don't need to implement them:
+### Background
+
+React Flow comes with two background variants: **dots** and **lines**. You can use it by passing it as a children to the React Flow component:
 
 ```javascript
-import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-renderer';
+import ReactFlow, { Background } from 'react-flow-renderer';
+
+const FlowWithBackground = () => (
+  <ReactFlow elements={elements}>
+    <Background
+      variant="dots"
+      gap={12}
+      size={4}
+    />
+  </ReactFlow>
+);
 ```
 
-#### isEdge
+#### Prop Types
 
-Returns true if element is an edge
-
-`isEdge = (element: Node | Edge): element is Edge`
-
-#### isNode
-
-Returns true if element is a node
-
-`isNode = (element: Node | Edge): element is Node`
-
-#### removeElements
-
-Returns elements without the elements from `elementsToRemove`
-
-`removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
-
-#### addEdge
-
-Returns elements array with added edge
-
-`addEdge = (edgeParams: Edge, elements: Elements): Elements`
-
-#### project
-
-Transforms pixel coordinates to the internal React Flow coordinate system
-
-`project = (position: XYPosition): XYPosition`
-
-You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
-
-## Plugins
+- `variant`: string - has to be 'dots' or 'lines' - default: `dots`
+- `gap`: number - the gap between the dots or lines - default: `16`
+- `size`: number - the radius of the dots or the stroke width of the lines - default: `0.5`
+- `color`: string - the color of the dots or lines - default: `#999` for dots, `#eee` for lines
+- `style`: css properties
+- `className`: class name
 
 ### MiniMap
 
@@ -291,7 +275,7 @@ You can use the mini map plugin by passing it as a children to the React Flow co
 ```javascript
 import ReactFlow, { MiniMap } from 'react-flow-renderer';
 
-const GraphWithMiniMap = () => (
+const FlowWithMiniMap = () => (
   <ReactFlow elements={elements}>
     <MiniMap
       nodeColor={(node) => {
@@ -336,6 +320,46 @@ const FlowWithControls = () => (
 - `showZoom`: boolean - default: true
 - `showFitView`: boolean - default: true
 - `showInteractive`: boolean - default: true
+
+## Helper Functions
+
+If you want to remove a node or connect two nodes with each other you need to pass a function to `onElementsRemove` and `onConnect`. In order to simplify this process we export some helper functions so that you don't need to implement them:
+
+```javascript
+import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-renderer';
+```
+
+#### isEdge
+
+Returns true if element is an edge
+
+`isEdge = (element: Node | Edge): element is Edge`
+
+#### isNode
+
+Returns true if element is a node
+
+`isNode = (element: Node | Edge): element is Node`
+
+#### removeElements
+
+Returns elements without the elements from `elementsToRemove`
+
+`removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
+
+#### addEdge
+
+Returns elements array with added edge
+
+`addEdge = (edgeParams: Edge, elements: Elements): Elements`
+
+#### project
+
+Transforms pixel coordinates to the internal React Flow coordinate system
+
+`project = (position: XYPosition): XYPosition`
+
+You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 
 ## Examples
 

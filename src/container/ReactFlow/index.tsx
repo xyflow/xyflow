@@ -20,30 +20,26 @@ import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
-import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc, Node, Edge, Connection } from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, OnLoadFunc, Node, Edge, Connection } from '../../types';
 
 import '../../style.css';
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
-  onElementClick: (element: Node | Edge) => void;
-  onElementsRemove: (elements: Elements) => void;
-  onNodeDragStart: (node: Node) => void;
-  onNodeDragStop: (node: Node) => void;
-  onConnect: (connection: Edge | Connection) => void;
-  onLoad: OnLoadFunc;
-  onMove: () => void;
-  onSelectionChange: (elements: Elements | null) => void;
+  onElementClick?: (element: Node | Edge) => void;
+  onElementsRemove?: (elements: Elements) => void;
+  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStop?: (node: Node) => void;
+  onConnect?: (connection: Edge | Connection) => void;
+  onLoad?: OnLoadFunc;
+  onMove?: () => void;
+  onSelectionChange?: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: string;
   connectionLineStyle: CSSProperties;
   deleteKeyCode: number;
   selectionKeyCode: number;
-  showBackground: boolean;
-  backgroundGap: number;
-  backgroundColor: string;
-  backgroundType: GridType;
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
@@ -69,10 +65,6 @@ const ReactFlow = ({
   connectionLineStyle,
   deleteKeyCode,
   selectionKeyCode,
-  showBackground,
-  backgroundGap,
-  backgroundType,
-  backgroundColor,
   snapToGrid,
   snapGrid,
   onlyRenderVisibleNodes,
@@ -99,10 +91,6 @@ const ReactFlow = ({
           deleteKeyCode={deleteKeyCode}
           elements={elements}
           onConnect={onConnect}
-          backgroundColor={backgroundColor}
-          backgroundGap={backgroundGap}
-          showBackground={showBackground}
-          backgroundType={backgroundType}
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
@@ -118,13 +106,6 @@ const ReactFlow = ({
 ReactFlow.displayName = 'ReactFlow';
 
 ReactFlow.defaultProps = {
-  onElementClick: () => {},
-  onElementsRemove: () => {},
-  onNodeDragStart: () => {},
-  onNodeDragStop: () => {},
-  onConnect: () => {},
-  onLoad: () => {},
-  onMove: () => {},
   nodeTypes: {
     input: InputNode,
     default: DefaultNode,
@@ -139,10 +120,6 @@ ReactFlow.defaultProps = {
   connectionLineStyle: {},
   deleteKeyCode: 8,
   selectionKeyCode: 16,
-  backgroundColor: '#eee',
-  backgroundGap: 24,
-  showBackground: true,
-  backgroundType: GridType.Dots,
   snapToGrid: false,
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,

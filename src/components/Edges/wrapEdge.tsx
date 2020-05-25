@@ -13,7 +13,7 @@ interface EdgeWrapperProps {
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle: CSSProperties;
-  onClick: (edge: Edge) => void;
+  onClick?: (edge: Edge) => void;
   animated: boolean;
   selected: boolean;
   isInteractive: boolean;
@@ -46,7 +46,10 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
         }
 
         store.dispatch.setSelectedElements({ id, source, target });
-        onClick({ id, source, target, type });
+
+        if (onClick) {
+          onClick({ id, source, target, type });
+        }
       };
 
       return (

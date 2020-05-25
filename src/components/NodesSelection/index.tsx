@@ -30,30 +30,28 @@ function getStartPositions(nodes: Node[]): StartPositions {
 export default memo(() => {
   const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState<StartPositions>({});
-  const state = useStoreState((s) => ({
-    transform: s.transform,
-    selectedNodesBbox: s.selectedNodesBbox,
-    selectedElements: s.selectedElements,
-    snapToGrid: s.snapToGrid,
-    snapGrid: s.snapGrid,
-    nodes: s.nodes,
-  }));
+  const [tX, tY, tScale] = useStoreState((s) => s.transform);
+  const selectedNodesBbox = useStoreState((s) => s.selectedNodesBbox);
+  const selectedElements = useStoreState((s) => s.selectedElements);
+  const snapToGrid = useStoreState((s) => s.snapToGrid);
+  const snapGrid = useStoreState((s) => s.snapGrid);
+  const nodes = useStoreState((s) => s.nodes);
+
   const updateNodePos = useStoreActions((a) => a.updateNodePos);
-  const [tx, ty, tScale] = state.transform;
-  const position = state.selectedNodesBbox;
-  const grid = (state.snapToGrid ? state.snapGrid : [1, 1])! as [number, number];
+  const position = selectedNodesBbox;
+  const grid = (snapToGrid ? snapGrid : [1, 1])! as [number, number];
 
   const onStart = (evt: MouseEvent) => {
     const scaledClient: XYPosition = {
       x: evt.clientX / tScale,
       y: evt.clientY / tScale,
     };
-    const offsetX: number = scaledClient.x - position.x - tx;
-    const offsetY: number = scaledClient.y - position.y - ty;
-    const selectedNodes = state.selectedElements
-      ? (state.selectedElements.filter(isNode) as Node[]).map(
-          (selectedNode) => state.nodes.find((node) => node.id === selectedNode.id)! as Node
-        )
+    const offsetX: number = scaledClient.x - position.x - tX;
+    const offsetY: number = scaledClient.y - position.y - tY;
+    const selectedNodes = selectedElements
+      ? selectedElements
+          .filter(isNode)
+          .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
       : [];
 
     const nextStartPositions = getStartPositions(selectedNodes);
@@ -70,11 +68,11 @@ export default memo(() => {
       y: evt.clientY / tScale,
     };
 
-    if (state.selectedElements) {
-      (state.selectedElements.filter(isNode) as Node[]).forEach((node) => {
+    if (selectedElements) {
+      selectedElements.filter(isNode).forEach((node) => {
         const pos: XYPosition = {
-          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tx,
-          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - ty,
+          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tX,
+          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - tY,
         };
 
         updateNodePos({ id: node.id, pos });
@@ -86,7 +84,7 @@ export default memo(() => {
     <div
       className="react-flow__nodesselection"
       style={{
-        transform: `translate(${tx}px,${ty}px) scale(${tScale})`,
+        transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
       }}
     >
       <ReactDraggable
@@ -98,10 +96,10 @@ export default memo(() => {
         <div
           className="react-flow__nodesselection-rect"
           style={{
-            width: state.selectedNodesBbox.width,
-            height: state.selectedNodesBbox.height,
-            top: state.selectedNodesBbox.y,
-            left: state.selectedNodesBbox.x,
+            width: selectedNodesBbox.width,
+            height: selectedNodesBbox.height,
+            top: selectedNodesBbox.y,
+            left: selectedNodesBbox.x,
           }}
         />
       </ReactDraggable>

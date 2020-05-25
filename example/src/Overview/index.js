@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background } from 'react-flow-renderer';
 
 const onNodeDragStart = node => console.log('drag start', node);
 const onNodeDragStop = node => console.log('drag stop', node);
@@ -59,8 +59,6 @@ const OverviewFlow = () => {
       onLoad={onLoad}
       connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
       connectionLineType="bezier"
-      backgroundColor="#888"
-      backgroundGap={16}
       snapToGrid={true}
       snapGrid={[16, 16]}
     >
@@ -74,11 +72,16 @@ const OverviewFlow = () => {
         }}
       />
       <Controls />
+      <Background
+        color="#888"
+        gap={16}
+      />
+
       <button
         type="button"
         onClick={addRandomNode}
         style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
-        className="richexample__add"
+        className="overview-example__add"
       >
         add node
       </button>

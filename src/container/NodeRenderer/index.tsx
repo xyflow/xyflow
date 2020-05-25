@@ -6,9 +6,9 @@ import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '.
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
-  onElementClick: (element: Node | Edge) => void;
-  onNodeDragStart: (node: Node) => void;
-  onNodeDragStop: (node: Node) => void;
+  onElementClick?: (element: Node | Edge) => void;
+  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStop?: (node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
 }
 
@@ -22,7 +22,7 @@ function renderNode(
   const nodeType = node.type || 'default';
   const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
   if (!props.nodeTypes[nodeType]) {
-    console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
+    console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
   }
 
   const isSelected = selectedElements ? selectedElements.some(({ id }) => id === node.id) : false;
@@ -49,18 +49,15 @@ function renderNode(
 }
 
 const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRendererProps) => {
-  const { nodes, transform, selectedElements, width, height, isInteractive } = useStoreState((s) => ({
-    nodes: s.nodes,
-    transform: s.transform,
-    selectedElements: s.selectedElements,
-    width: s.width,
-    height: s.height,
-    isInteractive: s.isInteractive,
-  }));
-
-  const [tx, ty, tScale] = transform;
+  const nodes = useStoreState((s) => s.nodes);
+  const transform = useStoreState((s) => s.transform);
+  const selectedElements = useStoreState((s) => s.selectedElements);
+  const width = useStoreState((s) => s.width);
+  const height = useStoreState((s) => s.height);
+  const isInteractive = useStoreState((s) => s.isInteractive);
+  const [tX, tY, tScale] = transform;
   const transformStyle = {
-    transform: `translate(${tx}px,${ty}px) scale(${tScale})`,
+    transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
   };
 
   const renderNodes = onlyRenderVisibleNodes
