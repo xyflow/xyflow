@@ -6,14 +6,13 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
-import BackgroundGrid from '../../components/BackgroundGrid';
 import useKeyPress from '../../hooks/useKeyPress';
 import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut, project } from '../../utils/graph';
-import { Elements, NodeTypesType, EdgeTypesType, GridType, OnLoadFunc, Node, Edge, Connection } from '../../types';
+import { Elements, NodeTypesType, EdgeTypesType, OnLoadFunc, Node, Edge, Connection } from '../../types';
 
 export interface GraphViewProps {
   elements: Elements;
@@ -30,10 +29,6 @@ export interface GraphViewProps {
   connectionLineType: string;
   connectionLineStyle: CSSProperties;
   deleteKeyCode: number;
-  showBackground: boolean;
-  backgroundGap: number;
-  backgroundColor: string;
-  backgroundType: GridType;
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
@@ -55,10 +50,6 @@ const GraphView = memo(
     onElementsRemove,
     deleteKeyCode,
     elements,
-    showBackground,
-    backgroundGap,
-    backgroundColor,
-    backgroundType,
     onConnect,
     snapToGrid,
     snapGrid,
@@ -135,9 +126,6 @@ const GraphView = memo(
 
     return (
       <div className={rendererClasses} ref={rendererNode}>
-        {showBackground && (
-          <BackgroundGrid gap={backgroundGap} color={backgroundColor} backgroundType={backgroundType} />
-        )}
         <NodeRenderer
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}

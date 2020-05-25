@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background } from 'react-flow-renderer';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onLoad = graphInstance => console.log('graph loaded:', graphInstance);
@@ -29,18 +29,18 @@ const EmptyFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={p => onConnect(p)}
       onNodeDragStop={onNodeDragStop}
-      style={{ width: '100%', height: '100%' }}
-      backgroundType="lines"
     >
-    <MiniMap />
-    <Controls />
-    <button
-      type="button"
-      onClick={addRandomNode}
-      style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}
-    >
-      add node
-    </button>
+      <MiniMap />
+      <Controls />
+      <Background variant="lines" />
+
+      <button
+        type="button"
+        onClick={addRandomNode}
+        style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}
+      >
+        add node
+      </button>
     </ReactFlow>
   );
 }

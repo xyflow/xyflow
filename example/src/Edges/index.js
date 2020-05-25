@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background } from 'react-flow-renderer';
 
 import CustomEdge from './CustomEdge';
 
@@ -50,6 +50,7 @@ const EdgesFlow = () => {
     >
       <MiniMap />
       <Controls />
+      <Background />
     </ReactFlow>
   );
 }

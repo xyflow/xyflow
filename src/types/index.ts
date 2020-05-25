@@ -54,7 +54,7 @@ export interface Edge {
   animated?: boolean;
 }
 
-export enum GridType {
+export enum BackgroundVariant {
   Lines = 'lines',
   Dots = 'dots',
 }

@@ -1,4 +1,4 @@
-describe('Rich Graph Rendering', () => {
+describe('Overview Graph Rendering', () => {
   it('renders a graph', () => {
     cy.visit('/');
 
@@ -9,9 +9,9 @@ describe('Rich Graph Rendering', () => {
   });
 
   it('renders a grid', () => {
-    cy.get('.react-flow__grid');
+    cy.get('.react-flow__background');
 
-    const gridStroke = Cypress.$('.react-flow__grid path').attr('fill');
+    const gridStroke = Cypress.$('.react-flow__background path').attr('fill');
     expect(gridStroke).to.equal('#888');
   });
 });

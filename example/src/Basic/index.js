@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, isNode } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, isNode, Background } from 'react-flow-renderer';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onLoad = graphInstance => console.log('graph loaded:', graphInstance);
@@ -47,10 +47,10 @@ const BasicFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      style={{ width: '100%', height: '100%' }}
-      backgroundType="lines"
       className="react-flow-basic-example"
     >
+      <Background variant="lines" />
+
       <button
         onClick={updatePos}
         style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, MiniMap, isNode, Controls } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, MiniMap, isNode, Controls, Background } from 'react-flow-renderer';
 import { getElements } from './utils';
 
 const onLoad = graph => {
@@ -40,17 +40,17 @@ const StressGraph = () => {
       onLoad={onLoad}
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
-      style={{ width: '100%', height: '100%' }}
-      backgroundType="lines"
     >
+      <MiniMap />
+      <Controls />
+      <Background />
+
       <button
         onClick={updatePos}
         style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
       >
         change pos
       </button>
-      <MiniMap />
-      <Controls />
     </ReactFlow>
   );
 }

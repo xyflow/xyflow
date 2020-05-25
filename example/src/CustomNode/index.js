@@ -64,8 +64,6 @@ const CustomNodeFlow = () => {
       }}
       connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
       connectionLineType="bezier"
-      backgroundColor="#888"
-      backgroundGap={16}
       snapToGrid={true}
       snapGrid={[16, 16]}
     >

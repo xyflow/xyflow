@@ -10,9 +10,9 @@ describe('Basic Graph Rendering', () => {
   });
 
   it('renders a grid', () => {
-    cy.get('.react-flow__grid');
+    cy.get('.react-flow__background');
 
-    const gridStroke = Cypress.$('.react-flow__grid path').attr('stroke');
+    const gridStroke = Cypress.$('.react-flow__background path').attr('stroke');
     expect(gridStroke).to.equal('#eee');
   });
 
