@@ -64,7 +64,7 @@
     "rollup-plugin-typescript2": "^0.27.1",
     "rollup-plugin-uglify": "^6.0.4",
     "start-server-and-test": "^1.11.0",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.3"
   },
   "peerDependencies": {
     "react": "^16.13.1"
