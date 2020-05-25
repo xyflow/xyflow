@@ -12,7 +12,7 @@ const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
 
 const onStart = (
   evt: MouseEvent | TouchEvent,
-  onClick: (node: Node) => void,
+  onDragStart: (node: Node) => void,
   id: ElementId,
   type: string,
   data: any,
@@ -26,13 +26,14 @@ const onStart = (
     x: startEvt.clientX * (1 / transform[2]),
     y: startEvt.clientY * (1 / transform[2]),
   };
+
   const offsetX = scaledClient.x - position.x - transform[0];
   const offsetY = scaledClient.y - position.y - transform[1];
   const node = { id, type, position, data };
 
   store.dispatch.setSelectedElements({ id, type } as Node);
   setOffset({ x: offsetX, y: offsetY });
-  onClick(node);
+  onDragStart(node);
 };
 
 const onDrag = (
@@ -60,7 +61,8 @@ const onDrag = (
 };
 
 const onStop = (
-  onNodeDragStop: (node: Node) => void,
+  onDragStop: (node: Node) => void,
+  onClick: (node: Node) => void,
   isDragging: boolean,
   setDragging: (isDragging: boolean) => void,
   id: ElementId,
@@ -68,15 +70,19 @@ const onStop = (
   position: XYPosition,
   data: any
 ): void => {
-  if (isDragging) {
-    setDragging(false);
-    onNodeDragStop({
-      id,
-      type,
-      position,
-      data,
-    } as Node);
+  const node = {
+    id,
+    type,
+    position,
+    data,
+  } as Node;
+
+  if (!isDragging) {
+    return onClick(node);
   }
+
+  setDragging(false);
+  onDragStop(node);
 };
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
@@ -90,6 +96,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       yPos,
       selected,
       onClick,
+      onNodeDragStart,
       onNodeDragStop,
       style,
       isInteractive,
@@ -139,9 +146,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
       return (
         <DraggableCore
-          onStart={(evt) => onStart(evt as MouseEvent, onClick, id, type, data, setOffset, transform, position)}
+          onStart={(evt) => onStart(evt as MouseEvent, onNodeDragStart, id, type, data, setOffset, transform, position)}
           onDrag={(evt) => onDrag(evt as MouseEvent, setDragging, id, offset, transform)}
-          onStop={() => onStop(onNodeDragStop, isDragging, setDragging, id, type, position, data)}
+          onStop={() => onStop(onNodeDragStop, onClick, isDragging, setDragging, id, type, position, data)}
           scale={transform[2]}
           disabled={!isInteractive}
           cancel=".nodrag"

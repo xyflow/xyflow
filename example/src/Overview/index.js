@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge, MiniMap, Controls } from 'react-flow-renderer';
 
+const onNodeDragStart = node => console.log('drag start', node);
 const onNodeDragStop = node => console.log('drag stop', node);
 const onElementClick = element => console.log('click', element);
+const onSelectionChange = elements => console.log('selection change', elements);
 const onLoad = (graph) => {
   console.log('graph loaded:', graph);
   graph.fitView();
@@ -50,7 +52,9 @@ const OverviewFlow = () => {
       onElementClick={onElementClick}
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
+      onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
+      onSelectionChange={onSelectionChange}
       style={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
       connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}

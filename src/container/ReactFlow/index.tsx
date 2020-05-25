@@ -14,6 +14,7 @@ import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
+import SelectionListener from '../../components/SelectionListener';
 import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
@@ -27,10 +28,12 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   elements: Elements;
   onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
+  onNodeDragStart: (node: Node) => void;
   onNodeDragStop: (node: Node) => void;
   onConnect: (connection: Edge | Connection) => void;
   onLoad: OnLoadFunc;
   onMove: () => void;
+  onSelectionChange: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: string;
@@ -59,7 +62,9 @@ const ReactFlow = ({
   onMove,
   onElementsRemove,
   onConnect,
+  onNodeDragStart,
   onNodeDragStop,
+  onSelectionChange,
   connectionLineType,
   connectionLineStyle,
   deleteKeyCode,
@@ -83,6 +88,7 @@ const ReactFlow = ({
           onLoad={onLoad}
           onMove={onMove}
           onElementClick={onElementClick}
+          onNodeDragStart={onNodeDragStart}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}
@@ -102,6 +108,7 @@ const ReactFlow = ({
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
           isInteractive={isInteractive}
         />
+        {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
       </StoreProvider>
     </div>
@@ -113,6 +120,7 @@ ReactFlow.displayName = 'ReactFlow';
 ReactFlow.defaultProps = {
   onElementClick: () => {},
   onElementsRemove: () => {},
+  onNodeDragStart: () => {},
   onNodeDragStop: () => {},
   onConnect: () => {},
   onLoad: () => {},
@@ -139,7 +147,6 @@ ReactFlow.defaultProps = {
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,
   isInteractive: true,
-  className: '',
 };
 
 export default ReactFlow;

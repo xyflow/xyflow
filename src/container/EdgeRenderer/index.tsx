@@ -117,7 +117,7 @@ function renderEdge(
   edge: Edge,
   props: EdgeRendererProps,
   nodes: Node[],
-  selectedElements: Elements,
+  selectedElements: Elements | null,
   isInteractive: boolean
 ) {
   const [sourceId, sourceHandleId] = edge.source.split('__');
@@ -154,9 +154,9 @@ function renderEdge(
     targetPosition
   );
 
-  const isSelected = (selectedElements as Edge[]).some(
-    (elm) => isEdge(elm) && elm.source === sourceId && elm.target === targetId
-  );
+  const isSelected = selectedElements
+    ? (selectedElements as Edge[]).some((elm) => isEdge(elm) && elm.source === sourceId && elm.target === targetId)
+    : false;
 
   return (
     <EdgeComponent

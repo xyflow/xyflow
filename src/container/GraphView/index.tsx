@@ -19,6 +19,7 @@ export interface GraphViewProps {
   elements: Elements;
   onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
+  onNodeDragStart: (node: Node) => void;
   onNodeDragStop: (node: Node) => void;
   onConnect: (connection: Connection | Edge) => void;
   onLoad: OnLoadFunc;
@@ -46,6 +47,7 @@ const GraphView = memo(
     onMove,
     onLoad,
     onElementClick,
+    onNodeDragStart,
     onNodeDragStop,
     connectionLineType,
     connectionLineStyle,
@@ -140,6 +142,7 @@ const GraphView = memo(
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}
           onNodeDragStop={onNodeDragStop}
+          onNodeDragStart={onNodeDragStart}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
         />
         <EdgeRenderer

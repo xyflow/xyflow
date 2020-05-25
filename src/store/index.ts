@@ -56,7 +56,7 @@ export interface StoreModel {
   transform: Transform;
   nodes: Node[];
   edges: Edge[];
-  selectedElements: Elements;
+  selectedElements: Elements | null;
   selectedNodesBbox: Rect;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
@@ -95,8 +95,6 @@ export interface StoreModel {
 
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
 
-  updateSelection: Action<StoreModel, SelectionRect>;
-
   updateTransform: Action<StoreModel, TransformXYK>;
 
   updateSize: Action<StoreModel, Dimensions>;
@@ -122,7 +120,7 @@ const storeModel: StoreModel = {
   transform: [0, 0, 1],
   nodes: [],
   edges: [],
-  selectedElements: [],
+  selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
   d3Zoom: null,
@@ -250,8 +248,11 @@ const storeModel: StoreModel = {
     const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
 
     state.selection = nextRect;
-    state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
     state.userSelectionRect = nextRect;
+
+    if (selectedElementsUpdated) {
+      state.selectedElements = nextSelectedElements.length > 0 ? nextSelectedElements : null;
+    }
   }),
 
   unsetUserSelection: action((state) => {
@@ -261,7 +262,7 @@ const storeModel: StoreModel = {
       state.selectionActive = false;
       state.userSelectionRect = { ...state.userSelectionRect, draw: false };
       state.nodesSelectionActive = false;
-      state.selectedElements = [];
+      state.selectedElements = null;
 
       return;
     }
@@ -283,7 +284,7 @@ const storeModel: StoreModel = {
   setNodesSelection: action((state, { isActive, selection }) => {
     if (!isActive || typeof selection === 'undefined') {
       state.nodesSelectionActive = false;
-      state.selectedElements = [];
+      state.selectedElements = null;
 
       return;
     }
@@ -291,7 +292,7 @@ const storeModel: StoreModel = {
 
     if (!selectedNodes.length) {
       state.nodesSelectionActive = false;
-      state.selectedElements = [];
+      state.selectedElements = null;
 
       return;
     }
@@ -309,17 +310,6 @@ const storeModel: StoreModel = {
     const selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
 
     state.selectedElements = selectedElements;
-  }),
-
-  updateSelection: action((state, selection) => {
-    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
-    const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
-
-    const nextSelectedElements = [...selectedNodes, ...selectedEdges];
-    const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
-
-    state.selection = selection;
-    state.selectedElements = selectedElementsUpdated ? nextSelectedElements : state.selectedElements;
   }),
 
   updateTransform: action((state, transform) => {
