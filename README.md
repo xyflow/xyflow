@@ -11,11 +11,11 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Styling](#styling)
 - [Nodes](#nodes)
   - [Options](#options-1)
-  - [Node Types / Custom Nodes](#node-types--custom-nodes)
-- [Handle Component](#handle-component)
+  - [Node Types & Custom Nodes](#node-types--custom-nodes)
+  - [Handle Component](#handle-component)
 - [Edges](#nodes)
   - [Options](#options-2)
-  - [Edge Types / Custom Edges](#edge-types--custom-edges)
+  - [Edge Types & Custom Edges](#edge-types--custom-edges)
 - [Components](#components)
   - [Background](#background)
   - [Minimap](#minimap)
@@ -76,7 +76,7 @@ const BasicFlow = () => (
 - `onSelectionChange`: fired when element selection changes
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
-- `style`: css style passed to the wrapper
+- `style`: css properties
 - `className`: additional class name
 - `connectionLineType`: connection line type = `straight` or `bezier`
 - `connectionLineStyle`: connection style as svg attributes
@@ -135,7 +135,7 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
 - `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
 
-### Node Types / Custom Nodes
+### Node Types & Custom Nodes
 
 The standard node types are `input`, `default` and `output`. The default node types object looks like this:
 
@@ -160,7 +160,7 @@ You could now use the type `special` for a node.
 The `default`, `input` and `output` types would be still available except you overwrote one of them.
 There is an example of a custom node implementation in the [custom node example](/example/src/CustomNode).
 
-## Handle Component
+### Handle Component
 
 We export a `Handle` component as a helper for your custom nodes:
 
@@ -178,7 +178,7 @@ const targetHandleWithValidation = (
 );
 ```
 
-### Prop Types
+#### Prop Types
 
 - `type`: 'source' | 'target'
 - `id`: string - you only need this when you have multiple source or target handles otherwise the node id is used
@@ -187,7 +187,7 @@ const targetHandleWithValidation = (
 - `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - true by default
 - `style`: css properties
 
-### Multiple Handles
+#### Multiple Handles
 
 If you need multiple source or target handles you can achieve this by creating a custom node. Normally you just use the id of a node for the `source` or `target` of an edge. If you have multiple source or target handles you need to pass an id to these handles. These ids get then added to the node id, so that you can connect a specific handle. If you have a node with an id = `1` and a handle with an id = `a` you can connect this handle by using the id = `1__a`.
 You can find an example of how to implement a custom node with multiple handles in the [custom node example](/example/src/CustomNode/ColorSelectorNode.js#L18-L29).
@@ -215,7 +215,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 
 You can find an example with lots of different edges in the [edges example](https://react-flow.netlify.app/edges).
 
-### Edge Types / Custom Edges
+### Edge Types & Custom Edges
 
 The basic edge types are `straight`, `default` and `step`. The default `edgeTypes` object looks like this:
 
