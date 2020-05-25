@@ -50,9 +50,11 @@ export default memo(() => {
     };
     const offsetX: number = scaledClient.x - position.x - tx;
     const offsetY: number = scaledClient.y - position.y - ty;
-    const selectedNodes = (state.selectedElements.filter(isNode) as Node[]).map(
-      (selectedNode) => state.nodes.find((node) => node.id === selectedNode.id)! as Node
-    );
+    const selectedNodes = state.selectedElements
+      ? (state.selectedElements.filter(isNode) as Node[]).map(
+          (selectedNode) => state.nodes.find((node) => node.id === selectedNode.id)! as Node
+        )
+      : [];
 
     const nextStartPositions = getStartPositions(selectedNodes);
 
@@ -68,14 +70,16 @@ export default memo(() => {
       y: evt.clientY / tScale,
     };
 
-    (state.selectedElements.filter(isNode) as Node[]).forEach((node) => {
-      const pos: XYPosition = {
-        x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tx,
-        y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - ty,
-      };
+    if (state.selectedElements) {
+      (state.selectedElements.filter(isNode) as Node[]).forEach((node) => {
+        const pos: XYPosition = {
+          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tx,
+          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - ty,
+        };
 
-      updateNodePos({ id: node.id, pos });
-    });
+        updateNodePos({ id: node.id, pos });
+      });
+    }
   };
 
   return (

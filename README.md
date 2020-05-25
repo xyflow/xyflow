@@ -72,6 +72,7 @@ const BasicFlow = () => (
 - `onConnect`: connect handler
 - `onLoad`: editor load handler
 - `onMove`: move handler
+- `onSelectionChange`: fired when element selection changes
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css style passed to the wrapper

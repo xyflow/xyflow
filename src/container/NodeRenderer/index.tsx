@@ -16,7 +16,7 @@ function renderNode(
   node: Node,
   props: NodeRendererProps,
   transform: Transform,
-  selectedElements: Elements,
+  selectedElements: Elements | null,
   isInteractive: boolean
 ) {
   const nodeType = node.type || 'default';
@@ -25,7 +25,7 @@ function renderNode(
     console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
   }
 
-  const isSelected = selectedElements.some(({ id }) => id === node.id);
+  const isSelected = selectedElements ? selectedElements.some(({ id }) => id === node.id) : false;
 
   return (
     <NodeComponent

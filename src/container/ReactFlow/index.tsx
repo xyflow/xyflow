@@ -14,6 +14,7 @@ import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
+import SelectionListener from '../../components/SelectionListener';
 import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
@@ -32,6 +33,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onConnect: (connection: Edge | Connection) => void;
   onLoad: OnLoadFunc;
   onMove: () => void;
+  onSelectionChange: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: string;
@@ -62,6 +64,7 @@ const ReactFlow = ({
   onConnect,
   onNodeDragStart,
   onNodeDragStop,
+  onSelectionChange,
   connectionLineType,
   connectionLineStyle,
   deleteKeyCode,
@@ -105,6 +108,7 @@ const ReactFlow = ({
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
           isInteractive={isInteractive}
         />
+        {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
       </StoreProvider>
     </div>
@@ -143,7 +147,6 @@ ReactFlow.defaultProps = {
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,
   isInteractive: true,
-  className: '',
 };
 
 export default ReactFlow;
