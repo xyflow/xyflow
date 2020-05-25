@@ -33,6 +33,7 @@ export interface GraphViewProps {
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
   isInteractive: boolean;
+  selectNodesOnDrag: boolean;
 }
 
 const GraphView = memo(
@@ -55,6 +56,7 @@ const GraphView = memo(
     snapGrid,
     onlyRenderVisibleNodes,
     isInteractive,
+    selectNodesOnDrag,
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -132,6 +134,7 @@ const GraphView = memo(
           onNodeDragStop={onNodeDragStop}
           onNodeDragStart={onNodeDragStart}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
+          selectNodesOnDrag={selectNodesOnDrag}
         />
         <EdgeRenderer
           width={width}

@@ -44,6 +44,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
   isInteractive: boolean;
+  selectNodesOnDrag: boolean;
 }
 
 const ReactFlow = ({
@@ -69,6 +70,7 @@ const ReactFlow = ({
   snapGrid,
   onlyRenderVisibleNodes,
   isInteractive,
+  selectNodesOnDrag,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -95,6 +97,7 @@ const ReactFlow = ({
           snapGrid={snapGrid}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
           isInteractive={isInteractive}
+          selectNodesOnDrag={selectNodesOnDrag}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
@@ -124,6 +127,7 @@ ReactFlow.defaultProps = {
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,
   isInteractive: true,
+  selectNodesOnDrag: true,
 };
 
 export default ReactFlow;

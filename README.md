@@ -86,6 +86,7 @@ const BasicFlow = () => (
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
 - `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
+- `selectNodesOnDrag`: default: `true`
 
 ## Styling
 

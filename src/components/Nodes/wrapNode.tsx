@@ -15,6 +15,7 @@ interface OnDragStartParams {
   id: ElementId;
   type: string;
   data: any;
+  selectNodesOnDrag: boolean;
   setOffset: (pos: XYPosition) => void;
   transform: Transform;
   position: XYPosition;
@@ -27,6 +28,7 @@ const onStart = ({
   id,
   type,
   data,
+  selectNodesOnDrag,
   setOffset,
   transform,
   position,
@@ -42,11 +44,14 @@ const onStart = ({
   const offsetY = scaledClient.y - position.y - transform[1];
   const node = { id, type, position, data };
 
-  store.dispatch.setSelectedElements({ id, type } as Node);
   setOffset({ x: offsetX, y: offsetY });
 
   if (onNodeDragStart) {
     onNodeDragStart(node);
+  }
+
+  if (selectNodesOnDrag) {
+    store.dispatch.setSelectedElements({ id, type } as Node);
   }
 };
 
@@ -83,19 +88,21 @@ interface OnDragStopParams {
   type: string;
   position: XYPosition;
   data: any;
+  selectNodesOnDrag: boolean;
   onNodeDragStop?: (node: Node) => void;
   onClick?: (node: Node) => void;
 }
 
 const onStop = ({
-  onNodeDragStop,
-  onClick,
-  isDragging,
-  setDragging,
   id,
   type,
   position,
   data,
+  isDragging,
+  setDragging,
+  selectNodesOnDrag,
+  onNodeDragStop,
+  onClick,
 }: OnDragStopParams): void => {
   const node = {
     id,
@@ -104,8 +111,14 @@ const onStop = ({
     data,
   } as Node;
 
-  if (!isDragging && onClick) {
-    return onClick(node);
+  if (!isDragging) {
+    if (!selectNodesOnDrag) {
+      store.dispatch.setSelectedElements({ id, type } as Node);
+    }
+
+    if (onClick) {
+      return onClick(node);
+    }
   }
 
   setDragging(false);
@@ -130,6 +143,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       onNodeDragStop,
       style,
       isInteractive,
+      selectNodesOnDrag,
       sourcePosition,
       targetPosition,
     }: WrapNodeProps) => {
@@ -177,10 +191,22 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       return (
         <DraggableCore
           onStart={(evt) =>
-            onStart({ evt: evt as MouseEvent, onNodeDragStart, id, type, data, setOffset, transform, position })
+            onStart({
+              evt: evt as MouseEvent,
+              selectNodesOnDrag,
+              onNodeDragStart,
+              id,
+              type,
+              data,
+              setOffset,
+              transform,
+              position,
+            })
           }
           onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform })}
-          onStop={() => onStop({ onNodeDragStop, onClick, isDragging, setDragging, id, type, position, data })}
+          onStop={() =>
+            onStop({ onNodeDragStop, selectNodesOnDrag, onClick, isDragging, setDragging, id, type, position, data })
+          }
           scale={transform[2]}
           disabled={!isInteractive}
           cancel=".nodrag"

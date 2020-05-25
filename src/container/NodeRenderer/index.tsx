@@ -6,6 +6,7 @@ import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '.
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
+  selectNodesOnDrag: boolean;
   onElementClick?: (element: Node | Edge) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
@@ -44,6 +45,7 @@ function renderNode(
       isInteractive={isInteractive}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
+      selectNodesOnDrag={props.selectNodesOnDrag}
     />
   );
 }
