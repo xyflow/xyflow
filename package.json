@@ -60,7 +60,7 @@
     "rollup-plugin-postcss": "^3.1.1",
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-serve": "^1.0.1",
-    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",
     "rollup-plugin-uglify": "^6.0.4",
     "start-server-and-test": "^1.11.0",
