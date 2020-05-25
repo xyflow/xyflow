@@ -123,6 +123,7 @@ export interface WrapNodeProps {
   yPos: number;
   isInteractive: boolean;
   onClick: (node: Node) => void | undefined;
+  onNodeDragStart: (node: Node) => void;
   onNodeDragStop: (node: Node) => void;
   style?: CSSProperties;
   sourcePosition?: Position;

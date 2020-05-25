@@ -67,6 +67,7 @@ const BasicFlow = () => (
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
 - `onElementClick`: element click handler
 - `onElementsRemove`: element remove handler
+- `onNodeDragStart`: node drag start handler
 - `onNodeDragStop`: node drag stop handler
 - `onConnect`: connect handler
 - `onLoad`: editor load handler

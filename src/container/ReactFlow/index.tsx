@@ -27,6 +27,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   elements: Elements;
   onElementClick: (element: Node | Edge) => void;
   onElementsRemove: (elements: Elements) => void;
+  onNodeDragStart: (node: Node) => void;
   onNodeDragStop: (node: Node) => void;
   onConnect: (connection: Edge | Connection) => void;
   onLoad: OnLoadFunc;
@@ -59,6 +60,7 @@ const ReactFlow = ({
   onMove,
   onElementsRemove,
   onConnect,
+  onNodeDragStart,
   onNodeDragStop,
   connectionLineType,
   connectionLineStyle,
@@ -83,6 +85,7 @@ const ReactFlow = ({
           onLoad={onLoad}
           onMove={onMove}
           onElementClick={onElementClick}
+          onNodeDragStart={onNodeDragStart}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}
@@ -113,6 +116,7 @@ ReactFlow.displayName = 'ReactFlow';
 ReactFlow.defaultProps = {
   onElementClick: () => {},
   onElementsRemove: () => {},
+  onNodeDragStart: () => {},
   onNodeDragStop: () => {},
   onConnect: () => {},
   onLoad: () => {},

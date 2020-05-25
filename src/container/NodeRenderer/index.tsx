@@ -7,6 +7,7 @@ import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '.
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   onElementClick: (element: Node | Edge) => void;
+  onNodeDragStart: (node: Node) => void;
   onNodeDragStop: (node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
 }
@@ -35,6 +36,7 @@ function renderNode(
       xPos={node.__rg.position.x}
       yPos={node.__rg.position.y}
       onClick={props.onElementClick}
+      onNodeDragStart={props.onNodeDragStart}
       onNodeDragStop={props.onNodeDragStop}
       transform={transform}
       selected={isSelected}
