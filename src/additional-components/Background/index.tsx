@@ -25,11 +25,9 @@ const defaultColors = {
 
 const Background = memo(
   ({ variant = BackgroundVariant.Dots, gap = 24, size = 0.5, color, style = {}, className = '' }: BackgroundProps) => {
-    const {
-      width,
-      height,
-      transform: [x, y, scale],
-    } = useStoreState((s) => s);
+    const width = useStoreState((s) => s.width);
+    const height = useStoreState((s) => s.height);
+    const [x, y, scale] = useStoreState((s) => s.transform);
 
     const bgClasses = classnames('react-flow__background', className);
     const bgColor = color ? color : defaultColors[variant];

@@ -30,27 +30,23 @@ const MiniMap = ({
   nodeBorderRadius = 5,
   maskColor = 'rgba(10, 10, 10, .25)',
 }: MiniMapProps) => {
-  const state = useStoreState(({ width, height, nodes, transform: [tX, tY, tScale] }) => ({
-    width,
-    height,
-    nodes,
-    tX,
-    tY,
-    tScale,
-  }));
+  const containerWidth = useStoreState((s) => s.width);
+  const containerHeight = useStoreState((s) => s.height);
+  const [tX, tY, tScale] = useStoreState((s) => s.transform);
+  const nodes = useStoreState((s) => s.nodes);
 
   const mapClasses = classnames('react-flow__minimap', className);
   const elementWidth = (style.width || baseStyle.width)! as number;
   const elementHeight = (style.height || baseStyle.height)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
-  const hasNodes = state.nodes && state.nodes.length;
+  const hasNodes = nodes && nodes.length;
 
-  const bb = getRectOfNodes(state.nodes);
+  const bb = getRectOfNodes(nodes);
   const viewBB: Rect = {
-    x: -state.tX / state.tScale,
-    y: -state.tY / state.tScale,
-    width: state.width / state.tScale,
-    height: state.height / state.tScale,
+    x: -tX / tScale,
+    y: -tY / tScale,
+    width: containerWidth / tScale,
+    height: containerHeight / tScale,
   };
 
   const boundingRect = hasNodes ? getBoundsofRects(bb, viewBB) : viewBB;
@@ -79,7 +75,7 @@ const MiniMap = ({
       }}
       className={mapClasses}
     >
-      {state.nodes.map((node) => (
+      {nodes.map((node) => (
         <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} borderRadius={nodeBorderRadius} />
       ))}
       <path

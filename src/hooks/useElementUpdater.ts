@@ -6,13 +6,8 @@ import { parseElement, isNode, isEdge } from '../utils/graph';
 import { Elements, Node, Edge } from '../types';
 
 const useElementUpdater = (elements: Elements): void => {
-  const state = useStoreState((s) => ({
-    nodes: s.nodes,
-    edges: s.edges,
-    transform: s.transform,
-    snapToGrid: s.snapToGrid,
-    snapGrid: s.snapGrid,
-  }));
+  const stateNodes = useStoreState((s) => s.nodes);
+  const stateEdges = useStoreState((s) => s.edges);
 
   const setNodes = useStoreActions((a) => a.setNodes);
   const setEdges = useStoreActions((a) => a.setEdges);
@@ -22,7 +17,7 @@ const useElementUpdater = (elements: Elements): void => {
     const edges: Edge[] = elements.filter(isEdge).map((e) => parseElement(e) as Edge);
 
     const nextNodes: Node[] = nodes.map((propNode) => {
-      const existingNode = state.nodes.find((n) => n.id === propNode.id);
+      const existingNode = stateNodes.find((n) => n.id === propNode.id);
 
       if (existingNode) {
         const data = !isEqual(existingNode.data, propNode.data)
@@ -59,8 +54,8 @@ const useElementUpdater = (elements: Elements): void => {
       return parseElement(propNode) as Node;
     });
 
-    const nodesChanged: boolean = !isEqual(state.nodes, nextNodes);
-    const edgesChanged: boolean = !isEqual(state.edges, edges);
+    const nodesChanged: boolean = !isEqual(stateNodes, nextNodes);
+    const edgesChanged: boolean = !isEqual(stateEdges, edges);
 
     if (nodesChanged) {
       setNodes(nextNodes);
@@ -69,7 +64,7 @@ const useElementUpdater = (elements: Elements): void => {
     if (edgesChanged) {
       setEdges(edges);
     }
-  }, [elements, state.nodes, state.edges]);
+  }, [elements, stateNodes, stateEdges]);
 };
 
 export default useElementUpdater;

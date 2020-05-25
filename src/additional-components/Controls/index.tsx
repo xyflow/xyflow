@@ -25,7 +25,7 @@ interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Controls = ({ style, showZoom = true, showFitView = true, showInteractive = true, className }: ControlProps) => {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
-  const { isInteractive } = useStoreState(({ isInteractive }) => ({ isInteractive }));
+  const isInteractive = useStoreState((s) => s.isInteractive);
   const mapClasses: string = classnames('react-flow__controls', className);
 
   return (

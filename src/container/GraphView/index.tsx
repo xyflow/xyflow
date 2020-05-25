@@ -58,14 +58,11 @@ const GraphView = memo(
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
-    const state = useStoreState((s) => ({
-      width: s.width,
-      height: s.height,
-      nodes: s.nodes,
-      edges: s.edges,
-      d3Initialised: s.d3Initialised,
-      nodesSelectionActive: s.nodesSelectionActive,
-    }));
+    const width = useStoreState((s) => s.width);
+    const height = useStoreState((s) => s.height);
+    const d3Initialised = useStoreState((s) => s.d3Initialised);
+    const nodesSelectionActive = useStoreState((s) => s.nodesSelectionActive);
+
     const updateSize = useStoreActions((actions) => actions.updateSize);
     const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
     const setOnConnect = useStoreActions((a) => a.setOnConnect);
@@ -106,7 +103,7 @@ const GraphView = memo(
     useD3Zoom({ zoomPane, onMove, selectionKeyPressed });
 
     useEffect(() => {
-      if (state.d3Initialised && onLoad) {
+      if (d3Initialised && onLoad) {
         onLoad({
           fitView,
           zoomIn,
@@ -114,7 +111,7 @@ const GraphView = memo(
           project,
         });
       }
-    }, [state.d3Initialised, onLoad]);
+    }, [d3Initialised, onLoad]);
 
     useEffect(() => {
       setSnapGrid({ snapToGrid, snapGrid });
@@ -137,15 +134,15 @@ const GraphView = memo(
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
         />
         <EdgeRenderer
-          width={state.width}
-          height={state.height}
+          width={width}
+          height={height}
           edgeTypes={edgeTypes}
           onElementClick={onElementClick}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
         />
         {selectionKeyPressed && <UserSelection isInteractive={isInteractive} />}
-        {state.nodesSelectionActive && <NodesSelection />}
+        {nodesSelectionActive && <NodesSelection />}
         <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
       </div>
     );
