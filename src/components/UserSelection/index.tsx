@@ -45,11 +45,9 @@ const SelectionRect = () => {
 };
 
 export default memo(({ isInteractive }: UserSelectionProps) => {
-  const { setUserSelection, updateUserSelection, unsetUserSelection } = useStoreActions((a) => ({
-    setUserSelection: a.setUserSelection,
-    updateUserSelection: a.updateUserSelection,
-    unsetUserSelection: a.unsetUserSelection,
-  }));
+  const setUserSelection = useStoreActions((a) => a.setUserSelection);
+  const updateUserSelection = useStoreActions((a) => a.updateUserSelection);
+  const unsetUserSelection = useStoreActions((a) => a.unsetUserSelection);
 
   if (!isInteractive) {
     return null;
