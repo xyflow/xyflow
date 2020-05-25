@@ -243,7 +243,7 @@ There is an implementation of a custom edge in the [edges example](/example/src/
 
 ### Background
 
-React Flow comes with two background variants: **dots** and **lines**.
+React Flow comes with two background variants: **dots** and **lines**. You can use it by passing it as a children to the React Flow component:
 
 ```javascript
 import ReactFlow, { Background } from 'react-flow-renderer';
@@ -263,8 +263,8 @@ const FlowWithBackground = () => (
 
 - `variant`: string - has to be 'dots' or 'lines' - default: `dots`
 - `gap`: number - the gap between the dots or lines - default: `16`
-- `size`: number - the radius of the dots or the stroke width of the lines - default: 0.5
-- `color`: string - the color of the dots or lines - default: `#999` for dots, '#eee' for lines
+- `size`: number - the radius of the dots or the stroke width of the lines - default: `0.5`
+- `color`: string - the color of the dots or lines - default: `#999` for dots, `#eee` for lines
 - `style`: css properties
 - `className`: class name
 
