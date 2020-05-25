@@ -7,7 +7,7 @@ import { Elements, Node } from '../types';
 
 interface HookParams {
   deleteKeyCode: number;
-  onElementsRemove: (elements: Elements) => void;
+  onElementsRemove?: (elements: Elements) => void;
 }
 
 export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
@@ -19,7 +19,7 @@ export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
 
   useEffect(() => {
-    if (deleteKeyPressed && state.selectedElements) {
+    if (onElementsRemove && deleteKeyPressed && state.selectedElements) {
       let elementsToRemove = state.selectedElements;
 
       // we also want to remove the edges if only one node is selected

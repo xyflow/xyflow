@@ -4,20 +4,26 @@ import { select, event } from 'd3-selection';
 
 import { useStoreState, useStoreActions } from '../store/hooks';
 
+interface UseD3ZoomParams {
+  zoomPane: MutableRefObject<Element | null>;
+  selectionKeyPressed: boolean;
+  onMove?: () => void;
+}
+
 const d3ZoomInstance = d3Zoom
   .zoom()
   .scaleExtent([0.5, 2])
   .filter(() => !event.button);
 
-export default (zoomPane: MutableRefObject<Element | null>, onMove: () => void, shiftPressed: boolean): void => {
-  const state = useStoreState(s => ({
+export default ({ zoomPane, onMove, selectionKeyPressed }: UseD3ZoomParams): void => {
+  const state = useStoreState((s) => ({
     transform: s.transform,
     d3Selection: s.d3Selection,
     d3Zoom: s.d3Zoom,
   }));
 
-  const initD3 = useStoreActions(actions => actions.initD3);
-  const updateTransform = useStoreActions(actions => actions.updateTransform);
+  const initD3 = useStoreActions((actions) => actions.initD3);
+  const updateTransform = useStoreActions((actions) => actions.updateTransform);
 
   useEffect(() => {
     if (zoomPane.current) {
@@ -27,7 +33,7 @@ export default (zoomPane: MutableRefObject<Element | null>, onMove: () => void, 
   }, []);
 
   useEffect(() => {
-    if (shiftPressed) {
+    if (selectionKeyPressed) {
       d3ZoomInstance.on('zoom', null);
     } else {
       d3ZoomInstance.on('zoom', () => {
@@ -37,7 +43,9 @@ export default (zoomPane: MutableRefObject<Element | null>, onMove: () => void, 
 
         updateTransform(event.transform);
 
-        onMove();
+        if (onMove) {
+          onMove();
+        }
       });
 
       if (state.d3Selection && state.d3Zoom) {
@@ -53,5 +61,5 @@ export default (zoomPane: MutableRefObject<Element | null>, onMove: () => void, 
     return () => {
       d3ZoomInstance.on('zoom', null);
     };
-  }, [shiftPressed]);
+  }, [selectionKeyPressed]);
 };

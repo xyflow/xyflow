@@ -6,9 +6,9 @@ import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '.
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
-  onElementClick: (element: Node | Edge) => void;
-  onNodeDragStart: (node: Node) => void;
-  onNodeDragStop: (node: Node) => void;
+  onElementClick?: (element: Node | Edge) => void;
+  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStop?: (node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
 }
 
@@ -22,7 +22,7 @@ function renderNode(
   const nodeType = node.type || 'default';
   const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
   if (!props.nodeTypes[nodeType]) {
-    console.warn(`No node type found for type "${nodeType}". Using fallback type "default".`);
+    console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
   }
 
   const isSelected = selectedElements ? selectedElements.some(({ id }) => id === node.id) : false;

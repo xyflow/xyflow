@@ -10,16 +10,27 @@ import { Node, XYPosition, Transform, ElementId, NodeComponentProps, WrapNodePro
 const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
   typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : (evt as MouseEvent);
 
-const onStart = (
-  evt: MouseEvent | TouchEvent,
-  onDragStart: (node: Node) => void,
-  id: ElementId,
-  type: string,
-  data: any,
-  setOffset: (pos: XYPosition) => void,
-  transform: Transform,
-  position: XYPosition
-): false | void => {
+interface OnDragStartParams {
+  evt: MouseEvent | TouchEvent;
+  id: ElementId;
+  type: string;
+  data: any;
+  setOffset: (pos: XYPosition) => void;
+  transform: Transform;
+  position: XYPosition;
+  onNodeDragStart?: (node: Node) => void;
+}
+
+const onStart = ({
+  evt,
+  onNodeDragStart,
+  id,
+  type,
+  data,
+  setOffset,
+  transform,
+  position,
+}: OnDragStartParams): false | void => {
   const startEvt = getMouseEvent(evt);
 
   const scaledClient: XYPosition = {
@@ -33,16 +44,21 @@ const onStart = (
 
   store.dispatch.setSelectedElements({ id, type } as Node);
   setOffset({ x: offsetX, y: offsetY });
-  onDragStart(node);
+
+  if (onNodeDragStart) {
+    onNodeDragStart(node);
+  }
 };
 
-const onDrag = (
-  evt: MouseEvent | TouchEvent,
-  setDragging: (isDragging: boolean) => void,
-  id: ElementId,
-  offset: XYPosition,
-  transform: Transform
-): void => {
+interface OnDragParams {
+  evt: MouseEvent | TouchEvent;
+  setDragging: (isDragging: boolean) => void;
+  id: ElementId;
+  offset: XYPosition;
+  transform: Transform;
+}
+
+const onDrag = ({ evt, setDragging, id, offset, transform }: OnDragParams): void => {
   const dragEvt = getMouseEvent(evt);
 
   const scaledClient = {
@@ -60,16 +76,27 @@ const onDrag = (
   });
 };
 
-const onStop = (
-  onDragStop: (node: Node) => void,
-  onClick: (node: Node) => void,
-  isDragging: boolean,
-  setDragging: (isDragging: boolean) => void,
-  id: ElementId,
-  type: string,
-  position: XYPosition,
-  data: any
-): void => {
+interface OnDragStopParams {
+  isDragging: boolean;
+  setDragging: (isDragging: boolean) => void;
+  id: ElementId;
+  type: string;
+  position: XYPosition;
+  data: any;
+  onNodeDragStop?: (node: Node) => void;
+  onClick?: (node: Node) => void;
+}
+
+const onStop = ({
+  onNodeDragStop,
+  onClick,
+  isDragging,
+  setDragging,
+  id,
+  type,
+  position,
+  data,
+}: OnDragStopParams): void => {
   const node = {
     id,
     type,
@@ -77,12 +104,15 @@ const onStop = (
     data,
   } as Node;
 
-  if (!isDragging) {
+  if (!isDragging && onClick) {
     return onClick(node);
   }
 
   setDragging(false);
-  onDragStop(node);
+
+  if (onNodeDragStop) {
+    onNodeDragStop(node);
+  }
 };
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
@@ -146,9 +176,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
       return (
         <DraggableCore
-          onStart={(evt) => onStart(evt as MouseEvent, onNodeDragStart, id, type, data, setOffset, transform, position)}
-          onDrag={(evt) => onDrag(evt as MouseEvent, setDragging, id, offset, transform)}
-          onStop={() => onStop(onNodeDragStop, onClick, isDragging, setDragging, id, type, position, data)}
+          onStart={(evt) =>
+            onStart({ evt: evt as MouseEvent, onNodeDragStart, id, type, data, setOffset, transform, position })
+          }
+          onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform })}
+          onStop={() => onStop({ onNodeDragStop, onClick, isDragging, setDragging, id, type, position, data })}
           scale={transform[2]}
           disabled={!isInteractive}
           cancel=".nodrag"

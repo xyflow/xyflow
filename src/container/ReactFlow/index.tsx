@@ -26,14 +26,14 @@ import '../../style.css';
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
-  onElementClick: (element: Node | Edge) => void;
-  onElementsRemove: (elements: Elements) => void;
-  onNodeDragStart: (node: Node) => void;
-  onNodeDragStop: (node: Node) => void;
-  onConnect: (connection: Edge | Connection) => void;
-  onLoad: OnLoadFunc;
-  onMove: () => void;
-  onSelectionChange: (elements: Elements | null) => void;
+  onElementClick?: (element: Node | Edge) => void;
+  onElementsRemove?: (elements: Elements) => void;
+  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStop?: (node: Node) => void;
+  onConnect?: (connection: Edge | Connection) => void;
+  onLoad?: OnLoadFunc;
+  onMove?: () => void;
+  onSelectionChange?: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: string;
@@ -106,13 +106,6 @@ const ReactFlow = ({
 ReactFlow.displayName = 'ReactFlow';
 
 ReactFlow.defaultProps = {
-  onElementClick: () => {},
-  onElementsRemove: () => {},
-  onNodeDragStart: () => {},
-  onNodeDragStop: () => {},
-  onConnect: () => {},
-  onLoad: () => {},
-  onMove: () => {},
   nodeTypes: {
     input: InputNode,
     default: DefaultNode,

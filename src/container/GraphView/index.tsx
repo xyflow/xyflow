@@ -16,13 +16,13 @@ import { Elements, NodeTypesType, EdgeTypesType, OnLoadFunc, Node, Edge, Connect
 
 export interface GraphViewProps {
   elements: Elements;
-  onElementClick: (element: Node | Edge) => void;
-  onElementsRemove: (elements: Elements) => void;
-  onNodeDragStart: (node: Node) => void;
-  onNodeDragStop: (node: Node) => void;
-  onConnect: (connection: Connection | Edge) => void;
-  onLoad: OnLoadFunc;
-  onMove: () => void;
+  onElementClick?: (element: Node | Edge) => void;
+  onElementsRemove?: (elements: Elements) => void;
+  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStop?: (node: Node) => void;
+  onConnect?: (connection: Connection | Edge) => void;
+  onLoad?: OnLoadFunc;
+  onMove?: () => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -92,18 +92,21 @@ const GraphView = memo(
 
     useEffect(() => {
       updateDimensions();
-      setOnConnect(onConnect);
       window.onresize = updateDimensions;
+
+      if (onConnect) {
+        setOnConnect(onConnect);
+      }
 
       return () => {
         window.onresize = null;
       };
     }, []);
 
-    useD3Zoom(zoomPane, onMove, selectionKeyPressed);
+    useD3Zoom({ zoomPane, onMove, selectionKeyPressed });
 
     useEffect(() => {
-      if (state.d3Initialised) {
+      if (state.d3Initialised && onLoad) {
         onLoad({
           fitView,
           zoomIn,
@@ -111,7 +114,7 @@ const GraphView = memo(
           project,
         });
       }
-    }, [state.d3Initialised]);
+    }, [state.d3Initialised, onLoad]);
 
     useEffect(() => {
       setSnapGrid({ snapToGrid, snapGrid });

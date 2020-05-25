@@ -108,7 +108,8 @@ export interface NodeComponentProps {
   yPos?: number;
   targetPosition?: Position;
   sourcePosition?: Position;
-  onClick?: (node: Node) => void | undefined;
+  onClick?: (node: Node) => void;
+  onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
 }
@@ -122,9 +123,9 @@ export interface WrapNodeProps {
   xPos: number;
   yPos: number;
   isInteractive: boolean;
-  onClick: (node: Node) => void | undefined;
-  onNodeDragStart: (node: Node) => void;
-  onNodeDragStop: (node: Node) => void;
+  onClick?: (node: Node) => void;
+  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
   sourcePosition?: Position;
   targetPosition?: Position;
