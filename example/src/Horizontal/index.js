@@ -28,6 +28,7 @@ const HorizontalFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onLoad={onLoad}
+      selectNodesOnDrag={false}
     />
   );
 }
