@@ -82,10 +82,6 @@ const BasicFlow = () => (
 - `connectionLineStyle`: connection style as svg attributes
 - `deleteKeyCode`: default: `8` (delete)
 - `selectionKeyCode`: default: `16` (shift)
-- `showBackground`: default: `true`
-- `backgroundGap`: gap size - default: `16`
-- `backgroundColor`: color of dots or lines - default: `#eee`
-- `backgroundType`: background type = `dots` or `lines` - default: `dots`
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
@@ -268,7 +264,7 @@ const FlowWithBackground = () => (
 - `variant`: string - has to be 'dots' or 'lines' - default: `dots`
 - `gap`: number - the gap between the dots or lines - default: `16`
 - `size`: number - the radius of the dots or the stroke width of the lines - default: 0.5
-- `color`: string - the color of the dots or lines - default: `#999`
+- `color`: string - the color of the dots or lines - default: `#999` for dots, '#eee' for lines
 - `style`: css properties
 - `className`: class name
 
