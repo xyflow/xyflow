@@ -55,7 +55,6 @@ const useElementUpdater = (elements: Elements): void => {
         return {
           ...existingNode,
           data,
-          style,
         };
       }
 
