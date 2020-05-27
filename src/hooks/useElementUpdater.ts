@@ -44,10 +44,17 @@ const useElementUpdater = (elements: Elements): void => {
           };
         }
 
+        if (style) {
+          return {
+            ...existingNode,
+            data,
+            style,
+          };
+        }
+
         return {
           ...existingNode,
           data,
-          style,
         };
       }
 
