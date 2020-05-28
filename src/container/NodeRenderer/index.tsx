@@ -42,6 +42,7 @@ function renderNode(
       transform={transform}
       selected={isSelected}
       style={node.style}
+      className={node.className}
       isInteractive={isInteractive}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}

@@ -28,34 +28,33 @@ const useElementUpdater = (elements: Elements): void => {
           ? { ...existingNode.style, ...propNode.style }
           : existingNode.style;
 
+        const className = existingNode.className === propNode.className ? existingNode.className : propNode.className;
+
         const positionChanged =
           existingNode.position.x !== propNode.position.x || existingNode.position.y !== propNode.position.y;
 
-        if (positionChanged) {
-          return {
-            ...existingNode,
-            __rg: {
-              ...existingNode.__rg,
-              position: propNode.position,
-            },
-            position: propNode.position,
-            data,
-            style,
-          };
-        }
-
-        if (style) {
-          return {
-            ...existingNode,
-            data,
-            style,
-          };
-        }
-
-        return {
+        const nodeProps = {
           ...existingNode,
           data,
         };
+
+        if (positionChanged) {
+          nodeProps.__rg = {
+            ...existingNode.__rg,
+            position: propNode.position,
+          };
+          nodeProps.position = propNode.position;
+        }
+
+        if (typeof style !== 'undefined') {
+          nodeProps.style = style;
+        }
+
+        if (typeof className !== 'undefined') {
+          nodeProps.className = className;
+        }
+
+        return nodeProps;
       }
 
       return parseElement(propNode) as Node;

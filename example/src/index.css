@@ -136,6 +136,11 @@ nav a.active:before {
   color: #111;
 }
 
+.dark-node>div {
+  background: #333 !important;
+  color: #f8f8f8 !important;
+}
+
 @media screen and (min-width: 768px) {
   nav {
     position: relative;

@@ -142,6 +142,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       onNodeDragStart,
       onNodeDragStop,
       style,
+      className,
       isInteractive,
       selectNodesOnDrag,
       sourcePosition,
@@ -151,7 +152,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const [offset, setOffset] = useState({ x: 0, y: 0 });
       const [isDragging, setDragging] = useState(false);
       const position = { x: xPos, y: yPos };
-      const nodeClasses = cx('react-flow__node', { selected });
+      const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, { selected });
+
       const nodeStyle: CSSProperties = {
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
