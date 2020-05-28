@@ -1,7 +1,7 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 import cx from 'classnames';
 
-import { ElementId, Node, Transform, HandleElement } from '../../types';
+import { ElementId, Node, Transform, HandleElement, Position } from '../../types';
 
 interface ConnectionLineProps {
   connectionSourceId: ElementId;
@@ -61,9 +61,15 @@ export default ({
   let dAttr: string = '';
 
   if (connectionLineType === 'bezier') {
-    const yOffset = Math.abs(targetY - sourceY) / 2;
-    const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-    dAttr = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
+    if (sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right) {
+      const xOffset = Math.abs(targetX - sourceX) / 2;
+      const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+      dAttr = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
+    } else {
+      const yOffset = Math.abs(targetY - sourceY) / 2;
+      const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+      dAttr = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
+    }
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }

@@ -7,7 +7,7 @@ const onLoad = (graph) => {
 };
 
 const initialElements = [
-  { id: '1', sourcePosition: 'right', type: 'input', data: { label: 'Input' }, position: { x: 0, y: 80 } },
+  { id: '1', sourcePosition: 'right', type: 'input', className: 'dark-node', data: { label: 'Input' }, position: { x: 0, y: 80 } },
   { id: '2', sourcePosition: 'right', targetPosition: 'left', data: { label: 'A Node' }, position: { x: 250, y: 0 } },
   { id: '3', sourcePosition: 'right', targetPosition: 'left', data: { label: 'Another node' }, position: { x: 250, y: 160 } },
   { id: '4', sourcePosition: 'right', targetPosition: 'left', data: { label: 'Node 4' }, position: { x: 500, y: 80 } },
@@ -21,6 +21,15 @@ const HorizontalFlow = () => {
   const onElementsRemove = (elementsToRemove) =>
     setElements(els => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements(els => addEdge(params, els));
+  const changeClassName = () => {
+    setElements(elms => elms.map(el => {
+      if (el.type === 'input') {
+        el.className = el.className ? '' : 'dark-node';
+      }
+
+      return {...el};
+    }))
+  }
 
   return (
     <ReactFlow
@@ -29,7 +38,14 @@ const HorizontalFlow = () => {
       onConnect={onConnect}
       onLoad={onLoad}
       selectNodesOnDrag={false}
-    />
+    >
+      <button
+        onClick={changeClassName}
+        style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
+      >
+        change class name
+      </button>
+    </ReactFlow>
   );
 }
 

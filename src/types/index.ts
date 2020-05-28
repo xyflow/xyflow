@@ -37,6 +37,7 @@ export interface Node {
   __rg?: any;
   data?: any;
   style?: CSSProperties;
+  className?: string;
   targetPosition?: Position;
   sourcePosition?: Position;
 }
@@ -128,6 +129,7 @@ export interface WrapNodeProps {
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
+  className?: string;
   sourcePosition?: Position;
   targetPosition?: Position;
 }
