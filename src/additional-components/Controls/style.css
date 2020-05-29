@@ -1,0 +1,28 @@
+.react-flow__controls {
+  position: absolute;
+  z-index: 5;
+  bottom: 10px;
+  left: 10px;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+
+  &-button {
+    background: #fefefe;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    user-select: none;
+    padding: 5px;
+
+    svg {
+      width: 100%;
+    }
+
+    &:hover {
+      background: #f4f4f4;
+    }
+  }
+}

@@ -158,23 +158,16 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents: isInteractive ? 'all' : 'none',
-      };
-
-      const updateNode = (): void => {
-        if (!nodeElement.current) {
-          return;
-        }
-
-        store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current });
+        ...style,
       };
 
       useEffect(() => {
         if (nodeElement.current) {
-          updateNode();
+          store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current });
 
           const resizeObserver = new ResizeObserver((entries) => {
             for (let _ of entries) {
-              updateNode();
+              store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current! });
             }
           });
 
@@ -188,7 +181,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         return;
-      }, []);
+      }, [id]);
 
       return (
         <DraggableCore
@@ -219,7 +212,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
                 id={id}
                 data={data}
                 type={type}
-                style={style}
                 selected={selected}
                 sourcePosition={sourcePosition}
                 targetPosition={targetPosition}

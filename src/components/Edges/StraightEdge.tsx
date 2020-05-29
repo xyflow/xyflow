@@ -4,7 +4,7 @@ import EdgeText from './EdgeText';
 import { EdgeProps } from '../../types';
 
 export default memo(
-  ({ sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, style = {} }: EdgeProps) => {
+  ({ sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, style }: EdgeProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
