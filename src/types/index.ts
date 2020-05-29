@@ -96,7 +96,6 @@ export interface NodeProps {
   selected: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
-  style?: CSSProperties;
 }
 
 export interface NodeComponentProps {

@@ -110,19 +110,35 @@
   pointer-events: all;
   transform-origin: 0 0;
   cursor: grab;
+  padding: 10px;
+  border-radius: 5px;
+  width: 150px;
+  background: #eee;
 
-  &.selected>*,
-  &.selected:hover>* {
+  &.selected,
+  &.selected:hover {
     box-shadow: 0 0 0 2px #555;
   }
 
-  &:hover>* {
+  &:hover {
     box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.08);
   }
 
   .react-flow__handle {
     cursor: crosshair;
   }
+}
+
+.react-flow__node-default {
+  background: #ff6060;
+}
+
+.react-flow__node-input {
+  background: #9999ff;
+}
+
+.react-flow__node-output {
+  background: #55dd99;
 }
 
 .react-flow__handle {

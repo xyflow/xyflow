@@ -154,10 +154,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const position = { x: xPos, y: yPos };
       const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, { selected });
 
-      const nodeStyle: CSSProperties = {
+      const nodeStyles: CSSProperties = {
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents: isInteractive ? 'all' : 'none',
+        ...style,
       };
 
       const updateNode = (): void => {
@@ -213,13 +214,12 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           disabled={!isInteractive}
           cancel=".nodrag"
         >
-          <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
+          <div className={nodeClasses} ref={nodeElement} style={nodeStyles}>
             <Provider value={id}>
               <NodeComponent
                 id={id}
                 data={data}
                 type={type}
-                style={style}
                 selected={selected}
                 sourcePosition={sourcePosition}
                 targetPosition={targetPosition}

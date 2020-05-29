@@ -2,11 +2,9 @@ import React from 'react';
 
 import { Handle } from 'react-flow-renderer';
 
-export default ({ data, styles }) => {
+export default ({ data }) => {
   return (
-    <div
-      style={{ background: '#eee', border: '1px solid #ddd', padding: 10, borderRadius: 5, ...styles }}
-    >
+    <>
       <Handle
         type="target"
         position="left"
@@ -27,6 +25,6 @@ export default ({ data, styles }) => {
         id="b"
         style={{ bottom: 10, top: 'auto', background: '#fff' }}
       />
-    </div>
+    </>
   );
 };
