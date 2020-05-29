@@ -9,3 +9,4 @@ export { isNode, isEdge, removeElements, addEdge, getOutgoers } from './utils/gr
 
 export * from './additional-components';
 export * from './types';
+export * from './store/hooks';
