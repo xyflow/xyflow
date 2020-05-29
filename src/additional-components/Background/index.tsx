@@ -5,6 +5,8 @@ import { useStoreState } from '../../store/hooks';
 import { BackgroundVariant } from '../../types';
 import { createGridLinesPath, createGridDotsPath } from './utils';
 
+import './style.css';
+
 interface BackgroundProps extends HTMLAttributes<SVGElement> {
   variant?: BackgroundVariant;
   gap?: number;

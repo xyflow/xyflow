@@ -10,6 +10,8 @@ import FitviewIcon from '../../../assets/icons/fitview.svg';
 import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
+import './style.css';
+
 interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;

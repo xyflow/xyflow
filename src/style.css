@@ -60,6 +60,12 @@
   }
 }
 
+@keyframes dashdraw {
+  from {
+    stroke-dashoffset: 10;
+  }
+}
+
 .react-flow__connection {
   pointer-events: none;
 }
@@ -83,12 +89,6 @@
 
 .react-flow__edge-textbg {
   fill: white;
-}
-
-@keyframes dashdraw {
-  from {
-    stroke-dashoffset: 10;
-  }
 }
 
 .react-flow__nodes {
@@ -189,46 +189,4 @@
     border: 1px dotted rgba(0, 89, 220, 0.8);
     pointer-events: all;
   }
-}
-
-.react-flow__controls {
-  position: absolute;
-  z-index: 5;
-  bottom: 10px;
-  left: 10px;
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.08);
-
-  &-button {
-    background: #fefefe;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    user-select: none;
-    padding: 5px;
-
-    svg {
-      width: 100%;
-    }
-
-    &:hover {
-      background: #f4f4f4;
-    }
-  }
-}
-
-.react-flow__minimap {
-  position: absolute;
-  z-index: 5;
-  bottom: 10px;
-  right: 10px;
-}
-
-.react-flow__background {
-  position: absolute;
-  top: 0;
-  left: 0;
 }
