@@ -13,8 +13,9 @@ interface EdgeWrapperProps {
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle: CSSProperties;
+  className?: string;
   onClick?: (edge: Edge) => void;
-  animated: boolean;
+  animated?: boolean;
   selected: boolean;
   isInteractive: boolean;
 }
@@ -34,9 +35,10 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       labelStyle,
       labelShowBg,
       labelBgStyle,
+      className,
       ...rest
     }: EdgeWrapperProps) => {
-      const edgeClasses = cx('react-flow__edge', { selected, animated });
+      const edgeClasses = cx('react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated });
       const edgeGroupStyle: CSSProperties = {
         pointerEvents: isInteractive ? 'all' : 'none',
       };

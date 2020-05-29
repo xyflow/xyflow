@@ -15,7 +15,7 @@ export default memo(
     labelStyle,
     labelShowBg,
     labelBgStyle,
-    style = {},
+    style,
   }: EdgeBezierProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
