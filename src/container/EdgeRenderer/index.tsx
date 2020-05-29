@@ -3,14 +3,14 @@ import React, { memo, CSSProperties } from 'react';
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
-import { XYPosition, Position, Edge, Node, ElementId, HandleElement, Elements } from '../../types';
+import { XYPosition, Position, Edge, Node, ElementId, HandleElement, Elements, ConnectionLineType } from '../../types';
 
 interface EdgeRendererProps {
   width: number;
   height: number;
   edgeTypes: any;
+  connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
-  connectionLineType?: string;
   onElementClick?: (element: Node | Edge) => void;
 }
 

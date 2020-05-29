@@ -153,6 +153,11 @@ export interface Connection {
   target: ElementId | null;
 }
 
+export enum ConnectionLineType {
+  Bezier = 'bezier',
+  Straight = 'straight',
+}
+
 export type OnConnectFunc = (connection: Connection) => void;
 
 export interface HandleElement extends XYPosition, Dimensions {

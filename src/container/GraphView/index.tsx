@@ -12,7 +12,16 @@ import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
 import { fitView, zoomIn, zoomOut, project } from '../../utils/graph';
-import { Elements, NodeTypesType, EdgeTypesType, OnLoadFunc, Node, Edge, Connection } from '../../types';
+import {
+  Elements,
+  NodeTypesType,
+  EdgeTypesType,
+  OnLoadFunc,
+  Node,
+  Edge,
+  Connection,
+  ConnectionLineType,
+} from '../../types';
 
 export interface GraphViewProps {
   elements: Elements;
@@ -26,8 +35,8 @@ export interface GraphViewProps {
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
-  connectionLineType: string;
-  connectionLineStyle: CSSProperties;
+  connectionLineType: ConnectionLineType;
+  connectionLineStyle?: CSSProperties;
   deleteKeyCode: number;
   snapToGrid: boolean;
   snapGrid: [number, number];
