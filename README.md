@@ -21,7 +21,7 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Minimap](#minimap)
   - [Controls](#controls)
 - [Helper Functions](#helper-functions)
-- [Access Internal State](#access-state)
+- [Access Internal State](#access-internal-state)
 - [Examples](#examples)
 - [Development](#development)
 - [Testing](#testing)
