@@ -21,6 +21,7 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Minimap](#minimap)
   - [Controls](#controls)
 - [Helper Functions](#helper-functions)
+- [Access Internal State](#access-state)
 - [Examples](#examples)
 - [Development](#development)
 - [Testing](#testing)
@@ -362,6 +363,29 @@ Transforms pixel coordinates to the internal React Flow coordinate system
 `project = (position: XYPosition): XYPosition`
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
+
+## Access Internal State
+
+We are using [Easy Peasy](https://easy-peasy.now.sh/) for state handling.
+If you need to access the internal state you can use the `useStoreState` hook inside a child component of the React Flow component:
+
+```javascript
+import ReactFlow, { useStoreState } from 'react-flow-renderer';
+
+const NodesDebugger = () => {
+  const nodes = useStoreState(state => state.nodes);
+
+  console.log(nodes);
+
+  return null:
+}
+
+const Flow = () => (
+  <ReactFlow elements={elements}>
+    <NodesDebugger />
+  </ReactFlow>
+);
+```
 
 ## Examples
 
