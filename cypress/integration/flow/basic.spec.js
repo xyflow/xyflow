@@ -6,7 +6,7 @@ describe('Basic Graph Rendering', () => {
     cy.get('.react-flow-basic-example'); // check if className prop works
     cy.get('.react-flow__node').should('have.length', 4);
     cy.get('.react-flow__edge').should('have.length', 2);
-    cy.get('.react-flow__node').children('div').children('.react-flow__handle');
+    cy.get('.react-flow__node').children('.react-flow__handle');
   });
 
   it('renders a grid', () => {
