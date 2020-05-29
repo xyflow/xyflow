@@ -210,3 +210,9 @@
   bottom: 10px;
   right: 10px;
 }
+
+.react-flow__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

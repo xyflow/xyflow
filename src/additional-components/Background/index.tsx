@@ -1,4 +1,4 @@
-import React, { memo, HTMLAttributes, CSSProperties } from 'react';
+import React, { memo, HTMLAttributes } from 'react';
 import classnames from 'classnames';
 
 import { useStoreState } from '../../store/hooks';
@@ -12,19 +12,13 @@ interface BackgroundProps extends HTMLAttributes<SVGElement> {
   size?: number;
 }
 
-const baseStyles: CSSProperties = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-};
-
 const defaultColors = {
   [BackgroundVariant.Dots]: '#999',
   [BackgroundVariant.Lines]: '#eee',
 };
 
 const Background = memo(
-  ({ variant = BackgroundVariant.Dots, gap = 24, size = 0.5, color, style = {}, className = '' }: BackgroundProps) => {
+  ({ variant = BackgroundVariant.Dots, gap = 24, size = 0.5, color, style, className }: BackgroundProps) => {
     const width = useStoreState((s) => s.width);
     const height = useStoreState((s) => s.height);
     const [x, y, scale] = useStoreState((s) => s.transform);
@@ -42,7 +36,7 @@ const Background = memo(
     const stroke = isLines ? bgColor : 'none';
 
     return (
-      <svg width={width} height={height} style={{ ...baseStyles, ...style }} className={bgClasses}>
+      <svg width={width} height={height} style={style} className={bgClasses}>
         <path fill={fill} stroke={stroke} strokeWidth={size} d={path} />
       </svg>
     );
