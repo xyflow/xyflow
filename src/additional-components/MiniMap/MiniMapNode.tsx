@@ -16,6 +16,7 @@ const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
   } = node.__rg;
   const { background, backgroundColor } = node.style || {};
   const fill = (background || backgroundColor || color) as string;
+
   return (
     <rect
       className="react-flow__minimap-node"
