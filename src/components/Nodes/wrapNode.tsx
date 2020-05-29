@@ -154,28 +154,20 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const position = { x: xPos, y: yPos };
       const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, { selected });
 
-      const nodeStyles: CSSProperties = {
+      const nodeStyle: CSSProperties = {
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents: isInteractive ? 'all' : 'none',
         ...style,
       };
 
-      const updateNode = (): void => {
-        if (!nodeElement.current) {
-          return;
-        }
-
-        store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current });
-      };
-
       useEffect(() => {
         if (nodeElement.current) {
-          updateNode();
+          store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current });
 
           const resizeObserver = new ResizeObserver((entries) => {
             for (let _ of entries) {
-              updateNode();
+              store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current! });
             }
           });
 
@@ -189,7 +181,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         return;
-      }, []);
+      }, [id]);
 
       return (
         <DraggableCore
@@ -214,7 +206,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           disabled={!isInteractive}
           cancel=".nodrag"
         >
-          <div className={nodeClasses} ref={nodeElement} style={nodeStyles}>
+          <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
             <Provider value={id}>
               <NodeComponent
                 id={id}
