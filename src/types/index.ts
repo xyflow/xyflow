@@ -168,6 +168,7 @@ export interface HandleProps {
   isValidConnection?: (connection: Connection) => boolean;
   id?: string;
   style?: CSSProperties;
+  className?: string;
 }
 
 export interface EdgeCompProps {

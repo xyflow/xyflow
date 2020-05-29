@@ -12,7 +12,9 @@ const Handle = memo(
     position = Position.Top,
     onConnect = () => {},
     isValidConnection = () => true,
-    ...rest
+    style,
+    className,
+    id,
   }: HandleProps) => {
     const nodeId = useContext(NodeIdContext) as ElementId;
     const setPosition = useStoreActions((a) => a.setConnectionPosition);
@@ -32,7 +34,9 @@ const Handle = memo(
         type={type}
         position={position}
         isValidConnection={isValidConnection}
-        {...rest}
+        style={style}
+        className={className}
+        id={id}
       />
     );
   }
