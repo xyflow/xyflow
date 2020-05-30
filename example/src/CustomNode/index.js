@@ -37,7 +37,7 @@ const CustomNodeFlow = () => {
 
     setElements([
       { id: '1', type: 'input', data: { label: 'An input node' }, position: { x: 0, y: 50 }, sourcePosition: 'right' },
-      { id: '2', type: 'selectorNode', data: { onChange: onChange, color: initBgColor }, style: { border: '1px solid #777' }, position: { x: 250, y: 50 } },
+      { id: '2', type: 'selectorNode', data: { onChange: onChange, color: initBgColor }, style: { border: '1px solid #777', padding: 10 }, position: { x: 250, y: 50 } },
       { id: '3', type: 'output', data: { label: 'Output A' }, position: { x: 550, y: 25 }, targetPosition: 'left' },
       { id: '4', type: 'output', data: { label: 'Output B' }, position: { x: 550, y: 100 }, targetPosition: 'left' },
 
