@@ -103,8 +103,6 @@
 .react-flow__node {
   position: absolute;
   color: #222;
-  font-family: sans-serif;
-  font-size: 12px;
   text-align: center;
   user-select: none;
   pointer-events: all;
@@ -131,6 +129,7 @@
   border-radius: 5px;
   width: 150px;
   background: #ff6060;
+  font-size: 12px;
 }
 
 .react-flow__node-input {
@@ -138,6 +137,7 @@
   border-radius: 5px;
   width: 150px;
   background: #9999ff;
+  font-size: 12px;
 }
 
 .react-flow__node-output {
@@ -145,6 +145,7 @@
   border-radius: 5px;
   width: 150px;
   background: #55dd99;
+  font-size: 12px;
 }
 
 .react-flow__handle {

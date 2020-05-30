@@ -136,7 +136,7 @@ nav a.active:before {
   color: #111;
 }
 
-.dark-node {
+.react-flow__node.dark-node {
   background: #333;
   color: #f8f8f8;
 }
