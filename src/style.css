@@ -110,9 +110,6 @@
   pointer-events: all;
   transform-origin: 0 0;
   cursor: grab;
-  padding: 10px;
-  border-radius: 5px;
-  width: 150px;
   background: #eee;
 
   &.selected,
@@ -130,14 +127,23 @@
 }
 
 .react-flow__node-default {
+  padding: 10px;
+  border-radius: 5px;
+  width: 150px;
   background: #ff6060;
 }
 
 .react-flow__node-input {
+  padding: 10px;
+  border-radius: 5px;
+  width: 150px;
   background: #9999ff;
 }
 
 .react-flow__node-output {
+  padding: 10px;
+  border-radius: 5px;
+  width: 150px;
   background: #55dd99;
 }
 
