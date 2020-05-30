@@ -20,7 +20,16 @@ import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import store from '../../store';
-import { Elements, NodeTypesType, EdgeTypesType, OnLoadFunc, Node, Edge, Connection } from '../../types';
+import {
+  Elements,
+  NodeTypesType,
+  EdgeTypesType,
+  OnLoadFunc,
+  Node,
+  Edge,
+  Connection,
+  ConnectionLineType,
+} from '../../types';
 
 import '../../style.css';
 
@@ -36,8 +45,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onSelectionChange?: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
-  connectionLineType: string;
-  connectionLineStyle: CSSProperties;
+  connectionLineType: ConnectionLineType;
+  connectionLineStyle?: CSSProperties;
   deleteKeyCode: number;
   selectionKeyCode: number;
   snapToGrid: boolean;
@@ -119,8 +128,7 @@ ReactFlow.defaultProps = {
     straight: StraightEdge,
     step: StepEdge,
   },
-  connectionLineType: 'bezier',
-  connectionLineStyle: {},
+  connectionLineType: ConnectionLineType.Bezier,
   deleteKeyCode: 8,
   selectionKeyCode: 16,
   snapToGrid: false,

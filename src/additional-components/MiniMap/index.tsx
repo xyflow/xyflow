@@ -1,10 +1,12 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
 import { useStoreState } from '../../store/hooks';
 import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
 import { Node, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
+
+import './style.css';
 
 type StringFunc = (node: Node) => string;
 
@@ -14,14 +16,8 @@ interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
   maskColor?: string;
 }
 
-const baseStyle: CSSProperties = {
-  position: 'absolute',
-  zIndex: 5,
-  bottom: 10,
-  right: 10,
-  width: 200,
-  height: 150,
-};
+const defaultWidth = 200;
+const defaultHeight = 150;
 
 const MiniMap = ({
   style = { backgroundColor: '#f8f8f8' },
@@ -36,11 +32,10 @@ const MiniMap = ({
   const nodes = useStoreState((s) => s.nodes);
 
   const mapClasses = classnames('react-flow__minimap', className);
-  const elementWidth = (style.width || baseStyle.width)! as number;
-  const elementHeight = (style.height || baseStyle.height)! as number;
+  const elementWidth = (style.width || defaultWidth)! as number;
+  const elementHeight = (style.height || defaultHeight)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
   const hasNodes = nodes && nodes.length;
-
   const bb = getRectOfNodes(nodes);
   const viewBB: Rect = {
     x: -tX / tScale,
@@ -48,17 +43,13 @@ const MiniMap = ({
     width: containerWidth / tScale,
     height: containerHeight / tScale,
   };
-
   const boundingRect = hasNodes ? getBoundsofRects(bb, viewBB) : viewBB;
-
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
   const viewWidth = viewScale * elementWidth;
   const viewHeight = viewScale * elementHeight;
-
   const offset = 5 * viewScale;
-
   const x = boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset;
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
@@ -69,10 +60,7 @@ const MiniMap = ({
       width={elementWidth}
       height={elementHeight}
       viewBox={`${x} ${y} ${width} ${height}`}
-      style={{
-        ...baseStyle,
-        ...style,
-      }}
+      style={style}
       className={mapClasses}
     >
       {nodes.map((node) => (

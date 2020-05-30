@@ -188,6 +188,7 @@ const targetHandleWithValidation = (
 - `onConnect`: function that gets triggered on connect
 - `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - true by default
 - `style`: css properties
+- `className`: additional class name
 
 #### Multiple Handles
 

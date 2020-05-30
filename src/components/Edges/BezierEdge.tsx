@@ -15,7 +15,7 @@ export default memo(
     labelStyle,
     labelShowBg,
     labelBgStyle,
-    style = {},
+    style,
   }: EdgeBezierProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
@@ -26,10 +26,13 @@ export default memo(
     let dAttr = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
 
     const leftAndRight = [Position.Left, Position.Right];
+
     if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
       dAttr = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
-    } else if (leftAndRight.includes(sourcePosition) || leftAndRight.includes(targetPosition)) {
+    } else if (leftAndRight.includes(targetPosition)) {
       dAttr = `M${sourceX},${sourceY} C${sourceX},${targetY} ${sourceX},${targetY} ${targetX},${targetY}`;
+    } else if (leftAndRight.includes(sourcePosition)) {
+      dAttr = `M${sourceX},${sourceY} C${targetX},${sourceY} ${targetX},${sourceY} ${targetX},${targetY}`;
     }
 
     const text = label ? (

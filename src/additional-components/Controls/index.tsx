@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
 import { fitView, zoomIn, zoomOut } from '../../utils/graph';
@@ -10,12 +10,7 @@ import FitviewIcon from '../../../assets/icons/fitview.svg';
 import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
-const baseStyle: CSSProperties = {
-  position: 'absolute',
-  zIndex: 5,
-  bottom: 10,
-  left: 10,
-};
+import './style.css';
 
 interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
@@ -26,16 +21,10 @@ interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
 const Controls = ({ style, showZoom = true, showFitView = true, showInteractive = true, className }: ControlProps) => {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const isInteractive = useStoreState((s) => s.isInteractive);
-  const mapClasses: string = classnames('react-flow__controls', className);
+  const mapClasses = classnames('react-flow__controls', className);
 
   return (
-    <div
-      className={mapClasses}
-      style={{
-        ...baseStyle,
-        ...style,
-      }}
-    >
+    <div className={mapClasses} style={style}>
       {showZoom && (
         <>
           <div className="react-flow__controls-button react-flow__controls-zoomin" onClick={zoomIn}>

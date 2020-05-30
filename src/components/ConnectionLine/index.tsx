@@ -1,13 +1,13 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 import cx from 'classnames';
 
-import { ElementId, Node, Transform, HandleElement, Position } from '../../types';
+import { ElementId, Node, Transform, HandleElement, Position, ConnectionLineType } from '../../types';
 
 interface ConnectionLineProps {
   connectionSourceId: ElementId;
   connectionPositionX: number;
   connectionPositionY: number;
-  connectionLineType?: string | null;
+  connectionLineType: ConnectionLineType;
   nodes: Node[];
   transform: Transform;
   isInteractive: boolean;
@@ -17,10 +17,10 @@ interface ConnectionLineProps {
 
 export default ({
   connectionSourceId,
-  connectionLineStyle = {},
+  connectionLineStyle,
   connectionPositionX,
   connectionPositionY,
-  connectionLineType,
+  connectionLineType = ConnectionLineType.Bezier,
   nodes = [],
   className,
   transform,
@@ -60,7 +60,7 @@ export default ({
 
   let dAttr: string = '';
 
-  if (connectionLineType === 'bezier') {
+  if (connectionLineType === ConnectionLineType.Bezier) {
     if (sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right) {
       const xOffset = Math.abs(targetX - sourceX) / 2;
       const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;

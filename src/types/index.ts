@@ -96,7 +96,6 @@ export interface NodeProps {
   selected: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
-  style?: CSSProperties;
 }
 
 export interface NodeComponentProps {
@@ -154,6 +153,11 @@ export interface Connection {
   target: ElementId | null;
 }
 
+export enum ConnectionLineType {
+  Bezier = 'bezier',
+  Straight = 'straight',
+}
+
 export type OnConnectFunc = (connection: Connection) => void;
 
 export interface HandleElement extends XYPosition, Dimensions {
@@ -168,6 +172,7 @@ export interface HandleProps {
   isValidConnection?: (connection: Connection) => boolean;
   id?: string;
   style?: CSSProperties;
+  className?: string;
 }
 
 export interface EdgeCompProps {
