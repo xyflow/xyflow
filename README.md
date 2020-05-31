@@ -128,6 +128,17 @@ You could now use the type `special` for a node.
 The `default`, `input` and `output` types would be still available except you overwrote one of them.
 There is an example of a custom node implementation in the [custom node example](/example/src/CustomNode).
 
+## Custom Node Props
+
+Your custom nodes are wrapped so that the basic functions like dragging or selecting work. Custom nodes receive the following props:
+
+- `id`: string
+- `data`: object
+- `type`: string
+- `selected`: boolean
+- `sourcePosition`: string
+- `targetPosition`: string
+
 ## Handle Component
 
 We export a `Handle` component as a helper for your custom nodes:
