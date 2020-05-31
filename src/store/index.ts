@@ -195,12 +195,11 @@ const storeModel: StoreModel = {
     let position: XYPosition = pos;
 
     if (state.snapToGrid) {
-      const transformedGridSizeX = state.snapGrid[0] * state.transform[2];
-      const transformedGridSizeY = state.snapGrid[1] * state.transform[2];
+      const [gridSizeX, gridSizeY] = state.snapGrid;
 
       position = {
-        x: transformedGridSizeX * Math.round(pos.x / transformedGridSizeX),
-        y: transformedGridSizeY * Math.round(pos.y / transformedGridSizeY),
+        x: gridSizeX * Math.round(pos.x / gridSizeX),
+        y: gridSizeY * Math.round(pos.y / gridSizeY),
       };
     }
 
