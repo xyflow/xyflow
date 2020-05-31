@@ -62,12 +62,9 @@ export const pointToRendererPoint = (
   };
 
   if (snapToGrid) {
-    const transformedGridSizeX = snapX * tScale;
-    const transformedGridSizeY = snapY * tScale;
-
     return {
-      x: transformedGridSizeX * Math.round(position.x / transformedGridSizeX),
-      y: transformedGridSizeY * Math.round(position.y / transformedGridSizeY),
+      x: snapX * Math.round(position.x / snapX),
+      y: snapY * Math.round(position.y / snapY),
     };
   }
 
