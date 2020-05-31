@@ -8,7 +8,6 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Installation](#installation)
 - [Usage](#usage)
 - [ReactFlow Component Prop Types](#reactflow-component-prop-types)
-- [Styling](#styling)
 - [Nodes](#nodes)
   - [Options](#options-1)
   - [Node Types & Custom Nodes](#node-types--custom-nodes)
@@ -20,13 +19,14 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Background](#background)
   - [Minimap](#minimap)
   - [Controls](#controls)
+- [Styling](#styling)
 - [Helper Functions](#helper-functions)
 - [Access Internal State](#access-internal-state)
 - [Examples](#examples)
 - [Development](#development)
 - [Testing](#testing)
 
-# Key Features
+## Key Features
 
 * **Easy to use:** Seamless zooming & panning behaviour and single and multi-selections of elements
 * **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes with multiple handles and edges
@@ -43,9 +43,9 @@ In order to make this library as flexible as possible we don’t do any state up
 npm install react-flow-renderer
 ```
 
-## Usage
+# Usage
 
-This is a very basic example of how to use react-flow. There are more advanced examples in the [example](/example/src) folder.
+This is a very basic example of how to use React Flow. There are more advanced examples in the [example](/example/src) folder.
 
 ```javascript
 import React from 'react';
@@ -53,18 +53,15 @@ import ReactFlow from 'react-flow-renderer';
 
 const elements = [
   { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
+  // you can also pass a React component as a label
+  { id: '2', data: { label: <div>Node 2</div> }, position: { x: 100, y: 100 } },
   { id: 'e1-2', source: '1', target: '2', animated: true },
 ];
 
-const graphStyles = { width: '100%', height: '100%' };
-
-const BasicFlow = () => (
-  <ReactFlow elements={elements} style={graphStyles} />
-);
+const BasicFlow = () => <ReactFlow elements={elements} />;
 ```
 
-## ReactFlow Component Prop Types
+# ReactFlow Component Prop Types
 
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
 - `onElementClick`: element click handler
@@ -89,44 +86,13 @@ const BasicFlow = () => (
 - `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
 - `selectNodesOnDrag`: default: `true`
 
-## Styling
-
-There are two ways how you can style the graph and the elements.
-You can create your own CSS rules or pass style properties to the components.
-
-#### Using Class Names
-
-Since we are using DOM nodes for rendering the graph you can simply overwrite the styles with your own CSS rules.
-The React Flow wrapper has the className `react-flow`. If you want to change the graph background for example you can do:
-
-```css
-.react-flow {
-  background: red;
-}
-```
-
-The same applies to the nodes (className: `react-flow__node`), edges (className: `react-flow__edge`), controls (`react-flow__controls`) or the mini map plugin (`react-flow__minimap`).
-
-#### Using Properties
-
-You could achieve the same effect by passing a style prop to the React Flow component:
-
-```javascript
-const FlowWithRedBg = (
-  <ReactFlow
-    elements={elements}
-    style={{ background: 'red', width: '100%' height: '300px' }}
-  />
-);
-```
-
-## Nodes
+# Nodes
 
 There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. The node types differ in the number and types of handles. An input node has only a source handle, a default node has a source and a target and an output node has only a target handle. You create nodes by adding them to the `elements` array of the React Flow component.
 
 Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }`
 
-### Options
+## Options
 
 - `id`: string *(required)*
 - `position`: { x: number, y: number } *(required)*
@@ -137,7 +103,7 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
 - `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
 
-### Node Types & Custom Nodes
+## Node Types & Custom Nodes
 
 The standard node types are `input`, `default` and `output`. The default node types object looks like this:
 
@@ -162,7 +128,7 @@ You could now use the type `special` for a node.
 The `default`, `input` and `output` types would be still available except you overwrote one of them.
 There is an example of a custom node implementation in the [custom node example](/example/src/CustomNode).
 
-### Handle Component
+## Handle Component
 
 We export a `Handle` component as a helper for your custom nodes:
 
@@ -180,35 +146,35 @@ const targetHandleWithValidation = (
 );
 ```
 
-#### Prop Types
+### Prop Types
 
-- `type`: 'source' | 'target'
+- `type`: 'source' or 'target'
 - `id`: string - you only need this when you have multiple source or target handles otherwise the node id is used
-- `position`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top' for type target, 'bottom' for type source
+- `position`: 'left', 'right', 'top' or 'bottom' handle position - default: 'top' for type target, 'bottom' for type source
 - `onConnect`: function that gets triggered on connect
-- `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - true by default
+- `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - default: `true`
 - `style`: css properties
 - `className`: additional class name
 
-#### Multiple Handles
+### Multiple Handles
 
 If you need multiple source or target handles you can achieve this by creating a custom node. Normally you just use the id of a node for the `source` or `target` of an edge. If you have multiple source or target handles you need to pass an id to these handles. These ids get then added to the node id, so that you can connect a specific handle. If you have a node with an id = `1` and a handle with an id = `a` you can connect this handle by using the id = `1__a`.
 You can find an example of how to implement a custom node with multiple handles in the [custom node example](/example/src/CustomNode/ColorSelectorNode.js#L18-L29).
 
-## Edges
+# Edges
 
-React Flow comes with three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`). As the names indicate, the edges differ in the representation. The default type is `default` which is a bezier edge. You create edges by adding them to your `elements` array of the React Flow component.
+React Flow comes with three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the React Flow component.
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true, label: 'edge label' }`
 
 If you wanted to display this edge, you would need a node with id = 1 (source node) and one with id = 2 (target node).
 
-### Options
+## Options
 
 - `id`: string *(required)*
 - `source`: string (an id of a node) *(required)*
 - `target`: string (an id of a node) *(required)*
-- `type`: 'input' | 'output' | 'default' or a custom one you implemented
+- `type`: 'input', 'output', 'default' or a custom one you implemented
 - `animated`: boolean
 - `style`: css properties for the edge line path
 - `label`: string
@@ -230,7 +196,7 @@ The basic edge types are `straight`, `default` and `step`. The default `edgeType
 }
 ```
 
-The keys represents the type names and the values are the edge components.
+The keys represent the type names and the values are the edge components.
 If you want to introduce a new edge type you can pass an `edgeTypes` object to the React Flow component:
 
 ```javascript
@@ -243,9 +209,9 @@ Now you could use the new type `special` for an edge.
 The `straight`, `default` and `step` types would still be available unless you overwrote one of them.
 There is an implementation of a custom edge in the [edges example](/example/src/Edges/index.js).
 
-## Components
+# Components
 
-### Background
+## Background
 
 React Flow comes with two background variants: **dots** and **lines**. You can use it by passing it as a children to the React Flow component:
 
@@ -263,16 +229,16 @@ const FlowWithBackground = () => (
 );
 ```
 
-#### Prop Types
+### Prop Types
 
 - `variant`: string - has to be 'dots' or 'lines' - default: `dots`
 - `gap`: number - the gap between the dots or lines - default: `16`
 - `size`: number - the radius of the dots or the stroke width of the lines - default: `0.5`
 - `color`: string - the color of the dots or lines - default: `#999` for dots, `#eee` for lines
 - `style`: css properties
-- `className`: class name
+- `className`: additional class name
 
-### MiniMap
+## MiniMap
 
 You can use the mini map plugin by passing it as a children to the React Flow component:
 
@@ -295,15 +261,15 @@ const FlowWithMiniMap = () => (
 );
 ```
 
-#### Prop Types
+### Prop Types
 
-- `nodeColor`: string | function - if you pass a color as a string all nodes will get that color. If you pass a function you can return a color depending on the passed node.
+- `nodeColor`: string or function - If you pass a color as a string all nodes will get that color. If you pass a function you can return a color depending on the passed node.
 - `nodeBorderRadius`: number
 - `maskColor`: string
 - `style`: css properties
-- `className`: class name
+- `className`: additional class name
 
-### Controls
+## Controls
 
 The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the React Flow component:
 
@@ -317,47 +283,107 @@ const FlowWithControls = () => (
 );
 ```
 
-#### Prop Types
+### Prop Types
 
-- `style`: css properties
-- `className`: class name
 - `showZoom`: boolean - default: true
 - `showFitView`: boolean - default: true
 - `showInteractive`: boolean - default: true
+- `style`: css properties
+- `className`: additional class name
 
-## Helper Functions
+# Styling
 
-If you want to remove a node or connect two nodes with each other you need to pass a function to `onElementsRemove` and `onConnect`. In order to simplify this process we export some helper functions so that you don't need to implement them:
+There are two ways how you can style the graph pane and the elements.
+You can create your own CSS rules or pass style properties to the components.
+
+## Using Class Names
+
+Since we are rendering DOM nodes you can simply overwrite the styles with your own CSS rules.
+The React Flow wrapper has the className `react-flow`. If you want to change the graph background for example you can do:
+
+```css
+.react-flow {
+  background: red;
+}
+```
+
+### Used Class Names
+
+* `.react-flow` - Outer container
+* `.react-flow__renderer` - Inner container
+* `.react-flow__zoompane` - Zoom & pan pane
+* `.react-flow__selectionpane` - Selection pane
+* `.react-flow__selection` - User selection
+* `.react-flow__edges` - Edges wrapper
+* `.react-flow__edge` - Edge element
+  * `.selected` is added when edge is selected
+  * `.animated` is added when edge is animated
+* `.react-flow__edge-path` - Edge element path
+* `.react-flow__edge-text` - Edge text
+* `.react-flow__edge-textbg` - Edge text background
+* `.react-flow__connection` - Connection line
+* `.react-flow__connection-path` - Connection line path
+* `.react-flow__nodes` - Nodes wrapper
+* `.react-flow__node` - Node element
+  * `.selected` is added when edge is selected
+  * `-${type}` is added (`.react-flow__node-default`, `.react-flow__node-input`, `.react-flow__node-output`)
+* `.react-flow__nodesselection` - Nodes selection
+* `.react-flow__nodesselection-rect ` - Nodes selection rect
+* `.react-flow__handle` - Handle component
+  * `.bottom` is added when position = 'bottom'
+  * `.top` is added when position = 'top'
+  * `.left` is added when position = 'left'
+  * `.right` is added when position = 'right'
+* `.react-flow__background` - Background component
+* `.react-flow__minimap` - Mini map component
+* `.react-flow__controls` - Controls component
+
+## Using Properties
+
+You could achieve the same effect by passing a style prop to the React Flow component:
+
+```javascript
+const FlowWithRedBg = (
+  <ReactFlow
+    elements={elements}
+    style={{ background: 'red', width: '100%' height: '300px' }}
+  />
+);
+```
+
+# Helper Functions
+
+If you want to remove a node or connect two nodes with each other you need to pass a function to `onElementsRemove` and `onConnect`. In order to simplify this process there are some helper functions you can use:
 
 ```javascript
 import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-renderer';
 ```
 
-#### isEdge
+### isEdge
 
 Returns true if element is an edge
 
 `isEdge = (element: Node | Edge): element is Edge`
 
-#### isNode
+### isNode
 
 Returns true if element is a node
 
 `isNode = (element: Node | Edge): element is Node`
 
-#### removeElements
+### removeElements
 
 Returns elements without the elements from `elementsToRemove`
 
 `removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
 
-#### addEdge
+### addEdge
 
 Returns elements array with added edge
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
-#### project
+### project
 
 Transforms pixel coordinates to the internal React Flow coordinate system
 
@@ -365,9 +391,9 @@ Transforms pixel coordinates to the internal React Flow coordinate system
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 
-## Access Internal State
+# Access Internal State
 
-We are using [Easy Peasy](https://easy-peasy.now.sh/) for state handling.
+Under the hood React Flow uses [Easy Peasy](https://easy-peasy.now.sh/) for state handling.
 If you need to access the internal state you can use the `useStoreState` hook inside a child component of the React Flow component:
 
 ```javascript
@@ -388,7 +414,7 @@ const Flow = () => (
 );
 ```
 
-## Examples
+# Examples
 
 You can find all examples in the [example](example) folder or check out the live versions:
 
@@ -401,9 +427,9 @@ You can find all examples in the [example](example) folder or check out the live
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
 
-## Development
+# Development
 
-First of all you need to install the React Flow dependencies `npm install` and the ones of the examples `cd example && npm install`.
+You need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
 
 If you want to contribute or develop some custom features the easiest way is to start the dev server:
 
@@ -413,9 +439,9 @@ npm run dev
 
 This serves the content of the `example` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
 
-## Testing
+# Testing
 
-Testing is done with cypress. You can find all test in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the test do:
+Testing is done with cypress. You can find all tests in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the tests do:
 
 ```
 npm run test

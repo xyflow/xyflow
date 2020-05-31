@@ -66,16 +66,6 @@
   }
 }
 
-.react-flow__connection {
-  pointer-events: none;
-}
-
-.react-flow__connection-path {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 2;
-}
-
 .react-flow__edge-path {
   fill: none;
   stroke: #bbb;
@@ -89,6 +79,16 @@
 
 .react-flow__edge-textbg {
   fill: white;
+}
+
+.react-flow__connection {
+  pointer-events: none;
+}
+
+.react-flow__connection-path {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 2;
 }
 
 .react-flow__nodes {
@@ -148,6 +148,24 @@
   font-size: 12px;
 }
 
+.react-flow__nodesselection {
+  z-index: 3;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform-origin: left top;
+  pointer-events: none;
+
+  &-rect {
+    position: absolute;
+    background: rgba(0, 89, 220, 0.08);
+    border: 1px dotted rgba(0, 89, 220, 0.8);
+    pointer-events: all;
+  }
+}
+
 .react-flow__handle {
   position: absolute;
   width: 10px;
@@ -177,23 +195,5 @@
     right: 0;
     top: 50%;
     transform: translate(0, -50%);
-  }
-}
-
-.react-flow__nodesselection {
-  z-index: 3;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  transform-origin: left top;
-  pointer-events: none;
-
-  &-rect {
-    position: absolute;
-    background: rgba(0, 89, 220, 0.08);
-    border: 1px dotted rgba(0, 89, 220, 0.8);
-    pointer-events: all;
   }
 }
