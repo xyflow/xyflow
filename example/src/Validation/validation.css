@@ -1,0 +1,23 @@
+.validationflow .react-flow__node {
+  background: #e6e6e9;
+  border: 1px solid #ddd;
+}
+
+.validationflow .react-flow__node-custominput {
+  width: 150px;
+  border-radius: 5px;
+  padding: 10px;
+  background: #fff;
+  color: #555;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 12px;
+}
+
+.validationflow .connecting {
+  background: #ff6060;
+}
+
+.validationflow .connecting.valid {
+  background: #55dd99;
+}

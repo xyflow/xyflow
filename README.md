@@ -167,6 +167,10 @@ const targetHandleWithValidation = (
 - `style`: css properties
 - `className`: additional class name
 
+### Validation
+
+The handle receives the additional class names `connecting` when the connection line is above the handle and `valid` if the connection is valid. You can find an example which uses these classes [here](/example/src/Validation/index.js).
+
 ### Multiple Handles
 
 If you need multiple source or target handles you can achieve this by creating a custom node. Normally you just use the id of a node for the `source` or `target` of an edge. If you have multiple source or target handles you need to pass an id to these handles. These ids get then added to the node id, so that you can connect a specific handle. If you have a node with an id = `1` and a handle with an id = `a` you can connect this handle by using the id = `1__a`.
@@ -345,6 +349,8 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
   * `.top` is added when position = 'top'
   * `.left` is added when position = 'left'
   * `.right` is added when position = 'right'
+  * `.connecting` is added when connection line is above a handle
+  * `.valid` is added when connection line is above a handle and the connection is valid
 * `.react-flow__background` - Background component
 * `.react-flow__minimap` - Mini map component
 * `.react-flow__controls` - Controls component
