@@ -6,9 +6,9 @@ import './validation.css';
 
 const initialElements = [
   { id: '0', type: 'custominput', position: { x: 0, y: 150 } },
-  { id: 'A', data: { label : 'A' }, position: { x: 250, y: 0 }, targetPosition: 'left', sourcePosition: 'right' },
-  { id: 'B', data: { label : 'B' }, position: { x: 250, y: 150 }, targetPosition: 'left', sourcePosition: 'right' },
-  { id: 'C', data: { label : 'C' }, position: { x: 250, y:300 }, targetPosition: 'left', sourcePosition: 'right' },
+  { id: 'A', type: 'customnode', position: { x: 250, y: 0 } },
+  { id: 'B', type: 'customnode', position: { x: 250, y: 150 } },
+  { id: 'C', type: 'customnode', position: { x: 250, y:300 } },
 ];
 
 const CustomInput = () => (
@@ -17,8 +17,23 @@ const CustomInput = () => (
     <Handle
       type="source"
       position="right"
-      style={{ background: '#e6e6e9' }}
       isValidConnection={connection => connection.target === 'B'}
+    />
+  </>
+);
+
+const CustomNode = ({ id }) => (
+  <>
+    <Handle
+      type="target"
+      position="left"
+      isValidConnection={_ => id === 'B'}
+    />
+    <div>{id}</div>
+    <Handle
+      type="source"
+      position="right"
+      isValidConnection={_ => id === 'B'}
     />
   </>
 );
@@ -35,7 +50,8 @@ const HorizontalFlow = () => {
       onLoad={reactflowInstance => reactflowInstance.fitView()}
       className="validationflow"
       nodeTypes={{
-        custominput: CustomInput
+        custominput: CustomInput,
+        customnode: CustomNode
       }}
     />
   );
