@@ -17,6 +17,8 @@ import {
   XYPosition,
   OnConnectFunc,
   SelectionRect,
+  HandleType,
+  SetConnectionId,
 } from '../types';
 
 type TransformXYK = {
@@ -69,7 +71,8 @@ export interface StoreModel {
 
   userSelectionRect: SelectionRect;
 
-  connectionSourceId: ElementId | null;
+  connectionNodeId: ElementId | null;
+  connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
 
   snapToGrid: boolean;
@@ -105,7 +108,7 @@ export interface StoreModel {
 
   setConnectionPosition: Action<StoreModel, XYPosition>;
 
-  setConnectionSourceId: Action<StoreModel, ElementId | null>;
+  setConnectionNodeId: Action<StoreModel, SetConnectionId>;
 
   setInteractive: Action<StoreModel, boolean>;
 
@@ -140,7 +143,8 @@ const storeModel: StoreModel = {
     height: 0,
     draw: false,
   },
-  connectionSourceId: null,
+  connectionNodeId: null,
+  connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
 
   snapGrid: [16, 16],
@@ -330,8 +334,9 @@ const storeModel: StoreModel = {
     state.connectionPosition = position;
   }),
 
-  setConnectionSourceId: action((state, sourceId) => {
-    state.connectionSourceId = sourceId;
+  setConnectionNodeId: action((state, { connectionNodeId, connectionHandleType }) => {
+    state.connectionNodeId = connectionNodeId;
+    state.connectionHandleType = connectionHandleType;
   }),
 
   setSnapGrid: action((state, { snapToGrid, snapGrid }) => {

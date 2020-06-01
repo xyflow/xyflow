@@ -190,7 +190,8 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
   const [tX, tY, tScale] = useStoreState((s) => s.transform);
   const edges = useStoreState((s) => s.edges);
   const nodes = useStoreState((s) => s.nodes);
-  const connectionSourceId = useStoreState((s) => s.connectionSourceId);
+  const connectionNodeId = useStoreState((s) => s.connectionNodeId);
+  const connectionHandleType = useStoreState((s) => s.connectionHandleType);
   const connectionPosition = useStoreState((s) => s.connectionPosition);
   const selectedElements = useStoreState((s) => s.selectedElements);
   const isInteractive = useStoreState((s) => s.isInteractive);
@@ -202,15 +203,17 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
   }
 
   const transformStyle = `translate(${tX},${tY}) scale(${tScale})`;
+  const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <g transform={transformStyle}>
         {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements, isInteractive))}
-        {connectionSourceId && (
+        {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}
-            connectionSourceId={connectionSourceId}
+            connectionNodeId={connectionNodeId!}
+            connectionHandleType={connectionHandleType!}
             connectionPositionX={connectionPosition.x}
             connectionPositionY={connectionPosition.y}
             transform={[tX, tY, tScale]}

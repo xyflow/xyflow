@@ -160,6 +160,11 @@ export enum ConnectionLineType {
 
 export type OnConnectFunc = (connection: Connection) => void;
 
+export type SetConnectionId = {
+  connectionNodeId: ElementId | null;
+  connectionHandleType: HandleType | null;
+};
+
 export interface HandleElement extends XYPosition, Dimensions {
   id?: ElementId | null;
   position: Position;

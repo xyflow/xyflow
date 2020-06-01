@@ -1,17 +1,17 @@
 import React, { memo, MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
 import cx from 'classnames';
 
-import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection } from '../../types';
+import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection, SetConnectionId } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
-type SetSourceIdFunc = (nodeId: ElementId | null) => void;
+type SetSourceIdFunc = (params: SetConnectionId) => void;
 
 interface BaseHandleProps {
   type: HandleType;
   nodeId: ElementId;
   onConnect: OnConnectFunc;
   position: Position;
-  setSourceId: SetSourceIdFunc;
+  setConnectionNodeId: SetSourceIdFunc;
   setPosition: (pos: XYPosition) => void;
   isValidConnection: ValidConnectionFunc;
   id?: ElementId | boolean;
@@ -29,8 +29,8 @@ type Result = {
 function onMouseDown(
   evt: ReactMouseEvent,
   nodeId: ElementId,
-  setSourceId: SetSourceIdFunc,
-  setPosition: (pos: XYPosition) => any,
+  setConnectionNodeId: SetSourceIdFunc,
+  setPosition: (pos: XYPosition) => void,
   onConnect: OnConnectFunc,
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc
@@ -48,7 +48,7 @@ function onMouseDown(
     x: evt.clientX - containerBounds.left,
     y: evt.clientY - containerBounds.top,
   });
-  setSourceId(nodeId);
+  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleType: isTarget ? 'target' : 'source' });
 
   function resetRecentHandle(): void {
     if (!recentHoveredHandle) {
@@ -120,7 +120,7 @@ function onMouseDown(
     }
 
     resetRecentHandle();
-    setSourceId(null);
+    setConnectionNodeId({ connectionNodeId: null, connectionHandleType: null });
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -136,7 +136,7 @@ const BaseHandle = memo(
     nodeId,
     onConnect,
     position,
-    setSourceId,
+    setConnectionNodeId,
     setPosition,
     className,
     id = false,
@@ -157,7 +157,7 @@ const BaseHandle = memo(
         data-handlepos={position}
         className={handleClasses}
         onMouseDown={(evt) =>
-          onMouseDown(evt, nodeIdWithHandleId, setSourceId, setPosition, onConnect, isTarget, isValidConnection)
+          onMouseDown(evt, nodeIdWithHandleId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection)
         }
         {...rest}
       />

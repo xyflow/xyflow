@@ -18,7 +18,7 @@ const Handle = memo(
   }: HandleProps) => {
     const nodeId = useContext(NodeIdContext) as ElementId;
     const setPosition = useStoreActions((a) => a.setConnectionPosition);
-    const setSourceId = useStoreActions((a) => a.setConnectionSourceId);
+    const setConnectionNodeId = useStoreActions((a) => a.setConnectionNodeId);
     const onConnectAction = useStoreState((s) => s.onConnect);
     const onConnectExtended = (params: Connection) => {
       onConnectAction(params);
@@ -29,7 +29,7 @@ const Handle = memo(
       <BaseHandle
         nodeId={nodeId}
         setPosition={setPosition}
-        setSourceId={setSourceId}
+        setConnectionNodeId={setConnectionNodeId}
         onConnect={onConnectExtended}
         type={type}
         position={position}
