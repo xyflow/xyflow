@@ -1,6 +1,5 @@
 import React, { useMemo, CSSProperties, HTMLAttributes } from 'react';
 import cx from 'classnames';
-import { StoreProvider } from 'easy-peasy';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
 
@@ -19,7 +18,7 @@ import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
-import store from '../../store';
+import Wrapper from './Wrapper';
 import {
   Elements,
   NodeTypesType,
@@ -92,7 +91,7 @@ const ReactFlow = ({
 
   return (
     <div style={style} className={cx('react-flow', className)}>
-      <StoreProvider store={store}>
+      <Wrapper>
         <GraphView
           onLoad={onLoad}
           onMove={onMove}
@@ -119,7 +118,7 @@ const ReactFlow = ({
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
-      </StoreProvider>
+      </Wrapper>
     </div>
   );
 };

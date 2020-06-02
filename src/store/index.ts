@@ -19,17 +19,13 @@ import {
   SelectionRect,
   HandleType,
   SetConnectionId,
+  NodePosUpdate,
 } from '../types';
 
 type TransformXYK = {
   x: number;
   y: number;
   k: number;
-};
-
-type NodePosUpdate = {
-  id: ElementId;
-  pos: XYPosition;
 };
 
 type NodeDimensionUpdate = {
@@ -87,6 +83,8 @@ export interface StoreModel {
 
   isInteractive: boolean;
 
+  reactFlowVersion: string;
+
   onConnect: OnConnectFunc;
 
   setOnConnect: Action<StoreModel, OnConnectFunc>;
@@ -126,7 +124,7 @@ export interface StoreModel {
   unsetUserSelection: Action<StoreModel>;
 }
 
-const storeModel: StoreModel = {
+export const storeModel: StoreModel = {
   width: 0,
   height: 0,
   transform: [0, 0, 1],
@@ -162,6 +160,8 @@ const storeModel: StoreModel = {
   snapToGrid: false,
 
   isInteractive: true,
+
+  reactFlowVersion: __REACT_FLOW_VERSION__,
 
   onConnect: () => {},
 

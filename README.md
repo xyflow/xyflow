@@ -19,6 +19,7 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Background](#background)
   - [Minimap](#minimap)
   - [Controls](#controls)
+  - [ReactFlowProvider](#reactflowprovider)
 - [Styling](#styling)
 - [Helper Functions](#helper-functions)
 - [Access Internal State](#access-internal-state)
@@ -132,7 +133,7 @@ Fits view port so that all nodes are visible
 
 # Nodes
 
-There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. The node types differ in the number and types of handles. An input node has only a source handle, a default node has a source and a target and an output node has only a target handle. You create nodes by adding them to the `elements` array of the React Flow component.
+There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. The node types differ in the number and types of handles. An input node has only a source handle, a default node has a source and a target and an output node has only a target handle. You create nodes by adding them to the `elements` array of the `ReactFlow` component.
 
 Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }`
 
@@ -160,7 +161,7 @@ The standard node types are `input`, `default` and `output`. The default node ty
 ```
 
 The keys represent the type names and the values are the components that get rendered.
-If you want to introduce a new type you can pass a `nodeTypes` object to the React Flow component:
+If you want to introduce a new type you can pass a `nodeTypes` object to the `ReactFlow` component:
 
 ```javascript
 nodeTypes={{
@@ -222,7 +223,7 @@ You can find an example of how to implement a custom node with multiple handles 
 
 # Edges
 
-React Flow comes with three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the React Flow component.
+React Flow comes with three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the `ReactFlow` component.
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true, label: 'edge label' }`
 
@@ -256,7 +257,7 @@ The basic edge types are `straight`, `default` and `step`. The default `edgeType
 ```
 
 The keys represent the type names and the values are the edge components.
-If you want to introduce a new edge type you can pass an `edgeTypes` object to the React Flow component:
+If you want to introduce a new edge type you can pass an `edgeTypes` object to the `ReactFlow` component:
 
 ```javascript
 edgeTypes={{
@@ -272,7 +273,7 @@ There is an implementation of a custom edge in the [edges example](/example/src/
 
 ## Background
 
-React Flow comes with two background variants: **dots** and **lines**. You can use it by passing it as a children to the React Flow component:
+React Flow comes with two background variants: **dots** and **lines**. You can use it by passing it as a children to the `ReactFlow` component:
 
 ```javascript
 import ReactFlow, { Background } from 'react-flow-renderer';
@@ -299,7 +300,7 @@ const FlowWithBackground = () => (
 
 ## MiniMap
 
-You can use the mini map plugin by passing it as a children to the React Flow component:
+You can use the mini map plugin by passing it as a children to the `ReactFlow` component:
 
 ```javascript
 import ReactFlow, { MiniMap } from 'react-flow-renderer';
@@ -330,7 +331,7 @@ const FlowWithMiniMap = () => (
 
 ## Controls
 
-The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the React Flow component:
+The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the `ReactFlow` component:
 
 ```javascript
 import ReactFlow, { Controls } from 'react-flow-renderer';
@@ -349,6 +350,25 @@ const FlowWithControls = () => (
 - `showInteractive`: boolean - default: true
 - `style`: css properties
 - `className`: additional class name
+
+## ReactFlowProvider
+
+If you need access to the internal state and action of React Flow outside of the `ReactFlow` component you can wrap it with the `ReactFlowProvider` component:
+
+```javascript
+import ReactFlow, { ReactFlowProvider } from 'react-flow-renderer';
+
+const FlowWithOwnProvider = () => (
+  <ReactFlowProvider>
+    <ReactFlow
+      elements={elements}
+      onElementClick={onElementClick}
+      onConnect={onConnect}
+    />
+  </ReactFlowProvider>
+);
+```
+
 
 # Styling
 
@@ -401,7 +421,7 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 
 ## Using Properties
 
-You could achieve the same effect by passing a style prop to the React Flow component:
+You could achieve the same effect by passing a style prop to the `ReactFlow` component:
 
 ```javascript
 const FlowWithRedBg = (
@@ -450,7 +470,7 @@ You can use these function as seen in [this example](/example/src/Overview/index
 # Access Internal State
 
 Under the hood React Flow uses [Easy Peasy](https://easy-peasy.now.sh/) for state handling.
-If you need to access the internal state you can use the `useStoreState` hook inside a child component of the React Flow component:
+If you need to access the internal state you can use the `useStoreState` hook inside a child component of the `ReactFlow` component:
 
 ```javascript
 import ReactFlow, { useStoreState } from 'react-flow-renderer';
@@ -469,6 +489,8 @@ const Flow = () => (
   </ReactFlow>
 );
 ```
+
+If you need more control you can wrap the `ReactFlow` component with the `ReactFlowProvider` component in order to be able to call `useStoreState` outside of the `ReactFlow` component.
 
 # Examples
 
