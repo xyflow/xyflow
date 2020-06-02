@@ -43,6 +43,9 @@ export interface GraphViewProps {
   onlyRenderVisibleNodes: boolean;
   isInteractive: boolean;
   selectNodesOnDrag: boolean;
+  minZoom: number;
+  maxZoom: number;
+  defaultZoom: number;
 }
 
 const GraphView = memo(
@@ -66,6 +69,9 @@ const GraphView = memo(
     onlyRenderVisibleNodes,
     isInteractive,
     selectNodesOnDrag,
+    minZoom,
+    maxZoom,
+    defaultZoom,
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -79,6 +85,9 @@ const GraphView = memo(
     const setOnConnect = useStoreActions((a) => a.setOnConnect);
     const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
     const setInteractive = useStoreActions((actions) => actions.setInteractive);
+    const updateTransform = useStoreActions((actions) => actions.updateTransform);
+    const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
+
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
     const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
 
@@ -106,6 +115,10 @@ const GraphView = memo(
         setOnConnect(onConnect);
       }
 
+      if (defaultZoom !== 1) {
+        updateTransform({ x: 0, y: 0, k: defaultZoom });
+      }
+
       return () => {
         window.onresize = null;
       };
@@ -131,6 +144,10 @@ const GraphView = memo(
     useEffect(() => {
       setInteractive(isInteractive);
     }, [isInteractive]);
+
+    useEffect(() => {
+      setMinMaxZoom({ minZoom, maxZoom });
+    }, [minZoom, maxZoom]);
 
     useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
     useElementUpdater(elements);

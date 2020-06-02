@@ -85,6 +85,9 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onlyRenderVisibleNodes`: default: `true`
 - `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
 - `selectNodesOnDrag`: default: `true`
+- `minZoom`: default: `0.5`
+- `maxZoom`: default: `2`
+- `defaultZoom`: default: `1`
 
 ## React Flow Instance
 

@@ -47,6 +47,11 @@ type D3Init = {
   selection: D3Selection<Element, unknown, null, undefined>;
 };
 
+type SetMinMaxZoom = {
+  minZoom: number;
+  maxZoom: number;
+};
+
 type SetSnapGrid = {
   snapToGrid: boolean;
   snapGrid: [number, number];
@@ -64,6 +69,8 @@ export interface StoreModel {
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
   d3Initialised: boolean;
+  minZoom: number;
+  maxZoom: number;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
@@ -104,6 +111,8 @@ export interface StoreModel {
 
   initD3: Action<StoreModel, D3Init>;
 
+  setMinMaxZoom: Action<StoreModel, SetMinMaxZoom>;
+
   setSnapGrid: Action<StoreModel, SetSnapGrid>;
 
   setConnectionPosition: Action<StoreModel, XYPosition>;
@@ -129,6 +138,8 @@ const storeModel: StoreModel = {
   d3Zoom: null,
   d3Selection: null,
   d3Initialised: false,
+  minZoom: 0.5,
+  maxZoom: 2,
 
   nodesSelectionActive: false,
   selectionActive: false,
@@ -326,8 +337,20 @@ const storeModel: StoreModel = {
 
   initD3: action((state, { zoom, selection }) => {
     state.d3Zoom = zoom;
+
+    state.d3Zoom.scaleExtent([state.minZoom, state.maxZoom]);
+
     state.d3Selection = selection;
     state.d3Initialised = true;
+  }),
+
+  setMinMaxZoom: action((state, { minZoom, maxZoom }) => {
+    state.minZoom = minZoom;
+    state.maxZoom = maxZoom;
+
+    if (state.d3Zoom) {
+      state.d3Zoom.scaleExtent([minZoom, maxZoom]);
+    }
   }),
 
   setConnectionPosition: action((state, position) => {

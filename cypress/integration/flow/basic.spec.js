@@ -127,8 +127,8 @@ describe('Basic Graph Rendering', () => {
 
     cy.window().then((win) => {
       cy.get('.react-flow__zoompane')
-        .trigger('mousedown', { which: 1, view: win })
-        .trigger('mousemove', newPosition)
+        .trigger('mousedown', 'topLeft', { which: 1, view: win })
+        .trigger('mousemove', 'bottomLeft')
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
           const styleAfterDrag = Cypress.$('.react-flow__nodes').css('transform');

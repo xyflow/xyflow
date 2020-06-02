@@ -10,10 +10,6 @@ interface UseD3ZoomParams {
   onMove?: () => void;
 }
 
-const d3ZoomInstance = zoom()
-  .scaleExtent([0.5, 2])
-  .filter(() => !event.button);
-
 export default ({ zoomPane, onMove, selectionKeyPressed }: UseD3ZoomParams): void => {
   const transform = useStoreState((s) => s.transform);
   const d3Selection = useStoreState((s) => s.d3Selection);
@@ -24,16 +20,21 @@ export default ({ zoomPane, onMove, selectionKeyPressed }: UseD3ZoomParams): voi
 
   useEffect(() => {
     if (zoomPane.current) {
-      const selection = select(zoomPane.current).call(d3ZoomInstance);
-      initD3({ zoom: d3ZoomInstance, selection });
+      const nextD3ZoomInstance = zoom();
+      const selection = select(zoomPane.current).call(nextD3ZoomInstance);
+      initD3({ zoom: nextD3ZoomInstance, selection });
     }
   }, []);
 
   useEffect(() => {
+    if (!d3Zoom) {
+      return;
+    }
+
     if (selectionKeyPressed) {
-      d3ZoomInstance.on('zoom', null);
+      d3Zoom.on('zoom', null);
     } else {
-      d3ZoomInstance.on('zoom', () => {
+      d3Zoom.on('zoom', () => {
         if (event.sourceEvent && event.sourceEvent.target !== zoomPane.current) {
           return;
         }
@@ -53,7 +54,7 @@ export default ({ zoomPane, onMove, selectionKeyPressed }: UseD3ZoomParams): voi
     }
 
     return () => {
-      d3ZoomInstance.on('zoom', null);
+      d3Zoom.on('zoom', null);
     };
-  }, [selectionKeyPressed]);
+  }, [selectionKeyPressed, d3Zoom]);
 };

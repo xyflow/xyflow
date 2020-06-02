@@ -48,6 +48,9 @@ const BasicFlow = () => {
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
+      defaultZoom={1.5}
+      minZoom={0.2}
+      maxZoom={4}
     >
       <Background variant="lines" />
 
