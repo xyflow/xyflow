@@ -55,8 +55,8 @@ function onMouseDown(
       return;
     }
 
-    recentHoveredHandle.classList.remove('valid');
-    recentHoveredHandle.classList.remove('connecting');
+    recentHoveredHandle.classList.remove('react-flow__handle-valid');
+    recentHoveredHandle.classList.remove('react-flow__handle-connecting');
   }
 
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
@@ -107,8 +107,8 @@ function onMouseDown(
 
     if (!isOwnHandle && elementBelow) {
       recentHoveredHandle = elementBelow;
-      elementBelow.classList.add('connecting');
-      elementBelow.classList.toggle('valid', isValid);
+      elementBelow.classList.add('react-flow__handle-connecting');
+      elementBelow.classList.toggle('react-flow__handle-valid', isValid);
     }
   }
 
@@ -144,7 +144,7 @@ const BaseHandle = memo(
     ...rest
   }: BaseHandleProps) => {
     const isTarget = type === 'target';
-    const handleClasses = cx('react-flow__handle', 'nodrag', className, position, {
+    const handleClasses = cx('react-flow__handle', `react-flow__handle-${position}`, 'nodrag', className, {
       source: !isTarget,
       target: isTarget,
     });

@@ -345,12 +345,12 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 * `.react-flow__nodesselection` - Nodes selection
 * `.react-flow__nodesselection-rect ` - Nodes selection rect
 * `.react-flow__handle` - Handle component
-  * `.bottom` is added when position = 'bottom'
-  * `.top` is added when position = 'top'
-  * `.left` is added when position = 'left'
-  * `.right` is added when position = 'right'
-  * `.connecting` is added when connection line is above a handle
-  * `.valid` is added when connection line is above a handle and the connection is valid
+  * `.react-flow__handle-bottom` is added when position = 'bottom'
+  * `.react-flow__handle-top` is added when position = 'top'
+  * `.react-flow__handle-left` is added when position = 'left'
+  * `.react-flow__handle-right` is added when position = 'right'
+  * `.react-flow__handle-connecting` is added when connection line is above a handle
+  * `.react-flow__handle-valid` is added when connection line is above a handle and the connection is valid
 * `.react-flow__background` - Background component
 * `.react-flow__minimap` - Mini map component
 * `.react-flow__controls` - Controls component
