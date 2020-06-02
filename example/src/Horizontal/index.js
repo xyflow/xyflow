@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
 
-const onLoad = (graph) => {
-  graph.fitView();
-};
+const onLoad = reactFlowInstance => reactFlowInstance.fitView();
 
 const initialElements = [
   { id: '1', sourcePosition: 'right', type: 'input', className: 'dark-node', data: { label: 'Input' }, position: { x: 0, y: 80 } },

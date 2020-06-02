@@ -47,7 +47,7 @@ const HorizontalFlow = () => {
       elements={elements}
       onConnect={onConnect}
       selectNodesOnDrag={false}
-      onLoad={reactflowInstance => reactflowInstance.fitView()}
+      onLoad={reactFlowInstance => reactFlowInstance.fitView()}
       className="validationflow"
       nodeTypes={{
         custominput: CustomInput,

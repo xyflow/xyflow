@@ -37,7 +37,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 
 In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass the functions to remove an element or connect nodes by yourself. You can implement your own ones or use the helper functions that come with the library.
 
-## Installation
+# Installation
 
 ```
 npm install react-flow-renderer
@@ -61,17 +61,17 @@ const elements = [
 const BasicFlow = () => <ReactFlow elements={elements} />;
 ```
 
-# ReactFlow Component Prop Types
+# React Flow Component Prop Types
 
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
-- `onElementClick`: element click handler
-- `onElementsRemove`: element remove handler
-- `onNodeDragStart`: node drag start handler
-- `onNodeDragStop`: node drag stop handler
-- `onConnect`: connect handler
-- `onLoad`: editor load handler
-- `onMove`: move handler
-- `onSelectionChange`: fired when element selection changes
+- `onElementClick(element: Node | Edge)`: element click callback
+- `onElementsRemove(elements: Elements)`: element remove callback
+- `onNodeDragStart(node: Node)`: node drag start callback
+- `onNodeDragStop(node: Node)`: node drag stop callback
+- `onConnect({ source, target })`: connect callback
+- `onLoad(reactFlowInstance)`: editor load callback
+- `onMove()`: move callback
+- `onSelectionChange(elements: Elements)`: fired when element selection changes
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css properties
@@ -85,6 +85,43 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onlyRenderVisibleNodes`: default: `true`
 - `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
 - `selectNodesOnDrag`: default: `true`
+
+## React Flow Instance
+
+You can receive a `reactFlowInstance` by using the `onLoad` callback:
+
+```javascript
+import React from 'react';
+import ReactFlow from 'react-flow-renderer';
+
+const onLoad = (reactFlowInstance) => {
+  reactFlowInstance.fitView();
+}
+
+const BasicFlow = () => <ReactFlow onLoad={onLoad} elements={[]} />;
+```
+
+`reactFlowInstance` has the following functions:
+
+### project
+
+Transforms pixel coordinates to the internal React Flow coordinate system
+
+`project = (position: XYPosition): XYPosition`
+
+### fitView
+
+Fits view port so that all nodes are visible
+
+`fitView = ({ padding }): void`
+
+### zoomIn
+
+`zoomIn = (): void`
+
+### zoomOut
+
+`zoomOut = (): void`
 
 # Nodes
 
@@ -400,11 +437,6 @@ Returns elements array with added edge
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
-### project
-
-Transforms pixel coordinates to the internal React Flow coordinate system
-
-`project = (position: XYPosition): XYPosition`
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 
