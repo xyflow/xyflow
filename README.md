@@ -369,6 +369,7 @@ const FlowWithOwnProvider = () => (
 );
 ```
 
+It is used in the [provider example](example/src/Provider/index.js).
 
 # Styling
 
@@ -504,6 +505,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [edges](https://react-flow.netlify.app/edges)
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
+- [provider](https://react-flow.netlify.app/provider)
 
 # Development
 
