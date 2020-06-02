@@ -45,6 +45,7 @@ export default [
       }),
       replace({
         'process.env.NODE_ENV': JSON.stringify(processEnv),
+        __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
       }),
       svgr(),
       typescript({

@@ -2,10 +2,20 @@ import React, { useEffect, useRef, useState, memo, ComponentType, CSSProperties 
 import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
+import { useStoreActions } from '../../store/hooks';
 
 import { Provider } from '../../contexts/NodeIdContext';
-import store from '../../store';
-import { Node, XYPosition, Transform, ElementId, NodeComponentProps, WrapNodeProps } from '../../types';
+import {
+  Node,
+  XYPosition,
+  Transform,
+  ElementId,
+  NodeComponentProps,
+  WrapNodeProps,
+  Elements,
+  Edge,
+  NodePosUpdate,
+} from '../../types';
 
 const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
   typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : (evt as MouseEvent);
@@ -19,6 +29,7 @@ interface OnDragStartParams {
   setOffset: (pos: XYPosition) => void;
   transform: Transform;
   position: XYPosition;
+  setSelectedElements: (elms: Elements | Node | Edge) => void;
   onNodeDragStart?: (node: Node) => void;
 }
 
@@ -32,6 +43,7 @@ const onStart = ({
   setOffset,
   transform,
   position,
+  setSelectedElements,
 }: OnDragStartParams): false | void => {
   const startEvt = getMouseEvent(evt);
 
@@ -51,7 +63,7 @@ const onStart = ({
   }
 
   if (selectNodesOnDrag) {
-    store.dispatch.setSelectedElements({ id, type } as Node);
+    setSelectedElements({ id, type } as Node);
   }
 };
 
@@ -61,9 +73,10 @@ interface OnDragParams {
   id: ElementId;
   offset: XYPosition;
   transform: Transform;
+  updateNodePos: (params: NodePosUpdate) => void;
 }
 
-const onDrag = ({ evt, setDragging, id, offset, transform }: OnDragParams): void => {
+const onDrag = ({ evt, setDragging, id, offset, transform, updateNodePos }: OnDragParams): void => {
   const dragEvt = getMouseEvent(evt);
 
   const scaledClient = {
@@ -72,7 +85,7 @@ const onDrag = ({ evt, setDragging, id, offset, transform }: OnDragParams): void
   };
 
   setDragging(true);
-  store.dispatch.updateNodePos({
+  updateNodePos({
     id,
     pos: {
       x: scaledClient.x - transform[0] - offset.x,
@@ -89,6 +102,7 @@ interface OnDragStopParams {
   position: XYPosition;
   data: any;
   selectNodesOnDrag: boolean;
+  setSelectedElements: (elms: Elements | Node | Edge) => void;
   onNodeDragStop?: (node: Node) => void;
   onClick?: (node: Node) => void;
 }
@@ -103,6 +117,7 @@ const onStop = ({
   selectNodesOnDrag,
   onNodeDragStop,
   onClick,
+  setSelectedElements,
 }: OnDragStopParams): void => {
   const node = {
     id,
@@ -113,7 +128,7 @@ const onStop = ({
 
   if (!isDragging) {
     if (!selectNodesOnDrag) {
-      store.dispatch.setSelectedElements({ id, type } as Node);
+      setSelectedElements({ id, type } as Node);
     }
 
     if (onClick) {
@@ -148,6 +163,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       sourcePosition,
       targetPosition,
     }: WrapNodeProps) => {
+      const updateNodeDimensions = useStoreActions((a) => a.updateNodeDimensions);
+      const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
+      const updateNodePos = useStoreActions((a) => a.updateNodePos);
+
       const nodeElement = useRef<HTMLDivElement>(null);
       const [offset, setOffset] = useState({ x: 0, y: 0 });
       const [isDragging, setDragging] = useState(false);
@@ -163,11 +182,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
       useEffect(() => {
         if (nodeElement.current) {
-          store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current });
+          updateNodeDimensions({ id, nodeElement: nodeElement.current });
 
           const resizeObserver = new ResizeObserver((entries) => {
             for (let _ of entries) {
-              store.dispatch.updateNodeDimensions({ id, nodeElement: nodeElement.current! });
+              updateNodeDimensions({ id, nodeElement: nodeElement.current! });
             }
           });
 
@@ -196,11 +215,23 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               setOffset,
               transform,
               position,
+              setSelectedElements,
             })
           }
-          onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform })}
+          onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
           onStop={() =>
-            onStop({ onNodeDragStop, selectNodesOnDrag, onClick, isDragging, setDragging, id, type, position, data })
+            onStop({
+              onNodeDragStop,
+              selectNodesOnDrag,
+              onClick,
+              isDragging,
+              setDragging,
+              id,
+              type,
+              position,
+              data,
+              setSelectedElements,
+            })
           }
           scale={transform[2]}
           disabled={!isInteractive}

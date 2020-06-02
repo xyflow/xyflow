@@ -203,3 +203,8 @@ export interface EdgeTextProps {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
 }
+
+export type NodePosUpdate = {
+  id: ElementId;
+  pos: XYPosition;
+};

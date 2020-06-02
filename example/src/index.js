@@ -11,6 +11,7 @@ import Empty from './Empty';
 import Edges from './Edges';
 import Validation from './Validation';
 import Horizontal from './Horizontal';
+import Provider from './Provider';
 
 import './index.css';
 
@@ -19,9 +20,9 @@ const routes = [{
   component: Overview,
   label: 'Overview'
 }, {
-  path: '/basic',
-  component: Basic,
-  label: 'Basic'
+  path: '/provider',
+  component: Provider,
+  label: 'Provider'
 }, {
   path: '/edges',
   component: Edges,
@@ -42,6 +43,9 @@ const routes = [{
   path: '/stress',
   component: Stress,
   label: 'Stress'
+}, {
+  path: '/basic',
+  component: Basic
 }, {
   path: '/empty',
   component: Empty
