@@ -6,9 +6,9 @@ const onNodeDragStart = node => console.log('drag start', node);
 const onNodeDragStop = node => console.log('drag stop', node);
 const onElementClick = element => console.log('click', element);
 const onSelectionChange = elements => console.log('selection change', elements);
-const onLoad = (graph) => {
-  console.log('graph loaded:', graph);
-  graph.fitView();
+const onLoad = (reactFlowInstance) => {
+  console.log('graph loaded:', reactFlowInstance);
+  reactFlowInstance.fitView();
 };
 
 const initialElements = [

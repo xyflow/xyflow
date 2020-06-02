@@ -1,10 +1,11 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 import cx from 'classnames';
 
-import { ElementId, Node, Transform, HandleElement, Position, ConnectionLineType } from '../../types';
+import { ElementId, Node, Transform, HandleElement, Position, ConnectionLineType, HandleType } from '../../types';
 
 interface ConnectionLineProps {
-  connectionSourceId: ElementId;
+  connectionNodeId: ElementId;
+  connectionHandleType: HandleType;
   connectionPositionX: number;
   connectionPositionY: number;
   connectionLineType: ConnectionLineType;
@@ -16,7 +17,8 @@ interface ConnectionLineProps {
 }
 
 export default ({
-  connectionSourceId,
+  connectionNodeId,
+  connectionHandleType,
   connectionLineStyle,
   connectionPositionX,
   connectionPositionY,
@@ -27,8 +29,8 @@ export default ({
   isInteractive,
 }: ConnectionLineProps) => {
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
-  const hasHandleId = connectionSourceId.includes('__');
-  const sourceIdSplitted = connectionSourceId.split('__');
+  const hasHandleId = connectionNodeId.includes('__');
+  const sourceIdSplitted = connectionNodeId.split('__');
   const nodeId = sourceIdSplitted[0];
   const handleId = hasHandleId ? sourceIdSplitted[1] : null;
 
@@ -42,14 +44,10 @@ export default ({
   }
 
   const connectionLineClasses: string = cx('react-flow__connection', className);
-  const hasSource = sourceNode.__rg.handleBounds.source !== null;
-
-  // output nodes don't have source handles so we need to use the target one
-  const handleKey = hasSource ? 'source' : 'target';
 
   const sourceHandle = handleId
-    ? sourceNode.__rg.handleBounds[handleKey].find((d: HandleElement) => d.id === handleId)
-    : sourceNode.__rg.handleBounds[handleKey][0];
+    ? sourceNode.__rg.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
+    : sourceNode.__rg.handleBounds[connectionHandleType][0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
   const sourceX = sourceNode.__rg.position.x + sourceHandleX;

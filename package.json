@@ -23,7 +23,7 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@welldone-software/why-did-you-render": "^4.2.2",
+    "@welldone-software/why-did-you-render": "^4.2.5",
     "classnames": "^2.2.6",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
@@ -33,9 +33,9 @@
     "resize-observer": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "@babel/preset-react": "^7.9.4",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
     "@svgr/rollup": "^5.4.0",
     "@types/classnames": "^2.2.10",
     "@types/d3": "^5.7.2",
@@ -44,13 +44,13 @@
     "autoprefixer": "^9.8.0",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
-    "cypress": "^4.6.0",
+    "cypress": "^4.7.0",
     "postcss-nested": "^4.2.1",
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "release-it": "^13.6.1",
-    "rollup": "^2.10.9",
+    "rollup": "^2.12.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",

@@ -141,6 +141,14 @@ nav a.active:before {
   color: #f8f8f8;
 }
 
+.react-flow__node-selectorNode {
+  font-size: 12px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  text-align: center;
+}
+
 @media screen and (min-width: 768px) {
   nav {
     position: relative;

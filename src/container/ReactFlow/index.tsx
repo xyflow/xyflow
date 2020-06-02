@@ -54,6 +54,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onlyRenderVisibleNodes: boolean;
   isInteractive: boolean;
   selectNodesOnDrag: boolean;
+  minZoom: number;
+  maxZoom: number;
+  defaultZoom: number;
 }
 
 const ReactFlow = ({
@@ -80,6 +83,9 @@ const ReactFlow = ({
   onlyRenderVisibleNodes,
   isInteractive,
   selectNodesOnDrag,
+  minZoom,
+  maxZoom,
+  defaultZoom,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -107,6 +113,9 @@ const ReactFlow = ({
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
           isInteractive={isInteractive}
           selectNodesOnDrag={selectNodesOnDrag}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          defaultZoom={defaultZoom}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
@@ -136,6 +145,9 @@ ReactFlow.defaultProps = {
   onlyRenderVisibleNodes: true,
   isInteractive: true,
   selectNodesOnDrag: true,
+  minZoom: 0.5,
+  maxZoom: 2,
+  defaultZoom: 1,
 };
 
 export default ReactFlow;

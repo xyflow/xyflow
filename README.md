@@ -37,7 +37,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 
 In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass the functions to remove an element or connect nodes by yourself. You can implement your own ones or use the helper functions that come with the library.
 
-## Installation
+# Installation
 
 ```
 npm install react-flow-renderer
@@ -61,17 +61,17 @@ const elements = [
 const BasicFlow = () => <ReactFlow elements={elements} />;
 ```
 
-# ReactFlow Component Prop Types
+# React Flow Component Prop Types
 
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
-- `onElementClick`: element click handler
-- `onElementsRemove`: element remove handler
-- `onNodeDragStart`: node drag start handler
-- `onNodeDragStop`: node drag stop handler
-- `onConnect`: connect handler
-- `onLoad`: editor load handler
-- `onMove`: move handler
-- `onSelectionChange`: fired when element selection changes
+- `onElementClick(element: Node | Edge)`: element click callback
+- `onElementsRemove(elements: Elements)`: element remove callback
+- `onNodeDragStart(node: Node)`: node drag start callback
+- `onNodeDragStop(node: Node)`: node drag stop callback
+- `onConnect({ source, target })`: connect callback
+- `onLoad(reactFlowInstance)`: editor load callback
+- `onMove()`: move callback
+- `onSelectionChange(elements: Elements)`: fired when element selection changes
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css properties
@@ -85,6 +85,50 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onlyRenderVisibleNodes`: default: `true`
 - `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
 - `selectNodesOnDrag`: default: `true`
+- `minZoom`: default: `0.5`
+- `maxZoom`: default: `2`
+- `defaultZoom`: default: `1`
+
+## React Flow Instance
+
+You can receive a `reactFlowInstance` by using the `onLoad` callback:
+
+```javascript
+import React from 'react';
+import ReactFlow from 'react-flow-renderer';
+
+const onLoad = (reactFlowInstance) => {
+  reactFlowInstance.fitView();
+}
+
+const BasicFlow = () => <ReactFlow onLoad={onLoad} elements={[]} />;
+```
+
+`reactFlowInstance` has the following functions:
+
+### project
+
+Transforms pixel coordinates to the internal React Flow coordinate system
+
+`project = (position: XYPosition): XYPosition`
+
+### fitView
+
+Fits view port so that all nodes are visible
+
+`fitView = ({ padding }): void`
+
+### zoomIn
+
+`zoomIn = (): void`
+
+### zoomOut
+
+`zoomOut = (): void`
+
+### getElements
+
+`getElements = (): Elements`
 
 # Nodes
 
@@ -166,6 +210,10 @@ const targetHandleWithValidation = (
 - `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - default: `true`
 - `style`: css properties
 - `className`: additional class name
+
+### Validation
+
+The handle receives the additional class names `connecting` when the connection line is above the handle and `valid` if the connection is valid. You can find an example which uses these classes [here](/example/src/Validation/index.js).
 
 ### Multiple Handles
 
@@ -341,10 +389,12 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 * `.react-flow__nodesselection` - Nodes selection
 * `.react-flow__nodesselection-rect ` - Nodes selection rect
 * `.react-flow__handle` - Handle component
-  * `.bottom` is added when position = 'bottom'
-  * `.top` is added when position = 'top'
-  * `.left` is added when position = 'left'
-  * `.right` is added when position = 'right'
+  * `.react-flow__handle-bottom` is added when position = 'bottom'
+  * `.react-flow__handle-top` is added when position = 'top'
+  * `.react-flow__handle-left` is added when position = 'left'
+  * `.react-flow__handle-right` is added when position = 'right'
+  * `.react-flow__handle-connecting` is added when connection line is above a handle
+  * `.react-flow__handle-valid` is added when connection line is above a handle and the connection is valid
 * `.react-flow__background` - Background component
 * `.react-flow__minimap` - Mini map component
 * `.react-flow__controls` - Controls component
@@ -394,11 +444,6 @@ Returns elements array with added edge
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
-### project
-
-Transforms pixel coordinates to the internal React Flow coordinate system
-
-`project = (position: XYPosition): XYPosition`
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 

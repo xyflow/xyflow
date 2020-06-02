@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import ReactFlow, { removeElements, addEdge, isNode, Background } from 'react-flow-renderer';
 
 const onNodeDragStop = node => console.log('drag stop', node);
-const onLoad = graphInstance => console.log('graph loaded:', graphInstance);
+const onLoad = reactFlowInstance => console.log('graph loaded:', reactFlowInstance);
 const onElementClick = element => console.log('click', element);
 
 const initialElements = [
@@ -48,6 +48,9 @@ const BasicFlow = () => {
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
+      defaultZoom={1.5}
+      minZoom={0.2}
+      maxZoom={4}
     >
       <Background variant="lines" />
 

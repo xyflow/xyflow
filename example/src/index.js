@@ -9,6 +9,7 @@ import Stress from './Stress';
 import Inactive from './Inactive';
 import Empty from './Empty';
 import Edges from './Edges';
+import Validation from './Validation';
 import Horizontal from './Horizontal';
 
 import './index.css';
@@ -33,6 +34,10 @@ const routes = [{
   path: '/horizontal',
   component: Horizontal,
   label: 'Horizontal'
+}, {
+  path: '/validation',
+  component: Validation,
+  label: 'Validation'
 }, {
   path: '/stress',
   component: Stress,

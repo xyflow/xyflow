@@ -6,7 +6,7 @@ import ColorSelectorNode from './ColorSelectorNode';
 
 const onNodeDragStop = node => console.log('drag stop', node);
 const onElementClick = element => console.log('click', element);
-const onLoad = (graph) => console.log('graph loaded:', graph);
+const onLoad = reactFlowInstance => console.log('graph loaded:', reactFlowInstance);
 
 const initBgColor = '#f0e742';
 

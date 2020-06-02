@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import ReactFlow, { removeElements, addEdge, MiniMap, isNode, Controls, Background } from 'react-flow-renderer';
 import { getElements } from './utils';
 
-const onLoad = graph => {
-  console.log('graph loaded:', graph);
-  graph.fitView();
-};
+const onLoad = reactFlowInstance => {
+  reactFlowInstance.fitView();
+
+  console.log(reactFlowInstance.getElements());
+}
 
 const initialElements = getElements(10, 10);
 
