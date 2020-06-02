@@ -353,7 +353,7 @@ const FlowWithControls = () => (
 
 ## ReactFlowProvider
 
-If you need access to the internal state and action of React Flow outside of the `ReactFlow` component you can it with the `ReactFlowProvider` component:
+If you need access to the internal state and action of React Flow outside of the `ReactFlow` component you can wrap it with the `ReactFlowProvider` component:
 
 ```javascript
 import ReactFlow, { ReactFlowProvider } from 'react-flow-renderer';
@@ -490,7 +490,7 @@ const Flow = () => (
 );
 ```
 
-If you need more control you can wrap the `ReactFlow` component with the `ReactFlowProvider` component in order to be able to call `useStoreState` outside of the component.
+If you need more control you can wrap the `ReactFlow` component with the `ReactFlowProvider` component in order to be able to call `useStoreState` outside of the `ReactFlow` component.
 
 # Examples
 
