@@ -11,7 +11,7 @@ import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
-import { fitView, zoomIn, zoomOut, project } from '../../utils/graph';
+import { fitView, zoomIn, zoomOut, project, getElements } from '../../utils/graph';
 import {
   Elements,
   NodeTypesType,
@@ -133,6 +133,7 @@ const GraphView = memo(
           zoomIn,
           zoomOut,
           project,
+          getElements,
         });
       }
     }, [d3Initialised, onLoad]);

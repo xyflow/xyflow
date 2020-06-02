@@ -126,6 +126,10 @@ Fits view port so that all nodes are visible
 
 `zoomOut = (): void`
 
+### getElements
+
+`getElements = (): Elements`
+
 # Nodes
 
 There are three different [node types](#node-types--custom-nodes) (`default`, `input`, `output`) you can use. The node types differ in the number and types of handles. An input node has only a source handle, a default node has a source and a target and an output node has only a target handle. You create nodes by adding them to the `elements` array of the React Flow component.

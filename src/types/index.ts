@@ -144,6 +144,7 @@ type OnLoadParams = {
   zoomOut: () => void;
   fitView: FitViewFunc;
   project: ProjectFunc;
+  getElements: () => Elements;
 };
 
 export type OnLoadFunc = (params: OnLoadParams) => void;

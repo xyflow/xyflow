@@ -210,3 +210,17 @@ const zoom = (amount: number): void => {
 export const zoomIn = (): void => zoom(0.2);
 
 export const zoomOut = (): void => zoom(-0.2);
+
+export const getElements = (): Elements => {
+  const { nodes, edges } = store.getState();
+
+  return [
+    ...nodes.map((node) => {
+      const n = { ...node };
+
+      delete n.__rg;
+      return n;
+    }),
+    ...edges.map((e) => ({ ...e })),
+  ];
+};
