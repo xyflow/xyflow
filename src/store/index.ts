@@ -161,7 +161,7 @@ export const storeModel: StoreModel = {
 
   isInteractive: true,
 
-  reactFlowVersion: __REACT_FLOW_VERSION__,
+  reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
   onConnect: () => {},
 

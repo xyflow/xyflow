@@ -15,54 +15,65 @@ import Provider from './Provider';
 
 import './index.css';
 
-const routes = [{
-  path: '/',
-  component: Overview,
-  label: 'Overview'
-}, {
-  path: '/provider',
-  component: Provider,
-  label: 'Provider'
-}, {
-  path: '/edges',
-  component: Edges,
-  label: 'Edges'
-}, {
-  path: '/custom-node',
-  component: CustomNode,
-  label: 'CustomNode'
-}, {
-  path: '/horizontal',
-  component: Horizontal,
-  label: 'Horizontal'
-}, {
-  path: '/validation',
-  component: Validation,
-  label: 'Validation'
-}, {
-  path: '/stress',
-  component: Stress,
-  label: 'Stress'
-}, {
-  path: '/basic',
-  component: Basic
-}, {
-  path: '/empty',
-  component: Empty
-}, {
-  path: '/inactive',
-  component: Inactive
-}];
+const routes = [
+  {
+    path: '/',
+    component: Overview,
+    label: 'Overview',
+  },
+  {
+    path: '/edges',
+    component: Edges,
+    label: 'Edges',
+  },
+  {
+    path: '/custom-node',
+    component: CustomNode,
+    label: 'CustomNode',
+  },
+  {
+    path: '/horizontal',
+    component: Horizontal,
+    label: 'Horizontal',
+  },
+  {
+    path: '/validation',
+    component: Validation,
+    label: 'Validation',
+  },
+  {
+    path: '/provider',
+    component: Provider,
+    label: 'Provider',
+  },
+  {
+    path: '/stress',
+    component: Stress,
+    label: 'Stress',
+  },
+  {
+    path: '/basic',
+    component: Basic,
+  },
+  {
+    path: '/empty',
+    component: Empty,
+  },
+  {
+    path: '/inactive',
+    component: Inactive,
+  },
+];
 
-const navLinks = routes.filter(route => route.label);
+const navLinks = routes.filter((route) => route.label);
 
 const SourceDisplay = withRouter(({ location }) => {
-  const route = routes.find(route => route.path === location.pathname);
+  const route = routes.find((route) => route.path === location.pathname);
   const sourceLink = `https://github.com/wbkd/react-flow/tree/master/example/src/${route.label}/index.js`;
 
   return (
     <a className="sourcedisplay" href={sourceLink}>
-     {'<Source />'}
+      {'<Source />'}
     </a>
   );
 });
@@ -70,30 +81,34 @@ const SourceDisplay = withRouter(({ location }) => {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState();
 
-  return  (
+  return (
     <header>
-      <a className="logo" href="https://github.com/wbkd/react-flow">React Flow</a>
+      <a className="logo" href="https://github.com/wbkd/react-flow">
+        React Flow
+      </a>
       <nav className={menuOpen ? 'is-open' : ''}>
-        {navLinks.map(route => (
+        {navLinks.map((route) => (
           <NavLink to={route.path} key={route.label} exact>
             {route.label}
           </NavLink>
         ))}
       </nav>
-      <button className="menu" onClick={() => setMenuOpen(!menuOpen)}>Menu</button>
+      <button className="menu" onClick={() => setMenuOpen(!menuOpen)}>
+        Menu
+      </button>
     </header>
   );
-}
+};
 
-ReactDOM.render((
+ReactDOM.render(
   <Router forceRefresh={true}>
     <Header />
     <SourceDisplay />
     <Switch>
-      {routes.map(route => (
+      {routes.map((route) => (
         <Route exact path={route.path} render={() => <route.component />} key={route.path} />
       ))}
     </Switch>
-  </Router>
-), document.getElementById('root'));
-
+  </Router>,
+  document.getElementById('root')
+);

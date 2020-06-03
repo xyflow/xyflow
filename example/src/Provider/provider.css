@@ -1,0 +1,32 @@
+.providerflow {
+  display: flex;
+  height: 100%;
+}
+
+.providerflow aside {
+  width: 20%;
+  max-width: 250px;
+  flex-grow: 1;
+  border-right: 1px solid #eee;
+  padding: 10px;
+  font-size: 12px;
+  background: #fcfcfc;
+}
+
+.providerflow aside .description {
+  margin-bottom: 10px;
+}
+
+.providerflow aside .title {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.providerflow aside .transform {
+  margin-bottom: 20px;
+}
+
+.providerflow .reactflow-wrapper {
+  flex-grow: 1;
+  height: 100%;
+}
