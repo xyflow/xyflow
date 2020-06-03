@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, memo, CSSProperties } from 'react';
 import classnames from 'classnames';
+import { ResizeObserver } from 'resize-observer';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
@@ -108,6 +109,8 @@ const GraphView = memo(
     };
 
     useEffect(() => {
+      let resizeObserver: ResizeObserver;
+
       updateDimensions();
       window.onresize = updateDimensions;
 
@@ -119,8 +122,22 @@ const GraphView = memo(
         updateTransform({ x: 0, y: 0, k: defaultZoom });
       }
 
+      if (rendererNode.current) {
+        resizeObserver = new ResizeObserver((entries) => {
+          for (let _ of entries) {
+            updateDimensions();
+          }
+        });
+
+        resizeObserver.observe(rendererNode.current);
+      }
+
       return () => {
         window.onresize = null;
+
+        if (resizeObserver && rendererNode.current) {
+          resizeObserver.unobserve(rendererNode.current!);
+        }
       };
     }, []);
 
