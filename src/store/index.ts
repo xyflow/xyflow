@@ -1,7 +1,8 @@
 import { createStore, Action, action, Thunk, thunk } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
-import { zoomIdentity, zoomTransform } from 'd3-zoom';
+import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
+import { select } from 'd3-selection';
 
 import { getDimensions } from '../utils';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -38,11 +39,6 @@ type NodeDimensionUpdate = {
 type SelectionUpdate = {
   isActive: boolean;
   selection?: SelectionRect;
-};
-
-type D3Init = {
-  zoom: ZoomBehavior<Element, unknown>;
-  selection: D3Selection<Element, unknown, null, undefined>;
 };
 
 type SetMinMaxZoom = {
@@ -109,7 +105,7 @@ export interface StoreModel {
 
   updateSize: Action<StoreModel, Dimensions>;
 
-  initD3: Action<StoreModel, D3Init>;
+  initD3: Action<StoreModel, Element>;
 
   setMinMaxZoom: Action<StoreModel, SetMinMaxZoom>;
 
@@ -342,11 +338,11 @@ export const storeModel: StoreModel = {
     state.height = size.height;
   }),
 
-  initD3: action((state, { zoom, selection }) => {
-    state.d3Zoom = zoom;
+  initD3: action((state, zoomPaneNode) => {
+    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]);
+    const selection = select(zoomPaneNode).call(d3ZoomInstance);
 
-    state.d3Zoom.scaleExtent([state.minZoom, state.maxZoom]);
-
+    state.d3Zoom = d3ZoomInstance;
     state.d3Selection = selection;
     state.d3Initialised = true;
   }),

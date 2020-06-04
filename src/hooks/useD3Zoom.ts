@@ -1,6 +1,5 @@
 import { useEffect, MutableRefObject } from 'react';
-import { zoom } from 'd3-zoom';
-import { select, event } from 'd3-selection';
+import { event } from 'd3-selection';
 
 import { useStoreState, useStoreActions } from '../store/hooks';
 
@@ -18,35 +17,27 @@ export default ({ zoomPane, onMove, selectionKeyPressed }: UseD3ZoomParams): voi
 
   useEffect(() => {
     if (zoomPane.current) {
-      const nextD3ZoomInstance = zoom();
-      const selection = select(zoomPane.current).call(nextD3ZoomInstance);
-      initD3({ zoom: nextD3ZoomInstance, selection });
+      initD3(zoomPane.current);
     }
   }, []);
 
   useEffect(() => {
-    if (!d3Zoom) {
-      return;
+    if (d3Zoom) {
+      if (selectionKeyPressed) {
+        d3Zoom.on('zoom', null);
+      } else {
+        d3Zoom.on('zoom', function () {
+          if (!event.sourceEvent || (event.sourceEvent && event.sourceEvent.target !== zoomPane.current)) {
+            return;
+          }
+
+          updateTransform(event.transform);
+
+          if (onMove) {
+            onMove();
+          }
+        });
+      }
     }
-
-    if (selectionKeyPressed) {
-      d3Zoom.on('zoom', null);
-    } else {
-      d3Zoom.on('zoom', () => {
-        if (!event.sourceEvent || (event.sourceEvent && event.sourceEvent.target !== zoomPane.current)) {
-          return;
-        }
-
-        updateTransform(event.transform);
-
-        if (onMove) {
-          onMove();
-        }
-      });
-    }
-
-    return () => {
-      d3Zoom.on('zoom', null);
-    };
   }, [selectionKeyPressed, d3Zoom]);
 };
