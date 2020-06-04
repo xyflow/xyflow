@@ -1,5 +1,3 @@
-import { zoomIdentity } from 'd3-zoom';
-
 import store from '../store';
 import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box, Connection } from '../types';
 
@@ -182,29 +180,12 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
   });
 };
 
-export const fitView = ({ padding = 0.1 }: FitViewParams = { padding: 0.1 }): void => {
-  const { nodes, width, height, d3Selection, d3Zoom } = store.getState();
-
-  if (!d3Selection || !d3Zoom || !nodes.length) {
-    return;
-  }
-
-  const bounds = getRectOfNodes(nodes);
-  const maxBoundsSize = Math.max(bounds.width, bounds.height);
-  const k = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
-  const boundsCenterX = bounds.x + bounds.width / 2;
-  const boundsCenterY = bounds.y + bounds.height / 2;
-  const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
-  const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
-
-  d3Selection.call(d3Zoom.transform, fittedTransform);
+export const fitView = (params: FitViewParams = { padding: 0.1 }): void => {
+  store.getActions().fitView(params);
 };
 
 const zoom = (amount: number): void => {
-  const { d3Zoom, d3Selection, transform } = store.getState();
-  if (d3Zoom && d3Selection) {
-    d3Zoom.scaleTo(d3Selection, transform[2] + amount);
-  }
+  store.getActions().zoom(amount);
 };
 
 export const zoomIn = (): void => zoom(0.2);
