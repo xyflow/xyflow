@@ -134,7 +134,7 @@ export interface WrapNodeProps {
 }
 
 export type FitViewParams = {
-  padding: number;
+  padding?: number;
 };
 export type FitViewFunc = (fitViewOptions: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;

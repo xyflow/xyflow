@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ReactFlow, { ReactFlowProvider, addEdge, removeElements } from 'react-flow-renderer';
+import ReactFlow, { ReactFlowProvider, addEdge, removeElements, Controls } from 'react-flow-renderer';
 
 import Sidebar from './Sidebar';
 
@@ -31,7 +31,9 @@ const ProviderFlow = () => {
             onElementClick={onElementClick}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
-          />
+          >
+            <Controls />
+          </ReactFlow>
         </div>
       </ReactFlowProvider>
     </div>

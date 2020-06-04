@@ -1,6 +1,7 @@
-import { createStore, Action, action } from 'easy-peasy';
+import { createStore, Action, action, Thunk, thunk } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
+import { zoomIdentity } from 'd3-zoom';
 
 import { getDimensions } from '../utils';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -20,6 +21,7 @@ import {
   HandleType,
   SetConnectionId,
   NodePosUpdate,
+  FitViewParams,
 } from '../types';
 
 type TransformXYK = {
@@ -122,6 +124,11 @@ export interface StoreModel {
   setUserSelection: Action<StoreModel, XYPosition>;
   updateUserSelection: Action<StoreModel, XYPosition>;
   unsetUserSelection: Action<StoreModel>;
+
+  fitView: Action<StoreModel, FitViewParams>;
+  zoom: Action<StoreModel, number>;
+  zoomIn: Thunk<StoreModel>;
+  zoomOut: Thunk<StoreModel>;
 }
 
 export const storeModel: StoreModel = {
@@ -369,6 +376,50 @@ export const storeModel: StoreModel = {
 
   setInteractive: action((state, isInteractive) => {
     state.isInteractive = isInteractive;
+  }),
+
+  fitView: action((state, { padding = 0.1 }) => {
+    const { nodes, width, height, d3Selection, d3Zoom } = state;
+
+    if (!d3Selection || !d3Zoom || !nodes.length) {
+      return;
+    }
+
+    const bounds = getRectOfNodes(nodes);
+    const maxBoundsSize = Math.max(bounds.width, bounds.height);
+    const k = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const boundsCenterX = bounds.x + bounds.width / 2;
+    const boundsCenterY = bounds.y + bounds.height / 2;
+    const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
+    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
+
+    d3Selection.call(d3Zoom.transform, fittedTransform);
+
+    state.transform = [fittedTransform.x, fittedTransform.y, fittedTransform.k];
+  }),
+
+  zoom: action((state, amount) => {
+    const { d3Zoom, d3Selection, transform } = state;
+    const nextZoom = transform[2] + amount;
+
+    if (d3Zoom && d3Selection) {
+      d3Zoom.scaleTo(d3Selection, nextZoom);
+
+      const graphTransform = zoomIdentity.translate(transform[0], transform[1]).scale(nextZoom);
+      d3Selection.call(d3Zoom.transform, graphTransform);
+
+      console.log(graphTransform);
+
+      state.transform = [graphTransform.x, graphTransform.y, graphTransform.k];
+    }
+  }),
+
+  zoomIn: thunk((actions) => {
+    actions.zoom(0.2);
+  }),
+
+  zoomOut: thunk((actions) => {
+    actions.zoom(-0.2);
   }),
 };
 

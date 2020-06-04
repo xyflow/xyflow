@@ -182,7 +182,7 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
   });
 };
 
-export const fitView = ({ padding }: FitViewParams = { padding: 0.1 }): void => {
+export const fitView = ({ padding = 0.1 }: FitViewParams = { padding: 0.1 }): void => {
   const { nodes, width, height, d3Selection, d3Zoom } = store.getState();
 
   if (!d3Selection || !d3Zoom || !nodes.length) {
