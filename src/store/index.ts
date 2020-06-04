@@ -192,7 +192,7 @@ export const storeModel: StoreModel = {
     // only update when size change
     if (
       !matchingNode ||
-      (matchingNode.__rg.width === dimensions.width && matchingNode.__rg.height === dimensions.height)
+      (matchingNode.__rf.width === dimensions.width && matchingNode.__rf.height === dimensions.height)
     ) {
       return;
     }
@@ -204,8 +204,8 @@ export const storeModel: StoreModel = {
 
     state.nodes.forEach((n) => {
       if (n.id === id) {
-        n.__rg = {
-          ...n.__rg,
+        n.__rf = {
+          ...n.__rf,
           ...dimensions,
           handleBounds,
         };
@@ -227,8 +227,8 @@ export const storeModel: StoreModel = {
 
     state.nodes.forEach((n) => {
       if (n.id === id) {
-        n.__rg = {
-          ...n.__rg,
+        n.__rf = {
+          ...n.__rf,
           position,
         };
       }

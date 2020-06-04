@@ -13,7 +13,7 @@ const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
     position: { x, y },
     width,
     height,
-  } = node.__rg;
+  } = node.__rf;
   const { background, backgroundColor } = node.style || {};
   const fill = (background || backgroundColor || color) as string;
 

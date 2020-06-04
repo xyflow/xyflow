@@ -34,8 +34,8 @@ function renderNode(
       id={node.id}
       type={nodeType}
       data={node.data}
-      xPos={node.__rg.position.x}
-      yPos={node.__rg.position.y}
+      xPos={node.__rf.position.x}
+      yPos={node.__rf.position.y}
       onClick={props.onElementClick}
       onNodeDragStart={props.onNodeDragStart}
       onNodeDragStop={props.onNodeDragStop}

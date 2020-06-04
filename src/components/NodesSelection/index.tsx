@@ -17,8 +17,8 @@ function getStartPositions(nodes: Node[]): StartPositions {
 
   return nodes.reduce((res, node) => {
     const startPosition = {
-      x: node.__rg.position.x || node.position.x,
-      y: node.__rg.position.y || node.position.y,
+      x: node.__rf.position.x || node.position.x,
+      y: node.__rf.position.y || node.position.y,
     };
 
     res[node.id] = startPosition;

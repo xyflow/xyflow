@@ -46,12 +46,12 @@ export default ({
   const connectionLineClasses: string = cx('react-flow__connection', className);
 
   const sourceHandle = handleId
-    ? sourceNode.__rg.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
-    : sourceNode.__rg.handleBounds[connectionHandleType][0];
-  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rg.width / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rg.height;
-  const sourceX = sourceNode.__rg.position.x + sourceHandleX;
-  const sourceY = sourceNode.__rg.position.y + sourceHandleY;
+    ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
+    : sourceNode.__rf.handleBounds[connectionHandleType][0];
+  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rf.width / 2;
+  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rf.height;
+  const sourceX = sourceNode.__rf.position.x + sourceHandleX;
+  const sourceY = sourceNode.__rf.position.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) * (1 / transform[2]);
   const targetY = (connectionPositionY - transform[1]) * (1 / transform[2]);

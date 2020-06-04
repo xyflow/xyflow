@@ -34,7 +34,7 @@ export interface Node {
   id: ElementId;
   position: XYPosition;
   type?: string;
-  __rg?: any;
+  __rf?: any;
   data?: any;
   style?: CSSProperties;
   className?: string;

@@ -39,8 +39,8 @@ const useElementUpdater = (elements: Elements): void => {
         };
 
         if (positionChanged) {
-          nodeProps.__rg = {
-            ...existingNode.__rg,
+          nodeProps.__rf = {
+            ...existingNode.__rf,
             position: propNode.position,
           };
           nodeProps.position = propNode.position;

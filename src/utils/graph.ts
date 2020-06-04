@@ -94,7 +94,7 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
     ...element,
     id: element.id.toString(),
     type: element.type || 'default',
-    __rg: {
+    __rf: {
       position: element.position,
       width: null,
       height: null,
@@ -129,7 +129,7 @@ export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
 
 export const getRectOfNodes = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
-    (currBox, { __rg: { position, width, height } }) =>
+    (currBox, { __rf: { position, width, height } }) =>
       getBoundsOfBoxes(currBox, rectToBox({ ...position, width, height })),
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
@@ -155,7 +155,7 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  return nodes.filter(({ __rg: { position, width, height } }) => {
+  return nodes.filter(({ __rf: { position, width, height } }) => {
     const nBox = rectToBox({ ...position, width, height });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
@@ -199,7 +199,7 @@ export const getElements = (): Elements => {
     ...nodes.map((node) => {
       const n = { ...node };
 
-      delete n.__rg;
+      delete n.__rf;
       return n;
     }),
     ...edges.map((e) => ({ ...e })),
