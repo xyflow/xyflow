@@ -502,6 +502,8 @@ You can find all examples in the [example](example) folder or check out the live
 - [custom node](https://react-flow.netlify.app/custom-node)
 - [horizontal](https://react-flow.netlify.app/horizontal)
 - [stress](https://react-flow.netlify.app/stress)
+- [validation](https://react-flow.netlify.app/validation)
+- [provider](https://react-flow.netlify.app/provider)
 - [edges](https://react-flow.netlify.app/edges)
 - [empty](https://react-flow.netlify.app/empty)
 - [inactive](https://react-flow.netlify.app/inactive)
