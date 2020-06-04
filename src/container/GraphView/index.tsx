@@ -80,7 +80,7 @@ const GraphView = memo(
     const height = useStoreState((s) => s.height);
     const d3Initialised = useStoreState((s) => s.d3Initialised);
     const nodesSelectionActive = useStoreState((s) => s.nodesSelectionActive);
-
+    const selectionActive = useStoreState((s) => s.selectionActive);
     const updateSize = useStoreActions((actions) => actions.updateSize);
     const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
     const setOnConnect = useStoreActions((a) => a.setOnConnect);
@@ -91,6 +91,7 @@ const GraphView = memo(
 
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
     const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
+    const userSelectionActive = selectionKeyPressed || selectionActive;
 
     const onZoomPaneClick = () => setNodesSelection({ isActive: false });
 
@@ -188,7 +189,7 @@ const GraphView = memo(
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
         />
-        {selectionKeyPressed && <UserSelection isInteractive={isInteractive} />}
+        {userSelectionActive && <UserSelection isInteractive={isInteractive} />}
         {nodesSelectionActive && <NodesSelection />}
         <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
       </div>

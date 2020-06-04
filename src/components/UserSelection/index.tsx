@@ -53,16 +53,16 @@ export default memo(({ isInteractive }: UserSelectionProps) => {
     return null;
   }
 
-  function onMouseDown(evt: React.MouseEvent): void {
+  const onMouseDown = (evt: React.MouseEvent): void => {
     const mousePos = getMousePosition(evt);
     if (!mousePos) {
       return;
     }
 
     setUserSelection(mousePos);
-  }
+  };
 
-  function onMouseMove(evt: React.MouseEvent): void {
+  const onMouseMove = (evt: React.MouseEvent): void => {
     const mousePos = getMousePosition(evt);
 
     if (!mousePos) {
@@ -70,11 +70,9 @@ export default memo(({ isInteractive }: UserSelectionProps) => {
     }
 
     updateUserSelection(mousePos);
-  }
+  };
 
-  function onMouseUp() {
-    unsetUserSelection();
-  }
+  const onMouseUp = () => unsetUserSelection();
 
   return (
     <div
