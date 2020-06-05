@@ -69,6 +69,7 @@
 .react-flow__edge-text {
   font-size: 12px;
   pointer-events: none;
+  user-select: none;
 }
 
 .react-flow__edge-textbg {
@@ -132,7 +133,6 @@
 
 .react-flow__node-output {
   background: #55dd99;
-
 }
 
 .react-flow__nodesselection {

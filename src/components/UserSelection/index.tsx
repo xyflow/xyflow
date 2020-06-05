@@ -2,13 +2,14 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import { XYPosition } from '../../types';
 
 type UserSelectionProps = {
   isInteractive: boolean;
+  selectionKeyPressed: boolean;
 };
 
 function getMousePosition(evt: React.MouseEvent): XYPosition | void {
@@ -44,12 +45,21 @@ const SelectionRect = () => {
   );
 };
 
-export default memo(({ isInteractive }: UserSelectionProps) => {
+export default memo(({ isInteractive, selectionKeyPressed }: UserSelectionProps) => {
+  const selectionActive = useStoreState((s) => s.selectionActive);
+
   const setUserSelection = useStoreActions((a) => a.setUserSelection);
   const updateUserSelection = useStoreActions((a) => a.updateUserSelection);
   const unsetUserSelection = useStoreActions((a) => a.unsetUserSelection);
+  const renderUserSelectionPane = selectionActive || selectionKeyPressed;
 
-  if (!isInteractive) {
+  useEffect(() => {
+    if (!selectionKeyPressed) {
+      unsetUserSelection();
+    }
+  }, [selectionKeyPressed]);
+
+  if (!isInteractive || !renderUserSelectionPane) {
     return null;
   }
 
@@ -63,6 +73,9 @@ export default memo(({ isInteractive }: UserSelectionProps) => {
   };
 
   const onMouseMove = (evt: React.MouseEvent): void => {
+    if (!selectionKeyPressed || !selectionActive) {
+      return;
+    }
     const mousePos = getMousePosition(evt);
 
     if (!mousePos) {
