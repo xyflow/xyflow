@@ -330,7 +330,9 @@ export const storeModel: StoreModel = {
   }),
 
   updateTransform: action((state, transform) => {
-    state.transform = [transform.x, transform.y, transform.k];
+    state.transform[0] = transform.x;
+    state.transform[1] = transform.y;
+    state.transform[2] = transform.k;
   }),
 
   updateSize: action((state, size) => {
