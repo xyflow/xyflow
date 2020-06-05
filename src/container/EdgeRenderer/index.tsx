@@ -26,23 +26,23 @@ function getHandlePosition(position: Position, node: Node, handle: any | null = 
     switch (position) {
       case Position.Top:
         return {
-          x: node.__rg.width / 2,
+          x: node.__rf.width / 2,
           y: 0,
         };
       case Position.Right:
         return {
-          x: node.__rg.width,
-          y: node.__rg.height / 2,
+          x: node.__rf.width,
+          y: node.__rf.height / 2,
         };
       case Position.Bottom:
         return {
-          x: node.__rg.width / 2,
-          y: node.__rg.height,
+          x: node.__rf.width / 2,
+          y: node.__rf.height,
         };
       case Position.Left:
         return {
           x: 0,
-          y: node.__rg.height / 2,
+          y: node.__rf.height / 2,
         };
     }
   }
@@ -98,12 +98,12 @@ function getEdgePositions(
   targetPosition: Position
 ): EdgePositions {
   const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  const sourceX = sourceNode.__rg.position.x + sourceHandlePos.x;
-  const sourceY = sourceNode.__rg.position.y + sourceHandlePos.y;
+  const sourceX = sourceNode.__rf.position.x + sourceHandlePos.x;
+  const sourceY = sourceNode.__rf.position.y + sourceHandlePos.y;
 
   const targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
-  const targetX = targetNode.__rg.position.x + targetHandlePos.x;
-  const targetY = targetNode.__rg.position.y + targetHandlePos.y;
+  const targetX = targetNode.__rf.position.x + targetHandlePos.x;
+  const targetY = targetNode.__rf.position.y + targetHandlePos.y;
 
   return {
     sourceX,
@@ -134,14 +134,14 @@ function renderEdge(
     throw new Error(`couldn't create edge for target id: ${targetId}`);
   }
 
-  if (!sourceNode.__rg.width || !sourceNode.__rg.height) {
+  if (!sourceNode.__rf.width || !sourceNode.__rf.height) {
     return null;
   }
 
   const edgeType = edge.type || 'default';
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  const sourceHandle = getHandle(sourceNode.__rg.handleBounds.source, sourceHandleId);
-  const targetHandle = getHandle(targetNode.__rg.handleBounds.target, targetHandleId);
+  const sourceHandle = getHandle(sourceNode.__rf.handleBounds.source, sourceHandleId);
+  const targetHandle = getHandle(targetNode.__rf.handleBounds.target, targetHandleId);
   const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
   const targetPosition = targetHandle ? targetHandle.position : Position.Top;
 

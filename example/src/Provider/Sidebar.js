@@ -17,7 +17,7 @@ export default () => {
       <div className="title">Nodes</div>
       {nodes.map((node) => (
         <div key={node.id}>
-          Node {node.id} - x: {node.__rg.position.x.toFixed(2)}, y: {node.__rg.position.y.toFixed(2)}
+          Node {node.id} - x: {node.__rf.position.x.toFixed(2)}, y: {node.__rf.position.y.toFixed(2)}
         </div>
       ))}
     </aside>

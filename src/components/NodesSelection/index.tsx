@@ -17,8 +17,8 @@ function getStartPositions(nodes: Node[]): StartPositions {
 
   return nodes.reduce((res, node) => {
     const startPosition = {
-      x: node.__rg.position.x || node.position.x,
-      y: node.__rg.position.y || node.position.y,
+      x: node.__rf.position.x || node.position.x,
+      y: node.__rf.position.y || node.position.y,
     };
 
     res[node.id] = startPosition;
@@ -38,8 +38,13 @@ export default memo(() => {
   const nodes = useStoreState((s) => s.nodes);
 
   const updateNodePos = useStoreActions((a) => a.updateNodePos);
+
   const position = selectedNodesBbox;
   const grid = (snapToGrid ? snapGrid : [1, 1])! as [number, number];
+
+  if (!selectedElements) {
+    return null;
+  }
 
   const onStart = (evt: MouseEvent) => {
     const scaledClient: XYPosition = {

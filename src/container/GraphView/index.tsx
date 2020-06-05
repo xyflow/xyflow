@@ -12,7 +12,7 @@ import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { getDimensions } from '../../utils';
-import { fitView, zoomIn, zoomOut, project, getElements } from '../../utils/graph';
+import { project, getElements } from '../../utils/graph';
 import {
   Elements,
   NodeTypesType,
@@ -80,7 +80,6 @@ const GraphView = memo(
     const height = useStoreState((s) => s.height);
     const d3Initialised = useStoreState((s) => s.d3Initialised);
     const nodesSelectionActive = useStoreState((s) => s.nodesSelectionActive);
-
     const updateSize = useStoreActions((actions) => actions.updateSize);
     const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
     const setOnConnect = useStoreActions((a) => a.setOnConnect);
@@ -88,6 +87,8 @@ const GraphView = memo(
     const setInteractive = useStoreActions((actions) => actions.setInteractive);
     const updateTransform = useStoreActions((actions) => actions.updateTransform);
     const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
+    const fitView = useStoreActions((actions) => actions.fitView);
+    const zoom = useStoreActions((actions) => actions.zoom);
 
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
     const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
@@ -146,9 +147,9 @@ const GraphView = memo(
     useEffect(() => {
       if (d3Initialised && onLoad) {
         onLoad({
-          fitView,
-          zoomIn,
-          zoomOut,
+          fitView: (params = { padding: 0.1 }) => fitView(params),
+          zoomIn: () => zoom(0.2),
+          zoomOut: () => zoom(-0.2),
           project,
           getElements,
         });
@@ -188,7 +189,7 @@ const GraphView = memo(
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
         />
-        {selectionKeyPressed && <UserSelection isInteractive={isInteractive} />}
+        <UserSelection selectionKeyPressed={selectionKeyPressed} isInteractive={isInteractive} />
         {nodesSelectionActive && <NodesSelection />}
         <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
       </div>

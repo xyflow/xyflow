@@ -34,7 +34,7 @@ export interface Node {
   id: ElementId;
   position: XYPosition;
   type?: string;
-  __rg?: any;
+  __rf?: any;
   data?: any;
   style?: CSSProperties;
   className?: string;
@@ -134,7 +134,7 @@ export interface WrapNodeProps {
 }
 
 export type FitViewParams = {
-  padding: number;
+  padding?: number;
 };
 export type FitViewFunc = (fitViewOptions: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;

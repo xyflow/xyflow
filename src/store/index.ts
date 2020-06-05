@@ -1,6 +1,8 @@
-import { createStore, Action, action } from 'easy-peasy';
+import { createStore, Action, action, Thunk, thunk } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
+import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
+import { select } from 'd3-selection';
 
 import { getDimensions } from '../utils';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -20,6 +22,7 @@ import {
   HandleType,
   SetConnectionId,
   NodePosUpdate,
+  FitViewParams,
 } from '../types';
 
 type TransformXYK = {
@@ -36,11 +39,6 @@ type NodeDimensionUpdate = {
 type SelectionUpdate = {
   isActive: boolean;
   selection?: SelectionRect;
-};
-
-type D3Init = {
-  zoom: ZoomBehavior<Element, unknown>;
-  selection: D3Selection<Element, unknown, null, undefined>;
 };
 
 type SetMinMaxZoom = {
@@ -107,7 +105,7 @@ export interface StoreModel {
 
   updateSize: Action<StoreModel, Dimensions>;
 
-  initD3: Action<StoreModel, D3Init>;
+  initD3: Action<StoreModel, Element>;
 
   setMinMaxZoom: Action<StoreModel, SetMinMaxZoom>;
 
@@ -122,6 +120,11 @@ export interface StoreModel {
   setUserSelection: Action<StoreModel, XYPosition>;
   updateUserSelection: Action<StoreModel, XYPosition>;
   unsetUserSelection: Action<StoreModel>;
+
+  fitView: Action<StoreModel, FitViewParams>;
+  zoom: Action<StoreModel, number>;
+  zoomIn: Thunk<StoreModel>;
+  zoomOut: Thunk<StoreModel>;
 }
 
 export const storeModel: StoreModel = {
@@ -185,7 +188,7 @@ export const storeModel: StoreModel = {
     // only update when size change
     if (
       !matchingNode ||
-      (matchingNode.__rg.width === dimensions.width && matchingNode.__rg.height === dimensions.height)
+      (matchingNode.__rf.width === dimensions.width && matchingNode.__rf.height === dimensions.height)
     ) {
       return;
     }
@@ -197,8 +200,8 @@ export const storeModel: StoreModel = {
 
     state.nodes.forEach((n) => {
       if (n.id === id) {
-        n.__rg = {
-          ...n.__rg,
+        n.__rf = {
+          ...n.__rf,
           ...dimensions,
           handleBounds,
         };
@@ -220,8 +223,8 @@ export const storeModel: StoreModel = {
 
     state.nodes.forEach((n) => {
       if (n.id === id) {
-        n.__rg = {
-          ...n.__rg,
+        n.__rf = {
+          ...n.__rf,
           position,
         };
       }
@@ -335,11 +338,11 @@ export const storeModel: StoreModel = {
     state.height = size.height;
   }),
 
-  initD3: action((state, { zoom, selection }) => {
-    state.d3Zoom = zoom;
+  initD3: action((state, zoomPaneNode) => {
+    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]);
+    const selection = select(zoomPaneNode).call(d3ZoomInstance);
 
-    state.d3Zoom.scaleExtent([state.minZoom, state.maxZoom]);
-
+    state.d3Zoom = d3ZoomInstance;
     state.d3Selection = selection;
     state.d3Initialised = true;
   }),
@@ -369,6 +372,45 @@ export const storeModel: StoreModel = {
 
   setInteractive: action((state, isInteractive) => {
     state.isInteractive = isInteractive;
+  }),
+
+  fitView: action((state, { padding = 0.1 }) => {
+    const { nodes, width, height, d3Selection, d3Zoom } = state;
+
+    if (!d3Selection || !d3Zoom || !nodes.length) {
+      return;
+    }
+
+    const bounds = getRectOfNodes(nodes);
+    const maxBoundsSize = Math.max(bounds.width, bounds.height);
+    const k = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const boundsCenterX = bounds.x + bounds.width / 2;
+    const boundsCenterY = bounds.y + bounds.height / 2;
+    const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
+    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
+
+    d3Selection.call(d3Zoom.transform, fittedTransform);
+
+    state.transform = [fittedTransform.x, fittedTransform.y, fittedTransform.k];
+  }),
+
+  zoom: action((state, amount) => {
+    const { d3Zoom, d3Selection, transform } = state;
+    const nextZoom = transform[2] + amount;
+
+    if (d3Zoom && d3Selection) {
+      d3Zoom.scaleTo(d3Selection, nextZoom);
+      const transforms = zoomTransform(d3Selection.node() as Element);
+      state.transform = [transforms.x, transforms.y, transforms.k];
+    }
+  }),
+
+  zoomIn: thunk((actions) => {
+    actions.zoom(0.2);
+  }),
+
+  zoomOut: thunk((actions) => {
+    actions.zoom(-0.2);
   }),
 };
 
