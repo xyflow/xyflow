@@ -49,7 +49,7 @@
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "release-it": "^13.6.2",
+    "release-it": "^13.6.3",
     "rollup": "^2.16.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-bundle-size": "^1.0.3",
