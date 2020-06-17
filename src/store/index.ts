@@ -376,7 +376,8 @@ export const storeModel: StoreModel = {
     state.isInteractive = isInteractive;
   }),
 
-  fitView: action((state, { padding = 0.1 }) => {
+  fitView: action((state, payload = { padding: 0.1 }) => {
+    const { padding } = payload;
     const { nodes, width, height, d3Selection, d3Zoom } = state;
 
     if (!d3Selection || !d3Zoom || !nodes.length) {
