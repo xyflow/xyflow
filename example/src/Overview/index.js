@@ -127,7 +127,6 @@ const OverviewFlow = () => {
       style={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
       connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
-      connectionLineType="bezier"
       snapToGrid={true}
       snapGrid={[16, 16]}
     >

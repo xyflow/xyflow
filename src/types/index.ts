@@ -167,8 +167,10 @@ export interface Connection {
 }
 
 export enum ConnectionLineType {
-  Bezier = 'bezier',
+  Bezier = 'default',
   Straight = 'straight',
+  Step = 'step',
+  SmoothStep = 'smoothstep',
 }
 
 export type OnConnectFunc = (connection: Connection) => void;

@@ -81,7 +81,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css properties
 - `className`: additional class name
-- `connectionLineType`: connection line type = `straight` or `bezier`
+- `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`
 - `connectionLineStyle`: connection style as svg attributes
 - `deleteKeyCode`: default: `8` (delete)
 - `selectionKeyCode`: default: `16` (shift)

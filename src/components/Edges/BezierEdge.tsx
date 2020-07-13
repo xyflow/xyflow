@@ -3,6 +3,42 @@ import React, { memo } from 'react';
 import EdgeText from './EdgeText';
 import { EdgeBezierProps, Position } from '../../types';
 
+interface GetBezierPathParams {
+  centerX: number;
+  centerY: number;
+  sourceX: number;
+  sourceY: number;
+  sourcePosition?: Position;
+  targetX: number;
+  targetY: number;
+  targetPosition?: Position;
+}
+
+export function getBezierPath({
+  centerX,
+  centerY,
+  sourceX,
+  sourceY,
+  sourcePosition = Position.Bottom,
+  targetX,
+  targetY,
+  targetPosition = Position.Top,
+}: GetBezierPathParams): string {
+  let path = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
+
+  const leftAndRight = [Position.Left, Position.Right];
+
+  if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
+    path = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
+  } else if (leftAndRight.includes(targetPosition)) {
+    path = `M${sourceX},${sourceY} C${sourceX},${targetY} ${sourceX},${targetY} ${targetX},${targetY}`;
+  } else if (leftAndRight.includes(sourcePosition)) {
+    path = `M${sourceX},${sourceY} C${targetX},${sourceY} ${targetX},${sourceY} ${targetX},${targetY}`;
+  }
+
+  return path;
+}
+
 export default memo(
   ({
     sourceX,
@@ -23,17 +59,16 @@ export default memo(
     const xOffset = Math.abs(targetX - sourceX) / 2;
     const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
 
-    let dAttr = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
-
-    const leftAndRight = [Position.Left, Position.Right];
-
-    if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-      dAttr = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
-    } else if (leftAndRight.includes(targetPosition)) {
-      dAttr = `M${sourceX},${sourceY} C${sourceX},${targetY} ${sourceX},${targetY} ${targetX},${targetY}`;
-    } else if (leftAndRight.includes(sourcePosition)) {
-      dAttr = `M${sourceX},${sourceY} C${targetX},${sourceY} ${targetX},${sourceY} ${targetX},${targetY}`;
-    }
+    const path = getBezierPath({
+      centerX,
+      centerY,
+      sourceX,
+      sourceY,
+      sourcePosition,
+      targetX,
+      targetY,
+      targetPosition,
+    });
 
     const text = label ? (
       <EdgeText
@@ -48,7 +83,7 @@ export default memo(
 
     return (
       <>
-        <path style={style} d={dAttr} className="react-flow__edge-path" />
+        <path style={style} d={path} className="react-flow__edge-path" />
         {text}
       </>
     );
