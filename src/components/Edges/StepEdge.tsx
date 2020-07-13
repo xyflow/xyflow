@@ -3,6 +3,18 @@ import React, { memo } from 'react';
 import EdgeText from './EdgeText';
 import { EdgeProps } from '../../types';
 
+interface GetStepPathParams {
+  centerY: number;
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+}
+
+export function getStepPath({ centerY, sourceX, sourceY, targetX, targetY }: GetStepPathParams): string {
+  return `M ${sourceX},${sourceY}L ${sourceX},${centerY}L ${targetX},${centerY}L ${targetX},${targetY}`;
+}
+
 export default memo(
   ({ sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, style }: EdgeProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
@@ -10,6 +22,8 @@ export default memo(
 
     const xOffset = Math.abs(targetX - sourceX) / 2;
     const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+
+    const path = getStepPath({ centerY, sourceX, sourceY, targetX, targetY });
 
     const text = label ? (
       <EdgeText
@@ -24,11 +38,7 @@ export default memo(
 
     return (
       <>
-        <path
-          style={style}
-          className="react-flow__edge-path"
-          d={`M ${sourceX},${sourceY}L ${sourceX},${centerY}L ${targetX},${centerY}L ${targetX},${targetY}`}
-        />
+        <path style={style} className="react-flow__edge-path" d={path} />
         {text}
       </>
     );

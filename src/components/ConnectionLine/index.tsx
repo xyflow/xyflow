@@ -1,6 +1,9 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 import cx from 'classnames';
 
+import { getBezierPath } from '../Edges/BezierEdge';
+import { getStepPath } from '../Edges/StepEdge';
+import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { ElementId, Node, Transform, HandleElement, Position, ConnectionLineType, HandleType } from '../../types';
 
 interface ConnectionLineProps {
@@ -11,7 +14,7 @@ interface ConnectionLineProps {
   connectionLineType: ConnectionLineType;
   nodes: Node[];
   transform: Transform;
-  isInteractive: boolean;
+  isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   className?: string;
 }
@@ -26,7 +29,7 @@ export default ({
   nodes = [],
   className,
   transform,
-  isInteractive,
+  isConnectable,
 }: ConnectionLineProps) => {
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const hasHandleId = connectionNodeId.includes('__');
@@ -39,7 +42,7 @@ export default ({
     setSourceNode(nextSourceNode);
   }, []);
 
-  if (!sourceNode || !isInteractive) {
+  if (!sourceNode || !isConnectable) {
     return null;
   }
 
@@ -57,17 +60,46 @@ export default ({
   const targetY = (connectionPositionY - transform[1]) * (1 / transform[2]);
 
   let dAttr: string = '';
+  const xOffset = Math.abs(targetX - sourceX) / 2;
+  const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+
+  const yOffset = Math.abs(targetY - sourceY) / 2;
+  const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
+  const isRightOrLeft = sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right;
+  const targetPosition = isRightOrLeft ? Position.Left : Position.Top;
 
   if (connectionLineType === ConnectionLineType.Bezier) {
-    if (sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right) {
-      const xOffset = Math.abs(targetX - sourceX) / 2;
-      const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
-      dAttr = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
-    } else {
-      const yOffset = Math.abs(targetY - sourceY) / 2;
-      const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-      dAttr = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
-    }
+    dAttr = getBezierPath({
+      centerX,
+      centerY,
+      sourceX,
+      sourceY,
+      sourcePosition: sourceHandle?.position,
+      targetX,
+      targetY,
+      targetPosition,
+    });
+  } else if (connectionLineType === ConnectionLineType.Step) {
+    dAttr = getStepPath({
+      centerY,
+      sourceX,
+      sourceY,
+      targetX,
+      targetY,
+    });
+  } else if (connectionLineType === ConnectionLineType.SmoothStep) {
+    dAttr = getSmoothStepPath({
+      xOffset,
+      yOffset,
+      centerX,
+      centerY,
+      sourceX,
+      sourceY,
+      sourcePosition: sourceHandle?.position,
+      targetX,
+      targetY,
+      targetPosition,
+    });
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }

@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, MouseEvent } from 'react';
 
 export type ElementId = string;
 
@@ -94,6 +94,7 @@ export interface NodeProps {
   type: string;
   data: any;
   selected: boolean;
+  isConnectable: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
 }
@@ -102,6 +103,7 @@ export interface NodeComponentProps {
   id: ElementId;
   type: string;
   data: any;
+  isConnectable: boolean;
   selected?: boolean;
   transform?: Transform;
   xPos?: number;
@@ -109,6 +111,10 @@ export interface NodeComponentProps {
   targetPosition?: Position;
   sourcePosition?: Position;
   onClick?: (node: Node) => void;
+  onMouseEnter?: (node: Node) => void;
+  onMouseMove?: (node: Node) => void;
+  onMouseLeave?: (node: Node) => void;
+  onContextMenu?: (node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
@@ -122,9 +128,15 @@ export interface WrapNodeProps {
   transform: Transform;
   xPos: number;
   yPos: number;
-  isInteractive: boolean;
+  isSelectable: boolean;
+  isDraggable: boolean;
+  isConnectable: boolean;
   selectNodesOnDrag: boolean;
   onClick?: (node: Node) => void;
+  onMouseEnter?: (evt: MouseEvent, node: Node) => void;
+  onMouseMove?: (evt: MouseEvent, node: Node) => void;
+  onMouseLeave?: (evt: MouseEvent, node: Node) => void;
+  onContextMenu?: (evt: MouseEvent, node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
@@ -155,8 +167,10 @@ export interface Connection {
 }
 
 export enum ConnectionLineType {
-  Bezier = 'bezier',
+  Bezier = 'default',
   Straight = 'straight',
+  Step = 'step',
+  SmoothStep = 'smoothstep',
 }
 
 export type OnConnectFunc = (connection: Connection) => void;
@@ -174,6 +188,7 @@ export interface HandleElement extends XYPosition, Dimensions {
 export interface HandleProps {
   type: HandleType;
   position: Position;
+  isConnectable?: boolean;
   onConnect?: OnConnectFunc;
   isValidConnection?: (connection: Connection) => boolean;
   id?: string;

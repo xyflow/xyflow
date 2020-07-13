@@ -23,7 +23,7 @@ const Controls = ({ style, showZoom = true, showFitView = true, showInteractive 
   const zoomIn = useStoreActions((actions) => actions.zoomIn);
   const zoomOut = useStoreActions((actions) => actions.zoomOut);
 
-  const isInteractive = useStoreState((s) => s.isInteractive);
+  const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
   const mapClasses = classnames('react-flow__controls', className);
 
   return (

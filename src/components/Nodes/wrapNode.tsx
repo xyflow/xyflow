@@ -1,4 +1,14 @@
-import React, { useEffect, useRef, useState, memo, ComponentType, CSSProperties } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  memo,
+  ComponentType,
+  CSSProperties,
+  useMemo,
+  MouseEvent,
+  useCallback,
+} from 'react';
 import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
@@ -17,6 +27,8 @@ import {
   NodePosUpdate,
 } from '../../types';
 
+import { noop } from '../../utils';
+
 const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
   typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : (evt as MouseEvent);
 
@@ -26,6 +38,7 @@ interface OnDragStartParams {
   type: string;
   data: any;
   selectNodesOnDrag: boolean;
+  isSelectable: boolean;
   setOffset: (pos: XYPosition) => void;
   transform: Transform;
   position: XYPosition;
@@ -44,6 +57,7 @@ const onStart = ({
   transform,
   position,
   setSelectedElements,
+  isSelectable,
 }: OnDragStartParams): false | void => {
   const startEvt = getMouseEvent(evt);
 
@@ -62,7 +76,7 @@ const onStart = ({
     onNodeDragStart(node);
   }
 
-  if (selectNodesOnDrag) {
+  if (selectNodesOnDrag && isSelectable) {
     setSelectedElements({ id, type } as Node);
   }
 };
@@ -102,6 +116,7 @@ interface OnDragStopParams {
   position: XYPosition;
   data: any;
   selectNodesOnDrag: boolean;
+  isSelectable: boolean;
   setSelectedElements: (elms: Elements | Node | Edge) => void;
   onNodeDragStop?: (node: Node) => void;
   onClick?: (node: Node) => void;
@@ -115,6 +130,7 @@ const onStop = ({
   isDragging,
   setDragging,
   selectNodesOnDrag,
+  isSelectable,
   onNodeDragStop,
   onClick,
   setSelectedElements,
@@ -125,8 +141,7 @@ const onStop = ({
     position,
     data,
   } as Node;
-
-  if (!isDragging) {
+  if (!isDragging && isSelectable) {
     if (!selectNodesOnDrag) {
       setSelectedElements({ id, type } as Node);
     }
@@ -154,11 +169,17 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       yPos,
       selected,
       onClick,
+      onMouseEnter,
+      onMouseMove,
+      onMouseLeave,
+      onContextMenu,
       onNodeDragStart,
       onNodeDragStop,
       style,
       className,
-      isInteractive,
+      isDraggable,
+      isSelectable,
+      isConnectable,
       selectNodesOnDrag,
       sourcePosition,
       targetPosition,
@@ -171,12 +192,55 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const [offset, setOffset] = useState({ x: 0, y: 0 });
       const [isDragging, setDragging] = useState(false);
       const position = { x: xPos, y: yPos };
-      const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, { selected });
+      const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, {
+        selected,
+        selectable: isSelectable,
+      });
+      const node = { id, type, position, data };
+      const onMouseEnterHandler = useMemo(() => {
+        if (!onMouseEnter || isDragging) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onMouseEnter(evt, node);
+      }, [onMouseEnter, isDragging]);
+
+      const onMouseMoveHandler = useMemo(() => {
+        if (!onMouseMove || isDragging) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onMouseMove(evt, node);
+      }, [onMouseMove, isDragging]);
+
+      const onMouseLeaveHandler = useMemo(() => {
+        if (!onMouseLeave || isDragging) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onMouseLeave(evt, node);
+      }, [onMouseLeave, isDragging]);
+
+      const onContextMenuHandler = useMemo(() => {
+        if (!onContextMenu) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onContextMenu(evt, node);
+      }, [onContextMenu]);
+
+      const onSelectNodeHandler = useCallback(() => {
+        if (!isDraggable && isSelectable) {
+          setSelectedElements({ id, type } as Node);
+        }
+
+        return noop;
+      }, [isSelectable, isDraggable, id, type]);
 
       const nodeStyle: CSSProperties = {
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
-        pointerEvents: isInteractive ? 'all' : 'none',
+        pointerEvents: isSelectable || isDraggable ? 'all' : 'none',
         ...style,
       };
 
@@ -208,6 +272,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             onStart({
               evt: evt as MouseEvent,
               selectNodesOnDrag,
+              isSelectable,
               onNodeDragStart,
               id,
               type,
@@ -223,6 +288,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             onStop({
               onNodeDragStop,
               selectNodesOnDrag,
+              isSelectable,
               onClick,
               isDragging,
               setDragging,
@@ -234,16 +300,26 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             })
           }
           scale={transform[2]}
-          disabled={!isInteractive}
+          disabled={!isDraggable}
           cancel=".nodrag"
         >
-          <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
+          <div
+            className={nodeClasses}
+            ref={nodeElement}
+            style={nodeStyle}
+            onMouseEnter={onMouseEnterHandler}
+            onMouseMove={onMouseMoveHandler}
+            onMouseLeave={onMouseLeaveHandler}
+            onContextMenu={onContextMenuHandler}
+            onClick={onSelectNodeHandler}
+          >
             <Provider value={id}>
               <NodeComponent
                 id={id}
                 data={data}
                 type={type}
                 selected={selected}
+                isConnectable={isConnectable}
                 sourcePosition={sourcePosition}
                 targetPosition={targetPosition}
               />

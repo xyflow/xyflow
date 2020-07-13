@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, memo, CSSProperties } from 'react';
-import classnames from 'classnames';
+import React, { useEffect, useRef, memo, CSSProperties, MouseEvent } from 'react';
 import { ResizeObserver } from 'resize-observer';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -28,6 +27,10 @@ export interface GraphViewProps {
   elements: Elements;
   onElementClick?: (element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
+  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Connection | Edge) => void;
@@ -42,7 +45,9 @@ export interface GraphViewProps {
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
-  isInteractive: boolean;
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
   selectNodesOnDrag: boolean;
   minZoom: number;
   maxZoom: number;
@@ -56,6 +61,10 @@ const GraphView = memo(
     onMove,
     onLoad,
     onElementClick,
+    onNodeMouseEnter,
+    onNodeMouseMove,
+    onNodeMouseLeave,
+    onNodeContextMenu,
     onNodeDragStart,
     onNodeDragStop,
     connectionLineType,
@@ -68,7 +77,9 @@ const GraphView = memo(
     snapToGrid,
     snapGrid,
     onlyRenderVisibleNodes,
-    isInteractive,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
     selectNodesOnDrag,
     minZoom,
     maxZoom,
@@ -84,14 +95,15 @@ const GraphView = memo(
     const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
     const setOnConnect = useStoreActions((a) => a.setOnConnect);
     const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
-    const setInteractive = useStoreActions((actions) => actions.setInteractive);
+    const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
+    const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
+    const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
     const updateTransform = useStoreActions((actions) => actions.updateTransform);
     const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
     const fitView = useStoreActions((actions) => actions.fitView);
     const zoom = useStoreActions((actions) => actions.zoom);
 
     const selectionKeyPressed = useKeyPress(selectionKeyCode);
-    const rendererClasses = classnames('react-flow__renderer', { 'is-interactive': isInteractive });
 
     const onZoomPaneClick = () => setNodesSelection({ isActive: false });
 
@@ -161,8 +173,16 @@ const GraphView = memo(
     }, [snapToGrid]);
 
     useEffect(() => {
-      setInteractive(isInteractive);
-    }, [isInteractive]);
+      setNodesDraggable(nodesDraggable);
+    }, [nodesDraggable]);
+
+    useEffect(() => {
+      setNodesConnectable(nodesConnectable);
+    }, [nodesConnectable]);
+
+    useEffect(() => {
+      setElementsSelectable(elementsSelectable);
+    }, [elementsSelectable]);
 
     useEffect(() => {
       setMinMaxZoom({ minZoom, maxZoom });
@@ -172,10 +192,14 @@ const GraphView = memo(
     useElementUpdater(elements);
 
     return (
-      <div className={rendererClasses} ref={rendererNode}>
+      <div className="react-flow__renderer" ref={rendererNode}>
         <NodeRenderer
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseMove={onNodeMouseMove}
+          onNodeMouseLeave={onNodeMouseLeave}
+          onNodeContextMenu={onNodeContextMenu}
           onNodeDragStop={onNodeDragStop}
           onNodeDragStart={onNodeDragStart}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
@@ -189,7 +213,7 @@ const GraphView = memo(
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
         />
-        <UserSelection selectionKeyPressed={selectionKeyPressed} isInteractive={isInteractive} />
+        <UserSelection selectionKeyPressed={selectionKeyPressed} />
         {nodesSelectionActive && <NodesSelection />}
         <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
       </div>

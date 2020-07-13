@@ -1,4 +1,4 @@
-import React, { useMemo, CSSProperties, HTMLAttributes } from 'react';
+import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent } from 'react';
 import cx from 'classnames';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
@@ -17,6 +17,7 @@ import SelectionListener from '../../components/SelectionListener';
 import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
+import SmoothStepEdge from '../../components/Edges/SmoothStepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {
@@ -36,6 +37,10 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   elements: Elements;
   onElementClick?: (element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
+  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
@@ -51,7 +56,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
-  isInteractive: boolean;
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
   selectNodesOnDrag: boolean;
   minZoom: number;
   maxZoom: number;
@@ -70,6 +77,10 @@ const ReactFlow = ({
   onMove,
   onElementsRemove,
   onConnect,
+  onNodeMouseEnter,
+  onNodeMouseMove,
+  onNodeMouseLeave,
+  onNodeContextMenu,
   onNodeDragStart,
   onNodeDragStop,
   onSelectionChange,
@@ -80,7 +91,9 @@ const ReactFlow = ({
   snapToGrid,
   snapGrid,
   onlyRenderVisibleNodes,
-  isInteractive,
+  nodesDraggable,
+  nodesConnectable,
+  elementsSelectable,
   selectNodesOnDrag,
   minZoom,
   maxZoom,
@@ -96,6 +109,10 @@ const ReactFlow = ({
           onLoad={onLoad}
           onMove={onMove}
           onElementClick={onElementClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseMove={onNodeMouseMove}
+          onNodeMouseLeave={onNodeMouseLeave}
+          onNodeContextMenu={onNodeContextMenu}
           onNodeDragStart={onNodeDragStart}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
@@ -110,7 +127,9 @@ const ReactFlow = ({
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
-          isInteractive={isInteractive}
+          nodesDraggable={nodesDraggable}
+          nodesConnectable={nodesConnectable}
+          elementsSelectable={elementsSelectable}
           selectNodesOnDrag={selectNodesOnDrag}
           minZoom={minZoom}
           maxZoom={maxZoom}
@@ -135,6 +154,7 @@ ReactFlow.defaultProps = {
     default: BezierEdge,
     straight: StraightEdge,
     step: StepEdge,
+    smoothstep: SmoothStepEdge,
   },
   connectionLineType: ConnectionLineType.Bezier,
   deleteKeyCode: 8,
@@ -142,7 +162,9 @@ ReactFlow.defaultProps = {
   snapToGrid: false,
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,
-  isInteractive: true,
+  nodesDraggable: true,
+  nodesConnectable: true,
+  elementsSelectable: true,
   selectNodesOnDrag: true,
   minZoom: 0.5,
   maxZoom: 2,
