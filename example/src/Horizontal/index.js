@@ -4,6 +4,14 @@ import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
 
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
 
+const onNodeMouseEnter = (evt, node) => console.log('mouse enter:', node);
+const onNodeMouseMove = (evt, node) => console.log('mouse move:', node);
+const onNodeMouseLeave = (evt, node) => console.log('mouse leave:', node);
+const onNodeContextMenu = (evt, node) => {
+  evt.preventDefault();
+  console.log('context menu:', node);
+};
+
 const initialElements = [
   {
     id: '1',
@@ -21,13 +29,13 @@ const initialElements = [
   { id: '7', sourcePosition: 'right', targetPosition: 'left', data: { label: 'Node 7' }, position: { x: 750, y: 50 } },
   { id: '8', sourcePosition: 'right', targetPosition: 'left', data: { label: 'Node 8' }, position: { x: 750, y: 300 } },
 
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3', animated: true },
-  { id: 'e1-4', source: '2', target: '4', label: 'edge label' },
-  { id: 'e3-5', source: '3', target: '5', animated: true },
-  { id: 'e3-6', source: '3', target: '6', animated: true },
-  { id: 'e5-7', source: '5', target: '7', animated: true },
-  { id: 'e6-8', source: '6', target: '8', animated: true },
+  { id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true },
+  { id: 'e1-3', source: '1', type: 'smoothstep', target: '3', animated: true },
+  { id: 'e1-4', source: '2', type: 'smoothstep', target: '4', label: 'edge label' },
+  { id: 'e3-5', source: '3', type: 'smoothstep', target: '5', animated: true },
+  { id: 'e3-6', source: '3', type: 'smoothstep', target: '6', animated: true },
+  { id: 'e5-7', source: '5', type: 'smoothstep', target: '7', animated: true },
+  { id: 'e6-8', source: '6', type: 'smoothstep', target: '8', animated: true },
 ];
 
 const HorizontalFlow = () => {
@@ -53,6 +61,10 @@ const HorizontalFlow = () => {
       onConnect={onConnect}
       onLoad={onLoad}
       selectNodesOnDrag={false}
+      onNodeMouseEnter={onNodeMouseEnter}
+      onNodeMouseMove={onNodeMouseMove}
+      onNodeMouseLeave={onNodeMouseLeave}
+      onNodeContextMenu={onNodeContextMenu}
     >
       <button onClick={changeClassName} style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}>
         change class name

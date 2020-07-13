@@ -1,4 +1,4 @@
-import React, { memo, ComponentType } from 'react';
+import React, { memo, ComponentType, MouseEvent } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import { getNodesInside } from '../../utils/graph';
@@ -8,6 +8,10 @@ interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
   onElementClick?: (element: Node | Edge) => void;
+  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
@@ -37,6 +41,10 @@ function renderNode(
       xPos={node.__rf.position.x}
       yPos={node.__rf.position.y}
       onClick={props.onElementClick}
+      onMouseEnter={props.onNodeMouseEnter}
+      onMouseMove={props.onNodeMouseMove}
+      onMouseLeave={props.onNodeMouseLeave}
+      onContextMenu={props.onNodeContextMenu}
       onNodeDragStart={props.onNodeDragStart}
       onNodeDragStop={props.onNodeDragStop}
       transform={transform}

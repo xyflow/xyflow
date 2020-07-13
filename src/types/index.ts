@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, MouseEvent } from 'react';
 
 export type ElementId = string;
 
@@ -109,6 +109,10 @@ export interface NodeComponentProps {
   targetPosition?: Position;
   sourcePosition?: Position;
   onClick?: (node: Node) => void;
+  onMouseEnter?: (node: Node) => void;
+  onMouseMove?: (node: Node) => void;
+  onMouseLeave?: (node: Node) => void;
+  onContextMenu?: (node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
@@ -125,6 +129,10 @@ export interface WrapNodeProps {
   isInteractive: boolean;
   selectNodesOnDrag: boolean;
   onClick?: (node: Node) => void;
+  onMouseEnter?: (evt: MouseEvent, node: Node) => void;
+  onMouseMove?: (evt: MouseEvent, node: Node) => void;
+  onMouseLeave?: (evt: MouseEvent, node: Node) => void;
+  onContextMenu?: (evt: MouseEvent, node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;

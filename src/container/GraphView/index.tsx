@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, CSSProperties } from 'react';
+import React, { useEffect, useRef, memo, CSSProperties, MouseEvent } from 'react';
 import classnames from 'classnames';
 import { ResizeObserver } from 'resize-observer';
 
@@ -28,6 +28,10 @@ export interface GraphViewProps {
   elements: Elements;
   onElementClick?: (element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
+  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Connection | Edge) => void;
@@ -56,6 +60,10 @@ const GraphView = memo(
     onMove,
     onLoad,
     onElementClick,
+    onNodeMouseEnter,
+    onNodeMouseMove,
+    onNodeMouseLeave,
+    onNodeContextMenu,
     onNodeDragStart,
     onNodeDragStop,
     connectionLineType,
@@ -176,6 +184,10 @@ const GraphView = memo(
         <NodeRenderer
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseMove={onNodeMouseMove}
+          onNodeMouseLeave={onNodeMouseLeave}
+          onNodeContextMenu={onNodeContextMenu}
           onNodeDragStop={onNodeDragStop}
           onNodeDragStart={onNodeDragStart}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}

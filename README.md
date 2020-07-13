@@ -69,6 +69,10 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onElementsRemove(elements: Elements)`: element remove callback
 - `onNodeDragStart(node: Node)`: node drag start callback
 - `onNodeDragStop(node: Node)`: node drag stop callback
+- `onNodeMouseEnter(evt: MouseEvent, node: Node)`: node mouse enter callback
+- `onNodeMouseMove(evt: MouseEvent, node: Node)`: node mouse move callback
+- `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave callback
+- `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu callback
 - `onConnect({ source, target })`: connect callback
 - `onLoad(reactFlowInstance)`: editor load callback
 - `onMove()`: move callback

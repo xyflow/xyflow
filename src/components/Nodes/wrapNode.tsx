@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo, ComponentType, CSSProperties } from 'react';
+import React, { useEffect, useRef, useState, memo, ComponentType, CSSProperties, useMemo, MouseEvent } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cx from 'classnames';
 import { ResizeObserver } from 'resize-observer';
@@ -16,6 +16,8 @@ import {
   Edge,
   NodePosUpdate,
 } from '../../types';
+
+import { noop } from '../../utils';
 
 const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
   typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : (evt as MouseEvent);
@@ -154,6 +156,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       yPos,
       selected,
       onClick,
+      onMouseEnter,
+      onMouseMove,
+      onMouseLeave,
+      onContextMenu,
       onNodeDragStart,
       onNodeDragStop,
       style,
@@ -172,6 +178,38 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const [isDragging, setDragging] = useState(false);
       const position = { x: xPos, y: yPos };
       const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, { selected });
+      const node = { id, type, position, data };
+      const onMouseEnterHandler = useMemo(() => {
+        if (!onMouseEnter || isDragging) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onMouseEnter(evt, node);
+      }, [onMouseEnter, isDragging]);
+
+      const onMouseMoveHandler = useMemo(() => {
+        if (!onMouseMove || isDragging) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onMouseMove(evt, node);
+      }, [onMouseMove, isDragging]);
+
+      const onMouseLeaveHandler = useMemo(() => {
+        if (!onMouseLeave || isDragging) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onMouseLeave(evt, node);
+      }, [onMouseLeave, isDragging]);
+
+      const onContextMenuHandler = useMemo(() => {
+        if (!onContextMenu) {
+          return noop;
+        }
+
+        return (evt: MouseEvent) => onContextMenu(evt, node);
+      }, [onContextMenu]);
 
       const nodeStyle: CSSProperties = {
         zIndex: selected ? 10 : 3,
@@ -237,7 +275,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           disabled={!isInteractive}
           cancel=".nodrag"
         >
-          <div className={nodeClasses} ref={nodeElement} style={nodeStyle}>
+          <div
+            className={nodeClasses}
+            ref={nodeElement}
+            style={nodeStyle}
+            onMouseEnter={onMouseEnterHandler}
+            onMouseMove={onMouseMoveHandler}
+            onMouseLeave={onMouseLeaveHandler}
+            onContextMenu={onContextMenuHandler}
+          >
             <Provider value={id}>
               <NodeComponent
                 id={id}
