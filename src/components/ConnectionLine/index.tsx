@@ -11,7 +11,7 @@ interface ConnectionLineProps {
   connectionLineType: ConnectionLineType;
   nodes: Node[];
   transform: Transform;
-  isInteractive: boolean;
+  isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   className?: string;
 }
@@ -26,7 +26,7 @@ export default ({
   nodes = [],
   className,
   transform,
-  isInteractive,
+  isConnectable,
 }: ConnectionLineProps) => {
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const hasHandleId = connectionNodeId.includes('__');
@@ -39,7 +39,7 @@ export default ({
     setSourceNode(nextSourceNode);
   }, []);
 
-  if (!sourceNode || !isInteractive) {
+  if (!sourceNode || !isConnectable) {
     return null;
   }
 

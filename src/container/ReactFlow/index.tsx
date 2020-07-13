@@ -56,7 +56,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
-  isInteractive: boolean;
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
   selectNodesOnDrag: boolean;
   minZoom: number;
   maxZoom: number;
@@ -89,7 +91,9 @@ const ReactFlow = ({
   snapToGrid,
   snapGrid,
   onlyRenderVisibleNodes,
-  isInteractive,
+  nodesDraggable,
+  nodesConnectable,
+  elementsSelectable,
   selectNodesOnDrag,
   minZoom,
   maxZoom,
@@ -123,7 +127,9 @@ const ReactFlow = ({
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
-          isInteractive={isInteractive}
+          nodesDraggable={nodesDraggable}
+          nodesConnectable={nodesConnectable}
+          elementsSelectable={elementsSelectable}
           selectNodesOnDrag={selectNodesOnDrag}
           minZoom={minZoom}
           maxZoom={maxZoom}
@@ -156,7 +162,9 @@ ReactFlow.defaultProps = {
   snapToGrid: false,
   snapGrid: [16, 16],
   onlyRenderVisibleNodes: true,
-  isInteractive: true,
+  nodesDraggable: true,
+  nodesConnectable: true,
+  elementsSelectable: true,
   selectNodesOnDrag: true,
   minZoom: 0.5,
   maxZoom: 2,

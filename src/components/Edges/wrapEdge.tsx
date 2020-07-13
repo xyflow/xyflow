@@ -17,7 +17,7 @@ interface EdgeWrapperProps {
   onClick?: (edge: Edge) => void;
   animated?: boolean;
   selected: boolean;
-  isInteractive: boolean;
+  elementsSelectable: boolean;
 }
 
 export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
@@ -30,7 +30,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       animated,
       selected,
       onClick,
-      isInteractive,
+      elementsSelectable,
       label,
       labelStyle,
       labelShowBg,
@@ -41,10 +41,10 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
       const edgeClasses = cx('react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated });
       const edgeGroupStyle: CSSProperties = {
-        pointerEvents: isInteractive ? 'all' : 'none',
+        pointerEvents: elementsSelectable ? 'all' : 'none',
       };
       const onEdgeClick = (): void => {
-        if (!isInteractive) {
+        if (!elementsSelectable) {
           return;
         }
 

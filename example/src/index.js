@@ -6,7 +6,7 @@ import Overview from './Overview';
 import Basic from './Basic';
 import CustomNode from './CustomNode';
 import Stress from './Stress';
-import Inactive from './Inactive';
+import Interaction from './Interaction';
 import Empty from './Empty';
 import Edges from './Edges';
 import Validation from './Validation';
@@ -60,8 +60,9 @@ const routes = [
     component: Empty,
   },
   {
-    path: '/inactive',
-    component: Inactive,
+    path: '/interaction',
+    component: Interaction,
+    label: 'Interaction',
   },
 ];
 

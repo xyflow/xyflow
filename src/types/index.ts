@@ -94,6 +94,7 @@ export interface NodeProps {
   type: string;
   data: any;
   selected: boolean;
+  isConnectable: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
 }
@@ -102,6 +103,7 @@ export interface NodeComponentProps {
   id: ElementId;
   type: string;
   data: any;
+  isConnectable: boolean;
   selected?: boolean;
   transform?: Transform;
   xPos?: number;
@@ -126,7 +128,9 @@ export interface WrapNodeProps {
   transform: Transform;
   xPos: number;
   yPos: number;
-  isInteractive: boolean;
+  isSelectable: boolean;
+  isDraggable: boolean;
+  isConnectable: boolean;
   selectNodesOnDrag: boolean;
   onClick?: (node: Node) => void;
   onMouseEnter?: (evt: MouseEvent, node: Node) => void;
@@ -182,6 +186,7 @@ export interface HandleElement extends XYPosition, Dimensions {
 export interface HandleProps {
   type: HandleType;
   position: Position;
+  isConnectable?: boolean;
   onConnect?: OnConnectFunc;
   isValidConnection?: (connection: Connection) => boolean;
   id?: string;

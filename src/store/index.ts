@@ -79,7 +79,9 @@ export interface StoreModel {
   snapToGrid: boolean;
   snapGrid: [number, number];
 
-  isInteractive: boolean;
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
 
   reactFlowVersion: string;
 
@@ -116,6 +118,9 @@ export interface StoreModel {
   setConnectionNodeId: Action<StoreModel, SetConnectionId>;
 
   setInteractive: Action<StoreModel, boolean>;
+  setNodesDraggable: Action<StoreModel, boolean>;
+  setNodesConnectable: Action<StoreModel, boolean>;
+  setElementsSelectable: Action<StoreModel, boolean>;
 
   setUserSelection: Action<StoreModel, XYPosition>;
   updateUserSelection: Action<StoreModel, XYPosition>;
@@ -162,7 +167,9 @@ export const storeModel: StoreModel = {
   snapGrid: [16, 16],
   snapToGrid: false,
 
-  isInteractive: true,
+  nodesDraggable: true,
+  nodesConnectable: true,
+  elementsSelectable: true,
 
   reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
@@ -373,7 +380,21 @@ export const storeModel: StoreModel = {
   }),
 
   setInteractive: action((state, isInteractive) => {
-    state.isInteractive = isInteractive;
+    state.nodesDraggable = isInteractive;
+    state.nodesConnectable = isInteractive;
+    state.elementsSelectable = isInteractive;
+  }),
+
+  setNodesDraggable: action((state, nodesDraggable) => {
+    state.nodesDraggable = nodesDraggable;
+  }),
+
+  setNodesConnectable: action((state, nodesConnectable) => {
+    state.nodesConnectable = nodesConnectable;
+  }),
+
+  setElementsSelectable: action((state, elementsSelectable) => {
+    state.elementsSelectable = elementsSelectable;
   }),
 
   fitView: action((state, payload = { padding: 0.1 }) => {

@@ -88,7 +88,9 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
-- `isInteractive`: default: `true`. If the graph is not interactive you can't drag any nodes
+- `nodesDraggable`: default: `true`
+- `nodesConnectable`: default: `true`
+- `elementsSelectable`: default: `true`
 - `selectNodesOnDrag`: default: `true`
 - `minZoom`: default: `0.5`
 - `maxZoom`: default: `2`
@@ -511,7 +513,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [provider](https://react-flow.netlify.app/provider)
 - [edges](https://react-flow.netlify.app/edges)
 - [empty](https://react-flow.netlify.app/empty)
-- [inactive](https://react-flow.netlify.app/inactive)
+- [interaction](https://react-flow.netlify.app/interaction)
 - [provider](https://react-flow.netlify.app/provider)
 
 # Development

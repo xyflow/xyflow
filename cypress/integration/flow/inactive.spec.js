@@ -1,6 +1,6 @@
-describe('Inactive Graph Rendering', () => {
+describe('Interaction Graph Rendering', () => {
   it('renders a graph', () => {
-    cy.visit('/inactive');
+    cy.visit('/interaction');
 
     cy.get('.react-flow__renderer');
     cy.get('.react-flow__node').should('have.length', 4);
@@ -20,12 +20,24 @@ describe('Inactive Graph Rendering', () => {
 
   it('tries to do a selection', () => {
     cy.get('body').type('{shift}', { release: false }).get('.react-flow__selectionpane').should('not.exist');
-
     cy.get('body').type('{shift}', { release: true });
   });
 
-  it('toggles interactive mode', () => {
-    cy.get('.react-flow__interactive').click();
+  it('toggles draggable mode', () => {
+    cy.get('.react-flow__draggable').click();
+  });
+
+  it('drags a node', () => {
+    const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
+
+    cy.drag('.react-flow__node:first', { x: 325, y: 100 }).then(($el) => {
+      const styleAfterDrag = $el.css('transform');
+      expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
+    });
+  });
+
+  it('toggles selectable mode', () => {
+    cy.get('.react-flow__selectable').click();
   });
 
   it('selects a node by click', () => {

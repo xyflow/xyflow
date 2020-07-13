@@ -1,4 +1,5 @@
 import React, { memo, useContext } from 'react';
+import classnames from 'classnames';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import BaseHandle from './BaseHandle';
@@ -12,6 +13,7 @@ const Handle = memo(
     position = Position.Top,
     onConnect = () => {},
     isValidConnection = () => true,
+    isConnectable = true,
     style,
     className,
     id,
@@ -24,9 +26,12 @@ const Handle = memo(
       onConnectAction(params);
       onConnect(params);
     };
+    const handleClasses = classnames(className, { connectable: isConnectable });
 
     return (
       <BaseHandle
+        className={handleClasses}
+        id={id}
         nodeId={nodeId}
         setPosition={setPosition}
         setConnectionNodeId={setConnectionNodeId}
@@ -35,8 +40,6 @@ const Handle = memo(
         position={position}
         isValidConnection={isValidConnection}
         style={style}
-        className={className}
-        id={id}
       />
     );
   }

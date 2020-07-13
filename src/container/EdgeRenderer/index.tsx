@@ -118,7 +118,7 @@ function renderEdge(
   props: EdgeRendererProps,
   nodes: Node[],
   selectedElements: Elements | null,
-  isInteractive: boolean
+  elementsSelectable: boolean
 ) {
   const [sourceId, sourceHandleId] = edge.source.split('__');
   const [targetId, targetHandleId] = edge.target.split('__');
@@ -181,7 +181,7 @@ function renderEdge(
       targetY={targetY}
       sourcePosition={sourcePosition}
       targetPosition={targetPosition}
-      isInteractive={isInteractive}
+      elementsSelectable={elementsSelectable}
     />
   );
 }
@@ -194,7 +194,8 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
   const connectionHandleType = useStoreState((s) => s.connectionHandleType);
   const connectionPosition = useStoreState((s) => s.connectionPosition);
   const selectedElements = useStoreState((s) => s.selectedElements);
-  const isInteractive = useStoreState((s) => s.isInteractive);
+  const nodesConnectable = useStoreState((s) => s.nodesConnectable);
+  const elementsSelectable = useStoreState((s) => s.elementsSelectable);
 
   const { width, height, connectionLineStyle, connectionLineType } = props;
 
@@ -208,7 +209,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <g transform={transformStyle}>
-        {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements, isInteractive))}
+        {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements, elementsSelectable))}
         {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}
@@ -219,7 +220,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
             transform={[tX, tY, tScale]}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}
-            isInteractive={isInteractive}
+            isConnectable={nodesConnectable}
           />
         )}
       </g>

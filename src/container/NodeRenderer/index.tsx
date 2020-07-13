@@ -22,7 +22,9 @@ function renderNode(
   props: NodeRendererProps,
   transform: Transform,
   selectedElements: Elements | null,
-  isInteractive: boolean
+  nodesDraggable: boolean,
+  nodesConnectable: boolean,
+  elementsSelectable: boolean
 ) {
   const nodeType = node.type || 'default';
   const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
@@ -51,7 +53,9 @@ function renderNode(
       selected={isSelected}
       style={node.style}
       className={node.className}
-      isInteractive={isInteractive}
+      isDraggable={nodesDraggable}
+      isSelectable={elementsSelectable}
+      isConnectable={nodesConnectable}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       selectNodesOnDrag={props.selectNodesOnDrag}
@@ -65,7 +69,10 @@ const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRend
   const selectedElements = useStoreState((s) => s.selectedElements);
   const width = useStoreState((s) => s.width);
   const height = useStoreState((s) => s.height);
-  const isInteractive = useStoreState((s) => s.isInteractive);
+  const nodesDraggable = useStoreState((s) => s.nodesDraggable);
+  const nodesConnectable = useStoreState((s) => s.nodesConnectable);
+  const elementsSelectable = useStoreState((s) => s.elementsSelectable);
+
   const [tX, tY, tScale] = transform;
   const transformStyle = {
     transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
@@ -77,7 +84,9 @@ const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRend
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {renderNodes.map((node) => renderNode(node, props, transform, selectedElements, isInteractive))}
+      {renderNodes.map((node) =>
+        renderNode(node, props, transform, selectedElements, nodesDraggable, nodesConnectable, elementsSelectable)
+      )}
     </div>
   );
 });

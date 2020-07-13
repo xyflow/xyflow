@@ -8,7 +8,6 @@ import { useStoreActions, useStoreState } from '../../store/hooks';
 import { XYPosition } from '../../types';
 
 type UserSelectionProps = {
-  isInteractive: boolean;
   selectionKeyPressed: boolean;
 };
 
@@ -45,8 +44,9 @@ const SelectionRect = () => {
   );
 };
 
-export default memo(({ isInteractive, selectionKeyPressed }: UserSelectionProps) => {
+export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   const selectionActive = useStoreState((s) => s.selectionActive);
+  const elementsSelectable = useStoreState((s) => s.elementsSelectable);
 
   const setUserSelection = useStoreActions((a) => a.setUserSelection);
   const updateUserSelection = useStoreActions((a) => a.updateUserSelection);
@@ -59,7 +59,7 @@ export default memo(({ isInteractive, selectionKeyPressed }: UserSelectionProps)
     }
   }, [selectionKeyPressed]);
 
-  if (!isInteractive || !renderUserSelectionPane) {
+  if (!elementsSelectable || !renderUserSelectionPane) {
     return null;
   }
 
