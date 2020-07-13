@@ -17,6 +17,7 @@ import SelectionListener from '../../components/SelectionListener';
 import BezierEdge from '../../components/Edges/BezierEdge';
 import StraightEdge from '../../components/Edges/StraightEdge';
 import StepEdge from '../../components/Edges/StepEdge';
+import SmoothStepEdge from '../../components/Edges/SmoothStepEdge';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {
@@ -135,6 +136,7 @@ ReactFlow.defaultProps = {
     default: BezierEdge,
     straight: StraightEdge,
     step: StepEdge,
+    smoothstep: SmoothStepEdge,
   },
   connectionLineType: ConnectionLineType.Bezier,
   deleteKeyCode: 8,

@@ -223,7 +223,7 @@ You can find an example of how to implement a custom node with multiple handles 
 
 # Edges
 
-React Flow comes with three [edge types](#edge-types--custom-edges) (`straight`, `default`, `step`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the `ReactFlow` component.
+React Flow comes with three [edge types](#edge-types--custom-edges) (`default`, `straight`, `step`, `smoothstep`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the `ReactFlow` component.
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true, label: 'edge label' }`
 
@@ -246,13 +246,14 @@ You can find an example with lots of different edges in the [edges example](http
 
 ### Edge Types & Custom Edges
 
-The basic edge types are `straight`, `default` and `step`. The default `edgeTypes` object looks like this:
+The basic edge types are `default` (bezier), `straight`, `step` and `smoothedge`. The default `edgeTypes` object looks like this:
 
 ```javascript
 {
   default: BezierEdge,
   straight: StraightEdge,
-  step: StepEdge
+  step: StepEdge,
+  smoothstep: SmoothStepEdge
 }
 ```
 
