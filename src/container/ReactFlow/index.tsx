@@ -14,10 +14,7 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
-import BezierEdge from '../../components/Edges/BezierEdge';
-import StraightEdge from '../../components/Edges/StraightEdge';
-import StepEdge from '../../components/Edges/StepEdge';
-import SmoothStepEdge from '../../components/Edges/SmoothStepEdge';
+import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {

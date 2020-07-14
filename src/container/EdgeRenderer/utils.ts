@@ -1,9 +1,6 @@
 import { ComponentType } from 'react';
 
-import StraightEdge from '../../components/Edges/StraightEdge';
-import BezierEdge from '../../components/Edges/BezierEdge';
-import StepEdge from '../../components/Edges/StepEdge';
-import SmoothStepEdge from '../../components/Edges/SmoothStepEdge';
+import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
 
 import { EdgeTypesType, EdgeCompProps } from '../../types';
