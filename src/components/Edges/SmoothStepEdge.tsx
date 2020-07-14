@@ -75,7 +75,7 @@ export function getSmoothStepPath({
       sourceY <= targetY
         ? rightTopCorner(targetX, centerY, cornerSize)
         : rightBottomCorner(targetX, centerY, cornerSize);
-  } else if (sourceX > targetX) {
+  } else {
     firstCornerPath =
       sourceY < targetY
         ? bottomRightCorner(sourceX, centerY, cornerSize)
@@ -101,7 +101,7 @@ export function getSmoothStepPath({
         sourceY <= targetY
           ? rightTopCorner(targetX, sourceY, cornerSize)
           : rightBottomCorner(targetX, sourceY, cornerSize);
-    } else if (sourceX > targetX) {
+    } else {
       firstCornerPath =
         sourceY <= targetY
           ? bottomRightCorner(sourceX, targetY, cornerSize)
@@ -114,7 +114,7 @@ export function getSmoothStepPath({
         sourceY <= targetY
           ? bottomLeftCorner(sourceX, targetY, cornerSize)
           : topLeftCorner(sourceX, targetY, cornerSize);
-    } else if (sourceX > targetX) {
+    } else {
       firstCornerPath =
         sourceY <= targetY
           ? bottomRightCorner(sourceX, targetY, cornerSize)
