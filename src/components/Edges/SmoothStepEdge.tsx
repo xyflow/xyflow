@@ -68,11 +68,11 @@ export function getSmoothStepPath({
   let secondCornerPath = null;
 
   // default case: source and target positions are top or bottom
-  if (sourceX < targetX) {
+  if (sourceX <= targetX) {
     firstCornerPath =
-      sourceY < targetY ? bottomLeftCorner(sourceX, centerY, cornerSize) : topLeftCorner(sourceX, centerY, cornerSize);
+      sourceY <= targetY ? bottomLeftCorner(sourceX, centerY, cornerSize) : topLeftCorner(sourceX, centerY, cornerSize);
     secondCornerPath =
-      sourceY < targetY
+      sourceY <= targetY
         ? rightTopCorner(targetX, centerY, cornerSize)
         : rightBottomCorner(targetX, centerY, cornerSize);
   } else if (sourceX > targetX) {
@@ -85,38 +85,38 @@ export function getSmoothStepPath({
   }
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    if (sourceX < targetX) {
+    if (sourceX <= targetX) {
       firstCornerPath =
-        sourceY < targetY
+        sourceY <= targetY
           ? rightTopCorner(centerX, sourceY, cornerSize)
           : rightBottomCorner(centerX, sourceY, cornerSize);
       secondCornerPath =
-        sourceY < targetY
+        sourceY <= targetY
           ? bottomLeftCorner(centerX, targetY, cornerSize)
           : topLeftCorner(centerX, targetY, cornerSize);
     }
   } else if (leftAndRight.includes(sourcePosition) && !leftAndRight.includes(targetPosition)) {
-    if (sourceX < targetX) {
+    if (sourceX <= targetX) {
       firstCornerPath =
-        sourceY < targetY
+        sourceY <= targetY
           ? rightTopCorner(targetX, sourceY, cornerSize)
           : rightBottomCorner(targetX, sourceY, cornerSize);
     } else if (sourceX > targetX) {
       firstCornerPath =
-        sourceY < targetY
+        sourceY <= targetY
           ? bottomRightCorner(sourceX, targetY, cornerSize)
           : topRightCorner(sourceX, targetY, cornerSize);
     }
     secondCornerPath = '';
   } else if (!leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    if (sourceX < targetX) {
+    if (sourceX <= targetX) {
       firstCornerPath =
-        sourceY < targetY
+        sourceY <= targetY
           ? bottomLeftCorner(sourceX, targetY, cornerSize)
           : topLeftCorner(sourceX, targetY, cornerSize);
     } else if (sourceX > targetX) {
       firstCornerPath =
-        sourceY < targetY
+        sourceY <= targetY
           ? bottomRightCorner(sourceX, targetY, cornerSize)
           : topRightCorner(sourceX, targetY, cornerSize);
     }
