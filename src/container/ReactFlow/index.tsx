@@ -60,6 +60,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
+  arrowHeadColor: string;
+  markerEndId?: string;
 }
 
 const ReactFlow = ({
@@ -95,6 +97,8 @@ const ReactFlow = ({
   minZoom,
   maxZoom,
   defaultZoom,
+  arrowHeadColor,
+  markerEndId,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -132,6 +136,8 @@ const ReactFlow = ({
           minZoom={minZoom}
           maxZoom={maxZoom}
           defaultZoom={defaultZoom}
+          arrowHeadColor={arrowHeadColor}
+          markerEndId={markerEndId}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
@@ -167,6 +173,7 @@ ReactFlow.defaultProps = {
   minZoom: 0.5,
   maxZoom: 2,
   defaultZoom: 1,
+  arrowHeadColor: '#bbb',
 };
 
 export default ReactFlow;

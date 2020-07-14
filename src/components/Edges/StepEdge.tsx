@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
+import { getMarkerEnd } from './utils';
 import { EdgeProps } from '../../types';
 
 interface GetStepPathParams {
@@ -16,7 +17,19 @@ export function getStepPath({ centerY, sourceX, sourceY, targetX, targetY }: Get
 }
 
 export default memo(
-  ({ sourceX, sourceY, targetX, targetY, label, labelStyle, labelShowBg, labelBgStyle, style }: EdgeProps) => {
+  ({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    label,
+    labelStyle,
+    labelShowBg,
+    labelBgStyle,
+    style,
+    arrowHeadType,
+    markerEndId,
+  }: EdgeProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
@@ -24,6 +37,8 @@ export default memo(
     const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
 
     const path = getStepPath({ centerY, sourceX, sourceY, targetX, targetY });
+
+    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
 
     const text = label ? (
       <EdgeText
@@ -38,7 +53,7 @@ export default memo(
 
     return (
       <>
-        <path style={style} className="react-flow__edge-path" d={path} />
+        <path style={style} className="react-flow__edge-path" d={path} markerEnd={markerEnd} />
         {text}
       </>
     );

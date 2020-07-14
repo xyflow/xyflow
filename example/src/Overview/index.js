@@ -70,7 +70,7 @@ const initialElements = [
         </>
       ),
     },
-    position: { x: 250, y: 300 },
+    position: { x: 250, y: 325 },
   },
   {
     id: '6',
@@ -88,7 +88,7 @@ const initialElements = [
   { id: 'e1-2', source: '1', target: '2', label: 'this is an edge label' },
   { id: 'e1-3', source: '1', target: '3' },
   { id: 'e3-4', source: '3', target: '4', animated: true, label: 'animated edge' },
-  { id: 'e4-5', source: '4', target: '5' },
+  { id: 'e4-5', source: '4', target: '5', arrowHeadType: 'arrowclosed', label: 'edge with arrow head' },
   { id: 'e5-6', source: '5', target: '6', type: 'smoothstep', label: 'smooth step edge' },
   {
     id: 'e5-7',

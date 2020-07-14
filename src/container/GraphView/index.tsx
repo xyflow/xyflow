@@ -52,6 +52,8 @@ export interface GraphViewProps {
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
+  arrowHeadColor: string;
+  markerEndId?: string;
 }
 
 const GraphView = memo(
@@ -84,6 +86,8 @@ const GraphView = memo(
     minZoom,
     maxZoom,
     defaultZoom,
+    arrowHeadColor,
+    markerEndId,
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -212,6 +216,8 @@ const GraphView = memo(
           onElementClick={onElementClick}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
+          arrowHeadColor={arrowHeadColor}
+          markerEndId={markerEndId}
         />
         <UserSelection selectionKeyPressed={selectionKeyPressed} />
         {nodesSelectionActive && <NodesSelection />}

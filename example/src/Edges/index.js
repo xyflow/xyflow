@@ -25,13 +25,21 @@ const initialElements = [
   { id: 'e3-4', source: '3', target: '4', type: 'straight', label: 'straight edge' },
   { id: 'e3-3a', source: '3', target: '3a', type: 'straight', label: 'label only edge', style: { stroke: 'none' } },
   { id: 'e3-5', source: '4', target: '5', animated: true, label: 'animated styled edge', style: { stroke: 'red' } },
-  { id: 'e5-6', source: '5', target: '6', label: 'styled label', labelStyle: { fill: 'red', fontWeight: 700 } },
+  {
+    id: 'e5-6',
+    source: '5',
+    target: '6',
+    label: 'styled label',
+    labelStyle: { fill: 'red', fontWeight: 700 },
+    arrowHeadType: 'arrow',
+  },
   {
     id: 'e5-7',
     source: '5',
     target: '7',
     label: 'label with styled bg',
     labelBgStyle: { fill: '#eee', fillOpacity: 0.7 },
+    arrowHeadType: 'arrowclosed',
   },
   { id: 'e5-8', source: '5', target: '8', type: 'custom', label: 'custom edge' },
 ];

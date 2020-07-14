@@ -3,6 +3,7 @@ import React, { memo, CSSProperties } from 'react';
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
+import MarkerDefinitions from './MarkerDefinitions';
 import { XYPosition, Position, Edge, Node, ElementId, HandleElement, Elements, ConnectionLineType } from '../../types';
 
 interface EdgeRendererProps {
@@ -12,6 +13,8 @@ interface EdgeRendererProps {
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   onElementClick?: (element: Node | Edge) => void;
+  arrowHeadColor: string;
+  markerEndId?: string;
 }
 
 interface EdgePositions {
@@ -171,6 +174,7 @@ function renderEdge(
       labelShowBg={edge.labelShowBg}
       labelBgStyle={edge.labelBgStyle}
       style={edge.style}
+      arrowHeadType={edge.arrowHeadType}
       source={sourceId}
       target={targetId}
       sourceHandleId={sourceHandleId}
@@ -182,6 +186,7 @@ function renderEdge(
       sourcePosition={sourcePosition}
       targetPosition={targetPosition}
       elementsSelectable={elementsSelectable}
+      markerEndId={props.markerEndId}
     />
   );
 }
@@ -197,7 +202,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
   const nodesConnectable = useStoreState((s) => s.nodesConnectable);
   const elementsSelectable = useStoreState((s) => s.elementsSelectable);
 
-  const { width, height, connectionLineStyle, connectionLineType } = props;
+  const { width, height, connectionLineStyle, connectionLineType, arrowHeadColor } = props;
 
   if (!width) {
     return null;
@@ -208,6 +213,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
+      <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
         {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements, elementsSelectable))}
         {renderConnectionLine && (
