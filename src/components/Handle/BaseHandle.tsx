@@ -1,5 +1,5 @@
 import React, { memo, MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
-import cx from 'classnames';
+import cc from 'classcat';
 
 import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection, SetConnectionId } from '../../types';
 
@@ -144,10 +144,16 @@ const BaseHandle = memo(
     ...rest
   }: BaseHandleProps) => {
     const isTarget = type === 'target';
-    const handleClasses = cx('react-flow__handle', `react-flow__handle-${position}`, 'nodrag', className, {
-      source: !isTarget,
-      target: isTarget,
-    });
+    const handleClasses = cc([
+      'react-flow__handle',
+      `react-flow__handle-${position}`,
+      'nodrag',
+      className,
+      {
+        source: !isTarget,
+        target: isTarget,
+      },
+    ]);
 
     const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
 

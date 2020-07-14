@@ -91,10 +91,12 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `nodesDraggable`: default: `true`
 - `nodesConnectable`: default: `true`
 - `elementsSelectable`: default: `true`
+- `zoomOnScroll`: default: `true`
 - `selectNodesOnDrag`: default: `true`
 - `minZoom`: default: `0.5`
 - `maxZoom`: default: `2`
 - `defaultZoom`: default: `1`
+- `arrowHeadColor`: default: `#bbb`
 
 ## React Flow Instance
 
@@ -247,6 +249,8 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `labelStyle`: css properties for the text
 - `labelShowBg`: boolean - default: `true`
 - `labelBgStyle`: css properties for the text background
+- `arrowHeadType`: 'arrow' or 'arrowclosed' - defines the arrowhead of the edge
+- `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 
 You can find an example with lots of different edges in the [edges example](https://react-flow.netlify.app/edges).
 

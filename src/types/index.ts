@@ -42,6 +42,11 @@ export interface Node {
   sourcePosition?: Position;
 }
 
+export enum ArrowHeadType {
+  Arrow = 'arrow',
+  ArrowClosed = 'arrowclosed',
+}
+
 export interface Edge {
   id: ElementId;
   type?: string;
@@ -53,6 +58,7 @@ export interface Edge {
   labelBgStyle?: CSSProperties;
   style?: CSSProperties;
   animated?: boolean;
+  arrowHeadType?: ArrowHeadType;
 }
 
 export enum BackgroundVariant {
@@ -82,6 +88,8 @@ export interface EdgeProps {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
   style?: CSSProperties;
+  arrowHeadType?: ArrowHeadType;
+  markerEndId?: string;
 }
 
 export interface EdgeBezierProps extends EdgeProps {

@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
+import { getMarkerEnd } from './utils';
 import { EdgeBezierProps, Position } from '../../types';
 
 interface GetBezierPathParams {
@@ -52,6 +53,8 @@ export default memo(
     labelShowBg,
     labelBgStyle,
     style,
+    arrowHeadType,
+    markerEndId,
   }: EdgeBezierProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
@@ -81,9 +84,11 @@ export default memo(
       />
     ) : null;
 
+    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
+
     return (
       <>
-        <path style={style} d={path} className="react-flow__edge-path" />
+        <path style={style} d={path} className="react-flow__edge-path" markerEnd={markerEnd} />
         {text}
       </>
     );

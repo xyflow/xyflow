@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@welldone-software/why-did-you-render": "^4.2.5",
-    "classnames": "^2.2.6",
+    "classcat": "^4.1.0",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.3.1",

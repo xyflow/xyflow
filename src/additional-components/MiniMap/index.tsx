@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cc from 'classcat';
 
 import { useStoreState } from '../../store/hooks';
 import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
@@ -31,7 +31,7 @@ const MiniMap = ({
   const [tX, tY, tScale] = useStoreState((s) => s.transform);
   const nodes = useStoreState((s) => s.nodes);
 
-  const mapClasses = classnames('react-flow__minimap', className);
+  const mapClasses = cc(['react-flow__minimap', className]);
   const elementWidth = (style.width || defaultWidth)! as number;
   const elementHeight = (style.height || defaultHeight)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;

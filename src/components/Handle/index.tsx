@@ -1,5 +1,5 @@
 import React, { memo, useContext } from 'react';
-import classnames from 'classnames';
+import cc from 'classcat';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import BaseHandle from './BaseHandle';
@@ -26,7 +26,7 @@ const Handle = memo(
       onConnectAction(params);
       onConnect(params);
     };
-    const handleClasses = classnames(className, { connectable: isConnectable });
+    const handleClasses = cc([className, { connectable: isConnectable }]);
 
     return (
       <BaseHandle

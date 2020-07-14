@@ -1,5 +1,5 @@
 import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent } from 'react';
-import cx from 'classnames';
+import cc from 'classcat';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
 
@@ -14,10 +14,7 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
-import BezierEdge from '../../components/Edges/BezierEdge';
-import StraightEdge from '../../components/Edges/StraightEdge';
-import StepEdge from '../../components/Edges/StepEdge';
-import SmoothStepEdge from '../../components/Edges/SmoothStepEdge';
+import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {
@@ -63,6 +60,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
+  arrowHeadColor: string;
+  markerEndId?: string;
+  zoomOnScroll: boolean
 }
 
 const ReactFlow = ({
@@ -98,12 +98,16 @@ const ReactFlow = ({
   minZoom,
   maxZoom,
   defaultZoom,
+  arrowHeadColor,
+  markerEndId,
+  zoomOnScroll
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
+  const reactFlowClasses = cc(['react-flow', className]);
 
   return (
-    <div style={style} className={cx('react-flow', className)}>
+    <div style={style} className={reactFlowClasses}>
       <Wrapper>
         <GraphView
           onLoad={onLoad}
@@ -134,6 +138,9 @@ const ReactFlow = ({
           minZoom={minZoom}
           maxZoom={maxZoom}
           defaultZoom={defaultZoom}
+          arrowHeadColor={arrowHeadColor}
+          markerEndId={markerEndId}
+          zoomOnScroll={zoomOnScroll}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
@@ -169,6 +176,8 @@ ReactFlow.defaultProps = {
   minZoom: 0.5,
   maxZoom: 2,
   defaultZoom: 1,
+  arrowHeadColor: '#bbb',
+  zoomOnScroll: true
 };
 
 export default ReactFlow;
