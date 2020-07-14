@@ -62,6 +62,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   defaultZoom: number;
   arrowHeadColor: string;
   markerEndId?: string;
+  zoomOnScroll: boolean
 }
 
 const ReactFlow = ({
@@ -99,6 +100,7 @@ const ReactFlow = ({
   defaultZoom,
   arrowHeadColor,
   markerEndId,
+  zoomOnScroll
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -138,6 +140,7 @@ const ReactFlow = ({
           defaultZoom={defaultZoom}
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
+          zoomOnScroll={zoomOnScroll}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
@@ -174,6 +177,7 @@ ReactFlow.defaultProps = {
   maxZoom: 2,
   defaultZoom: 1,
   arrowHeadColor: '#bbb',
+  zoomOnScroll: true
 };
 
 export default ReactFlow;

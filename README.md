@@ -91,6 +91,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `nodesDraggable`: default: `true`
 - `nodesConnectable`: default: `true`
 - `elementsSelectable`: default: `true`
+- `zoomOnScroll`: default: `true`
 - `selectNodesOnDrag`: default: `true`
 - `minZoom`: default: `0.5`
 - `maxZoom`: default: `2`

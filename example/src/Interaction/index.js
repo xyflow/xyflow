@@ -18,6 +18,7 @@ const InteractionFlow = () => {
   const [isSelectable, setIsSelectable] = useState(false);
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
+  const [zoomOnScroll, setZoomOnScroll] = useState(true);
 
   return (
     <ReactFlow
@@ -25,6 +26,7 @@ const InteractionFlow = () => {
       elementsSelectable={isSelectable}
       nodesConnectable={isConnectable}
       nodesDraggable={isDraggable}
+      zoomOnScroll={zoomOnScroll}
       onConnect={onConnect}
     >
       <MiniMap />
@@ -64,6 +66,18 @@ const InteractionFlow = () => {
               checked={isSelectable}
               onChange={(evt) => setIsSelectable(evt.target.checked)}
               className="react-flow__selectable"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="zoomonscroll">
+            zoom on scroll
+            <input
+              id="zoomonscroll"
+              type="checkbox"
+              checked={zoomOnScroll}
+              onChange={(evt) => setZoomOnScroll(evt.target.checked)}
+              className="react-flow__zoomonscroll"
             />
           </label>
         </div>
