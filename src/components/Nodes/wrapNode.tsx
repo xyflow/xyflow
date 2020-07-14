@@ -10,7 +10,8 @@ import React, {
   useCallback,
 } from 'react';
 import { DraggableCore } from 'react-draggable';
-import cx from 'classnames';
+import cc from 'classcat';
+
 import { ResizeObserver } from 'resize-observer';
 import { useStoreActions } from '../../store/hooks';
 
@@ -192,10 +193,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       const [offset, setOffset] = useState({ x: 0, y: 0 });
       const [isDragging, setDragging] = useState(false);
       const position = { x: xPos, y: yPos };
-      const nodeClasses = cx('react-flow__node', `react-flow__node-${type}`, className, {
-        selected,
-        selectable: isSelectable,
-      });
+      const nodeClasses = cc([
+        'react-flow__node',
+        `react-flow__node-${type}`,
+        className,
+        {
+          selected,
+          selectable: isSelectable,
+        },
+      ]);
       const node = { id, type, position, data };
       const onMouseEnterHandler = useMemo(() => {
         if (!onMouseEnter || isDragging) {

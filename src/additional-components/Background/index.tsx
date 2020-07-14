@@ -1,5 +1,5 @@
 import React, { memo, HTMLAttributes } from 'react';
-import classnames from 'classnames';
+import cc from 'classcat';
 
 import { useStoreState } from '../../store/hooks';
 import { BackgroundVariant } from '../../types';
@@ -25,7 +25,7 @@ const Background = memo(
     const height = useStoreState((s) => s.height);
     const [x, y, scale] = useStoreState((s) => s.transform);
 
-    const bgClasses = classnames('react-flow__background', className);
+    const bgClasses = cc(['react-flow__background', className]);
     const bgColor = color ? color : defaultColors[variant];
     const scaledGap = gap * scale;
     const xOffset = x % scaledGap;

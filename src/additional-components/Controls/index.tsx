@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cc from 'classcat';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 
@@ -24,7 +24,7 @@ const Controls = ({ style, showZoom = true, showFitView = true, showInteractive 
   const zoomOut = useStoreActions((actions) => actions.zoomOut);
 
   const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
-  const mapClasses = classnames('react-flow__controls', className);
+  const mapClasses = cc(['react-flow__controls', className]);
 
   return (
     <div className={mapClasses} style={style}>

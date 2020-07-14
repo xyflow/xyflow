@@ -1,5 +1,5 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
-import cx from 'classnames';
+import cc from 'classcat';
 
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getStepPath } from '../Edges/StepEdge';
@@ -46,7 +46,7 @@ export default ({
     return null;
   }
 
-  const connectionLineClasses: string = cx('react-flow__connection', className);
+  const connectionLineClasses: string = cc(['react-flow__connection', className]);
 
   const sourceHandle = handleId
     ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)

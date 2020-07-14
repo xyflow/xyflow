@@ -1,5 +1,5 @@
 import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent } from 'react';
-import cx from 'classnames';
+import cc from 'classcat';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
 
@@ -98,9 +98,10 @@ const ReactFlow = ({
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
+  const reactFlowClasses = cc(['react-flow', className]);
 
   return (
-    <div style={style} className={cx('react-flow', className)}>
+    <div style={style} className={reactFlowClasses}>
       <Wrapper>
         <GraphView
           onLoad={onLoad}

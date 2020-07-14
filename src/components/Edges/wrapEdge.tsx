@@ -1,5 +1,5 @@
 import React, { memo, ComponentType, CSSProperties } from 'react';
-import cx from 'classnames';
+import cc from 'classcat';
 
 import { useStoreActions } from '../../store/hooks';
 import { ElementId, Edge, EdgeCompProps } from '../../types';
@@ -39,7 +39,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       ...rest
     }: EdgeWrapperProps) => {
       const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
-      const edgeClasses = cx('react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated });
+      const edgeClasses = cc(['react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated }]);
       const edgeGroupStyle: CSSProperties = {
         pointerEvents: elementsSelectable ? 'all' : 'none',
       };
