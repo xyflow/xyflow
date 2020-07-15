@@ -521,6 +521,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [empty](https://reactflow.dev/empty)
 - [interaction](https://reactflow.dev/interaction)
 - [provider](https://reactflow.dev/provider)
+- [hidden](https://reactflow.dev/hidden)
 
 # Development
 
