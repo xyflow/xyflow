@@ -1,6 +1,6 @@
 ## React Flow Examples
 
-The examples are deployed here: https://react-flow.netlify.app/
+The examples are deployed here: https://reactflow.dev/
 
 ### Installation
 

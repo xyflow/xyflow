@@ -2,7 +2,7 @@
 
 # :ocean: React Flow
 
-React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with components like a mini-map and graph controls. Feel free to check out the [examples](https://react-flow.netlify.com/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
+React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with components like a mini-map and graph controls. Feel free to check out the [examples](https://reactflow.dev/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
 
 - [Key Features](#key-features)
 - [Installation](#installation)
@@ -254,7 +254,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 - `isHidden`: if `true` edge gets not rendered
 
-You can find an example with lots of different edges in the [edges example](https://react-flow.netlify.app/edges).
+You can find an example with lots of different edges in the [edges example](https://reactflow.dev/edges).
 
 ### Edge Types & Custom Edges
 
@@ -510,17 +510,17 @@ If you need more control you can wrap the `ReactFlow` component with the `ReactF
 
 You can find all examples in the [example](example) folder or check out the live versions:
 
-- [overview](https://react-flow.netlify.app/)
-- [basic](https://react-flow.netlify.app/basic)
-- [custom node](https://react-flow.netlify.app/custom-node)
-- [horizontal](https://react-flow.netlify.app/horizontal)
-- [stress](https://react-flow.netlify.app/stress)
-- [validation](https://react-flow.netlify.app/validation)
-- [provider](https://react-flow.netlify.app/provider)
-- [edges](https://react-flow.netlify.app/edges)
-- [empty](https://react-flow.netlify.app/empty)
-- [interaction](https://react-flow.netlify.app/interaction)
-- [provider](https://react-flow.netlify.app/provider)
+- [overview](https://reactflow.dev/)
+- [basic](https://reactflow.dev/basic)
+- [custom node](https://reactflow.dev/custom-node)
+- [horizontal](https://reactflow.dev/horizontal)
+- [stress](https://reactflow.dev/stress)
+- [validation](https://reactflow.dev/validation)
+- [provider](https://reactflow.dev/provider)
+- [edges](https://reactflow.dev/edges)
+- [empty](https://reactflow.dev/empty)
+- [interaction](https://reactflow.dev/interaction)
+- [provider](https://reactflow.dev/provider)
 
 # Development
 
