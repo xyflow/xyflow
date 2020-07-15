@@ -1,5 +1,5 @@
-describe('Overview Graph Rendering', () => {
-  it('renders a graph', () => {
+describe('Overview Flow Rendering', () => {
+  it('renders a flow', () => {
     cy.visit('/');
 
     cy.get('.react-flow__renderer');

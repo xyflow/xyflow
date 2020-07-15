@@ -1,5 +1,5 @@
-describe('Interaction Graph Rendering', () => {
-  it('renders a graph', () => {
+describe('Interaction Flow Rendering', () => {
+  it('renders initial flow', () => {
     cy.visit('/interaction');
 
     cy.get('.react-flow__renderer');

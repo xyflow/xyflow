@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge, isNode, Background } from 'react-flow-renderer';
 
-const onNodeDragStop = node => console.log('drag stop', node);
-const onLoad = reactFlowInstance => console.log('graph loaded:', reactFlowInstance);
-const onElementClick = element => console.log('click', element);
+const onNodeDragStop = (node) => console.log('drag stop', node);
+const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
+const onElementClick = (element) => console.log('click', element);
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -17,20 +17,19 @@ const initialElements = [
 
 const BasicFlow = () => {
   const [elements, setElements] = useState(initialElements);
-  const onElementsRemove = (elementsToRemove) =>
-    setElements(els => removeElements(elementsToRemove, els));
-  const onConnect = (params) => setElements(els => addEdge(params, els));
+  const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
+  const onConnect = (params) => setElements((els) => addEdge(params, els));
 
   const updatePos = () => {
-    setElements(elms => {
-      return elms.map(el => {
+    setElements((elms) => {
+      return elms.map((el) => {
         if (isNode(el)) {
           return {
             ...el,
             position: {
               x: Math.random() * 400,
-              y: Math.random() * 400
-            }
+              y: Math.random() * 400,
+            },
           };
         }
 
@@ -54,14 +53,11 @@ const BasicFlow = () => {
     >
       <Background variant="lines" />
 
-      <button
-        onClick={updatePos}
-        style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
-      >
+      <button onClick={updatePos} style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}>
         change pos
       </button>
     </ReactFlow>
   );
-}
+};
 
 export default BasicFlow;

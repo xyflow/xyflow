@@ -1,5 +1,5 @@
-describe('Stress Graph Rendering', () => {
-  it('renders a graph', () => {
+describe('Stress Flow Rendering', () => {
+  it('renders initial flow', () => {
     cy.visit('/stress');
 
     cy.get('.react-flow__renderer');

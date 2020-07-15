@@ -1,5 +1,5 @@
-describe('Custom Node Graph Rendering', () => {
-  it('renders a graph', () => {
+describe('Custom Node Flow Rendering', () => {
+  it('renders a flow', () => {
     cy.visit('/custom-node');
 
     cy.get('.react-flow__renderer');
