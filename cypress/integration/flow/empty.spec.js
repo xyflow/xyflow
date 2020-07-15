@@ -1,5 +1,5 @@
 describe('Empty Flow Rendering', () => {
-  it('renders an empty graph', () => {
+  it('renders an empty flow', () => {
     cy.visit('/empty');
 
     cy.get('.react-flow__renderer');

@@ -40,6 +40,7 @@ export interface Node {
   className?: string;
   targetPosition?: Position;
   sourcePosition?: Position;
+  isHidden?: boolean;
 }
 
 export enum ArrowHeadType {
@@ -59,6 +60,7 @@ export interface Edge {
   style?: CSSProperties;
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
+  isHidden?: boolean;
 }
 
 export enum BackgroundVariant {
@@ -151,6 +153,7 @@ export interface WrapNodeProps {
   className?: string;
   sourcePosition?: Position;
   targetPosition?: Position;
+  isHidden?: boolean;
 }
 
 export type FitViewParams = {

@@ -1,4 +1,4 @@
-describe('Basic Graph Rendering', () => {
+describe('Basic Flow Rendering', () => {
   it('renders a flow with three nodes', () => {
     cy.visit('/basic');
 

@@ -187,6 +187,7 @@ function renderEdge(
       targetPosition={targetPosition}
       elementsSelectable={elementsSelectable}
       markerEndId={props.markerEndId}
+      isHidden={edge.isHidden}
     />
   );
 }

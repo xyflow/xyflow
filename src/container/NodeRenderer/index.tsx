@@ -59,6 +59,7 @@ function renderNode(
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       selectNodesOnDrag={props.selectNodesOnDrag}
+      isHidden={node.isHidden}
     />
   );
 }

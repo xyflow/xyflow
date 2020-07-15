@@ -63,9 +63,11 @@ const MiniMap = ({
       style={style}
       className={mapClasses}
     >
-      {nodes.map((node) => (
-        <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} borderRadius={nodeBorderRadius} />
-      ))}
+      {nodes
+        .filter((node) => !node.isHidden)
+        .map((node) => (
+          <MiniMapNode key={node.id} node={node} color={nodeColorFunc(node)} borderRadius={nodeBorderRadius} />
+        ))}
       <path
         className="react-flow__minimap-mask"
         d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
