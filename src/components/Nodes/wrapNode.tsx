@@ -265,7 +265,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         return;
       }, [id]);
-      console.log(isHidden);
+
       if (isHidden) {
         return null;
       }
