@@ -155,6 +155,7 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `className`: additional class name
 - `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
 - `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
+- `isHidden`: if `true` node gets not rendered
 
 ## Node Types & Custom Nodes
 
@@ -251,6 +252,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `labelBgStyle`: css properties for the text background
 - `arrowHeadType`: 'arrow' or 'arrowclosed' - defines the arrowhead of the edge
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
+- `isHidden`: if `true` edge gets not rendered
 
 You can find an example with lots of different edges in the [edges example](https://react-flow.netlify.app/edges).
 

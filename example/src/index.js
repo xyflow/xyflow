@@ -12,6 +12,7 @@ import Edges from './Edges';
 import Validation from './Validation';
 import Horizontal from './Horizontal';
 import Provider from './Provider';
+import Hidden from './Hidden';
 
 import './index.css';
 
@@ -52,6 +53,11 @@ const routes = [
     label: 'Stress',
   },
   {
+    path: '/interaction',
+    component: Interaction,
+    label: 'Interaction',
+  },
+  {
     path: '/basic',
     component: Basic,
   },
@@ -60,9 +66,8 @@ const routes = [
     component: Empty,
   },
   {
-    path: '/interaction',
-    component: Interaction,
-    label: 'Interaction',
+    path: '/hidden',
+    component: Hidden,
   },
 ];
 

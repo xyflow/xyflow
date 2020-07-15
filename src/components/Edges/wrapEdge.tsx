@@ -18,6 +18,7 @@ interface EdgeWrapperProps {
   animated?: boolean;
   selected: boolean;
   elementsSelectable: boolean;
+  isHidden?: boolean;
 }
 
 export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
@@ -36,9 +37,15 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       labelShowBg,
       labelBgStyle,
       className,
+      isHidden,
       ...rest
     }: EdgeWrapperProps) => {
       const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
+
+      if (isHidden) {
+        return null;
+      }
+
       const edgeClasses = cc(['react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated }]);
       const edgeGroupStyle: CSSProperties = {
         pointerEvents: elementsSelectable ? 'all' : 'none',

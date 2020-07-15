@@ -29,6 +29,7 @@ const useElementUpdater = (elements: Elements): void => {
           : existingNode.style;
 
         const className = existingNode.className === propNode.className ? existingNode.className : propNode.className;
+        const isHidden = existingNode.isHidden === propNode.isHidden ? existingNode.isHidden : propNode.isHidden;
 
         const positionChanged =
           existingNode.position.x !== propNode.position.x || existingNode.position.y !== propNode.position.y;
@@ -52,6 +53,10 @@ const useElementUpdater = (elements: Elements): void => {
 
         if (typeof className !== 'undefined') {
           nodeProps.className = className;
+        }
+
+        if (typeof isHidden !== 'undefined') {
+          nodeProps.isHidden = isHidden;
         }
 
         return nodeProps;

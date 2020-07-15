@@ -184,6 +184,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       selectNodesOnDrag,
       sourcePosition,
       targetPosition,
+      isHidden,
     }: WrapNodeProps) => {
       const updateNodeDimensions = useStoreActions((a) => a.updateNodeDimensions);
       const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
@@ -243,13 +244,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         return noop;
       }, [isSelectable, isDraggable, id, type]);
 
-      const nodeStyle: CSSProperties = {
-        zIndex: selected ? 10 : 3,
-        transform: `translate(${xPos}px,${yPos}px)`,
-        pointerEvents: isSelectable || isDraggable ? 'all' : 'none',
-        ...style,
-      };
-
       useEffect(() => {
         if (nodeElement.current) {
           updateNodeDimensions({ id, nodeElement: nodeElement.current });
@@ -271,6 +265,17 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         return;
       }, [id]);
+      console.log(isHidden);
+      if (isHidden) {
+        return null;
+      }
+
+      const nodeStyle: CSSProperties = {
+        zIndex: selected ? 10 : 3,
+        transform: `translate(${xPos}px,${yPos}px)`,
+        pointerEvents: isSelectable || isDraggable ? 'all' : 'none',
+        ...style,
+      };
 
       return (
         <DraggableCore
