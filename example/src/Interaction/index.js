@@ -11,6 +11,10 @@ const initialElements = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
+const onNodeDragStart = (node) => console.log('drag start', node);
+const onNodeDragStop = (node) => console.log('drag stop', node);
+const onElementClick = (element) => console.log('click', element);
+
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params) => setElements((els) => addEdge(params, els));
@@ -28,6 +32,9 @@ const InteractionFlow = () => {
       nodesDraggable={isDraggable}
       zoomOnScroll={zoomOnScroll}
       onConnect={onConnect}
+      onElementClick={onElementClick}
+      onNodeDragStart={onNodeDragStart}
+      onNodeDragStop={onNodeDragStop}
     >
       <MiniMap />
       <Controls />

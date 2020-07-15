@@ -238,11 +238,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
       const onSelectNodeHandler = useCallback(() => {
         if (!isDraggable && isSelectable) {
-          setSelectedElements({ id, type } as Node);
+          setSelectedElements({ id: node.id, type: node.type } as Node);
+
+          if (onClick) {
+            onClick(node);
+          }
         }
 
         return noop;
-      }, [isSelectable, isDraggable, id, type]);
+      }, [isSelectable, isDraggable, node]);
 
       useEffect(() => {
         if (nodeElement.current) {
