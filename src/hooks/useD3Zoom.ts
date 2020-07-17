@@ -7,10 +7,11 @@ interface UseD3ZoomParams {
   zoomPane: MutableRefObject<Element | null>;
   selectionKeyPressed: boolean;
   zoomOnScroll: boolean;
+  zoomOnDoubleClick: boolean;
   onMove?: () => void;
 }
 
-export default ({ zoomPane, onMove, zoomOnScroll, selectionKeyPressed }: UseD3ZoomParams): void => {
+export default ({ zoomPane, onMove, zoomOnScroll, zoomOnDoubleClick, selectionKeyPressed }: UseD3ZoomParams): void => {
   const d3Zoom = useStoreState((s) => s.d3Zoom);
 
   const initD3 = useStoreActions((actions) => actions.initD3);
@@ -27,15 +28,7 @@ export default ({ zoomPane, onMove, zoomOnScroll, selectionKeyPressed }: UseD3Zo
       if (selectionKeyPressed) {
         d3Zoom.on('zoom', null);
       } else {
-        d3Zoom.on('zoom', function () {
-          if (!event.sourceEvent || (event.sourceEvent && event.sourceEvent.target !== zoomPane.current)) {
-            return;
-          }
-
-          if (!zoomOnScroll && event.sourceEvent.type === 'wheel') {
-            return;
-          }
-
+        d3Zoom.on('zoom', () => {
           updateTransform(event.transform);
 
           if (onMove) {
@@ -44,5 +37,21 @@ export default ({ zoomPane, onMove, zoomOnScroll, selectionKeyPressed }: UseD3Zo
         });
       }
     }
-  }, [selectionKeyPressed, zoomOnScroll, d3Zoom]);
+  }, [selectionKeyPressed, d3Zoom]);
+
+  useEffect(() => {
+    if (d3Zoom) {
+      d3Zoom.filter(() => {
+        if (!zoomOnScroll && event.type === 'wheel') {
+          return false;
+        }
+
+        if (!zoomOnDoubleClick && event.type === 'dblclick') {
+          return false;
+        }
+
+        return !event.ctrlKey && !event.button;
+      });
+    }
+  }, [d3Zoom, zoomOnScroll, zoomOnDoubleClick]);
 };

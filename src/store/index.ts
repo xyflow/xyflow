@@ -349,6 +349,7 @@ export const storeModel: StoreModel = {
 
   initD3: action((state, zoomPaneNode) => {
     const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]);
+
     const selection = select(zoomPaneNode).call(d3ZoomInstance);
 
     state.d3Zoom = d3ZoomInstance;
@@ -413,7 +414,8 @@ export const storeModel: StoreModel = {
     const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
     const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
 
-    d3Selection.call(d3Zoom.transform, fittedTransform);
+    // we need to sync the d3 zoom transform with the fitted transform
+    d3Selection.property('__zoom', fittedTransform);
 
     state.transform = [fittedTransform.x, fittedTransform.y, fittedTransform.k];
   }),

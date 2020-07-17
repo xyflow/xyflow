@@ -55,6 +55,7 @@ export interface GraphViewProps {
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
+  zoomOnDoubleClick: boolean;
 }
 
 const GraphView = memo(
@@ -90,6 +91,7 @@ const GraphView = memo(
     arrowHeadColor,
     markerEndId,
     zoomOnScroll,
+    zoomOnDoubleClick,
   }: GraphViewProps) => {
     const zoomPane = useRef<HTMLDivElement>(null);
     const rendererNode = useRef<HTMLDivElement>(null);
@@ -160,7 +162,7 @@ const GraphView = memo(
       };
     }, []);
 
-    useD3Zoom({ zoomPane, onMove, selectionKeyPressed, zoomOnScroll });
+    useD3Zoom({ zoomPane, onMove, selectionKeyPressed, zoomOnScroll, zoomOnDoubleClick });
 
     useEffect(() => {
       if (d3Initialised && onLoad) {
