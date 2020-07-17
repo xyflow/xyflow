@@ -64,39 +64,53 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 
 # React Flow Component Prop Types
 
+#### Basic Props
 - `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
-- `onElementClick(element: Node | Edge)`: element click callback
-- `onElementsRemove(elements: Elements)`: element remove callback
-- `onNodeDragStart(node: Node)`: node drag start callback
-- `onNodeDragStop(node: Node)`: node drag stop callback
-- `onNodeMouseEnter(evt: MouseEvent, node: Node)`: node mouse enter callback
-- `onNodeMouseMove(evt: MouseEvent, node: Node)`: node mouse move callback
-- `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave callback
-- `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu callback
-- `onConnect({ source, target })`: connect callback
-- `onLoad(reactFlowInstance)`: editor load callback
-- `onMove()`: move callback
-- `onSelectionChange(elements: Elements)`: fired when element selection changes
-- `nodeTypes`: object with [node types](#node-types--custom-nodes)
-- `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `style`: css properties
 - `className`: additional class name
-- `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`
-- `connectionLineStyle`: connection style as svg attributes
-- `deleteKeyCode`: default: `8` (delete)
-- `selectionKeyCode`: default: `16` (shift)
+
+#### Flow View
+- `minZoom`: default: `0.5`
+- `maxZoom`: default: `2`
+- `defaultZoom`: default: `1`
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
+
+#### Event Handlers
+- `onElementClick(element: Node | Edge)`: called when user clicks node or edge
+- `onElementsRemove(elements: Elements)`: called when user removes node or edge
+- `onNodeDragStart(node: Node)`: node drag start
+- `onNodeDragStop(node: Node)`: node drag stop
+- `onNodeMouseEnter(evt: MouseEvent, node: Node)`: node mouse enter
+- `onNodeMouseMove(evt: MouseEvent, node: Node)`: node mouse move
+- `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave
+- `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu
+- `onConnect({ source, target })`: called when user connects two nodes
+- `onLoad(reactFlowInstance)`: called when flow is initialized
+- `onMove()`: called when user pans or zooms
+- `onSelectionChange(elements: Elements)`: called user selects one or multiple elements
+
+#### Interaction
 - `nodesDraggable`: default: `true`
 - `nodesConnectable`: default: `true`
 - `elementsSelectable`: default: `true`
 - `zoomOnScroll`: default: `true`
+- `zoomOnDoubleClick`: default: `true`
 - `selectNodesOnDrag`: default: `true`
-- `minZoom`: default: `0.5`
-- `maxZoom`: default: `2`
-- `defaultZoom`: default: `1`
+
+#### Element Customization
+- `nodeTypes`: object with [node types](#node-types--custom-nodes)
+- `edgeTypes`: object with [edge types](#edge-types--custom-edges)
 - `arrowHeadColor`: default: `#bbb`
+
+#### Connection Line Options
+- `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`
+- `connectionLineStyle`: connection style as svg attributes
+
+#### Keys
+- `deleteKeyCode`: default: `8` (delete)
+- `selectionKeyCode`: default: `16` (shift)
 
 ## React Flow Instance
 

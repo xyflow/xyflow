@@ -23,6 +23,7 @@ const InteractionFlow = () => {
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
   const [zoomOnScroll, setZoomOnScroll] = useState(true);
+  const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(true);
 
   return (
     <ReactFlow
@@ -31,6 +32,7 @@ const InteractionFlow = () => {
       nodesConnectable={isConnectable}
       nodesDraggable={isDraggable}
       zoomOnScroll={zoomOnScroll}
+      zoomOnDoubleClick={zoomOnDoubleClick}
       onConnect={onConnect}
       onElementClick={onElementClick}
       onNodeDragStart={onNodeDragStart}
@@ -85,6 +87,18 @@ const InteractionFlow = () => {
               checked={zoomOnScroll}
               onChange={(evt) => setZoomOnScroll(evt.target.checked)}
               className="react-flow__zoomonscroll"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="zoomondbl">
+            zoom on double click
+            <input
+              id="zoomondbl"
+              type="checkbox"
+              checked={zoomOnDoubleClick}
+              onChange={(evt) => setZoomOnDoubleClick(evt.target.checked)}
+              className="react-flow__zoomondbl"
             />
           </label>
         </div>
