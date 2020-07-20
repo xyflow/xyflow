@@ -1,10 +1,10 @@
 import { createStore, Action, action, Thunk, thunk } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
-import { zoom, zoomIdentity, zoomTransform } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
 import { select } from 'd3-selection';
 
-import { getDimensions } from '../utils';
+import { getDimensions, clamp } from '../utils';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 import { getNodesInside, getConnectedEdges, getRectOfNodes } from '../utils/graph';
@@ -421,13 +421,23 @@ export const storeModel: StoreModel = {
   }),
 
   zoom: action((state, amount) => {
-    const { d3Zoom, d3Selection, transform } = state;
-    const nextZoom = transform[2] + amount;
+    const { d3Selection, transform, minZoom, maxZoom } = state;
+    const nextZoom = clamp(transform[2] + amount, minZoom, maxZoom);
 
-    if (d3Zoom && d3Selection) {
-      d3Zoom.scaleTo(d3Selection, nextZoom);
-      const transforms = zoomTransform(d3Selection.node() as Element);
-      state.transform = [transforms.x, transforms.y, transforms.k];
+    if (d3Selection) {
+      // we want to zoom in and out to the center of the zoom pane
+      const center = [state.width / 2, state.height / 2];
+      const centerInverted = [(center[0] - transform[0]) / transform[2], (center[1] - transform[1]) / transform[2]];
+      const x = center[0] - centerInverted[0] * nextZoom;
+      const y = center[1] - centerInverted[1] * nextZoom;
+      const zoomedTransform = zoomIdentity.translate(x, y).scale(nextZoom);
+
+      // we need to sync the d3 zoom transform with the zoomed transform
+      d3Selection.property('__zoom', zoomedTransform);
+
+      state.transform[0] = zoomedTransform.x;
+      state.transform[1] = zoomedTransform.y;
+      state.transform[2] = zoomedTransform.k;
     }
   }),
 
