@@ -56,7 +56,8 @@ const CustomNodeFlow = () => {
   }, []);
 
   const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
-  const onConnect = (params) => setElements((els) => addEdge(params, els));
+  const onConnect = (params) =>
+    setElements((els) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, els));
 
   return (
     <ReactFlow
@@ -70,7 +71,7 @@ const CustomNodeFlow = () => {
       nodeTypes={{
         selectorNode: ColorSelectorNode,
       }}
-      connectionLineStyle={{ stroke: '#ddd' }}
+      connectionLineStyle={{ stroke: '#fff' }}
       snapToGrid={true}
       snapGrid={[16, 16]}
     >
