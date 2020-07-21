@@ -95,8 +95,10 @@ const initialElements = [
     source: '5',
     target: '7',
     type: 'step',
+    style: { stroke: '#f6ab6c' },
     label: 'a step edge',
-    labelStyle: { fill: 'red', fontWeight: 700 },
+    animated: true,
+    labelStyle: { fill: '#f6ab6c', fontWeight: 700 },
   },
 ];
 
@@ -132,11 +134,12 @@ const OverviewFlow = () => {
     >
       <MiniMap
         nodeColor={(n) => {
-          if (n.type === 'input') return 'blue';
-          if (n.type === 'output') return 'green';
-          if (n.type === 'default') return 'red';
+          if (n.style?.background) return n.style.background;
+          if (n.type === 'input') return '#9999ff';
+          if (n.type === 'output') return '#79c9b7';
+          if (n.type === 'default') return '#ff6060';
 
-          return '#FFCC00';
+          return '#eee';
         }}
       />
       <Controls />

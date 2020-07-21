@@ -15,7 +15,7 @@ const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
     height,
   } = node.__rf;
   const { background, backgroundColor } = node.style || {};
-  const fill = (background || backgroundColor || color) as string;
+  const fill = (color || background || backgroundColor) as string;
 
   return (
     <rect
