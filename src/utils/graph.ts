@@ -33,8 +33,15 @@ const getEdgeId = ({ source, target }: Connection): ElementId => `reactflow__edg
 
 export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elements => {
   if (!edgeParams.source || !edgeParams.target) {
-    throw new Error('Can not create edge. An edge needs a source and a target');
+    throw new Error("Can't create edge. An edge needs a source and a target.");
   }
+
+  // make sure that there is node with the target and one with the source id
+  [edgeParams.source, edgeParams.target].forEach((id) => {
+    if (!elements.find((e) => isNode(e) && e.id === id)) {
+      throw new Error(`Can't create edge. Node with id=${id} does not exist.`);
+    }
+  });
 
   if (isEdge(edgeParams)) {
     return elements.concat({ ...edgeParams });
