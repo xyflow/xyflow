@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
 import { getMarkerEnd } from './utils';
-import { EdgeBezierProps, Position } from '../../types';
+import { EdgeSmoothStepProps, Position } from '../../types';
 
 // These are some helper methods for drawing the round corners
 // The name indicates the direction of the path. "bottomLeftCorner" goes
@@ -44,6 +44,7 @@ interface GetSmoothStepPathParams {
   targetX: number;
   targetY: number;
   targetPosition?: Position;
+  borderRadius?: number;
 }
 
 export function getSmoothStepPath({
@@ -57,9 +58,10 @@ export function getSmoothStepPath({
   targetX,
   targetY,
   targetPosition = Position.Top,
+  borderRadius = 5,
 }: GetSmoothStepPathParams): string {
-  const cornerWidth = Math.min(5, Math.abs(targetX - sourceX));
-  const cornerHeight = Math.min(5, Math.abs(targetY - sourceY));
+  const cornerWidth = Math.min(borderRadius, Math.abs(targetX - sourceX));
+  const cornerHeight = Math.min(borderRadius, Math.abs(targetY - sourceY));
   const cornerSize = Math.min(cornerWidth, cornerHeight, xOffset, yOffset);
 
   const leftAndRight = [Position.Left, Position.Right];
@@ -141,7 +143,8 @@ export default memo(
     targetPosition = Position.Top,
     arrowHeadType,
     markerEndId,
-  }: EdgeBezierProps) => {
+    borderRadius = 5,
+  }: EdgeSmoothStepProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
@@ -159,6 +162,7 @@ export default memo(
       targetX,
       targetY,
       targetPosition,
+      borderRadius,
     });
 
     const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
