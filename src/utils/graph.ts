@@ -7,13 +7,13 @@ export const isEdge = (element: Node | Connection | Edge): element is Edge =>
 export const isNode = (element: Node | Connection | Edge): element is Node =>
   'id' in element && !('source' in element) && !('target' in element);
 
-export const getOutgoers = (node: Node, elements: Elements): Elements => {
+export const getOutgoers = (node: Node, elements: Elements): Node[] => {
   if (!isNode(node)) {
     return [];
   }
 
-  const outgoerIds = (elements as Edge[]).filter((e) => e.source === node.id).map((e) => e.target);
-  return elements.filter((e) => outgoerIds.includes(e.id));
+  const outgoerIds = elements.filter((e) => isEdge(e) && e.source === node.id).map((e) => (e as Edge).target);
+  return elements.filter((e) => outgoerIds.includes(e.id)) as Node[];
 };
 
 export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {
