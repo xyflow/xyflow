@@ -16,26 +16,6 @@ describe('Empty Flow Rendering', () => {
       .trigger('mouseup', 'bottomRight', { force: true });
   });
 
-  it('renders a control panel', () => {
-    cy.get('.react-flow__controls');
-  });
-
-  it('uses zoom in control', () => {
-    cy.get('.react-flow__controls-zoomin').click();
-  });
-
-  it('uses zoom out control', () => {
-    cy.get('.react-flow__controls-zoomout').click();
-  });
-
-  it('uses fit view control', () => {
-    cy.get('.react-flow__controls-fitview').click();
-  });
-
-  it('uses lock view control', () => {
-    cy.get('.react-flow__controls-interactive');
-  });
-
   it('renders an empty mini map', () => {
     cy.get('.react-flow__minimap');
     cy.get('.react-flow__minimap-node').should('not.exist');
