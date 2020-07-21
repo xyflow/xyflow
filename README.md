@@ -1,6 +1,6 @@
- ![react-flow](https://user-images.githubusercontent.com/2857535/67417109-516ef000-f5c8-11e9-938a-c2121d3ebbe4.png)
+ ![react-flow](https://user-images.githubusercontent.com/2857535/88070904-7e5e2c80-cb73-11ea-9f69-6b8647eef24a.png)
 
-# :ocean: React Flow
+# React Flow
 
 React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with components like a mini-map and graph controls. Feel free to check out the [examples](https://reactflow.dev/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
 
