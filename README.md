@@ -482,7 +482,7 @@ Returns true if element is a node
 
 ### removeElements
 
-Returns elements without the elements from `elementsToRemove`
+Returns an array of elements without the ones from `elementsToRemove`. It also removes all incoming/outgoing edges if you just pass one or multiple nodes
 
 `removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
 
@@ -491,6 +491,12 @@ Returns elements without the elements from `elementsToRemove`
 Returns elements array with added edge
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
+
+### getOutgoers
+
+Returns all direct child nodes of the passed node
+
+`getOutgoers = (node: Node, elements: Elements): Node[]`
 
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
