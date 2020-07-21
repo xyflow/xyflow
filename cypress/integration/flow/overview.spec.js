@@ -1,9 +1,10 @@
 describe('Overview Flow Rendering', () => {
-  it('renders a flow', () => {
+  before(() => {
     cy.visit('/');
+  });
 
+  it('renders a flow', () => {
     cy.get('.react-flow__renderer');
-
     cy.get('.react-flow__node').should('have.length', 7);
     cy.get('.react-flow__edge').should('have.length', 6);
   });

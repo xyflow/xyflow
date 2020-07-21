@@ -22,8 +22,8 @@ const InteractionFlow = () => {
   const [isSelectable, setIsSelectable] = useState(false);
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
-  const [zoomOnScroll, setZoomOnScroll] = useState(true);
-  const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(true);
+  const [zoomOnScroll, setZoomOnScroll] = useState(false);
+  const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
 
   return (
     <ReactFlow

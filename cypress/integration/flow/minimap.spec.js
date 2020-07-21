@@ -1,7 +1,9 @@
 describe('Minimap Testing', () => {
-  it('renders the mini map', () => {
+  before(() => {
     cy.visit('/');
+  });
 
+  it('renders the mini map', () => {
     cy.get('.react-flow__minimap');
     cy.get('.react-flow__minimap-mask');
   });

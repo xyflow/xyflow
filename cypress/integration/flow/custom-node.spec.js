@@ -1,7 +1,9 @@
 describe('Custom Node Flow Rendering', () => {
-  it('renders a flow', () => {
+  before(() => {
     cy.visit('/custom-node');
+  });
 
+  it('renders initial flow', () => {
     cy.get('.react-flow__renderer');
 
     cy.get('.react-flow__node').should('have.length', 4);

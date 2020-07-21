@@ -1,7 +1,9 @@
 describe('Empty Flow Rendering', () => {
-  it('renders an empty flow', () => {
+  before(() => {
     cy.visit('/empty');
+  });
 
+  it('renders an empty flow', () => {
     cy.get('.react-flow__renderer');
     cy.get('.react-flow__node').should('not.exist');
     cy.get('.react-flow__edge').should('not.exist');

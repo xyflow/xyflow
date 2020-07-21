@@ -1,7 +1,9 @@
 describe('Controls Testing', () => {
-  it('renders the control panel', () => {
+  before(() => {
     cy.visit('/');
+  });
 
+  it('renders the control panel', () => {
     cy.get('.react-flow__controls');
   });
 
