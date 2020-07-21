@@ -128,7 +128,7 @@ const OverviewFlow = () => {
       onSelectionChange={onSelectionChange}
       style={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
-      connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
+      connectionLineStyle={{ stroke: '#ddd' }}
       snapToGrid={true}
       snapGrid={[16, 16]}
     >

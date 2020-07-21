@@ -70,7 +70,7 @@ const CustomNodeFlow = () => {
       nodeTypes={{
         selectorNode: ColorSelectorNode,
       }}
-      connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
+      connectionLineStyle={{ stroke: '#ddd' }}
       snapToGrid={true}
       snapGrid={[16, 16]}
     >

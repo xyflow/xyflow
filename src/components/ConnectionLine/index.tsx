@@ -2,7 +2,6 @@ import React, { useEffect, useState, CSSProperties } from 'react';
 import cc from 'classcat';
 
 import { getBezierPath } from '../Edges/BezierEdge';
-import { getStepPath } from '../Edges/StepEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { ElementId, Node, Transform, HandleElement, Position, ConnectionLineType, HandleType } from '../../types';
 
@@ -80,12 +79,18 @@ export default ({
       targetPosition,
     });
   } else if (connectionLineType === ConnectionLineType.Step) {
-    dAttr = getStepPath({
+    dAttr = getSmoothStepPath({
+      xOffset,
+      yOffset,
+      centerX,
       centerY,
       sourceX,
       sourceY,
+      sourcePosition: sourceHandle?.position,
       targetX,
       targetY,
+      targetPosition,
+      borderRadius: 0,
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
     dAttr = getSmoothStepPath({

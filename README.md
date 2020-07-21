@@ -542,6 +542,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [interaction](https://reactflow.dev/interaction)
 - [provider](https://reactflow.dev/provider)
 - [hidden](https://reactflow.dev/hidden)
+- [edge types](https://reactflow.dev/edge-types)
 
 # Development
 
