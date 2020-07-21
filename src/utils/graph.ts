@@ -38,8 +38,9 @@ export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elem
 
   // make sure that there is node with the target and one with the source id
   [edgeParams.source, edgeParams.target].forEach((id) => {
-    if (!elements.find((e) => isNode(e) && e.id === id)) {
-      throw new Error(`Can't create edge. Node with id=${id} does not exist.`);
+    const nodeId = id.includes('__') ? id.split('__')[0] : id;
+    if (!elements.find((e) => isNode(e) && e.id === nodeId)) {
+      throw new Error(`Can't create edge. Node with id=${nodeId} does not exist.`);
     }
   });
 
