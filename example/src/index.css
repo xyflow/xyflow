@@ -48,8 +48,8 @@ header a:hover {
 
 .menu {
   margin-left: auto;
-  background: rgb(255, 96, 96);
-  color: white;
+  background: #f3f3f3;
+  color: #333;
   border: none;
   padding: 5px 12px;
   border-radius: 5px;
@@ -74,25 +74,26 @@ nav.is-open {
 nav a {
   text-decoration: none;
   font-size: 14px;
-  background: rgb(255, 96, 96);
+  background: #f3f3f3;
   color: white;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 5px;
   position: relative;
   display: block;
   margin-bottom: 5px;
+  text-align: center;
 }
 
 nav a,
 nav a:focus,
 nav a:active,
 nav a:visited {
-  color: #fff;
+  color: #333;
 }
 
 nav a:hover {
-  color: #fff;
-  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.12);
+  color: #333;
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.08);
 }
 
 nav a.active:before {
@@ -101,7 +102,7 @@ nav a.active:before {
   width: 6px;
   height: 6px;
   background: white;
-  opacity: 0.5;
+  opacity: 0.8;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
@@ -165,6 +166,7 @@ nav a.active:before {
     font-size: 12px;
     display: inline-block;
     margin-bottom: 0;
+    padding: 5px 12px;
   }
 
   .menu {
