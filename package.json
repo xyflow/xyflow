@@ -16,10 +16,12 @@
     "start:examples": "npm run build && cd example && npm start",
     "dev:wait": "start-server-and-test start:examples http-get://localhost:3000",
     "build:example": "npm install && npm run build && cd example && npm install && npm run build",
-    "cy:run": "cypress run",
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
-    "test": "npm run dev:wait cy:run",
+    "test:chrome": "cypress run --browser chrome",
+    "test:firefox": "cypress run --browser firefox",
+    "test:all": "npm run test:chrome && npm run test:firefox",
+    "test": "npm run dev:wait test:chrome",
     "release": "release-it"
   },
   "dependencies": {
