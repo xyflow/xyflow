@@ -1,7 +1,9 @@
 describe('Interaction Flow Rendering', () => {
-  it('renders initial flow', () => {
+  before(() => {
     cy.visit('/interaction');
+  });
 
+  it('renders initial flow', () => {
     cy.get('.react-flow__renderer');
     cy.get('.react-flow__node').should('have.length', 4);
     cy.get('.react-flow__edge').should('have.length', 2);
@@ -21,6 +23,38 @@ describe('Interaction Flow Rendering', () => {
   it('tries to do a selection', () => {
     cy.get('body').type('{shift}', { release: false }).get('.react-flow__selectionpane').should('not.exist');
     cy.get('body').type('{shift}', { release: true });
+  });
+
+  it('tries to connect to nodes', () => {
+    cy.get('.react-flow__node')
+      .contains('Node 3')
+      .find('.react-flow__handle.source')
+      .then(($el) => {
+        const pointerEvents = $el.css('pointer-events');
+        expect(pointerEvents).to.equal('none');
+      });
+  });
+
+  it('tries to zoom by scroll', () => {
+    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+
+    cy.get('.react-flow__zoompane')
+      .dblclick()
+      .then(() => {
+        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        expect(styleBeforeZoom).to.equal(styleAfterZoom);
+      });
+  });
+
+  it('tries to zoom by double click', () => {
+    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+
+    cy.get('.react-flow__zoompane')
+      .trigger('wheel', 'topLeft', { deltaY: -200 })
+      .then(() => {
+        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        expect(styleBeforeZoom).to.equal(styleAfterZoom);
+      });
   });
 
   it('toggles draggable mode', () => {
@@ -46,5 +80,54 @@ describe('Interaction Flow Rendering', () => {
 
   it('selects an edge by click', () => {
     cy.get('.react-flow__edge:first').click().should('have.class', 'selected');
+  });
+
+  it('toggles connectable mode', () => {
+    cy.get('.react-flow__connectable').click();
+  });
+
+  it('connects two nodes', () => {
+    cy.get('.react-flow__node')
+      .contains('Node 3')
+      .find('.react-flow__handle.source')
+      .trigger('mousedown', { which: 1 });
+
+    cy.get('.react-flow__node')
+      .contains('Node 4')
+      .find('.react-flow__handle.target')
+      .trigger('mousemove')
+      .trigger('mouseup', { force: true });
+
+    cy.get('.react-flow__edge').should('have.length', 3);
+  });
+
+  it('toggles zoom on scroll', () => {
+    cy.get('.react-flow__zoomonscroll').click();
+  });
+
+  it('zooms by scroll', () => {
+    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+
+    cy.get('.react-flow__zoompane')
+      .trigger('wheel', 'topLeft', { deltaY: 200 })
+      .then(() => {
+        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
+      });
+  });
+
+  it('toggles zoom on double click', () => {
+    cy.get('.react-flow__zoomondbl').click();
+  });
+
+  it('zooms by double click', () => {
+    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+
+    cy.get('.react-flow__zoompane')
+      .dblclick()
+      .then(() => {
+        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
+      });
   });
 });

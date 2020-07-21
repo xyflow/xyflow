@@ -1,7 +1,9 @@
 describe('Basic Flow Rendering', () => {
-  it('renders a flow with three nodes', () => {
+  before(() => {
     cy.visit('/basic');
+  });
 
+  it('renders a flow with three nodes', () => {
     cy.get('.react-flow__renderer');
     cy.get('.react-flow-basic-example'); // check if className prop works
     cy.get('.react-flow__node').should('have.length', 4);
@@ -115,16 +117,10 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('drags the pane', () => {
-    // for d3 we have to pass the window to the event
-    // https://github.com/cypress-io/cypress/issues/3441
-
-    const newPosition = {
-      clientX: Cypress.config('viewportWidth') * 0.6,
-      clientY: Cypress.config('viewportHeight') * 0.7,
-    };
-
     const styleBeforeDrag = Cypress.$('.react-flow__nodes').css('transform');
 
+    // for d3 we have to pass the window to the event
+    // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
       cy.get('.react-flow__zoompane')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })

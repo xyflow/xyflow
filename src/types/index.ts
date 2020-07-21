@@ -99,6 +99,10 @@ export interface EdgeBezierProps extends EdgeProps {
   targetPosition: Position;
 }
 
+export interface EdgeSmoothStepProps extends EdgeBezierProps {
+  borderRadius?: number;
+}
+
 export interface NodeProps {
   id: ElementId;
   type: string;

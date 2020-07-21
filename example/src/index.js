@@ -13,6 +13,7 @@ import Validation from './Validation';
 import Horizontal from './Horizontal';
 import Provider from './Provider';
 import Hidden from './Hidden';
+import EdgeTypes from './EdgeTypes';
 
 import './index.css';
 
@@ -68,6 +69,10 @@ const routes = [
   {
     path: '/hidden',
     component: Hidden,
+  },
+  {
+    path: '/edge-types',
+    component: EdgeTypes,
   },
 ];
 

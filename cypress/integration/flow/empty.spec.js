@@ -1,7 +1,9 @@
 describe('Empty Flow Rendering', () => {
-  it('renders an empty flow', () => {
+  before(() => {
     cy.visit('/empty');
+  });
 
+  it('renders an empty flow', () => {
     cy.get('.react-flow__renderer');
     cy.get('.react-flow__node').should('not.exist');
     cy.get('.react-flow__edge').should('not.exist');
@@ -14,26 +16,6 @@ describe('Empty Flow Rendering', () => {
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
       .trigger('mousemove', 'bottomRight', { which: 1 })
       .trigger('mouseup', 'bottomRight', { force: true });
-  });
-
-  it('renders a control panel', () => {
-    cy.get('.react-flow__controls');
-  });
-
-  it('uses zoom in control', () => {
-    cy.get('.react-flow__controls-zoomin').click();
-  });
-
-  it('uses zoom out control', () => {
-    cy.get('.react-flow__controls-zoomout').click();
-  });
-
-  it('uses fit view control', () => {
-    cy.get('.react-flow__controls-fitview').click();
-  });
-
-  it('uses lock view control', () => {
-    cy.get('.react-flow__controls-interactive');
   });
 
   it('renders an empty mini map', () => {
