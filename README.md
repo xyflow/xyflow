@@ -78,7 +78,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onlyRenderVisibleNodes`: default: `true`
 
 #### Event Handlers
-- `onElementClick(element: Node | Edge)`: called when user clicks node or edge
+- `onElementClick(element: Node | Edge)`: called when user clicks node or edge click
 - `onElementsRemove(elements: Elements)`: called when user removes node or edge
 - `onNodeDragStart(node: Node)`: node drag start
 - `onNodeDragStop(node: Node)`: node drag stop
@@ -87,9 +87,9 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave
 - `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu
 - `onConnect({ source, target })`: called when user connects two nodes
-- `onLoad(reactFlowInstance)`: called when flow is initialized
+- `onLoad(reactFlowInstance)`: called after flow is initialized
 - `onMove()`: called when user pans or zooms
-- `onSelectionChange(elements: Elements)`: called user selects one or multiple elements
+- `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
 
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.
@@ -170,9 +170,9 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
 - `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
 - `isHidden`: if `true`, the node will not be rendered
-- `draggable`: if option is not set, the node is draggable (overwrites generel `nodesDraggable` option)
-- `connectable`: if option is not set, the node is connectable (overwrites generel `nodesConnectable` option)
-- `selectable`: if option is not set, the node is selectable (overwrites generel `elementsSelectable` option)
+- `draggable`: boolean - if option is not set, the node is draggable (overwrites generel `nodesDraggable` option)
+- `connectable`: boolean - if option is not set, the node is connectable (overwrites generel `nodesConnectable` option)
+- `selectable`: boolean - if option is not set, the node is selectable (overwrites generel `elementsSelectable` option)
 
 ## Node Types & Custom Nodes
 
@@ -195,7 +195,7 @@ nodeTypes={{
 }}
 ```
 
-You could now use the type `special` for a node.
+You can now use the type `special` for a node.
 The `default`, `input` and `output` types would be still available except you overwrote one of them.
 There is an example of a custom node implementation in the [custom node example](/example/src/CustomNode).
 
@@ -231,7 +231,7 @@ const targetHandleWithValidation = (
 ### Prop Types
 
 - `type`: 'source' or 'target'
-- `id`: string - you only need this when you have multiple source or target handles otherwise the node id is used
+- `id`: string - you only need this when you have multiple source or target handles (otherwise the node id is used)
 - `position`: 'left', 'right', 'top' or 'bottom' handle position - default: 'top' for type target, 'bottom' for type source
 - `onConnect`: function that gets triggered on connect
 - `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - default: `true`
@@ -249,11 +249,11 @@ You can find an example of how to implement a custom node with multiple handles 
 
 # Edges
 
-React Flow comes with three [edge types](#edge-types--custom-edges) (`default`, `straight`, `step`, `smoothstep`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the `ReactFlow` component.
+React Flow comes with four [edge types](#edge-types--custom-edges) (`default`, `straight`, `step`, `smoothstep`). As the names indicate, the edges differ in the representation. The default type is a bezier edge. You create edges by adding them to your `elements` array of the `ReactFlow` component.
 
 Edge example: `{ id: 'e1-2', type: 'straight', source: '1', target: '2', animated: true, label: 'edge label' }`
 
-If you wanted to display this edge, you would need a node with id = 1 (source node) and one with id = 2 (target node).
+If you wanted to display this edge, you would need a node with id = 1 (source node) and another one with id = 2 (target node).
 
 ## Options
 
@@ -271,7 +271,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 - `isHidden`: if `true`, the edge will not be rendered
 
-You can find an example with lots of different edges in the [edges example](https://reactflow.dev/edges).
+You can find an example with different edges in the [edges example](https://reactflow.dev/edges).
 
 ### Edge Types & Custom Edges
 
