@@ -92,9 +92,9 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onSelectionChange(elements: Elements)`: called user selects one or multiple elements
 
 #### Interaction
-- `nodesDraggable`: default: `true`
-- `nodesConnectable`: default: `true`
-- `elementsSelectable`: default: `true`
+- `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.
+- `nodesConnectable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `connectable` node option.
+- `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `selectable` node option.
 - `zoomOnScroll`: default: `true`
 - `zoomOnDoubleClick`: default: `true`
 - `selectNodesOnDrag`: default: `true`
@@ -170,6 +170,9 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
 - `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
 - `isHidden`: if `true`, the node will not be rendered
+- `draggable`: if option is not set, the node is draggable (overwrites generel `nodesDraggable` option)
+- `connectable`: if option is not set, the node is connectable (overwrites generel `nodesConnectable` option)
+- `selectable`: if option is not set, the node is selectable (overwrites generel `elementsSelectable` option)
 
 ## Node Types & Custom Nodes
 
