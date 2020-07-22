@@ -450,6 +450,7 @@ export const storeModel: StoreModel = {
   }),
 };
 
-const store = createStore(storeModel);
+const nodeEnv: string = process.env.NODE_ENV as string;
+const store = createStore(storeModel, { devTools: nodeEnv === 'development' });
 
 export default store;
