@@ -41,6 +41,9 @@ export interface Node {
   targetPosition?: Position;
   sourcePosition?: Position;
   isHidden?: boolean;
+  draggable?: boolean;
+  selectable?: boolean;
+  connectable?: boolean;
 }
 
 export enum ArrowHeadType {
@@ -117,8 +120,8 @@ export interface NodeComponentProps {
   id: ElementId;
   type: string;
   data: any;
-  isConnectable: boolean;
   selected?: boolean;
+  isConnectable: boolean;
   transform?: Transform;
   xPos?: number;
   yPos?: number;

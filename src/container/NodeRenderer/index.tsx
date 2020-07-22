@@ -34,6 +34,10 @@ function renderNode(
 
   const isSelected = selectedElements ? selectedElements.some(({ id }) => id === node.id) : false;
 
+  const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
+  const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
+  const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+
   return (
     <NodeComponent
       key={node.id}
@@ -53,9 +57,9 @@ function renderNode(
       selected={isSelected}
       style={node.style}
       className={node.className}
-      isDraggable={nodesDraggable}
-      isSelectable={elementsSelectable}
-      isConnectable={nodesConnectable}
+      isDraggable={isDraggable}
+      isSelectable={isSelectable}
+      isConnectable={isConnectable}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       selectNodesOnDrag={props.selectNodesOnDrag}

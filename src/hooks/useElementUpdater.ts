@@ -30,6 +30,11 @@ const useElementUpdater = (elements: Elements): void => {
 
         const className = existingNode.className === propNode.className ? existingNode.className : propNode.className;
         const isHidden = existingNode.isHidden === propNode.isHidden ? existingNode.isHidden : propNode.isHidden;
+        const draggable = existingNode.draggable === propNode.draggable ? existingNode.draggable : propNode.draggable;
+        const selectable =
+          existingNode.selectable === propNode.selectable ? existingNode.selectable : propNode.selectable;
+        const connectable =
+          existingNode.connectable === propNode.connectable ? existingNode.connectable : propNode.connectable;
 
         const positionChanged =
           existingNode.position.x !== propNode.position.x || existingNode.position.y !== propNode.position.y;
@@ -57,6 +62,18 @@ const useElementUpdater = (elements: Elements): void => {
 
         if (typeof isHidden !== 'undefined') {
           nodeProps.isHidden = isHidden;
+        }
+
+        if (typeof draggable !== 'undefined') {
+          nodeProps.draggable = draggable;
+        }
+
+        if (typeof selectable !== 'undefined') {
+          nodeProps.selectable = selectable;
+        }
+
+        if (typeof connectable !== 'undefined') {
+          nodeProps.connectable = connectable;
         }
 
         return nodeProps;
