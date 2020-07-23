@@ -104,16 +104,6 @@ const initialElements = [
 
 const OverviewFlow = () => {
   const [elements, setElements] = useState(initialElements);
-
-  const addRandomNode = () => {
-    setElements((els) =>
-      els.concat({
-        id: (els.length + 1).toString(),
-        data: { label: 'Added node' },
-        position: { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight },
-      })
-    );
-  };
   const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
@@ -144,15 +134,6 @@ const OverviewFlow = () => {
       />
       <Controls />
       <Background color="#888" gap={16} />
-
-      <button
-        type="button"
-        onClick={addRandomNode}
-        style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
-        className="overview-example__add"
-      >
-        add node
-      </button>
     </ReactFlow>
   );
 };
