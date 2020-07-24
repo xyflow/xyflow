@@ -63,6 +63,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
+  defaultPosition: [number, number];
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
@@ -104,6 +105,7 @@ const ReactFlow = ({
   minZoom,
   maxZoom,
   defaultZoom,
+  defaultPosition,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
@@ -147,6 +149,7 @@ const ReactFlow = ({
           minZoom={minZoom}
           maxZoom={maxZoom}
           defaultZoom={defaultZoom}
+          defaultPosition={defaultPosition}
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}
@@ -186,6 +189,7 @@ ReactFlow.defaultProps = {
   minZoom: 0.5,
   maxZoom: 2,
   defaultZoom: 1,
+  defaultPosition: [0, 0],
   arrowHeadColor: '#bbb',
   zoomOnScroll: true,
   zoomOnDoubleClick: true,

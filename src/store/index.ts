@@ -105,6 +105,8 @@ export interface StoreModel {
 
   updateTransform: Action<StoreModel, TransformXYK>;
 
+  setInitTransform: Action<StoreModel, TransformXYK>;
+
   updateSize: Action<StoreModel, Dimensions>;
 
   initD3: Action<StoreModel, Element>;
@@ -340,6 +342,18 @@ export const storeModel: StoreModel = {
     state.transform[0] = transform.x;
     state.transform[1] = transform.y;
     state.transform[2] = transform.k;
+  }),
+
+  setInitTransform: action((state, transform) => {
+    state.transform[0] = transform.x;
+    state.transform[1] = transform.y;
+    state.transform[2] = transform.k;
+
+    if (state.d3Selection) {
+      const updatedTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.k);
+      // we need to sync the d3 zoom transform with the updated transform
+      state.d3Selection.property('__zoom', updatedTransform);
+    }
   }),
 
   updateSize: action((state, size) => {

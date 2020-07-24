@@ -55,6 +55,7 @@ export interface GraphViewProps {
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
+  defaultPosition: [number, number];
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
@@ -93,6 +94,7 @@ const GraphView = memo(
     minZoom,
     maxZoom,
     defaultZoom,
+    defaultPosition,
     arrowHeadColor,
     markerEndId,
     zoomOnScroll,
@@ -111,7 +113,7 @@ const GraphView = memo(
     const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
     const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
     const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
-    const updateTransform = useStoreActions((actions) => actions.updateTransform);
+    const setInitTransform = useStoreActions((actions) => actions.setInitTransform);
     const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
     const fitView = useStoreActions((actions) => actions.fitView);
     const zoom = useStoreActions((actions) => actions.zoom);
@@ -142,10 +144,6 @@ const GraphView = memo(
 
       if (onConnect) {
         setOnConnect(onConnect);
-      }
-
-      if (defaultZoom !== 1) {
-        updateTransform({ x: 0, y: 0, k: defaultZoom });
       }
 
       if (rendererNode.current) {
@@ -186,6 +184,18 @@ const GraphView = memo(
           project,
           getElements,
         });
+      }
+
+      if (d3Initialised) {
+        const initialTransform = {
+          x: defaultPosition[0],
+          y: defaultPosition[1],
+          k: defaultZoom,
+        };
+
+        if (initialTransform.x !== 0 || initialTransform.y !== 0 || initialTransform.k !== 1) {
+          setInitTransform(initialTransform);
+        }
       }
     }, [d3Initialised, onLoad]);
 

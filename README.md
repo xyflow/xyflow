@@ -73,6 +73,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `minZoom`: default: `0.5`
 - `maxZoom`: default: `2`
 - `defaultZoom`: default: `1`
+- `defaultPosition`: default: `[0, 0]`
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
@@ -88,7 +89,9 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu
 - `onConnect({ source, target })`: called when user connects two nodes
 - `onLoad(reactFlowInstance)`: called after flow is initialized
-- `onMove()`: called when user pans or zooms
+- `onMove()`: called when user is panning or zooming
+- `onMoveStart()`: called when user starts panning or zooming
+- `onMoveEnd()`: called when user ends panning or zooming
 - `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
 
 #### Interaction
