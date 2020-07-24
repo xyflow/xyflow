@@ -1,17 +1,40 @@
-import { useEffect, MutableRefObject } from 'react';
+import { useEffect, useRef, MutableRefObject } from 'react';
 import { event } from 'd3-selection';
 
 import { useStoreState, useStoreActions } from '../store/hooks';
+import { FlowTransform } from '../types';
 
 interface UseD3ZoomParams {
   zoomPane: MutableRefObject<Element | null>;
   selectionKeyPressed: boolean;
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
-  onMove?: () => void;
+  onMove?: (flowTransform?: FlowTransform) => void;
+  onMoveStart?: (flowTransform?: FlowTransform) => void;
+  onMoveEnd?: (flowTransform?: FlowTransform) => void;
 }
 
-export default ({ zoomPane, onMove, zoomOnScroll, zoomOnDoubleClick, selectionKeyPressed }: UseD3ZoomParams): void => {
+const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
+  prevTransform.x !== eventTransform.x ||
+  prevTransform.y !== eventTransform.y ||
+  prevTransform.zoom !== eventTransform.k;
+
+const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
+  x: eventTransform.x,
+  y: eventTransform.y,
+  zoom: eventTransform.k,
+});
+
+export default ({
+  zoomPane,
+  onMove,
+  onMoveStart,
+  onMoveEnd,
+  zoomOnScroll,
+  zoomOnDoubleClick,
+  selectionKeyPressed,
+}: UseD3ZoomParams): void => {
+  const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
   const d3Zoom = useStoreState((s) => s.d3Zoom);
 
   const initD3 = useStoreActions((actions) => actions.initD3);
@@ -32,12 +55,47 @@ export default ({ zoomPane, onMove, zoomOnScroll, zoomOnDoubleClick, selectionKe
           updateTransform(event.transform);
 
           if (onMove) {
-            onMove();
+            const flowTransform = eventToFlowTransform(event.transform);
+            onMove(flowTransform);
           }
         });
       }
     }
-  }, [selectionKeyPressed, d3Zoom]);
+  }, [selectionKeyPressed, d3Zoom, updateTransform, onMove]);
+
+  useEffect(() => {
+    if (d3Zoom) {
+      if (onMoveStart) {
+        d3Zoom.on('start', () => {
+          if (viewChanged(prevTransform.current, event.transform)) {
+            const flowTransform = eventToFlowTransform(event.transform);
+            prevTransform.current = flowTransform;
+
+            onMoveStart(flowTransform);
+          }
+        });
+      } else {
+        d3Zoom.on('start', null);
+      }
+    }
+  }, [d3Zoom, onMoveStart]);
+
+  useEffect(() => {
+    if (d3Zoom) {
+      if (onMoveEnd) {
+        d3Zoom.on('end', () => {
+          if (viewChanged(prevTransform.current, event.transform)) {
+            const flowTransform = eventToFlowTransform(event.transform);
+            prevTransform.current = flowTransform;
+
+            onMoveEnd(flowTransform);
+          }
+        });
+      } else {
+        d3Zoom.on('end', null);
+      }
+    }
+  }, [d3Zoom, onMoveEnd]);
 
   useEffect(() => {
     if (d3Zoom) {

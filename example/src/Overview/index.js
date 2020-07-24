@@ -11,6 +11,8 @@ const onLoad = (reactFlowInstance) => {
   reactFlowInstance.fitView();
 };
 
+const onMoveEnd = (transform) => console.log('zoom/move end', transform);
+
 const initialElements = [
   {
     id: '1',
@@ -116,6 +118,7 @@ const OverviewFlow = () => {
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
       onSelectionChange={onSelectionChange}
+      onMoveEnd={onMoveEnd}
       style={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
       connectionLineStyle={{ stroke: '#ddd' }}

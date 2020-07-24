@@ -26,6 +26,7 @@ import {
   Edge,
   Connection,
   ConnectionLineType,
+  FlowTransform,
 } from '../../types';
 
 import '../../style.css';
@@ -42,7 +43,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onLoad?: OnLoadFunc;
-  onMove?: () => void;
+  onMove?: (flowTransform?: FlowTransform) => void;
+  onMoveStart?: (flowTransform?: FlowTransform) => void;
+  onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -60,6 +63,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
+  defaultPosition: [number, number];
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
@@ -76,6 +80,8 @@ const ReactFlow = ({
   edgeTypes,
   onLoad,
   onMove,
+  onMoveStart,
+  onMoveEnd,
   onElementsRemove,
   onConnect,
   onNodeMouseEnter,
@@ -99,6 +105,7 @@ const ReactFlow = ({
   minZoom,
   maxZoom,
   defaultZoom,
+  defaultPosition,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
@@ -114,6 +121,8 @@ const ReactFlow = ({
         <GraphView
           onLoad={onLoad}
           onMove={onMove}
+          onMoveStart={onMoveStart}
+          onMoveEnd={onMoveEnd}
           onElementClick={onElementClick}
           onNodeMouseEnter={onNodeMouseEnter}
           onNodeMouseMove={onNodeMouseMove}
@@ -140,6 +149,7 @@ const ReactFlow = ({
           minZoom={minZoom}
           maxZoom={maxZoom}
           defaultZoom={defaultZoom}
+          defaultPosition={defaultPosition}
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}
@@ -179,6 +189,7 @@ ReactFlow.defaultProps = {
   minZoom: 0.5,
   maxZoom: 2,
   defaultZoom: 1,
+  defaultPosition: [0, 0],
   arrowHeadColor: '#bbb',
   zoomOnScroll: true,
   zoomOnDoubleClick: true,
