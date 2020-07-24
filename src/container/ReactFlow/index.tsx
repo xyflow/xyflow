@@ -26,6 +26,7 @@ import {
   Edge,
   Connection,
   ConnectionLineType,
+  FlowTransform,
 } from '../../types';
 
 import '../../style.css';
@@ -42,7 +43,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onLoad?: OnLoadFunc;
-  onMove?: () => void;
+  onMove?: (flowTransform?: FlowTransform) => void;
+  onMoveStart?: (flowTransform?: FlowTransform) => void;
+  onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -76,6 +79,8 @@ const ReactFlow = ({
   edgeTypes,
   onLoad,
   onMove,
+  onMoveStart,
+  onMoveEnd,
   onElementsRemove,
   onConnect,
   onNodeMouseEnter,
@@ -114,6 +119,8 @@ const ReactFlow = ({
         <GraphView
           onLoad={onLoad}
           onMove={onMove}
+          onMoveStart={onMoveStart}
+          onMoveEnd={onMoveEnd}
           onElementClick={onElementClick}
           onNodeMouseEnter={onNodeMouseEnter}
           onNodeMouseMove={onNodeMouseMove}

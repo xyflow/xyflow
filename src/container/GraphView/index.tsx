@@ -21,6 +21,7 @@ import {
   Edge,
   Connection,
   ConnectionLineType,
+  FlowTransform,
 } from '../../types';
 
 export interface GraphViewProps {
@@ -35,7 +36,9 @@ export interface GraphViewProps {
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Connection | Edge) => void;
   onLoad?: OnLoadFunc;
-  onMove?: () => void;
+  onMove?: (flowTransform?: FlowTransform) => void;
+  onMoveStart?: (flowTransform?: FlowTransform) => void;
+  onMoveEnd?: (flowTransform?: FlowTransform) => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -63,6 +66,8 @@ const GraphView = memo(
     nodeTypes,
     edgeTypes,
     onMove,
+    onMoveStart,
+    onMoveEnd,
     onLoad,
     onElementClick,
     onNodeMouseEnter,
@@ -162,7 +167,15 @@ const GraphView = memo(
       };
     }, []);
 
-    useD3Zoom({ zoomPane, onMove, selectionKeyPressed, zoomOnScroll, zoomOnDoubleClick });
+    useD3Zoom({
+      zoomPane,
+      onMove,
+      onMoveStart,
+      onMoveEnd,
+      selectionKeyPressed,
+      zoomOnScroll,
+      zoomOnDoubleClick,
+    });
 
     useEffect(() => {
       if (d3Initialised && onLoad) {

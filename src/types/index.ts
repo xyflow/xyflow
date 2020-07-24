@@ -241,3 +241,9 @@ export type NodePosUpdate = {
   id: ElementId;
   pos: XYPosition;
 };
+
+export type FlowTransform = {
+  x: number;
+  y: number;
+  zoom: number;
+};
