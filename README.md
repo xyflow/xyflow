@@ -22,7 +22,7 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [ReactFlowProvider](#reactflowprovider)
 - [Styling](#styling)
 - [Helper Functions](#helper-functions)
-- [Access Internal State](#access-internal-state)
+- [Access Internal State and Actions](#access-internal-state-and-actions)
 - [Examples](#examples)
 - [Development](#development)
 - [Testing](#testing)
@@ -155,6 +155,12 @@ Fits view port so that all nodes are visible
 ### getElements
 
 `getElements = (): Elements`
+
+### setTransform
+
+Sets position and zoom of the pane
+
+`setTransform = (transform: FlowTransform): void`
 
 # Nodes
 
@@ -507,7 +513,7 @@ Returns all direct child nodes of the passed node
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 
-# Access Internal State
+# Access Internal State and Actions
 
 Under the hood React Flow uses [Easy Peasy](https://easy-peasy.now.sh/) for state handling.
 If you need to access the internal state you can use the `useStoreState` hook inside a child component of the `ReactFlow` component:
@@ -528,6 +534,21 @@ const Flow = () => (
     <NodesDebugger />
   </ReactFlow>
 );
+```
+
+You will not need this in most cases but you can also use the internal actions that are defined in the [store](/src/store/index.ts):
+
+```javascript
+import React, { useEffect } from 'react';
+import { useStoreActions } from 'react-flow-renderer'
+
+const TransformUpdater = ({ x, y, zoom }) => {
+  const setTransform = useStoreActions(a => a.setInitTransform);
+
+  useEffect(() => {
+    setTransform({ x, y, k: zoom })
+  }, [x, y, zoom])
+});
 ```
 
 If you need more control you can wrap the `ReactFlow` component with the `ReactFlowProvider` component in order to be able to call `useStoreState` outside of the `ReactFlow` component.
