@@ -175,6 +175,7 @@ type OnLoadParams = {
   fitView: FitViewFunc;
   project: ProjectFunc;
   getElements: () => Elements;
+  setTransform: (transform: FlowTransform) => void;
 };
 
 export type OnLoadFunc = (params: OnLoadParams) => void;

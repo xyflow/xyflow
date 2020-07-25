@@ -183,6 +183,8 @@ const GraphView = memo(
           zoomOut: () => zoom(-0.2),
           project,
           getElements,
+          setTransform: (transform: FlowTransform) =>
+            setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
         });
       }
 
