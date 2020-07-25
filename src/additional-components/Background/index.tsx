@@ -21,8 +21,6 @@ const defaultColors = {
 
 const Background = memo(
   ({ variant = BackgroundVariant.Dots, gap = 24, size = 0.5, color, style, className }: BackgroundProps) => {
-    const width = useStoreState((s) => s.width);
-    const height = useStoreState((s) => s.height);
     const [x, y, scale] = useStoreState((s) => s.transform);
 
     const bgClasses = cc(['react-flow__background', className]);
@@ -32,15 +30,22 @@ const Background = memo(
     const yOffset = y % scaledGap;
     const isLines = variant === BackgroundVariant.Lines;
     const path = isLines
-      ? createGridLinesPath(width, height, xOffset, yOffset, scaledGap)
-      : createGridDotsPath(width, height, xOffset, yOffset, scaledGap, size);
+      ? createGridLinesPath(xOffset, yOffset, scaledGap)
+      : createGridDotsPath(xOffset, yOffset, scaledGap, size);
     const fill = isLines ? 'none' : bgColor;
     const stroke = isLines ? bgColor : 'none';
 
+    const bg = `<svg width="${scaledGap + size}" height="${scaledGap + size}" xmlns='http://www.w3.org/2000/svg' ${
+      typeof style !== 'undefined' ? `style="${style}"` : ''
+    }><path fill="${fill}" stroke="${stroke}" strokeWidth="${size}" d="${path}" /></svg>`;
+
     return (
-      <svg width={width} height={height} style={style} className={bgClasses}>
-        <path fill={fill} stroke={stroke} strokeWidth={size} d={path} />
-      </svg>
+      <div
+        className={bgClasses}
+        style={{
+          backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(bg)}")`,
+        }}
+      ></div>
     );
   }
 );
