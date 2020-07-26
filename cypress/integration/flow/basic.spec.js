@@ -13,9 +13,6 @@ describe('Basic Flow Rendering', () => {
 
   it('renders a grid', () => {
     cy.get('.react-flow__background');
-
-    const gridStroke = Cypress.$('.react-flow__background path').attr('stroke');
-    expect(gridStroke).to.equal('#eee');
   });
 
   it('selects a node by click', () => {

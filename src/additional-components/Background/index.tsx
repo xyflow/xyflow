@@ -1,4 +1,4 @@
-import React, { memo, HTMLAttributes } from 'react';
+import React, { memo, useMemo, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { useStoreState } from '../../store/hooks';
@@ -21,26 +21,32 @@ const defaultColors = {
 
 const Background = memo(
   ({ variant = BackgroundVariant.Dots, gap = 24, size = 0.5, color, style, className }: BackgroundProps) => {
-    const width = useStoreState((s) => s.width);
-    const height = useStoreState((s) => s.height);
     const [x, y, scale] = useStoreState((s) => s.transform);
 
     const bgClasses = cc(['react-flow__background', className]);
-    const bgColor = color ? color : defaultColors[variant];
     const scaledGap = gap * scale;
     const xOffset = x % scaledGap;
     const yOffset = y % scaledGap;
-    const isLines = variant === BackgroundVariant.Lines;
-    const path = isLines
-      ? createGridLinesPath(width, height, xOffset, yOffset, scaledGap)
-      : createGridDotsPath(width, height, xOffset, yOffset, scaledGap, size);
-    const fill = isLines ? 'none' : bgColor;
-    const stroke = isLines ? bgColor : 'none';
+
+    const bgSvgTile = useMemo(() => {
+      const isLines = variant === BackgroundVariant.Lines;
+      const bgColor = color ? color : defaultColors[variant];
+      const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
+
+      return encodeURIComponent(
+        `<svg width="${scaledGap}" height="${scaledGap}" xmlns='http://www.w3.org/2000/svg'>${path}</svg>`
+      );
+    }, [variant, scaledGap, size, color]);
 
     return (
-      <svg width={width} height={height} style={style} className={bgClasses}>
-        <path fill={fill} stroke={stroke} strokeWidth={size} d={path} />
-      </svg>
+      <div
+        className={bgClasses}
+        style={{
+          ...style,
+          backgroundImage: `url("data:image/svg+xml;utf8,${bgSvgTile}")`,
+          backgroundPosition: `${xOffset}px ${yOffset}px`,
+        }}
+      ></div>
     );
   }
 );

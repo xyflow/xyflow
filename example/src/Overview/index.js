@@ -136,7 +136,7 @@ const OverviewFlow = () => {
         }}
       />
       <Controls />
-      <Background color="#888" gap={16} />
+      <Background color="#aaa" gap={16} />
     </ReactFlow>
   );
 };
