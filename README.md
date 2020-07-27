@@ -272,6 +272,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `type`: 'input', 'output', 'default' or a custom one you implemented
 - `animated`: boolean
 - `style`: css properties for the edge line path
+- `className`: additional class name
 - `label`: string
 - `labelStyle`: css properties for the text
 - `labelShowBg`: boolean - default: `true`
@@ -279,6 +280,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `arrowHeadType`: 'arrow' or 'arrowclosed' - defines the arrowhead of the edge
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 - `isHidden`: if `true`, the edge will not be rendered
+- `data`: {} you can use this to pass data to your custom edges.
 
 You can find an example with different edges in the [edges example](https://reactflow.dev/edges).
 
