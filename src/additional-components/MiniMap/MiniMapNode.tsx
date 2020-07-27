@@ -10,7 +10,7 @@ interface MiniMapNodeProps {
   style?: CSSProperties;
 }
 
-const MiniMapNode = memo(({ x, y, width, height, style, color, borderRadius }: MiniMapNodeProps) => {
+const MiniMapNode = ({ x, y, width, height, style, color, borderRadius }: MiniMapNodeProps) => {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
 
@@ -26,8 +26,8 @@ const MiniMapNode = memo(({ x, y, width, height, style, color, borderRadius }: M
       fill={fill}
     />
   );
-});
+};
 
 MiniMapNode.displayName = 'MiniMapNode';
 
-export default MiniMapNode;
+export default memo(MiniMapNode);

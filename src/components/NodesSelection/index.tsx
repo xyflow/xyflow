@@ -3,7 +3,7 @@
  * made a selectio  with on or several nodes
  */
 
-import React, { useState, memo } from 'react';
+import React, { useState } from 'react';
 import ReactDraggable from 'react-draggable';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -27,7 +27,7 @@ function getStartPositions(nodes: Node[]): StartPositions {
   }, startPositions);
 }
 
-export default memo(() => {
+export default () => {
   const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState<StartPositions>({});
   const [tX, tY, tScale] = useStoreState((s) => s.transform);
@@ -110,4 +110,4 @@ export default memo(() => {
       </ReactDraggable>
     </div>
   );
-});
+};
