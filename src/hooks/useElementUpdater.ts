@@ -3,94 +3,122 @@ import isEqual from 'fast-deep-equal';
 
 import { useStoreState, useStoreActions } from '../store/hooks';
 import { parseElement, isNode, isEdge } from '../utils/graph';
-import { Elements, Node, Edge } from '../types';
+import { Elements, Node, Edge, FlowElement } from '../types';
 
-const useElementUpdater = (elements: Elements): void => {
-  const stateNodes = useStoreState((s) => s.nodes);
-  const stateEdges = useStoreState((s) => s.edges);
-
-  const setNodes = useStoreActions((a) => a.setNodes);
-  const setEdges = useStoreActions((a) => a.setEdges);
+const useElementUpdater = (propElements: Elements): void => {
+  const stateElements = useStoreState((s) => s.elements);
+  const setElements = useStoreActions((a) => a.setElements);
 
   useEffect(() => {
-    const nextEdges: Edge[] = elements.filter(isEdge).map((e) => parseElement(e) as Edge);
-    const nextNodes: Node[] = elements.filter(isNode).map((propNode) => {
-      const existingNode = stateNodes.find((n) => n.id === propNode.id);
+    const nextElements: Elements = propElements.map((propElement) => {
+      const existingElement = stateElements.find((el) => el.id === propElement.id);
 
-      if (existingNode) {
-        const data = !isEqual(existingNode.data, propNode.data)
-          ? { ...existingNode.data, ...propNode.data }
-          : existingNode.data;
+      if (existingElement) {
+        const data = !isEqual(existingElement.data, propElement.data)
+          ? { ...existingElement.data, ...propElement.data }
+          : existingElement.data;
 
-        const style = !isEqual(existingNode.style, propNode.style)
-          ? { ...existingNode.style, ...propNode.style }
-          : existingNode.style;
+        const style = !isEqual(existingElement.style, propElement.style)
+          ? { ...existingElement.style, ...propElement.style }
+          : existingElement.style;
 
-        const className = existingNode.className === propNode.className ? existingNode.className : propNode.className;
-        const isHidden = existingNode.isHidden === propNode.isHidden ? existingNode.isHidden : propNode.isHidden;
-        const draggable = existingNode.draggable === propNode.draggable ? existingNode.draggable : propNode.draggable;
-        const selectable =
-          existingNode.selectable === propNode.selectable ? existingNode.selectable : propNode.selectable;
-        const connectable =
-          existingNode.connectable === propNode.connectable ? existingNode.connectable : propNode.connectable;
-
-        const positionChanged =
-          existingNode.position.x !== propNode.position.x || existingNode.position.y !== propNode.position.y;
-
-        const nodeProps = {
-          ...existingNode,
-          data,
+        const elementProps = {
+          ...existingElement,
         };
 
-        if (positionChanged) {
-          nodeProps.__rf = {
-            ...existingNode.__rf,
-            position: propNode.position,
-          };
-          nodeProps.position = propNode.position;
+        if (typeof data !== 'undefined') {
+          elementProps.data = data;
         }
 
         if (typeof style !== 'undefined') {
-          nodeProps.style = style;
+          elementProps.style = style;
         }
 
-        if (typeof className !== 'undefined') {
-          nodeProps.className = className;
+        if (typeof propElement.className !== 'undefined') {
+          elementProps.className = propElement.className;
         }
 
-        if (typeof isHidden !== 'undefined') {
-          nodeProps.isHidden = isHidden;
+        if (typeof propElement.isHidden !== 'undefined') {
+          elementProps.isHidden = propElement.isHidden;
         }
 
-        if (typeof draggable !== 'undefined') {
-          nodeProps.draggable = draggable;
-        }
+        if (isNode(existingElement)) {
+          const propNode = propElement as Node;
+          const nodeProps = elementProps as Node;
 
-        if (typeof selectable !== 'undefined') {
-          nodeProps.selectable = selectable;
-        }
+          const positionChanged =
+            existingElement.position.x !== propNode.position.x || existingElement.position.y !== propNode.position.y;
 
-        if (typeof connectable !== 'undefined') {
-          nodeProps.connectable = connectable;
-        }
+          if (positionChanged) {
+            nodeProps.__rf = {
+              ...existingElement.__rf,
+              position: propNode.position,
+            };
+            nodeProps.position = propNode.position;
+          }
 
-        return nodeProps;
+          if (typeof propNode.draggable !== 'undefined') {
+            nodeProps.draggable = propNode.draggable;
+          }
+
+          if (typeof propNode.selectable !== 'undefined') {
+            nodeProps.selectable = propNode.selectable;
+          }
+
+          if (typeof propNode.connectable !== 'undefined') {
+            nodeProps.connectable = propNode.connectable;
+          }
+
+          return nodeProps;
+        } else if (isEdge(existingElement)) {
+          const propEdge = propElement as Edge;
+          const edgeProps = elementProps as Edge;
+
+          const labelStyle = !isEqual(existingElement.labelStyle, propEdge.labelStyle)
+            ? { ...existingElement.labelStyle, ...propEdge.labelStyle }
+            : existingElement.labelStyle;
+
+          const labelBgStyle = !isEqual(existingElement.labelBgStyle, propEdge.labelBgStyle)
+            ? { ...existingElement.labelBgStyle, ...propEdge.labelBgStyle }
+            : existingElement.labelBgStyle;
+
+          if (typeof propEdge.label !== 'undefined') {
+            edgeProps.label = propEdge.label;
+          }
+
+          if (typeof labelStyle !== 'undefined') {
+            edgeProps.labelStyle = labelStyle;
+          }
+
+          if (typeof propEdge.labelShowBg !== 'undefined') {
+            edgeProps.labelShowBg = propEdge.labelShowBg;
+          }
+
+          if (typeof labelBgStyle !== 'undefined') {
+            edgeProps.labelBgStyle = labelBgStyle;
+          }
+
+          if (typeof propEdge.animated !== 'undefined') {
+            edgeProps.animated = propEdge.animated;
+          }
+
+          if (typeof propEdge.arrowHeadType !== 'undefined') {
+            edgeProps.arrowHeadType = propEdge.arrowHeadType;
+          }
+
+          return edgeProps;
+        }
       }
 
-      return parseElement(propNode) as Node;
+      return parseElement(propElement) as FlowElement;
     });
 
-    const nodesChanged: boolean = !isEqual(stateNodes, nextNodes);
-    const edgesChanged: boolean = !isEqual(stateEdges, nextEdges);
+    const elementsChanged: boolean = !isEqual(stateElements, nextElements);
 
-    if (nodesChanged) {
-      setNodes(nextNodes);
+    if (elementsChanged) {
+      setElements(nextElements);
     }
-
-    if (edgesChanged) {
-      setEdges(nextEdges);
-    }
-  }, [elements, stateNodes, stateEdges]);
+  }, [propElements, stateElements]);
 };
 
 export default useElementUpdater;

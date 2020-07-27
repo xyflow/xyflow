@@ -10,6 +10,12 @@ const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInsta
 
 const initBgColor = '#f0e742';
 
+const connectionLineStyle = { stroke: '#fff' };
+const snapGrid = [16, 16];
+const nodeTypes = {
+  selectorNode: ColorSelectorNode,
+};
+
 const CustomNodeFlow = () => {
   const [elements, setElements] = useState([]);
   const [bgColor, setBgColor] = useState(initBgColor);
@@ -66,14 +72,12 @@ const CustomNodeFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      style={{ width: '100%', height: '100%', background: bgColor }}
+      style={{ background: bgColor }}
       onLoad={onLoad}
-      nodeTypes={{
-        selectorNode: ColorSelectorNode,
-      }}
-      connectionLineStyle={{ stroke: '#fff' }}
+      nodeTypes={nodeTypes}
+      connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
-      snapGrid={[16, 16]}
+      snapGrid={snapGrid}
     >
       <MiniMap
         nodeColor={(n) => {

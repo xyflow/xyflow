@@ -41,8 +41,12 @@ const initialElements = [
     labelBgStyle: { fill: '#eee', fillOpacity: 0.7 },
     arrowHeadType: 'arrowclosed',
   },
-  { id: 'e5-8', source: '5', target: '8', type: 'custom', label: 'custom edge' },
+  { id: 'e5-8', source: '5', target: '8', type: 'custom', data: { text: 'custom edge' } },
 ];
+
+const edgeTypes = {
+  custom: CustomEdge,
+};
 
 const EdgesFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -57,12 +61,9 @@ const EdgesFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      style={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
       snapToGrid={true}
-      edgeTypes={{
-        custom: CustomEdge,
-      }}
+      edgeTypes={edgeTypes}
     >
       <MiniMap />
       <Controls />

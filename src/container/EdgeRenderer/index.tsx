@@ -166,6 +166,7 @@ function renderEdge(
       key={edge.id}
       id={edge.id}
       type={edge.type}
+      data={edge.data}
       onClick={props.onElementClick}
       selected={isSelected}
       animated={edge.animated}
@@ -216,7 +217,7 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
-        {edges.map((e: Edge) => renderEdge(e, props, nodes, selectedElements, elementsSelectable))}
+        {edges.map((edge) => renderEdge(edge, props, nodes, selectedElements, elementsSelectable))}
         {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}

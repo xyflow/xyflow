@@ -1,20 +1,17 @@
-import React from 'react';
-
-import { Node } from '../../types';
+import React, { memo, CSSProperties } from 'react';
 
 interface MiniMapNodeProps {
-  node: Node;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   color: string;
   borderRadius: number;
+  style?: CSSProperties;
 }
 
-const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
-  const {
-    position: { x, y },
-    width,
-    height,
-  } = node.__rf;
-  const { background, backgroundColor } = node.style || {};
+const MiniMapNode = memo(({ x, y, width, height, style, color, borderRadius }: MiniMapNodeProps) => {
+  const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
 
   return (
@@ -29,7 +26,7 @@ const MiniMapNode = ({ node, color, borderRadius }: MiniMapNodeProps) => {
       fill={fill}
     />
   );
-};
+});
 
 MiniMapNode.displayName = 'MiniMapNode';
 

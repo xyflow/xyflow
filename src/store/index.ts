@@ -1,4 +1,4 @@
-import { createStore, Action, action, Thunk, thunk } from 'easy-peasy';
+import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 import { zoom, zoomIdentity } from 'd3-zoom';
@@ -7,7 +7,7 @@ import { select } from 'd3-selection';
 import { getDimensions, clamp } from '../utils';
 import { getHandleBounds } from '../components/Nodes/utils';
 
-import { getNodesInside, getConnectedEdges, getRectOfNodes } from '../utils/graph';
+import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge } from '../utils/graph';
 import {
   ElementId,
   Elements,
@@ -55,8 +55,9 @@ export interface StoreModel {
   width: number;
   height: number;
   transform: Transform;
-  nodes: Node[];
-  edges: Edge[];
+  elements: Elements;
+  nodes: Computed<StoreModel, Node[]>;
+  edges: Computed<StoreModel, Edge[]>;
   selectedElements: Elements | null;
   selectedNodesBbox: Rect;
 
@@ -89,9 +90,7 @@ export interface StoreModel {
 
   setOnConnect: Action<StoreModel, OnConnectFunc>;
 
-  setNodes: Action<StoreModel, Node[]>;
-
-  setEdges: Action<StoreModel, Edge[]>;
+  setElements: Action<StoreModel, Elements>;
 
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
 
@@ -138,8 +137,9 @@ export const storeModel: StoreModel = {
   width: 0,
   height: 0,
   transform: [0, 0, 1],
-  nodes: [],
-  edges: [],
+  elements: [],
+  nodes: computed([(state) => state.elements], (elements) => elements.filter((el) => isNode(el)) as Node[]),
+  edges: computed([(state) => state.elements], (elements) => elements.filter((el) => isEdge(el)) as Edge[]),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
@@ -181,12 +181,8 @@ export const storeModel: StoreModel = {
     state.onConnect = onConnect;
   }),
 
-  setNodes: action((state, nodes) => {
-    state.nodes = nodes;
-  }),
-
-  setEdges: action((state, edges) => {
-    state.edges = edges;
+  setElements: action((state, elements) => {
+    state.elements = elements;
   }),
 
   updateNodeDimensions: action((state, { id, nodeElement }) => {
@@ -207,8 +203,8 @@ export const storeModel: StoreModel = {
       target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
     };
 
-    state.nodes.forEach((n) => {
-      if (n.id === id) {
+    state.elements.forEach((n) => {
+      if (n.id === id && isNode(n)) {
         n.__rf = {
           ...n.__rf,
           ...dimensions,
@@ -230,8 +226,8 @@ export const storeModel: StoreModel = {
       };
     }
 
-    state.nodes.forEach((n) => {
-      if (n.id === id) {
+    state.elements.forEach((n) => {
+      if (n.id === id && isNode(n)) {
         n.__rf = {
           ...n.__rf,
           position,

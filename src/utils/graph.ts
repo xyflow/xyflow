@@ -85,7 +85,7 @@ export const project = (position: XYPosition): XYPosition => {
 
 export const parseElement = (element: Node | Edge): Node | Edge => {
   if (!element.id) {
-    throw new Error('All elements (nodes and edges) need to have an id.');
+    throw new Error('All nodes and edges need to have an id.');
   }
 
   if (isEdge(element)) {

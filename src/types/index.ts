@@ -2,7 +2,9 @@ import { CSSProperties, MouseEvent } from 'react';
 
 export type ElementId = string;
 
-export type Elements = Array<Node | Edge>;
+export type FlowElement = Node | Edge;
+
+export type Elements = Array<FlowElement>;
 
 export type Transform = [number, number, number];
 
@@ -64,6 +66,8 @@ export interface Edge {
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
   isHidden?: boolean;
+  data?: any;
+  className?: string;
 }
 
 export enum BackgroundVariant {
@@ -95,6 +99,7 @@ export interface EdgeProps {
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
+  data?: any;
 }
 
 export interface EdgeBezierProps extends EdgeProps {
@@ -227,6 +232,7 @@ export interface EdgeCompProps {
   onClick?: (edge: Edge) => void;
   animated?: boolean;
   selected?: boolean;
+  data?: any;
 }
 
 export interface EdgeTextProps {

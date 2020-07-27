@@ -104,6 +104,9 @@ const initialElements = [
   },
 ];
 
+const connectionLineStyle = { stroke: '#ddd' };
+const snapGrid = [16, 16];
+
 const OverviewFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
@@ -119,11 +122,10 @@ const OverviewFlow = () => {
       onNodeDragStop={onNodeDragStop}
       onSelectionChange={onSelectionChange}
       onMoveEnd={onMoveEnd}
-      style={{ width: '100%', height: '100%' }}
       onLoad={onLoad}
-      connectionLineStyle={{ stroke: '#ddd' }}
+      connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
-      snapGrid={[16, 16]}
+      snapGrid={snapGrid}
     >
       <MiniMap
         nodeColor={(n) => {
