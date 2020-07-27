@@ -19,6 +19,7 @@ interface EdgeWrapperProps {
   selected: boolean;
   elementsSelectable: boolean;
   isHidden?: boolean;
+  data?: any;
 }
 
 export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
@@ -38,6 +39,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       labelBgStyle,
       className,
       isHidden,
+      data,
       ...rest
     }: EdgeWrapperProps) => {
       const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
@@ -76,6 +78,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
             labelStyle={labelStyle}
             labelShowBg={labelShowBg}
             labelBgStyle={labelBgStyle}
+            data={data}
             {...rest}
           />
         </g>
