@@ -13,6 +13,8 @@ const initialElements = [
 
 const isValidConnection = (connection) => connection.target === 'B';
 
+const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
+
 const CustomInput = () => (
   <>
     <div>Only connectable with B</div>
@@ -28,6 +30,11 @@ const CustomNode = ({ id }) => (
   </>
 );
 
+const nodeTypes = {
+  custominput: CustomInput,
+  customnode: CustomNode,
+};
+
 const HorizontalFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params) => setElements((els) => addEdge(params, els));
@@ -37,12 +44,9 @@ const HorizontalFlow = () => {
       elements={elements}
       onConnect={onConnect}
       selectNodesOnDrag={false}
-      onLoad={(reactFlowInstance) => reactFlowInstance.fitView()}
+      onLoad={onLoad}
       className="validationflow"
-      nodeTypes={{
-        custominput: CustomInput,
-        customnode: CustomNode,
-      }}
+      nodeTypes={nodeTypes}
     />
   );
 };
