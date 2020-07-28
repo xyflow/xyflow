@@ -142,10 +142,6 @@ const GraphView = memo(
       updateDimensions();
       window.onresize = updateDimensions;
 
-      if (onConnect) {
-        setOnConnect(onConnect);
-      }
-
       if (rendererNode.current) {
         resizeObserver = new ResizeObserver((entries) => {
           for (let _ of entries) {
@@ -200,6 +196,12 @@ const GraphView = memo(
         }
       }
     }, [d3Initialised, onLoad]);
+
+    useEffect(() => {
+      if (onConnect) {
+        setOnConnect(onConnect);
+      }
+    }, [onConnect]);
 
     useEffect(() => {
       setSnapGrid({ snapToGrid, snapGrid });
