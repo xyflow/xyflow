@@ -130,47 +130,45 @@ function onMouseDown(
   document.addEventListener('mouseup', onMouseUp);
 }
 
-const BaseHandle = memo(
-  ({
-    type,
-    nodeId,
-    onConnect,
-    position,
-    setConnectionNodeId,
-    setPosition,
+const BaseHandle = ({
+  type,
+  nodeId,
+  onConnect,
+  position,
+  setConnectionNodeId,
+  setPosition,
+  className,
+  id = false,
+  isValidConnection,
+  ...rest
+}: BaseHandleProps) => {
+  const isTarget = type === 'target';
+  const handleClasses = cc([
+    'react-flow__handle',
+    `react-flow__handle-${position}`,
+    'nodrag',
     className,
-    id = false,
-    isValidConnection,
-    ...rest
-  }: BaseHandleProps) => {
-    const isTarget = type === 'target';
-    const handleClasses = cc([
-      'react-flow__handle',
-      `react-flow__handle-${position}`,
-      'nodrag',
-      className,
-      {
-        source: !isTarget,
-        target: isTarget,
-      },
-    ]);
+    {
+      source: !isTarget,
+      target: isTarget,
+    },
+  ]);
 
-    const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
+  const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
 
-    return (
-      <div
-        data-nodeid={nodeIdWithHandleId}
-        data-handlepos={position}
-        className={handleClasses}
-        onMouseDown={(evt) =>
-          onMouseDown(evt, nodeIdWithHandleId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection)
-        }
-        {...rest}
-      />
-    );
-  }
-);
+  return (
+    <div
+      data-nodeid={nodeIdWithHandleId}
+      data-handlepos={position}
+      className={handleClasses}
+      onMouseDown={(evt) =>
+        onMouseDown(evt, nodeIdWithHandleId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection)
+      }
+      {...rest}
+    />
+  );
+};
 
 BaseHandle.displayName = 'BaseHandle';
 
-export default BaseHandle;
+export default memo(BaseHandle);

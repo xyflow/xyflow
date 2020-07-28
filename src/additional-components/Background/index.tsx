@@ -19,38 +19,43 @@ const defaultColors = {
   [BackgroundVariant.Lines]: '#eee',
 };
 
-const Background = memo(
-  ({ variant = BackgroundVariant.Dots, gap = 24, size = 0.5, color, style, className }: BackgroundProps) => {
-    const [x, y, scale] = useStoreState((s) => s.transform);
+const Background = ({
+  variant = BackgroundVariant.Dots,
+  gap = 24,
+  size = 0.5,
+  color,
+  style,
+  className,
+}: BackgroundProps) => {
+  const [x, y, scale] = useStoreState((s) => s.transform);
 
-    const bgClasses = cc(['react-flow__background', className]);
-    const scaledGap = gap * scale;
-    const xOffset = x % scaledGap;
-    const yOffset = y % scaledGap;
+  const bgClasses = cc(['react-flow__background', className]);
+  const scaledGap = gap * scale;
+  const xOffset = x % scaledGap;
+  const yOffset = y % scaledGap;
 
-    const bgSvgTile = useMemo(() => {
-      const isLines = variant === BackgroundVariant.Lines;
-      const bgColor = color ? color : defaultColors[variant];
-      const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
+  const bgSvgTile = useMemo(() => {
+    const isLines = variant === BackgroundVariant.Lines;
+    const bgColor = color ? color : defaultColors[variant];
+    const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
 
-      return encodeURIComponent(
-        `<svg width="${scaledGap}" height="${scaledGap}" xmlns='http://www.w3.org/2000/svg'>${path}</svg>`
-      );
-    }, [variant, scaledGap, size, color]);
-
-    return (
-      <div
-        className={bgClasses}
-        style={{
-          ...style,
-          backgroundImage: `url("data:image/svg+xml;utf8,${bgSvgTile}")`,
-          backgroundPosition: `${xOffset}px ${yOffset}px`,
-        }}
-      ></div>
+    return encodeURIComponent(
+      `<svg width="${scaledGap}" height="${scaledGap}" xmlns='http://www.w3.org/2000/svg'>${path}</svg>`
     );
-  }
-);
+  }, [variant, scaledGap, size, color]);
+
+  return (
+    <div
+      className={bgClasses}
+      style={{
+        ...style,
+        backgroundImage: `url("data:image/svg+xml;utf8,${bgSvgTile}")`,
+        backgroundPosition: `${xOffset}px ${yOffset}px`,
+      }}
+    ></div>
+  );
+};
 
 Background.displayName = 'Background';
 
-export default Background;
+export default memo(Background);

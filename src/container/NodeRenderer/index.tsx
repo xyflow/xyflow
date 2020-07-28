@@ -68,7 +68,7 @@ function renderNode(
   );
 }
 
-const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRendererProps) => {
+const NodeRenderer = ({ onlyRenderVisibleNodes = true, ...props }: NodeRendererProps) => {
   const nodes = useStoreState((s) => s.nodes);
   const transform = useStoreState((s) => s.transform);
   const selectedElements = useStoreState((s) => s.selectedElements);
@@ -94,8 +94,8 @@ const NodeRenderer = memo(({ onlyRenderVisibleNodes = true, ...props }: NodeRend
       )}
     </div>
   );
-});
+};
 
 NodeRenderer.displayName = 'NodeRenderer';
 
-export default NodeRenderer;
+export default memo(NodeRenderer);

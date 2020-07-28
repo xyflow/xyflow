@@ -193,7 +193,7 @@ function renderEdge(
   );
 }
 
-const EdgeRenderer = memo((props: EdgeRendererProps) => {
+const EdgeRenderer = (props: EdgeRendererProps) => {
   const [tX, tY, tScale] = useStoreState((s) => s.transform);
   const edges = useStoreState((s) => s.edges);
   const nodes = useStoreState((s) => s.nodes);
@@ -234,8 +234,8 @@ const EdgeRenderer = memo((props: EdgeRendererProps) => {
       </g>
     </svg>
   );
-});
+};
 
 EdgeRenderer.displayName = 'EdgeRenderer';
 
-export default EdgeRenderer;
+export default memo(EdgeRenderer);

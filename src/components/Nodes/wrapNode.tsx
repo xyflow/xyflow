@@ -160,192 +160,190 @@ const onStop = ({
 };
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
-  const NodeWrapper = memo(
-    ({
-      id,
-      type,
-      data,
-      transform,
-      xPos,
-      yPos,
-      selected,
-      onClick,
-      onMouseEnter,
-      onMouseMove,
-      onMouseLeave,
-      onContextMenu,
-      onNodeDragStart,
-      onNodeDragStop,
-      style,
+  const NodeWrapper = ({
+    id,
+    type,
+    data,
+    transform,
+    xPos,
+    yPos,
+    selected,
+    onClick,
+    onMouseEnter,
+    onMouseMove,
+    onMouseLeave,
+    onContextMenu,
+    onNodeDragStart,
+    onNodeDragStop,
+    style,
+    className,
+    isDraggable,
+    isSelectable,
+    isConnectable,
+    selectNodesOnDrag,
+    sourcePosition,
+    targetPosition,
+    isHidden,
+  }: WrapNodeProps) => {
+    const updateNodeDimensions = useStoreActions((a) => a.updateNodeDimensions);
+    const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
+    const updateNodePos = useStoreActions((a) => a.updateNodePos);
+
+    const nodeElement = useRef<HTMLDivElement>(null);
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setDragging] = useState(false);
+    const position = { x: xPos, y: yPos };
+    const nodeClasses = cc([
+      'react-flow__node',
+      `react-flow__node-${type}`,
       className,
-      isDraggable,
-      isSelectable,
-      isConnectable,
-      selectNodesOnDrag,
-      sourcePosition,
-      targetPosition,
-      isHidden,
-    }: WrapNodeProps) => {
-      const updateNodeDimensions = useStoreActions((a) => a.updateNodeDimensions);
-      const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
-      const updateNodePos = useStoreActions((a) => a.updateNodePos);
-
-      const nodeElement = useRef<HTMLDivElement>(null);
-      const [offset, setOffset] = useState({ x: 0, y: 0 });
-      const [isDragging, setDragging] = useState(false);
-      const position = { x: xPos, y: yPos };
-      const nodeClasses = cc([
-        'react-flow__node',
-        `react-flow__node-${type}`,
-        className,
-        {
-          selected,
-          selectable: isSelectable,
-        },
-      ]);
-      const node = { id, type, position, data };
-      const onMouseEnterHandler = useMemo(() => {
-        if (!onMouseEnter || isDragging) {
-          return noop;
-        }
-
-        return (evt: MouseEvent) => onMouseEnter(evt, node);
-      }, [onMouseEnter, isDragging]);
-
-      const onMouseMoveHandler = useMemo(() => {
-        if (!onMouseMove || isDragging) {
-          return noop;
-        }
-
-        return (evt: MouseEvent) => onMouseMove(evt, node);
-      }, [onMouseMove, isDragging]);
-
-      const onMouseLeaveHandler = useMemo(() => {
-        if (!onMouseLeave || isDragging) {
-          return noop;
-        }
-
-        return (evt: MouseEvent) => onMouseLeave(evt, node);
-      }, [onMouseLeave, isDragging]);
-
-      const onContextMenuHandler = useMemo(() => {
-        if (!onContextMenu) {
-          return noop;
-        }
-
-        return (evt: MouseEvent) => onContextMenu(evt, node);
-      }, [onContextMenu]);
-
-      const onSelectNodeHandler = useCallback(() => {
-        if (!isDraggable && isSelectable) {
-          setSelectedElements({ id: node.id, type: node.type } as Node);
-
-          if (onClick) {
-            onClick(node);
-          }
-        }
-
+      {
+        selected,
+        selectable: isSelectable,
+      },
+    ]);
+    const node = { id, type, position, data };
+    const onMouseEnterHandler = useMemo(() => {
+      if (!onMouseEnter || isDragging) {
         return noop;
-      }, [isSelectable, isDraggable, node]);
-
-      useEffect(() => {
-        if (nodeElement.current) {
-          updateNodeDimensions({ id, nodeElement: nodeElement.current });
-
-          const resizeObserver = new ResizeObserver((entries) => {
-            for (let _ of entries) {
-              updateNodeDimensions({ id, nodeElement: nodeElement.current! });
-            }
-          });
-
-          resizeObserver.observe(nodeElement.current);
-
-          return () => {
-            if (resizeObserver && nodeElement.current) {
-              resizeObserver.unobserve(nodeElement.current);
-            }
-          };
-        }
-
-        return;
-      }, [id]);
-
-      if (isHidden) {
-        return null;
       }
 
-      const nodeStyle: CSSProperties = {
-        zIndex: selected ? 10 : 3,
-        transform: `translate(${xPos}px,${yPos}px)`,
-        pointerEvents: isSelectable || isDraggable ? 'all' : 'none',
-        ...style,
-      };
+      return (evt: MouseEvent) => onMouseEnter(evt, node);
+    }, [onMouseEnter, isDragging]);
 
-      return (
-        <DraggableCore
-          onStart={(evt) =>
-            onStart({
-              evt: evt as MouseEvent,
-              selectNodesOnDrag,
-              isSelectable,
-              onNodeDragStart,
-              id,
-              type,
-              data,
-              setOffset,
-              transform,
-              position,
-              setSelectedElements,
-            })
+    const onMouseMoveHandler = useMemo(() => {
+      if (!onMouseMove || isDragging) {
+        return noop;
+      }
+
+      return (evt: MouseEvent) => onMouseMove(evt, node);
+    }, [onMouseMove, isDragging]);
+
+    const onMouseLeaveHandler = useMemo(() => {
+      if (!onMouseLeave || isDragging) {
+        return noop;
+      }
+
+      return (evt: MouseEvent) => onMouseLeave(evt, node);
+    }, [onMouseLeave, isDragging]);
+
+    const onContextMenuHandler = useMemo(() => {
+      if (!onContextMenu) {
+        return noop;
+      }
+
+      return (evt: MouseEvent) => onContextMenu(evt, node);
+    }, [onContextMenu]);
+
+    const onSelectNodeHandler = useCallback(() => {
+      if (!isDraggable && isSelectable) {
+        setSelectedElements({ id: node.id, type: node.type } as Node);
+
+        if (onClick) {
+          onClick(node);
+        }
+      }
+
+      return noop;
+    }, [isSelectable, isDraggable, node]);
+
+    useEffect(() => {
+      if (nodeElement.current) {
+        updateNodeDimensions({ id, nodeElement: nodeElement.current });
+
+        const resizeObserver = new ResizeObserver((entries) => {
+          for (let _ of entries) {
+            updateNodeDimensions({ id, nodeElement: nodeElement.current! });
           }
-          onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
-          onStop={() =>
-            onStop({
-              onNodeDragStop,
-              selectNodesOnDrag,
-              isSelectable,
-              onClick,
-              isDragging,
-              setDragging,
-              id,
-              type,
-              position,
-              data,
-              setSelectedElements,
-            })
+        });
+
+        resizeObserver.observe(nodeElement.current);
+
+        return () => {
+          if (resizeObserver && nodeElement.current) {
+            resizeObserver.unobserve(nodeElement.current);
           }
-          scale={transform[2]}
-          disabled={!isDraggable}
-          cancel=".nodrag"
-        >
-          <div
-            className={nodeClasses}
-            ref={nodeElement}
-            style={nodeStyle}
-            onMouseEnter={onMouseEnterHandler}
-            onMouseMove={onMouseMoveHandler}
-            onMouseLeave={onMouseLeaveHandler}
-            onContextMenu={onContextMenuHandler}
-            onClick={onSelectNodeHandler}
-          >
-            <Provider value={id}>
-              <NodeComponent
-                id={id}
-                data={data}
-                type={type}
-                selected={selected}
-                isConnectable={isConnectable}
-                sourcePosition={sourcePosition}
-                targetPosition={targetPosition}
-              />
-            </Provider>
-          </div>
-        </DraggableCore>
-      );
+        };
+      }
+
+      return;
+    }, [id]);
+
+    if (isHidden) {
+      return null;
     }
-  );
+
+    const nodeStyle: CSSProperties = {
+      zIndex: selected ? 10 : 3,
+      transform: `translate(${xPos}px,${yPos}px)`,
+      pointerEvents: isSelectable || isDraggable ? 'all' : 'none',
+      ...style,
+    };
+
+    return (
+      <DraggableCore
+        onStart={(evt) =>
+          onStart({
+            evt: evt as MouseEvent,
+            selectNodesOnDrag,
+            isSelectable,
+            onNodeDragStart,
+            id,
+            type,
+            data,
+            setOffset,
+            transform,
+            position,
+            setSelectedElements,
+          })
+        }
+        onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
+        onStop={() =>
+          onStop({
+            onNodeDragStop,
+            selectNodesOnDrag,
+            isSelectable,
+            onClick,
+            isDragging,
+            setDragging,
+            id,
+            type,
+            position,
+            data,
+            setSelectedElements,
+          })
+        }
+        scale={transform[2]}
+        disabled={!isDraggable}
+        cancel=".nodrag"
+      >
+        <div
+          className={nodeClasses}
+          ref={nodeElement}
+          style={nodeStyle}
+          onMouseEnter={onMouseEnterHandler}
+          onMouseMove={onMouseMoveHandler}
+          onMouseLeave={onMouseLeaveHandler}
+          onContextMenu={onContextMenuHandler}
+          onClick={onSelectNodeHandler}
+        >
+          <Provider value={id}>
+            <NodeComponent
+              id={id}
+              data={data}
+              type={type}
+              selected={selected}
+              isConnectable={isConnectable}
+              sourcePosition={sourcePosition}
+              targetPosition={targetPosition}
+            />
+          </Provider>
+        </div>
+      </DraggableCore>
+    );
+  };
 
   NodeWrapper.displayName = 'NodeWrapper';
 
-  return NodeWrapper;
+  return memo(NodeWrapper);
 };
