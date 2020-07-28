@@ -141,9 +141,6 @@ const GraphView = ({
     updateDimensions();
     window.onresize = updateDimensions;
 
-    if (onConnect) {
-      setOnConnect(onConnect);
-    }
 
     if (rendererNode.current) {
       resizeObserver = new ResizeObserver((entries) => {
@@ -199,6 +196,12 @@ const GraphView = ({
       }
     }
   }, [d3Initialised, onLoad]);
+        
+  useEffect(() => {
+    if (onConnect) {
+      setOnConnect(onConnect);
+    }
+  }, [onConnect]);
 
   useEffect(() => {
     setSnapGrid({ snapToGrid, snapGrid });
