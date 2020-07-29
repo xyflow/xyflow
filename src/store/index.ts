@@ -54,6 +54,7 @@ type SetSnapGrid = {
 export interface StoreModel {
   width: number;
   height: number;
+  viewportBox: Computed<StoreModel, Rect>;
   transform: Transform;
   elements: Elements;
   nodes: Computed<StoreModel, Node[]>;
@@ -136,10 +137,11 @@ export interface StoreModel {
 export const storeModel: StoreModel = {
   width: 0,
   height: 0,
+  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   transform: [0, 0, 1],
   elements: [],
-  nodes: computed([(state) => state.elements], (elements) => elements.filter((el) => isNode(el)) as Node[]),
-  edges: computed([(state) => state.elements], (elements) => elements.filter((el) => isEdge(el)) as Edge[]),
+  nodes: computed((state) => state.elements.filter((el) => isNode(el)) as Node[]),
+  edges: computed((state) => state.elements.filter((el) => isEdge(el)) as Edge[]),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
