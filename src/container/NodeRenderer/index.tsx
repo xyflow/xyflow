@@ -72,20 +72,15 @@ const NodeRenderer = ({ onlyRenderVisibleNodes = true, ...props }: NodeRendererP
   const nodes = useStoreState((s) => s.nodes);
   const transform = useStoreState((s) => s.transform);
   const selectedElements = useStoreState((s) => s.selectedElements);
-  const width = useStoreState((s) => s.width);
-  const height = useStoreState((s) => s.height);
+  const viewportBox = useStoreState((s) => s.viewportBox);
   const nodesDraggable = useStoreState((s) => s.nodesDraggable);
   const nodesConnectable = useStoreState((s) => s.nodesConnectable);
   const elementsSelectable = useStoreState((s) => s.elementsSelectable);
-
-  const [tX, tY, tScale] = transform;
   const transformStyle = {
-    transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
+    transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
   };
 
-  const renderNodes = onlyRenderVisibleNodes
-    ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
-    : nodes;
+  const renderNodes = onlyRenderVisibleNodes ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
