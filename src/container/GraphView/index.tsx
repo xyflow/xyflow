@@ -60,6 +60,7 @@ export interface GraphViewProps {
   markerEndId?: string;
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
+  paneMoveable: boolean;
 }
 
 const GraphView = ({
@@ -98,6 +99,7 @@ const GraphView = ({
   markerEndId,
   zoomOnScroll,
   zoomOnDoubleClick,
+  paneMoveable,
 }: GraphViewProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
   const rendererNode = useRef<HTMLDivElement>(null);
@@ -141,7 +143,6 @@ const GraphView = ({
     updateDimensions();
     window.onresize = updateDimensions;
 
-
     if (rendererNode.current) {
       resizeObserver = new ResizeObserver((entries) => {
         for (let _ of entries) {
@@ -169,6 +170,7 @@ const GraphView = ({
     selectionKeyPressed,
     zoomOnScroll,
     zoomOnDoubleClick,
+    paneMoveable,
   });
 
   useEffect(() => {
@@ -196,7 +198,7 @@ const GraphView = ({
       }
     }
   }, [d3Initialised, onLoad]);
-        
+
   useEffect(() => {
     if (onConnect) {
       setOnConnect(onConnect);

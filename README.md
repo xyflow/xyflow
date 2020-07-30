@@ -101,6 +101,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `zoomOnScroll`: default: `true`
 - `zoomOnDoubleClick`: default: `true`
 - `selectNodesOnDrag`: default: `true`
+- `paneMoveable`: default: `true` - If set to `false`, panning and zooming is disabled
 
 #### Element Customization
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)

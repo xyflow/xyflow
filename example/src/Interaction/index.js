@@ -24,6 +24,7 @@ const InteractionFlow = () => {
   const [isConnectable, setIsConnectable] = useState(false);
   const [zoomOnScroll, setZoomOnScroll] = useState(false);
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
+  const [paneMoveable, setPaneMoveable] = useState(true);
 
   return (
     <ReactFlow
@@ -37,6 +38,7 @@ const InteractionFlow = () => {
       onElementClick={onElementClick}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
+      paneMoveable={paneMoveable}
     >
       <MiniMap />
       <Controls />
@@ -99,6 +101,18 @@ const InteractionFlow = () => {
               checked={zoomOnDoubleClick}
               onChange={(evt) => setZoomOnDoubleClick(evt.target.checked)}
               className="react-flow__zoomondbl"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="panemoveable">
+            pane moveable
+            <input
+              id="panemoveable"
+              type="checkbox"
+              checked={paneMoveable}
+              onChange={(evt) => setPaneMoveable(evt.target.checked)}
+              className="react-flow__panemoveable"
             />
           </label>
         </div>
