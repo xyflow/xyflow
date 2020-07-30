@@ -60,6 +60,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   nodesConnectable: boolean;
   elementsSelectable: boolean;
   selectNodesOnDrag: boolean;
+  paneMoveable: boolean;
   minZoom: number;
   maxZoom: number;
   defaultZoom: number;
@@ -110,6 +111,7 @@ const ReactFlow = ({
   markerEndId,
   zoomOnScroll,
   zoomOnDoubleClick,
+  paneMoveable,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -154,6 +156,7 @@ const ReactFlow = ({
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}
           zoomOnDoubleClick={zoomOnDoubleClick}
+          paneMoveable={paneMoveable}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
@@ -186,6 +189,7 @@ ReactFlow.defaultProps = {
   nodesConnectable: true,
   elementsSelectable: true,
   selectNodesOnDrag: true,
+  paneMoveable: true,
   minZoom: 0.5,
   maxZoom: 2,
   defaultZoom: 1,

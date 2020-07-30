@@ -9,6 +9,7 @@ interface UseD3ZoomParams {
   selectionKeyPressed: boolean;
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
+  paneMoveable: boolean;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
@@ -33,6 +34,7 @@ export default ({
   zoomOnScroll,
   zoomOnDoubleClick,
   selectionKeyPressed,
+  paneMoveable,
 }: UseD3ZoomParams): void => {
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
   const d3Zoom = useStoreState((s) => s.d3Zoom);
@@ -100,6 +102,10 @@ export default ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.filter(() => {
+        if (!paneMoveable) {
+          return false;
+        }
+
         if (!zoomOnScroll && event.type === 'wheel') {
           return false;
         }
@@ -111,5 +117,5 @@ export default ({
         return !event.ctrlKey && !event.button;
       });
     }
-  }, [d3Zoom, zoomOnScroll, zoomOnDoubleClick]);
+  }, [d3Zoom, zoomOnScroll, zoomOnDoubleClick, paneMoveable]);
 };
