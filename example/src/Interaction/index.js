@@ -14,6 +14,7 @@ const initialElements = [
 const onNodeDragStart = (node) => console.log('drag start', node);
 const onNodeDragStop = (node) => console.log('drag stop', node);
 const onElementClick = (element) => console.log('click', element);
+const onZoomPaneClick = () => console.log('onZoomPaneClick');
 
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -25,6 +26,7 @@ const InteractionFlow = () => {
   const [zoomOnScroll, setZoomOnScroll] = useState(false);
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
   const [paneMoveable, setPaneMoveable] = useState(true);
+  const [captureZoomClick, setCaptureZoomClick] = useState(false);
 
   return (
     <ReactFlow
@@ -39,6 +41,7 @@ const InteractionFlow = () => {
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
       paneMoveable={paneMoveable}
+      onZoomPaneClick={captureZoomClick ? onZoomPaneClick : undefined}
     >
       <MiniMap />
       <Controls />
@@ -113,6 +116,18 @@ const InteractionFlow = () => {
               checked={paneMoveable}
               onChange={(evt) => setPaneMoveable(evt.target.checked)}
               className="react-flow__panemoveable"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="capturezoompaneclick">
+            capture zoom pane click
+            <input
+              id="capturezoompaneclick"
+              type="checkbox"
+              checked={captureZoomClick}
+              onChange={(evt) => setCaptureZoomClick(evt.target.checked)}
+              className="react-flow__capturezoompaneclick"
             />
           </label>
         </div>

@@ -47,6 +47,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
+  onZoomPaneClick?: () => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: ConnectionLineType;
@@ -112,6 +113,7 @@ const ReactFlow = ({
   zoomOnScroll,
   zoomOnDoubleClick,
   paneMoveable,
+  onZoomPaneClick,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
@@ -157,6 +159,7 @@ const ReactFlow = ({
           zoomOnScroll={zoomOnScroll}
           zoomOnDoubleClick={zoomOnDoubleClick}
           paneMoveable={paneMoveable}
+          onZoomPaneClick={onZoomPaneClick}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
