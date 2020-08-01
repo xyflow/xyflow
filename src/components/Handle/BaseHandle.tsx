@@ -1,7 +1,17 @@
 import React, { memo, MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
 import cc from 'classcat';
 
-import { HandleType, ElementId, Position, XYPosition, OnConnectFunc, Connection, SetConnectionId } from '../../types';
+import {
+  HandleType,
+  ElementId,
+  Position,
+  XYPosition,
+  OnConnectFunc,
+  OnConnectStartFunc,
+  OnConnectStopFunc,
+  Connection,
+  SetConnectionId,
+} from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 type SetSourceIdFunc = (params: SetConnectionId) => void;
@@ -10,6 +20,8 @@ interface BaseHandleProps {
   type: HandleType;
   nodeId: ElementId;
   onConnect: OnConnectFunc;
+  onConnectStart?: OnConnectStartFunc;
+  onConnectStop?: OnConnectStopFunc;
   position: Position;
   setConnectionNodeId: SetSourceIdFunc;
   setPosition: (pos: XYPosition) => void;
@@ -33,7 +45,9 @@ function onMouseDown(
   setPosition: (pos: XYPosition) => void,
   onConnect: OnConnectFunc,
   isTarget: boolean,
-  isValidConnection: ValidConnectionFunc
+  isValidConnection: ValidConnectionFunc,
+  onConnectStart?: OnConnectStartFunc,
+  onConnectStop?: OnConnectStopFunc
 ): void {
   const reactFlowNode = document.querySelector('.react-flow');
 
@@ -41,6 +55,7 @@ function onMouseDown(
     return;
   }
 
+  const handleType = isTarget ? 'target' : 'source';
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 
@@ -48,7 +63,11 @@ function onMouseDown(
     x: evt.clientX - containerBounds.left,
     y: evt.clientY - containerBounds.top,
   });
-  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleType: isTarget ? 'target' : 'source' });
+  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleType: handleType });
+
+  if (onConnectStart) {
+    onConnectStart({ nodeId, handleType });
+  }
 
   function resetRecentHandle(): void {
     if (!recentHoveredHandle) {
@@ -115,12 +134,16 @@ function onMouseDown(
   function onMouseUp(evt: MouseEvent) {
     const { connection, isValid } = checkElementBelowIsValid(evt);
 
-    if (isValid) {
+    if (isValid && onConnect) {
       onConnect(connection);
     }
 
     resetRecentHandle();
     setConnectionNodeId({ connectionNodeId: null, connectionHandleType: null });
+
+    if (onConnectStop) {
+      onConnectStop();
+    }
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -134,6 +157,8 @@ const BaseHandle = ({
   type,
   nodeId,
   onConnect,
+  onConnectStart,
+  onConnectStop,
   position,
   setConnectionNodeId,
   setPosition,
@@ -162,7 +187,17 @@ const BaseHandle = ({
       data-handlepos={position}
       className={handleClasses}
       onMouseDown={(evt) =>
-        onMouseDown(evt, nodeIdWithHandleId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection)
+        onMouseDown(
+          evt,
+          nodeIdWithHandleId,
+          setConnectionNodeId,
+          setPosition,
+          onConnect,
+          isTarget,
+          isValidConnection,
+          onConnectStart,
+          onConnectStop
+        )
       }
       {...rest}
     />

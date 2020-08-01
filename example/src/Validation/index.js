@@ -15,6 +15,10 @@ const isValidConnection = (connection) => connection.target === 'B';
 
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
 
+const onConnectStart = ({ nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
+
+const onConnectStop = () => console.log('on connect stop');
+
 const CustomInput = () => (
   <>
     <div>Only connectable with B</div>
@@ -47,6 +51,8 @@ const HorizontalFlow = () => {
       onLoad={onLoad}
       className="validationflow"
       nodeTypes={nodeTypes}
+      onConnectStart={onConnectStart}
+      onConnectStop={onConnectStop}
     />
   );
 };

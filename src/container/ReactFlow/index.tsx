@@ -27,6 +27,7 @@ import {
   Connection,
   ConnectionLineType,
   FlowTransform,
+  OnConnectStartFunc,
 } from '../../types';
 
 import '../../style.css';
@@ -42,6 +43,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
+  onConnectStart?: OnConnectStartFunc;
+  onConnectStop?: () => void;
   onLoad?: OnLoadFunc;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
@@ -86,6 +89,8 @@ const ReactFlow = ({
   onMoveEnd,
   onElementsRemove,
   onConnect,
+  onConnectStart,
+  onConnectStop,
   onNodeMouseEnter,
   onNodeMouseMove,
   onNodeMouseLeave,
@@ -143,6 +148,8 @@ const ReactFlow = ({
           deleteKeyCode={deleteKeyCode}
           elements={elements}
           onConnect={onConnect}
+          onConnectStart={onConnectStart}
+          onConnectStop={onConnectStop}
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
