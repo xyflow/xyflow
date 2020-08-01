@@ -14,7 +14,7 @@ const initialElements = [
 const onNodeDragStart = (node) => console.log('drag start', node);
 const onNodeDragStop = (node) => console.log('drag stop', node);
 const onElementClick = (element) => console.log('click', element);
-const onZoomPaneClick = () => console.log('onZoomPaneClick');
+const onPaneClick = () => console.log('onPaneClick');
 
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -41,7 +41,7 @@ const InteractionFlow = () => {
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
       paneMoveable={paneMoveable}
-      onZoomPaneClick={captureZoomClick ? onZoomPaneClick : undefined}
+      onPaneClick={captureZoomClick ? onPaneClick : undefined}
     >
       <MiniMap />
       <Controls />

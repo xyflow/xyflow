@@ -39,7 +39,7 @@ export interface GraphViewProps {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  onZoomPaneClick?: () => void;
+  onPaneClick?: () => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -101,7 +101,7 @@ const GraphView = ({
   zoomOnScroll,
   zoomOnDoubleClick,
   paneMoveable,
-  onZoomPaneClick,
+  onPaneClick,
 }: GraphViewProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
   const rendererNode = useRef<HTMLDivElement>(null);
@@ -123,8 +123,8 @@ const GraphView = ({
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  const handleZoomPaneClick = () => {
-    onZoomPaneClick?.();
+  const onZoomPaneClick = () => {
+    onPaneClick?.();
     setNodesSelection({ isActive: false });
   };
 
@@ -259,7 +259,7 @@ const GraphView = ({
       />
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && <NodesSelection />}
-      <div className="react-flow__zoompane" onClick={handleZoomPaneClick} ref={zoomPane} />
+      <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
     </div>
   );
 };
