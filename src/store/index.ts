@@ -18,6 +18,8 @@ import {
   Dimensions,
   XYPosition,
   OnConnectFunc,
+  OnConnectStartFunc,
+  OnConnectStopFunc,
   SelectionRect,
   HandleType,
   SetConnectionId,
@@ -87,9 +89,13 @@ export interface StoreModel {
 
   reactFlowVersion: string;
 
-  onConnect: OnConnectFunc;
+  onConnect?: OnConnectFunc;
+  onConnectStart?: OnConnectStartFunc;
+  onConnectStop?: OnConnectStopFunc;
 
   setOnConnect: Action<StoreModel, OnConnectFunc>;
+  setOnConnectStart: Action<StoreModel, OnConnectStartFunc>;
+  setOnConnectStop: Action<StoreModel, OnConnectStopFunc>;
 
   setElements: Action<StoreModel, Elements>;
 
@@ -177,10 +183,14 @@ export const storeModel: StoreModel = {
 
   reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
-  onConnect: () => {},
-
   setOnConnect: action((state, onConnect) => {
     state.onConnect = onConnect;
+  }),
+  setOnConnectStart: action((state, onConnectStart) => {
+    state.onConnectStart = onConnectStart;
+  }),
+  setOnConnectStop: action((state, onConnectStop) => {
+    state.onConnectStop = onConnectStop;
   }),
 
   setElements: action((state, elements) => {

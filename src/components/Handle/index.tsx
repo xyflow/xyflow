@@ -10,20 +10,27 @@ import { HandleProps, ElementId, Position, Connection } from '../../types';
 const Handle = ({
   type = 'source',
   position = Position.Top,
-  onConnect = () => {},
   isValidConnection = () => true,
   isConnectable = true,
   style,
   className,
   id,
+  onConnect,
 }: HandleProps) => {
   const nodeId = useContext(NodeIdContext) as ElementId;
   const setPosition = useStoreActions((a) => a.setConnectionPosition);
   const setConnectionNodeId = useStoreActions((a) => a.setConnectionNodeId);
   const onConnectAction = useStoreState((s) => s.onConnect);
+  const onConnectStart = useStoreState((s) => s.onConnectStart);
+  const onConnectStop = useStoreState((s) => s.onConnectStop);
   const onConnectExtended = (params: Connection) => {
-    onConnectAction(params);
-    onConnect(params);
+    if (onConnectAction) {
+      onConnectAction(params);
+    }
+
+    if (onConnect) {
+      onConnect(params);
+    }
   };
   const handleClasses = cc([className, { connectable: isConnectable }]);
 
@@ -35,6 +42,8 @@ const Handle = ({
       setPosition={setPosition}
       setConnectionNodeId={setConnectionNodeId}
       onConnect={onConnectExtended}
+      onConnectStart={onConnectStart}
+      onConnectStop={onConnectStop}
       type={type}
       position={position}
       isValidConnection={isValidConnection}

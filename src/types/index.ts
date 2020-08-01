@@ -198,6 +198,12 @@ export enum ConnectionLineType {
 }
 
 export type OnConnectFunc = (connection: Connection) => void;
+export type OnConnectStartParams = {
+  nodeId: ElementId | null;
+  handleType: HandleType | null;
+};
+export type OnConnectStartFunc = (params: OnConnectStartParams) => void;
+export type OnConnectStopFunc = () => void;
 
 export type SetConnectionId = {
   connectionNodeId: ElementId | null;
