@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, CSSProperties, MouseEvent } from 'react';
+import React, { useEffect, useRef, useCallback, memo, CSSProperties, MouseEvent } from 'react';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
@@ -109,14 +109,12 @@ const GraphView = ({
 }: GraphViewProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
   const rendererNode = useRef<HTMLDivElement>(null);
-  const width = useStoreState((s) => s.width);
-  const height = useStoreState((s) => s.height);
-  const d3Initialised = useStoreState((s) => s.d3Initialised);
-  const nodesSelectionActive = useStoreState((s) => s.nodesSelectionActive);
+  const d3Initialised = useStoreState((state) => state.d3Initialised);
+  const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
   const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
-  const setOnConnect = useStoreActions((a) => a.setOnConnect);
-  const setOnConnectStart = useStoreActions((a) => a.setOnConnectStart);
-  const setOnConnectStop = useStoreActions((a) => a.setOnConnectStop);
+  const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
+  const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
+  const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
   const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
   const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
   const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
@@ -126,14 +124,16 @@ const GraphView = ({
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
 
-  const selectionKeyPressed = useKeyPress(selectionKeyCode);
-
-  const onZoomPaneClick = () => {
+  const onZoomPaneClick = useCallback(() => {
     onPaneClick?.();
     setNodesSelection({ isActive: false });
-  };
+  }, [onPaneClick]);
 
   useResizeHandler(rendererNode);
+  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
+  useElementUpdater(elements);
+
+  const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
   useD3Zoom({
     zoomPane,
@@ -192,7 +192,7 @@ const GraphView = ({
 
   useEffect(() => {
     setSnapGrid({ snapToGrid, snapGrid });
-  }, [snapToGrid]);
+  }, [snapToGrid, snapGrid]);
 
   useEffect(() => {
     setNodesDraggable(nodesDraggable);
@@ -210,9 +210,6 @@ const GraphView = ({
     setMinMaxZoom({ minZoom, maxZoom });
   }, [minZoom, maxZoom]);
 
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
-  useElementUpdater(elements);
-
   return (
     <div className="react-flow__renderer" ref={rendererNode}>
       <NodeRenderer
@@ -228,8 +225,6 @@ const GraphView = ({
         selectNodesOnDrag={selectNodesOnDrag}
       />
       <EdgeRenderer
-        width={width}
-        height={height}
         edgeTypes={edgeTypes}
         onElementClick={onElementClick}
         connectionLineType={connectionLineType}

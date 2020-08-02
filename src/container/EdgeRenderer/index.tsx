@@ -7,8 +7,6 @@ import MarkerDefinitions from './MarkerDefinitions';
 import { XYPosition, Position, Edge, Node, ElementId, HandleElement, Elements, ConnectionLineType } from '../../types';
 
 interface EdgeRendererProps {
-  width: number;
-  height: number;
   edgeTypes: any;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
@@ -203,8 +201,10 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const selectedElements = useStoreState((s) => s.selectedElements);
   const nodesConnectable = useStoreState((s) => s.nodesConnectable);
   const elementsSelectable = useStoreState((s) => s.elementsSelectable);
+  const width = useStoreState((state) => state.width);
+  const height = useStoreState((state) => state.height);
 
-  const { width, height, connectionLineStyle, connectionLineType, arrowHeadColor } = props;
+  const { connectionLineStyle, connectionLineType, arrowHeadColor } = props;
 
   if (!width) {
     return null;
