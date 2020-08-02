@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, memo, CSSProperties, MouseEvent } from 'react';
-import { ResizeObserver } from 'resize-observer';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
@@ -10,7 +9,7 @@ import useKeyPress from '../../hooks/useKeyPress';
 import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
-import { getDimensions } from '../../utils';
+import useResizeHandler from '../../hooks/useResizeHandler';
 import { project, getElements } from '../../utils/graph';
 import {
   Elements,
@@ -114,7 +113,6 @@ const GraphView = ({
   const height = useStoreState((s) => s.height);
   const d3Initialised = useStoreState((s) => s.d3Initialised);
   const nodesSelectionActive = useStoreState((s) => s.nodesSelectionActive);
-  const updateSize = useStoreActions((actions) => actions.updateSize);
   const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
   const setOnConnect = useStoreActions((a) => a.setOnConnect);
   const setOnConnectStart = useStoreActions((a) => a.setOnConnectStart);
@@ -135,44 +133,7 @@ const GraphView = ({
     setNodesSelection({ isActive: false });
   };
 
-  const updateDimensions = () => {
-    if (!rendererNode.current) {
-      return;
-    }
-
-    const size = getDimensions(rendererNode.current);
-
-    if (size.height === 0 || size.width === 0) {
-      throw new Error('The React Flow parent container needs a width and a height to render the graph.');
-    }
-
-    updateSize(size);
-  };
-
-  useEffect(() => {
-    let resizeObserver: ResizeObserver;
-
-    updateDimensions();
-    window.onresize = updateDimensions;
-
-    if (rendererNode.current) {
-      resizeObserver = new ResizeObserver((entries) => {
-        for (let _ of entries) {
-          updateDimensions();
-        }
-      });
-
-      resizeObserver.observe(rendererNode.current);
-    }
-
-    return () => {
-      window.onresize = null;
-
-      if (resizeObserver && rendererNode.current) {
-        resizeObserver.unobserve(rendererNode.current!);
-      }
-    };
-  }, []);
+  useResizeHandler(rendererNode);
 
   useD3Zoom({
     zoomPane,
