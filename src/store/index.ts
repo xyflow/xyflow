@@ -424,19 +424,20 @@ export const storeModel: StoreModel = {
 
   fitView: action((state, payload = { padding: 0.1 }) => {
     const { padding } = payload;
-    const { nodes, width, height, d3Selection, d3Zoom } = state;
+    const { nodes, width, height, d3Selection, minZoom, maxZoom } = state;
 
-    if (!d3Selection || !d3Zoom || !nodes.length) {
+    if (!d3Selection || !nodes.length) {
       return;
     }
 
     const bounds = getRectOfNodes(nodes);
     const maxBoundsSize = Math.max(bounds.width, bounds.height);
-    const k = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const zoom = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const clampedZoom = clamp(zoom, minZoom, maxZoom);
     const boundsCenterX = bounds.x + bounds.width / 2;
     const boundsCenterY = bounds.y + bounds.height / 2;
-    const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
-    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
+    const transform = [width / 2 - boundsCenterX * clampedZoom, height / 2 - boundsCenterY * clampedZoom];
+    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(clampedZoom);
 
     // we need to sync the d3 zoom transform with the fitted transform
     d3Selection.property('__zoom', fittedTransform);
