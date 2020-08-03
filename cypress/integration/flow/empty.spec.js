@@ -14,8 +14,8 @@ describe('Empty Flow Rendering', () => {
       .type('{shift}', { release: false })
       .get('.react-flow__selectionpane')
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
-      .trigger('mousemove', 'bottomRight', { which: 1 })
-      .trigger('mouseup', 'bottomRight', { force: true });
+      .trigger('mousemove', 'bottomLeft', { which: 1 })
+      .trigger('mouseup', 'bottomLeft', { force: true });
   });
 
   it('renders an empty mini map', () => {
