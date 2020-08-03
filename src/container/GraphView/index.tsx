@@ -107,6 +107,7 @@ const GraphView = ({
   paneMoveable,
   onPaneClick,
 }: GraphViewProps) => {
+  const isInitialised = useRef<boolean>(false);
   const zoomPane = useRef<HTMLDivElement>(null);
   const rendererNode = useRef<HTMLDivElement>(null);
   const d3Initialised = useStoreState((state) => state.d3Initialised);
@@ -147,19 +148,19 @@ const GraphView = ({
   });
 
   useEffect(() => {
-    if (d3Initialised && onLoad) {
-      onLoad({
-        fitView: (params = { padding: 0.1 }) => fitView(params),
-        zoomIn: () => zoom(0.2),
-        zoomOut: () => zoom(-0.2),
-        project,
-        getElements,
-        setTransform: (transform: FlowTransform) =>
-          setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
-      });
-    }
+    if (!isInitialised.current && d3Initialised) {
+      if (onLoad) {
+        onLoad({
+          fitView: (params = { padding: 0.1 }) => fitView(params),
+          zoomIn: () => zoom(0.2),
+          zoomOut: () => zoom(-0.2),
+          project,
+          getElements,
+          setTransform: (transform: FlowTransform) =>
+            setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
+        });
+      }
 
-    if (d3Initialised) {
       const initialTransform = {
         x: defaultPosition[0],
         y: defaultPosition[1],
@@ -169,6 +170,8 @@ const GraphView = ({
       if (initialTransform.x !== 0 || initialTransform.y !== 0 || initialTransform.k !== 1) {
         setInitTransform(initialTransform);
       }
+
+      isInitialised.current = true;
     }
   }, [d3Initialised, onLoad]);
 
