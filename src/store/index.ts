@@ -38,11 +38,6 @@ type NodeDimensionUpdate = {
   nodeElement: HTMLDivElement;
 };
 
-type SelectionUpdate = {
-  isActive: boolean;
-  selection?: SelectionRect;
-};
-
 type SetMinMaxZoom = {
   minZoom: number;
   maxZoom: number;
@@ -105,7 +100,7 @@ export interface StoreModel {
 
   setSelection: Action<StoreModel, boolean>;
 
-  setNodesSelection: Action<StoreModel, SelectionUpdate>;
+  unsetNodesSelection: Action<StoreModel>;
 
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
 
@@ -198,7 +193,6 @@ export const storeModel: StoreModel = {
   }),
 
   updateNodeDimensions: action((state, { id, nodeElement }) => {
-    const bounds = nodeElement.getBoundingClientRect();
     const dimensions = getDimensions(nodeElement);
     const matchingNode = state.nodes.find((n) => n.id === id);
 
@@ -210,6 +204,7 @@ export const storeModel: StoreModel = {
       return;
     }
 
+    const bounds = nodeElement.getBoundingClientRect();
     const handleBounds = {
       source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
       target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
@@ -315,27 +310,9 @@ export const storeModel: StoreModel = {
     state.selectionActive = isActive;
   }),
 
-  setNodesSelection: action((state, { isActive, selection }) => {
-    if (!isActive || typeof selection === 'undefined') {
-      state.nodesSelectionActive = false;
-      state.selectedElements = null;
-
-      return;
-    }
-    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
-
-    if (!selectedNodes.length) {
-      state.nodesSelectionActive = false;
-      state.selectedElements = null;
-
-      return;
-    }
-
-    const selectedNodesBbox = getRectOfNodes(selectedNodes);
-
-    state.selection = selection;
-    state.nodesSelectionActive = true;
-    state.selectedNodesBbox = selectedNodesBbox;
+  unsetNodesSelection: action((state) => {
+    state.nodesSelectionActive = false;
+    state.selectedElements = null;
   }),
 
   setSelectedElements: action((state, elements) => {
