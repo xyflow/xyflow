@@ -174,7 +174,7 @@ export type FitViewParams = {
 export type FitViewFunc = (fitViewOptions?: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;
 
-type OnLoadParams = {
+export type OnLoadParams = {
   zoomIn: () => void;
   zoomOut: () => void;
   fitView: FitViewFunc;
