@@ -365,8 +365,10 @@ export const storeModel: StoreModel = {
   }),
 
   updateSize: action((state, size) => {
-    state.width = size.width;
-    state.height = size.height;
+    // when parent has no size we use these default values
+    // so that the calculations don't throw any errors
+    state.width = size.width || 500;
+    state.height = size.height || 500;
   }),
 
   initD3: action((state, zoomPaneNode) => {
