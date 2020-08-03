@@ -18,7 +18,7 @@
     "build:example": "npm install && npm run build && cd example && npm install && npm run build",
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
-    "test:chrome": "cypress run --browser chrome",
+    "test:chrome": "cypress run --browser chrome --headless",
     "test:firefox": "cypress run --browser firefox",
     "test:all": "npm run test:chrome && npm run test:firefox",
     "test": "npm run dev:wait test:chrome",
