@@ -88,8 +88,8 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave
 - `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu
 - `onConnect({ source, target })`: called when user connects two nodes
-- `onConnectStart({ nodeId, handleType })`: called when user starts to drag connection line
-- `onConnectStop()`: called when user stops to drag connection line
+- `onConnectStart(evt: MouseEvent, { nodeId, handleType })`: called when user starts to drag connection line
+- `onConnectStop(evt: MouseEvent)`: called when user stops to drag connection line
 - `onLoad(reactFlowInstance)`: called after flow is initialized
 - `onMove()`: called when user is panning or zooming
 - `onMoveStart()`: called when user starts panning or zooming
