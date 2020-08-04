@@ -42,6 +42,7 @@ export interface GraphViewProps {
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onPaneClick?: (evt: MouseEvent) => void;
+  onPaneContextMenu?: (evt: MouseEvent) => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -106,6 +107,7 @@ const GraphView = ({
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
+  onPaneContextMenu,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -129,6 +131,10 @@ const GraphView = ({
     onPaneClick?.(evt);
     unsetNodesSelection();
   }, [onPaneClick]);
+
+  const onZoomPaneContextMenu = useCallback((evt: React.MouseEvent) => {
+    onPaneContextMenu?.(evt);
+  }, [onPaneContextMenu]);
 
   useResizeHandler(rendererNode);
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
@@ -237,7 +243,7 @@ const GraphView = ({
       />
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && <NodesSelection />}
-      <div className="react-flow__zoompane" onClick={onZoomPaneClick} ref={zoomPane} />
+      <div className="react-flow__zoompane" onClick={onZoomPaneClick} onContextMenu={onZoomPaneContextMenu} ref={zoomPane} />
     </div>
   );
 };
