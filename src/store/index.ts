@@ -67,7 +67,6 @@ export interface StoreModel {
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
-  selection: SelectionRect | null;
 
   userSelectionRect: SelectionRect;
 
@@ -154,7 +153,6 @@ export const storeModel: StoreModel = {
 
   nodesSelectionActive: false,
   selectionActive: false,
-  selection: null,
 
   userSelectionRect: {
     startX: 0,
@@ -226,7 +224,6 @@ export const storeModel: StoreModel = {
 
     if (state.snapToGrid) {
       const [gridSizeX, gridSizeY] = state.snapGrid;
-
       position = {
         x: gridSizeX * Math.round(pos.x / gridSizeX),
         y: gridSizeY * Math.round(pos.y / gridSizeY),
@@ -276,7 +273,6 @@ export const storeModel: StoreModel = {
     const nextSelectedElements = [...selectedNodes, ...selectedEdges];
     const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
 
-    state.selection = nextRect;
     state.userSelectionRect = nextRect;
 
     if (selectedElementsUpdated) {
@@ -298,7 +294,6 @@ export const storeModel: StoreModel = {
 
     const selectedNodesBbox = getRectOfNodes(selectedNodes);
 
-    state.selection = state.userSelectionRect;
     state.nodesSelectionActive = true;
     state.selectedNodesBbox = selectedNodesBbox;
 
