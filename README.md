@@ -12,7 +12,7 @@ React Flow is a library for building node-based graphs. You can easily implement
   - [Options](#options-1)
   - [Node Types & Custom Nodes](#node-types--custom-nodes)
   - [Handle Component](#handle-component)
-- [Edges](#nodes)
+- [Edges](#edges)
   - [Options](#options)
   - [Edge Types & Custom Edges](#edge-types--custom-edges)
 - [Components](#components)

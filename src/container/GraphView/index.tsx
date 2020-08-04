@@ -112,7 +112,7 @@ const GraphView = ({
   const rendererNode = useRef<HTMLDivElement>(null);
   const d3Initialised = useStoreState((state) => state.d3Initialised);
   const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
-  const setNodesSelection = useStoreActions((actions) => actions.setNodesSelection);
+  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
@@ -127,7 +127,7 @@ const GraphView = ({
 
   const onZoomPaneClick = useCallback(() => {
     onPaneClick?.();
-    setNodesSelection({ isActive: false });
+    unsetNodesSelection();
   }, [onPaneClick]);
 
   useResizeHandler(rendererNode);

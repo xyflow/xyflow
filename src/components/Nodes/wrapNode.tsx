@@ -95,8 +95,8 @@ const onDrag = ({ evt, setDragging, id, offset, transform, updateNodePos }: OnDr
   const dragEvt = getMouseEvent(evt);
 
   const scaledClient = {
-    x: dragEvt.clientX * (1 / transform[2]),
-    y: dragEvt.clientY * (1 / transform[2]),
+    x: dragEvt.clientX / transform[2],
+    y: dragEvt.clientY / transform[2],
   };
 
   setDragging(true);

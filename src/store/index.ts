@@ -38,11 +38,6 @@ type NodeDimensionUpdate = {
   nodeElement: HTMLDivElement;
 };
 
-type SelectionUpdate = {
-  isActive: boolean;
-  selection?: SelectionRect;
-};
-
 type SetMinMaxZoom = {
   minZoom: number;
   maxZoom: number;
@@ -72,7 +67,6 @@ export interface StoreModel {
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
-  selection: SelectionRect | null;
 
   userSelectionRect: SelectionRect;
 
@@ -105,7 +99,7 @@ export interface StoreModel {
 
   setSelection: Action<StoreModel, boolean>;
 
-  setNodesSelection: Action<StoreModel, SelectionUpdate>;
+  unsetNodesSelection: Action<StoreModel>;
 
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
 
@@ -159,7 +153,6 @@ export const storeModel: StoreModel = {
 
   nodesSelectionActive: false,
   selectionActive: false,
-  selection: null,
 
   userSelectionRect: {
     startX: 0,
@@ -198,7 +191,6 @@ export const storeModel: StoreModel = {
   }),
 
   updateNodeDimensions: action((state, { id, nodeElement }) => {
-    const bounds = nodeElement.getBoundingClientRect();
     const dimensions = getDimensions(nodeElement);
     const matchingNode = state.nodes.find((n) => n.id === id);
 
@@ -210,6 +202,7 @@ export const storeModel: StoreModel = {
       return;
     }
 
+    const bounds = nodeElement.getBoundingClientRect();
     const handleBounds = {
       source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
       target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
@@ -231,7 +224,6 @@ export const storeModel: StoreModel = {
 
     if (state.snapToGrid) {
       const [gridSizeX, gridSizeY] = state.snapGrid;
-
       position = {
         x: gridSizeX * Math.round(pos.x / gridSizeX),
         y: gridSizeY * Math.round(pos.y / gridSizeY),
@@ -281,7 +273,6 @@ export const storeModel: StoreModel = {
     const nextSelectedElements = [...selectedNodes, ...selectedEdges];
     const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
 
-    state.selection = nextRect;
     state.userSelectionRect = nextRect;
 
     if (selectedElementsUpdated) {
@@ -303,7 +294,6 @@ export const storeModel: StoreModel = {
 
     const selectedNodesBbox = getRectOfNodes(selectedNodes);
 
-    state.selection = state.userSelectionRect;
     state.nodesSelectionActive = true;
     state.selectedNodesBbox = selectedNodesBbox;
 
@@ -315,27 +305,9 @@ export const storeModel: StoreModel = {
     state.selectionActive = isActive;
   }),
 
-  setNodesSelection: action((state, { isActive, selection }) => {
-    if (!isActive || typeof selection === 'undefined') {
-      state.nodesSelectionActive = false;
-      state.selectedElements = null;
-
-      return;
-    }
-    const selectedNodes = getNodesInside(state.nodes, selection, state.transform);
-
-    if (!selectedNodes.length) {
-      state.nodesSelectionActive = false;
-      state.selectedElements = null;
-
-      return;
-    }
-
-    const selectedNodesBbox = getRectOfNodes(selectedNodes);
-
-    state.selection = selection;
-    state.nodesSelectionActive = true;
-    state.selectedNodesBbox = selectedNodesBbox;
+  unsetNodesSelection: action((state) => {
+    state.nodesSelectionActive = false;
+    state.selectedElements = null;
   }),
 
   setSelectedElements: action((state, elements) => {
@@ -424,19 +396,20 @@ export const storeModel: StoreModel = {
 
   fitView: action((state, payload = { padding: 0.1 }) => {
     const { padding } = payload;
-    const { nodes, width, height, d3Selection, d3Zoom } = state;
+    const { nodes, width, height, d3Selection, minZoom, maxZoom } = state;
 
-    if (!d3Selection || !d3Zoom || !nodes.length) {
+    if (!d3Selection || !nodes.length) {
       return;
     }
 
     const bounds = getRectOfNodes(nodes);
     const maxBoundsSize = Math.max(bounds.width, bounds.height);
-    const k = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const zoom = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const clampedZoom = clamp(zoom, minZoom, maxZoom);
     const boundsCenterX = bounds.x + bounds.width / 2;
     const boundsCenterY = bounds.y + bounds.height / 2;
-    const transform = [width / 2 - boundsCenterX * k, height / 2 - boundsCenterY * k];
-    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(k);
+    const transform = [width / 2 - boundsCenterX * clampedZoom, height / 2 - boundsCenterY * clampedZoom];
+    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(clampedZoom);
 
     // we need to sync the d3 zoom transform with the fitted transform
     d3Selection.property('__zoom', fittedTransform);

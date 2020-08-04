@@ -11,10 +11,10 @@ interface HookParams {
 }
 
 export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
-  const selectedElements = useStoreState((s) => s.selectedElements);
-  const edges = useStoreState((s) => s.edges);
+  const selectedElements = useStoreState((state) => state.selectedElements);
+  const edges = useStoreState((state) => state.edges);
 
-  const setNodesSelection = useStoreActions((a) => a.setNodesSelection);
+  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
       }
 
       onElementsRemove(elementsToRemove);
-      setNodesSelection({ isActive: false });
+      unsetNodesSelection();
     }
   }, [deleteKeyPressed]);
 };
