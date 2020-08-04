@@ -15,9 +15,9 @@ const isValidConnection = (connection) => connection.target === 'B';
 
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
 
-const onConnectStart = ({ nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
+const onConnectStart = (evt, { nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
 
-const onConnectStop = () => console.log('on connect stop');
+const onConnectStop = (evt) => console.log('on connect stop', evt);
 
 const CustomInput = () => (
   <>

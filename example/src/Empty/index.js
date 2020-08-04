@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background } from 'react-flow-renderer';
 
-const onNodeDragStop = (node) => console.log('drag stop', node);
+const onNodeDragStop = (evt, node) => console.log('drag stop', node);
 const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
-const onElementClick = (element) => console.log('click', element);
+const onElementClick = (evt, element) => console.log('click', element);
 
 const EmptyFlow = () => {
   const [elements, setElements] = useState([]);

@@ -4,8 +4,8 @@ import ReactFlow, { isEdge, removeElements, addEdge, MiniMap, Controls } from 'r
 
 import ColorSelectorNode from './ColorSelectorNode';
 
-const onNodeDragStop = (node) => console.log('drag stop', node);
-const onElementClick = (element) => console.log('click', element);
+const onNodeDragStop = (evt, node) => console.log('drag stop', node);
+const onElementClick = (evt, element) => console.log('click', element);
 const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 
 const initBgColor = '#f0e742';

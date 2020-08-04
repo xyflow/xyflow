@@ -66,7 +66,7 @@ function onMouseDown(
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleType: handleType });
 
   if (onConnectStart) {
-    onConnectStart({ nodeId, handleType });
+    onConnectStart(evt, { nodeId, handleType });
   }
 
   function resetRecentHandle(): void {
@@ -142,7 +142,7 @@ function onMouseDown(
     setConnectionNodeId({ connectionNodeId: null, connectionHandleType: null });
 
     if (onConnectStop) {
-      onConnectStop();
+      onConnectStop(evt);
     }
 
     document.removeEventListener('mousemove', onMouseMove);

@@ -79,23 +79,23 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onlyRenderVisibleNodes`: default: `true`
 
 #### Event Handlers
-- `onElementClick(element: Node | Edge)`: called when user clicks node or edge click
+- `onElementClick(evt: MouseEvent, element: Node | Edge)`: called when user clicks node or edge click
 - `onElementsRemove(elements: Elements)`: called when user removes node or edge
-- `onNodeDragStart(node: Node)`: node drag start
-- `onNodeDragStop(node: Node)`: node drag stop
+- `onNodeDragStart(evt: MouseEvent, node: Node)`: node drag start
+- `onNodeDragStop(evt: MouseEvent, node: Node)`: node drag stop
 - `onNodeMouseEnter(evt: MouseEvent, node: Node)`: node mouse enter
 - `onNodeMouseMove(evt: MouseEvent, node: Node)`: node mouse move
 - `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave
 - `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu
 - `onConnect({ source, target })`: called when user connects two nodes
-- `onConnectStart({ nodeId, handleType })`: called when user starts to drag connection line
-- `onConnectStop()`: called when user stops to drag connection line
+- `onConnectStart(evt: MouseEvent, { nodeId, handleType })`: called when user starts to drag connection line
+- `onConnectStop(evt: MouseEvent)`: called when user stops to drag connection line
 - `onLoad(reactFlowInstance)`: called after flow is initialized
 - `onMove()`: called when user is panning or zooming
 - `onMoveStart()`: called when user starts panning or zooming
 - `onMoveEnd()`: called when user ends panning or zooming
 - `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
-- `onPaneClick()`: called when user clicks directly on the canvas
+- `onPaneClick(evt: MouseEvent)`: called when user clicks directly on the canvas
 
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.

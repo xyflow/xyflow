@@ -26,14 +26,14 @@ import {
 
 export interface GraphViewProps {
   elements: Elements;
-  onElementClick?: (element: Node | Edge) => void;
+  onElementClick?: (evt: MouseEvent, element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
   onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
   onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
   onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
   onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (node: Node) => void;
-  onNodeDragStop?: (node: Node) => void;
+  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
+  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
   onConnect?: (connection: Connection | Edge) => void;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: () => void;
@@ -41,7 +41,7 @@ export interface GraphViewProps {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  onPaneClick?: () => void;
+  onPaneClick?: (evt: MouseEvent) => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -125,8 +125,8 @@ const GraphView = ({
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
 
-  const onZoomPaneClick = useCallback(() => {
-    onPaneClick?.();
+  const onZoomPaneClick = useCallback((evt: React.MouseEvent) => {
+    onPaneClick?.(evt);
     unsetNodesSelection();
   }, [onPaneClick]);
 

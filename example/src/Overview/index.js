@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background, isNode } from 'react-flow-renderer';
 
-const onNodeDragStart = (node) => console.log('drag start', node);
-const onNodeDragStop = (node) => console.log('drag stop', node);
-const onElementClick = (element) => console.log(`${isNode(element) ? 'node' : 'edge'} click:`, element);
+const onNodeDragStart = (evt, node) => console.log('drag start', node);
+const onNodeDragStop = (evt, node) => console.log('drag stop', node);
+const onElementClick = (evt, element) => console.log(`${isNode(element) ? 'node' : 'edge'} click:`, element);
 const onSelectionChange = (elements) => console.log('selection change', elements);
 const onLoad = (reactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);

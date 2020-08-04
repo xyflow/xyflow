@@ -4,8 +4,8 @@ import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background } fro
 
 import CustomEdge from './CustomEdge';
 
-const onNodeDragStop = (node) => console.log('drag stop', node);
-const onElementClick = (element) => console.log('click', element);
+const onNodeDragStop = (evt, node) => console.log('drag stop', node);
+const onElementClick = (evt, element) => console.log('click', element);
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
 
 const initialElements = [
