@@ -30,16 +30,16 @@ function getStartPositions(nodes: Node[]): StartPositions {
 export default () => {
   const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState<StartPositions>({});
-  const [tX, tY, tScale] = useStoreState((s) => s.transform);
-  const selectedNodesBbox = useStoreState((s) => s.selectedNodesBbox);
-  const selectedElements = useStoreState((s) => s.selectedElements);
-  const snapToGrid = useStoreState((s) => s.snapToGrid);
-  const snapGrid = useStoreState((s) => s.snapGrid);
-  const nodes = useStoreState((s) => s.nodes);
 
-  const updateNodePos = useStoreActions((a) => a.updateNodePos);
+  const [tX, tY, tScale] = useStoreState((state) => state.transform);
+  const selectedNodesBbox = useStoreState((state) => state.selectedNodesBbox);
+  const selectedElements = useStoreState((state) => state.selectedElements);
+  const snapToGrid = useStoreState((state) => state.snapToGrid);
+  const snapGrid = useStoreState((state) => state.snapGrid);
+  const nodes = useStoreState((state) => state.nodes);
 
-  const position = selectedNodesBbox;
+  const updateNodePos = useStoreActions((actions) => actions.updateNodePos);
+
   const grid = (snapToGrid ? snapGrid : [1, 1])! as [number, number];
 
   if (!selectedElements) {
@@ -51,8 +51,8 @@ export default () => {
       x: evt.clientX / tScale,
       y: evt.clientY / tScale,
     };
-    const offsetX: number = scaledClient.x - position.x - tX;
-    const offsetY: number = scaledClient.y - position.y - tY;
+    const offsetX: number = scaledClient.x - selectedNodesBbox.x - tX;
+    const offsetY: number = scaledClient.y - selectedNodesBbox.y - tY;
     const selectedNodes = selectedElements
       ? selectedElements
           .filter(isNode)
@@ -76,8 +76,8 @@ export default () => {
     if (selectedElements) {
       selectedElements.filter(isNode).forEach((node) => {
         const pos: XYPosition = {
-          x: startPositions[node.id].x + scaledClient.x - position.x - offset.x - tX,
-          y: startPositions[node.id].y + scaledClient.y - position.y - offset.y - tY,
+          x: startPositions[node.id].x + scaledClient.x - selectedNodesBbox.x - offset.x - tX,
+          y: startPositions[node.id].y + scaledClient.y - selectedNodesBbox.y - offset.y - tY,
         };
 
         updateNodePos({ id: node.id, pos });
