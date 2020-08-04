@@ -156,7 +156,9 @@ function renderEdge(
   );
 
   const isSelected = selectedElements
-    ? (selectedElements as Edge[]).some((elm) => isEdge(elm) && elm.source === sourceId && elm.target === targetId)
+    ? (selectedElements as Edge[]).some(
+        (elm) => isEdge(elm) && elm.source === sourceId && elm.target === targetId && elm.id === edge.id
+      )
     : false;
 
   return (
