@@ -10,7 +10,7 @@ interface EdgeRendererProps {
   edgeTypes: any;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
-  onElementClick?: (element: Node | Edge) => void;
+  onElementClick?: (evt: React.MouseEvent, element: Node | Edge) => void;
   arrowHeadColor: string;
   markerEndId?: string;
 }

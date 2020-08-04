@@ -154,13 +154,13 @@ export interface WrapNodeProps {
   isDraggable: boolean;
   isConnectable: boolean;
   selectNodesOnDrag: boolean;
-  onClick?: (node: Node) => void;
+  onClick?: (evt: MouseEvent, node: Node) => void;
   onMouseEnter?: (evt: MouseEvent, node: Node) => void;
   onMouseMove?: (evt: MouseEvent, node: Node) => void;
   onMouseLeave?: (evt: MouseEvent, node: Node) => void;
   onContextMenu?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (node: Node) => void;
-  onNodeDragStop?: (node: Node) => void;
+  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
+  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
   style?: CSSProperties;
   className?: string;
   sourcePosition?: Position;
@@ -235,7 +235,7 @@ export interface EdgeCompProps {
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
-  onClick?: (edge: Edge) => void;
+  onClick?: (evt: MouseEvent, edge: Edge) => void;
   animated?: boolean;
   selected?: boolean;
   data?: any;

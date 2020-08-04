@@ -11,10 +11,10 @@ const initialElements = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const onNodeDragStart = (node) => console.log('drag start', node);
-const onNodeDragStop = (node) => console.log('drag stop', node);
-const onElementClick = (element) => console.log('click', element);
-const onPaneClick = () => console.log('onPaneClick');
+const onNodeDragStart = (evt, node) => console.log('drag start', node);
+const onNodeDragStop = (evt, node) => console.log('drag stop', node);
+const onElementClick = (evt, element) => console.log('click', evt, element);
+const onPaneClick = (evt) => console.log('onPaneClick', evt);
 
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);

@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 
 import './provider.css';
 
-const onElementClick = (element) => console.log('click', element);
+const onElementClick = (evt, element) => console.log('click', element);
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },

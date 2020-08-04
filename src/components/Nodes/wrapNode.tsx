@@ -44,7 +44,7 @@ interface OnDragStartParams {
   transform: Transform;
   position: XYPosition;
   setSelectedElements: (elms: Elements | Node | Edge) => void;
-  onNodeDragStart?: (node: Node) => void;
+  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
 }
 
 const onStart = ({
@@ -74,7 +74,7 @@ const onStart = ({
   setOffset({ x: offsetX, y: offsetY });
 
   if (onNodeDragStart) {
-    onNodeDragStart(node);
+    onNodeDragStart(evt as MouseEvent, node);
   }
 
   if (selectNodesOnDrag && isSelectable) {
@@ -110,6 +110,7 @@ const onDrag = ({ evt, setDragging, id, offset, transform, updateNodePos }: OnDr
 };
 
 interface OnDragStopParams {
+  evt: MouseEvent;
   isDragging: boolean;
   setDragging: (isDragging: boolean) => void;
   id: ElementId;
@@ -119,11 +120,12 @@ interface OnDragStopParams {
   selectNodesOnDrag: boolean;
   isSelectable: boolean;
   setSelectedElements: (elms: Elements | Node | Edge) => void;
-  onNodeDragStop?: (node: Node) => void;
-  onClick?: (node: Node) => void;
+  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
+  onClick?: (evt: MouseEvent, node: Node) => void;
 }
 
 const onStop = ({
+  evt,
   id,
   type,
   position,
@@ -148,14 +150,14 @@ const onStop = ({
     }
 
     if (onClick) {
-      return onClick(node);
+      return onClick(evt, node);
     }
   }
 
   setDragging(false);
 
   if (onNodeDragStop) {
-    onNodeDragStop(node);
+    onNodeDragStop(evt, node);
   }
 };
 
@@ -240,7 +242,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         setSelectedElements({ id: node.id, type: node.type } as Node);
 
         if (onClick) {
-          onClick(node);
+          return (evt: MouseEvent) => onClick(evt, node);
         }
       }
 
@@ -298,8 +300,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           })
         }
         onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
-        onStop={() =>
+        onStop={(evt) =>
           onStop({
+            evt: evt as MouseEvent,
             onNodeDragStop,
             selectNodesOnDrag,
             isSelectable,
