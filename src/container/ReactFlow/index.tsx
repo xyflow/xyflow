@@ -28,6 +28,7 @@ import {
   ConnectionLineType,
   FlowTransform,
   OnConnectStartFunc,
+  OnConnectStopFunc,
 } from '../../types';
 
 import '../../style.css';
@@ -44,7 +45,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
-  onConnectStop?: () => void;
+  onConnectStop?: OnConnectStopFunc;
   onLoad?: OnLoadFunc;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;

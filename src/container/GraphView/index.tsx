@@ -22,6 +22,7 @@ import {
   ConnectionLineType,
   FlowTransform,
   OnConnectStartFunc,
+  OnConnectStopFunc,
 } from '../../types';
 
 export interface GraphViewProps {
@@ -36,7 +37,7 @@ export interface GraphViewProps {
   onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
   onConnect?: (connection: Connection | Edge) => void;
   onConnectStart?: OnConnectStartFunc;
-  onConnectStop?: () => void;
+  onConnectStop?: OnConnectStopFunc;
   onLoad?: OnLoadFunc;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
@@ -127,14 +128,20 @@ const GraphView = ({
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
 
-  const onZoomPaneClick = useCallback((evt: React.MouseEvent) => {
-    onPaneClick?.(evt);
-    unsetNodesSelection();
-  }, [onPaneClick]);
+  const onZoomPaneClick = useCallback(
+    (evt: React.MouseEvent) => {
+      onPaneClick?.(evt);
+      unsetNodesSelection();
+    },
+    [onPaneClick]
+  );
 
-  const onZoomPaneContextMenu = useCallback((evt: React.MouseEvent) => {
-    onPaneContextMenu?.(evt);
-  }, [onPaneContextMenu]);
+  const onZoomPaneContextMenu = useCallback(
+    (evt: React.MouseEvent) => {
+      onPaneContextMenu?.(evt);
+    },
+    [onPaneContextMenu]
+  );
 
   useResizeHandler(rendererNode);
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
@@ -243,7 +250,12 @@ const GraphView = ({
       />
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && <NodesSelection />}
-      <div className="react-flow__zoompane" onClick={onZoomPaneClick} onContextMenu={onZoomPaneContextMenu} ref={zoomPane} />
+      <div
+        className="react-flow__zoompane"
+        onClick={onZoomPaneClick}
+        onContextMenu={onZoomPaneContextMenu}
+        ref={zoomPane}
+      />
     </div>
   );
 };
