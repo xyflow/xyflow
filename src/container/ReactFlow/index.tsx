@@ -50,7 +50,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
-  onPaneClick?: () => void;
+  onPaneClick?: (evt: MouseEvent) => void;
   onPaneContextMenu?: (evt: MouseEvent) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
