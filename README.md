@@ -96,6 +96,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onMoveEnd()`: called when user ends panning or zooming
 - `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
 - `onPaneClick(evt: MouseEvent)`: called when user clicks directly on the canvas
+- `onPaneContextMenu(evt: MouseEvent)`: called when user does a right-click on the canvas
 
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.
