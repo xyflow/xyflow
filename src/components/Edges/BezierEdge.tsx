@@ -1,12 +1,11 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
-import { getMarkerEnd } from './utils';
+
+import { getMarkerEnd, getCenter } from './utils';
 import { EdgeBezierProps, Position } from '../../types';
 
 interface GetBezierPathParams {
-  centerX: number;
-  centerY: number;
   sourceX: number;
   sourceY: number;
   sourcePosition?: Position;
@@ -16,8 +15,6 @@ interface GetBezierPathParams {
 }
 
 export function getBezierPath({
-  centerX,
-  centerY,
   sourceX,
   sourceY,
   sourcePosition = Position.Bottom,
@@ -25,9 +22,10 @@ export function getBezierPath({
   targetY,
   targetPosition = Position.Top,
 }: GetBezierPathParams): string {
-  let path = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
-
+  const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
   const leftAndRight = [Position.Left, Position.Right];
+
+  let path = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
     path = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
@@ -56,15 +54,8 @@ export default memo(
     arrowHeadType,
     markerEndId,
   }: EdgeBezierProps) => {
-    const yOffset = Math.abs(targetY - sourceY) / 2;
-    const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-
-    const xOffset = Math.abs(targetX - sourceX) / 2;
-    const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
-
+    const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
     const path = getBezierPath({
-      centerX,
-      centerY,
       sourceX,
       sourceY,
       sourcePosition,

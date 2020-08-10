@@ -41,7 +41,7 @@ const initialElements = [
     labelBgStyle: { fill: '#eee', fillOpacity: 0.7 },
     arrowHeadType: 'arrowclosed',
   },
-  { id: 'e5-8', source: '5', target: '8', type: 'custom', data: { text: 'custom edge' } },
+  { id: 'e5-8', source: '5', target: '8', type: 'custom', data: { text: 'custom edge' }, arrowHeadType: 'arrowclosed' },
 ];
 
 const edgeTypes = {

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
-import { getMarkerEnd } from './utils';
+import { getMarkerEnd, getCenter } from './utils';
 import { EdgeSmoothStepProps, Position } from '../../types';
 
 // These are some helper methods for drawing the round corners
@@ -34,10 +34,6 @@ const rightTopCorner = (cornerX: number, cornerY: number, cornerSize: number): s
   `L ${cornerX - cornerSize},${cornerY}Q ${cornerX},${cornerY} ${cornerX},${cornerY + cornerSize}`;
 
 interface GetSmoothStepPathParams {
-  xOffset: number;
-  yOffset: number;
-  centerX: number;
-  centerY: number;
   sourceX: number;
   sourceY: number;
   sourcePosition?: Position;
@@ -48,10 +44,6 @@ interface GetSmoothStepPathParams {
 }
 
 export function getSmoothStepPath({
-  xOffset,
-  yOffset,
-  centerX,
-  centerY,
   sourceX,
   sourceY,
   sourcePosition = Position.Bottom,
@@ -60,9 +52,10 @@ export function getSmoothStepPath({
   targetPosition = Position.Top,
   borderRadius = 5,
 }: GetSmoothStepPathParams): string {
+  const [centerX, centerY, offsetX, offsetY] = getCenter({ sourceX, sourceY, targetX, targetY });
   const cornerWidth = Math.min(borderRadius, Math.abs(targetX - sourceX));
   const cornerHeight = Math.min(borderRadius, Math.abs(targetY - sourceY));
-  const cornerSize = Math.min(cornerWidth, cornerHeight, xOffset, yOffset);
+  const cornerSize = Math.min(cornerWidth, cornerHeight, offsetX, offsetY);
 
   const leftAndRight = [Position.Left, Position.Right];
 
@@ -145,17 +138,9 @@ export default memo(
     markerEndId,
     borderRadius = 5,
   }: EdgeSmoothStepProps) => {
-    const yOffset = Math.abs(targetY - sourceY) / 2;
-    const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-
-    const xOffset = Math.abs(targetX - sourceX) / 2;
-    const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+    const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
 
     const path = getSmoothStepPath({
-      xOffset,
-      yOffset,
-      centerX,
-      centerY,
       sourceX,
       sourceY,
       sourcePosition,
