@@ -39,7 +39,7 @@ type Result = {
 };
 
 function onMouseDown(
-  evt: ReactMouseEvent,
+  event: ReactMouseEvent,
   nodeId: ElementId,
   setConnectionNodeId: SetSourceIdFunc,
   setPosition: (pos: XYPosition) => void,
@@ -60,13 +60,13 @@ function onMouseDown(
   let recentHoveredHandle: Element;
 
   setPosition({
-    x: evt.clientX - containerBounds.left,
-    y: evt.clientY - containerBounds.top,
+    x: event.clientX - containerBounds.left,
+    y: event.clientY - containerBounds.top,
   });
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleType: handleType });
 
   if (onConnectStart) {
-    onConnectStart(evt, { nodeId, handleType });
+    onConnectStart(event, { nodeId, handleType });
   }
 
   function resetRecentHandle(): void {
@@ -79,8 +79,8 @@ function onMouseDown(
   }
 
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
-  function checkElementBelowIsValid(evt: MouseEvent) {
-    const elementBelow = document.elementFromPoint(evt.clientX, evt.clientY);
+  function checkElementBelowIsValid(event: MouseEvent) {
+    const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
 
     const result: Result = {
       elementBelow,
@@ -110,13 +110,13 @@ function onMouseDown(
     return result;
   }
 
-  function onMouseMove(evt: MouseEvent) {
+  function onMouseMove(event: MouseEvent) {
     setPosition({
-      x: evt.clientX - containerBounds.left,
-      y: evt.clientY - containerBounds.top,
+      x: event.clientX - containerBounds.left,
+      y: event.clientY - containerBounds.top,
     });
 
-    const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(evt);
+    const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(event);
 
     if (!isHoveringHandle) {
       return resetRecentHandle();
@@ -131,8 +131,12 @@ function onMouseDown(
     }
   }
 
-  function onMouseUp(evt: MouseEvent) {
-    const { connection, isValid } = checkElementBelowIsValid(evt);
+  function onMouseUp(event: MouseEvent) {
+    const { connection, isValid } = checkElementBelowIsValid(event);
+
+    if (onConnectStop) {
+      onConnectStop(event);
+    }
 
     if (isValid && onConnect) {
       onConnect(connection);
@@ -140,10 +144,6 @@ function onMouseDown(
 
     resetRecentHandle();
     setConnectionNodeId({ connectionNodeId: null, connectionHandleType: null });
-
-    if (onConnectStop) {
-      onConnectStop(evt);
-    }
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -186,9 +186,9 @@ const BaseHandle = ({
       data-nodeid={nodeIdWithHandleId}
       data-handlepos={position}
       className={handleClasses}
-      onMouseDown={(evt) =>
+      onMouseDown={(event) =>
         onMouseDown(
-          evt,
+          event,
           nodeIdWithHandleId,
           setConnectionNodeId,
           setPosition,

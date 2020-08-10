@@ -42,7 +42,7 @@ const HiddenFlow = () => {
               id="ishidden"
               type="checkbox"
               checked={isHidden}
-              onChange={(evt) => setIsHidden(evt.target.checked)}
+              onChange={(event) => setIsHidden(event.target.checked)}
               className="react-flow__ishidden"
             />
           </label>

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge, isNode, Background } from 'react-flow-renderer';
 
-const onNodeDragStop = (evt, node) => console.log('drag stop', node);
 const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
-const onElementClick = (evt, element) => console.log('click', element);
+const onNodeDragStop = (event, node) => console.log('drag stop', node);
+const onElementClick = (event, element) => console.log('click', element);
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },

@@ -11,13 +11,10 @@ const initialElements = [
   { id: 'C', type: 'customnode', position: { x: 250, y: 300 } },
 ];
 
-const isValidConnection = (connection) => connection.target === 'B';
-
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
-
-const onConnectStart = (evt, { nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
-
-const onConnectStop = (evt) => console.log('on connect stop', evt);
+const isValidConnection = (connection) => connection.target === 'B';
+const onConnectStart = (event, { nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
+const onConnectStop = (event) => console.log('on connect stop', event);
 
 const CustomInput = () => (
   <>
@@ -41,7 +38,10 @@ const nodeTypes = {
 
 const HorizontalFlow = () => {
   const [elements, setElements] = useState(initialElements);
-  const onConnect = (params) => setElements((els) => addEdge(params, els));
+  const onConnect = (params) => {
+    console.log('on connect', params);
+    setElements((els) => addEdge(params, els));
+  };
 
   return (
     <ReactFlow

@@ -7,13 +7,13 @@ import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '.
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
-  onElementClick?: (evt: MouseEvent, element: Node | Edge) => void;
-  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
+  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
+  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
 }
 

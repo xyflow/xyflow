@@ -35,14 +35,14 @@ import '../../style.css';
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
-  onElementClick?: (evt: MouseEvent, element: Node | Edge) => void;
+  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
-  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
@@ -51,8 +51,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
-  onPaneClick?: (evt: MouseEvent) => void;
-  onPaneContextMenu?: (evt: MouseEvent) => void;
+  onPaneClick?: (event: MouseEvent) => void;
+  onPaneContextMenu?: (event: MouseEvent) => void;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   connectionLineType: ConnectionLineType;

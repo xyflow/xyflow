@@ -79,24 +79,24 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onlyRenderVisibleNodes`: default: `true`
 
 #### Event Handlers
-- `onElementClick(evt: MouseEvent, element: Node | Edge)`: called when user clicks node or edge click
+- `onElementClick(event: MouseEvent, element: Node | Edge)`: called when user clicks node or edge click
 - `onElementsRemove(elements: Elements)`: called when user removes node or edge
-- `onNodeDragStart(evt: MouseEvent, node: Node)`: node drag start
-- `onNodeDragStop(evt: MouseEvent, node: Node)`: node drag stop
-- `onNodeMouseEnter(evt: MouseEvent, node: Node)`: node mouse enter
-- `onNodeMouseMove(evt: MouseEvent, node: Node)`: node mouse move
-- `onNodeMouseLeave(evt: MouseEvent, node: Node)`: node mouse leave
-- `onNodeContextMenu(evt: MouseEvent, node: Node)`: node context menu
+- `onNodeDragStart(event: MouseEvent, node: Node)`: node drag start
+- `onNodeDragStop(event: MouseEvent, node: Node)`: node drag stop
+- `onNodeMouseEnter(event: MouseEvent, node: Node)`: node mouse enter
+- `onNodeMouseMove(event: MouseEvent, node: Node)`: node mouse move
+- `onNodeMouseLeave(event: MouseEvent, node: Node)`: node mouse leave
+- `onNodeContextMenu(event: MouseEvent, node: Node)`: node context menu
 - `onConnect({ source, target })`: called when user connects two nodes
-- `onConnectStart(evt: MouseEvent, { nodeId, handleType })`: called when user starts to drag connection line
-- `onConnectStop(evt: MouseEvent)`: called when user stops to drag connection line
+- `onConnectStart(event: MouseEvent, { nodeId, handleType })`: called when user starts to drag connection line
+- `onConnectStop(event: MouseEvent)`: called when user stops to drag connection line
 - `onLoad(reactFlowInstance)`: called after flow is initialized
 - `onMove()`: called when user is panning or zooming
 - `onMoveStart()`: called when user starts panning or zooming
 - `onMoveEnd()`: called when user ends panning or zooming
 - `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
-- `onPaneClick(evt: MouseEvent)`: called when user clicks directly on the canvas
-- `onPaneContextMenu(evt: MouseEvent)`: called when user does a right-click on the canvas
+- `onPaneClick(event: MouseEvent)`: called when user clicks directly on the canvas
+- `onPaneContextMenu(event: MouseEvent)`: called when user does a right-click on the canvas
 
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.
@@ -550,7 +550,7 @@ import React, { useEffect } from 'react';
 import { useStoreActions } from 'react-flow-renderer'
 
 const TransformUpdater = ({ x, y, zoom }) => {
-  const setTransform = useStoreActions(a => a.setInitTransform);
+  const setTransform = useStoreActions(actions => actions.setInitTransform);
 
   useEffect(() => {
     setTransform({ x, y, k: zoom })
