@@ -6,8 +6,8 @@ import { parseElement, isNode, isEdge } from '../utils/graph';
 import { Elements, Node, Edge, FlowElement } from '../types';
 
 const useElementUpdater = (propElements: Elements): void => {
-  const stateElements = useStoreState((s) => s.elements);
-  const setElements = useStoreActions((a) => a.setElements);
+  const stateElements = useStoreState((state) => state.elements);
+  const setElements = useStoreActions((actions) => actions.setElements);
 
   useEffect(() => {
     const nextElements: Elements = propElements.map((propElement) => {

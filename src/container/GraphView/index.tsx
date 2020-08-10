@@ -27,14 +27,14 @@ import {
 
 export interface GraphViewProps {
   elements: Elements;
-  onElementClick?: (evt: MouseEvent, element: Node | Edge) => void;
+  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
-  onNodeMouseEnter?: (evt: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (evt: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (evt: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
+  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
+  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
+  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onConnect?: (connection: Connection | Edge) => void;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
@@ -42,8 +42,8 @@ export interface GraphViewProps {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  onPaneClick?: (evt: MouseEvent) => void;
-  onPaneContextMenu?: (evt: MouseEvent) => void;
+  onPaneClick?: (event: MouseEvent) => void;
+  onPaneContextMenu?: (event: MouseEvent) => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -129,16 +129,16 @@ const GraphView = ({
   const zoom = useStoreActions((actions) => actions.zoom);
 
   const onZoomPaneClick = useCallback(
-    (evt: React.MouseEvent) => {
-      onPaneClick?.(evt);
+    (event: React.MouseEvent) => {
+      onPaneClick?.(event);
       unsetNodesSelection();
     },
     [onPaneClick]
   );
 
   const onZoomPaneContextMenu = useCallback(
-    (evt: React.MouseEvent) => {
-      onPaneContextMenu?.(evt);
+    (event: React.MouseEvent) => {
+      onPaneContextMenu?.(event);
     },
     [onPaneContextMenu]
   );

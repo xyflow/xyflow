@@ -11,7 +11,7 @@ type UserSelectionProps = {
   selectionKeyPressed: boolean;
 };
 
-function getMousePosition(evt: React.MouseEvent): XYPosition | void {
+function getMousePosition(event: React.MouseEvent): XYPosition | void {
   const reactFlowNode = document.querySelector('.react-flow');
   if (!reactFlowNode) {
     return;
@@ -20,13 +20,13 @@ function getMousePosition(evt: React.MouseEvent): XYPosition | void {
   const containerBounds = reactFlowNode.getBoundingClientRect();
 
   return {
-    x: evt.clientX - containerBounds.left,
-    y: evt.clientY - containerBounds.top,
+    x: event.clientX - containerBounds.left,
+    y: event.clientY - containerBounds.top,
   };
 }
 
 const SelectionRect = () => {
-  const userSelectionRect = useStoreState((s) => s.userSelectionRect);
+  const userSelectionRect = useStoreState((state) => state.userSelectionRect);
 
   if (!userSelectionRect.draw) {
     return null;
@@ -45,12 +45,12 @@ const SelectionRect = () => {
 };
 
 export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
-  const selectionActive = useStoreState((s) => s.selectionActive);
-  const elementsSelectable = useStoreState((s) => s.elementsSelectable);
+  const selectionActive = useStoreState((state) => state.selectionActive);
+  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
 
-  const setUserSelection = useStoreActions((a) => a.setUserSelection);
-  const updateUserSelection = useStoreActions((a) => a.updateUserSelection);
-  const unsetUserSelection = useStoreActions((a) => a.unsetUserSelection);
+  const setUserSelection = useStoreActions((actions) => actions.setUserSelection);
+  const updateUserSelection = useStoreActions((actions) => actions.updateUserSelection);
+  const unsetUserSelection = useStoreActions((actions) => actions.unsetUserSelection);
   const renderUserSelectionPane = selectionActive || selectionKeyPressed;
 
   useEffect(() => {
@@ -63,8 +63,8 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     return null;
   }
 
-  const onMouseDown = (evt: React.MouseEvent): void => {
-    const mousePos = getMousePosition(evt);
+  const onMouseDown = (event: React.MouseEvent): void => {
+    const mousePos = getMousePosition(event);
     if (!mousePos) {
       return;
     }
@@ -72,11 +72,11 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     setUserSelection(mousePos);
   };
 
-  const onMouseMove = (evt: React.MouseEvent): void => {
+  const onMouseMove = (event: React.MouseEvent): void => {
     if (!selectionKeyPressed || !selectionActive) {
       return;
     }
-    const mousePos = getMousePosition(evt);
+    const mousePos = getMousePosition(event);
 
     if (!mousePos) {
       return;

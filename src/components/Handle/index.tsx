@@ -18,11 +18,11 @@ const Handle = ({
   onConnect,
 }: HandleProps) => {
   const nodeId = useContext(NodeIdContext) as ElementId;
-  const setPosition = useStoreActions((a) => a.setConnectionPosition);
-  const setConnectionNodeId = useStoreActions((a) => a.setConnectionNodeId);
-  const onConnectAction = useStoreState((s) => s.onConnect);
-  const onConnectStart = useStoreState((s) => s.onConnectStart);
-  const onConnectStop = useStoreState((s) => s.onConnectStop);
+  const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
+  const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
+  const onConnectAction = useStoreState((state) => state.onConnect);
+  const onConnectStart = useStoreState((state) => state.onConnectStart);
+  const onConnectStop = useStoreState((state) => state.onConnectStop);
   const onConnectExtended = (params: Connection) => {
     if (onConnectAction) {
       onConnectAction(params);

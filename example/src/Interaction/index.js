@@ -11,11 +11,11 @@ const initialElements = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const onNodeDragStart = (evt, node) => console.log('drag start', node);
-const onNodeDragStop = (evt, node) => console.log('drag stop', node);
-const onElementClick = (evt, element) => console.log('click', evt, element);
-const onPaneClick = (evt) => console.log('onPaneClick', evt);
-const onPaneContextMenu = (evt) => console.log('onPaneContextMenu', evt);
+const onNodeDragStart = (event, node) => console.log('drag start', node);
+const onNodeDragStop = (event, node) => console.log('drag stop', node);
+const onElementClick = (event, element) => console.log('click', element);
+const onPaneClick = (event) => console.log('onPaneClick', event);
+const onPaneContextMenu = (event) => console.log('onPaneContextMenu', event);
 
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -56,7 +56,7 @@ const InteractionFlow = () => {
               id="draggable"
               type="checkbox"
               checked={isDraggable}
-              onChange={(evt) => setIsDraggable(evt.target.checked)}
+              onChange={(event) => setIsDraggable(event.target.checked)}
               className="react-flow__draggable"
             />
           </label>
@@ -68,7 +68,7 @@ const InteractionFlow = () => {
               id="connectable"
               type="checkbox"
               checked={isConnectable}
-              onChange={(evt) => setIsConnectable(evt.target.checked)}
+              onChange={(event) => setIsConnectable(event.target.checked)}
               className="react-flow__connectable"
             />
           </label>
@@ -80,7 +80,7 @@ const InteractionFlow = () => {
               id="selectable"
               type="checkbox"
               checked={isSelectable}
-              onChange={(evt) => setIsSelectable(evt.target.checked)}
+              onChange={(event) => setIsSelectable(event.target.checked)}
               className="react-flow__selectable"
             />
           </label>
@@ -92,7 +92,7 @@ const InteractionFlow = () => {
               id="zoomonscroll"
               type="checkbox"
               checked={zoomOnScroll}
-              onChange={(evt) => setZoomOnScroll(evt.target.checked)}
+              onChange={(event) => setZoomOnScroll(event.target.checked)}
               className="react-flow__zoomonscroll"
             />
           </label>
@@ -104,7 +104,7 @@ const InteractionFlow = () => {
               id="zoomondbl"
               type="checkbox"
               checked={zoomOnDoubleClick}
-              onChange={(evt) => setZoomOnDoubleClick(evt.target.checked)}
+              onChange={(event) => setZoomOnDoubleClick(event.target.checked)}
               className="react-flow__zoomondbl"
             />
           </label>
@@ -116,7 +116,7 @@ const InteractionFlow = () => {
               id="panemoveable"
               type="checkbox"
               checked={paneMoveable}
-              onChange={(evt) => setPaneMoveable(evt.target.checked)}
+              onChange={(event) => setPaneMoveable(event.target.checked)}
               className="react-flow__panemoveable"
             />
           </label>
@@ -128,7 +128,7 @@ const InteractionFlow = () => {
               id="capturezoompaneclick"
               type="checkbox"
               checked={captureZoomClick}
-              onChange={(evt) => setCaptureZoomClick(evt.target.checked)}
+              onChange={(event) => setCaptureZoomClick(event.target.checked)}
               className="react-flow__capturezoompaneclick"
             />
           </label>

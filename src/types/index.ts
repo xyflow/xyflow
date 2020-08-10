@@ -154,13 +154,13 @@ export interface WrapNodeProps {
   isDraggable: boolean;
   isConnectable: boolean;
   selectNodesOnDrag: boolean;
-  onClick?: (evt: ReactMouseEvent, node: Node) => void;
-  onMouseEnter?: (evt: ReactMouseEvent, node: Node) => void;
-  onMouseMove?: (evt: ReactMouseEvent, node: Node) => void;
-  onMouseLeave?: (evt: ReactMouseEvent, node: Node) => void;
-  onContextMenu?: (evt: ReactMouseEvent, node: Node) => void;
-  onNodeDragStart?: (evt: ReactMouseEvent, node: Node) => void;
-  onNodeDragStop?: (evt: ReactMouseEvent, node: Node) => void;
+  onClick?: (event: ReactMouseEvent, node: Node) => void;
+  onMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
+  onMouseMove?: (event: ReactMouseEvent, node: Node) => void;
+  onMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
+  onContextMenu?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
   style?: CSSProperties;
   className?: string;
   sourcePosition?: Position;
@@ -202,8 +202,8 @@ export type OnConnectStartParams = {
   nodeId: ElementId | null;
   handleType: HandleType | null;
 };
-export type OnConnectStartFunc = (evt: ReactMouseEvent, params: OnConnectStartParams) => void;
-export type OnConnectStopFunc = (evt: MouseEvent) => void;
+export type OnConnectStartFunc = (event: ReactMouseEvent, params: OnConnectStartParams) => void;
+export type OnConnectStopFunc = (event: MouseEvent) => void;
 
 export type SetConnectionId = {
   connectionNodeId: ElementId | null;
@@ -235,7 +235,7 @@ export interface EdgeCompProps {
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
-  onClick?: (evt: ReactMouseEvent, edge: Edge) => void;
+  onClick?: (event: ReactMouseEvent, edge: Edge) => void;
   animated?: boolean;
   selected?: boolean;
   data?: any;

@@ -14,7 +14,7 @@ interface EdgeWrapperProps {
   labelShowBg?: boolean;
   labelBgStyle: CSSProperties;
   className?: string;
-  onClick?: (evt: React.MouseEvent, edge: Edge) => void;
+  onClick?: (event: React.MouseEvent, edge: Edge) => void;
   animated?: boolean;
   selected: boolean;
   elementsSelectable: boolean;
@@ -41,7 +41,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
     data,
     ...rest
   }: EdgeWrapperProps) => {
-    const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
+    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
 
     if (isHidden) {
       return null;
@@ -51,7 +51,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
     const edgeGroupStyle: CSSProperties = {
       pointerEvents: elementsSelectable ? 'all' : 'none',
     };
-    const onEdgeClick = (evt: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+    const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       if (!elementsSelectable) {
         return;
       }
@@ -59,7 +59,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       setSelectedElements({ id, source, target });
 
       if (onClick) {
-        onClick(evt, { id, source, target, type });
+        onClick(event, { id, source, target, type });
       }
     };
 

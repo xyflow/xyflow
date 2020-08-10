@@ -5,14 +5,14 @@ import { isInputDOMNode } from '../utils';
 export default (keyCode: number): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
-  function downHandler(evt: KeyboardEvent) {
-    if (evt.keyCode === keyCode && !isInputDOMNode(evt)) {
+  function downHandler(event: KeyboardEvent) {
+    if (event.keyCode === keyCode && !isInputDOMNode(event)) {
       setKeyPressed(true);
     }
   }
 
-  const upHandler = (evt: KeyboardEvent) => {
-    if (evt.keyCode === keyCode && !isInputDOMNode(evt)) {
+  const upHandler = (event: KeyboardEvent) => {
+    if (event.keyCode === keyCode && !isInputDOMNode(event)) {
       setKeyPressed(false);
     }
   };

@@ -4,9 +4,9 @@ import ReactFlow, { isEdge, removeElements, addEdge, MiniMap, Controls } from 'r
 
 import ColorSelectorNode from './ColorSelectorNode';
 
-const onNodeDragStop = (evt, node) => console.log('drag stop', node);
-const onElementClick = (evt, element) => console.log('click', element);
 const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
+const onNodeDragStop = (event, node) => console.log('drag stop', node);
+const onElementClick = (event, element) => console.log('click', element);
 
 const initBgColor = '#f0e742';
 
@@ -21,14 +21,14 @@ const CustomNodeFlow = () => {
   const [bgColor, setBgColor] = useState(initBgColor);
 
   useEffect(() => {
-    const onChange = (evt) => {
+    const onChange = (event) => {
       setElements((els) =>
         els.map((e) => {
           if (isEdge(e) || e.id !== '2') {
             return e;
           }
 
-          const color = evt.target.value;
+          const color = event.target.value;
 
           setBgColor(color);
 

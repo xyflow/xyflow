@@ -46,10 +46,10 @@ export default () => {
     return null;
   }
 
-  const onStart = (evt: MouseEvent) => {
+  const onStart = (event: MouseEvent) => {
     const scaledClient: XYPosition = {
-      x: evt.clientX / tScale,
-      y: evt.clientY / tScale,
+      x: event.clientX / tScale,
+      y: event.clientY / tScale,
     };
     const offsetX: number = scaledClient.x - selectedNodesBbox.x - tX;
     const offsetY: number = scaledClient.y - selectedNodesBbox.y - tY;
@@ -67,10 +67,10 @@ export default () => {
     }
   };
 
-  const onDrag = (evt: MouseEvent) => {
+  const onDrag = (event: MouseEvent) => {
     const scaledClient: XYPosition = {
-      x: evt.clientX / tScale,
-      y: evt.clientY / tScale,
+      x: event.clientX / tScale,
+      y: event.clientY / tScale,
     };
 
     if (selectedElements) {
@@ -95,8 +95,8 @@ export default () => {
       <ReactDraggable
         scale={tScale}
         grid={grid}
-        onStart={(evt) => onStart(evt as MouseEvent)}
-        onDrag={(evt) => onDrag(evt as MouseEvent)}
+        onStart={(event) => onStart(event as MouseEvent)}
+        onDrag={(event) => onDrag(event as MouseEvent)}
       >
         <div
           className="react-flow__nodesselection-rect"

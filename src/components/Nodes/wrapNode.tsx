@@ -30,11 +30,11 @@ import {
 
 import { noop } from '../../utils';
 
-const getMouseEvent = (evt: MouseEvent | TouchEvent) =>
-  typeof TouchEvent !== 'undefined' && evt instanceof TouchEvent ? evt.touches[0] : (evt as MouseEvent);
+const getMouseEvent = (event: MouseEvent | TouchEvent) =>
+  typeof TouchEvent !== 'undefined' && event instanceof TouchEvent ? event.touches[0] : (event as MouseEvent);
 
 interface OnDragStartParams {
-  evt: MouseEvent | TouchEvent;
+  event: MouseEvent | TouchEvent;
   id: ElementId;
   type: string;
   data: any;
@@ -44,11 +44,11 @@ interface OnDragStartParams {
   transform: Transform;
   position: XYPosition;
   setSelectedElements: (elms: Elements | Node | Edge) => void;
-  onNodeDragStart?: (evt: MouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
 }
 
 const onStart = ({
-  evt,
+  event,
   onNodeDragStart,
   id,
   type,
@@ -60,11 +60,11 @@ const onStart = ({
   setSelectedElements,
   isSelectable,
 }: OnDragStartParams): false | void => {
-  const startEvt = getMouseEvent(evt);
+  const startEvent = getMouseEvent(event);
 
   const scaledClient: XYPosition = {
-    x: startEvt.clientX * (1 / transform[2]),
-    y: startEvt.clientY * (1 / transform[2]),
+    x: startEvent.clientX * (1 / transform[2]),
+    y: startEvent.clientY * (1 / transform[2]),
   };
 
   const offsetX = scaledClient.x - position.x - transform[0];
@@ -74,7 +74,7 @@ const onStart = ({
   setOffset({ x: offsetX, y: offsetY });
 
   if (onNodeDragStart) {
-    onNodeDragStart(evt as MouseEvent, node);
+    onNodeDragStart(event as MouseEvent, node);
   }
 
   if (selectNodesOnDrag && isSelectable) {
@@ -83,7 +83,7 @@ const onStart = ({
 };
 
 interface OnDragParams {
-  evt: MouseEvent | TouchEvent;
+  event: MouseEvent | TouchEvent;
   setDragging: (isDragging: boolean) => void;
   id: ElementId;
   offset: XYPosition;
@@ -91,12 +91,12 @@ interface OnDragParams {
   updateNodePos: (params: NodePosUpdate) => void;
 }
 
-const onDrag = ({ evt, setDragging, id, offset, transform, updateNodePos }: OnDragParams): void => {
-  const dragEvt = getMouseEvent(evt);
+const onDrag = ({ event, setDragging, id, offset, transform, updateNodePos }: OnDragParams): void => {
+  const dragEvent = getMouseEvent(event);
 
   const scaledClient = {
-    x: dragEvt.clientX / transform[2],
-    y: dragEvt.clientY / transform[2],
+    x: dragEvent.clientX / transform[2],
+    y: dragEvent.clientY / transform[2],
   };
 
   setDragging(true);
@@ -110,7 +110,7 @@ const onDrag = ({ evt, setDragging, id, offset, transform, updateNodePos }: OnDr
 };
 
 interface OnDragStopParams {
-  evt: MouseEvent;
+  event: MouseEvent;
   isDragging: boolean;
   setDragging: (isDragging: boolean) => void;
   id: ElementId;
@@ -120,12 +120,12 @@ interface OnDragStopParams {
   selectNodesOnDrag: boolean;
   isSelectable: boolean;
   setSelectedElements: (elms: Elements | Node | Edge) => void;
-  onNodeDragStop?: (evt: MouseEvent, node: Node) => void;
-  onClick?: (evt: MouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
+  onClick?: (event: MouseEvent, node: Node) => void;
 }
 
 const onStop = ({
-  evt,
+  event,
   id,
   type,
   position,
@@ -150,14 +150,14 @@ const onStop = ({
     }
 
     if (onClick) {
-      return onClick(evt, node);
+      return onClick(event, node);
     }
   }
 
   setDragging(false);
 
   if (onNodeDragStop) {
-    onNodeDragStop(evt, node);
+    onNodeDragStop(event, node);
   }
 };
 
@@ -187,9 +187,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     targetPosition,
     isHidden,
   }: WrapNodeProps) => {
-    const updateNodeDimensions = useStoreActions((a) => a.updateNodeDimensions);
-    const setSelectedElements = useStoreActions((a) => a.setSelectedElements);
-    const updateNodePos = useStoreActions((a) => a.updateNodePos);
+    const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
+    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+    const updateNodePos = useStoreActions((actions) => actions.updateNodePos);
 
     const nodeElement = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -210,7 +210,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         return noop;
       }
 
-      return (evt: MouseEvent) => onMouseEnter(evt, node);
+      return (event: MouseEvent) => onMouseEnter(event, node);
     }, [onMouseEnter, isDragging]);
 
     const onMouseMoveHandler = useMemo(() => {
@@ -218,7 +218,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         return noop;
       }
 
-      return (evt: MouseEvent) => onMouseMove(evt, node);
+      return (event: MouseEvent) => onMouseMove(event, node);
     }, [onMouseMove, isDragging]);
 
     const onMouseLeaveHandler = useMemo(() => {
@@ -226,7 +226,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         return noop;
       }
 
-      return (evt: MouseEvent) => onMouseLeave(evt, node);
+      return (event: MouseEvent) => onMouseLeave(event, node);
     }, [onMouseLeave, isDragging]);
 
     const onContextMenuHandler = useMemo(() => {
@@ -234,7 +234,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         return noop;
       }
 
-      return (evt: MouseEvent) => onContextMenu(evt, node);
+      return (event: MouseEvent) => onContextMenu(event, node);
     }, [onContextMenu]);
 
     const onSelectNodeHandler = useCallback(() => {
@@ -242,7 +242,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         setSelectedElements({ id: node.id, type: node.type } as Node);
 
         if (onClick) {
-          return (evt: MouseEvent) => onClick(evt, node);
+          return (event: MouseEvent) => onClick(event, node);
         }
       }
 
@@ -284,9 +284,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     return (
       <DraggableCore
-        onStart={(evt) =>
+        onStart={(event) =>
           onStart({
-            evt: evt as MouseEvent,
+            event: event as MouseEvent,
             selectNodesOnDrag,
             isSelectable,
             onNodeDragStart,
@@ -299,10 +299,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             setSelectedElements,
           })
         }
-        onDrag={(evt) => onDrag({ evt: evt as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
-        onStop={(evt) =>
+        onDrag={(event) => onDrag({ event: event as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
+        onStop={(event) =>
           onStop({
-            evt: evt as MouseEvent,
+            event: event as MouseEvent,
             onNodeDragStop,
             selectNodesOnDrag,
             isSelectable,

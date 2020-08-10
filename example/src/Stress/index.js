@@ -5,7 +5,6 @@ import { getElements } from './utils';
 
 const onLoad = (reactFlowInstance) => {
   reactFlowInstance.fitView();
-
   console.log(reactFlowInstance.getElements());
 };
 
