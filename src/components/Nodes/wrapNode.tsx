@@ -237,17 +237,18 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       return (event: MouseEvent) => onContextMenu(event, node);
     }, [onContextMenu]);
 
-    const onSelectNodeHandler = useCallback(() => {
-      if (!isDraggable && isSelectable) {
-        setSelectedElements({ id: node.id, type: node.type } as Node);
+    const onSelectNodeHandler = useCallback(
+      (event: MouseEvent) => {
+        if (!isDraggable && isSelectable) {
+          setSelectedElements({ id: node.id, type: node.type } as Node);
 
-        if (onClick) {
-          return (event: MouseEvent) => onClick(event, node);
+          if (onClick) {
+            onClick(event, node);
+          }
         }
-      }
-
-      return noop;
-    }, [isSelectable, isDraggable, node]);
+      },
+      [isSelectable, isDraggable, node]
+    );
 
     useEffect(() => {
       if (nodeElement.current) {
