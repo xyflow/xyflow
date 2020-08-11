@@ -15,6 +15,7 @@ React Flow is a library for building node-based graphs. You can easily implement
 - [Edges](#edges)
   - [Options](#options)
   - [Edge Types & Custom Edges](#edge-types--custom-edges)
+  - [Edge Utils](#edge-utils)
 - [Components](#components)
   - [Background](#background)
   - [Minimap](#minimap)
@@ -282,6 +283,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `labelStyle`: css properties for the text
 - `labelShowBg`: boolean - default: `true`
 - `labelBgStyle`: css properties for the text background
+- `labelBgPadding`: [number, number] background rectangle padding - default: `[2, 4]`
 - `arrowHeadType`: 'arrow' or 'arrowclosed' - defines the arrowhead of the edge
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 - `isHidden`: if `true`, the edge will not be rendered
@@ -289,7 +291,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 
 You can find an example with different edges in the [edges example](https://reactflow.dev/edges).
 
-### Edge Types & Custom Edges
+## Edge Types & Custom Edges
 
 The basic edge types are `default` (bezier), `straight`, `step` and `smoothedge`. The default `edgeTypes` object looks like this:
 
@@ -314,6 +316,49 @@ edgeTypes={{
 Now you could use the new type `special` for an edge.
 The `straight`, `default` and `step` types would still be available unless you overwrote one of them.
 There is an implementation of a custom edge in the [edges example](/example/src/Edges/index.js).
+
+## Edge Utils
+
+There are several utils that help you to create a custom edge. They are used in the [custom edge](/example/src/Edges/CustomEdge.js) example.
+
+### getBezierPath
+
+Returns the path of a bezier edge.
+
+`getBezierPath({
+  sourceX,
+  sourceY,
+  sourcePosition = Position.Bottom,
+  targetX,
+  targetY,
+  targetPosition = Position.Top,
+}: GetBezierPathParams): string`
+
+### getSmoothStepPath
+
+Returns the path of a smooth step edge. You can set `borderRadius` = `0` to get a step edge path.
+
+`getSmoothStepPath({
+  sourceX,
+  sourceY,
+  sourcePosition = Position.Bottom,
+  targetX,
+  targetY,
+  targetPosition = Position.Top,
+  borderRadius = 5,
+}: GetSmoothStepPathParams): string`
+
+### getEdgeCenter
+
+Returns the center poostion `[centerX, centerY]` of the edge.
+
+`getEdgeCenter({ sourceX, sourceY, targetX, targetY }: GetCenterParams): [number, number, number, number]`
+
+### getMarkerEnd
+
+Returns the marker end url for displaying the arrow head.
+
+`getMarkerEnd(arrowHeadType?: ArrowHeadType, markerEndId?: string): string`
 
 # Components
 

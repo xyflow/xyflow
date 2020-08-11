@@ -19,7 +19,7 @@ const initialElements = [
   { id: '6', type: 'output', data: { label: 'Output 6' }, position: { x: 50, y: 550 } },
   { id: '7', type: 'output', data: { label: 'Output 7' }, position: { x: 250, y: 550 } },
   { id: '8', type: 'output', data: { label: 'Output 8' }, position: { x: 525, y: 600 } },
-  { id: 'e1-2', source: '1', target: '2', label: 'bezier edge (default)' },
+  { id: 'e1-2', source: '1', target: '2', label: 'bezier edge (default)', className: 'normal-edge' },
   { id: 'e2-2a', source: '2', target: '2a', type: 'smoothstep', label: 'smoothstep edge' },
   { id: 'e2-3', source: '2', target: '3', type: 'step', label: 'step edge' },
   { id: 'e3-4', source: '3', target: '4', type: 'straight', label: 'straight edge' },
@@ -38,10 +38,11 @@ const initialElements = [
     source: '5',
     target: '7',
     label: 'label with styled bg',
-    labelBgStyle: { fill: '#eee', fillOpacity: 0.7 },
+    labelBgStyle: { fill: '#555', color: '#fff', fillOpacity: 0.7 },
     arrowHeadType: 'arrowclosed',
+    labelBgPadding: [8, 4],
   },
-  { id: 'e5-8', source: '5', target: '8', type: 'custom', data: { text: 'custom edge' } },
+  { id: 'e5-8', source: '5', target: '8', type: 'custom', data: { text: 'custom edge' }, arrowHeadType: 'arrowclosed' },
 ];
 
 const edgeTypes = {

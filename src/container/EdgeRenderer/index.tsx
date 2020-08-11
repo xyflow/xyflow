@@ -161,6 +161,7 @@ function renderEdge(
     <EdgeComponent
       key={edge.id}
       id={edge.id}
+      className={edge.className}
       type={edge.type}
       data={edge.data}
       onClick={props.onElementClick}
@@ -170,6 +171,7 @@ function renderEdge(
       labelStyle={edge.labelStyle}
       labelShowBg={edge.labelShowBg}
       labelBgStyle={edge.labelBgStyle}
+      labelBgPadding={edge.labelBgPadding}
       style={edge.style}
       arrowHeadType={edge.arrowHeadType}
       source={sourceId}

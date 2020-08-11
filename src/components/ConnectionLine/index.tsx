@@ -59,18 +59,12 @@ export default ({
   const targetY = (connectionPositionY - transform[1]) * (1 / transform[2]);
 
   let dAttr: string = '';
-  const xOffset = Math.abs(targetX - sourceX) / 2;
-  const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
 
-  const yOffset = Math.abs(targetY - sourceY) / 2;
-  const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
   const isRightOrLeft = sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right;
   const targetPosition = isRightOrLeft ? Position.Left : Position.Top;
 
   if (connectionLineType === ConnectionLineType.Bezier) {
     dAttr = getBezierPath({
-      centerX,
-      centerY,
       sourceX,
       sourceY,
       sourcePosition: sourceHandle?.position,
@@ -80,10 +74,6 @@ export default ({
     });
   } else if (connectionLineType === ConnectionLineType.Step) {
     dAttr = getSmoothStepPath({
-      xOffset,
-      yOffset,
-      centerX,
-      centerY,
       sourceX,
       sourceY,
       sourcePosition: sourceHandle?.position,
@@ -94,10 +84,6 @@ export default ({
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
     dAttr = getSmoothStepPath({
-      xOffset,
-      yOffset,
-      centerX,
-      centerY,
       sourceX,
       sourceY,
       sourcePosition: sourceHandle?.position,
