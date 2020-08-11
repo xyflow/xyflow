@@ -12,8 +12,6 @@ export default memo(({ x, y, label, labelStyle = {}, labelShowBg = true, labelBg
     if (edgeRef.current) {
       const textBbox = edgeRef.current.getBBox();
 
-      console.log(textBbox);
-
       setEdgeTextBbox({
         x: textBbox.x,
         y: textBbox.y,

@@ -161,6 +161,7 @@ function renderEdge(
     <EdgeComponent
       key={edge.id}
       id={edge.id}
+      className={edge.className}
       type={edge.type}
       data={edge.data}
       onClick={props.onElementClick}
