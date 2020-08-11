@@ -171,6 +171,7 @@ function renderEdge(
       labelStyle={edge.labelStyle}
       labelShowBg={edge.labelShowBg}
       labelBgStyle={edge.labelBgStyle}
+      labelBgPadding={edge.labelBgPadding}
       style={edge.style}
       arrowHeadType={edge.arrowHeadType}
       source={sourceId}

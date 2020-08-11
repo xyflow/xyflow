@@ -283,6 +283,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `labelStyle`: css properties for the text
 - `labelShowBg`: boolean - default: `true`
 - `labelBgStyle`: css properties for the text background
+- `labelBgPadding`: [number, number] background rectangle padding - default: `[2, 4]`
 - `arrowHeadType`: 'arrow' or 'arrowclosed' - defines the arrowhead of the edge
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 - `isHidden`: if `true`, the edge will not be rendered

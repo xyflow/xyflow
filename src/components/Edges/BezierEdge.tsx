@@ -53,6 +53,7 @@ export default memo(
     style,
     arrowHeadType,
     markerEndId,
+    labelBgPadding,
   }: EdgeBezierProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
     const path = getBezierPath({
@@ -72,6 +73,7 @@ export default memo(
         labelStyle={labelStyle}
         labelShowBg={labelShowBg}
         labelBgStyle={labelBgStyle}
+        labelBgPadding={labelBgPadding}
       />
     ) : null;
 
