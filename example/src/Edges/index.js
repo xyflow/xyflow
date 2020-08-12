@@ -38,9 +38,10 @@ const initialElements = [
     source: '5',
     target: '7',
     label: 'label with styled bg',
-    labelBgStyle: { fill: '#555', color: '#fff', fillOpacity: 0.7 },
-    arrowHeadType: 'arrowclosed',
     labelBgPadding: [8, 4],
+    labelBgBorderRadius: 4,
+    labelBgStyle: { fill: '#FFCC00', color: '#fff', fillOpacity: 0.7 },
+    arrowHeadType: 'arrowclosed',
   },
   { id: 'e5-8', source: '5', target: '8', type: 'custom', data: { text: 'custom edge' }, arrowHeadType: 'arrowclosed' },
 ];

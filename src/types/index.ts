@@ -63,6 +63,7 @@ export interface Edge {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
   labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
   style?: CSSProperties;
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
@@ -98,6 +99,7 @@ export interface EdgeProps {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
   labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
@@ -238,6 +240,7 @@ export interface EdgeCompProps {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
   labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
   onClick?: (event: ReactMouseEvent, edge: Edge) => void;
   animated?: boolean;
   selected?: boolean;
@@ -252,6 +255,7 @@ export interface EdgeTextProps {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
   labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
 }
 
 export type NodePosUpdate = {

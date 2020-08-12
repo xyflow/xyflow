@@ -132,6 +132,7 @@ export default memo(
     labelShowBg,
     labelBgStyle,
     labelBgPadding,
+    labelBgBorderRadius,
     style,
     sourcePosition = Position.Bottom,
     targetPosition = Position.Top,
@@ -162,6 +163,7 @@ export default memo(
         labelShowBg={labelShowBg}
         labelBgStyle={labelBgStyle}
         labelBgPadding={labelBgPadding}
+        labelBgBorderRadius={labelBgBorderRadius}
       />
     ) : null;
 
