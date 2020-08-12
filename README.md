@@ -275,7 +275,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `id`: string *(required)*
 - `source`: string (an id of a node) *(required)*
 - `target`: string (an id of a node) *(required)*
-- `type`: 'input', 'output', 'default' or a custom one you implemented
+- `type`: 'default' (bezier), 'straight', 'step' and 'smoothedge'
 - `animated`: boolean
 - `style`: css properties for the edge line path
 - `className`: additional class name
