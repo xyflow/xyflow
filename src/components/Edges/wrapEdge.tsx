@@ -14,6 +14,7 @@ interface EdgeWrapperProps {
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
   labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
   className?: string;
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
   animated?: boolean;
@@ -38,6 +39,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
     labelShowBg,
     labelBgStyle,
     labelBgPadding,
+    labelBgBorderRadius,
     className,
     isHidden,
     data,
@@ -80,6 +82,7 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
           labelShowBg={labelShowBg}
           labelBgStyle={labelBgStyle}
           labelBgPadding={labelBgPadding}
+          labelBgBorderRadius={labelBgBorderRadius}
           data={data}
           {...rest}
         />

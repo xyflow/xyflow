@@ -15,6 +15,7 @@ export default memo(
     labelShowBg,
     labelBgStyle,
     labelBgPadding,
+    labelBgBorderRadius,
     style,
     arrowHeadType,
     markerEndId,
@@ -35,6 +36,7 @@ export default memo(
         labelShowBg={labelShowBg}
         labelBgStyle={labelBgStyle}
         labelBgPadding={labelBgPadding}
+        labelBgBorderRadius={labelBgBorderRadius}
       />
     ) : null;
 

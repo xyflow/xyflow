@@ -98,6 +98,10 @@ const useElementUpdater = (propElements: Elements): void => {
             edgeProps.labelBgPadding = propEdge.labelBgPadding;
           }
 
+          if (typeof propEdge.labelBgBorderRadius !== 'undefined') {
+            edgeProps.labelBgBorderRadius = propEdge.labelBgBorderRadius;
+          }
+
           if (typeof labelBgStyle !== 'undefined') {
             edgeProps.labelBgStyle = labelBgStyle;
           }
