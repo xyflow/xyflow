@@ -63,7 +63,13 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
       setSelectedElements({ id, source, target });
 
       if (onClick) {
-        onClick(event, { id, source, target, type });
+        const edgeElement: Edge = { id, source, target, type };
+
+        if (typeof data !== 'undefined') {
+          edgeElement.data = data;
+        }
+
+        onClick(event, edgeElement);
       }
     };
 
