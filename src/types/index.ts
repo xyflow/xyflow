@@ -90,6 +90,7 @@ export interface SelectionRect extends Rect {
 }
 
 export interface EdgeProps {
+  id: ElementId;
   sourceX: number;
   sourceY: number;
   targetX: number;
