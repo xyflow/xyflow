@@ -28,6 +28,7 @@ const InteractionFlow = () => {
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
   const [paneMoveable, setPaneMoveable] = useState(true);
   const [captureZoomClick, setCaptureZoomClick] = useState(false);
+  const [captureElementClick, setCaptureElementClick] = useState(false);
 
   return (
     <ReactFlow
@@ -38,7 +39,7 @@ const InteractionFlow = () => {
       zoomOnScroll={zoomOnScroll}
       zoomOnDoubleClick={zoomOnDoubleClick}
       onConnect={onConnect}
-      onElementClick={onElementClick}
+      onElementClick={captureElementClick ? onElementClick : undefined}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
       paneMoveable={paneMoveable}
@@ -130,6 +131,18 @@ const InteractionFlow = () => {
               checked={captureZoomClick}
               onChange={(event) => setCaptureZoomClick(event.target.checked)}
               className="react-flow__capturezoompaneclick"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="captureelementclick">
+            capture element click
+            <input
+              id="captureelementclick"
+              type="checkbox"
+              checked={captureElementClick}
+              onChange={(event) => setCaptureElementClick(event.target.checked)}
+              className="react-flow__captureelementclick"
             />
           </label>
         </div>

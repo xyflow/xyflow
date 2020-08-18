@@ -12,10 +12,24 @@ describe('Interaction Flow Rendering', () => {
 
   it('tries to select a node by click', () => {
     const pointerEvents = Cypress.$('.react-flow__node:first').css('pointer-events');
-    expect(pointerEvents).to.equal('all');
+    expect(pointerEvents).to.equal('none');
   });
 
   it('tries to select an edge by click', () => {
+    const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
+    expect(pointerEvents).to.equal('none');
+  });
+
+  it('toggles on capture element click', () => {
+    cy.get('.react-flow__captureelementclick').click();
+  });
+
+  it('allows node clicks when enabled', () => {
+    const pointerEvents = Cypress.$('.react-flow__node:first').css('pointer-events');
+    expect(pointerEvents).to.equal('all');
+  });
+
+  it('allows edge clicks when enabled', () => {
     const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
     expect(pointerEvents).to.equal('all');
   });
