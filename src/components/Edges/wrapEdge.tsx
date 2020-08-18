@@ -53,14 +53,12 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
 
     const edgeClasses = cc(['react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated }]);
     const edgeGroupStyle: CSSProperties = {
-      pointerEvents: elementsSelectable ? 'all' : 'none',
+      pointerEvents: elementsSelectable || onClick ? 'all' : 'none',
     };
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-      if (!elementsSelectable) {
-        return;
+      if (elementsSelectable) {
+        setSelectedElements({ id, source, target });
       }
-
-      setSelectedElements({ id, source, target });
 
       if (onClick) {
         const edgeElement: Edge = { id, source, target, type };

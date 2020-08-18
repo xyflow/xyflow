@@ -241,10 +241,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       (event: MouseEvent) => {
         if (!isDraggable && isSelectable) {
           setSelectedElements({ id: node.id, type: node.type } as Node);
+        }
 
-          if (onClick) {
-            onClick(event, node);
-          }
+        if (onClick) {
+          onClick(event, node);
         }
       },
       [isSelectable, isDraggable, node]
@@ -279,7 +279,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const nodeStyle: CSSProperties = {
       zIndex: selected ? 10 : 3,
       transform: `translate(${xPos}px,${yPos}px)`,
-      pointerEvents: isSelectable || isDraggable ? 'all' : 'none',
+      pointerEvents: isSelectable || isDraggable || onClick ? 'all' : 'none',
       ...style,
     };
 

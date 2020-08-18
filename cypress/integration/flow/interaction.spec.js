@@ -12,12 +12,12 @@ describe('Interaction Flow Rendering', () => {
 
   it('tries to select a node by click', () => {
     const pointerEvents = Cypress.$('.react-flow__node:first').css('pointer-events');
-    expect(pointerEvents).to.equal('none');
+    expect(pointerEvents).to.equal('all');
   });
 
   it('tries to select an edge by click', () => {
     const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
-    expect(pointerEvents).to.equal('none');
+    expect(pointerEvents).to.equal('all');
   });
 
   it('tries to do a selection', () => {
