@@ -158,6 +158,10 @@ Fits view port so that all nodes are visible
 
 `zoomOut = (): void`
 
+### zoomTo
+
+`zoomTo = (zoomLevel: number): void`
+
 ### getElements
 
 `getElements = (): Elements`
