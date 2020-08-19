@@ -127,6 +127,7 @@ const GraphView = ({
   const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
+  const zoomTo = useStoreActions((actions) => actions.zoomTo);
 
   const onZoomPaneClick = useCallback(
     (event: React.MouseEvent) => {
@@ -167,6 +168,7 @@ const GraphView = ({
           fitView: (params = { padding: 0.1 }) => fitView(params),
           zoomIn: () => zoom(0.2),
           zoomOut: () => zoom(-0.2),
+          zoomTo: (zoomLevel) => zoomTo(zoomLevel),
           project,
           getElements,
           setTransform: (transform: FlowTransform) =>
