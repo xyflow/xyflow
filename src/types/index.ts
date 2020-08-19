@@ -182,6 +182,7 @@ export type ProjectFunc = (position: XYPosition) => XYPosition;
 export type OnLoadParams = {
   zoomIn: () => void;
   zoomOut: () => void;
+  zoomTo: (zoomLevel: number) => void;
   fitView: FitViewFunc;
   project: ProjectFunc;
   getElements: () => Elements;

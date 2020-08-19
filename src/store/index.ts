@@ -129,7 +129,8 @@ export interface StoreModel {
   unsetUserSelection: Action<StoreModel>;
 
   fitView: Action<StoreModel, FitViewParams>;
-  zoom: Action<StoreModel, number>;
+  zoomTo: Action<StoreModel, number>;
+  zoom: Thunk<StoreModel, number, any, StoreModel>;
   zoomIn: Thunk<StoreModel>;
   zoomOut: Thunk<StoreModel>;
 }
@@ -418,9 +419,9 @@ export const storeModel: StoreModel = {
     state.transform = [fittedTransform.x, fittedTransform.y, fittedTransform.k];
   }),
 
-  zoom: action((state, amount) => {
+  zoomTo: action((state, zoomLevel) => {
     const { d3Selection, transform, minZoom, maxZoom } = state;
-    const nextZoom = clamp(transform[2] + amount, minZoom, maxZoom);
+    const nextZoom = clamp(zoomLevel, minZoom, maxZoom);
 
     if (d3Selection) {
       // we want to zoom in and out to the center of the zoom pane
@@ -437,6 +438,13 @@ export const storeModel: StoreModel = {
       state.transform[1] = zoomedTransform.y;
       state.transform[2] = zoomedTransform.k;
     }
+  }),
+
+  zoom: thunk((actions, amount, helpers) => {
+    const { transform } = helpers.getState();
+    const nextZoom = transform[2] + amount;
+
+    actions.zoomTo(nextZoom);
   }),
 
   zoomIn: thunk((actions) => {
