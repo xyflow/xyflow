@@ -256,7 +256,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         const resizeObserver = new ResizeObserver((entries) => {
           for (let _ of entries) {
-            updateNodeDimensions({ id, nodeElement: nodeElement.current! });
+            if (nodeElement.current) {
+              updateNodeDimensions({ id, nodeElement: nodeElement.current });
+            }
           }
         });
 
