@@ -403,8 +403,9 @@ export const storeModel: StoreModel = {
     }
 
     const bounds = getRectOfNodes(nodes);
-    const maxBoundsSize = Math.max(bounds.width, bounds.height);
-    const zoom = Math.min(width, height) / (maxBoundsSize + maxBoundsSize * padding);
+    const xZoom = width / (bounds.width * (1 + padding));
+    const yZoom = height / (bounds.height * (1 + padding));
+    const zoom = Math.min(xZoom, yZoom);
     const clampedZoom = clamp(zoom, minZoom, maxZoom);
     const boundsCenterX = bounds.x + bounds.width / 2;
     const boundsCenterY = bounds.y + bounds.height / 2;
