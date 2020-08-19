@@ -20,6 +20,20 @@ describe('Interaction Flow Rendering', () => {
     expect(pointerEvents).to.equal('none');
   });
 
+  it('toggles on capture element click', () => {
+    cy.get('.react-flow__captureelementclick').click();
+  });
+
+  it('allows node clicks when enabled', () => {
+    const pointerEvents = Cypress.$('.react-flow__node:first').css('pointer-events');
+    expect(pointerEvents).to.equal('all');
+  });
+
+  it('allows edge clicks when enabled', () => {
+    const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
+    expect(pointerEvents).to.equal('all');
+  });
+
   it('tries to do a selection', () => {
     cy.get('body').type('{shift}', { release: false }).get('.react-flow__selectionpane').should('not.exist');
     cy.get('body').type('{shift}', { release: true });
