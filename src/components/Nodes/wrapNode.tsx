@@ -283,7 +283,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       zIndex: selected ? 10 : 3,
       transform: `translate(${xPos}px,${yPos}px)`,
       pointerEvents: isSelectable || isDraggable || onClick ? 'all' : 'none',
-      visibility: isInitialized ? 'visible' : 'hidden',
+      opacity: isInitialized ? 1 : 0, // prevents jumping of nodes on start
       ...style,
     };
 
