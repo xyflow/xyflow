@@ -583,7 +583,7 @@ const NodesDebugger = () => {
 
   console.log(nodes);
 
-  return null:
+  return null;
 }
 
 const Flow = () => (
