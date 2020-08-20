@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import './provider.css';
 
 const onElementClick = (event, element) => console.log('click', element);
+const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 
 const initialElements = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -31,6 +32,7 @@ const ProviderFlow = () => {
             onElementClick={onElementClick}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
+            onLoad={onLoad}
           >
             <Controls />
           </ReactFlow>

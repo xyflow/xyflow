@@ -1,5 +1,6 @@
-import store from '../store';
+import store, { StoreModel } from '../store';
 import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box, Connection } from '../types';
+import { Store } from 'easy-peasy';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -75,6 +76,14 @@ export const pointToRendererPoint = (
   }
 
   return position;
+};
+
+export const onLoadProject = (currentStore: Store<StoreModel>) => {
+  return (position: XYPosition): XYPosition => {
+    const { transform, snapToGrid, snapGrid } = currentStore.getState();
+
+    return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
+  };
 };
 
 export const project = (position: XYPosition): XYPosition => {
@@ -207,9 +216,7 @@ export const zoomIn = (): void => zoom(0.2);
 
 export const zoomOut = (): void => zoom(-0.2);
 
-export const getElements = (): Elements => {
-  const { nodes, edges } = store.getState();
-
+const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
   return [
     ...nodes.map((node) => {
       const n = { ...node };
@@ -219,4 +226,18 @@ export const getElements = (): Elements => {
     }),
     ...edges.map((e) => ({ ...e })),
   ];
+};
+
+export const onLoadGetElements = (currentStore: Store<StoreModel>) => {
+  return (): Elements => {
+    const { nodes = [], edges = [] } = currentStore.getState();
+
+    return parseElements(nodes, edges);
+  };
+};
+
+export const getElements = (): Elements => {
+  const { nodes = [], edges = [] } = store.getState();
+
+  return parseElements(nodes, edges);
 };

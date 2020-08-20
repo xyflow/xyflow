@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, memo, CSSProperties, MouseEvent } from 'react';
 
-import { useStoreState, useStoreActions } from '../../store/hooks';
+import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import UserSelection from '../../components/UserSelection';
@@ -10,7 +10,7 @@ import useD3Zoom from '../../hooks/useD3Zoom';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { project, getElements } from '../../utils/graph';
+import { onLoadProject, onLoadGetElements } from '../../utils/graph';
 import {
   Elements,
   NodeTypesType,
@@ -128,6 +128,7 @@ const GraphView = ({
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
   const zoomTo = useStoreActions((actions) => actions.zoomTo);
+  const currentStore = useStore();
 
   const onZoomPaneClick = useCallback(
     (event: React.MouseEvent) => {
@@ -169,8 +170,8 @@ const GraphView = ({
           zoomIn: () => zoom(0.2),
           zoomOut: () => zoom(-0.2),
           zoomTo: (zoomLevel) => zoomTo(zoomLevel),
-          project,
-          getElements,
+          project: onLoadProject(currentStore),
+          getElements: onLoadGetElements(currentStore),
           setTransform: (transform: FlowTransform) =>
             setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
         });
