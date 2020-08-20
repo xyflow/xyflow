@@ -171,6 +171,7 @@ export interface WrapNodeProps {
   sourcePosition?: Position;
   targetPosition?: Position;
   isHidden?: boolean;
+  isInitialized?: boolean;
 }
 
 export type FitViewParams = {
