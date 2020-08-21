@@ -186,6 +186,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     sourcePosition,
     targetPosition,
     isHidden,
+    isInitialized,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
@@ -282,6 +283,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       zIndex: selected ? 10 : 3,
       transform: `translate(${xPos}px,${yPos}px)`,
       pointerEvents: isSelectable || isDraggable || onClick ? 'all' : 'none',
+      opacity: isInitialized ? 1 : 0, // prevents jumping of nodes on start
       ...style,
     };
 

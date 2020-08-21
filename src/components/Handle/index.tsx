@@ -23,6 +23,8 @@ const Handle = ({
   const onConnectAction = useStoreState((state) => state.onConnect);
   const onConnectStart = useStoreState((state) => state.onConnectStart);
   const onConnectStop = useStoreState((state) => state.onConnectStop);
+  const onConnectEnd = useStoreState((state) => state.onConnectEnd);
+
   const onConnectExtended = (params: Connection) => {
     if (onConnectAction) {
       onConnectAction(params);
@@ -44,6 +46,7 @@ const Handle = ({
       onConnect={onConnectExtended}
       onConnectStart={onConnectStart}
       onConnectStop={onConnectStop}
+      onConnectEnd={onConnectEnd}
       type={type}
       position={position}
       isValidConnection={isValidConnection}

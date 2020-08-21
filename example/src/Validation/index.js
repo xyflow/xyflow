@@ -15,6 +15,7 @@ const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
 const isValidConnection = (connection) => connection.target === 'B';
 const onConnectStart = (event, { nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
 const onConnectStop = (event) => console.log('on connect stop', event);
+const onConnectEnd = (event) => console.log('on connect end', event);
 
 const CustomInput = () => (
   <>
@@ -53,6 +54,7 @@ const HorizontalFlow = () => {
       nodeTypes={nodeTypes}
       onConnectStart={onConnectStart}
       onConnectStop={onConnectStop}
+      onConnectEnd={onConnectEnd}
     />
   );
 };

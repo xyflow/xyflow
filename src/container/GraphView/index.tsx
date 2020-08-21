@@ -23,6 +23,7 @@ import {
   FlowTransform,
   OnConnectStartFunc,
   OnConnectStopFunc,
+  OnConnectEndFunc,
 } from '../../types';
 
 export interface GraphViewProps {
@@ -38,6 +39,7 @@ export interface GraphViewProps {
   onConnect?: (connection: Connection | Edge) => void;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
+  onConnectEnd?: OnConnectEndFunc;
   onLoad?: OnLoadFunc;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
@@ -91,6 +93,7 @@ const GraphView = ({
   onConnect,
   onConnectStart,
   onConnectStop,
+  onConnectEnd,
   snapToGrid,
   snapGrid,
   onlyRenderVisibleNodes,
@@ -119,6 +122,7 @@ const GraphView = ({
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
+  const setOnConnectEnd = useStoreActions((actions) => actions.setOnConnectEnd);
   const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
   const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
   const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
@@ -208,6 +212,12 @@ const GraphView = ({
       setOnConnectStop(onConnectStop);
     }
   }, [onConnectStop]);
+
+  useEffect(() => {
+    if (onConnectEnd) {
+      setOnConnectEnd(onConnectEnd);
+    }
+  }, [onConnectEnd]);
 
   useEffect(() => {
     setSnapGrid({ snapToGrid, snapGrid });

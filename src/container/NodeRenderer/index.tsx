@@ -37,6 +37,7 @@ function renderNode(
   const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
   const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
   const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+  const isInitialized = node.__rf.width !== null && node.__rf.height !== null;
 
   return (
     <NodeComponent
@@ -64,6 +65,7 @@ function renderNode(
       targetPosition={node.targetPosition}
       selectNodesOnDrag={props.selectNodesOnDrag}
       isHidden={node.isHidden}
+      isInitialized={isInitialized}
     />
   );
 }
