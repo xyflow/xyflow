@@ -9,6 +9,7 @@ import {
   OnConnectFunc,
   OnConnectStartFunc,
   OnConnectStopFunc,
+  OnConnectEndFunc,
   Connection,
   SetConnectionId,
 } from '../../types';
@@ -22,6 +23,7 @@ interface BaseHandleProps {
   onConnect: OnConnectFunc;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
+  onConnectEnd?: OnConnectEndFunc;
   position: Position;
   setConnectionNodeId: SetSourceIdFunc;
   setPosition: (pos: XYPosition) => void;
@@ -47,7 +49,8 @@ function onMouseDown(
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
   onConnectStart?: OnConnectStartFunc,
-  onConnectStop?: OnConnectStopFunc
+  onConnectStop?: OnConnectStopFunc,
+  onConnectEnd?: OnConnectEndFunc
 ): void {
   const reactFlowNode = document.querySelector('.react-flow');
 
@@ -142,6 +145,10 @@ function onMouseDown(
       onConnect(connection);
     }
 
+    if (onConnectEnd) {
+      onConnectEnd(event);
+    }
+
     resetRecentHandle();
     setConnectionNodeId({ connectionNodeId: null, connectionHandleType: null });
 
@@ -159,6 +166,7 @@ const BaseHandle = ({
   onConnect,
   onConnectStart,
   onConnectStop,
+  onConnectEnd,
   position,
   setConnectionNodeId,
   setPosition,
@@ -196,7 +204,8 @@ const BaseHandle = ({
           isTarget,
           isValidConnection,
           onConnectStart,
-          onConnectStop
+          onConnectStop,
+          onConnectEnd
         )
       }
       {...rest}

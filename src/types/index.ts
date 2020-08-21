@@ -211,6 +211,7 @@ export type OnConnectStartParams = {
 };
 export type OnConnectStartFunc = (event: ReactMouseEvent, params: OnConnectStartParams) => void;
 export type OnConnectStopFunc = (event: MouseEvent) => void;
+export type OnConnectEndFunc = (event: MouseEvent) => void;
 
 export type SetConnectionId = {
   connectionNodeId: ElementId | null;

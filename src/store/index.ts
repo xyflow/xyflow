@@ -20,6 +20,7 @@ import {
   OnConnectFunc,
   OnConnectStartFunc,
   OnConnectStopFunc,
+  OnConnectEndFunc,
   SelectionRect,
   HandleType,
   SetConnectionId,
@@ -86,10 +87,12 @@ export interface StoreModel {
   onConnect?: OnConnectFunc;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
+  onConnectEnd?: OnConnectEndFunc;
 
   setOnConnect: Action<StoreModel, OnConnectFunc>;
   setOnConnectStart: Action<StoreModel, OnConnectStartFunc>;
   setOnConnectStop: Action<StoreModel, OnConnectStopFunc>;
+  setOnConnectEnd: Action<StoreModel, OnConnectEndFunc>;
 
   setElements: Action<StoreModel, Elements>;
 
@@ -185,6 +188,9 @@ export const storeModel: StoreModel = {
   }),
   setOnConnectStop: action((state, onConnectStop) => {
     state.onConnectStop = onConnectStop;
+  }),
+  setOnConnectEnd: action((state, onConnectEnd) => {
+    state.onConnectEnd = onConnectEnd;
   }),
 
   setElements: action((state, elements) => {
