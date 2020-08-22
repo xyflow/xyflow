@@ -3,7 +3,7 @@
  * made a selectio  with on or several nodes
  */
 
-import React, { useState } from 'react';
+import React, { useState, MouseEvent } from 'react';
 import ReactDraggable from 'react-draggable';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -27,7 +27,13 @@ function getStartPositions(nodes: Node[]): StartPositions {
   }, startPositions);
 }
 
-export default () => {
+export interface NodesSelectionProps {
+  onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
+}
+
+export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: NodesSelectionProps) => {
   const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
   const [startPositions, setStartPositions] = useState<StartPositions>({});
 
@@ -61,6 +67,10 @@ export default () => {
 
     const nextStartPositions = getStartPositions(selectedNodes);
 
+    if (onSelectionDragStart) {
+      onSelectionDragStart(event, selectedNodes);
+    }
+
     if (nextStartPositions) {
       setOffset({ x: offsetX, y: offsetY });
       setStartPositions(nextStartPositions);
@@ -74,7 +84,17 @@ export default () => {
     };
 
     if (selectedElements) {
-      selectedElements.filter(isNode).forEach((node) => {
+      const selectedNodes = selectedElements ? selectedElements.filter(isNode) : [];
+
+      if (onSelectionDrag) {
+        const selectionNodes = selectedNodes.map(
+          (selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node
+        );
+
+        onSelectionDrag(event, selectionNodes);
+      }
+
+      selectedNodes.forEach((node) => {
         const pos: XYPosition = {
           x: startPositions[node.id].x + scaledClient.x - selectedNodesBbox.x - offset.x - tX,
           y: startPositions[node.id].y + scaledClient.y - selectedNodesBbox.y - offset.y - tY,
@@ -82,6 +102,16 @@ export default () => {
 
         updateNodePos({ id: node.id, pos });
       });
+    }
+  };
+
+  const onStop = (event: MouseEvent) => {
+    if (selectedElements && onSelectionDragStop) {
+      const selectedNodes = selectedElements
+        ? selectedElements.filter(isNode).map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)!)
+        : [];
+
+      onSelectionDragStop(event, selectedNodes);
     }
   };
 
@@ -97,6 +127,7 @@ export default () => {
         grid={grid}
         onStart={(event) => onStart(event as MouseEvent)}
         onDrag={(event) => onDrag(event as MouseEvent)}
+        onStop={(event) => onStop(event as MouseEvent)}
       >
         <div
           className="react-flow__nodesselection-rect"

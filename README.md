@@ -97,6 +97,9 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onMoveStart()`: called when user starts panning or zooming
 - `onMoveEnd()`: called when user ends panning or zooming
 - `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
+- `onSelectionDragStart(evt: MouseEvent, nodes: Node[])`: called when user starts to drag a selection
+- `onSelectionDrag(evt: MouseEvent, nodes: Node[])`: called when user drags a selection
+- `onSelectionDragStop(evt: MouseEvent, nodes: Node[])`: called when user stops to drag a selection
 - `onPaneClick(event: MouseEvent)`: called when user clicks directly on the canvas
 - `onPaneContextMenu(event: MouseEvent)`: called when user does a right-click on the canvas
 
