@@ -46,6 +46,9 @@ export interface GraphViewProps {
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onPaneClick?: (event: MouseEvent) => void;
   onPaneContextMenu?: (event: MouseEvent) => void;
+  onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
   selectionKeyCode: number;
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
@@ -84,6 +87,9 @@ const GraphView = ({
   onNodeContextMenu,
   onNodeDragStart,
   onNodeDragStop,
+  onSelectionDragStart,
+  onSelectionDrag,
+  onSelectionDragStop,
   connectionLineType,
   connectionLineStyle,
   selectionKeyCode,
@@ -262,7 +268,13 @@ const GraphView = ({
         markerEndId={markerEndId}
       />
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
-      {nodesSelectionActive && <NodesSelection />}
+      {nodesSelectionActive && (
+        <NodesSelection
+          onSelectionDragStart={onSelectionDragStart}
+          onSelectionDrag={onSelectionDrag}
+          onSelectionDragStop={onSelectionDragStop}
+        />
+      )}
       <div
         className="react-flow__zoompane"
         onClick={onZoomPaneClick}
