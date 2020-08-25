@@ -6,17 +6,18 @@ interface MiniMapNodeProps {
   width: number;
   height: number;
   color: string;
+  className: string;
   borderRadius: number;
   style?: CSSProperties;
 }
 
-const MiniMapNode = ({ x, y, width, height, style, color, borderRadius }: MiniMapNodeProps) => {
+const MiniMapNode = ({ x, y, width, height, style, color, className, borderRadius }: MiniMapNodeProps) => {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
 
   return (
     <rect
-      className="react-flow__minimap-node"
+      className={`react-flow__minimap-node ${className}`}
       x={x}
       y={y}
       rx={borderRadius}
