@@ -27,7 +27,7 @@
   "dependencies": {
     "@welldone-software/why-did-you-render": "^4.3.1",
     "classcat": "^4.1.0",
-    "d3-selection": "^1.4.2",
+    "d3-selection": "^2.0.0",
     "d3-zoom": "^1.8.3",
     "easy-peasy": "^3.3.1",
     "fast-deep-equal": "^3.1.3",
