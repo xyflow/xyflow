@@ -1,5 +1,4 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
-import { event } from 'd3-selection';
 
 import { useStoreState, useStoreActions } from '../store/hooks';
 import { FlowTransform } from '../types';
@@ -53,7 +52,7 @@ export default ({
       if (selectionKeyPressed) {
         d3Zoom.on('zoom', null);
       } else {
-        d3Zoom.on('zoom', () => {
+        d3Zoom.on('zoom', (event: any) => {
           updateTransform(event.transform);
 
           if (onMove) {
@@ -68,7 +67,7 @@ export default ({
   useEffect(() => {
     if (d3Zoom) {
       if (onMoveStart) {
-        d3Zoom.on('start', () => {
+        d3Zoom.on('start', (event: any) => {
           if (viewChanged(prevTransform.current, event.transform)) {
             const flowTransform = eventToFlowTransform(event.transform);
             prevTransform.current = flowTransform;
@@ -85,7 +84,7 @@ export default ({
   useEffect(() => {
     if (d3Zoom) {
       if (onMoveEnd) {
-        d3Zoom.on('end', () => {
+        d3Zoom.on('end', (event: any) => {
           if (viewChanged(prevTransform.current, event.transform)) {
             const flowTransform = eventToFlowTransform(event.transform);
             prevTransform.current = flowTransform;
@@ -101,7 +100,7 @@ export default ({
 
   useEffect(() => {
     if (d3Zoom) {
-      d3Zoom.filter(() => {
+      d3Zoom.filter((event: any) => {
         if (!paneMoveable) {
           return false;
         }
