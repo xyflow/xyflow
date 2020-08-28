@@ -8,7 +8,7 @@ export { getBezierPath } from './components/Edges/BezierEdge';
 export { getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
 
-export { isNode, isEdge, removeElements, addEdge, getOutgoers } from './utils/graph';
+export { isNode, isEdge, removeElements, addEdge, getOutgoers, getConnectedEdges } from './utils/graph';
 
 export * from './additional-components';
 export * from './types';
