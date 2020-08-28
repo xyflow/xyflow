@@ -1,4 +1,5 @@
 import React, { memo, CSSProperties } from 'react';
+import cc from 'classcat';
 
 interface MiniMapNodeProps {
   x: number;
@@ -17,7 +18,7 @@ const MiniMapNode = ({ x, y, width, height, style, color, className, borderRadiu
 
   return (
     <rect
-      className={`react-flow__minimap-node ${className}`}
+      className={cc(['react-flow__minimap-node', className])}
       x={x}
       y={y}
       rx={borderRadius}
