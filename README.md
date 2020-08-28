@@ -233,6 +233,10 @@ Your custom nodes are wrapped so that the basic functions like dragging or selec
 - `sourcePosition`: string
 - `targetPosition`: string
 
+### Prevent dragging
+
+If you have controls inside your custom node that should not drag the node you can add the class name `nodrag`.
+
 ## Handle Component
 
 We export a `Handle` component as a helper for your custom nodes:
@@ -425,6 +429,7 @@ const FlowWithMiniMap = () => (
 
 - `nodeColor`: string or function - If you pass a color as a string all nodes will get that color. If you pass a function you can return a color depending on the passed node.
 - `nodeBorderRadius`: number
+- `nodeClassName`: string or function for adding an additional class to the nodes inside the mini map
 - `maskColor`: string
 - `style`: css properties
 - `className`: additional class name
@@ -571,6 +576,11 @@ Returns all direct child nodes of the passed node
 
 `getOutgoers = (node: Node, elements: Elements): Node[]`
 
+### getConnectedEdges
+
+Returns all edges that are connected to the passed nodes
+
+`getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[]`
 
 You can use these function as seen in [this example](/example/src/Overview/index.js#L40-L41) or use your own ones.
 
