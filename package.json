@@ -48,7 +48,7 @@
     "babel-preset-react-app": "^9.1.2",
     "cypress": "^5.0.0",
     "postcss-nested": "^4.2.3",
-    "prettier": "2.0.5",
+    "prettier": "2.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "release-it": "^13.6.9",
