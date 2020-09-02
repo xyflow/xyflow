@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, memo, CSSProperties, MouseEvent } from 'react';
+import React, { useEffect, useRef, useCallback, memo, CSSProperties, MouseEvent, WheelEvent } from 'react';
 
 import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
 import NodeRenderer from '../NodeRenderer';
@@ -44,6 +44,7 @@ export interface GraphViewProps {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
+  onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: MouseEvent) => void;
   onPaneContextMenu?: (event: MouseEvent) => void;
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -117,6 +118,7 @@ const GraphView = ({
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
+  onPaneScroll,
   onPaneContextMenu,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
@@ -153,6 +155,13 @@ const GraphView = ({
       onPaneContextMenu?.(event);
     },
     [onPaneContextMenu]
+  );
+
+  const onZoomPaneScroll = useCallback(
+    (event: WheelEvent) => {
+      onPaneScroll?.(event);
+    },
+    [onPaneScroll]
   );
 
   useResizeHandler(rendererNode);
@@ -279,6 +288,7 @@ const GraphView = ({
         className="react-flow__zoompane"
         onClick={onZoomPaneClick}
         onContextMenu={onZoomPaneContextMenu}
+        onWheel={onZoomPaneScroll}
         ref={zoomPane}
       />
     </div>
