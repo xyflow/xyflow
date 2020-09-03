@@ -306,7 +306,7 @@ You can find an example with different edges in the [edges example](https://reac
 
 ## Edge Types & Custom Edges
 
-The basic edge types are `default` (bezier), `straight`, `step` and `smoothedge`. The default `edgeTypes` object looks like this:
+The basic edge types are `default` (bezier), `straight`, `step` and `smoothstep`. The default `edgeTypes` object looks like this:
 
 ```javascript
 {
