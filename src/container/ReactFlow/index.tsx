@@ -1,4 +1,4 @@
-import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent } from 'react';
+import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent, WheelEvent } from 'react';
 import cc from 'classcat';
 
 const nodeEnv: string = process.env.NODE_ENV as string;
@@ -56,6 +56,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
+  onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: MouseEvent) => void;
   onPaneContextMenu?: (event: MouseEvent) => void;
   nodeTypes: NodeTypesType;
@@ -130,6 +131,7 @@ const ReactFlow = ({
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
+  onPaneScroll,
   onPaneContextMenu,
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
@@ -180,6 +182,7 @@ const ReactFlow = ({
           zoomOnDoubleClick={zoomOnDoubleClick}
           paneMoveable={paneMoveable}
           onPaneClick={onPaneClick}
+          onPaneScroll={onPaneScroll}
           onPaneContextMenu={onPaneContextMenu}
           onSelectionDragStart={onSelectionDragStart}
           onSelectionDrag={onSelectionDrag}
