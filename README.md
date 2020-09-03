@@ -102,6 +102,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onSelectionDragStop(evt: MouseEvent, nodes: Node[])`: called when user stops to drag a selection
 - `onPaneClick(event: MouseEvent)`: called when user clicks directly on the canvas
 - `onPaneContextMenu(event: MouseEvent)`: called when user does a right-click on the canvas
+- `onPaneScroll(event: WheelEvent)`: called when user scrolls pane (only works when `zoomOnScroll` is set to `false) 
 
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.
