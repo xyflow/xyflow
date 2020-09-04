@@ -79,6 +79,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   defaultPosition: [number, number];
   arrowHeadColor: string;
   markerEndId?: string;
+  useScrollToPan: [boolean, number];
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
 }
@@ -128,6 +129,7 @@ const ReactFlow = ({
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
+  useScrollToPan,
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
@@ -142,6 +144,7 @@ const ReactFlow = ({
     <div style={style} className={reactFlowClasses}>
       <Wrapper>
         <GraphView
+          useScrollToPan={useScrollToPan}
           onLoad={onLoad}
           onMove={onMove}
           onMoveStart={onMoveStart}

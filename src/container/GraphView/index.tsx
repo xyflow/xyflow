@@ -70,6 +70,7 @@ export interface GraphViewProps {
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
+  useScrollToPan: [boolean, number];
   zoomOnDoubleClick: boolean;
   paneMoveable: boolean;
 }
@@ -115,6 +116,7 @@ const GraphView = ({
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
+  useScrollToPan,
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
@@ -127,6 +129,9 @@ const GraphView = ({
   const d3Initialised = useStoreState((state) => state.d3Initialised);
   const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
+  const [x, y, zoomLevel] = useStoreState((store) => {
+    return store.transform;
+  });
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
@@ -141,6 +146,7 @@ const GraphView = ({
   const zoom = useStoreActions((actions) => actions.zoom);
   const zoomTo = useStoreActions((actions) => actions.zoomTo);
   const currentStore = useStore();
+  const [scrollToPan, scrollSpeed] = useScrollToPan;
 
   const onZoomPaneClick = useCallback(
     (event: React.MouseEvent) => {
@@ -163,6 +169,11 @@ const GraphView = ({
     },
     [onPaneScroll]
   );
+
+  const scrollToPanHandler = (event: WheelEvent) => {
+    const panDirectionY = event.deltaY > 0 ? y - scrollSpeed : y + scrollSpeed;
+    setInitTransform({ x, y: panDirectionY, k: zoomLevel });
+  };
 
   useResizeHandler(rendererNode);
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
@@ -288,7 +299,7 @@ const GraphView = ({
         className="react-flow__zoompane"
         onClick={onZoomPaneClick}
         onContextMenu={onZoomPaneContextMenu}
-        onWheel={onZoomPaneScroll}
+        onWheel={scrollToPan ? (event: WheelEvent) => scrollToPanHandler(event) : onZoomPaneScroll}
         ref={zoomPane}
       />
     </div>

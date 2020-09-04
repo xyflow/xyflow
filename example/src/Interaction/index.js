@@ -26,6 +26,7 @@ const InteractionFlow = () => {
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
   const [zoomOnScroll, setZoomOnScroll] = useState(false);
+  const [useScrollToPan, setUseScrollToPan] = useState(false);
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
   const [paneMoveable, setPaneMoveable] = useState(true);
   const [captureZoomClick, setCaptureZoomClick] = useState(false);
@@ -48,6 +49,7 @@ const InteractionFlow = () => {
       onPaneClick={captureZoomClick ? onPaneClick : undefined}
       onPaneScroll={captureZoomScroll ? onPaneScroll : undefined}
       onPaneContextMenu={captureZoomClick ? onPaneContextMenu : undefined}
+      useScrollToPan={[useScrollToPan, 50]}
     >
       <MiniMap />
       <Controls />
@@ -158,6 +160,18 @@ const InteractionFlow = () => {
               checked={captureElementClick}
               onChange={(event) => setCaptureElementClick(event.target.checked)}
               className="react-flow__captureelementclick"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="usescrolltopan">
+            use scroll to pan
+            <input
+              id="usescrolltopan"
+              type="checkbox"
+              checked={useScrollToPan}
+              onChange={(event) => setUseScrollToPan(event.target.checked)}
+              className="react-flow__usescrolltopan"
             />
           </label>
         </div>
