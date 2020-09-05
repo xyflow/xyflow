@@ -324,6 +324,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         scale={transform[2]}
         disabled={!isDraggable}
         cancel=".nodrag"
+        nodeRef={nodeElement}
       >
         <div
           className={nodeClasses}
