@@ -41,6 +41,10 @@ const useElementUpdater = (propElements: Elements): void => {
         if (typeof propElement.isHidden !== 'undefined') {
           elementProps.isHidden = propElement.isHidden;
         }
+        
+        if (typeof propElement.type !== 'undefined') {
+          elementProps.type = propElement.type;
+        }
 
         if (isNode(existingElement)) {
           const propNode = propElement as Node;
