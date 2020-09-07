@@ -51,7 +51,7 @@
     "prettier": "2.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "release-it": "^13.7.1",
+    "release-it": "^14.0.2",
     "rollup": "^2.26.10",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-bundle-size": "^1.0.3",
