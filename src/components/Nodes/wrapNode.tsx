@@ -16,150 +16,10 @@ import { ResizeObserver } from 'resize-observer';
 import { useStoreActions } from '../../store/hooks';
 
 import { Provider } from '../../contexts/NodeIdContext';
-import {
-  Node,
-  XYPosition,
-  Transform,
-  ElementId,
-  NodeComponentProps,
-  WrapNodeProps,
-  Elements,
-  Edge,
-  NodePosUpdate,
-} from '../../types';
-
-import { noop } from '../../utils';
+import { Node, NodeComponentProps, WrapNodeProps } from '../../types';
 
 const getMouseEvent = (event: MouseEvent | TouchEvent) =>
   typeof TouchEvent !== 'undefined' && event instanceof TouchEvent ? event.touches[0] : (event as MouseEvent);
-
-interface OnDragStartParams {
-  event: MouseEvent | TouchEvent;
-  id: ElementId;
-  type: string;
-  data: any;
-  selectNodesOnDrag: boolean;
-  isSelectable: boolean;
-  setOffset: (pos: XYPosition) => void;
-  transform: Transform;
-  position: XYPosition;
-  setSelectedElements: (elms: Elements | Node | Edge) => void;
-  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
-}
-
-const onStart = ({
-  event,
-  onNodeDragStart,
-  id,
-  type,
-  data,
-  selectNodesOnDrag,
-  setOffset,
-  transform,
-  position,
-  setSelectedElements,
-  isSelectable,
-}: OnDragStartParams): false | void => {
-  const startEvent = getMouseEvent(event);
-
-  const scaledClient: XYPosition = {
-    x: startEvent.clientX * (1 / transform[2]),
-    y: startEvent.clientY * (1 / transform[2]),
-  };
-
-  const offsetX = scaledClient.x - position.x - transform[0];
-  const offsetY = scaledClient.y - position.y - transform[1];
-  const node = { id, type, position, data };
-
-  setOffset({ x: offsetX, y: offsetY });
-
-  if (onNodeDragStart) {
-    onNodeDragStart(event as MouseEvent, node);
-  }
-
-  if (selectNodesOnDrag && isSelectable) {
-    setSelectedElements({ id, type } as Node);
-  }
-};
-
-interface OnDragParams {
-  event: MouseEvent | TouchEvent;
-  setDragging: (isDragging: boolean) => void;
-  id: ElementId;
-  offset: XYPosition;
-  transform: Transform;
-  updateNodePos: (params: NodePosUpdate) => void;
-}
-
-const onDrag = ({ event, setDragging, id, offset, transform, updateNodePos }: OnDragParams): void => {
-  const dragEvent = getMouseEvent(event);
-
-  const scaledClient = {
-    x: dragEvent.clientX / transform[2],
-    y: dragEvent.clientY / transform[2],
-  };
-
-  setDragging(true);
-  updateNodePos({
-    id,
-    pos: {
-      x: scaledClient.x - transform[0] - offset.x,
-      y: scaledClient.y - transform[1] - offset.y,
-    },
-  });
-};
-
-interface OnDragStopParams {
-  event: MouseEvent;
-  isDragging: boolean;
-  setDragging: (isDragging: boolean) => void;
-  id: ElementId;
-  type: string;
-  position: XYPosition;
-  data: any;
-  selectNodesOnDrag: boolean;
-  isSelectable: boolean;
-  setSelectedElements: (elms: Elements | Node | Edge) => void;
-  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
-  onClick?: (event: MouseEvent, node: Node) => void;
-}
-
-const onStop = ({
-  event,
-  id,
-  type,
-  position,
-  data,
-  isDragging,
-  setDragging,
-  selectNodesOnDrag,
-  isSelectable,
-  onNodeDragStop,
-  onClick,
-  setSelectedElements,
-}: OnDragStopParams): void => {
-  const node = {
-    id,
-    type,
-    position,
-    data,
-  } as Node;
-  if (!isDragging && isSelectable) {
-    if (!selectNodesOnDrag) {
-      setSelectedElements({ id, type } as Node);
-    }
-
-    if (onClick) {
-      return onClick(event, node);
-    }
-  }
-
-  setDragging(false);
-
-  if (onNodeDragStop) {
-    onNodeDragStop(event, node);
-  }
-};
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
   const NodeWrapper = ({
@@ -195,60 +55,129 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const nodeElement = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setDragging] = useState(false);
-    const position = { x: xPos, y: yPos };
-    const nodeClasses = cc([
-      'react-flow__node',
-      `react-flow__node-${type}`,
-      className,
-      {
-        selected,
-        selectable: isSelectable,
-      },
-    ]);
-    const node = { id, type, position, data };
+
+    const position = useMemo(() => ({ x: xPos, y: yPos }), [xPos, yPos]);
+    const node = useMemo(() => ({ id, type, position, data }), [id, type, position, data]);
+    const nodeStyle: CSSProperties = useMemo(
+      () => ({
+        zIndex: selected ? 10 : 3,
+        transform: `translate(${xPos}px,${yPos}px)`,
+        pointerEvents: isSelectable || isDraggable || onClick ? 'all' : 'none',
+        opacity: isInitialized ? 1 : 0, // prevents jumping of nodes on start
+        ...style,
+      }),
+      [selected, xPos, yPos, isSelectable, isDraggable, onClick, isInitialized, style]
+    );
     const onMouseEnterHandler = useMemo(() => {
       if (!onMouseEnter || isDragging) {
-        return noop;
+        return;
       }
 
       return (event: MouseEvent) => onMouseEnter(event, node);
-    }, [onMouseEnter, isDragging]);
+    }, [onMouseEnter, isDragging, node]);
 
     const onMouseMoveHandler = useMemo(() => {
       if (!onMouseMove || isDragging) {
-        return noop;
+        return;
       }
 
       return (event: MouseEvent) => onMouseMove(event, node);
-    }, [onMouseMove, isDragging]);
+    }, [onMouseMove, isDragging, node]);
 
     const onMouseLeaveHandler = useMemo(() => {
       if (!onMouseLeave || isDragging) {
-        return noop;
+        return;
       }
 
       return (event: MouseEvent) => onMouseLeave(event, node);
-    }, [onMouseLeave, isDragging]);
+    }, [onMouseLeave, isDragging, node]);
 
     const onContextMenuHandler = useMemo(() => {
       if (!onContextMenu) {
-        return noop;
+        return;
       }
 
       return (event: MouseEvent) => onContextMenu(event, node);
-    }, [onContextMenu]);
+    }, [onContextMenu, node]);
 
     const onSelectNodeHandler = useCallback(
       (event: MouseEvent) => {
-        if (!isDraggable && isSelectable) {
-          setSelectedElements({ id: node.id, type: node.type } as Node);
-        }
+        if (!isDraggable) {
+          if (isSelectable) {
+            setSelectedElements({ id: node.id, type: node.type } as Node);
+          }
 
-        if (onClick) {
-          onClick(event, node);
+          if (onClick) {
+            onClick(event, node);
+          }
         }
       },
-      [isSelectable, isDraggable, node]
+      [isSelectable, isDraggable, onClick, node]
+    );
+
+    const onDragStart = useCallback(
+      (event) => {
+        const startEvent = getMouseEvent(event);
+
+        const scaledClientX = startEvent.clientX / transform[2];
+        const scaledClientY = startEvent.clientY / transform[2];
+
+        const offsetX = scaledClientX - position.x - transform[0];
+        const offsetY = scaledClientY - position.y - transform[1];
+
+        setOffset({ x: offsetX, y: offsetY });
+
+        if (onNodeDragStart) {
+          onNodeDragStart(event as MouseEvent, node);
+        }
+
+        if (selectNodesOnDrag && isSelectable) {
+          setSelectedElements({ id: node.id, type: node.type } as Node);
+        }
+      },
+      [node, transform, position, selectNodesOnDrag, isSelectable, onNodeDragStart]
+    );
+
+    const onDrag = useCallback(
+      (event) => {
+        const dragEvent = getMouseEvent(event);
+
+        const scaledClientX = dragEvent.clientX / transform[2];
+        const scaledClientY = dragEvent.clientY / transform[2];
+
+        setDragging(true);
+        updateNodePos({
+          id,
+          pos: {
+            x: scaledClientX - transform[0] - offset.x,
+            y: scaledClientY - transform[1] - offset.y,
+          },
+        });
+      },
+      [id, transform, offset]
+    );
+
+    const onDragStop = useCallback(
+      (event) => {
+        if (!isDragging) {
+          if (isSelectable && !selectNodesOnDrag) {
+            setSelectedElements({ id: node.id, type: node.type } as Node);
+          }
+
+          if (onClick) {
+            onClick(event as MouseEvent, node);
+          }
+
+          return;
+        }
+
+        setDragging(false);
+
+        if (onNodeDragStop) {
+          onNodeDragStop(event as MouseEvent, node);
+        }
+      },
+      [node, isDragging, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop]
     );
 
     useEffect(() => {
@@ -279,48 +208,21 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       return null;
     }
 
-    const nodeStyle: CSSProperties = {
-      zIndex: selected ? 10 : 3,
-      transform: `translate(${xPos}px,${yPos}px)`,
-      pointerEvents: isSelectable || isDraggable || onClick ? 'all' : 'none',
-      opacity: isInitialized ? 1 : 0, // prevents jumping of nodes on start
-      ...style,
-    };
+    const nodeClasses = cc([
+      'react-flow__node',
+      `react-flow__node-${type}`,
+      className,
+      {
+        selected,
+        selectable: isSelectable,
+      },
+    ]);
 
     return (
       <DraggableCore
-        onStart={(event) =>
-          onStart({
-            event: event as MouseEvent,
-            selectNodesOnDrag,
-            isSelectable,
-            onNodeDragStart,
-            id,
-            type,
-            data,
-            setOffset,
-            transform,
-            position,
-            setSelectedElements,
-          })
-        }
-        onDrag={(event) => onDrag({ event: event as MouseEvent, setDragging, id, offset, transform, updateNodePos })}
-        onStop={(event) =>
-          onStop({
-            event: event as MouseEvent,
-            onNodeDragStop,
-            selectNodesOnDrag,
-            isSelectable,
-            onClick,
-            isDragging,
-            setDragging,
-            id,
-            type,
-            position,
-            data,
-            setSelectedElements,
-          })
-        }
+        onStart={onDragStart}
+        onDrag={onDrag}
+        onStop={onDragStop}
         scale={transform[2]}
         disabled={!isDraggable}
         cancel=".nodrag"
