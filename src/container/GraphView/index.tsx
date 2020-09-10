@@ -24,6 +24,7 @@ import {
   OnConnectStartFunc,
   OnConnectStopFunc,
   OnConnectEndFunc,
+  TranslateExtent,
 } from '../../types';
 
 export interface GraphViewProps {
@@ -67,6 +68,7 @@ export interface GraphViewProps {
   maxZoom: number;
   defaultZoom: number;
   defaultPosition: [number, number];
+  translateExtent?: TranslateExtent;
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
@@ -112,6 +114,7 @@ const GraphView = ({
   maxZoom,
   defaultZoom,
   defaultPosition,
+  translateExtent,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
@@ -137,6 +140,7 @@ const GraphView = ({
   const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
   const setInitTransform = useStoreActions((actions) => actions.setInitTransform);
   const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
+  const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
   const zoomTo = useStoreActions((actions) => actions.zoomTo);
@@ -253,6 +257,12 @@ const GraphView = ({
   useEffect(() => {
     setMinMaxZoom({ minZoom, maxZoom });
   }, [minZoom, maxZoom]);
+
+  useEffect(() => {
+    if (typeof translateExtent !== 'undefined') {
+      setTranslateExtent(translateExtent);
+    }
+  }, [translateExtent]);
 
   return (
     <div className="react-flow__renderer" ref={rendererNode}>

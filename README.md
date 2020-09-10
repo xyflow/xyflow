@@ -31,10 +31,10 @@ React Flow is a library for building node-based graphs. You can easily implement
 ## Key Features
 
 * **Easy to use:** Seamless zooming & panning behaviour and single and multi-selections of elements
-* **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes with multiple handles and edges
+* **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes with multiple handles and custom edges
 * **Fast rendering:** Only nodes that have changed are re-rendered and only those that are in the viewport are displayed
-* **Utils:** Snap-to-grid, background styles and graph [helper functions](#helper-functions)
-* **Components:** [Background, Minimap and graph controls](#components)
+* **Utils:** Snap-to-grid and graph [helper functions](#helper-functions)
+* **Components:** [Background, Minimap and Controls](#components)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
 In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass the functions to remove an element or connect nodes by yourself. You can implement your own ones or use the helper functions that come with the library.
@@ -78,9 +78,10 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
+- `translateExtent`: [default `[[-∞, -∞], [+∞, +∞]]`](https://github.com/d3/d3-zoom#zoom_translateExtent)
 
 #### Event Handlers
-- `onElementClick(event: MouseEvent, element: Node | Edge)`: called when user clicks node or edge click
+- `onElementClick(event: MouseEvent, element: Node | Edge)`: called when user clicks node or edge
 - `onElementsRemove(elements: Elements)`: called when user removes node or edge
 - `onNodeDragStart(event: MouseEvent, node: Node)`: node drag start
 - `onNodeDragStop(event: MouseEvent, node: Node)`: node drag stop
@@ -93,21 +94,21 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onConnectStop(event: MouseEvent)`: called when user stops to drag connection line
 - `onConnectEnd(event: MouseEvent)`: called after user stops or connects nodes
 - `onLoad(reactFlowInstance)`: called after flow is initialized
-- `onMove()`: called when user is panning or zooming
-- `onMoveStart()`: called when user starts panning or zooming
-- `onMoveEnd()`: called when user ends panning or zooming
+- `onMove(flowTransform: FlowTransform)`: called when user is panning or zooming
+- `onMoveStart(flowTransform: FlowTransform)`: called when user starts panning or zooming
+- `onMoveEnd(flowTransform: FlowTransform)`: called when user ends panning or zooming
 - `onSelectionChange(elements: Elements)`: called when user selects one or multiple elements
 - `onSelectionDragStart(evt: MouseEvent, nodes: Node[])`: called when user starts to drag a selection
 - `onSelectionDrag(evt: MouseEvent, nodes: Node[])`: called when user drags a selection
 - `onSelectionDragStop(evt: MouseEvent, nodes: Node[])`: called when user stops to drag a selection
 - `onPaneClick(event: MouseEvent)`: called when user clicks directly on the canvas
 - `onPaneContextMenu(event: MouseEvent)`: called when user does a right-click on the canvas
-- `onPaneScroll(event: WheelEvent)`: called when user scrolls pane (only works when `zoomOnScroll` is set to `false) 
+- `onPaneScroll(event: WheelEvent)`: called when user scrolls pane (only works when `zoomOnScroll` is set to `false)
 
 #### Interaction
-- `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option.
-- `nodesConnectable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `connectable` node option.
-- `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `selectable` node option.
+- `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option
+- `nodesConnectable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `connectable` node option
+- `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `selectable` node option
 - `zoomOnScroll`: default: `true`
 - `zoomOnDoubleClick`: default: `true`
 - `selectNodesOnDrag`: default: `true`
@@ -145,13 +146,14 @@ const BasicFlow = () => <ReactFlow onLoad={onLoad} elements={[]} />;
 
 ### project
 
-Transforms pixel coordinates to the internal React Flow coordinate system
+Transforms pixel coordinates to the internal ReactFlow coordinate system.
+This can be used when you drag nodes (from a side bar for example) and need the position on the pane.
 
 `project = (position: XYPosition): XYPosition`
 
 ### fitView
 
-Fits view port so that all nodes are visible
+Fits view port so that all nodes are inside the view port.
 
 `fitView = ({ padding }): void`
 
@@ -173,7 +175,7 @@ Fits view port so that all nodes are visible
 
 ### setTransform
 
-Sets position and zoom of the pane
+Sets position and zoom of the pane.
 
 `setTransform = (transform: FlowTransform): void`
 
@@ -194,9 +196,9 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `targetPosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'top'
 - `sourcePosition`: 'left' | 'right' | 'top' | 'bottom' handle position - default: 'bottom'
 - `isHidden`: if `true`, the node will not be rendered
-- `draggable`: boolean - if option is not set, the node is draggable (overwrites generel `nodesDraggable` option)
-- `connectable`: boolean - if option is not set, the node is connectable (overwrites generel `nodesConnectable` option)
-- `selectable`: boolean - if option is not set, the node is selectable (overwrites generel `elementsSelectable` option)
+- `draggable`: boolean - if option is not set, the node is draggable (overwrites general `nodesDraggable` option)
+- `connectable`: boolean - if option is not set, the node is connectable (overwrites general `nodesConnectable` option)
+- `selectable`: boolean - if option is not set, the node is selectable (overwrites general `elementsSelectable` option)
 
 ## Node Types & Custom Nodes
 
@@ -236,7 +238,7 @@ Your custom nodes are wrapped so that the basic functions like dragging or selec
 
 ### Prevent dragging
 
-If you have controls inside your custom node that should not drag the node you can add the class name `nodrag`.
+If you have controls or other elements inside your custom node that should not drag the node you can add the class name `nodrag`.
 
 ## Handle Component
 
@@ -531,10 +533,12 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 You could achieve the same effect by passing a style prop to the `ReactFlow` component:
 
 ```javascript
+const style = { background: 'red', width: '100%' height: '300px' };
+
 const FlowWithRedBg = (
   <ReactFlow
     elements={elements}
-    style={{ background: 'red', width: '100%' height: '300px' }}
+    style={style}
   />
 );
 ```
@@ -549,37 +553,37 @@ import ReactFlow, { isNode, isEdge, removeElements, addEdge } from 'react-flow-r
 
 ### isEdge
 
-Returns true if element is an edge
+Returns `true` if the passed element is an edge.
 
 `isEdge = (element: Node | Edge): element is Edge`
 
 ### isNode
 
-Returns true if element is a node
+Returns `true` if the passed element is a node.
 
 `isNode = (element: Node | Edge): element is Node`
 
 ### removeElements
 
-Returns an array of elements without the ones from `elementsToRemove`. It also removes all incoming/outgoing edges if you just pass one or multiple nodes
+Returns an array of elements without the ones from `elementsToRemove`. It also removes all incoming/outgoing edges if you just pass one or multiple nodes.
 
 `removeElements = (elementsToRemove: Elements, elements: Elements): Elements`
 
 ### addEdge
 
-Returns elements array with added edge
+Returns an array with elements with the added edge.
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
 
 ### getOutgoers
 
-Returns all direct child nodes of the passed node
+Returns all direct child nodes of the passed node.
 
 `getOutgoers = (node: Node, elements: Elements): Node[]`
 
 ### getConnectedEdges
 
-Returns all edges that are connected to the passed nodes
+Returns all edges that are connected to the passed nodes.
 
 `getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[]`
 
@@ -657,7 +661,7 @@ This serves the content of the `example` folder and watches changes inside the `
 
 # Testing
 
-Testing is done with cypress. You can find all tests in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the tests do:
+Testing is done with cypress. You can find the tests in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the tests do:
 
 ```
 npm run test

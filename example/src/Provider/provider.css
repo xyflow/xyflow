@@ -30,3 +30,7 @@
   flex-grow: 1;
   height: 100%;
 }
+
+.providerflow .selectall {
+  margin-top: 10px;
+}

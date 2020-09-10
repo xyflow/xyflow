@@ -30,6 +30,7 @@ import {
   OnConnectStartFunc,
   OnConnectStopFunc,
   OnConnectEndFunc,
+  TranslateExtent,
 } from '../../types';
 
 import '../../style.css';
@@ -77,6 +78,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   maxZoom: number;
   defaultZoom: number;
   defaultPosition: [number, number];
+  translateExtent?: TranslateExtent;
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll: boolean;
@@ -125,6 +127,7 @@ const ReactFlow = ({
   maxZoom,
   defaultZoom,
   defaultPosition,
+  translateExtent,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
@@ -176,6 +179,7 @@ const ReactFlow = ({
           maxZoom={maxZoom}
           defaultZoom={defaultZoom}
           defaultPosition={defaultPosition}
+          translateExtent={translateExtent}
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}
