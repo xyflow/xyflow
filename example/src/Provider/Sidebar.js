@@ -1,9 +1,14 @@
 import React from 'react';
-import { useStoreState } from 'react-flow-renderer';
+import { useStoreState, useStoreActions } from 'react-flow-renderer';
 
 export default () => {
   const nodes = useStoreState((store) => store.nodes);
   const transform = useStoreState((store) => store.transform);
+  const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+
+  const selectAll = () => {
+    setSelectedElements(nodes.map((node) => ({ id: node.id, type: node.type })));
+  };
 
   return (
     <aside>
@@ -20,6 +25,10 @@ export default () => {
           Node {node.id} - x: {node.__rf.position.x.toFixed(2)}, y: {node.__rf.position.y.toFixed(2)}
         </div>
       ))}
+
+      <div className="selectall">
+        <button onClick={selectAll}>select all nodes</button>
+      </div>
     </aside>
   );
 };
