@@ -26,6 +26,7 @@ import {
   SetConnectionId,
   NodePosUpdate,
   FitViewParams,
+  TranslateExtent,
 } from '../types';
 
 type TransformXYK = {
@@ -65,6 +66,7 @@ export interface StoreModel {
   d3Initialised: boolean;
   minZoom: number;
   maxZoom: number;
+  translateExtent: TranslateExtent;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
@@ -116,6 +118,8 @@ export interface StoreModel {
 
   setMinMaxZoom: Action<StoreModel, SetMinMaxZoom>;
 
+  setTranslateExtent: Action<StoreModel, TranslateExtent>;
+
   setSnapGrid: Action<StoreModel, SetSnapGrid>;
 
   setConnectionPosition: Action<StoreModel, XYPosition>;
@@ -154,6 +158,10 @@ export const storeModel: StoreModel = {
   d3Initialised: false,
   minZoom: 0.5,
   maxZoom: 2,
+  translateExtent: [
+    [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+    [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+  ],
 
   nodesSelectionActive: false,
   selectionActive: false,
@@ -351,7 +359,7 @@ export const storeModel: StoreModel = {
   }),
 
   initD3: action((state, zoomPaneNode) => {
-    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]);
+    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(state.translateExtent);
 
     const selection = select(zoomPaneNode).call(d3ZoomInstance);
 
@@ -366,6 +374,14 @@ export const storeModel: StoreModel = {
 
     if (state.d3Zoom) {
       state.d3Zoom.scaleExtent([minZoom, maxZoom]);
+    }
+  }),
+
+  setTranslateExtent: action((state, translateExtent) => {
+    state.translateExtent = translateExtent;
+
+    if (state.d3Zoom) {
+      state.d3Zoom.translateExtent(translateExtent);
     }
   }),
 

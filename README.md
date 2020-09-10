@@ -78,6 +78,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `snapToGrid`: default: `false`
 - `snapGrid`: [x, y] array - default: `[16, 16]`
 - `onlyRenderVisibleNodes`: default: `true`
+- `translateExtent`: [default `[[-∞, -∞], [+∞, +∞]]`](https://github.com/d3/d3-zoom#zoom_translateExtent)
 
 #### Event Handlers
 - `onElementClick(event: MouseEvent, element: Node | Edge)`: called when user clicks node or edge

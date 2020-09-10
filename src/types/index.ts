@@ -272,3 +272,5 @@ export type FlowTransform = {
   y: number;
   zoom: number;
 };
+
+export type TranslateExtent = [[number, number], [number, number]];
