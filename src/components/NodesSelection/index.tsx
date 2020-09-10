@@ -3,29 +3,12 @@
  * made a selectio  with on or several nodes
  */
 
-import React, { useState, MouseEvent } from 'react';
-import ReactDraggable from 'react-draggable';
+import React, { MouseEvent } from 'react';
+import ReactDraggable, { DraggableData } from 'react-draggable';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import { isNode } from '../../utils/graph';
-import { Node, XYPosition } from '../../types';
-
-type StartPositions = { [key: string]: XYPosition };
-
-function getStartPositions(nodes: Node[]): StartPositions {
-  const startPositions: StartPositions = {};
-
-  return nodes.reduce((res, node) => {
-    const startPosition = {
-      x: node.__rf.position.x || node.position.x,
-      y: node.__rf.position.y || node.position.y,
-    };
-
-    res[node.id] = startPosition;
-
-    return res;
-  }, startPositions);
-}
+import { Node } from '../../types';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -34,9 +17,6 @@ export interface NodesSelectionProps {
 }
 
 export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: NodesSelectionProps) => {
-  const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
-  const [startPositions, setStartPositions] = useState<StartPositions>({});
-
   const [tX, tY, tScale] = useStoreState((state) => state.transform);
   const selectedNodesBbox = useStoreState((state) => state.selectedNodesBbox);
   const selectedElements = useStoreState((state) => state.selectedElements);
@@ -44,7 +24,7 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
   const snapGrid = useStoreState((state) => state.snapGrid);
   const nodes = useStoreState((state) => state.nodes);
 
-  const updateNodePos = useStoreActions((actions) => actions.updateNodePos);
+  const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
 
   const grid = (snapToGrid ? snapGrid : [1, 1])! as [number, number];
 
@@ -53,36 +33,18 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
   }
 
   const onStart = (event: MouseEvent) => {
-    const scaledClient: XYPosition = {
-      x: event.clientX / tScale,
-      y: event.clientY / tScale,
-    };
-    const offsetX: number = scaledClient.x - selectedNodesBbox.x - tX;
-    const offsetY: number = scaledClient.y - selectedNodesBbox.y - tY;
     const selectedNodes = selectedElements
       ? selectedElements
           .filter(isNode)
           .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
       : [];
 
-    const nextStartPositions = getStartPositions(selectedNodes);
-
     if (onSelectionDragStart) {
       onSelectionDragStart(event, selectedNodes);
     }
-
-    if (nextStartPositions) {
-      setOffset({ x: offsetX, y: offsetY });
-      setStartPositions(nextStartPositions);
-    }
   };
 
-  const onDrag = (event: MouseEvent) => {
-    const scaledClient: XYPosition = {
-      x: event.clientX / tScale,
-      y: event.clientY / tScale,
-    };
-
+  const onDrag = (event: MouseEvent, data: DraggableData) => {
     if (selectedElements) {
       const selectedNodes = selectedElements ? selectedElements.filter(isNode) : [];
 
@@ -95,12 +57,13 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
       }
 
       selectedNodes.forEach((node) => {
-        const pos: XYPosition = {
-          x: startPositions[node.id].x + scaledClient.x - selectedNodesBbox.x - offset.x - tX,
-          y: startPositions[node.id].y + scaledClient.y - selectedNodesBbox.y - offset.y - tY,
-        };
-
-        updateNodePos({ id: node.id, pos });
+        updateNodePosDiff({
+          id: node.id,
+          diff: {
+            x: data.deltaX,
+            y: data.deltaY,
+          },
+        });
       });
     }
   };
@@ -126,7 +89,7 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
         scale={tScale}
         grid={grid}
         onStart={(event) => onStart(event as MouseEvent)}
-        onDrag={(event) => onDrag(event as MouseEvent)}
+        onDrag={(event, data) => onDrag(event as MouseEvent, data)}
         onStop={(event) => onStop(event as MouseEvent)}
       >
         <div

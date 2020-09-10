@@ -25,6 +25,7 @@ import {
   HandleType,
   SetConnectionId,
   NodePosUpdate,
+  NodeDiffUpdate,
   FitViewParams,
   TranslateExtent,
 } from '../types';
@@ -101,6 +102,7 @@ export interface StoreModel {
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
+  updateNodePosDiff: Action<StoreModel, NodeDiffUpdate>;
 
   setSelection: Action<StoreModel, boolean>;
 
@@ -250,6 +252,20 @@ export const storeModel: StoreModel = {
         n.__rf = {
           ...n.__rf,
           position,
+        };
+      }
+    });
+  }),
+
+  updateNodePosDiff: action((state, { id, diff }) => {
+    state.elements.forEach((n) => {
+      if (n.id === id && isNode(n)) {
+        n.__rf = {
+          ...n.__rf,
+          position: {
+            x: n.__rf.position.x + diff.x,
+            y: n.__rf.position.y + diff.y,
+          },
         };
       }
     });
