@@ -581,6 +581,12 @@ Returns all direct child nodes of the passed node.
 
 `getOutgoers = (node: Node, elements: Elements): Node[]`
 
+### getIncomers
+
+Returns all direct incoming nodes of the passed node.
+
+`getOutgoers = (node: Node, elements: Elements): Node[]`
+
 ### getConnectedEdges
 
 Returns all edges that are connected to the passed nodes.

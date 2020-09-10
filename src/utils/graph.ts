@@ -1,6 +1,7 @@
+import { Store } from 'easy-peasy';
+
 import store, { StoreModel } from '../store';
 import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box, Connection } from '../types';
-import { Store } from 'easy-peasy';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -15,6 +16,15 @@ export const getOutgoers = (node: Node, elements: Elements): Node[] => {
 
   const outgoerIds = elements.filter((e) => isEdge(e) && e.source === node.id).map((e) => (e as Edge).target);
   return elements.filter((e) => outgoerIds.includes(e.id)) as Node[];
+};
+
+export const getIncomers = (node: Node, elements: Elements): Node[] => {
+  if (!isNode(node)) {
+    return [];
+  }
+
+  const incomersIds = elements.filter((e) => isEdge(e) && e.target === node.id).map((e) => (e as Edge).source);
+  return elements.filter((e) => incomersIds.includes(e.id)) as Node[];
 };
 
 export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {

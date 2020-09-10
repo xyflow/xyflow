@@ -1,4 +1,4 @@
-import { isNode, isEdge, getOutgoers, removeElements, addEdge } from '../../../src/utils/graph.ts';
+import { isNode, isEdge, getOutgoers, getIncomers, removeElements, addEdge } from '../../../src/utils/graph.ts';
 
 const nodes = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -10,6 +10,7 @@ const nodes = [
 const edges = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
+  { id: 'e2-3', source: '2', target: '3' },
 ];
 
 const elements = [...nodes, ...edges];
@@ -29,8 +30,16 @@ describe('Graph Utils Testing', () => {
     const outgoers = getOutgoers(nodes[0], elements);
     expect(outgoers.length).to.be.equal(2);
 
-    const noOutgoers = getOutgoers(nodes[1], elements);
+    const noOutgoers = getOutgoers(nodes[2], elements);
     expect(noOutgoers.length).to.be.equal(0);
+  });
+
+  it('tests getIncomers function', () => {
+    const incomers = getIncomers(nodes[2], elements);
+    expect(incomers.length).to.be.equal(2);
+
+    const noIncomers = getIncomers(nodes[0], elements);
+    expect(noIncomers.length).to.be.equal(0);
   });
 
   describe('tests addEdge function', () => {
