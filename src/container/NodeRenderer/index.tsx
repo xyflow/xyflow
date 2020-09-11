@@ -15,6 +15,8 @@ interface NodeRendererProps {
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onlyRenderVisibleNodes?: boolean;
+  snapToGrid?: boolean;
+  snapGrid?: [number, number];
 }
 
 function renderNode(
@@ -47,6 +49,7 @@ function renderNode(
       data={node.data}
       xPos={node.__rf.position.x}
       yPos={node.__rf.position.y}
+      isDragging={node.__rf.isDragging}
       onClick={props.onElementClick}
       onMouseEnter={props.onNodeMouseEnter}
       onMouseMove={props.onNodeMouseMove}
@@ -66,6 +69,8 @@ function renderNode(
       selectNodesOnDrag={props.selectNodesOnDrag}
       isHidden={node.isHidden}
       isInitialized={isInitialized}
+      snapGrid={props.snapGrid}
+      snapToGrid={props.snapToGrid}
     />
   );
 }

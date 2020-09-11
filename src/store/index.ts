@@ -227,11 +227,9 @@ export const storeModel: StoreModel = {
 
     state.elements.forEach((n) => {
       if (n.id === id && isNode(n)) {
-        n.__rf = {
-          ...n.__rf,
-          ...dimensions,
-          handleBounds,
-        };
+        n.__rf.width = dimensions.width;
+        n.__rf.height = dimensions.height;
+        n.__rf.handleBounds = handleBounds;
       }
     });
   }),
@@ -249,24 +247,21 @@ export const storeModel: StoreModel = {
 
     state.elements.forEach((n) => {
       if (n.id === id && isNode(n)) {
-        n.__rf = {
-          ...n.__rf,
-          position,
-        };
+        n.__rf.position = position;
       }
     });
   }),
 
-  updateNodePosDiff: action((state, { id, diff }) => {
+  updateNodePosDiff: action((state, { id, diff = null, isDragging = true }) => {
     state.elements.forEach((n) => {
       if (n.id === id && isNode(n)) {
-        n.__rf = {
-          ...n.__rf,
-          position: {
+        if (diff) {
+          n.__rf.position = {
             x: n.__rf.position.x + diff.x,
             y: n.__rf.position.y + diff.y,
-          },
-        };
+          };
+        }
+        n.__rf.isDragging = isDragging;
       }
     });
   }),
@@ -316,7 +311,7 @@ export const storeModel: StoreModel = {
 
     if (!selectedNodes) {
       state.selectionActive = false;
-      state.userSelectionRect = { ...state.userSelectionRect, draw: false };
+      state.userSelectionRect.draw = false;
       state.nodesSelectionActive = false;
       state.selectedElements = null;
 
@@ -328,7 +323,7 @@ export const storeModel: StoreModel = {
     state.nodesSelectionActive = true;
     state.selectedNodesBbox = selectedNodesBbox;
 
-    state.userSelectionRect = { ...state.userSelectionRect, draw: false };
+    state.userSelectionRect.draw = false;
     state.selectionActive = false;
   }),
 
@@ -454,7 +449,9 @@ export const storeModel: StoreModel = {
     // we need to sync the d3 zoom transform with the fitted transform
     d3Selection.property('__zoom', fittedTransform);
 
-    state.transform = [fittedTransform.x, fittedTransform.y, fittedTransform.k];
+    state.transform[0] = fittedTransform.x;
+    state.transform[1] = fittedTransform.y;
+    state.transform[2] = fittedTransform.k;
   }),
 
   zoomTo: action((state, zoomLevel) => {

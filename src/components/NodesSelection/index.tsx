@@ -73,6 +73,13 @@ export default ({
 
   const onStop = useCallback(
     (event: MouseEvent) => {
+      selectedNodes?.forEach((node) => {
+        updateNodePosDiff({
+          id: node.id,
+          isDragging: false,
+        });
+      });
+
       onSelectionDragStop?.(event, selectedNodes);
     },
     [selectedNodes, onSelectionDragStop]
