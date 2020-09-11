@@ -11,7 +11,7 @@ const useElementUpdater = (propElements: Elements): void => {
 
   useEffect(() => {
     const nextElements: Elements = propElements.map((propElement) => {
-      const existingElement = stateElements.find((el) => el.id === propElement.id);
+      const existingElement = stateElements.find((el) => el.id === propElement.id?.toString());
 
       if (existingElement) {
         const data = !isEqual(existingElement.data, propElement.data)
@@ -41,7 +41,7 @@ const useElementUpdater = (propElements: Elements): void => {
         if (typeof propElement.isHidden !== 'undefined') {
           elementProps.isHidden = propElement.isHidden;
         }
-        
+
         if (typeof propElement.type !== 'undefined') {
           elementProps.type = propElement.type;
         }

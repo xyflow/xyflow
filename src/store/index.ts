@@ -25,6 +25,7 @@ import {
   HandleType,
   SetConnectionId,
   NodePosUpdate,
+  NodeDiffUpdate,
   FitViewParams,
   TranslateExtent,
 } from '../types';
@@ -101,6 +102,7 @@ export interface StoreModel {
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
+  updateNodePosDiff: Action<StoreModel, NodeDiffUpdate>;
 
   setSelection: Action<StoreModel, boolean>;
 
@@ -255,6 +257,20 @@ export const storeModel: StoreModel = {
     });
   }),
 
+  updateNodePosDiff: action((state, { id, diff }) => {
+    state.elements.forEach((n) => {
+      if (n.id === id && isNode(n)) {
+        n.__rf = {
+          ...n.__rf,
+          position: {
+            x: n.__rf.position.x + diff.x,
+            y: n.__rf.position.y + diff.y,
+          },
+        };
+      }
+    });
+  }),
+
   setUserSelection: action((state, mousePos) => {
     state.userSelectionRect = {
       width: 0,
@@ -296,9 +312,9 @@ export const storeModel: StoreModel = {
   }),
 
   unsetUserSelection: action((state) => {
-    const selectedNodes = getNodesInside(state.nodes, state.userSelectionRect, state.transform);
+    const selectedNodes = state.selectedElements?.filter(isNode);
 
-    if (!selectedNodes.length) {
+    if (!selectedNodes) {
       state.selectionActive = false;
       state.userSelectionRect = { ...state.userSelectionRect, draw: false };
       state.nodesSelectionActive = false;

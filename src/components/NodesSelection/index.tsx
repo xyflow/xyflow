@@ -3,141 +3,123 @@
  * made a selectio  with on or several nodes
  */
 
-import React, { useState, MouseEvent } from 'react';
-import ReactDraggable from 'react-draggable';
+import React, { useMemo, useCallback, MouseEvent } from 'react';
+import ReactDraggable, { DraggableData } from 'react-draggable';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import { isNode } from '../../utils/graph';
-import { Node, XYPosition } from '../../types';
-
-type StartPositions = { [key: string]: XYPosition };
-
-function getStartPositions(nodes: Node[]): StartPositions {
-  const startPositions: StartPositions = {};
-
-  return nodes.reduce((res, node) => {
-    const startPosition = {
-      x: node.__rf.position.x || node.position.x,
-      y: node.__rf.position.y || node.position.y,
-    };
-
-    res[node.id] = startPosition;
-
-    return res;
-  }, startPositions);
-}
+import { Node } from '../../types';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
 }
 
-export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: NodesSelectionProps) => {
-  const [offset, setOffset] = useState<XYPosition>({ x: 0, y: 0 });
-  const [startPositions, setStartPositions] = useState<StartPositions>({});
-
+export default ({
+  onSelectionDragStart,
+  onSelectionDrag,
+  onSelectionDragStop,
+  onSelectionContextMenu,
+}: NodesSelectionProps) => {
   const [tX, tY, tScale] = useStoreState((state) => state.transform);
   const selectedNodesBbox = useStoreState((state) => state.selectedNodesBbox);
+  const selectionActive = useStoreState((state) => state.selectionActive);
   const selectedElements = useStoreState((state) => state.selectedElements);
   const snapToGrid = useStoreState((state) => state.snapToGrid);
   const snapGrid = useStoreState((state) => state.snapGrid);
   const nodes = useStoreState((state) => state.nodes);
 
-  const updateNodePos = useStoreActions((actions) => actions.updateNodePos);
+  const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
 
   const grid = (snapToGrid ? snapGrid : [1, 1])! as [number, number];
 
-  if (!selectedElements) {
-    return null;
-  }
+  const selectedNodes = useMemo(
+    () =>
+      selectedElements
+        ? selectedElements
+            .filter(isNode)
+            .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
+        : [],
+    [selectedElements]
+  );
 
-  const onStart = (event: MouseEvent) => {
-    const scaledClient: XYPosition = {
-      x: event.clientX / tScale,
-      y: event.clientY / tScale,
-    };
-    const offsetX: number = scaledClient.x - selectedNodesBbox.x - tX;
-    const offsetY: number = scaledClient.y - selectedNodesBbox.y - tY;
-    const selectedNodes = selectedElements
-      ? selectedElements
-          .filter(isNode)
-          .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
-      : [];
+  const onStart = useCallback(
+    (event: MouseEvent) => {
+      onSelectionDragStart?.(event, selectedNodes);
+    },
+    [onSelectionDragStart, selectedNodes]
+  );
 
-    const nextStartPositions = getStartPositions(selectedNodes);
-
-    if (onSelectionDragStart) {
-      onSelectionDragStart(event, selectedNodes);
-    }
-
-    if (nextStartPositions) {
-      setOffset({ x: offsetX, y: offsetY });
-      setStartPositions(nextStartPositions);
-    }
-  };
-
-  const onDrag = (event: MouseEvent) => {
-    const scaledClient: XYPosition = {
-      x: event.clientX / tScale,
-      y: event.clientY / tScale,
-    };
-
-    if (selectedElements) {
-      const selectedNodes = selectedElements ? selectedElements.filter(isNode) : [];
-
+  const onDrag = useCallback(
+    (event: MouseEvent, data: DraggableData) => {
       if (onSelectionDrag) {
-        const selectionNodes = selectedNodes.map(
-          (selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node
-        );
-
-        onSelectionDrag(event, selectionNodes);
+        onSelectionDrag(event, selectedNodes);
       }
 
-      selectedNodes.forEach((node) => {
-        const pos: XYPosition = {
-          x: startPositions[node.id].x + scaledClient.x - selectedNodesBbox.x - offset.x - tX,
-          y: startPositions[node.id].y + scaledClient.y - selectedNodesBbox.y - offset.y - tY,
-        };
-
-        updateNodePos({ id: node.id, pos });
+      selectedNodes?.forEach((node) => {
+        updateNodePosDiff({
+          id: node.id,
+          diff: {
+            x: data.deltaX,
+            y: data.deltaY,
+          },
+        });
       });
-    }
-  };
+    },
+    [onSelectionDrag, selectedNodes, updateNodePosDiff]
+  );
 
-  const onStop = (event: MouseEvent) => {
-    if (selectedElements && onSelectionDragStop) {
+  const onStop = useCallback(
+    (event: MouseEvent) => {
+      onSelectionDragStop?.(event, selectedNodes);
+    },
+    [selectedNodes, onSelectionDragStop]
+  );
+
+  const onContextMenu = useCallback(
+    (event: MouseEvent) => {
       const selectedNodes = selectedElements
         ? selectedElements.filter(isNode).map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)!)
         : [];
 
-      onSelectionDragStop(event, selectedNodes);
-    }
-  };
+      onSelectionContextMenu?.(event, selectedNodes);
+    },
+    [onSelectionContextMenu]
+  );
+
+  const style = useMemo(
+    () => ({
+      transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
+    }),
+    [tX, tY, tScale]
+  );
+
+  const innerStyle = useMemo(
+    () => ({
+      width: selectedNodesBbox.width,
+      height: selectedNodesBbox.height,
+      top: selectedNodesBbox.y,
+      left: selectedNodesBbox.x,
+    }),
+    [selectedNodesBbox]
+  );
+
+  if (!selectedElements || selectionActive) {
+    return null;
+  }
 
   return (
-    <div
-      className="react-flow__nodesselection"
-      style={{
-        transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
-      }}
-    >
+    <div className="react-flow__nodesselection" style={style}>
       <ReactDraggable
         scale={tScale}
         grid={grid}
         onStart={(event) => onStart(event as MouseEvent)}
-        onDrag={(event) => onDrag(event as MouseEvent)}
+        onDrag={(event, data) => onDrag(event as MouseEvent, data)}
         onStop={(event) => onStop(event as MouseEvent)}
       >
-        <div
-          className="react-flow__nodesselection-rect"
-          style={{
-            width: selectedNodesBbox.width,
-            height: selectedNodesBbox.height,
-            top: selectedNodesBbox.y,
-            left: selectedNodesBbox.x,
-          }}
-        />
+        <div className="react-flow__nodesselection-rect" onContextMenu={onContextMenu} style={innerStyle} />
       </ReactDraggable>
     </div>
   );

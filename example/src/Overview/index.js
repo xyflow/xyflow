@@ -7,6 +7,10 @@ const onNodeDragStop = (event, node) => console.log('drag stop', node);
 const onSelectionDrag = (event, nodes) => console.log('selection drag', nodes);
 const onSelectionDragStart = (event, nodes) => console.log('selection drag start', nodes);
 const onSelectionDragStop = (event, nodes) => console.log('selection drag stop', nodes);
+const onSelectionContextMenu = (event, nodes) => {
+  event.preventDefault();
+  console.log('selection context menu', nodes);
+};
 const onElementClick = (event, element) => console.log(`${isNode(element) ? 'node' : 'edge'} click:`, element);
 const onSelectionChange = (elements) => console.log('selection change', elements);
 const onLoad = (reactFlowInstance) => {
@@ -126,6 +130,7 @@ const OverviewFlow = () => {
       onSelectionDragStart={onSelectionDragStart}
       onSelectionDrag={onSelectionDrag}
       onSelectionDragStop={onSelectionDragStop}
+      onSelectionContextMenu={onSelectionContextMenu}
       onSelectionChange={onSelectionChange}
       onMoveEnd={onMoveEnd}
       onLoad={onLoad}
