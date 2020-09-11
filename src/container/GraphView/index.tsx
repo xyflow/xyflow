@@ -279,6 +279,8 @@ const GraphView = ({
         onNodeDragStart={onNodeDragStart}
         onlyRenderVisibleNodes={onlyRenderVisibleNodes}
         selectNodesOnDrag={selectNodesOnDrag}
+        snapToGrid={snapToGrid}
+        snapGrid={snapGrid}
       />
       <EdgeRenderer
         edgeTypes={edgeTypes}

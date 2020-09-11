@@ -172,6 +172,8 @@ export interface WrapNodeProps {
   targetPosition?: Position;
   isHidden?: boolean;
   isInitialized?: boolean;
+  snapToGrid?: boolean;
+  snapGrid?: [number, number];
 }
 
 export type FitViewParams = {

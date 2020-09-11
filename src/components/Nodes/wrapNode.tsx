@@ -11,15 +11,11 @@ import React, {
 } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cc from 'classcat';
-
 import { ResizeObserver } from 'resize-observer';
-import { useStoreActions } from '../../store/hooks';
 
+import { useStoreActions } from '../../store/hooks';
 import { Provider } from '../../contexts/NodeIdContext';
 import { Node, NodeComponentProps, WrapNodeProps } from '../../types';
-
-const getMouseEvent = (event: MouseEvent | TouchEvent) =>
-  typeof TouchEvent !== 'undefined' && event instanceof TouchEvent ? event.touches[0] : (event as MouseEvent);
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
   const NodeWrapper = ({
@@ -47,18 +43,20 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     targetPosition,
     isHidden,
     isInitialized,
+    snapToGrid,
+    snapGrid,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
-    const updateNodePos = useStoreActions((actions) => actions.updateNodePos);
+    const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
     const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
 
     const nodeElement = useRef<HTMLDivElement>(null);
-    const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setDragging] = useState(false);
 
-    const position = useMemo(() => ({ x: xPos, y: yPos }), [xPos, yPos]);
-    const node = useMemo(() => ({ id, type, position, data }), [id, type, position, data]);
+    const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
+    const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
+
     const nodeStyle: CSSProperties = useMemo(
       () => ({
         zIndex: selected ? 10 : 3,
@@ -109,9 +107,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             setSelectedElements({ id: node.id, type: node.type } as Node);
           }
 
-          if (onClick) {
-            onClick(event, node);
-          }
+          onClick?.(event, node);
         }
       },
       [isSelectable, isDraggable, onClick, node]
@@ -119,66 +115,47 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const onDragStart = useCallback(
       (event) => {
-        const startEvent = getMouseEvent(event);
-
-        const scaledClientX = startEvent.clientX / transform[2];
-        const scaledClientY = startEvent.clientY / transform[2];
-
-        const offsetX = scaledClientX - position.x - transform[0];
-        const offsetY = scaledClientY - position.y - transform[1];
-
-        setOffset({ x: offsetX, y: offsetY });
-
-        if (onNodeDragStart) {
-          onNodeDragStart(event as MouseEvent, node);
-        }
+        onNodeDragStart?.(event as MouseEvent, node);
 
         if (selectNodesOnDrag && isSelectable) {
           unsetNodesSelection();
           setSelectedElements({ id: node.id, type: node.type } as Node);
         }
       },
-      [node, transform, position, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [node, transform, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
-      (event) => {
-        const dragEvent = getMouseEvent(event);
-
-        const scaledClientX = dragEvent.clientX / transform[2];
-        const scaledClientY = dragEvent.clientY / transform[2];
-
+      (_, data) => {
         setDragging(true);
-        updateNodePos({
+        updateNodePosDiff({
           id,
-          pos: {
-            x: scaledClientX - transform[0] - offset.x,
-            y: scaledClientY - transform[1] - offset.y,
+          diff: {
+            x: data.deltaX,
+            y: data.deltaY,
           },
         });
       },
-      [id, transform, offset]
+      [id, transform]
     );
 
     const onDragStop = useCallback(
       (event) => {
+        // onDragStop also gets called when user just clicks on a node.
+        // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!isDragging) {
           if (isSelectable && !selectNodesOnDrag) {
             setSelectedElements({ id: node.id, type: node.type } as Node);
           }
 
-          if (onClick) {
-            onClick(event as MouseEvent, node);
-          }
+          onClick?.(event as MouseEvent, node);
 
           return;
         }
 
         setDragging(false);
 
-        if (onNodeDragStop) {
-          onNodeDragStop(event as MouseEvent, node);
-        }
+        onNodeDragStop?.(event as MouseEvent, node);
       },
       [node, isDragging, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop]
     );
@@ -187,11 +164,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       if (nodeElement.current) {
         updateNodeDimensions({ id, nodeElement: nodeElement.current });
 
-        const resizeObserver = new ResizeObserver((entries) => {
-          for (let _ of entries) {
-            if (nodeElement.current) {
-              updateNodeDimensions({ id, nodeElement: nodeElement.current });
-            }
+        const resizeObserver = new ResizeObserver(() => {
+          if (nodeElement.current) {
+            updateNodeDimensions({ id, nodeElement: nodeElement.current });
           }
         });
 
@@ -230,6 +205,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         disabled={!isDraggable}
         cancel=".nodrag"
         nodeRef={nodeElement}
+        grid={grid}
       >
         <div
           className={nodeClasses}
