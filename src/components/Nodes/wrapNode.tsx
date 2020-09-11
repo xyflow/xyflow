@@ -1,14 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  memo,
-  ComponentType,
-  CSSProperties,
-  useMemo,
-  MouseEvent,
-  useCallback,
-} from 'react';
+import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cc from 'classcat';
 import { ResizeObserver } from 'resize-observer';
@@ -45,6 +35,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     isInitialized,
     snapToGrid,
     snapGrid,
+    isDragging,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
@@ -52,7 +43,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
 
     const nodeElement = useRef<HTMLDivElement>(null);
-    const [isDragging, setDragging] = useState(false);
 
     const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
     const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
@@ -122,12 +112,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           setSelectedElements({ id: node.id, type: node.type } as Node);
         }
       },
-      [node, transform, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [node, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
       (_, data) => {
-        setDragging(true);
         updateNodePosDiff({
           id,
           diff: {
@@ -136,7 +125,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           },
         });
       },
-      [id, transform]
+      [id]
     );
 
     const onDragStop = useCallback(
@@ -153,7 +142,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           return;
         }
 
-        setDragging(false);
         updateNodePosDiff({
           id,
           isDragging: false,
@@ -161,7 +149,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
-      [node, isDragging, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop]
+      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop]
     );
 
     useEffect(() => {
