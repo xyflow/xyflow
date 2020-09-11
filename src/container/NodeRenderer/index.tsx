@@ -49,6 +49,7 @@ function renderNode(
       data={node.data}
       xPos={node.__rf.position.x}
       yPos={node.__rf.position.y}
+      isDragging={node.__rf.isDragging}
       onClick={props.onElementClick}
       onMouseEnter={props.onNodeMouseEnter}
       onMouseMove={props.onNodeMouseMove}

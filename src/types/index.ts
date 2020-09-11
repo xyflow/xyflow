@@ -174,6 +174,7 @@ export interface WrapNodeProps {
   isInitialized?: boolean;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
+  isDragging?: boolean;
 }
 
 export type FitViewParams = {
@@ -271,7 +272,8 @@ export type NodePosUpdate = {
 
 export type NodeDiffUpdate = {
   id: ElementId;
-  diff: XYPosition;
+  diff?: XYPosition;
+  isDragging?: boolean;
 };
 
 export type FlowTransform = {

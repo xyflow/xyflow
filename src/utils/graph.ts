@@ -126,6 +126,7 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
       width: null,
       height: null,
       handleBounds: {},
+      isDragging: false,
     },
   } as Node;
 };
@@ -182,13 +183,13 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  return nodes.filter(({ __rf: { position, width, height } }) => {
+  return nodes.filter(({ __rf: { position, width, height, isDragging } }) => {
     const nBox = rectToBox({ ...position, width, height });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = xOverlap * yOverlap;
 
-    if (width === null || height === null) {
+    if (width === null || height === null || isDragging) {
       // at the beginnning all nodes have width & height === 0
       return true;
     }

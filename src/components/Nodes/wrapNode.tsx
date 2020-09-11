@@ -154,6 +154,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         setDragging(false);
+        updateNodePosDiff({
+          id,
+          isDragging: false,
+        });
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
