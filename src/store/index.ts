@@ -312,9 +312,9 @@ export const storeModel: StoreModel = {
   }),
 
   unsetUserSelection: action((state) => {
-    const selectedNodes = getNodesInside(state.nodes, state.userSelectionRect, state.transform);
+    const selectedNodes = state.selectedElements?.filter(isNode);
 
-    if (!selectedNodes.length) {
+    if (!selectedNodes) {
       state.selectionActive = false;
       state.userSelectionRect = { ...state.userSelectionRect, draw: false };
       state.nodesSelectionActive = false;

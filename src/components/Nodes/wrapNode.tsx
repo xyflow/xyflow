@@ -51,6 +51,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
     const updateNodePos = useStoreActions((actions) => actions.updateNodePos);
+    const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
 
     const nodeElement = useRef<HTMLDivElement>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -104,6 +105,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       (event: MouseEvent) => {
         if (!isDraggable) {
           if (isSelectable) {
+            unsetNodesSelection();
             setSelectedElements({ id: node.id, type: node.type } as Node);
           }
 
@@ -132,6 +134,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         if (selectNodesOnDrag && isSelectable) {
+          unsetNodesSelection();
           setSelectedElements({ id: node.id, type: node.type } as Node);
         }
       },
