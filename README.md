@@ -101,6 +101,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onSelectionDragStart(evt: MouseEvent, nodes: Node[])`: called when user starts to drag a selection
 - `onSelectionDrag(evt: MouseEvent, nodes: Node[])`: called when user drags a selection
 - `onSelectionDragStop(evt: MouseEvent, nodes: Node[])`: called when user stops to drag a selection
+- `onSelectionContextMenu(event: MouseEvent, nodes: Node[])`: called when user does a right-click on a selection
 - `onPaneClick(event: MouseEvent)`: called when user clicks directly on the canvas
 - `onPaneContextMenu(event: MouseEvent)`: called when user does a right-click on the canvas
 - `onPaneScroll(event: WheelEvent)`: called when user scrolls pane (only works when `zoomOnScroll` is set to `false)

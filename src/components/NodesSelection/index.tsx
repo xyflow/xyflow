@@ -3,7 +3,7 @@
  * made a selectio  with on or several nodes
  */
 
-import React, { MouseEvent } from 'react';
+import React, { useMemo, useCallback, MouseEvent } from 'react';
 import ReactDraggable, { DraggableData } from 'react-draggable';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -14,9 +14,15 @@ export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
 }
 
-export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: NodesSelectionProps) => {
+export default ({
+  onSelectionDragStart,
+  onSelectionDrag,
+  onSelectionDragStop,
+  onSelectionContextMenu,
+}: NodesSelectionProps) => {
   const [tX, tY, tScale] = useStoreState((state) => state.transform);
   const selectedNodesBbox = useStoreState((state) => state.selectedNodesBbox);
   const selectedElements = useStoreState((state) => state.selectedElements);
@@ -32,31 +38,30 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
     return null;
   }
 
-  const onStart = (event: MouseEvent) => {
-    const selectedNodes = selectedElements
-      ? selectedElements
-          .filter(isNode)
-          .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
-      : [];
+  const selectedNodes = useMemo(
+    () =>
+      selectedElements
+        ? selectedElements
+            .filter(isNode)
+            .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
+        : [],
+    [selectedElements]
+  );
 
-    if (onSelectionDragStart) {
-      onSelectionDragStart(event, selectedNodes);
-    }
-  };
+  const onStart = useCallback(
+    (event: MouseEvent) => {
+      onSelectionDragStart?.(event, selectedNodes);
+    },
+    [onSelectionDragStart, selectedNodes]
+  );
 
-  const onDrag = (event: MouseEvent, data: DraggableData) => {
-    if (selectedElements) {
-      const selectedNodes = selectedElements ? selectedElements.filter(isNode) : [];
-
+  const onDrag = useCallback(
+    (event: MouseEvent, data: DraggableData) => {
       if (onSelectionDrag) {
-        const selectionNodes = selectedNodes.map(
-          (selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node
-        );
-
-        onSelectionDrag(event, selectionNodes);
+        onSelectionDrag(event, selectedNodes);
       }
 
-      selectedNodes.forEach((node) => {
+      selectedNodes?.forEach((node) => {
         updateNodePosDiff({
           id: node.id,
           diff: {
@@ -65,26 +70,47 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
           },
         });
       });
-    }
-  };
+    },
+    [onSelectionDrag, selectedNodes, updateNodePosDiff]
+  );
 
-  const onStop = (event: MouseEvent) => {
-    if (selectedElements && onSelectionDragStop) {
+  const onStop = useCallback(
+    (event: MouseEvent) => {
+      onSelectionDragStop?.(event, selectedNodes);
+    },
+    [selectedNodes, onSelectionDragStop]
+  );
+
+  const onContextMenu = useCallback(
+    (event: MouseEvent) => {
       const selectedNodes = selectedElements
         ? selectedElements.filter(isNode).map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)!)
         : [];
 
-      onSelectionDragStop(event, selectedNodes);
-    }
-  };
+      onSelectionContextMenu?.(event, selectedNodes);
+    },
+    [onSelectionContextMenu]
+  );
+
+  const style = useMemo(
+    () => ({
+      transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
+    }),
+    [tX, tY, tScale]
+  );
+
+  const innerStyle = useMemo(
+    () => ({
+      width: selectedNodesBbox.width,
+      height: selectedNodesBbox.height,
+      top: selectedNodesBbox.y,
+      left: selectedNodesBbox.x,
+    }),
+    [selectedNodesBbox]
+  );
 
   return (
-    <div
-      className="react-flow__nodesselection"
-      style={{
-        transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
-      }}
-    >
+    <div className="react-flow__nodesselection" style={style}>
       <ReactDraggable
         scale={tScale}
         grid={grid}
@@ -92,15 +118,7 @@ export default ({ onSelectionDragStart, onSelectionDrag, onSelectionDragStop }: 
         onDrag={(event, data) => onDrag(event as MouseEvent, data)}
         onStop={(event) => onStop(event as MouseEvent)}
       >
-        <div
-          className="react-flow__nodesselection-rect"
-          style={{
-            width: selectedNodesBbox.width,
-            height: selectedNodesBbox.height,
-            top: selectedNodesBbox.y,
-            left: selectedNodesBbox.x,
-          }}
-        />
+        <div className="react-flow__nodesselection-rect" onContextMenu={onContextMenu} style={innerStyle} />
       </ReactDraggable>
     </div>
   );
