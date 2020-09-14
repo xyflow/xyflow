@@ -3,7 +3,7 @@
  * made a selectio  with on or several nodes
  */
 
-import React, { useMemo, useCallback, MouseEvent } from 'react';
+import React, { useMemo, useCallback, useRef, MouseEvent } from 'react';
 import ReactDraggable, { DraggableData } from 'react-draggable';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -33,7 +33,9 @@ export default ({
 
   const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
 
-  const grid = (snapToGrid ? snapGrid : [1, 1])! as [number, number];
+  const nodeRef = useRef(null);
+
+  const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
 
   const selectedNodes = useMemo(
     () =>
@@ -43,6 +45,23 @@ export default ({
             .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
         : [],
     [selectedElements]
+  );
+
+  const style = useMemo(
+    () => ({
+      transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
+    }),
+    [tX, tY, tScale]
+  );
+
+  const innerStyle = useMemo(
+    () => ({
+      width: selectedNodesBbox.width,
+      height: selectedNodesBbox.height,
+      top: selectedNodesBbox.y,
+      left: selectedNodesBbox.x,
+    }),
+    [selectedNodesBbox]
   );
 
   const onStart = useCallback(
@@ -96,23 +115,6 @@ export default ({
     [onSelectionContextMenu]
   );
 
-  const style = useMemo(
-    () => ({
-      transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
-    }),
-    [tX, tY, tScale]
-  );
-
-  const innerStyle = useMemo(
-    () => ({
-      width: selectedNodesBbox.width,
-      height: selectedNodesBbox.height,
-      top: selectedNodesBbox.y,
-      left: selectedNodesBbox.x,
-    }),
-    [selectedNodesBbox]
-  );
-
   if (!selectedElements || selectionActive) {
     return null;
   }
@@ -125,8 +127,14 @@ export default ({
         onStart={(event) => onStart(event as MouseEvent)}
         onDrag={(event, data) => onDrag(event as MouseEvent, data)}
         onStop={(event) => onStop(event as MouseEvent)}
+        nodeRef={nodeRef}
       >
-        <div className="react-flow__nodesselection-rect" onContextMenu={onContextMenu} style={innerStyle} />
+        <div
+          ref={nodeRef}
+          className="react-flow__nodesselection-rect"
+          onContextMenu={onContextMenu}
+          style={innerStyle}
+        />
       </ReactDraggable>
     </div>
   );
