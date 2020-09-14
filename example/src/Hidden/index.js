@@ -27,8 +27,6 @@ const HiddenFlow = () => {
     );
   }, [isHidden]);
 
-  console.log(elements);
-
   return (
     <ReactFlow elements={elements} onConnect={onConnect}>
       <MiniMap />

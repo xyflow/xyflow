@@ -153,7 +153,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     useEffect(() => {
-      if (nodeElement.current) {
+      if (nodeElement.current && !isHidden) {
         updateNodeDimensions({ id, nodeElement: nodeElement.current });
 
         const resizeObserver = new ResizeObserver(() => {
@@ -172,7 +172,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       }
 
       return;
-    }, [id]);
+    }, [id, isHidden]);
 
     if (isHidden) {
       return null;
