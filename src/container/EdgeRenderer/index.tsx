@@ -175,8 +175,8 @@ function renderEdge(
       labelBgBorderRadius={edge.labelBgBorderRadius}
       style={edge.style}
       arrowHeadType={edge.arrowHeadType}
-      source={sourceId}
-      target={targetId}
+      source={edge.source}
+      target={edge.target}
       sourceHandleId={sourceHandleId}
       targetHandleId={targetHandleId}
       sourceX={sourceX}
