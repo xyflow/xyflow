@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import EdgeText from './EdgeText';
 
 import { getMarkerEnd, getCenter } from './utils';
-import { EdgeBezierProps, Position } from '../../types';
+import { EdgeProps, Position } from '../../types';
 
 interface GetBezierPathParams {
   sourceX: number;
@@ -55,7 +55,7 @@ export default memo(
     style,
     arrowHeadType,
     markerEndId,
-  }: EdgeBezierProps) => {
+  }: EdgeProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
     const path = getBezierPath({
       sourceX,

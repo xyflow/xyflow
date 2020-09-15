@@ -1,75 +1,71 @@
-import React, { memo, ComponentType, CSSProperties } from 'react';
+import React, { memo, useMemo, ComponentType, CSSProperties, useCallback } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions } from '../../store/hooks';
-import { ElementId, Edge, EdgeCompProps } from '../../types';
+import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
 
-interface EdgeWrapperProps {
-  id: ElementId;
-  source: ElementId;
-  target: ElementId;
-  type: any;
-  label?: string;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
-  className?: string;
-  onClick?: (event: React.MouseEvent, edge: Edge) => void;
-  animated?: boolean;
-  selected: boolean;
-  elementsSelectable: boolean;
-  isHidden?: boolean;
-  data?: any;
-}
-
-export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
+export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
     id,
-    source,
-    target,
+    className,
     type,
-    animated,
-    selected,
+    data,
     onClick,
-    elementsSelectable,
+    selected,
+    animated,
     label,
     labelStyle,
     labelShowBg,
     labelBgStyle,
     labelBgPadding,
     labelBgBorderRadius,
-    className,
+    style,
+    arrowHeadType,
+    source,
+    target,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    elementsSelectable,
+    markerEndId,
     isHidden,
-    data,
-    ...rest
-  }: EdgeWrapperProps) => {
+  }: WrapEdgeProps) => {
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+
+    const edgeClasses = cc(['react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated }]);
+
+    const edgeGroupStyle: CSSProperties = useMemo(
+      () => ({
+        pointerEvents: elementsSelectable || onClick ? 'all' : 'none',
+      }),
+      [elementsSelectable, onClick]
+    );
+
+    const onEdgeClick = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        if (elementsSelectable) {
+          setSelectedElements({ id, source, target });
+        }
+
+        if (onClick) {
+          const edgeElement: Edge = { id, source, target, type };
+
+          if (typeof data !== 'undefined') {
+            edgeElement.data = data;
+          }
+
+          onClick(event, edgeElement);
+        }
+      },
+      [elementsSelectable, id, source, target, type, data, onClick]
+    );
 
     if (isHidden) {
       return null;
     }
-
-    const edgeClasses = cc(['react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated }]);
-    const edgeGroupStyle: CSSProperties = {
-      pointerEvents: elementsSelectable || onClick ? 'all' : 'none',
-    };
-    const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-      if (elementsSelectable) {
-        setSelectedElements({ id, source, target });
-      }
-
-      if (onClick) {
-        const edgeElement: Edge = { id, source, target, type };
-
-        if (typeof data !== 'undefined') {
-          edgeElement.data = data;
-        }
-
-        onClick(event, edgeElement);
-      }
-    };
 
     return (
       <g className={edgeClasses} onClick={onEdgeClick} style={edgeGroupStyle}>
@@ -77,10 +73,8 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
           id={id}
           source={source}
           target={target}
-          type={type}
-          animated={animated}
           selected={selected}
-          onClick={onClick}
+          animated={animated}
           label={label}
           labelStyle={labelStyle}
           labelShowBg={labelShowBg}
@@ -88,7 +82,15 @@ export default (EdgeComponent: ComponentType<EdgeCompProps>) => {
           labelBgPadding={labelBgPadding}
           labelBgBorderRadius={labelBgBorderRadius}
           data={data}
-          {...rest}
+          style={style}
+          arrowHeadType={arrowHeadType}
+          sourceX={sourceX}
+          sourceY={sourceY}
+          targetX={targetX}
+          targetY={targetY}
+          sourcePosition={sourcePosition}
+          targetPosition={targetPosition}
+          markerEndId={markerEndId}
         />
       </g>
     );

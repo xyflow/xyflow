@@ -89,12 +89,48 @@ export interface SelectionRect extends Rect {
   draw: boolean;
 }
 
-export interface EdgeProps {
+export interface WrapEdgeProps {
   id: ElementId;
+  className?: string;
+  type: string;
+  data?: any;
+  onClick?: (event: React.MouseEvent, edge: Edge) => void;
+  selected: boolean;
+  animated?: boolean;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
+  labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
+  style?: CSSProperties;
+  arrowHeadType?: ArrowHeadType;
+  source: ElementId;
+  target: ElementId;
+  sourceHandleId?: string;
   sourceX: number;
   sourceY: number;
   targetX: number;
   targetY: number;
+  sourcePosition: Position;
+  targetPosition: Position;
+  elementsSelectable?: boolean;
+  markerEndId?: string;
+  isHidden?: boolean;
+}
+
+export interface EdgeProps {
+  id: ElementId;
+  source: ElementId;
+  target: ElementId;
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+  selected?: boolean;
+  animated?: boolean;
+  sourcePosition: Position;
+  targetPosition: Position;
   label?: string;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
@@ -106,14 +142,19 @@ export interface EdgeProps {
   markerEndId?: string;
   data?: any;
 }
-
-export interface EdgeBezierProps extends EdgeProps {
-  sourcePosition: Position;
-  targetPosition: Position;
+export interface EdgeSmoothStepProps extends EdgeProps {
+  borderRadius?: number;
 }
 
-export interface EdgeSmoothStepProps extends EdgeBezierProps {
-  borderRadius?: number;
+export interface EdgeTextProps {
+  x: number;
+  y: number;
+  label?: string;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
+  labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
 }
 
 export interface NodeProps {
@@ -235,34 +276,6 @@ export interface HandleProps {
   id?: string;
   style?: CSSProperties;
   className?: string;
-}
-
-export interface EdgeCompProps {
-  id: ElementId;
-  source: ElementId;
-  target: ElementId;
-  type: any;
-  label?: string;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
-  onClick?: (event: ReactMouseEvent, edge: Edge) => void;
-  animated?: boolean;
-  selected?: boolean;
-  data?: any;
-}
-
-export interface EdgeTextProps {
-  x: number;
-  y: number;
-  label?: string;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
 }
 
 export type NodePosUpdate = {
