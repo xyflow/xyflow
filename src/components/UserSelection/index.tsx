@@ -2,7 +2,7 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import { XYPosition } from '../../types';
@@ -52,12 +52,6 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   const updateUserSelection = useStoreActions((actions) => actions.updateUserSelection);
   const unsetUserSelection = useStoreActions((actions) => actions.unsetUserSelection);
   const renderUserSelectionPane = selectionActive || selectionKeyPressed;
-
-  useEffect(() => {
-    if (!selectionKeyPressed) {
-      unsetUserSelection();
-    }
-  }, [selectionKeyPressed]);
 
   if (!elementsSelectable || !renderUserSelectionPane) {
     return null;
