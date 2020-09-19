@@ -85,7 +85,7 @@ const navLinks = routes.filter((route) => route.label);
 
 const SourceDisplay = withRouter(({ location }) => {
   const route = routes.find((route) => route.path === location.pathname);
-  const sourceLink = `https://github.com/wbkd/react-flow/tree/master/example/src/${route.label}/index.js`;
+  const sourceLink = `https://github.com/wbkd/react-flow/tree/main/example/src/${route.label}/index.js`;
 
   return (
     <a className="sourcedisplay" href={sourceLink}>
