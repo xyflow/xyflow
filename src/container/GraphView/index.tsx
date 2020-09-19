@@ -20,6 +20,7 @@ import {
   Edge,
   Connection,
   ConnectionLineType,
+  ConnectionLineComponent,
   FlowTransform,
   OnConnectStartFunc,
   OnConnectStopFunc,
@@ -57,6 +58,7 @@ export interface GraphViewProps {
   edgeTypes: EdgeTypesType;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
+  connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode: number;
   snapToGrid: boolean;
   snapGrid: [number, number];
@@ -97,6 +99,7 @@ const GraphView = ({
   onSelectionContextMenu,
   connectionLineType,
   connectionLineStyle,
+  connectionLineComponent,
   selectionKeyCode,
   onElementsRemove,
   deleteKeyCode,
@@ -289,6 +292,7 @@ const GraphView = ({
         connectionLineStyle={connectionLineStyle}
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
+        connectionLineComponent={connectionLineComponent}
       />
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (

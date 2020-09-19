@@ -14,6 +14,7 @@ import Horizontal from './Horizontal';
 import Provider from './Provider';
 import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
+import CustomConnectionLine from './CustomConnectionLine';
 
 import './index.css';
 
@@ -73,6 +74,10 @@ const routes = [
   {
     path: '/edge-types',
     component: EdgeTypes,
+  },
+  {
+    path: '/custom-connectionline',
+    component: CustomConnectionLine,
   },
 ];
 

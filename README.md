@@ -123,6 +123,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 #### Connection Line Options
 - `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`
 - `connectionLineStyle`: connection style as svg attributes
+- `connectionLineComponent`: [custom connection line component](/example/src/CustomConnectionLine/index.js)
 
 #### Keys
 - `deleteKeyCode`: default: `8` (delete)
@@ -653,6 +654,7 @@ You can find all examples in the [example](example) folder or check out the live
 - [provider](https://reactflow.dev/provider)
 - [hidden](https://reactflow.dev/hidden)
 - [edge types](https://reactflow.dev/edge-types)
+- [custom connectionline](https://reactflow.dev/custom-connectionline)
 
 # Development
 

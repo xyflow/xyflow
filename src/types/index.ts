@@ -248,6 +248,19 @@ export enum ConnectionLineType {
   SmoothStep = 'smoothstep',
 }
 
+export type ConnectionLineComponentProps = {
+  sourceX: number;
+  sourceY: number;
+  sourcePosition?: Position;
+  targetX: number;
+  targetY: number;
+  targetPosition?: Position;
+  connectionLineStyle?: CSSProperties;
+  connectionLineType: ConnectionLineType;
+};
+
+export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponentProps>;
+
 export type OnConnectFunc = (connection: Connection) => void;
 export type OnConnectStartParams = {
   nodeId: ElementId | null;

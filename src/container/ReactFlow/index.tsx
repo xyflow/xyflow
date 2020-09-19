@@ -26,6 +26,7 @@ import {
   Edge,
   Connection,
   ConnectionLineType,
+  ConnectionLineComponent,
   FlowTransform,
   OnConnectStartFunc,
   OnConnectStopFunc,
@@ -65,6 +66,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   edgeTypes: EdgeTypesType;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
+  connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode: number;
   selectionKeyCode: number;
   snapToGrid: boolean;
@@ -116,6 +118,7 @@ const ReactFlow = ({
   onSelectionContextMenu,
   connectionLineType,
   connectionLineStyle,
+  connectionLineComponent,
   deleteKeyCode,
   selectionKeyCode,
   snapToGrid,
@@ -162,6 +165,7 @@ const ReactFlow = ({
           edgeTypes={edgeTypesParsed}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
+          connectionLineComponent={connectionLineComponent}
           selectionKeyCode={selectionKeyCode}
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
