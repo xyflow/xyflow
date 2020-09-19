@@ -78,6 +78,11 @@
 
 .react-flow__connection {
   pointer-events: none;
+
+  .animated {
+    stroke-dasharray: 5;
+    animation: dashdraw 0.5s linear infinite;
+  }
 }
 
 .react-flow__connection-path {
@@ -117,6 +122,7 @@
 .react-flow__node-default.selectable,
 .react-flow__node-input.selectable,
 .react-flow__node-output.selectable {
+
   &.selected,
   &.selected:hover {
     box-shadow: 0 0 0 1px #333;

@@ -1,9 +1,17 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
-import cc from 'classcat';
 
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
-import { ElementId, Node, Transform, HandleElement, Position, ConnectionLineType, HandleType } from '../../types';
+import {
+  ElementId,
+  Node,
+  Transform,
+  HandleElement,
+  Position,
+  ConnectionLineType,
+  ConnectionLineComponent,
+  HandleType,
+} from '../../types';
 
 interface ConnectionLineProps {
   connectionNodeId: ElementId;
@@ -15,7 +23,7 @@ interface ConnectionLineProps {
   transform: Transform;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
-  className?: string;
+  CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
 export default ({
@@ -26,9 +34,9 @@ export default ({
   connectionPositionY,
   connectionLineType = ConnectionLineType.Bezier,
   nodes = [],
-  className,
   transform,
   isConnectable,
+  CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const hasHandleId = connectionNodeId.includes('__');
@@ -45,8 +53,6 @@ export default ({
     return null;
   }
 
-  const connectionLineClasses: string = cc(['react-flow__connection', className]);
-
   const sourceHandle = handleId
     ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
     : sourceNode.__rf.handleBounds[connectionHandleType][0];
@@ -55,13 +61,30 @@ export default ({
   const sourceX = sourceNode.__rf.position.x + sourceHandleX;
   const sourceY = sourceNode.__rf.position.y + sourceHandleY;
 
-  const targetX = (connectionPositionX - transform[0]) * (1 / transform[2]);
-  const targetY = (connectionPositionY - transform[1]) * (1 / transform[2]);
-
-  let dAttr: string = '';
+  const targetX = (connectionPositionX - transform[0]) / transform[2];
+  const targetY = (connectionPositionY - transform[1]) / transform[2];
 
   const isRightOrLeft = sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right;
   const targetPosition = isRightOrLeft ? Position.Left : Position.Top;
+
+  if (CustomConnectionLineComponent) {
+    return (
+      <g className="react-flow__connection">
+        <CustomConnectionLineComponent
+          sourceX={sourceX}
+          sourceY={sourceY}
+          sourcePosition={sourceHandle?.position}
+          targetX={targetX}
+          targetY={targetY}
+          targetPosition={targetPosition}
+          connectionLineType={connectionLineType}
+          connectionLineStyle={connectionLineStyle}
+        />
+      </g>
+    );
+  }
+
+  let dAttr: string = '';
 
   if (connectionLineType === ConnectionLineType.Bezier) {
     dAttr = getBezierPath({
@@ -96,7 +119,7 @@ export default ({
   }
 
   return (
-    <g className={connectionLineClasses}>
+    <g className="react-flow__connection">
       <path d={dAttr} className="react-flow__connection-path" style={connectionLineStyle} />
     </g>
   );
