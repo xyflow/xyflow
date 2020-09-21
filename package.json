@@ -25,7 +25,7 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@welldone-software/why-did-you-render": "^4.3.1",
+    "@welldone-software/why-did-you-render": "^4.3.2",
     "classcat": "^4.1.0",
     "d3-selection": "^2.0.0",
     "d3-zoom": "^2.0.0",
