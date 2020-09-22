@@ -458,6 +458,10 @@ const FlowWithControls = () => (
 - `showZoom`: boolean - default: true
 - `showFitView`: boolean - default: true
 - `showInteractive`: boolean - default: true
+- `onZoomIn`: function that gets triggered when the zoom in button is pressed
+- `onZoomOut`: function that gets triggered when the zoom out button is pressed
+- `onFitView`: function that gets triggered when the fit-to-view button is pressed
+- `onInteractiveChange`: function that gets triggered when the lock button is pressed - passes the new value
 - `style`: css properties
 - `className`: additional class name
 
