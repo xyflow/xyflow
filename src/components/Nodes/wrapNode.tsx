@@ -129,24 +129,24 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     const onDragStop = useCallback(
-      (event) => {
+      (event, data) => {
         // onDragStop also gets called when user just clicks on a node.
-        // Because of that we set dragging to true inside the onDrag handler and handle the click here
+        // Because of that we set dragging to false inside the onDrag handler and handle the click here
         if (!isDragging) {
           if (isSelectable && !selectNodesOnDrag) {
             setSelectedElements({ id: node.id, type: node.type } as Node);
           }
-
           onClick?.(event as MouseEvent, node);
-
           return;
         }
-
         updateNodePosDiff({
           id,
+          diff: {
+            x: data.deltaX,
+            y: data.deltaY,
+          },
           isDragging: false,
         });
-
         onNodeDragStop?.(event as MouseEvent, node);
       },
       [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop]
