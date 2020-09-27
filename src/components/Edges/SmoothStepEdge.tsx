@@ -41,6 +41,8 @@ interface GetSmoothStepPathParams {
   targetY: number;
   targetPosition?: Position;
   borderRadius?: number;
+  centerX?: number;
+  centerY?: number;
 }
 
 export function getSmoothStepPath({
@@ -51,8 +53,10 @@ export function getSmoothStepPath({
   targetY,
   targetPosition = Position.Top,
   borderRadius = 5,
+  centerX,
+  centerY,
 }: GetSmoothStepPathParams): string {
-  const [centerX, centerY, offsetX, offsetY] = getCenter({ sourceX, sourceY, targetX, targetY });
+  const [_centerX, _centerY, offsetX, offsetY] = getCenter({ sourceX, sourceY, targetX, targetY });
   const cornerWidth = Math.min(borderRadius, Math.abs(targetX - sourceX));
   const cornerHeight = Math.min(borderRadius, Math.abs(targetY - sourceY));
   const cornerSize = Math.min(cornerWidth, cornerHeight, offsetX, offsetY);
@@ -62,33 +66,28 @@ export function getSmoothStepPath({
   let firstCornerPath = null;
   let secondCornerPath = null;
 
+  const cX = centerX ? centerX : _centerX;
+  const cY = centerY ? centerY : _centerY;
+
   // default case: source and target positions are top or bottom
   if (sourceX <= targetX) {
     firstCornerPath =
-      sourceY <= targetY ? bottomLeftCorner(sourceX, centerY, cornerSize) : topLeftCorner(sourceX, centerY, cornerSize);
+      sourceY <= targetY ? bottomLeftCorner(sourceX, cY, cornerSize) : topLeftCorner(sourceX, cY, cornerSize);
     secondCornerPath =
-      sourceY <= targetY
-        ? rightTopCorner(targetX, centerY, cornerSize)
-        : rightBottomCorner(targetX, centerY, cornerSize);
+      sourceY <= targetY ? rightTopCorner(targetX, cY, cornerSize) : rightBottomCorner(targetX, cY, cornerSize);
   } else {
     firstCornerPath =
-      sourceY < targetY
-        ? bottomRightCorner(sourceX, centerY, cornerSize)
-        : topRightCorner(sourceX, centerY, cornerSize);
+      sourceY < targetY ? bottomRightCorner(sourceX, cY, cornerSize) : topRightCorner(sourceX, cY, cornerSize);
     secondCornerPath =
-      sourceY < targetY ? leftTopCorner(targetX, centerY, cornerSize) : leftBottomCorner(targetX, centerY, cornerSize);
+      sourceY < targetY ? leftTopCorner(targetX, cY, cornerSize) : leftBottomCorner(targetX, cY, cornerSize);
   }
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
     if (sourceX <= targetX) {
       firstCornerPath =
-        sourceY <= targetY
-          ? rightTopCorner(centerX, sourceY, cornerSize)
-          : rightBottomCorner(centerX, sourceY, cornerSize);
+        sourceY <= targetY ? rightTopCorner(cX, sourceY, cornerSize) : rightBottomCorner(cX, sourceY, cornerSize);
       secondCornerPath =
-        sourceY <= targetY
-          ? bottomLeftCorner(centerX, targetY, cornerSize)
-          : topLeftCorner(centerX, targetY, cornerSize);
+        sourceY <= targetY ? bottomLeftCorner(cX, targetY, cornerSize) : topLeftCorner(cX, targetY, cornerSize);
     }
   } else if (leftAndRight.includes(sourcePosition) && !leftAndRight.includes(targetPosition)) {
     if (sourceX <= targetX) {
