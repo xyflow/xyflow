@@ -350,6 +350,8 @@ Returns the path of a bezier edge.
   targetX,
   targetY,
   targetPosition = Position.Top,
+  centerX, // optional
+  centerY // optional
 }: GetBezierPathParams): string`
 
 ### getSmoothStepPath
@@ -364,11 +366,13 @@ Returns the path of a smooth step edge. You can set `borderRadius` = `0` to get 
   targetY,
   targetPosition = Position.Top,
   borderRadius = 5,
+  centerX, // optional
+  centerY // optional
 }: GetSmoothStepPathParams): string`
 
 ### getEdgeCenter
 
-Returns the center poostion `[centerX, centerY]` of the edge.
+Returns the center poostion `[centerX, centerY, offsetX, offsetY]` of the edge.
 
 `getEdgeCenter({ sourceX, sourceY, targetX, targetY }: GetCenterParams): [number, number, number, number]`
 
