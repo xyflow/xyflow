@@ -149,7 +149,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
-      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop]
+      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging]
     );
 
     useEffect(() => {
