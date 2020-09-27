@@ -12,6 +12,8 @@ interface GetBezierPathParams {
   targetX: number;
   targetY: number;
   targetPosition?: Position;
+  centerX?: number;
+  centerY?: number;
 }
 
 export function getBezierPath({
@@ -21,14 +23,19 @@ export function getBezierPath({
   targetX,
   targetY,
   targetPosition = Position.Top,
+  centerX,
+  centerY,
 }: GetBezierPathParams): string {
-  const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
+  const [_centerX, _centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
   const leftAndRight = [Position.Left, Position.Right];
 
-  let path = `M${sourceX},${sourceY} C${sourceX},${centerY} ${targetX},${centerY} ${targetX},${targetY}`;
+  const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
+  const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
+
+  let path = `M${sourceX},${sourceY} C${sourceX},${cY} ${targetX},${cY} ${targetX},${targetY}`;
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    path = `M${sourceX},${sourceY} C${centerX},${sourceY} ${centerX},${targetY} ${targetX},${targetY}`;
+    path = `M${sourceX},${sourceY} C${cX},${sourceY} ${cX},${targetY} ${targetX},${targetY}`;
   } else if (leftAndRight.includes(targetPosition)) {
     path = `M${sourceX},${sourceY} C${sourceX},${targetY} ${sourceX},${targetY} ${targetX},${targetY}`;
   } else if (leftAndRight.includes(sourcePosition)) {
