@@ -29,8 +29,8 @@ export function getBezierPath({
   const [_centerX, _centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
   const leftAndRight = [Position.Left, Position.Right];
 
-  const cX = centerX ? centerX : _centerX;
-  const cY = centerY ? centerY : _centerY;
+  const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
+  const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
 
   let path = `M${sourceX},${sourceY} C${sourceX},${cY} ${targetX},${cY} ${targetX},${targetY}`;
 
