@@ -142,8 +142,8 @@ const ReactFlow = ({
   onPaneScroll,
   onPaneContextMenu,
 }: ReactFlowProps) => {
-  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
-  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
+  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypes]);
+  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypes]);
   const reactFlowClasses = cc(['react-flow', className]);
 
   return (

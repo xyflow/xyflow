@@ -1,7 +1,7 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
 
 import { useStoreState, useStoreActions } from '../store/hooks';
-import { FlowTransform } from '../types';
+import { FlowTransform, TranslateExtent } from '../types';
 
 interface UseD3ZoomParams {
   zoomPane: MutableRefObject<Element | null>;
@@ -9,6 +9,9 @@ interface UseD3ZoomParams {
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
   paneMoveable: boolean;
+  defaultPosition: [number, number];
+  defaultZoom: number;
+  translateExtent?: TranslateExtent;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
@@ -34,6 +37,9 @@ export default ({
   zoomOnDoubleClick,
   selectionKeyPressed,
   paneMoveable,
+  defaultPosition,
+  defaultZoom,
+  translateExtent,
 }: UseD3ZoomParams): void => {
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
   const d3Zoom = useStoreState((s) => s.d3Zoom);
@@ -43,7 +49,7 @@ export default ({
 
   useEffect(() => {
     if (zoomPane.current) {
-      initD3(zoomPane.current);
+      initD3({ zoomPane: zoomPane.current, defaultPosition, defaultZoom, translateExtent });
     }
   }, []);
 
