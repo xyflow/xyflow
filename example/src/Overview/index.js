@@ -54,7 +54,7 @@ const initialElements = [
       ),
     },
     position: { x: 400, y: 100 },
-    style: { background: '#eee', color: '#222', border: '1px solid #bbb', width: 180 },
+    style: { background: '#D6D5E6', color: '#333', border: '1px solid #222138', width: 180 },
   },
   {
     id: '4',
@@ -139,14 +139,20 @@ const OverviewFlow = () => {
       snapGrid={snapGrid}
     >
       <MiniMap
-        nodeColor={(n) => {
+        nodeStrokeColor={(n) => {
           if (n.style?.background) return n.style.background;
-          if (n.type === 'input') return '#9999ff';
-          if (n.type === 'output') return '#79c9b7';
-          if (n.type === 'default') return '#ff6060';
+          if (n.type === 'input') return '#0041d0';
+          if (n.type === 'output') return '#ff0072';
+          if (n.type === 'default') return '#1a192b';
 
           return '#eee';
         }}
+        nodeColor={(n) => {
+          if (n.style?.background) return n.style.background;
+
+          return '#fff';
+        }}
+        borderRadius={2}
       />
       <Controls />
       <Background color="#aaa" gap={16} />

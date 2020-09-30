@@ -62,12 +62,12 @@
 
 .react-flow__edge-path {
   fill: none;
-  stroke: #bbb;
-  stroke-width: 1.5;
+  stroke: #b1b1b7;
+  stroke-width: 1;
 }
 
 .react-flow__edge-text {
-  font-size: 12px;
+  font-size: 10px;
   pointer-events: none;
   user-select: none;
 }
@@ -87,8 +87,8 @@
 
 .react-flow__connection-path {
   fill: none;
-  stroke: #ddd;
-  stroke-width: 1.5;
+  stroke: #b1b1b7;
+  stroke-width: 1;
 }
 
 .react-flow__nodes {
@@ -117,32 +117,58 @@
   font-size: 12px;
   color: #222;
   text-align: center;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .react-flow__node-default.selectable,
 .react-flow__node-input.selectable,
 .react-flow__node-output.selectable {
-
-  &.selected,
-  &.selected:hover {
-    box-shadow: 0 0 0 1px #333;
-  }
-
   &:hover {
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
   }
 }
 
 .react-flow__node-input {
-  background: #9999ff;
+  background: #fff;
+  border-color: #0041d0;
+
+  &.selected,
+  &.selected:hover {
+    box-shadow: 0 0 0 0.5px #0041d0;
+  }
+
+  .react-flow__handle {
+    background: #0041d0;
+  }
 }
 
 .react-flow__node-default {
-  background: #ff6060;
+  background: #fff;
+  border-color: #1a192b;
+
+  &.selected,
+  &.selected:hover {
+    box-shadow: 0 0 0 0.5px #1a192b;
+  }
+
+  .react-flow__handle {
+    background: #1a192b;
+  }
 }
 
 .react-flow__node-output {
-  background: #79c9b7;
+  background: #fff;
+  border-color: #ff0072;
+
+  &.selected,
+  &.selected:hover {
+    box-shadow: 0 0 0 0.5px #ff0072;
+  }
+
+  .react-flow__handle {
+    background: #ff0072;
+  }
 }
 
 .react-flow__nodesselection {
@@ -165,10 +191,12 @@
 
 .react-flow__handle {
   position: absolute;
-  width: 10px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.4);
+  width: 6px;
+  height: 6px;
+  background: #555;
+  border: 1px solid white;
   pointer-events: none;
+  border-radius: 100%;
 
   &.connectable {
     pointer-events: all;
@@ -179,24 +207,24 @@
 .react-flow__handle-bottom {
   top: auto;
   left: 50%;
-  bottom: 0;
+  bottom: -4px;
   transform: translate(-50%, 0);
 }
 
 .react-flow__handle-top {
   left: 50%;
-  top: 0;
+  top: -4px;
   transform: translate(-50%, 0);
 }
 
 .react-flow__handle-left {
   top: 50%;
-  left: 0;
+  left: -4px;
   transform: translate(0, -50%);
 }
 
 .react-flow__handle-right {
-  right: 0;
+  right: -4px;
   top: 50%;
   transform: translate(0, -50%);
 }
