@@ -8,7 +8,7 @@ const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInsta
 const onNodeDragStop = (event, node) => console.log('drag stop', node);
 const onElementClick = (event, element) => console.log('click', element);
 
-const initBgColor = '#f0e742';
+const initBgColor = '#1A192B';
 
 const connectionLineStyle = { stroke: '#fff' };
 const snapGrid = [16, 16];
@@ -78,12 +78,17 @@ const CustomNodeFlow = () => {
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
+      defaultZoom={1.5}
     >
       <MiniMap
-        nodeColor={(n) => {
-          if (n.type === 'input') return 'blue';
+        nodeStrokeColor={(n) => {
+          if (n.type === 'input') return '#0041d0';
           if (n.type === 'selectorNode') return bgColor;
-          if (n.type === 'output') return 'green';
+          if (n.type === 'output') return '#ff0072';
+        }}
+        nodeColor={(n) => {
+          if (n.type === 'selectorNode') return bgColor;
+          return '#fff';
         }}
       />
       <Controls />

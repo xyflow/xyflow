@@ -15,13 +15,13 @@ interface BackgroundProps extends HTMLAttributes<SVGElement> {
 }
 
 const defaultColors = {
-  [BackgroundVariant.Dots]: '#999',
+  [BackgroundVariant.Dots]: '#81818a',
   [BackgroundVariant.Lines]: '#eee',
 };
 
 const Background = ({
   variant = BackgroundVariant.Dots,
-  gap = 24,
+  gap = 15,
   size = 0.5,
   color,
   style,

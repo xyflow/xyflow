@@ -51,6 +51,12 @@ type SetSnapGrid = {
   snapGrid: [number, number];
 };
 
+type InitD3 = {
+  zoomPane: Element;
+  defaultPosition: [number, number];
+  defaultZoom: number;
+  translateExtent?: TranslateExtent;
+};
 export interface StoreModel {
   width: number;
   height: number;
@@ -116,7 +122,7 @@ export interface StoreModel {
 
   updateSize: Action<StoreModel, Dimensions>;
 
-  initD3: Action<StoreModel, Element>;
+  initD3: Action<StoreModel, InitD3>;
 
   setMinMaxZoom: Action<StoreModel, SetMinMaxZoom>;
 
@@ -369,11 +375,21 @@ export const storeModel: StoreModel = {
     state.height = size.height || 500;
   }),
 
-  initD3: action((state, zoomPaneNode) => {
-    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(state.translateExtent);
+  initD3: action((state, { zoomPane, defaultPosition, defaultZoom, translateExtent }) => {
+    const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
+    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
+    const selection = select(zoomPane).call(d3ZoomInstance);
 
-    const selection = select(zoomPaneNode).call(d3ZoomInstance);
+    const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
+    const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
+    const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
 
+    const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
+    selection.property('__zoom', updatedTransform);
+
+    state.transform[0] = clampedX;
+    state.transform[1] = clampedY;
+    state.transform[2] = clampedZoom;
     state.d3Zoom = d3ZoomInstance;
     state.d3Selection = selection;
     state.d3Initialised = true;

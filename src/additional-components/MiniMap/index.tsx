@@ -12,6 +12,7 @@ type StringFunc = (node: Node) => string;
 
 interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
   nodeColor?: string | StringFunc;
+  nodeStrokeColor?: string | StringFunc;
   nodeClassName?: string | StringFunc;
   nodeBorderRadius?: number;
   maskColor?: string;
@@ -21,12 +22,13 @@ const defaultWidth = 200;
 const defaultHeight = 150;
 
 const MiniMap = ({
-  style = { backgroundColor: '#f8f8f8' },
+  style = { backgroundColor: '#fff' },
   className,
-  nodeColor = '#ddd',
+  nodeStrokeColor = '#555',
+  nodeColor = '#fff',
   nodeClassName = '',
   nodeBorderRadius = 5,
-  maskColor = 'rgba(10, 10, 10, .25)',
+  maskColor = '#F0F2F3',
 }: MiniMapProps) => {
   const containerWidth = useStoreState((s) => s.width);
   const containerHeight = useStoreState((s) => s.height);
@@ -37,6 +39,9 @@ const MiniMap = ({
   const elementWidth = (style.width || defaultWidth)! as number;
   const elementHeight = (style.height || defaultHeight)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
+  const nodeStrokeColorFunc = (nodeStrokeColor instanceof Function
+    ? nodeStrokeColor
+    : () => nodeStrokeColor) as StringFunc;
   const nodeClassNameFunc = (nodeClassName instanceof Function ? nodeClassName : () => nodeClassName) as StringFunc;
   const hasNodes = nodes && nodes.length;
   const bb = getRectOfNodes(nodes);
@@ -79,6 +84,7 @@ const MiniMap = ({
             className={nodeClassNameFunc(node)}
             color={nodeColorFunc(node)}
             borderRadius={nodeBorderRadius}
+            strokeColor={nodeStrokeColorFunc(node)}
           />
         ))}
       <path

@@ -76,7 +76,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `defaultZoom`: default: `1`
 - `defaultPosition`: default: `[0, 0]`
 - `snapToGrid`: default: `false`
-- `snapGrid`: [x, y] array - default: `[16, 16]`
+- `snapGrid`: [x, y] array - default: `[15, 15]`
 - `onlyRenderVisibleNodes`: default: `true`
 - `translateExtent`: [default `[[-∞, -∞], [+∞, +∞]]`](https://github.com/d3/d3-zoom#zoom_translateExtent)
 
@@ -118,7 +118,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 #### Element Customization
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
-- `arrowHeadColor`: default: `#bbb`
+- `arrowHeadColor`: default: `#b1b1b7`
 
 #### Connection Line Options
 - `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`
@@ -405,9 +405,9 @@ const FlowWithBackground = () => (
 ### Prop Types
 
 - `variant`: string - has to be 'dots' or 'lines' - default: `dots`
-- `gap`: number - the gap between the dots or lines - default: `16`
+- `gap`: number - the gap between the dots or lines - default: `15`
 - `size`: number - the radius of the dots or the stroke width of the lines - default: `0.5`
-- `color`: string - the color of the dots or lines - default: `#999` for dots, `#eee` for lines
+- `color`: string - the color of the dots or lines - default: `#81818a` for dots, `#eee` for lines
 - `style`: css properties
 - `className`: additional class name
 
@@ -437,6 +437,7 @@ const FlowWithMiniMap = () => (
 ### Prop Types
 
 - `nodeColor`: string or function - If you pass a color as a string all nodes will get that color. If you pass a function you can return a color depending on the passed node.
+- `nodeStrokeColor`: string or function - If you pass a color as a string all nodes will get that stroke color. If you pass a function you can return a color depending on the passed node.
 - `nodeBorderRadius`: number
 - `nodeClassName`: string or function for adding an additional class to the nodes inside the mini map
 - `maskColor`: string
@@ -543,7 +544,7 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 You could achieve the same effect by passing a style prop to the `ReactFlow` component:
 
 ```javascript
-const style = { background: 'red', width: '100%' height: '300px' };
+const style = { background: 'red', height: '300px' };
 
 const FlowWithRedBg = (
   <ReactFlow

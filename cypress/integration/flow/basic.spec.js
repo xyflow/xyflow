@@ -25,7 +25,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects an edge by click', () => {
-    cy.get('.react-flow__edge:first').click().should('have.class', 'selected');
+    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
   });
 
   it('deselects edge', () => {
@@ -71,7 +71,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects an edge', () => {
-    cy.get('.react-flow__edge:first').click().should('have.class', 'selected');
+    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
   });
 
   it('drags a node', () => {

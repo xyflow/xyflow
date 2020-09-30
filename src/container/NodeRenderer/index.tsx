@@ -83,6 +83,7 @@ const NodeRenderer = ({ onlyRenderVisibleNodes = true, ...props }: NodeRendererP
   const nodesDraggable = useStoreState((s) => s.nodesDraggable);
   const nodesConnectable = useStoreState((s) => s.nodesConnectable);
   const elementsSelectable = useStoreState((s) => s.elementsSelectable);
+
   const transformStyle = {
     transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
   };

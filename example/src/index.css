@@ -138,16 +138,20 @@ nav a.active:before {
 }
 
 .react-flow__node.dark-node {
-  background: #333;
+  background: #0041d0;
   color: #f8f8f8;
 }
 
 .react-flow__node-selectorNode {
   font-size: 12px;
-  background: #eee;
-  border: 1px solid #555;
+  background: #f0f2f3;
+  border: 1px solid 555;
   border-radius: 5px;
   text-align: center;
+}
+
+.react-flow__node-selectorNode .react-flow__handle {
+  border-color: #f0f2f3;
 }
 
 @media screen and (min-width: 768px) {

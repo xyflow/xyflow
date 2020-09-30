@@ -188,6 +188,9 @@ const GraphView = ({
     zoomOnScroll,
     zoomOnDoubleClick,
     paneMoveable,
+    defaultPosition,
+    defaultZoom,
+    translateExtent,
   });
 
   useEffect(() => {
@@ -203,16 +206,6 @@ const GraphView = ({
           setTransform: (transform: FlowTransform) =>
             setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
         });
-      }
-
-      const initialTransform = {
-        x: defaultPosition[0],
-        y: defaultPosition[1],
-        k: defaultZoom,
-      };
-
-      if (initialTransform.x !== 0 || initialTransform.y !== 0 || initialTransform.k !== 1) {
-        setInitTransform(initialTransform);
       }
 
       isInitialised.current = true;

@@ -142,8 +142,8 @@ const ReactFlow = ({
   onPaneScroll,
   onPaneContextMenu,
 }: ReactFlowProps) => {
-  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
-  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
+  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypes]);
+  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypes]);
   const reactFlowClasses = cc(['react-flow', className]);
 
   return (
@@ -224,7 +224,7 @@ ReactFlow.defaultProps = {
   deleteKeyCode: 8,
   selectionKeyCode: 16,
   snapToGrid: false,
-  snapGrid: [16, 16],
+  snapGrid: [15, 15],
   onlyRenderVisibleNodes: true,
   nodesDraggable: true,
   nodesConnectable: true,
@@ -235,7 +235,7 @@ ReactFlow.defaultProps = {
   maxZoom: 2,
   defaultZoom: 1,
   defaultPosition: [0, 0],
-  arrowHeadColor: '#bbb',
+  arrowHeadColor: '#b1b1b7',
   zoomOnScroll: true,
   zoomOnDoubleClick: true,
 };
