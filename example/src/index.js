@@ -117,14 +117,19 @@ const Header = () => {
 };
 
 ReactDOM.render(
-  <Router forceRefresh={true}>
-    <Header />
-    <SourceDisplay />
-    <Switch>
-      {routes.map((route) => (
-        <Route exact path={route.path} render={() => <route.component />} key={route.path} />
-      ))}
-    </Switch>
-  </Router>,
+  <Validation />,
   document.getElementById('root')
 );
+
+// ReactDOM.render(
+//   <Router forceRefresh={true}>
+//     <Header />
+//     <SourceDisplay />
+//     <Switch>
+//       {routes.map((route) => (
+//         <Route exact path={route.path} render={() => <route.component />} key={route.path} />
+//       ))}
+//     </Switch>
+//   </Router>,
+//   document.getElementById('root')
+// );

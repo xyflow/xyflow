@@ -20,15 +20,18 @@ const onConnectEnd = (event) => console.log('on connect end', event);
 const CustomInput = () => (
   <>
     <div>Only connectable with B</div>
-    <Handle type="source" position="right" isValidConnection={isValidConnection} />
+    <Handle type="source" position="right" id='a' isValidConnection={isValidConnection} />
+    {/* <Handle type="source" position="right" id='a' /> */}
   </>
 );
 
 const CustomNode = ({ id }) => (
   <>
     <Handle type="target" position="left" isValidConnection={isValidConnection} />
+    {/* <Handle type="target" position="left" /> */}
     <div>{id}</div>
     <Handle type="source" position="right" isValidConnection={isValidConnection} />
+    {/* <Handle type="source" position="right" /> */}
   </>
 );
 
@@ -40,7 +43,7 @@ const nodeTypes = {
 const HorizontalFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params) => {
-    console.log('on connect', params);
+    // console.log('on connect', params);
     setElements((els) => addEdge(params, els));
   };
 
@@ -52,9 +55,9 @@ const HorizontalFlow = () => {
       onLoad={onLoad}
       className="validationflow"
       nodeTypes={nodeTypes}
-      onConnectStart={onConnectStart}
-      onConnectStop={onConnectStop}
-      onConnectEnd={onConnectEnd}
+      // onConnectStart={onConnectStart}
+      // onConnectStop={onConnectStop}
+      // onConnectEnd={onConnectEnd}
     />
   );
 };

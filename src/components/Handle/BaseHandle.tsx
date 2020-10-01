@@ -42,6 +42,7 @@ type Result = {
 
 function onMouseDown(
   event: ReactMouseEvent,
+  handleId: ElementId,
   nodeId: ElementId,
   setConnectionNodeId: SetSourceIdFunc,
   setPosition: (pos: XYPosition) => void,
@@ -84,30 +85,36 @@ function onMouseDown(
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
   function checkElementBelowIsValid(event: MouseEvent) {
     const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+    // console.log(elementBelow)
+    // console.log(handleId)
 
     const result: Result = {
       elementBelow,
       isValid: false,
-      connection: { source: null, target: null },
+      connection: { source: null, target: null, sourceHandle: null, targetHandle: null },
       isHoveringHandle: false,
     };
 
     if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
-      let connection: Connection = { source: null, target: null };
-
-      if (isTarget) {
-        const sourceId = elementBelow.getAttribute('data-nodeid');
-        connection = { source: sourceId, target: nodeId };
-      } else {
-        const targetId = elementBelow.getAttribute('data-nodeid');
-        connection = { source: nodeId, target: targetId };
-      }
-
-      const isValid = isValidConnection(connection);
-
-      result.connection = connection;
-      result.isValid = isValid;
       result.isHoveringHandle = true;
+      if ((isTarget && elementBelow.classList.contains('source')) || (!isTarget && elementBelow.classList.contains('target'))) {
+        let connection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
+
+        if (isTarget) {
+          const sourceId = elementBelow.getAttribute('data-nodeid');
+          const sourcehandleId = elementBelow.getAttribute('data-handleid');
+          connection = { source: sourceId, sourceHandle: sourcehandleId, target: nodeId, targetHandle: handleId };
+        } else {
+          const targetId = elementBelow.getAttribute('data-nodeid');
+          const targetHandleId = elementBelow.getAttribute('data-handleid');
+          connection = { source: nodeId, sourceHandle: handleId, target: targetId , targetHandle: targetHandleId};
+        }
+        
+        const isValid = isValidConnection(connection);
+
+        result.connection = connection;
+        result.isValid = isValid;
+      }
     }
 
     return result;
@@ -187,17 +194,20 @@ const BaseHandle = ({
     },
   ]);
 
-  const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
+  // const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
+  const handleId = id ? `${id}`: ''
 
   return (
     <div
-      data-nodeid={nodeIdWithHandleId}
+      data-handleid={handleId}
+      data-nodeid={nodeId}
       data-handlepos={position}
       className={handleClasses}
       onMouseDown={(event) =>
         onMouseDown(
           event,
-          nodeIdWithHandleId,
+          handleId,
+          nodeId,
           setConnectionNodeId,
           setPosition,
           onConnect,
