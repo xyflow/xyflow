@@ -52,7 +52,7 @@ function onMouseDown(
   onConnectStop?: OnConnectStopFunc,
   onConnectEnd?: OnConnectEndFunc
 ): void {
-  const reactFlowNode = document.querySelector('.react-flow');
+  const reactFlowNode = (event.target as Element).closest('.react-flow');
 
   if (!reactFlowNode) {
     return;
