@@ -58,6 +58,8 @@ export interface Edge {
   type?: string;
   source: ElementId;
   target: ElementId;
+  sourceHandle?: ElementId;
+  targetHandle?: ElementId;
   label?: string;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;

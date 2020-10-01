@@ -85,8 +85,6 @@ function onMouseDown(
   // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
   function checkElementBelowIsValid(event: MouseEvent) {
     const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
-    // console.log(elementBelow)
-    // console.log(handleId)
 
     const result: Result = {
       elementBelow,
@@ -194,9 +192,7 @@ const BaseHandle = ({
     },
   ]);
 
-  // const nodeIdWithHandleId = id ? `${nodeId}__${id}` : nodeId;
   const handleId = id ? `${id}`: ''
-
   return (
     <div
       data-handleid={handleId}

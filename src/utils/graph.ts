@@ -40,7 +40,19 @@ export const removeElements = (elementsToRemove: Elements, elements: Elements): 
   });
 };
 
-const getEdgeId = ({ source, target }: Connection): ElementId => `reactflow__edge-${source}-${target}`;
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId => `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
+
+const existingConnection = (edge: Edge, elements: Elements) => {
+  for (const element of elements) {
+    if (isEdge(element)) {
+      if (element.source === edge.source && element.sourceHandle === edge.sourceHandle && element.target === edge.target && element.targetHandle === edge.targetHandle) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 
 export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elements => {
   if (!edgeParams.source || !edgeParams.target) {
@@ -49,22 +61,27 @@ export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elem
 
   // make sure that there is node with the target and one with the source id
   [edgeParams.source, edgeParams.target].forEach((id) => {
-    const nodeId = id.includes('__') ? id.split('__')[0] : id;
-    if (!elements.find((e) => isNode(e) && e.id === nodeId)) {
-      throw new Error(`Can't create edge. Node with id=${nodeId} does not exist.`);
+    if (!elements.find((e) => isNode(e) && e.id === id)) {
+      throw new Error(`Can't create edge. Node with id=${id} does not exist.`);
     }
   });
+  // need to check if handles exist
+  // 
+  // 
+  // 
 
+  let edge: Edge
   if (isEdge(edgeParams)) {
-    return elements.concat({ ...edgeParams });
+    edge = {...edgeParams}
+  } else {
+    edge = {
+      ...edgeParams,
+      id: getEdgeId(edgeParams),
+    } as Edge;
   }
-
-  const edge = {
-    ...edgeParams,
-    id: getEdgeId(edgeParams),
-  } as Edge;
-
-  return elements.concat(edge);
+  
+  if (existingConnection(edge, elements)) {return elements}
+  return elements.concat(edge)
 };
 
 export const pointToRendererPoint = (
@@ -112,6 +129,8 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
       ...element,
       source: element.source.toString(),
       target: element.target.toString(),
+      sourceHandle: element.sourceHandle ? element.sourceHandle.toString() : '',
+      targetHandle: element.targetHandle ? element.targetHandle.toString() : '',
       id: element.id.toString(),
       type: element.type || 'default',
     };
