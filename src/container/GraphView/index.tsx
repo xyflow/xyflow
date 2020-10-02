@@ -60,23 +60,23 @@ export interface GraphViewProps {
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode: number;
-  snapToGrid: boolean;
-  snapGrid: [number, number];
+  snapToGrid?: boolean;
+  snapGrid?: [number, number];
   onlyRenderVisibleNodes: boolean;
-  nodesDraggable: boolean;
-  nodesConnectable: boolean;
-  elementsSelectable: boolean;
-  selectNodesOnDrag: boolean;
-  minZoom: number;
-  maxZoom: number;
-  defaultZoom: number;
-  defaultPosition: [number, number];
+  nodesDraggable?: boolean;
+  nodesConnectable?: boolean;
+  elementsSelectable?: boolean;
+  selectNodesOnDrag?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
+  defaultZoom?: number;
+  defaultPosition?: [number, number];
   translateExtent?: TranslateExtent;
   arrowHeadColor: string;
   markerEndId?: string;
-  zoomOnScroll: boolean;
-  zoomOnDoubleClick: boolean;
-  paneMoveable: boolean;
+  zoomOnScroll?: boolean;
+  zoomOnDoubleClick?: boolean;
+  paneMoveable?: boolean;
 }
 
 const GraphView = ({
@@ -114,7 +114,7 @@ const GraphView = ({
   nodesDraggable,
   nodesConnectable,
   elementsSelectable,
-  selectNodesOnDrag,
+  selectNodesOnDrag = true,
   minZoom,
   maxZoom,
   defaultZoom,
@@ -140,38 +140,18 @@ const GraphView = ({
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
   const setOnConnectEnd = useStoreActions((actions) => actions.setOnConnectEnd);
   const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
+  const setSnapToGrid = useStoreActions((actions) => actions.setSnapToGrid);
   const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
   const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
   const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
   const setInitTransform = useStoreActions((actions) => actions.setInitTransform);
-  const setMinMaxZoom = useStoreActions((actions) => actions.setMinMaxZoom);
+  const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
+  const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const fitView = useStoreActions((actions) => actions.fitView);
   const zoom = useStoreActions((actions) => actions.zoom);
   const zoomTo = useStoreActions((actions) => actions.zoomTo);
   const currentStore = useStore();
-
-  const onZoomPaneClick = useCallback(
-    (event: React.MouseEvent) => {
-      onPaneClick?.(event);
-      unsetNodesSelection();
-    },
-    [onPaneClick]
-  );
-
-  const onZoomPaneContextMenu = useCallback(
-    (event: React.MouseEvent) => {
-      onPaneContextMenu?.(event);
-    },
-    [onPaneContextMenu]
-  );
-
-  const onZoomPaneScroll = useCallback(
-    (event: WheelEvent) => {
-      onPaneScroll?.(event);
-    },
-    [onPaneScroll]
-  );
 
   useResizeHandler(rendererNode);
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
@@ -212,6 +192,28 @@ const GraphView = ({
     }
   }, [d3Initialised, onLoad]);
 
+  const onZoomPaneClick = useCallback(
+    (event: React.MouseEvent) => {
+      onPaneClick?.(event);
+      unsetNodesSelection();
+    },
+    [onPaneClick]
+  );
+
+  const onZoomPaneContextMenu = useCallback(
+    (event: React.MouseEvent) => {
+      onPaneContextMenu?.(event);
+    },
+    [onPaneContextMenu]
+  );
+
+  const onZoomPaneScroll = useCallback(
+    (event: WheelEvent) => {
+      onPaneScroll?.(event);
+    },
+    [onPaneScroll]
+  );
+
   useEffect(() => {
     if (onConnect) {
       setOnConnect(onConnect);
@@ -237,24 +239,46 @@ const GraphView = ({
   }, [onConnectEnd]);
 
   useEffect(() => {
-    setSnapGrid({ snapToGrid, snapGrid });
-  }, [snapToGrid, snapGrid]);
+    if (typeof snapToGrid !== 'undefined') {
+      setSnapToGrid(snapToGrid);
+    }
+  }, [snapToGrid]);
 
   useEffect(() => {
-    setNodesDraggable(nodesDraggable);
+    if (typeof snapGrid !== 'undefined') {
+      setSnapGrid(snapGrid);
+    }
+  }, [snapGrid]);
+
+  useEffect(() => {
+    if (typeof nodesDraggable !== 'undefined') {
+      setNodesDraggable(nodesDraggable);
+    }
   }, [nodesDraggable]);
 
   useEffect(() => {
-    setNodesConnectable(nodesConnectable);
+    if (typeof nodesConnectable !== 'undefined') {
+      setNodesConnectable(nodesConnectable);
+    }
   }, [nodesConnectable]);
 
   useEffect(() => {
-    setElementsSelectable(elementsSelectable);
+    if (typeof elementsSelectable !== 'undefined') {
+      setElementsSelectable(elementsSelectable);
+    }
   }, [elementsSelectable]);
 
   useEffect(() => {
-    setMinMaxZoom({ minZoom, maxZoom });
-  }, [minZoom, maxZoom]);
+    if (typeof minZoom !== 'undefined') {
+      setMinZoom(minZoom);
+    }
+  }, [minZoom]);
+
+  useEffect(() => {
+    if (typeof maxZoom !== 'undefined') {
+      setMaxZoom(maxZoom);
+    }
+  }, [maxZoom]);
 
   useEffect(() => {
     if (typeof translateExtent !== 'undefined') {

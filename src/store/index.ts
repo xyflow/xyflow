@@ -28,6 +28,7 @@ import {
   NodeDiffUpdate,
   FitViewParams,
   TranslateExtent,
+  SnapGrid,
 } from '../types';
 
 type TransformXYK = {
@@ -39,16 +40,6 @@ type TransformXYK = {
 type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
-};
-
-type SetMinMaxZoom = {
-  minZoom: number;
-  maxZoom: number;
-};
-
-type SetSnapGrid = {
-  snapToGrid: boolean;
-  snapGrid: [number, number];
 };
 
 type InitD3 = {
@@ -85,7 +76,7 @@ export interface StoreModel {
   connectionPosition: XYPosition;
 
   snapToGrid: boolean;
-  snapGrid: [number, number];
+  snapGrid: SnapGrid;
 
   nodesDraggable: boolean;
   nodesConnectable: boolean;
@@ -124,11 +115,13 @@ export interface StoreModel {
 
   initD3: Action<StoreModel, InitD3>;
 
-  setMinMaxZoom: Action<StoreModel, SetMinMaxZoom>;
+  setMinZoom: Action<StoreModel, number>;
+  setMaxZoom: Action<StoreModel, number>;
 
   setTranslateExtent: Action<StoreModel, TranslateExtent>;
 
-  setSnapGrid: Action<StoreModel, SetSnapGrid>;
+  setSnapToGrid: Action<StoreModel, boolean>;
+  setSnapGrid: Action<StoreModel, SnapGrid>;
 
   setConnectionPosition: Action<StoreModel, XYPosition>;
 
@@ -187,7 +180,7 @@ export const storeModel: StoreModel = {
   connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
 
-  snapGrid: [16, 16],
+  snapGrid: [15, 15],
   snapToGrid: false,
 
   nodesDraggable: true,
@@ -395,12 +388,19 @@ export const storeModel: StoreModel = {
     state.d3Initialised = true;
   }),
 
-  setMinMaxZoom: action((state, { minZoom, maxZoom }) => {
+  setMinZoom: action((state, minZoom) => {
     state.minZoom = minZoom;
-    state.maxZoom = maxZoom;
 
     if (state.d3Zoom) {
-      state.d3Zoom.scaleExtent([minZoom, maxZoom]);
+      state.d3Zoom.scaleExtent([minZoom, state.maxZoom]);
+    }
+  }),
+
+  setMaxZoom: action((state, maxZoom) => {
+    state.minZoom = maxZoom;
+
+    if (state.d3Zoom) {
+      state.d3Zoom.scaleExtent([state.minZoom, maxZoom]);
     }
   }),
 
@@ -421,8 +421,11 @@ export const storeModel: StoreModel = {
     state.connectionHandleType = connectionHandleType;
   }),
 
-  setSnapGrid: action((state, { snapToGrid, snapGrid }) => {
+  setSnapToGrid: action((state, snapToGrid) => {
     state.snapToGrid = snapToGrid;
+  }),
+
+  setSnapGrid: action((state, snapGrid) => {
     state.snapGrid = snapGrid;
   }),
 
