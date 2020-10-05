@@ -6,11 +6,11 @@ import { FlowTransform, TranslateExtent } from '../types';
 interface UseD3ZoomParams {
   zoomPane: MutableRefObject<Element | null>;
   selectionKeyPressed: boolean;
-  zoomOnScroll: boolean;
-  zoomOnDoubleClick: boolean;
-  paneMoveable: boolean;
-  defaultPosition: [number, number];
-  defaultZoom: number;
+  zoomOnScroll?: boolean;
+  zoomOnDoubleClick?: boolean;
+  paneMoveable?: boolean;
+  defaultPosition?: [number, number];
+  defaultZoom?: number;
   translateExtent?: TranslateExtent;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
@@ -33,12 +33,12 @@ export default ({
   onMove,
   onMoveStart,
   onMoveEnd,
-  zoomOnScroll,
-  zoomOnDoubleClick,
+  zoomOnScroll = true,
+  zoomOnDoubleClick = true,
   selectionKeyPressed,
-  paneMoveable,
-  defaultPosition,
-  defaultZoom,
+  paneMoveable = true,
+  defaultPosition = [0, 0],
+  defaultZoom = 1,
   translateExtent,
 }: UseD3ZoomParams): void => {
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });

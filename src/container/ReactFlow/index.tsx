@@ -36,6 +36,19 @@ import {
 
 import '../../style.css';
 
+const defaultNodeTypes = {
+  input: InputNode,
+  default: DefaultNode,
+  output: OutputNode,
+};
+
+const defaultEdgeTypes = {
+  default: BezierEdge,
+  straight: StraightEdge,
+  step: StepEdge,
+  smoothstep: SmoothStepEdge,
+};
+
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
   onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
@@ -62,40 +75,38 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: MouseEvent) => void;
   onPaneContextMenu?: (event: MouseEvent) => void;
-  nodeTypes: NodeTypesType;
-  edgeTypes: EdgeTypesType;
-  connectionLineType: ConnectionLineType;
+  nodeTypes?: NodeTypesType;
+  edgeTypes?: EdgeTypesType;
+  connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
-  deleteKeyCode: number;
-  selectionKeyCode: number;
-  snapToGrid: boolean;
-  snapGrid: [number, number];
-  onlyRenderVisibleNodes: boolean;
-  nodesDraggable: boolean;
-  nodesConnectable: boolean;
-  elementsSelectable: boolean;
-  selectNodesOnDrag: boolean;
-  paneMoveable: boolean;
-  minZoom: number;
-  maxZoom: number;
-  defaultZoom: number;
-  defaultPosition: [number, number];
+  deleteKeyCode?: number;
+  selectionKeyCode?: number;
+  snapToGrid?: boolean;
+  snapGrid?: [number, number];
+  onlyRenderVisibleNodes?: boolean;
+  nodesDraggable?: boolean;
+  nodesConnectable?: boolean;
+  elementsSelectable?: boolean;
+  selectNodesOnDrag?: boolean;
+  paneMoveable?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
+  defaultZoom?: number;
+  defaultPosition?: [number, number];
   translateExtent?: TranslateExtent;
-  arrowHeadColor: string;
+  arrowHeadColor?: string;
   markerEndId?: string;
-  zoomOnScroll: boolean;
-  zoomOnDoubleClick: boolean;
+  zoomOnScroll?: boolean;
+  zoomOnDoubleClick?: boolean;
 }
 
 const ReactFlow = ({
-  style,
-  onElementClick,
   elements = [],
   className,
-  children,
-  nodeTypes,
-  edgeTypes,
+  nodeTypes = defaultNodeTypes,
+  edgeTypes = defaultEdgeTypes,
+  onElementClick,
   onLoad,
   onMove,
   onMoveStart,
@@ -116,38 +127,40 @@ const ReactFlow = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
-  connectionLineType,
+  connectionLineType = ConnectionLineType.Bezier,
   connectionLineStyle,
   connectionLineComponent,
-  deleteKeyCode,
-  selectionKeyCode,
-  snapToGrid,
-  snapGrid,
-  onlyRenderVisibleNodes,
+  deleteKeyCode = 8,
+  selectionKeyCode = 16,
+  snapToGrid = false,
+  snapGrid = [15, 15],
+  onlyRenderVisibleNodes = true,
+  selectNodesOnDrag = true,
   nodesDraggable,
   nodesConnectable,
   elementsSelectable,
-  selectNodesOnDrag,
   minZoom,
   maxZoom,
-  defaultZoom,
-  defaultPosition,
+  defaultZoom = 1,
+  defaultPosition = [0, 0],
   translateExtent,
-  arrowHeadColor,
+  arrowHeadColor = '#b1b1b7',
   markerEndId,
-  zoomOnScroll,
-  zoomOnDoubleClick,
-  paneMoveable,
+  zoomOnScroll = true,
+  zoomOnDoubleClick = true,
+  paneMoveable = true,
   onPaneClick,
   onPaneScroll,
   onPaneContextMenu,
+  children,
+  ...rest
 }: ReactFlowProps) => {
-  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypes]);
-  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypes]);
+  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
+  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
   const reactFlowClasses = cc(['react-flow', className]);
 
   return (
-    <div style={style} className={reactFlowClasses}>
+    <div {...rest} className={reactFlowClasses}>
       <Wrapper>
         <GraphView
           onLoad={onLoad}
@@ -207,37 +220,5 @@ const ReactFlow = ({
 };
 
 ReactFlow.displayName = 'ReactFlow';
-
-ReactFlow.defaultProps = {
-  nodeTypes: {
-    input: InputNode,
-    default: DefaultNode,
-    output: OutputNode,
-  },
-  edgeTypes: {
-    default: BezierEdge,
-    straight: StraightEdge,
-    step: StepEdge,
-    smoothstep: SmoothStepEdge,
-  },
-  connectionLineType: ConnectionLineType.Bezier,
-  deleteKeyCode: 8,
-  selectionKeyCode: 16,
-  snapToGrid: false,
-  snapGrid: [15, 15],
-  onlyRenderVisibleNodes: true,
-  nodesDraggable: true,
-  nodesConnectable: true,
-  elementsSelectable: true,
-  selectNodesOnDrag: true,
-  paneMoveable: true,
-  minZoom: 0.5,
-  maxZoom: 2,
-  defaultZoom: 1,
-  defaultPosition: [0, 0],
-  arrowHeadColor: '#b1b1b7',
-  zoomOnScroll: true,
-  zoomOnDoubleClick: true,
-};
 
 export default ReactFlow;

@@ -32,6 +32,8 @@ export interface Box extends XYPosition {
   y2: number;
 }
 
+export type SnapGrid = [number, number];
+
 export interface Node {
   id: ElementId;
   position: XYPosition;
@@ -214,7 +216,7 @@ export interface WrapNodeProps {
   isHidden?: boolean;
   isInitialized?: boolean;
   snapToGrid?: boolean;
-  snapGrid?: [number, number];
+  snapGrid?: SnapGrid;
   isDragging?: boolean;
 }
 
