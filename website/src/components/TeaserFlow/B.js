@@ -62,7 +62,7 @@ const nodeTypes = {
   result: ResultNode,
 };
 
-const onLoad = (rf) => rf.fitView({ padding: 0.2 });
+const onLoad = (rf) => setTimeout(() => rf.fitView({ padding: 0.1 }), 1);
 
 const findNodeById = (id) => (n) => n.id === id;
 
@@ -96,7 +96,7 @@ export default () => {
 
         resultNode.data = {
           ...resultNode.data,
-          value: result,
+          value: !forname && !lastname ? '*please enter a name*' : result,
         };
 
         return nextElements;
@@ -161,7 +161,7 @@ export default () => {
   return (
     <TeaserFlow
       title="Customizable"
-      description="You can create your own node and edge types. Implement complex UIs inside your nodes or add functionality to your edges. React Flow comes with a lot of event handlers."
+      description="You can create your own node and edge types or just pass a custom style. You can implement custom UIs inside your nodes and add functionality to your edges."
       textPosition="right"
       fitView
       isDark

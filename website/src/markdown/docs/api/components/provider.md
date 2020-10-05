@@ -18,4 +18,4 @@ const FlowWithOwnProvider = () => (
 );
 ```
 
-It is used in the [provider example](example/src/Provider/index.js).
+It is used in the [provider example](https://github.com/wbkd/react-flow/blob/main/example/src/Provider/index.js).

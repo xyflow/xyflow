@@ -33,7 +33,7 @@ const onMoveEnd = (transform) => console.log('zoom/move end', transform);
 
 const initialElements = [
   {
-    id: 'overview-1',
+    id: '1',
     type: 'input',
     data: {
       label: (
@@ -45,7 +45,7 @@ const initialElements = [
     position: { x: 250, y: 0 },
   },
   {
-    id: 'overview-2',
+    id: '2',
     data: {
       label: (
         <>
@@ -56,7 +56,7 @@ const initialElements = [
     position: { x: 100, y: 100 },
   },
   {
-    id: 'overview-3',
+    id: '3',
     data: {
       label: (
         <>
@@ -73,36 +73,21 @@ const initialElements = [
     },
   },
   {
-    id: 'overview-4',
+    id: '4',
     position: { x: 250, y: 200 },
     data: {
-      label: (
-        <>
-          You can find the docs on{' '}
-          <a
-            href="https://github.com/wbkd/react-flow"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Github
-          </a>
-        </>
-      ),
+      label: 'Another default node',
     },
   },
   {
-    id: 'overview-5',
+    id: '5',
     data: {
-      label: (
-        <>
-          Or check out the other <strong>examples</strong>
-        </>
-      ),
+      label: 'Node id: 5',
     },
     position: { x: 250, y: 325 },
   },
   {
-    id: 'overview-6',
+    id: '6',
     type: 'output',
     data: {
       label: (
@@ -114,43 +99,38 @@ const initialElements = [
     position: { x: 100, y: 480 },
   },
   {
-    id: 'overview-7',
+    id: '7',
     type: 'output',
     data: { label: 'Another output node' },
     position: { x: 400, y: 450 },
   },
+  { id: 'e1-2', source: '1', target: '2', label: 'this is an edge label' },
+  { id: 'e1-3', source: '1', target: '3' },
   {
-    id: 'overview-e1-2',
-    source: 'overview-1',
-    target: 'overview-2',
-    label: 'this is an edge label',
-  },
-  { id: 'overview-e1-3', source: 'overview-1', target: 'overview-3' },
-  {
-    id: 'overview-e3-4',
-    source: 'overview-3',
-    target: 'overview-4',
+    id: 'e3-4',
+    source: '3',
+    target: '4',
     animated: true,
     label: 'animated edge',
   },
   {
-    id: 'overview-e4-5',
-    source: 'overview-4',
-    target: 'overview-5',
+    id: 'e4-5',
+    source: '4',
+    target: '5',
     arrowHeadType: 'arrowclosed',
     label: 'edge with arrow head',
   },
   {
-    id: 'overview-e5-6',
-    source: 'overview-5',
-    target: 'overview-6',
+    id: 'e5-6',
+    source: '5',
+    target: '6',
     type: 'smoothstep',
     label: 'smooth step edge',
   },
   {
-    id: 'overview-e5-7',
-    source: 'overview-5',
-    target: 'overview-7',
+    id: 'e5-7',
+    source: '5',
+    target: '7',
     type: 'step',
     style: { stroke: '#f6ab6c' },
     label: 'a step edge',
@@ -167,8 +147,6 @@ const OverviewFlow = () => {
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements((els) => addEdge(params, els));
-
-  console.log('render overview');
 
   return (
     <ReactFlow
@@ -188,17 +166,22 @@ const OverviewFlow = () => {
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
-      key="overview"
     >
       <MiniMap
-        nodeColor={(n) => {
+        nodeStrokeColor={(n) => {
           if (n.style?.background) return n.style.background;
-          if (n.type === 'input') return '#9999ff';
-          if (n.type === 'output') return '#79c9b7';
-          if (n.type === 'default') return '#ff6060';
+          if (n.type === 'input') return '#0041d0';
+          if (n.type === 'output') return '#ff0072';
+          if (n.type === 'default') return '#1a192b';
 
           return '#eee';
         }}
+        nodeColor={(n) => {
+          if (n.style?.background) return n.style.background;
+
+          return '#fff';
+        }}
+        borderRadius={2}
       />
       <Controls />
       <Background color="#aaa" gap={16} />

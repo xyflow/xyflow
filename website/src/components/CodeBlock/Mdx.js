@@ -18,21 +18,26 @@ export default ({ children, className = 'javascript', language }) => {
           style={{
             ...style,
             overflowX: 'auto',
-            padding: '20px',
-            borderRadius: '6px',
-            margin: '40px 0 40px 0',
+            padding: 16,
+            borderRadius: 4,
+            margin: '20px 0 20px 0',
             fontSize: 14,
           }}
         >
-          {tokens
-            .filter((line) => line.some((l) => l.content))
-            .map((line, i) => (
-              <div key={i} {...getLineProps({ line, key: i })}>
-                {line.map((token, key) => (
-                  <span key={key} {...getTokenProps({ token, key })} />
-                ))}
-              </div>
-            ))}
+          {tokens.map(
+            (line, i, lines) =>
+              !(
+                line.length === 1 &&
+                line[0].empty &&
+                (i === 0 || i === lines.length - 1)
+              ) && (
+                <div key={i} {...getLineProps({ line, key: i })}>
+                  {line.map((token, key) => (
+                    <span key={key} {...getTokenProps({ token, key })} />
+                  ))}
+                </div>
+              )
+          )}
         </pre>
       )}
     </Highlight>

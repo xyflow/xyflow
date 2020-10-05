@@ -7,7 +7,7 @@ import { ReactFlowProvider } from 'react-flow-renderer';
 export const frontmatter = {
   title: 'Hidden',
   slug: 'hidden',
-  order: 4,
+  order: 12,
 };
 
 export default () => {

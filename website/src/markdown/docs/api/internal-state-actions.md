@@ -27,7 +27,7 @@ const Flow = () => (
 
 ### Internal actions
 
-You will not need this in most cases but you can also use the internal actions that are defined in the [store](/src/store/index.ts):
+You will not need this in most cases but you can also use the internal actions that are defined in the [store](https://github.com/wbkd/react-flow/blob/main/src/store/index.ts):
 
 ```jsx
 import React, { useEffect } from 'react';

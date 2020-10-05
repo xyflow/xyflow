@@ -92,7 +92,7 @@ const Home = () => {
         <HeadlineAbsolute>
           <CenterContent>
             <HeadlineWrapper>
-              <H1>Wire your ideas together with React Flow</H1>
+              <H1>Wire your ideas with React Flow</H1>
               <SectionSubtitle>
                 Highly customizable React.js library for building node-based
                 editors and diagrams.
@@ -128,7 +128,7 @@ const Home = () => {
         <CenterContent>
           <SectionIntro
             title="Getting Started"
-            text="With React Flow you can build node-based applications. From complex interactive editors to simple static diagrams."
+            text="React Flow enables you to build node-based applications. From simple static diagrams to complex interactive editors."
             color={baseColors.textLight}
           />
           <Paragraph mb={3} color={baseColors.textLight}>
@@ -151,8 +151,8 @@ const Home = () => {
             them elements. You can pass a set of elements as a prop to the
             ReactFlow component. Hereby all elements need unique ids. A node
             needs a position and a label and an edge needs a source (node id)
-            and a target (node id). This is the most basic set up you need to
-            get started. A simple flow could look like this:
+            and a target (node id). This is the most basic for a flow. A simple
+            flow could look like this:
           </Paragraph>
           <CodeBlock
             code={`import React from 'react';
@@ -179,7 +179,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;`}
       <ContentSection bg="violetLighten5">
         <SectionIntro
           title="Built with React Flow"
-          text="React Flow has a fast growing community. Since the first release new projects popup. Ranging from Music Synthesizers and Study catalogs over to presentational business logic."
+          text="You can do a wide range of applications with React Flow. Ranging from music synthesizers and study planners to visualizations of neural nets."
           color={baseColors.textLight}
         />
         <Showcases />
@@ -187,7 +187,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;`}
 
       <ContentSection>
         <SectionIntro
-          title="Do you want to realize a data driven experience?"
+          title="Do you want to build a data driven application?"
           text="Reach out and contact us. We’re happy to chat and always excited for a new data driven challenge."
         />
 

@@ -31,12 +31,12 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        icon: `src/assets/icons/favicon.svg`,
+        icon: `src/assets/images/react-flow-logo.svg`,
         name: `React Flow`,
         short_name: `react-flow`,
         start_url: `/`,
         background_color: `#f7f0eb`,
-        theme_color: `#a2466c`,
+        theme_color: `#1A192B`,
         display: `standalone`,
         lang: 'en',
       },

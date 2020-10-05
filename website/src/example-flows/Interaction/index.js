@@ -39,6 +39,8 @@ const onElementClick = (event, element) => console.log('click', element);
 const onPaneClick = (event) => console.log('onPaneClick', event);
 const onPaneScroll = (event) => console.log('onPaneScroll', event);
 const onPaneContextMenu = (event) => console.log('onPaneContextMenu', event);
+const onLoad = (reactFlowInstance) =>
+  reactFlowInstance.fitView({ padding: 0.2 });
 
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -70,6 +72,7 @@ const InteractionFlow = () => {
       onPaneClick={captureZoomClick ? onPaneClick : undefined}
       onPaneScroll={captureZoomScroll ? onPaneScroll : undefined}
       onPaneContextMenu={captureZoomClick ? onPaneContextMenu : undefined}
+      onLoad={onLoad}
     >
       <MiniMap />
       <Controls />

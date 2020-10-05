@@ -80,7 +80,7 @@ const flowProps = {
 export default () => (
   <TeaserFlow
     title="Feature-rich"
-    description="You only need a few lines to get started. You get seamless zooming & panning, different edge and node types, single and multi-selection, controls and more."
+    description="React Flow comes with seamless zooming & panning, different edge and node types, single and multi-selection, controls, several event handlers and more."
     flowProps={flowProps}
     withControls
     fitView

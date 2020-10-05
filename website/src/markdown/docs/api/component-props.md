@@ -2,8 +2,14 @@
 title: Prop Types
 ---
 
+This is the list of prop types you can pass to the main `ReactFlow` component.
+
+```jsx
+import ReactFlow from 'react-flow-renderer';
+```
+
 ### Basic Props
-- `elements`: array of [nodes](#nodes) and [edges](#edges) *(required)*
+- `elements`: array of [nodes](/docs/api/nodes/) and [edges](/docs/api/edges/) *(required)*
 - `style`: css properties
 - `className`: additional class name
 
@@ -13,7 +19,7 @@ title: Prop Types
 - `defaultZoom`: default: `1`
 - `defaultPosition`: default: `[0, 0]`
 - `snapToGrid`: default: `false`
-- `snapGrid`: [x, y] array - default: `[16, 16]`
+- `snapGrid`: [x, y] array - default: `[15, 15]`
 - `onlyRenderVisibleNodes`: default: `true`
 - `translateExtent`: [default `[[-∞, -∞], [+∞, +∞]]`](https://github.com/d3/d3-zoom#zoom_translateExtent)
 
@@ -55,7 +61,7 @@ title: Prop Types
 ### Element Customization
 - `nodeTypes`: object with [node types](#node-types--custom-nodes)
 - `edgeTypes`: object with [edge types](#edge-types--custom-edges)
-- `arrowHeadColor`: default: `#bbb`
+- `arrowHeadColor`: default: `#b1b1b7`
 
 ### Connection Line Options
 - `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`

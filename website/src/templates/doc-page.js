@@ -12,10 +12,24 @@ const docsMenu = [
     group: 'API Reference',
     items: [
       { title: 'Prop Types' },
-      { title: 'Instance' },
-      { title: 'Nodes' },
-      { title: 'Edges' },
       { title: 'Helper Functions' },
+      {
+        group: 'Nodes',
+        items: [
+          { title: 'Node Options' },
+          { title: 'Node Types & Custom Nodes' },
+          { title: 'Handle Component' },
+        ],
+      },
+      {
+        group: 'Edges',
+        items: [
+          { title: 'Edge Options' },
+          { title: 'Edge Types & Custom Edges' },
+          { title: 'Edge Utils' },
+        ],
+      },
+      { title: 'Instance' },
       { title: 'Internal State and Actions' },
       {
         group: 'Components',

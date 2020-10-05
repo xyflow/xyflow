@@ -15,30 +15,41 @@ const onLoad = (reactFlowInstance) => {
 const BasicFlow = () => <ReactFlow onLoad={onLoad} elements={[]} />;
 ```
 
-`reactFlowInstance` has the following functions:
+The `reactFlowInstance` has the following functions:
 
 ### `project`
 
 Transforms pixel coordinates to the internal ReactFlow coordinate system.
-This can be used when you drag nodes (from a side bar for example) and need the position on the pane.
+This can be used when you drag nodes (from a side bar for example) and need the internal position on the pane.
 
 `project = (position: XYPosition): XYPosition`
 
+**example:**
+```
+reactFlowInstance.project({ x: 100, y: 100 });
+```
+
 ### `fitView`
 
-Fits view port so that all nodes are inside the view port.
+Fits the view port so that all nodes are visible
 
 `fitView = ({ padding }): void`
 
 ### `zoomIn`
 
+Zoom in
+
 `zoomIn = (): void`
 
 ### `zoomOut`
 
+Zoom out
+
 `zoomOut = (): void`
 
 ### `zoomTo`
+
+Zooms to the specified zoom level
 
 `zoomTo = (zoomLevel: number): void`
 
@@ -51,3 +62,8 @@ Fits view port so that all nodes are inside the view port.
 Sets position and zoom of the pane.
 
 `setTransform = (transform: FlowTransform): void`
+
+**example:**
+```
+reactFlowInstance.setTransform({ x: 100, y: 100, zoom: 1.5 });
+```

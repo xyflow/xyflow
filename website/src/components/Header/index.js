@@ -209,10 +209,10 @@ const Header = () => {
               <NavItem to="/" activeClassName="active" className="mobile">
                 Home
               </NavItem>
-              <NavItem to="/docs" activeClassName="active">
+              <NavItem to="/docs/" activeClassName="active">
                 Docs
               </NavItem>
-              <NavItem to="/examples" activeClassName="active">
+              <NavItem to="/examples/" activeClassName="active">
                 Examples
               </NavItem>
 

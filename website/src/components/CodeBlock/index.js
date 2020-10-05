@@ -3,11 +3,11 @@ import styled from '@emotion/styled';
 import { Box } from 'reflexbox';
 
 import { colors } from 'themes';
-import CodeBlock from 'components/Mdx/CodeBlock';
+import CodeBlock from './Mdx';
 import { H4, AttributionText } from 'components/Typo';
 
 const Wrapper = styled(Box)`
-  max-width: 800px;
+  max-width: 750px;
   margin: 0 auto;
 
   h4 {
