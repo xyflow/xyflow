@@ -16,6 +16,7 @@
     "start:examples": "npm run build && cd example && npm start",
     "dev:wait": "start-server-and-test start:examples http-get://localhost:3000",
     "build:example": "npm install && npm run build && cd example && npm install && npm run build",
+    "build:website": "cd website && npm install && GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true npm run build",
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
     "test:chrome": "cypress run --browser chrome --headless",
