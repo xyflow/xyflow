@@ -216,7 +216,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
 
-  const { connectionLineStyle, connectionLineType, arrowHeadColor, connectionLineComponent } = props;
+  const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
 
   if (!width) {
     return null;

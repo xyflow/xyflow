@@ -14,9 +14,9 @@ interface NodeRendererProps {
   onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
-  onlyRenderVisibleNodes?: boolean;
-  snapToGrid?: boolean;
-  snapGrid?: [number, number];
+  onlyRenderVisibleNodes: boolean;
+  snapToGrid: boolean;
+  snapGrid: [number, number];
 }
 
 function renderNode(
@@ -75,7 +75,7 @@ function renderNode(
   );
 }
 
-const NodeRenderer = ({ onlyRenderVisibleNodes = true, ...props }: NodeRendererProps) => {
+const NodeRenderer = (props: NodeRendererProps) => {
   const nodes = useStoreState((s) => s.nodes);
   const transform = useStoreState((s) => s.transform);
   const selectedElements = useStoreState((s) => s.selectedElements);
@@ -88,7 +88,7 @@ const NodeRenderer = ({ onlyRenderVisibleNodes = true, ...props }: NodeRendererP
     transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
   };
 
-  const renderNodes = onlyRenderVisibleNodes ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
+  const renderNodes = props.onlyRenderVisibleNodes ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>

@@ -97,18 +97,16 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   translateExtent?: TranslateExtent;
   arrowHeadColor?: string;
   markerEndId?: string;
-  zoomOnScroll: boolean;
+  zoomOnScroll?: boolean;
   zoomOnDoubleClick?: boolean;
 }
 
 const ReactFlow = ({
-  style,
-  onElementClick,
   elements = [],
   className,
-  children,
   nodeTypes = defaultNodeTypes,
   edgeTypes = defaultEdgeTypes,
+  onElementClick,
   onLoad,
   onMove,
   onMoveStart,
@@ -134,13 +132,13 @@ const ReactFlow = ({
   connectionLineComponent,
   deleteKeyCode = 8,
   selectionKeyCode = 16,
-  snapToGrid,
-  snapGrid,
+  snapToGrid = false,
+  snapGrid = [15, 15],
   onlyRenderVisibleNodes = true,
+  selectNodesOnDrag = true,
   nodesDraggable,
   nodesConnectable,
   elementsSelectable,
-  selectNodesOnDrag = true,
   minZoom,
   maxZoom,
   defaultZoom = 1,
@@ -154,13 +152,15 @@ const ReactFlow = ({
   onPaneClick,
   onPaneScroll,
   onPaneContextMenu,
+  children,
+  ...rest
 }: ReactFlowProps) => {
-  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypes]);
-  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypes]);
+  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
+  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
   const reactFlowClasses = cc(['react-flow', className]);
 
   return (
-    <div style={style} className={reactFlowClasses}>
+    <div {...rest} className={reactFlowClasses}>
       <Wrapper>
         <GraphView
           onLoad={onLoad}

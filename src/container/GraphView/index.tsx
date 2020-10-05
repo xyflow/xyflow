@@ -60,8 +60,8 @@ export interface GraphViewProps {
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode: number;
-  snapToGrid?: boolean;
-  snapGrid?: [number, number];
+  snapToGrid: boolean;
+  snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
@@ -69,8 +69,8 @@ export interface GraphViewProps {
   selectNodesOnDrag?: boolean;
   minZoom?: number;
   maxZoom?: number;
-  defaultZoom?: number;
-  defaultPosition?: [number, number];
+  defaultZoom: number;
+  defaultPosition: [number, number];
   translateExtent?: TranslateExtent;
   arrowHeadColor: string;
   markerEndId?: string;

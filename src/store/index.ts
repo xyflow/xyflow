@@ -426,7 +426,8 @@ export const storeModel: StoreModel = {
   }),
 
   setSnapGrid: action((state, snapGrid) => {
-    state.snapGrid = snapGrid;
+    state.snapGrid[0] = snapGrid[0];
+    state.snapGrid[1] = snapGrid[1];
   }),
 
   setInteractive: action((state, isInteractive) => {
