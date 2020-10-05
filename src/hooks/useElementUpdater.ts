@@ -44,6 +44,13 @@ const useElementUpdater = (propElements: Elements): void => {
 
         if (typeof propElement.type !== 'undefined') {
           elementProps.type = propElement.type;
+
+          // we reset the elements dimensions here in order to force a re-calculation of the bounds.
+          // When the type of a node changes it is possible that the number or positions of handles changes too.
+          if (isNode(existingElement) && propElement.type !== existingElement.type) {
+            existingElement.__rf.width = null;
+            existingElement.__rf.height = null;
+          }
         }
 
         if (isNode(existingElement)) {

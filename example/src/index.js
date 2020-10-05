@@ -15,6 +15,7 @@ import Provider from './Provider';
 import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
 import CustomConnectionLine from './CustomConnectionLine';
+import NodeTypeChange from './NodeTypeChange';
 
 import './index.css';
 
@@ -78,6 +79,10 @@ const routes = [
   {
     path: '/custom-connectionline',
     component: CustomConnectionLine,
+  },
+  {
+    path: '/nodetype-change',
+    component: NodeTypeChange,
   },
 ];
 
