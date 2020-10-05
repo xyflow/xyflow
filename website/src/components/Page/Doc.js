@@ -9,15 +9,11 @@ const Wrapper = styled(Flex)`
   border-top: 1px solid ${(p) => p.theme.colors.silverLighten30};
 `;
 
-const left =
-  typeof window !== 'undefined' && window.innerWidth > 1000
-    ? Math.min(350, window.innerWidth * 0.3) / 2
-    : 0;
-
 const DocWrapper = styled(Box)`
   max-width: 620px;
   margin: 0 auto;
   position: relative;
+  padding: 0 16px;
 `;
 
 export default ({ children, menu = [], ...rest }) => (

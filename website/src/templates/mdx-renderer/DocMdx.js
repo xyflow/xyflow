@@ -9,7 +9,7 @@ import CodeBlock from 'components/CodeBlock/Mdx';
 
 import { getThemeSpacePx } from 'utils/css-utils';
 
-const PostWrapper = styled.div`
+const DocWrapper = styled.div`
   ${Text} {
     margin-bottom: ${getThemeSpacePx(3)};
     margin-top: ${getThemeSpacePx(3)};
@@ -18,16 +18,21 @@ const PostWrapper = styled.div`
       background: rgb(246, 248, 250);
       border-radius: 2px;
       padding: 0 3px;
+      font-size: 14px;
     }
   }
 
   ul,
   ol {
-    padding-left: ${getThemeSpacePx(5)};
+    padding-left: ${getThemeSpacePx(4)};
   }
 
   li {
     margin-bottom: ${getThemeSpacePx(2)};
+
+    code {
+      font-size: 14px;
+    }
   }
 
   hr {
@@ -123,9 +128,9 @@ const CustomComponents = {
 const BlogMdx = ({ content = null }) => {
   return (
     <MDXProvider components={CustomComponents}>
-      <PostWrapper>
+      <DocWrapper>
         <MDXRenderer>{content}</MDXRenderer>
-      </PostWrapper>
+      </DocWrapper>
     </MDXProvider>
   );
 };

@@ -100,7 +100,7 @@ const Home = () => {
               <Flex mt={3} alignItems="center">
                 <DocsButton
                   as={Link}
-                  to="/docs"
+                  to="/docs/"
                   icon="code"
                   colorizeStroke
                   color="textInverted"
@@ -108,7 +108,7 @@ const Home = () => {
                 >
                   Documentation
                 </DocsButton>
-                <ExampleButton to="/examples">
+                <ExampleButton to="/examples/">
                   Examples
                   <Icon
                     width="24px"

@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'gatsby';
 import styled from '@emotion/styled';
 import { Flex, Box } from 'reflexbox';
 
 import Icon from 'components/Icon';
 import Button from 'components/Button';
+import Close from 'components/Close';
 import { getThemeColor, getThemeSpacePx, device, px } from 'utils/css-utils';
+import useMenuHeight from 'hooks/useMenuHeight';
+
 import ReactFlowLogo from 'assets/images/react-flow-logo.svg';
 
 const Centered = styled(Flex)`
@@ -26,7 +29,7 @@ const NavWrapper = styled(Box)`
   left: 0;
   width: 100%;
   padding: ${getThemeSpacePx(3)};
-  z-index: 100;
+  z-index: 500;
   background: ${getThemeColor('background')};
   align-items: center;
   flex-direction: column;
@@ -112,6 +115,18 @@ const NavItem = styled(Link)`
 `;
 
 const GithubButton = styled.a`
+  font-size: 30px;
+  display: block;
+  padding: ${(p) => (p.isButton ? '8px 16px' : '16px 0')};
+  text-align: center;
+  color: ${getThemeColor('textLight')};
+
+  &:focus,
+  &:visited,
+  &:active {
+    color: ${getThemeColor('textLight')};
+  }
+
   @media ${device.tablet} {
     margin-left: 50px;
     font-size: 16px;
@@ -124,16 +139,6 @@ const GithubButton = styled.a`
       }
     }
   }
-`;
-
-const Close = styled.div`
-  padding: ${getThemeSpacePx(1)};
-  line-height: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  height: 50px;
 `;
 
 const NavButton = styled.div`
@@ -166,10 +171,9 @@ const LogoSubtitle = styled(Box)`
 `;
 
 const Header = () => {
-  const [menuHeight, setMenuHeight] = useState(
-    typeof window !== 'undefined' ? window.innerHeight : 0
-  );
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuHeight = useMenuHeight();
+
   const toggleMenu = () => {
     const nextMenuOpen = !menuOpen;
 
@@ -177,18 +181,6 @@ const Header = () => {
 
     setMenuOpen(nextMenuOpen);
   };
-
-  useEffect(() => {
-    const onResize = () => {
-      setMenuHeight(typeof window !== 'undefined' ? window.innerHeight : 0);
-    };
-
-    window.addEventListener('resize', onResize);
-
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  });
 
   return (
     <Wrapper>
@@ -228,21 +220,17 @@ const Header = () => {
                 Github
               </Button>
 
-              <a
+              <GithubButton
                 href="https://github.com/wbkd/react-flow"
                 activeClassName="active"
                 className="mobile"
                 isButton
               >
                 Github
-              </a>
+              </GithubButton>
             </NavInner>
           </Nav>
-          <Flex pb={4} alignItems="center" className="mobile">
-            <Close onClick={toggleMenu}>
-              <Icon name="close" strokeColor="text" colorizeStroke />
-            </Close>
-          </Flex>
+          <Close onClick={toggleMenu} className="mobile" />
         </NavWrapper>
       </Centered>
     </Wrapper>

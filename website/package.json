@@ -36,8 +36,6 @@
     "gatsby-plugin-svgr": "^2.0.2",
     "gatsby-remark-copy-linked-files": "^2.3.15",
     "gatsby-remark-images": "^3.3.30",
-    "gatsby-remark-images-medium-zoom": "^1.7.0",
-    "gatsby-remark-responsive-iframe": "^2.4.14",
     "gatsby-remark-unwrap-images": "^1.0.2",
     "gatsby-source-filesystem": "^2.3.30",
     "gatsby-transformer-javascript-frontmatter": "^2.3.13",

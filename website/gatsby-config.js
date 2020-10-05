@@ -53,9 +53,6 @@ module.exports = {
               linkImagesToOriginal: false,
             },
           },
-          {
-            resolve: `gatsby-remark-images-medium-zoom`,
-          },
         ],
       },
     },
@@ -73,18 +70,7 @@ module.exports = {
               linkImagesToOriginal: false,
             },
           },
-          {
-            resolve: `gatsby-remark-responsive-iframe`,
-            options: {
-              wrapperStyle: `margin-bottom: 1.0725rem`,
-            },
-          },
           'gatsby-remark-copy-linked-files',
-          {
-            resolve: `gatsby-remark-images-medium-zoom`, // Important!
-            options: {},
-          },
-          // 'gatsby-remark-unwrap-images',
         ],
         remarkPlugins: [require('remark-unwrap-images')],
         extensions: [`.md`, `.mdx`],
