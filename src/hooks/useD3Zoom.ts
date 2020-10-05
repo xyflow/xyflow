@@ -107,6 +107,8 @@ export default ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.filter((event: any) => {
+        console.log(event);
+
         if (!paneMoveable) {
           return false;
         }
