@@ -1,0 +1,15 @@
+<svg width="40" height="39" viewBox="0 0 40 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="22.75" y="2.75" width="13.5" height="13.5" rx="2.25" fill="white" stroke="#FF0072" stroke-width="1.5"/>
+<rect x="22.75" y="22.75" width="13.5" height="13.5" rx="2.25" fill="white" stroke="#1A192B" stroke-width="1.5"/>
+<rect x="2.75" y="2.75" width="13.5" height="13.5" rx="2.25" fill="white" stroke="#1A192B" stroke-width="1.5"/>
+<rect x="2.75" y="22.75" width="13.5" height="13.5" rx="2.25" fill="white" stroke="#1A192B" stroke-width="1.5"/>
+<circle cx="22.5" cy="9.5" r="2" fill="#FF0072" stroke="white"/>
+<circle cx="29.5" cy="16.5" r="2" fill="#FF0072" stroke="white"/>
+<circle cx="22.5" cy="29.5" r="2" fill="#1A192B" stroke="white"/>
+<circle cx="29.5" cy="22.5" r="2" fill="#1A192B" stroke="white"/>
+<circle cx="16.5" cy="9.5" r="2" fill="#1A192B" stroke="white"/>
+<circle cx="16.5" cy="29.5" r="2" fill="#1A192B" stroke="white"/>
+<rect opacity="0.4" x="18" y="10" width="1" height="3" transform="rotate(-90 18 10)" fill="#1A192B"/>
+<rect opacity="0.4" x="30" y="21" width="1" height="3" transform="rotate(180 30 21)" fill="#1A192B"/>
+<rect opacity="0.4" x="18" y="30" width="1" height="3" transform="rotate(-90 18 30)" fill="#1A192B"/>
+</svg>

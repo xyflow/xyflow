@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Showcase 1",
+    "url": "https://github.com",
+    "image": "../images/showcases/showcase.jpg"
+  },
+  {
+    "title": "Showcase 2",
+    "url": "https://github.com",
+    "image": "../images/showcases/showcase.jpg"
+  },
+  {
+    "title": "Showcase 3",
+    "url": "https://github.com",
+    "image": "../images/showcases/showcase.jpg"
+  }
+]
