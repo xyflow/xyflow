@@ -44,3 +44,8 @@
 .react-flow {
   font-family: 'jetbrains-mono';
 }
+
+.react-flow__controls-button {
+  width: 16px;
+  height: 16px;
+}
