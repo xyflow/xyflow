@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch, NavLink, withRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
 
 import Overview from './Overview';
 import Basic from './Basic';
@@ -10,7 +10,6 @@ import Interaction from './Interaction';
 import Empty from './Empty';
 import Edges from './Edges';
 import Validation from './Validation';
-import Horizontal from './Horizontal';
 import Provider from './Provider';
 import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
@@ -34,11 +33,6 @@ const routes = [
     path: '/custom-node',
     component: CustomNode,
     label: 'CustomNode',
-  },
-  {
-    path: '/horizontal',
-    component: Horizontal,
-    label: 'Horizontal',
   },
   {
     path: '/validation',
@@ -88,24 +82,13 @@ const routes = [
 
 const navLinks = routes.filter((route) => route.label);
 
-const SourceDisplay = withRouter(({ location }) => {
-  const route = routes.find((route) => route.path === location.pathname);
-  const sourceLink = `https://github.com/wbkd/react-flow/tree/main/example/src/${route.label}/index.js`;
-
-  return (
-    <a className="sourcedisplay" href={sourceLink}>
-      {'<Source />'}
-    </a>
-  );
-});
-
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState();
 
   return (
     <header>
       <a className="logo" href="https://github.com/wbkd/react-flow">
-        React Flow
+        React Flow Dev
       </a>
       <nav className={menuOpen ? 'is-open' : ''}>
         {navLinks.map((route) => (
@@ -124,7 +107,6 @@ const Header = () => {
 ReactDOM.render(
   <Router forceRefresh={true}>
     <Header />
-    <SourceDisplay />
     <Switch>
       {routes.map((route) => (
         <Route exact path={route.path} render={() => <route.component />} key={route.path} />

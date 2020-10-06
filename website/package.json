@@ -1,0 +1,84 @@
+{
+  "name": "react-flow-website",
+  "description": "",
+  "version": "1.0.0",
+  "author": "webkid",
+  "bugs": {
+    "url": "https://github.com/wbkd/react-flow/issues"
+  },
+  "browserslist": [
+    ">0.25%",
+    "ie 11"
+  ],
+  "dependencies": {
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
+    "@mdx-js/mdx": "^1.6.17",
+    "@mdx-js/react": "^1.6.17",
+    "@react-hook/size": "^2.1.1",
+    "@svgr/webpack": "^5.4.0",
+    "babel-polyfill": "^6.26.0",
+    "d3-array": "^2.7.1",
+    "d3-color": "^2.0.0",
+    "d3-scale": "^3.2.2",
+    "d3-shape": "^2.0.0",
+    "emotion-normalize": "^10.1.0",
+    "emotion-theming": "^10.0.27",
+    "gatsby": "^2.24.60",
+    "gatsby-image": "^2.4.18",
+    "gatsby-plugin-draft": "^0.0.5",
+    "gatsby-plugin-emotion": "^4.3.11",
+    "gatsby-plugin-manifest": "^2.4.29",
+    "gatsby-plugin-mdx": "^1.2.40",
+    "gatsby-plugin-netlify": "^2.3.15",
+    "gatsby-plugin-react-helmet": "^3.3.11",
+    "gatsby-plugin-react-svg": "^3.0.0",
+    "gatsby-plugin-svgr": "^2.0.2",
+    "gatsby-remark-copy-linked-files": "^2.3.15",
+    "gatsby-remark-images": "^3.3.30",
+    "gatsby-remark-unwrap-images": "^1.0.2",
+    "gatsby-source-filesystem": "^2.3.30",
+    "gatsby-transformer-javascript-frontmatter": "^2.3.13",
+    "gatsby-transformer-json": "^2.4.12",
+    "gatsby-transformer-remark": "^2.8.35",
+    "prism-react-renderer": "^1.1.1",
+    "rc-table": "^7.9.8",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-flow-renderer": "^6.1.0",
+    "react-helmet": "^6.1.0",
+    "reflexbox": "^4.0.6",
+    "remark-unwrap-images": "^2.0.0"
+  },
+  "devDependencies": {
+    "@octokit/rest": "^18.0.6",
+    "babel-preset-gatsby": "^0.5.10",
+    "eslint": "^7.9.0",
+    "eslint-plugin-react": "^7.20.6",
+    "gatsby-cli": "^2.12.97",
+    "gatsby-plugin-sharp": "^2.6.36",
+    "gatsby-transformer-sharp": "^2.5.15",
+    "gh-pages": "^3.1.0",
+    "prettier": "^2.1.1"
+  },
+  "homepage": "https://reactflow.dev",
+  "keywords": [
+    "gatsby"
+  ],
+  "license": "MIT",
+  "main": "n/a",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wbkd/react-flow.git"
+  },
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "gatsby develop -H 0.0.0.0",
+    "lint": "eslint --ext .js,.jsx --ignore-pattern public .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --trailing-comma es5 --no-semi --single-quote --write 'src/**/*.js' 'src/**/*.md'",
+    "build": "GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true gatsby build --log-pages",
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public",
+    "fix-semi": "eslint --quiet --ignore-pattern node_modules --ignore-pattern public --parser babel-eslint --no-eslintrc --rule '{\"semi\": [2, \"never\"], \"no-extra-semi\": [2]}' --fix gatsby-node.js"
+  }
+}
