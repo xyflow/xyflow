@@ -12,7 +12,7 @@ type UserSelectionProps = {
 };
 
 function getMousePosition(event: React.MouseEvent): XYPosition | void {
-  const reactFlowNode = document.querySelector('.react-flow');
+  const reactFlowNode = (event.target as Element).closest('.react-flow');
   if (!reactFlowNode) {
     return;
   }
