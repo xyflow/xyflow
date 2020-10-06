@@ -4,6 +4,9 @@ import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background, isNo
 
 const onNodeDragStart = (event, node) => console.log('drag start', node);
 const onNodeDragStop = (event, node) => console.log('drag stop', node);
+const onPaneClick = (event) => console.log('pane click', event);
+const onPaneScroll = (event) => console.log('pane scroll', event);
+const onPaneContextMenu = (event) => console.log('pane context menu', event);
 const onSelectionDrag = (event, nodes) => console.log('selection drag', nodes);
 const onSelectionDragStart = (event, nodes) => console.log('selection drag start', nodes);
 const onSelectionDragStop = (event, nodes) => console.log('selection drag stop', nodes);
@@ -125,6 +128,9 @@ const OverviewFlow = () => {
       onElementClick={onElementClick}
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
+      onPaneClick={onPaneClick}
+      onPaneScroll={onPaneScroll}
+      onPaneContextMenu={onPaneContextMenu}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
       onSelectionDragStart={onSelectionDragStart}

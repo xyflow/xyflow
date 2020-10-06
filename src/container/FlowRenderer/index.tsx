@@ -103,7 +103,7 @@ const FlowRenderer = ({
           onSelectionContextMenu={onSelectionContextMenu}
         />
       )}
-      <div className="react-flow__zoompane" onClick={onClick} onContextMenu={onContextMenu} onWheel={onWheel} />
+      <div className="react-flow__pane" onClick={onClick} onContextMenu={onContextMenu} onWheel={onWheel} />
     </div>
   );
 };
