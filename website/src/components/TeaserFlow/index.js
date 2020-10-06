@@ -26,7 +26,7 @@ const ReactFlowWrapper = styled(Box)`
   border-radius: 5px;
   order: 2;
 
-  ${device.tablet} {
+  @media ${device.tablet} {
     order: ${(p) => p.order};
   }
 
@@ -58,7 +58,7 @@ const DescriptionWrapper = styled(Box)`
   order: 1;
   margin-bottom: ${getThemeSpacePx(3)};
 
-  ${device.tablet} {
+  @media ${device.tablet} {
     order: ${(p) => p.order};
   }
 `;

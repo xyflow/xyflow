@@ -25,10 +25,9 @@ import React from 'react';
 import ReactFlow from 'react-flow-renderer';
 
 const elements = [
-  // input node
   {
     id: '1',
-    type: 'input',
+    type: 'input', // input node
     data: { label: 'Input Node' },
     position: { x: 250, y: 25 },
   },
@@ -39,11 +38,9 @@ const elements = [
     data: { label: <div>Default Node</div> },
     position: { x: 100, y: 125 },
   },
-  // output node
   {
     id: '3',
-    type: 'output',
-    // you can also pass a React component as a label
+    type: 'output', // output node
     data: { label: 'Output Node' },
     position: { x: 250, y: 250 },
   },
@@ -52,11 +49,56 @@ const elements = [
   { id: 'e2-3', source: '2', target: '3' },
 ];
 
-const BasicFlow = () => <ReactFlow elements={elements} />;
+export default () => <ReactFlow elements={elements} />;
 ```
 
 import Flow from './index';
 
 <Flow />
 
-You can find more advanced examples in the [examples](reactflow.dev/examples/) section.
+## Basic Functionality
+
+We don’t do any state updates besides the positions. This means that you need to pass the functions to remove an element or connect nodes by yourself. You can implement your own ones or use the [helper functions](/docs/api/helper-functions/) that come with the library. Here you see an example of how to use the heler functions `removeElements` and `addEdge`.
+
+
+```jsx
+import React, { useState } from 'react';
+import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
+
+const initialElements = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'Input Node' },
+    position: { x: 250, y: 25 },
+  },
+  {
+    id: '2',
+    data: { label: 'Another Node' },
+    position: { x: 100, y: 125 },
+  },
+];
+
+export default () => {
+  const [elements, setElements] = useState(initialElements);
+  const onElementsRemove = (elementsToRemove) =>
+    setElements((els) => removeElements(elementsToRemove, els));
+  const onConnect = (params) => setElements((els) => addEdge(params, els));
+
+  return (
+    <ReactFlow
+      elements={elements}
+      onElementsRemove={onElementsRemove}
+      onConnect={onConnect}
+    />
+  );
+}
+```
+
+In this example you can connect nodes and remove selected nodes and edges with the delete key.
+
+import Basic from './BasicFunctions';
+
+<Basic />
+
+You can find more advanced examples in the [examples](/examples/) section.
