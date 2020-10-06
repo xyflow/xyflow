@@ -1,15 +1,10 @@
-import React, { useEffect, useRef, useCallback, memo, CSSProperties, MouseEvent, WheelEvent } from 'react';
+import React, { useEffect, useRef, memo, CSSProperties, MouseEvent, WheelEvent } from 'react';
 
 import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
+import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import UserSelection from '../../components/UserSelection';
-import NodesSelection from '../../components/NodesSelection';
-import useKeyPress from '../../hooks/useKeyPress';
-import useD3Zoom from '../../hooks/useD3Zoom';
-import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useElementUpdater from '../../hooks/useElementUpdater';
-import useResizeHandler from '../../hooks/useResizeHandler';
 import { onLoadProject, onLoadGetElements } from '../../utils/graph';
 import {
   Elements,
@@ -130,11 +125,7 @@ const GraphView = ({
   onPaneContextMenu,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
-  const zoomPane = useRef<HTMLDivElement>(null);
-  const rendererNode = useRef<HTMLDivElement>(null);
   const d3Initialised = useStoreState((state) => state.d3Initialised);
-  const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
@@ -153,25 +144,7 @@ const GraphView = ({
   const zoomTo = useStoreActions((actions) => actions.zoomTo);
   const currentStore = useStore();
 
-  useResizeHandler(rendererNode);
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
   useElementUpdater(elements);
-
-  const selectionKeyPressed = useKeyPress(selectionKeyCode);
-
-  useD3Zoom({
-    zoomPane,
-    onMove,
-    onMoveStart,
-    onMoveEnd,
-    selectionKeyPressed,
-    zoomOnScroll,
-    zoomOnDoubleClick,
-    paneMoveable,
-    defaultPosition,
-    defaultZoom,
-    translateExtent,
-  });
 
   useEffect(() => {
     if (!isInitialised.current && d3Initialised) {
@@ -191,28 +164,6 @@ const GraphView = ({
       isInitialised.current = true;
     }
   }, [d3Initialised, onLoad]);
-
-  const onZoomPaneClick = useCallback(
-    (event: React.MouseEvent) => {
-      onPaneClick?.(event);
-      unsetNodesSelection();
-    },
-    [onPaneClick]
-  );
-
-  const onZoomPaneContextMenu = useCallback(
-    (event: React.MouseEvent) => {
-      onPaneContextMenu?.(event);
-    },
-    [onPaneContextMenu]
-  );
-
-  const onZoomPaneScroll = useCallback(
-    (event: WheelEvent) => {
-      onPaneScroll?.(event);
-    },
-    [onPaneScroll]
-  );
 
   useEffect(() => {
     if (onConnect) {
@@ -287,7 +238,27 @@ const GraphView = ({
   }, [translateExtent]);
 
   return (
-    <div className="react-flow__renderer" ref={rendererNode}>
+    <FlowRenderer
+      onPaneClick={onPaneClick}
+      onPaneContextMenu={onPaneContextMenu}
+      onPaneScroll={onPaneScroll}
+      onElementsRemove={onElementsRemove}
+      deleteKeyCode={deleteKeyCode}
+      selectionKeyCode={selectionKeyCode}
+      onMove={onMove}
+      onMoveStart={onMoveStart}
+      onMoveEnd={onMoveEnd}
+      zoomOnScroll={zoomOnScroll}
+      zoomOnDoubleClick={zoomOnDoubleClick}
+      paneMoveable={paneMoveable}
+      defaultPosition={defaultPosition}
+      defaultZoom={defaultZoom}
+      translateExtent={translateExtent}
+      onSelectionDragStart={onSelectionDragStart}
+      onSelectionDrag={onSelectionDrag}
+      onSelectionDragStop={onSelectionDragStop}
+      onSelectionContextMenu={onSelectionContextMenu}
+    >
       <NodeRenderer
         nodeTypes={nodeTypes}
         onElementClick={onElementClick}
@@ -311,23 +282,7 @@ const GraphView = ({
         markerEndId={markerEndId}
         connectionLineComponent={connectionLineComponent}
       />
-      <UserSelection selectionKeyPressed={selectionKeyPressed} />
-      {nodesSelectionActive && (
-        <NodesSelection
-          onSelectionDragStart={onSelectionDragStart}
-          onSelectionDrag={onSelectionDrag}
-          onSelectionDragStop={onSelectionDragStop}
-          onSelectionContextMenu={onSelectionContextMenu}
-        />
-      )}
-      <div
-        className="react-flow__zoompane"
-        onClick={onZoomPaneClick}
-        onContextMenu={onZoomPaneContextMenu}
-        onWheel={onZoomPaneScroll}
-        ref={zoomPane}
-      />
-    </div>
+    </FlowRenderer>
   );
 };
 

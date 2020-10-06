@@ -36,7 +36,7 @@ describe('Controls Testing', () => {
     // for d3 we have to pass the window to the event
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
-      cy.get('.react-flow__zoompane')
+      cy.get('.react-flow__renderer')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
         .trigger('mousemove', 'bottomLeft')
         .trigger('mouseup', { force: true, view: win })
