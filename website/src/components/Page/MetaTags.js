@@ -17,7 +17,7 @@ const MetaTags = ({
   if (image) {
     image = `https://reactflow.dev${image}`;
   } else {
-    image = 'https://reactflow.dev/images/webkid-social.jpg';
+    image = 'https://reactflow.dev/images/react-flow-header.jpg';
   }
 
   return (
