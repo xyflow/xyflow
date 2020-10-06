@@ -119,7 +119,7 @@ describe('Basic Flow Rendering', () => {
     // for d3 we have to pass the window to the event
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
-      cy.get('.react-flow__zoompane')
+      cy.get('.react-flow__renderer')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
         .trigger('mousemove', 'bottomLeft')
         .trigger('mouseup', { force: true, view: win })
@@ -133,7 +133,7 @@ describe('Basic Flow Rendering', () => {
   it('zooms the pane', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
-    cy.get('.react-flow__zoompane')
+    cy.get('.react-flow__renderer')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
