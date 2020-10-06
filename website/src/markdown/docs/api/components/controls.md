@@ -23,3 +23,5 @@ const FlowWithControls = () => (
 - `showInteractive`: boolean - default: true
 - `style`: css properties
 - `className`: additional class name
+
+**Typescript:** The interface of the Controls Prop Types are exported as `ControlProps`.

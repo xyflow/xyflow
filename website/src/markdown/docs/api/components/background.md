@@ -29,3 +29,5 @@ const FlowWithBackground = () => (
 - `color`: string - the color of the dots or lines - default: `#81818a` for dots, `#eee` for lines
 - `style`: css properties
 - `className`: additional class name
+
+**Typescript:** The interface of the Background Prop Types are exported as `BackgroundProps`.

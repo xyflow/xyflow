@@ -71,3 +71,9 @@ import ReactFlow from 'react-flow-renderer';
 ### Keys
 - `deleteKeyCode`: default: `8` (backspace)
 - `selectionKeyCode`: default: `16` (shift)
+
+**Typescript:** The interface of the ReactFlow Prop Types are exported as `ReactFlowProps`. You can use it in your code as follows:
+
+```javascript
+import { ReactFlowProps } from 'react-flow-renderer';
+```

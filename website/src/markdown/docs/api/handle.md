@@ -28,6 +28,8 @@ const targetHandleWithValidation = (
 - `style`: css properties
 - `className`: additional class name
 
+**Typescript:** The interface of the Handle Prop Types are exported as `HandleProps`.
+
 ### Validation
 
 The handle receives the additional class names `connecting` when the connection line is above the handle and `valid` if the connection is valid. You can find an example which uses these classes [here](/examples/validation).

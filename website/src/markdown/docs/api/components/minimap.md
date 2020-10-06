@@ -34,3 +34,5 @@ const FlowWithMiniMap = () => (
 - `maskColor`: string
 - `style`: css properties
 - `className`: additional class name
+
+**Typescript:** The interface of the MiniMap Prop Types are exported as `MiniMapProps`.
