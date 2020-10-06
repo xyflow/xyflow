@@ -6,6 +6,7 @@ import { MDXRenderer } from 'gatsby-plugin-mdx';
 
 import { H1, H2, H3, H4, Text } from 'components/Typo';
 import CodeBlock from 'components/CodeBlock/Mdx';
+import InfoBox from 'components/InfoBox';
 
 import { getThemeSpacePx } from 'utils/css-utils';
 
@@ -123,6 +124,7 @@ const CustomComponents = {
   p: Text,
   pre: (props) => <div {...props} />,
   code: CodeBlock,
+  InfoBox,
 };
 
 const BlogMdx = ({ content = null }) => {

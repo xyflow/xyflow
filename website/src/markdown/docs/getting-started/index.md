@@ -49,12 +49,18 @@ const elements = [
   { id: 'e2-3', source: '2', target: '3' },
 ];
 
-export default () => <div style={{ height: 300 }}><ReactFlow elements={elements} /></div>;
+export default () => (
+  <div style={{ height: 300 }}>
+    <ReactFlow elements={elements} />
+  </div>
+);
 ```
 
 import Flow from './index';
 
 <Flow />
+
+<InfoBox title="Attention!" text="The dimensions of your React Flow component depend on the parents dimensions."/>
 
 ## Basic Functionality
 
