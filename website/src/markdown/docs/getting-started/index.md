@@ -49,7 +49,7 @@ const elements = [
   { id: 'e2-3', source: '2', target: '3' },
 ];
 
-export default () => <ReactFlow elements={elements} />;
+export default () => <div style={{ height: 300 }}><ReactFlow elements={elements} /></div>;
 ```
 
 import Flow from './index';
@@ -86,11 +86,14 @@ export default () => {
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
   return (
-    <ReactFlow
-      elements={elements}
-      onElementsRemove={onElementsRemove}
-      onConnect={onConnect}
-    />
+    <div style={{ height: 300 }}>
+      <ReactFlow
+        elements={elements}
+        onElementsRemove={onElementsRemove}
+        onConnect={onConnect}
+        deleteKeyCode={46} /* 'delete'-key */
+      />
+    </div>
   );
 }
 ```
