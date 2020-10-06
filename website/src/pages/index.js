@@ -149,9 +149,7 @@ const Home = () => {
           <Paragraph my={3} color={baseColors.textLight}>
             A flow consists of nodes and edges (or just nodes). Together we call
             them elements. You can pass a set of elements as a prop to the
-            ReactFlow component. Hereby all elements need unique ids. A node
-            needs a position and a label and an edge needs a source (node id)
-            and a target (node id). This is the most basic for a flow. A simple
+            ReactFlow component. This is the most basic for a flow. A simple
             flow could look like this:
           </Paragraph>
           <CodeBlock

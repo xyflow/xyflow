@@ -12,5 +12,3 @@ React Flow is a library for building node-based applications. These can be simpl
 * **Utils:** Snap-to-grid and graph [helper functions](#helper-functions)
 * **Components:** [Background, Minimap and Controls](#components)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
-
-In order to make this library as flexible as possible we don’t do any state updates besides the positions. This means that you need to pass the functions to remove an element or connect nodes by yourself. You can implement your own ones or use the helper functions that come with the library.
