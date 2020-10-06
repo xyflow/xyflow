@@ -16,7 +16,7 @@ const getOffset = () => {
   } else if (windowWidth < 1200) {
     return 405;
   } else {
-    return (windowWidth - 1200) / 2 + 405;
+    return (windowWidth - 1200) / 2 + 450;
   }
 };
 

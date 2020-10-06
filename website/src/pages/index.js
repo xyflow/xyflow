@@ -27,6 +27,11 @@ const metaTags = {
   robots: 'index,follow',
 };
 
+const HeroWrapper = styled(Box)`
+  position: relative;
+  height: 500px;
+`;
+
 const SectionSubtitle = styled(H4)`
   font-weight: 400;
   line-height: 1.5;
@@ -40,11 +45,16 @@ const HeadlineAbsolute = styled(Box)`
   left: 0;
   width: 100%;
   z-index: 100;
+  height: 100%;
   pointer-events: none;
 `;
 
 const HeadlineWrapper = styled(Box)`
   max-width: 400px;
+
+  ${H1} {
+    margin-top: 0;
+  }
 `;
 
 const DocsButton = styled(Button)`
@@ -98,13 +108,20 @@ const WorkButton = styled(Button)`
   }
 `;
 
+const CenterHeadline = styled(CenterContent)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+`;
+
 const Home = () => {
   return (
     <Page metaTags={metaTags}>
-      <Box style={{ position: 'relative', height: 500 }}>
+      <HeroWrapper>
         <HeroFlow />
         <HeadlineAbsolute>
-          <CenterContent>
+          <CenterHeadline>
             <HeadlineWrapper>
               <H1>Wire your ideas with React Flow</H1>
               <SectionSubtitle>
@@ -134,9 +151,9 @@ const Home = () => {
                 </ExampleButton>
               </Flex>
             </HeadlineWrapper>
-          </CenterContent>
+          </CenterHeadline>
         </HeadlineAbsolute>
-      </Box>
+      </HeroWrapper>
 
       <ContentSection bg="violetLighten5">
         <CenterContent>
