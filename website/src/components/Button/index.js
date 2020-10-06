@@ -53,6 +53,7 @@ const Button = styled.button`
     svg {
       .nostroke {
         stroke: none;
+        fill: ${getThemeColor('background')};
       }
     }
   }

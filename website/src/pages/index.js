@@ -30,6 +30,7 @@ const metaTags = {
 const SectionSubtitle = styled(H4)`
   font-weight: 400;
   line-height: 1.5;
+  margin: 30px 0;
   color: ${getThemeColor('silverDarken30')};
 `;
 
@@ -55,17 +56,30 @@ const DocsButton = styled(Button)`
 const ExampleButton = styled(Link)`
   pointer-events: all;
   display: flex;
+  font-weight: bold;
   align-items: center;
 
   &&& {
-    color: ${getThemeColor('text')};
+    color: ${getThemeColor('red')};
+
+    svg {
+      transform: translateX(0px);
+      transition: all 0.125s ease-in-out;
+    }
+
+    polyline,
+    path,
+    line {
+      stroke: none;
+      fill: ${getThemeColor('red')};
+    }
 
     &:hover {
       color: ${getThemeColor('red')};
 
-      polyline,
-      line {
-        stroke: ${getThemeColor('red')};
+      svg {
+        transform: translateX(5px);
+        transition: all 0.125s ease-in-out;
       }
     }
   }
@@ -111,7 +125,7 @@ const Home = () => {
                 <ExampleButton to="/examples/">
                   Examples
                   <Icon
-                    width="24px"
+                    width="40px"
                     name="arrow_right"
                     colorizeStroke
                     strokeColor="text"

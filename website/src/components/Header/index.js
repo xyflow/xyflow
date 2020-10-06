@@ -117,7 +117,7 @@ const NavItem = styled(Link)`
 const GithubButton = styled.a`
   font-size: 30px;
   display: block;
-  padding: ${(p) => (p.isButton ? '8px 16px' : '16px 0')};
+  padding: ${(p) => (p.isButton ? '12px 24px' : '16px 0')} !important;
   text-align: center;
   color: ${getThemeColor('textLight')};
 

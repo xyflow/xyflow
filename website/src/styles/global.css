@@ -43,6 +43,8 @@
 
 .react-flow {
   font-family: 'jetbrains-mono';
+  text-transform: uppercase;
+  font-size: 24px;
 }
 
 .react-flow__controls-button {

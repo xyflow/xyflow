@@ -18,7 +18,7 @@ export default ({ children, className = 'javascript', language }) => {
           style={{
             ...style,
             overflowX: 'auto',
-            padding: 16,
+            padding: 30,
             borderRadius: 4,
             margin: '20px 0 20px 0',
             fontSize: 14,

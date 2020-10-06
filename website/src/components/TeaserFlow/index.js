@@ -37,8 +37,21 @@ const ReactFlowWrapper = styled(Box)`
 
 const DocsLink = styled(Link)`
   display: flex;
+  font-weight: bold;
   align-items: center;
   margin-top: 16px;
+
+  svg {
+    transform: translateX(0px);
+    transition: all 0.125s ease-in-out;
+  }
+
+  &:hover {
+    svg {
+      transform: translateX(5px);
+      transition: all 0.125s ease-in-out;
+    }
+  }
 `;
 
 const DescriptionWrapper = styled(Box)`
@@ -53,10 +66,10 @@ const DescriptionWrapper = styled(Box)`
 const Description = ({ title, description }) => (
   <DescriptionWrapper width={[1, 1, 0.35]}>
     <H2>{title}</H2>
-    <Text>{description}</Text>
+    <Text style={{ opacity: 0.7 }}>{description}</Text>
     <DocsLink to="/docs">
       Documentation{'  '}
-      <Icon width={24} name="arrow_right" colorizeStroke strokeColor="red" />
+      <Icon width={42} name="arrow_right" colorizeStroke strokeColor="red" />
     </DocsLink>
   </DescriptionWrapper>
 );
