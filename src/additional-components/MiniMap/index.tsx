@@ -10,7 +10,7 @@ import './style.css';
 
 type StringFunc = (node: Node) => string;
 
-interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
+export interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
   nodeColor?: string | StringFunc;
   nodeStrokeColor?: string | StringFunc;
   nodeClassName?: string | StringFunc;
