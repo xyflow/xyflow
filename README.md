@@ -1,4 +1,4 @@
- ![react-flow](https://user-images.githubusercontent.com/2857535/88070904-7e5e2c80-cb73-11ea-9f69-6b8647eef24a.png)
+ ![react-flow](https://user-images.githubusercontent.com/2857535/95202503-b0317780-07e1-11eb-86b1-127fe312facf.jpg)
 
 # React Flow
 
