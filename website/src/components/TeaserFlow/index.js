@@ -23,8 +23,15 @@ const Wrapper = styled(Flex)`
 const ReactFlowWrapper = styled(Box)`
   height: 400px;
   background: ${(p) => (p.isDark ? baseColors.violet : 'white')};
-  border-radius: 5px;
+  border-radius: 10px;
   order: 2;
+  margin: 30px 0;
+  border: solid rgba(26, 25, 43, 0.054) 1.5px;
+
+  box-shadow: 0 2.8px 2.2px rgba(26, 25, 43, 0.014),
+    0 12.5px 10px rgba(26, 25, 43, 0.02),
+    0 22.3px 17.9px rgba(26, 25, 43, 0.022),
+    0 41.8px 33.4px rgba(26, 25, 43, 0.026), 0 100px 80px rgba(26, 25, 43, 0.02);
 
   @media ${device.tablet} {
     order: ${(p) => p.order};
