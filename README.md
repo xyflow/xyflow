@@ -131,6 +131,12 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `deleteKeyCode`: default: `8` (delete)
 - `selectionKeyCode`: default: `16` (shift)
 
+**Typescript:** The interface of the ReactFlow Prop Types are exported as `ReactFlowProps`. You can use it in your code as follows:
+
+```javascript
+import { ReactFlowProps } from 'react-flow-renderer';
+```
+
 ## React Flow Instance
 
 You can receive a `reactFlowInstance` by using the `onLoad` callback:
@@ -271,6 +277,8 @@ const targetHandleWithValidation = (
 - `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id' }` as param, returns a boolean - default: `true`
 - `style`: css properties
 - `className`: additional class name
+
+**Typescript:** The interface of the Handle Prop Types are exported as `HandleProps`.
 
 ### Validation
 
@@ -413,6 +421,8 @@ const FlowWithBackground = () => (
 - `style`: css properties
 - `className`: additional class name
 
+**Typescript:** The interface of the Background Prop Types are exported as `BackgroundProps`.
+
 ## MiniMap
 
 You can use the mini map plugin by passing it as a children to the `ReactFlow` component:
@@ -446,6 +456,8 @@ const FlowWithMiniMap = () => (
 - `style`: css properties
 - `className`: additional class name
 
+**Typescript:** The interface of the MiniMap Prop Types are exported as `MiniMapProps`.
+
 ## Controls
 
 The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the `ReactFlow` component:
@@ -471,6 +483,8 @@ const FlowWithControls = () => (
 - `onInteractiveChange`: function that gets triggered when the lock button is pressed - passes the new value
 - `style`: css properties
 - `className`: additional class name
+
+**Typescript:** The interface of the Controls Prop Types are exported as `ControlProps`.
 
 ## ReactFlowProvider
 
