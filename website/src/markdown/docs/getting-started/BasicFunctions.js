@@ -32,6 +32,7 @@ const BasicFlow = () => {
           elements={elements}
           onElementsRemove={onElementsRemove}
           onConnect={onConnect}
+          deleteKeyCode={46} /*delete-key*/
         />
       </ReactFlowProvider>
     </div>
