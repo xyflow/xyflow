@@ -1,14 +1,4 @@
-# wbkd-gatsby
-The new webkid website & blog powered by Gatsby.
+# React Flow Website
 
-# Installation
-Run:
-```
-git clone https://github.com/wbkd/wbkd-gatsby
-cd wbkd-gatsby
-nvm use # optional
-npm install
-```
+The [react flow website](https://reactflow.dev) powered by Gatsby
 
-## Running in development
-`gatsby develop`
