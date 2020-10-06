@@ -51,6 +51,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   const setUserSelection = useStoreActions((actions) => actions.setUserSelection);
   const updateUserSelection = useStoreActions((actions) => actions.updateUserSelection);
   const unsetUserSelection = useStoreActions((actions) => actions.unsetUserSelection);
+  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const renderUserSelectionPane = selectionActive || selectionKeyPressed;
 
   if (!elementsSelectable || !renderUserSelectionPane) {
@@ -81,12 +82,18 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
   const onMouseUp = () => unsetUserSelection();
 
+  const onMouseLeave = () => {
+    unsetUserSelection();
+    unsetNodesSelection();
+  };
+
   return (
     <div
       className="react-flow__selectionpane"
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
     >
       <SelectionRect />
     </div>
