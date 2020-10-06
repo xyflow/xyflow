@@ -12,6 +12,7 @@ import ReactFlow, {
 import { H2, Text } from 'components/Typo';
 import Icon from 'components/Icon';
 import { baseColors } from 'themes';
+import { device, getThemeSpacePx } from 'utils/css-utils';
 
 const Wrapper = styled(Flex)`
   justify-content: space-between;
@@ -23,6 +24,11 @@ const ReactFlowWrapper = styled(Box)`
   height: 400px;
   background: ${(p) => (p.isDark ? baseColors.violet : 'white')};
   border-radius: 5px;
+  order: 2;
+
+  ${device.tablet} {
+    order: ${(p) => p.order};
+  }
 
   .react-flow__controls {
     opacity: ${(p) => (p.isDark ? 0.5 : 1)};
@@ -35,15 +41,24 @@ const DocsLink = styled(Link)`
   margin-top: 16px;
 `;
 
+const DescriptionWrapper = styled(Box)`
+  order: 1;
+  margin-bottom: ${getThemeSpacePx(3)};
+
+  ${device.tablet} {
+    order: ${(p) => p.order};
+  }
+`;
+
 const Description = ({ title, description }) => (
-  <Box width={[1, 1, 0.35]}>
+  <DescriptionWrapper width={[1, 1, 0.35]}>
     <H2>{title}</H2>
     <Text>{description}</Text>
     <DocsLink to="/docs">
       Documentation{'  '}
       <Icon width={24} name="arrow_right" colorizeStroke strokeColor="red" />
     </DocsLink>
-  </Box>
+  </DescriptionWrapper>
 );
 
 export default ({
@@ -58,13 +73,18 @@ export default ({
   children,
 }) => {
   const bgColor = isDark ? baseColors.violetLighten60 : baseColors.violet;
+  const reactFlowOrder = textPosition === 'left' ? 2 : 1;
 
   return (
     <Wrapper mb={[6, 6, 7]}>
       {textPosition === 'left' && (
-        <Description title={title} description={description} />
+        <Description order={1} title={title} description={description} />
       )}
-      <ReactFlowWrapper width={[1, 1, 0.6]} isDark={isDark}>
+      <ReactFlowWrapper
+        width={[1, 1, 0.6]}
+        isDark={isDark}
+        order={reactFlowOrder}
+      >
         {children ? (
           children
         ) : (
@@ -82,7 +102,7 @@ export default ({
         )}
       </ReactFlowWrapper>
       {textPosition !== 'left' && (
-        <Description title={title} description={description} />
+        <Description order={2} title={title} description={description} />
       )}
     </Wrapper>
   );

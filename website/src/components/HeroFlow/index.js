@@ -8,9 +8,10 @@ import ReactFlow, {
 import ColorPickerNode from './ColorPickerNode';
 
 const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+const isSmallScreen = windowWidth < 800;
 
 const getOffset = () => {
-  if (windowWidth < 800) {
+  if (isSmallScreen) {
     return 0;
   } else if (windowWidth < 1200) {
     return 405;
@@ -20,8 +21,10 @@ const getOffset = () => {
 };
 
 const getColorNodeX = () => {
-  if (windowWidth < 800) {
-    return offsetLeft + 440;
+  if (windowWidth < 600) {
+    return offsetLeft + 250;
+  } else if (isSmallScreen) {
+    return offsetLeft + 400;
   } else if (windowWidth < 1000) {
     return offsetLeft + 300;
   } else if (windowWidth < 1200) {
@@ -86,28 +89,31 @@ export default () => {
         type: 'colorpicker',
         data: { color: 'red', value: 105, onChange },
         sourcePosition: 'right',
-        position: { x: offsetLeft + 50, y: 5 },
+        position: { x: offsetLeft + 50, y: isSmallScreen ? 250 : 5 },
       },
       {
         id: '2',
         type: 'colorpicker',
         data: { color: 'green', value: 100, onChange },
         sourcePosition: 'right',
-        position: { x: offsetLeft, y: 150 },
+        position: { x: offsetLeft, y: isSmallScreen ? 325 : 150 },
       },
       {
         id: '3',
         data: { color: 'blue', value: 165, onChange },
         type: 'colorpicker',
         sourcePosition: 'right',
-        position: { x: offsetLeft + 120, y: 300 },
+        position: {
+          x: isSmallScreen ? offsetLeft + 50 : offsetLeft + 120,
+          y: isSmallScreen ? 400 : 300,
+        },
       },
       {
         id: '4',
         data: { label: 'rgb(105, 100, 165)' },
         targetPosition: 'left',
         sourcePosition: 'right',
-        position: { x: getColorNodeX(), y: 180 },
+        position: { x: getColorNodeX(), y: isSmallScreen ? 350 : 180 },
         style: {
           background: 'rgb(105, 100, 165)',
           color: 'white',

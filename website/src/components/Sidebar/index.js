@@ -49,6 +49,10 @@ const MobileButton = styled(Flex)`
   cursor: pointer;
   justify-content: center;
   align-items: center;
+
+  @media ${device.tablet} {
+    display: none;
+  }
 `;
 
 const MenuLink = styled(Link)`

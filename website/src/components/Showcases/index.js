@@ -52,9 +52,14 @@ const Showcases = () => {
 
   return (
     <CenterContent>
-      <Flex marginX={-gridPadding}>
+      <Flex marginX={[0, 0, -gridPadding]} flexWrap="wrap">
         {showcases.map((showcase) => (
-          <Box key={showcase.title} width={1 / 3} px={gridPadding}>
+          <Box
+            key={showcase.title}
+            width={[1, 1, 1 / 3]}
+            px={[0, 0, gridPadding]}
+            mb={[3, 3, 0]}
+          >
             <Link href={showcase.url} target="_blank" rel="noopener noreferrer">
               <RoundImage fluid={showcase.image.childImageSharp.fluid} />
               <Title>{showcase.title}</Title>
@@ -64,7 +69,12 @@ const Showcases = () => {
           </Box>
         ))}
         {emptyShowCases.map((index) => (
-          <Box key={index} width={1 / 3} px={gridPadding}>
+          <Box
+            key={index}
+            width={[1, 1, 1 / 3]}
+            px={[0, 0, gridPadding]}
+            mb={[3, 3, 0]}
+          >
             <EmptyCase>
               <img src={reactFlowIconSrc} alt="react flow logo" />
             </EmptyCase>
