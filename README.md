@@ -509,8 +509,8 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 ### Used Class Names
 
 * `.react-flow` - Outer container
-* `.react-flow__renderer` - Inner container
-* `.react-flow__zoompane` - Zoom & pan pane
+* `.react-flow__renderer` - Flow container, used for zooming and panning
+* `.react-flow__pane` - Background Pane for click and wheel events, previously `.react-flow__zoompane`
 * `.react-flow__selectionpane` - Selection pane
 * `.react-flow__selection` - User selection
 * `.react-flow__edges` - Edges wrapper
