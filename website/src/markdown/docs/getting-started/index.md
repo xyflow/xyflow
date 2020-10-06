@@ -95,7 +95,7 @@ export default () => {
 }
 ```
 
-In this example you can connect nodes and remove selected nodes and edges with the delete key.
+In this example you can connect nodes and remove selected nodes and edges with the backspace key.
 
 import Basic from './BasicFunctions';
 

@@ -69,5 +69,5 @@ import ReactFlow from 'react-flow-renderer';
 - `connectionLineComponent`: [custom connection line component](/example/src/CustomConnectionLine/index.js)
 
 ### Keys
-- `deleteKeyCode`: default: `8` (delete)
+- `deleteKeyCode`: default: `8` (backspace)
 - `selectionKeyCode`: default: `16` (shift)
