@@ -46,6 +46,10 @@
 .react-flow__edge {
   pointer-events: all;
 
+  &.inactive {
+    pointer-events: none;
+  }
+
   &.selected {
     .react-flow__edge-path {
       stroke: #555;

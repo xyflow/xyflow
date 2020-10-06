@@ -22,7 +22,7 @@ const defaultWidth = 200;
 const defaultHeight = 150;
 
 const MiniMap = ({
-  style = { backgroundColor: '#fff' },
+  style,
   className,
   nodeStrokeColor = '#555',
   nodeColor = '#fff',
@@ -36,8 +36,8 @@ const MiniMap = ({
   const nodes = useStoreState((s) => s.nodes);
 
   const mapClasses = cc(['react-flow__minimap', className]);
-  const elementWidth = (style.width || defaultWidth)! as number;
-  const elementHeight = (style.height || defaultHeight)! as number;
+  const elementWidth = (style?.width || defaultWidth)! as number;
+  const elementHeight = (style?.height || defaultHeight)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
   const nodeStrokeColorFunc = (nodeStrokeColor instanceof Function
     ? nodeStrokeColor
