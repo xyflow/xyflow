@@ -14,9 +14,9 @@ const getOffset = () => {
   if (isSmallScreen) {
     return 0;
   } else if (windowWidth < 1200) {
-    return 405;
+    return 425;
   } else {
-    return (windowWidth - 1200) / 2 + 450;
+    return (windowWidth - 1200) / 2 + 500;
   }
 };
 
@@ -115,6 +115,7 @@ export default () => {
         sourcePosition: 'right',
         position: { x: getColorNodeX(), y: isSmallScreen ? 350 : 180 },
         style: {
+          width: 200,
           background: 'rgb(105, 100, 165)',
           color: 'white',
           textShadow:

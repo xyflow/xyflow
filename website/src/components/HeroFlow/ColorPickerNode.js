@@ -8,7 +8,6 @@ const ColorPickerNodeWrapper = styled.div`
   padding: 10px;
   background: white;
   border: 1px solid ${getThemeColor('violet')};
-  font-size: 12px;
   border-radius: 4px;
   box-shadow: ${(p) =>
     p.selected ? `0 0 0 0.25px ${p.theme.colors.violet}` : 'none'};
