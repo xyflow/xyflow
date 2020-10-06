@@ -45,7 +45,7 @@
     "rc-table": "^7.9.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-flow-renderer": "^6.0.2",
+    "react-flow-renderer": "^6.1.0",
     "react-helmet": "^6.1.0",
     "reflexbox": "^4.0.6",
     "remark-unwrap-images": "^2.0.0"
