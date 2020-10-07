@@ -33,7 +33,7 @@ const InputLabel = styled.div`
   color: ${(p) => p.theme.colors.violetLighten60};
 `;
 
-const InputNode = ({ id, data }) => {
+const InputNode = ({ id, data, isConnectable }) => {
   return (
     <NodeWrapper>
       <InputLabel>{data.label}:</InputLabel>
@@ -42,17 +42,29 @@ const InputNode = ({ id, data }) => {
         value={data.value}
         onChange={(event) => data.onChange(event, id)}
       />
-      <Handle type="source" position="bottom" />
+      <Handle type="source" position="bottom" isConnectable={isConnectable} />
     </NodeWrapper>
   );
 };
 
-const ResultNode = ({ data }) => {
+const ResultNode = ({ data, isConnectable }) => {
   return (
     <NodeWrapper>
       <div>{data.value}</div>
-      <Handle type="target" position="top" id="a" style={{ left: '40%' }} />
-      <Handle type="target" position="top" id="b" style={{ left: '60%' }} />
+      <Handle
+        type="target"
+        position="top"
+        id="a"
+        style={{ left: '40%' }}
+        isConnectable={isConnectable}
+      />
+      <Handle
+        type="target"
+        position="top"
+        id="b"
+        style={{ left: '60%' }}
+        isConnectable={isConnectable}
+      />
     </NodeWrapper>
   );
 };
