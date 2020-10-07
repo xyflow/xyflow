@@ -17,7 +17,7 @@ import FlowB from 'components/TeaserFlow/B';
 import FlowC from 'components/TeaserFlow/C';
 import { Paragraph, H1, H4 } from 'components/Typo';
 import { baseColors } from 'themes';
-import { getThemeColor } from 'utils/css-utils';
+import { getThemeColor, device } from 'utils/css-utils';
 
 const metaTags = {
   title: 'React Flow',
@@ -111,8 +111,11 @@ const WorkButton = styled(Button)`
 const CenterHeadline = styled(CenterContent)`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   height: 100%;
+
+  @media ${device.tablet} {
+    justify-content: center;
+  }
 `;
 
 const Home = () => {

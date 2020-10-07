@@ -8,8 +8,10 @@ import useExamplePages from 'hooks/useExamplePages';
 
 const Wrapper = styled(Flex)`
   border-top: 1px solid ${(p) => p.theme.colors.silverLighten30};
-  height: 100%;
   flex-grow: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 `;
 
 export default ({ children, title, slug }) => {
