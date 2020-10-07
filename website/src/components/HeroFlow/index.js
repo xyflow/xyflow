@@ -3,6 +3,7 @@ import ReactFlow, {
   ReactFlowProvider,
   Background,
   Controls,
+  addEdge,
 } from 'react-flow-renderer';
 
 import ColorPickerNode from './ColorPickerNode';
@@ -45,6 +46,7 @@ const findNodeByColor = (color) => (n) =>
 
 export default () => {
   const [elements, setElements] = useState([]);
+  const onConnect = (params) => setElements((els) => addEdge(params, els));
 
   useEffect(() => {
     const onChange = (event, id) => {
@@ -132,7 +134,12 @@ export default () => {
 
   return (
     <ReactFlowProvider>
-      <ReactFlow elements={elements} zoomOnScroll={false} nodeTypes={nodeTypes}>
+      <ReactFlow
+        elements={elements}
+        zoomOnScroll={false}
+        nodeTypes={nodeTypes}
+        onConnect={onConnect}
+      >
         <Background />
         <Controls showInteractive={false} />
       </ReactFlow>

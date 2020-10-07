@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactFlow, {
+  ReactFlowProvider,
+  Background,
+  Controls,
+  addEdge,
+} from 'react-flow-renderer';
 
 import TeaserFlow from 'components/TeaserFlow';
+import { baseColors } from 'themes';
 
-const elements = [
+const initialElements = [
   {
     id: '1',
     type: 'input',
@@ -72,17 +79,28 @@ const elements = [
   },
 ];
 
-const flowProps = {
-  elements,
-  onLoad: (rf) => rf.fitView({ padding: 0.2 }),
-};
+const onLoad = (rf) => rf.fitView({ padding: 0.2 });
 
-export default () => (
-  <TeaserFlow
-    title="Feature-rich"
-    description="React Flow comes with seamless zooming & panning, different edge and node types, single and multi-selection, controls, several event handlers and more."
-    flowProps={flowProps}
-    withControls
-    fitView
-  />
-);
+export default () => {
+  const [elements, setElements] = useState(initialElements);
+  const onConnect = (params) => setElements((els) => addEdge(params, els));
+
+  return (
+    <TeaserFlow
+      title="Feature-rich"
+      description="React Flow comes with seamless zooming & panning, different edge and node types, single and multi-selection, controls, several event handlers and more."
+    >
+      <ReactFlowProvider>
+        <ReactFlow
+          elements={elements}
+          onLoad={onLoad}
+          zoomOnScroll={false}
+          onConnect={onConnect}
+        >
+          <Background color={baseColors.silverDarken60} gap={15} />
+          <Controls showInteractive={false} />
+        </ReactFlow>
+      </ReactFlowProvider>
+    </TeaserFlow>
+  );
+};

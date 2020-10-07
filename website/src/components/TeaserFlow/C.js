@@ -1,4 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactFlow, {
+  ReactFlowProvider,
+  Background,
+  Controls,
+  addEdge,
+} from 'react-flow-renderer';
 
 import TeaserFlow from 'components/TeaserFlow';
 
@@ -10,7 +16,7 @@ const defaultNodeOptions = {
   },
 };
 
-const elements = [
+const initialElements = [
   {
     id: 'input',
     type: 'input',
@@ -155,19 +161,34 @@ const elements = [
   },
 ];
 
-const flowProps = {
-  elements,
-  onLoad: (rf) => rf.fitView({ padding: 0.2 }),
-};
+const onLoad = (rf) => rf.fitView({ padding: 0.2 });
 
-export default () => (
-  <TeaserFlow
-    title="Additional Components"
-    description="React Flow includes a MiniMap, Controls, Background and a FlowProvider you can use to access internal state outside the ReactFlow component."
-    flowProps={flowProps}
-    withControls
-    withMinimap
-    fitView
-    linesBg
-  />
-);
+export default () => {
+  const [elements, setElements] = useState(initialElements);
+  const onConnect = (params) =>
+    setElements((els) => {
+      params.type = 'step';
+      return addEdge(params, els);
+    });
+
+  return (
+    <TeaserFlow
+      title="Additional Components"
+      description="React Flow includes a MiniMap, Controls, Background and a FlowProvider you can use to access internal state outside the ReactFlow component."
+      linesBg
+    >
+      <ReactFlowProvider>
+        <ReactFlow
+          elements={elements}
+          onLoad={onLoad}
+          zoomOnScroll={false}
+          onConnect={onConnect}
+          connectionLineType="step"
+        >
+          <Background variant="lines" gap={20} />
+          <Controls showInteractive={false} />
+        </ReactFlow>
+      </ReactFlowProvider>
+    </TeaserFlow>
+  );
+};

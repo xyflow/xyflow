@@ -158,12 +158,13 @@ export default () => {
     setElements(initialElements);
   }, []);
 
+  console.log(elements);
+
   return (
     <TeaserFlow
       title="Customizable"
       description="You can create your own node and edge types or just pass a custom style. You can implement custom UIs inside your nodes and add functionality to your edges."
       textPosition="right"
-      fitView
       isDark
     >
       <ReactFlowProvider>
@@ -172,6 +173,7 @@ export default () => {
           nodeTypes={nodeTypes}
           onLoad={onLoad}
           zoomOnScroll={false}
+          nodesConnectable={false}
         >
           <Background color={baseColors.silverDarken60} gap={15} />
           <Controls showInteractive={false} />
