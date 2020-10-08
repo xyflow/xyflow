@@ -14,7 +14,7 @@ import ReactFlowLogo from 'assets/images/react-flow-logo.svg';
 const Centered = styled(Flex)`
   justify-content: space-between;
   align-items: center;
-  padding: ${getThemeSpacePx(4)};
+  padding: 24px 16px;
 `;
 
 const Wrapper = styled.nav`

@@ -25,7 +25,7 @@ const ReactFlowWrapper = styled(Box)`
   background: ${(p) => (p.isDark ? baseColors.violet : 'white')};
   border-radius: 10px;
   order: 2;
-  margin: 30px 0;
+  margin: ${getThemeSpacePx(4)} ${getThemeSpacePx(0)};
   border: solid rgba(26, 25, 43, 0.054) 1.5px;
 
   box-shadow: 0 2.8px 2.2px rgba(26, 25, 43, 0.014),
@@ -35,6 +35,10 @@ const ReactFlowWrapper = styled(Box)`
 
   @media ${device.tablet} {
     order: ${(p) => p.order};
+  }
+
+  @media ${device.mobile} {
+    margin-top: ${getThemeSpacePx(3)};
   }
 
   .react-flow__controls {
@@ -47,6 +51,10 @@ const DocsLink = styled(Link)`
   font-weight: bold;
   align-items: center;
   margin-top: 16px;
+
+  @media ${device.mobile} {
+    margin-top: ${getThemeSpacePx(0)};
+  }
 
   svg {
     transform: translateX(0px);
@@ -67,6 +75,10 @@ const DescriptionWrapper = styled(Box)`
 
   @media ${device.tablet} {
     order: ${(p) => p.order};
+  }
+
+  @media ${device.mobile} {
+    margin-bottom: ${getThemeSpacePx(0)};
   }
 `;
 
