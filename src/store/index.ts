@@ -397,7 +397,7 @@ export const storeModel: StoreModel = {
   }),
 
   setMaxZoom: action((state, maxZoom) => {
-    state.minZoom = maxZoom;
+    state.maxZoom = maxZoom;
 
     if (state.d3Zoom) {
       state.d3Zoom.scaleExtent([state.minZoom, maxZoom]);
