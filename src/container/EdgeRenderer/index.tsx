@@ -132,8 +132,10 @@ function renderEdge(
   selectedElements: Elements | null,
   elementsSelectable: boolean
 ) {
-  const [sourceId, sourceHandleId] = edge.source.split('__');
-  const [targetId, targetHandleId] = edge.target.split('__');
+  const sourceId = edge.source
+  const sourceHandleId = edge.sourceHandle!
+  const targetId = edge.target
+  const targetHandleId = edge.targetHandle!
 
   const sourceNode = nodes.find((n) => n.id === sourceId);
   const targetNode = nodes.find((n) => n.id === targetId);

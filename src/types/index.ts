@@ -60,6 +60,8 @@ export interface Edge {
   type?: string;
   source: ElementId;
   target: ElementId;
+  sourceHandle?: ElementId;
+  targetHandle?: ElementId;
   label?: string;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
@@ -241,6 +243,8 @@ export type OnLoadFunc = (params: OnLoadParams) => void;
 export interface Connection {
   source: ElementId | null;
   target: ElementId | null;
+  sourceHandle: ElementId | null;
+  targetHandle: ElementId | null;
 }
 
 export enum ConnectionLineType {

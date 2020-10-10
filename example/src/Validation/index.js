@@ -12,25 +12,40 @@ const initialElements = [
 ];
 
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
-const isValidConnection = (connection) => connection.target === 'B';
+const isValidConnection = (connection) => {
+  return (connection.target === 'B' && connection.targetHandle === '0')
+}
 const onConnectStart = (event, { nodeId, handleType }) => console.log('on connect start', { nodeId, handleType });
 const onConnectStop = (event) => console.log('on connect stop', event);
 const onConnectEnd = (event) => console.log('on connect end', event);
 
 const CustomInput = () => (
   <>
-    <div>Only connectable with B</div>
+    <div>Only connectable with B's first target</div>
     <Handle type="source" position="right" isValidConnection={isValidConnection} />
   </>
 );
 
-const CustomNode = ({ id }) => (
-  <>
-    <Handle type="target" position="left" isValidConnection={isValidConnection} />
-    <div>{id}</div>
-    <Handle type="source" position="right" isValidConnection={isValidConnection} />
-  </>
-);
+const CustomNode = ({ id }) => {
+  if (id === 'B') {
+    return (
+      <>
+        <Handle type="target" position="left" id='0' isValidConnection={isValidConnection} style={{top: '10px'}} />
+        <Handle type="target" position="left" id='1' isValidConnection={isValidConnection} style={{top: '25px'}} />
+        <div>{id}</div>
+        <Handle type="source" position="right" isValidConnection={isValidConnection} />
+      </>
+    )  
+  } else {
+    return (
+      <>
+        <Handle type="target" position="left" isValidConnection={isValidConnection} />
+        <div>{id}</div>
+        <Handle type="source" position="right" isValidConnection={isValidConnection} />
+      </>
+    )
+  }
+}
 
 const nodeTypes = {
   custominput: CustomInput,
