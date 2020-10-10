@@ -72,6 +72,7 @@ export interface GraphViewProps {
   zoomOnScroll?: boolean;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
+  onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
 const GraphView = ({
@@ -123,6 +124,7 @@ const GraphView = ({
   onPaneClick,
   onPaneScroll,
   onPaneContextMenu,
+  onDrop,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
   const d3Initialised = useStoreState((state) => state.d3Initialised);
@@ -258,6 +260,7 @@ const GraphView = ({
       onSelectionDrag={onSelectionDrag}
       onSelectionDragStop={onSelectionDragStop}
       onSelectionContextMenu={onSelectionContextMenu}
+      onDrop={onDrop}
     >
       <NodeRenderer
         nodeTypes={nodeTypes}

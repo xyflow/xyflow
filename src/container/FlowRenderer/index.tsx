@@ -46,6 +46,7 @@ const FlowRenderer = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  onDrop,
 }: FlowRendererProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
@@ -103,7 +104,14 @@ const FlowRenderer = ({
           onSelectionContextMenu={onSelectionContextMenu}
         />
       )}
-      <div className="react-flow__pane" onClick={onClick} onContextMenu={onContextMenu} onWheel={onWheel} />
+      <div 
+        className="react-flow__pane" 
+        onClick={onClick} 
+        onContextMenu={onContextMenu} 
+        onWheel={onWheel}
+        onDrop={onDrop}
+        onDragOver={(event)=> event.preventDefault()}
+      />
     </div>
   );
 };

@@ -1,0 +1,35 @@
+.NodeLibrary {
+    position: absolute;
+    padding: 15px 20px;
+    font-size: 12px;
+    background-color: rgb(250, 248, 248);
+    color: rgb(0, 0, 0);
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    right: 50px;
+    top: 100px;
+    width: 260px;
+    height: 500px;
+    z-index: 4;
+    overflow-y: auto;
+  }
+
+  .LibraryItem {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    color: black;
+    text-align: center;
+    width: 100%;
+    height: 55px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
