@@ -1,9 +1,12 @@
 import React from 'react';
 import { graphql } from 'gatsby';
+import { Box } from 'reflexbox';
+import styled from '@emotion/styled';
 
 import DocPage from 'components/Page/Doc';
 import Mdx from './mdx-renderer/DocMdx';
 import { H1 } from 'components/Typo';
+import Icon from 'components/Icon';
 
 const docsMenu = [
   { title: 'Introduction' },
@@ -44,6 +47,32 @@ const docsMenu = [
   },
 ];
 
+const EditLink = styled.a`
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    opacity: 0.6;
+  }
+
+  .icon {
+    margin-right: 5px;
+  }
+`;
+
+const EditButton = ({ slug }) => (
+  <Box my={[4, 4, 5]}>
+    <EditLink
+      href={`https://github.com/wbkd/react-flow/edit/main/website/src/markdown${slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Icon width="22px" name="pen" colorizeStroke strokeColor="red" />
+      Edit this page
+    </EditLink>
+  </Box>
+);
+
 function extendMenu(items, menuData) {
   items.forEach((menuItem) => {
     if (menuItem.group) {
@@ -68,10 +97,13 @@ const DocPageTemplate = ({ data, pageContext }) => {
 
   extendMenu(docsMenu, pageContext.menu);
 
+  const slug = content.fileAbsolutePath.split('markdown')[1];
+
   return (
     <DocPage metaTags={metaTags} menu={docsMenu}>
       <H1>{title}</H1>
       <Mdx content={content.body} />
+      <EditButton slug={slug} />
     </DocPage>
   );
 };
@@ -82,6 +114,7 @@ export const pageQuery = graphql`
   query DocPageBySlug($slug: String!) {
     content: mdx(fields: { slug: { eq: $slug } }) {
       id
+      fileAbsolutePath
       excerpt
       body
       fields {
