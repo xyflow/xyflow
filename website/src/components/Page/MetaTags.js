@@ -38,11 +38,13 @@ const MetaTags = ({
       {description && <meta name="twitter:description" content={description} />}
       {image && <meta name="twitter:image" content={image} />}
 
-      <script
-        src="https://cdn.usefathom.com/script.js"
-        site="LXMRMWLB"
-        defer
-      ></script>
+      {process.env.NODE_ENV === 'production' && (
+        <script
+          src="https://cdn.usefathom.com/script.js"
+          site="LXMRMWLB"
+          defer
+        ></script>
+      )}
     </Helmet>
   );
 };

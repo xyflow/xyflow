@@ -128,8 +128,6 @@ const EdgesFlow = () => {
     setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
-  console.log('render edges');
-
   return (
     <ReactFlow
       elements={elements}
