@@ -1,57 +1,57 @@
 [
   {
     "title": "Overview",
-    "slug": "examples/",
+    "slug": "/examples/",
     "source": "Overview"
   },
   {
     "title": "Custom Node",
-    "slug": "examples/custom-node",
+    "slug": "/examples/custom-node/",
     "source": "CustomNode"
   },
   {
     "title": "Edges",
-    "slug": "examples/edges",
+    "slug": "/examples/edges/",
     "source": "Edges"
   },
   {
     "title": "Horizontal",
-    "slug": "examples/horizontal",
+    "slug": "/examples/horizontal/",
     "source": "Horizontal"
   },
   {
     "title": "Interaction",
-    "slug": "examples/interaction",
+    "slug": "/examples/interaction/",
     "source": "Interaction"
   },
   {
     "title": "Provider",
-    "slug": "examples/provider",
+    "slug": "/examples/provider/",
     "source": "Provider"
   },
   {
     "title": "Stress",
-    "slug": "examples/stress",
+    "slug": "/examples/stress/",
     "source": "Stress"
   },
   {
     "title": "Validation",
-    "slug": "examples/validation",
+    "slug": "/examples/validation/",
     "source": "Validation"
   },
   {
     "title": "Custom Connectionline",
-    "slug": "examples/custom-connectionline",
+    "slug": "/examples/custom-connectionline/",
     "source": "CustomConnectionLine"
   },
   {
     "title": "Edge Types",
-    "slug": "examples/edge-types",
+    "slug": "/examples/edge-types/",
     "source": "EdgeTypes"
   },
   {
     "title": "Hidden",
-    "slug": "examples/hidden",
+    "slug": "/examples/hidden/",
     "source": "Hidden"
   }
 ]
