@@ -105,6 +105,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 - `onPaneClick(event: MouseEvent)`: called when user clicks directly on the canvas
 - `onPaneContextMenu(event: MouseEvent)`: called when user does a right-click on the canvas
 - `onPaneScroll(event: WheelEvent)`: called when user scrolls pane (only works when `zoomOnScroll` is set to `false)
+- `onEdgeUpdate(oldEdge: Edge, newConnection: Connection)`: called when user press at either end of the edge and point to the target node
 
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option
@@ -585,6 +586,12 @@ Returns an array of elements without the ones from `elementsToRemove`. It also r
 Returns an array with elements with the added edge.
 
 `addEdge = (edgeParams: Edge, elements: Elements): Elements`
+
+### updateEdge
+
+Returns an array with elements with the updated edge.
+
+`updateEdge = (oldEdge: Edge, newConnection: Connection, elements: Elements): Elements`
 
 ### getOutgoers
 

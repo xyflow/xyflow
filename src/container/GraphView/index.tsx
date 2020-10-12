@@ -25,7 +25,8 @@ import {
   OnConnectStartFunc,
   OnConnectStopFunc,
   OnConnectEndFunc,
-  TranslateExtent,
+  TranslateExtent, 
+  OnEdgeUpdateFunc,
 } from '../../types';
 
 export interface GraphViewProps {
@@ -77,6 +78,7 @@ export interface GraphViewProps {
   zoomOnScroll?: boolean;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
+  onEdgeUpdate?: OnEdgeUpdateFunc; 
 }
 
 const GraphView = ({
@@ -128,6 +130,7 @@ const GraphView = ({
   onPaneClick,
   onPaneScroll,
   onPaneContextMenu,
+  onEdgeUpdate,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -310,6 +313,7 @@ const GraphView = ({
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
         connectionLineComponent={connectionLineComponent}
+        onEdgeUpdate={onEdgeUpdate}
       />
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (

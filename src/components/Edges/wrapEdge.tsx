@@ -32,6 +32,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     elementsSelectable,
     markerEndId,
     isHidden,
+    onEitherEndOfEdgePress,
   }: WrapEdgeProps) => {
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
 
@@ -63,12 +64,53 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       [elementsSelectable, id, source, target, type, data, onClick]
     );
 
+    const handleEitherEndOfEdgePress = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>, isEdgeHeader?: boolean): void => {
+        if (elementsSelectable) {
+          setSelectedElements({ id, source, target });
+        }
+
+        const edgeElement: Edge = { id, source, target, type };
+
+        if (typeof data !== 'undefined') {
+          edgeElement.data = data;
+        }
+
+        onEitherEndOfEdgePress(event, edgeElement, isEdgeHeader);
+      },
+      [elementsSelectable, id, source, target, type, data, onEitherEndOfEdgePress]
+    );
+
+    const handleEdgeHeaderPress = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        handleEitherEndOfEdgePress(event, true);
+      },
+      [handleEitherEndOfEdgePress],
+    );
+
+    const handleEdgeFooterPress = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        handleEitherEndOfEdgePress(event);
+      },
+      [handleEitherEndOfEdgePress],
+    );
+
     if (isHidden) {
       return null;
     }
 
     return (
       <g className={edgeClasses} onClick={onEdgeClick} style={edgeGroupStyle}>
+        <g onMouseDown={handleEdgeFooterPress}>
+          <circle
+            className="move-handler"
+            cx={sourceX}
+            cy={sourceY}
+            r="12"
+            stroke="transparent"
+            fill="transparent"
+          />
+        </g>
         <EdgeComponent
           id={id}
           source={source}
@@ -92,6 +134,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           targetPosition={targetPosition}
           markerEndId={markerEndId}
         />
+        <g onMouseDown={handleEdgeHeaderPress}>
+          <circle
+            className="move-handler"
+            cx={targetX}
+            cy={targetY}
+            r="12"
+            stroke="transparent"
+            fill="transparent"
+          />
+        </g>
       </g>
     );
   };
