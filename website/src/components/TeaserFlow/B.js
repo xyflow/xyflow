@@ -170,8 +170,6 @@ export default () => {
     setElements(initialElements);
   }, []);
 
-  console.log(elements);
-
   return (
     <TeaserFlow
       title="Customizable"

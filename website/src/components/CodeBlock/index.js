@@ -7,7 +7,6 @@ import CodeBlock from './Mdx';
 import { H4, AttributionText } from 'components/Typo';
 
 const Wrapper = styled(Box)`
-  max-width: 750px;
   margin: 0 auto;
   padding: 5px 0;
 

@@ -16,6 +16,13 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
+        name: 'exampleflows',
+        path: `${__dirname}/src/example-flows`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
         name: `markdown`,
         path: `${__dirname}/src/markdown`,
       },

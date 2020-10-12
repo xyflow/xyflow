@@ -1,20 +1,47 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Flex } from 'reflexbox';
+import { Flex, Box } from 'reflexbox';
 
 import Page from 'components/Page';
 import Sidebar from 'components/Sidebar';
 import useExamplePages from 'hooks/useExamplePages';
+import CodeBlock from 'components/CodeBlock';
+import { H4 } from 'components/Typo';
+
+import 'example-flows/Overview';
 
 const Wrapper = styled(Flex)`
   border-top: 1px solid ${(p) => p.theme.colors.silverLighten30};
   flex-grow: 1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
 `;
 
-export default ({ children, title, slug }) => {
+const ReactFlowWrapper = styled(Box)`
+  flex-grow: 1;
+
+  .react-flow {
+    height: 65vh;
+  }
+`;
+
+const SourceWrapper = styled(Box)`
+  border-top: 1px solid #eee;
+  max-width: 1000px;
+  margin: 0 auto;
+`;
+
+const SourceCodeBlock = ({ absolutePath, internal }) => {
+  const splittedPath = absolutePath.split('/');
+  const fileName = splittedPath[splittedPath.length - 1];
+
+  return (
+    <Box>
+      <Box>{fileName}</Box>
+      <CodeBlock code={internal.content} />
+    </Box>
+  );
+};
+
+export default ({ children, title, slug, sourceCodeFiles = [] }) => {
   const menu = useExamplePages();
 
   const metaTags = {
@@ -23,11 +50,23 @@ export default ({ children, title, slug }) => {
     robots: 'index, follow',
   };
 
+  const hasSource = sourceCodeFiles.length > 0;
+
   return (
     <Page metaTags={metaTags} footerBorder>
       <Wrapper>
         <Sidebar menu={menu} />
-        {children}
+        <ReactFlowWrapper>
+          {children}
+          {hasSource && (
+            <SourceWrapper p={3}>
+              <H4 as="div">Source Code</H4>
+              {sourceCodeFiles.map((source) => (
+                <SourceCodeBlock key={source.absolutePath} {...source} />
+              ))}
+            </SourceWrapper>
+          )}
+        </ReactFlowWrapper>
       </Wrapper>
     </Page>
   );

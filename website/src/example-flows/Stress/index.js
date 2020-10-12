@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { removeElements, addEdge, MiniMap, isNode, Controls, Background } from 'react-flow-renderer';
+import ReactFlow, {
+  removeElements,
+  addEdge,
+  MiniMap,
+  isNode,
+  Controls,
+  Background,
+} from 'react-flow-renderer';
 import { getElements } from './utils';
 
 const onLoad = (reactFlowInstance) => {
@@ -12,7 +19,8 @@ const initialElements = getElements(10, 10);
 
 const StressFlow = () => {
   const [elements, setElements] = useState(initialElements);
-  const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
+  const onElementsRemove = (elementsToRemove) =>
+    setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
   const updatePos = () => {
@@ -34,12 +42,20 @@ const StressFlow = () => {
   };
 
   return (
-    <ReactFlow elements={elements} onLoad={onLoad} onElementsRemove={onElementsRemove} onConnect={onConnect}>
+    <ReactFlow
+      elements={elements}
+      onLoad={onLoad}
+      onElementsRemove={onElementsRemove}
+      onConnect={onConnect}
+    >
       <MiniMap />
       <Controls />
       <Background />
 
-      <button onClick={updatePos} style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}>
+      <button
+        onClick={updatePos}
+        style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}
+      >
         change pos
       </button>
     </ReactFlow>

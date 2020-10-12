@@ -2,13 +2,15 @@ const path = require('path');
 const { createFilePath } = require('gatsby-source-filesystem');
 
 const docsGenerator = require('./generators/docs');
+const exampleGenerator = require('./generators/examples');
 
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
   const generateDocs = docsGenerator(createPage, graphql);
+  const generateExamples = exampleGenerator(createPage, graphql);
 
-  return Promise.all([generateDocs]);
+  return Promise.all([generateDocs, generateExamples]);
 };
 
 exports.onCreateNode = ({ node, actions, getNode }) => {

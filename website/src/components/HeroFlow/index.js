@@ -9,6 +9,8 @@ import ReactFlow, {
 import ColorPickerNode from './ColorPickerNode';
 
 const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+const hasTouch = typeof window !== 'undefined' && 'ontouchstart' in window;
+
 const isSmallScreen = windowWidth < 800;
 
 const getOffset = () => {
@@ -139,6 +141,7 @@ export default () => {
         zoomOnScroll={false}
         nodeTypes={nodeTypes}
         onConnect={onConnect}
+        paneMoveable={!hasTouch}
       >
         <Background />
         <Controls showInteractive={false} />
