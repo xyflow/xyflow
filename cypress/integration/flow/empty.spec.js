@@ -16,6 +16,8 @@ describe('Empty Flow Rendering', () => {
       .trigger('mousedown', 'topLeft', { which: 1, force: true })
       .trigger('mousemove', 'bottomLeft', { which: 1 })
       .trigger('mouseup', 'bottomLeft', { force: true });
+
+    cy.get('body').type('{shift}', { release: true });
   });
 
   it('renders an empty mini map', () => {

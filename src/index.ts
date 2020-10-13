@@ -11,5 +11,10 @@ export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/uti
 export { isNode, isEdge, removeElements, addEdge, getOutgoers, getIncomers, getConnectedEdges, updateEdge } from './utils/graph';
 
 export * from './additional-components';
-export * from './types';
 export * from './store/hooks';
+export * from './types';
+
+export { ReactFlowProps } from './container/ReactFlow';
+export { MiniMapProps } from './additional-components/MiniMap';
+export { ControlProps } from './additional-components/Controls';
+export { BackgroundProps } from './additional-components/Background';

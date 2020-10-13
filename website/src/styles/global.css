@@ -1,0 +1,56 @@
+@font-face {
+  font-family: 'nt-dapper';
+  src: url('https://webkid.io/fonts/NTDapper-regular.woff2') format('woff2'),
+    url('https://webkid.io/fonts/NTDapper-regular.woff') format('woff'),
+    url('https://webkid.io/fonts/NTDapper-regular.eot');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'nt-dapper';
+  src: url('https://webkid.io/fonts/NTDapper-bold.woff2') format('woff2'),
+    url('https://webkid.io/fonts/NTDapper-bold.woff') format('woff'),
+    url('https://webkid.io/fonts/NTDapper-bold.eot');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'nt-dapper';
+  src: url('https://webkid.io/fonts/NTDapper-black.woff2') format('woff2'),
+    url('https://webkid.io/fonts/NTDapper-black.woff') format('woff'),
+    url('https://webkid.io/fonts/NTDapper-black.eot');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'jetbrains-mono';
+  src: url('../../static/fonts/JetBrainsMono-Regular.woff2') format('woff2'),
+    url('../../static/fonts/JetBrainsMono-Regular.woff') format('woff'),
+    url('../../static/fonts/JetBrainsMono-Regular.eot');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.noscroll {
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.react-flow {
+  font-family: 'jetbrains-mono';
+  text-transform: uppercase;
+}
+
+.react-flow .react-flow__node {
+  font-size: 14px;
+}
+
+.react-flow__controls-button {
+  width: 16px;
+  height: 16px;
+}

@@ -7,7 +7,7 @@ import { createGridLinesPath, createGridDotsPath } from './utils';
 
 import './style.css';
 
-interface BackgroundProps extends HTMLAttributes<SVGElement> {
+export interface BackgroundProps extends HTMLAttributes<SVGElement> {
   variant?: BackgroundVariant;
   gap?: number;
   color?: string;

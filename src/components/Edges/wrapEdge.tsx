@@ -1,4 +1,4 @@
-import React, { memo, useMemo, ComponentType, CSSProperties, useCallback } from 'react';
+import React, { memo, ComponentType, useCallback } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions } from '../../store/hooks';
@@ -36,14 +36,13 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
   }: WrapEdgeProps) => {
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
 
-    const edgeClasses = cc(['react-flow__edge', `react-flow__edge-${type}`, className, { selected, animated }]);
-
-    const edgeGroupStyle: CSSProperties = useMemo(
-      () => ({
-        pointerEvents: elementsSelectable || onClick ? 'all' : 'none',
-      }),
-      [elementsSelectable, onClick]
-    );
+    const inactive = !elementsSelectable && !onClick;
+    const edgeClasses = cc([
+      'react-flow__edge',
+      `react-flow__edge-${type}`,
+      className,
+      { selected, animated, inactive },
+    ]);
 
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
@@ -100,7 +99,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     }
 
     return (
-      <g className={edgeClasses} onClick={onEdgeClick} style={edgeGroupStyle}>
+      <g className={edgeClasses} onClick={onEdgeClick}>
         <g onMouseDown={handleEdgeFooterPress}>
           <circle
             className="move-handler"

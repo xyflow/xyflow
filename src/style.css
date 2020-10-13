@@ -6,7 +6,7 @@
 }
 
 .react-flow__renderer,
-.react-flow__zoompane,
+.react-flow__pane,
 .react-flow__selectionpane {
   width: 100%;
   height: 100%;
@@ -15,12 +15,16 @@
   left: 0;
 }
 
-.react-flow__zoompane {
+.react-flow__pane {
   z-index: 1;
 }
 
+.react-flow__renderer {
+  z-index: 4;
+}
+
 .react-flow__selectionpane {
-  z-index: 2;
+  z-index: 5;
 }
 
 .react-flow__selection {
@@ -41,6 +45,10 @@
 
 .react-flow__edge {
   pointer-events: all;
+
+  &.inactive {
+    pointer-events: none;
+  }
 
   &.selected {
     .react-flow__edge-path {

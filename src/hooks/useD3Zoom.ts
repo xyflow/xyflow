@@ -107,6 +107,20 @@ export default ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.filter((event: any) => {
+        if (selectionKeyPressed) {
+          return false;
+        }
+
+        // only allow zoom on nodes
+        if (event.target.closest('.react-flow__node') && event.type !== 'wheel') {
+          return false;
+        }
+
+        // only allow zoom on user selection
+        if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
+          return false;
+        }
+
         if (!paneMoveable) {
           return false;
         }
@@ -122,5 +136,5 @@ export default ({
         return !event.ctrlKey && !event.button;
       });
     }
-  }, [d3Zoom, zoomOnScroll, zoomOnDoubleClick, paneMoveable]);
+  }, [d3Zoom, zoomOnScroll, zoomOnDoubleClick, paneMoveable, selectionKeyPressed]);
 };

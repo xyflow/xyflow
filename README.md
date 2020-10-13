@@ -1,4 +1,6 @@
- ![react-flow](https://user-images.githubusercontent.com/2857535/88070904-7e5e2c80-cb73-11ea-9f69-6b8647eef24a.png)
+![react-flow](https://user-images.githubusercontent.com/2857535/95224198-b2540000-07fa-11eb-832d-361d72d60345.jpg)
+
+## ✨ React Flow has a [new website](https://reactflow.dev) ✨
 
 # React Flow
 
@@ -129,6 +131,12 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 #### Keys
 - `deleteKeyCode`: default: `8` (delete)
 - `selectionKeyCode`: default: `16` (shift)
+
+**Typescript:** The interface of the ReactFlow Prop Types are exported as `ReactFlowProps`. You can use it in your code as follows:
+
+```javascript
+import { ReactFlowProps } from 'react-flow-renderer';
+```
 
 ## React Flow Instance
 
@@ -271,6 +279,8 @@ const targetHandleWithValidation = (
 - `style`: css properties
 - `className`: additional class name
 
+**Typescript:** The interface of the Handle Prop Types are exported as `HandleProps`.
+
 ### Validation
 
 The handle receives the additional class names `connecting` when the connection line is above the handle and `valid` if the connection is valid. You can find an example which uses these classes [here](/example/src/Validation/index.js).
@@ -412,6 +422,8 @@ const FlowWithBackground = () => (
 - `style`: css properties
 - `className`: additional class name
 
+**Typescript:** The interface of the Background Prop Types are exported as `BackgroundProps`.
+
 ## MiniMap
 
 You can use the mini map plugin by passing it as a children to the `ReactFlow` component:
@@ -445,6 +457,8 @@ const FlowWithMiniMap = () => (
 - `style`: css properties
 - `className`: additional class name
 
+**Typescript:** The interface of the MiniMap Prop Types are exported as `MiniMapProps`.
+
 ## Controls
 
 The control panel contains a zoom-in, zoom-out, fit-view and a lock/unlock button. You can use it by passing it as a children to the `ReactFlow` component:
@@ -470,6 +484,8 @@ const FlowWithControls = () => (
 - `onInteractiveChange`: function that gets triggered when the lock button is pressed - passes the new value
 - `style`: css properties
 - `className`: additional class name
+
+**Typescript:** The interface of the Controls Prop Types are exported as `ControlProps`.
 
 ## ReactFlowProvider
 
@@ -510,8 +526,8 @@ The React Flow wrapper has the className `react-flow`. If you want to change the
 ### Used Class Names
 
 * `.react-flow` - Outer container
-* `.react-flow__renderer` - Inner container
-* `.react-flow__zoompane` - Zoom & pan pane
+* `.react-flow__renderer` - Flow container, used for zooming and panning
+* `.react-flow__pane` - Background Pane for click and wheel events, previously `.react-flow__zoompane`
 * `.react-flow__selectionpane` - Selection pane
 * `.react-flow__selection` - User selection
 * `.react-flow__edges` - Edges wrapper

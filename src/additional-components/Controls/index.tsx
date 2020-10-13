@@ -11,7 +11,7 @@ import UnlockIcon from '../../../assets/icons/unlock.svg';
 
 import './style.css';
 
-interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;

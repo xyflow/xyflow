@@ -52,7 +52,7 @@ describe('Interaction Flow Rendering', () => {
   it('tries to zoom by scroll', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
-    cy.get('.react-flow__zoompane')
+    cy.get('.react-flow__renderer')
       .dblclick()
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
@@ -63,7 +63,7 @@ describe('Interaction Flow Rendering', () => {
   it('tries to zoom by double click', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
-    cy.get('.react-flow__zoompane')
+    cy.get('.react-flow__renderer')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
@@ -122,7 +122,7 @@ describe('Interaction Flow Rendering', () => {
   it('zooms by scroll', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
-    cy.get('.react-flow__zoompane')
+    cy.get('.react-flow__renderer')
       .trigger('wheel', 'topLeft', { deltaY: 200 })
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
@@ -137,7 +137,7 @@ describe('Interaction Flow Rendering', () => {
   it('zooms by double click', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
-    cy.get('.react-flow__zoompane')
+    cy.get('.react-flow__renderer')
       .dblclick()
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
