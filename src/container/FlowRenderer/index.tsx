@@ -12,15 +12,15 @@ import NodesSelection from '../../components/NodesSelection';
 
 interface FlowRendererProps
   extends Omit<
-    GraphViewProps,
-    | 'elements'
-    | 'snapToGrid'
-    | 'nodeTypes'
-    | 'edgeTypes'
-    | 'snapGrid'
-    | 'connectionLineType'
-    | 'arrowHeadColor'
-    | 'onlyRenderVisibleNodes'
+  GraphViewProps,
+  | 'elements'
+  | 'snapToGrid'
+  | 'nodeTypes'
+  | 'edgeTypes'
+  | 'snapGrid'
+  | 'connectionLineType'
+  | 'arrowHeadColor'
+  | 'onlyRenderVisibleNodes'
   > {
   children: ReactNode;
 }
@@ -48,11 +48,12 @@ const FlowRenderer = ({
   onSelectionContextMenu,
 }: FlowRendererProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
+  const rendererNode = useRef<HTMLDivElement>(null);
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  useResizeHandler(zoomPane);
+  useResizeHandler(rendererNode);
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
 
   useD3Zoom({
@@ -92,7 +93,7 @@ const FlowRenderer = ({
   );
 
   return (
-    <div className="react-flow__renderer" ref={zoomPane}>
+    <div className="react-flow__renderer" ref={rendererNode}>
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (
@@ -103,7 +104,13 @@ const FlowRenderer = ({
           onSelectionContextMenu={onSelectionContextMenu}
         />
       )}
-      <div className="react-flow__pane" onClick={onClick} onContextMenu={onContextMenu} onWheel={onWheel} />
+      <div
+        className="react-flow__pane"
+        onClick={onClick}
+        onContextMenu={onContextMenu}
+        onWheel={onWheel}
+        ref={zoomPane}
+      />
     </div>
   );
 };
