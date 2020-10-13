@@ -11,7 +11,6 @@ import { H4 } from 'components/Typo';
 import 'example-flows/Overview';
 
 const Wrapper = styled(Flex)`
-  border-top: 1px solid ${(p) => p.theme.colors.silverLighten30};
   flex-grow: 1;
 `;
 
@@ -19,12 +18,12 @@ const ReactFlowWrapper = styled(Box)`
   flex-grow: 1;
 
   .react-flow {
+    border-bottom:1px solid ${(p) => p.theme.colors.silverLighten30};
     height: 65vh;
   }
 `;
 
 const SourceWrapper = styled(Box)`
-  border-top: 1px solid #eee;
   max-width: 1000px;
   margin: 0 auto;
 `;
@@ -50,6 +49,8 @@ export default ({ children, title, slug, sourceCodeFiles = [] }) => {
     robots: 'index, follow',
   };
 
+  console.log(sourceCodeFiles);
+
   const hasSource = sourceCodeFiles.length > 0;
 
   return (
@@ -60,7 +61,7 @@ export default ({ children, title, slug, sourceCodeFiles = [] }) => {
           {children}
           {hasSource && (
             <SourceWrapper p={3}>
-              <H4 as="div">Source Code</H4>
+              <H4 as="div">{title} Source Code</H4>
               {sourceCodeFiles.map((source) => (
                 <SourceCodeBlock key={source.absolutePath} {...source} />
               ))}

@@ -23,8 +23,6 @@ export default ({ data, pageContext }) => {
     load();
   }, [pageContext]);
 
-  console.log(pageContext, data);
-
   return (
     <ExamplePage
       title={pageContext.title}

@@ -1,7 +1,6 @@
 .providerflow {
   flex-direction: column;
   display: flex;
-  height: 100%;
   flex-grow: 1;
 }
 
@@ -27,7 +26,6 @@
 
 .providerflow .reactflow-wrapper {
   flex-grow: 1;
-  height: 100%;
 }
 
 .providerflow .selectall {
