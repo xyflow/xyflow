@@ -317,7 +317,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `isHidden`: if `true`, the edge will not be rendered
 - `data`: {} you can use this to pass data to your custom edges.
 
-You can find an example with different edges in the [edges example](https://reactflow.dev/edges).
+You can find an example with different edges in the [edges example](https://reactflow.dev/examples/edges).
 
 ## Edge Types & Custom Edges
 
@@ -666,20 +666,18 @@ If you need more control you can wrap the `ReactFlow` component with the `ReactF
 
 You can find all examples in the [example](example) folder or check out the live versions:
 
-- [overview](https://reactflow.dev/)
-- [basic](https://reactflow.dev/basic)
-- [custom node](https://reactflow.dev/custom-node)
-- [horizontal](https://reactflow.dev/horizontal)
-- [stress](https://reactflow.dev/stress)
-- [validation](https://reactflow.dev/validation)
-- [provider](https://reactflow.dev/provider)
-- [edges](https://reactflow.dev/edges)
-- [empty](https://reactflow.dev/empty)
-- [interaction](https://reactflow.dev/interaction)
-- [provider](https://reactflow.dev/provider)
-- [hidden](https://reactflow.dev/hidden)
-- [edge types](https://reactflow.dev/edge-types)
-- [custom connectionline](https://reactflow.dev/custom-connectionline)
+- [overview](https://reactflow.dev/examples)
+- [custom node](https://reactflow.dev/examples/custom-node)
+- [horizontal](https://reactflow.dev/examples/horizontal)
+- [stress](https://reactflow.dev/examples/stress)
+- [validation](https://reactflow.dev/examples/validation)
+- [provider](https://reactflow.dev/examples/provider)
+- [edges](https://reactflow.dev/examples/edges)
+- [interaction](https://reactflow.dev/examples/interaction)
+- [provider](https://reactflow.dev/examples/provider)
+- [hidden](https://reactflow.dev/examples/hidden)
+- [edge types](https://reactflow.dev/examples/edge-types)
+- [custom connectionline](https://reactflow.dev/examples/custom-connectionline)
 
 # Development
 
