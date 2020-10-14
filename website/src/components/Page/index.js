@@ -23,7 +23,6 @@ const PageWrapper = styled(Flex)`
 
 const PageContent = styled(Box)`
   flex: 1 0 auto;
-  position: relative;
 `;
 
 const Page = ({

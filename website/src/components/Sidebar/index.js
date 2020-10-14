@@ -18,6 +18,7 @@ const Aside = styled.aside`
   overflow-y: auto;
   background: white;
   z-index: 400;
+  padding: 20px 10px;
 
   @media ${device.tablet} {
     width: 30%;

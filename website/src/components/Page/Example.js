@@ -18,7 +18,7 @@ const ReactFlowWrapper = styled(Box)`
   flex-grow: 1;
 
   .react-flow {
-    border-bottom:1px solid ${(p) => p.theme.colors.silverLighten30};
+    border-bottom: 1px solid ${(p) => p.theme.colors.silverLighten30};
     height: 65vh;
   }
 `;
@@ -48,8 +48,6 @@ export default ({ children, title, slug, sourceCodeFiles = [] }) => {
     siteUrl: `https://reactflow.dev/examples/${slug}`,
     robots: 'index, follow',
   };
-
-  console.log(sourceCodeFiles);
 
   const hasSource = sourceCodeFiles.length > 0;
 

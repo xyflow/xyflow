@@ -17,7 +17,7 @@ export default function useMenuHeight() {
     return () => {
       window.removeEventListener('resize', onResize);
     };
-  });
+  }, []);
 
   return menuHeight;
 }
