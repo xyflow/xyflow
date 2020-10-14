@@ -10,5 +10,5 @@ React Flow is a library for building node-based applications. These can be simpl
 * **Customizable:** Different [node](/docs/api/node-types/) and [edge types](/docs/api/edge-types) and support for custom nodes with multiple handles and custom edges
 * **Fast rendering:** Only nodes that have changed are re-rendered and only those that are in the viewport are displayed
 * **Utils:** Snap-to-grid and graph [helper functions](/docs/api/helper-functions/)
-* **Components:** [Background](/docs/api/components/background/), [Minimap](/docs/api/components/minimap/) and [Controls](/docs/api/components/controls/)(#components)
+* **Components:** [Background](/docs/api/components/background/), [Minimap](/docs/api/components/minimap/) and [Controls](/docs/api/components/controls/)
 * **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
