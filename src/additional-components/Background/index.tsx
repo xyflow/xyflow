@@ -31,8 +31,9 @@ const Background = ({
 
   const bgClasses = cc(['react-flow__background', className]);
   const scaledGap = gap * scale;
-  const xOffset = (x % scaledGap) - scaledGap / 2;
-  const yOffset = (y % scaledGap) - scaledGap / 2;
+  const halfGap = scaledGap / 2;
+  const xOffset = (x % scaledGap) - halfGap;
+  const yOffset = (y % scaledGap) - halfGap;
 
   const bgSvgTile = useMemo(() => {
     const isLines = variant === BackgroundVariant.Lines;
