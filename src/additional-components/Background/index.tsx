@@ -31,13 +31,13 @@ const Background = ({
 
   const bgClasses = cc(['react-flow__background', className]);
   const scaledGap = gap * scale;
-  const xOffset = x % scaledGap;
-  const yOffset = y % scaledGap;
+  const xOffset = (x % scaledGap) - scaledGap / 2;
+  const yOffset = (y % scaledGap) - scaledGap / 2;
 
   const bgSvgTile = useMemo(() => {
     const isLines = variant === BackgroundVariant.Lines;
     const bgColor = color ? color : defaultColors[variant];
-    const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
+    const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(scaledGap, size, bgColor);
 
     return encodeURIComponent(
       `<svg width="${scaledGap}" height="${scaledGap}" xmlns='http://www.w3.org/2000/svg'>${path}</svg>`
