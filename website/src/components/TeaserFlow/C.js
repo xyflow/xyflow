@@ -4,6 +4,7 @@ import ReactFlow, {
   Background,
   Controls,
   addEdge,
+  MiniMap,
 } from 'react-flow-renderer';
 
 import TeaserFlow from 'components/TeaserFlow';
@@ -187,6 +188,7 @@ export default () => {
         >
           <Background variant="lines" gap={20} />
           <Controls showInteractive={false} />
+          <MiniMap />
         </ReactFlow>
       </ReactFlowProvider>
     </TeaserFlow>

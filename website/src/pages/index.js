@@ -118,6 +118,11 @@ const CenterHeadline = styled(CenterContent)`
   }
 `;
 
+const GettingStartedWrapper = styled(Box)`
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
 const Home = () => {
   return (
     <Page metaTags={metaTags}>
@@ -165,28 +170,29 @@ const Home = () => {
             text="React Flow enables you to build node-based applications. From simple static diagrams to complex interactive editors."
             color={baseColors.textLight}
           />
-          <Paragraph mb={3} color={baseColors.textLight}>
-            React Flow is published on{' '}
-            <a
-              href="https://www.npmjs.com/package/react-flow-renderer"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              npm
-            </a>
-            . You can install it via:
-          </Paragraph>
-          <CodeBlock
-            code={`npm install --save react-flow-renderer`}
-            language="bash"
-          />
-          <Paragraph my={3} color={baseColors.textLight}>
-            A flow consists of nodes and edges (or just nodes). Together we call
-            them elements. You can pass a set of elements as a prop to the
-            ReactFlow component. A simple flow could look like this:
-          </Paragraph>
-          <CodeBlock
-            code={`import React from 'react';
+          <GettingStartedWrapper>
+            <Paragraph mb={3} color={baseColors.textLight}>
+              React Flow is published on{' '}
+              <a
+                href="https://www.npmjs.com/package/react-flow-renderer"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                npm
+              </a>
+              . You can install it via:
+            </Paragraph>
+            <CodeBlock
+              code={`npm install --save react-flow-renderer`}
+              language="bash"
+            />
+            <Paragraph my={3} color={baseColors.textLight}>
+              A flow consists of nodes and edges (or just nodes). Together we
+              call them elements. You can pass a set of elements as a prop to
+              the ReactFlow component. A simple flow could look like this:
+            </Paragraph>
+            <CodeBlock
+              code={`import React from 'react';
 import ReactFlow from 'react-flow-renderer';
 
 const elements = [
@@ -197,20 +203,21 @@ const elements = [
 ];
 
 export default () => <ReactFlow elements={elements} />;`}
-          />
-          <Paragraph mt={3} color={baseColors.textLight}>
-            You can find a detailed{' '}
-            <Link to="/docs/getting-started/">entry point</Link> in the docs or
-            read our{' '}
-            <a
-              href="https://webkid.io/blog/react-flow-node-based-graph-library/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              blog post
-            </a>{' '}
-            to get started.
-          </Paragraph>
+            />
+            <Paragraph mt={3} color={baseColors.textLight}>
+              You can find a detailed{' '}
+              <Link to="/docs/getting-started/">entry point</Link> in the docs
+              or read our{' '}
+              <a
+                href="https://webkid.io/blog/react-flow-node-based-graph-library/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                blog post
+              </a>{' '}
+              to get started.
+            </Paragraph>
+          </GettingStartedWrapper>
         </CenterContent>
       </ContentSection>
 
