@@ -39,4 +39,4 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `isHidden`: if `true`, the edge will not be rendered
 - `data`: {} you can use this to pass data to your custom edges.
 
-You can find an example with different edges in the [edges example](https://reactflow.dev/edges).
+You can find an example with different edges in the [edges example](/examples/edges/).

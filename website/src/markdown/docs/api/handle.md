@@ -32,7 +32,7 @@ const targetHandleWithValidation = (
 
 ### Validation
 
-The handle receives the additional class names `connecting` when the connection line is above the handle and `valid` if the connection is valid. You can find an example which uses these classes [here](/examples/validation).
+The handle receives the additional class names `connecting` when the connection line is above the handle and `valid` if the connection is valid. You can find an example which uses these classes [here](/examples/validation/).
 
 ### Multiple Handles
 

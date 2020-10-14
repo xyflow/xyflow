@@ -59,14 +59,14 @@ import ReactFlow from 'react-flow-renderer';
 - `paneMoveable`: default: `true` - If set to `false`, panning and zooming is disabled
 
 ### Element Customization
-- `nodeTypes`: object with [node types](#node-types--custom-nodes)
-- `edgeTypes`: object with [edge types](#edge-types--custom-edges)
+- `nodeTypes`: object with [node types](/docs/api/node-types/)
+- `edgeTypes`: object with [edge types](/docs/api/edge-types/)
 - `arrowHeadColor`: default: `#b1b1b7`
 
 ### Connection Line Options
 - `connectionLineType`: connection line type = `default` (bezier), `straight`, `step`, `smoothstep`
 - `connectionLineStyle`: connection style as svg attributes
-- `connectionLineComponent`: [custom connection line component](/example/src/CustomConnectionLine/index.js)
+- `connectionLineComponent`: [custom connection line component](/examples/custom-connectionline/)
 
 ### Keys
 - `deleteKeyCode`: default: `8` (backspace)

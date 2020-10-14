@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
-
+import slugify from 'slugify';
 import { MDXProvider } from '@mdx-js/react';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 
 import { H1, H2, H3, H4, Text } from 'components/Typo';
 import CodeBlock from 'components/CodeBlock/Mdx';
 import InfoBox from 'components/InfoBox';
-
+import Link from 'components/Link';
 import { getThemeSpacePx } from 'utils/css-utils';
 
 const DocWrapper = styled.div`
@@ -116,14 +116,32 @@ const DocH4 = styled(H4)`
   margin: ${getThemeSpacePx(6)} 0 ${getThemeSpacePx(3)} 0;
 `;
 
+export const getAnchorId = (props = {}) => {
+  let id = '';
+  let nextChildren = props.children;
+
+  // when a react component is passed instead of just text
+  // we need to go through the children until we reach the text content
+  while (nextChildren) {
+    if (typeof nextChildren === 'string') {
+      id = slugify(nextChildren, { lower: true });
+    }
+
+    nextChildren = nextChildren?.props?.children;
+  }
+
+  return id;
+};
+
 const CustomComponents = {
-  h1: DocH1,
-  h2: DocH2,
-  h3: DocH3,
-  h4: DocH4,
+  h1: (props) => <DocH1 {...props} id={getAnchorId(props)} />,
+  h2: (props) => <DocH2 {...props} id={getAnchorId(props)} />,
+  h3: (props) => <DocH3 {...props} id={getAnchorId(props)} />,
+  h4: (props) => <DocH4 {...props} id={getAnchorId(props)} />,
   p: Text,
   pre: (props) => <div {...props} />,
   code: CodeBlock,
+  a: Link,
   InfoBox,
 };
 
