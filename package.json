@@ -23,7 +23,8 @@
     "test:firefox": "cypress run --browser firefox",
     "test:all": "npm run test:chrome && npm run test:firefox",
     "test": "npm run dev:wait test:chrome",
-    "release": "release-it"
+    "release": "release-it",
+    "postinstall": "cd example && npm install"
   },
   "dependencies": {
     "@welldone-software/why-did-you-render": "^4.3.2",
