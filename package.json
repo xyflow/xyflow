@@ -51,7 +51,7 @@
     "postcss-nested": "^4.2.3",
     "prettier": "2.1.2",
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "release-it": "^14.1.0",
     "rollup": "^2.29.0",
     "rollup-plugin-babel": "^4.4.0",
@@ -65,7 +65,7 @@
     "typescript": "^4.0.3"
   },
   "peerDependencies": {
-    "react": "^16.13.1"
+    "react": "^16.14.0"
   },
   "files": [
     "dist"
