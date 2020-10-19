@@ -53,7 +53,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "release-it": "^14.2.0",
-    "rollup": "^2.29.0",
+    "rollup": "^2.32.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-commonjs": "^10.1.0",
