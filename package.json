@@ -43,7 +43,7 @@
     "@svgr/rollup": "^5.4.0",
     "@types/classnames": "^2.2.10",
     "@types/d3": "^5.16.3",
-    "@types/react": "^16.9.52",
+    "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "autoprefixer": "^9.8.6",
     "babel-preset-react-app": "^9.1.2",
