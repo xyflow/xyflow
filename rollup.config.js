@@ -1,9 +1,9 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import babel from 'rollup-plugin-babel';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
-import replace from 'rollup-plugin-replace';
+import replace from '@rollup/plugin-replace';
 import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 
@@ -15,7 +15,7 @@ const processEnv = isProd ? 'production' : 'development';
 export default [
   {
     input: 'src/index.ts',
-    external: ['react', 'react-dom'],
+    external: ['react', 'react-dom', /@babel\/runtime/],
     onwarn(warning, rollupWarn) {
       if (warning.code !== 'CIRCULAR_DEPENDENCY') {
         rollupWarn(warning);
@@ -42,6 +42,7 @@ export default [
       }),
       babel({
         exclude: 'node_modules/**',
+        babelHelpers: 'runtime',
       }),
       replace({
         'process.env.NODE_ENV': JSON.stringify(processEnv),
