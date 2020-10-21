@@ -288,8 +288,8 @@ export const storeModel: StoreModel = {
       ...state.userSelectionRect,
       x: negativeX ? mousePos.x : state.userSelectionRect.x,
       y: negativeY ? mousePos.y : state.userSelectionRect.y,
-      width: negativeX ? startX - mousePos.x : mousePos.x - startX,
-      height: negativeY ? startY - mousePos.y : mousePos.y - startY,
+      width: Math.abs(mousePos.x - startX),
+      height: Math.abs(mousePos.y - startY),
     };
 
     const selectedNodes = getNodesInside(state.nodes, nextRect, state.transform);

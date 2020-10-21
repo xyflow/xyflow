@@ -187,7 +187,7 @@ export const getNodesInside = (
     const nBox = rectToBox({ ...position, width, height });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
-    const overlappingArea = xOverlap * yOverlap;
+    const overlappingArea = Math.ceil(xOverlap * yOverlap);
 
     if (width === null || height === null || isDragging) {
       // at the beginnning all nodes have width & height === 0
