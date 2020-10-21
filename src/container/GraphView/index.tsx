@@ -55,6 +55,7 @@ export interface GraphViewProps {
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode: number;
+  multiSelectionKeyCode: number;
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
@@ -96,6 +97,7 @@ const GraphView = ({
   connectionLineStyle,
   connectionLineComponent,
   selectionKeyCode,
+  multiSelectionKeyCode,
   onElementsRemove,
   deleteKeyCode,
   elements,
@@ -245,6 +247,7 @@ const GraphView = ({
       onElementsRemove={onElementsRemove}
       deleteKeyCode={deleteKeyCode}
       selectionKeyCode={selectionKeyCode}
+      multiSelectionKeyCode={multiSelectionKeyCode}
       onMove={onMove}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}

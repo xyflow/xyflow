@@ -82,6 +82,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode?: number;
   selectionKeyCode?: number;
+  multiSelectionKeyCode?: number;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
   onlyRenderVisibleNodes?: boolean;
@@ -132,6 +133,7 @@ const ReactFlow = ({
   connectionLineComponent,
   deleteKeyCode = 8,
   selectionKeyCode = 16,
+  multiSelectionKeyCode = 91,
   snapToGrid = false,
   snapGrid = [15, 15],
   onlyRenderVisibleNodes = true,
@@ -182,6 +184,7 @@ const ReactFlow = ({
           selectionKeyCode={selectionKeyCode}
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
+          multiSelectionKeyCode={multiSelectionKeyCode}
           elements={elements}
           onConnect={onConnect}
           onConnectStart={onConnectStart}

@@ -82,6 +82,8 @@ export interface StoreModel {
   nodesConnectable: boolean;
   elementsSelectable: boolean;
 
+  multiSelectionActive: boolean;
+
   reactFlowVersion: string;
 
   onConnect?: OnConnectFunc;
@@ -104,8 +106,10 @@ export interface StoreModel {
   setSelection: Action<StoreModel, boolean>;
 
   unsetNodesSelection: Action<StoreModel>;
+  resetSelectedElements: Action<StoreModel>;
 
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
+  addSelectedElements: Thunk<StoreModel, Elements | Node | Edge>;
 
   updateTransform: Action<StoreModel, TransformXYK>;
 
@@ -141,6 +145,8 @@ export interface StoreModel {
   zoom: Thunk<StoreModel, number, any, StoreModel>;
   zoomIn: Thunk<StoreModel>;
   zoomOut: Thunk<StoreModel>;
+
+  setMultiSelectionActive: Action<StoreModel, boolean>;
 }
 
 export const storeModel: StoreModel = {
@@ -186,6 +192,8 @@ export const storeModel: StoreModel = {
   nodesDraggable: true,
   nodesConnectable: true,
   elementsSelectable: true,
+
+  multiSelectionActive: false,
 
   reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
@@ -332,6 +340,9 @@ export const storeModel: StoreModel = {
 
   unsetNodesSelection: action((state) => {
     state.nodesSelectionActive = false;
+  }),
+
+  resetSelectedElements: action((state) => {
     state.selectedElements = null;
   }),
 
@@ -341,6 +352,20 @@ export const storeModel: StoreModel = {
     const selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
 
     state.selectedElements = selectedElements;
+  }),
+
+  addSelectedElements: thunk((actions, elements, helpers) => {
+    const { multiSelectionActive, selectedElements } = helpers.getState();
+    const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
+
+    if (multiSelectionActive) {
+      const nextElements =  selectedElements ? [...selectedElements, ...selectedElementsArr] : selectedElementsArr;
+      actions.setSelectedElements(nextElements);
+
+      return;
+    }
+
+    actions.setSelectedElements(elements);
   }),
 
   updateTransform: action((state, transform) => {
@@ -509,6 +534,10 @@ export const storeModel: StoreModel = {
   zoomOut: thunk((actions) => {
     actions.zoom(-0.2);
   }),
+
+  setMultiSelectionActive: action((state, isActive) => {
+    state.multiSelectionActive = isActive;
+  })
 };
 
 const nodeEnv: string = process.env.NODE_ENV as string;

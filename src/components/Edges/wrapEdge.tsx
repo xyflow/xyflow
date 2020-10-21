@@ -33,7 +33,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerEndId,
     isHidden,
   }: WrapEdgeProps) => {
-    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+    const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
 
     const inactive = !elementsSelectable && !onClick;
     const edgeClasses = cc([
@@ -46,7 +46,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         if (elementsSelectable) {
-          setSelectedElements({ id, source, target });
+          addSelectedElements({ id, source, target });
         }
 
         if (onClick) {

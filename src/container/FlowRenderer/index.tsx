@@ -36,6 +36,7 @@ const FlowRenderer = ({
   onMoveStart,
   onMoveEnd,
   selectionKeyCode,
+  multiSelectionKeyCode,
   zoomOnScroll,
   zoomOnDoubleClick,
   paneMoveable,
@@ -48,12 +49,15 @@ const FlowRenderer = ({
   onSelectionContextMenu,
 }: FlowRendererProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
+
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
+  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
   const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
+
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
   useResizeHandler(zoomPane);
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
+  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode, multiSelectionKeyCode });
 
   useD3Zoom({
     zoomPane,
@@ -73,6 +77,7 @@ const FlowRenderer = ({
     (event: MouseEvent) => {
       onPaneClick?.(event);
       unsetNodesSelection();
+      resetSelectedElements();
     },
     [onPaneClick]
   );

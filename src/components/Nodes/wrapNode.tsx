@@ -38,7 +38,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     isDragging,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
-    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+    const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
     const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
 
@@ -94,7 +94,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         if (!isDraggable) {
           if (isSelectable) {
             unsetNodesSelection();
-            setSelectedElements({ id: node.id, type: node.type } as Node);
+            addSelectedElements({ id: node.id, type: node.type } as Node);
           }
 
           onClick?.(event, node);
@@ -109,7 +109,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         if (selectNodesOnDrag && isSelectable) {
           unsetNodesSelection();
-          setSelectedElements({ id: node.id, type: node.type } as Node);
+          addSelectedElements({ id: node.id, type: node.type } as Node);
         }
       },
       [node, selectNodesOnDrag, isSelectable, onNodeDragStart]
@@ -134,7 +134,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!isDragging) {
           if (isSelectable && !selectNodesOnDrag) {
-            setSelectedElements({ id: node.id, type: node.type } as Node);
+            addSelectedElements({ id: node.id, type: node.type } as Node);
           }
 
           onClick?.(event as MouseEvent, node);
