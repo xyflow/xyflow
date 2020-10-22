@@ -23,8 +23,7 @@
     "test:firefox": "cypress run --browser firefox",
     "test:all": "npm run test:chrome && npm run test:firefox",
     "test": "npm run dev:wait test:chrome",
-    "release": "release-it",
-    "postinstall": "cd example && npm install"
+    "release": "release-it"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
