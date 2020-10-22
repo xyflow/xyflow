@@ -167,6 +167,7 @@ export interface NodeProps {
   isConnectable: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
+  isDragging?: boolean;
 }
 
 export interface NodeComponentProps {
@@ -188,6 +189,7 @@ export interface NodeComponentProps {
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
+  isDragging?: boolean;
 }
 
 export interface WrapNodeProps {

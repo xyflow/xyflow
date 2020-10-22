@@ -218,6 +218,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               isConnectable={isConnectable}
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}
+              isDragging={isDragging}
             />
           </Provider>
         </div>
