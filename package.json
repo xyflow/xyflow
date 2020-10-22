@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "6.1.3",
+  "version": "6.2.0",
   "main": "dist/ReactFlow.js",
   "module": "dist/ReactFlow.esm.js",
   "types": "dist/index.d.ts",
