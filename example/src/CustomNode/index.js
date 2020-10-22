@@ -72,7 +72,7 @@ const CustomNodeFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      style={{ background: bgColor }}
+      style={{ background: bgColor, height: 600 }}
       onLoad={onLoad}
       nodeTypes={nodeTypes}
       connectionLineStyle={connectionLineStyle}
