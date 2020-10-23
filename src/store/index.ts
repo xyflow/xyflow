@@ -511,7 +511,7 @@ export const storeModel: StoreModel = {
   }),
 };
 
-const nodeEnv: string = __ENV__ as string;
+const nodeEnv: string = (typeof __ENV__ !== 'undefined' && __ENV__) as string;
 const store = createStore(storeModel, { devTools: nodeEnv === 'development' });
 
 export default store;

@@ -36,6 +36,10 @@ export default [
       },
     ],
     plugins: [
+      replace({
+        __ENV__: JSON.stringify(processEnv),
+        __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
+      }),
       bundleSize(),
       postcss({
         minimize: isProd,
@@ -44,10 +48,7 @@ export default [
         exclude: 'node_modules/**',
         babelHelpers: 'runtime',
       }),
-      replace({
-        __ENV__: JSON.stringify(processEnv),
-        __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
-      }),
+
       svgr(),
       typescript({
         clean: true,
