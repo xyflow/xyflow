@@ -26,6 +26,7 @@ function renderNode(
   selectedElements: Elements | null,
   nodesDraggable: boolean,
   nodesConnectable: boolean,
+  elementsRemovable: boolean,
   elementsSelectable: boolean
 ) {
   const nodeType = node.type || 'default';
@@ -37,6 +38,7 @@ function renderNode(
   const isSelected = selectedElements ? selectedElements.some(({ id }) => id === node.id) : false;
 
   const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
+  const isRemovable = !!(node.removable || (elementsRemovable && typeof node.removable === 'undefined'));
   const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
   const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
   const isInitialized = node.__rf.width !== null && node.__rf.height !== null;
@@ -62,6 +64,7 @@ function renderNode(
       style={node.style}
       className={node.className}
       isDraggable={isDraggable}
+      isRemovable={isRemovable}
       isSelectable={isSelectable}
       isConnectable={isConnectable}
       sourcePosition={node.sourcePosition}
@@ -82,6 +85,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const viewportBox = useStoreState((s) => s.viewportBox);
   const nodesDraggable = useStoreState((s) => s.nodesDraggable);
   const nodesConnectable = useStoreState((s) => s.nodesConnectable);
+  const elementsRemovable = useStoreState((s) => s.elementsRemovable);
   const elementsSelectable = useStoreState((s) => s.elementsSelectable);
 
   const transformStyle = {
@@ -93,7 +97,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   return (
     <div className="react-flow__nodes" style={transformStyle}>
       {renderNodes.map((node) =>
-        renderNode(node, props, transform, selectedElements, nodesDraggable, nodesConnectable, elementsSelectable)
+        renderNode(node, props, transform, selectedElements, nodesDraggable, nodesConnectable, elementsRemovable, elementsSelectable)
       )}
     </div>
   );

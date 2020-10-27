@@ -130,6 +130,7 @@ function renderEdge(
   props: EdgeRendererProps,
   nodes: Node[],
   selectedElements: Elements | null,
+  elementsRemovable: boolean,
   elementsSelectable: boolean
 ) {
   const [sourceId, sourceHandleId] = edge.source.split('__');
@@ -196,6 +197,7 @@ function renderEdge(
       targetY={targetY}
       sourcePosition={sourcePosition}
       targetPosition={targetPosition}
+      elementsRemovable={elementsRemovable}
       elementsSelectable={elementsSelectable}
       markerEndId={props.markerEndId}
       isHidden={edge.isHidden}
@@ -212,6 +214,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const connectionPosition = useStoreState((state) => state.connectionPosition);
   const selectedElements = useStoreState((state) => state.selectedElements);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);
+  const elementsRemovable = useStoreState((state) => state.elementsRemovable);
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
@@ -229,7 +232,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
-        {edges.map((edge: Edge) => renderEdge(edge, props, nodes, selectedElements, elementsSelectable))}
+        {edges.map((edge: Edge) => renderEdge(edge, props, nodes, selectedElements, elementsRemovable, elementsSelectable))}
         {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}

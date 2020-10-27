@@ -37,7 +37,7 @@ const Controls = ({
   const zoomIn = useStoreActions((actions) => actions.zoomIn);
   const zoomOut = useStoreActions((actions) => actions.zoomOut);
 
-  const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
+  const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsRemovable && s.elementsSelectable);
   const mapClasses = cc(['react-flow__controls', className]);
 
   return (

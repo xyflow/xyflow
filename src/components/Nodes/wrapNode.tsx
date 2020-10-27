@@ -26,6 +26,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     style,
     className,
     isDraggable,
+    isRemovable,
     isSelectable,
     isConnectable,
     selectNodesOnDrag,
@@ -215,6 +216,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               data={data}
               type={type}
               selected={selected}
+              isRemovable={isRemovable}
               isConnectable={isConnectable}
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}

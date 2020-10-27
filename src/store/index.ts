@@ -80,6 +80,7 @@ export interface StoreModel {
 
   nodesDraggable: boolean;
   nodesConnectable: boolean;
+  elementsRemovable: boolean;
   elementsSelectable: boolean;
 
   reactFlowVersion: string;
@@ -130,6 +131,7 @@ export interface StoreModel {
   setInteractive: Action<StoreModel, boolean>;
   setNodesDraggable: Action<StoreModel, boolean>;
   setNodesConnectable: Action<StoreModel, boolean>;
+  setElementsRemovable: Action<StoreModel, boolean>;
   setElementsSelectable: Action<StoreModel, boolean>;
 
   setUserSelection: Action<StoreModel, XYPosition>;
@@ -185,6 +187,7 @@ export const storeModel: StoreModel = {
 
   nodesDraggable: true,
   nodesConnectable: true,
+  elementsRemovable: true,
   elementsSelectable: true,
 
   reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
@@ -433,6 +436,7 @@ export const storeModel: StoreModel = {
   setInteractive: action((state, isInteractive) => {
     state.nodesDraggable = isInteractive;
     state.nodesConnectable = isInteractive;
+    state.elementsRemovable = isInteractive;
     state.elementsSelectable = isInteractive;
   }),
 
@@ -442,6 +446,10 @@ export const storeModel: StoreModel = {
 
   setNodesConnectable: action((state, nodesConnectable) => {
     state.nodesConnectable = nodesConnectable;
+  }),
+
+  setElementsRemovable: action((state, elementsRemovable) => {
+    state.elementsRemovable = elementsRemovable;
   }),
 
   setElementsSelectable: action((state, elementsSelectable) => {

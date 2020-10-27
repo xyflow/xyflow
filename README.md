@@ -111,7 +111,8 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 #### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option
 - `nodesConnectable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `connectable` node option
-- `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `selectable` node option
+- `elementsRemovable`: default: `true`. This applies to all elements. You can also change the behavior of a specific element with the `removable` element option
+- `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific element with the `selectable` element option
 - `zoomOnScroll`: default: `true`
 - `zoomOnDoubleClick`: default: `true`
 - `selectNodesOnDrag`: default: `true`
@@ -208,6 +209,7 @@ Node example: `{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { 
 - `isHidden`: if `true`, the node will not be rendered
 - `draggable`: boolean - if option is not set, the node is draggable (overwrites general `nodesDraggable` option)
 - `connectable`: boolean - if option is not set, the node is connectable (overwrites general `nodesConnectable` option)
+- `removable`: boolean - if option is not set, the node is removable (overwrites general `elementsRemovable` option)
 - `selectable`: boolean - if option is not set, the node is selectable (overwrites general `elementsSelectable` option)
 
 ## Node Types & Custom Nodes
@@ -316,6 +318,7 @@ If you wanted to display this edge, you would need a node with id = 1 (source no
 - `markerEndId`: custom marker end url - if this is used `arrowHeadType` gets ignored
 - `isHidden`: if `true`, the edge will not be rendered
 - `data`: {} you can use this to pass data to your custom edges.
+- `removable`: boolean - if option is not set, the edge is removable (overwrites general `elementsRemovable` option)
 
 You can find an example with different edges in the [edges example](https://reactflow.dev/examples/edges).
 

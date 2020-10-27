@@ -52,6 +52,7 @@ import ReactFlow from 'react-flow-renderer';
 ### Interaction
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option
 - `nodesConnectable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `connectable` node option
+- `elementsRemovable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `removable` node option
 - `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `selectable` node option
 - `zoomOnScroll`: default: `true`
 - `zoomOnDoubleClick`: default: `true`

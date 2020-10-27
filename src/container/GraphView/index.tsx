@@ -60,6 +60,7 @@ export interface GraphViewProps {
   onlyRenderVisibleNodes: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
+  elementsRemovable?: boolean;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
   minZoom?: number;
@@ -108,6 +109,7 @@ const GraphView = ({
   onlyRenderVisibleNodes,
   nodesDraggable,
   nodesConnectable,
+  elementsRemovable,
   elementsSelectable,
   selectNodesOnDrag = true,
   minZoom,
@@ -134,6 +136,7 @@ const GraphView = ({
   const setSnapToGrid = useStoreActions((actions) => actions.setSnapToGrid);
   const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
   const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
+  const setElementsRemovable = useStoreActions((actions) => actions.setElementsRemovable);
   const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
   const setInitTransform = useStoreActions((actions) => actions.setInitTransform);
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
@@ -212,6 +215,12 @@ const GraphView = ({
       setNodesConnectable(nodesConnectable);
     }
   }, [nodesConnectable]);
+
+  useEffect(() => {
+    if (typeof elementsRemovable !== 'undefined') {
+      setElementsRemovable(elementsRemovable);
+    }
+  }, [elementsRemovable]);
 
   useEffect(() => {
     if (typeof elementsSelectable !== 'undefined') {

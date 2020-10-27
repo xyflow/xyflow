@@ -22,6 +22,7 @@ const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
+  const [isRemovable, setIsRemovable] = useState(false);
   const [isSelectable, setIsSelectable] = useState(false);
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
@@ -35,6 +36,7 @@ const InteractionFlow = () => {
   return (
     <ReactFlow
       elements={elements}
+      elementsRemovable={isRemovable}
       elementsSelectable={isSelectable}
       nodesConnectable={isConnectable}
       nodesDraggable={isDraggable}
@@ -74,6 +76,18 @@ const InteractionFlow = () => {
               checked={isConnectable}
               onChange={(event) => setIsConnectable(event.target.checked)}
               className="react-flow__connectable"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="removable">
+            removable
+            <input
+              id="removable"
+              type="checkbox"
+              checked={isRemovable}
+              onChange={(event) => setIsRemovable(event.target.checked)}
+              className="react-flow__removable"
             />
           </label>
         </div>

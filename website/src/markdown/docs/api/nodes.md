@@ -27,4 +27,5 @@ Node example:
 - `isHidden`: if `true`, the node will not be rendered
 - `draggable`: boolean - if option is not set, the node is draggable (overwrites general `nodesDraggable` option)
 - `connectable`: boolean - if option is not set, the node is connectable (overwrites general `nodesConnectable` option)
+- `removable`: boolean - if option is not set, the node is removable (overwrites general `elementsRemovable` option)
 - `selectable`: boolean - if option is not set, the node is selectable (overwrites general `elementsSelectable` option)

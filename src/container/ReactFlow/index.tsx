@@ -87,6 +87,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onlyRenderVisibleNodes?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
+  elementsRemovable?: boolean;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
   paneMoveable?: boolean;
@@ -138,6 +139,7 @@ const ReactFlow = ({
   selectNodesOnDrag = true,
   nodesDraggable,
   nodesConnectable,
+  elementsRemovable,
   elementsSelectable,
   minZoom,
   maxZoom,
@@ -192,6 +194,7 @@ const ReactFlow = ({
           onlyRenderVisibleNodes={onlyRenderVisibleNodes}
           nodesDraggable={nodesDraggable}
           nodesConnectable={nodesConnectable}
+          elementsRemovable={elementsRemovable}
           elementsSelectable={elementsSelectable}
           selectNodesOnDrag={selectNodesOnDrag}
           minZoom={minZoom}

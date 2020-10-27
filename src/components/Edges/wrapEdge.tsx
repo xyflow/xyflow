@@ -29,6 +29,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     targetY,
     sourcePosition,
     targetPosition,
+    elementsRemovable,
     elementsSelectable,
     markerEndId,
     isHidden,
@@ -59,7 +60,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           onClick(event, edgeElement);
         }
       },
-      [elementsSelectable, id, source, target, type, data, onClick]
+      [elementsRemovable, elementsSelectable, id, source, target, type, data, onClick]
     );
 
     if (isHidden) {

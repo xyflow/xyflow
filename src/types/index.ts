@@ -46,6 +46,7 @@ export interface Node {
   sourcePosition?: Position;
   isHidden?: boolean;
   draggable?: boolean;
+  removable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
 }
@@ -72,6 +73,7 @@ export interface Edge {
   isHidden?: boolean;
   data?: any;
   className?: string;
+  removable?: boolean;
 }
 
 export enum BackgroundVariant {
@@ -116,6 +118,7 @@ export interface WrapEdgeProps {
   targetY: number;
   sourcePosition: Position;
   targetPosition: Position;
+  elementsRemovable?: boolean;
   elementsSelectable?: boolean;
   markerEndId?: string;
   isHidden?: boolean;
@@ -164,6 +167,7 @@ export interface NodeProps {
   type: string;
   data: any;
   selected: boolean;
+  isRemovable: boolean;
   isConnectable: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
@@ -175,6 +179,7 @@ export interface NodeComponentProps {
   type: string;
   data: any;
   selected?: boolean;
+  isRemovable: boolean;
   isConnectable: boolean;
   transform?: Transform;
   xPos?: number;
@@ -200,6 +205,7 @@ export interface WrapNodeProps {
   transform: Transform;
   xPos: number;
   yPos: number;
+  isRemovable: boolean;
   isSelectable: boolean;
   isDraggable: boolean;
   isConnectable: boolean;

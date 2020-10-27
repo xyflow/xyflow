@@ -11,6 +11,7 @@ interface HookParams {
 }
 
 export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
+  const elementsRemovable = useStoreState((state) => state.elementsRemovable); 
   const selectedElements = useStoreState((state) => state.selectedElements);
   const edges = useStoreState((state) => state.edges);
 
@@ -18,8 +19,8 @@ export default ({ deleteKeyCode, onElementsRemove }: HookParams): void => {
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
 
   useEffect(() => {
-    if (onElementsRemove && deleteKeyPressed && selectedElements) {
-      let elementsToRemove = selectedElements;
+    if (onElementsRemove && deleteKeyPressed && elementsRemovable && selectedElements) {
+      let elementsToRemove = selectedElements.filter(el => el.removable);
 
       // we also want to remove the edges if only one node is selected
       if (selectedElements.length === 1 && isNode(selectedElements[0])) {
