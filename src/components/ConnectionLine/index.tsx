@@ -15,6 +15,7 @@ import {
 
 interface ConnectionLineProps {
   connectionNodeId: ElementId;
+  connectionHandleId: ElementId | null;
   connectionHandleType: HandleType;
   connectionPositionX: number;
   connectionPositionY: number;
@@ -28,6 +29,7 @@ interface ConnectionLineProps {
 
 export default ({
   connectionNodeId,
+  connectionHandleId,
   connectionHandleType,
   connectionLineStyle,
   connectionPositionX,
@@ -39,10 +41,8 @@ export default ({
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
-  const hasHandleId = connectionNodeId.includes('__');
-  const sourceIdSplitted = connectionNodeId.split('__');
-  const nodeId = sourceIdSplitted[0];
-  const handleId = hasHandleId ? sourceIdSplitted[1] : null;
+  const nodeId = connectionNodeId;
+  const handleId = connectionHandleId;
 
   useEffect(() => {
     const nextSourceNode = nodes.find((n) => n.id === nodeId) || null;
