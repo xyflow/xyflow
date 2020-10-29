@@ -72,6 +72,7 @@ export interface StoreModel {
   userSelectionRect: SelectionRect;
 
   connectionNodeId: ElementId | null;
+  connectionHandleId: ElementId | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
 
@@ -177,6 +178,7 @@ export const storeModel: StoreModel = {
     draw: false,
   },
   connectionNodeId: null,
+  connectionHandleId: null,
   connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
 
@@ -416,8 +418,9 @@ export const storeModel: StoreModel = {
     state.connectionPosition = position;
   }),
 
-  setConnectionNodeId: action((state, { connectionNodeId, connectionHandleType }) => {
+  setConnectionNodeId: action((state, { connectionNodeId, connectionHandleId, connectionHandleType }) => {
     state.connectionNodeId = connectionNodeId;
+    state.connectionHandleId = connectionHandleId;
     state.connectionHandleType = connectionHandleType;
   }),
 

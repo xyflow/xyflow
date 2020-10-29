@@ -40,29 +40,39 @@ export const removeElements = (elementsToRemove: Elements, elements: Elements): 
   });
 };
 
-const getEdgeId = ({ source, target }: Connection): ElementId => `reactflow__edge-${source}-${target}`;
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId =>
+  `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
+
+const connectionExists = (edge: Edge, elements: Elements) => {
+  return elements.some(
+    (el) =>
+      isEdge(el) &&
+      el.source === edge.source &&
+      el.target === edge.target &&
+      (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
+      (el.targetHandle === edge.targetHandle || (!el.targetHandle && !edge.targetHandle))
+  );
+};
 
 export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elements => {
   if (!edgeParams.source || !edgeParams.target) {
-    throw new Error("Can't create edge. An edge needs a source and a target.");
+    console.warn("Can't create edge. An edge needs a source and a target.");
+    return elements;
   }
 
-  // make sure that there is node with the target and one with the source id
-  [edgeParams.source, edgeParams.target].forEach((id) => {
-    const nodeId = id.includes('__') ? id.split('__')[0] : id;
-    if (!elements.find((e) => isNode(e) && e.id === nodeId)) {
-      throw new Error(`Can't create edge. Node with id=${nodeId} does not exist.`);
-    }
-  });
-
+  let edge: Edge;
   if (isEdge(edgeParams)) {
-    return elements.concat({ ...edgeParams });
+    edge = { ...edgeParams };
+  } else {
+    edge = {
+      ...edgeParams,
+      id: getEdgeId(edgeParams),
+    } as Edge;
   }
 
-  const edge = {
-    ...edgeParams,
-    id: getEdgeId(edgeParams),
-  } as Edge;
+  if (connectionExists(edge, elements)) {
+    return elements;
+  }
 
   return elements.concat(edge);
 };
@@ -112,6 +122,8 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
       ...element,
       source: element.source.toString(),
       target: element.target.toString(),
+      sourceHandle: element.sourceHandle ? element.sourceHandle.toString() : null,
+      targetHandle: element.targetHandle ? element.targetHandle.toString() : null,
       id: element.id.toString(),
       type: element.type || 'default',
     };

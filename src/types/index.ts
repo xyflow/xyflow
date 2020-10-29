@@ -60,6 +60,8 @@ export interface Edge {
   type?: string;
   source: ElementId;
   target: ElementId;
+  sourceHandle?: ElementId | null;
+  targetHandle?: ElementId | null;
   label?: string;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
@@ -243,6 +245,8 @@ export type OnLoadFunc = (params: OnLoadParams) => void;
 export interface Connection {
   source: ElementId | null;
   target: ElementId | null;
+  sourceHandle: ElementId | null;
+  targetHandle: ElementId | null;
 }
 
 export enum ConnectionLineType {
@@ -276,6 +280,7 @@ export type OnConnectEndFunc = (event: MouseEvent) => void;
 
 export type SetConnectionId = {
   connectionNodeId: ElementId | null;
+  connectionHandleId: ElementId | null;
   connectionHandleType: HandleType | null;
 };
 
@@ -290,7 +295,7 @@ export interface HandleProps {
   isConnectable?: boolean;
   onConnect?: OnConnectFunc;
   isValidConnection?: (connection: Connection) => boolean;
-  id?: string;
+  id?: ElementId;
   style?: CSSProperties;
   className?: string;
 }
