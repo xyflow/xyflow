@@ -8,15 +8,6 @@ React Flow is a library for building node-based graphs. You can easily implement
 - **Documentation:** https://reactflow.dev/docs
 - **Examples:** https://reactflow.dev/examples
 
-## Key Features
-
-* **Easy to use:** Seamless zooming & panning behaviour and single and multi-selections of elements
-* **Customizable:** Different [node](#node-types--custom-nodes) and [edge types](#edge-types--custom-edges) and support for custom nodes with multiple handles and custom edges
-* **Fast rendering:** Only nodes that have changed are re-rendered and only those that are in the viewport are displayed
-* **Utils:** Snap-to-grid and graph [helper functions](#helper-functions)
-* **Components:** [Background, Minimap and Controls](#components)
-* **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
-
 # Installation
 
 ```
@@ -25,7 +16,7 @@ npm install react-flow-renderer
 
 # Quick Start
 
-This is a very basic example of how to use React Flow. There are more advanced examples in the [example](/example/src) folder.
+This is a very basic example of how to use React Flow. You can find more advanced examples on the [website](https://reactflow.dev/examples).
 
 ```javascript
 import React from 'react';
@@ -45,7 +36,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 
 You need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
 
-If you want to contribute or develop some custom features the easiest way is to start the dev server:
+If you want to contribute or develop custom features the easiest way is to start the dev server:
 
 ```
 npm run dev
