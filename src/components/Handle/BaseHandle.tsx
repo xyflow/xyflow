@@ -28,7 +28,7 @@ interface BaseHandleProps {
   setConnectionNodeId: SetSourceIdFunc;
   setPosition: (pos: XYPosition) => void;
   isValidConnection: ValidConnectionFunc;
-  id?: ElementId | boolean;
+  id?: ElementId | null;
   className?: string;
   style?: CSSProperties;
 }
@@ -42,7 +42,7 @@ type Result = {
 
 function onMouseDown(
   event: ReactMouseEvent,
-  handleId: ElementId,
+  handleId: ElementId | null,
   nodeId: ElementId,
   setConnectionNodeId: SetSourceIdFunc,
   setPosition: (pos: XYPosition) => void,
@@ -67,7 +67,7 @@ function onMouseDown(
     x: event.clientX - containerBounds.left,
     y: event.clientY - containerBounds.top,
   });
-  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleType: handleType });
+  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
 
   if (onConnectStart) {
     onConnectStart(event, { nodeId, handleType });
@@ -95,7 +95,10 @@ function onMouseDown(
 
     if (elementBelow && (elementBelow.classList.contains('target') || elementBelow.classList.contains('source'))) {
       result.isHoveringHandle = true;
-      if ((isTarget && elementBelow.classList.contains('source')) || (!isTarget && elementBelow.classList.contains('target'))) {
+      if (
+        (isTarget && elementBelow.classList.contains('source')) ||
+        (!isTarget && elementBelow.classList.contains('target'))
+      ) {
         let connection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
 
         if (isTarget) {
@@ -105,7 +108,7 @@ function onMouseDown(
         } else {
           const targetId = elementBelow.getAttribute('data-nodeid');
           const targetHandleId = elementBelow.getAttribute('data-handleid');
-          connection = { source: nodeId, sourceHandle: handleId, target: targetId , targetHandle: targetHandleId};
+          connection = { source: nodeId, sourceHandle: handleId, target: targetId, targetHandle: targetHandleId };
         }
 
         const isValid = isValidConnection(connection);
@@ -155,7 +158,7 @@ function onMouseDown(
     }
 
     resetRecentHandle();
-    setConnectionNodeId({ connectionNodeId: null, connectionHandleType: null });
+    setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -176,7 +179,7 @@ const BaseHandle = ({
   setConnectionNodeId,
   setPosition,
   className,
-  id = false,
+  id = null,
   isValidConnection,
   ...rest
 }: BaseHandleProps) => {
@@ -192,7 +195,8 @@ const BaseHandle = ({
     },
   ]);
 
-  const handleId = id ? `${id}`: ''
+  const handleId = id || null;
+
   return (
     <div
       data-handleid={handleId}

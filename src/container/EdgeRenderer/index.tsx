@@ -98,6 +98,10 @@ function getHandle(bounds: HandleElement[], handleId: ElementId | null): HandleE
     handle = bounds.find((d) => d.id === handleId);
   }
 
+  if (typeof handle === 'undefined') {
+    return null;
+  }
+
   return handle;
 }
 
@@ -132,20 +136,22 @@ function renderEdge(
   selectedElements: Elements | null,
   elementsSelectable: boolean
 ) {
-  const sourceId = edge.source
-  const sourceHandleId = edge.sourceHandle!
-  const targetId = edge.target
-  const targetHandleId = edge.targetHandle!
+  const sourceId = edge.source;
+  const sourceHandleId = edge.sourceHandle || null;
+  const targetId = edge.target;
+  const targetHandleId = edge.targetHandle || null;
 
   const sourceNode = nodes.find((n) => n.id === sourceId);
   const targetNode = nodes.find((n) => n.id === targetId);
 
   if (!sourceNode) {
-    throw new Error(`couldn't create edge for source id: ${sourceId}`);
+    console.warn(`couldn't create edge for source id: ${sourceId}`);
+    return null;
   }
 
   if (!targetNode) {
-    throw new Error(`couldn't create edge for target id: ${targetId}`);
+    console.warn(`couldn't create edge for target id: ${targetId}`);
+    return null;
   }
 
   if (!sourceNode.__rf.width || !sourceNode.__rf.height) {
@@ -158,6 +164,16 @@ function renderEdge(
   const targetHandle = getHandle(targetNode.__rf.handleBounds.target, targetHandleId);
   const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
   const targetPosition = targetHandle ? targetHandle.position : Position.Top;
+
+  if (!sourceHandle) {
+    console.warn(`couldn't create edge for source handle id: ${sourceHandleId}`);
+    return null;
+  }
+
+  if (!targetHandle) {
+    console.warn(`couldn't create edge for source handle id: ${targetHandleId}`);
+    return null;
+  }
 
   const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
     sourceNode,
@@ -210,6 +226,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const edges = useStoreState((state) => state.edges);
   const nodes = useStoreState((state) => state.nodes);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
+  const connectionHandleId = useStoreState((state) => state.connectionHandleId);
   const connectionHandleType = useStoreState((state) => state.connectionHandleType);
   const connectionPosition = useStoreState((state) => state.connectionPosition);
   const selectedElements = useStoreState((state) => state.selectedElements);
@@ -236,6 +253,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           <ConnectionLine
             nodes={nodes}
             connectionNodeId={connectionNodeId!}
+            connectionHandleId={connectionHandleId}
             connectionHandleType={connectionHandleType!}
             connectionPositionX={connectionPosition.x}
             connectionPositionY={connectionPosition.y}

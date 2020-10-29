@@ -25,8 +25,8 @@ export const getHandleBounds = (
       return {
         id: handleId,
         position: handlePosition,
-        x: (bounds.left - parentBounds.left) * (1 / k),
-        y: (bounds.top - parentBounds.top) * (1 / k),
+        x: (bounds.left - parentBounds.left) / k,
+        y: (bounds.top - parentBounds.top) / k,
         ...dimensions,
       };
     }

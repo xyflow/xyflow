@@ -40,43 +40,29 @@ export const removeElements = (elementsToRemove: Elements, elements: Elements): 
   });
 };
 
-const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId => `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId =>
+  `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
 
-const existingConnection = (edge: Edge, elements: Elements) => {
-  for (const element of elements) {
-    if (isEdge(element)) {
-      if (element.source === edge.source && element.sourceHandle === edge.sourceHandle && element.target === edge.target && element.targetHandle === edge.targetHandle) {
-        return true
-      }
-    }
-  }
-  return false
-}
-
+const connectionExists = (edge: Edge, elements: Elements) => {
+  return elements.some(
+    (el) =>
+      isEdge(el) &&
+      el.source === edge.source &&
+      el.target === edge.target &&
+      (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
+      (el.targetHandle === edge.targetHandle || (!el.targetHandle && !edge.targetHandle))
+  );
+};
 
 export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elements => {
   if (!edgeParams.source || !edgeParams.target) {
-    throw new Error("Can't create edge. An edge needs a source and a target.");
+    console.warn("Can't create edge. An edge needs a source and a target.");
+    return elements;
   }
 
-  // make sure that there is node with the target and one with the source id
-  [edgeParams.source, edgeParams.target].forEach((id) => {
-    if (!elements.find((e) => isNode(e) && e.id === id)) {
-      throw new Error(`Can't create edge. Node with id=${id} does not exist.`);
-    }
-  });
-
-  // make sure that the handles exists in each node
-  const handleElements = Array.from(document.getElementsByClassName("react-flow__handle")) as HTMLDivElement[]
-  [[edgeParams.source, edgeParams.sourceHandle], [edgeParams.target, edgeParams.targetHandle]].forEach(([nodeId, handleId]) => {
-    if (!handleElements.find((he) => he.getAttribute('data-nodeid') === nodeId && he.getAttribute('data-handleid') === handleId)) {
-      throw new Error(`Can't create edge. Handle with id=${handleId} does not exist within Node with id=${nodeId}.`);
-    }
-  })
-
-  let edge: Edge
+  let edge: Edge;
   if (isEdge(edgeParams)) {
-    edge = {...edgeParams}
+    edge = { ...edgeParams };
   } else {
     edge = {
       ...edgeParams,
@@ -84,8 +70,11 @@ export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elem
     } as Edge;
   }
 
-  if (existingConnection(edge, elements)) {return elements}
-  return elements.concat(edge)
+  if (connectionExists(edge, elements)) {
+    return elements;
+  }
+
+  return elements.concat(edge);
 };
 
 export const pointToRendererPoint = (
@@ -133,8 +122,8 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
       ...element,
       source: element.source.toString(),
       target: element.target.toString(),
-      sourceHandle: element.sourceHandle ? element.sourceHandle.toString() : '',
-      targetHandle: element.targetHandle ? element.targetHandle.toString() : '',
+      sourceHandle: element.sourceHandle ? element.sourceHandle.toString() : null,
+      targetHandle: element.targetHandle ? element.targetHandle.toString() : null,
       id: element.id.toString(),
       type: element.type || 'default',
     };
