@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@welldone-software/why-did-you-render": "^4.3.2",
+    "@welldone-software/why-did-you-render": "^5.0.0",
     "classcat": "^4.1.0",
     "d3-selection": "^2.0.0",
     "d3-zoom": "^2.0.0",
