@@ -24,7 +24,7 @@
     "test:all": "npm run test:chrome && npm run test:firefox",
     "test": "npm run dev:wait test:chrome",
     "release": "npm run test && release-it",
-    "release:next": "release-it --preRelease=rc --npm.tag=next"
+    "release:next": "release-it major --npm.tag=next"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
