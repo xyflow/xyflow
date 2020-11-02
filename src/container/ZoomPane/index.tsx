@@ -55,7 +55,6 @@ const ZoomPane = ({
 
   const initD3 = useStoreActions((actions) => actions.initD3);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
-  const updateTransformDelta = useStoreActions((actions) => actions.updateTransformDelta);
 
   useResizeHandler(zoomPane);
 
@@ -83,16 +82,20 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Zoom) {
-      d3Zoom.on('zoom', (event: any) => {
-        updateTransform(event.transform);
+      if (selectionKeyPressed) {
+        d3Zoom.on('zoom', null);
+      } else {
+        d3Zoom.on('zoom', (event: any) => {
+          updateTransform(event.transform);
 
-        if (onMove) {
-          const flowTransform = eventToFlowTransform(event.transform);
-          onMove(flowTransform);
-        }
-      });
+          if (onMove) {
+            const flowTransform = eventToFlowTransform(event.transform);
+            onMove(flowTransform);
+          }
+        });
+      }
     }
-  }, [selectionKeyPressed, panOnScroll, d3Zoom, updateTransform, updateTransformDelta, onMove]);
+  }, [selectionKeyPressed, d3Zoom, updateTransform, onMove]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -137,7 +140,7 @@ const ZoomPane = ({
         }
 
         // during a selection we prevent all other interactions
-        if (elementsSelectable && selectionKeyPressed) {
+        if (selectionKeyPressed) {
           return false;
         }
 

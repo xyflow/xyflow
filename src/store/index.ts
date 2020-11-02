@@ -37,12 +37,6 @@ type TransformXYK = {
   k: number;
 };
 
-type TransformDeltas = {
-  x?: number;
-  y?: number;
-  k?: number;
-};
-
 type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
@@ -116,7 +110,6 @@ export interface StoreModel {
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
 
   updateTransform: Action<StoreModel, TransformXYK>;
-  updateTransformDelta: Action<StoreModel, TransformDeltas>;
 
   setInitTransform: Action<StoreModel, TransformXYK>;
 
@@ -358,20 +351,6 @@ export const storeModel: StoreModel = {
     state.transform[0] = transform.x;
     state.transform[1] = transform.y;
     state.transform[2] = transform.k;
-  }),
-
-  updateTransformDelta: action((state, deltas) => {
-    const { x = 0, y = 0, k = 0 } = deltas;
-
-    state.transform[0] += x;
-    state.transform[1] += y;
-    state.transform[2] += k;
-
-    if (state.d3Selection) {
-      const updatedTransform = zoomIdentity.translate(state.transform[0], state.transform[1]).scale(state.transform[2]);
-      // we need to sync the d3 zoom transform with the updated transform
-      state.d3Selection.property('__zoom', updatedTransform);
-    }
   }),
 
   setInitTransform: action((state, transform) => {
