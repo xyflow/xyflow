@@ -1,10 +1,10 @@
-import { useEffect, useRef, MutableRefObject } from 'react';
+import React, { useEffect, useRef, ReactNode } from 'react';
 
-import { useStoreState, useStoreActions } from '../store/hooks';
-import { FlowTransform, TranslateExtent } from '../types';
+import useResizeHandler from '../../hooks/useResizeHandler';
+import { useStoreState, useStoreActions } from '../../store/hooks';
+import { FlowTransform, TranslateExtent } from '../../types';
 
-interface UseD3ZoomParams {
-  zoomPane: MutableRefObject<Element | null>;
+interface ZoomPaneProps {
   selectionKeyPressed: boolean;
   elementsSelectable?: boolean;
   zoomOnScroll?: boolean;
@@ -17,6 +17,7 @@ interface UseD3ZoomParams {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
+  children: ReactNode;
 }
 
 const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
@@ -30,8 +31,7 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
   zoom: eventTransform.k,
 });
 
-export default ({
-  zoomPane,
+const ZoomPane = ({
   onMove,
   onMoveStart,
   onMoveEnd,
@@ -44,13 +44,20 @@ export default ({
   defaultPosition = [0, 0],
   defaultZoom = 1,
   translateExtent,
-}: UseD3ZoomParams): void => {
+  children,
+}: ZoomPaneProps) => {
+  const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
+
   const d3Zoom = useStoreState((s) => s.d3Zoom);
+  const d3Selection = useStoreState((s) => s.d3Selection);
+  const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
 
   const initD3 = useStoreActions((actions) => actions.initD3);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
   const updateTransformDelta = useStoreActions((actions) => actions.updateTransformDelta);
+
+  useResizeHandler(zoomPane);
 
   useEffect(() => {
     if (zoomPane.current) {
@@ -59,19 +66,29 @@ export default ({
   }, []);
 
   useEffect(() => {
+    if (d3Selection && d3Zoom) {
+      const pan = (evt: any) => {
+        d3Zoom.translateBy(d3Selection, evt.wheelDeltaX, evt.wheelDeltaY);
+      };
+
+      if (panOnScroll) {
+        d3Selection.on('wheel', pan).on('wheel.zoom', null);
+      } else {
+        if (typeof d3ZoomHandler !== 'undefined') {
+          d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
+        }
+      }
+    }
+  }, [panOnScroll, d3Selection, d3Zoom]);
+
+  useEffect(() => {
     if (d3Zoom) {
       d3Zoom.on('zoom', (event: any) => {
-        if (panOnScroll && event.sourceEvent.type === 'wheel') {
-          const { deltaX, deltaY } = event.sourceEvent;
-          updateTransformDelta({ x: deltaX, y: deltaY });
-        } else {
-          updateTransform(event.transform);
+        updateTransform(event.transform);
 
-          // todo: should we move this into the store or into a wrapper component with useEffect?
-          if (onMove) {
-            const flowTransform = eventToFlowTransform(event.transform);
-            onMove(flowTransform);
-          }
+        if (onMove) {
+          const flowTransform = eventToFlowTransform(event.transform);
+          onMove(flowTransform);
         }
       });
     }
@@ -154,4 +171,12 @@ export default ({
       });
     }
   }, [d3Zoom, zoomOnScroll, panOnScroll, zoomOnDoubleClick, paneMoveable, selectionKeyPressed, elementsSelectable]);
+
+  return (
+    <div className="react-flow__renderer react-flow__zoompane" ref={zoomPane}>
+      {children}
+    </div>
+  );
 };
+
+export default ZoomPane;

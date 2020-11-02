@@ -1,6 +1,6 @@
 import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
-import { Selection as D3Selection, ZoomBehavior } from 'd3';
+import { Selection as D3Selection, ZoomBehavior, ValueFn } from 'd3';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select } from 'd3-selection';
 
@@ -67,6 +67,7 @@ export interface StoreModel {
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
+  d3ZoomHandler: ValueFn<Element, unknown, void> | undefined;
   d3Initialised: boolean;
   minZoom: number;
   maxZoom: number;
@@ -165,6 +166,7 @@ export const storeModel: StoreModel = {
   d3Zoom: null,
   d3Selection: null,
   d3Initialised: false,
+  d3ZoomHandler: () => {},
   minZoom: 0.5,
   maxZoom: 2,
   translateExtent: [
@@ -403,11 +405,14 @@ export const storeModel: StoreModel = {
     const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
     selection.property('__zoom', updatedTransform);
 
+    const defaultHandler = selection.on('wheel.zoom');
+
     state.transform[0] = clampedX;
     state.transform[1] = clampedY;
     state.transform[2] = clampedZoom;
     state.d3Zoom = d3ZoomInstance;
     state.d3Selection = selection;
+    state.d3ZoomHandler = defaultHandler;
     state.d3Initialised = true;
   }),
 

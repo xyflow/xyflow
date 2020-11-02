@@ -1,12 +1,11 @@
-import React, { useCallback, useRef, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
+import React, { useCallback, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
 import { useStoreActions, useStoreState } from '../../store/hooks';
 
-import useResizeHandler from '../../hooks/useResizeHandler';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
-import useD3Zoom from '../../hooks/useD3Zoom';
 import useKeyPress from '../../hooks/useKeyPress';
 
 import { GraphViewProps } from '../GraphView';
+import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
 
@@ -49,29 +48,11 @@ const FlowRenderer = ({
   onSelectionDragStop,
   onSelectionContextMenu,
 }: FlowRendererProps) => {
-  const zoomPane = useRef<HTMLDivElement>(null);
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  useResizeHandler(zoomPane);
   useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
-
-  useD3Zoom({
-    zoomPane,
-    onMove,
-    onMoveStart,
-    onMoveEnd,
-    selectionKeyPressed,
-    elementsSelectable,
-    zoomOnScroll,
-    panOnScroll,
-    zoomOnDoubleClick,
-    paneMoveable,
-    defaultPosition,
-    defaultZoom,
-    translateExtent,
-  });
 
   const onClick = useCallback(
     (event: MouseEvent) => {
@@ -96,7 +77,20 @@ const FlowRenderer = ({
   );
 
   return (
-    <div className="react-flow__renderer" ref={zoomPane}>
+    <ZoomPane
+      onMove={onMove}
+      onMoveStart={onMoveStart}
+      onMoveEnd={onMoveEnd}
+      selectionKeyPressed={selectionKeyPressed}
+      elementsSelectable={elementsSelectable}
+      zoomOnScroll={zoomOnScroll}
+      panOnScroll={panOnScroll}
+      zoomOnDoubleClick={zoomOnDoubleClick}
+      paneMoveable={paneMoveable}
+      defaultPosition={defaultPosition}
+      defaultZoom={defaultZoom}
+      translateExtent={translateExtent}
+    >
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (
@@ -108,7 +102,7 @@ const FlowRenderer = ({
         />
       )}
       <div className="react-flow__pane" onClick={onClick} onContextMenu={onContextMenu} onWheel={onWheel} />
-    </div>
+    </ZoomPane>
   );
 };
 
