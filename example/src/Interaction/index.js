@@ -25,8 +25,8 @@ const InteractionFlow = () => {
   const [isSelectable, setIsSelectable] = useState(false);
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
-  const [zoomOnScroll, setZoomOnScroll] = useState(false);
-  const [panOnScroll, setPanOnScroll] = useState(true);
+  const [zoomOnScroll, setZoomOnScroll] = useState(true);
+  const [panOnScroll, setPanOnScroll] = useState(false);
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
   const [paneMoveable, setPaneMoveable] = useState(true);
   const [captureZoomClick, setCaptureZoomClick] = useState(false);
