@@ -60,6 +60,8 @@ export interface Edge {
   type?: string;
   source: ElementId;
   target: ElementId;
+  sourceHandle?: ElementId | null;
+  targetHandle?: ElementId | null;
   label?: string;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
@@ -168,6 +170,7 @@ export interface NodeProps {
   isConnectable: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
+  isDragging?: boolean;
 }
 
 export interface NodeComponentProps {
@@ -189,6 +192,7 @@ export interface NodeComponentProps {
   onNodeDragStart?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
+  isDragging?: boolean;
 }
 
 export interface WrapNodeProps {
@@ -242,6 +246,8 @@ export type OnLoadFunc = (params: OnLoadParams) => void;
 export interface Connection {
   source: ElementId | null;
   target: ElementId | null;
+  sourceHandle: ElementId | null;
+  targetHandle: ElementId | null;
 }
 
 export enum ConnectionLineType {
@@ -275,6 +281,7 @@ export type OnConnectEndFunc = (event: MouseEvent) => void;
 
 export type SetConnectionId = {
   connectionNodeId: ElementId | null;
+  connectionHandleId: ElementId | null;
   connectionHandleType: HandleType | null;
 };
 
@@ -289,7 +296,7 @@ export interface HandleProps {
   isConnectable?: boolean;
   onConnect?: OnConnectFunc;
   isValidConnection?: (connection: Connection) => boolean;
-  id?: string;
+  id?: ElementId;
   style?: CSSProperties;
   className?: string;
 }

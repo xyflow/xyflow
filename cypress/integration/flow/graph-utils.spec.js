@@ -44,10 +44,17 @@ describe('Graph Utils Testing', () => {
 
   describe('tests addEdge function', () => {
     it('adds edge', () => {
-      const newEdge = { source: '2', target: '3' };
+      const newEdge = { source: '1', target: '4' };
       const nextElements = addEdge(newEdge, elements);
 
       expect(nextElements.length).to.be.equal(elements.length + 1);
+    });
+
+    it('tries to add existing edge', () => {
+      const newEdge = { source: '2', target: '3' };
+      const nextElements = addEdge(newEdge, elements);
+
+      expect(nextElements.length).to.be.equal(elements.length);
     });
 
     it('tries to add invalid edge', () => {
@@ -59,18 +66,6 @@ describe('Graph Utils Testing', () => {
         console.log(e.message);
 
         expect(e.message).to.be.equal("Can't create edge. An edge needs a source and a target.");
-      }
-    });
-
-    it('tries to add edge with id that does not exist', () => {
-      const notExistingId = 'does-not-exist';
-      const newEdge = { source: notExistingId, target: '3' };
-
-      try {
-        addEdge(newEdge, elements);
-      } catch (e) {
-        console.log(e.message);
-        expect(e.message).to.be.equal(`Can't create edge. Node with id=${notExistingId} does not exist.`);
       }
     });
   });
