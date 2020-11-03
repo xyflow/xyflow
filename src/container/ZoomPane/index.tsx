@@ -71,6 +71,9 @@ const ZoomPane = ({
       if (panOnScroll) {
         d3Selection
           .on('wheel', (event: any) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
             const currentZoom = d3Selection.property('__zoom').k || 1;
 
             d3Zoom.translateBy(
