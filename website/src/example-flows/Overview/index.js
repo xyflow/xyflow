@@ -44,7 +44,7 @@ const OverviewFlow = () => {
 
           return '#fff';
         }}
-        borderRadius={2}
+        nodeBorderRadius={2}
       />
       <Controls />
       <Background color="#aaa" gap={16} />
