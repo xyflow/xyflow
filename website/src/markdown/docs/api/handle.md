@@ -23,8 +23,8 @@ const targetHandleWithValidation = (
 - `type`: 'source' or 'target'
 - `id`: string - you only need this when you have multiple source or target handles (otherwise the node id is used)
 - `position`: 'left', 'right', 'top' or 'bottom' handle position - default: 'top' for type target, 'bottom' for type source
-- `onConnect`: function that gets triggered on connect
-- `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id', sourceHandle: 'source handle id or null', targetHandle: 'target handle id or null' }` as param, returns a boolean - default: `true`
+- `onConnect`: function that gets triggered on connect. This callback only gets executed on source handles.
+- `isValidConnection`: function receives a connection `{ target: 'some-id', source: 'another-id', sourceHandle: 'source handle id or null', targetHandle: 'target handle id or null' }` as param, returns a boolean - default: `true`.
 - `style`: css properties
 - `className`: additional class name
 

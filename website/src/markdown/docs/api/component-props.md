@@ -53,7 +53,9 @@ import ReactFlow from 'react-flow-renderer';
 - `nodesDraggable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `draggable` node option
 - `nodesConnectable`: default: `true`. This applies to all nodes. You can also change the behavior of a specific node with the `connectable` node option
 - `elementsSelectable`: default: `true`. This applies to all elements. You can also change the behavior of a specific node with the `selectable` node option
-- `zoomOnScroll`: default: `true`
+- `zoomOnScroll`: default: `true`. Zoom the graph in and out using the mousewheel or trackpad
+- `panOnScroll`: default: `false`. Move the graph while keeping the zoomlevel using mousewheel or trackpad. Overwrites `zoomOnScroll`.
+- `panOnScrollSpeed`: default: `0.5`. Controls how fast the canvas is moved while using the mousewheel. Only has an effect if `panOnScroll` is enabled.
 - `zoomOnDoubleClick`: default: `true`
 - `selectNodesOnDrag`: default: `true`
 - `paneMoveable`: default: `true` - If set to `false`, panning and zooming is disabled
