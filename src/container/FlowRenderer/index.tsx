@@ -38,6 +38,7 @@ const FlowRenderer = ({
   elementsSelectable,
   zoomOnScroll,
   panOnScroll,
+  panOnScrollSpeed,
   zoomOnDoubleClick,
   paneMoveable,
   defaultPosition,
@@ -85,6 +86,7 @@ const FlowRenderer = ({
       elementsSelectable={elementsSelectable}
       zoomOnScroll={zoomOnScroll}
       panOnScroll={panOnScroll}
+      panOnScrollSpeed={panOnScrollSpeed}
       zoomOnDoubleClick={zoomOnDoubleClick}
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}

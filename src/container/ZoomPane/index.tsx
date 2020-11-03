@@ -9,6 +9,7 @@ interface ZoomPaneProps {
   elementsSelectable?: boolean;
   zoomOnScroll?: boolean;
   panOnScroll?: boolean;
+  panOnScrollSpeed?: number;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
@@ -37,6 +38,7 @@ const ZoomPane = ({
   onMoveEnd,
   zoomOnScroll = true,
   panOnScroll = false,
+  panOnScrollSpeed = 0.5,
   zoomOnDoubleClick = true,
   selectionKeyPressed,
   elementsSelectable,
@@ -66,19 +68,23 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Selection && d3Zoom) {
-      const pan = (evt: any) => {
-        d3Zoom.translateBy(d3Selection, evt.wheelDeltaX, evt.wheelDeltaY);
-      };
-
       if (panOnScroll) {
-        d3Selection.on('wheel', pan).on('wheel.zoom', null);
-      } else {
-        if (typeof d3ZoomHandler !== 'undefined') {
-          d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
-        }
+        d3Selection
+          .on('wheel', (event: any) => {
+            const currentZoom = d3Selection.property('__zoom').k || 1;
+
+            d3Zoom.translateBy(
+              d3Selection,
+              (event.wheelDeltaX / currentZoom) * panOnScrollSpeed,
+              (event.wheelDeltaY / currentZoom) * panOnScrollSpeed
+            );
+          })
+          .on('wheel.zoom', null);
+      } else if (typeof d3ZoomHandler !== 'undefined') {
+        d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
       }
     }
-  }, [panOnScroll, d3Selection, d3Zoom]);
+  }, [panOnScroll, d3Selection, d3Zoom, d3ZoomHandler]);
 
   useEffect(() => {
     if (d3Zoom) {

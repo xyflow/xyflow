@@ -71,6 +71,7 @@ export interface GraphViewProps {
   markerEndId?: string;
   zoomOnScroll?: boolean;
   panOnScroll?: boolean;
+  panOnScrollSpeed?: number;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
 }
@@ -120,6 +121,7 @@ const GraphView = ({
   markerEndId,
   zoomOnScroll,
   panOnScroll,
+  panOnScrollSpeed,
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
@@ -254,6 +256,7 @@ const GraphView = ({
       zoomOnScroll={zoomOnScroll}
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnScroll={panOnScroll}
+      panOnScrollSpeed={panOnScrollSpeed}
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
