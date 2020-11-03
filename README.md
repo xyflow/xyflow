@@ -60,4 +60,4 @@ Special thanks to [Andy Lindemann](https://github.com/AndyLnd) for a lot of help
 
 ---
 
-React Flow was initially developed by [webkid](https://webkid.io), a data visualization company from Berlin. If you need help or want to develop react-based tools or data visualizations, [get in touch](https://webkid.io/contact)!
+React Flow is maintained by [webkid](https://webkid.io), a data visualization agency from Berlin. If you need help or want to develop react-based tools or data visualizations, [get in touch](https://webkid.io/contact)!
