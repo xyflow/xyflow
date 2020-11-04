@@ -167,6 +167,8 @@ export interface NodeProps {
   data: any;
   selected: boolean;
   isConnectable: boolean;
+  xPos?: number;
+  yPos?: number;
   targetPosition?: Position;
   sourcePosition?: Position;
   isDragging?: boolean;
