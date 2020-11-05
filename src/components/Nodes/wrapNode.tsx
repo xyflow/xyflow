@@ -94,13 +94,16 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         if (!isDraggable) {
           if (isSelectable) {
             unsetNodesSelection();
-            addSelectedElements({ id: node.id, type: node.type } as Node);
+
+            if (!selected) {
+              addSelectedElements({ id: node.id, type: node.type } as Node);
+            }
           }
 
           onClick?.(event, node);
         }
       },
-      [isSelectable, isDraggable, onClick, node]
+      [isSelectable, selected, isDraggable, onClick, node]
     );
 
     const onDragStart = useCallback(
@@ -109,16 +112,18 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         if (selectNodesOnDrag && isSelectable) {
           unsetNodesSelection();
-          addSelectedElements({ id: node.id, type: node.type } as Node);
+
+          if (!selected) {
+            addSelectedElements({ id: node.id, type: node.type } as Node);
+          }
         }
       },
-      [node, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
       (_, data) => {
         updateNodePosDiff({
-          id,
           diff: {
             x: data.deltaX,
             y: data.deltaY,
@@ -143,7 +148,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         updateNodePosDiff({
-          id,
           isDragging: false,
         });
 

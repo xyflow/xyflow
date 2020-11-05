@@ -111,7 +111,7 @@ export interface StoreModel {
   resetSelectedElements: Action<StoreModel>;
 
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
-  addSelectedElements: Thunk<StoreModel, Elements | Node | Edge>;
+  addSelectedElements: Thunk<StoreModel, Elements | Node | Edge>;
 
   updateTransform: Action<StoreModel, TransformXYK>;
 
@@ -263,9 +263,9 @@ export const storeModel: StoreModel = {
     });
   }),
 
-  updateNodePosDiff: action((state, { id, diff = null, isDragging = true }) => {
+  updateNodePosDiff: action((state, { diff = null, isDragging = true }) => {
     state.elements.forEach((n) => {
-      if (n.id === id && isNode(n)) {
+      if (isNode(n) && state.selectedElements?.find((sNode) => sNode.id === n.id)) {
         if (diff) {
           n.__rf.position = {
             x: n.__rf.position.x + diff.x,
@@ -363,7 +363,7 @@ export const storeModel: StoreModel = {
     const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
 
     if (multiSelectionActive) {
-      const nextElements =  selectedElements ? [...selectedElements, ...selectedElementsArr] : selectedElementsArr;
+      const nextElements = selectedElements ? [...selectedElements, ...selectedElementsArr] : selectedElementsArr;
       actions.setSelectedElements(nextElements);
 
       return;
@@ -545,7 +545,7 @@ export const storeModel: StoreModel = {
 
   setMultiSelectionActive: action((state, isActive) => {
     state.multiSelectionActive = isActive;
-  })
+  }),
 };
 
 const nodeEnv: string = (typeof __ENV__ !== 'undefined' && __ENV__) as string;

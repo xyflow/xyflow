@@ -308,7 +308,6 @@ export type NodePosUpdate = {
 };
 
 export type NodeDiffUpdate = {
-  id: ElementId;
   diff?: XYPosition;
   isDragging?: boolean;
 };

@@ -77,14 +77,11 @@ export default ({
         onSelectionDrag(event, selectedNodes);
       }
 
-      selectedNodes?.forEach((node) => {
-        updateNodePosDiff({
-          id: node.id,
-          diff: {
-            x: data.deltaX,
-            y: data.deltaY,
-          },
-        });
+      updateNodePosDiff({
+        diff: {
+          x: data.deltaX,
+          y: data.deltaY,
+        },
       });
     },
     [onSelectionDrag, selectedNodes, updateNodePosDiff]
@@ -92,11 +89,8 @@ export default ({
 
   const onStop = useCallback(
     (event: MouseEvent) => {
-      selectedNodes?.forEach((node) => {
-        updateNodePosDiff({
-          id: node.id,
-          isDragging: false,
-        });
+      updateNodePosDiff({
+        isDragging: false,
       });
 
       onSelectionDragStop?.(event, selectedNodes);
