@@ -1,6 +1,6 @@
 import React, { memo, CSSProperties } from 'react';
 
-import { useStoreState, useStoreActions } from '../../store/hooks';
+import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
@@ -14,10 +14,8 @@ import {
   Elements,
   ConnectionLineType,
   ConnectionLineComponent,
-  Connection,
   OnEdgeUpdateFunc,
 } from '../../types';
-import { onMouseDown, SetSourceIdFunc } from '../../components/Handle/BaseHandle';
 
 interface EdgeRendererProps {
   edgeTypes: any;
@@ -138,9 +136,7 @@ function renderEdge(
   props: EdgeRendererProps,
   nodes: Node[],
   selectedElements: Elements | null,
-  elementsSelectable: boolean,
-  setConnectionNodeId: SetSourceIdFunc,
-  setPosition: (pos: XYPosition) => void
+  elementsSelectable: boolean
 ) {
   const sourceId = edge.source;
   const sourceHandleId = edge.sourceHandle || null;
@@ -192,22 +188,6 @@ function renderEdge(
 
   const isSelected = selectedElements ? selectedElements.some((elm) => isEdge(elm) && elm.id === edge.id) : false;
 
-  const onConnect = (connection: Connection) => {
-    const { onEdgeUpdate } = props;
-    if (onEdgeUpdate) {
-      onEdgeUpdate(edge, connection);
-    }
-  };
-
-  const handleEitherEndOfEdgePress = (event: React.MouseEvent, edge: Edge, isEdgeHeader = false) => {
-    const { source, target } = edge;
-    const nodeId = isEdgeHeader ? source : target;
-    const isValidConnection = () => true;
-    const isTarget = !isEdgeHeader;
-
-    onMouseDown(event, null, nodeId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection);
-  };
-
   return (
     <EdgeComponent
       key={edge.id}
@@ -239,7 +219,6 @@ function renderEdge(
       elementsSelectable={elementsSelectable}
       markerEndId={props.markerEndId}
       isHidden={edge.isHidden}
-      onEitherEndOfEdgePress={handleEitherEndOfEdgePress}
     />
   );
 }
@@ -257,8 +236,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
-  const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
-  const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
 
   const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
 
@@ -273,9 +250,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
-        {edges.map((edge: Edge) =>
-          renderEdge(edge, props, nodes, selectedElements, elementsSelectable, setConnectionNodeId, setPosition)
-        )}
+        {edges.map((edge: Edge) => renderEdge(edge, props, nodes, selectedElements, elementsSelectable))}
         {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}

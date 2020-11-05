@@ -82,16 +82,8 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, elements: E
     throw new Error("Can't create new edge. An edge needs a source and a target.");
   }
 
-  // make sure that there is node with the target and one with the source id
-  [newConnection.source, newConnection.target].forEach((id) => {
-    const nodeId = id.includes('__') ? id.split('__')[0] : id;
+  const foundEdge = elements.find((e) => isEdge(e) && e.id === oldEdge.id) as Edge;
 
-    if (!elements.find((e) => isNode(e) && e.id === nodeId)) {
-      throw new Error(`Can't create edge. Node with id=${nodeId} does not exist.`);
-    }
-  });
-  
-  const foundEdge = elements.find(e => isEdge(e) && e.id === oldEdge.id) as Edge;
   if (!foundEdge) {
     throw new Error(`The old edge with id=${oldEdge.id} does not exist.`);
   }
@@ -104,9 +96,8 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, elements: E
     target: newConnection.target,
   } as Edge;
 
-  return elements.filter(e => e.id !== oldEdge.id).concat(edge);
+  return elements.filter((e) => e.id !== oldEdge.id).concat(edge);
 };
-
 
 export const pointToRendererPoint = (
   { x, y }: XYPosition,

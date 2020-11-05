@@ -145,7 +145,7 @@ export function onMouseDown(
 
   function onMouseUp(event: MouseEvent) {
     const { connection, isValid } = checkElementBelowIsValid(event);
-    
+
     if (onConnectStop) {
       onConnectStop(event);
     }

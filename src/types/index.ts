@@ -111,7 +111,8 @@ export interface WrapEdgeProps {
   arrowHeadType?: ArrowHeadType;
   source: ElementId;
   target: ElementId;
-  sourceHandleId?: string;
+  sourceHandleId: ElementId | null;
+  targetHandleId: ElementId | null;
   sourceX: number;
   sourceY: number;
   targetX: number;
@@ -121,7 +122,7 @@ export interface WrapEdgeProps {
   elementsSelectable?: boolean;
   markerEndId?: string;
   isHidden?: boolean;
-  onEitherEndOfEdgePress: (event: React.MouseEvent, edge: Edge, isEdgeHeader?: boolean) => void;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
 }
 
 export interface EdgeProps {
