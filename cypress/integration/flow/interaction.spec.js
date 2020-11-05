@@ -135,6 +135,7 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('zooms by double click', () => {
+    cy.get('.react-flow__controls-zoomout').click();
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
     cy.get('.react-flow__renderer')
