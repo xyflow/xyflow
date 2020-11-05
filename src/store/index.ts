@@ -310,9 +310,9 @@ export const storeModel: StoreModel = {
   }),
 
   unsetUserSelection: action((state) => {
-    const selectedNodes = state.selectedElements?.filter(isNode);
+    const selectedNodes = state.selectedElements?.filter((node) => isNode(node) && node.__rf) as Node[];
 
-    if (!selectedNodes) {
+    if (!selectedNodes || selectedNodes.length === 0) {
       state.selectionActive = false;
       state.userSelectionRect.draw = false;
       state.nodesSelectionActive = false;
