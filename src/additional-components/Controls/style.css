@@ -8,6 +8,7 @@
   &-button {
     background: #fefefe;
     border-bottom: 1px solid #eee;
+    box-sizing: content-box;
     display: flex;
     justify-content: center;
     align-items: center;
