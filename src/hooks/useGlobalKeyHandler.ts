@@ -11,7 +11,7 @@ interface HookParams {
   onElementsRemove?: (elements: Elements) => void;
 }
 
-export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove  }: HookParams): void => {
+export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: HookParams): void => {
   const selectedElements = useStoreState((state) => state.selectedElements);
   const edges = useStoreState((state) => state.edges);
 
@@ -41,5 +41,5 @@ export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove  }: Hoo
 
   useEffect(() => {
     setMultiSelectionActive(multiSelectionKeyPressed);
-  }, [multiSelectionKeyPressed])
+  }, [multiSelectionKeyPressed]);
 };
