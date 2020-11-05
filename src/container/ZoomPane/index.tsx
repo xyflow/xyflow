@@ -78,8 +78,8 @@ const ZoomPane = ({
 
             d3Zoom.translateBy(
               d3Selection,
-              (event.wheelDeltaX / currentZoom) * panOnScrollSpeed,
-              (event.wheelDeltaY / currentZoom) * panOnScrollSpeed
+              (event.deltaX / currentZoom) * panOnScrollSpeed,
+              (event.deltaY / currentZoom) * panOnScrollSpeed
             );
           })
           .on('wheel.zoom', null);
