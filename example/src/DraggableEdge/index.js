@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { MiniMap, Controls, Background, updateEdge } from 'react-flow-renderer';
+import ReactFlow, { MiniMap, Controls, Background, updateEdge, addEdge } from 'react-flow-renderer';
 
 const onLoad = (reactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
@@ -52,7 +52,8 @@ const DragEdge = () => {
   const [elements, setElements] = useState(initialElements);
   const onEdgeUpdate = (oldEdge, newConnection) => {
     setElements((els) => updateEdge(oldEdge, newConnection, els));
-  }
+  };
+  const onConnect = (params) => setElements((els) => addEdge(params, els));
 
   return (
     <ReactFlow
@@ -61,6 +62,7 @@ const DragEdge = () => {
       snapToGrid={true}
       snapGrid={snapGrid}
       onEdgeUpdate={onEdgeUpdate}
+      onConnect={onConnect}
     >
       <MiniMap
         nodeStrokeColor={(n) => {

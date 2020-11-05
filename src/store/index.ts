@@ -157,8 +157,8 @@ export const storeModel: StoreModel = {
   viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   transform: [0, 0, 1],
   elements: [],
-  nodes: computed((state) => state.elements.filter((el) => isNode(el)) as Node[]),
-  edges: computed((state) => state.elements.filter((el) => isEdge(el)) as Edge[]),
+  nodes: computed((state) => state.elements.filter(isNode)),
+  edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 

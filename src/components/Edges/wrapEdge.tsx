@@ -63,10 +63,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       [elementsSelectable, id, source, target, type, data, onClick]
     );
 
-    const handleEitherEndOfEdgePress = useCallback(
+    const handleEdgeUpdaterMouseDown = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>, isEdgeHeader?: boolean): void => {
         if (elementsSelectable) {
-          setSelectedElements({ id, source, target });
+          addSelectedElements({ id, source, target });
         }
 
         const edgeElement: Edge = { id, source, target, type };
@@ -80,18 +80,18 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       [elementsSelectable, id, source, target, type, data, onEitherEndOfEdgePress]
     );
 
-    const handleEdgeHeaderPress = useCallback(
+    const handleEdgeTargetMouseDown = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        handleEitherEndOfEdgePress(event, true);
+        handleEdgeUpdaterMouseDown(event, true);
       },
-      [handleEitherEndOfEdgePress],
+      [handleEdgeUpdaterMouseDown]
     );
 
-    const handleEdgeFooterPress = useCallback(
+    const handleEdgeSourceMouseDown = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        handleEitherEndOfEdgePress(event);
+        handleEdgeUpdaterMouseDown(event);
       },
-      [handleEitherEndOfEdgePress],
+      [handleEdgeUpdaterMouseDown]
     );
 
     if (isHidden) {
@@ -100,9 +100,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     return (
       <g className={edgeClasses} onClick={onEdgeClick}>
-        <g onMouseDown={handleEdgeFooterPress}>
+        <g onMouseDown={handleEdgeSourceMouseDown}>
           <circle
-            className="move-handler"
+            className="react-flow__edgeupdater"
             cx={sourceX}
             cy={sourceY}
             r="12"
@@ -133,9 +133,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           targetPosition={targetPosition}
           markerEndId={markerEndId}
         />
-        <g onMouseDown={handleEdgeHeaderPress}>
+        <g onMouseDown={handleEdgeTargetMouseDown}>
           <circle
-            className="move-handler"
+            className="react-flow__edgeupdater"
             cx={targetX}
             cy={targetY}
             r="12"

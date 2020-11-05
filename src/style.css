@@ -237,6 +237,6 @@
   transform: translate(0, -50%);
 }
 
-.move-handler {
+.react-flow__edgeupdater {
   cursor: move;
 }

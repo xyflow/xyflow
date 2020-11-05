@@ -15,7 +15,7 @@ import {
   ConnectionLineType,
   ConnectionLineComponent,
   Connection,
-  OnEdgeUpdateFunc
+  OnEdgeUpdateFunc,
 } from '../../types';
 import { onMouseDown, SetSourceIdFunc } from '../../components/Handle/BaseHandle';
 
@@ -140,7 +140,7 @@ function renderEdge(
   selectedElements: Elements | null,
   elementsSelectable: boolean,
   setConnectionNodeId: SetSourceIdFunc,
-  setPosition: (pos: XYPosition) => void,
+  setPosition: (pos: XYPosition) => void
 ) {
   const sourceId = edge.source;
   const sourceHandleId = edge.sourceHandle || null;
@@ -197,7 +197,7 @@ function renderEdge(
     if (onEdgeUpdate) {
       onEdgeUpdate(edge, connection);
     }
-  }
+  };
 
   const handleEitherEndOfEdgePress = (event: React.MouseEvent, edge: Edge, isEdgeHeader = false) => {
     const { source, target } = edge;
@@ -205,16 +205,8 @@ function renderEdge(
     const isValidConnection = () => true;
     const isTarget = !isEdgeHeader;
 
-    onMouseDown(
-      event,
-      nodeId,
-      setConnectionNodeId,
-      setPosition,
-      onConnect,
-      isTarget,
-      isValidConnection,
-    )
-  }
+    onMouseDown(event, null, nodeId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection);
+  };
 
   return (
     <EdgeComponent
@@ -282,15 +274,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
         {edges.map((edge: Edge) =>
-          renderEdge(
-            edge,
-            props,
-            nodes,
-            selectedElements,
-            elementsSelectable,
-            setConnectionNodeId,
-            setPosition,
-          ))}
+          renderEdge(edge, props, nodes, selectedElements, elementsSelectable, setConnectionNodeId, setPosition)
+        )}
         {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}

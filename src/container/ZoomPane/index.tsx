@@ -159,7 +159,10 @@ const ZoomPane = ({
         }
 
         // when the target element is a node, we still allow zooming
-        if (event.target.closest('.react-flow__node') && event.type !== 'wheel') {
+        if (
+          (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edgeupdater')) &&
+          event.type !== 'wheel'
+        ) {
           return false;
         }
 

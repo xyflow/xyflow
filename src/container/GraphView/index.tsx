@@ -20,7 +20,7 @@ import {
   OnConnectStartFunc,
   OnConnectStopFunc,
   OnConnectEndFunc,
-  TranslateExtent, 
+  TranslateExtent,
   OnEdgeUpdateFunc,
 } from '../../types';
 
@@ -76,7 +76,7 @@ export interface GraphViewProps {
   panOnScrollSpeed?: number;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
-  onEdgeUpdate?: OnEdgeUpdateFunc; 
+  onEdgeUpdate?: OnEdgeUpdateFunc;
 }
 
 const GraphView = ({
