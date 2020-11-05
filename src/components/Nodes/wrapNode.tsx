@@ -214,10 +214,13 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               id={id}
               data={data}
               type={type}
+              xPos={xPos}
+              yPos={yPos}
               selected={selected}
               isConnectable={isConnectable}
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}
+              isDragging={isDragging}
             />
           </Provider>
         </div>

@@ -49,7 +49,7 @@ describe('Interaction Flow Rendering', () => {
       });
   });
 
-  it('tries to zoom by scroll', () => {
+  it('tries to zoom by double click', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
     cy.get('.react-flow__renderer')
@@ -60,7 +60,7 @@ describe('Interaction Flow Rendering', () => {
       });
   });
 
-  it('tries to zoom by double click', () => {
+  it('tries to zoom by scroll', () => {
     const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
 
     cy.get('.react-flow__renderer')

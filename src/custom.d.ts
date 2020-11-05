@@ -3,7 +3,7 @@ declare module '*.css' {
   export default content;
 }
 
-interface SvgrComponent extends React.StatelessComponent<React.SVGAttributes<SVGElement>> {}
+interface SvgrComponent extends React.FunctionComponent<React.SVGAttributes<SVGElement>> {}
 
 declare module '*.svg' {
   const svgUrl: string;
@@ -13,3 +13,4 @@ declare module '*.svg' {
 }
 
 declare var __REACT_FLOW_VERSION__: string;
+declare var __ENV__: string;

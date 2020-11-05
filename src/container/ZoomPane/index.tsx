@@ -1,12 +1,15 @@
-import { useEffect, useRef, MutableRefObject } from 'react';
+import React, { useEffect, useRef, ReactNode } from 'react';
 
-import { useStoreState, useStoreActions } from '../store/hooks';
-import { FlowTransform, TranslateExtent } from '../types';
+import useResizeHandler from '../../hooks/useResizeHandler';
+import { useStoreState, useStoreActions } from '../../store/hooks';
+import { FlowTransform, TranslateExtent } from '../../types';
 
-interface UseD3ZoomParams {
-  zoomPane: MutableRefObject<Element | null>;
+interface ZoomPaneProps {
   selectionKeyPressed: boolean;
+  elementsSelectable?: boolean;
   zoomOnScroll?: boolean;
+  panOnScroll?: boolean;
+  panOnScrollSpeed?: number;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
@@ -15,6 +18,7 @@ interface UseD3ZoomParams {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
+  children: ReactNode;
 }
 
 const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
@@ -28,30 +32,62 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
   zoom: eventTransform.k,
 });
 
-export default ({
-  zoomPane,
+const ZoomPane = ({
   onMove,
   onMoveStart,
   onMoveEnd,
   zoomOnScroll = true,
+  panOnScroll = false,
+  panOnScrollSpeed = 0.5,
   zoomOnDoubleClick = true,
   selectionKeyPressed,
+  elementsSelectable,
   paneMoveable = true,
   defaultPosition = [0, 0],
   defaultZoom = 1,
   translateExtent,
-}: UseD3ZoomParams): void => {
+  children,
+}: ZoomPaneProps) => {
+  const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
+
   const d3Zoom = useStoreState((s) => s.d3Zoom);
+  const d3Selection = useStoreState((s) => s.d3Selection);
+  const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
 
   const initD3 = useStoreActions((actions) => actions.initD3);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
+
+  useResizeHandler(zoomPane);
 
   useEffect(() => {
     if (zoomPane.current) {
       initD3({ zoomPane: zoomPane.current, defaultPosition, defaultZoom, translateExtent });
     }
   }, []);
+
+  useEffect(() => {
+    if (d3Selection && d3Zoom) {
+      if (panOnScroll) {
+        d3Selection
+          .on('wheel', (event: any) => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            const currentZoom = d3Selection.property('__zoom').k || 1;
+
+            d3Zoom.translateBy(
+              d3Selection,
+              (event.wheelDeltaX / currentZoom) * panOnScrollSpeed,
+              (event.wheelDeltaY / currentZoom) * panOnScrollSpeed
+            );
+          })
+          .on('wheel.zoom', null);
+      } else if (typeof d3ZoomHandler !== 'undefined') {
+        d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
+      }
+    }
+  }, [panOnScroll, d3Selection, d3Zoom, d3ZoomHandler]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -107,34 +143,52 @@ export default ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.filter((event: any) => {
+        // if all interactions are disabled, we prevent all zoom events
+        if (!paneMoveable && !zoomOnScroll && !panOnScroll && !zoomOnDoubleClick) {
+          return false;
+        }
+
+        // during a selection we prevent all other interactions
         if (selectionKeyPressed) {
           return false;
         }
 
-        // only allow zoom on nodes
-        if (event.target.closest('.react-flow__node') && event.type !== 'wheel') {
-          return false;
-        }
-
-        // only allow zoom on user selection
-        if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
-          return false;
-        }
-
-        if (!paneMoveable) {
-          return false;
-        }
-
-        if (!zoomOnScroll && event.type === 'wheel') {
-          return false;
-        }
-
+        // if zoom on double click is disabled, we prevent the double click event
         if (!zoomOnDoubleClick && event.type === 'dblclick') {
           return false;
         }
 
+        // when the target element is a node, we still allow zooming
+        if (event.target.closest('.react-flow__node') && event.type !== 'wheel') {
+          return false;
+        }
+
+        // when the target element is a node selection, we still allow zooming
+        if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
+          return false;
+        }
+
+        // when there is no scroll handling enabled, we prevent all wheel events
+        if (!zoomOnScroll && !panOnScroll && event.type === 'wheel') {
+          return false;
+        }
+
+        // if the pane is not movable, we prevent dragging it with the mouse
+        if (!paneMoveable && event.type === 'mousedown') {
+          return false;
+        }
+
+        // default filter for d3-zoom, prevents zooming on buttons and when ctrl is pressed
         return !event.ctrlKey && !event.button;
       });
     }
-  }, [d3Zoom, zoomOnScroll, zoomOnDoubleClick, paneMoveable, selectionKeyPressed]);
+  }, [d3Zoom, zoomOnScroll, panOnScroll, zoomOnDoubleClick, paneMoveable, selectionKeyPressed, elementsSelectable]);
+
+  return (
+    <div className="react-flow__renderer react-flow__zoompane" ref={zoomPane}>
+      {children}
+    </div>
+  );
 };
+
+export default ZoomPane;
