@@ -35,6 +35,7 @@ const FlowRenderer = ({
   onMoveStart,
   onMoveEnd,
   selectionKeyCode,
+  multiSelectionKeyCode,
   elementsSelectable,
   zoomOnScroll,
   panOnScroll,
@@ -50,15 +51,18 @@ const FlowRenderer = ({
   onSelectionContextMenu,
 }: FlowRendererProps) => {
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
+  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
   const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
+
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode });
+  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode, multiSelectionKeyCode });
 
   const onClick = useCallback(
     (event: MouseEvent) => {
       onPaneClick?.(event);
       unsetNodesSelection();
+      resetSelectedElements();
     },
     [onPaneClick]
   );

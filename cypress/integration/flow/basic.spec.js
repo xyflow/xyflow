@@ -15,6 +15,19 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-flow__background');
   });
 
+  it('selects two nodes by clicks', () => {
+    cy.get('body').type('{cmd}', { release: false });
+    cy.get('.react-flow__node:first')
+      .click()
+      .should('have.class', 'selected')
+      .get('.react-flow__node:last')
+      .click()
+      .should('have.class', 'selected')
+      .get('.react-flow__node:first')
+      .should('have.class', 'selected');
+    cy.get('body').type('{cmd}', { release: true });
+  });
+
   it('selects a node by click', () => {
     cy.get('.react-flow__node:first').click().should('have.class', 'selected');
   });
