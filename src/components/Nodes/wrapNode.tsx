@@ -139,7 +139,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         // onDragStop also gets called when user just clicks on a node.
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!isDragging) {
-          if (isSelectable && !selectNodesOnDrag) {
+          if (isSelectable && !selectNodesOnDrag && !selected) {
             addSelectedElements({ id: node.id, type: node.type } as Node);
           }
 
@@ -155,7 +155,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
-      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging]
+      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging, selected]
     );
 
     useEffect(() => {
