@@ -124,6 +124,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const onDrag = useCallback(
       (_, data) => {
         updateNodePosDiff({
+          id,
           diff: {
             x: data.deltaX,
             y: data.deltaY,
@@ -148,6 +149,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         }
 
         updateNodePosDiff({
+          id: node.id,
           isDragging: false,
         });
 

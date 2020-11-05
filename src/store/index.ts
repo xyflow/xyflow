@@ -263,9 +263,9 @@ export const storeModel: StoreModel = {
     });
   }),
 
-  updateNodePosDiff: action((state, { diff = null, isDragging = true }) => {
+  updateNodePosDiff: action((state, { id = null, diff = null, isDragging = true }) => {
     state.elements.forEach((n) => {
-      if (isNode(n) && state.selectedElements?.find((sNode) => sNode.id === n.id)) {
+      if (isNode(n) && (id === n.id || state.selectedElements?.find((sNode) => sNode.id === n.id))) {
         if (diff) {
           n.__rf.position = {
             x: n.__rf.position.x + diff.x,
