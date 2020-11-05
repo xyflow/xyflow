@@ -11,15 +11,15 @@ import NodesSelection from '../../components/NodesSelection';
 
 interface FlowRendererProps
   extends Omit<
-    GraphViewProps,
-    | 'elements'
-    | 'snapToGrid'
-    | 'nodeTypes'
-    | 'edgeTypes'
-    | 'snapGrid'
-    | 'connectionLineType'
-    | 'arrowHeadColor'
-    | 'onlyRenderVisibleNodes'
+  GraphViewProps,
+  | 'elements'
+  | 'snapToGrid'
+  | 'nodeTypes'
+  | 'edgeTypes'
+  | 'snapGrid'
+  | 'connectionLineType'
+  | 'arrowHeadColor'
+  | 'onlyRenderVisibleNodes'
   > {
   children: ReactNode;
 }

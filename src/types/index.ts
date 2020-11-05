@@ -121,6 +121,7 @@ export interface WrapEdgeProps {
   elementsSelectable?: boolean;
   markerEndId?: string;
   isHidden?: boolean;
+  onEitherEndOfEdgePress: (event: React.MouseEvent, edge: Edge, isEdgeHeader?: boolean) => void;
 }
 
 export interface EdgeProps {
@@ -320,3 +321,5 @@ export type FlowTransform = {
 };
 
 export type TranslateExtent = [[number, number], [number, number]];
+
+export type OnEdgeUpdateFunc = (oldEdge: Edge, newConnection: Connection) => void;

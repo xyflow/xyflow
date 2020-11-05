@@ -15,7 +15,7 @@ import {
 } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
-type SetSourceIdFunc = (params: SetConnectionId) => void;
+export type SetSourceIdFunc = (params: SetConnectionId) => void;
 
 interface BaseHandleProps {
   type: HandleType;
@@ -40,7 +40,7 @@ type Result = {
   isHoveringHandle: boolean;
 };
 
-function onMouseDown(
+export function onMouseDown(
   event: ReactMouseEvent,
   handleId: ElementId | null,
   nodeId: ElementId,
@@ -67,6 +67,7 @@ function onMouseDown(
     x: event.clientX - containerBounds.left,
     y: event.clientY - containerBounds.top,
   });
+
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
 
   if (onConnectStart) {
@@ -144,7 +145,7 @@ function onMouseDown(
 
   function onMouseUp(event: MouseEvent) {
     const { connection, isValid } = checkElementBelowIsValid(event);
-
+    
     if (onConnectStop) {
       onConnectStop(event);
     }

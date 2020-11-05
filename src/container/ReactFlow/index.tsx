@@ -32,6 +32,7 @@ import {
   OnConnectStopFunc,
   OnConnectEndFunc,
   TranslateExtent,
+  OnEdgeUpdateFunc,
 } from '../../types';
 
 import '../../style.css';
@@ -102,6 +103,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
   zoomOnDoubleClick?: boolean;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
 }
 
 const ReactFlow = ({
@@ -159,6 +161,7 @@ const ReactFlow = ({
   onPaneScroll,
   onPaneContextMenu,
   children,
+  onEdgeUpdate,
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
@@ -220,6 +223,7 @@ const ReactFlow = ({
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
+          onEdgeUpdate={onEdgeUpdate}
         />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
