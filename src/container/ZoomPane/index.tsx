@@ -123,7 +123,7 @@ const ZoomPane = ({
         d3Zoom.on('zoom', null);
       } else {
         d3Zoom.on('zoom', (event: any) => {
-          updateTransform(event.transform);
+          updateTransform([event.transform.x, event.transform.y, event.transform.k]);
 
           if (onMove) {
             const flowTransform = eventToFlowTransform(event.transform);

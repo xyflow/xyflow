@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo, CSSProperties, MouseEvent, WheelEvent } from 'react';
 
-import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
+import { useStoreActions, useStore } from '../../store/hooks';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
@@ -132,7 +132,6 @@ const GraphView = ({
   onPaneContextMenu,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
-  const d3Zoom = useStoreState((state) => state.d3Zoom);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
@@ -142,34 +141,32 @@ const GraphView = ({
   const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
   const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
   const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
-  const setInitTransform = useStoreActions((actions) => actions.setInitTransform);
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const currentStore = useStore();
-  const { zoomIn, zoomOut, zoomTo, fitView } = useZoomPanHelper();
+  const { zoomIn, zoomOut, zoomTo, transform, fitView } = useZoomPanHelper();
 
   useElementUpdater(elements);
 
   useEffect(() => {
-    if (!isInitialised.current && d3Zoom) {
+    if (!isInitialised.current && zoomIn && zoomOut && zoomTo && transform && fitView) {
       if (onLoad) {
         onLoad({
           fitView: (params = { padding: 0.1 }) => fitView(params),
           zoomIn,
           zoomOut,
           zoomTo,
+          setTransform: transform,
           project: onLoadProject(currentStore),
           getElements: onLoadGetElements(currentStore),
-          setTransform: (transform: FlowTransform) =>
-            setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
           toObject: onLoadToObject(currentStore),
         });
       }
 
       isInitialised.current = true;
     }
-  }, [d3Zoom, onLoad]);
+  }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView]);
 
   useEffect(() => {
     if (onConnect) {

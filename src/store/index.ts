@@ -1,12 +1,11 @@
 import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
-import { zoomIdentity } from 'd3-zoom';
 
 import { getDimensions } from '../utils';
+import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
-import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge } from '../utils/graph';
 import {
   ElementId,
   Elements,
@@ -28,12 +27,6 @@ import {
   TranslateExtent,
   SnapGrid,
 } from '../types';
-
-type TransformXYK = {
-  x: number;
-  y: number;
-  k: number;
-};
 
 type NodeDimensionUpdate = {
   id: ElementId;
@@ -110,9 +103,7 @@ export interface StoreModel {
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
   addSelectedElements: Thunk<StoreModel, Elements | Node | Edge>;
 
-  updateTransform: Action<StoreModel, TransformXYK>;
-
-  setInitTransform: Action<StoreModel, TransformXYK>;
+  updateTransform: Action<StoreModel, Transform>;
 
   updateSize: Action<StoreModel, Dimensions>;
 
@@ -148,8 +139,8 @@ export const storeModel: StoreModel = {
   viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   transform: [0, 0, 1],
   elements: [],
-  nodes: computed((state) => state.elements.filter((el) => isNode(el)) as Node[]),
-  edges: computed((state) => state.elements.filter((el) => isEdge(el)) as Edge[]),
+  nodes: computed((state) => state.elements.filter(isNode)),
+  edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
@@ -363,21 +354,9 @@ export const storeModel: StoreModel = {
   }),
 
   updateTransform: action((state, transform) => {
-    state.transform[0] = transform.x;
-    state.transform[1] = transform.y;
-    state.transform[2] = transform.k;
-  }),
-
-  setInitTransform: action((state, transform) => {
-    state.transform[0] = transform.x;
-    state.transform[1] = transform.y;
-    state.transform[2] = transform.k;
-
-    if (state.d3Selection) {
-      const updatedTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.k);
-      // we need to sync the d3 zoom transform with the updated transform
-      state.d3Selection.property('__zoom', updatedTransform);
-    }
+    state.transform[0] = transform[0];
+    state.transform[1] = transform[1];
+    state.transform[2] = transform[2];
   }),
 
   updateSize: action((state, size) => {

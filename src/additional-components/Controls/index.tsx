@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import cc from 'classcat';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -39,56 +39,47 @@ const Controls = ({
   const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
   const mapClasses = cc(['react-flow__controls', className]);
 
+  const onZoomInHandler = useCallback(() => {
+    zoomIn?.();
+    onZoomIn?.();
+  }, [zoomIn, onZoomIn]);
+
+  const onZoomOutHandler = useCallback(() => {
+    zoomOut?.();
+    onZoomOut?.();
+  }, [zoomOut, onZoomOut]);
+
+  const onFitViewHandler = useCallback(() => {
+    fitView?.();
+    onFitView?.();
+  }, [fitView, onFitView]);
+
+  const onInteractiveChangeHandler = useCallback(() => {
+    setInteractive?.(!isInteractive);
+    onInteractiveChange?.(!isInteractive);
+  }, [isInteractive, setInteractive, onInteractiveChange]);
+
   return (
     <div className={mapClasses} style={style}>
       {showZoom && (
         <>
-          <div
-            className="react-flow__controls-button react-flow__controls-zoomin"
-            onClick={() => {
-              zoomIn();
-              if (onZoomIn) {
-                onZoomIn();
-              }
-            }}
-          >
+          <div className="react-flow__controls-button react-flow__controls-zoomin" onClick={onZoomInHandler}>
             <PlusIcon />
           </div>
-          <div
-            className="react-flow__controls-button react-flow__controls-zoomout"
-            onClick={() => {
-              zoomOut();
-              if (onZoomOut) {
-                onZoomOut();
-              }
-            }}
-          >
+          <div className="react-flow__controls-button react-flow__controls-zoomout" onClick={onZoomOutHandler}>
             <MinusIcon />
           </div>
         </>
       )}
       {showFitView && (
-        <div
-          className="react-flow__controls-button react-flow__controls-fitview"
-          onClick={() => {
-            fitView({ padding: 0.1 });
-            if (onFitView) {
-              onFitView();
-            }
-          }}
-        >
+        <div className="react-flow__controls-button react-flow__controls-fitview" onClick={onFitViewHandler}>
           <FitviewIcon />
         </div>
       )}
       {showInteractive && (
         <div
           className="react-flow__controls-button react-flow__controls-interactive"
-          onClick={() => {
-            setInteractive(!isInteractive);
-            if (onInteractiveChange) {
-              onInteractiveChange(!isInteractive);
-            }
-          }}
+          onClick={onInteractiveChangeHandler}
         >
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </div>

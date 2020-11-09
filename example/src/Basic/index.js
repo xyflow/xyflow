@@ -41,6 +41,8 @@ const BasicFlow = () => {
 
   const logToObject = () => console.log(rfInstance.toObject());
 
+  const resetTransform = () => rfInstance.setTransform({ x: 0, y: 0, zoom: 1 });
+
   return (
     <ReactFlow
       elements={elements}
@@ -57,6 +59,9 @@ const BasicFlow = () => {
       <Background variant="lines" />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+        <button onClick={resetTransform} style={{ marginRight: 5 }}>
+          reset transform
+        </button>
         <button onClick={updatePos} style={{ marginRight: 5 }}>
           change pos
         </button>
