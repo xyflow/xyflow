@@ -4,7 +4,6 @@ import { useStoreActions, useStore } from '../../store/hooks';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import useElementUpdater from '../../hooks/useElementUpdater';
 import { onLoadProject, onLoadGetElements, onLoadToObject } from '../../utils/graph';
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
@@ -12,7 +11,7 @@ import { ReactFlowProps } from '../ReactFlow';
 
 import { NodeTypesType, EdgeTypesType, ConnectionLineType } from '../../types';
 
-export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'> {
+export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'elements'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   selectionKeyCode: number;
@@ -53,7 +52,6 @@ const GraphView = ({
   multiSelectionKeyCode,
   onElementsRemove,
   deleteKeyCode,
-  elements,
   onConnect,
   onConnectStart,
   onConnectStop,
@@ -96,8 +94,6 @@ const GraphView = ({
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView } = useZoomPanHelper();
-
-  useElementUpdater(elements);
 
   useEffect(() => {
     if (!isInitialised.current && zoomIn && zoomOut && zoomTo && transform && fitView) {

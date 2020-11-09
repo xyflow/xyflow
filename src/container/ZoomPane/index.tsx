@@ -55,13 +55,13 @@ const ZoomPane = ({
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
 
+  const store = useStore();
   const d3Zoom = useStoreState((s) => s.d3Zoom);
   const d3Selection = useStoreState((s) => s.d3Selection);
   const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
 
   const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
-  const store = useStore();
 
   useResizeHandler(zoomPane);
 

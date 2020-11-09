@@ -9,6 +9,7 @@ if (nodeEnv !== 'production') {
 }
 
 import GraphView from '../GraphView';
+import ElementUpdater from '../../components/ElementUpdater';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
@@ -189,7 +190,6 @@ const ReactFlow = ({
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
           multiSelectionKeyCode={multiSelectionKeyCode}
-          elements={elements}
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onConnectStop={onConnectStop}
@@ -221,6 +221,7 @@ const ReactFlow = ({
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
         />
+        <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
       </Wrapper>
