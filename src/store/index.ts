@@ -44,6 +44,7 @@ type InitD3Zoom = {
   d3Zoom: ZoomBehavior<Element, unknown>;
   d3Selection: D3Selection<Element, unknown, null, undefined>;
   d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  transform: Transform;
 };
 export interface StoreModel {
   width: number;
@@ -59,7 +60,6 @@ export interface StoreModel {
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
   d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
-  d3Initialised: boolean;
   minZoom: number;
   maxZoom: number;
   translateExtent: TranslateExtent;
@@ -155,7 +155,6 @@ export const storeModel: StoreModel = {
 
   d3Zoom: null,
   d3Selection: null,
-  d3Initialised: false,
   d3ZoomHandler: undefined,
   minZoom: 0.5,
   maxZoom: 2,
@@ -388,11 +387,14 @@ export const storeModel: StoreModel = {
     state.height = size.height || 500;
   }),
 
-  initD3Zoom: action((state, { d3Zoom, d3Selection, d3ZoomHandler }) => {
+  initD3Zoom: action((state, { d3Zoom, d3Selection, d3ZoomHandler, transform }) => {
     state.d3Zoom = d3Zoom;
     state.d3Selection = d3Selection;
     state.d3ZoomHandler = d3ZoomHandler;
-    state.d3Initialised = true;
+
+    state.transform[0] = transform[0];
+    state.transform[1] = transform[1];
+    state.transform[2] = transform[2];
   }),
 
   setMinZoom: action((state, minZoom) => {

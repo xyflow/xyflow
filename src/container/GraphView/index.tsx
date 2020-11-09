@@ -132,7 +132,7 @@ const GraphView = ({
   onPaneContextMenu,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
-  const d3Initialised = useStoreState((state) => state.d3Initialised);
+  const d3Zoom = useStoreState((state) => state.d3Zoom);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
@@ -152,7 +152,7 @@ const GraphView = ({
   useElementUpdater(elements);
 
   useEffect(() => {
-    if (!isInitialised.current && d3Initialised) {
+    if (!isInitialised.current && d3Zoom) {
       if (onLoad) {
         onLoad({
           fitView: (params = { padding: 0.1 }) => fitView(params),
@@ -169,7 +169,7 @@ const GraphView = ({
 
       isInitialised.current = true;
     }
-  }, [d3Initialised, onLoad]);
+  }, [d3Zoom, onLoad]);
 
   useEffect(() => {
     if (onConnect) {

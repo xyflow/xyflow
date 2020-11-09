@@ -67,7 +67,6 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (zoomPane.current) {
-      // initD3: action((state, { zoomPane, defaultPosition, defaultZoom, translateExtent }) => {
       const state = store.getState();
       const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
       const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
@@ -76,18 +75,16 @@ const ZoomPane = ({
       const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
       const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
       const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
-
       const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
-      // selection.property('__zoom', updatedTransform);
-
-      const zoomHandler = selection.on('wheel.zoom');
 
       d3ZoomInstance.transform(selection, updatedTransform);
 
       initD3Zoom({
         d3Zoom: d3ZoomInstance,
         d3Selection: selection,
-        d3ZoomHandler: zoomHandler,
+        d3ZoomHandler: selection.on('wheel.zoom'),
+        // we need to pass transform because zoom handler is not registered when we set the initial transform
+        transform: [clampedX, clampedY, clampedZoom],
       });
     }
   }, []);
