@@ -10,6 +10,7 @@ import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
 import './style.css';
+import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
 export interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
@@ -33,9 +34,7 @@ const Controls = ({
   className,
 }: ControlProps) => {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
-  const fitView = useStoreActions((actions) => actions.fitView);
-  const zoomIn = useStoreActions((actions) => actions.zoomIn);
-  const zoomOut = useStoreActions((actions) => actions.zoomOut);
+  const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
 
   const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
   const mapClasses = cc(['react-flow__controls', className]);
@@ -44,20 +43,26 @@ const Controls = ({
     <div className={mapClasses} style={style}>
       {showZoom && (
         <>
-          <div className="react-flow__controls-button react-flow__controls-zoomin" onClick={() => {
-            zoomIn();
-            if (onZoomIn) {
-              onZoomIn();
-            }
-          }}>
+          <div
+            className="react-flow__controls-button react-flow__controls-zoomin"
+            onClick={() => {
+              zoomIn();
+              if (onZoomIn) {
+                onZoomIn();
+              }
+            }}
+          >
             <PlusIcon />
           </div>
-          <div className="react-flow__controls-button react-flow__controls-zoomout" onClick={() => {
-            zoomOut();
-            if (onZoomOut) {
-              onZoomOut();
-            }
-          }}>
+          <div
+            className="react-flow__controls-button react-flow__controls-zoomout"
+            onClick={() => {
+              zoomOut();
+              if (onZoomOut) {
+                onZoomOut();
+              }
+            }}
+          >
             <MinusIcon />
           </div>
         </>

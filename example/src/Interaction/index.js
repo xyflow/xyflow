@@ -50,6 +50,7 @@ const InteractionFlow = () => {
       onPaneClick={captureZoomClick ? onPaneClick : undefined}
       onPaneScroll={captureZoomScroll ? onPaneScroll : undefined}
       onPaneContextMenu={captureZoomClick ? onPaneContextMenu : undefined}
+      onMoveEnd={(evt) => console.log('on move end', evt)}
     >
       <MiniMap />
       <Controls />

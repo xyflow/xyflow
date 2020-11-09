@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 
+import { zoom, zoomIdentity } from 'd3-zoom';
+import { select } from 'd3-selection';
+import { clamp } from '../../utils';
+
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { useStoreState, useStoreActions } from '../../store/hooks';
+import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
 import { FlowTransform, TranslateExtent } from '../../types';
 
 interface ZoomPaneProps {
@@ -55,14 +59,36 @@ const ZoomPane = ({
   const d3Selection = useStoreState((s) => s.d3Selection);
   const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
 
-  const initD3 = useStoreActions((actions) => actions.initD3);
+  const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
+  const store = useStore();
 
   useResizeHandler(zoomPane);
 
   useEffect(() => {
     if (zoomPane.current) {
-      initD3({ zoomPane: zoomPane.current, defaultPosition, defaultZoom, translateExtent });
+      // initD3: action((state, { zoomPane, defaultPosition, defaultZoom, translateExtent }) => {
+      const state = store.getState();
+      const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
+      const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
+      const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
+
+      const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
+      const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
+      const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
+
+      const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
+      // selection.property('__zoom', updatedTransform);
+
+      const zoomHandler = selection.on('wheel.zoom');
+
+      d3ZoomInstance.transform(selection, updatedTransform);
+
+      initD3Zoom({
+        d3Zoom: d3ZoomInstance,
+        d3Selection: selection,
+        d3ZoomHandler: zoomHandler,
+      });
     }
   }, []);
 

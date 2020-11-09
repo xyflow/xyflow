@@ -22,6 +22,7 @@ import {
   OnConnectEndFunc,
   TranslateExtent,
 } from '../../types';
+import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
 export interface GraphViewProps {
   elements: Elements;
@@ -145,10 +146,8 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
-  const fitView = useStoreActions((actions) => actions.fitView);
-  const zoom = useStoreActions((actions) => actions.zoom);
-  const zoomTo = useStoreActions((actions) => actions.zoomTo);
   const currentStore = useStore();
+  const { zoomIn, zoomOut, zoomTo, fitView } = useZoomPanHelper();
 
   useElementUpdater(elements);
 
@@ -157,9 +156,9 @@ const GraphView = ({
       if (onLoad) {
         onLoad({
           fitView: (params = { padding: 0.1 }) => fitView(params),
-          zoomIn: () => zoom(0.2),
-          zoomOut: () => zoom(-0.2),
-          zoomTo: (zoomLevel) => zoomTo(zoomLevel),
+          zoomIn,
+          zoomOut,
+          zoomTo,
           project: onLoadProject(currentStore),
           getElements: onLoadGetElements(currentStore),
           setTransform: (transform: FlowTransform) =>
