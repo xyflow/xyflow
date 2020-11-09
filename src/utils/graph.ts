@@ -210,20 +210,17 @@ export const getNodesInside = (
 };
 
 export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
-  const nodeIds = nodes.map((n) => n.id);
+  const nodeIds = nodes.map((node) => node.id);
 
-  return edges.filter((e) => {
-    const sourceId = e.source.split('__')[0];
-    const targetId = e.target.split('__')[0];
-
-    return nodeIds.includes(sourceId) || nodeIds.includes(targetId);
-  });
+  return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
 };
 
 const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
   return [
     ...nodes.map((node) => {
       const n = { ...node };
+
+      n.position = n.__rf.position;
 
       delete n.__rf;
       return n;
