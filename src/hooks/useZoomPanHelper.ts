@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
-import { useStoreState, useStore } from '../store/hooks';
 
+import { useStoreState, useStore } from '../store/hooks';
 import { clamp } from '../utils';
 import { getRectOfNodes } from '../utils/graph';
 import { FitViewParams, FlowTransform } from '../types';
 
-const initialHelpers = {
+const initialZoomPanHelper = {
   zoomIn: null,
   zoomOut: null,
   zoomTo: null,
@@ -53,7 +53,7 @@ export default () => {
       };
     }
 
-    return initialHelpers;
+    return initialZoomPanHelper;
   }, [d3Zoom, d3Selection]);
 
   return zoomPanHelperFunctions;

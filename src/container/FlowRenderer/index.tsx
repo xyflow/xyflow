@@ -20,6 +20,7 @@ interface FlowRendererProps
     | 'connectionLineType'
     | 'arrowHeadColor'
     | 'onlyRenderVisibleNodes'
+    | 'selectNodesOnDrag'
   > {
   children: ReactNode;
 }

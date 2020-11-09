@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, CSSProperties, MouseEvent, WheelEvent } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 
 import { useStoreActions, useStore } from '../../store/hooks';
 import FlowRenderer from '../FlowRenderer';
@@ -6,76 +6,26 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import useElementUpdater from '../../hooks/useElementUpdater';
 import { onLoadProject, onLoadGetElements, onLoadToObject } from '../../utils/graph';
-import {
-  Elements,
-  NodeTypesType,
-  EdgeTypesType,
-  OnLoadFunc,
-  Node,
-  Edge,
-  Connection,
-  ConnectionLineType,
-  ConnectionLineComponent,
-  FlowTransform,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
-  TranslateExtent,
-} from '../../types';
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
-export interface GraphViewProps {
-  elements: Elements;
-  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
-  onElementsRemove?: (elements: Elements) => void;
-  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
-  onConnect?: (connection: Connection | Edge) => void;
-  onConnectStart?: OnConnectStartFunc;
-  onConnectStop?: OnConnectStopFunc;
-  onConnectEnd?: OnConnectEndFunc;
-  onLoad?: OnLoadFunc;
-  onMove?: (flowTransform?: FlowTransform) => void;
-  onMoveStart?: (flowTransform?: FlowTransform) => void;
-  onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  onPaneScroll?: (event?: WheelEvent) => void;
-  onPaneClick?: (event: MouseEvent) => void;
-  onPaneContextMenu?: (event: MouseEvent) => void;
-  onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
-  selectionKeyCode: number;
+import { ReactFlowProps } from '../ReactFlow';
+
+import { NodeTypesType, EdgeTypesType, ConnectionLineType } from '../../types';
+
+export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
-  connectionLineType: ConnectionLineType;
-  connectionLineStyle?: CSSProperties;
-  connectionLineComponent?: ConnectionLineComponent;
+  selectionKeyCode: number;
   deleteKeyCode: number;
   multiSelectionKeyCode: number;
+  connectionLineType: ConnectionLineType;
   snapToGrid: boolean;
   snapGrid: [number, number];
   onlyRenderVisibleNodes: boolean;
-  nodesDraggable?: boolean;
-  nodesConnectable?: boolean;
-  elementsSelectable?: boolean;
-  selectNodesOnDrag?: boolean;
-  minZoom?: number;
-  maxZoom?: number;
   defaultZoom: number;
   defaultPosition: [number, number];
-  translateExtent?: TranslateExtent;
   arrowHeadColor: string;
-  markerEndId?: string;
-  zoomOnScroll?: boolean;
-  panOnScroll?: boolean;
-  panOnScrollSpeed?: number;
-  zoomOnDoubleClick?: boolean;
-  paneMoveable?: boolean;
+  selectNodesOnDrag: boolean;
 }
 
 const GraphView = ({
@@ -114,7 +64,7 @@ const GraphView = ({
   nodesDraggable,
   nodesConnectable,
   elementsSelectable,
-  selectNodesOnDrag = true,
+  selectNodesOnDrag,
   minZoom,
   maxZoom,
   defaultZoom,
