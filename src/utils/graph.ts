@@ -1,6 +1,17 @@
 import { Store } from 'easy-peasy';
 import { StoreModel } from '../store';
-import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, Box, Connection } from '../types';
+import {
+  ElementId,
+  Node,
+  Edge,
+  Elements,
+  Transform,
+  XYPosition,
+  Rect,
+  Box,
+  Connection,
+  FlowExportObject,
+} from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -234,5 +245,17 @@ export const onLoadGetElements = (currentStore: Store<StoreModel>) => {
     const { nodes = [], edges = [] } = currentStore.getState();
 
     return parseElements(nodes, edges);
+  };
+};
+
+export const onLoadToObject = (currentStore: Store<StoreModel>) => {
+  return (): FlowExportObject => {
+    const { nodes = [], edges = [], transform } = currentStore.getState();
+
+    return {
+      elements: parseElements(nodes, edges),
+      position: [transform[0], transform[1]],
+      zoom: transform[2],
+    };
   };
 };

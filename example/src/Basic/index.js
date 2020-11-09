@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import ReactFlow, { removeElements, addEdge, isNode, Background } from 'react-flow-renderer';
 
-const onLoad = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeDragStop = (event, node) => console.log('drag stop', node);
 const onElementClick = (event, element) => console.log('click', element);
 
@@ -16,9 +15,11 @@ const initialElements = [
 ];
 
 const BasicFlow = () => {
+  const [rfInstance, setRfInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
   const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params) => setElements((els) => addEdge(params, els));
+  const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
 
   const updatePos = () => {
     setElements((elms) => {
@@ -38,6 +39,8 @@ const BasicFlow = () => {
     });
   };
 
+  const logToObject = () => console.log(rfInstance.toObject());
+
   return (
     <ReactFlow
       elements={elements}
@@ -53,9 +56,12 @@ const BasicFlow = () => {
     >
       <Background variant="lines" />
 
-      <button onClick={updatePos} style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}>
-        change pos
-      </button>
+      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+        <button onClick={updatePos} style={{ marginRight: 5 }}>
+          change pos
+        </button>
+        <button onClick={logToObject}>toObject</button>
+      </div>
     </ReactFlow>
   );
 };

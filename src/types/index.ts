@@ -229,8 +229,16 @@ export interface WrapNodeProps {
 export type FitViewParams = {
   padding: number;
 };
+
+export type FlowExportObject = {
+  elements: Elements;
+  position: [number, number];
+  zoom: number;
+};
+
 export type FitViewFunc = (fitViewOptions?: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;
+export type ToObjectFunc = () => FlowExportObject;
 
 export type OnLoadParams = {
   zoomIn: () => void;
@@ -240,6 +248,7 @@ export type OnLoadParams = {
   project: ProjectFunc;
   getElements: () => Elements;
   setTransform: (transform: FlowTransform) => void;
+  toObject: ToObjectFunc;
 };
 
 export type OnLoadFunc = (params: OnLoadParams) => void;

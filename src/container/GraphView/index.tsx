@@ -5,7 +5,7 @@ import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import useElementUpdater from '../../hooks/useElementUpdater';
-import { onLoadProject, onLoadGetElements } from '../../utils/graph';
+import { onLoadProject, onLoadGetElements, onLoadToObject } from '../../utils/graph';
 import {
   Elements,
   NodeTypesType,
@@ -163,6 +163,7 @@ const GraphView = ({
           getElements: onLoadGetElements(currentStore),
           setTransform: (transform: FlowTransform) =>
             setInitTransform({ x: transform.x, y: transform.y, k: transform.zoom }),
+          toObject: onLoadToObject(currentStore),
         });
       }
 
