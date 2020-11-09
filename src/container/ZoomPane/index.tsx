@@ -75,11 +75,16 @@ const ZoomPane = ({
             event.stopImmediatePropagation();
 
             const currentZoom = d3Selection.property('__zoom').k || 1;
+            // increase scroll speed in firefox
+            // firefox: deltaMode === 1; chrome: deltaMode === 0
+            const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
+            const deltaX = event.deltaX * deltaNormalize;
+            const deltaY = event.deltaY * deltaNormalize;
 
             d3Zoom.translateBy(
               d3Selection,
-              (event.deltaX / currentZoom) * panOnScrollSpeed,
-              (event.deltaY / currentZoom) * panOnScrollSpeed
+              (deltaX / currentZoom) * panOnScrollSpeed,
+              (deltaY / currentZoom) * panOnScrollSpeed
             );
           })
           .on('wheel.zoom', null);
