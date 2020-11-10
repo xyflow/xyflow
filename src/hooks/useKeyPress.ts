@@ -1,27 +1,28 @@
 import { useState, useEffect } from 'react';
 
 import { isInputDOMNode } from '../utils';
+import { KeyCode } from '../types';
 
-export default (keyCode: number): boolean => {
+export default (keyCode: KeyCode): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
-  function downHandler(event: KeyboardEvent) {
-    if (event.keyCode === keyCode && !isInputDOMNode(event)) {
-      setKeyPressed(true);
-    }
-  }
-
-  const upHandler = (event: KeyboardEvent) => {
-    if (event.keyCode === keyCode && !isInputDOMNode(event)) {
-      setKeyPressed(false);
-    }
-  };
-
-  const resetHandler = () => {
-    setKeyPressed(false);
-  };
-
   useEffect(() => {
+    const downHandler = (event: KeyboardEvent) => {
+      if (!isInputDOMNode(event) && (event.key === keyCode || event.keyCode === keyCode)) {
+        event.preventDefault();
+
+        setKeyPressed(true);
+      }
+    };
+
+    const upHandler = (event: KeyboardEvent) => {
+      if (!isInputDOMNode(event) && (event.key === keyCode || event.keyCode === keyCode)) {
+        setKeyPressed(false);
+      }
+    };
+
+    const resetHandler = () => setKeyPressed(false);
+
     window.addEventListener('keydown', downHandler);
     window.addEventListener('keyup', upHandler);
     window.addEventListener('blur', resetHandler);
@@ -31,7 +32,7 @@ export default (keyCode: number): boolean => {
       window.removeEventListener('keyup', upHandler);
       window.removeEventListener('blur', resetHandler);
     };
-  }, []);
+  }, [keyCode, setKeyPressed]);
 
   return keyPressed;
 };

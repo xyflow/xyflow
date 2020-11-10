@@ -329,3 +329,5 @@ export type FlowTransform = {
 };
 
 export type TranslateExtent = [[number, number], [number, number]];
+
+export type KeyCode = number | string;

@@ -33,6 +33,7 @@ import {
   OnConnectStopFunc,
   OnConnectEndFunc,
   TranslateExtent,
+  KeyCode,
 } from '../../types';
 
 import '../../style.css';
@@ -81,9 +82,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
-  deleteKeyCode?: number;
-  selectionKeyCode?: number;
-  multiSelectionKeyCode?: number;
+  deleteKeyCode?: KeyCode;
+  selectionKeyCode?: KeyCode;
+  multiSelectionKeyCode?: KeyCode;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
   onlyRenderVisibleNodes?: boolean;
@@ -134,9 +135,9 @@ const ReactFlow = ({
   connectionLineType = ConnectionLineType.Bezier,
   connectionLineStyle,
   connectionLineComponent,
-  deleteKeyCode = 8,
-  selectionKeyCode = 16,
-  multiSelectionKeyCode = 91,
+  deleteKeyCode = 'Backspace',
+  selectionKeyCode = 'Shift',
+  multiSelectionKeyCode = 'Meta',
   snapToGrid = false,
   snapGrid = [15, 15],
   onlyRenderVisibleNodes = true,

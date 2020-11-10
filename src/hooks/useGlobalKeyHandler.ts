@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { useStore, useStoreActions } from '../store/hooks';
 import useKeyPress from './useKeyPress';
 import { isNode, getConnectedEdges } from '../utils/graph';
-import { Elements } from '../types';
+import { Elements, KeyCode } from '../types';
 
 interface HookParams {
-  deleteKeyCode: number;
-  multiSelectionKeyCode: number;
+  deleteKeyCode: KeyCode;
+  multiSelectionKeyCode: KeyCode;
   onElementsRemove?: (elements: Elements) => void;
 }
 

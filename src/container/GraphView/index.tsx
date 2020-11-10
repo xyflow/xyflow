@@ -9,14 +9,14 @@ import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
 import { ReactFlowProps } from '../ReactFlow';
 
-import { NodeTypesType, EdgeTypesType, ConnectionLineType } from '../../types';
+import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
 
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'elements'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
-  selectionKeyCode: number;
-  deleteKeyCode: number;
-  multiSelectionKeyCode: number;
+  selectionKeyCode: KeyCode;
+  deleteKeyCode: KeyCode;
+  multiSelectionKeyCode: KeyCode;
   connectionLineType: ConnectionLineType;
   snapToGrid: boolean;
   snapGrid: [number, number];
