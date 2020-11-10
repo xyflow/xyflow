@@ -1,8 +1,8 @@
-import React, { memo, ComponentType, MouseEvent } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import { getNodesInside } from '../../utils/graph';
-import { Node, NodeTypesType, WrapNodeProps, Elements, Edge } from '../../types';
+import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -19,82 +19,71 @@ interface NodeRendererProps {
   snapGrid: [number, number];
 }
 
-function renderNode(
-  node: Node,
-  props: NodeRendererProps,
-  scale: number,
-  selectedElements: Elements | null,
-  nodesDraggable: boolean,
-  nodesConnectable: boolean,
-  elementsSelectable: boolean
-) {
-  const nodeType = node.type || 'default';
-  const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
-  if (!props.nodeTypes[nodeType]) {
-    console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
-  }
-
-  const isSelected = selectedElements ? selectedElements.some(({ id }) => id === node.id) : false;
-
-  const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
-  const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
-  const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
-  const isInitialized = node.__rf.width !== null && node.__rf.height !== null;
-
-  return (
-    <NodeComponent
-      key={node.id}
-      id={node.id}
-      type={nodeType}
-      data={node.data}
-      xPos={node.__rf.position.x}
-      yPos={node.__rf.position.y}
-      isDragging={node.__rf.isDragging}
-      onClick={props.onElementClick}
-      onMouseEnter={props.onNodeMouseEnter}
-      onMouseMove={props.onNodeMouseMove}
-      onMouseLeave={props.onNodeMouseLeave}
-      onContextMenu={props.onNodeContextMenu}
-      onNodeDragStart={props.onNodeDragStart}
-      onNodeDragStop={props.onNodeDragStop}
-      scale={scale}
-      selected={isSelected}
-      style={node.style}
-      className={node.className}
-      isDraggable={isDraggable}
-      isSelectable={isSelectable}
-      isConnectable={isConnectable}
-      sourcePosition={node.sourcePosition}
-      targetPosition={node.targetPosition}
-      selectNodesOnDrag={props.selectNodesOnDrag}
-      isHidden={node.isHidden}
-      isInitialized={isInitialized}
-      snapGrid={props.snapGrid}
-      snapToGrid={props.snapToGrid}
-    />
-  );
-}
-
 const NodeRenderer = (props: NodeRendererProps) => {
-  const nodes = useStoreState((s) => s.nodes);
-  const transform = useStoreState((s) => s.transform);
-  const selectedElements = useStoreState((s) => s.selectedElements);
-  const viewportBox = useStoreState((s) => s.viewportBox);
-  const nodesDraggable = useStoreState((s) => s.nodesDraggable);
-  const nodesConnectable = useStoreState((s) => s.nodesConnectable);
-  const elementsSelectable = useStoreState((s) => s.elementsSelectable);
+  const nodes = useStoreState((state) => state.nodes);
+  const transform = useStoreState((state) => state.transform);
+  const selectedElements = useStoreState((state) => state.selectedElements);
+  const viewportBox = useStoreState((state) => state.viewportBox);
+  const nodesDraggable = useStoreState((state) => state.nodesDraggable);
+  const nodesConnectable = useStoreState((state) => state.nodesConnectable);
+  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
 
-  const transformStyle = {
-    transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
-  };
+  const transformStyle = useMemo(
+    () => ({
+      transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
+    }),
+    [transform[0], transform[1], transform[2]]
+  );
 
-  const renderNodes = props.onlyRenderVisibleNodes ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
+  const nodesToRender = props.onlyRenderVisibleNodes ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {renderNodes.map((node) =>
-        renderNode(node, props, transform[2], selectedElements, nodesDraggable, nodesConnectable, elementsSelectable)
-      )}
+      {nodesToRender.map((node) => {
+        const nodeType = node.type || 'default';
+        const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
+
+        if (!props.nodeTypes[nodeType]) {
+          console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
+        }
+
+        const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
+        const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
+        const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+
+        return (
+          <NodeComponent
+            key={node.id}
+            id={node.id}
+            className={node.className}
+            style={node.style}
+            type={nodeType}
+            data={node.data}
+            sourcePosition={node.sourcePosition}
+            targetPosition={node.targetPosition}
+            isHidden={node.isHidden}
+            xPos={node.__rf.position.x}
+            yPos={node.__rf.position.y}
+            isDragging={node.__rf.isDragging}
+            isInitialized={node.__rf.width !== null && node.__rf.height !== null}
+            snapGrid={props.snapGrid}
+            snapToGrid={props.snapToGrid}
+            selectNodesOnDrag={props.selectNodesOnDrag}
+            onClick={props.onElementClick}
+            onMouseEnter={props.onNodeMouseEnter}
+            onMouseMove={props.onNodeMouseMove}
+            onMouseLeave={props.onNodeMouseLeave}
+            onContextMenu={props.onNodeContextMenu}
+            onNodeDragStart={props.onNodeDragStart}
+            onNodeDragStop={props.onNodeDragStop}
+            scale={transform[2]}
+            selected={selectedElements?.some(({ id }) => id === node.id) || false}
+            isDraggable={isDraggable}
+            isSelectable={isSelectable}
+            isConnectable={isConnectable}
+          />
+        );
+      })}
     </div>
   );
 };
