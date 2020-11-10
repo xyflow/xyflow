@@ -28,7 +28,7 @@ const MiniMap = ({
   nodeColor = '#fff',
   nodeClassName = '',
   nodeBorderRadius = 5,
-  maskColor = '#F0F2F3',
+  maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
   const containerWidth = useStoreState((s) => s.width);
   const containerHeight = useStoreState((s) => s.height);
