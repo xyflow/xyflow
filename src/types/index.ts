@@ -331,3 +331,9 @@ export type FlowTransform = {
 export type TranslateExtent = [[number, number], [number, number]];
 
 export type KeyCode = number | string;
+
+export enum PanOnScrollMode {
+  Free = 'free',
+  Vertical = 'vertical',
+  Horizontal = 'horizontal',
+}

@@ -6,7 +6,7 @@ import { clamp } from '../../utils';
 
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
-import { FlowTransform, TranslateExtent } from '../../types';
+import { FlowTransform, TranslateExtent, PanOnScrollMode } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -14,6 +14,7 @@ interface ZoomPaneProps {
   zoomOnScroll?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
+  panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
@@ -43,6 +44,7 @@ const ZoomPane = ({
   zoomOnScroll = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
+  panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
   selectionKeyPressed,
   elementsSelectable,
@@ -101,8 +103,8 @@ const ZoomPane = ({
             // increase scroll speed in firefox
             // firefox: deltaMode === 1; chrome: deltaMode === 0
             const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
-            const deltaX = event.deltaX * deltaNormalize;
-            const deltaY = event.deltaY * deltaNormalize;
+            const deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
+            const deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
 
             d3Zoom.translateBy(
               d3Selection,
@@ -115,7 +117,7 @@ const ZoomPane = ({
         d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
       }
     }
-  }, [panOnScroll, d3Selection, d3Zoom, d3ZoomHandler]);
+  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler]);
 
   useEffect(() => {
     if (d3Zoom) {

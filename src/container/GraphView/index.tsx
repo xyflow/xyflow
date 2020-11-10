@@ -73,6 +73,7 @@ const GraphView = ({
   zoomOnScroll,
   panOnScroll,
   panOnScrollSpeed,
+  panOnScrollMode,
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
@@ -203,6 +204,7 @@ const GraphView = ({
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnScroll={panOnScroll}
       panOnScrollSpeed={panOnScrollSpeed}
+      panOnScrollMode={panOnScrollMode}
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}

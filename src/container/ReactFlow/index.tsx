@@ -34,6 +34,7 @@ import {
   OnConnectEndFunc,
   TranslateExtent,
   KeyCode,
+  PanOnScrollMode,
 } from '../../types';
 
 import '../../style.css';
@@ -103,6 +104,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   zoomOnScroll?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
+  panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
 }
 
@@ -155,6 +157,7 @@ const ReactFlow = ({
   zoomOnScroll = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
+  panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
   paneMoveable = true,
   onPaneClick,
@@ -213,6 +216,7 @@ const ReactFlow = ({
           zoomOnDoubleClick={zoomOnDoubleClick}
           panOnScroll={panOnScroll}
           panOnScrollSpeed={panOnScrollSpeed}
+          panOnScrollMode={panOnScrollMode}
           paneMoveable={paneMoveable}
           onPaneClick={onPaneClick}
           onPaneScroll={onPaneScroll}
