@@ -2,7 +2,7 @@ import React, { memo, ComponentType, MouseEvent } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import { getNodesInside } from '../../utils/graph';
-import { Node, Transform, NodeTypesType, WrapNodeProps, Elements, Edge } from '../../types';
+import { Node, NodeTypesType, WrapNodeProps, Elements, Edge } from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -22,7 +22,7 @@ interface NodeRendererProps {
 function renderNode(
   node: Node,
   props: NodeRendererProps,
-  transform: Transform,
+  scale: number,
   selectedElements: Elements | null,
   nodesDraggable: boolean,
   nodesConnectable: boolean,
@@ -57,7 +57,7 @@ function renderNode(
       onContextMenu={props.onNodeContextMenu}
       onNodeDragStart={props.onNodeDragStart}
       onNodeDragStop={props.onNodeDragStop}
-      transform={transform}
+      scale={scale}
       selected={isSelected}
       style={node.style}
       className={node.className}
@@ -93,7 +93,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   return (
     <div className="react-flow__nodes" style={transformStyle}>
       {renderNodes.map((node) =>
-        renderNode(node, props, transform, selectedElements, nodesDraggable, nodesConnectable, elementsSelectable)
+        renderNode(node, props, transform[2], selectedElements, nodesDraggable, nodesConnectable, elementsSelectable)
       )}
     </div>
   );

@@ -12,7 +12,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     id,
     type,
     data,
-    transform,
+    scale,
     xPos,
     yPos,
     selected,
@@ -199,7 +199,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onStart={onDragStart}
         onDrag={onDrag}
         onStop={onDragStop}
-        scale={transform[2]}
+        scale={scale}
         disabled={!isDraggable}
         cancel=".nodrag"
         nodeRef={nodeElement}

@@ -201,7 +201,7 @@ export interface WrapNodeProps {
   type: string;
   data: any;
   selected: boolean;
-  transform: Transform;
+  scale: number;
   xPos: number;
   yPos: number;
   isSelectable: boolean;
