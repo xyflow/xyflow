@@ -337,3 +337,12 @@ export enum PanOnScrollMode {
   Vertical = 'vertical',
   Horizontal = 'horizontal',
 }
+
+export interface ZoomPanHelperFunctions {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  zoomTo: (zoomLevel: number) => void;
+  transform: (transform: FlowTransform) => void;
+  fitView: (params?: FitViewParams) => void;
+  initialized: boolean;
+}

@@ -4,22 +4,23 @@ import { zoomIdentity } from 'd3-zoom';
 import { useStoreState, useStore } from '../store/hooks';
 import { clamp } from '../utils';
 import { getRectOfNodes } from '../utils/graph';
-import { FitViewParams, FlowTransform } from '../types';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions } from '../types';
 
-const initialZoomPanHelper = {
-  zoomIn: null,
-  zoomOut: null,
-  zoomTo: null,
-  transform: null,
-  fitView: null,
+const initialZoomPanHelper: ZoomPanHelperFunctions = {
+  zoomIn: () => {},
+  zoomOut: () => {},
+  zoomTo: (_: number) => {},
+  transform: (_: FlowTransform) => {},
+  fitView: (_: FitViewParams = { padding: 0.1 }) => {},
+  initialized: false,
 };
 
-export default () => {
+const usePanZoomHelper = (): ZoomPanHelperFunctions => {
   const store = useStore();
   const d3Zoom = useStoreState((s) => s.d3Zoom);
   const d3Selection = useStoreState((s) => s.d3Selection);
 
-  const zoomPanHelperFunctions = useMemo(() => {
+  const zoomPanHelperFunctions = useMemo<ZoomPanHelperFunctions>(() => {
     if (d3Selection && d3Zoom) {
       return {
         zoomIn: () => d3Zoom.scaleBy(d3Selection, 1.2),
@@ -50,6 +51,7 @@ export default () => {
 
           d3Zoom.transform(d3Selection, transform);
         },
+        initialized: true,
       };
     }
 
@@ -58,3 +60,5 @@ export default () => {
 
   return zoomPanHelperFunctions;
 };
+
+export default usePanZoomHelper;

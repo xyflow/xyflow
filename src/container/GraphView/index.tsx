@@ -94,10 +94,10 @@ const GraphView = ({
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const currentStore = useStore();
-  const { zoomIn, zoomOut, zoomTo, transform, fitView } = useZoomPanHelper();
+  const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
   useEffect(() => {
-    if (!isInitialised.current && zoomIn && zoomOut && zoomTo && transform && fitView) {
+    if (!isInitialised.current && initialized) {
       if (onLoad) {
         onLoad({
           fitView: (params = { padding: 0.1 }) => fitView(params),
@@ -113,7 +113,7 @@ const GraphView = ({
 
       isInitialised.current = true;
     }
-  }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView]);
+  }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView, initialized]);
 
   useEffect(() => {
     if (onConnect) {
