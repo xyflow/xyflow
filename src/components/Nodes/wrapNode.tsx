@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cc from 'classcat';
-import { ResizeObserver } from 'resize-observer';
 
 import { useStoreActions } from '../../store/hooks';
 import { Provider } from '../../contexts/NodeIdContext';

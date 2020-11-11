@@ -1,5 +1,4 @@
 import { useEffect, MutableRefObject } from 'react';
-import { ResizeObserver } from 'resize-observer';
 import { useStoreActions } from '../store/hooks';
 
 import { getDimensions } from '../utils';
