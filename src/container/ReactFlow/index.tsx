@@ -88,7 +88,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   multiSelectionKeyCode?: KeyCode;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
-  onlyRenderVisibleNodes?: boolean;
+  onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
   elementsSelectable?: boolean;
@@ -142,7 +142,7 @@ const ReactFlow = ({
   multiSelectionKeyCode = 'Meta',
   snapToGrid = false,
   snapGrid = [15, 15],
-  onlyRenderVisibleNodes = true,
+  onlyRenderVisibleElements = true,
   selectNodesOnDrag = true,
   nodesDraggable,
   nodesConnectable,
@@ -200,7 +200,7 @@ const ReactFlow = ({
           onConnectEnd={onConnectEnd}
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
-          onlyRenderVisibleNodes={onlyRenderVisibleNodes}
+          onlyRenderVisibleElements={onlyRenderVisibleElements}
           nodesDraggable={nodesDraggable}
           nodesConnectable={nodesConnectable}
           elementsSelectable={elementsSelectable}

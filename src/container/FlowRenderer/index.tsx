@@ -19,7 +19,7 @@ interface FlowRendererProps
     | 'snapGrid'
     | 'connectionLineType'
     | 'arrowHeadColor'
-    | 'onlyRenderVisibleNodes'
+    | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
   > {
   children: ReactNode;

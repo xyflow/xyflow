@@ -20,7 +20,7 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
   connectionLineType: ConnectionLineType;
   snapToGrid: boolean;
   snapGrid: [number, number];
-  onlyRenderVisibleNodes: boolean;
+  onlyRenderVisibleElements: boolean;
   defaultZoom: number;
   defaultPosition: [number, number];
   arrowHeadColor: string;
@@ -58,7 +58,7 @@ const GraphView = ({
   onConnectEnd,
   snapToGrid,
   snapGrid,
-  onlyRenderVisibleNodes,
+  onlyRenderVisibleElements,
   nodesDraggable,
   nodesConnectable,
   elementsSelectable,
@@ -93,6 +93,7 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
+  const setOnlyRenderVisibleElements = useStoreActions((actions) => actions.setOnlyRenderVisibleElements);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
@@ -187,6 +188,12 @@ const GraphView = ({
     }
   }, [translateExtent]);
 
+  useEffect(() => {
+    if (typeof onlyRenderVisibleElements !== 'undefined') {
+      setOnlyRenderVisibleElements(onlyRenderVisibleElements);
+    }
+  }, [translateExtent]);
+
   return (
     <FlowRenderer
       onPaneClick={onPaneClick}
@@ -223,7 +230,6 @@ const GraphView = ({
         onNodeContextMenu={onNodeContextMenu}
         onNodeDragStop={onNodeDragStop}
         onNodeDragStart={onNodeDragStart}
-        onlyRenderVisibleNodes={onlyRenderVisibleNodes}
         selectNodesOnDrag={selectNodesOnDrag}
         snapToGrid={snapToGrid}
         snapGrid={snapGrid}

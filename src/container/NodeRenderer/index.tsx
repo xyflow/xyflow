@@ -1,7 +1,6 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
 import { useStoreState } from '../../store/hooks';
-import { getNodesInside } from '../../utils/graph';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 
 interface NodeRendererProps {
@@ -14,19 +13,17 @@ interface NodeRendererProps {
   onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
-  onlyRenderVisibleNodes: boolean;
   snapToGrid: boolean;
   snapGrid: [number, number];
 }
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const nodes = useStoreState((state) => state.nodes);
   const transform = useStoreState((state) => state.transform);
   const selectedElements = useStoreState((state) => state.selectedElements);
-  const viewportBox = useStoreState((state) => state.viewportBox);
   const nodesDraggable = useStoreState((state) => state.nodesDraggable);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
+  const visibleNodes = useStoreState((state) => state.visibleNodes);
 
   const transformStyle = useMemo(
     () => ({
@@ -35,11 +32,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
     [transform[0], transform[1], transform[2]]
   );
 
-  const nodesToRender = props.onlyRenderVisibleNodes ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
-
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {nodesToRender.map((node) => {
+      {visibleNodes.map((node) => {
         const nodeType = node.type || 'default';
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
 

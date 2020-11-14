@@ -4,12 +4,11 @@ import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
+import { getHandlePosition, getHandle } from './utils';
 import {
-  XYPosition,
   Position,
   Edge,
   Node,
-  ElementId,
   HandleElement,
   Elements,
   ConnectionLineType,
@@ -31,78 +30,6 @@ interface EdgePositions {
   sourceY: number;
   targetX: number;
   targetY: number;
-}
-
-function getHandlePosition(position: Position, node: Node, handle: any | null = null): XYPosition {
-  if (!handle) {
-    switch (position) {
-      case Position.Top:
-        return {
-          x: node.__rf.width / 2,
-          y: 0,
-        };
-      case Position.Right:
-        return {
-          x: node.__rf.width,
-          y: node.__rf.height / 2,
-        };
-      case Position.Bottom:
-        return {
-          x: node.__rf.width / 2,
-          y: node.__rf.height,
-        };
-      case Position.Left:
-        return {
-          x: 0,
-          y: node.__rf.height / 2,
-        };
-    }
-  }
-
-  switch (position) {
-    case Position.Top:
-      return {
-        x: handle.x + handle.width / 2,
-        y: handle.y,
-      };
-    case Position.Right:
-      return {
-        x: handle.x + handle.width,
-        y: handle.y + handle.height / 2,
-      };
-    case Position.Bottom:
-      return {
-        x: handle.x + handle.width / 2,
-        y: handle.y + handle.height,
-      };
-    case Position.Left:
-      return {
-        x: handle.x,
-        y: handle.y + handle.height / 2,
-      };
-  }
-}
-
-function getHandle(bounds: HandleElement[], handleId: ElementId | null): HandleElement | null | undefined {
-  let handle = null;
-
-  if (!bounds) {
-    return null;
-  }
-
-  // there is no handleId when there are no multiple handles/ handles with ids
-  // so we just pick the first one
-  if (bounds.length === 1 || !handleId) {
-    handle = bounds[0];
-  } else if (handleId) {
-    handle = bounds.find((d) => d.id === handleId);
-  }
-
-  if (typeof handle === 'undefined') {
-    return null;
-  }
-
-  return handle;
 }
 
 function getEdgePositions(
@@ -132,25 +59,29 @@ function getEdgePositions(
 function renderEdge(
   edge: Edge,
   props: EdgeRendererProps,
+  visibleNodes: Node[],
   nodes: Node[],
   selectedElements: Elements | null,
   elementsSelectable: boolean
 ) {
-  const sourceId = edge.source;
   const sourceHandleId = edge.sourceHandle || null;
-  const targetId = edge.target;
   const targetHandleId = edge.targetHandle || null;
 
-  const sourceNode = nodes.find((n) => n.id === sourceId);
-  const targetNode = nodes.find((n) => n.id === targetId);
+  const sourceNode = nodes.find((n) => n.id === edge.source);
+  const targetNode = nodes.find((n) => n.id === edge.target);
+  const renderEdge = visibleNodes.some((n) => n.id === edge.source || n.id == edge.target);
+
+  if (!renderEdge) {
+    return null;
+  }
 
   if (!sourceNode) {
-    console.warn(`couldn't create edge for source id: ${sourceId}`);
+    console.warn(`couldn't create edge for source id: ${edge.source}`);
     return null;
   }
 
   if (!targetNode) {
-    console.warn(`couldn't create edge for target id: ${targetId}`);
+    console.warn(`couldn't create edge for target id: ${edge.target}`);
     return null;
   }
 
@@ -224,7 +155,6 @@ function renderEdge(
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const [tX, tY, tScale] = useStoreState((state) => state.transform);
   const edges = useStoreState((state) => state.edges);
-  const nodes = useStoreState((state) => state.nodes);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
   const connectionHandleType = useStoreState((state) => state.connectionHandleType);
@@ -234,6 +164,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
+  const visibleNodes = useStoreState((state) => state.visibleNodes);
+  const nodes = useStoreState((state) => state.nodes);
 
   const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
 
@@ -248,10 +180,10 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
-        {edges.map((edge: Edge) => renderEdge(edge, props, nodes, selectedElements, elementsSelectable))}
+        {edges.map((edge: Edge) => renderEdge(edge, props, visibleNodes, nodes, selectedElements, elementsSelectable))}
         {renderConnectionLine && (
           <ConnectionLine
-            nodes={nodes}
+            nodes={visibleNodes}
             connectionNodeId={connectionNodeId!}
             connectionHandleId={connectionHandleId}
             connectionHandleType={connectionHandleType!}
