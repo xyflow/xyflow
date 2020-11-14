@@ -115,7 +115,7 @@ function renderEdge(
     targetPosition
   );
 
-  const isSelected = selectedElements ? selectedElements.some((elm) => isEdge(elm) && elm.id === edge.id) : false;
+  const isSelected = selectedElements?.some((elm) => isEdge(elm) && elm.id === edge.id) || false;
 
   return (
     <EdgeComponent
