@@ -42,7 +42,6 @@ type InitD3Zoom = {
 export interface StoreModel {
   width: number;
   height: number;
-  viewportBox: Computed<StoreModel, Rect>;
   transform: Transform;
   elements: Elements;
   visibleNodes: Computed<StoreModel, Node[]>;
@@ -140,7 +139,6 @@ export interface StoreModel {
 export const storeModel: StoreModel = {
   width: 0,
   height: 0,
-  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   transform: [0, 0, 1],
   elements: [],
   nodes: computed((state) => state.elements.filter(isNode)),

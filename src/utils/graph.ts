@@ -206,7 +206,7 @@ export const getNodesInside = (
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
 
     if (width === null || height === null || isDragging) {
-      // at the beginnning all nodes have width & height === 0
+      // nodes are initialized with width and height = null
       return true;
     }
 
