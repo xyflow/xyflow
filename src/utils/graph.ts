@@ -154,14 +154,14 @@ const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
   y2: Math.max(box1.y2, box2.y2),
 });
 
-const rectToBox = ({ x, y, width, height }: Rect): Box => ({
+export const rectToBox = ({ x, y, width, height }: Rect): Box => ({
   x,
   y,
   x2: x + width,
   y2: y + height,
 });
 
-const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
+export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   x,
   y,
   width: x2 - x,

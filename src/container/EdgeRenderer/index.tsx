@@ -4,7 +4,7 @@ import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getHandlePosition, getHandle } from './utils';
+import { getHandlePosition, getHandle, isEdgeVisible } from './utils';
 import {
   Position,
   Edge,
@@ -13,6 +13,7 @@ import {
   Elements,
   ConnectionLineType,
   ConnectionLineComponent,
+  Transform,
 } from '../../types';
 
 interface EdgeRendererProps {
@@ -56,24 +57,33 @@ function getEdgePositions(
   };
 }
 
+type SourceTargetNode = {
+  sourceNode: Node | null;
+  targetNode: Node | null;
+};
+
+const initialSourceTarget: SourceTargetNode = { sourceNode: null, targetNode: null };
+
 function renderEdge(
   edge: Edge,
   props: EdgeRendererProps,
-  visibleNodes: Node[],
   nodes: Node[],
   selectedElements: Elements | null,
-  elementsSelectable: boolean
+  elementsSelectable: boolean,
+  transform: Transform,
+  width: number,
+  height: number
 ) {
   const sourceHandleId = edge.sourceHandle || null;
   const targetHandleId = edge.targetHandle || null;
-
-  const sourceNode = nodes.find((n) => n.id === edge.source);
-  const targetNode = nodes.find((n) => n.id === edge.target);
-  const renderEdge = visibleNodes.some((n) => n.id === edge.source || n.id == edge.target);
-
-  if (!renderEdge) {
-    return null;
-  }
+  const { sourceNode, targetNode } = nodes.reduce((res, node) => {
+    if (node.id === edge.source) {
+      res.sourceNode = node;
+    } else if (node.id === edge.target) {
+      res.targetNode = node;
+    }
+    return res;
+  }, initialSourceTarget);
 
   if (!sourceNode) {
     console.warn(`couldn't create edge for source id: ${edge.source}`);
@@ -86,6 +96,18 @@ function renderEdge(
   }
 
   if (!sourceNode.__rf.width || !sourceNode.__rf.height) {
+    return null;
+  }
+
+  const renderEdge = isEdgeVisible({
+    sourcePos: sourceNode.__rf.position,
+    targetPos: targetNode.__rf.position,
+    width,
+    height,
+    transform,
+  });
+
+  if (!renderEdge) {
     return null;
   }
 
@@ -153,7 +175,7 @@ function renderEdge(
 }
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
-  const [tX, tY, tScale] = useStoreState((state) => state.transform);
+  const transform = useStoreState((state) => state.transform);
   const edges = useStoreState((state) => state.edges);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
@@ -164,32 +186,32 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
-  const visibleNodes = useStoreState((state) => state.visibleNodes);
   const nodes = useStoreState((state) => state.nodes);
-
-  const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
 
   if (!width) {
     return null;
   }
 
-  const transformStyle = `translate(${tX},${tY}) scale(${tScale})`;
+  const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
+  const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
-        {edges.map((edge: Edge) => renderEdge(edge, props, visibleNodes, nodes, selectedElements, elementsSelectable))}
+        {edges.map((edge: Edge) =>
+          renderEdge(edge, props, nodes, selectedElements, elementsSelectable, transform, width, height)
+        )}
         {renderConnectionLine && (
           <ConnectionLine
-            nodes={visibleNodes}
+            nodes={nodes}
             connectionNodeId={connectionNodeId!}
             connectionHandleId={connectionHandleId}
             connectionHandleType={connectionHandleType!}
             connectionPositionX={connectionPosition.x}
             connectionPositionY={connectionPosition.y}
-            transform={[tX, tY, tScale]}
+            transform={transform}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}
             isConnectable={nodesConnectable}
