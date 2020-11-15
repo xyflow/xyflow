@@ -4,7 +4,7 @@ import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNode } from './utils';
+import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes } from './utils';
 import { Position, Edge, Node, Elements, ConnectionLineType, ConnectionLineComponent, Transform } from '../../types';
 
 interface EdgeRendererProps {
@@ -31,7 +31,7 @@ function renderEdge(
 ) {
   const sourceHandleId = edge.sourceHandle || null;
   const targetHandleId = edge.targetHandle || null;
-  const { sourceNode, targetNode } = getSourceTargetNode(edge, nodes);
+  const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
 
   if (!sourceNode) {
     console.warn(`couldn't create edge for source id: ${edge.source}`);

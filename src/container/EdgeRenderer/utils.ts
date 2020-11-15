@@ -40,8 +40,8 @@ export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
 }
 
 export function getHandlePosition(position: Position, node: Node, handle: any | null = null): XYPosition {
-  const x = handle?.x || 0;
-  const y = handle?.y || 0;
+  const x = (handle?.x || 0) + node.__rf.position.x;
+  const y = (handle?.y || 0) + node.__rf.position.y;
   const width = handle?.width || node.__rf.width;
   const height = handle?.height || node.__rf.height;
 
@@ -74,21 +74,16 @@ export function getHandle(bounds: HandleElement[], handleId: ElementId | null): 
     return null;
   }
 
-  let handle = null;
-
   // there is no handleId when there are no multiple handles/ handles with ids
   // so we just pick the first one
+  let handle = null;
   if (bounds.length === 1 || !handleId) {
     handle = bounds[0];
   } else if (handleId) {
     handle = bounds.find((d) => d.id === handleId);
   }
 
-  if (typeof handle === 'undefined') {
-    return null;
-  }
-
-  return handle;
+  return typeof handle === 'undefined' ? null : handle;
 }
 
 interface EdgePositions {
@@ -107,18 +102,13 @@ export const getEdgePositions = (
   targetPosition: Position
 ): EdgePositions => {
   const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  const sourceX = sourceNode.__rf.position.x + sourceHandlePos.x;
-  const sourceY = sourceNode.__rf.position.y + sourceHandlePos.y;
-
   const targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
-  const targetX = targetNode.__rf.position.x + targetHandlePos.x;
-  const targetY = targetNode.__rf.position.y + targetHandlePos.y;
 
   return {
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
+    sourceX: sourceHandlePos.x,
+    sourceY: sourceHandlePos.y,
+    targetX: targetHandlePos.x,
+    targetY: targetHandlePos.y,
   };
 };
 
@@ -165,7 +155,7 @@ type SourceTargetNode = {
   targetNode: Node | null;
 };
 
-export const getSourceTargetNode = (edge: Edge, nodes: Node[]): SourceTargetNode => {
+export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNode => {
   return nodes.reduce(
     (res, node) => {
       if (node.id === edge.source) {
