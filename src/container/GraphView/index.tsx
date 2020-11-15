@@ -93,7 +93,6 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
-  const setOnlyRenderVisibleElements = useStoreActions((actions) => actions.setOnlyRenderVisibleElements);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
@@ -188,12 +187,6 @@ const GraphView = ({
     }
   }, [translateExtent]);
 
-  useEffect(() => {
-    if (typeof onlyRenderVisibleElements !== 'undefined') {
-      setOnlyRenderVisibleElements(onlyRenderVisibleElements);
-    }
-  }, [translateExtent]);
-
   return (
     <FlowRenderer
       onPaneClick={onPaneClick}
@@ -233,6 +226,7 @@ const GraphView = ({
         selectNodesOnDrag={selectNodesOnDrag}
         snapToGrid={snapToGrid}
         snapGrid={snapGrid}
+        onlyRenderVisibleElements={onlyRenderVisibleElements}
       />
       <EdgeRenderer
         edgeTypes={edgeTypes}
@@ -242,6 +236,7 @@ const GraphView = ({
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
         connectionLineComponent={connectionLineComponent}
+        onlyRenderVisibleElements={onlyRenderVisibleElements}
       />
     </FlowRenderer>
   );

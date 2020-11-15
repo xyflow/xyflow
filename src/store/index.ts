@@ -44,12 +44,11 @@ export interface StoreModel {
   height: number;
   transform: Transform;
   elements: Elements;
-  visibleNodes: Computed<StoreModel, Node[]>;
   nodes: Computed<StoreModel, Node[]>;
   edges: Computed<StoreModel, Edge[]>;
   selectedElements: Elements | null;
   selectedNodesBbox: Rect;
-  onlyRenderVisibleElements: boolean;
+  viewportBox: Computed<StoreModel, Rect>;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
@@ -132,8 +131,6 @@ export interface StoreModel {
   unsetUserSelection: Action<StoreModel>;
 
   setMultiSelectionActive: Action<StoreModel, boolean>;
-
-  setOnlyRenderVisibleElements: Action<StoreModel, boolean>;
 }
 
 export const storeModel: StoreModel = {
@@ -142,19 +139,10 @@ export const storeModel: StoreModel = {
   transform: [0, 0, 1],
   elements: [],
   nodes: computed((state) => state.elements.filter(isNode)),
-  visibleNodes: computed((state) => {
-    if (!state.onlyRenderVisibleElements) {
-      return state.nodes;
-    }
-
-    const viewportBox = { x: 0, y: 0, width: state.width, height: state.height };
-
-    return getNodesInside(state.nodes, viewportBox, state.transform, true);
-  }),
+  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
-  onlyRenderVisibleElements: true,
 
   d3Zoom: null,
   d3Selection: null,
@@ -451,10 +439,6 @@ export const storeModel: StoreModel = {
 
   setMultiSelectionActive: action((state, isActive) => {
     state.multiSelectionActive = isActive;
-  }),
-
-  setOnlyRenderVisibleElements: action((state, onlyRenderVisible) => {
-    state.onlyRenderVisibleElements = onlyRenderVisible;
   }),
 };
 

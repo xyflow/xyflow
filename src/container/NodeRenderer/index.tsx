@@ -1,5 +1,6 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
+import { getNodesInside } from '../../utils/graph';
 import { useStoreState } from '../../store/hooks';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 
@@ -15,6 +16,7 @@ interface NodeRendererProps {
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   snapToGrid: boolean;
   snapGrid: [number, number];
+  onlyRenderVisibleElements: boolean;
 }
 
 const NodeRenderer = (props: NodeRendererProps) => {
@@ -23,7 +25,10 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const nodesDraggable = useStoreState((state) => state.nodesDraggable);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const visibleNodes = useStoreState((state) => state.visibleNodes);
+  const viewportBox = useStoreState((state) => state.viewportBox);
+  const nodes = useStoreState((state) => state.nodes);
+
+  const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
   const transformStyle = useMemo(
     () => ({

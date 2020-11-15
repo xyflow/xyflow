@@ -4,17 +4,8 @@ import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getHandlePosition, getHandle, isEdgeVisible } from './utils';
-import {
-  Position,
-  Edge,
-  Node,
-  HandleElement,
-  Elements,
-  ConnectionLineType,
-  ConnectionLineComponent,
-  Transform,
-} from '../../types';
+import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNode } from './utils';
+import { Position, Edge, Node, Elements, ConnectionLineType, ConnectionLineComponent, Transform } from '../../types';
 
 interface EdgeRendererProps {
   edgeTypes: any;
@@ -24,45 +15,8 @@ interface EdgeRendererProps {
   arrowHeadColor: string;
   markerEndId?: string;
   connectionLineComponent?: ConnectionLineComponent;
+  onlyRenderVisibleElements: boolean;
 }
-
-interface EdgePositions {
-  sourceX: number;
-  sourceY: number;
-  targetX: number;
-  targetY: number;
-}
-
-function getEdgePositions(
-  sourceNode: Node,
-  sourceHandle: HandleElement | unknown,
-  sourcePosition: Position,
-  targetNode: Node,
-  targetHandle: HandleElement | unknown,
-  targetPosition: Position
-): EdgePositions {
-  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  const sourceX = sourceNode.__rf.position.x + sourceHandlePos.x;
-  const sourceY = sourceNode.__rf.position.y + sourceHandlePos.y;
-
-  const targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
-  const targetX = targetNode.__rf.position.x + targetHandlePos.x;
-  const targetY = targetNode.__rf.position.y + targetHandlePos.y;
-
-  return {
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-  };
-}
-
-type SourceTargetNode = {
-  sourceNode: Node | null;
-  targetNode: Node | null;
-};
-
-const initialSourceTarget: SourceTargetNode = { sourceNode: null, targetNode: null };
 
 function renderEdge(
   edge: Edge,
@@ -72,18 +26,12 @@ function renderEdge(
   elementsSelectable: boolean,
   transform: Transform,
   width: number,
-  height: number
+  height: number,
+  onlyRenderVisibleElements: boolean
 ) {
   const sourceHandleId = edge.sourceHandle || null;
   const targetHandleId = edge.targetHandle || null;
-  const { sourceNode, targetNode } = nodes.reduce((res, node) => {
-    if (node.id === edge.source) {
-      res.sourceNode = node;
-    } else if (node.id === edge.target) {
-      res.targetNode = node;
-    }
-    return res;
-  }, initialSourceTarget);
+  const { sourceNode, targetNode } = getSourceTargetNode(edge, nodes);
 
   if (!sourceNode) {
     console.warn(`couldn't create edge for source id: ${edge.source}`);
@@ -99,15 +47,17 @@ function renderEdge(
     return null;
   }
 
-  const renderEdge = isEdgeVisible({
-    sourcePos: sourceNode.__rf.position,
-    targetPos: targetNode.__rf.position,
-    width,
-    height,
-    transform,
-  });
+  const isVisible = onlyRenderVisibleElements
+    ? isEdgeVisible({
+        sourcePos: sourceNode.__rf.position,
+        targetPos: targetNode.__rf.position,
+        width,
+        height,
+        transform,
+      })
+    : true;
 
-  if (!renderEdge) {
+  if (!isVisible) {
     return null;
   }
 
@@ -192,7 +142,13 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     return null;
   }
 
-  const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
+  const {
+    connectionLineType,
+    arrowHeadColor,
+    connectionLineStyle,
+    connectionLineComponent,
+    onlyRenderVisibleElements,
+  } = props;
   const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
@@ -201,7 +157,17 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
         {edges.map((edge: Edge) =>
-          renderEdge(edge, props, nodes, selectedElements, elementsSelectable, transform, width, height)
+          renderEdge(
+            edge,
+            props,
+            nodes,
+            selectedElements,
+            elementsSelectable,
+            transform,
+            width,
+            height,
+            onlyRenderVisibleElements
+          )
         )}
         {renderConnectionLine && (
           <ConnectionLine
