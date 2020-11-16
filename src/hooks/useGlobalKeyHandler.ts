@@ -1,19 +1,18 @@
 import { useEffect } from 'react';
 
-import { useStoreState, useStoreActions } from '../store/hooks';
+import { useStore, useStoreActions } from '../store/hooks';
 import useKeyPress from './useKeyPress';
 import { isNode, getConnectedEdges } from '../utils/graph';
-import { Elements } from '../types';
+import { Elements, KeyCode } from '../types';
 
 interface HookParams {
-  deleteKeyCode: number;
-  multiSelectionKeyCode: number;
+  deleteKeyCode: KeyCode;
+  multiSelectionKeyCode: KeyCode;
   onElementsRemove?: (elements: Elements) => void;
 }
 
 export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: HookParams): void => {
-  const selectedElements = useStoreState((state) => state.selectedElements);
-  const edges = useStoreState((state) => state.edges);
+  const store = useStore();
 
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const setMultiSelectionActive = useStoreActions((actions) => actions.setMultiSelectionActive);
@@ -23,6 +22,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: Hook
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
+    const { edges, selectedElements } = store.getState();
     if (onElementsRemove && deleteKeyPressed && selectedElements) {
       let elementsToRemove = selectedElements;
 

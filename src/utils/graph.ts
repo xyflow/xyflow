@@ -1,7 +1,17 @@
 import { Store } from 'easy-peasy';
-
-import store, { StoreModel } from '../store';
-import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, FitViewParams, Box, Connection } from '../types';
+import { StoreModel } from '../store';
+import {
+  ElementId,
+  Node,
+  Edge,
+  Elements,
+  Transform,
+  XYPosition,
+  Rect,
+  Box,
+  Connection,
+  FlowExportObject,
+} from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -106,12 +116,6 @@ export const onLoadProject = (currentStore: Store<StoreModel>) => {
   };
 };
 
-export const project = (position: XYPosition): XYPosition => {
-  const { transform, snapToGrid, snapGrid } = store.getState();
-
-  return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
-};
-
 export const parseElement = (element: Node | Edge): Node | Edge => {
   if (!element.id) {
     throw new Error('All nodes and edges need to have an id.');
@@ -150,14 +154,14 @@ const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
   y2: Math.max(box1.y2, box2.y2),
 });
 
-const rectToBox = ({ x, y, width, height }: Rect): Box => ({
+export const rectToBox = ({ x, y, width, height }: Rect): Box => ({
   x,
   y,
   x2: x + width,
   y2: y + height,
 });
 
-const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
+export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   x,
   y,
   width: x2 - x,
@@ -202,7 +206,7 @@ export const getNodesInside = (
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
 
     if (width === null || height === null || isDragging) {
-      // at the beginnning all nodes have width & height === 0
+      // nodes are initialized with width and height = null
       return true;
     }
 
@@ -217,32 +221,17 @@ export const getNodesInside = (
 };
 
 export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
-  const nodeIds = nodes.map((n) => n.id);
+  const nodeIds = nodes.map((node) => node.id);
 
-  return edges.filter((e) => {
-    const sourceId = e.source.split('__')[0];
-    const targetId = e.target.split('__')[0];
-
-    return nodeIds.includes(sourceId) || nodeIds.includes(targetId);
-  });
+  return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
 };
-
-export const fitView = (params: FitViewParams = { padding: 0.1 }): void => {
-  store.getActions().fitView(params);
-};
-
-const zoom = (amount: number): void => {
-  store.getActions().zoom(amount);
-};
-
-export const zoomIn = (): void => zoom(0.2);
-
-export const zoomOut = (): void => zoom(-0.2);
 
 const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
   return [
     ...nodes.map((node) => {
       const n = { ...node };
+
+      n.position = n.__rf.position;
 
       delete n.__rf;
       return n;
@@ -259,8 +248,14 @@ export const onLoadGetElements = (currentStore: Store<StoreModel>) => {
   };
 };
 
-export const getElements = (): Elements => {
-  const { nodes = [], edges = [] } = store.getState();
+export const onLoadToObject = (currentStore: Store<StoreModel>) => {
+  return (): FlowExportObject => {
+    const { nodes = [], edges = [], transform } = currentStore.getState();
 
-  return parseElements(nodes, edges);
+    return {
+      elements: parseElements(nodes, edges),
+      position: [transform[0], transform[1]],
+      zoom: transform[2],
+    };
+  };
 };

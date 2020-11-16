@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 
+import { zoom, zoomIdentity } from 'd3-zoom';
+import { select } from 'd3-selection';
+import { clamp } from '../../utils';
+
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { useStoreState, useStoreActions } from '../../store/hooks';
-import { FlowTransform, TranslateExtent } from '../../types';
+import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
+import { FlowTransform, TranslateExtent, PanOnScrollMode } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -10,6 +14,7 @@ interface ZoomPaneProps {
   zoomOnScroll?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
+  panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
@@ -39,6 +44,7 @@ const ZoomPane = ({
   zoomOnScroll = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
+  panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
   selectionKeyPressed,
   elementsSelectable,
@@ -51,18 +57,37 @@ const ZoomPane = ({
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
 
+  const store = useStore();
   const d3Zoom = useStoreState((s) => s.d3Zoom);
   const d3Selection = useStoreState((s) => s.d3Selection);
   const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
 
-  const initD3 = useStoreActions((actions) => actions.initD3);
+  const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
 
   useResizeHandler(zoomPane);
 
   useEffect(() => {
     if (zoomPane.current) {
-      initD3({ zoomPane: zoomPane.current, defaultPosition, defaultZoom, translateExtent });
+      const state = store.getState();
+      const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
+      const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
+      const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
+
+      const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
+      const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
+      const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
+      const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
+
+      d3ZoomInstance.transform(selection, updatedTransform);
+
+      initD3Zoom({
+        d3Zoom: d3ZoomInstance,
+        d3Selection: selection,
+        d3ZoomHandler: selection.on('wheel.zoom'),
+        // we need to pass transform because zoom handler is not registered when we set the initial transform
+        transform: [clampedX, clampedY, clampedZoom],
+      });
     }
   }, []);
 
@@ -78,13 +103,13 @@ const ZoomPane = ({
             // increase scroll speed in firefox
             // firefox: deltaMode === 1; chrome: deltaMode === 0
             const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
-            const deltaX = event.deltaX * deltaNormalize;
-            const deltaY = event.deltaY * deltaNormalize;
+            const deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
+            const deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
 
             d3Zoom.translateBy(
               d3Selection,
-              (deltaX / currentZoom) * panOnScrollSpeed,
-              (deltaY / currentZoom) * panOnScrollSpeed
+              -(deltaX / currentZoom) * panOnScrollSpeed,
+              -(deltaY / currentZoom) * panOnScrollSpeed
             );
           })
           .on('wheel.zoom', null);
@@ -92,7 +117,7 @@ const ZoomPane = ({
         d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
       }
     }
-  }, [panOnScroll, d3Selection, d3Zoom, d3ZoomHandler]);
+  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -100,7 +125,7 @@ const ZoomPane = ({
         d3Zoom.on('zoom', null);
       } else {
         d3Zoom.on('zoom', (event: any) => {
-          updateTransform(event.transform);
+          updateTransform([event.transform.x, event.transform.y, event.transform.k]);
 
           if (onMove) {
             const flowTransform = eventToFlowTransform(event.transform);

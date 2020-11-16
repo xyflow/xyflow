@@ -17,6 +17,7 @@ const onElementClick = (event, element) => console.log('click', element);
 const onPaneClick = (event) => console.log('onPaneClick', event);
 const onPaneScroll = (event) => console.log('onPaneScroll', event);
 const onPaneContextMenu = (event) => console.log('onPaneContextMenu', event);
+const onMoveEnd = (event) => console.log('onMoveEnd', event);
 
 const InteractionFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -27,6 +28,7 @@ const InteractionFlow = () => {
   const [isConnectable, setIsConnectable] = useState(false);
   const [zoomOnScroll, setZoomOnScroll] = useState(false);
   const [panOnScroll, setPanOnScroll] = useState(false);
+  const [panOnScrollMode, setPanOnScrollMode] = useState('free');
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
   const [paneMoveable, setPaneMoveable] = useState(true);
   const [captureZoomClick, setCaptureZoomClick] = useState(false);
@@ -41,6 +43,7 @@ const InteractionFlow = () => {
       nodesDraggable={isDraggable}
       zoomOnScroll={zoomOnScroll}
       panOnScroll={panOnScroll}
+      panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
       onConnect={onConnect}
       onElementClick={captureElementClick ? onElementClick : undefined}
@@ -50,6 +53,7 @@ const InteractionFlow = () => {
       onPaneClick={captureZoomClick ? onPaneClick : undefined}
       onPaneScroll={captureZoomScroll ? onPaneScroll : undefined}
       onPaneContextMenu={captureZoomClick ? onPaneContextMenu : undefined}
+      onMoveEnd={onMoveEnd}
     >
       <MiniMap />
       <Controls />
@@ -113,6 +117,21 @@ const InteractionFlow = () => {
               onChange={(event) => setPanOnScroll(event.target.checked)}
               className="react-flow__panonscroll"
             />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="panonscrollmode">
+            panOnScrollMode
+            <select
+              id="panonscrollmode"
+              value={panOnScrollMode}
+              onChange={(event) => setPanOnScrollMode(event.target.value)}
+              className="react-flow__panonscrollmode"
+            >
+              <option value="free">free</option>
+              <option value="horizontal">horizontal</option>
+              <option value="vertical">vertical</option>
+            </select>
           </label>
         </div>
         <div>

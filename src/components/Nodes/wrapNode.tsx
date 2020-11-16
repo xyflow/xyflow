@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
 import { DraggableCore } from 'react-draggable';
 import cc from 'classcat';
-import { ResizeObserver } from 'resize-observer';
 
 import { useStoreActions } from '../../store/hooks';
 import { Provider } from '../../contexts/NodeIdContext';
@@ -12,7 +11,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     id,
     type,
     data,
-    transform,
+    scale,
     xPos,
     yPos,
     selected,
@@ -199,7 +198,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onStart={onDragStart}
         onDrag={onDrag}
         onStop={onDragStop}
-        scale={transform[2]}
+        scale={scale}
         disabled={!isDraggable}
         cancel=".nodrag"
         nodeRef={nodeElement}

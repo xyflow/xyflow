@@ -1,14 +1,8 @@
 import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent, WheelEvent } from 'react';
 import cc from 'classcat';
 
-const nodeEnv: string = (typeof __ENV__ !== 'undefined' && __ENV__) as string;
-
-if (nodeEnv !== 'production') {
-  const whyDidYouRender = require('@welldone-software/why-did-you-render');
-  whyDidYouRender(React);
-}
-
 import GraphView from '../GraphView';
+import ElementUpdater from '../../components/ElementUpdater';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
@@ -32,6 +26,8 @@ import {
   OnConnectStopFunc,
   OnConnectEndFunc,
   TranslateExtent,
+  KeyCode,
+  PanOnScrollMode,
 } from '../../types';
 
 import '../../style.css';
@@ -80,12 +76,12 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
-  deleteKeyCode?: number;
-  selectionKeyCode?: number;
-  multiSelectionKeyCode?: number;
+  deleteKeyCode?: KeyCode;
+  selectionKeyCode?: KeyCode;
+  multiSelectionKeyCode?: KeyCode;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
-  onlyRenderVisibleNodes?: boolean;
+  onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
   elementsSelectable?: boolean;
@@ -101,6 +97,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   zoomOnScroll?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
+  panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
 }
 
@@ -133,12 +130,12 @@ const ReactFlow = ({
   connectionLineType = ConnectionLineType.Bezier,
   connectionLineStyle,
   connectionLineComponent,
-  deleteKeyCode = 8,
-  selectionKeyCode = 16,
-  multiSelectionKeyCode = 91,
+  deleteKeyCode = 'Backspace',
+  selectionKeyCode = 'Shift',
+  multiSelectionKeyCode = 'Meta',
   snapToGrid = false,
   snapGrid = [15, 15],
-  onlyRenderVisibleNodes = true,
+  onlyRenderVisibleElements = true,
   selectNodesOnDrag = true,
   nodesDraggable,
   nodesConnectable,
@@ -153,6 +150,7 @@ const ReactFlow = ({
   zoomOnScroll = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
+  panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
   paneMoveable = true,
   onPaneClick,
@@ -189,14 +187,13 @@ const ReactFlow = ({
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
           multiSelectionKeyCode={multiSelectionKeyCode}
-          elements={elements}
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onConnectStop={onConnectStop}
           onConnectEnd={onConnectEnd}
           snapToGrid={snapToGrid}
           snapGrid={snapGrid}
-          onlyRenderVisibleNodes={onlyRenderVisibleNodes}
+          onlyRenderVisibleElements={onlyRenderVisibleElements}
           nodesDraggable={nodesDraggable}
           nodesConnectable={nodesConnectable}
           elementsSelectable={elementsSelectable}
@@ -212,6 +209,7 @@ const ReactFlow = ({
           zoomOnDoubleClick={zoomOnDoubleClick}
           panOnScroll={panOnScroll}
           panOnScrollSpeed={panOnScrollSpeed}
+          panOnScrollMode={panOnScrollMode}
           paneMoveable={paneMoveable}
           onPaneClick={onPaneClick}
           onPaneScroll={onPaneScroll}
@@ -221,6 +219,7 @@ const ReactFlow = ({
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
         />
+        <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
         {children}
       </Wrapper>
