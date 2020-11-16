@@ -60,7 +60,7 @@ function renderEdge(
   }
 
   if (!targetHandle) {
-    console.warn(`couldn't create edge for source handle id: ${targetHandleId}; edge id: ${edge.id}`);
+    console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
     return null;
   }
 
