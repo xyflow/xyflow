@@ -34,12 +34,12 @@ function renderEdge(
   const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
 
   if (!sourceNode) {
-    console.warn(`couldn't create edge for source id: ${edge.source}`);
+    console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
     return null;
   }
 
   if (!targetNode) {
-    console.warn(`couldn't create edge for target id: ${edge.target}`);
+    console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
     return null;
   }
 
@@ -55,12 +55,12 @@ function renderEdge(
   const targetPosition = targetHandle ? targetHandle.position : Position.Top;
 
   if (!sourceHandle) {
-    console.warn(`couldn't create edge for source handle id: ${sourceHandleId}`);
+    console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
     return null;
   }
 
   if (!targetHandle) {
-    console.warn(`couldn't create edge for source handle id: ${targetHandleId}`);
+    console.warn(`couldn't create edge for source handle id: ${targetHandleId}; edge id: ${edge.id}`);
     return null;
   }
 
