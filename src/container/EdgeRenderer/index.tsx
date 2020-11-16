@@ -47,20 +47,6 @@ function renderEdge(
     return null;
   }
 
-  const isVisible = onlyRenderVisibleElements
-    ? isEdgeVisible({
-        sourcePos: sourceNode.__rf.position,
-        targetPos: targetNode.__rf.position,
-        width,
-        height,
-        transform,
-      })
-    : true;
-
-  if (!isVisible) {
-    return null;
-  }
-
   const edgeType = edge.type || 'default';
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
   const sourceHandle = getHandle(sourceNode.__rf.handleBounds.source, sourceHandleId);
@@ -86,6 +72,20 @@ function renderEdge(
     targetHandle,
     targetPosition
   );
+
+  const isVisible = onlyRenderVisibleElements
+    ? isEdgeVisible({
+        sourcePos: { x: sourceX, y: sourceY },
+        targetPos: { x: targetX, y: targetY },
+        width,
+        height,
+        transform,
+      })
+    : true;
+
+  if (!isVisible) {
+    return null;
+  }
 
   const isSelected = selectedElements?.some((elm) => isEdge(elm) && elm.id === edge.id) || false;
 
