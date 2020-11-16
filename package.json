@@ -52,7 +52,7 @@
     "@types/react-dom": "^16.9.9",
     "autoprefixer": "^9.8.6",
     "babel-preset-react-app": "^10.0.0",
-    "cypress": "^5.5.0",
+    "cypress": "^5.6.0",
     "postcss-nested": "^4.2.3",
     "prettier": "2.1.2",
     "prop-types": "^15.7.2",
