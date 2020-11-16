@@ -1,13 +1,6 @@
 import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent, WheelEvent } from 'react';
 import cc from 'classcat';
 
-const nodeEnv: string = (typeof __ENV__ !== 'undefined' && __ENV__) as string;
-
-if (nodeEnv !== 'production') {
-  const whyDidYouRender = require('@welldone-software/why-did-you-render');
-  whyDidYouRender(React);
-}
-
 import GraphView from '../GraphView';
 import ElementUpdater from '../../components/ElementUpdater';
 import DefaultNode from '../../components/Nodes/DefaultNode';
