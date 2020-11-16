@@ -201,7 +201,7 @@ export interface WrapNodeProps {
   type: string;
   data: any;
   selected: boolean;
-  transform: Transform;
+  scale: number;
   xPos: number;
   yPos: number;
   isSelectable: boolean;
@@ -229,8 +229,16 @@ export interface WrapNodeProps {
 export type FitViewParams = {
   padding: number;
 };
+
+export type FlowExportObject = {
+  elements: Elements;
+  position: [number, number];
+  zoom: number;
+};
+
 export type FitViewFunc = (fitViewOptions?: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;
+export type ToObjectFunc = () => FlowExportObject;
 
 export type OnLoadParams = {
   zoomIn: () => void;
@@ -240,6 +248,7 @@ export type OnLoadParams = {
   project: ProjectFunc;
   getElements: () => Elements;
   setTransform: (transform: FlowTransform) => void;
+  toObject: ToObjectFunc;
 };
 
 export type OnLoadFunc = (params: OnLoadParams) => void;
@@ -320,3 +329,20 @@ export type FlowTransform = {
 };
 
 export type TranslateExtent = [[number, number], [number, number]];
+
+export type KeyCode = number | string;
+
+export enum PanOnScrollMode {
+  Free = 'free',
+  Vertical = 'vertical',
+  Horizontal = 'horizontal',
+}
+
+export interface ZoomPanHelperFunctions {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  zoomTo: (zoomLevel: number) => void;
+  transform: (transform: FlowTransform) => void;
+  fitView: (params?: FitViewParams) => void;
+  initialized: boolean;
+}

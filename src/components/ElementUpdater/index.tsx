@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import isEqual from 'fast-deep-equal';
 
-import { useStoreState, useStoreActions } from '../store/hooks';
-import { parseElement, isNode, isEdge } from '../utils/graph';
-import { Elements, Node, Edge, FlowElement } from '../types';
+import { useStoreState, useStoreActions } from '../../store/hooks';
+import { parseElement, isNode, isEdge } from '../../utils/graph';
+import { Elements, Node, Edge, FlowElement } from '../../types';
 
-const useElementUpdater = (propElements: Elements): void => {
+interface ElementUpdaterProps {
+  elements: Elements;
+}
+
+const ElementUpdater = ({ elements }: ElementUpdaterProps) => {
   const stateElements = useStoreState((state) => state.elements);
   const setElements = useStoreActions((actions) => actions.setElements);
 
   useEffect(() => {
-    const nextElements: Elements = propElements.map((propElement) => {
+    const nextElements: Elements = elements.map((propElement) => {
       const existingElement = stateElements.find((el) => el.id === propElement.id?.toString());
 
       if (existingElement) {
@@ -137,7 +141,9 @@ const useElementUpdater = (propElements: Elements): void => {
     if (elementsChanged) {
       setElements(nextElements);
     }
-  }, [propElements, stateElements]);
+  }, [elements, stateElements]);
+
+  return null;
 };
 
-export default useElementUpdater;
+export default ElementUpdater;

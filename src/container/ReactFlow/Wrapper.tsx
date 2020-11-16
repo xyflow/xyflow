@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { StoreProvider, useStore } from 'easy-peasy';
+import { StoreProvider } from 'easy-peasy';
 
-import store, { StoreModel } from '../../store';
+import store from '../../store';
+import { useStore } from '../../store/hooks';
 
 const Wrapper: FC = ({ children }) => {
-  const easyPeasyStore = useStore<StoreModel>();
+  const easyPeasyStore = useStore();
   const isWrapepdWithReactFlowProvider = easyPeasyStore?.getState()?.reactFlowVersion;
 
   if (isWrapepdWithReactFlowProvider) {

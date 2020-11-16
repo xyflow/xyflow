@@ -1,13 +1,11 @@
 import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
-import { zoom, zoomIdentity } from 'd3-zoom';
-import { select } from 'd3-selection';
 
-import { getDimensions, clamp } from '../utils';
+import { getDimensions } from '../utils';
+import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
-import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge } from '../utils/graph';
 import {
   ElementId,
   Elements,
@@ -26,43 +24,35 @@ import {
   SetConnectionId,
   NodePosUpdate,
   NodeDiffUpdate,
-  FitViewParams,
   TranslateExtent,
   SnapGrid,
 } from '../types';
-
-type TransformXYK = {
-  x: number;
-  y: number;
-  k: number;
-};
 
 type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
 };
 
-type InitD3 = {
-  zoomPane: Element;
-  defaultPosition: [number, number];
-  defaultZoom: number;
-  translateExtent?: TranslateExtent;
+type InitD3Zoom = {
+  d3Zoom: ZoomBehavior<Element, unknown>;
+  d3Selection: D3Selection<Element, unknown, null, undefined>;
+  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  transform: Transform;
 };
 export interface StoreModel {
   width: number;
   height: number;
-  viewportBox: Computed<StoreModel, Rect>;
   transform: Transform;
   elements: Elements;
   nodes: Computed<StoreModel, Node[]>;
   edges: Computed<StoreModel, Edge[]>;
   selectedElements: Elements | null;
   selectedNodesBbox: Rect;
+  viewportBox: Computed<StoreModel, Rect>;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
   d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
-  d3Initialised: boolean;
   minZoom: number;
   maxZoom: number;
   translateExtent: TranslateExtent;
@@ -113,13 +103,11 @@ export interface StoreModel {
   setSelectedElements: Action<StoreModel, Elements | Node | Edge>;
   addSelectedElements: Thunk<StoreModel, Elements | Node | Edge>;
 
-  updateTransform: Action<StoreModel, TransformXYK>;
-
-  setInitTransform: Action<StoreModel, TransformXYK>;
+  updateTransform: Action<StoreModel, Transform>;
 
   updateSize: Action<StoreModel, Dimensions>;
 
-  initD3: Action<StoreModel, InitD3>;
+  initD3Zoom: Action<StoreModel, InitD3Zoom>;
 
   setMinZoom: Action<StoreModel, number>;
   setMaxZoom: Action<StoreModel, number>;
@@ -142,29 +130,22 @@ export interface StoreModel {
   updateUserSelection: Action<StoreModel, XYPosition>;
   unsetUserSelection: Action<StoreModel>;
 
-  fitView: Action<StoreModel, FitViewParams>;
-  zoomTo: Action<StoreModel, number>;
-  zoom: Thunk<StoreModel, number, any, StoreModel>;
-  zoomIn: Thunk<StoreModel>;
-  zoomOut: Thunk<StoreModel>;
-
   setMultiSelectionActive: Action<StoreModel, boolean>;
 }
 
 export const storeModel: StoreModel = {
   width: 0,
   height: 0,
-  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   transform: [0, 0, 1],
   elements: [],
-  nodes: computed((state) => state.elements.filter((el) => isNode(el)) as Node[]),
-  edges: computed((state) => state.elements.filter((el) => isEdge(el)) as Edge[]),
+  nodes: computed((state) => state.elements.filter(isNode)),
+  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
+  edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
   d3Zoom: null,
   d3Selection: null,
-  d3Initialised: false,
   d3ZoomHandler: undefined,
   minZoom: 0.5,
   maxZoom: 2,
@@ -373,21 +354,9 @@ export const storeModel: StoreModel = {
   }),
 
   updateTransform: action((state, transform) => {
-    state.transform[0] = transform.x;
-    state.transform[1] = transform.y;
-    state.transform[2] = transform.k;
-  }),
-
-  setInitTransform: action((state, transform) => {
-    state.transform[0] = transform.x;
-    state.transform[1] = transform.y;
-    state.transform[2] = transform.k;
-
-    if (state.d3Selection) {
-      const updatedTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.k);
-      // we need to sync the d3 zoom transform with the updated transform
-      state.d3Selection.property('__zoom', updatedTransform);
-    }
+    state.transform[0] = transform[0];
+    state.transform[1] = transform[1];
+    state.transform[2] = transform[2];
   }),
 
   updateSize: action((state, size) => {
@@ -397,27 +366,14 @@ export const storeModel: StoreModel = {
     state.height = size.height || 500;
   }),
 
-  initD3: action((state, { zoomPane, defaultPosition, defaultZoom, translateExtent }) => {
-    const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
-    const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
-    const selection = select(zoomPane).call(d3ZoomInstance);
+  initD3Zoom: action((state, { d3Zoom, d3Selection, d3ZoomHandler, transform }) => {
+    state.d3Zoom = d3Zoom;
+    state.d3Selection = d3Selection;
+    state.d3ZoomHandler = d3ZoomHandler;
 
-    const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
-    const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
-    const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
-
-    const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
-    selection.property('__zoom', updatedTransform);
-
-    const defaultHandler = selection.on('wheel.zoom');
-
-    state.transform[0] = clampedX;
-    state.transform[1] = clampedY;
-    state.transform[2] = clampedZoom;
-    state.d3Zoom = d3ZoomInstance;
-    state.d3Selection = selection;
-    state.d3ZoomHandler = defaultHandler;
-    state.d3Initialised = true;
+    state.transform[0] = transform[0];
+    state.transform[1] = transform[1];
+    state.transform[2] = transform[2];
   }),
 
   setMinZoom: action((state, minZoom) => {
@@ -479,68 +435,6 @@ export const storeModel: StoreModel = {
 
   setElementsSelectable: action((state, elementsSelectable) => {
     state.elementsSelectable = elementsSelectable;
-  }),
-
-  fitView: action((state, payload = { padding: 0.1 }) => {
-    const { padding } = payload;
-    const { nodes, width, height, d3Selection, minZoom, maxZoom } = state;
-
-    if (!d3Selection || !nodes.length) {
-      return;
-    }
-
-    const bounds = getRectOfNodes(nodes);
-    const xZoom = width / (bounds.width * (1 + padding));
-    const yZoom = height / (bounds.height * (1 + padding));
-    const zoom = Math.min(xZoom, yZoom);
-    const clampedZoom = clamp(zoom, minZoom, maxZoom);
-    const boundsCenterX = bounds.x + bounds.width / 2;
-    const boundsCenterY = bounds.y + bounds.height / 2;
-    const transform = [width / 2 - boundsCenterX * clampedZoom, height / 2 - boundsCenterY * clampedZoom];
-    const fittedTransform = zoomIdentity.translate(transform[0], transform[1]).scale(clampedZoom);
-
-    // we need to sync the d3 zoom transform with the fitted transform
-    d3Selection.property('__zoom', fittedTransform);
-
-    state.transform[0] = fittedTransform.x;
-    state.transform[1] = fittedTransform.y;
-    state.transform[2] = fittedTransform.k;
-  }),
-
-  zoomTo: action((state, zoomLevel) => {
-    const { d3Selection, transform, minZoom, maxZoom } = state;
-    const nextZoom = clamp(zoomLevel, minZoom, maxZoom);
-
-    if (d3Selection) {
-      // we want to zoom in and out to the center of the zoom pane
-      const center = [state.width / 2, state.height / 2];
-      const centerInverted = [(center[0] - transform[0]) / transform[2], (center[1] - transform[1]) / transform[2]];
-      const x = center[0] - centerInverted[0] * nextZoom;
-      const y = center[1] - centerInverted[1] * nextZoom;
-      const zoomedTransform = zoomIdentity.translate(x, y).scale(nextZoom);
-
-      // we need to sync the d3 zoom transform with the zoomed transform
-      d3Selection.property('__zoom', zoomedTransform);
-
-      state.transform[0] = zoomedTransform.x;
-      state.transform[1] = zoomedTransform.y;
-      state.transform[2] = zoomedTransform.k;
-    }
-  }),
-
-  zoom: thunk((actions, amount, helpers) => {
-    const { transform } = helpers.getState();
-    const nextZoom = transform[2] + amount;
-
-    actions.zoomTo(nextZoom);
-  }),
-
-  zoomIn: thunk((actions) => {
-    actions.zoom(0.2);
-  }),
-
-  zoomOut: thunk((actions) => {
-    actions.zoom(-0.2);
   }),
 
   setMultiSelectionActive: action((state, isActive) => {
