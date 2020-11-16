@@ -71,6 +71,8 @@ export interface GraphViewProps {
   arrowHeadColor: string;
   markerEndId?: string;
   zoomOnScroll?: boolean;
+  panOnScroll?: boolean;
+  panOnScrollSpeed?: number;
   zoomOnDoubleClick?: boolean;
   paneMoveable?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc; 
@@ -120,6 +122,8 @@ const GraphView = ({
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
+  panOnScroll,
+  panOnScrollSpeed,
   zoomOnDoubleClick,
   paneMoveable,
   onPaneClick,
@@ -248,11 +252,14 @@ const GraphView = ({
       onElementsRemove={onElementsRemove}
       deleteKeyCode={deleteKeyCode}
       selectionKeyCode={selectionKeyCode}
+      elementsSelectable={elementsSelectable}
       onMove={onMove}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
       zoomOnScroll={zoomOnScroll}
       zoomOnDoubleClick={zoomOnDoubleClick}
+      panOnScroll={panOnScroll}
+      panOnScrollSpeed={panOnScrollSpeed}
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
