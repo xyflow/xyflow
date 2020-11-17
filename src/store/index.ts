@@ -1,4 +1,4 @@
-import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'easy-peasy';
+import { createStore, Action, action, ActionOn, actionOn, Thunk, thunk, computed, Computed } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
@@ -91,6 +91,7 @@ export interface StoreModel {
   setElements: Action<StoreModel, Elements>;
 
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
+  updateNodeHandlePositions: ActionOn<StoreModel>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
   updateNodePosDiff: Action<StoreModel, NodeDiffUpdate>;
@@ -211,20 +212,38 @@ export const storeModel: StoreModel = {
       return;
     }
 
-    const bounds = nodeElement.getBoundingClientRect();
-    const handleBounds = {
-      source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
-      target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
-    };
-
     state.elements.forEach((n) => {
       if (n.id === id && isNode(n)) {
         n.__rf.width = dimensions.width;
         n.__rf.height = dimensions.height;
-        n.__rf.handleBounds = handleBounds;
       }
     });
   }),
+
+  updateNodeHandlePositions: actionOn(
+    (actions) => actions.updateNodeDimensions,
+    (state, target) => {
+      const { nodeElement, id } = target.payload;
+      const matchingNode = state.nodes.find((n) => n.id === id);
+
+      if (!matchingNode) {
+        return;
+      }
+
+      const bounds = nodeElement.getBoundingClientRect();
+
+      const handleBounds = {
+        source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
+        target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
+      };
+
+      state.elements.forEach((n) => {
+        if (n.id === id && isNode(n)) {
+          n.__rf.handleBounds = handleBounds;
+        }
+      });
+    }
+  ),
 
   updateNodePos: action((state, { id, pos }) => {
     let position: XYPosition = pos;
