@@ -198,13 +198,15 @@ export const storeModel: StoreModel = {
 
   setElements: action((state, propElements) => {
     // remove deleted elements
-    state.elements.forEach((se, i) => {
-      const removeElement = !propElements.some((pe) => pe.id === se.id);
+    for (let i = 0; i < state.elements.length; i++) {
+      const se = state.elements[i];
+      const elementExistsInProps = propElements.find((pe) => pe.id === se.id);
 
-      if (removeElement) {
+      if (!elementExistsInProps) {
         state.elements.splice(i, 1);
+        i--;
       }
-    });
+    }
 
     propElements.forEach((el) => {
       const storeElementIndex = state.elements.findIndex((se) => se.id === el.id);
@@ -213,35 +215,44 @@ export const storeModel: StoreModel = {
       if (storeElementIndex !== -1) {
         const storeElement = state.elements[storeElementIndex];
 
-        state.elements[storeElementIndex] = {
-          ...storeElement,
-          ...el,
-        };
-
         if (isNode(state.elements[storeElementIndex])) {
           const propNode = el as Node;
           const storeNode = state.elements[storeElementIndex] as Node;
 
-          const poitionChanged =
+          const positionChanged =
             storeNode.position.x !== propNode.position.x || storeNode.position.y !== propNode.position.y;
 
-          if (poitionChanged) {
-            (state.elements[storeElementIndex] as Node).__rf = {
-              ...storeNode.__rf,
+          if (positionChanged) {
+            (state.elements[storeElementIndex] as Node) = {
+              ...storeElement,
+              ...el,
+              __rf: {
+                ...storeNode.__rf,
+                position: propNode.position,
+              },
               position: propNode.position,
             };
+          } else {
+            state.elements[storeElementIndex] = {
+              ...storeElement,
+              ...el,
+            };
           }
-
           // we reset the elements dimensions here in order to force a re-calculation of the bounds.
           // When the type of a node changes it is possible that the number or positions of handles changes too.
-          if (propNode.type !== storeNode.type) {
+          if (typeof propNode.type !== 'undefined' && propNode.type !== storeNode.type) {
             (state.elements[storeElementIndex] as Node).__rf.width = null;
             (state.elements[storeElementIndex] as Node).__rf.height = null;
           }
+        } else {
+          state.elements[storeElementIndex] = {
+            ...storeElement,
+            ...el,
+          };
         }
       } else {
         // add new element
-        state.elements.push(parseElement(el));
+        state.elements.push(parseElement({ ...el }));
       }
     });
   }),
