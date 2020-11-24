@@ -57,7 +57,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "release-it": "^14.2.1",
-    "rollup": "^2.33.2",
+    "rollup": "^2.33.3",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-postcss": "^3.1.8",
     "rollup-plugin-typescript2": "^0.29.0",
