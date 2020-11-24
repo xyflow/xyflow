@@ -46,7 +46,7 @@
     "@svgr/rollup": "^5.5.0",
     "@types/classnames": "^2.2.11",
     "@types/d3": "^6.2.0",
-    "@types/react": "^16.9.56",
+    "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/resize-observer-browser": "^0.1.4",
     "autoprefixer": "^9.8.6",
