@@ -147,6 +147,7 @@ export const storeModel: StoreModel = {
   edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
 
   d3Zoom: null,
   d3Selection: null,
