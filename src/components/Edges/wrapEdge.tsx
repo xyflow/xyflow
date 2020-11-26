@@ -2,7 +2,7 @@ import React, { memo, ComponentType, useCallback } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions } from '../../store/hooks';
-import { Edge, EdgeProps, WrapEdgeProps, Connection } from '../../types';
+import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
 import { onMouseDown } from '../../components/Handle/BaseHandle';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
@@ -35,7 +35,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     isHidden,
     sourceHandleId,
     targetHandleId,
-    onEdgeUpdate,
+    handleEdgeUpdate,
+    onConnectEdge,
   }: WrapEdgeProps) => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
@@ -72,26 +73,19 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
         const nodeId = isSourceHandle ? target : source;
         const handleId = isSourceHandle ? targetHandleId : sourceHandleId;
-
-        const onConnect = (connection: Connection) => {
-          if (onEdgeUpdate) {
-            const edgeElement: Edge = {
-              id,
-              source,
-              target,
-              sourceHandle: sourceHandleId,
-              targetHandle: targetHandleId,
-              type,
-            };
-
-            onEdgeUpdate(edgeElement, connection);
-          }
-        };
-
         const isValidConnection = () => true;
         const isTarget = isSourceHandle;
 
-        onMouseDown(event, handleId, nodeId, setConnectionNodeId, setPosition, onConnect, isTarget, isValidConnection);
+        onMouseDown(
+          event,
+          handleId,
+          nodeId,
+          setConnectionNodeId,
+          setPosition,
+          onConnectEdge,
+          isTarget,
+          isValidConnection
+        );
       },
       [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition]
     );
@@ -116,16 +110,18 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     return (
       <g className={edgeClasses} onClick={onEdgeClick}>
-        <g onMouseDown={onEdgeUpdaterSourceMouseDown}>
-          <circle
-            className="react-flow__edgeupdater"
-            cx={sourceX}
-            cy={sourceY}
-            r="12"
-            stroke="transparent"
-            fill="transparent"
-          />
-        </g>
+        {handleEdgeUpdate && (
+          <g onMouseDown={onEdgeUpdaterSourceMouseDown}>
+            <circle
+              className="react-flow__edgeupdater"
+              cx={sourceX}
+              cy={sourceY}
+              r="12"
+              stroke="transparent"
+              fill="transparent"
+            />
+          </g>
+        )}
         <EdgeComponent
           id={id}
           source={source}
@@ -149,16 +145,18 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           targetPosition={targetPosition}
           markerEndId={markerEndId}
         />
-        <g onMouseDown={onEdgeUpdaterTargetMouseDown}>
-          <circle
-            className="react-flow__edgeupdater"
-            cx={targetX}
-            cy={targetY}
-            r="12"
-            stroke="transparent"
-            fill="transparent"
-          />
-        </g>
+        {handleEdgeUpdate && (
+          <g onMouseDown={onEdgeUpdaterTargetMouseDown}>
+            <circle
+              className="react-flow__edgeupdater"
+              cx={targetX}
+              cy={targetY}
+              r="12"
+              stroke="transparent"
+              fill="transparent"
+            />
+          </g>
+        )}
       </g>
     );
   };

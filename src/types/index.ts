@@ -122,7 +122,8 @@ export interface WrapEdgeProps {
   elementsSelectable?: boolean;
   markerEndId?: string;
   isHidden?: boolean;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
+  handleEdgeUpdate: boolean;
+  onConnectEdge: OnConnectFunc;
 }
 
 export interface EdgeProps {

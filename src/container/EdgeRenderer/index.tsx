@@ -15,6 +15,7 @@ import {
   ConnectionLineType,
   ConnectionLineComponent,
   OnEdgeUpdateFunc,
+  Connection,
 } from '../../types';
 
 interface EdgeRendererProps {
@@ -188,6 +189,10 @@ function renderEdge(
 
   const isSelected = selectedElements ? selectedElements.some((elm) => isEdge(elm) && elm.id === edge.id) : false;
 
+  const onConnectEdge = (connection: Connection) => {
+    props.onEdgeUpdate?.(edge, connection);
+  };
+
   return (
     <EdgeComponent
       key={edge.id}
@@ -219,6 +224,8 @@ function renderEdge(
       elementsSelectable={elementsSelectable}
       markerEndId={props.markerEndId}
       isHidden={edge.isHidden}
+      onConnectEdge={onConnectEdge}
+      handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
     />
   );
 }
