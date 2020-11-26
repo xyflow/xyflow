@@ -35,6 +35,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     snapToGrid,
     snapGrid,
     isDragging,
+    resizeObserver,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
@@ -160,24 +161,19 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     useEffect(() => {
       if (nodeElement.current && !isHidden) {
         updateNodeDimensions({ id, nodeElement: nodeElement.current });
+      }
+    }, [id, isHidden]);
 
-        const resizeObserver = new ResizeObserver(() => {
-          if (nodeElement.current) {
-            updateNodeDimensions({ id, nodeElement: nodeElement.current });
-          }
-        });
+    useEffect(() => {
+      if (nodeElement.current) {
+        const currNode = nodeElement.current;
+        resizeObserver.observe(currNode);
 
-        resizeObserver.observe(nodeElement.current);
-
-        return () => {
-          if (resizeObserver && nodeElement.current) {
-            resizeObserver.unobserve(nodeElement.current);
-          }
-        };
+        return () => resizeObserver.unobserve(currNode);
       }
 
       return;
-    }, [id, isHidden]);
+    }, []);
 
     if (isHidden) {
       return null;
@@ -213,6 +209,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onMouseLeave={onMouseLeaveHandler}
           onContextMenu={onContextMenuHandler}
           onClick={onSelectNodeHandler}
+          data-id={id}
         >
           <Provider value={id}>
             <NodeComponent

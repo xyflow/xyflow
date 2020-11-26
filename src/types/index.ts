@@ -224,6 +224,7 @@ export interface WrapNodeProps {
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
   isDragging?: boolean;
+  resizeObserver: ResizeObserver;
 }
 
 export type FitViewParams = {

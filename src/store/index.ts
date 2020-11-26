@@ -1,4 +1,4 @@
-import { createStore, Action, action, ActionOn, actionOn, Thunk, thunk, computed, Computed } from 'easy-peasy';
+import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'easy-peasy';
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
@@ -31,6 +31,10 @@ import {
 type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
+};
+
+type NodeDimensionUpdates = {
+  updates: NodeDimensionUpdate[];
 };
 
 type InitD3Zoom = {
@@ -90,8 +94,8 @@ export interface StoreModel {
 
   setElements: Action<StoreModel, Elements>;
 
+  batchUpdateNodeDimensions: Action<StoreModel, NodeDimensionUpdates>;
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
-  updateNodeHandlePositions: ActionOn<StoreModel>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
   updateNodePosDiff: Action<StoreModel, NodeDiffUpdate>;
@@ -248,50 +252,39 @@ export const storeModel: StoreModel = {
     });
   }),
 
-  updateNodeDimensions: action((state, { id, nodeElement }) => {
-    const dimensions = getDimensions(nodeElement);
-    const matchingNode = state.nodes.find((n) => n.id === id);
+  batchUpdateNodeDimensions: action((state, { updates }) => {
+    updates.forEach((update) => {
+      const dimensions = getDimensions(update.nodeElement);
+      const matchingIndex = state.elements.findIndex((n) => n.id === update.id);
+      const matchingNode = state.elements[matchingIndex] as Node;
 
-    // only update when size change
-    if (
-      !matchingNode ||
-      (matchingNode.__rf.width === dimensions.width && matchingNode.__rf.height === dimensions.height)
-    ) {
-      return;
-    }
+      if (
+        matchingIndex !== -1 &&
+        dimensions.width &&
+        dimensions.height &&
+        (matchingNode.__rf.width !== dimensions.width || matchingNode.__rf.height !== dimensions.height)
+      ) {
+        const handleBounds = getHandleBounds(update.nodeElement, state.transform[2]);
 
-    state.elements.forEach((n) => {
-      if (n.id === id && isNode(n)) {
-        n.__rf.width = dimensions.width;
-        n.__rf.height = dimensions.height;
+        (state.elements[matchingIndex] as Node).__rf.width = dimensions.width;
+        (state.elements[matchingIndex] as Node).__rf.height = dimensions.height;
+        (state.elements[matchingIndex] as Node).__rf.handleBounds = handleBounds;
       }
     });
   }),
 
-  updateNodeHandlePositions: actionOn(
-    (actions) => actions.updateNodeDimensions,
-    (state, target) => {
-      const { nodeElement, id } = target.payload;
-      const matchingNode = state.nodes.find((n) => n.id === id);
+  updateNodeDimensions: action((state, { id, nodeElement }) => {
+    const dimensions = getDimensions(nodeElement);
+    const matchingIndex = state.elements.findIndex((n) => n.id === id);
 
-      if (!matchingNode) {
-        return;
-      }
+    if (matchingIndex !== -1 && dimensions.width && dimensions.height) {
+      const handleBounds = getHandleBounds(nodeElement, state.transform[2]);
 
-      const bounds = nodeElement.getBoundingClientRect();
-
-      const handleBounds = {
-        source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
-        target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
-      };
-
-      state.elements.forEach((n) => {
-        if (n.id === id && isNode(n)) {
-          n.__rf.handleBounds = handleBounds;
-        }
-      });
+      (state.elements[matchingIndex] as Node).__rf.width = dimensions.width;
+      (state.elements[matchingIndex] as Node).__rf.height = dimensions.height;
+      (state.elements[matchingIndex] as Node).__rf.handleBounds = handleBounds;
     }
-  ),
+  }),
 
   updateNodePos: action((state, { id, pos }) => {
     let position: XYPosition = pos;
