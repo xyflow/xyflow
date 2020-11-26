@@ -219,6 +219,7 @@ export const storeModel: StoreModel = {
           const propNode = el as Node;
           const positionChanged =
             storeElement.position.x !== propNode.position.x || storeElement.position.y !== propNode.position.y;
+          const typeChanged = typeof propNode.type !== 'undefined' && propNode.type !== storeElement.type;
 
           state.elements[storeElementIndex] = {
             ...storeElement,
@@ -228,9 +229,10 @@ export const storeModel: StoreModel = {
           if (positionChanged) {
             (state.elements[storeElementIndex] as Node).__rf.position = propNode.position;
           }
-          // we reset the elements dimensions here in order to force a re-calculation of the bounds.
-          // When the type of a node changes it is possible that the number or positions of handles changes too.
-          if (typeof propNode.type !== 'undefined' && propNode.type !== storeElement.type) {
+
+          if (typeChanged) {
+            // we reset the elements dimensions here in order to force a re-calculation of the bounds.
+            // When the type of a node changes it is possible that the number or positions of handles changes too.
             (state.elements[storeElementIndex] as Node).__rf.width = null;
           }
         } else {
