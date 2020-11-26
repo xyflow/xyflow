@@ -284,6 +284,7 @@ export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponen
 export type OnConnectFunc = (connection: Connection) => void;
 export type OnConnectStartParams = {
   nodeId: ElementId | null;
+  handleId: ElementId | null;
   handleType: HandleType | null;
 };
 export type OnConnectStartFunc = (event: ReactMouseEvent, params: OnConnectStartParams) => void;
