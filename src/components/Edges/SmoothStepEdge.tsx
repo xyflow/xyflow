@@ -8,30 +8,18 @@ import { EdgeSmoothStepProps, Position } from '../../types';
 // The name indicates the direction of the path. "bottomLeftCorner" goes
 // from bottom to the left and "leftBottomCorner" goes from left to the bottom.
 // We have to consider the direction of the paths because of the animated lines.
-
-const bottomLeftCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX},${cornerY - cornerSize}Q ${cornerX},${cornerY} ${cornerX + cornerSize},${cornerY}`;
-
-const leftBottomCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX + cornerSize},${cornerY}Q ${cornerX},${cornerY} ${cornerX},${cornerY - cornerSize}`;
-
-const bottomRightCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX},${cornerY - cornerSize}Q ${cornerX},${cornerY} ${cornerX - cornerSize},${cornerY}`;
-
-const rightBottomCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX - cornerSize},${cornerY}Q ${cornerX},${cornerY} ${cornerX},${cornerY - cornerSize}`;
-
-const leftTopCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX + cornerSize},${cornerY}Q ${cornerX},${cornerY} ${cornerX},${cornerY + cornerSize}`;
-
-const topLeftCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX},${cornerY + cornerSize}Q ${cornerX},${cornerY} ${cornerX + cornerSize},${cornerY}`;
-
-const topRightCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX},${cornerY + cornerSize}Q ${cornerX},${cornerY} ${cornerX - cornerSize},${cornerY}`;
-
-const rightTopCorner = (cornerX: number, cornerY: number, cornerSize: number): string =>
-  `L ${cornerX - cornerSize},${cornerY}Q ${cornerX},${cornerY} ${cornerX},${cornerY + cornerSize}`;
+const bottomLeftCorner = (x: number, y: number, size: number): string =>
+  `L ${x},${y - size}Q ${x},${y} ${x + size},${y}`;
+const leftBottomCorner = (x: number, y: number, size: number): string =>
+  `L ${x + size},${y}Q ${x},${y} ${x},${y - size}`;
+const bottomRightCorner = (x: number, y: number, size: number): string =>
+  `L ${x},${y - size}Q ${x},${y} ${x - size},${y}`;
+const rightBottomCorner = (x: number, y: number, size: number): string =>
+  `L ${x - size},${y}Q ${x},${y} ${x},${y - size}`;
+const leftTopCorner = (x: number, y: number, size: number): string => `L ${x + size},${y}Q ${x},${y} ${x},${y + size}`;
+const topLeftCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x + size},${y}`;
+const topRightCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x - size},${y}`;
+const rightTopCorner = (x: number, y: number, size: number): string => `L ${x - size},${y}Q ${x},${y} ${x},${y + size}`;
 
 interface GetSmoothStepPathParams {
   sourceX: number;
@@ -60,27 +48,12 @@ export function getSmoothStepPath({
   const cornerWidth = Math.min(borderRadius, Math.abs(targetX - sourceX));
   const cornerHeight = Math.min(borderRadius, Math.abs(targetY - sourceY));
   const cornerSize = Math.min(cornerWidth, cornerHeight, offsetX, offsetY);
-
   const leftAndRight = [Position.Left, Position.Right];
-
-  let firstCornerPath = null;
-  let secondCornerPath = null;
-
   const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
   const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
 
-  // default case: source and target positions are top or bottom
-  if (sourceX <= targetX) {
-    firstCornerPath =
-      sourceY <= targetY ? bottomLeftCorner(sourceX, cY, cornerSize) : topLeftCorner(sourceX, cY, cornerSize);
-    secondCornerPath =
-      sourceY <= targetY ? rightTopCorner(targetX, cY, cornerSize) : rightBottomCorner(targetX, cY, cornerSize);
-  } else {
-    firstCornerPath =
-      sourceY < targetY ? bottomRightCorner(sourceX, cY, cornerSize) : topRightCorner(sourceX, cY, cornerSize);
-    secondCornerPath =
-      sourceY < targetY ? leftTopCorner(targetX, cY, cornerSize) : leftBottomCorner(targetX, cY, cornerSize);
-  }
+  let firstCornerPath = null;
+  let secondCornerPath = null;
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
     if (sourceX <= targetX) {
@@ -115,6 +88,18 @@ export function getSmoothStepPath({
           : topRightCorner(sourceX, targetY, cornerSize);
     }
     secondCornerPath = '';
+  } else {
+    if (sourceX <= targetX) {
+      firstCornerPath =
+        sourceY <= targetY ? bottomLeftCorner(sourceX, cY, cornerSize) : topLeftCorner(sourceX, cY, cornerSize);
+      secondCornerPath =
+        sourceY <= targetY ? rightTopCorner(targetX, cY, cornerSize) : rightBottomCorner(targetX, cY, cornerSize);
+    } else {
+      firstCornerPath =
+        sourceY < targetY ? bottomRightCorner(sourceX, cY, cornerSize) : topRightCorner(sourceX, cY, cornerSize);
+      secondCornerPath =
+        sourceY < targetY ? leftTopCorner(targetX, cY, cornerSize) : leftBottomCorner(targetX, cY, cornerSize);
+    }
   }
 
   return `M ${sourceX},${sourceY}${firstCornerPath}${secondCornerPath}L ${targetX},${targetY}`;

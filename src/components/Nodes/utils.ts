@@ -1,7 +1,16 @@
 import { HandleElement, Position } from '../../types';
 import { getDimensions } from '../../utils';
 
-export const getHandleBounds = (
+export const getHandleBounds = (nodeElement: HTMLDivElement, scale: number) => {
+  const bounds = nodeElement.getBoundingClientRect();
+
+  return {
+    source: getHandleBoundsByHandleType('.source', nodeElement, bounds, scale),
+    target: getHandleBoundsByHandleType('.target', nodeElement, bounds, scale),
+  };
+};
+
+export const getHandleBoundsByHandleType = (
   selector: string,
   nodeElement: HTMLDivElement,
   parentBounds: ClientRect | DOMRect,

@@ -1,6 +1,8 @@
 import { DraggableEvent } from 'react-draggable';
 import { MouseEvent as ReactMouseEvent } from 'react';
 
+import { Dimensions } from '../types';
+
 export const isInputDOMNode = (e: ReactMouseEvent | DraggableEvent | KeyboardEvent) => {
   const target = e?.target as HTMLElement;
 
@@ -9,7 +11,7 @@ export const isInputDOMNode = (e: ReactMouseEvent | DraggableEvent | KeyboardEve
   );
 };
 
-export const getDimensions = (node: HTMLDivElement) => ({
+export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
   height: node.offsetHeight,
 });

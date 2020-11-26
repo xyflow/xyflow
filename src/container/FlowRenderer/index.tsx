@@ -11,15 +11,16 @@ import NodesSelection from '../../components/NodesSelection';
 
 interface FlowRendererProps
   extends Omit<
-  GraphViewProps,
-  | 'elements'
-  | 'snapToGrid'
-  | 'nodeTypes'
-  | 'edgeTypes'
-  | 'snapGrid'
-  | 'connectionLineType'
-  | 'arrowHeadColor'
-  | 'onlyRenderVisibleNodes'
+    GraphViewProps,
+    | 'elements'
+    | 'snapToGrid'
+    | 'nodeTypes'
+    | 'edgeTypes'
+    | 'snapGrid'
+    | 'connectionLineType'
+    | 'arrowHeadColor'
+    | 'onlyRenderVisibleElements'
+    | 'selectNodesOnDrag'
   > {
   children: ReactNode;
 }
@@ -40,6 +41,7 @@ const FlowRenderer = ({
   zoomOnScroll,
   panOnScroll,
   panOnScrollSpeed,
+  panOnScrollMode,
   zoomOnDoubleClick,
   paneMoveable,
   defaultPosition,
@@ -91,6 +93,7 @@ const FlowRenderer = ({
       zoomOnScroll={zoomOnScroll}
       panOnScroll={panOnScroll}
       panOnScrollSpeed={panOnScrollSpeed}
+      panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}
