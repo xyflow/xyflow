@@ -140,6 +140,11 @@ nav a.active:before {
   color: #f8f8f8;
 }
 
+.react-flow__node.dark {
+  background: #557;
+  color: #f8f8f8;
+}
+
 .react-flow__node-selectorNode {
   font-size: 12px;
   background: #f0f2f3;
