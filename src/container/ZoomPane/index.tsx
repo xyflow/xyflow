@@ -71,7 +71,12 @@ const ZoomPane = ({
     if (zoomPane.current) {
       const state = store.getState();
       const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
-      const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
+      
+      const d3ZoomInstance = zoom()
+        .scaleExtent([state.minZoom, state.maxZoom])
+        .touchable(() => true)
+        .translateExtent(currentTranslateExtent)
+        
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 
       const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
