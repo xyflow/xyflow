@@ -15,7 +15,7 @@ import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
 import CustomConnectionLine from './CustomConnectionLine';
 import NodeTypeChange from './NodeTypeChange';
-import DraggableEdge from './DraggableEdge';
+import UpdatableEdge from './UpdatableEdge';
 
 import './index.css';
 
@@ -80,9 +80,9 @@ const routes = [
     component: NodeTypeChange,
   },
   {
-    path: '/draggable-edge',
-    component: DraggableEdge,
-    label: 'Draggable Edge',
+    path: '/updatable-edge',
+    component: UpdatableEdge,
+    label: 'Updatable Edge',
   },
 ];
 
