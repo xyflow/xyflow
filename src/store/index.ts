@@ -144,10 +144,10 @@ export const storeModel: StoreModel = {
   transform: [0, 0, 1],
   elements: [],
   nodes: computed((state) => state.elements.filter(isNode)),
-  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
 
   d3Zoom: null,
   d3Selection: null,

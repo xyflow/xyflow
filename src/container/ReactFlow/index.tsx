@@ -28,6 +28,7 @@ import {
   TranslateExtent,
   KeyCode,
   PanOnScrollMode,
+  OnEdgeUpdateFunc,
 } from '../../types';
 
 import '../../style.css';
@@ -99,6 +100,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
 }
 
 const ReactFlow = ({
@@ -157,6 +159,7 @@ const ReactFlow = ({
   onPaneScroll,
   onPaneContextMenu,
   children,
+  onEdgeUpdate,
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
@@ -218,6 +221,7 @@ const ReactFlow = ({
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
+          onEdgeUpdate={onEdgeUpdate}
         />
         <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}

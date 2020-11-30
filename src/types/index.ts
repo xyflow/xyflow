@@ -111,7 +111,8 @@ export interface WrapEdgeProps {
   arrowHeadType?: ArrowHeadType;
   source: ElementId;
   target: ElementId;
-  sourceHandleId?: string;
+  sourceHandleId: ElementId | null;
+  targetHandleId: ElementId | null;
   sourceX: number;
   sourceY: number;
   targetX: number;
@@ -121,6 +122,8 @@ export interface WrapEdgeProps {
   elementsSelectable?: boolean;
   markerEndId?: string;
   isHidden?: boolean;
+  handleEdgeUpdate: boolean;
+  onConnectEdge: OnConnectFunc;
 }
 
 export interface EdgeProps {
@@ -348,3 +351,5 @@ export interface ZoomPanHelperFunctions {
   fitView: (params?: FitViewParams) => void;
   initialized: boolean;
 }
+
+export type OnEdgeUpdateFunc = (oldEdge: Edge, newConnection: Connection) => void;

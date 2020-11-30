@@ -79,6 +79,7 @@ const GraphView = ({
   onPaneClick,
   onPaneScroll,
   onPaneContextMenu,
+  onEdgeUpdate,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -236,6 +237,7 @@ const GraphView = ({
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
         connectionLineComponent={connectionLineComponent}
+        onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
       />
     </FlowRenderer>

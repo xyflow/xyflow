@@ -1,11 +1,21 @@
-import React, { memo, CSSProperties } from 'react';
+import React, { memo, CSSProperties, useCallback } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes } from './utils';
-import { Position, Edge, Node, Elements, ConnectionLineType, ConnectionLineComponent, Transform } from '../../types';
+import {
+  Position,
+  Edge,
+  Node,
+  Elements,
+  ConnectionLineType,
+  ConnectionLineComponent,
+  Transform,
+  OnEdgeUpdateFunc,
+  Connection,
+} from '../../types';
 
 interface EdgeRendererProps {
   edgeTypes: any;
@@ -16,22 +26,42 @@ interface EdgeRendererProps {
   markerEndId?: string;
   connectionLineComponent?: ConnectionLineComponent;
   onlyRenderVisibleElements: boolean;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
 }
 
-function renderEdge(
-  edge: Edge,
-  props: EdgeRendererProps,
-  nodes: Node[],
-  selectedElements: Elements | null,
-  elementsSelectable: boolean,
-  transform: Transform,
-  width: number,
-  height: number,
-  onlyRenderVisibleElements: boolean
-) {
+interface EdgeWrapperProps {
+  edge: Edge;
+  props: EdgeRendererProps;
+  nodes: Node[];
+  selectedElements: Elements | null;
+  elementsSelectable: boolean;
+  transform: Transform;
+  width: number;
+  height: number;
+  onlyRenderVisibleElements: boolean;
+}
+
+const Edge = ({
+  edge,
+  props,
+  nodes,
+  selectedElements,
+  elementsSelectable,
+  transform,
+  width,
+  height,
+  onlyRenderVisibleElements,
+}: EdgeWrapperProps) => {
   const sourceHandleId = edge.sourceHandle || null;
   const targetHandleId = edge.targetHandle || null;
   const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
+
+  const onConnectEdge = useCallback(
+    (connection: Connection) => {
+      props.onEdgeUpdate?.(edge, connection);
+    },
+    [edge]
+  );
 
   if (!sourceNode) {
     console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
@@ -120,9 +150,11 @@ function renderEdge(
       elementsSelectable={elementsSelectable}
       markerEndId={props.markerEndId}
       isHidden={edge.isHidden}
+      onConnectEdge={onConnectEdge}
+      handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
     />
   );
-}
+};
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const transform = useStoreState((state) => state.transform);
@@ -156,19 +188,20 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={transformStyle}>
-        {edges.map((edge: Edge) =>
-          renderEdge(
-            edge,
-            props,
-            nodes,
-            selectedElements,
-            elementsSelectable,
-            transform,
-            width,
-            height,
-            onlyRenderVisibleElements
-          )
-        )}
+        {edges.map((edge: Edge) => (
+          <Edge
+            key={edge.id}
+            edge={edge}
+            props={props}
+            nodes={nodes}
+            selectedElements={selectedElements}
+            elementsSelectable={elementsSelectable}
+            transform={transform}
+            width={width}
+            height={height}
+            onlyRenderVisibleElements={onlyRenderVisibleElements}
+          />
+        ))}
         {renderConnectionLine && (
           <ConnectionLine
             nodes={nodes}
