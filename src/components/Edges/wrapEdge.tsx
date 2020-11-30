@@ -1,4 +1,4 @@
-import React, { memo, ComponentType, useCallback } from 'react';
+import React, { memo, ComponentType, useCallback, useState } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions } from '../../store/hooks';
@@ -41,13 +41,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
     const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
+    const [updating, setUpdating] = useState<boolean>(false);
 
     const inactive = !elementsSelectable && !onClick;
     const edgeClasses = cc([
       'react-flow__edge',
       `react-flow__edge-${type}`,
       className,
-      { selected, animated, inactive },
+      { selected, animated, inactive, updating },
     ]);
 
     const onEdgeClick = useCallback(
@@ -104,6 +105,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       [id, target, targetHandleId, handleEdgeUpdater]
     );
 
+    const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
+    const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
+
     if (isHidden) {
       return null;
     }
@@ -111,12 +115,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     return (
       <g className={edgeClasses} onClick={onEdgeClick}>
         {handleEdgeUpdate && (
-          <g onMouseDown={onEdgeUpdaterSourceMouseDown}>
+          <g
+            onMouseDown={onEdgeUpdaterSourceMouseDown}
+            onMouseEnter={onEdgeUpdaterMouseEnter}
+            onMouseOut={onEdgeUpdaterMouseOut}
+          >
             <circle
               className="react-flow__edgeupdater"
               cx={sourceX}
               cy={sourceY}
-              r="12"
+              r={10}
               stroke="transparent"
               fill="transparent"
             />
@@ -146,12 +154,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           markerEndId={markerEndId}
         />
         {handleEdgeUpdate && (
-          <g onMouseDown={onEdgeUpdaterTargetMouseDown}>
+          <g
+            onMouseDown={onEdgeUpdaterTargetMouseDown}
+            onMouseEnter={onEdgeUpdaterMouseEnter}
+            onMouseOut={onEdgeUpdaterMouseOut}
+          >
             <circle
               className="react-flow__edgeupdater"
               cx={targetX}
               cy={targetY}
-              r="12"
+              r={10}
               stroke="transparent"
               fill="transparent"
             />

@@ -60,6 +60,12 @@
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }
+
+  &.updating {
+    .react-flow__edge-path {
+      stroke: #777;
+    }
+  }
 }
 
 @keyframes dashdraw {
