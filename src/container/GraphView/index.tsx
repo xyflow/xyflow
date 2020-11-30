@@ -45,6 +45,7 @@ const GraphView = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  connectionMode,
   connectionLineType,
   connectionLineStyle,
   connectionLineComponent,
@@ -94,6 +95,7 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
+  const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
@@ -187,6 +189,12 @@ const GraphView = ({
       setTranslateExtent(translateExtent);
     }
   }, [translateExtent]);
+
+  useEffect(() => {
+    if (typeof connectionMode !== 'undefined') {
+      setConnectionMode(connectionMode);
+    }
+  }, [connectionMode]);
 
   return (
     <FlowRenderer

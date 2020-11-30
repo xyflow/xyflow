@@ -264,6 +264,11 @@ export interface Connection {
   targetHandle: ElementId | null;
 }
 
+export enum ConnectionMode {
+  Strict = 'strict',
+  Loose = 'loose',
+}
+
 export enum ConnectionLineType {
   Bezier = 'default',
   Straight = 'straight',

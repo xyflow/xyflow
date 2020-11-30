@@ -26,6 +26,7 @@ import {
   NodeDiffUpdate,
   TranslateExtent,
   SnapGrid,
+  ConnectionMode,
 } from '../types';
 
 type NodeDimensionUpdate = {
@@ -70,6 +71,7 @@ export interface StoreModel {
   connectionHandleId: ElementId | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
+  connectionMode: ConnectionMode;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
@@ -136,6 +138,8 @@ export interface StoreModel {
   unsetUserSelection: Action<StoreModel>;
 
   setMultiSelectionActive: Action<StoreModel, boolean>;
+
+  setConnectionMode: Action<StoreModel, ConnectionMode>;
 }
 
 export const storeModel: StoreModel = {
@@ -175,6 +179,7 @@ export const storeModel: StoreModel = {
   connectionHandleId: null,
   connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
+  connectionMode: ConnectionMode.Strict,
 
   snapGrid: [15, 15],
   snapToGrid: false,
@@ -499,6 +504,10 @@ export const storeModel: StoreModel = {
 
   setMultiSelectionActive: action((state, isActive) => {
     state.multiSelectionActive = isActive;
+  }),
+
+  setConnectionMode: action((state, connectionMode) => {
+    state.connectionMode = connectionMode;
   }),
 };
 

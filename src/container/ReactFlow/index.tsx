@@ -19,6 +19,7 @@ import {
   Node,
   Edge,
   Connection,
+  ConnectionMode,
   ConnectionLineType,
   ConnectionLineComponent,
   FlowTransform,
@@ -74,6 +75,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onPaneContextMenu?: (event: MouseEvent) => void;
   nodeTypes?: NodeTypesType;
   edgeTypes?: EdgeTypesType;
+  connectionMode?: ConnectionMode;
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
@@ -129,6 +131,7 @@ const ReactFlow = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  connectionMode,
   connectionLineType = ConnectionLineType.Bezier,
   connectionLineStyle,
   connectionLineComponent,
@@ -183,6 +186,7 @@ const ReactFlow = ({
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}
+          connectionMode={connectionMode}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           connectionLineComponent={connectionLineComponent}

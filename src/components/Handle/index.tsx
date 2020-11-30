@@ -1,16 +1,18 @@
-import React, { memo, useContext } from 'react';
+import React, { memo, useContext, useCallback } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
-import BaseHandle from './BaseHandle';
 import NodeIdContext from '../../contexts/NodeIdContext';
+import { HandleProps, Connection, ElementId, Position } from '../../types';
 
-import { HandleProps, ElementId, Position, Connection } from '../../types';
+import { onMouseDown } from './handler';
+
+const alwaysValid = () => true;
 
 const Handle = ({
   type = 'source',
   position = Position.Top,
-  isValidConnection = () => true,
+  isValidConnection = alwaysValid,
   isConnectable = true,
   style,
   className,
@@ -24,32 +26,69 @@ const Handle = ({
   const onConnectStart = useStoreState((state) => state.onConnectStart);
   const onConnectStop = useStoreState((state) => state.onConnectStop);
   const onConnectEnd = useStoreState((state) => state.onConnectEnd);
+  const connectionMode = useStoreState((state) => state.connectionMode);
+  const handleId = id || null;
+  const isTarget = type === 'target';
 
-  const onConnectExtended = (params: Connection) => {
-    if (onConnectAction) {
-      onConnectAction(params);
-    }
+  const onConnectExtended = useCallback(
+    (params: Connection) => {
+      onConnectAction?.(params);
+      onConnect?.(params);
+    },
+    [onConnectAction, onConnect]
+  );
 
-    if (onConnect) {
-      onConnect(params);
-    }
-  };
-  const handleClasses = cc([className, { connectable: isConnectable }]);
+  const onMouseDownHandler = useCallback(
+    (event: React.MouseEvent) => {
+      onMouseDown(
+        event,
+        handleId,
+        nodeId,
+        setConnectionNodeId,
+        setPosition,
+        onConnectExtended,
+        isTarget,
+        isValidConnection,
+        connectionMode,
+        onConnectStart,
+        onConnectStop,
+        onConnectEnd
+      );
+    },
+    [
+      handleId,
+      nodeId,
+      setConnectionNodeId,
+      setPosition,
+      onConnectExtended,
+      isTarget,
+      isValidConnection,
+      connectionMode,
+      onConnectStart,
+      onConnectStop,
+      onConnectEnd,
+    ]
+  );
+
+  const handleClasses = cc([
+    'react-flow__handle',
+    `react-flow__handle-${position}`,
+    'nodrag',
+    className,
+    {
+      source: !isTarget,
+      target: isTarget,
+      connectable: isConnectable,
+    },
+  ]);
 
   return (
-    <BaseHandle
+    <div
+      data-handleid={handleId}
+      data-nodeid={nodeId}
+      data-handlepos={position}
       className={handleClasses}
-      id={id}
-      nodeId={nodeId}
-      setPosition={setPosition}
-      setConnectionNodeId={setConnectionNodeId}
-      onConnect={onConnectExtended}
-      onConnectStart={onConnectStart}
-      onConnectStop={onConnectStop}
-      onConnectEnd={onConnectEnd}
-      type={type}
-      position={position}
-      isValidConnection={isValidConnection}
+      onMouseDown={onMouseDownHandler}
       style={style}
     />
   );

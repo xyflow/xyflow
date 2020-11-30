@@ -1,9 +1,9 @@
 import React, { memo, ComponentType, useCallback, useState } from 'react';
 import cc from 'classcat';
 
-import { useStoreActions } from '../../store/hooks';
+import { useStoreActions, useStoreState } from '../../store/hooks';
 import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
-import { onMouseDown } from '../../components/Handle/BaseHandle';
+import { onMouseDown } from '../../components/Handle/handler';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -41,6 +41,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
     const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
+    const connectionMode = useStoreState((state) => state.connectionMode);
+
     const [updating, setUpdating] = useState<boolean>(false);
 
     const inactive = !elementsSelectable && !onClick;
@@ -85,7 +87,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           setPosition,
           onConnectEdge,
           isTarget,
-          isValidConnection
+          isValidConnection,
+          connectionMode
         );
       },
       [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition]
