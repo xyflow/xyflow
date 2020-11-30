@@ -71,7 +71,7 @@ export function onMouseDown(
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
 
   if (onConnectStart) {
-    onConnectStart(event, { nodeId, handleType });
+    onConnectStart(event, { nodeId, handleId, handleType });
   }
 
   function resetRecentHandle(): void {
