@@ -55,21 +55,32 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        const edgeElement: Edge = {
+          id,
+          source,
+          target,
+          type,
+        };
+
+        if (sourceHandleId) {
+          edgeElement.sourceHandle = sourceHandleId;
+        }
+
+        if (targetHandleId) {
+          edgeElement.targetHandle = targetHandleId;
+        }
+
+        if (typeof data !== 'undefined') {
+          edgeElement.data = data;
+        }
+
         if (elementsSelectable) {
-          addSelectedElements({ id, source, target });
+          addSelectedElements(edgeElement);
         }
 
-        if (onClick) {
-          const edgeElement: Edge = { id, source, target, type };
-
-          if (typeof data !== 'undefined') {
-            edgeElement.data = data;
-          }
-
-          onClick(event, edgeElement);
-        }
+        onClick?.(event, edgeElement);
       },
-      [elementsSelectable, id, source, target, type, data, onClick]
+      [elementsSelectable, id, source, target, type, data, sourceHandleId, targetHandleId, onClick]
     );
 
     const handleEdgeUpdater = useCallback(
