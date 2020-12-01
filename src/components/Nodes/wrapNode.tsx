@@ -167,9 +167,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     useEffect(() => {
       if (nodeElement.current) {
         const currNode = nodeElement.current;
-        resizeObserver.observe(currNode);
+        resizeObserver?.observe(currNode);
 
-        return () => resizeObserver.unobserve(currNode);
+        return () => resizeObserver?.unobserve(currNode);
       }
 
       return;

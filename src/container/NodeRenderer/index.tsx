@@ -38,18 +38,20 @@ const NodeRenderer = (props: NodeRendererProps) => {
     [transform[0], transform[1], transform[2]]
   );
 
-  const resizeObserver = useMemo(
-    () =>
-      new ResizeObserver((entries) => {
-        const updates = entries.map((entry) => ({
-          id: entry.target.getAttribute('data-id') as string,
-          nodeElement: entry.target as HTMLDivElement,
-        }));
+  const resizeObserver = useMemo(() => {
+    if (typeof ResizeObserver === 'undefined') {
+      return null;
+    }
 
-        batchUpdateNodeDimensions({ updates });
-      }),
-    []
-  );
+    return new ResizeObserver((entries) => {
+      const updates = entries.map((entry) => ({
+        id: entry.target.getAttribute('data-id') as string,
+        nodeElement: entry.target as HTMLDivElement,
+      }));
+
+      batchUpdateNodeDimensions({ updates });
+    });
+  }, []);
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
