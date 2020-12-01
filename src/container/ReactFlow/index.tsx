@@ -19,6 +19,7 @@ import {
   Node,
   Edge,
   Connection,
+  ConnectionMode,
   ConnectionLineType,
   ConnectionLineComponent,
   FlowTransform,
@@ -28,6 +29,7 @@ import {
   TranslateExtent,
   KeyCode,
   PanOnScrollMode,
+  OnEdgeUpdateFunc,
 } from '../../types';
 
 import '../../style.css';
@@ -73,6 +75,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onPaneContextMenu?: (event: MouseEvent) => void;
   nodeTypes?: NodeTypesType;
   edgeTypes?: EdgeTypesType;
+  connectionMode?: ConnectionMode;
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
@@ -99,6 +102,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
 }
 
 const ReactFlow = ({
@@ -127,6 +131,7 @@ const ReactFlow = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  connectionMode,
   connectionLineType = ConnectionLineType.Bezier,
   connectionLineStyle,
   connectionLineComponent,
@@ -157,6 +162,7 @@ const ReactFlow = ({
   onPaneScroll,
   onPaneContextMenu,
   children,
+  onEdgeUpdate,
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
@@ -180,6 +186,7 @@ const ReactFlow = ({
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}
+          connectionMode={connectionMode}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           connectionLineComponent={connectionLineComponent}
@@ -218,6 +225,7 @@ const ReactFlow = ({
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
+          onEdgeUpdate={onEdgeUpdate}
         />
         <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}

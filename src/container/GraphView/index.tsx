@@ -45,6 +45,7 @@ const GraphView = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  connectionMode,
   connectionLineType,
   connectionLineStyle,
   connectionLineComponent,
@@ -79,6 +80,7 @@ const GraphView = ({
   onPaneClick,
   onPaneScroll,
   onPaneContextMenu,
+  onEdgeUpdate,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -93,6 +95,7 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
+  const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
@@ -187,6 +190,12 @@ const GraphView = ({
     }
   }, [translateExtent]);
 
+  useEffect(() => {
+    if (typeof connectionMode !== 'undefined') {
+      setConnectionMode(connectionMode);
+    }
+  }, [connectionMode]);
+
   return (
     <FlowRenderer
       onPaneClick={onPaneClick}
@@ -236,6 +245,7 @@ const GraphView = ({
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
         connectionLineComponent={connectionLineComponent}
+        onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
       />
     </FlowRenderer>

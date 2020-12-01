@@ -87,6 +87,32 @@ export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elem
   return elements.concat(edge);
 };
 
+export const updateEdge = (oldEdge: Edge, newConnection: Connection, elements: Elements): Elements => {
+  if (!newConnection.source || !newConnection.target) {
+    console.warn("Can't create new edge. An edge needs a source and a target.");
+    return elements;
+  }
+
+  const foundEdge = elements.find((e) => isEdge(e) && e.id === oldEdge.id) as Edge;
+
+  if (!foundEdge) {
+    console.warn(`The old edge with id=${oldEdge.id} does not exist.`);
+    return elements;
+  }
+
+  // Remove old edge and create the new edge with parameters of old edge.
+  const edge = {
+    ...oldEdge,
+    id: getEdgeId(newConnection),
+    source: newConnection.source,
+    target: newConnection.target,
+    sourceHandle: newConnection.sourceHandle,
+    targetHandle: newConnection.targetHandle,
+  } as Edge;
+
+  return elements.filter((e) => e.id !== oldEdge.id).concat(edge);
+};
+
 export const pointToRendererPoint = (
   { x, y }: XYPosition,
   [tx, ty, tScale]: Transform,

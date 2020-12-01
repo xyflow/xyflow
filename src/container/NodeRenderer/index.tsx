@@ -1,7 +1,7 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
 import { getNodesInside } from '../../utils/graph';
-import { useStoreState } from '../../store/hooks';
+import { useStoreState, useStoreActions } from '../../store/hooks';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 
 interface NodeRendererProps {
@@ -27,6 +27,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const viewportBox = useStoreState((state) => state.viewportBox);
   const nodes = useStoreState((state) => state.nodes);
+  const batchUpdateNodeDimensions = useStoreActions((actions) => actions.batchUpdateNodeDimensions);
 
   const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
@@ -35,6 +36,19 @@ const NodeRenderer = (props: NodeRendererProps) => {
       transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
     }),
     [transform[0], transform[1], transform[2]]
+  );
+
+  const resizeObserver = useMemo(
+    () =>
+      new ResizeObserver((entries) => {
+        const updates = entries.map((entry) => ({
+          id: entry.target.getAttribute('data-id') as string,
+          nodeElement: entry.target as HTMLDivElement,
+        }));
+
+        batchUpdateNodeDimensions({ updates });
+      }),
+    []
   );
 
   return (
@@ -81,6 +95,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isDraggable={isDraggable}
             isSelectable={isSelectable}
             isConnectable={isConnectable}
+            resizeObserver={resizeObserver}
           />
         );
       })}

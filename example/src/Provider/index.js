@@ -33,6 +33,7 @@ const ProviderFlow = () => {
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
             onLoad={onLoad}
+            connectionMode="loose"
           >
             <Controls />
           </ReactFlow>

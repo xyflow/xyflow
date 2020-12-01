@@ -15,6 +15,7 @@ import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
 import CustomConnectionLine from './CustomConnectionLine';
 import NodeTypeChange from './NodeTypeChange';
+import UpdatableEdge from './UpdatableEdge';
 
 import './index.css';
 
@@ -77,6 +78,11 @@ const routes = [
   {
     path: '/nodetype-change',
     component: NodeTypeChange,
+  },
+  {
+    path: '/updatable-edge',
+    component: UpdatableEdge,
+    label: 'Updatable Edge',
   },
 ];
 

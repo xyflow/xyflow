@@ -3,7 +3,7 @@ import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { getDimensions } from '../utils';
-import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge } from '../utils/graph';
+import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge, parseElement } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 import {
@@ -26,11 +26,16 @@ import {
   NodeDiffUpdate,
   TranslateExtent,
   SnapGrid,
+  ConnectionMode,
 } from '../types';
 
 type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
+};
+
+type NodeDimensionUpdates = {
+  updates: NodeDimensionUpdate[];
 };
 
 type InitD3Zoom = {
@@ -66,6 +71,7 @@ export interface StoreModel {
   connectionHandleId: ElementId | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
+  connectionMode: ConnectionMode;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
@@ -90,6 +96,7 @@ export interface StoreModel {
 
   setElements: Action<StoreModel, Elements>;
 
+  batchUpdateNodeDimensions: Action<StoreModel, NodeDimensionUpdates>;
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
 
   updateNodePos: Action<StoreModel, NodePosUpdate>;
@@ -131,6 +138,8 @@ export interface StoreModel {
   unsetUserSelection: Action<StoreModel>;
 
   setMultiSelectionActive: Action<StoreModel, boolean>;
+
+  setConnectionMode: Action<StoreModel, ConnectionMode>;
 }
 
 export const storeModel: StoreModel = {
@@ -139,10 +148,10 @@ export const storeModel: StoreModel = {
   transform: [0, 0, 1],
   elements: [],
   nodes: computed((state) => state.elements.filter(isNode)),
-  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
   edges: computed((state) => state.elements.filter(isEdge)),
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+  viewportBox: computed((state) => ({ x: 0, y: 0, width: state.width, height: state.height })),
 
   d3Zoom: null,
   d3Selection: null,
@@ -170,6 +179,7 @@ export const storeModel: StoreModel = {
   connectionHandleId: null,
   connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
+  connectionMode: ConnectionMode.Strict,
 
   snapGrid: [15, 15],
   snapToGrid: false,
@@ -195,35 +205,90 @@ export const storeModel: StoreModel = {
     state.onConnectEnd = onConnectEnd;
   }),
 
-  setElements: action((state, elements) => {
-    state.elements = elements;
+  setElements: action((state, propElements) => {
+    // remove deleted elements
+    for (let i = 0; i < state.elements.length; i++) {
+      const se = state.elements[i];
+      const elementExistsInProps = propElements.find((pe) => pe.id === se.id);
+
+      if (!elementExistsInProps) {
+        state.elements.splice(i, 1);
+        i--;
+      }
+    }
+
+    propElements.forEach((el) => {
+      const storeElementIndex = state.elements.findIndex((se) => se.id === el.id);
+
+      // update existing element
+      if (storeElementIndex !== -1) {
+        const storeElement = state.elements[storeElementIndex];
+
+        if (isNode(storeElement)) {
+          const propNode = el as Node;
+          const positionChanged =
+            storeElement.position.x !== propNode.position.x || storeElement.position.y !== propNode.position.y;
+          const typeChanged = typeof propNode.type !== 'undefined' && propNode.type !== storeElement.type;
+
+          state.elements[storeElementIndex] = {
+            ...storeElement,
+            ...propNode,
+          };
+
+          if (positionChanged) {
+            (state.elements[storeElementIndex] as Node).__rf.position = propNode.position;
+          }
+
+          if (typeChanged) {
+            // we reset the elements dimensions here in order to force a re-calculation of the bounds.
+            // When the type of a node changes it is possible that the number or positions of handles changes too.
+            (state.elements[storeElementIndex] as Node).__rf.width = null;
+          }
+        } else {
+          state.elements[storeElementIndex] = {
+            ...storeElement,
+            ...el,
+          };
+        }
+      } else {
+        // add new element
+        state.elements.push(parseElement(el));
+      }
+    });
+  }),
+
+  batchUpdateNodeDimensions: action((state, { updates }) => {
+    updates.forEach((update) => {
+      const dimensions = getDimensions(update.nodeElement);
+      const matchingIndex = state.elements.findIndex((n) => n.id === update.id);
+      const matchingNode = state.elements[matchingIndex] as Node;
+
+      if (
+        matchingIndex !== -1 &&
+        dimensions.width &&
+        dimensions.height &&
+        (matchingNode.__rf.width !== dimensions.width || matchingNode.__rf.height !== dimensions.height)
+      ) {
+        const handleBounds = getHandleBounds(update.nodeElement, state.transform[2]);
+
+        (state.elements[matchingIndex] as Node).__rf.width = dimensions.width;
+        (state.elements[matchingIndex] as Node).__rf.height = dimensions.height;
+        (state.elements[matchingIndex] as Node).__rf.handleBounds = handleBounds;
+      }
+    });
   }),
 
   updateNodeDimensions: action((state, { id, nodeElement }) => {
     const dimensions = getDimensions(nodeElement);
-    const matchingNode = state.nodes.find((n) => n.id === id);
+    const matchingIndex = state.elements.findIndex((n) => n.id === id);
 
-    // only update when size change
-    if (
-      !matchingNode ||
-      (matchingNode.__rf.width === dimensions.width && matchingNode.__rf.height === dimensions.height)
-    ) {
-      return;
+    if (matchingIndex !== -1 && dimensions.width && dimensions.height) {
+      const handleBounds = getHandleBounds(nodeElement, state.transform[2]);
+
+      (state.elements[matchingIndex] as Node).__rf.width = dimensions.width;
+      (state.elements[matchingIndex] as Node).__rf.height = dimensions.height;
+      (state.elements[matchingIndex] as Node).__rf.handleBounds = handleBounds;
     }
-
-    const bounds = nodeElement.getBoundingClientRect();
-    const handleBounds = {
-      source: getHandleBounds('.source', nodeElement, bounds, state.transform[2]),
-      target: getHandleBounds('.target', nodeElement, bounds, state.transform[2]),
-    };
-
-    state.elements.forEach((n) => {
-      if (n.id === id && isNode(n)) {
-        n.__rf.width = dimensions.width;
-        n.__rf.height = dimensions.height;
-        n.__rf.handleBounds = handleBounds;
-      }
-    });
   }),
 
   updateNodePos: action((state, { id, pos }) => {
@@ -439,6 +504,10 @@ export const storeModel: StoreModel = {
 
   setMultiSelectionActive: action((state, isActive) => {
     state.multiSelectionActive = isActive;
+  }),
+
+  setConnectionMode: action((state, connectionMode) => {
+    state.connectionMode = connectionMode;
   }),
 };
 
