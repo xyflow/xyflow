@@ -200,6 +200,7 @@
     background: rgba(0, 89, 220, 0.08);
     border: 1px dotted rgba(0, 89, 220, 0.8);
     pointer-events: all;
+    cursor: grab;
   }
 }
 

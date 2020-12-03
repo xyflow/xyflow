@@ -40,11 +40,16 @@ export default ({
   const selectedNodes = useMemo(
     () =>
       selectedElements
-        ? selectedElements
-            .filter(isNode)
-            .map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)! as Node)
+        ? selectedElements.filter(isNode).map((selectedNode) => {
+            const matchingNode = nodes.find((node) => node.id === selectedNode.id);
+
+            return {
+              ...matchingNode,
+              position: matchingNode?.__rf.position,
+            } as Node;
+          })
         : [],
-    [selectedElements]
+    [selectedElements, nodes]
   );
 
   const style = useMemo(
