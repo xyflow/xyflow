@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useStore, useStoreActions } from '../store/hooks';
 import useKeyPress from './useKeyPress';
 import { isNode, getConnectedEdges } from '../utils/graph';
-import { Elements, KeyCode } from '../types';
+import { Elements, KeyCode, ElementId, FlowElement } from '../types';
 
 interface HookParams {
   deleteKeyCode: KeyCode;
@@ -23,17 +23,16 @@ export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: Hook
 
   useEffect(() => {
     const { edges, selectedElements } = store.getState();
+
     if (onElementsRemove && deleteKeyPressed && selectedElements) {
-      let elementsToRemove = selectedElements;
+      const selectedNodes = selectedElements.filter(isNode);
+      const connectedEdges = getConnectedEdges(selectedNodes, edges);
+      const elementsToRemove = [...selectedElements, ...connectedEdges].reduce(
+        (res, item) => res.set(item.id, item),
+        new Map<ElementId, FlowElement>()
+      );
 
-      // we also want to remove the edges if only one node is selected
-      if (selectedElements.length === 1 && isNode(selectedElements[0])) {
-        const node = selectedElements[0];
-        const connectedEdges = getConnectedEdges([node], edges);
-        elementsToRemove = [...selectedElements, ...connectedEdges];
-      }
-
-      onElementsRemove(elementsToRemove);
+      onElementsRemove(Array.from(elementsToRemove.values()));
       unsetNodesSelection();
       resetSelectedElements();
     }
