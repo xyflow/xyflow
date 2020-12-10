@@ -17,6 +17,7 @@ import CustomConnectionLine from './CustomConnectionLine';
 import NodeTypeChange from './NodeTypeChange';
 import UpdatableEdge from './UpdatableEdge';
 import UpdateNode from './UpdateNode';
+import SaveRestore from './SaveRestore';
 
 import './index.css';
 
@@ -89,6 +90,11 @@ const routes = [
     path: '/update-node',
     component: UpdateNode,
     label: 'Update Node',
+  },
+  {
+    path: '/save-restore',
+    component: SaveRestore,
+    label: 'Save Restore',
   },
 ];
 
