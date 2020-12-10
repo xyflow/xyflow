@@ -25,12 +25,9 @@ const BasicFlow = () => {
     setElements((elms) => {
       return elms.map((el) => {
         if (isNode(el)) {
-          return {
-            ...el,
-            position: {
-              x: Math.random() * 400,
-              y: Math.random() * 400,
-            },
+          el.position = {
+            x: Math.random() * 400,
+            y: Math.random() * 400,
           };
         }
 
@@ -46,10 +43,7 @@ const BasicFlow = () => {
     setElements((elms) => {
       return elms.map((el) => {
         if (isNode(el)) {
-          return {
-            ...el,
-            className: el.className === 'light' ? 'dark' : 'light',
-          };
+          el.className = el.className === 'light' ? 'dark' : 'light';
         }
 
         return el;
