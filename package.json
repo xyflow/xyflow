@@ -23,6 +23,7 @@
     "test:all": "npm run test:chrome && npm run test:firefox",
     "test": "npm run dev:wait test:chrome",
     "release": "npm run test && release-it",
+    "release:notest": "release-it",
     "release:next": "release-it --preRelease=next"
   },
   "dependencies": {
