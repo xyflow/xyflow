@@ -28,6 +28,7 @@ const EmptyFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={(p) => onConnect(p)}
       onNodeDragStop={onNodeDragStop}
+      onlyRenderVisibleElements={false}
     >
       <MiniMap />
       <Controls />
