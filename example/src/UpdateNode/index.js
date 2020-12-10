@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
 import ReactFlow from 'react-flow-renderer';
+
+import './updatenode.css';
 
 const initialElements = [
   { id: '1', data: { label: '-' }, position: { x: 100, y: 100 } },
@@ -58,14 +59,14 @@ const UpdateNode = () => {
 
   return (
     <ReactFlow elements={elements} defaultZoom={1.5} minZoom={0.2} maxZoom={4}>
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4, fontSize: 12 }}>
-        <label style={{ display: 'block' }}>label:</label>
+      <div className="updatenode__controls">
+        <label>label:</label>
         <input value={nodeName} onChange={(evt) => setNodeName(evt.target.value)} />
 
-        <label style={{ display: 'block', marginTop: 10 }}>background:</label>
+        <label className="updatenode__bglabel">background:</label>
         <input value={nodeBg} onChange={(evt) => setNodeBg(evt.target.value)} />
 
-        <div style={{ marginTop: 10, display: 'flex', alignItems: 'center' }}>
+        <div className="updatenode__checkboxwrapper">
           <label>hidden:</label>
           <input type="checkbox" checked={nodeHidden} onChange={(evt) => setNodeHidden(evt.target.checked)} />
         </div>
