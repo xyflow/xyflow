@@ -12,6 +12,7 @@ const UpdateNode = () => {
   const [elements, setElements] = useState(initialElements);
   const [nodeName, setNodeName] = useState('Node 1');
   const [nodeBg, setNodeBg] = useState('#eee');
+  const [nodeHidden, setNodeHidden] = useState(false);
 
   useEffect(() => {
     setElements((els) =>
@@ -42,6 +43,19 @@ const UpdateNode = () => {
     );
   }, [nodeBg, setElements]);
 
+  useEffect(() => {
+    setElements((els) =>
+      els.map((el) => {
+        if (el.id === '1' || el.id === 'e1-2') {
+          // when you update a simple type you can just update the value
+          el.isHidden = nodeHidden;
+        }
+
+        return el;
+      })
+    );
+  }, [nodeHidden, setElements]);
+
   return (
     <ReactFlow elements={elements} defaultZoom={1.5} minZoom={0.2} maxZoom={4}>
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4, fontSize: 12 }}>
@@ -50,6 +64,11 @@ const UpdateNode = () => {
 
         <label style={{ display: 'block', marginTop: 10 }}>background:</label>
         <input value={nodeBg} onChange={(evt) => setNodeBg(evt.target.value)} />
+
+        <div style={{ marginTop: 10, display: 'flex', alignItems: 'center' }}>
+          <label>hidden:</label>
+          <input type="checkbox" checked={nodeHidden} onChange={(evt) => setNodeHidden(evt.target.checked)} />
+        </div>
       </div>
     </ReactFlow>
   );
