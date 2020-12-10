@@ -215,8 +215,8 @@ const ZoomPane = ({
           return false;
         }
 
-        // default filter for d3-zoom, prevents zooming on buttons and when ctrl is pressed
-        return !event.ctrlKey && !event.button;
+        // default filter for d3-zoom
+        return (!event.ctrlKey || event.type === 'wheel') && !event.button;
       });
     }
   }, [d3Zoom, zoomOnScroll, panOnScroll, zoomOnDoubleClick, paneMoveable, selectionKeyPressed, elementsSelectable]);
