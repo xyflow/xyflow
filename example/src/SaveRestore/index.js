@@ -39,7 +39,7 @@ const Controls = memo(({ rfInstance, setElements }) => {
     };
 
     onRestoreFlow();
-  }, [rfInstance, setElements, transform]);
+  }, [setElements, transform]);
 
   const onAdd = useCallback(() => {
     const newNode = {
