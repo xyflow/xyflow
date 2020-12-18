@@ -116,6 +116,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           if (!selected) {
             addSelectedElements({ id: node.id, type: node.type } as Node);
           }
+        } else if (!selectNodesOnDrag && !selected && isSelectable) {
+          unsetNodesSelection();
+          addSelectedElements([]);
         }
       },
       [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
