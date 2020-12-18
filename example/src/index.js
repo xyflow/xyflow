@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 
 import Overview from './Overview';
 import Basic from './Basic';
@@ -25,37 +25,30 @@ const routes = [
   {
     path: '/',
     component: Overview,
-    label: 'Overview',
   },
   {
     path: '/edges',
     component: Edges,
-    label: 'Edges',
   },
   {
     path: '/custom-node',
     component: CustomNode,
-    label: 'CustomNode',
   },
   {
     path: '/validation',
     component: Validation,
-    label: 'Validation',
   },
   {
     path: '/provider',
     component: Provider,
-    label: 'Provider',
   },
   {
     path: '/stress',
     component: Stress,
-    label: 'Stress',
   },
   {
     path: '/interaction',
     component: Interaction,
-    label: 'Interaction',
   },
   {
     path: '/basic',
@@ -84,43 +77,35 @@ const routes = [
   {
     path: '/updatable-edge',
     component: UpdatableEdge,
-    label: 'Updatable Edge',
   },
   {
     path: '/update-node',
     component: UpdateNode,
-    label: 'Update Node',
   },
   {
     path: '/save-restore',
     component: SaveRestore,
-    label: 'Save Restore',
   },
 ];
 
-const navLinks = routes.filter((route) => route.label);
-
-const Header = () => {
-  const [menuOpen, setMenuOpen] = useState();
+const Header = withRouter(({ history, location }) => {
+  const onChange = (event) => history.push(event.target.value);
 
   return (
     <header>
       <a className="logo" href="https://github.com/wbkd/react-flow">
         React Flow Dev
       </a>
-      <nav className={menuOpen ? 'is-open' : ''}>
-        {navLinks.map((route) => (
-          <NavLink to={route.path} key={route.label} exact>
-            {route.label}
-          </NavLink>
+      <select defaultValue={location.pathname} onChange={onChange}>
+        {routes.map((route) => (
+          <option value={route.path} key={route.path}>
+            {route.path === '/' ? 'overview' : route.path.substr(1, route.path.length)}
+          </option>
         ))}
-      </nav>
-      <button className="menu" onClick={() => setMenuOpen(!menuOpen)}>
-        Menu
-      </button>
+      </select>
     </header>
   );
-};
+});
 
 ReactDOM.render(
   <Router forceRefresh={true}>

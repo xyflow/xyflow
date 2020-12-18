@@ -4,13 +4,9 @@ body {
 }
 
 html,
-body {
-  margin: 0;
-}
-
-html,
 body,
 #root {
+  margin: 0;
   height: 100%;
 }
 
@@ -44,86 +40,8 @@ header a:hover {
   color: #333;
 }
 
-.menu {
+header select {
   margin-left: auto;
-  background: #f3f3f3;
-  color: #333;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 5px;
-}
-
-nav {
-  font-weight: 400;
-  display: none;
-  position: absolute;
-  width: 94%;
-  top: 46px;
-  z-index: 10;
-  left: 0;
-  padding: 3%;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-nav.is-open {
-  display: block;
-}
-
-nav a {
-  text-decoration: none;
-  font-size: 14px;
-  background: #f3f3f3;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 5px;
-  position: relative;
-  display: block;
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-nav a,
-nav a:focus,
-nav a:active,
-nav a:visited {
-  color: #333;
-}
-
-nav a:hover {
-  color: #333;
-  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.08);
-}
-
-nav a.active:before {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: white;
-  opacity: 0.8;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.sourcedisplay {
-  position: absolute;
-  top: 50px;
-  right: 15px;
-  z-index: 4;
-  text-decoration: none;
-  font-size: 12px;
-}
-
-.sourcedisplay,
-.sourcedisplay:focus,
-.sourcedisplay:active,
-.sourcedisplay:visited {
-  color: #777;
-}
-
-.sourcedisplay:hover {
-  color: #111;
 }
 
 .overview-example__add {
@@ -158,28 +76,6 @@ nav a.active:before {
 }
 
 @media screen and (min-width: 768px) {
-  nav {
-    position: relative;
-    display: block;
-    margin-left: auto;
-    width: auto;
-    padding: 0;
-    top: auto;
-    left: auto;
-  }
-
-  nav a {
-    margin-left: 10px;
-    font-size: 12px;
-    display: inline-block;
-    margin-bottom: 0;
-    padding: 5px 12px;
-  }
-
-  .menu {
-    display: none;
-  }
-
   .overview-example__add {
     display: block;
   }
