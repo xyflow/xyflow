@@ -165,7 +165,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       if (nodeElement.current && !isHidden) {
         updateNodeDimensions({ id, nodeElement: nodeElement.current });
       }
-    }, [id, isHidden]);
+    }, [id, isHidden, sourcePosition, targetPosition]);
 
     useEffect(() => {
       if (nodeElement.current) {
