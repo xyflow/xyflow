@@ -40,10 +40,6 @@
   height: 100%;
 }
 
-.dndflow .selectall {
-  margin-top: 10px;
-}
-
 @media screen and (min-width: 768px) {
   .dndflow {
     flex-direction: row;

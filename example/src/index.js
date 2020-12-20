@@ -19,6 +19,7 @@ import UpdatableEdge from './UpdatableEdge';
 import UpdateNode from './UpdateNode';
 import SaveRestore from './SaveRestore';
 import DragNDrop from './DragNDrop';
+import Layout from './Layouting';
 
 import './index.css';
 
@@ -90,6 +91,10 @@ const routes = [
   {
     path: '/drag-and-drop',
     component: DragNDrop,
+  },
+  {
+    path: '/layouting',
+    component: Layout,
   },
 ];
 
