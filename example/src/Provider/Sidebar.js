@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStoreState, useStoreActions } from 'react-flow-renderer';
 
-export default () => {
+const Sidebar = () => {
   const nodes = useStoreState((store) => store.nodes);
   const transform = useStoreState((store) => store.transform);
   const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
@@ -32,3 +32,5 @@ export default () => {
     </aside>
   );
 };
+
+export default Sidebar;

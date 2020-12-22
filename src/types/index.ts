@@ -354,6 +354,7 @@ export interface ZoomPanHelperFunctions {
   zoomTo: (zoomLevel: number) => void;
   transform: (transform: FlowTransform) => void;
   fitView: (params?: FitViewParams) => void;
+  setCenter: (x: number, y: number, zoom?: number) => void;
   initialized: boolean;
 }
 

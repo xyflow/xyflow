@@ -12,6 +12,7 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   zoomTo: (_: number) => {},
   transform: (_: FlowTransform) => {},
   fitView: (_: FitViewParams = { padding: 0.1 }) => {},
+  setCenter: (_: number, __: number) => {},
   initialized: false,
 };
 
@@ -48,6 +49,16 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
           const x = width / 2 - boundsCenterX * clampedZoom;
           const y = height / 2 - boundsCenterY * clampedZoom;
           const transform = zoomIdentity.translate(x, y).scale(clampedZoom);
+
+          d3Zoom.transform(d3Selection, transform);
+        },
+        setCenter: (x: number, y: number, zoom?: number) => {
+          const { width, height, maxZoom } = store.getState();
+
+          const nextZoom = typeof zoom !== 'undefined' ? zoom : maxZoom;
+          const centerX = width / 2 - x * nextZoom;
+          const centerY = height / 2 - y * nextZoom;
+          const transform = zoomIdentity.translate(centerX, centerY).scale(nextZoom);
 
           d3Zoom.transform(d3Selection, transform);
         },

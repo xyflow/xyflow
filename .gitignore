@@ -7,3 +7,4 @@ cypress/screenshots
 dist
 .env
 stats.html
+.eslintcache
