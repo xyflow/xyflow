@@ -4,7 +4,7 @@ import { zoomIdentity } from 'd3-zoom';
 import { useStoreState, useStore } from '../store/hooks';
 import { clamp } from '../utils';
 import { getRectOfNodes } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions } from '../types';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, Transform } from '../types';
 
 const initialZoomPanHelper: ZoomPanHelperFunctions = {
   zoomIn: () => {},
@@ -13,7 +13,28 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   transform: (_: FlowTransform) => {},
   fitView: (_: FitViewParams = { padding: 0.1 }) => {},
   setCenter: (_: number, __: number) => {},
+  fitBounds: (_: Rect) => {},
   initialized: false,
+};
+
+const getTransformForBounds = (
+  bounds: Rect,
+  width: number,
+  height: number,
+  minZoom: number,
+  maxZoom: number,
+  padding = 0.1
+): Transform => {
+  const xZoom = width / (bounds.width * (1 + padding));
+  const yZoom = height / (bounds.height * (1 + padding));
+  const zoom = Math.min(xZoom, yZoom);
+  const clampedZoom = clamp(zoom, minZoom, maxZoom);
+  const boundsCenterX = bounds.x + bounds.width / 2;
+  const boundsCenterY = bounds.y + bounds.height / 2;
+  const x = width / 2 - boundsCenterX * clampedZoom;
+  const y = height / 2 - boundsCenterY * clampedZoom;
+
+  return [x, y, zoom];
 };
 
 const usePanZoomHelper = (): ZoomPanHelperFunctions => {
@@ -40,15 +61,8 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
           }
 
           const bounds = getRectOfNodes(nodes);
-          const xZoom = width / (bounds.width * (1 + options.padding));
-          const yZoom = height / (bounds.height * (1 + options.padding));
-          const zoom = Math.min(xZoom, yZoom);
-          const clampedZoom = clamp(zoom, minZoom, maxZoom);
-          const boundsCenterX = bounds.x + bounds.width / 2;
-          const boundsCenterY = bounds.y + bounds.height / 2;
-          const x = width / 2 - boundsCenterX * clampedZoom;
-          const y = height / 2 - boundsCenterY * clampedZoom;
-          const transform = zoomIdentity.translate(x, y).scale(clampedZoom);
+          const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options.padding);
+          const transform = zoomIdentity.translate(x, y).scale(zoom);
 
           d3Zoom.transform(d3Selection, transform);
         },
@@ -59,6 +73,13 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
           const centerX = width / 2 - x * nextZoom;
           const centerY = height / 2 - y * nextZoom;
           const transform = zoomIdentity.translate(centerX, centerY).scale(nextZoom);
+
+          d3Zoom.transform(d3Selection, transform);
+        },
+        fitBounds: (bounds: Rect, padding = 0.1) => {
+          const { width, height, minZoom, maxZoom } = store.getState();
+          const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, padding);
+          const transform = zoomIdentity.translate(x, y).scale(zoom);
 
           d3Zoom.transform(d3Selection, transform);
         },
