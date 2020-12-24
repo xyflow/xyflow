@@ -131,7 +131,7 @@ const ReactFlow = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
-  connectionMode,
+  connectionMode = ConnectionMode.Strict,
   connectionLineType = ConnectionLineType.Bezier,
   connectionLineStyle,
   connectionLineComponent,

@@ -242,9 +242,10 @@ const GraphView = ({
         onElementClick={onElementClick}
         connectionLineType={connectionLineType}
         connectionLineStyle={connectionLineStyle}
+        connectionLineComponent={connectionLineComponent}
+        connectionMode={connectionMode}
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
-        connectionLineComponent={connectionLineComponent}
         onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
       />

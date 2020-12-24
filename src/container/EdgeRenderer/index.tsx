@@ -10,21 +10,23 @@ import {
   Edge,
   Node,
   Elements,
+  Connection,
   ConnectionLineType,
   ConnectionLineComponent,
+  ConnectionMode,
   Transform,
   OnEdgeUpdateFunc,
-  Connection,
 } from '../../types';
 
 interface EdgeRendererProps {
   edgeTypes: any;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
+  connectionLineComponent?: ConnectionLineComponent;
+  connectionMode?: ConnectionMode;
   onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
   arrowHeadColor: string;
   markerEndId?: string;
-  connectionLineComponent?: ConnectionLineComponent;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
 }
@@ -39,6 +41,7 @@ interface EdgeWrapperProps {
   width: number;
   height: number;
   onlyRenderVisibleElements: boolean;
+  connectionMode?: ConnectionMode;
 }
 
 const Edge = ({
@@ -51,6 +54,7 @@ const Edge = ({
   width,
   height,
   onlyRenderVisibleElements,
+  connectionMode,
 }: EdgeWrapperProps) => {
   const sourceHandleId = edge.sourceHandle || null;
   const targetHandleId = edge.targetHandle || null;
@@ -79,8 +83,14 @@ const Edge = ({
 
   const edgeType = edge.type || 'default';
   const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
+  const targetNodeBounds = targetNode.__rf.handleBounds;
+  // when connection type is loose we can define all handles as sources
+  const targetNodeHandles =
+    connectionMode === ConnectionMode.Strict
+      ? targetNodeBounds.target
+      : targetNodeBounds.target || targetNodeBounds.source;
   const sourceHandle = getHandle(sourceNode.__rf.handleBounds.source, sourceHandleId);
-  const targetHandle = getHandle(targetNode.__rf.handleBounds.target, targetHandleId);
+  const targetHandle = getHandle(targetNodeHandles, targetHandleId);
   const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
   const targetPosition = targetHandle ? targetHandle.position : Position.Top;
 
