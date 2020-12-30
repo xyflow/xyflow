@@ -160,7 +160,8 @@ export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNod
     (res, node) => {
       if (node.id === edge.source) {
         res.sourceNode = node;
-      } else if (node.id === edge.target) {
+      }
+      if (node.id === edge.target) {
         res.targetNode = node;
       }
       return res;
