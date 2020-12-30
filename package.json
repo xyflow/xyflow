@@ -52,7 +52,7 @@
     "@types/resize-observer-browser": "^0.1.4",
     "autoprefixer": "^10.1.0",
     "babel-preset-react-app": "^10.0.0",
-    "cypress": "^6.1.0",
+    "cypress": "^6.2.0",
     "postcss": "^8.2.1",
     "postcss-nested": "^5.0.3",
     "prettier": "2.2.1",
