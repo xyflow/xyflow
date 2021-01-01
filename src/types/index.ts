@@ -2,9 +2,9 @@ import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 
 export type ElementId = string;
 
-export type FlowElement = Node | Edge;
+export type FlowElement<T = any> = Node<T> | Edge<T>;
 
-export type Elements = Array<FlowElement>;
+export type Elements<T = any> = Array<FlowElement<T>>;
 
 export type Transform = [number, number, number];
 
