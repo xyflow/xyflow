@@ -149,7 +149,7 @@ export interface EdgeProps<T = any> {
   markerEndId?: string;
   data?: T;
 }
-export interface EdgeSmoothStepProps extends EdgeProps {
+export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
   borderRadius?: number;
 }
 
@@ -242,20 +242,20 @@ export type FlowExportObject = {
 
 export type FitViewFunc = (fitViewOptions?: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;
-export type ToObjectFunc = () => FlowExportObject;
+export type ToObjectFunc<T = any> = () => FlowExportObject<T>;
 
-export type OnLoadParams = {
+export type OnLoadParams<T = any> = {
   zoomIn: () => void;
   zoomOut: () => void;
   zoomTo: (zoomLevel: number) => void;
   fitView: FitViewFunc;
   project: ProjectFunc;
-  getElements: () => Elements;
+  getElements: () => Elements<T>;
   setTransform: (transform: FlowTransform) => void;
-  toObject: ToObjectFunc;
+  toObject: ToObjectFunc<T>;
 };
 
-export type OnLoadFunc = (params: OnLoadParams) => void;
+export type OnLoadFunc<T = any> = (params: OnLoadParams<T>) => void;
 
 export interface Connection {
   source: ElementId | null;
@@ -359,4 +359,4 @@ export interface ZoomPanHelperFunctions {
   initialized: boolean;
 }
 
-export type OnEdgeUpdateFunc = (oldEdge: Edge, newConnection: Connection) => void;
+export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
