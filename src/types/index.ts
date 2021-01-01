@@ -34,12 +34,12 @@ export interface Box extends XYPosition {
 
 export type SnapGrid = [number, number];
 
-export interface Node {
+export interface Node<T = any> {
   id: ElementId;
   position: XYPosition;
   type?: string;
   __rf?: any;
-  data?: any;
+  data?: T;
   style?: CSSProperties;
   className?: string;
   targetPosition?: Position;
@@ -55,7 +55,7 @@ export enum ArrowHeadType {
   ArrowClosed = 'arrowclosed',
 }
 
-export interface Edge {
+export interface Edge<T = any> {
   id: ElementId;
   type?: string;
   source: ElementId;
@@ -72,7 +72,7 @@ export interface Edge {
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
   isHidden?: boolean;
-  data?: any;
+  data?: T;
   className?: string;
 }
 
@@ -93,11 +93,11 @@ export interface SelectionRect extends Rect {
   draw: boolean;
 }
 
-export interface WrapEdgeProps {
+export interface WrapEdgeProps<T = any> {
   id: ElementId;
   className?: string;
   type: string;
-  data?: any;
+  data?: T;
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
   selected: boolean;
   animated?: boolean;
@@ -126,7 +126,7 @@ export interface WrapEdgeProps {
   onConnectEdge: OnConnectFunc;
 }
 
-export interface EdgeProps {
+export interface EdgeProps<T = any> {
   id: ElementId;
   source: ElementId;
   target: ElementId;
@@ -147,7 +147,7 @@ export interface EdgeProps {
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
-  data?: any;
+  data?: T;
 }
 export interface EdgeSmoothStepProps extends EdgeProps {
   borderRadius?: number;
@@ -164,10 +164,10 @@ export interface EdgeTextProps {
   labelBgBorderRadius?: number;
 }
 
-export interface NodeProps {
+export interface NodeProps<T = any> {
   id: ElementId;
   type: string;
-  data: any;
+  data: T;
   selected: boolean;
   isConnectable: boolean;
   xPos?: number;
@@ -177,10 +177,10 @@ export interface NodeProps {
   isDragging?: boolean;
 }
 
-export interface NodeComponentProps {
+export interface NodeComponentProps<T = any> {
   id: ElementId;
   type: string;
-  data: any;
+  data: T;
   selected?: boolean;
   isConnectable: boolean;
   transform?: Transform;
@@ -199,10 +199,10 @@ export interface NodeComponentProps {
   isDragging?: boolean;
 }
 
-export interface WrapNodeProps {
+export interface WrapNodeProps<T = any> {
   id: ElementId;
   type: string;
-  data: any;
+  data: T;
   selected: boolean;
   scale: number;
   xPos: number;
