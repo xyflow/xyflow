@@ -234,8 +234,8 @@ export type FitViewParams = {
   padding: number;
 };
 
-export type FlowExportObject = {
-  elements: Elements;
+export type FlowExportObject<T = any> = {
+  elements: Elements<T>;
   position: [number, number];
   zoom: number;
 };
