@@ -12,51 +12,49 @@ import pkg from './package.json';
 const isProd = process.env.NODE_ENV === 'production';
 const processEnv = isProd ? 'production' : 'development';
 
-export default [
-  {
-    input: 'src/index.ts',
-    external: ['react', 'react-dom', /@babel\/runtime/],
-    onwarn(warning, rollupWarn) {
-      if (warning.code !== 'CIRCULAR_DEPENDENCY') {
-        rollupWarn(warning);
-      }
-    },
-    output: [
-      {
-        file: pkg.main,
-        format: 'cjs',
-        sourcemap: true,
-        exports: 'named',
-      },
-      {
-        file: pkg.module,
-        format: 'esm',
-        sourcemap: true,
-        exports: 'named',
-      },
-    ],
-    plugins: [
-      replace({
-        __ENV__: JSON.stringify(processEnv),
-        __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
-      }),
-      bundleSize(),
-      postcss({
-        minimize: isProd,
-      }),
-      babel({
-        exclude: 'node_modules/**',
-        babelHelpers: 'runtime',
-      }),
-
-      svgr(),
-      typescript({
-        clean: true,
-      }),
-      resolve(),
-      commonjs({
-        include: 'node_modules/**',
-      }),
-    ],
+export default {
+  input: 'src/index.ts',
+  external: ['react', 'react-dom', /@babel\/runtime/],
+  onwarn(warning, rollupWarn) {
+    if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+      rollupWarn(warning);
+    }
   },
-];
+  output: [
+    {
+      file: pkg.main,
+      format: 'cjs',
+      sourcemap: true,
+      exports: 'named',
+    },
+    {
+      file: pkg.module,
+      format: 'esm',
+      sourcemap: true,
+      exports: 'named',
+    },
+  ],
+  plugins: [
+    replace({
+      __ENV__: JSON.stringify(processEnv),
+      __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
+    }),
+    bundleSize(),
+    postcss({
+      minimize: isProd,
+    }),
+    babel({
+      exclude: 'node_modules/**',
+      babelHelpers: 'runtime',
+    }),
+
+    svgr(),
+    typescript({
+      clean: true,
+    }),
+    resolve(),
+    commonjs({
+      include: 'node_modules/**',
+    }),
+  ],
+};
