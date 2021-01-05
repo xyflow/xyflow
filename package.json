@@ -17,7 +17,7 @@
     "start:testserver": "npm run build && rollup -c rollup.examples.js -w --environment NODE_ENV:testing",
     "dev": "npm run start:examples",
     "dev:wait": "start-server-and-test start:testserver http-get://localhost:3000",
-    "build:dev": "npm install && npm run build && npm run build:examples",
+    "build:dev": "npm install --legacy-peer-deps && npm run build && npm run build:examples",
     "cy:open": "cypress open",
     "cypress": "npm run dev:wait cy:open",
     "test:chrome": "cypress run --browser chrome --headless",
