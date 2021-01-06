@@ -46,8 +46,8 @@ export default {
     babel({
       exclude: 'node_modules/**',
       babelHelpers: 'runtime',
+      plugins: ['@babel/plugin-transform-runtime'],
     }),
-
     svgr(),
     typescript({
       clean: true,
