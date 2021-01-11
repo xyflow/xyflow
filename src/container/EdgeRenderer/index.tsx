@@ -77,7 +77,8 @@ const Edge = ({
     return null;
   }
 
-  if (!sourceNode.__rf.width || !sourceNode.__rf.height) {
+  // source and target node need to be initialized
+  if (!sourceNode.__rf.width || !targetNode.__rf.width) {
     return null;
   }
 
