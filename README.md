@@ -5,7 +5,9 @@ React Flow is a library for building node-based graphs. You can easily implement
 - **Website:** https://reactflow.dev
 - **Documentation:** https://reactflow.dev/docs
 - **Examples:** https://reactflow.dev/examples
+- **Website/Docs Repository:** https://github.com/wbkd/react-flow-docs
 - **Community:** https://discord.gg/Bqt6xrs
+
 
 ## Installation
 
