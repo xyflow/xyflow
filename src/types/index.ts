@@ -2,9 +2,9 @@ import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 
 export type ElementId = string;
 
-export type FlowElement = Node | Edge;
+export type FlowElement<T = any> = Node<T> | Edge<T>;
 
-export type Elements = Array<FlowElement>;
+export type Elements<T = any> = Array<FlowElement<T>>;
 
 export type Transform = [number, number, number];
 
@@ -34,12 +34,12 @@ export interface Box extends XYPosition {
 
 export type SnapGrid = [number, number];
 
-export interface Node {
+export interface Node<T = any> {
   id: ElementId;
   position: XYPosition;
   type?: string;
   __rf?: any;
-  data?: any;
+  data?: T;
   style?: CSSProperties;
   className?: string;
   targetPosition?: Position;
@@ -55,7 +55,7 @@ export enum ArrowHeadType {
   ArrowClosed = 'arrowclosed',
 }
 
-export interface Edge {
+export interface Edge<T = any> {
   id: ElementId;
   type?: string;
   source: ElementId;
@@ -72,7 +72,7 @@ export interface Edge {
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
   isHidden?: boolean;
-  data?: any;
+  data?: T;
   className?: string;
 }
 
@@ -93,11 +93,11 @@ export interface SelectionRect extends Rect {
   draw: boolean;
 }
 
-export interface WrapEdgeProps {
+export interface WrapEdgeProps<T = any> {
   id: ElementId;
   className?: string;
   type: string;
-  data?: any;
+  data?: T;
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
   selected: boolean;
   animated?: boolean;
@@ -126,7 +126,7 @@ export interface WrapEdgeProps {
   onConnectEdge: OnConnectFunc;
 }
 
-export interface EdgeProps {
+export interface EdgeProps<T = any> {
   id: ElementId;
   source: ElementId;
   target: ElementId;
@@ -147,9 +147,9 @@ export interface EdgeProps {
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
-  data?: any;
+  data?: T;
 }
-export interface EdgeSmoothStepProps extends EdgeProps {
+export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
   borderRadius?: number;
 }
 
@@ -164,10 +164,10 @@ export interface EdgeTextProps {
   labelBgBorderRadius?: number;
 }
 
-export interface NodeProps {
+export interface NodeProps<T = any> {
   id: ElementId;
   type: string;
-  data: any;
+  data: T;
   selected: boolean;
   isConnectable: boolean;
   xPos?: number;
@@ -177,10 +177,10 @@ export interface NodeProps {
   isDragging?: boolean;
 }
 
-export interface NodeComponentProps {
+export interface NodeComponentProps<T = any> {
   id: ElementId;
   type: string;
-  data: any;
+  data: T;
   selected?: boolean;
   isConnectable: boolean;
   transform?: Transform;
@@ -199,10 +199,10 @@ export interface NodeComponentProps {
   isDragging?: boolean;
 }
 
-export interface WrapNodeProps {
+export interface WrapNodeProps<T = any> {
   id: ElementId;
   type: string;
-  data: any;
+  data: T;
   selected: boolean;
   scale: number;
   xPos: number;
@@ -234,28 +234,28 @@ export type FitViewParams = {
   padding: number;
 };
 
-export type FlowExportObject = {
-  elements: Elements;
+export type FlowExportObject<T = any> = {
+  elements: Elements<T>;
   position: [number, number];
   zoom: number;
 };
 
 export type FitViewFunc = (fitViewOptions?: FitViewParams) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;
-export type ToObjectFunc = () => FlowExportObject;
+export type ToObjectFunc<T = any> = () => FlowExportObject<T>;
 
-export type OnLoadParams = {
+export type OnLoadParams<T = any> = {
   zoomIn: () => void;
   zoomOut: () => void;
   zoomTo: (zoomLevel: number) => void;
   fitView: FitViewFunc;
   project: ProjectFunc;
-  getElements: () => Elements;
+  getElements: () => Elements<T>;
   setTransform: (transform: FlowTransform) => void;
-  toObject: ToObjectFunc;
+  toObject: ToObjectFunc<T>;
 };
 
-export type OnLoadFunc = (params: OnLoadParams) => void;
+export type OnLoadFunc<T = any> = (params: OnLoadParams<T>) => void;
 
 export interface Connection {
   source: ElementId | null;
@@ -359,4 +359,4 @@ export interface ZoomPanHelperFunctions {
   initialized: boolean;
 }
 
-export type OnEdgeUpdateFunc = (oldEdge: Edge, newConnection: Connection) => void;
+export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
