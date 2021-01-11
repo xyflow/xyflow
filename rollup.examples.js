@@ -13,6 +13,9 @@ import libraryRollupConfig from './rollup.config.js';
 const isProd = process.env.NODE_ENV === 'production';
 const isTesting = process.env.NODE_ENV === 'testing';
 
+const serveFiles = !isProd || isTesting;
+const doLiveReload = !isProd && !isTesting;
+
 const rollupConfig = {
   input: ['example/src/index.js'],
   output: [
@@ -41,13 +44,14 @@ const rollupConfig = {
     commonjs({
       include: 'node_modules/**',
     }),
-    serve({
-      open: !isTesting,
-      port: 3000,
-      contentBase: 'example/public/',
-      historyApiFallback: true,
-    }),
-    !isTesting && livereload(),
+    serveFiles &&
+      serve({
+        open: true,
+        port: 3000,
+        contentBase: 'example/public/',
+        historyApiFallback: true,
+      }),
+    doLiveReload && livereload(),
   ],
 };
 

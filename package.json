@@ -16,7 +16,7 @@
     "build:examples": "rollup -c rollup.examples.js --environment NODE_ENV:production",
     "dev": "npm run start:examples",
     "start:testserver": "npm run build && rollup -c rollup.examples.js -w --environment NODE_ENV:testing",
-    "build:dev": "npm i --legacy-deps && npm run build:examples",
+    "build:dev": "npm install && npm run build:examples",
     "dev:wait": "start-server-and-test start:testserver http-get://localhost:3000",
     "test": "npm run dev:wait test:chrome",
     "test:chrome": "cypress run --browser chrome --headless",
