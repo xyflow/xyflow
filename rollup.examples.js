@@ -24,6 +24,7 @@ const rollupConfig = {
   ],
   plugins: [
     replace({
+      'process.env.NODE_ENV': isProd ? JSON.stringify('production') : JSON.stringify('development'),
       'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': 'false',
     }),
     postcss({
@@ -34,8 +35,7 @@ const rollupConfig = {
     }),
     babel({
       exclude: 'node_modules/**',
-      babelHelpers: 'bundled',
-      plugins: [],
+      babelHelpers: 'runtime',
     }),
     resolve(),
     commonjs({
@@ -51,4 +51,4 @@ const rollupConfig = {
   ],
 };
 
-export default rollupConfig; // isTesting ? rollupConfig : [libraryRollupConfig, rollupConfig];
+export default isTesting ? rollupConfig : [libraryRollupConfig, rollupConfig];
