@@ -166,6 +166,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           sourcePosition={sourcePosition}
           targetPosition={targetPosition}
           markerEndId={markerEndId}
+          sourceHandleId={sourceHandleId}
+          targetHandleId={targetHandleId}
         />
         {handleEdgeUpdate && (
           <g

@@ -148,6 +148,8 @@ export interface EdgeProps<T = any> {
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
   data?: T;
+  sourceHandleId?: ElementId | null;
+  targetHandleId?: ElementId | null;
 }
 export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
   borderRadius?: number;

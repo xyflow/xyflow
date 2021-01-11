@@ -35,7 +35,7 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 
 ## Development
 
-You need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
+Before you start you need to install the React Flow dependencies via `npm install`.
 
 If you want to contribute or develop custom features the easiest way is to start the dev server:
 
