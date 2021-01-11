@@ -50,7 +50,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/resize-observer-browser": "^0.1.5",
-    "autoprefixer": "^10.1.0",
+    "autoprefixer": "^10.2.1",
     "babel-preset-react-app": "^10.0.0",
     "cypress": "^6.2.1",
     "postcss": "^8.2.1",
