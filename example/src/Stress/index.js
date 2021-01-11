@@ -33,15 +33,23 @@ const StressFlow = () => {
     });
   };
 
+  const updateElements = () => {
+    const grid = Math.ceil(Math.random() * 10);
+    setElements(getElements(grid, grid));
+  };
+
   return (
     <ReactFlow elements={elements} onLoad={onLoad} onElementsRemove={onElementsRemove} onConnect={onConnect}>
       <MiniMap />
       <Controls />
       <Background />
 
-      <button onClick={updatePos} style={{ position: 'absolute', right: 10, top: 30, zIndex: 4 }}>
-        change pos
-      </button>
+      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+        <button onClick={updatePos} style={{ marginRight: 5 }}>
+          change pos
+        </button>
+        <button onClick={updateElements}>update elements</button>
+      </div>
     </ReactFlow>
   );
 };

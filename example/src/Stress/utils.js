@@ -15,7 +15,7 @@ export function getElements(xElements = 10, yElements = 10) {
       };
       initialElements.push(node);
 
-      if (recentNodeId && nodeId <= (xElements * yElements)) {
+      if (recentNodeId && nodeId <= xElements * yElements) {
         initialElements.push({ id: `${x}-${y}`, source: recentNodeId.toString(), target: nodeId.toString() });
       }
 

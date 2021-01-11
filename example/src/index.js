@@ -20,6 +20,7 @@ import UpdateNode from './UpdateNode';
 import SaveRestore from './SaveRestore';
 import DragNDrop from './DragNDrop';
 import Layout from './Layouting';
+import SwitchFlows from './Switch';
 
 import './index.css';
 
@@ -95,6 +96,10 @@ const routes = [
   {
     path: '/layouting',
     component: Layout,
+  },
+  {
+    path: '/switch',
+    component: SwitchFlows,
   },
 ];
 
