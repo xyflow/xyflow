@@ -1,4 +1,4 @@
-import React, { memo, useMemo, HTMLAttributes } from 'react';
+import React, { memo, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { useStoreState } from '../../store/hooks';
@@ -34,25 +34,26 @@ const Background = ({
   const xOffset = x % scaledGap;
   const yOffset = y % scaledGap;
 
-  const bgSvgTile = useMemo(() => {
-    const isLines = variant === BackgroundVariant.Lines;
-    const bgColor = color ? color : defaultColors[variant];
-    const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
 
-    return encodeURIComponent(
-      `<svg width="${scaledGap}" height="${scaledGap}" xmlns='http://www.w3.org/2000/svg'>${path}</svg>`
-    );
-  }, [variant, scaledGap, size, color]);
+	const isLines = variant === BackgroundVariant.Lines;
+	const bgColor = color ? color : defaultColors[variant];
+	const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
 
   return (
-    <div
+    <svg
       className={bgClasses}
       style={{
-        ...style,
-        backgroundImage: `url("data:image/svg+xml;utf8,${bgSvgTile}")`,
-        backgroundPosition: `${xOffset}px ${yOffset}px`,
+				...style,
+				width: "100%",
+				height: "100%"
       }}
-    ></div>
+    >
+			<pattern id="pattern" x={xOffset} y={yOffset} width={scaledGap} height={scaledGap} patternUnits="userSpaceOnUse">
+				{path}
+			</pattern>
+
+			<rect x="0" y="0" width="100%" height="100%" fill="url(#pattern)"></rect>
+		</svg>
   );
 };
 
