@@ -319,8 +319,6 @@ export interface HandleProps {
   onConnect?: OnConnectFunc;
   isValidConnection?: (connection: Connection) => boolean;
   id?: ElementId;
-  style?: CSSProperties;
-  className?: string;
 }
 
 export type NodePosUpdate = {

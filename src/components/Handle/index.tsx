@@ -1,4 +1,4 @@
-import React, { memo, useContext, useCallback } from 'react';
+import React, { memo, useContext, useCallback, FunctionComponent, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
@@ -9,16 +9,17 @@ import { onMouseDown } from './handler';
 
 const alwaysValid = () => true;
 
-const Handle = ({
+const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
   type = 'source',
   position = Position.Top,
   isValidConnection = alwaysValid,
   isConnectable = true,
-  style,
-  className,
   id,
   onConnect,
-}: HandleProps) => {
+  children,
+  className,
+  ...rest
+}) => {
   const nodeId = useContext(NodeIdContext) as ElementId;
   const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
   const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
@@ -89,8 +90,10 @@ const Handle = ({
       data-handlepos={position}
       className={handleClasses}
       onMouseDown={onMouseDownHandler}
-      style={style}
-    />
+      {...rest}
+    >
+      {children}
+    </div>
   );
 };
 
