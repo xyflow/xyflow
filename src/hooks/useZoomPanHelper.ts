@@ -34,7 +34,7 @@ const getTransformForBounds = (
   const x = width / 2 - boundsCenterX * clampedZoom;
   const y = height / 2 - boundsCenterY * clampedZoom;
 
-  return [x, y, zoom];
+  return [x, y, clampedZoom];
 };
 
 const usePanZoomHelper = (): ZoomPanHelperFunctions => {
