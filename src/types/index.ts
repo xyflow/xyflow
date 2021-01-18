@@ -232,6 +232,7 @@ export interface WrapNodeProps {
 
 export type FitViewParams = {
   padding: number;
+  transformCallback?: (transform: FlowTransform) => void;
 };
 
 export type FlowExportObject = {

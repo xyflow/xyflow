@@ -49,7 +49,9 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
           const y = height / 2 - boundsCenterY * clampedZoom;
           const transform = zoomIdentity.translate(x, y).scale(clampedZoom);
 
-          d3Zoom.transform(d3Selection, transform);
+          options.transformCallback
+            ? options.transformCallback({ x: x, y: y, zoom: clampedZoom })
+            : d3Zoom.transform(d3Selection, transform);
         },
         initialized: true,
       };
