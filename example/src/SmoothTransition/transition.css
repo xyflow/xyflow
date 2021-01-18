@@ -1,0 +1,17 @@
+.transition {
+    flex-grow: 1;
+    position: relative;
+  }
+  
+.transition .controls {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 10;
+    font-size: 12px;
+}
+  
+.transition .controls button + button {
+    margin-left: 10px;
+}
+  

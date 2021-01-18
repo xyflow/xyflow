@@ -20,6 +20,7 @@ import UpdateNode from './UpdateNode';
 import SaveRestore from './SaveRestore';
 import DragNDrop from './DragNDrop';
 import Layout from './Layouting';
+import SmoothTransition from './SmoothTransition';
 
 import './index.css';
 
@@ -96,6 +97,10 @@ const routes = [
     path: '/layouting',
     component: Layout,
   },
+  {
+    path: '/smooth-transition',
+    component: SmoothTransition,
+  }
 ];
 
 const Header = withRouter(({ history, location }) => {
