@@ -67,7 +67,7 @@
     "react-flow-renderer": "^8.3.2",
     "react-router-dom": "^5.2.0",
     "release-it": "^14.2.2",
-    "rollup": "^2.36.1",
+    "rollup": "^2.36.2",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-postcss": "^4.0.0",
