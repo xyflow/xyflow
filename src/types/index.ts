@@ -1,4 +1,5 @@
 import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 export type ElementId = string;
 
@@ -360,3 +361,15 @@ export interface ZoomPanHelperFunctions {
 }
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
+
+export type NodeDimensionUpdate = {
+  id: ElementId;
+  nodeElement: HTMLDivElement;
+};
+
+export type InitD3ZoomPayload = {
+  d3Zoom: ZoomBehavior<Element, unknown>;
+  d3Selection: D3Selection<Element, unknown, null, undefined>;
+  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  transform: Transform;
+};

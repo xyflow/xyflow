@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import cc from 'classcat';
 
 import { useStoreState } from '../../store/hooks';
-import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
+import { getRectOfNodes, getBoundsofRects, isNode } from '../../utils/graph';
 import { Node, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
 
@@ -33,7 +33,8 @@ const MiniMap = ({
   const containerWidth = useStoreState((s) => s.width);
   const containerHeight = useStoreState((s) => s.height);
   const [tX, tY, tScale] = useStoreState((s) => s.transform);
-  const nodes = useStoreState((s) => s.nodes);
+  const elements = useStoreState((s) => s.elements);
+  const nodes = elements.filter(isNode);
 
   const mapClasses = cc(['react-flow__minimap', className]);
   const elementWidth = (style?.width || defaultWidth)! as number;

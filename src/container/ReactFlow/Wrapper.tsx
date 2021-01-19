@@ -1,20 +1,22 @@
 import React, { FC } from 'react';
-import { StoreProvider } from 'easy-peasy';
+import { Provider } from 'react-redux';
 
 import store from '../../store';
-import { useStore } from '../../store/hooks';
+// import { useStore } from '../../store/hooks';
 
 const Wrapper: FC = ({ children }) => {
-  const easyPeasyStore = useStore();
-  const isWrapepdWithReactFlowProvider = easyPeasyStore?.getState()?.reactFlowVersion;
+  // const reactFlowStore = useStore();
+  // const isWrapepdWithReactFlowProvider = reactFlowStore?.getState()?.reactFlowVersion;
 
-  if (isWrapepdWithReactFlowProvider) {
-    // we need to wrap it with a fragment because t's not allowed for children to be a ReactNode
-    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
-    return <>{children}</>;
-  }
+  // console.log(isWrapepdWithReactFlowProvider);
 
-  return <StoreProvider store={store}>{children}</StoreProvider>;
+  // if (isWrapepdWithReactFlowProvider) {
+  //   // we need to wrap it with a fragment because t's not allowed for children to be a ReactNode
+  //   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
+  //   return <>{children}</>;
+  // }
+
+  return <Provider store={store}>{children}</Provider>;
 };
 
 Wrapper.displayName = 'ReactFlowWrapper';

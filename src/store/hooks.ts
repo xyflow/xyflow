@@ -1,10 +1,28 @@
-import { createTypedHooks } from 'easy-peasy';
+import { bindActionCreators, ActionCreatorsMapObject } from 'redux';
+import { useStore as useStoreRedux, useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux';
+import { useMemo } from 'react';
 
-import { StoreModel } from './index';
+import { ReactFlowState, AppDispatch } from './index';
+import { ActionTypes } from './action-types';
 
-const typedHooks = createTypedHooks<StoreModel>();
+export const useTypedSelector: TypedUseSelectorHook<ReactFlowState> = useSelector;
 
-export const useStoreActions = typedHooks.useStoreActions;
-export const useStoreDispatch = typedHooks.useStoreDispatch;
-export const useStoreState = typedHooks.useStoreState;
-export const useStore = typedHooks.useStore;
+export function useActions(actions: ActionTypes, deps?: any): ActionTypes {
+  const dispatch: AppDispatch = useDispatch();
+
+  const action = useMemo(
+    () => {
+      if (Array.isArray(actions)) {
+        return actions.map((a) => bindActionCreators(a, dispatch));
+      }
+      return bindActionCreators<ActionCreatorsMapObject<ActionTypes>>(actions, dispatch);
+    },
+    deps ? [dispatch, ...deps] : [dispatch]
+  );
+
+  return action;
+}
+
+export const useStoreActions = useActions;
+export const useStoreState = useTypedSelector;
+export const useStore = useStoreRedux;

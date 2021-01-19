@@ -5,7 +5,7 @@ import { useStoreActions, useStoreState } from '../../store/hooks';
 import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ElementId, Position } from '../../types';
 
-import { onMouseDown } from './handler';
+import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
 const alwaysValid = () => true;
 
@@ -45,8 +45,8 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
         event,
         handleId,
         nodeId,
-        setConnectionNodeId,
-        setPosition,
+        (setConnectionNodeId as unknown) as SetSourceIdFunc,
+        (setPosition as unknown) as SetPosition,
         onConnectExtended,
         isTarget,
         isValidConnection,

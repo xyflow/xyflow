@@ -29,7 +29,8 @@ export default ({
   const selectedElements = useStoreState((state) => state.selectedElements);
   const snapToGrid = useStoreState((state) => state.snapToGrid);
   const snapGrid = useStoreState((state) => state.snapGrid);
-  const nodes = useStoreState((state) => state.nodes);
+  const elements = useStoreState((state) => state.elements);
+  const nodes = elements.filter(isNode);
 
   const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
 

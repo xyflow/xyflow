@@ -1,6 +1,6 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
-import { getNodesInside } from '../../utils/graph';
+import { getNodesInside, isNode } from '../../utils/graph';
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 
@@ -25,10 +25,13 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const nodesDraggable = useStoreState((state) => state.nodesDraggable);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const viewportBox = useStoreState((state) => state.viewportBox);
-  const nodes = useStoreState((state) => state.nodes);
+  const width = useStoreState((state) => state.width);
+  const height = useStoreState((state) => state.height);
+  const elements = useStoreState((state) => state.elements);
   const batchUpdateNodeDimensions = useStoreActions((actions) => actions.batchUpdateNodeDimensions);
 
+  const viewportBox = { x: 0, y: 0, width, height };
+  const nodes = elements.filter(isNode);
   const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
   const transformStyle = useMemo(

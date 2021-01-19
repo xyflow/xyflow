@@ -1,5 +1,5 @@
-import { Store } from 'easy-peasy';
-import { StoreModel } from '../store';
+import { Store } from 'redux';
+import { ReactFlowState } from '../store';
 import {
   ElementId,
   Node,
@@ -134,7 +134,7 @@ export const pointToRendererPoint = (
   return position;
 };
 
-export const onLoadProject = (currentStore: Store<StoreModel>) => {
+export const onLoadProject = (currentStore: Store<ReactFlowState>) => {
   return (position: XYPosition): XYPosition => {
     const { transform, snapToGrid, snapGrid } = currentStore.getState();
 
@@ -266,17 +266,21 @@ const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
   ];
 };
 
-export const onLoadGetElements = (currentStore: Store<StoreModel>) => {
+export const onLoadGetElements = (currentStore: Store<ReactFlowState>) => {
   return (): Elements => {
-    const { nodes = [], edges = [] } = currentStore.getState();
+    const { elements = [] } = currentStore.getState();
+    const nodes = elements.filter(isNode);
+    const edges = elements.filter(isEdge);
 
     return parseElements(nodes, edges);
   };
 };
 
-export const onLoadToObject = (currentStore: Store<StoreModel>) => {
+export const onLoadToObject = (currentStore: Store<ReactFlowState>) => {
   return (): FlowExportObject => {
-    const { nodes = [], edges = [], transform } = currentStore.getState();
+    const { elements = [], transform } = currentStore.getState();
+    const nodes = elements.filter(isNode);
+    const edges = elements.filter(isEdge);
 
     return {
       elements: parseElements(nodes, edges),
