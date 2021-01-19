@@ -80,6 +80,7 @@
     "react": "16 || 17"
   },
   "files": [
-    "dist"
+    "dist",
+    "nocss"
   ]
 }
