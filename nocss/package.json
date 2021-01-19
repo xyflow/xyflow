@@ -1,0 +1,6 @@
+{
+  "internal": true,
+  "main": "../dist/nocss/ReactFlow-nocss.js",
+  "module": "../dist/nocss/ReactFlow-nocss.esm.js",
+  "types": "../dist/nocss/index.d.ts"
+}
