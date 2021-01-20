@@ -44,6 +44,7 @@ const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, extractCss =
     }),
     bundleSize(),
     postcss({
+      minimize: !extractCss,
       extract: extractCss,
     }),
     babel({
