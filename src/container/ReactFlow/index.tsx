@@ -33,6 +33,7 @@ import {
 } from '../../types';
 
 import '../../style.css';
+import '../../theme-default.css';
 
 const defaultNodeTypes = {
   input: InputNode,

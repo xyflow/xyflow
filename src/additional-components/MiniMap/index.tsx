@@ -6,8 +6,6 @@ import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
 import { Node, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
 
-import './style.css';
-
 type StringFunc = (node: Node) => string;
 
 export interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {

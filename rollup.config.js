@@ -1,4 +1,3 @@
-import path from 'path';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
@@ -13,7 +12,7 @@ import pkg from './package.json';
 const isProd = process.env.NODE_ENV === 'production';
 const processEnv = isProd ? 'production' : 'development';
 
-const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, extractCss = false } = {}) => ({
+const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
   input: 'src/index.ts',
   external: ['react', 'react-dom', /@babel\/runtime/],
   onwarn(warning, rollupWarn) {
@@ -44,8 +43,8 @@ const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, extractCss =
     }),
     bundleSize(),
     postcss({
-      minimize: !extractCss,
-      extract: extractCss,
+      minimize: isProd,
+      inject: injectCSS,
     }),
     babel({
       exclude: 'node_modules/**',
@@ -68,7 +67,7 @@ export default isProd
       baseConfig({
         mainFile: 'dist/nocss/ReactFlow-nocss.js',
         moduleFile: 'dist/nocss/ReactFlow-nocss.esm.js',
-        extractCss: path.resolve('dist/nocss/style.css'),
+        injectCSS: false,
       }),
     ]
   : baseConfig();
