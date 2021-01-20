@@ -28,7 +28,7 @@ const rollupConfig = {
   plugins: [
     replace({
       'process.env.NODE_ENV': isProd ? JSON.stringify('production') : JSON.stringify('development'),
-      'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': 'false',
+      'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': false,
     }),
     postcss({
       modules: false,
