@@ -8,7 +8,7 @@ import postcss from 'rollup-plugin-postcss';
 import livereload from 'rollup-plugin-livereload';
 import serve from 'rollup-plugin-serve';
 
-import libraryRollupConfig from './rollup.config.js';
+import { baseConfig } from './rollup.config.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 const isTesting = process.env.NODE_ENV === 'testing';
@@ -16,8 +16,8 @@ const isTesting = process.env.NODE_ENV === 'testing';
 const serveFiles = !isProd || isTesting;
 const doLiveReload = !isProd && !isTesting;
 
-const rollupConfig = {
-  input: ['example/src/index.js'],
+const rollupExamplesConfig = {
+  input: 'example/src/index.js',
   output: [
     {
       dir: 'example/public/dist',
@@ -55,4 +55,4 @@ const rollupConfig = {
   ],
 };
 
-export default isTesting ? rollupConfig : [libraryRollupConfig, rollupConfig];
+export default isTesting ? rollupExamplesConfig : [baseConfig(), rollupExamplesConfig];

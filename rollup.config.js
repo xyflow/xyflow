@@ -10,9 +10,10 @@ import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
-const processEnv = isProd ? 'production' : 'development';
+const isTesting = process.env.NODE_ENV === 'testing';
+const processEnv = isProd || isTesting ? 'production' : 'development';
 
-const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
+export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
   input: 'src/index.ts',
   external: ['react', 'react-dom', /@babel\/runtime/],
   onwarn(warning, rollupWarn) {
@@ -61,7 +62,7 @@ const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = 
   ],
 });
 
-export default isProd
+export default isProd && !isTesting
   ? [
       baseConfig(),
       baseConfig({
