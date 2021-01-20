@@ -177,8 +177,9 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.filter((event: any) => {
+        const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
         // if all interactions are disabled, we prevent all zoom events
-        if (!paneMoveable && !zoomOnScroll && !panOnScroll && !zoomOnDoubleClick) {
+        if (!paneMoveable && !zoomScroll && !panOnScroll && !zoomOnDoubleClick) {
           return false;
         }
 
@@ -210,7 +211,7 @@ const ZoomPane = ({
         }
 
         // when there is no scroll handling enabled, we prevent all wheel events
-        if (!zoomOnScroll && !panOnScroll && event.type === 'wheel') {
+        if (!zoomScroll && !panOnScroll && event.type === 'wheel') {
           return false;
         }
 
@@ -223,7 +224,16 @@ const ZoomPane = ({
         return (!event.ctrlKey || event.type === 'wheel') && !event.button;
       });
     }
-  }, [d3Zoom, zoomOnScroll, panOnScroll, zoomOnDoubleClick, paneMoveable, selectionKeyPressed, elementsSelectable]);
+  }, [
+    d3Zoom,
+    zoomOnScroll,
+    panOnScroll,
+    zoomOnDoubleClick,
+    paneMoveable,
+    selectionKeyPressed,
+    elementsSelectable,
+    zoomActivationKeyPressed,
+  ]);
 
   return (
     <div className="react-flow__renderer react-flow__zoompane" ref={zoomPane}>
