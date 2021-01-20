@@ -39,8 +39,8 @@ const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, extractCss =
     replace({
       __ENV__: JSON.stringify(processEnv),
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
-      // this comes from the easy-peasy dependency 'memoizerific'
-      'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': JSON.stringify('true'),
+      // this comes from the easy-peasy dependency
+      'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': false,
     }),
     bundleSize(),
     postcss({
