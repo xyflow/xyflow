@@ -46,7 +46,7 @@ const LayoutFlow = () => {
 
   useEffect(() => {
     onLayout('TB');
-  }, []);
+  }, [onLayout]);
 
   return (
     <div className="layoutflow">

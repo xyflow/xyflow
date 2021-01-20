@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
-
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select } from 'd3-selection';
-import { clamp } from '../../utils';
 
+import { clamp } from '../../utils';
+import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
-import { FlowTransform, TranslateExtent, PanOnScrollMode } from '../../types';
+import { FlowTransform, TranslateExtent, PanOnScrollMode, KeyCode } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -23,6 +23,7 @@ interface ZoomPaneProps {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
+  zoomActivationKeyCode?: KeyCode;
   children: ReactNode;
 }
 
@@ -52,6 +53,7 @@ const ZoomPane = ({
   defaultPosition = [0, 0],
   defaultZoom = 1,
   translateExtent,
+  zoomActivationKeyCode,
   children,
 }: ZoomPaneProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -64,6 +66,8 @@ const ZoomPane = ({
 
   const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
+
+  const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
   useResizeHandler(zoomPane);
 
@@ -93,7 +97,7 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Selection && d3Zoom) {
-      if (panOnScroll) {
+      if (panOnScroll && !zoomActivationKeyPressed) {
         d3Selection
           .on('wheel', (event: any) => {
             event.preventDefault();
@@ -117,7 +121,7 @@ const ZoomPane = ({
         d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
       }
     }
-  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler]);
+  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler, zoomActivationKeyPressed]);
 
   useEffect(() => {
     if (d3Zoom) {

@@ -82,6 +82,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   deleteKeyCode?: KeyCode;
   selectionKeyCode?: KeyCode;
   multiSelectionKeyCode?: KeyCode;
+  zoomActivationKeyCode?: KeyCode;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
   onlyRenderVisibleElements?: boolean;
@@ -138,6 +139,7 @@ const ReactFlow = ({
   deleteKeyCode = 'Backspace',
   selectionKeyCode = 'Shift',
   multiSelectionKeyCode = 'Meta',
+  zoomActivationKeyCode = 'Meta',
   snapToGrid = false,
   snapGrid = [15, 15],
   onlyRenderVisibleElements = true,
@@ -194,6 +196,7 @@ const ReactFlow = ({
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
           multiSelectionKeyCode={multiSelectionKeyCode}
+          zoomActivationKeyCode={zoomActivationKeyCode}
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onConnectStop={onConnectStop}

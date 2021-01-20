@@ -37,6 +37,7 @@ const FlowRenderer = ({
   onMoveEnd,
   selectionKeyCode,
   multiSelectionKeyCode,
+  zoomActivationKeyCode,
   elementsSelectable,
   zoomOnScroll,
   panOnScroll,
@@ -99,6 +100,7 @@ const FlowRenderer = ({
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
       translateExtent={translateExtent}
+      zoomActivationKeyCode={zoomActivationKeyCode}
     >
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
