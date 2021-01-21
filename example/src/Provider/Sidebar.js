@@ -1,10 +1,11 @@
 import React from 'react';
-import { useStoreState, useStoreActions } from 'react-flow-renderer';
+import { useStoreState, useStoreActions, isNode } from 'react-flow-renderer';
 
 const Sidebar = () => {
-  const nodes = useStoreState((store) => store.nodes);
+  const elements = useStoreState((store) => store.elements);
   const transform = useStoreState((store) => store.transform);
   const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+  const nodes = elements.filter(isNode);
 
   const selectAll = () => {
     setSelectedElements(nodes.map((node) => ({ id: node.id, type: node.type })));

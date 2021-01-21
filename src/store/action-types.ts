@@ -158,9 +158,7 @@ interface UpdateTransform {
 
 interface UpdateSize {
   type: typeof UPDATE_SIZE;
-  payload: {
-    size: Dimensions;
-  };
+  payload: Dimensions;
 }
 
 interface InitD3Zoom {

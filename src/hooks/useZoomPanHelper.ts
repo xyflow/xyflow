@@ -3,7 +3,7 @@ import { zoomIdentity } from 'd3-zoom';
 
 import { useStoreState, useStore } from '../store/hooks';
 import { clamp } from '../utils';
-import { getRectOfNodes } from '../utils/graph';
+import { getRectOfNodes, isNode } from '../utils/graph';
 import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, Transform } from '../types';
 
 const initialZoomPanHelper: ZoomPanHelperFunctions = {
@@ -54,7 +54,8 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
           d3Zoom.transform(d3Selection, nextTransform);
         },
         fitView: (options: FitViewParams = { padding: 0.1 }) => {
-          const { nodes, width, height, minZoom, maxZoom } = store.getState();
+          const { elements, width, height, minZoom, maxZoom } = store.getState();
+          const nodes = elements.filter(isNode);
 
           if (!nodes.length) {
             return;

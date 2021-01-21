@@ -1,24 +1,19 @@
-import { bindActionCreators, ActionCreatorsMapObject } from 'redux';
+import { bindActionCreators } from 'redux';
 import { useStore as useStoreRedux, useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux';
 import { useMemo } from 'react';
 
 import { ReactFlowState, AppDispatch } from './index';
-import { ActionTypes } from './action-types';
+import { actions } from './actions';
 
 export const useTypedSelector: TypedUseSelectorHook<ReactFlowState> = useSelector;
 
-export function useActions(actions: ActionTypes, deps?: any): ActionTypes {
+export function useActions(actionSelector: any): any {
   const dispatch: AppDispatch = useDispatch();
 
-  const action = useMemo(
-    () => {
-      if (Array.isArray(actions)) {
-        return actions.map((a) => bindActionCreators(a, dispatch));
-      }
-      return bindActionCreators<ActionCreatorsMapObject<ActionTypes>>(actions, dispatch);
-    },
-    deps ? [dispatch, ...deps] : [dispatch]
-  );
+  const action = useMemo(() => {
+    const currAction = actionSelector(actions);
+    return bindActionCreators(currAction, dispatch);
+  }, [dispatch, actionSelector]);
 
   return action;
 }

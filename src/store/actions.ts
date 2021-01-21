@@ -161,10 +161,8 @@ export const updateTransform = (transform: Transform): ActionTypes => ({
 export const updateSize = (size: Dimensions): ActionTypes => ({
   type: UPDATE_SIZE,
   payload: {
-    size: {
-      width: size.width || 500,
-      height: size.height || 500,
-    },
+    width: size.width || 500,
+    height: size.height || 500,
   },
 });
 
@@ -241,3 +239,39 @@ export const setConnectionMode = (connectionMode: ConnectionMode): ActionTypes =
   type: SET_CONNECTION_MODE,
   payload: { connectionMode },
 });
+
+export const actions = {
+  setOnConnect,
+  setOnConnectStart,
+  setOnConnectStop,
+  setOnConnectEnd,
+  setElements,
+  batchUpdateNodeDimensions,
+  updateNodeDimensions,
+  updateNodePos,
+  updateNodePosDiff,
+  setUserSelection,
+  updateUserSelection,
+  unsetUserSelection,
+  setSelection,
+  unsetNodesSelection,
+  resetSelectedElements,
+  setSelectedElements,
+  addSelectedElements,
+  updateTransform,
+  updateSize,
+  initD3Zoom,
+  setMinZoom,
+  setMaxZoom,
+  setTranslateExtent,
+  setConnectionPosition,
+  setConnectionNodeId,
+  setSnapToGrid,
+  setSnapGrid,
+  setInteractive,
+  setNodesDraggable,
+  setNodesConnectable,
+  setElementsSelectable,
+  setMultiSelectionActive,
+  setConnectionMode,
+};

@@ -306,7 +306,7 @@ export function reactFlowReducer(state = initialState, action: ActionTypes): Rea
                 isDragging,
                 position: {
                   x: el.__rf.position.x + diff.x,
-                  y: el.__rf.position.x + diff.y,
+                  y: el.__rf.position.y + diff.y,
                 },
               },
             };

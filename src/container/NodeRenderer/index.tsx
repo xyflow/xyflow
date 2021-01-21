@@ -52,7 +52,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         nodeElement: entry.target as HTMLDivElement,
       }));
 
-      batchUpdateNodeDimensions({ updates });
+      batchUpdateNodeDimensions(updates);
     });
   }, []);
 
