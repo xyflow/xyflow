@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 import { zoom, zoomIdentity } from 'd3-zoom';
-import { select } from 'd3-selection';
+import { select, pointer } from 'd3-selection';
 
 import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
@@ -12,6 +12,7 @@ interface ZoomPaneProps {
   selectionKeyPressed: boolean;
   elementsSelectable?: boolean;
   zoomOnScroll?: boolean;
+  zoomOnPinch?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
@@ -43,6 +44,7 @@ const ZoomPane = ({
   onMoveStart,
   onMoveEnd,
   zoomOnScroll = true,
+  zoomOnPinch = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
@@ -104,6 +106,17 @@ const ZoomPane = ({
             event.stopImmediatePropagation();
 
             const currentZoom = d3Selection.property('__zoom').k || 1;
+
+            if (event.ctrlKey && zoomOnPinch) {
+              const point = pointer(event);
+              // taken from https://github.com/d3/d3-zoom/blob/master/src/zoom.js
+              const pinchDelta = -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * 10;
+              const zoom = currentZoom * Math.pow(2, pinchDelta);
+              d3Zoom.scaleTo(d3Selection, zoom, point);
+
+              return;
+            }
+
             // increase scroll speed in firefox
             // firefox: deltaMode === 1; chrome: deltaMode === 0
             const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
@@ -121,7 +134,7 @@ const ZoomPane = ({
         d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
       }
     }
-  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler, zoomActivationKeyPressed]);
+  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler, zoomActivationKeyPressed, zoomOnPinch]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -178,8 +191,10 @@ const ZoomPane = ({
     if (d3Zoom) {
       d3Zoom.filter((event: any) => {
         const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
+        const pinchZoom = zoomOnPinch && event.ctrlKey;
+
         // if all interactions are disabled, we prevent all zoom events
-        if (!paneMoveable && !zoomScroll && !panOnScroll && !zoomOnDoubleClick) {
+        if (!paneMoveable && !zoomScroll && !panOnScroll && !zoomOnDoubleClick && !zoomOnPinch) {
           return false;
         }
 
@@ -210,8 +225,12 @@ const ZoomPane = ({
           return false;
         }
 
+        if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
+          return false;
+        }
+
         // when there is no scroll handling enabled, we prevent all wheel events
-        if (!zoomScroll && !panOnScroll && event.type === 'wheel') {
+        if (!zoomScroll && !panOnScroll && !pinchZoom && event.type === 'wheel') {
           return false;
         }
 
@@ -227,6 +246,7 @@ const ZoomPane = ({
   }, [
     d3Zoom,
     zoomOnScroll,
+    zoomOnPinch,
     panOnScroll,
     zoomOnDoubleClick,
     paneMoveable,

@@ -73,6 +73,7 @@ const GraphView = ({
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
+  zoomOnPinch,
   panOnScroll,
   panOnScrollSpeed,
   panOnScrollMode,
@@ -212,6 +213,7 @@ const GraphView = ({
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
       zoomOnScroll={zoomOnScroll}
+      zoomOnPinch={zoomOnPinch}
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnScroll={panOnScroll}
       panOnScrollSpeed={panOnScrollSpeed}

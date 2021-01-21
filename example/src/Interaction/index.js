@@ -27,6 +27,7 @@ const InteractionFlow = () => {
   const [isDraggable, setIsDraggable] = useState(false);
   const [isConnectable, setIsConnectable] = useState(false);
   const [zoomOnScroll, setZoomOnScroll] = useState(false);
+  const [zoomOnPinch, setZoomOnPinch] = useState(false);
   const [panOnScroll, setPanOnScroll] = useState(false);
   const [panOnScrollMode, setPanOnScrollMode] = useState('free');
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState(false);
@@ -42,6 +43,7 @@ const InteractionFlow = () => {
       nodesConnectable={isConnectable}
       nodesDraggable={isDraggable}
       zoomOnScroll={zoomOnScroll}
+      zoomOnPinch={zoomOnPinch}
       panOnScroll={panOnScroll}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
@@ -104,6 +106,18 @@ const InteractionFlow = () => {
               checked={zoomOnScroll}
               onChange={(event) => setZoomOnScroll(event.target.checked)}
               className="react-flow__zoomonscroll"
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="zoomonpinch">
+            zoomOnPinch
+            <input
+              id="zoomonpinch"
+              type="checkbox"
+              checked={zoomOnPinch}
+              onChange={(event) => setZoomOnPinch(event.target.checked)}
+              className="react-flow__zoomonpinch"
             />
           </label>
         </div>

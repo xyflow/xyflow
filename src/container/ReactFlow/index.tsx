@@ -100,6 +100,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   arrowHeadColor?: string;
   markerEndId?: string;
   zoomOnScroll?: boolean;
+  zoomOnPinch?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
@@ -156,6 +157,7 @@ const ReactFlow = ({
   arrowHeadColor = '#b1b1b7',
   markerEndId,
   zoomOnScroll = true,
+  zoomOnPinch = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
@@ -217,6 +219,7 @@ const ReactFlow = ({
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}
+          zoomOnPinch={zoomOnPinch}
           zoomOnDoubleClick={zoomOnDoubleClick}
           panOnScroll={panOnScroll}
           panOnScrollSpeed={panOnScrollSpeed}
