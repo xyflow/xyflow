@@ -1,5 +1,7 @@
 import { Store } from 'easy-peasy';
+
 import { StoreModel } from '../store';
+import { clampPosition } from '../utils';
 import {
   ElementId,
   Node,
@@ -11,6 +13,7 @@ import {
   Box,
   Connection,
   FlowExportObject,
+  NodeExtent,
 } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -142,7 +145,7 @@ export const onLoadProject = (currentStore: Store<StoreModel>) => {
   };
 };
 
-export const parseElement = (element: Node | Edge): Node | Edge => {
+export const parseElement = (element: Node | Edge, nodeExtent: NodeExtent): Node | Edge => {
   if (!element.id) {
     throw new Error('All nodes and edges need to have an id.');
   }
@@ -164,7 +167,7 @@ export const parseElement = (element: Node | Edge): Node | Edge => {
     id: element.id.toString(),
     type: element.type || 'default',
     __rf: {
-      position: element.position,
+      position: clampPosition(element.position, nodeExtent),
       width: null,
       height: null,
       handleBounds: {},

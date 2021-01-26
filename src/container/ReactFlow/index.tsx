@@ -30,6 +30,7 @@ import {
   KeyCode,
   PanOnScrollMode,
   OnEdgeUpdateFunc,
+  NodeExtent,
 } from '../../types';
 
 import '../../style.css';
@@ -97,6 +98,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   defaultZoom?: number;
   defaultPosition?: [number, number];
   translateExtent?: TranslateExtent;
+  nodeExtent?: NodeExtent;
   arrowHeadColor?: string;
   markerEndId?: string;
   zoomOnScroll?: boolean;
@@ -154,6 +156,7 @@ const ReactFlow = ({
   defaultZoom = 1,
   defaultPosition = [0, 0],
   translateExtent,
+  nodeExtent,
   arrowHeadColor = '#b1b1b7',
   markerEndId,
   zoomOnScroll = true,
@@ -216,6 +219,7 @@ const ReactFlow = ({
           defaultZoom={defaultZoom}
           defaultPosition={defaultPosition}
           translateExtent={translateExtent}
+          nodeExtent={nodeExtent}
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}

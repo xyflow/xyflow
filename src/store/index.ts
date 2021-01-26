@@ -2,7 +2,7 @@ import { createStore, Action, action, Thunk, thunk, computed, Computed } from 'e
 import isEqual from 'fast-deep-equal';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
-import { getDimensions } from '../utils';
+import { clampPosition, getDimensions } from '../utils';
 import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge, parseElement } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
@@ -27,6 +27,7 @@ import {
   TranslateExtent,
   SnapGrid,
   ConnectionMode,
+  NodeExtent,
 } from '../types';
 
 type NodeDimensionUpdate = {
@@ -44,6 +45,7 @@ type InitD3Zoom = {
   d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
   transform: Transform;
 };
+
 export interface StoreModel {
   width: number;
   height: number;
@@ -61,6 +63,7 @@ export interface StoreModel {
   minZoom: number;
   maxZoom: number;
   translateExtent: TranslateExtent;
+  nodeExtent: NodeExtent;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
@@ -120,6 +123,7 @@ export interface StoreModel {
   setMaxZoom: Action<StoreModel, number>;
 
   setTranslateExtent: Action<StoreModel, TranslateExtent>;
+  setNodeExtent: Action<StoreModel, NodeExtent>;
 
   setSnapToGrid: Action<StoreModel, boolean>;
   setSnapGrid: Action<StoreModel, SnapGrid>;
@@ -159,6 +163,10 @@ export const storeModel: StoreModel = {
   minZoom: 0.5,
   maxZoom: 2,
   translateExtent: [
+    [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+    [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+  ],
+  nodeExtent: [
     [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
     [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
   ],
@@ -236,7 +244,10 @@ export const storeModel: StoreModel = {
           };
 
           if (positionChanged) {
-            (state.elements[storeElementIndex] as Node).__rf.position = propNode.position;
+            (state.elements[storeElementIndex] as Node).__rf.position = clampPosition(
+              propNode.position,
+              state.nodeExtent
+            );
           }
 
           if (typeChanged) {
@@ -252,7 +263,7 @@ export const storeModel: StoreModel = {
         }
       } else {
         // add new element
-        state.elements.push(parseElement(el));
+        state.elements.push(parseElement(el, state.nodeExtent));
       }
     });
   }),
@@ -304,7 +315,7 @@ export const storeModel: StoreModel = {
 
     state.elements.forEach((n) => {
       if (n.id === id && isNode(n)) {
-        n.__rf.position = position;
+        n.__rf.position = clampPosition(position, state.nodeExtent);
       }
     });
   }),
@@ -313,10 +324,11 @@ export const storeModel: StoreModel = {
     state.elements.forEach((n) => {
       if (isNode(n) && (id === n.id || state.selectedElements?.find((sNode) => sNode.id === n.id))) {
         if (diff) {
-          n.__rf.position = {
+          const position = {
             x: n.__rf.position.x + diff.x,
             y: n.__rf.position.y + diff.y,
           };
+          n.__rf.position = clampPosition(position, state.nodeExtent);
         }
         n.__rf.isDragging = isDragging;
       }
@@ -463,6 +475,16 @@ export const storeModel: StoreModel = {
     if (state.d3Zoom) {
       state.d3Zoom.translateExtent(translateExtent);
     }
+  }),
+
+  setNodeExtent: action((state, nodeExtent) => {
+    state.nodeExtent = nodeExtent;
+
+    state.elements.forEach((el) => {
+      if (isNode(el)) {
+        el.__rf.position = clampPosition(el.__rf.position, nodeExtent);
+      }
+    });
   }),
 
   setConnectionPosition: action((state, position) => {

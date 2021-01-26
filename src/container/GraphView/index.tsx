@@ -70,6 +70,7 @@ const GraphView = ({
   defaultZoom,
   defaultPosition,
   translateExtent,
+  nodeExtent,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
@@ -97,6 +98,7 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
+  const setNodeExtent = useStoreActions((actions) => actions.setNodeExtent);
   const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
@@ -191,6 +193,12 @@ const GraphView = ({
       setTranslateExtent(translateExtent);
     }
   }, [translateExtent]);
+
+  useEffect(() => {
+    if (typeof nodeExtent !== 'undefined') {
+      setNodeExtent(nodeExtent);
+    }
+  }, [nodeExtent]);
 
   useEffect(() => {
     if (typeof connectionMode !== 'undefined') {

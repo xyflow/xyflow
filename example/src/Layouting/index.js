@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactFlow, { ReactFlowProvider, addEdge, removeElements, Controls, isNode } from 'react-flow-renderer';
 import dagre from 'dagre';
 
@@ -8,6 +8,11 @@ import './layouting.css';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
+
+const nodeExtent = [
+  [0, 0],
+  [1000, 1000],
+];
 
 const LayoutFlow = () => {
   const [elements, setElements] = useState(initialElements);
@@ -44,14 +49,16 @@ const LayoutFlow = () => {
     setElements(layoutedElements);
   };
 
-  useEffect(() => {
-    onLayout('TB');
-  }, [onLayout]);
-
   return (
     <div className="layoutflow">
       <ReactFlowProvider>
-        <ReactFlow elements={elements} onConnect={onConnect} onElementsRemove={onElementsRemove}>
+        <ReactFlow
+          elements={elements}
+          onConnect={onConnect}
+          onElementsRemove={onElementsRemove}
+          nodeExtent={nodeExtent}
+          onLoad={() => onLayout('TB')}
+        >
           <Controls />
         </ReactFlow>
         <div className="controls">
