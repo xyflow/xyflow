@@ -1,5 +1,6 @@
 import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent, WheelEvent } from 'react';
 import cc from 'classcat';
+import { DraggableData } from 'react-draggable';
 
 import GraphView from '../GraphView';
 import ElementUpdater from '../../components/ElementUpdater';
@@ -31,6 +32,7 @@ import {
   PanOnScrollMode,
   OnEdgeUpdateFunc,
   NodeExtent,
+  ElementId,
 } from '../../types';
 
 import '../../style.css';
@@ -58,6 +60,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
   onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDrag?: (event: MouseEvent, nodeId: ElementId, data: DraggableData) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
@@ -130,6 +133,7 @@ const ReactFlow = ({
   onNodeMouseLeave,
   onNodeContextMenu,
   onNodeDragStart,
+  onNodeDrag,
   onNodeDragStop,
   onSelectionChange,
   onSelectionDragStart,
@@ -191,6 +195,7 @@ const ReactFlow = ({
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
           onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}

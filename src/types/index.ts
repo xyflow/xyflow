@@ -1,4 +1,5 @@
 import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { DraggableData } from 'react-draggable';
 
 export type ElementId = string;
 
@@ -196,6 +197,7 @@ export interface NodeComponentProps<T = any> {
   onMouseLeave?: (node: Node) => void;
   onContextMenu?: (node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
+  onNodeDrag?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
   isDragging?: boolean;
@@ -219,6 +221,7 @@ export interface WrapNodeProps<T = any> {
   onMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
   onContextMenu?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDrag?: (event: ReactMouseEvent, nodeId: ElementId, data: DraggableData) => void;
   onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
   style?: CSSProperties;
   className?: string;
