@@ -3,7 +3,6 @@ import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 import { getNodesInside } from '../../utils/graph';
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
-
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
@@ -13,6 +12,7 @@ interface NodeRendererProps {
   onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
   onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   snapToGrid: boolean;
   snapGrid: [number, number];
@@ -91,6 +91,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onMouseLeave={props.onNodeMouseLeave}
             onContextMenu={props.onNodeContextMenu}
             onNodeDragStart={props.onNodeDragStart}
+            onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
             scale={transform[2]}
             selected={selectedElements?.some(({ id }) => id === node.id) || false}

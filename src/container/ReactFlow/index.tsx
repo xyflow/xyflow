@@ -58,6 +58,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
   onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
@@ -130,6 +131,7 @@ const ReactFlow = ({
   onNodeMouseLeave,
   onNodeContextMenu,
   onNodeDragStart,
+  onNodeDrag,
   onNodeDragStop,
   onSelectionChange,
   onSelectionDragStart,
@@ -191,6 +193,7 @@ const ReactFlow = ({
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
           onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}

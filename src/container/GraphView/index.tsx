@@ -40,6 +40,7 @@ const GraphView = ({
   onNodeMouseLeave,
   onNodeContextMenu,
   onNodeDragStart,
+  onNodeDrag,
   onNodeDragStop,
   onSelectionDragStart,
   onSelectionDrag,
@@ -243,6 +244,7 @@ const GraphView = ({
         onNodeMouseLeave={onNodeMouseLeave}
         onNodeContextMenu={onNodeContextMenu}
         onNodeDragStop={onNodeDragStop}
+        onNodeDrag={onNodeDrag}
         onNodeDragStart={onNodeDragStart}
         selectNodesOnDrag={selectNodesOnDrag}
         snapToGrid={snapToGrid}

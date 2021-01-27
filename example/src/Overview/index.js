@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import ReactFlow, { removeElements, addEdge, MiniMap, Controls, Background, isNode } from 'react-flow-renderer';
 
 const onNodeDragStart = (event, node) => console.log('drag start', node);
+const onNodeDrag = (event, node) => console.log('drag', node);
 const onNodeDragStop = (event, node) => console.log('drag stop', node);
 const onPaneClick = (event) => console.log('pane click', event);
 const onPaneScroll = (event) => console.log('pane scroll', event);
@@ -132,6 +133,7 @@ const OverviewFlow = () => {
       onPaneScroll={onPaneScroll}
       onPaneContextMenu={onPaneContextMenu}
       onNodeDragStart={onNodeDragStart}
+      onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
       onSelectionDragStart={onSelectionDragStart}
       onSelectionDrag={onSelectionDrag}
