@@ -126,18 +126,22 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     const onDrag = useCallback(
-      (event: DraggableEvent, draggbleData: DraggableData) => {
-        onNodeDrag?.(event as MouseEvent, id, draggbleData);
+      (event: DraggableEvent, draggableData: DraggableData) => {
+        if (onNodeDrag) {
+          node.position.x += draggableData.deltaX;
+          node.position.y += draggableData.deltaY;
+          onNodeDrag(event as MouseEvent, node);
+        }
 
         updateNodePosDiff({
           id,
           diff: {
-            x: draggbleData.deltaX,
-            y: draggbleData.deltaY,
+            x: draggableData.deltaX,
+            y: draggableData.deltaY,
           },
         });
       },
-      [id]
+      [id, node, onNodeDrag]
     );
 
     const onDragStop = useCallback(
