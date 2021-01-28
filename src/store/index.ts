@@ -55,6 +55,6 @@ export const initialState: ReactFlowState = {
 
 const store = configureStore(initialState);
 
-export type AppDispatch = typeof store.dispatch;
+export type ReactFlowDispatch = typeof store.dispatch;
 
 export default store;

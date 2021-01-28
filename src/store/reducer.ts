@@ -6,7 +6,6 @@ import { getHandleBounds } from '../components/Nodes/utils';
 
 import { ReactFlowState, FlowElement, Node, XYPosition } from '../types';
 import {
-  ReactFlowActionTypes,
   ADD_SELECTED_ELEMENTS,
   BATCH_UPDATE_NODE_DIMENSIONS,
   INIT_D3ZOOM,
@@ -38,14 +37,15 @@ import {
   UPDATE_SIZE,
   UPDATE_TRANSFORM,
   UPDATE_USER_SELECTION,
-} from './action-types';
+} from './contants';
+import { ReactFlowAction } from './actions';
 
 import { initialState } from './index';
 
-export default function reactFlowReducer(state = initialState, action: ReactFlowActionTypes): ReactFlowState {
+export default function reactFlowReducer(state = initialState, action: ReactFlowAction): ReactFlowState {
   switch (action.type) {
     case SET_ELEMENTS: {
-      const propElements = action.elements;
+      const propElements = action.payload;
 
       const nextElements = propElements.map((el: FlowElement) => {
         let storeElement = state.elements.find((se) => se.id === el.id);
@@ -90,7 +90,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     }
     case BATCH_UPDATE_NODE_DIMENSIONS: {
       const updatedElements = state.elements.map((el) => {
-        const update = action.updates.find((u) => u.id === el.id);
+        const update = action.payload.find((u) => u.id === el.id);
         if (update) {
           const dimensions = getDimensions(update.nodeElement);
           const nodeToUpdate = el as Node;
@@ -212,7 +212,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       return { ...state, elements: nextElements };
     }
     case SET_USER_SELECTION: {
-      const { mousePos } = action;
+      const mousePos = action.payload;
 
       const userSelectionRect = {
         width: 0,
@@ -231,7 +231,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       };
     }
     case UPDATE_USER_SELECTION: {
-      const { mousePos } = action;
+      const mousePos = action.payload;
       const startX = state.userSelectionRect.startX || 0;
       const startY = state.userSelectionRect.startY || 0;
 
@@ -298,7 +298,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       };
     }
     case SET_SELECTED_ELEMENTS: {
-      const { elements } = action;
+      const elements = action.payload;
       const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
       const selectedElementsUpdated = !isEqual(selectedElementsArr, state.selectedElements);
       const selectedElements = selectedElementsUpdated ? selectedElementsArr : state.selectedElements;
@@ -310,7 +310,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     }
     case ADD_SELECTED_ELEMENTS: {
       const { multiSelectionActive, selectedElements } = state;
-      const { elements } = action;
+      const elements = action.payload;
       const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
 
       let nextElements = selectedElementsArr;
@@ -336,7 +336,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       };
     }
     case SET_MINZOOM: {
-      const { minZoom } = action.payload;
+      const minZoom = action.payload;
 
       if (state.d3Zoom) {
         state.d3Zoom.scaleExtent([minZoom, state.maxZoom]);
@@ -349,7 +349,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     }
 
     case SET_MAXZOOM: {
-      const { maxZoom } = action.payload;
+      const maxZoom = action.payload;
 
       if (state.d3Zoom) {
         state.d3Zoom.scaleExtent([state.minZoom, maxZoom]);
@@ -361,7 +361,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       };
     }
     case SET_TRANSLATEEXTENT: {
-      const { translateExtent } = action.payload;
+      const translateExtent = action.payload;
 
       if (state.d3Zoom) {
         state.d3Zoom.translateExtent(translateExtent);
