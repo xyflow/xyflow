@@ -6,7 +6,7 @@ import { getHandleBounds } from '../components/Nodes/utils';
 
 import { ReactFlowState, FlowElement, Node, XYPosition } from '../types';
 import {
-  ActionTypes,
+  ReactFlowActionTypes,
   ADD_SELECTED_ELEMENTS,
   BATCH_UPDATE_NODE_DIMENSIONS,
   INIT_D3ZOOM,
@@ -42,7 +42,7 @@ import {
 
 import { initialState } from './index';
 
-export default function reactFlowReducer(state = initialState, action: ActionTypes): ReactFlowState {
+export default function reactFlowReducer(state = initialState, action: ReactFlowActionTypes): ReactFlowState {
   switch (action.type) {
     case SET_ELEMENTS: {
       const propElements = action.elements;

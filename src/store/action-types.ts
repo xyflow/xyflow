@@ -257,7 +257,7 @@ interface SetConnectionMode {
   };
 }
 
-export type ActionTypes =
+export type ReactFlowActionTypes =
   | OnConnectAction
   | OnConnectStartAction
   | OnConnectStopAction

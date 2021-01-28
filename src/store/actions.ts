@@ -18,7 +18,7 @@ import {
 } from '../types';
 
 import {
-  ActionTypes,
+  ReactFlowActionTypes,
   SET_ON_CONNECT,
   SET_ON_CONNECT_START,
   SET_ON_CONNECT_STOP,
@@ -53,112 +53,112 @@ import {
   SET_CONNECTION_MODE,
 } from './action-types';
 
-export const setOnConnect = (onConnect: OnConnectFunc): ActionTypes => ({
+export const setOnConnect = (onConnect: OnConnectFunc): ReactFlowActionTypes => ({
   type: SET_ON_CONNECT,
   payload: {
     onConnect,
   },
 });
 
-export const setOnConnectStart = (onConnectStart: OnConnectStartFunc): ActionTypes => ({
+export const setOnConnectStart = (onConnectStart: OnConnectStartFunc): ReactFlowActionTypes => ({
   type: SET_ON_CONNECT_START,
   payload: {
     onConnectStart,
   },
 });
 
-export const setOnConnectStop = (onConnectStop: OnConnectStopFunc): ActionTypes => ({
+export const setOnConnectStop = (onConnectStop: OnConnectStopFunc): ReactFlowActionTypes => ({
   type: SET_ON_CONNECT_STOP,
   payload: {
     onConnectStop,
   },
 });
 
-export const setOnConnectEnd = (onConnectEnd: OnConnectEndFunc): ActionTypes => ({
+export const setOnConnectEnd = (onConnectEnd: OnConnectEndFunc): ReactFlowActionTypes => ({
   type: SET_ON_CONNECT_END,
   payload: {
     onConnectEnd,
   },
 });
 
-export const setElements = (elements: Elements): ActionTypes => ({
+export const setElements = (elements: Elements): ReactFlowActionTypes => ({
   type: SET_ELEMENTS,
   elements,
 });
 
-export const batchUpdateNodeDimensions = (updates: NodeDimensionUpdate[]): ActionTypes => ({
+export const batchUpdateNodeDimensions = (updates: NodeDimensionUpdate[]): ReactFlowActionTypes => ({
   type: BATCH_UPDATE_NODE_DIMENSIONS,
   updates,
 });
 
-export const updateNodeDimensions = (payload: NodeDimensionUpdate): ActionTypes => ({
+export const updateNodeDimensions = (payload: NodeDimensionUpdate): ReactFlowActionTypes => ({
   type: UPDATE_NODE_DIMENSIONS,
   payload,
 });
 
-export const updateNodePos = (payload: NodePosUpdate): ActionTypes => ({
+export const updateNodePos = (payload: NodePosUpdate): ReactFlowActionTypes => ({
   type: UPDATE_NODE_POS,
   payload,
 });
 
-export const updateNodePosDiff = (payload: NodeDiffUpdate): ActionTypes => ({
+export const updateNodePosDiff = (payload: NodeDiffUpdate): ReactFlowActionTypes => ({
   type: UPDATE_NODE_POS_DIFF,
   payload,
 });
 
-export const setUserSelection = (mousePos: XYPosition): ActionTypes => ({
+export const setUserSelection = (mousePos: XYPosition): ReactFlowActionTypes => ({
   type: SET_USER_SELECTION,
   mousePos,
 });
 
-export const updateUserSelection = (mousePos: XYPosition): ActionTypes => ({
+export const updateUserSelection = (mousePos: XYPosition): ReactFlowActionTypes => ({
   type: SET_USER_SELECTION,
   mousePos,
 });
 
-export const unsetUserSelection = (): ActionTypes => ({
+export const unsetUserSelection = (): ReactFlowActionTypes => ({
   type: UNSET_USER_SELECTION,
 });
 
-export const setSelection = (selectionActive: boolean): ActionTypes => ({
+export const setSelection = (selectionActive: boolean): ReactFlowActionTypes => ({
   type: SET_SELECTION,
   payload: {
     selectionActive,
   },
 });
 
-export const unsetNodesSelection = (): ActionTypes => ({
+export const unsetNodesSelection = (): ReactFlowActionTypes => ({
   type: UNSET_NODES_SELECTION,
   payload: {
     nodesSelectionActive: false,
   },
 });
 
-export const resetSelectedElements = (): ActionTypes => ({
+export const resetSelectedElements = (): ReactFlowActionTypes => ({
   type: RESET_SELECTED_ELEMENTS,
   payload: {
     selectedElements: null,
   },
 });
 
-export const setSelectedElements = (elements: Elements): ActionTypes => ({
+export const setSelectedElements = (elements: Elements): ReactFlowActionTypes => ({
   type: SET_SELECTED_ELEMENTS,
   elements,
 });
 
-export const addSelectedElements = (elements: Elements): ActionTypes => ({
+export const addSelectedElements = (elements: Elements): ReactFlowActionTypes => ({
   type: ADD_SELECTED_ELEMENTS,
   elements,
 });
 
-export const updateTransform = (transform: Transform): ActionTypes => ({
+export const updateTransform = (transform: Transform): ReactFlowActionTypes => ({
   type: UPDATE_TRANSFORM,
   payload: {
     transform,
   },
 });
 
-export const updateSize = (size: Dimensions): ActionTypes => ({
+export const updateSize = (size: Dimensions): ReactFlowActionTypes => ({
   type: UPDATE_SIZE,
   payload: {
     width: size.width || 500,
@@ -166,47 +166,47 @@ export const updateSize = (size: Dimensions): ActionTypes => ({
   },
 });
 
-export const initD3Zoom = (payload: InitD3ZoomPayload): ActionTypes => ({
+export const initD3Zoom = (payload: InitD3ZoomPayload): ReactFlowActionTypes => ({
   type: INIT_D3ZOOM,
   payload,
 });
 
-export const setMinZoom = (minZoom: number): ActionTypes => ({
+export const setMinZoom = (minZoom: number): ReactFlowActionTypes => ({
   type: SET_MINZOOM,
   payload: { minZoom },
 });
 
-export const setMaxZoom = (maxZoom: number): ActionTypes => ({
+export const setMaxZoom = (maxZoom: number): ReactFlowActionTypes => ({
   type: SET_MAXZOOM,
   payload: { maxZoom },
 });
 
-export const setTranslateExtent = (translateExtent: TranslateExtent): ActionTypes => ({
+export const setTranslateExtent = (translateExtent: TranslateExtent): ReactFlowActionTypes => ({
   type: SET_TRANSLATEEXTENT,
   payload: { translateExtent },
 });
 
-export const setConnectionPosition = (connectionPosition: XYPosition): ActionTypes => ({
+export const setConnectionPosition = (connectionPosition: XYPosition): ReactFlowActionTypes => ({
   type: SET_CONNECTION_POSITION,
   payload: { connectionPosition },
 });
 
-export const setConnectionNodeId = (payload: SetConnectionId): ActionTypes => ({
+export const setConnectionNodeId = (payload: SetConnectionId): ReactFlowActionTypes => ({
   type: SET_CONNECTION_NODEID,
   payload,
 });
 
-export const setSnapToGrid = (snapToGrid: boolean): ActionTypes => ({
+export const setSnapToGrid = (snapToGrid: boolean): ReactFlowActionTypes => ({
   type: SET_SNAPTOGRID,
   payload: { snapToGrid },
 });
 
-export const setSnapGrid = (snapGrid: SnapGrid): ActionTypes => ({
+export const setSnapGrid = (snapGrid: SnapGrid): ReactFlowActionTypes => ({
   type: SET_SNAPGRID,
   payload: { snapGrid },
 });
 
-export const setInteractive = (isInteractive: boolean): ActionTypes => ({
+export const setInteractive = (isInteractive: boolean): ReactFlowActionTypes => ({
   type: SET_INTERACTIVE,
   payload: {
     nodesDraggable: isInteractive,
@@ -215,27 +215,27 @@ export const setInteractive = (isInteractive: boolean): ActionTypes => ({
   },
 });
 
-export const setNodesDraggable = (nodesDraggable: boolean): ActionTypes => ({
+export const setNodesDraggable = (nodesDraggable: boolean): ReactFlowActionTypes => ({
   type: SET_NODES_DRAGGABLE,
   payload: { nodesDraggable },
 });
 
-export const setNodesConnectable = (nodesConnectable: boolean): ActionTypes => ({
+export const setNodesConnectable = (nodesConnectable: boolean): ReactFlowActionTypes => ({
   type: SET_NODES_CONNECTABLE,
   payload: { nodesConnectable },
 });
 
-export const setElementsSelectable = (elementsSelectable: boolean): ActionTypes => ({
+export const setElementsSelectable = (elementsSelectable: boolean): ReactFlowActionTypes => ({
   type: SET_ELEMENTS_SELECTABLE,
   payload: { elementsSelectable },
 });
 
-export const setMultiSelectionActive = (multiSelectionActive: boolean): ActionTypes => ({
+export const setMultiSelectionActive = (multiSelectionActive: boolean): ReactFlowActionTypes => ({
   type: SET_MULTI_SELECTION_ACTIVE,
   payload: { multiSelectionActive },
 });
 
-export const setConnectionMode = (connectionMode: ConnectionMode): ActionTypes => ({
+export const setConnectionMode = (connectionMode: ConnectionMode): ReactFlowActionTypes => ({
   type: SET_CONNECTION_MODE,
   payload: { connectionMode },
 });
