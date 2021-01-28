@@ -39,6 +39,15 @@ type NodeDimensionUpdates = {
   updates: NodeDimensionUpdate[];
 };
 
+type HandleUpdate = {
+  id: ElementId;
+  nodeElement: HTMLDivElement;
+}
+
+type HandleUpdates = {
+  updates: HandleUpdate[];
+}
+
 type InitD3Zoom = {
   d3Zoom: ZoomBehavior<Element, unknown>;
   d3Selection: D3Selection<Element, unknown, null, undefined>;
@@ -98,6 +107,8 @@ export interface StoreModel {
   setOnConnectEnd: Action<StoreModel, OnConnectEndFunc>;
 
   setElements: Action<StoreModel, Elements>;
+
+  batchUpdateHandles: Action<StoreModel, HandleUpdates>;
 
   batchUpdateNodeDimensions: Action<StoreModel, NodeDimensionUpdates>;
   updateNodeDimensions: Action<StoreModel, NodeDimensionUpdate>;
@@ -265,6 +276,15 @@ export const storeModel: StoreModel = {
         // add new element
         state.elements.push(parseElement(el, state.nodeExtent));
       }
+    });
+  }),
+
+  batchUpdateHandles: action((state, { updates }) => {
+    updates.forEach((update) => {
+      const matchingIndex = state.elements.findIndex((n) => n.id === update.id);
+      const handleBounds = getHandleBounds(update.nodeElement, state.transform[2]);
+
+      (state.elements[matchingIndex] as Node).__rf.handleBounds = handleBounds;
     });
   }),
 

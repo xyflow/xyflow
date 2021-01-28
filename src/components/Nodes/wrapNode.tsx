@@ -37,6 +37,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     snapGrid,
     isDragging,
     resizeObserver,
+    mutationObserver,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
@@ -176,10 +177,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     useEffect(() => {
       if (nodeElement.current) {
+        const config = { attributes: false, childList: true, subtree: true };
         const currNode = nodeElement.current;
         resizeObserver?.observe(currNode);
+        mutationObserver?.observe(currNode, config);
 
-        return () => resizeObserver?.unobserve(currNode);
+        return () => {
+          resizeObserver?.unobserve(currNode);
+          mutationObserver?.disconnect();
+        }
       }
 
       return;

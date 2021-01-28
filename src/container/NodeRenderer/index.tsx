@@ -19,6 +19,21 @@ interface NodeRendererProps {
   onlyRenderVisibleElements: boolean;
 }
 
+const findParentNodeElement = (element: HTMLElement | null): HTMLElement | null => {
+  // Base case, hit root of tree.
+  if (element === null) {
+    return null;
+  }
+
+  // Base case, hit target parent with ID.
+  if (element.getAttribute('data-id') !== null) {
+    return element;
+  }
+
+  // Recurse until we either find the parent or hit the root of the tree.
+  return findParentNodeElement(element.parentElement);
+}
+
 const NodeRenderer = (props: NodeRendererProps) => {
   const transform = useStoreState((state) => state.transform);
   const selectedElements = useStoreState((state) => state.selectedElements);
@@ -28,6 +43,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const viewportBox = useStoreState((state) => state.viewportBox);
   const nodes = useStoreState((state) => state.nodes);
   const batchUpdateNodeDimensions = useStoreActions((actions) => actions.batchUpdateNodeDimensions);
+  const batchUpdateHandles = useStoreActions((actions) => actions.batchUpdateHandles);
 
   const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
@@ -50,6 +66,24 @@ const NodeRenderer = (props: NodeRendererProps) => {
       }));
 
       batchUpdateNodeDimensions({ updates });
+    });
+  }, []);
+
+  const mutationObserver = useMemo(() => {
+    if (typeof MutationObserver === 'undefined') {
+      return null;
+    }
+
+    return new MutationObserver((entries) => {
+      const updates = entries.map((entry) => {
+        let parentElement = findParentNodeElement(entry.target.parentElement);
+        return {
+          id: parentElement?.getAttribute('data-id') as string,
+          nodeElement: parentElement as HTMLDivElement,
+        }
+      });
+
+      batchUpdateHandles({ updates });
     });
   }, []);
 
@@ -99,6 +133,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isSelectable={isSelectable}
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
+            mutationObserver={mutationObserver}
           />
         );
       })}
