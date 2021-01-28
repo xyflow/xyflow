@@ -2,12 +2,13 @@ import { bindActionCreators } from 'redux';
 import { useStore as useStoreRedux, useSelector, useDispatch, TypedUseSelectorHook } from 'react-redux';
 import { useMemo } from 'react';
 
-import { ReactFlowState, AppDispatch } from './index';
-import { actions } from './actions';
+import { AppDispatch } from './index';
+import * as actions from './actions';
+import { ReactFlowState } from '../types';
 
 export const useTypedSelector: TypedUseSelectorHook<ReactFlowState> = useSelector;
 
-export function useActions(actionSelector: any): any {
+export function useActions(actionSelector: (value: any) => any): any {
   const dispatch: AppDispatch = useDispatch();
 
   const action = useMemo(() => {

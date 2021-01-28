@@ -1,5 +1,4 @@
 import { Store } from 'redux';
-import { ReactFlowState } from '../store';
 import {
   ElementId,
   Node,
@@ -11,6 +10,7 @@ import {
   Box,
   Connection,
   FlowExportObject,
+  ReactFlowState,
 } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
