@@ -37,7 +37,7 @@ const getTransformForBounds = (
   return [x, y, clampedZoom];
 };
 
-const usePanZoomHelper = (): ZoomPanHelperFunctions => {
+const useZoomPanHelper = (): ZoomPanHelperFunctions => {
   const store = useStore();
   const d3Zoom = useStoreState((s) => s.d3Zoom);
   const d3Selection = useStoreState((s) => s.d3Selection);
@@ -93,4 +93,4 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
   return zoomPanHelperFunctions;
 };
 
-export default usePanZoomHelper;
+export default useZoomPanHelper;
