@@ -11,7 +11,7 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   zoomOut: () => {},
   zoomTo: (_: number) => {},
   transform: (_: FlowTransform) => {},
-  fitView: (_: FitViewParams = { padding: 0.1 }) => {},
+  fitView: (_: FitViewParams = { padding: 0.1, excludeHidden: false }) => {},
   setCenter: (_: number, __: number) => {},
   fitBounds: (_: Rect) => {},
   initialized: false,
@@ -53,14 +53,14 @@ const usePanZoomHelper = (): ZoomPanHelperFunctions => {
 
           d3Zoom.transform(d3Selection, nextTransform);
         },
-        fitView: (options: FitViewParams = { padding: 0.1 }) => {
+        fitView: (options: FitViewParams = { padding: 0.1, excludeHidden: false }) => {
           const { nodes, width, height, minZoom, maxZoom } = store.getState();
 
           if (!nodes.length) {
             return;
           }
 
-          const bounds = getRectOfNodes(nodes);
+          const bounds = getRectOfNodes(options.excludeHidden ? nodes.filter(node => !node.isHidden) : nodes);
           const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options.padding);
           const transform = zoomIdentity.translate(x, y).scale(zoom);
 
