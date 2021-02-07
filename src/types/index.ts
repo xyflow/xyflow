@@ -235,7 +235,7 @@ export interface WrapNodeProps<T = any> {
 }
 
 export type FitViewParams = {
-  padding: number;
+  padding?: number;
   excludeHidden?: boolean;
 };
 
