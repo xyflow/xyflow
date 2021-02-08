@@ -6,7 +6,7 @@ import { clamp } from '../utils';
 import { getRectOfNodes } from '../utils/graph';
 import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, Transform } from '../types';
 
-const DEFAULT_PADDING = 0.1
+const DEFAULT_PADDING = 0.1;
 
 const initialZoomPanHelper: ZoomPanHelperFunctions = {
   zoomIn: () => {},
@@ -62,8 +62,8 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
             return;
           }
 
-          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter(node => !node.isHidden));
-          const padding = options.padding || DEFAULT_PADDING
+          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.isHidden));
+          const padding = options.padding ?? DEFAULT_PADDING;
           const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, padding);
           const transform = zoomIdentity.translate(x, y).scale(zoom);
 
