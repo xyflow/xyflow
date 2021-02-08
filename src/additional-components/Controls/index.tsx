@@ -10,11 +10,13 @@ import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
+import { FitViewParams } from '../../types';
 
 export interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;
+  fitViewParams?: FitViewParams;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
   onFitView?: () => void;
@@ -26,6 +28,7 @@ const Controls = ({
   showZoom = true,
   showFitView = true,
   showInteractive = true,
+  fitViewParams,
   onZoomIn,
   onZoomOut,
   onFitView,
@@ -49,9 +52,9 @@ const Controls = ({
   }, [zoomOut, onZoomOut]);
 
   const onFitViewHandler = useCallback(() => {
-    fitView?.();
+    fitView?.(fitViewParams);
     onFitView?.();
-  }, [fitView, onFitView]);
+  }, [fitView, fitViewParams, onFitView]);
 
   const onInteractiveChangeHandler = useCallback(() => {
     setInteractive?.(!isInteractive);

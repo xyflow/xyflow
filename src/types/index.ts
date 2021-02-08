@@ -235,7 +235,8 @@ export interface WrapNodeProps<T = any> {
 }
 
 export type FitViewParams = {
-  padding: number;
+  padding?: number;
+  includeHiddenNodes?: boolean;
 };
 
 export type FlowExportObject<T = any> = {
