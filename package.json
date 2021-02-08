@@ -55,7 +55,7 @@
     "@types/resize-observer-browser": "^0.1.5",
     "autoprefixer": "^10.2.4",
     "babel-preset-react-app": "^10.0.0",
-    "cypress": "^6.3.0",
+    "cypress": "^6.4.0",
     "dagre": "^0.8.5",
     "localforage": "^1.9.0",
     "postcss": "^8.2.4",
