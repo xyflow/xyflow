@@ -40,6 +40,7 @@ const GraphView = ({
   onNodeMouseLeave,
   onNodeContextMenu,
   onNodeDragStart,
+  onNodeDrag,
   onNodeDragStop,
   onSelectionDragStart,
   onSelectionDrag,
@@ -51,6 +52,7 @@ const GraphView = ({
   connectionLineComponent,
   selectionKeyCode,
   multiSelectionKeyCode,
+  zoomActivationKeyCode,
   onElementsRemove,
   deleteKeyCode,
   onConnect,
@@ -69,9 +71,11 @@ const GraphView = ({
   defaultZoom,
   defaultPosition,
   translateExtent,
+  nodeExtent,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
+  zoomOnPinch,
   panOnScroll,
   panOnScrollSpeed,
   panOnScrollMode,
@@ -95,6 +99,7 @@ const GraphView = ({
   const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
   const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
+  const setNodeExtent = useStoreActions((actions) => actions.setNodeExtent);
   const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
@@ -191,6 +196,12 @@ const GraphView = ({
   }, [translateExtent]);
 
   useEffect(() => {
+    if (typeof nodeExtent !== 'undefined') {
+      setNodeExtent(nodeExtent);
+    }
+  }, [nodeExtent]);
+
+  useEffect(() => {
     if (typeof connectionMode !== 'undefined') {
       setConnectionMode(connectionMode);
     }
@@ -205,11 +216,13 @@ const GraphView = ({
       deleteKeyCode={deleteKeyCode}
       selectionKeyCode={selectionKeyCode}
       multiSelectionKeyCode={multiSelectionKeyCode}
+      zoomActivationKeyCode={zoomActivationKeyCode}
       elementsSelectable={elementsSelectable}
       onMove={onMove}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
       zoomOnScroll={zoomOnScroll}
+      zoomOnPinch={zoomOnPinch}
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnScroll={panOnScroll}
       panOnScrollSpeed={panOnScrollSpeed}
@@ -231,6 +244,7 @@ const GraphView = ({
         onNodeMouseLeave={onNodeMouseLeave}
         onNodeContextMenu={onNodeContextMenu}
         onNodeDragStop={onNodeDragStop}
+        onNodeDrag={onNodeDrag}
         onNodeDragStart={onNodeDragStart}
         selectNodesOnDrag={selectNodesOnDrag}
         snapToGrid={snapToGrid}

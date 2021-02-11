@@ -17,6 +17,7 @@ import {
   SetConnectionId,
   SnapGrid,
   ConnectionMode,
+  NodeExtent,
 } from '../types';
 
 import {
@@ -53,6 +54,7 @@ import {
   SET_ELEMENTS_SELECTABLE,
   SET_MULTI_SELECTION_ACTIVE,
   SET_CONNECTION_MODE,
+  SET_NODE_EXTENT,
 } from './contants';
 
 export const setOnConnect = (onConnect: OnConnectFunc) =>
@@ -158,6 +160,8 @@ export const setMultiSelectionActive = (multiSelectionActive: boolean) =>
 export const setConnectionMode = (connectionMode: ConnectionMode) =>
   createAction(SET_CONNECTION_MODE, { connectionMode });
 
+export const setNodeExtent = (nodeExtent: NodeExtent) => createAction(SET_NODE_EXTENT, { nodeExtent });
+
 export type ReactFlowAction = ReturnType<
   | typeof setOnConnect
   | typeof setOnConnectStart
@@ -192,4 +196,5 @@ export type ReactFlowAction = ReturnType<
   | typeof setElementsSelectable
   | typeof setMultiSelectionActive
   | typeof setConnectionMode
+  | typeof setNodeExtent
 >;

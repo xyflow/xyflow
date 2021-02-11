@@ -10,9 +10,10 @@ import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
-const processEnv = isProd ? 'production' : 'development';
+const isTesting = process.env.NODE_ENV === 'testing';
+const processEnv = isProd || isTesting ? 'production' : 'development';
 
-export default {
+export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
   input: 'src/index.ts',
   external: ['react', 'react-dom', /@babel\/runtime/],
   onwarn(warning, rollupWarn) {
@@ -22,13 +23,13 @@ export default {
   },
   output: [
     {
-      file: pkg.main,
+      file: mainFile,
       format: 'cjs',
       sourcemap: true,
       exports: 'named',
     },
     {
-      file: pkg.module,
+      file: moduleFile,
       format: 'esm',
       sourcemap: true,
       exports: 'named',
@@ -38,10 +39,13 @@ export default {
     replace({
       __ENV__: JSON.stringify(processEnv),
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
+      // this comes from the easy-peasy dependency
+      'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': false,
     }),
     bundleSize(),
     postcss({
       minimize: isProd,
+      inject: injectCSS,
     }),
     babel({
       exclude: 'node_modules/**',
@@ -56,4 +60,15 @@ export default {
       include: 'node_modules/**',
     }),
   ],
-};
+});
+
+export default isProd && !isTesting
+  ? [
+      baseConfig(),
+      baseConfig({
+        mainFile: 'dist/nocss/ReactFlow-nocss.js',
+        moduleFile: 'dist/nocss/ReactFlow-nocss.esm.js',
+        injectCSS: false,
+      }),
+    ]
+  : baseConfig();

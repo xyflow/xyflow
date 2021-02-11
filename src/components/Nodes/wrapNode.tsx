@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
-import { DraggableCore } from 'react-draggable';
+import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import cc from 'classcat';
 
 import { useStoreActions } from '../../store/hooks';
 import { Provider } from '../../contexts/NodeIdContext';
-import { Node, NodeComponentProps, WrapNodeProps } from '../../types';
+import { NodeComponentProps, WrapNodeProps } from '../../types';
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
   const NodeWrapper = ({
@@ -21,6 +21,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     onMouseLeave,
     onContextMenu,
     onNodeDragStart,
+    onNodeDrag,
     onNodeDragStop,
     style,
     className,
@@ -96,7 +97,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             unsetNodesSelection();
 
             if (!selected) {
-              addSelectedElements({ id: node.id, type: node.type } as Node);
+              addSelectedElements(node);
             }
           }
 
@@ -107,14 +108,14 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     const onDragStart = useCallback(
-      (event) => {
+      (event: DraggableEvent) => {
         onNodeDragStart?.(event as MouseEvent, node);
 
         if (selectNodesOnDrag && isSelectable) {
           unsetNodesSelection();
 
           if (!selected) {
-            addSelectedElements({ id: node.id, type: node.type } as Node);
+            addSelectedElements(node);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unsetNodesSelection();
@@ -125,25 +126,31 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     const onDrag = useCallback(
-      (_, data) => {
+      (event: DraggableEvent, draggableData: DraggableData) => {
+        if (onNodeDrag) {
+          node.position.x += draggableData.deltaX;
+          node.position.y += draggableData.deltaY;
+          onNodeDrag(event as MouseEvent, node);
+        }
+
         updateNodePosDiff({
           id,
           diff: {
-            x: data.deltaX,
-            y: data.deltaY,
+            x: draggableData.deltaX,
+            y: draggableData.deltaY,
           },
         });
       },
-      [id]
+      [id, node, onNodeDrag]
     );
 
     const onDragStop = useCallback(
-      (event) => {
+      (event: DraggableEvent) => {
         // onDragStop also gets called when user just clicks on a node.
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!isDragging) {
           if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedElements({ id: node.id, type: node.type } as Node);
+            addSelectedElements(node);
           }
 
           onClick?.(event as MouseEvent, node);

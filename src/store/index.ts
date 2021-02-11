@@ -23,6 +23,11 @@ export const initialState: ReactFlowState = {
     [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
   ],
 
+  nodeExtent: [
+    [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+    [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+  ],
+
   nodesSelectionActive: false,
   selectionActive: false,
 

@@ -21,6 +21,7 @@ import {
   SET_MULTI_SELECTION_ACTIVE,
   SET_NODES_CONNECTABLE,
   SET_NODES_DRAGGABLE,
+  SET_NODE_EXTENT,
   SET_ON_CONNECT,
   SET_ON_CONNECT_END,
   SET_ON_CONNECT_START,
@@ -82,7 +83,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
           return storeElement;
         } else {
           // add new element
-          return parseElement(el);
+          return parseElement(el, state.nodeExtent);
         }
       });
 
@@ -389,6 +390,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case SET_ELEMENTS_SELECTABLE:
     case SET_MULTI_SELECTION_ACTIVE:
     case SET_CONNECTION_MODE:
+    case SET_NODE_EXTENT:
       return { ...state, ...action.payload };
     default:
       return state;

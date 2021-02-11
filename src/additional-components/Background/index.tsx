@@ -5,8 +5,6 @@ import { useStoreState } from '../../store/hooks';
 import { BackgroundVariant } from '../../types';
 import { createGridLinesPath, createGridDotsPath } from './utils';
 
-import './style.css';
-
 export interface BackgroundProps extends HTMLAttributes<SVGElement> {
   variant?: BackgroundVariant;
   gap?: number;
@@ -34,26 +32,25 @@ const Background = ({
   const xOffset = x % scaledGap;
   const yOffset = y % scaledGap;
 
-
-	const isLines = variant === BackgroundVariant.Lines;
-	const bgColor = color ? color : defaultColors[variant];
-	const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
+  const isLines = variant === BackgroundVariant.Lines;
+  const bgColor = color ? color : defaultColors[variant];
+  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
 
   return (
     <svg
       className={bgClasses}
       style={{
-				...style,
-				width: "100%",
-				height: "100%"
+        ...style,
+        width: '100%',
+        height: '100%',
       }}
     >
-			<pattern id="pattern" x={xOffset} y={yOffset} width={scaledGap} height={scaledGap} patternUnits="userSpaceOnUse">
-				{path}
-			</pattern>
+      <pattern id="pattern" x={xOffset} y={yOffset} width={scaledGap} height={scaledGap} patternUnits="userSpaceOnUse">
+        {path}
+      </pattern>
 
-			<rect x="0" y="0" width="100%" height="100%" fill="url(#pattern)"></rect>
-		</svg>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern)"></rect>
+    </svg>
   );
 };
 

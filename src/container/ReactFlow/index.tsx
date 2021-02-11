@@ -30,9 +30,11 @@ import {
   KeyCode,
   PanOnScrollMode,
   OnEdgeUpdateFunc,
+  NodeExtent,
 } from '../../types';
 
 import '../../style.css';
+import '../../theme-default.css';
 
 const defaultNodeTypes = {
   input: InputNode,
@@ -56,6 +58,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
   onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
+  onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
@@ -82,6 +85,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   deleteKeyCode?: KeyCode;
   selectionKeyCode?: KeyCode;
   multiSelectionKeyCode?: KeyCode;
+  zoomActivationKeyCode?: KeyCode;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
   onlyRenderVisibleElements?: boolean;
@@ -95,9 +99,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   defaultZoom?: number;
   defaultPosition?: [number, number];
   translateExtent?: TranslateExtent;
+  nodeExtent?: NodeExtent;
   arrowHeadColor?: string;
   markerEndId?: string;
   zoomOnScroll?: boolean;
+  zoomOnPinch?: boolean;
   panOnScroll?: boolean;
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
@@ -125,6 +131,7 @@ const ReactFlow = ({
   onNodeMouseLeave,
   onNodeContextMenu,
   onNodeDragStart,
+  onNodeDrag,
   onNodeDragStop,
   onSelectionChange,
   onSelectionDragStart,
@@ -138,6 +145,7 @@ const ReactFlow = ({
   deleteKeyCode = 'Backspace',
   selectionKeyCode = 'Shift',
   multiSelectionKeyCode = 'Meta',
+  zoomActivationKeyCode = 'Meta',
   snapToGrid = false,
   snapGrid = [15, 15],
   onlyRenderVisibleElements = true,
@@ -150,9 +158,11 @@ const ReactFlow = ({
   defaultZoom = 1,
   defaultPosition = [0, 0],
   translateExtent,
+  nodeExtent,
   arrowHeadColor = '#b1b1b7',
   markerEndId,
   zoomOnScroll = true,
+  zoomOnPinch = true,
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
@@ -183,6 +193,7 @@ const ReactFlow = ({
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
           onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}
@@ -194,6 +205,7 @@ const ReactFlow = ({
           onElementsRemove={onElementsRemove}
           deleteKeyCode={deleteKeyCode}
           multiSelectionKeyCode={multiSelectionKeyCode}
+          zoomActivationKeyCode={zoomActivationKeyCode}
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onConnectStop={onConnectStop}
@@ -210,9 +222,11 @@ const ReactFlow = ({
           defaultZoom={defaultZoom}
           defaultPosition={defaultPosition}
           translateExtent={translateExtent}
+          nodeExtent={nodeExtent}
           arrowHeadColor={arrowHeadColor}
           markerEndId={markerEndId}
           zoomOnScroll={zoomOnScroll}
+          zoomOnPinch={zoomOnPinch}
           zoomOnDoubleClick={zoomOnDoubleClick}
           panOnScroll={panOnScroll}
           panOnScrollSpeed={panOnScrollSpeed}

@@ -6,8 +6,6 @@ import { getRectOfNodes, getBoundsofRects, isNode } from '../../utils/graph';
 import { Node, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
 
-import './style.css';
-
 type StringFunc = (node: Node) => string;
 
 export interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
@@ -15,6 +13,7 @@ export interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
   nodeStrokeColor?: string | StringFunc;
   nodeClassName?: string | StringFunc;
   nodeBorderRadius?: number;
+  nodeStrokeWidth?: number;
   maskColor?: string;
 }
 
@@ -28,6 +27,7 @@ const MiniMap = ({
   nodeColor = '#fff',
   nodeClassName = '',
   nodeBorderRadius = 5,
+  nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
   const containerWidth = useStoreState((s) => s.width);
@@ -86,6 +86,7 @@ const MiniMap = ({
             color={nodeColorFunc(node)}
             borderRadius={nodeBorderRadius}
             strokeColor={nodeStrokeColorFunc(node)}
+            strokeWidth={nodeStrokeWidth}
           />
         ))}
       <path

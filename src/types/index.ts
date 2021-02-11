@@ -197,6 +197,7 @@ export interface NodeComponentProps<T = any> {
   onMouseLeave?: (node: Node) => void;
   onContextMenu?: (node: Node) => void;
   onNodeDragStart?: (node: Node) => void;
+  onNodeDrag?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
   isDragging?: boolean;
@@ -220,6 +221,7 @@ export interface WrapNodeProps<T = any> {
   onMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
   onContextMenu?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
   style?: CSSProperties;
   className?: string;
@@ -234,7 +236,8 @@ export interface WrapNodeProps<T = any> {
 }
 
 export type FitViewParams = {
-  padding: number;
+  padding?: number;
+  includeHiddenNodes?: boolean;
 };
 
 export type FlowExportObject<T = any> = {
@@ -340,6 +343,7 @@ export type FlowTransform = {
 };
 
 export type TranslateExtent = [[number, number], [number, number]];
+export type NodeExtent = TranslateExtent;
 
 export type KeyCode = number | string;
 
@@ -354,7 +358,7 @@ export interface ZoomPanHelperFunctions {
   zoomOut: () => void;
   zoomTo: (zoomLevel: number) => void;
   transform: (transform: FlowTransform) => void;
-  fitView: (params?: FitViewParams) => void;
+  fitView: FitViewFunc;
   setCenter: (x: number, y: number, zoom?: number) => void;
   fitBounds: (bounds: Rect, padding?: number) => void;
   initialized: boolean;
@@ -391,6 +395,7 @@ export interface ReactFlowState {
   minZoom: number;
   maxZoom: number;
   translateExtent: TranslateExtent;
+  nodeExtent: NodeExtent;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
