@@ -1,4 +1,4 @@
-import { bindActionCreators, Store } from 'redux';
+import { bindActionCreators, Store, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import {
   useStore as useStoreRedux,
   useSelector,
@@ -14,18 +14,32 @@ import { ReactFlowState } from '../types';
 
 export const useTypedSelector: TypedUseSelectorHook<ReactFlowState> = useSelector;
 
-export function useActions(actionSelector: (value: any) => any): any {
+export type ActionCreatorSelector<Action> = (acts: typeof actions) => ActionCreator<Action>;
+export type ActionMapObjectSelector<Action> = (acts: typeof actions) => ActionCreatorsMapObject<Action>;
+export type ActionSelector<Action> = (acts: typeof actions) => ActionCreatorsMapObject<Action> | ActionCreator<Action>;
+
+export function useStoreActions<Action extends ReactFlowAction>(
+  actionSelector: ActionCreatorSelector<Action>
+): ActionCreator<Action>;
+
+export function useStoreActions<Action extends ReactFlowAction>(
+  actionSelector: ActionMapObjectSelector<Action>
+): ActionCreatorsMapObject<Action>;
+
+export function useStoreActions<Action extends ReactFlowAction>(actionSelector: ActionSelector<Action>) {
   const dispatch: ReactFlowDispatch = reduxUseDispatch();
+  const currAction = actionSelector(actions);
 
   const action = useMemo(() => {
-    const currAction: any = actionSelector(actions);
-    return bindActionCreators(currAction, dispatch);
-  }, [dispatch, actionSelector]);
+    // this looks weird but required if both ActionSelector and ActionMapObjectSelector are supported
+    return typeof currAction === 'function'
+      ? bindActionCreators(currAction, dispatch)
+      : bindActionCreators(currAction, dispatch);
+  }, [dispatch, currAction]);
 
   return action;
 }
 
-export const useStoreActions = useActions;
 export const useStoreState = useTypedSelector;
 export const useStore = (): Store<ReactFlowState, ReactFlowAction> => {
   const store = useStoreRedux<ReactFlowState, ReactFlowAction>();
