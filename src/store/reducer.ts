@@ -1,112 +1,109 @@
 import isEqual from 'fast-deep-equal';
 
 import { getDimensions } from '../utils';
-import { getNodesInside, getConnectedEdges, getRectOfNodes, isNode, isEdge, parseElement } from '../utils/graph';
+import {
+  getNodesInside,
+  getConnectedEdges,
+  getRectOfNodes,
+  isNode,
+  isEdge,
+  parseNode,
+  parseEdge,
+} from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
-import { ReactFlowState, FlowElement, Node, XYPosition } from '../types';
-import {
-  ADD_SELECTED_ELEMENTS,
-  BATCH_UPDATE_NODE_DIMENSIONS,
-  INIT_D3ZOOM,
-  RESET_SELECTED_ELEMENTS,
-  SET_CONNECTION_MODE,
-  SET_CONNECTION_NODEID,
-  SET_CONNECTION_POSITION,
-  SET_ELEMENTS,
-  SET_ELEMENTS_SELECTABLE,
-  SET_INTERACTIVE,
-  SET_MAXZOOM,
-  SET_MINZOOM,
-  SET_MULTI_SELECTION_ACTIVE,
-  SET_NODES_CONNECTABLE,
-  SET_NODES_DRAGGABLE,
-  SET_NODE_EXTENT,
-  SET_ON_CONNECT,
-  SET_ON_CONNECT_END,
-  SET_ON_CONNECT_START,
-  SET_ON_CONNECT_STOP,
-  SET_SELECTED_ELEMENTS,
-  SET_SNAPGRID,
-  SET_SNAPTOGRID,
-  SET_TRANSLATEEXTENT,
-  SET_USER_SELECTION,
-  UNSET_USER_SELECTION,
-  UPDATE_NODE_DIMENSIONS,
-  UPDATE_NODE_POS,
-  UPDATE_NODE_POS_DIFF,
-  UPDATE_SIZE,
-  UPDATE_TRANSFORM,
-  UPDATE_USER_SELECTION,
-} from './contants';
+import { ReactFlowState, Node, XYPosition, Edge } from '../types';
+import * as constants from './contants';
 import { ReactFlowAction } from './actions';
 
 import { initialState } from './index';
 
+type ElementsSplitted = {
+  nodeElements: Node[];
+  edgeElements: Edge[];
+};
+
 export default function reactFlowReducer(state = initialState, action: ReactFlowAction): ReactFlowState {
   switch (action.type) {
-    case SET_ELEMENTS: {
+    case constants.SET_ELEMENTS: {
       const propElements = action.payload;
+      const elementsSplitted: ElementsSplitted = {
+        nodeElements: [],
+        edgeElements: [],
+      };
+      const { nodeElements, edgeElements } = propElements.reduce((res, item): ElementsSplitted => {
+        if (isNode(item)) {
+          res.nodeElements.push(item);
+        } else if (isEdge(item)) {
+          res.edgeElements.push(item);
+        }
 
-      const nextElements = propElements.map((el: FlowElement) => {
-        let storeElement = state.elements.find((se) => se.id === el.id);
+        return res;
+      }, elementsSplitted);
+
+      const nextNodes = nodeElements.map((propNode: Node) => {
+        let storeNode = state.nodes.find((node) => node.id === propNode.id);
 
         // update existing element
-        if (storeElement) {
-          if (isNode(storeElement)) {
-            const propNode = el as Node;
-            const positionChanged =
-              storeElement.position.x !== propNode.position.x || storeElement.position.y !== propNode.position.y;
-            const typeChanged = typeof propNode.type !== 'undefined' && propNode.type !== storeElement.type;
+        if (storeNode) {
+          const positionChanged =
+            storeNode.position.x !== propNode.position.x || storeNode.position.y !== propNode.position.y;
+          const typeChanged = typeof propNode.type !== 'undefined' && propNode.type !== storeNode.type;
 
-            storeElement = {
-              ...storeElement,
-              ...propNode,
-            };
+          storeNode = {
+            ...storeNode,
+            ...propNode,
+          };
 
-            if (positionChanged) {
-              (storeElement as Node).__rf.position = propNode.position;
-            }
-
-            if (typeChanged) {
-              // we reset the elements dimensions here in order to force a re-calculation of the bounds.
-              // When the type of a node changes it is possible that the number or positions of handles changes too.
-              (storeElement as Node).__rf.width = null;
-            }
-          } else {
-            storeElement = {
-              ...storeElement,
-              ...el,
-            };
+          if (positionChanged) {
+            storeNode.__rf.position = propNode.position;
           }
 
-          return storeElement;
+          if (typeChanged) {
+            // we reset the elements dimensions here in order to force a re-calculation of the bounds.
+            // When the type of a node changes it is possible that the number or positions of handles changes too.
+            storeNode.__rf.width = null;
+          }
+
+          return storeNode;
         } else {
           // add new element
-          return parseElement(el, state.nodeExtent);
+          return parseNode(propNode, state.nodeExtent);
         }
       });
 
-      return { ...state, elements: nextElements };
+      const nextEdges = edgeElements.map((propEdge: Edge) => {
+        let storeEdge = state.edges.find((se) => se.id === propEdge.id);
+
+        if (storeEdge) {
+          return {
+            ...storeEdge,
+            ...propEdge,
+          };
+        } else {
+          return parseEdge(propEdge);
+        }
+      });
+
+      return { ...state, nodes: nextNodes, edges: nextEdges };
     }
-    case BATCH_UPDATE_NODE_DIMENSIONS: {
-      const updatedElements = state.elements.map((el) => {
-        const update = action.payload.find((u) => u.id === el.id);
+    case constants.BATCH_UPDATE_NODE_DIMENSIONS: {
+      const updatedNodes = state.nodes.map((node) => {
+        const update = action.payload.find((u) => u.id === node.id);
         if (update) {
           const dimensions = getDimensions(update.nodeElement);
-          const nodeToUpdate = el as Node;
 
           if (
             dimensions.width &&
             dimensions.height &&
-            (nodeToUpdate.__rf.width !== dimensions.width || nodeToUpdate.__rf.height !== dimensions.height)
+            (node.__rf.width !== dimensions.width || node.__rf.height !== dimensions.height)
           ) {
             const handleBounds = getHandleBounds(update.nodeElement, state.transform[2]);
 
             return {
-              ...nodeToUpdate,
+              ...node,
               __rf: {
-                ...nodeToUpdate.__rf,
+                ...node.__rf,
                 ...dimensions,
                 handleBounds,
               },
@@ -114,15 +111,15 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
           }
         }
 
-        return el;
+        return node;
       });
 
       return {
         ...state,
-        elements: updatedElements,
+        nodes: updatedNodes,
       };
     }
-    case UPDATE_NODE_DIMENSIONS: {
+    case constants.UPDATE_NODE_DIMENSIONS: {
       const { nodeElement, id } = action.payload;
       const dimensions = getDimensions(nodeElement);
 
@@ -130,14 +127,14 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         return state;
       }
 
-      const nextElements = state.elements.map((el) => {
-        if (el.id === id && isNode(el)) {
+      const nextNodes = state.nodes.map((node) => {
+        if (node.id === id) {
           const handleBounds = getHandleBounds(nodeElement, state.transform[2]);
 
           return {
-            ...el,
+            ...node,
             __rf: {
-              ...el.__rf,
+              ...node.__rf,
               width: dimensions.width,
               height: dimensions.height,
               handleBounds,
@@ -145,12 +142,12 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
           };
         }
 
-        return el;
+        return node;
       });
 
-      return { ...state, elements: nextElements };
+      return { ...state, nodes: nextNodes };
     }
-    case UPDATE_NODE_POS: {
+    case constants.UPDATE_NODE_POS: {
       const { id, pos } = action.payload;
 
       let position: XYPosition = pos;
@@ -163,56 +160,56 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         };
       }
 
-      const nextElements = state.elements.map((el) => {
-        if (el.id === id && isNode(el)) {
+      const nextNodes = state.nodes.map((node) => {
+        if (node.id === id) {
           return {
-            ...el,
+            ...node,
             __rf: {
-              ...el.__rf,
+              ...node.__rf,
               position,
             },
           };
         }
 
-        return el;
+        return node;
       });
 
-      return { ...state, elements: nextElements };
+      return { ...state, nodes: nextNodes };
     }
-    case UPDATE_NODE_POS_DIFF: {
+    case constants.UPDATE_NODE_POS_DIFF: {
       const { id, diff, isDragging } = action.payload;
 
-      const nextElements = state.elements.map((el) => {
-        if (isNode(el) && (id === el.id || state.selectedElements?.find((sNode) => sNode.id === el.id))) {
+      const nextNodes = state.nodes.map((node) => {
+        if (id === node.id || state.selectedElements?.find((sNode) => sNode.id === node.id)) {
           if (diff) {
             return {
-              ...el,
+              ...node,
               __rf: {
-                ...el.__rf,
+                ...node.__rf,
                 isDragging,
                 position: {
-                  x: el.__rf.position.x + diff.x,
-                  y: el.__rf.position.y + diff.y,
+                  x: node.__rf.position.x + diff.x,
+                  y: node.__rf.position.y + diff.y,
                 },
               },
             };
           }
 
           return {
-            ...el,
+            ...node,
             __rf: {
-              ...el.__rf,
+              ...node.__rf,
               isDragging,
             },
           };
         }
 
-        return el;
+        return node;
       });
 
-      return { ...state, elements: nextElements };
+      return { ...state, nodes: nextNodes };
     }
-    case SET_USER_SELECTION: {
+    case constants.SET_USER_SELECTION: {
       const mousePos = action.payload;
 
       const userSelectionRect = {
@@ -231,7 +228,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         selectionActive: true,
       };
     }
-    case UPDATE_USER_SELECTION: {
+    case constants.UPDATE_USER_SELECTION: {
       const mousePos = action.payload;
       const startX = state.userSelectionRect.startX || 0;
       const startY = state.userSelectionRect.startY || 0;
@@ -247,11 +244,8 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         height: Math.abs(mousePos.y - startY),
       };
 
-      const nodes = state.elements.filter(isNode);
-      const edges = state.elements.filter(isEdge);
-
-      const selectedNodes = getNodesInside(nodes, nextUserSelectRect, state.transform);
-      const selectedEdges = getConnectedEdges(selectedNodes, edges);
+      const selectedNodes = getNodesInside(state.nodes, nextUserSelectRect, state.transform);
+      const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
 
       const nextSelectedElements = [...selectedNodes, ...selectedEdges];
       const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
@@ -269,7 +263,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         userSelectionRect: nextUserSelectRect,
       };
     }
-    case UNSET_USER_SELECTION: {
+    case constants.UNSET_USER_SELECTION: {
       const selectedNodes = state.selectedElements?.filter((node) => isNode(node) && node.__rf) as Node[];
 
       const selectionActive = false;
@@ -298,7 +292,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         nodesSelectionActive: true,
       };
     }
-    case SET_SELECTED_ELEMENTS: {
+    case constants.SET_SELECTED_ELEMENTS: {
       const elements = action.payload;
       const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
       const selectedElementsUpdated = !isEqual(selectedElementsArr, state.selectedElements);
@@ -309,7 +303,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         selectedElements,
       };
     }
-    case ADD_SELECTED_ELEMENTS: {
+    case constants.ADD_SELECTED_ELEMENTS: {
       const { multiSelectionActive, selectedElements } = state;
       const elements = action.payload;
       const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
@@ -325,7 +319,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
 
       return { ...state, selectedElements: nextSelectedElements };
     }
-    case INIT_D3ZOOM: {
+    case constants.INIT_D3ZOOM: {
       const { d3Zoom, d3Selection, d3ZoomHandler, transform } = action.payload;
 
       return {
@@ -336,7 +330,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         transform,
       };
     }
-    case SET_MINZOOM: {
+    case constants.SET_MINZOOM: {
       const minZoom = action.payload;
 
       if (state.d3Zoom) {
@@ -349,7 +343,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       };
     }
 
-    case SET_MAXZOOM: {
+    case constants.SET_MAXZOOM: {
       const maxZoom = action.payload;
 
       if (state.d3Zoom) {
@@ -361,7 +355,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         maxZoom,
       };
     }
-    case SET_TRANSLATEEXTENT: {
+    case constants.SET_TRANSLATEEXTENT: {
       const translateExtent = action.payload;
 
       if (state.d3Zoom) {
@@ -373,24 +367,24 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         translateExtent,
       };
     }
-    case SET_ON_CONNECT:
-    case SET_ON_CONNECT_START:
-    case SET_ON_CONNECT_STOP:
-    case SET_ON_CONNECT_END:
-    case RESET_SELECTED_ELEMENTS:
-    case UPDATE_TRANSFORM:
-    case UPDATE_SIZE:
-    case SET_CONNECTION_POSITION:
-    case SET_CONNECTION_NODEID:
-    case SET_SNAPTOGRID:
-    case SET_SNAPGRID:
-    case SET_INTERACTIVE:
-    case SET_NODES_DRAGGABLE:
-    case SET_NODES_CONNECTABLE:
-    case SET_ELEMENTS_SELECTABLE:
-    case SET_MULTI_SELECTION_ACTIVE:
-    case SET_CONNECTION_MODE:
-    case SET_NODE_EXTENT:
+    case constants.SET_ON_CONNECT:
+    case constants.SET_ON_CONNECT_START:
+    case constants.SET_ON_CONNECT_STOP:
+    case constants.SET_ON_CONNECT_END:
+    case constants.RESET_SELECTED_ELEMENTS:
+    case constants.UPDATE_TRANSFORM:
+    case constants.UPDATE_SIZE:
+    case constants.SET_CONNECTION_POSITION:
+    case constants.SET_CONNECTION_NODEID:
+    case constants.SET_SNAPTOGRID:
+    case constants.SET_SNAPGRID:
+    case constants.SET_INTERACTIVE:
+    case constants.SET_NODES_DRAGGABLE:
+    case constants.SET_NODES_CONNECTABLE:
+    case constants.SET_ELEMENTS_SELECTABLE:
+    case constants.SET_MULTI_SELECTION_ACTIVE:
+    case constants.SET_CONNECTION_MODE:
+    case constants.SET_NODE_EXTENT:
       return { ...state, ...action.payload };
     default:
       return state;

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useStore, useStoreActions } from '../store/hooks';
 import useKeyPress from './useKeyPress';
-import { isNode, getConnectedEdges, isEdge } from '../utils/graph';
+import { isNode, getConnectedEdges } from '../utils/graph';
 import { Elements, KeyCode, ElementId, FlowElement } from '../types';
 
 interface HookParams {
@@ -22,8 +22,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: Hook
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { elements, selectedElements } = store.getState();
-    const edges = elements.filter(isEdge);
+    const { edges, selectedElements } = store.getState();
 
     if (onElementsRemove && deleteKeyPressed && selectedElements) {
       const selectedNodes = selectedElements.filter(isNode);

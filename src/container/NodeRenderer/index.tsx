@@ -1,6 +1,6 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
-import { getNodesInside, isNode } from '../../utils/graph';
+import { getNodesInside } from '../../utils/graph';
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 interface NodeRendererProps {
@@ -27,11 +27,10 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
-  const elements = useStoreState((state) => state.elements);
+  const nodes = useStoreState((state) => state.nodes);
   const batchUpdateNodeDimensions = useStoreActions((actions) => actions.batchUpdateNodeDimensions);
 
-  const viewportBox = { x: 0, y: 0, width, height };
-  const nodes = elements.filter(isNode);
+  const viewportBox = useMemo(() => ({ x: 0, y: 0, width, height }), [width, height]);
   const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
 
   const transformStyle = useMemo(

@@ -2,7 +2,7 @@ import React, { memo, CSSProperties, useCallback } from 'react';
 
 import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
-import { isEdge, isNode } from '../../utils/graph';
+import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes } from './utils';
 import {
@@ -169,7 +169,8 @@ const Edge = ({
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const transform = useStoreState((state) => state.transform);
-  const elements = useStoreState((state) => state.elements);
+  const nodes = useStoreState((state) => state.nodes);
+  const edges = useStoreState((state) => state.edges);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
   const connectionHandleType = useStoreState((state) => state.connectionHandleType);
@@ -179,9 +180,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
-
-  const edges = elements.filter(isEdge);
-  const nodes = elements.filter(isNode);
 
   if (!width) {
     return null;

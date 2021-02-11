@@ -382,12 +382,10 @@ export interface ReactFlowState {
   width: number;
   height: number;
   transform: Transform;
-  elements: Elements;
-  // nodes: Computed<StoreModel, Node[]>;
-  // edges: Computed<StoreModel, Edge[]>;
+  nodes: Node[];
+  edges: Edge[];
   selectedElements: Elements | null;
   selectedNodesBbox: Rect;
-  // viewportBox: Computed<StoreModel, Rect>;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
