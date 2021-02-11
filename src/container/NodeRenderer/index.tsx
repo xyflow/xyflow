@@ -28,7 +28,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
   const nodes = useStoreState((state) => state.nodes);
-  const batchUpdateNodeDimensions = useStoreActions((actions) => actions.batchUpdateNodeDimensions);
+  const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
 
   const viewportBox = useMemo(() => ({ x: 0, y: 0, width, height }), [width, height]);
   const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
@@ -51,7 +51,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         nodeElement: entry.target as HTMLDivElement,
       }));
 
-      batchUpdateNodeDimensions(updates);
+      updateNodeDimensions(updates);
     });
   }, []);
 

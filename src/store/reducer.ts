@@ -87,7 +87,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
 
       return { ...state, nodes: nextNodes, edges: nextEdges };
     }
-    case constants.BATCH_UPDATE_NODE_DIMENSIONS: {
+    case constants.UPDATE_NODE_DIMENSIONS: {
       const updatedNodes = state.nodes.map((node) => {
         const update = action.payload.find((u) => u.id === node.id);
         if (update) {
@@ -118,34 +118,6 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         ...state,
         nodes: updatedNodes,
       };
-    }
-    case constants.UPDATE_NODE_DIMENSIONS: {
-      const { nodeElement, id } = action.payload;
-      const dimensions = getDimensions(nodeElement);
-
-      if (!dimensions.width || !dimensions.height) {
-        return state;
-      }
-
-      const nextNodes = state.nodes.map((node) => {
-        if (node.id === id) {
-          const handleBounds = getHandleBounds(nodeElement, state.transform[2]);
-
-          return {
-            ...node,
-            __rf: {
-              ...node.__rf,
-              width: dimensions.width,
-              height: dimensions.height,
-              handleBounds,
-            },
-          };
-        }
-
-        return node;
-      });
-
-      return { ...state, nodes: nextNodes };
     }
     case constants.UPDATE_NODE_POS: {
       const { id, pos } = action.payload;

@@ -65,8 +65,6 @@ const CustomNodeFlow = () => {
   const onConnect = (params) =>
     setElements((els) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, els));
 
-  console.log('example', elements);
-
   return (
     <ReactFlow
       elements={elements}

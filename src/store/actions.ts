@@ -44,11 +44,8 @@ export const setOnConnectEnd = (onConnectEnd: OnConnectEndFunc) =>
 
 export const setElements = (elements: Elements) => createAction(constants.SET_ELEMENTS, elements);
 
-export const batchUpdateNodeDimensions = (updates: NodeDimensionUpdate[]) =>
-  createAction(constants.BATCH_UPDATE_NODE_DIMENSIONS, updates);
-
-export const updateNodeDimensions = (payload: NodeDimensionUpdate) =>
-  createAction(constants.UPDATE_NODE_DIMENSIONS, payload);
+export const updateNodeDimensions = (updates: NodeDimensionUpdate[]) =>
+  createAction(constants.UPDATE_NODE_DIMENSIONS, updates);
 
 export const updateNodePos = (payload: NodePosUpdate) => createAction(constants.UPDATE_NODE_POS, payload);
 
@@ -135,7 +132,6 @@ export type ReactFlowAction = ReturnType<
   | typeof setOnConnectStop
   | typeof setOnConnectEnd
   | typeof setElements
-  | typeof batchUpdateNodeDimensions
   | typeof updateNodeDimensions
   | typeof updateNodePos
   | typeof updateNodePosDiff
