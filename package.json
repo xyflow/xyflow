@@ -33,12 +33,10 @@
     "classcat": "^4.1.0",
     "d3-selection": "^2.0.0",
     "d3-zoom": "^2.0.0",
-    "easy-peasy": "^4.0.1",
     "fast-deep-equal": "^3.1.3",
     "react-draggable": "^4.4.3",
     "react-redux": "^7.2.2",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.13",
