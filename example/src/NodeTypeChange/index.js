@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import ReactFlow, { addEdge } from 'react-flow-renderer';
+import ReactFlow, { addEdge, isEdge } from 'react-flow-renderer';
 
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
 
@@ -23,19 +23,20 @@ const initialElements = [
   { id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true },
 ];
 
-const HorizontalFlow = () => {
+const NodeTypeChangeFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params) => setElements((els) => addEdge(params, els));
   const changeType = () => {
     setElements((elms) =>
       elms.map((el) => {
-        if (el.type === 'input') {
+        if (isEdge(el) || el.type === 'input') {
           return el;
         }
 
-        el.type = el.type === 'default' ? 'output' : 'default';
-
-        return { ...el };
+        return {
+          ...el,
+          type: el.type === 'default' ? 'output' : 'default',
+        };
       })
     );
   };
@@ -49,4 +50,4 @@ const HorizontalFlow = () => {
   );
 };
 
-export default HorizontalFlow;
+export default NodeTypeChangeFlow;
