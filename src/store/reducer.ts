@@ -18,72 +18,66 @@ import { ReactFlowAction } from './actions';
 
 import { initialState } from './index';
 
-type ElementsSplitted = {
-  nodeElements: Node[];
-  edgeElements: Edge[];
+type NextElements = {
+  nextNodes: Node[];
+  nextEdges: Edge[];
 };
 
 export default function reactFlowReducer(state = initialState, action: ReactFlowAction): ReactFlowState {
   switch (action.type) {
     case constants.SET_ELEMENTS: {
       const propElements = action.payload;
-      const elementsSplitted: ElementsSplitted = {
-        nodeElements: [],
-        edgeElements: [],
+      const nextElements: NextElements = {
+        nextNodes: [],
+        nextEdges: [],
       };
-      const { nodeElements, edgeElements } = propElements.reduce((res, item): ElementsSplitted => {
-        if (isNode(item)) {
-          res.nodeElements.push(item);
-        } else if (isEdge(item)) {
-          res.edgeElements.push(item);
+      const { nextNodes, nextEdges } = propElements.reduce((res, propElement): NextElements => {
+        if (isNode(propElement)) {
+          let storeNode = state.nodes.find((node) => node.id === propElement.id);
+
+          // update existing element
+          if (storeNode) {
+            const positionChanged =
+              storeNode.position.x !== propElement.position.x || storeNode.position.y !== propElement.position.y;
+            const typeChanged = typeof propElement.type !== 'undefined' && propElement.type !== storeNode.type;
+
+            storeNode = {
+              ...storeNode,
+              ...propElement,
+            };
+
+            if (positionChanged) {
+              storeNode.__rf.position = propElement.position;
+            }
+
+            if (typeChanged) {
+              // we reset the elements dimensions here in order to force a re-calculation of the bounds.
+              // When the type of a node changes it is possible that the number or positions of handles changes too.
+              storeNode.__rf.width = null;
+            }
+
+            res.nextNodes.push(storeNode);
+          } else {
+            // add new element
+            res.nextNodes.push(parseNode(propElement, state.nodeExtent));
+          }
+        } else if (isEdge(propElement)) {
+          let storeEdge = state.edges.find((se) => se.id === propElement.id);
+
+          if (storeEdge) {
+            storeEdge = {
+              ...storeEdge,
+              ...propElement,
+            };
+
+            res.nextEdges.push(storeEdge);
+          } else {
+            res.nextEdges.push(parseEdge(propElement));
+          }
         }
 
         return res;
-      }, elementsSplitted);
-
-      const nextNodes = nodeElements.map((propNode: Node) => {
-        let storeNode = state.nodes.find((node) => node.id === propNode.id);
-
-        // update existing element
-        if (storeNode) {
-          const positionChanged =
-            storeNode.position.x !== propNode.position.x || storeNode.position.y !== propNode.position.y;
-          const typeChanged = typeof propNode.type !== 'undefined' && propNode.type !== storeNode.type;
-
-          storeNode = {
-            ...storeNode,
-            ...propNode,
-          };
-
-          if (positionChanged) {
-            storeNode.__rf.position = propNode.position;
-          }
-
-          if (typeChanged) {
-            // we reset the elements dimensions here in order to force a re-calculation of the bounds.
-            // When the type of a node changes it is possible that the number or positions of handles changes too.
-            storeNode.__rf.width = null;
-          }
-
-          return storeNode;
-        } else {
-          // add new element
-          return parseNode(propNode, state.nodeExtent);
-        }
-      });
-
-      const nextEdges = edgeElements.map((propEdge: Edge) => {
-        let storeEdge = state.edges.find((se) => se.id === propEdge.id);
-
-        if (storeEdge) {
-          return {
-            ...storeEdge,
-            ...propEdge,
-          };
-        } else {
-          return parseEdge(propEdge);
-        }
-      });
+      }, nextElements);
 
       return { ...state, nodes: nextNodes, edges: nextEdges };
     }
@@ -121,7 +115,6 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     }
     case constants.UPDATE_NODE_POS: {
       const { id, pos } = action.payload;
-
       let position: XYPosition = pos;
 
       if (state.snapToGrid) {
