@@ -124,7 +124,7 @@ export const setMultiSelectionActive = (multiSelectionActive: boolean) =>
 export const setConnectionMode = (connectionMode: ConnectionMode) =>
   createAction(constants.SET_CONNECTION_MODE, { connectionMode });
 
-export const setNodeExtent = (nodeExtent: NodeExtent) => createAction(constants.SET_NODE_EXTENT, { nodeExtent });
+export const setNodeExtent = (nodeExtent: NodeExtent) => createAction(constants.SET_NODE_EXTENT, nodeExtent);
 
 export type ReactFlowAction = ReturnType<
   | typeof setOnConnect

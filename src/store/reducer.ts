@@ -1,6 +1,6 @@
 import isEqual from 'fast-deep-equal';
 
-import { getDimensions } from '../utils';
+import { clampPosition, getDimensions } from '../utils';
 import {
   getNodesInside,
   getConnectedEdges,
@@ -33,44 +33,36 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       };
       const { nextNodes, nextEdges } = propElements.reduce((res, propElement): NextElements => {
         if (isNode(propElement)) {
-          let storeNode = state.nodes.find((node) => node.id === propElement.id);
+          const storeNode = state.nodes.find((node) => node.id === propElement.id);
 
-          // update existing element
           if (storeNode) {
-            const positionChanged =
-              storeNode.position.x !== propElement.position.x || storeNode.position.y !== propElement.position.y;
-            const typeChanged = typeof propElement.type !== 'undefined' && propElement.type !== storeNode.type;
-
-            storeNode = {
+            const updatedNode: Node = {
               ...storeNode,
               ...propElement,
             };
 
-            if (positionChanged) {
-              storeNode.__rf.position = propElement.position;
+            if (storeNode.position.x !== propElement.position.x || storeNode.position.y !== propElement.position.y) {
+              updatedNode.__rf.position = propElement.position;
             }
 
-            if (typeChanged) {
+            if (typeof propElement.type !== 'undefined' && propElement.type !== storeNode.type) {
               // we reset the elements dimensions here in order to force a re-calculation of the bounds.
               // When the type of a node changes it is possible that the number or positions of handles changes too.
-              storeNode.__rf.width = null;
+              updatedNode.__rf.width = null;
             }
 
-            res.nextNodes.push(storeNode);
+            res.nextNodes.push(updatedNode);
           } else {
-            // add new element
             res.nextNodes.push(parseNode(propElement, state.nodeExtent));
           }
         } else if (isEdge(propElement)) {
-          let storeEdge = state.edges.find((se) => se.id === propElement.id);
+          const storeEdge = state.edges.find((se) => se.id === propElement.id);
 
           if (storeEdge) {
-            storeEdge = {
+            res.nextEdges.push({
               ...storeEdge,
               ...propElement,
-            };
-
-            res.nextEdges.push(storeEdge);
+            });
           } else {
             res.nextEdges.push(parseEdge(propElement));
           }
@@ -146,27 +138,22 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
 
       const nextNodes = state.nodes.map((node) => {
         if (id === node.id || state.selectedElements?.find((sNode) => sNode.id === node.id)) {
-          if (diff) {
-            return {
-              ...node,
-              __rf: {
-                ...node.__rf,
-                isDragging,
-                position: {
-                  x: node.__rf.position.x + diff.x,
-                  y: node.__rf.position.y + diff.y,
-                },
-              },
-            };
-          }
-
-          return {
+          const updatedNode = {
             ...node,
             __rf: {
               ...node.__rf,
               isDragging,
             },
           };
+
+          if (diff) {
+            updatedNode.__rf.position = {
+              x: node.__rf.position.x + diff.x,
+              y: node.__rf.position.y + diff.y,
+            };
+          }
+
+          return updatedNode;
         }
 
         return node;
@@ -177,34 +164,29 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_USER_SELECTION: {
       const mousePos = action.payload;
 
-      const userSelectionRect = {
-        width: 0,
-        height: 0,
-        startX: mousePos.x,
-        startY: mousePos.y,
-        x: mousePos.x,
-        y: mousePos.y,
-        draw: true,
-      };
-
       return {
         ...state,
-        userSelectionRect,
         selectionActive: true,
+        userSelectionRect: {
+          width: 0,
+          height: 0,
+          startX: mousePos.x,
+          startY: mousePos.y,
+          x: mousePos.x,
+          y: mousePos.y,
+          draw: true,
+        },
       };
     }
     case constants.UPDATE_USER_SELECTION: {
       const mousePos = action.payload;
-      const startX = state.userSelectionRect.startX || 0;
-      const startY = state.userSelectionRect.startY || 0;
-
-      const negativeX = mousePos.x < startX;
-      const negativeY = mousePos.y < startY;
+      const startX = state.userSelectionRect.startX ?? 0;
+      const startY = state.userSelectionRect.startY ?? 0;
 
       const nextUserSelectRect = {
         ...state.userSelectionRect,
-        x: negativeX ? mousePos.x : state.userSelectionRect.x,
-        y: negativeY ? mousePos.y : state.userSelectionRect.y,
+        x: mousePos.x < startX ? mousePos.x : state.userSelectionRect.x,
+        y: mousePos.y < startY ? mousePos.y : state.userSelectionRect.y,
         width: Math.abs(mousePos.x - startX),
         height: Math.abs(mousePos.y - startY),
       };
@@ -213,49 +195,41 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
 
       const nextSelectedElements = [...selectedNodes, ...selectedEdges];
-      const selectedElementsUpdated = !isEqual(nextSelectedElements, state.selectedElements);
-
-      if (selectedElementsUpdated) {
-        return {
-          ...state,
-          selectedElements: nextSelectedElements.length > 0 ? nextSelectedElements : null,
-          userSelectionRect: nextUserSelectRect,
-        };
-      }
+      const selectedElementsChanged = !isEqual(nextSelectedElements, state.selectedElements);
+      const selectedElementsUpdate = selectedElementsChanged
+        ? {
+            selectedElements: nextSelectedElements.length > 0 ? nextSelectedElements : null,
+          }
+        : {};
 
       return {
         ...state,
+        ...selectedElementsUpdate,
         userSelectionRect: nextUserSelectRect,
       };
     }
     case constants.UNSET_USER_SELECTION: {
       const selectedNodes = state.selectedElements?.filter((node) => isNode(node) && node.__rf) as Node[];
 
-      const selectionActive = false;
-      const userSelectionRect = {
-        ...state.userSelectionRect,
-        draw: false,
+      const stateUpdate = {
+        ...state,
+        selectionActive: false,
+        userSelectionRect: {
+          ...state.userSelectionRect,
+          draw: false,
+        },
       };
 
       if (!selectedNodes || selectedNodes.length === 0) {
-        return {
-          ...state,
-          selectionActive,
-          userSelectionRect,
-          selectedElements: null,
-          nodesSelectionActive: false,
-        };
+        stateUpdate.selectedElements = null;
+        stateUpdate.nodesSelectionActive = false;
+      } else {
+        const selectedNodesBbox = getRectOfNodes(selectedNodes);
+        stateUpdate.selectedNodesBbox = selectedNodesBbox;
+        stateUpdate.nodesSelectionActive = true;
       }
 
-      const selectedNodesBbox = getRectOfNodes(selectedNodes);
-
-      return {
-        ...state,
-        selectionActive,
-        userSelectionRect,
-        selectedNodesBbox,
-        nodesSelectionActive: true,
-      };
+      return stateUpdate;
     }
     case constants.SET_SELECTED_ELEMENTS: {
       const elements = action.payload;
@@ -298,9 +272,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_MINZOOM: {
       const minZoom = action.payload;
 
-      if (state.d3Zoom) {
-        state.d3Zoom.scaleExtent([minZoom, state.maxZoom]);
-      }
+      state.d3Zoom?.scaleExtent([minZoom, state.maxZoom]);
 
       return {
         ...state,
@@ -311,9 +283,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_MAXZOOM: {
       const maxZoom = action.payload;
 
-      if (state.d3Zoom) {
-        state.d3Zoom.scaleExtent([state.minZoom, maxZoom]);
-      }
+      state.d3Zoom?.scaleExtent([state.minZoom, maxZoom]);
 
       return {
         ...state,
@@ -323,13 +293,27 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_TRANSLATEEXTENT: {
       const translateExtent = action.payload;
 
-      if (state.d3Zoom) {
-        state.d3Zoom.translateExtent(translateExtent);
-      }
+      state.d3Zoom?.translateExtent(translateExtent);
 
       return {
         ...state,
         translateExtent,
+      };
+    }
+    case constants.SET_NODE_EXTENT: {
+      const nodeExtent = action.payload;
+      return {
+        ...state,
+        nodeExtent,
+        nodes: state.nodes.map((node) => {
+          return {
+            ...node,
+            __rf: {
+              ...node.__rf,
+              position: clampPosition(node.__rf.position, nodeExtent),
+            },
+          };
+        }),
       };
     }
     case constants.SET_ON_CONNECT:
@@ -337,6 +321,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_ON_CONNECT_STOP:
     case constants.SET_ON_CONNECT_END:
     case constants.RESET_SELECTED_ELEMENTS:
+    case constants.UNSET_NODES_SELECTION:
     case constants.UPDATE_TRANSFORM:
     case constants.UPDATE_SIZE:
     case constants.SET_CONNECTION_POSITION:
@@ -349,7 +334,6 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_ELEMENTS_SELECTABLE:
     case constants.SET_MULTI_SELECTION_ACTIVE:
     case constants.SET_CONNECTION_MODE:
-    case constants.SET_NODE_EXTENT:
       return { ...state, ...action.payload };
     default:
       return state;
