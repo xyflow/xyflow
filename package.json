@@ -58,7 +58,7 @@
     "cypress": "^6.4.0",
     "dagre": "^0.8.5",
     "localforage": "^1.9.0",
-    "postcss": "^8.2.5",
+    "postcss": "^8.2.6",
     "postcss-cli": "^8.3.1",
     "postcss-nested": "^5.0.3",
     "prettier": "2.2.1",
