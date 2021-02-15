@@ -50,7 +50,7 @@
     "@svgr/rollup": "^5.5.0",
     "@types/classnames": "^2.2.11",
     "@types/d3": "^6.3.0",
-    "@types/react": "^17.0.1",
+    "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.0",
     "@types/resize-observer-browser": "^0.1.5",
     "autoprefixer": "^10.2.4",
