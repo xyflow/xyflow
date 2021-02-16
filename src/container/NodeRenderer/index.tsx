@@ -30,8 +30,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const nodes = useStoreState((state) => state.nodes);
   const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
 
-  const viewportBox = useMemo(() => ({ x: 0, y: 0, width, height }), [width, height]);
-  const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
+  const visibleNodes = props.onlyRenderVisibleElements
+    ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
+    : nodes;
 
   const transformStyle = useMemo(
     () => ({
@@ -45,8 +46,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
       return null;
     }
 
-    return new ResizeObserver((entries) => {
-      const updates = entries.map((entry) => ({
+    return new ResizeObserver((entries: ResizeObserverEntry[]) => {
+      const updates = entries.map((entry: ResizeObserverEntry) => ({
         id: entry.target.getAttribute('data-id') as string,
         nodeElement: entry.target as HTMLDivElement,
       }));
