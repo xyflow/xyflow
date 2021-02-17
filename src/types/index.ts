@@ -361,6 +361,7 @@ export interface ZoomPanHelperFunctions {
   fitView: FitViewFunc;
   setCenter: (x: number, y: number, zoom?: number) => void;
   fitBounds: (bounds: Rect, padding?: number) => void;
+  project: (position: XYPosition) => XYPosition;
   initialized: boolean;
 }
 
