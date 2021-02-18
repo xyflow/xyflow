@@ -8,7 +8,7 @@ const onLoad = (reactFlowInstance) => {
   console.log(reactFlowInstance.getElements());
 };
 
-const initialElements = getElements(10, 10);
+const initialElements = getElements(30, 30);
 
 const StressFlow = () => {
   const [elements, setElements] = useState(initialElements);

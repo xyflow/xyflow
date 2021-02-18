@@ -25,11 +25,14 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const nodesDraggable = useStoreState((state) => state.nodesDraggable);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const viewportBox = useStoreState((state) => state.viewportBox);
+  const width = useStoreState((state) => state.width);
+  const height = useStoreState((state) => state.height);
   const nodes = useStoreState((state) => state.nodes);
-  const batchUpdateNodeDimensions = useStoreActions((actions) => actions.batchUpdateNodeDimensions);
+  const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
 
-  const visibleNodes = props.onlyRenderVisibleElements ? getNodesInside(nodes, viewportBox, transform, true) : nodes;
+  const visibleNodes = props.onlyRenderVisibleElements
+    ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
+    : nodes;
 
   const transformStyle = useMemo(
     () => ({
@@ -43,13 +46,13 @@ const NodeRenderer = (props: NodeRendererProps) => {
       return null;
     }
 
-    return new ResizeObserver((entries) => {
-      const updates = entries.map((entry) => ({
+    return new ResizeObserver((entries: ResizeObserverEntry[]) => {
+      const updates = entries.map((entry: ResizeObserverEntry) => ({
         id: entry.target.getAttribute('data-id') as string,
         nodeElement: entry.target as HTMLDivElement,
       }));
 
-      batchUpdateNodeDimensions({ updates });
+      updateNodeDimensions(updates);
     });
   }, []);
 

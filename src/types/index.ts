@@ -1,4 +1,5 @@
 import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 export type ElementId = string;
 
@@ -360,7 +361,65 @@ export interface ZoomPanHelperFunctions {
   fitView: FitViewFunc;
   setCenter: (x: number, y: number, zoom?: number) => void;
   fitBounds: (bounds: Rect, padding?: number) => void;
+  project: (position: XYPosition) => XYPosition;
   initialized: boolean;
 }
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
+
+export type NodeDimensionUpdate = {
+  id: ElementId;
+  nodeElement: HTMLDivElement;
+};
+
+export type InitD3ZoomPayload = {
+  d3Zoom: ZoomBehavior<Element, unknown>;
+  d3Selection: D3Selection<Element, unknown, null, undefined>;
+  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  transform: Transform;
+};
+
+export interface ReactFlowState {
+  width: number;
+  height: number;
+  transform: Transform;
+  nodes: Node[];
+  edges: Edge[];
+  selectedElements: Elements | null;
+  selectedNodesBbox: Rect;
+
+  d3Zoom: ZoomBehavior<Element, unknown> | null;
+  d3Selection: D3Selection<Element, unknown, null, undefined> | null;
+  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  minZoom: number;
+  maxZoom: number;
+  translateExtent: TranslateExtent;
+  nodeExtent: NodeExtent;
+
+  nodesSelectionActive: boolean;
+  selectionActive: boolean;
+
+  userSelectionRect: SelectionRect;
+
+  connectionNodeId: ElementId | null;
+  connectionHandleId: ElementId | null;
+  connectionHandleType: HandleType | null;
+  connectionPosition: XYPosition;
+  connectionMode: ConnectionMode;
+
+  snapToGrid: boolean;
+  snapGrid: SnapGrid;
+
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
+
+  multiSelectionActive: boolean;
+
+  reactFlowVersion: string;
+
+  onConnect?: OnConnectFunc;
+  onConnectStart?: OnConnectStartFunc;
+  onConnectStop?: OnConnectStopFunc;
+  onConnectEnd?: OnConnectEndFunc;
+}

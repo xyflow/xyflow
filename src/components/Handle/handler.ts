@@ -15,6 +15,8 @@ import {
 type ValidConnectionFunc = (connection: Connection) => boolean;
 export type SetSourceIdFunc = (params: SetConnectionId) => void;
 
+export type SetPosition = (pos: XYPosition) => void;
+
 type Result = {
   elementBelow: Element | null;
   isValid: boolean;
@@ -86,7 +88,7 @@ export function onMouseDown(
   handleId: ElementId | null,
   nodeId: ElementId,
   setConnectionNodeId: SetSourceIdFunc,
-  setPosition: (pos: XYPosition) => void,
+  setPosition: SetPosition,
   onConnect: OnConnectFunc,
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,

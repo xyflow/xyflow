@@ -1,7 +1,7 @@
-import { Store } from 'easy-peasy';
+import { Store } from 'redux';
 
-import { StoreModel } from '../store';
 import { clampPosition } from '../utils';
+
 import {
   ElementId,
   Node,
@@ -13,6 +13,7 @@ import {
   Box,
   Connection,
   FlowExportObject,
+  ReactFlowState,
   NodeExtent,
 } from '../types';
 
@@ -137,7 +138,7 @@ export const pointToRendererPoint = (
   return position;
 };
 
-export const onLoadProject = (currentStore: Store<StoreModel>) => {
+export const onLoadProject = (currentStore: Store<ReactFlowState>) => {
   return (position: XYPosition): XYPosition => {
     const { transform, snapToGrid, snapGrid } = currentStore.getState();
 
@@ -145,35 +146,31 @@ export const onLoadProject = (currentStore: Store<StoreModel>) => {
   };
 };
 
-export const parseElement = (element: Node | Edge, nodeExtent: NodeExtent): Node | Edge => {
-  if (!element.id) {
-    throw new Error('All nodes and edges need to have an id.');
-  }
-
-  if (isEdge(element)) {
-    return {
-      ...element,
-      source: element.source.toString(),
-      target: element.target.toString(),
-      sourceHandle: element.sourceHandle ? element.sourceHandle.toString() : null,
-      targetHandle: element.targetHandle ? element.targetHandle.toString() : null,
-      id: element.id.toString(),
-      type: element.type || 'default',
-    };
-  }
-
+export const parseNode = (node: Node, nodeExtent: NodeExtent): Node => {
   return {
-    ...element,
-    id: element.id.toString(),
-    type: element.type || 'default',
+    ...node,
+    id: node.id.toString(),
+    type: node.type || 'default',
     __rf: {
-      position: clampPosition(element.position, nodeExtent),
+      position: clampPosition(node.position, nodeExtent),
       width: null,
       height: null,
       handleBounds: {},
       isDragging: false,
     },
-  } as Node;
+  };
+};
+
+export const parseEdge = (edge: Edge): Edge => {
+  return {
+    ...edge,
+    source: edge.source.toString(),
+    target: edge.target.toString(),
+    sourceHandle: edge.sourceHandle ? edge.sourceHandle.toString() : null,
+    targetHandle: edge.targetHandle ? edge.targetHandle.toString() : null,
+    id: edge.id.toString(),
+    type: edge.type || 'default',
+  };
 };
 
 const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
@@ -269,7 +266,7 @@ const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
   ];
 };
 
-export const onLoadGetElements = (currentStore: Store<StoreModel>) => {
+export const onLoadGetElements = (currentStore: Store<ReactFlowState>) => {
   return (): Elements => {
     const { nodes = [], edges = [] } = currentStore.getState();
 
@@ -277,7 +274,7 @@ export const onLoadGetElements = (currentStore: Store<StoreModel>) => {
   };
 };
 
-export const onLoadToObject = (currentStore: Store<StoreModel>) => {
+export const onLoadToObject = (currentStore: Store<ReactFlowState>) => {
   return (): FlowExportObject => {
     const { nodes = [], edges = [], transform } = currentStore.getState();
 

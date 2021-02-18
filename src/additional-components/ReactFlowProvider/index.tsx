@@ -1,14 +1,15 @@
-import React, { useMemo, FC } from 'react';
-import { StoreProvider, createStore } from 'easy-peasy';
+import React, { FC, useMemo } from 'react';
+import { Provider } from 'react-redux';
 
-import { storeModel } from '../../store';
+import { initialState } from '../../store';
+import configureStore from '../../store/configure-store';
 
 const ReactFlowProvider: FC = ({ children }) => {
   const store = useMemo(() => {
-    return createStore(storeModel);
+    return configureStore(initialState);
   }, []);
 
-  return <StoreProvider store={store}>{children}</StoreProvider>;
+  return <Provider store={store}>{children}</Provider>;
 };
 
 ReactFlowProvider.displayName = 'ReactFlowProvider';

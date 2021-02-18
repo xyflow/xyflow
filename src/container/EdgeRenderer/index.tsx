@@ -169,6 +169,7 @@ const Edge = ({
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const transform = useStoreState((state) => state.transform);
+  const nodes = useStoreState((state) => state.nodes);
   const edges = useStoreState((state) => state.edges);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
@@ -179,7 +180,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
   const width = useStoreState((state) => state.width);
   const height = useStoreState((state) => state.height);
-  const nodes = useStoreState((state) => state.nodes);
 
   if (!width) {
     return null;

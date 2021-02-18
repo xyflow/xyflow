@@ -3,8 +3,8 @@ import { zoomIdentity } from 'd3-zoom';
 
 import { useStoreState, useStore } from '../store/hooks';
 import { clamp } from '../utils';
-import { getRectOfNodes } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, Transform } from '../types';
+import { getRectOfNodes, pointToRendererPoint } from '../utils/graph';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, Transform, XYPosition } from '../types';
 
 const DEFAULT_PADDING = 0.1;
 
@@ -16,6 +16,7 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   fitView: (_: FitViewParams = { padding: DEFAULT_PADDING, includeHiddenNodes: false }) => {},
   setCenter: (_: number, __: number) => {},
   fitBounds: (_: Rect) => {},
+  project: (position: XYPosition) => position,
   initialized: false,
 };
 
@@ -85,6 +86,10 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
           const transform = zoomIdentity.translate(x, y).scale(zoom);
 
           d3Zoom.transform(d3Selection, transform);
+        },
+        project: (position: XYPosition) => {
+          const { transform, snapToGrid, snapGrid } = store.getState();
+          return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
         },
         initialized: true,
       };

@@ -21,6 +21,7 @@ import SaveRestore from './SaveRestore';
 import DragNDrop from './DragNDrop';
 import Layout from './Layouting';
 import SwitchFlows from './Switch';
+import UseZoomPanHelper from './UseZoomPanHelper';
 
 import './index.css';
 
@@ -100,6 +101,10 @@ const routes = [
   {
     path: '/switch',
     component: SwitchFlows,
+  },
+  {
+    path: '/usezoompanhelper',
+    component: UseZoomPanHelper,
   },
 ];
 
