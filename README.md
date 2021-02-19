@@ -1,5 +1,11 @@
 [![react-flow](https://user-images.githubusercontent.com/2857535/95224198-b2540000-07fa-11eb-832d-361d72d60345.jpg)](https://reactflow.dev)
 
+## This is a fork of react flow. There are some TODOs
+- Convert to emotion
+- Convert redux to recoil
+- Add server side compatibility
+
+
 React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with components like a mini-map and graph controls. Feel free to check out the [examples](https://reactflow.dev/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
 
 - **Website:** https://reactflow.dev

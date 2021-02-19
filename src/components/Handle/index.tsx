@@ -10,6 +10,29 @@ import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 const alwaysValid = () => true;
 
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
+const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
+  type = 'source',
+
+  position = Position.Top,
+  isValidConnection = alwaysValid,
+  isConnectable = true,
+  id,
+  field,
+  onConnect,
+  children,
+  className,
+  ...rest
+}) => {
+  const nodeId = useContext(NodeIdContext) as ElementId;
+  const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
+  const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
+  const onConnectAction = useStoreState((state) => state.onConnect);
+  const onConnectStart = useStoreState((state) => state.onConnectStart);
+  const onConnectStop = useStoreState((state) => state.onConnectStop);
+  const onConnectEnd = useStoreState((state) => state.onConnectEnd);
+  const connectionMode = useStoreState((state) => state.connectionMode);
+  const handleId = id || null;
+  const isTarget = type === 'target';
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   (

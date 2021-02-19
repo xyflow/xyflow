@@ -3,13 +3,20 @@ import { useState, useEffect } from 'react';
 import { isInputDOMNode } from '../utils';
 import { KeyCode } from '../types';
 
-export default (keyCode?: KeyCode): boolean => {
-  const [keyPressed, setKeyPressed] = useState(false);
+function resolveKeyCode(keyCode: KeyCode | Array<KeyCode>, event: any) {
 
+  if(Array.isArray(keyCode)) {
+    return keyCode.includes(event.key) || keyCode.includes(event.keyCode)
+  }
+  return (event.key === keyCode || event.keyCode === keyCode);
+}
+export default (keyCode?: KeyCode | Array<KeyCode>): boolean => {
+  const [keyPressed, setKeyPressed] = useState(false);
   useEffect(() => {
     if (typeof keyCode !== 'undefined') {
       const downHandler = (event: KeyboardEvent) => {
-        if (!isInputDOMNode(event) && (event.key === keyCode || event.keyCode === keyCode)) {
+        
+        if (!isInputDOMNode(event) && resolveKeyCode(keyCode, event)) {
           event.preventDefault();
 
           setKeyPressed(true);
@@ -17,7 +24,7 @@ export default (keyCode?: KeyCode): boolean => {
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        if (!isInputDOMNode(event) && (event.key === keyCode || event.keyCode === keyCode)) {
+        if (!isInputDOMNode(event) && resolveKeyCode(keyCode, event)) {
           setKeyPressed(false);
         }
       };

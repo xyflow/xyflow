@@ -15,7 +15,7 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   selectionKeyCode: KeyCode;
-  deleteKeyCode: KeyCode;
+  deleteKeyCode: KeyCode | Array<KeyCode>;
   multiSelectionKeyCode: KeyCode;
   connectionLineType: ConnectionLineType;
   snapToGrid: boolean;
