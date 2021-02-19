@@ -87,6 +87,7 @@ export default ({
           x: data.deltaX,
           y: data.deltaY,
         },
+        isDragging: true,
       });
     },
     [onSelectionDrag, selectedNodes, updateNodePosDiff]

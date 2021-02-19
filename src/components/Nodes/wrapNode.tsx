@@ -139,6 +139,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             x: draggableData.deltaX,
             y: draggableData.deltaY,
           },
+          isDragging: true,
         });
       },
       [id, node, onNodeDrag]
