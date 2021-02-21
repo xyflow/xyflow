@@ -43,6 +43,15 @@
 .react-flow__node {
   cursor: grab;
 }
+.react-flow__node-entity {
+  padding: 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #222;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+}
 
 .react-flow__node-default,
 .react-flow__node-input,
@@ -154,4 +163,30 @@
       background: #f4f4f4;
     }
   }
+}
+
+.title-input {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  outline: 0;
+  border: none;
+}
+.name-input {
+  outline: 0;
+  border: none;
+}
+.type-input {
+  outline: 0;
+  border: none;
+}
+.input-row {
+  border-top: solid 1px black;
+}
+.input-name-container {
+  border-right: solid 1px black;
+}
+.resize {
+  resize: horizontal;
+  overflow: hidden;
 }

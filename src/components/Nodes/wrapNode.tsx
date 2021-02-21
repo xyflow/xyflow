@@ -16,6 +16,8 @@ import { useStoreActions } from '../../store/hooks';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeComponentProps, WrapNodeProps } from '../../types';
 
+
+
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
   const NodeWrapper = ({
     id,
@@ -25,6 +27,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     xPos,
     yPos,
     selected,
+    // nodes,
+    onAddField,
+    onRemoveField,
     onClick,
     onMouseEnter,
     onMouseMove,
@@ -53,10 +58,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
     const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-
+    //const updateElements = useStoreActions((actions) => actions.setElements);
     const nodeElement = useRef<HTMLDivElement>(null);
 
-    const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
+    const node: any = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
     const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
 
     const nodeStyle: CSSProperties = useMemo(
@@ -170,6 +175,38 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       [id, node, onNodeDrag]
     );
 
+    const addField = useCallback((event: MouseEvent) => {
+      let newNode = node
+      /*
+      const newNodeList = nodes?.map((n) => {
+        if(n.id === node.id) {
+          const randomName = makeid(8)
+          newNode = {
+            ...n,
+            data: {
+              ...n.data,
+              fields: n?.data?.fields ? [...n?.data?.fields, { name: `field-${randomName}`, value: ''}] : [{ name: `field-${randomName}`, value: ''}]
+            }
+          }
+          return newNode
+        }
+        return n
+      })
+      updateElements(newNodeList);
+      */
+      if(onAddField) {
+        onAddField(event, newNode)
+      }
+    }, [onAddField, node])
+
+
+    const removeField = useCallback((event: MouseEvent) => {
+      if(onRemoveField) {
+        onRemoveField(event, node)
+      }
+    }, [onRemoveField, node])
+
+
     const onDragStop = useCallback(
       (event: DraggableEvent) => {
         // onDragStop also gets called when user just clicks on a node.
@@ -230,6 +267,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       },
     ]);
 
+
     return (
       <DraggableCore
         onStart={onDragStart}
@@ -266,6 +304,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}
               isDragging={isDragging}
+              onAddField={addField}
+              onRemoveField={removeField}
             />
           </Provider>
         </div>

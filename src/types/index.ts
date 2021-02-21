@@ -199,6 +199,8 @@ export interface NodeComponentProps<T = any> {
   yPos?: number;
   targetPosition?: Position;
   sourcePosition?: Position;
+  onAddField?: (event: ReactMouseEvent) => void;
+  onRemoveField?: (event: ReactMouseEvent) => void;
   onClick?: (node: Node) => void;
   onNodeDoubleClick?: (node: Node) => void;
   onMouseEnter?: (node: Node) => void;
@@ -216,6 +218,7 @@ export interface WrapNodeProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
+  nodes?: Array<Node>
   selected: boolean;
   scale: number;
   xPos: number;
@@ -224,6 +227,8 @@ export interface WrapNodeProps<T = any> {
   isDraggable: boolean;
   isConnectable: boolean;
   selectNodesOnDrag: boolean;
+  onAddField?: (event: ReactMouseEvent, element: Node | Edge) => void;
+  onRemoveField?: (event: ReactMouseEvent, element: Node | Edge) => void;
   onClick?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
   onMouseEnter?: (event: ReactMouseEvent, node: Node) => void;

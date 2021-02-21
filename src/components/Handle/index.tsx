@@ -102,17 +102,18 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       ]
     );
 
-    const handleClasses = cc([
-      'react-flow__handle',
-      `react-flow__handle-${position}`,
-      'nodrag',
-      className,
-      {
-        source: !isTarget,
-        target: isTarget,
-        connectable: isConnectable,
-      },
-    ]);
+  const handleClasses = cc([
+    'react-flow__handle',
+    field ?  `react-flow__handle-field-${position}` : `react-flow__handle-${position}`,
+    ...(field ?  ['react-flow__handle-field'] : []),
+    'nodrag',
+    className,
+    {
+      source: !isTarget,
+      target: isTarget,
+      connectable: isConnectable,
+    },
+  ]);
 
     return (
       <div
@@ -133,3 +134,4 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
 Handle.displayName = 'Handle';
 
 export default memo(Handle);
+

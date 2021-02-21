@@ -6,6 +6,8 @@ import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
+  onAddField?: (event: MouseEvent, element: Node | Edge) => void;
+  onRemoveField?: (event: MouseEvent, element: Node | Edge) => void;
   onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
   onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
   onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
@@ -76,6 +78,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             key={node.id}
             id={node.id}
             className={node.className}
+            nodes={nodes}
             style={node.style}
             type={nodeType}
             data={node.data}
@@ -98,6 +101,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDragStart={props.onNodeDragStart}
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
+            onAddField={props.onAddField}
+            onRemoveField={props.onRemoveField}
             scale={transform[2]}
             selected={selectedElements?.some(({ id }) => id === node.id) || false}
             isDraggable={isDraggable}

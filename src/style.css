@@ -147,6 +147,23 @@
   transform: translate(0, -50%);
 }
 
+.react-flow__handle-field-left {
+  left: -4px;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.react-flow__handle-field {
+  position: 'absolute'
+
+}
+
+.react-flow__handle-field-right {
+  right: -4px;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
 .react-flow__edgeupdater {
   cursor: move;
   pointer-events: all;

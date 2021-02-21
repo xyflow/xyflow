@@ -26,6 +26,7 @@ type NextElements = {
 export default function reactFlowReducer(state = initialState, action: ReactFlowAction): ReactFlowState {
   switch (action.type) {
     case constants.SET_ELEMENTS: {
+
       const propElements = action.payload;
       const nextElements: NextElements = {
         nextNodes: [],
