@@ -1,11 +1,13 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { Provider, ReactReduxContext } from 'react-redux';
 
 import store from '../../store';
 
 const Wrapper: FC = ({ children }) => {
   const contextValue = useContext(ReactReduxContext);
-  const isWrappedWithReactFlowProvider = contextValue?.store?.getState()?.reactFlowVersion;
+  const isWrappedWithReactFlowProvider = useMemo(() => contextValue?.store?.getState()?.reactFlowVersion, [
+    contextValue,
+  ]);
 
   if (isWrappedWithReactFlowProvider) {
     // we need to wrap it with a fragment because t's not allowed for children to be a ReactNode
