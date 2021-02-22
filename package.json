@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.17",
     "@babel/plugin-transform-runtime": "^7.12.17",
-    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-env": "^7.12.17",
     "@babel/preset-react": "^7.12.13",
     "@rollup/plugin-alias": "^3.1.2",
     "@rollup/plugin-babel": "^5.3.0",
