@@ -29,7 +29,7 @@
     "release:next": "release-it --preRelease=next"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.13",
+    "@babel/runtime": "^7.12.18",
     "classcat": "^4.1.0",
     "d3-selection": "^2.0.0",
     "d3-zoom": "^2.0.0",
