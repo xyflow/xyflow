@@ -41,6 +41,7 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
       // this comes from the easy-peasy dependency
       'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': false,
+      preventAssignment: true,
     }),
     bundleSize(),
     postcss({
