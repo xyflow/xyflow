@@ -15,7 +15,7 @@
     "start:examples": "cd example && npm start",
     "build:examples": "cd example && npm run build",
     "start:testserver": "npm run build && npm run start:examples",
-    "build:dev": "npm install && cd example && npm install && npm run build",
+    "build:dev": "npm install && npm run build && cd example && npm install && npm run build",
     "dev:wait": "start-server-and-test start:testserver http-get://localhost:3000",
     "test": "npm run dev:wait test:chrome",
     "test:chrome": "cypress run --browser chrome --headless",
