@@ -14,7 +14,6 @@
     "start": "rollup -w -c",
     "start:examples": "cd example && npm start",
     "build:examples": "cd example && npm run build",
-    "dev": "npm run build && npm run start && npm run start:examples",
     "start:testserver": "npm run build && npm run start:examples",
     "build:dev": "npm install && cd example && npm install && npm run build",
     "dev:wait": "start-server-and-test start:testserver http-get://localhost:3000",

@@ -19,7 +19,7 @@ npm install react-flow-renderer
 
 This is a very basic example of how to use React Flow. You can find more advanced examples on the [website](https://reactflow.dev/examples).
 
-```javascript
+```js
 import React from 'react';
 import ReactFlow from 'react-flow-renderer';
 
@@ -35,21 +35,27 @@ const BasicFlow = () => <ReactFlow elements={elements} />;
 
 ## Development
 
-Before you start you need to install the React Flow dependencies via `npm install`.
+Before you start you need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
 
 If you want to contribute or develop custom features the easiest way is to start the dev server:
 
-```
-npm run dev
+```sh
+npm start
 ```
 
-This serves the content of the `example` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
+and the example app via:
+
+```sh
+cd example && npm start 
+```
+
+The example app serves the content of the `example` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
 
 ## Testing
 
 Testing is done with cypress. You can find the tests in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the tests do:
 
-```
+```sh
 npm run test
 ```
 
