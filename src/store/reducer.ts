@@ -78,12 +78,12 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         const update = action.payload.find((u) => u.id === node.id);
         if (update) {
           const dimensions = getDimensions(update.nodeElement);
-
-          if (
+          const doUpdate =
             dimensions.width &&
             dimensions.height &&
-            (node.__rf.width !== dimensions.width || node.__rf.height !== dimensions.height)
-          ) {
+            (node.__rf.width !== dimensions.width || node.__rf.height !== dimensions.height || update.forceUpdate);
+
+          if (doUpdate) {
             const handleBounds = getHandleBounds(update.nodeElement, state.transform[2]);
 
             return {

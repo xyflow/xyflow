@@ -370,6 +370,7 @@ export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connec
 export type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
+  forceUpdate?: boolean;
 };
 
 export type InitD3ZoomPayload = {
