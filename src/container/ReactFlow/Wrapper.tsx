@@ -10,7 +10,7 @@ const Wrapper: FC = ({ children }) => {
   ]);
 
   if (isWrappedWithReactFlowProvider) {
-    // we need to wrap it with a fragment because t's not allowed for children to be a ReactNode
+    // we need to wrap it with a fragment because it's not allowed for children to be a ReactNode
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
     return <>{children}</>;
   }
