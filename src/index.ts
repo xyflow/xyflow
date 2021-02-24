@@ -19,6 +19,7 @@ export {
   updateEdge,
 } from './utils/graph';
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
+export { default as useNodeLayoutEffect } from './hooks/useNodeLayoutEffect';
 
 export * from './additional-components';
 export * from './store/hooks';
