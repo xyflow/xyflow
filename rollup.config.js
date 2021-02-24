@@ -49,7 +49,7 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
       inject: injectCSS,
     }),
     babel({
-      exclude: 'node_modules/**',
+      skipPreflightCheck: true,
       babelHelpers: 'runtime',
     }),
     svgr(),
