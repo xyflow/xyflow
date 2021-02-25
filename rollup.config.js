@@ -15,7 +15,7 @@ const processEnv = isProd || isTesting ? 'production' : 'development';
 
 export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
   input: 'src/index.ts',
-  external: ['react', 'react-dom', /@babel\/runtime/],
+  external: ['react', 'react-dom', (id) => id.includes('@babel/runtime')],
   onwarn(warning, rollupWarn) {
     if (warning.code !== 'CIRCULAR_DEPENDENCY') {
       rollupWarn(warning);
@@ -39,8 +39,6 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
     replace({
       __ENV__: JSON.stringify(processEnv),
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
-      // this comes from the easy-peasy dependency
-      'process.env.FORCE_SIMILAR_INSTEAD_OF_MAP': false,
       preventAssignment: true,
     }),
     bundleSize(),
@@ -53,10 +51,10 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
       babelHelpers: 'runtime',
     }),
     svgr(),
+    resolve(),
     typescript({
       clean: true,
     }),
-    resolve(),
     commonjs({
       include: 'node_modules/**',
     }),
