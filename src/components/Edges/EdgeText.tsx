@@ -27,7 +27,7 @@ export default memo(
           height: textBbox.height,
         });
       }
-    }, []);
+    }, [label]);
 
     if (typeof label === 'undefined' || !label) {
       return null;
