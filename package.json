@@ -28,7 +28,7 @@
     "release:next": "release-it --preRelease=next"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.7",
     "classcat": "^5.0.3",
     "d3-selection": "^2.0.0",
     "d3-zoom": "^2.0.0",
@@ -38,9 +38,9 @@
     "redux": "^4.0.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.17",
-    "@babel/plugin-transform-runtime": "^7.12.17",
-    "@babel/preset-env": "^7.12.17",
+    "@babel/core": "^7.13.1",
+    "@babel/plugin-transform-runtime": "^7.13.7",
+    "@babel/preset-env": "^7.13.5",
     "@babel/preset-react": "^7.12.13",
     "@rollup/plugin-alias": "^3.1.2",
     "@rollup/plugin-babel": "^5.3.0",
