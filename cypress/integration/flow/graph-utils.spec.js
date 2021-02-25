@@ -1,4 +1,4 @@
-import { isNode, isEdge, getOutgoers, getIncomers, removeElements, addEdge } from '../../../src/utils/graph.ts';
+import { isNode, isEdge, getOutgoers, getIncomers, removeElements, addEdge } from '../../../dist/ReactFlow.js';
 
 const nodes = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
