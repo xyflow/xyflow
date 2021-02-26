@@ -1,5 +1,13 @@
 import { ArrowHeadType, Position } from '../../types';
 
+export const getMarkerStart= (arrowHeadType?: ArrowHeadType, markerStartId?: string): string => {
+  if (typeof markerStartId !== 'undefined' && markerStartId) {
+    return `url(#${markerStartId})`;
+  }
+
+  return typeof arrowHeadType !== 'undefined' ? `url(#react-flow__${arrowHeadType})` : 'none';
+};
+
 export const getMarkerEnd = (arrowHeadType?: ArrowHeadType, markerEndId?: string): string => {
   if (typeof markerEndId !== 'undefined' && markerEndId) {
     return `url(#${markerEndId})`;

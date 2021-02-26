@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
 
-import { getMarkerEnd, getCenter } from './utils';
+import { getMarkerEnd, getMarkerStart, getCenter } from './utils';
 import { EdgeProps, Position } from '../../types';
 
 interface GetBezierPathParams {
@@ -45,6 +45,13 @@ export function getBezierPath({
   return path;
 }
 
+const getOffsetX = (position: Position) => {
+  return position === Position.Left || position === Position.Right ?  (10 * (position === Position.Left ? -1 : 1)) : 0
+}
+ const getOffsetY = (position: Position) => {
+  return position === Position.Top || position === Position.Bottom ?  (10 * (position === Position.Bottom ? 1 : -1)) : 0
+} 
+
 export default memo(
   ({
     sourceX,
@@ -62,14 +69,22 @@ export default memo(
     style,
     arrowHeadType,
     markerEndId,
+    startArrowHeadType,
+    markerStartId
   }: EdgeProps) => {
+
+    const sourceOffsetX = startArrowHeadType ? getOffsetX(sourcePosition) : 0;
+    const sourceOffsetY = startArrowHeadType ? getOffsetY(sourcePosition) : 0;
+    const targetOffsetX = arrowHeadType ? getOffsetX(targetPosition) : 0;
+    const targetOffsetY = arrowHeadType ? getOffsetY(targetPosition) : 0;
+
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
     const path = getBezierPath({
-      sourceX,
-      sourceY,
+      sourceX: sourceX + sourceOffsetX,
+      sourceY: sourceY + sourceOffsetY,
       sourcePosition,
-      targetX,
-      targetY,
+      targetX: targetX + targetOffsetX,
+      targetY: targetY + targetOffsetY,
       targetPosition,
     });
 
@@ -86,11 +101,12 @@ export default memo(
       />
     ) : null;
 
-    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
+    const markerEnd = getMarkerEnd(arrowHeadType + `_${targetPosition.toLowerCase()}` as any, markerEndId);
+    const markerStart = getMarkerStart(startArrowHeadType + `_${sourcePosition.toLowerCase()}` as any, markerStartId);
 
     return (
       <>
-        <path style={style} d={path} className="react-flow__edge-path" markerEnd={markerEnd} />
+        <path style={style} d={path} className="react-flow__edge-path" markerStart={markerStart} markerEnd={markerEnd} />
         {text}
       </>
     );

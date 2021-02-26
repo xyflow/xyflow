@@ -50,3 +50,61 @@
     max-width: 250px;
   }
 }
+
+.sidebar-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.sidebar-input {
+  height: 24px;
+  width: calc(100% - 8px);
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.sidebar-selection {
+  height: 24px;
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.accordion-summary-text {
+  display: flex;
+  font-size: 14px;
+  padding-left: 8px;
+  align-items: center;
+}
+
+.accordion-details-label {
+  display: block;
+  width: 100%;
+}
+.accordion-input {
+  display: block;
+  height: 24px;
+  margin-top: 8px;
+  width: calc(100% - 8px);
+}
+.accordion-details {
+  display: block !important;
+}
+.accordion-select {
+  height: 30px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.sidebar-addfield-button {
+  margin: 8px 0 !important;
+}
+
+.sidebar-options-panel {
+  margin: 8px 0px 16px 0px!important;
+}
+
+.sidebar-options-panel-summary {
+  font-weight: 700;
+  font-size: 14px;
+}

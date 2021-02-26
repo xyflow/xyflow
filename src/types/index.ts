@@ -1,4 +1,4 @@
-import React, { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
+import React, { CSSProperties, MouseEvent as ReactMouseEvent, ChangeEvent as ReactChangeEvent, HTMLAttributes, ReactNode } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 export type ElementId = string;
@@ -72,6 +72,8 @@ export interface Edge<T = any> {
   style?: CSSProperties;
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
+  startArrowHeadType?: ArrowHeadType;
+  markerStartId?: ArrowHeadType;
   isHidden?: boolean;
   data?: T;
   className?: string;
@@ -82,7 +84,7 @@ export enum BackgroundVariant {
   Dots = 'dots',
 }
 
-export type HandleType = 'source' | 'target';
+export type HandleType = 'source' | 'target' | 'target/source';
 
 export type NodeTypesType = { [key: string]: ReactNode };
 
@@ -111,6 +113,7 @@ export interface WrapEdgeProps<T = any> {
   labelBgBorderRadius?: number;
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
+  startArrowHeadType?: ArrowHeadType;
   source: ElementId;
   target: ElementId;
   sourceHandleId: ElementId | null;
@@ -123,6 +126,7 @@ export interface WrapEdgeProps<T = any> {
   targetPosition: Position;
   elementsSelectable?: boolean;
   markerEndId?: string;
+  markerStartId?: string;
   isHidden?: boolean;
   handleEdgeUpdate: boolean;
   onConnectEdge: OnConnectFunc;
@@ -156,6 +160,8 @@ export interface EdgeProps<T = any> {
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
+  startArrowHeadType?: ArrowHeadType;
+  markerStartId?: string;
   data?: T;
   sourceHandleId?: ElementId | null;
   targetHandleId?: ElementId | null;
@@ -200,7 +206,9 @@ export interface NodeComponentProps<T = any> {
   targetPosition?: Position;
   sourcePosition?: Position;
   onAddField?: (event: ReactMouseEvent) => void;
+  onTitleChange?:(event: ReactChangeEvent, element: Node | Edge) => void;
   onRemoveField?: (event: ReactMouseEvent) => void;
+  onFieldChange?: (event: ReactChangeEvent) => void;
   onClick?: (node: Node) => void;
   onNodeDoubleClick?: (node: Node) => void;
   onMouseEnter?: (node: Node) => void;
@@ -229,6 +237,8 @@ export interface WrapNodeProps<T = any> {
   selectNodesOnDrag: boolean;
   onAddField?: (event: ReactMouseEvent, element: Node | Edge) => void;
   onRemoveField?: (event: ReactMouseEvent, element: Node | Edge) => void;
+  onFieldChange?: (event: ReactChangeEvent, element: Node | Edge) => void;
+  onTitleChange?:(event: ReactChangeEvent, element: Node | Edge) => void;
   onClick?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
   onMouseEnter?: (event: ReactMouseEvent, node: Node) => void;

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent, ChangeEvent } from 'react';
 
 import { getNodesInside } from '../../utils/graph';
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -8,6 +8,8 @@ interface NodeRendererProps {
   selectNodesOnDrag: boolean;
   onAddField?: (event: MouseEvent, element: Node | Edge) => void;
   onRemoveField?: (event: MouseEvent, element: Node | Edge) => void;
+  onFieldChange?: (event: ChangeEvent, element: Node | Edge) => void;
+  onTitleChange?: (event: ChangeEvent, element: Node | Edge) => void;
   onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
   onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
   onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
@@ -93,6 +95,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             snapToGrid={props.snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}
             onClick={props.onElementClick}
+            onFieldChange={props.onFieldChange}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
@@ -102,6 +105,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
             onAddField={props.onAddField}
+            onTitleChange={props.onTitleChange}
             onRemoveField={props.onRemoveField}
             scale={transform[2]}
             selected={selectedElements?.some(({ id }) => id === node.id) || false}

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
-import { getMarkerEnd } from './utils';
+import { getMarkerEnd, getMarkerStart } from './utils';
 import { EdgeProps } from '../../types';
 
 export default memo(
@@ -19,6 +19,8 @@ export default memo(
     style,
     arrowHeadType,
     markerEndId,
+    startArrowHeadType, 
+    markerStartId
   }: EdgeProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
@@ -26,7 +28,7 @@ export default memo(
     const xOffset = Math.abs(targetX - sourceX) / 2;
     const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
     const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
-
+    const markerStart = getMarkerStart(startArrowHeadType, markerStartId);
     const text = label ? (
       <EdgeText
         x={centerX}
@@ -46,6 +48,7 @@ export default memo(
           style={style}
           className="react-flow__edge-path"
           d={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
+          markerStart={markerStart}
           markerEnd={markerEnd}
         />
         {text}

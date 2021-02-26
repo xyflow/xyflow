@@ -27,6 +27,7 @@ interface EdgeRendererProps {
   onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   arrowHeadColor: string;
+  markerStartId?: string;
   markerEndId?: string;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
@@ -156,6 +157,7 @@ const Edge = ({
       labelBgBorderRadius={edge.labelBgBorderRadius}
       style={edge.style}
       arrowHeadType={edge.arrowHeadType}
+      startArrowHeadType={edge.startArrowHeadType}
       source={edge.source}
       target={edge.target}
       sourceHandleId={sourceHandleId}
@@ -168,6 +170,7 @@ const Edge = ({
       targetPosition={targetPosition}
       elementsSelectable={elementsSelectable}
       markerEndId={props.markerEndId}
+      markerStartId={props.markerStartId}
       isHidden={edge.isHidden}
       onConnectEdge={onConnectEdge}
       handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}

@@ -1,11 +1,4 @@
-import React, {
-  useMemo,
-  CSSProperties,
-  HTMLAttributes,
-  MouseEvent as ReactMouseEvent,
-  WheelEvent,
-  forwardRef,
-} from 'react';
+import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, WheelEvent, ChangeEvent, forwardRef } from 'react';
 import cc from 'classcat';
 
 import GraphView from '../GraphView';
@@ -60,6 +53,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   elements: Elements;
   onAddField?:(event: MouseEvent, element: Node | Edge) => void;
   onRemoveField?:(event: MouseEvent, element: Node | Edge) => void;
+  onFieldChange?:(event: ChangeEvent, element: Node | Edge) => void;
+  onTitleChange?:(event: ChangeEvent, element: Node | Edge) => void;
   onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
   onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
@@ -139,6 +134,7 @@ const ReactFlow = ({
   edgeTypes = defaultEdgeTypes,
   onAddField,
   onRemoveField,
+  onTitleChange,
   onElementClick,
   onLoad,
   onMove,
@@ -149,6 +145,7 @@ const ReactFlow = ({
   onConnectStart,
   onConnectStop,
   onConnectEnd,
+  onFieldChange,
   onNodeMouseEnter,
   onNodeMouseMove,
   onNodeMouseLeave,
@@ -208,6 +205,8 @@ const ReactFlow = ({
         <GraphView
           onAddField={onAddField}
           onRemoveField={onRemoveField}
+          onFieldChange={onFieldChange}
+          onTitleChange={onTitleChange}
           onLoad={onLoad}
           onMove={onMove}
           onMoveStart={onMoveStart}

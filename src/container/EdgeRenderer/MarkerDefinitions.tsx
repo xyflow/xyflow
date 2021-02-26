@@ -47,6 +47,273 @@ const MarkerDefinitions = ({ color }: MarkerDefinitionsProps) => {
           points="-5,-4 0,0 -5,4"
         />
       </Marker>
+      <marker id="react-flow__one_to_one_start_right"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="0"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100 0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      <marker id="react-flow__one_to_one_end_right"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-180"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100 0,0 100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      <marker id="react-flow__one_to_one_start_left"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-180"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100  0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      <marker id="react-flow__one_to_one_end_left"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-180"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100  0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      <marker id="react-flow__one_to_one_start_top"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100  0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      <marker id="react-flow__one_to_one_end_top"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100  0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      
+      <marker id="react-flow__one_to_one_start_bottom"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100  0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+      <marker id="react-flow__one_to_one_end_bottom"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,-50 0,100  0,0 -100,0"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          fill="none" 
+          stroke={color}  />
+      </marker>
+
+      <marker id="react-flow__one_to_many_end_right"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-180"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 150,50 0,0 150,0 0,0 150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker>
+      <marker id="react-flow__one_to_many_start_right"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="0"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 -150,50 0,0 -150,0 0,0 -150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker>
+      <marker id="react-flow__one_to_many_end_left"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="0"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 150,50 0,0 150,0 0,0 150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker>
+      <marker id="react-flow__one_to_many_start_left"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-180"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 -150,50 0,0 -150,0 0,0 -150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker>
+      <marker id="react-flow__one_to_many_start_top"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 -150,50 0,0 -150,0 0,0 -150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker> 
+
+      <marker id="react-flow__one_to_many_end_top"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="-90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 -150,50 0,0 -150,0 0,0 -150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker> 
+      <marker id="react-flow__one_to_many_start_bottom"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 -150,50 0,0 -150,0 0,0 -150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker> 
+      <marker id="react-flow__one_to_many_end_bottom"     
+        className="react-flow__arrowhead"
+        markerWidth="20"
+        markerHeight="20"
+        viewBox="-20 -20 40 40"
+        orient="90"
+        refX="0"
+        refY="0">
+        <polyline  
+          points="0,0 -150,50 0,0 -150,0 0,0 -150,-50"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          fill="none" 
+          stroke={color}  />
+
+      </marker> 
     </defs>
   );
 };

@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import ReactFlow, { ReactFlowProvider, addEdge, removeElements, Controls, MiniMap,} from 'react-flow-renderer';
-
+import { Accordion, AccordionSummary, AccordionDetails, Button } from '@material-ui/core'
 import Sidebar from './Sidebar';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import './dnd.css';
 
-const initialElements = [{ id: '1', type: 'entity', data: { label: 'entity node', fields: [{name: 'Test', value: 'test'}] }, position: { x: 250, y: 5 } }];
+const options = ['text', 'number', 'date', 'boolean', 'relation']
+const initialElements = { 1: { 
+  id: '1', 
+  type: 'entity', 
+  data: { label: 'Table', 
+  options, 
+  fields: [{name: 'Test', value: 'test', type: 'text'}] }, 
+  position: { x: 250, y: 5 } } 
+};
 
 function makeid(length) {
   var result           = '';
@@ -17,14 +26,40 @@ function makeid(length) {
   return result;
 }
 
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+let nodeId = 0;
+const getId = () => `dndnode_${nodeId++}`;
 
 const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [elements, setElements] = useState(initialElements);
-  const onConnect = (params) => setElements((els) => addEdge(params, els));
-  const onElementsRemove = (elementsToRemove) => setElements((els) => removeElements(elementsToRemove, els));
+
+  const onConnect = (params) => {
+ 
+    setElements((els) => 
+    {
+      return addEdge({ ...params, startArrowHeadType: 'one_to_one_start', relationType: 'one-to-one' }, Object.values(els)).reduce((acc, n) => {
+        return {
+          ...acc,
+          [n.id]: n
+        }
+      }, {})
+    });
+  };
+  const onElementsRemove = (elementsToRemove) => 
+  {
+    if(elementsToRemove.find(({id}) => selected.id === id)) {
+      setSelected(() => null)
+    }
+    setElements((els) => {
+      return removeElements(elementsToRemove, Object.values(els)).reduce((acc, n) => {
+        return {
+          ...acc,
+          [n.id]: n
+        }
+      }, {})
+    });
+  }
 
   const onLoad = (_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance);
 
@@ -38,56 +73,309 @@ const DnDFlow = () => {
 
     const type = event.dataTransfer.getData('application/reactflow');
     const position = reactFlowInstance.project({ x: event.clientX, y: event.clientY - 40 });
+    const id = getId()
+    const label = type === 'entity' ? `Table${nodeId}`: `${type} node`
+
     const newNode = {
-      id: getId(),
+      id,
       type,
       position,
-      data: { label: `${type} node` },
+      data: { label, options },
     };
-
-    setElements((es) => es.concat(newNode));
+    setElements((es) => {
+      return { ...es, [id]: newNode}
+    });
   };
   
   const onAddField = (event, node) => {
-
+    if(!node && selected && !selected.target && !selected.source) {
+      node = selected
+    }
     setElements((elements) => {
-      return elements.map((el) =>
-      {
-        if(el.id === node.id) {
-          const randomName = makeid(8)
-          return {
-            ...el,
-            data: {
-              ...el.data,
-              fields: el?.data?.fields ? [...el?.data?.fields, { name: `field-${randomName}`, value: ''}] : [{ name: `field-${randomName}`, value: ''}]
-            }
+      const randomName = makeid(8)
+      return {
+        ...elements,
+        [node.id]: {
+          ...elements[node.id],
+          data: {
+            ...elements[node.id].data,
+            fields: elements[node.id]?.data?.fields ? 
+            [...elements[node.id]?.data?.fields, { name: `field-${randomName}`, value: '', type: 'text'}] : 
+            [{ name: `field-${randomName}`, value: '', type: 'text'}]
           }
         }
-        return el
-      
-      })
+      }
     })
+  }
 
+  const onRemoveField = (event, node) => {
+    const id = event.target.id.replace('remove-', '')
+     if(!node && selected && !selected.target && !selected.source) {
+      node = elements[selected.id]
+    }
+    const newNode ={
+      ...node,
+      data: {
+        ...node.data,
+        fields: node.data.fields.map((field) => {
+          if(id === field.name) {
+            return undefined
+          }
+          return field
+        }).filter((field) => field)
+      }
+    }
+    setSelected(() => newNode)
+    setElements((elements) => {
+      return {
+        ...elements,
+        [node.id]: newNode
+      }
+    })
+  }
+
+  const onTitleChange = (event, node) => {
+    if(!node && selected && !selected.target && !selected.source) {
+      node = selected
+    }
+    setElements((els) => {
+      return {
+        ...els,
+        [node.id]: {
+          ...node,
+          data: {
+            ...node.data,
+            label: event.target.value
+          }
+
+        }
+      }
+    })
+  }
+
+  const onRelationshipLabelChange = (event) => {
+    const newNode = {
+      ...elements[selected.id],
+      label: event.target.value
+    }
+    setSelected(() => newNode)
+    setElements((els) => {
+      return {
+        ...els,
+        [newNode.id]: newNode
+      }
+    })
+  }
+
+  const onFieldChange = (event, node) => {
+
+    if(!node && selected && !selected.target && !selected.source) {
+      node = selected
+    }
+    const name = event.target.name
+    const slicedName = name.slice(name.length - 5, name.length)
+    const isType = slicedName === '-type'
+    const newNode = {
+      ...node,
+      data: {
+        ...node.data,
+        fields: node.data.fields.map((field) => {
+          if((isType && field.name === name.replace('-type', '')) || name === field.name) {
+
+            return {
+              ...field,
+              ...(isType && { type: event.target.value }),
+              ...(!isType && { value: event.target.value })
+            }
+          }
+          return field
+        })
+      }
+    }
+    setElements((els) => {
+      return {
+        ...els,
+        [node.id]: newNode
+      }
+    })
+  }
+
+  const onSelectionChange = (els) => {
+
+    if(els === null) {
+      setSelected(() => null)
+    }
+    else {
+      setSelected(() => elements[els[0].id])
+    }
+  }
+
+  const handleSwap = (event) => {
+    const swappedHandles = {
+      sourceHandle: selected.targetHandle,
+      targetHandle: selected.sourceHandle,
+      source: selected.target,
+      target: selected.source,
+
+    }
+    const newNode = { ...elements[selected.id], ...swappedHandles }
+    setSelected(() => newNode)
+    setElements((els) => ({...els, [selected.id]: newNode }))
+
+  }
+
+  const onRelationshipTypeChange = (event) => {
+    let arrows;
+    const r = event.target.value.toLowerCase()
+    switch(r){
+      case 'one-to-one': {
+        arrows = {
+          startArrowHeadType: 'one_to_one_start',
+          arrowHeadType: null
+        }
+        break;
+      }
+      case 'many-to-one': {
+        arrows = {
+          arrowHeadType: 'one_to_many_end',
+          startArrowHeadType: null
+        }
+        break;
+      }
+      case 'one-to-many': {
+        arrows = {
+          arrowHeadType: null,
+          startArrowHeadType: 'one_to_many_start'
+        }
+        break;
+      }
+      case 'many-to-many': {
+        arrows = {
+          startArrowHeadType: 'one_to_many_end',
+          arrowHeadType: 'one_to_many_start',
+        }
+        break;
+      }
+      default: 
+        arrows = null
+    }
+    const newSelected = {
+      ...selected,
+      relationType: event.target.value.toLowerCase(),
+      ...arrows
+    }
+    setSelected(() => newSelected)
+    setElements((els) => {
+      return {
+        ...els,
+        [selected.id]: newSelected
+      }
+    })
+    
   }
 
   return (
     <div className="dndflow">
-      <ReactFlowProvider>
+
+        <ReactFlowProvider>
         <div className="reactflow-wrapper">
           <ReactFlow
-            elements={elements}
+            elements={Object.values(elements)}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
+            onSelectionChange={onSelectionChange}
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
             onAddField={onAddField}
+            onRemoveField={onRemoveField}
+            onFieldChange={onFieldChange}
+            onTitleChange={onTitleChange}
           >
             <MiniMap />
             <Controls />
           </ReactFlow>
         </div>
-        <Sidebar />
+        <Sidebar>
+        {selected && !selected.target && !selected.source &&
+          <div>
+            <h4>Entity Options</h4>
+            <div>
+              <label htmlFor="table-name" className="sidebar-label">Table Name</label>
+              <input id="table-name" className="sidebar-input" name="title" onChange={onTitleChange} value={elements[selected.id].data.label}/>
+            </div>
+            <div>
+            <Accordion className="sidebar-options-panel">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
+                  Database Options
+              </AccordionSummary>
+            </Accordion>
+            <Accordion className="sidebar-options-panel">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
+                  Database Options
+              </AccordionSummary>
+            </Accordion>
+            <label htmlFor="fields" className="sidebar-label">Fields</label>
+              {
+                elements[selected.id].data?.fields?.map((field) => {
+                  return (
+                    <Accordion key={`${selected.id}-${field.name}`} >
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <button onClick={onRemoveField} id={`remove-${field.name}`}>-</button>
+                        <span className="accordion-summary-text">
+                          <b>{`${field.value}`}</b>
+                          <i>:{` ${field.type}`}</i>
+                        </span>
+                      </AccordionSummary>
+                      <AccordionDetails className="accordion-details">
+                        <label htmlFor={`${selected.id}-${field.name}`} className="accordion-details-label">Column Name</label>
+                        <input id={`${selected.id}-${field.name}`} name={field.name} className="accordion-input" value={field.value} onChange={onFieldChange}/>
+                        <br/>
+                        <label htmlFor={`${selected.id}-${field.name}-type`} className="accordion-details-label">Data Type</label>
+                        <select id={`${selected.id}-${field.name}-type`} name={`${field.name}-type`} className="accordion-select" value={field.type} onChange={onFieldChange}>
+                          {
+                            elements[selected.id]?.data?.options?.map((option) => {
+                              return <option key={`sidebar-${option}`}>{option}</option>
+                            })
+                          }
+                        </select>
+                      </AccordionDetails>
+                    </Accordion>
+                  )
+                })
+              }
+              <div>
+                <Button variant="contained" className="sidebar-addfield-button" disableElevation fullWidth onClick={onAddField}>Add Field</Button>
+              </div>
+        
+            </div>
+          </div> 
+          }
+
+      {selected && selected.target && selected.source &&
+      <div>
+          <div>
+            <h4>Relationship Options</h4>
+            <div>
+              <label htmlFor="relation-name" className="sidebar-label">Relation Name</label>
+              <input id="relation-name" className="sidebar-input" value={selected.label || ''} onChange={onRelationshipLabelChange}/>
+            </div>
+            <div>
+              <label htmlFor="relation-type" className="sidebar-label">Relationship Type</label>
+              <select id="relation-type" className="sidebar-selection" value={selected.relationType} onChange={onRelationshipTypeChange}>
+                <option value="one-to-one">One-to-One</option>
+                <option value="many-to-one">Many-to-One</option>
+                <option value="one-to-many">One-to-Many</option>
+                <option value="many-to-many">Many-to-Many</option>
+              </select>
+            </div>
+            {selected.relationType !== 'many-to-many' && <div>
+              <Button variant="contained" fullWidth onClick={handleSwap}>Swap Relationship</Button>
+            </div>
+            }
+          </div> 
+      </div> }
+          </Sidebar>
       </ReactFlowProvider>
     </div>
   );

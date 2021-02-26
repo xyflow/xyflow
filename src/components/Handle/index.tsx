@@ -33,19 +33,11 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
   const connectionMode = useStoreState((state) => state.connectionMode);
   const handleId = id || null;
   const isTarget = type === 'target';
-
-const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
-  (
-    {
-      type = 'source',
-      position = Position.Top,
-      isValidConnection = alwaysValid,
-      isConnectable = true,
-      id,
-      onConnect,
-      children,
-      className,
-      ...rest
+  const isUniversal = type === 'target/source'
+  const onConnectExtended = useCallback(
+    (params: Connection) => {
+      onConnectAction?.(params);
+      onConnect?.(params);
     },
     ref
   ) => {
@@ -94,6 +86,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         setPosition,
         onConnectExtended,
         isTarget,
+        isUniversal,
         isValidConnection,
         connectionMode,
         onConnectStart,
