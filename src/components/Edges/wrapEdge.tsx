@@ -134,6 +134,20 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
     const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
 
+    const radiusEdgeUpdater = 10;
+
+    const shiftX = (position: string, x: number) => {
+      if (position === 'right') return x + radiusEdgeUpdater;
+      if (position === 'left') return x - radiusEdgeUpdater;
+      return x;
+    }
+
+    const shiftY = (position: string, y: number) =>{
+      if (position === 'bottom') return y + radiusEdgeUpdater;
+      if (position === 'top') return y - radiusEdgeUpdater;
+      return y;
+    }
+
     if (isHidden) {
       return null;
     }
@@ -148,9 +162,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           >
             <circle
               className="react-flow__edgeupdater"
-              cx={sourceX}
-              cy={sourceY}
-              r={10}
+              cx={shiftX(sourcePosition, sourceX)}
+              cy={shiftY(sourcePosition, sourceY)}
+              r={radiusEdgeUpdater}
               stroke="transparent"
               fill="transparent"
             />
@@ -189,9 +203,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           >
             <circle
               className="react-flow__edgeupdater"
-              cx={targetX}
-              cy={targetY}
-              r={10}
+              cx={shiftX(targetPosition, targetX)}
+              cy={shiftY(targetPosition, targetY)}
+              r={radiusEdgeUpdater}
               stroke="transparent"
               fill="transparent"
             />
