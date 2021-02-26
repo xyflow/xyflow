@@ -109,6 +109,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
+  onEdgeContextMenu?: (event: MouseEvent, nodes: Edge) => void;
 }
 
 const ReactFlow = ({
@@ -173,6 +174,7 @@ const ReactFlow = ({
   onPaneContextMenu,
   children,
   onEdgeUpdate,
+  onEdgeContextMenu,
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
@@ -240,6 +242,7 @@ const ReactFlow = ({
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
           onEdgeUpdate={onEdgeUpdate}
+          onEdgeContextMenu={onEdgeContextMenu}
         />
         <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}

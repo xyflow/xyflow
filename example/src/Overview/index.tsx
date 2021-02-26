@@ -40,6 +40,7 @@ const onLoad = (reactFlowInstance: OnLoadParams) => {
 };
 
 const onMoveEnd = (transform?: FlowTransform) => console.log('zoom/move end', transform);
+const onEdgeContextMenu = (_: MouseEvent, edge: Edge) => console.log('edge context menu', edge);
 
 const initialElements: Elements = [
   {
@@ -177,6 +178,7 @@ const OverviewFlow = () => {
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
+      onEdgeContextMenu={onEdgeContextMenu}
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />

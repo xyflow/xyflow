@@ -85,6 +85,7 @@ const GraphView = ({
   onPaneScroll,
   onPaneContextMenu,
   onEdgeUpdate,
+  onEdgeContextMenu,
 }: GraphViewProps) => {
   const isInitialised = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -262,6 +263,7 @@ const GraphView = ({
         markerEndId={markerEndId}
         onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
+        onEdgeContextMenu={onEdgeContextMenu}
       />
     </FlowRenderer>
   );

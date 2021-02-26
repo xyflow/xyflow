@@ -29,6 +29,7 @@ interface EdgeRendererProps {
   markerEndId?: string;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
+  onEdgeContextMenu?: (event: React.MouseEvent, element: Edge) => void;
 }
 
 interface EdgeWrapperProps {
@@ -163,6 +164,7 @@ const Edge = ({
       isHidden={edge.isHidden}
       onConnectEdge={onConnectEdge}
       handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
+      onContextMenu={props.onEdgeContextMenu}
     />
   );
 };
