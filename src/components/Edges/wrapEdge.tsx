@@ -4,41 +4,44 @@ import cc from 'classcat';
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
+import { EdgeAnchorStart, EdgeAnchorEnd } from './EdgeAnchors';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
-  const EdgeWrapper = ({
-    id,
-    className,
-    type,
-    data,
-    onClick,
-    selected,
-    animated,
-    label,
-    labelStyle,
-    labelShowBg,
-    labelBgStyle,
-    labelBgPadding,
-    labelBgBorderRadius,
-    style,
-    arrowHeadType,
-    source,
-    target,
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
-    elementsSelectable,
-    markerEndId,
-    isHidden,
-    sourceHandleId,
-    targetHandleId,
-    handleEdgeUpdate,
-    onConnectEdge,
-    onContextMenu,
-  }: WrapEdgeProps): JSX.Element | null => {
+  const EdgeWrapper = (props: WrapEdgeProps): JSX.Element | null => {
+    const {
+      id,
+      className,
+      type,
+      data,
+      onClick,
+      selected,
+      animated,
+      label,
+      labelStyle,
+      labelShowBg,
+      labelBgStyle,
+      labelBgPadding,
+      labelBgBorderRadius,
+      style,
+      arrowHeadType,
+      source,
+      target,
+      sourceX,
+      sourceY,
+      targetX,
+      targetY,
+      sourcePosition,
+      targetPosition,
+      elementsSelectable,
+      markerEndId,
+      isHidden,
+      sourceHandleId,
+      targetHandleId,
+      handleEdgeUpdate,
+      onConnectEdge,
+      onContextMenu,
+    } = props;
+
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
     const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
@@ -134,20 +137,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
     const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
 
-    const radiusEdgeUpdater = 10;
-
-    const shiftX = (position: string, x: number) => {
-      if (position === 'right') return x + radiusEdgeUpdater;
-      if (position === 'left') return x - radiusEdgeUpdater;
-      return x;
-    }
-
-    const shiftY = (position: string, y: number) =>{
-      if (position === 'bottom') return y + radiusEdgeUpdater;
-      if (position === 'top') return y - radiusEdgeUpdater;
-      return y;
-    }
-
     if (isHidden) {
       return null;
     }
@@ -160,14 +149,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <circle
-              className="react-flow__edgeupdater"
-              cx={shiftX(sourcePosition, sourceX)}
-              cy={shiftY(sourcePosition, sourceY)}
-              r={radiusEdgeUpdater}
-              stroke="transparent"
-              fill="transparent"
-            />
+            <EdgeAnchorStart {...props} />
           </g>
         )}
         <EdgeComponent
@@ -201,14 +183,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <circle
-              className="react-flow__edgeupdater"
-              cx={shiftX(targetPosition, targetX)}
-              cy={shiftY(targetPosition, targetY)}
-              r={radiusEdgeUpdater}
-              stroke="transparent"
-              fill="transparent"
-            />
+            <EdgeAnchorEnd {...props} />
           </g>
         )}
       </g>
