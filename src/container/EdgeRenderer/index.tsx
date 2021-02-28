@@ -192,7 +192,10 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const edges = useStoreState((state) => state.edges);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
-  const connectionHandleType = useStoreState((state) => state.connectionHandleType);
+  const connectionHandleType = useStoreState((state) => {
+
+    return state.connectionHandleType
+  });
   const connectionPosition = useStoreState((state) => state.connectionPosition);
   const selectedElements = useStoreState((state) => state.selectedElements);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);

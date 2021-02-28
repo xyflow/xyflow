@@ -136,6 +136,7 @@ export function onMouseDown(
     y: event.clientY - containerBounds.top,
   });
 
+
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
   onConnectStart?.(event, { nodeId, handleId, handleType });
 

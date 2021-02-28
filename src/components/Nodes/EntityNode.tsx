@@ -4,7 +4,7 @@ import Handle from '../../components/Handle';
 import { NodeProps, Position } from '../../types';
 
 // disable while over inputs
-const EntityNode = ({  data, isConnectable, onAddField, onRemoveField, onTitleChange, onFieldChange, showFieldHandles, horizontalHandles = true, targetPosition = Position.Top, id }: NodeProps & any) => {
+const EntityNode = ({  data, isConnectable, onAddField, onRemoveField, onTitleChange, onFieldChange, showFieldHandles = true, horizontalHandles = false, targetPosition = Position.Top, id }: NodeProps & any) => {
   return (<>
     <Handle type="target/source" id={`${id}-top`} position={targetPosition} isConnectable={isConnectable} />
     {horizontalHandles && <Handle type="target/source" id={`${id}-left`} position={Position.Left} isConnectable={isConnectable} />}
@@ -18,7 +18,7 @@ const EntityNode = ({  data, isConnectable, onAddField, onRemoveField, onTitleCh
             <tr  key={`${id}-${name}`}>
               <td className="input-row">
                 <div style={{position: 'relative'}}>
-                { showFieldHandles && <Handle type="target" field position={Position.Left} isConnectable={isConnectable} />  }
+                { showFieldHandles && type === 'relation' && <Handle type="target/source" field position={Position.Left} id={`${id}-${name}-left`} isConnectable={isConnectable} />  }
                 <table>
                   <tbody>
                     <tr>
@@ -42,7 +42,7 @@ const EntityNode = ({  data, isConnectable, onAddField, onRemoveField, onTitleCh
 
                   </tbody>
                     </table>
-                    { showFieldHandles && <Handle type="target/source" field position={Position.Right} isConnectable={isConnectable} /> }
+                    { showFieldHandles && type === 'relation' && <Handle type="target/source" field position={Position.Right} id={`${id}-${name}-right`} isConnectable={isConnectable} /> }
                 </div>
                 </td>
             </tr>

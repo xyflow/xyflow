@@ -402,6 +402,7 @@ export type NodeDimensionUpdate = {
   id: ElementId;
   nodeElement: HTMLDivElement;
   forceUpdate?: boolean;
+  force?: boolean
 };
 
 export type InitD3ZoomPayload = {

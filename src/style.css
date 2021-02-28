@@ -148,7 +148,7 @@
 }
 
 .react-flow__handle-field-left {
-  left: -4px;
+  left: -18px;
   top: 50%;
   transform: translate(0, -50%);
 }
@@ -159,7 +159,7 @@
 }
 
 .react-flow__handle-field-right {
-  right: -4px;
+  right: -18px;
   top: 50%;
   transform: translate(0, -50%);
 }

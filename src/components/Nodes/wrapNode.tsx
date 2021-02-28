@@ -246,6 +246,22 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       }
     }, [id, isHidden, sourcePosition, targetPosition]);
 
+    const fieldRelationCount = React.useMemo(() => {
+      let count = 0
+ 
+      data?.fields?.forEach(({ type } : { type: string}) => {
+        if(type === 'relation') count += 1
+      });
+      return count
+    }, [data.fields])
+
+    useEffect(() => {
+      //On field type change force the handles to update
+        if (nodeElement.current && !isHidden) {
+          updateNodeDimensions([{ id, nodeElement: nodeElement.current, force: true }]);
+      }
+    }, [fieldRelationCount]);
+
     useEffect(() => {
       if (nodeElement.current) {
         const currNode = nodeElement.current;

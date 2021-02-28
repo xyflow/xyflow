@@ -45,6 +45,9 @@ export default ({
   const handleId = connectionHandleId;
 
   useEffect(() => {
+    //Find out if our handle is a field
+    // then search nodes here
+
     const nextSourceNode = nodes.find((n) => n.id === nodeId) || null;
     setSourceNode(nextSourceNode);
   }, []);
@@ -54,7 +57,10 @@ export default ({
   }
 
   const sourceHandle = handleId
-    ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
+    ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => 
+    { 
+  
+      return d.id === handleId})
     : sourceNode.__rf.handleBounds[connectionHandleType][0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rf.width / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rf.height;

@@ -134,6 +134,20 @@
   }
 }
 
+.react-flow__handle-field {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border: 1px solid black;
+  border-radius: 100%;
+
+  &.connectable {
+    cursor: crosshair;
+  }
+}
+
+
 .react-flow__minimap {
   background-color: #fff;
 }
