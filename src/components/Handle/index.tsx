@@ -1,4 +1,4 @@
-import React, { memo, useContext, useCallback, FunctionComponent, HTMLAttributes } from 'react';
+import React, { memo, useContext, useCallback, FC, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { useStoreActions, useStoreState } from '../../store/hooks';
@@ -9,7 +9,7 @@ import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
 const alwaysValid = () => true;
 
-const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
+const Handle: FC<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
   type = 'source',
   position = Position.Top,
   isValidConnection = alwaysValid,

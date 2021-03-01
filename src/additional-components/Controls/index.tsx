@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -12,7 +12,7 @@ import UnlockIcon from '../../../assets/icons/unlock.svg';
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 import { FitViewParams } from '../../types';
 
-export interface ControlProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;

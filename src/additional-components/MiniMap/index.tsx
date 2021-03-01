@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { useStoreState } from '../../store/hooks';
@@ -8,7 +8,7 @@ import MiniMapNode from './MiniMapNode';
 
 type StringFunc = (node: Node) => string;
 
-export interface MiniMapProps extends React.HTMLAttributes<SVGSVGElement> {
+export interface MiniMapProps extends HTMLAttributes<SVGSVGElement> {
   nodeColor?: string | StringFunc;
   nodeStrokeColor?: string | StringFunc;
   nodeClassName?: string | StringFunc;
