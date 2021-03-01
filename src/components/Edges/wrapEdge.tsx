@@ -4,44 +4,42 @@ import cc from 'classcat';
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
-import { EdgeAnchorStart, EdgeAnchorEnd } from './EdgeAnchors';
+import { EdgeAnchor } from './EdgeAnchor';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
-  const EdgeWrapper = (props: WrapEdgeProps): JSX.Element | null => {
-    const {
-      id,
-      className,
-      type,
-      data,
-      onClick,
-      selected,
-      animated,
-      label,
-      labelStyle,
-      labelShowBg,
-      labelBgStyle,
-      labelBgPadding,
-      labelBgBorderRadius,
-      style,
-      arrowHeadType,
-      source,
-      target,
-      sourceX,
-      sourceY,
-      targetX,
-      targetY,
-      sourcePosition,
-      targetPosition,
-      elementsSelectable,
-      markerEndId,
-      isHidden,
-      sourceHandleId,
-      targetHandleId,
-      handleEdgeUpdate,
-      onConnectEdge,
-      onContextMenu,
-    } = props;
-
+  const EdgeWrapper = ({
+    id,
+    className,
+    type,
+    data,
+    onClick,
+    selected,
+    animated,
+    label,
+    labelStyle,
+    labelShowBg,
+    labelBgStyle,
+    labelBgPadding,
+    labelBgBorderRadius,
+    style,
+    arrowHeadType,
+    source,
+    target,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    elementsSelectable,
+    markerEndId,
+    isHidden,
+    sourceHandleId,
+    targetHandleId,
+    handleEdgeUpdate,
+    onConnectEdge,
+    onContextMenu,
+  }: WrapEdgeProps): JSX.Element | null => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
     const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
@@ -149,7 +147,11 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <EdgeAnchorStart {...props} />
+            <EdgeAnchor
+              position={sourcePosition}
+              centerX={sourceX}
+              centerY={sourceY}
+            />
           </g>
         )}
         <EdgeComponent
@@ -179,11 +181,15 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         />
         {handleEdgeUpdate && (
           <g
-            onMouseDown={onEdgeUpdaterTargetMouseDown}
-            onMouseEnter={onEdgeUpdaterMouseEnter}
-            onMouseOut={onEdgeUpdaterMouseOut}
+          onMouseDown={onEdgeUpdaterTargetMouseDown}
+          onMouseEnter={onEdgeUpdaterMouseEnter}
+          onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <EdgeAnchorEnd {...props} />
+            <EdgeAnchor
+              position={targetPosition}
+              centerX={targetX}
+              centerY={targetY}
+            />
           </g>
         )}
       </g>
