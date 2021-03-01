@@ -20,6 +20,7 @@ export {
   getTransformForBounds,
 } from './utils/graph';
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
+export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
 
 export * from './additional-components';
 export * from './store/hooks';

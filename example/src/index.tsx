@@ -22,6 +22,7 @@ import DragNDrop from './DragNDrop';
 import Layout from './Layouting';
 import SwitchFlows from './Switch';
 import UseZoomPanHelper from './UseZoomPanHelper';
+import UseUpdateNodeInternals from './UseUpdateNodeInternals';
 
 import './index.css';
 
@@ -105,6 +106,10 @@ const routes = [
   {
     path: '/usezoompanhelper',
     component: UseZoomPanHelper,
+  },
+  {
+    path: '/useupdatenodeinternals',
+    component: UseUpdateNodeInternals,
   },
 ];
 

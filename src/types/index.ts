@@ -425,3 +425,5 @@ export interface ReactFlowState {
   onConnectStop?: OnConnectStopFunc;
   onConnectEnd?: OnConnectEndFunc;
 }
+
+export type UpdateNodeInternals = (nodeId: ElementId) => void;
