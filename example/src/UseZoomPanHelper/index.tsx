@@ -47,7 +47,6 @@ const UseZoomPanHelperFlow = () => {
     },
     [project]
   );
-  console.log(elements);
 
   return (
     <ReactFlow elements={elements} onElementsRemove={onElementsRemove} onConnect={onConnect} onPaneClick={onPaneClick}>
