@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 export type ElementId = string;
@@ -157,7 +157,7 @@ export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
   borderRadius?: number;
 }
 
-export interface EdgeTextProps {
+export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   x: number;
   y: number;
   label?: string;
