@@ -181,9 +181,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         />
         {handleEdgeUpdate && (
           <g
-          onMouseDown={onEdgeUpdaterTargetMouseDown}
-          onMouseEnter={onEdgeUpdaterMouseEnter}
-          onMouseOut={onEdgeUpdaterMouseOut}
+            onMouseDown={onEdgeUpdaterTargetMouseDown}
+            onMouseEnter={onEdgeUpdaterMouseEnter}
+            onMouseOut={onEdgeUpdaterMouseOut}
           >
             <EdgeAnchor
               position={targetPosition}
