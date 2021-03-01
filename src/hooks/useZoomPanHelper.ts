@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
 
 import { useStoreState, useStore } from '../store/hooks';
-import { clamp } from '../utils';
-import { getRectOfNodes, pointToRendererPoint } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, Transform, XYPosition } from '../types';
+import { getRectOfNodes, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, XYPosition } from '../types';
 
 const DEFAULT_PADDING = 0.1;
 
@@ -18,26 +17,6 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   fitBounds: (_: Rect) => {},
   project: (position: XYPosition) => position,
   initialized: false,
-};
-
-const getTransformForBounds = (
-  bounds: Rect,
-  width: number,
-  height: number,
-  minZoom: number,
-  maxZoom: number,
-  padding = DEFAULT_PADDING
-): Transform => {
-  const xZoom = width / (bounds.width * (1 + padding));
-  const yZoom = height / (bounds.height * (1 + padding));
-  const zoom = Math.min(xZoom, yZoom);
-  const clampedZoom = clamp(zoom, minZoom, maxZoom);
-  const boundsCenterX = bounds.x + bounds.width / 2;
-  const boundsCenterY = bounds.y + bounds.height / 2;
-  const x = width / 2 - boundsCenterX * clampedZoom;
-  const y = height / 2 - boundsCenterY * clampedZoom;
-
-  return [x, y, clampedZoom];
 };
 
 const useZoomPanHelper = (): ZoomPanHelperFunctions => {
@@ -64,8 +43,14 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
           }
 
           const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.isHidden));
-          const padding = options.padding ?? DEFAULT_PADDING;
-          const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, padding);
+          const [x, y, zoom] = getTransformForBounds(
+            bounds,
+            width,
+            height,
+            minZoom,
+            maxZoom,
+            options.padding ?? DEFAULT_PADDING
+          );
           const transform = zoomIdentity.translate(x, y).scale(zoom);
 
           d3Zoom.transform(d3Selection, transform);

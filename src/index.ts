@@ -17,6 +17,7 @@ export {
   getIncomers,
   getConnectedEdges,
   updateEdge,
+  getTransformForBounds,
 } from './utils/graph';
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
 
