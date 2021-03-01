@@ -4,6 +4,7 @@ import cc from 'classcat';
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
+import { EdgeAnchor } from './EdgeAnchor';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -146,13 +147,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <circle
-              className="react-flow__edgeupdater"
-              cx={sourceX}
-              cy={sourceY}
-              r={10}
-              stroke="transparent"
-              fill="transparent"
+            <EdgeAnchor
+              position={sourcePosition}
+              centerX={sourceX}
+              centerY={sourceY}
             />
           </g>
         )}
@@ -187,13 +185,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <circle
-              className="react-flow__edgeupdater"
-              cx={targetX}
-              cy={targetY}
-              r={10}
-              stroke="transparent"
-              fill="transparent"
+            <EdgeAnchor
+              position={targetPosition}
+              centerX={targetX}
+              centerY={targetY}
             />
           </g>
         )}
