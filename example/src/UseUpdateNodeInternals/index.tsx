@@ -22,7 +22,6 @@ const initialElements: Elements = [
     type: 'custom',
     data: { label: 'Node 1', handleCount: initialHandleCount },
     position: { x: 250, y: 5 },
-    className: 'light',
   },
 ];
 

@@ -23,6 +23,7 @@ import Layout from './Layouting';
 import SwitchFlows from './Switch';
 import UseZoomPanHelper from './UseZoomPanHelper';
 import UseUpdateNodeInternals from './UseUpdateNodeInternals';
+import Undirectional from './Undirectional';
 
 import './index.css';
 
@@ -110,6 +111,10 @@ const routes = [
   {
     path: '/useupdatenodeinternals',
     component: UseUpdateNodeInternals,
+  },
+  {
+    path: '/undirectional',
+    component: Undirectional,
   },
 ];
 
