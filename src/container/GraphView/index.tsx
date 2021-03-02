@@ -59,6 +59,7 @@ const GraphView = ({
   selectionKeyCode,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
+  isValidConnection,
   onElementsRemove,
   deleteKeyCode,
   onConnect,
@@ -255,6 +256,7 @@ const GraphView = ({
         nodeTypes={nodeTypes}
         onFieldChange={onFieldChange}
         onAddField={onAddField}
+        isValidConnection={isValidConnection}
         onRemoveField={onRemoveField}
         onElementClick={onElementClick}
         onNodeDoubleClick={onNodeDoubleClick}

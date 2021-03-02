@@ -92,8 +92,24 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
         onConnectStart,
         onConnectStop,
         onConnectEnd,
-      ]
-    );
+        field
+      );
+    },
+    [
+      handleId,
+      nodeId,
+      setConnectionNodeId,
+      setPosition,
+      onConnectExtended,
+      isTarget,
+      isValidConnection,
+      connectionMode,
+      onConnectStart,
+      onConnectStop,
+      onConnectEnd,
+      field
+    ]
+  );
 
   const handleClasses = cc([
     'react-flow__handle',
@@ -108,21 +124,20 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
     },
   ]);
 
-    return (
-      <div
-        data-handleid={handleId}
-        data-nodeid={nodeId}
-        data-handlepos={position}
-        className={handleClasses}
-        onMouseDown={onMouseDownHandler}
-        ref={ref}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
-  }
-);
+  return (
+    <div
+      data-handleid={handleId}
+      data-nodeid={nodeId}
+      data-handlepos={position}
+      {...(field && {'data-handletype': 'field'})}
+      className={handleClasses}
+      onMouseDown={onMouseDownHandler}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
 
 Handle.displayName = 'Handle';
 

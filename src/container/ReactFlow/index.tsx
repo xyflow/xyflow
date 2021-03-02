@@ -71,6 +71,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onConnectEnd?: OnConnectEndFunc;
   onLoad?: OnLoadFunc;
   onMove?: (flowTransform?: FlowTransform) => void;
+  isValidConnection?: (connection: Connection) => boolean;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
@@ -186,6 +187,7 @@ const ReactFlow = ({
   panOnScroll = false,
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
+  isValidConnection,
   zoomOnDoubleClick = true,
   paneMoveable = true,
   onPaneClick,
@@ -219,6 +221,7 @@ const ReactFlow = ({
           onNodeDragStart={onNodeDragStart}
           onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
+          isValidConnection={isValidConnection}
           nodeTypes={nodeTypesParsed}
           edgeTypes={edgeTypesParsed}
           connectionMode={connectionMode}

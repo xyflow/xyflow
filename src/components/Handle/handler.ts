@@ -36,7 +36,8 @@ function checkElementBelowIsValid(
   nodeId: ElementId,
   handleId: ElementId | null,
   isValidConnection: ValidConnectionFunc,
-  doc: Document | ShadowRoot
+  doc: Document | ShadowRoot,
+  field?: boolean
 ) {
   // TODO: why does this throw an error? elementFromPoint should be available for ShadowRoot too
   // @ts-ignore
@@ -55,6 +56,7 @@ function checkElementBelowIsValid(
   if (elementBelow && (elementBelowIsTarget || elementBelowIsSource)) {
     result.isHoveringHandle = true;
     const elementBelowHandleId = elementBelow.getAttribute('data-handleid');
+    const elementIsField = elementBelow.getAttribute('data-handletype');
     // in strict mode we don't allow target to target or source to source connections 
     const isValid =
       connectionMode === ConnectionMode.Strict
@@ -72,12 +74,16 @@ function checkElementBelowIsValid(
             sourceHandle: elementBelowHandleId,
             target: nodeId,
             targetHandle: handleId,
+            sourceField: Boolean(elementIsField),
+            targetField: field
           }
         : {
             source: nodeId,
             sourceHandle: handleId,
             target: elementBelowNodeId,
             targetHandle: elementBelowHandleId,
+            sourceField: Boolean(elementIsField),
+            targetField: field
           };
 
       result.connection = connection;
@@ -108,7 +114,8 @@ export function onMouseDown(
   onEdgeUpdateEnd?: (evt: MouseEvent) => void,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
-  onConnectEnd?: OnConnectEndFunc
+  onConnectEnd?: OnConnectEndFunc,
+  field?: boolean
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   // when react-flow is used inside a shadow root we can't use document
@@ -154,7 +161,8 @@ export function onMouseDown(
       nodeId,
       handleId,
       isValidConnection,
-      doc
+      doc,
+      field
     );
 
     if (!isHoveringHandle) {
@@ -179,7 +187,8 @@ export function onMouseDown(
       nodeId,
       handleId,
       isValidConnection,
-      doc
+      doc,
+      field
     );
 
     onConnectStop?.(event);

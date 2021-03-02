@@ -33,12 +33,26 @@ const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selected, setSelected] = useState(null);
   const [elements, setElements] = useState(initialElements);
+  const [error, setError] = useState(null);
+
 
   const onConnect = (params) => {
- 
+    let newConnection = params
+    // swap target and source if sourceField
+    if(params.sourceField) {
+      newConnection = {
+        ...newConnection,
+        source: params.target,
+        target: params.source,
+        sourceHandle: params.targetHandle,
+        targetHandle: params.sourceHandle,
+        sourceField: false,
+        targetField: true
+      }
+    }
     setElements((els) => 
     {
-      return addEdge({ ...params, startArrowHeadType: 'one_to_one_start', relationType: 'one-to-one' }, Object.values(els)).reduce((acc, n) => {
+      return addEdge({ ...newConnection, startArrowHeadType: 'one_to_one_start', relationType: 'one-to-one' }, Object.values(els)).reduce((acc, n) => {
         return {
           ...acc,
           [n.id]: n
@@ -110,6 +124,7 @@ const DnDFlow = () => {
 
   const onRemoveField = (event, node) => {
     const id = event.target.id.replace('remove-', '')
+
      if(!node && selected && !selected.target && !selected.source) {
       node = elements[selected.id]
     }
@@ -126,9 +141,19 @@ const DnDFlow = () => {
       }
     }
     setSelected(() => newNode)
-    setElements((elements) => {
+    setElements((els) => {
+  
+      const newEls = Object.values(els).reduce((acc, el) => {
+        if(el.targetHandle?.includes(id)) {
+          return acc
+        }
+        return {
+          ...acc,
+          [el.id]: el
+        }
+      }, {})
       return {
-        ...elements,
+        ...newEls,
         [node.id]: newNode
       }
     })
@@ -167,6 +192,7 @@ const DnDFlow = () => {
     })
   }
 
+
   const onFieldChange = (event, node) => {
 
     if(!node && selected && !selected.target && !selected.source) {
@@ -175,13 +201,16 @@ const DnDFlow = () => {
     const name = event.target.name
     const slicedName = name.slice(name.length - 5, name.length)
     const isType = slicedName === '-type'
+    let removeConections = false
     const newNode = {
       ...node,
       data: {
         ...node.data,
         fields: node.data.fields.map((field) => {
           if((isType && field.name === name.replace('-type', '')) || name === field.name) {
-
+            if(isType && field.type === 'relation' && event.target.value !== 'relation') {
+              removeConections = field.name
+            }
             return {
               ...field,
               ...(isType && { type: event.target.value }),
@@ -192,9 +221,23 @@ const DnDFlow = () => {
         })
       }
     }
+    
     setElements((els) => {
+      let newEls = els
+      if(removeConections) {
+        newEls = Object.values(els).reduce((acc, el) => {
+          if(el.targetHandle?.includes(removeConections)) {
+            return acc
+          }
+          return {
+            ...acc,
+            [el.id]: el
+          }
+        }, {})
+      }
+
       return {
-        ...els,
+        ...newEls,
         [node.id]: newNode
       }
     })
@@ -274,6 +317,51 @@ const DnDFlow = () => {
     
   }
 
+  // fields can only connect to nodes for now
+  // additionally the field connection end can only the source
+  // the connection and can only be 1 - 1
+  // in the future they can reference indexes
+  const isValidConnection = (c) => {
+
+    if(!c.sourceField && !c.targetField){
+      // check for existing node to node
+      const existing = Object.values(elements).find(({ source, target, sourceField, targetField }) => {
+        if(((source === c.source && target === c.target) && !(sourceField || targetField)) || 
+        ((source === c.target && target === c.source) && !(sourceField || targetField)) ) {
+          return true
+        }
+      })
+      if(existing) {
+        setError(() => 'Relationship between tables already exists.')
+        return false
+      }
+      return true
+    }
+
+    if((!c.sourceField && c.targetField) || (c.sourceField && !c.targetField)){
+      // check for existing field to node
+            // check for existing node to node
+      const existing = Object.values(elements).find(({ source, targetHandle }) => {
+        const leftTarget = targetHandle?.replace('right', 'left')
+        const rightTarget = targetHandle?.replace('left','right')
+        if((leftTarget === c.targetHandle || 
+          leftTarget === c.sourceHandle || 
+          rightTarget === c.targetHandle || 
+          rightTarget === c.sourceHandle) && (source === c.source || source === c.target)) {
+          setError(() => 'Relationship between field and table already exists.')
+          return true
+        }
+      })
+      if(existing) {
+        return false
+      }
+      return true
+    }
+    if(c.sourceField && c.targetField) {
+      setError(() => "Fields cannot connect to fields.")
+    }
+    return false
+  }
   return (
     <div className="dndflow">
 
@@ -284,6 +372,7 @@ const DnDFlow = () => {
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
             onSelectionChange={onSelectionChange}
+            onElementClick={() => setError(null)}
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
@@ -291,12 +380,27 @@ const DnDFlow = () => {
             onRemoveField={onRemoveField}
             onFieldChange={onFieldChange}
             onTitleChange={onTitleChange}
+            isValidConnection={isValidConnection}
           >
             <MiniMap />
             <Controls />
           </ReactFlow>
         </div>
         <Sidebar>
+        {error && error}
+        {!selected && (
+        <>
+          <Accordion className="sidebar-options-panel">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
+                  Database Options
+              </AccordionSummary>
+          </Accordion>
+          <Accordion className="sidebar-options-panel">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
+              API Options
+            </AccordionSummary>
+          </Accordion>
+        </>)}
         {selected && !selected.target && !selected.source &&
           <div>
             <h4>Entity Options</h4>
@@ -312,7 +416,7 @@ const DnDFlow = () => {
             </Accordion>
             <Accordion className="sidebar-options-panel">
               <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
-                  Database Options
+                  API Options
               </AccordionSummary>
             </Accordion>
             <label htmlFor="fields" className="sidebar-label">Fields</label>
@@ -360,16 +464,15 @@ const DnDFlow = () => {
               <label htmlFor="relation-name" className="sidebar-label">Relation Name</label>
               <input id="relation-name" className="sidebar-input" value={selected.label || ''} onChange={onRelationshipLabelChange}/>
             </div>
-            <div>
+            {!selected.targetField && <div>
               <label htmlFor="relation-type" className="sidebar-label">Relationship Type</label>
               <select id="relation-type" className="sidebar-selection" value={selected.relationType} onChange={onRelationshipTypeChange}>
                 <option value="one-to-one">One-to-One</option>
-                <option value="many-to-one">Many-to-One</option>
                 <option value="one-to-many">One-to-Many</option>
                 <option value="many-to-many">Many-to-Many</option>
               </select>
-            </div>
-            {selected.relationType !== 'many-to-many' && <div>
+            </div>}
+            {selected.relationType !== 'many-to-many' && !selected.targetField && <div>
               <Button variant="contained" fullWidth onClick={handleSwap}>Swap Relationship</Button>
             </div>
             }
