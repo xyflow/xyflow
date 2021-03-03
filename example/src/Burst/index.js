@@ -6,6 +6,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import './dnd.css';
 
+/* TODO 
+  on subconnection doubleclick
+*/
+
 const options = ['text', 'number', 'date', 'boolean', 'relation']
 const initialElements = { 1: { 
   id: '1', 
@@ -52,7 +56,7 @@ const DnDFlow = () => {
     }
     setElements((els) => 
     {
-      return addEdge({ ...newConnection, startArrowHeadType: 'one_to_one_start', relationType: 'one-to-one' }, Object.values(els)).reduce((acc, n) => {
+      return addEdge({ ...newConnection, startArrowHeadType: 'one_to_one_start', relationType: 'one-to-one', type: 'smoothstep' }, Object.values(els)).reduce((acc, n) => {
         return {
           ...acc,
           [n.id]: n
@@ -60,6 +64,7 @@ const DnDFlow = () => {
       }, {})
     });
   };
+  console.log(elements)
   const onElementsRemove = (elementsToRemove) => 
   {
     if(elementsToRemove.find(({id}) => selected.id === id)) {
@@ -375,6 +380,7 @@ const DnDFlow = () => {
             onElementClick={() => setError(null)}
             onLoad={onLoad}
             onDrop={onDrop}
+            connectionLineType="smoothstep"
             onDragOver={onDragOver}
             onAddField={onAddField}
             onRemoveField={onRemoveField}

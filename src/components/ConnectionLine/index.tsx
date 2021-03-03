@@ -38,8 +38,9 @@ export default ({
   nodes = [],
   transform,
   isConnectable,
-  CustomConnectionLineComponent,
+  CustomConnectionLineComponent
 }: ConnectionLineProps) => {
+
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
@@ -72,7 +73,7 @@ export default ({
 
   const isRightOrLeft = sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right;
   const targetPosition = isRightOrLeft ? Position.Left : Position.Top;
-
+   
   if (CustomConnectionLineComponent) {
     return (
       <g className="react-flow__connection">
@@ -105,16 +106,24 @@ export default ({
     });
   } else if (connectionLineType === ConnectionLineType.Step) {
     dAttr = getSmoothStepPath({
-      sourceX,
+      sourceX: targetX,
       sourceY,
       sourcePosition: sourceHandle?.position,
-      targetX,
+      targetX: sourceX,
       targetY,
       targetPosition,
       borderRadius: 0,
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
-    dAttr = getSmoothStepPath({
+    // seems like a hack but it's working
+    dAttr = getSmoothStepPath( sourceHandle.position === Position.Left ? {
+      sourceX: targetX,
+      sourceY: targetY,
+      sourcePosition: sourceHandle?.position,
+      targetX: sourceX,
+      targetY: sourceY,
+      targetPosition,
+    } : {
       sourceX,
       sourceY,
       sourcePosition: sourceHandle?.position,
@@ -125,7 +134,7 @@ export default ({
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }
-
+  
   return (
     <g className="react-flow__connection">
       <path d={dAttr} className="react-flow__connection-path" style={connectionLineStyle} />

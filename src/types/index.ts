@@ -139,6 +139,7 @@ export interface WrapEdgeProps<T = any> {
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
 }
 
+
 export interface EdgeProps<T = any> {
   id: ElementId;
   source: ElementId;
@@ -151,7 +152,8 @@ export interface EdgeProps<T = any> {
   animated?: boolean;
   sourcePosition: Position;
   targetPosition: Position;
-  label?: string | ReactNode;
+  subconnections?: Array<Connection>;
+  label?: string;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;

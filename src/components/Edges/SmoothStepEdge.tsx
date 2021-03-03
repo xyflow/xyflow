@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
-import { getMarkerEnd, getCenter } from './utils';
+import { getMarkerEnd, getMarkerStart, getCenter } from './utils';
 import { EdgeSmoothStepProps, Position } from '../../types';
 
 // These are some helper methods for drawing the round corners
@@ -20,6 +20,13 @@ const leftTopCorner = (x: number, y: number, size: number): string => `L ${x + s
 const topLeftCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x + size},${y}`;
 const topRightCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x - size},${y}`;
 const rightTopCorner = (x: number, y: number, size: number): string => `L ${x - size},${y}Q ${x},${y} ${x},${y + size}`;
+
+const getOffsetX = (position: Position) => {
+  return position === Position.Left || position === Position.Right ?  (10 * (position === Position.Left ? -1 : 1)) : 0
+}
+ const getOffsetY = (position: Position) => {
+  return position === Position.Top || position === Position.Bottom ?  (10 * (position === Position.Bottom ? 1 : -1)) : 0
+} 
 
 interface GetSmoothStepPathParams {
   sourceX: number;
@@ -127,22 +134,30 @@ export default memo(
     sourcePosition = Position.Bottom,
     targetPosition = Position.Top,
     arrowHeadType,
+    startArrowHeadType,
     markerEndId,
     borderRadius = 5,
+    markerStartId
   }: EdgeSmoothStepProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
 
+    const sourceOffsetX = startArrowHeadType ? getOffsetX(sourcePosition) : 0;
+    const sourceOffsetY = startArrowHeadType ? getOffsetY(sourcePosition) : 0;
+    const targetOffsetX = arrowHeadType ? getOffsetX(targetPosition) : 0;
+    const targetOffsetY = arrowHeadType ? getOffsetY(targetPosition) : 0;
+
     const path = getSmoothStepPath({
-      sourceX,
-      sourceY,
+      sourceX: sourceX + sourceOffsetX,
+      sourceY: sourceY + sourceOffsetY,
       sourcePosition,
-      targetX,
-      targetY,
+      targetX: targetX + targetOffsetX,
+      targetY: targetY + targetOffsetY,
       targetPosition,
-      borderRadius,
+      borderRadius
     });
 
-    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
+    const markerEnd = getMarkerEnd(arrowHeadType + `_${targetPosition.toLowerCase()}` as any, markerEndId);
+    const markerStart = getMarkerStart(startArrowHeadType + `_${sourcePosition.toLowerCase()}` as any, markerStartId);
 
     const text = label ? (
       <EdgeText
@@ -156,10 +171,9 @@ export default memo(
         labelBgBorderRadius={labelBgBorderRadius}
       />
     ) : null;
-
     return (
       <>
-        <path style={style} className="react-flow__edge-path" d={path} markerEnd={markerEnd} />
+        <path style={style} className="react-flow__edge-path" d={path} markerEnd={markerEnd} markerStart={markerStart} />
         {text}
       </>
     );

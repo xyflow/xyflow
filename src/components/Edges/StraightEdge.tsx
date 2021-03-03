@@ -4,6 +4,8 @@ import EdgeText from './EdgeText';
 import { getMarkerEnd, getMarkerStart } from './utils';
 import { EdgeProps } from '../../types';
 
+
+
 export default memo(
   ({
     sourceX,
@@ -22,6 +24,8 @@ export default memo(
     startArrowHeadType, 
     markerStartId
   }: EdgeProps) => {
+
+
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
