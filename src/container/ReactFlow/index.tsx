@@ -110,6 +110,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   zoomOnDoubleClick?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onEdgeContextMenu?: (event: MouseEvent, nodes: Edge) => void;
+  edgeUpdaterRadius?: number
 }
 
 const ReactFlow = ({
@@ -175,6 +176,7 @@ const ReactFlow = ({
   children,
   onEdgeUpdate,
   onEdgeContextMenu,
+  edgeUpdaterRadius = 10,
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
@@ -243,6 +245,7 @@ const ReactFlow = ({
           onSelectionContextMenu={onSelectionContextMenu}
           onEdgeUpdate={onEdgeUpdate}
           onEdgeContextMenu={onEdgeContextMenu}
+          edgeUpdaterRadius={edgeUpdaterRadius}
         />
         <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}

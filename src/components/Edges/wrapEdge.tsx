@@ -39,6 +39,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     handleEdgeUpdate,
     onConnectEdge,
     onContextMenu,
+    edgeUpdaterRadius,
   }: WrapEdgeProps): JSX.Element | null => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
@@ -151,6 +152,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
               position={sourcePosition}
               centerX={sourceX}
               centerY={sourceY}
+              radius={edgeUpdaterRadius}
             />
           </g>
         )}
@@ -189,6 +191,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
               position={targetPosition}
               centerX={targetX}
               centerY={targetY}
+              radius={edgeUpdaterRadius}
             />
           </g>
         )}
