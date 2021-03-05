@@ -86,8 +86,9 @@ const GraphView = ({
   onPaneContextMenu,
   onEdgeUpdate,
   onEdgeContextMenu,
+  edgeUpdaterRadius,
 }: GraphViewProps) => {
-  const isInitialised = useRef<boolean>(false);
+  const isInitialized = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
   const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
   const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
@@ -106,7 +107,7 @@ const GraphView = ({
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
   useEffect(() => {
-    if (!isInitialised.current && initialized) {
+    if (!isInitialized.current && initialized) {
       if (onLoad) {
         onLoad({
           fitView: (params = { padding: 0.1 }) => fitView(params),
@@ -120,7 +121,7 @@ const GraphView = ({
         });
       }
 
-      isInitialised.current = true;
+      isInitialized.current = true;
     }
   }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView, initialized]);
 
@@ -264,6 +265,7 @@ const GraphView = ({
         onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
         onEdgeContextMenu={onEdgeContextMenu}
+        edgeUpdaterRadius={edgeUpdaterRadius}
       />
     </FlowRenderer>
   );

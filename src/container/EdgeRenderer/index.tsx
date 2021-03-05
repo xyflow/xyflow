@@ -30,6 +30,7 @@ interface EdgeRendererProps {
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onEdgeContextMenu?: (event: React.MouseEvent, element: Edge) => void;
+  edgeUpdaterRadius?: number;
 }
 
 interface EdgeWrapperProps {
@@ -165,6 +166,7 @@ const Edge = ({
       onConnectEdge={onConnectEdge}
       handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
       onContextMenu={props.onEdgeContextMenu}
+      edgeUpdaterRadius={props.edgeUpdaterRadius}
     />
   );
 };
