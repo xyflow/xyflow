@@ -43,6 +43,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
   }: WrapEdgeProps): JSX.Element | null => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
+    const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
     const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
     const connectionMode = useStoreState((state) => state.connectionMode);
 
@@ -82,6 +83,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         if (elementsSelectable) {
+          unsetNodesSelection();
           addSelectedElements(edgeElement);
         }
 
@@ -148,12 +150,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <EdgeAnchor
-              position={sourcePosition}
-              centerX={sourceX}
-              centerY={sourceY}
-              radius={edgeUpdaterRadius}
-            />
+            <EdgeAnchor position={sourcePosition} centerX={sourceX} centerY={sourceY} radius={edgeUpdaterRadius} />
           </g>
         )}
         <EdgeComponent
@@ -187,12 +184,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             onMouseEnter={onEdgeUpdaterMouseEnter}
             onMouseOut={onEdgeUpdaterMouseOut}
           >
-            <EdgeAnchor
-              position={targetPosition}
-              centerX={targetX}
-              centerY={targetY}
-              radius={edgeUpdaterRadius}
-            />
+            <EdgeAnchor position={targetPosition} centerX={targetX} centerY={targetY} radius={edgeUpdaterRadius} />
           </g>
         )}
       </g>
