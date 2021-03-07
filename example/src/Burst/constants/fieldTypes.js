@@ -90,12 +90,12 @@ export const dynamoDbDataType = [
 ]
 
 export const optionFamilySubtypes = {
-    text, 
-    number,
-    decimal,
-    date, 
-    boolean,
-    relation,
-    list, // need a subtype advanced
-    object // need an object builder
+    text: {}, 
+    number: {},
+    decimal: {},
+    date: {}, 
+    boolean: {},
+    relation: {},
+    list: {}, // need a subtype advanced
+    object: {} // need an object builder
 }
