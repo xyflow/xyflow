@@ -1,16 +1,48 @@
-import React, { useState } from 'react';
+import React, { createElement, useState } from 'react';
 import ReactFlow, { ReactFlowProvider, addEdge, removeElements, Controls, MiniMap,} from 'react-flow-renderer';
-import { Accordion, AccordionSummary, AccordionDetails, Button } from '@material-ui/core'
 import Sidebar from './Sidebar';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { options } from './constants/fieldTypes'
+import makeId from './utils/makeId'
 
 import './dnd.css';
+
 
 /* TODO 
   on subconnection doubleclick
 */
 
-const options = ['text', 'number', 'date', 'boolean', 'relation']
+
+
+function assignSelected (node, selected, elements) {
+  if(!node && elements[selected] && !elements[selected].target && !elements[selected].source) {
+    return elements[selected]
+  }
+  return node
+}
+
+
+function createElementsFromArray(els) {
+  return els.reduce((acc, n) => {
+    return {
+      ...acc,
+      [n.id]: n
+    }
+  }, {})
+}
+
+function reReduceElements(els, cb) {
+  return Object.values(els).reduce((acc, el) => {
+    const newAcc = cb(acc, el)
+    if(newAcc) {
+      return newAcc
+    }
+    return {
+      ...acc,
+      [el.id]: el
+    }
+  }, {})
+}
+
 const initialElements = { 1: { 
   id: '1', 
   type: 'entity', 
@@ -20,21 +52,13 @@ const initialElements = { 1: {
   position: { x: 250, y: 5 } } 
 };
 
-function makeid(length) {
-  var result           = '';
-  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for ( var i = 0; i < length; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
 
 let nodeId = 0;
 const getId = () => `dndnode_${nodeId++}`;
 
 const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  // the id of a selected node or connection
   const [selected, setSelected] = useState(null);
   const [elements, setElements] = useState(initialElements);
   const [error, setError] = useState(null);
@@ -56,27 +80,26 @@ const DnDFlow = () => {
     }
     setElements((els) => 
     {
-      return addEdge({ ...newConnection, startArrowHeadType: 'one_to_one_start', relationType: 'one-to-one', type: 'smoothstep' }, Object.values(els)).reduce((acc, n) => {
-        return {
-          ...acc,
-          [n.id]: n
-        }
-      }, {})
+      return createElementsFromArray(addEdge(
+        { 
+          ...newConnection, 
+          startArrowHeadType: 'one_to_one_start', 
+          relationType: 'one-to-one', 
+          type: 'smoothstep' }, 
+          Object.values(els)
+        )
+      )
     });
   };
   console.log(elements)
+
   const onElementsRemove = (elementsToRemove) => 
   {
-    if(elementsToRemove.find(({id}) => selected.id === id)) {
+    if(elementsToRemove.find(({id}) => selected === id)) {
       setSelected(() => null)
     }
     setElements((els) => {
-      return removeElements(elementsToRemove, Object.values(els)).reduce((acc, n) => {
-        return {
-          ...acc,
-          [n.id]: n
-        }
-      }, {})
+      return createElementsFromArray(removeElements(elementsToRemove, Object.values(els)))
     });
   }
 
@@ -89,12 +112,10 @@ const DnDFlow = () => {
 
   const onDrop = (event) => {
     event.preventDefault();
-
     const type = event.dataTransfer.getData('application/reactflow');
     const position = reactFlowInstance.project({ x: event.clientX, y: event.clientY - 40 });
     const id = getId()
     const label = type === 'entity' ? `Table${nodeId}`: `${type} node`
-
     const newNode = {
       id,
       type,
@@ -107,11 +128,9 @@ const DnDFlow = () => {
   };
   
   const onAddField = (event, node) => {
-    if(!node && selected && !selected.target && !selected.source) {
-      node = selected
-    }
+    node = assignSelected(node, selected, elements);
     setElements((elements) => {
-      const randomName = makeid(8)
+      const randomName = makeId(8)
       return {
         ...elements,
         [node.id]: {
@@ -119,7 +138,10 @@ const DnDFlow = () => {
           data: {
             ...elements[node.id].data,
             fields: elements[node.id]?.data?.fields ? 
-            [...elements[node.id]?.data?.fields, { name: `field-${randomName}`, value: '', type: 'text'}] : 
+            [
+              ...elements[node.id]?.data?.fields, 
+              { name: `field-${randomName}`, value: '', type: 'text'}
+            ] : 
             [{ name: `field-${randomName}`, value: '', type: 'text'}]
           }
         }
@@ -127,12 +149,10 @@ const DnDFlow = () => {
     })
   }
 
+
   const onRemoveField = (event, node) => {
     const id = event.target.id.replace('remove-', '')
-
-     if(!node && selected && !selected.target && !selected.source) {
-      node = elements[selected.id]
-    }
+    node = assignSelected(node, selected, elements);
     const newNode ={
       ...node,
       data: {
@@ -145,18 +165,13 @@ const DnDFlow = () => {
         }).filter((field) => field)
       }
     }
-    setSelected(() => newNode)
+
     setElements((els) => {
-  
-      const newEls = Object.values(els).reduce((acc, el) => {
+      const newEls = reReduceElements(els, (acc, el) => {
         if(el.targetHandle?.includes(id)) {
           return acc
         }
-        return {
-          ...acc,
-          [el.id]: el
-        }
-      }, {})
+      })
       return {
         ...newEls,
         [node.id]: newNode
@@ -165,9 +180,7 @@ const DnDFlow = () => {
   }
 
   const onTitleChange = (event, node) => {
-    if(!node && selected && !selected.target && !selected.source) {
-      node = selected
-    }
+    node = assignSelected(node, selected, elements);
     setElements((els) => {
       return {
         ...els,
@@ -183,26 +196,8 @@ const DnDFlow = () => {
     })
   }
 
-  const onRelationshipLabelChange = (event) => {
-    const newNode = {
-      ...elements[selected.id],
-      label: event.target.value
-    }
-    setSelected(() => newNode)
-    setElements((els) => {
-      return {
-        ...els,
-        [newNode.id]: newNode
-      }
-    })
-  }
-
-
   const onFieldChange = (event, node) => {
-
-    if(!node && selected && !selected.target && !selected.source) {
-      node = selected
-    }
+    node = assignSelected(node, selected, elements);
     const name = event.target.name
     const slicedName = name.slice(name.length - 5, name.length)
     const isType = slicedName === '-type'
@@ -226,21 +221,15 @@ const DnDFlow = () => {
         })
       }
     }
-    
     setElements((els) => {
       let newEls = els
       if(removeConections) {
-        newEls = Object.values(els).reduce((acc, el) => {
+        newEls = reReduceElements(els, (acc, el) => {
           if(el.targetHandle?.includes(removeConections)) {
             return acc
           }
-          return {
-            ...acc,
-            [el.id]: el
-          }
-        }, {})
+        })
       }
-
       return {
         ...newEls,
         [node.id]: newNode
@@ -254,73 +243,11 @@ const DnDFlow = () => {
       setSelected(() => null)
     }
     else {
-      setSelected(() => elements[els[0].id])
+      setSelected(() => els[0].id)
     }
   }
 
-  const handleSwap = (event) => {
-    const swappedHandles = {
-      sourceHandle: selected.targetHandle,
-      targetHandle: selected.sourceHandle,
-      source: selected.target,
-      target: selected.source,
 
-    }
-    const newNode = { ...elements[selected.id], ...swappedHandles }
-    setSelected(() => newNode)
-    setElements((els) => ({...els, [selected.id]: newNode }))
-
-  }
-
-  const onRelationshipTypeChange = (event) => {
-    let arrows;
-    const r = event.target.value.toLowerCase()
-    switch(r){
-      case 'one-to-one': {
-        arrows = {
-          startArrowHeadType: 'one_to_one_start',
-          arrowHeadType: null
-        }
-        break;
-      }
-      case 'many-to-one': {
-        arrows = {
-          arrowHeadType: 'one_to_many_end',
-          startArrowHeadType: null
-        }
-        break;
-      }
-      case 'one-to-many': {
-        arrows = {
-          arrowHeadType: null,
-          startArrowHeadType: 'one_to_many_start'
-        }
-        break;
-      }
-      case 'many-to-many': {
-        arrows = {
-          startArrowHeadType: 'one_to_many_end',
-          arrowHeadType: 'one_to_many_start',
-        }
-        break;
-      }
-      default: 
-        arrows = null
-    }
-    const newSelected = {
-      ...selected,
-      relationType: event.target.value.toLowerCase(),
-      ...arrows
-    }
-    setSelected(() => newSelected)
-    setElements((els) => {
-      return {
-        ...els,
-        [selected.id]: newSelected
-      }
-    })
-    
-  }
 
   // fields can only connect to nodes for now
   // additionally the field connection end can only the source
@@ -367,9 +294,9 @@ const DnDFlow = () => {
     }
     return false
   }
+
   return (
     <div className="dndflow">
-
         <ReactFlowProvider>
         <div className="reactflow-wrapper">
           <ReactFlow
@@ -392,99 +319,19 @@ const DnDFlow = () => {
             <Controls />
           </ReactFlow>
         </div>
-        <Sidebar>
-        {error && error}
-        {!selected && (
-        <>
-          <Accordion className="sidebar-options-panel">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
-                  Database Options
-              </AccordionSummary>
-          </Accordion>
-          <Accordion className="sidebar-options-panel">
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
-              API Options
-            </AccordionSummary>
-          </Accordion>
-        </>)}
-        {selected && !selected.target && !selected.source &&
-          <div>
-            <h4>Entity Options</h4>
-            <div>
-              <label htmlFor="table-name" className="sidebar-label">Table Name</label>
-              <input id="table-name" className="sidebar-input" name="title" onChange={onTitleChange} value={elements[selected.id].data.label}/>
-            </div>
-            <div>
-            <Accordion className="sidebar-options-panel">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
-                  Database Options
-              </AccordionSummary>
-            </Accordion>
-            <Accordion className="sidebar-options-panel">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="sidebar-options-panel-summary">
-                  API Options
-              </AccordionSummary>
-            </Accordion>
-            <label htmlFor="fields" className="sidebar-label">Fields</label>
-              {
-                elements[selected.id].data?.fields?.map((field) => {
-                  return (
-                    <Accordion key={`${selected.id}-${field.name}`} >
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <button onClick={onRemoveField} id={`remove-${field.name}`}>-</button>
-                        <span className="accordion-summary-text">
-                          <b>{`${field.value}`}</b>
-                          <i>:{` ${field.type}`}</i>
-                        </span>
-                      </AccordionSummary>
-                      <AccordionDetails className="accordion-details">
-                        <label htmlFor={`${selected.id}-${field.name}`} className="accordion-details-label">Column Name</label>
-                        <input id={`${selected.id}-${field.name}`} name={field.name} className="accordion-input" value={field.value} onChange={onFieldChange}/>
-                        <br/>
-                        <label htmlFor={`${selected.id}-${field.name}-type`} className="accordion-details-label">Data Type</label>
-                        <select id={`${selected.id}-${field.name}-type`} name={`${field.name}-type`} className="accordion-select" value={field.type} onChange={onFieldChange}>
-                          {
-                            elements[selected.id]?.data?.options?.map((option) => {
-                              return <option key={`sidebar-${option}`}>{option}</option>
-                            })
-                          }
-                        </select>
-                      </AccordionDetails>
-                    </Accordion>
-                  )
-                })
-              }
-              <div>
-                <Button variant="contained" className="sidebar-addfield-button" disableElevation fullWidth onClick={onAddField}>Add Field</Button>
-              </div>
-        
-            </div>
-          </div> 
-          }
+        <Sidebar 
+          onAddField={onAddField}
+          onRemoveField={onRemoveField}
+          onFieldChange={onFieldChange}
+          error={error}
+          setError={setError}
+          onTitleChange={onTitleChange}
+          selected={selected}
+          elements={elements}
+          setSelected={setSelected}
+          setElements={setElements}
+        />
 
-      {selected && selected.target && selected.source &&
-      <div>
-          <div>
-            <h4>Relationship Options</h4>
-            <div>
-              <label htmlFor="relation-name" className="sidebar-label">Relation Name</label>
-              <input id="relation-name" className="sidebar-input" value={selected.label || ''} onChange={onRelationshipLabelChange}/>
-            </div>
-            {!selected.targetField && <div>
-              <label htmlFor="relation-type" className="sidebar-label">Relationship Type</label>
-              <select id="relation-type" className="sidebar-selection" value={selected.relationType} onChange={onRelationshipTypeChange}>
-                <option value="one-to-one">One-to-One</option>
-                <option value="one-to-many">One-to-Many</option>
-                <option value="many-to-many">Many-to-Many</option>
-              </select>
-            </div>}
-            {selected.relationType !== 'many-to-many' && !selected.targetField && <div>
-              <Button variant="contained" fullWidth onClick={handleSwap}>Swap Relationship</Button>
-            </div>
-            }
-          </div> 
-      </div> }
-          </Sidebar>
       </ReactFlowProvider>
     </div>
   );
