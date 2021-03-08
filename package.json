@@ -57,7 +57,7 @@
     "cypress": "^6.5.0",
     "postcss": "^8.2.6",
     "postcss-cli": "^8.3.1",
-    "postcss-nested": "^5.0.4",
+    "postcss-nested": "^5.0.5",
     "prettier": "2.2.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
