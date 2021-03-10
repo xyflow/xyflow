@@ -234,8 +234,8 @@ const ZoomPane = ({
           return false;
         }
 
-        // if the pane is not movable, we prevent dragging it with the mouse
-        if (!paneMoveable && event.type === 'mousedown') {
+        // if the pane is not movable, we prevent dragging it with mousestart or touchstart
+        if (!paneMoveable && (event.type === 'mousedown' || event.type === 'touchstart')) {
           return false;
         }
 
