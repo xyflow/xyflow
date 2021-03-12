@@ -29,7 +29,10 @@ interface EdgeRendererProps {
   markerEndId?: string;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: React.MouseEvent, element: Edge) => void;
+  onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
 }
 
@@ -166,6 +169,9 @@ const Edge = ({
       onConnectEdge={onConnectEdge}
       handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
       onContextMenu={props.onEdgeContextMenu}
+      onMouseEnter={props.onEdgeMouseEnter}
+      onMouseMove={props.onEdgeMouseMove}
+      onMouseLeave={props.onEdgeMouseLeave}
       edgeUpdaterRadius={props.edgeUpdaterRadius}
     />
   );

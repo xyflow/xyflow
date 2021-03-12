@@ -39,6 +39,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     handleEdgeUpdate,
     onConnectEdge,
     onContextMenu,
+    onMouseEnter,
+    onMouseMove,
+    onMouseLeave,
     edgeUpdaterRadius,
   }: WrapEdgeProps): JSX.Element | null => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
@@ -99,6 +102,27 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       [edgeElement, onContextMenu]
     );
 
+    const onEdgeMouseEnter = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        onMouseEnter?.(event, edgeElement);
+      },
+      [edgeElement, onContextMenu]
+    );
+
+    const onEdgeMouseMove = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        onMouseMove?.(event, edgeElement);
+      },
+      [edgeElement, onContextMenu]
+    );
+
+    const onEdgeMouseLeave = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+        onMouseLeave?.(event, edgeElement);
+      },
+      [edgeElement, onContextMenu]
+    );
+
     const handleEdgeUpdater = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
         const nodeId = isSourceHandle ? target : source;
@@ -143,7 +167,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     }
 
     return (
-      <g className={edgeClasses} onClick={onEdgeClick} onContextMenu={onEdgeContextMenu}>
+      <g
+        className={edgeClasses}
+        onClick={onEdgeClick}
+        onContextMenu={onEdgeContextMenu}
+        onMouseEnter={onEdgeMouseEnter}
+        onMouseMove={onEdgeMouseMove}
+        onMouseLeave={onEdgeMouseLeave}
+      >
         {handleEdgeUpdate && (
           <g
             onMouseDown={onEdgeUpdaterSourceMouseDown}

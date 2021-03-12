@@ -86,6 +86,9 @@ const GraphView = ({
   onPaneContextMenu,
   onEdgeUpdate,
   onEdgeContextMenu,
+  onEdgeMouseEnter,
+  onEdgeMouseMove,
+  onEdgeMouseLeave,
   edgeUpdaterRadius,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
@@ -265,6 +268,9 @@ const GraphView = ({
         onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
         onEdgeContextMenu={onEdgeContextMenu}
+        onEdgeMouseEnter={onEdgeMouseEnter}
+        onEdgeMouseMove={onEdgeMouseMove}
+        onEdgeMouseLeave={onEdgeMouseLeave}
         edgeUpdaterRadius={edgeUpdaterRadius}
       />
     </FlowRenderer>

@@ -109,8 +109,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: MouseEvent, nodes: Edge) => void;
-  edgeUpdaterRadius?: number
+  onEdgeContextMenu?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeMouseEnter?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeMouseMove?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeMouseLeave?: (event: MouseEvent, edge: Edge) => void;
+  edgeUpdaterRadius?: number;
 }
 
 const ReactFlow = ({
@@ -176,6 +179,9 @@ const ReactFlow = ({
   children,
   onEdgeUpdate,
   onEdgeContextMenu,
+  onEdgeMouseEnter,
+  onEdgeMouseMove,
+  onEdgeMouseLeave,
   edgeUpdaterRadius = 10,
   ...rest
 }: ReactFlowProps) => {
@@ -245,6 +251,9 @@ const ReactFlow = ({
           onSelectionContextMenu={onSelectionContextMenu}
           onEdgeUpdate={onEdgeUpdate}
           onEdgeContextMenu={onEdgeContextMenu}
+          onEdgeMouseEnter={onEdgeMouseEnter}
+          onEdgeMouseMove={onEdgeMouseMove}
+          onEdgeMouseLeave={onEdgeMouseLeave}
           edgeUpdaterRadius={edgeUpdaterRadius}
         />
         <ElementUpdater elements={elements} />

@@ -41,6 +41,9 @@ const onLoad = (reactFlowInstance: OnLoadParams) => {
 
 const onMoveEnd = (transform?: FlowTransform) => console.log('zoom/move end', transform);
 const onEdgeContextMenu = (_: MouseEvent, edge: Edge) => console.log('edge context menu', edge);
+const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
+const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('edge mouse move', edge);
+const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
 
 const initialElements: Elements = [
   {
@@ -179,6 +182,9 @@ const OverviewFlow = () => {
       snapToGrid={true}
       snapGrid={snapGrid}
       onEdgeContextMenu={onEdgeContextMenu}
+      onEdgeMouseEnter={onEdgeMouseEnter}
+      onEdgeMouseMove={onEdgeMouseMove}
+      onEdgeMouseLeave={onEdgeMouseLeave}
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
