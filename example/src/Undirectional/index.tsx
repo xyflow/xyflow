@@ -11,6 +11,7 @@ import ReactFlow, {
   ElementId,
   ConnectionLineType,
   ConnectionMode,
+  updateEdge,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
@@ -30,6 +31,12 @@ const initialElements: Elements = [
     type: 'custom',
     position: { x: 450, y: 100 },
   },
+  {
+    id: 'e1-2',
+    source: '2',
+    target: '3',
+    sourceHandle: 'right',
+  },
 ];
 
 const nodeTypes: NodeTypesType = {
@@ -44,6 +51,8 @@ const UpdateNodeInternalsFlow = () => {
   const onConnect = (params: Connection | Edge) =>
     setElements((els) => addEdge({ ...params, type: 'smoothstep' }, els));
   const { project } = useZoomPanHelper();
+  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
+    setElements((els) => updateEdge(oldEdge, newConnection, els));
 
   const onPaneClick = useCallback(
     (evt) =>
@@ -65,6 +74,7 @@ const UpdateNodeInternalsFlow = () => {
       onPaneClick={onPaneClick}
       connectionLineType={ConnectionLineType.SmoothStep}
       connectionMode={ConnectionMode.Loose}
+      onEdgeUpdate={onEdgeUpdate}
     />
   );
 };
