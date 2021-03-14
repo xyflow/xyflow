@@ -98,12 +98,14 @@ export function onMouseDown(
   onConnectEnd?: OnConnectEndFunc
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
+  const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+  const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
 
   if (!reactFlowNode) {
     return;
   }
 
-  const handleType = isTarget ? 'target' : 'source';
+  const handleType = elementBelowIsTarget ? 'target' : 'source';
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 
