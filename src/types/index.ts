@@ -197,6 +197,7 @@ export interface NodeComponentProps<T = any> {
   targetPosition?: Position;
   sourcePosition?: Position;
   onClick?: (node: Node) => void;
+  onNodeDoubleClick?: (node: Node) => void;
   onMouseEnter?: (node: Node) => void;
   onMouseMove?: (node: Node) => void;
   onMouseLeave?: (node: Node) => void;
@@ -221,6 +222,7 @@ export interface WrapNodeProps<T = any> {
   isConnectable: boolean;
   selectNodesOnDrag: boolean;
   onClick?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
   onMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
   onMouseMove?: (event: ReactMouseEvent, node: Node) => void;
   onMouseLeave?: (event: ReactMouseEvent, node: Node) => void;

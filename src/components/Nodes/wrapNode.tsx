@@ -20,6 +20,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     onMouseMove,
     onMouseLeave,
     onContextMenu,
+    onNodeDoubleClick,
     onNodeDragStart,
     onNodeDrag,
     onNodeDragStop,
@@ -169,6 +170,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging, selected]
     );
 
+    const onNodeDoubleClickHandler = useCallback((event: MouseEvent) => {
+      onNodeDoubleClick?.(event, node)
+    }, [node, onNodeDoubleClick])
+
     useEffect(() => {
       if (nodeElement.current && !isHidden) {
         updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
@@ -220,6 +225,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onMouseLeave={onMouseLeaveHandler}
           onContextMenu={onContextMenuHandler}
           onClick={onSelectNodeHandler}
+          onDoubleClick={onNodeDoubleClickHandler}
           data-id={id}
         >
           <Provider value={id}>

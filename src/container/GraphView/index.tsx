@@ -35,6 +35,7 @@ const GraphView = ({
   onMoveEnd,
   onLoad,
   onElementClick,
+  onNodeDoubleClick,
   onNodeMouseEnter,
   onNodeMouseMove,
   onNodeMouseLeave,
@@ -244,6 +245,7 @@ const GraphView = ({
       <NodeRenderer
         nodeTypes={nodeTypes}
         onElementClick={onElementClick}
+        onNodeDoubleClick={onNodeDoubleClick}
         onNodeMouseEnter={onNodeMouseEnter}
         onNodeMouseMove={onNodeMouseMove}
         onNodeMouseLeave={onNodeMouseLeave}
