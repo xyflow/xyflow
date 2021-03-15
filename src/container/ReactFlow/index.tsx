@@ -115,6 +115,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onEdgeMouseMove?: (event: MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
+  document?: Document | ShadowRoot;
   nodeTypesId?: string;
   edgeTypesId?: string;
 }
@@ -189,6 +190,7 @@ const ReactFlow = ({
   edgeUpdaterRadius = 10,
   nodeTypesId = '1',
   edgeTypesId = '1',
+  document = window.document,
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypesId]);
@@ -262,6 +264,7 @@ const ReactFlow = ({
           onEdgeMouseMove={onEdgeMouseMove}
           onEdgeMouseLeave={onEdgeMouseLeave}
           edgeUpdaterRadius={edgeUpdaterRadius}
+          document={document}
         />
         <ElementUpdater elements={elements} />
         {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}

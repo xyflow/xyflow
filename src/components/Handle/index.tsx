@@ -28,6 +28,7 @@ const Handle: FC<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
   const onConnectStop = useStoreState((state) => state.onConnectStop);
   const onConnectEnd = useStoreState((state) => state.onConnectEnd);
   const connectionMode = useStoreState((state) => state.connectionMode);
+  const document = useStoreState(state => state.document);
   const handleId = id || null;
   const isTarget = type === 'target';
 
@@ -53,7 +54,8 @@ const Handle: FC<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
         connectionMode,
         onConnectStart,
         onConnectStop,
-        onConnectEnd
+        onConnectEnd,
+        document
       );
     },
     [
@@ -68,6 +70,7 @@ const Handle: FC<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
       onConnectStart,
       onConnectStop,
       onConnectEnd,
+      document
     ]
   );
 

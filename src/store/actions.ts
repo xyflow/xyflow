@@ -42,6 +42,11 @@ export const setOnConnectEnd = (onConnectEnd: OnConnectEndFunc) =>
     onConnectEnd,
   });
 
+export const setDocument = (document: Document | ShadowRoot) =>
+  createAction(constants.SET_DOCUMENT, {
+    document
+  })
+
 export const setElements = (elements: Elements) => createAction(constants.SET_ELEMENTS, elements);
 
 export const updateNodeDimensions = (updates: NodeDimensionUpdate[]) =>
@@ -160,4 +165,5 @@ export type ReactFlowAction = ReturnType<
   | typeof setMultiSelectionActive
   | typeof setConnectionMode
   | typeof setNodeExtent
+  | typeof setDocument
 >;

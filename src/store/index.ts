@@ -3,6 +3,7 @@ import configureStore from './configure-store';
 import { ReactFlowState, ConnectionMode } from '../types';
 
 export const initialState: ReactFlowState = {
+  document: window.document,
   width: 0,
   height: 0,
   transform: [0, 0, 1],

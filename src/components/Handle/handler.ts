@@ -31,7 +31,8 @@ function checkElementBelowIsValid(
   isTarget: boolean,
   nodeId: ElementId,
   handleId: ElementId | null,
-  isValidConnection: ValidConnectionFunc
+  isValidConnection: ValidConnectionFunc,
+  document: Document | ShadowRoot
 ) {
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
@@ -95,7 +96,8 @@ export function onMouseDown(
   connectionMode: ConnectionMode,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
-  onConnectEnd?: OnConnectEndFunc
+  onConnectEnd?: OnConnectEndFunc,
+  document: Document | ShadowRoot = window.document
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
@@ -131,7 +133,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      document
     );
 
     if (!isHoveringHandle) {
@@ -154,7 +157,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      document
     );
 
     onConnectStop?.(event);
@@ -168,10 +172,10 @@ export function onMouseDown(
     resetRecentHandle(recentHoveredHandle);
     setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
+    document.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+    document.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
   }
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  document.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+  document.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
 }
