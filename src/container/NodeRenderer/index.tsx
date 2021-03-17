@@ -7,6 +7,7 @@ interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
   onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
+  onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
   onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
   onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
   onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
@@ -93,6 +94,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
             onContextMenu={props.onNodeContextMenu}
+            onNodeDoubleClick={props.onNodeDoubleClick}
             onNodeDragStart={props.onNodeDragStart}
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
