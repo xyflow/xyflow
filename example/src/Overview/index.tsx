@@ -21,6 +21,7 @@ import ReactFlow, {
 const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDoubleClick = (_: MouseEvent, node: Node) => console.log('node double click', node);
 const onPaneClick = (event: MouseEvent) => console.log('pane click', event);
 const onPaneScroll = (event?: MouseEvent) => console.log('pane scroll', event);
 const onPaneContextMenu = (event: MouseEvent) => console.log('pane context menu', event);
@@ -171,6 +172,7 @@ const OverviewFlow = () => {
       onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
+      onNodeDoubleClick={onNodeDoubleClick}
       onSelectionDragStart={onSelectionDragStart}
       onSelectionDrag={onSelectionDrag}
       onSelectionDragStop={onSelectionDragStop}

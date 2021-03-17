@@ -136,6 +136,7 @@ const ReactFlow = ({
   onNodeMouseMove,
   onNodeMouseLeave,
   onNodeContextMenu,
+  onNodeDoubleClick,
   onNodeDragStart,
   onNodeDrag,
   onNodeDragStop,
@@ -203,6 +204,7 @@ const ReactFlow = ({
           onNodeMouseMove={onNodeMouseMove}
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
+          onNodeDoubleClick={onNodeDoubleClick}
           onNodeDragStart={onNodeDragStart}
           onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
