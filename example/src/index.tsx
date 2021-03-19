@@ -15,6 +15,7 @@ import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
 import CustomConnectionLine from './CustomConnectionLine';
 import NodeTypeChange from './NodeTypeChange';
+import NodeTypesObjectChange from './NodeTypesObjectChange';
 import UpdatableEdge from './UpdatableEdge';
 import UpdateNode from './UpdateNode';
 import SaveRestore from './SaveRestore';
@@ -79,6 +80,10 @@ const routes = [
   {
     path: '/nodetype-change',
     component: NodeTypeChange,
+  },
+  {
+    path: '/nodetypesobject-change',
+    component: NodeTypesObjectChange,
   },
   {
     path: '/updatable-edge',

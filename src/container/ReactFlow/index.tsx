@@ -115,6 +115,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onEdgeMouseMove?: (event: MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
+  nodeTypesId?: string;
+  edgeTypesId?: string;
 }
 
 const ReactFlow = ({
@@ -185,10 +187,12 @@ const ReactFlow = ({
   onEdgeMouseMove,
   onEdgeMouseLeave,
   edgeUpdaterRadius = 10,
+  nodeTypesId = '1',
+  edgeTypesId = '1',
   ...rest
 }: ReactFlowProps) => {
-  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
-  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
+  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypesId]);
+  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypesId]);
   const reactFlowClasses = cc(['react-flow', className]);
 
   return (
