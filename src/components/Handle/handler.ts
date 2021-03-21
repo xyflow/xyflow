@@ -99,9 +99,10 @@ export function onMouseDown(
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
-  const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
+  const elementBelowIsTarget = elementBelow?.classList.contains('target');
+  const elementBelowIsSource = elementBelow?.classList.contains('source');
 
-  if (!reactFlowNode) {
+  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource)) {
     return;
   }
 
