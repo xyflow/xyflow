@@ -11,6 +11,7 @@ import {
   SetConnectionId,
   Connection,
 } from '../../types';
+import { getInitialDocument } from '../../utils/document';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 export type SetSourceIdFunc = (params: SetConnectionId) => void;
@@ -97,8 +98,12 @@ export function onMouseDown(
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
   onConnectEnd?: OnConnectEndFunc,
-  document: Document | ShadowRoot = window.document
+  document: Document | ShadowRoot | undefined = getInitialDocument()
 ): void {
+  if(!document) {
+    return;
+  }
+
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
@@ -121,7 +126,7 @@ export function onMouseDown(
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
-  function onMouseMove(event: MouseEvent) {
+  const onMouseMove = (event: MouseEvent) => {
     setPosition({
       x: event.clientX - containerBounds.left,
       y: event.clientY - containerBounds.top,
@@ -148,9 +153,9 @@ export function onMouseDown(
       elementBelow.classList.add('react-flow__handle-connecting');
       elementBelow.classList.toggle('react-flow__handle-valid', isValid);
     }
-  }
+  };
 
-  function onMouseUp(event: MouseEvent) {
+  const onMouseUp = (event: MouseEvent) => {
     const { connection, isValid } = checkElementBelowIsValid(
       event,
       connectionMode,
@@ -174,7 +179,7 @@ export function onMouseDown(
 
     document.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
     document.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
-  }
+  };
 
   document.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
   document.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);

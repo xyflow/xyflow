@@ -35,6 +35,7 @@ import {
 
 import '../../style.css';
 import '../../theme-default.css';
+import { getInitialDocument } from '../../utils/document';
 
 const defaultNodeTypes = {
   input: InputNode,
@@ -190,7 +191,7 @@ const ReactFlow = ({
   edgeUpdaterRadius = 10,
   nodeTypesId = '1',
   edgeTypesId = '1',
-  document = window.document,
+  document = getInitialDocument(),
   ...rest
 }: ReactFlowProps) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypesId]);

@@ -1,9 +1,10 @@
 import configureStore from './configure-store';
 
 import { ReactFlowState, ConnectionMode } from '../types';
+import { getInitialDocument } from '../utils/document';
 
 export const initialState: ReactFlowState = {
-  document: window.document,
+  document: getInitialDocument(),
   width: 0,
   height: 0,
   transform: [0, 0, 1],
