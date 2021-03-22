@@ -101,8 +101,9 @@ export function onMouseDown(
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
   const elementBelowIsSource = elementBelow?.classList.contains('source');
+  const elementBelowIsUpdater = elementBelow?.classList.contains('react-flow__edgeupdater');
 
-  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource)) {
+  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource && !elementBelowIsUpdater)) {
     return;
   }
 
