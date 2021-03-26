@@ -25,6 +25,7 @@ import SwitchFlows from './Switch';
 import UseZoomPanHelper from './UseZoomPanHelper';
 import UseUpdateNodeInternals from './UseUpdateNodeInternals';
 import Undirectional from './Undirectional';
+import MultiFlows from './MultiFlows';
 
 import './index.css';
 
@@ -120,6 +121,10 @@ const routes = [
   {
     path: '/undirectional',
     component: Undirectional,
+  },
+  {
+    path: '/multiflows',
+    component: MultiFlows,
   },
 ];
 
