@@ -1,4 +1,4 @@
-import React, { memo, useCallback, HTMLAttributes } from 'react';
+import React, { memo, useCallback, HTMLAttributes, FC } from 'react';
 import cc from 'classcat';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -23,7 +23,15 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   onInteractiveChange?: (interactiveStatus: boolean) => void;
 }
 
-const Controls = ({
+export interface ControlButtonProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const ControlButton: FC<ControlButtonProps> = ({ children, className, onClick }) => (
+  <div className={cc(['react-flow__controls-button', className])} onClick={onClick}>
+    {children}
+  </div>
+);
+
+const Controls: FC<ControlProps> = ({
   style,
   showZoom = true,
   showFitView = true,
@@ -34,7 +42,8 @@ const Controls = ({
   onFitView,
   onInteractiveChange,
   className,
-}: ControlProps) => {
+  children,
+}) => {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
 
@@ -65,27 +74,25 @@ const Controls = ({
     <div className={mapClasses} style={style}>
       {showZoom && (
         <>
-          <div className="react-flow__controls-button react-flow__controls-zoomin" onClick={onZoomInHandler}>
+          <ControlButton onClick={onZoomInHandler} className="react-flow__controls-zoomin">
             <PlusIcon />
-          </div>
-          <div className="react-flow__controls-button react-flow__controls-zoomout" onClick={onZoomOutHandler}>
+          </ControlButton>
+          <ControlButton onClick={onZoomOutHandler} className="react-flow__controls-zoomout">
             <MinusIcon />
-          </div>
+          </ControlButton>
         </>
       )}
       {showFitView && (
-        <div className="react-flow__controls-button react-flow__controls-fitview" onClick={onFitViewHandler}>
+        <ControlButton className="react-flow__controls-fitview" onClick={onFitViewHandler}>
           <FitviewIcon />
-        </div>
+        </ControlButton>
       )}
       {showInteractive && (
-        <div
-          className="react-flow__controls-button react-flow__controls-interactive"
-          onClick={onInteractiveChangeHandler}
-        >
+        <ControlButton className="react-flow__controls-interactive" onClick={onInteractiveChangeHandler}>
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
-        </div>
+        </ControlButton>
       )}
+      {children}
     </div>
   );
 };
