@@ -124,7 +124,7 @@ export default memo(
     markerEndId,
     borderRadius = 5,
   }: EdgeSmoothStepProps) => {
-    const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
+    const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
 
     const path = getSmoothStepPath({
       sourceX,
