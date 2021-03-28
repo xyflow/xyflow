@@ -35,6 +35,11 @@ const EdgeTypesFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       minZoom={0.2}
+      zoomOnScroll={false}
+      selectionKeyCode="a+s"
+      multiSelectionKeyCode={['ShiftLeft', 'ShiftRight']}
+      deleteKeyCode={['AltLeft+KeyD', 'Backspace']}
+      zoomActivationKeyCode="z"
     >
       <MiniMap />
       <Controls />
