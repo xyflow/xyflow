@@ -11,6 +11,7 @@ import {
   SetConnectionId,
   Connection,
 } from '../../types';
+import { getInitialDocument } from '../../utils/document';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 export type SetSourceIdFunc = (params: SetConnectionId) => void;
@@ -31,7 +32,8 @@ function checkElementBelowIsValid(
   isTarget: boolean,
   nodeId: ElementId,
   handleId: ElementId | null,
-  isValidConnection: ValidConnectionFunc
+  isValidConnection: ValidConnectionFunc,
+  document: Document | ShadowRoot
 ) {
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
@@ -95,8 +97,13 @@ export function onMouseDown(
   connectionMode: ConnectionMode,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
-  onConnectEnd?: OnConnectEndFunc
+  onConnectEnd?: OnConnectEndFunc,
+  document: Document | ShadowRoot | undefined = getInitialDocument()
 ): void {
+  if(!document) {
+    return;
+  }
+
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
@@ -119,7 +126,7 @@ export function onMouseDown(
   setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
-  function onMouseMove(event: MouseEvent) {
+  const onMouseMove = (event: MouseEvent) => {
     setPosition({
       x: event.clientX - containerBounds.left,
       y: event.clientY - containerBounds.top,
@@ -131,7 +138,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      document
     );
 
     if (!isHoveringHandle) {
@@ -145,16 +153,17 @@ export function onMouseDown(
       elementBelow.classList.add('react-flow__handle-connecting');
       elementBelow.classList.toggle('react-flow__handle-valid', isValid);
     }
-  }
+  };
 
-  function onMouseUp(event: MouseEvent) {
+  const onMouseUp = (event: MouseEvent) => {
     const { connection, isValid } = checkElementBelowIsValid(
       event,
       connectionMode,
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      document
     );
 
     onConnectStop?.(event);
@@ -168,10 +177,10 @@ export function onMouseDown(
     resetRecentHandle(recentHoveredHandle);
     setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
+    document.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+    document.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
+  };
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  document.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+  document.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
 }
