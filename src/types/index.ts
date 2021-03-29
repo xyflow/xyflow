@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes } from 'react';
+import { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 export type ElementId = string;
@@ -63,7 +63,7 @@ export interface Edge<T = any> {
   target: ElementId;
   sourceHandle?: ElementId | null;
   targetHandle?: ElementId | null;
-  label?: string;
+  label?: string | ReactNode;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
@@ -84,7 +84,7 @@ export enum BackgroundVariant {
 
 export type HandleType = 'source' | 'target';
 
-export type NodeTypesType = { [key: string]: React.ReactNode };
+export type NodeTypesType = { [key: string]: ReactNode };
 
 export type EdgeTypesType = NodeTypesType;
 
@@ -102,7 +102,7 @@ export interface WrapEdgeProps<T = any> {
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
   selected: boolean;
   animated?: boolean;
-  label?: string;
+  label?: string | ReactNode;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
@@ -144,7 +144,7 @@ export interface EdgeProps<T = any> {
   animated?: boolean;
   sourcePosition: Position;
   targetPosition: Position;
-  label?: string;
+  label?: string | ReactNode;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
@@ -164,7 +164,7 @@ export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
 export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   x: number;
   y: number;
-  label?: string;
+  label?: string | ReactNode;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;

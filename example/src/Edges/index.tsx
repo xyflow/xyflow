@@ -43,7 +43,14 @@ const initialElements: Elements = [
     id: 'e5-6',
     source: '5',
     target: '6',
-    label: 'styled label',
+    label: (
+      <>
+        <tspan>i am using</tspan>
+        <tspan dy={10} x={0}>
+          {'<tspan>'}
+        </tspan>
+      </>
+    ),
     labelStyle: { fill: 'red', fontWeight: 700 },
     arrowHeadType: ArrowHeadType.Arrow,
   },
