@@ -334,7 +334,6 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_ELEMENTS_SELECTABLE:
     case constants.SET_MULTI_SELECTION_ACTIVE:
     case constants.SET_CONNECTION_MODE:
-    case constants.SET_DOCUMENT:
       return { ...state, ...action.payload };
     default:
       return state;

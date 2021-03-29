@@ -91,7 +91,6 @@ const GraphView = ({
   onEdgeMouseMove,
   onEdgeMouseLeave,
   edgeUpdaterRadius,
-  document,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -108,7 +107,6 @@ const GraphView = ({
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const setNodeExtent = useStoreActions((actions) => actions.setNodeExtent);
   const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
-  const setDocument = useStoreActions(actions => actions.setDocument);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
@@ -130,10 +128,6 @@ const GraphView = ({
       isInitialized.current = true;
     }
   }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView, initialized]);
-
-  useEffect(() => {
-    setDocument(document);
-  }, [document])
 
   useEffect(() => {
     if (onConnect) {
