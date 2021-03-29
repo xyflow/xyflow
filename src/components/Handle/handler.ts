@@ -1,5 +1,7 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
 
+import { getHostForElement } from '../../utils';
+
 import {
   ElementId,
   XYPosition,
@@ -31,9 +33,10 @@ function checkElementBelowIsValid(
   isTarget: boolean,
   nodeId: ElementId,
   handleId: ElementId | null,
-  isValidConnection: ValidConnectionFunc
+  isValidConnection: ValidConnectionFunc,
+  doc: Document | ShadowRoot
 ) {
-  const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+  const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
   const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
 
@@ -98,7 +101,14 @@ export function onMouseDown(
   onConnectEnd?: OnConnectEndFunc
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
-  const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+  // when react-flow is used inside a shadow root we can't use document
+  const doc = getHostForElement(event.target as HTMLElement);
+
+  if (!doc) {
+    return;
+  }
+
+  const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
   const elementBelowIsSource = elementBelow?.classList.contains('source');
   const elementBelowIsUpdater = elementBelow?.classList.contains('react-flow__edgeupdater');
@@ -131,7 +141,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      doc
     );
 
     if (!isHoveringHandle) {
@@ -154,7 +165,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      doc
     );
 
     onConnectStop?.(event);
@@ -168,10 +180,10 @@ export function onMouseDown(
     resetRecentHandle(recentHoveredHandle);
     setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
+    doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+    doc.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
   }
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  doc.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+  doc.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
 }
