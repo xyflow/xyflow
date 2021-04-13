@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
+import React, { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 export type ElementId = string;
@@ -100,6 +100,7 @@ export interface WrapEdgeProps<T = any> {
   type: string;
   data?: T;
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   selected: boolean;
   animated?: boolean;
   label?: string | ReactNode;

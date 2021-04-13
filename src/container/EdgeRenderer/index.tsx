@@ -25,6 +25,7 @@ interface EdgeRendererProps {
   connectionLineComponent?: ConnectionLineComponent;
   connectionMode?: ConnectionMode;
   onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
+  onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   arrowHeadColor: string;
   markerEndId?: string;
   onlyRenderVisibleElements: boolean;
@@ -173,6 +174,7 @@ const Edge = ({
       onMouseMove={props.onEdgeMouseMove}
       onMouseLeave={props.onEdgeMouseLeave}
       edgeUpdaterRadius={props.edgeUpdaterRadius}
+      onEdgeDoubleClick={props.onEdgeDoubleClick}
     />
   );
 };
