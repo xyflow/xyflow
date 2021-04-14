@@ -96,6 +96,13 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       [elementsSelectable, edgeElement, onClick]
     );
 
+    const onEdgeDoubleClickHandler = useCallback(
+      (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+        onEdgeDoubleClick?.(event, edgeElement);
+      },
+      [edgeElement, onEdgeDoubleClick]
+    );
+
     const onEdgeContextMenu = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         onContextMenu?.(event, edgeElement);
@@ -162,10 +169,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
     const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
-
-    const onEdgeDoubleClickHandler = useCallback((event: React.MouseEvent<SVGGElement, MouseEvent>) => {
-      onEdgeDoubleClick?.(event, edgeElement)
-    }, [edgeElement, onEdgeDoubleClick])
 
     if (isHidden) {
       return null;
