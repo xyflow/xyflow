@@ -36,7 +36,7 @@ const Background: FC<BackgroundProps> = ({
 
   const isLines = variant === BackgroundVariant.Lines;
   const bgColor = color ? color : defaultColors[variant];
-  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size, bgColor);
+  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size * scale, bgColor);
 
   return (
     <svg
