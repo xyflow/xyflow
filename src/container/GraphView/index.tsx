@@ -36,6 +36,7 @@ const GraphView = ({
   onLoad,
   onElementClick,
   onNodeDoubleClick,
+  onEdgeDoubleClick,
   onNodeMouseEnter,
   onNodeMouseMove,
   onNodeMouseLeave,
@@ -261,6 +262,7 @@ const GraphView = ({
       <EdgeRenderer
         edgeTypes={edgeTypes}
         onElementClick={onElementClick}
+        onEdgeDoubleClick={onEdgeDoubleClick}
         connectionLineType={connectionLineType}
         connectionLineStyle={connectionLineStyle}
         connectionLineComponent={connectionLineComponent}
