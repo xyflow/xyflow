@@ -64,7 +64,7 @@ const MiniMap = ({
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
-  const shapeRendering = !!window.chrome ?  "crispEdges" : "geometricPrecision";
+  const shapeRendering = (typeof window === "undefined" || !!window.chrome) ?  "crispEdges" : "geometricPrecision";
 
   return (
     <svg
