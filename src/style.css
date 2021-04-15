@@ -178,8 +178,4 @@
   z-index: 5;
   bottom: 10px;
   right: 10px;
-
-  &-node {
-    shape-rendering: crispedges;
-  }
 }
