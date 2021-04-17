@@ -232,6 +232,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         cancel=".nodrag"
         nodeRef={nodeElement}
         grid={grid}
+        enableUserSelectHack={false}
       >
         <div
           className={nodeClasses}

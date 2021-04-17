@@ -128,6 +128,7 @@ export default ({
         onDrag={(event, data) => onDrag(event as MouseEvent, data)}
         onStop={(event) => onStop(event as MouseEvent)}
         nodeRef={nodeRef}
+        enableUserSelectHack={false}
       >
         <div
           ref={nodeRef}
