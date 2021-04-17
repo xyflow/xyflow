@@ -17,6 +17,8 @@ export interface MiniMapProps extends HTMLAttributes<SVGSVGElement> {
   maskColor?: string;
 }
 
+declare const window: any;
+
 const defaultWidth = 200;
 const defaultHeight = 150;
 
@@ -62,6 +64,7 @@ const MiniMap = ({
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
+  const shapeRendering = (typeof window === "undefined" || !!window.chrome) ?  "crispEdges" : "geometricPrecision";
 
   return (
     <svg
@@ -86,6 +89,7 @@ const MiniMap = ({
             borderRadius={nodeBorderRadius}
             strokeColor={nodeStrokeColorFunc(node)}
             strokeWidth={nodeStrokeWidth}
+            shapeRendering={shapeRendering}
           />
         ))}
       <path
