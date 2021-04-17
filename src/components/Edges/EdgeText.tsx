@@ -11,6 +11,7 @@ const EdgeText: FC<EdgeTextProps> = ({
   labelBgStyle = {},
   labelBgPadding = [2, 4],
   labelBgBorderRadius = 2,
+  children,
   ...rest
 }) => {
   const edgeRef = useRef<SVGTextElement>(null);
@@ -50,6 +51,7 @@ const EdgeText: FC<EdgeTextProps> = ({
       <text className="react-flow__edge-text" y={edgeTextBbox.height / 2} dy="0.3em" ref={edgeRef} style={labelStyle}>
         {label}
       </text>
+      {children}
     </g>
   );
 };
