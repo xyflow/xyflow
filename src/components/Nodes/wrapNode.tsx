@@ -53,11 +53,25 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       () => ({
         zIndex: selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
-        pointerEvents: isSelectable || isDraggable || onClick ? 'all' : 'none',
-        opacity: isInitialized ? 1 : 0, // prevents jumping of nodes on start
+        pointerEvents:
+          isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
+        // prevents jumping of nodes on start
+        opacity: isInitialized ? 1 : 0,
         ...style,
       }),
-      [selected, xPos, yPos, isSelectable, isDraggable, onClick, isInitialized, style]
+      [
+        selected,
+        xPos,
+        yPos,
+        isSelectable,
+        isDraggable,
+        onClick,
+        isInitialized,
+        style,
+        onMouseEnter,
+        onMouseMove,
+        onMouseLeave,
+      ]
     );
     const onMouseEnterHandler = useMemo(() => {
       if (!onMouseEnter || isDragging) {
@@ -170,9 +184,12 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging, selected]
     );
 
-    const onNodeDoubleClickHandler = useCallback((event: MouseEvent) => {
-      onNodeDoubleClick?.(event, node)
-    }, [node, onNodeDoubleClick])
+    const onNodeDoubleClickHandler = useCallback(
+      (event: MouseEvent) => {
+        onNodeDoubleClick?.(event, node);
+      },
+      [node, onNodeDoubleClick]
+    );
 
     useEffect(() => {
       if (nodeElement.current && !isHidden) {
