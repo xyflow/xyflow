@@ -8,6 +8,8 @@ React Flow is a library for building node-based graphs. You can easily implement
 - **Website/Docs Repository:** https://github.com/wbkd/react-flow-docs
 - **Community:** https://discord.gg/Bqt6xrs
 
+React Flow was initially created for [datablocks](https://datablocks.pro). A node-based editor for transforming, analyzing and visualizing data.
+
 
 ## Installation
 
@@ -59,9 +61,14 @@ Testing is done with cypress. You can find the tests in the [`integration/flow`]
 npm run test
 ```
 
+## Maintainer
+
+Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+
 ## Support
 
 If you need custom support or features for your application we are [happy to hear from you](https://webkid.io/contact).
+
 
 ### Thanks!
 
