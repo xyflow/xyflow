@@ -184,15 +184,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
       >
-        {handleEdgeUpdate && (
-          <g
-            onMouseDown={onEdgeUpdaterSourceMouseDown}
-            onMouseEnter={onEdgeUpdaterMouseEnter}
-            onMouseOut={onEdgeUpdaterMouseOut}
-          >
-            <EdgeAnchor position={sourcePosition} centerX={sourceX} centerY={sourceY} radius={edgeUpdaterRadius} />
-          </g>
-        )}
         <EdgeComponent
           id={id}
           source={source}
@@ -218,6 +209,15 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           sourceHandleId={sourceHandleId}
           targetHandleId={targetHandleId}
         />
+        {handleEdgeUpdate && (
+          <g
+            onMouseDown={onEdgeUpdaterSourceMouseDown}
+            onMouseEnter={onEdgeUpdaterMouseEnter}
+            onMouseOut={onEdgeUpdaterMouseOut}
+          >
+            <EdgeAnchor position={sourcePosition} centerX={sourceX} centerY={sourceY} radius={edgeUpdaterRadius} />
+          </g>
+        )}
         {handleEdgeUpdate && (
           <g
             onMouseDown={onEdgeUpdaterTargetMouseDown}
