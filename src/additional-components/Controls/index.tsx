@@ -1,4 +1,4 @@
-import React, { memo, useCallback, HTMLAttributes, FC } from 'react';
+import React, { memo, useCallback, HTMLAttributes, FC, useEffect, useState } from 'react';
 import cc from 'classcat';
 
 import { useStoreState, useStoreActions } from '../../store/hooks';
@@ -25,8 +25,8 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface ControlButtonProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ControlButton: FC<ControlButtonProps> = ({ children, className, onClick }) => (
-  <div className={cc(['react-flow__controls-button', className])} onClick={onClick}>
+export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
+  <div className={cc(['react-flow__controls-button', className])} {...rest}>
     {children}
   </div>
 );
@@ -44,6 +44,7 @@ const Controls: FC<ControlProps> = ({
   className,
   children,
 }) => {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
 
@@ -69,6 +70,14 @@ const Controls: FC<ControlProps> = ({
     setInteractive?.(!isInteractive);
     onInteractiveChange?.(!isInteractive);
   }, [isInteractive, setInteractive, onInteractiveChange]);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className={mapClasses} style={style}>
