@@ -31,7 +31,7 @@ describe('Interaction Flow Rendering', () => {
 
   it('allows edge clicks when enabled', () => {
     const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
-    expect(pointerEvents).to.equal('all');
+    expect(pointerEvents.toLowerCase()).to.equal('visiblestroke');
   });
 
   it('tries to do a selection', () => {
