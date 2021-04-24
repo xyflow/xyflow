@@ -192,7 +192,7 @@ const OverviewFlow = () => {
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
-      <Background color="#aaa" gap={20} size={1} />
+      <Background color="#aaa" gap={20} />
     </ReactFlow>
   );
 };

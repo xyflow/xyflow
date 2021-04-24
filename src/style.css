@@ -59,6 +59,10 @@
   fill: none;
 }
 
+.react-flow__edge-textwrapper {
+  pointer-events: all;
+}
+
 .react-flow__edge-text {
   pointer-events: none;
   user-select: none;
