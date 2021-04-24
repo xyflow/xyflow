@@ -42,7 +42,7 @@
 }
 
 .react-flow__edge {
-  pointer-events: all;
+  pointer-events: visibleStroke;
 
   &.inactive {
     pointer-events: none;
@@ -145,6 +145,7 @@
 
 .react-flow__edgeupdater {
   cursor: move;
+  pointer-events: all;
 }
 
 /* additional components */
