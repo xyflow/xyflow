@@ -1,4 +1,4 @@
-# React Flow Contribution Guidlines
+# React Flow Contribution Guidelines
 
 Thanks for your interest in contributing to React Flow 🙌  
 Every form of contribution is appreciated. From issue reports to pull requests and documentation 👌  
