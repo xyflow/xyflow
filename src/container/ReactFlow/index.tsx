@@ -162,7 +162,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       zoomActivationKeyCode = 'Meta',
       snapToGrid = false,
       snapGrid = [15, 15],
-      onlyRenderVisibleElements = true,
+      onlyRenderVisibleElements = false,
       selectNodesOnDrag = true,
       nodesDraggable,
       nodesConnectable,
