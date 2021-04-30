@@ -49,6 +49,7 @@ const initialElements: Elements = [
 ];
 
 const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
+const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge) => console.log('start update', edge);
 
 const UpdatableEdge = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
@@ -57,7 +58,14 @@ const UpdatableEdge = () => {
   const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
 
   return (
-    <ReactFlow elements={elements} onLoad={onLoad} snapToGrid={true} onEdgeUpdate={onEdgeUpdate} onConnect={onConnect}>
+    <ReactFlow
+      elements={elements}
+      onLoad={onLoad}
+      snapToGrid={true}
+      onEdgeUpdate={onEdgeUpdate}
+      onConnect={onConnect}
+      onEdgeUpdateStart={onEdgeUpdateStart}
+    >
       <Controls />
     </ReactFlow>
   );
