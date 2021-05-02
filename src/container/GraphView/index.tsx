@@ -14,7 +14,7 @@ import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../..
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'elements'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
-  selectionKeyCode: KeyCode;
+  selectionKeyCode: KeyCode | boolean;
   deleteKeyCode: KeyCode;
   multiSelectionKeyCode: KeyCode;
   connectionLineType: ConnectionLineType;

@@ -84,7 +84,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
   deleteKeyCode?: KeyCode;
-  selectionKeyCode?: KeyCode;
+  selectionKeyCode?: KeyCode | boolean;
   multiSelectionKeyCode?: KeyCode;
   zoomActivationKeyCode?: KeyCode;
   snapToGrid?: boolean;
