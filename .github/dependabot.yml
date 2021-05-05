@@ -1,0 +1,28 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "04:00"
+  open-pull-requests-limit: 10
+  target-branch: main
+  ignore:
+  - dependency-name: "@babel/core"
+    versions:
+    - 7.13.8
+  - dependency-name: "@babel/plugin-transform-runtime"
+    versions:
+    - 7.13.8
+  - dependency-name: rollup
+    versions:
+    - 2.40.0
+  - dependency-name: "@babel/runtime"
+    versions:
+    - 7.13.8
+  - dependency-name: "@babel/preset-env"
+    versions:
+    - 7.13.8
+  - dependency-name: classcat
+    versions:
+    - 5.0.1
