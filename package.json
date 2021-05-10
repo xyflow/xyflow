@@ -61,7 +61,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "release-it": "^14.6.1",
+    "release-it": "^14.6.2",
     "rollup": "^2.47.0",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-livereload": "^2.0.0",
