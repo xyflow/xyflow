@@ -1,4 +1,4 @@
-import React, { useState, useCallback, CSSProperties, useRef } from 'react';
+import React, { useState, useCallback, CSSProperties } from 'react';
 
 import ReactFlow, {
   NodeTypesType,
