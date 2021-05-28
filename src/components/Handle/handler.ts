@@ -12,6 +12,7 @@ import {
   ConnectionMode,
   SetConnectionId,
   Connection,
+  HandleType,
 } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
@@ -96,6 +97,7 @@ export function onMouseDown(
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
   connectionMode: ConnectionMode,
+  elementEdgeUpdaterType?: HandleType | null,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
   onConnectEnd?: OnConnectEndFunc
@@ -111,13 +113,12 @@ export function onMouseDown(
   const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
   const elementBelowIsSource = elementBelow?.classList.contains('source');
-  const elementBelowIsUpdater = elementBelow?.classList.contains('react-flow__edgeupdater');
 
-  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource && !elementBelowIsUpdater)) {
+  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource && !elementEdgeUpdaterType)) {
     return;
   }
 
-  const handleType = elementBelowIsTarget ? 'target' : 'source';
+  const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementBelowIsTarget ? 'target' : 'source';
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 

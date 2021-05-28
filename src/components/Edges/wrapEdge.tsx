@@ -150,7 +150,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           onConnectEdge,
           isTarget,
           isValidConnection,
-          connectionMode
+          connectionMode,
+          isSourceHandle ? 'target' : 'source'
         );
       },
       [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement]

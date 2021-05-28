@@ -7,6 +7,7 @@ import ReactFlow, {
   OnLoadParams,
   Connection,
   Edge,
+  removeElements,
 } from 'react-flow-renderer';
 
 const initialElements: Elements = [
@@ -56,6 +57,7 @@ const UpdatableEdge = () => {
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setElements((els) => updateEdge(oldEdge, newConnection, els));
   const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
 
   return (
     <ReactFlow
@@ -65,6 +67,7 @@ const UpdatableEdge = () => {
       onEdgeUpdate={onEdgeUpdate}
       onConnect={onConnect}
       onEdgeUpdateStart={onEdgeUpdateStart}
+      onElementsRemove={onElementsRemove}
     >
       <Controls />
     </ReactFlow>
