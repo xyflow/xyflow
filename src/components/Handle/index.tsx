@@ -51,7 +51,8 @@ const Handle: FC<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
         isTarget,
         isValidConnection,
         connectionMode,
-        null,
+        undefined,
+        undefined,
         onConnectStart,
         onConnectStop,
         onConnectEnd

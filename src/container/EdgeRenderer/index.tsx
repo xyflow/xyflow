@@ -35,6 +35,7 @@ interface EdgeRendererProps {
   onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
 }
 
@@ -177,6 +178,7 @@ const Edge = ({
       edgeUpdaterRadius={props.edgeUpdaterRadius}
       onEdgeDoubleClick={props.onEdgeDoubleClick}
       onEdgeUpdateStart={props.onEdgeUpdateStart}
+      onEdgeUpdateEnd={props.onEdgeUpdateEnd}
     />
   );
 };

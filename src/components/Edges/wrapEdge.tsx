@@ -45,6 +45,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     onMouseLeave,
     edgeUpdaterRadius,
     onEdgeUpdateStart,
+    onEdgeUpdateEnd,
   }: WrapEdgeProps): JSX.Element | null => {
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
@@ -141,6 +142,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
         onEdgeUpdateStart?.(event, edgeElement);
 
+        const _onEdgeUpdate = onEdgeUpdateEnd
+          ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
+          : undefined;
+
         onMouseDown(
           event,
           handleId,
@@ -151,7 +156,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           isTarget,
           isValidConnection,
           connectionMode,
-          isSourceHandle ? 'target' : 'source'
+          isSourceHandle ? 'target' : 'source',
+          _onEdgeUpdate
         );
       },
       [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement]

@@ -51,6 +51,7 @@ const initialElements: Elements = [
 
 const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
 const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge) => console.log('start update', edge);
+const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge) => console.log('end update', edge);
 
 const UpdatableEdge = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
@@ -68,6 +69,7 @@ const UpdatableEdge = () => {
       onConnect={onConnect}
       onEdgeUpdateStart={onEdgeUpdateStart}
       onElementsRemove={onElementsRemove}
+      onEdgeUpdateEnd={onEdgeUpdateEnd}
     >
       <Controls />
     </ReactFlow>

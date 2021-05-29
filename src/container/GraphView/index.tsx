@@ -93,6 +93,7 @@ const GraphView = ({
   onEdgeMouseLeave,
   edgeUpdaterRadius,
   onEdgeUpdateStart,
+  onEdgeUpdateEnd,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -277,6 +278,7 @@ const GraphView = ({
         onEdgeMouseMove={onEdgeMouseMove}
         onEdgeMouseLeave={onEdgeMouseLeave}
         onEdgeUpdateStart={onEdgeUpdateStart}
+        onEdgeUpdateEnd={onEdgeUpdateEnd}
         edgeUpdaterRadius={edgeUpdaterRadius}
       />
     </FlowRenderer>

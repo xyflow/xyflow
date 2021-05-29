@@ -97,7 +97,8 @@ export function onMouseDown(
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
   connectionMode: ConnectionMode,
-  elementEdgeUpdaterType?: HandleType | null,
+  elementEdgeUpdaterType?: HandleType,
+  onEdgeUpdateEnd?: (evt: MouseEvent) => void,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
   onConnectEnd?: OnConnectEndFunc
@@ -177,6 +178,10 @@ export function onMouseDown(
     }
 
     onConnectEnd?.(event);
+
+    if (elementEdgeUpdaterType && onEdgeUpdateEnd) {
+      onEdgeUpdateEnd(event);
+    }
 
     resetRecentHandle(recentHoveredHandle);
     setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });

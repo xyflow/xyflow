@@ -1,4 +1,11 @@
-import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent, WheelEvent, forwardRef } from 'react';
+import React, {
+  useMemo,
+  CSSProperties,
+  HTMLAttributes,
+  MouseEvent as ReactMouseEvent,
+  WheelEvent,
+  forwardRef,
+} from 'react';
 import cc from 'classcat';
 
 import GraphView from '../GraphView';
@@ -51,16 +58,16 @@ const defaultEdgeTypes = {
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
-  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
+  onElementClick?: (event: ReactMouseEvent, element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
-  onNodeDoubleClick?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
-  onNodeDrag?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
+  onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeMouseMove?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeContextMenu?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
@@ -70,13 +77,13 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
-  onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionDragStart?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionDrag?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionDragStop?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onPaneScroll?: (event?: WheelEvent) => void;
-  onPaneClick?: (event: MouseEvent) => void;
-  onPaneContextMenu?: (event: MouseEvent) => void;
+  onPaneClick?: (event: ReactMouseEvent) => void;
+  onPaneContextMenu?: (event: ReactMouseEvent) => void;
   nodeTypes?: NodeTypesType;
   edgeTypes?: EdgeTypesType;
   connectionMode?: ConnectionMode;
@@ -110,12 +117,13 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeMouseEnter?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeMouseMove?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeMouseLeave?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeDoubleClick?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeContextMenu?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeMouseEnter?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
   nodeTypesId?: string;
   edgeTypesId?: string;
@@ -194,6 +202,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onEdgeMouseMove,
       onEdgeMouseLeave,
       onEdgeUpdateStart,
+      onEdgeUpdateEnd,
       edgeUpdaterRadius = 10,
       nodeTypesId = '1',
       edgeTypesId = '1',
@@ -273,6 +282,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeMouseMove={onEdgeMouseMove}
             onEdgeMouseLeave={onEdgeMouseLeave}
             onEdgeUpdateStart={onEdgeUpdateStart}
+            onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
           />
           <ElementUpdater elements={elements} />
