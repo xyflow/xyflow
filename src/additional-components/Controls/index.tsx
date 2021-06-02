@@ -27,7 +27,7 @@ export interface ControlButtonProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
   <div className={cc(['react-flow__controls-button', className])} {...rest}>
-    {children}
+      {children}
   </div>
 );
 
@@ -83,21 +83,33 @@ const Controls: FC<ControlProps> = ({
     <div className={mapClasses} style={style}>
       {showZoom && (
         <>
-          <ControlButton onClick={onZoomInHandler} className="react-flow__controls-zoomin">
+          <ControlButton tabIndex={0} onKeyPress={(event: any)=>{
+            if(event.charCode==13){
+            onZoomInHandler();
+            }}} onClick={onZoomInHandler} className="react-flow__controls-zoomin">
             <PlusIcon />
           </ControlButton>
-          <ControlButton onClick={onZoomOutHandler} className="react-flow__controls-zoomout">
+          <ControlButton tabIndex={0} onKeyPress={(event: any)=>{
+            if(event.charCode==13){
+              onZoomOutHandler();
+            }}} onClick={onZoomOutHandler} className="react-flow__controls-zoomout">
             <MinusIcon />
           </ControlButton>
         </>
       )}
       {showFitView && (
-        <ControlButton className="react-flow__controls-fitview" onClick={onFitViewHandler}>
+        <ControlButton tabIndex={0} onKeyPress={(event: any)=>{
+          if(event.charCode==13){
+            onFitViewHandler();
+          }}} className="react-flow__controls-fitview" onClick={onFitViewHandler}>
           <FitviewIcon />
         </ControlButton>
       )}
       {showInteractive && (
-        <ControlButton className="react-flow__controls-interactive" onClick={onInteractiveChangeHandler}>
+        <ControlButton tabIndex={0} onKeyPress={(event: any)=>{
+          if(event.charCode==13){
+            onInteractiveChangeHandler();
+          }}} className="react-flow__controls-interactive" onClick={onInteractiveChangeHandler}>
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </ControlButton>
       )}
