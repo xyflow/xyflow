@@ -18,6 +18,22 @@ const Sidebar = () => {
       <div className="dndnode output" onDragStart={(event: DragEvent) => onDragStart(event, { nodeType: "output", label: "Output Node" })} draggable>
         Output Node
       </div>
+      <div className="react-flow__node-multihandle" draggable
+        onDragStart={(event: DragEvent) =>
+          onDragStart(event, {
+            nodeType: "multihandle",
+            handles: {
+              top: { type: "target", ids: ["top_1", "top_2", "top_3"] },
+              bottom: { type: "source", ids: ["bottom_1", "bottom_2"] },
+              left: { type: "target", ids: ["left_1"] },
+              right: { type: "source", ids: ["right_1"] },
+            },
+            label: "Multi-handle node (3-2-1-1)",
+          })
+        }
+      >
+        Multi-handle node (3-2-1-1)
+      </div>
     </aside>
   );
 };

@@ -13,6 +13,7 @@ import ElementUpdater from '../../components/ElementUpdater';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
+import MultiHandleNode from '../../components/Nodes/MultiHandleNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
@@ -47,6 +48,7 @@ const defaultNodeTypes = {
   input: InputNode,
   default: DefaultNode,
   output: OutputNode,
+  multihandle: MultiHandleNode,
 };
 
 const defaultEdgeTypes = {

@@ -46,7 +46,8 @@
 
 .react-flow__node-default,
 .react-flow__node-input,
-.react-flow__node-output {
+.react-flow__node-output,
+.react-flow__node-multihandle {
   padding: 10px;
   border-radius: 3px;
   width: 150px;
@@ -59,7 +60,8 @@
 
 .react-flow__node-default.selectable,
 .react-flow__node-input.selectable,
-.react-flow__node-output.selectable {
+.react-flow__node-output.selectable,
+.react-flow__node-multihandle {
   &:hover {
     box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
   }
@@ -104,6 +106,20 @@
 
   .react-flow__handle {
     background: #ff0072;
+  }
+}
+
+.react-flow__node-multihandle {
+  background: #fff;
+  border-color: #1a192b;
+
+  &.selected,
+  &.selected:hover {
+    box-shadow: 0 0 0 0.5px #1a192b;
+  }
+
+  .react-flow__handle {
+    background: #1a192b;
   }
 }
 
