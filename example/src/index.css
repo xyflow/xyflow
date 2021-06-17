@@ -41,7 +41,7 @@ header a:hover {
 }
 
 header select {
-  margin-left: auto;
+  margin-left: 1em;
 }
 
 .overview-example__add {
