@@ -8,14 +8,14 @@ const onDragStart = (event: DragEvent, nodeType: string) => {
 const Sidebar = () => {
   return (
     <aside>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
-      <div className="dndnode input" onDragStart={(event: DragEvent) => onDragStart(event, 'input')} draggable>
+      <div className="description">You can drag these nodes to the pane on the left.</div>
+      <div className="react-flow__node-input" onDragStart={(event: DragEvent) => onDragStart(event, 'input')} draggable>
         Input Node
       </div>
-      <div className="dndnode" onDragStart={(event: DragEvent) => onDragStart(event, 'default')} draggable>
+      <div className="react-flow__node-default" onDragStart={(event: DragEvent) => onDragStart(event, 'default')} draggable>
         Default Node
       </div>
-      <div className="dndnode output" onDragStart={(event: DragEvent) => onDragStart(event, 'output')} draggable>
+      <div className="react-flow__node-output" onDragStart={(event: DragEvent) => onDragStart(event, 'output')} draggable>
         Output Node
       </div>
     </aside>
