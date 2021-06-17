@@ -90,10 +90,10 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
-  deleteKeyCode?: KeyCode;
+  deleteKeyCodes?: KeyCode[];
   selectionKeyCode?: KeyCode;
-  multiSelectionKeyCode?: KeyCode;
-  zoomActivationKeyCode?: KeyCode;
+  multiSelectionKeyCodes?: KeyCode[];
+  zoomActivationKeyCodes?: KeyCode[];
   snapToGrid?: boolean;
   snapGrid?: [number, number];
   onlyRenderVisibleElements?: boolean;
@@ -166,10 +166,10 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
       connectionLineComponent,
-      deleteKeyCode = 'Backspace',
+      deleteKeyCodes = ['Backspace', 'Delete'],
       selectionKeyCode = 'Shift',
-      multiSelectionKeyCode = 'Meta',
-      zoomActivationKeyCode = 'Meta',
+      multiSelectionKeyCodes = ['Meta', 'Control'],
+      zoomActivationKeyCodes = ['Meta', 'Control'],
       snapToGrid = false,
       snapGrid = [15, 15],
       onlyRenderVisibleElements = false,
@@ -241,9 +241,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionLineComponent={connectionLineComponent}
             selectionKeyCode={selectionKeyCode}
             onElementsRemove={onElementsRemove}
-            deleteKeyCode={deleteKeyCode}
-            multiSelectionKeyCode={multiSelectionKeyCode}
-            zoomActivationKeyCode={zoomActivationKeyCode}
+            deleteKeyCodes={deleteKeyCodes}
+            multiSelectionKeyCodes={multiSelectionKeyCodes}
+            zoomActivationKeyCodes={zoomActivationKeyCodes}
             onConnect={onConnect}
             onConnectStart={onConnectStart}
             onConnectStop={onConnectStop}

@@ -31,13 +31,13 @@ const FlowRenderer = ({
   onPaneContextMenu,
   onPaneScroll,
   onElementsRemove,
-  deleteKeyCode,
+  deleteKeyCodes,
   onMove,
   onMoveStart,
   onMoveEnd,
   selectionKeyCode,
-  multiSelectionKeyCode,
-  zoomActivationKeyCode,
+  multiSelectionKeyCodes,
+  zoomActivationKeyCodes,
   elementsSelectable,
   zoomOnScroll,
   zoomOnPinch,
@@ -61,7 +61,7 @@ const FlowRenderer = ({
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode, multiSelectionKeyCode });
+  useGlobalKeyHandler({ onElementsRemove, deleteKeyCodes, multiSelectionKeyCodes });
 
   const onClick = useCallback(
     (event: MouseEvent) => {
@@ -103,7 +103,7 @@ const FlowRenderer = ({
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
       translateExtent={translateExtent}
-      zoomActivationKeyCode={zoomActivationKeyCode}
+      zoomActivationKeyCodes={zoomActivationKeyCodes}
       preventScrolling={preventScrolling}
     >
       {children}

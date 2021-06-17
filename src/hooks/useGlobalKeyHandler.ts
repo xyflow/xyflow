@@ -6,20 +6,20 @@ import { isNode, getConnectedEdges } from '../utils/graph';
 import { Elements, KeyCode, ElementId, FlowElement } from '../types';
 
 interface HookParams {
-  deleteKeyCode: KeyCode;
-  multiSelectionKeyCode: KeyCode;
+  deleteKeyCodes: KeyCode[];
+  multiSelectionKeyCodes: KeyCode[];
   onElementsRemove?: (elements: Elements) => void;
 }
 
-export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: HookParams): void => {
+export default ({ deleteKeyCodes, multiSelectionKeyCodes, onElementsRemove }: HookParams): void => {
   const store = useStore();
 
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const setMultiSelectionActive = useStoreActions((actions) => actions.setMultiSelectionActive);
   const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
 
-  const deleteKeyPressed = useKeyPress(deleteKeyCode);
-  const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
+  const deleteKeyPressed = useKeyPress(...deleteKeyCodes);
+  const multiSelectionKeyPressed = useKeyPress(...multiSelectionKeyCodes);
 
   useEffect(() => {
     const { edges, selectedElements } = store.getState();

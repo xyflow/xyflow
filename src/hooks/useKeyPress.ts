@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 import { isInputDOMNode } from '../utils';
 import { KeyCode } from '../types';
 
-export default (keyCode?: KeyCode): boolean => {
+export default (...keyCodes: KeyCode[]): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
   useEffect(() => {
-    if (typeof keyCode !== 'undefined') {
+    if (typeof keyCodes !== 'undefined' && keyCodes.length > 0) {
       const downHandler = (event: KeyboardEvent) => {
-        if (!isInputDOMNode(event) && (event.key === keyCode || event.keyCode === keyCode)) {
+        if (!isInputDOMNode(event) && (keyCodes.indexOf(event.key) != -1 || keyCodes.indexOf(event.keyCode) != -1)) {
           event.preventDefault();
 
           setKeyPressed(true);
@@ -17,7 +17,7 @@ export default (keyCode?: KeyCode): boolean => {
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        if (!isInputDOMNode(event) && (event.key === keyCode || event.keyCode === keyCode)) {
+        if (!isInputDOMNode(event) && (keyCodes.indexOf(event.key) != -1 || keyCodes.indexOf(event.keyCode) != -1)) {
           setKeyPressed(false);
         }
       };
@@ -34,7 +34,7 @@ export default (keyCode?: KeyCode): boolean => {
         window.removeEventListener('blur', resetHandler);
       };
     }
-  }, [keyCode, setKeyPressed]);
+  }, [keyCodes, setKeyPressed]);
 
   return keyPressed;
 };

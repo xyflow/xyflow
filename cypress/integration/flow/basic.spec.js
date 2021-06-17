@@ -96,14 +96,6 @@ describe('Basic Flow Rendering', () => {
     });
   });
 
-  it('removes a node', () => {
-    cy.get('.react-flow__node').contains('Node 2').click();
-    cy.get('body').type('{backspace}');
-
-    cy.get('.react-flow__node').should('have.length', 3);
-    cy.get('.react-flow__edge').should('have.length', 1);
-  });
-
   it('connects nodes', () => {
     cy.get('.react-flow__node')
       .contains('Node 3')
@@ -116,14 +108,37 @@ describe('Basic Flow Rendering', () => {
       .trigger('mousemove')
       .trigger('mouseup', { force: true });
 
-    cy.get('.react-flow__edge').should('have.length', 2);
+    cy.get('.react-flow__edge').should('have.length', 3);
   });
 
-  it('removes an edge', () => {
+  it('backspace removes an edge', () => {
     cy.get('.react-flow__edge:first').click();
     cy.get('body').type('{backspace}');
 
+    cy.get('.react-flow__edge').should('have.length', 2);
+  });
+
+  it('del removes an edge', () => {
+    cy.get('.react-flow__edge:first').click();
+    cy.get('body').type('{del}');
+
     cy.get('.react-flow__edge').should('have.length', 1);
+  });
+
+  it('backspace removes a node', () => {
+    cy.get('.react-flow__node').contains('Node 2').click();
+    cy.get('body').type('{backspace}');
+
+    cy.get('.react-flow__node').should('have.length', 3);
+    cy.get('.react-flow__edge').should('have.length', 1);
+  });
+
+  it('del removes a node', () => {
+    cy.get('.react-flow__node').contains('Node 3').click();
+    cy.get('body').type('{del}');
+
+    cy.get('.react-flow__node').should('have.length', 2);
+    cy.get('.react-flow__edge').should('have.length', 0);
   });
 
   it('drags the pane', () => {

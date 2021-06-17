@@ -24,7 +24,7 @@ interface ZoomPaneProps {
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  zoomActivationKeyCode?: KeyCode;
+  zoomActivationKeyCodes?: KeyCode[];
   preventScrolling?: boolean;
   children: ReactNode;
 }
@@ -58,7 +58,7 @@ const ZoomPane = ({
   defaultPosition = [0, 0],
   defaultZoom = 1,
   translateExtent,
-  zoomActivationKeyCode,
+  zoomActivationKeyCodes,
   preventScrolling = true,
   children,
 }: ZoomPaneProps) => {
@@ -73,7 +73,7 @@ const ZoomPane = ({
   const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
   const updateTransform = useStoreActions((actions) => actions.updateTransform);
 
-  const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
+  const zoomActivationKeyPressed = zoomActivationKeyCodes !== undefined ? useKeyPress(...zoomActivationKeyCodes) : false;
 
   useResizeHandler(zoomPane);
 
