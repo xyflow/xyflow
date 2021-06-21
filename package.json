@@ -69,7 +69,7 @@
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-typescript2": "^0.30.0",
     "start-server-and-test": "^1.12.5",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.4"
   },
   "peerDependencies": {
     "react": "17",
