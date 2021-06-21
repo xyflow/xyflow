@@ -54,7 +54,7 @@
     "autoprefixer": "^10.2.6",
     "babel-preset-react-app": "^10.0.0",
     "cypress": "^7.5.0",
-    "postcss": "^8.3.4",
+    "postcss": "^8.3.5",
     "postcss-cli": "^8.3.1",
     "postcss-nested": "^5.0.5",
     "prettier": "2.3.1",
