@@ -47,8 +47,8 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
             bounds,
             width,
             height,
-            minZoom,
-            maxZoom,
+            options.minZoom ?? minZoom,
+            options.maxZoom ?? maxZoom,
             options.padding ?? DEFAULT_PADDING
           );
           const transform = zoomIdentity.translate(x, y).scale(zoom);

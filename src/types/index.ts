@@ -248,6 +248,8 @@ export interface WrapNodeProps<T = any> {
 export type FitViewParams = {
   padding?: number;
   includeHiddenNodes?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 };
 
 export type FlowExportObject<T = any> = {
