@@ -10,7 +10,7 @@
     "react-flow-renderer": "file:../",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.5"
+    "typescript": "^4.3.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,10 +34,10 @@
     ]
   },
   "devDependencies": {
-    "@types/react-router-dom": "^5.1.7",
     "@types/dagre": "^0.7.44",
     "@types/localforage": "0.0.34",
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.1"
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.8",
+    "@types/react-router-dom": "^5.1.7"
   }
 }
