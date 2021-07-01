@@ -1,4 +1,11 @@
-import React, { useMemo, CSSProperties, HTMLAttributes, MouseEvent, WheelEvent } from 'react';
+import React, {
+  useMemo,
+  CSSProperties,
+  HTMLAttributes,
+  MouseEvent as ReactMouseEvent,
+  WheelEvent,
+  forwardRef,
+} from 'react';
 import cc from 'classcat';
 
 import GraphView from '../GraphView';
@@ -51,16 +58,16 @@ const defaultEdgeTypes = {
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
   elements: Elements;
-  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
+  onElementClick?: (event: ReactMouseEvent, element: Node | Edge) => void;
   onElementsRemove?: (elements: Elements) => void;
-  onNodeDoubleClick?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
-  onNodeDrag?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
+  onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeMouseMove?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeContextMenu?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
   onConnect?: (connection: Edge | Connection) => void;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
@@ -70,13 +77,13 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   onSelectionChange?: (elements: Elements | null) => void;
-  onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
-  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
+  onSelectionDragStart?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionDrag?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionDragStop?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onPaneScroll?: (event?: WheelEvent) => void;
-  onPaneClick?: (event: MouseEvent) => void;
-  onPaneContextMenu?: (event: MouseEvent) => void;
+  onPaneClick?: (event: ReactMouseEvent) => void;
+  onPaneContextMenu?: (event: ReactMouseEvent) => void;
   nodeTypes?: NodeTypesType;
   edgeTypes?: EdgeTypesType;
   connectionMode?: ConnectionMode;
@@ -110,166 +117,182 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeMouseEnter?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeMouseMove?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeMouseLeave?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeContextMenu?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeMouseEnter?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
   nodeTypesId?: string;
   edgeTypesId?: string;
 }
 
-const ReactFlow = ({
-  elements = [],
-  className,
-  nodeTypes = defaultNodeTypes,
-  edgeTypes = defaultEdgeTypes,
-  onElementClick,
-  onLoad,
-  onMove,
-  onMoveStart,
-  onMoveEnd,
-  onElementsRemove,
-  onConnect,
-  onConnectStart,
-  onConnectStop,
-  onConnectEnd,
-  onNodeMouseEnter,
-  onNodeMouseMove,
-  onNodeMouseLeave,
-  onNodeContextMenu,
-  onNodeDoubleClick,
-  onNodeDragStart,
-  onNodeDrag,
-  onNodeDragStop,
-  onSelectionChange,
-  onSelectionDragStart,
-  onSelectionDrag,
-  onSelectionDragStop,
-  onSelectionContextMenu,
-  connectionMode = ConnectionMode.Strict,
-  connectionLineType = ConnectionLineType.Bezier,
-  connectionLineStyle,
-  connectionLineComponent,
-  deleteKeyCode = 'Backspace',
-  selectionKeyCode = 'Shift',
-  multiSelectionKeyCode = 'Meta',
-  zoomActivationKeyCode = 'Meta',
-  snapToGrid = false,
-  snapGrid = [15, 15],
-  onlyRenderVisibleElements = true,
-  selectNodesOnDrag = true,
-  nodesDraggable,
-  nodesConnectable,
-  elementsSelectable,
-  minZoom,
-  maxZoom,
-  defaultZoom = 1,
-  defaultPosition = [0, 0],
-  translateExtent,
-  nodeExtent,
-  arrowHeadColor = '#b1b1b7',
-  markerEndId,
-  zoomOnScroll = true,
-  zoomOnPinch = true,
-  panOnScroll = false,
-  panOnScrollSpeed = 0.5,
-  panOnScrollMode = PanOnScrollMode.Free,
-  zoomOnDoubleClick = true,
-  paneMoveable = true,
-  onPaneClick,
-  onPaneScroll,
-  onPaneContextMenu,
-  children,
-  onEdgeUpdate,
-  onEdgeContextMenu,
-  onEdgeMouseEnter,
-  onEdgeMouseMove,
-  onEdgeMouseLeave,
-  edgeUpdaterRadius = 10,
-  nodeTypesId = '1',
-  edgeTypesId = '1',
-  ...rest
-}: ReactFlowProps) => {
-  const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypesId]);
-  const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypesId]);
-  const reactFlowClasses = cc(['react-flow', className]);
+export type ReactFlowRefType = HTMLDivElement;
 
-  return (
-    <div {...rest} className={reactFlowClasses}>
-      <Wrapper>
-        <GraphView
-          onLoad={onLoad}
-          onMove={onMove}
-          onMoveStart={onMoveStart}
-          onMoveEnd={onMoveEnd}
-          onElementClick={onElementClick}
-          onNodeMouseEnter={onNodeMouseEnter}
-          onNodeMouseMove={onNodeMouseMove}
-          onNodeMouseLeave={onNodeMouseLeave}
-          onNodeContextMenu={onNodeContextMenu}
-          onNodeDoubleClick={onNodeDoubleClick}
-          onNodeDragStart={onNodeDragStart}
-          onNodeDrag={onNodeDrag}
-          onNodeDragStop={onNodeDragStop}
-          nodeTypes={nodeTypesParsed}
-          edgeTypes={edgeTypesParsed}
-          connectionMode={connectionMode}
-          connectionLineType={connectionLineType}
-          connectionLineStyle={connectionLineStyle}
-          connectionLineComponent={connectionLineComponent}
-          selectionKeyCode={selectionKeyCode}
-          onElementsRemove={onElementsRemove}
-          deleteKeyCode={deleteKeyCode}
-          multiSelectionKeyCode={multiSelectionKeyCode}
-          zoomActivationKeyCode={zoomActivationKeyCode}
-          onConnect={onConnect}
-          onConnectStart={onConnectStart}
-          onConnectStop={onConnectStop}
-          onConnectEnd={onConnectEnd}
-          snapToGrid={snapToGrid}
-          snapGrid={snapGrid}
-          onlyRenderVisibleElements={onlyRenderVisibleElements}
-          nodesDraggable={nodesDraggable}
-          nodesConnectable={nodesConnectable}
-          elementsSelectable={elementsSelectable}
-          selectNodesOnDrag={selectNodesOnDrag}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          defaultZoom={defaultZoom}
-          defaultPosition={defaultPosition}
-          translateExtent={translateExtent}
-          nodeExtent={nodeExtent}
-          arrowHeadColor={arrowHeadColor}
-          markerEndId={markerEndId}
-          zoomOnScroll={zoomOnScroll}
-          zoomOnPinch={zoomOnPinch}
-          zoomOnDoubleClick={zoomOnDoubleClick}
-          panOnScroll={panOnScroll}
-          panOnScrollSpeed={panOnScrollSpeed}
-          panOnScrollMode={panOnScrollMode}
-          paneMoveable={paneMoveable}
-          onPaneClick={onPaneClick}
-          onPaneScroll={onPaneScroll}
-          onPaneContextMenu={onPaneContextMenu}
-          onSelectionDragStart={onSelectionDragStart}
-          onSelectionDrag={onSelectionDrag}
-          onSelectionDragStop={onSelectionDragStop}
-          onSelectionContextMenu={onSelectionContextMenu}
-          onEdgeUpdate={onEdgeUpdate}
-          onEdgeContextMenu={onEdgeContextMenu}
-          onEdgeMouseEnter={onEdgeMouseEnter}
-          onEdgeMouseMove={onEdgeMouseMove}
-          onEdgeMouseLeave={onEdgeMouseLeave}
-          edgeUpdaterRadius={edgeUpdaterRadius}
-        />
-        <ElementUpdater elements={elements} />
-        {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
-        {children}
-      </Wrapper>
-    </div>
-  );
-};
+const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
+  (
+    {
+      elements = [],
+      className,
+      nodeTypes = defaultNodeTypes,
+      edgeTypes = defaultEdgeTypes,
+      onElementClick,
+      onLoad,
+      onMove,
+      onMoveStart,
+      onMoveEnd,
+      onElementsRemove,
+      onConnect,
+      onConnectStart,
+      onConnectStop,
+      onConnectEnd,
+      onNodeMouseEnter,
+      onNodeMouseMove,
+      onNodeMouseLeave,
+      onNodeContextMenu,
+      onNodeDoubleClick,
+      onNodeDragStart,
+      onNodeDrag,
+      onNodeDragStop,
+      onSelectionChange,
+      onSelectionDragStart,
+      onSelectionDrag,
+      onSelectionDragStop,
+      onSelectionContextMenu,
+      connectionMode = ConnectionMode.Strict,
+      connectionLineType = ConnectionLineType.Bezier,
+      connectionLineStyle,
+      connectionLineComponent,
+      deleteKeyCode = 'Backspace',
+      selectionKeyCode = 'Shift',
+      multiSelectionKeyCode = 'Meta',
+      zoomActivationKeyCode = 'Meta',
+      snapToGrid = false,
+      snapGrid = [15, 15],
+      onlyRenderVisibleElements = false,
+      selectNodesOnDrag = true,
+      nodesDraggable,
+      nodesConnectable,
+      elementsSelectable,
+      minZoom,
+      maxZoom,
+      defaultZoom = 1,
+      defaultPosition = [0, 0],
+      translateExtent,
+      nodeExtent,
+      arrowHeadColor = '#b1b1b7',
+      markerEndId,
+      zoomOnScroll = true,
+      zoomOnPinch = true,
+      panOnScroll = false,
+      panOnScrollSpeed = 0.5,
+      panOnScrollMode = PanOnScrollMode.Free,
+      zoomOnDoubleClick = true,
+      paneMoveable = true,
+      onPaneClick,
+      onPaneScroll,
+      onPaneContextMenu,
+      children,
+      onEdgeUpdate,
+      onEdgeContextMenu,
+      onEdgeDoubleClick,
+      onEdgeMouseEnter,
+      onEdgeMouseMove,
+      onEdgeMouseLeave,
+      onEdgeUpdateStart,
+      onEdgeUpdateEnd,
+      edgeUpdaterRadius = 10,
+      nodeTypesId = '1',
+      edgeTypesId = '1',
+      ...rest
+    },
+    ref
+  ) => {
+    const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypesId]);
+    const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypesId]);
+    const reactFlowClasses = cc(['react-flow', className]);
+
+    return (
+      <div {...rest} ref={ref} className={reactFlowClasses}>
+        <Wrapper>
+          <GraphView
+            onLoad={onLoad}
+            onMove={onMove}
+            onMoveStart={onMoveStart}
+            onMoveEnd={onMoveEnd}
+            onElementClick={onElementClick}
+            onNodeMouseEnter={onNodeMouseEnter}
+            onNodeMouseMove={onNodeMouseMove}
+            onNodeMouseLeave={onNodeMouseLeave}
+            onNodeContextMenu={onNodeContextMenu}
+            onNodeDoubleClick={onNodeDoubleClick}
+            onNodeDragStart={onNodeDragStart}
+            onNodeDrag={onNodeDrag}
+            onNodeDragStop={onNodeDragStop}
+            nodeTypes={nodeTypesParsed}
+            edgeTypes={edgeTypesParsed}
+            connectionMode={connectionMode}
+            connectionLineType={connectionLineType}
+            connectionLineStyle={connectionLineStyle}
+            connectionLineComponent={connectionLineComponent}
+            selectionKeyCode={selectionKeyCode}
+            onElementsRemove={onElementsRemove}
+            deleteKeyCode={deleteKeyCode}
+            multiSelectionKeyCode={multiSelectionKeyCode}
+            zoomActivationKeyCode={zoomActivationKeyCode}
+            onConnect={onConnect}
+            onConnectStart={onConnectStart}
+            onConnectStop={onConnectStop}
+            onConnectEnd={onConnectEnd}
+            snapToGrid={snapToGrid}
+            snapGrid={snapGrid}
+            onlyRenderVisibleElements={onlyRenderVisibleElements}
+            nodesDraggable={nodesDraggable}
+            nodesConnectable={nodesConnectable}
+            elementsSelectable={elementsSelectable}
+            selectNodesOnDrag={selectNodesOnDrag}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
+            defaultZoom={defaultZoom}
+            defaultPosition={defaultPosition}
+            translateExtent={translateExtent}
+            nodeExtent={nodeExtent}
+            arrowHeadColor={arrowHeadColor}
+            markerEndId={markerEndId}
+            zoomOnScroll={zoomOnScroll}
+            zoomOnPinch={zoomOnPinch}
+            zoomOnDoubleClick={zoomOnDoubleClick}
+            panOnScroll={panOnScroll}
+            panOnScrollSpeed={panOnScrollSpeed}
+            panOnScrollMode={panOnScrollMode}
+            paneMoveable={paneMoveable}
+            onPaneClick={onPaneClick}
+            onPaneScroll={onPaneScroll}
+            onPaneContextMenu={onPaneContextMenu}
+            onSelectionDragStart={onSelectionDragStart}
+            onSelectionDrag={onSelectionDrag}
+            onSelectionDragStop={onSelectionDragStop}
+            onSelectionContextMenu={onSelectionContextMenu}
+            onEdgeUpdate={onEdgeUpdate}
+            onEdgeContextMenu={onEdgeContextMenu}
+            onEdgeDoubleClick={onEdgeDoubleClick}
+            onEdgeMouseEnter={onEdgeMouseEnter}
+            onEdgeMouseMove={onEdgeMouseMove}
+            onEdgeMouseLeave={onEdgeMouseLeave}
+            onEdgeUpdateStart={onEdgeUpdateStart}
+            onEdgeUpdateEnd={onEdgeUpdateEnd}
+            edgeUpdaterRadius={edgeUpdaterRadius}
+          />
+          <ElementUpdater elements={elements} />
+          {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
+          {children}
+        </Wrapper>
+      </div>
+    );
+  }
+);
 
 ReactFlow.displayName = 'ReactFlow';
 

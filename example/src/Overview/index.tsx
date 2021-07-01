@@ -45,6 +45,7 @@ const onEdgeContextMenu = (_: MouseEvent, edge: Edge) => console.log('edge conte
 const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
 const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('edge mouse move', edge);
 const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
+const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('edge double click', edge);
 
 const initialElements: Elements = [
   {
@@ -187,10 +188,11 @@ const OverviewFlow = () => {
       onEdgeMouseEnter={onEdgeMouseEnter}
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
+      onEdgeDoubleClick={onEdgeDoubleClick}
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
-      <Background color="#aaa" gap={16} />
+      <Background color="#aaa" gap={20} />
     </ReactFlow>
   );
 };

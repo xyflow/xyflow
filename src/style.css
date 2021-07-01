@@ -42,7 +42,7 @@
 }
 
 .react-flow__edge {
-  pointer-events: all;
+  pointer-events: visibleStroke;
 
   &.inactive {
     pointer-events: none;
@@ -57,6 +57,10 @@
 
 .react-flow__edge-path {
   fill: none;
+}
+
+.react-flow__edge-textwrapper {
+  pointer-events: all;
 }
 
 .react-flow__edge-text {
@@ -145,6 +149,7 @@
 
 .react-flow__edgeupdater {
   cursor: move;
+  pointer-events: all;
 }
 
 /* additional components */
@@ -166,6 +171,7 @@
   &-button {
     width: 24px;
     height: 24px;
+    border: none;
 
     svg {
       width: 100%;
@@ -178,8 +184,4 @@
   z-index: 5;
   bottom: 10px;
   right: 10px;
-
-  &-node {
-    shape-rendering: crispedges;
-  }
 }

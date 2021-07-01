@@ -73,6 +73,12 @@ export function getSmoothStepPath({
         sourceY <= targetY ? rightTopCorner(cX, sourceY, cornerSize) : rightBottomCorner(cX, sourceY, cornerSize);
       secondCornerPath =
         sourceY <= targetY ? bottomLeftCorner(cX, targetY, cornerSize) : topLeftCorner(cX, targetY, cornerSize);
+    } else if (sourcePosition === Position.Right && targetPosition === Position.Left){
+    // and sourceX > targetX
+      firstCornerPath =
+        sourceY <= targetY ? leftTopCorner(cX, sourceY, cornerSize) : leftBottomCorner(cX, sourceY, cornerSize);
+      secondCornerPath =
+        sourceY <= targetY ? bottomRightCorner(cX, targetY, cornerSize) : topRightCorner(cX, targetY, cornerSize);
     }
   } else if (leftAndRight.includes(sourcePosition) && !leftAndRight.includes(targetPosition)) {
     if (sourceX <= targetX) {
@@ -83,8 +89,8 @@ export function getSmoothStepPath({
     } else {
       firstCornerPath =
         sourceY <= targetY
-          ? bottomRightCorner(sourceX, targetY, cornerSize)
-          : topRightCorner(sourceX, targetY, cornerSize);
+          ? leftTopCorner(targetX, sourceY, cornerSize)
+          : leftBottomCorner(targetX, sourceY, cornerSize);
     }
     secondCornerPath = '';
   } else if (!leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
@@ -124,7 +130,7 @@ export default memo(
     markerEndId,
     borderRadius = 5,
   }: EdgeSmoothStepProps) => {
-    const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
+    const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
 
     const path = getSmoothStepPath({
       sourceX,

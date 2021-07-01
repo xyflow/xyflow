@@ -1,4 +1,4 @@
-import React, { useState, useCallback, CSSProperties, useRef } from 'react';
+import React, { useState, useCallback, CSSProperties } from 'react';
 
 import ReactFlow, {
   NodeTypesType,
@@ -11,6 +11,7 @@ import ReactFlow, {
   ElementId,
   useUpdateNodeInternals,
   Position,
+  isEdge,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
@@ -20,7 +21,7 @@ const initialElements: Elements = [
   {
     id: '1',
     type: 'custom',
-    data: { label: 'Node 1', handleCount: initialHandleCount },
+    data: { label: 'Node 1', handleCount: initialHandleCount, handlePosition: 0 },
     position: { x: 250, y: 5 },
   },
 ];
@@ -35,7 +36,6 @@ let id = 5;
 const getId = (): ElementId => `${id++}`;
 
 const UpdateNodeInternalsFlow = () => {
-  const handleCount = useRef<number>(initialHandleCount);
   const [elements, setElements] = useState<Elements>(initialElements);
   const updateNodeInternals = useUpdateNodeInternals();
   const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
@@ -54,9 +54,29 @@ const UpdateNodeInternalsFlow = () => {
       ),
     [project]
   );
+
   const toggleHandleCount = useCallback(() => {
-    handleCount.current = handleCount.current === 1 ? 2 : 1;
-    setElements((els) => els.map((el) => ({ ...el, data: { ...el.data, handleCount: handleCount.current } })));
+    setElements((els) =>
+      els.map((el) => {
+        if (isEdge(el)) {
+          return el;
+        }
+
+        return { ...el, data: { ...el.data, handleCount: el.data?.handleCount === 1 ? 2 : 1 } };
+      })
+    );
+  }, []);
+
+  const toggleHandlePosition = useCallback(() => {
+    setElements((els) =>
+      els.map((el) => {
+        if (isEdge(el)) {
+          return el;
+        }
+
+        return { ...el, data: { ...el.data, handlePosition: el.data?.handlePosition === 0 ? 1 : 0 } };
+      })
+    );
   }, []);
 
   const updateNode = useCallback(() => updateNodeInternals('1'), [updateNodeInternals]);
@@ -65,6 +85,7 @@ const UpdateNodeInternalsFlow = () => {
     <ReactFlow elements={elements} nodeTypes={nodeTypes} onConnect={onConnect} onPaneClick={onPaneClick}>
       <div style={buttonWrapperStyles}>
         <button onClick={toggleHandleCount}>toggle handle count</button>
+        <button onClick={toggleHandlePosition}>toggle handle position</button>
         <button onClick={updateNode}>update node internals</button>
       </div>
     </ReactFlow>

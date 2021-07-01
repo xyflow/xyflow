@@ -25,6 +25,7 @@ interface EdgeRendererProps {
   connectionLineComponent?: ConnectionLineComponent;
   connectionMode?: ConnectionMode;
   onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
+  onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   arrowHeadColor: string;
   markerEndId?: string;
   onlyRenderVisibleElements: boolean;
@@ -33,6 +34,8 @@ interface EdgeRendererProps {
   onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
 }
 
@@ -173,6 +176,9 @@ const Edge = ({
       onMouseMove={props.onEdgeMouseMove}
       onMouseLeave={props.onEdgeMouseLeave}
       edgeUpdaterRadius={props.edgeUpdaterRadius}
+      onEdgeDoubleClick={props.onEdgeDoubleClick}
+      onEdgeUpdateStart={props.onEdgeUpdateStart}
+      onEdgeUpdateEnd={props.onEdgeUpdateEnd}
     />
   );
 };

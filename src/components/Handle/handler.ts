@@ -1,5 +1,7 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
 
+import { getHostForElement } from '../../utils';
+
 import {
   ElementId,
   XYPosition,
@@ -10,6 +12,7 @@ import {
   ConnectionMode,
   SetConnectionId,
   Connection,
+  HandleType,
 } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
@@ -31,9 +34,10 @@ function checkElementBelowIsValid(
   isTarget: boolean,
   nodeId: ElementId,
   handleId: ElementId | null,
-  isValidConnection: ValidConnectionFunc
+  isValidConnection: ValidConnectionFunc,
+  doc: Document | ShadowRoot
 ) {
-  const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+  const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
   const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
 
@@ -93,21 +97,29 @@ export function onMouseDown(
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
   connectionMode: ConnectionMode,
+  elementEdgeUpdaterType?: HandleType,
+  onEdgeUpdateEnd?: (evt: MouseEvent) => void,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
   onConnectEnd?: OnConnectEndFunc
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
-  const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
-  const elementBelowIsTarget = elementBelow?.classList.contains('target');
-  const elementBelowIsSource = elementBelow?.classList.contains('source');
-  const elementBelowIsUpdater = elementBelow?.classList.contains('react-flow__edgeupdater');
+  // when react-flow is used inside a shadow root we can't use document
+  const doc = getHostForElement(event.target as HTMLElement);
 
-  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource && !elementBelowIsUpdater)) {
+  if (!doc) {
     return;
   }
 
-  const handleType = elementBelowIsTarget ? 'target' : 'source';
+  const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
+  const elementBelowIsTarget = elementBelow?.classList.contains('target');
+  const elementBelowIsSource = elementBelow?.classList.contains('source');
+
+  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource && !elementEdgeUpdaterType)) {
+    return;
+  }
+
+  const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementBelowIsTarget ? 'target' : 'source';
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 
@@ -131,7 +143,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      doc
     );
 
     if (!isHoveringHandle) {
@@ -154,7 +167,8 @@ export function onMouseDown(
       isTarget,
       nodeId,
       handleId,
-      isValidConnection
+      isValidConnection,
+      doc
     );
 
     onConnectStop?.(event);
@@ -165,13 +179,17 @@ export function onMouseDown(
 
     onConnectEnd?.(event);
 
+    if (elementEdgeUpdaterType && onEdgeUpdateEnd) {
+      onEdgeUpdateEnd(event);
+    }
+
     resetRecentHandle(recentHoveredHandle);
     setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
+    doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+    doc.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
   }
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  doc.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
+  doc.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
 }

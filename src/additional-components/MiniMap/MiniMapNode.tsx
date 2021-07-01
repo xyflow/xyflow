@@ -9,6 +9,7 @@ interface MiniMapNodeProps {
   borderRadius: number;
   className: string;
   color: string;
+  shapeRendering: string;
   strokeColor: string;
   strokeWidth: number;
   style?: CSSProperties;
@@ -25,6 +26,7 @@ const MiniMapNode = ({
   strokeWidth,
   className,
   borderRadius,
+  shapeRendering
 }: MiniMapNodeProps) => {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
@@ -41,6 +43,7 @@ const MiniMapNode = ({
       fill={fill}
       stroke={strokeColor}
       strokeWidth={strokeWidth}
+      shapeRendering={shapeRendering}
     />
   );
 };
