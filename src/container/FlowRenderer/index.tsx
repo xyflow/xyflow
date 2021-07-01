@@ -49,6 +49,7 @@ const FlowRenderer = ({
   defaultPosition,
   defaultZoom,
   translateExtent,
+  preventScrolling,
   onSelectionDragStart,
   onSelectionDrag,
   onSelectionDragStop,
@@ -103,6 +104,7 @@ const FlowRenderer = ({
       defaultZoom={defaultZoom}
       translateExtent={translateExtent}
       zoomActivationKeyCode={zoomActivationKeyCode}
+      preventScrolling={preventScrolling}
     >
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />

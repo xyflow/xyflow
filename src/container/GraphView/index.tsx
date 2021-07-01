@@ -73,6 +73,7 @@ const GraphView = ({
   defaultZoom,
   defaultPosition,
   translateExtent,
+  preventScrolling,
   nodeExtent,
   arrowHeadColor,
   markerEndId,
@@ -244,6 +245,7 @@ const GraphView = ({
       onSelectionDrag={onSelectionDrag}
       onSelectionDragStop={onSelectionDragStop}
       onSelectionContextMenu={onSelectionContextMenu}
+      preventScrolling={preventScrolling}
     >
       <NodeRenderer
         nodeTypes={nodeTypes}
