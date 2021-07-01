@@ -102,6 +102,9 @@ const ZoomPane = ({
       if (panOnScroll && !zoomActivationKeyPressed) {
         d3Selection
           .on('wheel', (event: any) => {
+            if (event.target.closest('.nowheel')) {
+              return false;
+            }
             event.preventDefault();
             event.stopImmediatePropagation();
 
