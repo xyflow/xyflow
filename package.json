@@ -30,7 +30,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.6",
     "@types/d3": "^7.0.0",
-    "@types/react-redux": "^7.1.16",
+    "@types/react-redux": "^7.1.18",
     "classcat": "^5.0.3",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
