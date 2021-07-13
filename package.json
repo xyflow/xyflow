@@ -64,7 +64,7 @@
     "release-it": "^14.10.0",
     "rollup": "^2.53.1",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-typescript2": "^0.30.0",
