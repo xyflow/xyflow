@@ -7,6 +7,7 @@ import { Node, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
 
 type StringFunc = (node: Node) => string;
+type VoidFunc = (node: Node) => void;
 
 export interface MiniMapProps extends HTMLAttributes<SVGSVGElement> {
   nodeColor?: string | StringFunc;
@@ -15,6 +16,7 @@ export interface MiniMapProps extends HTMLAttributes<SVGSVGElement> {
   nodeBorderRadius?: number;
   nodeStrokeWidth?: number;
   maskColor?: string;
+  onMiniMapNodeClick?: VoidFunc;
 }
 
 declare const window: any;
@@ -31,6 +33,7 @@ const MiniMap = ({
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
+  onMiniMapNodeClick,
 }: MiniMapProps) => {
   const containerWidth = useStoreState((s) => s.width);
   const containerHeight = useStoreState((s) => s.height);
@@ -41,9 +44,11 @@ const MiniMap = ({
   const elementWidth = (style?.width || defaultWidth)! as number;
   const elementHeight = (style?.height || defaultHeight)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
-  const nodeStrokeColorFunc = (nodeStrokeColor instanceof Function
-    ? nodeStrokeColor
-    : () => nodeStrokeColor) as StringFunc;
+  const nodeStrokeColorFunc = (
+    nodeStrokeColor instanceof Function ? nodeStrokeColor : () => nodeStrokeColor
+  ) as StringFunc;
+  const miniMapNodeClickFunc =
+    onMiniMapNodeClick instanceof Function ? (node: Node) => () => onMiniMapNodeClick(node) : () => undefined;
   const nodeClassNameFunc = (nodeClassName instanceof Function ? nodeClassName : () => nodeClassName) as StringFunc;
   const hasNodes = nodes && nodes.length;
   const bb = getRectOfNodes(nodes);
@@ -64,7 +69,7 @@ const MiniMap = ({
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
-  const shapeRendering = (typeof window === "undefined" || !!window.chrome) ?  "crispEdges" : "geometricPrecision";
+  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
   return (
     <svg
@@ -90,6 +95,7 @@ const MiniMap = ({
             strokeColor={nodeStrokeColorFunc(node)}
             strokeWidth={nodeStrokeWidth}
             shapeRendering={shapeRendering}
+            onClick={miniMapNodeClickFunc(node)}
           />
         ))}
       <path

@@ -13,6 +13,7 @@ interface MiniMapNodeProps {
   strokeColor: string;
   strokeWidth: number;
   style?: CSSProperties;
+  onClick?: () => void;
 }
 
 const MiniMapNode = ({
@@ -26,7 +27,8 @@ const MiniMapNode = ({
   strokeWidth,
   className,
   borderRadius,
-  shapeRendering
+  shapeRendering,
+  onClick,
 }: MiniMapNodeProps) => {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
@@ -44,6 +46,7 @@ const MiniMapNode = ({
       stroke={strokeColor}
       strokeWidth={strokeWidth}
       shapeRendering={shapeRendering}
+      onClick={onClick}
     />
   );
 };

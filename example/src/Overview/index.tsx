@@ -190,7 +190,7 @@ const OverviewFlow = () => {
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
     >
-      <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
+      <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} onMiniMapNodeClick={(node) => console.log(node)} />
       <Controls />
       <Background color="#aaa" gap={20} />
     </ReactFlow>
