@@ -185,3 +185,7 @@
   bottom: 10px;
   right: 10px;
 }
+
+.react-flow__minimap-mask{
+	pointer-events: none;
+}

@@ -1,9 +1,7 @@
 import React, { useState, MouseEvent, CSSProperties } from 'react';
 
 import ReactFlow, {
-  useStoreState,
   useZoomPanHelper,
-  ReactFlowProvider,
   removeElements,
   addEdge,
   MiniMap,
@@ -19,6 +17,7 @@ import ReactFlow, {
   ArrowHeadType,
   Connection,
   Edge,
+	ReactFlowProvider,
 } from 'react-flow-renderer';
 
 const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
@@ -162,12 +161,10 @@ const nodeColor = (n: Node): string => {
 const OverviewFlow = () => {
   const [elements, setElements] = useState(initialElements);
   const { setCenter } = useZoomPanHelper();
-  const nodes = useStoreState((state) => state.nodes);
 
   const onMiniMapNodeClick = (node: Node) => {
     console.log('miniMapNode click', node);
-    const target = nodes?.find((n) => node.id === n.id);
-    setCenter(target?.position.x!, target?.position.y!);
+    setCenter(node?.position.x!, node?.position.y!);
   };
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
