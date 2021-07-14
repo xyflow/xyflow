@@ -1,6 +1,9 @@
 import React, { useState, MouseEvent, CSSProperties } from 'react';
 
 import ReactFlow, {
+  useStoreState,
+  useZoomPanHelper,
+  ReactFlowProvider,
   removeElements,
   addEdge,
   MiniMap,
@@ -158,6 +161,14 @@ const nodeColor = (n: Node): string => {
 
 const OverviewFlow = () => {
   const [elements, setElements] = useState(initialElements);
+  const { setCenter } = useZoomPanHelper();
+  const nodes = useStoreState((state) => state.nodes);
+
+  const onMiniMapNodeClick = (node: Node) => {
+    console.log('miniMapNode click', node);
+    const target = nodes?.find((n) => node.id === n.id);
+    setCenter(target?.position.x!, target?.position.y!);
+  };
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
 
@@ -190,11 +201,22 @@ const OverviewFlow = () => {
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
     >
-      <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} onMiniMapNodeClick={(node) => console.log(node)} />
+      <MiniMap
+        nodeStrokeColor={nodeStrokeColor}
+        nodeColor={nodeColor}
+        nodeBorderRadius={2}
+        onMiniMapNodeClick={onMiniMapNodeClick}
+      />
       <Controls />
       <Background color="#aaa" gap={20} />
     </ReactFlow>
   );
 };
 
-export default OverviewFlow;
+const OverviewFlowProvider = () => (
+  <ReactFlowProvider>
+    <OverviewFlow></OverviewFlow>
+  </ReactFlowProvider>
+);
+
+export default OverviewFlowProvider;
