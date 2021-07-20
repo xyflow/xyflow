@@ -303,7 +303,7 @@ export type ConnectionLineComponentProps = {
   targetPosition?: Position;
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
-  sourceNode?: Node | null;
+  sourceNode?: Node;
   sourceHandle?: HandleElement;
 };
 
