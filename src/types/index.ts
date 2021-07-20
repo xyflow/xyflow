@@ -303,6 +303,8 @@ export type ConnectionLineComponentProps = {
   targetPosition?: Position;
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
+  sourceNode?: Node | null;
+  sourceHandle?: HandleElement;
 };
 
 export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponentProps>;
