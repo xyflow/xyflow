@@ -248,6 +248,8 @@ export interface WrapNodeProps<T = any> {
 export type FitViewParams = {
   padding?: number;
   includeHiddenNodes?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 };
 
 export type FlowExportObject<T = any> = {
@@ -301,6 +303,8 @@ export type ConnectionLineComponentProps = {
   targetPosition?: Position;
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
+  sourceNode?: Node;
+  sourceHandle?: HandleElement;
 };
 
 export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponentProps>;

@@ -23,12 +23,12 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   onInteractiveChange?: (interactiveStatus: boolean) => void;
 }
 
-export interface ControlButtonProps extends HTMLAttributes<HTMLDivElement> {}
+export interface ControlButtonProps extends HTMLAttributes<HTMLButtonElement> {}
 
 export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
-  <div className={cc(['react-flow__controls-button', className])} {...rest}>
+  <button className={cc(['react-flow__controls-button', className])} {...rest}>
     {children}
-  </div>
+  </button>
 );
 
 const Controls: FC<ControlProps> = ({

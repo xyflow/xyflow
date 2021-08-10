@@ -191,7 +191,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         height: Math.abs(mousePos.y - startY),
       };
 
-      const selectedNodes = getNodesInside(state.nodes, nextUserSelectRect, state.transform);
+      const selectedNodes = getNodesInside(state.nodes, nextUserSelectRect, state.transform, false, true);
       const selectedEdges = getConnectedEdges(selectedNodes, state.edges);
 
       const nextSelectedElements = [...selectedNodes, ...selectedEdges];

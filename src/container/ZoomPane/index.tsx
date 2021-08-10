@@ -25,6 +25,7 @@ interface ZoomPaneProps {
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   zoomActivationKeyCode?: KeyCode;
+  preventScrolling?: boolean;
   children: ReactNode;
 }
 
@@ -38,6 +39,8 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
   y: eventTransform.y,
   zoom: eventTransform.k,
 });
+
+const hasNoWheelClass = (event: any) => event.target.closest('.nowheel');
 
 const ZoomPane = ({
   onMove,
@@ -56,6 +59,7 @@ const ZoomPane = ({
   defaultZoom = 1,
   translateExtent,
   zoomActivationKeyCode,
+  preventScrolling = true,
   children,
 }: ZoomPaneProps) => {
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -102,6 +106,9 @@ const ZoomPane = ({
       if (panOnScroll && !zoomActivationKeyPressed) {
         d3Selection
           .on('wheel', (event: any) => {
+            if (hasNoWheelClass(event)) {
+              return false;
+            }
             event.preventDefault();
             event.stopImmediatePropagation();
 
@@ -131,10 +138,27 @@ const ZoomPane = ({
           })
           .on('wheel.zoom', null);
       } else if (typeof d3ZoomHandler !== 'undefined') {
-        d3Selection.on('wheel', null).on('wheel.zoom', d3ZoomHandler);
+        d3Selection
+          .on('wheel', (event: any) => {
+            if (!preventScrolling || hasNoWheelClass(event)) {
+              return null;
+            }
+
+            event.preventDefault();
+          })
+          .on('wheel.zoom', d3ZoomHandler);
       }
     }
-  }, [panOnScroll, panOnScrollMode, d3Selection, d3Zoom, d3ZoomHandler, zoomActivationKeyPressed, zoomOnPinch]);
+  }, [
+    panOnScroll,
+    panOnScrollMode,
+    d3Selection,
+    d3Zoom,
+    d3ZoomHandler,
+    zoomActivationKeyPressed,
+    zoomOnPinch,
+    preventScrolling,
+  ]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -208,7 +232,7 @@ const ZoomPane = ({
           return false;
         }
 
-        if (event.target.closest('.nowheel') && event.type === 'wheel') {
+        if (hasNoWheelClass(event) && event.type === 'wheel') {
           return false;
         }
 
