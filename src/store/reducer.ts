@@ -41,7 +41,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
               ...propElement,
             };
 
-            if (storeNode.position.x !== propElement.position.x || storeNode.position.y !== propElement.position.y) {
+            if (storeNode.__rf.position.x !== propElement.position.x || storeNode.__rf.position.y !== propElement.position.y) {
               updatedNode.__rf.position = propElement.position;
             }
 
@@ -121,6 +121,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
         if (node.id === id) {
           return {
             ...node,
+            position,
             __rf: {
               ...node.__rf,
               position,
@@ -138,20 +139,25 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
 
       const nextNodes = state.nodes.map((node) => {
         if (id === node.id || state.selectedElements?.find((sNode) => sNode.id === node.id)) {
-          const updatedNode = {
-            ...node,
-            __rf: {
-              ...node.__rf,
-              isDragging,
-            },
-          };
-
+          let position: XYPosition = {...node.__rf.position};
           if (diff) {
-            updatedNode.__rf.position = {
+            position = {
               x: node.__rf.position.x + diff.x,
               y: node.__rf.position.y + diff.y,
             };
           }
+
+          const updatedNode = {
+            ...node,
+            position,
+            __rf: {
+              ...node.__rf,
+              position,
+              isDragging,
+            },
+          };
+
+          
 
           return updatedNode;
         }
