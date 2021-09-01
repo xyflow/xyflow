@@ -28,7 +28,7 @@
     "release:next": "release-it --preRelease=next"
   },
   "dependencies": {
-    "@babel/runtime": "^7.14.8",
+    "@babel/runtime": "^7.15.3",
     "@types/d3": "^7.0.0",
     "@types/react-redux": "^7.1.18",
     "classcat": "^5.0.3",
@@ -62,7 +62,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "release-it": "^14.10.1",
-    "rollup": "^2.54.0",
+    "rollup": "^2.56.3",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.0",
