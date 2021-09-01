@@ -40,6 +40,7 @@ const onLoad = (reactFlowInstance: OnLoadParams) => {
   reactFlowInstance.fitView();
 };
 
+const onMoveStart = (transform?: FlowTransform) => console.log('zoom/move start', transform);
 const onMoveEnd = (transform?: FlowTransform) => console.log('zoom/move end', transform);
 const onEdgeContextMenu = (_: MouseEvent, edge: Edge) => console.log('edge context menu', edge);
 const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
@@ -179,6 +180,7 @@ const OverviewFlow = () => {
       onSelectionDragStop={onSelectionDragStop}
       onSelectionContextMenu={onSelectionContextMenu}
       onSelectionChange={onSelectionChange}
+      onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
       onLoad={onLoad}
       connectionLineStyle={connectionLineStyle}

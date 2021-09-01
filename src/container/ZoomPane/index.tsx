@@ -181,12 +181,10 @@ const ZoomPane = ({
     if (d3Zoom) {
       if (onMoveStart) {
         d3Zoom.on('start', (event: any) => {
-          if (viewChanged(prevTransform.current, event.transform)) {
-            const flowTransform = eventToFlowTransform(event.transform);
-            prevTransform.current = flowTransform;
+          const flowTransform = eventToFlowTransform(event.transform);
+          prevTransform.current = flowTransform;
 
-            onMoveStart(flowTransform);
-          }
+          onMoveStart(flowTransform);
         });
       } else {
         d3Zoom.on('start', null);
