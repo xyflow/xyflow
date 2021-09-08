@@ -128,7 +128,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   edgeTypesId?: string;
 }
 
-const ReactFlow = ({
+const ReactFlow = forwardRef(({
   elements = [],
   className,
   nodeTypes = defaultNodeTypes,
@@ -196,13 +196,13 @@ const ReactFlow = ({
   children,
   onEdgeUpdate,
   ...rest
-}: ReactFlowProps) => {
+}: ReactFlowProps, ref) => {
   const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), []);
   const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), []);
   const reactFlowClasses = cc(['react-flow', className]);
  
   return (
-    <div {...rest} className={reactFlowClasses}>
+    <div {...rest} ref={ref as any} className={reactFlowClasses}>
       <Wrapper>
         <GraphView
           onAddField={onAddField}
@@ -274,7 +274,7 @@ const ReactFlow = ({
       </Wrapper>
     </div>
   );
-};
+});
 
 ReactFlow.displayName = 'ReactFlow';
 

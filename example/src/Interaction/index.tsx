@@ -58,7 +58,7 @@ const InteractionFlow = () => {
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
       onConnect={onConnect}
-      onElementClick={captureElementClick ? onElementClick : undefined}
+      onElementClick={captureElementClick ? onElementClick as any : undefined}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
       paneMoveable={paneMoveable}

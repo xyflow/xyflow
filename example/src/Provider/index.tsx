@@ -40,7 +40,7 @@ const ProviderFlow = () => {
         <div className="reactflow-wrapper">
           <ReactFlow
             elements={elements}
-            onElementClick={onElementClick}
+            onElementClick={onElementClick as any}
             onConnect={onConnect}
             onElementsRemove={onElementsRemove}
             onLoad={onLoad}

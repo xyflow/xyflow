@@ -165,7 +165,7 @@ const OverviewFlow = () => {
   return (
     <ReactFlow
       elements={elements}
-      onElementClick={onElementClick}
+      onElementClick={onElementClick as any}
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onPaneClick={onPaneClick}
@@ -183,7 +183,7 @@ const OverviewFlow = () => {
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
       onLoad={onLoad}
-      connectionLineStyle={connectionLineStyle}
+      connectionLineStyle={connectionLineStyle as any}
       snapToGrid={true}
       snapGrid={snapGrid}
       onEdgeContextMenu={onEdgeContextMenu}

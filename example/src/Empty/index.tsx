@@ -40,7 +40,7 @@ const EmptyFlow = () => {
     <ReactFlow
       elements={elements}
       onLoad={onLoad}
-      onElementClick={onElementClick}
+      onElementClick={onElementClick as any}
       onElementsRemove={onElementsRemove}
       onConnect={(p) => onConnect(p)}
       onNodeDragStop={onNodeDragStop}

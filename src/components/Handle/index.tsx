@@ -10,7 +10,8 @@ import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 const alwaysValid = () => true;
 
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
-const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>> = ({
+
+const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(({
   type = 'source',
 
   position = Position.Top,
@@ -22,7 +23,7 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
   children,
   className,
   ...rest
-}) => {
+}, ref) => {
   const nodeId = useContext(NodeIdContext) as ElementId;
   const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
   const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
@@ -39,56 +40,24 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
       onConnectAction?.(params);
       onConnect?.(params);
     },
-    ref
-  ) => {
-    const nodeId = useContext(NodeIdContext) as ElementId;
-    const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
-    const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
-    const onConnectAction = useStoreState((state) => state.onConnect);
-    const onConnectStart = useStoreState((state) => state.onConnectStart);
-    const onConnectStop = useStoreState((state) => state.onConnectStop);
-    const onConnectEnd = useStoreState((state) => state.onConnectEnd);
-    const connectionMode = useStoreState((state) => state.connectionMode);
-    const handleId = id || null;
-    const isTarget = type === 'target';
+    [onConnectAction, onConnect]
+  );
 
-    const onConnectExtended = useCallback(
-      (params: Connection) => {
-        onConnectAction?.(params);
-        onConnect?.(params);
-      },
-      [onConnectAction, onConnect]
-    );
-
-    const onMouseDownHandler = useCallback(
-      (event: React.MouseEvent) => {
-        onMouseDown(
-          event,
-          handleId,
-          nodeId,
-          setConnectionNodeId as unknown as SetSourceIdFunc,
-          setPosition as unknown as SetPosition,
-          onConnectExtended,
-          isTarget,
-          isValidConnection,
-          connectionMode,
-          undefined,
-          undefined,
-          onConnectStart,
-          onConnectStop,
-          onConnectEnd
-        );
-      },
-      [
+  const onMouseDownHandler = useCallback(
+    (event: React.MouseEvent) => {
+      onMouseDown(
+        event,
         handleId,
         nodeId,
-        setConnectionNodeId,
-        setPosition,
+        (setConnectionNodeId as unknown) as SetSourceIdFunc,
+        (setPosition as unknown) as SetPosition,
         onConnectExtended,
         isTarget,
         isUniversal,
         isValidConnection,
         connectionMode,
+        undefined,
+        undefined,
         onConnectStart,
         onConnectStop,
         onConnectEnd,
@@ -132,14 +101,14 @@ const Handle: FunctionComponent<HandleProps & Omit<HTMLAttributes<HTMLDivElement
       {...(field && {'data-handletype': 'field'})}
       className={handleClasses}
       onMouseDown={onMouseDownHandler}
+      ref={ref}
       {...rest}
     >
       {children}
     </div>
   );
-};
+});
 
 Handle.displayName = 'Handle';
 
 export default memo(Handle);
-

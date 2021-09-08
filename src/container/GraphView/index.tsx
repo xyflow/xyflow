@@ -255,10 +255,10 @@ const GraphView = ({
       <NodeRenderer
         nodeTypes={nodeTypes}
         onFieldChange={onFieldChange}
-        onAddField={onAddField}
+        onAddField={onAddField as any}
         isValidConnection={isValidConnection}
-        onRemoveField={onRemoveField}
-        onElementClick={onElementClick}
+        onRemoveField={onRemoveField as any}
+        onElementClick={onElementClick as any}
         onNodeDoubleClick={onNodeDoubleClick}
         onNodeMouseEnter={onNodeMouseEnter}
         onNodeMouseMove={onNodeMouseMove}
@@ -275,7 +275,7 @@ const GraphView = ({
       />
       <EdgeRenderer
         edgeTypes={edgeTypes}
-        onElementClick={onElementClick}
+        onElementClick={onElementClick as any}
         onEdgeDoubleClick={onEdgeDoubleClick}
         connectionLineType={connectionLineType}
         connectionLineStyle={connectionLineStyle}

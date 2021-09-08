@@ -29,6 +29,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.3",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.4",
     "@types/d3": "^7.0.0",
     "@types/react-redux": "^7.1.18",
     "classcat": "^5.0.3",

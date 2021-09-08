@@ -153,7 +153,7 @@ export interface EdgeProps<T = any> {
   sourcePosition: Position;
   targetPosition: Position;
   subconnections?: Array<Connection>;
-  label?: string;
+  label?: string | ReactNode;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;

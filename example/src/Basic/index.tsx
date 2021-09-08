@@ -67,7 +67,7 @@ const BasicFlow = () => {
     <ReactFlow
       elements={elements}
       onLoad={onLoad}
-      onElementClick={onElementClick}
+      onElementClick={onElementClick as any}
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
