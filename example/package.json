@@ -39,10 +39,5 @@
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
     "@types/react-router-dom": "^5.1.7"
-  },
-  "resolutions": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-
   }
 }

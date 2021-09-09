@@ -4,15 +4,18 @@ import SidebarFieldSummary from './components/SidebarFieldSummary'
 import SidebarFieldDetails from './components/SidebarFieldDetails'
 import SidebarRelationshipOptions from './components/SidebarRelationshipOptions'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { CircularProgress } from '@material-ui/core';
 
-
-export default ({ 
+const SideBar = ({ 
   children, 
   error, 
   selected, 
   elements, 
+  loading,
+  onGenerateService,
   setElements,
   onAddField, 
+  isValidService,
   onRemoveField, 
   onTitleChange, 
   onFieldChange
@@ -174,6 +177,9 @@ export default ({
               targetField={elements[selected].targetField}
             /> }
       {children}
+      <div><Button variant="contained" disabled={loading || !isValidService} className="sidebar-addfield-button" disableElevation fullWidth onClick={onGenerateService}>{loading ? <CircularProgress /> :'Generate Service'}</Button></div>
     </aside>
   );
 };
+
+export default SideBar
