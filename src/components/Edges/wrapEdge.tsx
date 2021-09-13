@@ -160,7 +160,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           _onEdgeUpdate
         );
       },
-      [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement]
+      [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement, onConnectEdge]
     );
 
     const onEdgeUpdaterSourceMouseDown = useCallback(
