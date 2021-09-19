@@ -294,7 +294,7 @@ const DnDFlow = () => {
     }
     return false
   }
-
+  console.log(elements)
   return (
     <div className="dndflow">
         <ReactFlowProvider>

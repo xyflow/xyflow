@@ -5,6 +5,7 @@ import SidebarFieldDetails from './components/SidebarFieldDetails'
 import SidebarRelationshipOptions from './components/SidebarRelationshipOptions'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CircularProgress } from '@material-ui/core';
+import { select } from 'd3-selection';
 
 const SideBar = ({ 
   children, 
@@ -40,11 +41,12 @@ const SideBar = ({
 
   
   const handleSwap = (event) => {
+ 
     const swappedHandles = {
-      sourceHandle: selected.targetHandle,
-      targetHandle: selected.sourceHandle,
-      source: selected.target,
-      target: selected.source,
+      sourceHandle: elements[selected].targetHandle,
+      targetHandle: elements[selected].sourceHandle,
+      source: elements[selected].target,
+      target:elements[selected].source,
 
     }
     const newNode = { ...elements[selected], ...swappedHandles }
