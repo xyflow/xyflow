@@ -11,7 +11,7 @@ const onConnect = (params: Connection | Edge) => console.log('handle onConnect',
 const ColorSelectorNode: FC<NodeProps> = ({ data, isConnectable }) => {
   return (
     <>
-      <Handle type="target" position={Position.Left} style={targetHandleStyle} onConnect={onConnect} />
+      <Handle type="source" position={Position.Left} style={targetHandleStyle} onConnect={onConnect} />
       <div>
         Custom Color Picker Node: <strong>{data.color}</strong>
       </div>

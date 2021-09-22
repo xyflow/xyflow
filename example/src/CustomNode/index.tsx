@@ -7,11 +7,13 @@ import ReactFlow, {
   addEdge,
   MiniMap,
   Controls,
+  updateEdge,
   Node,
   FlowElement,
   OnLoadParams,
   Elements,
   Position,
+  ConnectionMode,
   SnapGrid,
   Connection,
   Edge,
@@ -79,6 +81,7 @@ const CustomNodeFlow = () => {
         data: { label: 'Output A' },
         position: { x: 550, y: 25 },
         targetPosition: Position.Left,
+
       },
       {
         id: '4',
@@ -86,6 +89,7 @@ const CustomNodeFlow = () => {
         data: { label: 'Output B' },
         position: { x: 550, y: 100 },
         targetPosition: Position.Left,
+
       },
 
       { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#fff' } },
@@ -97,7 +101,8 @@ const CustomNodeFlow = () => {
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params: Connection | Edge) =>
     setElements((els) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, els));
-
+  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
+    setElements((els) => updateEdge(oldEdge, newConnection, els));
   return (
     <ReactFlow
       elements={elements}
@@ -112,6 +117,9 @@ const CustomNodeFlow = () => {
       snapToGrid={true}
       snapGrid={snapGrid}
       defaultZoom={1.5}
+      onEdgeUpdate={onEdgeUpdate}
+      connectionMode={ConnectionMode.Loose}
+
     >
       <MiniMap
         nodeStrokeColor={(n: Node): string => {
