@@ -79,6 +79,8 @@ export default ({
           targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
+          sourceNode={sourceNode}
+          sourceHandle={sourceHandle}
         />
       </g>
     );

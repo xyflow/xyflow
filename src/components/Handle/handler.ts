@@ -37,6 +37,8 @@ function checkElementBelowIsValid(
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
+  // TODO: why does this throw an error? elementFromPoint should be available for ShadowRoot too
+  // @ts-ignore
   const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
   const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
@@ -111,6 +113,7 @@ export function onMouseDown(
     return;
   }
 
+  // @ts-ignore
   const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
   const elementBelowIsSource = elementBelow?.classList.contains('source');

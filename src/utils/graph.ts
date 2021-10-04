@@ -216,7 +216,9 @@ export const getNodesInside = (
   nodes: Node[],
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
-  partially: boolean = false
+  partially: boolean = false,
+  // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
+  excludeNonSelectableNodes: boolean = false
 ): Node[] => {
   const rBox = rectToBox({
     x: (rect.x - tx) / tScale,
@@ -225,7 +227,11 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  return nodes.filter(({ __rf: { position, width, height, isDragging } }) => {
+  return nodes.filter(({ selectable = true, __rf: { position, width, height, isDragging } }) => {
+    if (excludeNonSelectableNodes && !selectable) {
+      return false;
+    }
+
     const nBox = rectToBox({ ...position, width, height });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));

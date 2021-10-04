@@ -107,6 +107,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   defaultZoom?: number;
   defaultPosition?: [number, number];
   translateExtent?: TranslateExtent;
+  preventScrolling?: boolean;
   nodeExtent?: NodeExtent;
   arrowHeadColor?: string;
   markerEndId?: string;
@@ -181,6 +182,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       defaultZoom = 1,
       defaultPosition = [0, 0],
       translateExtent,
+      preventScrolling = true,
       nodeExtent,
       arrowHeadColor = '#b1b1b7',
       markerEndId,
@@ -258,6 +260,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             defaultZoom={defaultZoom}
             defaultPosition={defaultPosition}
             translateExtent={translateExtent}
+            preventScrolling={preventScrolling}
             nodeExtent={nodeExtent}
             arrowHeadColor={arrowHeadColor}
             markerEndId={markerEndId}
