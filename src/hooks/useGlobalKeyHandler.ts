@@ -36,7 +36,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: Hook
       unsetNodesSelection();
       resetSelectedElements();
     }
-  }, [deleteKeyPressed]);
+  }, [deleteKeyPressed, onElementsRemove]);
 
   useEffect(() => {
     setMultiSelectionActive(multiSelectionKeyPressed);

@@ -363,7 +363,7 @@ export type FlowTransform = {
 export type TranslateExtent = [[number, number], [number, number]];
 export type NodeExtent = TranslateExtent;
 
-export type KeyCode = number | string;
+export type KeyCode = string | Array<string>;
 
 export enum PanOnScrollMode {
   Free = 'free',

@@ -23,6 +23,9 @@ const onLoad = (reactFlowInstance: OnLoadParams) => {
 
 const initialElements = getElements();
 
+const multiSelectionKeyCode = ['ShiftLeft', 'ShiftRight'];
+const deleteKeyCode = ['AltLeft+KeyD', 'Backspace'];
+
 const EdgeTypesFlow = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
@@ -35,6 +38,11 @@ const EdgeTypesFlow = () => {
       onElementsRemove={onElementsRemove}
       onConnect={onConnect}
       minZoom={0.2}
+      zoomOnScroll={false}
+      selectionKeyCode="a+s"
+      multiSelectionKeyCode={multiSelectionKeyCode}
+      deleteKeyCode={deleteKeyCode}
+      zoomActivationKeyCode="z"
     >
       <MiniMap />
       <Controls />
