@@ -26,6 +26,7 @@ import UseZoomPanHelper from './UseZoomPanHelper';
 import UseUpdateNodeInternals from './UseUpdateNodeInternals';
 import Undirectional from './Undirectional';
 import MultiFlows from './MultiFlows';
+import DragHandle from './DragHandle';
 
 import './index.css';
 
@@ -125,6 +126,10 @@ const routes = [
   {
     path: '/multiflows',
     component: MultiFlows,
+  },
+  {
+    path: '/draghandle',
+    component: DragHandle,
   },
 ];
 
