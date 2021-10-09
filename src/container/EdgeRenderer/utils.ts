@@ -86,6 +86,44 @@ export function getHandle(bounds: HandleElement[], handleId: ElementId | null): 
   return typeof handle === 'undefined' ? null : handle;
 }
 
+export function getHandleOrClosest(
+  sourceNode: Node,
+  sourceHandle: HandleElement | unknown,
+  sourcePosition: Position,
+  targetNode: Node,
+  targetHandles: HandleElement[],
+  targetHandleId: ElementId | null
+): HandleElement | null {
+  if (!targetHandles) {
+    return null;
+  }
+  if (targetHandleId) {
+    const handleWithId = targetHandles.find((d) => d.id === targetHandleId);
+    if (handleWithId) {
+      return handleWithId;
+    }
+  }
+
+  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
+  let closestHandle: HandleElement | undefined,
+    closestDistance = Infinity;
+  for (const targetHandle of targetHandles) {
+    const targetHandlePos = getHandlePosition(targetHandle.position, targetNode, targetHandle);
+    const dx = targetHandlePos.x - sourceHandlePos.x;
+    const dy = targetHandlePos.y - sourceHandlePos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < closestDistance) {
+      closestHandle = targetHandle;
+      closestDistance = distance;
+    }
+  }
+
+  if (closestHandle != null) {
+    return closestHandle;
+  }
+  return getHandle(targetHandles, targetHandleId);
+}
+
 interface EdgePositions {
   sourceX: number;
   sourceY: number;

@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import EdgeText from './EdgeText';
 
 import { getMarkerEnd, getCenter } from './utils';
-import { EdgeProps, Position } from '../../types';
+import { EdgeProps, Position, XYPosition } from '../../types';
 
 interface GetBezierPathParams {
   sourceX: number;
@@ -23,27 +23,25 @@ export function getBezierPath({
   targetX,
   targetY,
   targetPosition = Position.Top,
-  centerX,
-  centerY,
 }: GetBezierPathParams): string {
-  const [_centerX, _centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
-  const leftAndRight = [Position.Left, Position.Right];
-
-  const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
-  const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
-
-  let path = `M${sourceX},${sourceY} C${sourceX},${cY} ${targetX},${cY} ${targetX},${targetY}`;
-
-  if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    path = `M${sourceX},${sourceY} C${cX},${sourceY} ${cX},${targetY} ${targetX},${targetY}`;
-  } else if (leftAndRight.includes(targetPosition)) {
-    path = `M${sourceX},${sourceY} C${sourceX},${targetY} ${sourceX},${targetY} ${targetX},${targetY}`;
-  } else if (leftAndRight.includes(sourcePosition)) {
-    path = `M${sourceX},${sourceY} C${targetX},${sourceY} ${targetX},${sourceY} ${targetX},${targetY}`;
-  }
-
-  return path;
+  const endOfSourceRunway = getRunwayPoint(sourceX, sourceY, sourcePosition);
+  const startOfTargetRunway = getRunwayPoint(targetX, targetY, targetPosition);
+  return `M ${sourceX},${sourceY} C ${endOfSourceRunway.x},${endOfSourceRunway.y} ${startOfTargetRunway.x},${startOfTargetRunway.y} ${targetX},${targetY}`;
 }
+
+const RUNWAY_DISTANCE = 50;
+const getRunwayPoint = (x: number, y: number, position: Position): XYPosition => {
+  switch (position) {
+    case Position.Top:
+      return { x, y: y - RUNWAY_DISTANCE };
+    case Position.Right:
+      return { x: x + RUNWAY_DISTANCE, y };
+    case Position.Bottom:
+      return { x, y: y + RUNWAY_DISTANCE };
+    case Position.Left:
+      return { x: x - RUNWAY_DISTANCE, y };
+  }
+};
 
 export default memo(
   ({

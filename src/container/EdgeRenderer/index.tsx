@@ -4,7 +4,7 @@ import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes } from './utils';
+import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes, getHandleOrClosest } from './utils';
 import {
   Position,
   Edge,
@@ -99,8 +99,15 @@ const Edge = ({
       ? targetNodeBounds.target
       : targetNodeBounds.target || targetNodeBounds.source;
   const sourceHandle = getHandle(sourceNode.__rf.handleBounds.source, sourceHandleId);
-  const targetHandle = getHandle(targetNodeHandles, targetHandleId);
   const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
+  const targetHandle = getHandleOrClosest(
+    sourceNode,
+    sourceHandle,
+    sourcePosition,
+    targetNode,
+    targetNodeHandles,
+    targetHandleId
+  );
   const targetPosition = targetHandle ? targetHandle.position : Position.Top;
 
   if (!sourceHandle) {
