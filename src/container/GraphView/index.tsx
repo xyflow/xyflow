@@ -11,7 +11,7 @@ import { ReactFlowProps } from '../ReactFlow';
 
 import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
 
-export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'elements'> {
+export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   selectionKeyCode: KeyCode;
@@ -55,7 +55,6 @@ const GraphView = ({
   selectionKeyCode,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
-  onElementsRemove,
   deleteKeyCode,
   onConnect,
   onConnectStart,
@@ -95,6 +94,8 @@ const GraphView = ({
   edgeUpdaterRadius,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
+  onNodesChange,
+  onEdgesChange,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -111,6 +112,9 @@ const GraphView = ({
   const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
   const setNodeExtent = useStoreActions((actions) => actions.setNodeExtent);
   const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
+  const setOnNodesChange = useStoreActions((actions) => actions.setOnNodesChange);
+  const setOnEdgesChange = useStoreActions((actions) => actions.setOnEdgesChange);
+
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
@@ -217,12 +221,23 @@ const GraphView = ({
     }
   }, [connectionMode]);
 
+  useEffect(() => {
+    if (typeof onNodesChange !== 'undefined') {
+      setOnNodesChange(onNodesChange);
+    }
+  }, [onNodesChange]);
+
+  useEffect(() => {
+    if (typeof onEdgesChange !== 'undefined') {
+      setOnEdgesChange(onEdgesChange);
+    }
+  }, [onEdgesChange]);
+
   return (
     <FlowRenderer
       onPaneClick={onPaneClick}
       onPaneContextMenu={onPaneContextMenu}
       onPaneScroll={onPaneScroll}
-      onElementsRemove={onElementsRemove}
       deleteKeyCode={deleteKeyCode}
       selectionKeyCode={selectionKeyCode}
       multiSelectionKeyCode={multiSelectionKeyCode}

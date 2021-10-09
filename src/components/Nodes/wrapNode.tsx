@@ -1,18 +1,8 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  memo,
-  ComponentType,
-  CSSProperties,
-  useMemo,
-  MouseEvent,
-  useCallback,
-} from 'react';
+import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import cc from 'classcat';
 
-import { useStoreActions } from '../../store/hooks';
+import { useStoreActions, useStoreState } from '../../store/hooks';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeComponentProps, WrapNodeProps } from '../../types';
 
@@ -50,9 +40,9 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     resizeObserver,
     dragHandle,
   }: WrapNodeProps) => {
-    const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
+    // const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
-    const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
+    const onNodesChange = useStoreState((state) => state.onNodesChange);
     const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
 
     const nodeElement = useRef<HTMLDivElement>(null);
@@ -84,6 +74,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onMouseLeave,
       ]
     );
+
     const onMouseEnterHandler = useMemo(() => {
       if (!onMouseEnter || isDragging) {
         return;
@@ -153,20 +144,25 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const onDrag = useCallback(
       (event: DraggableEvent, draggableData: DraggableData) => {
+        node.position.x += draggableData.deltaX;
+        node.position.y += draggableData.deltaY;
+
         if (onNodeDrag) {
-          node.position.x += draggableData.deltaX;
-          node.position.y += draggableData.deltaY;
           onNodeDrag(event as MouseEvent, node);
         }
 
-        updateNodePosDiff({
-          id,
-          diff: {
-            x: draggableData.deltaX,
-            y: draggableData.deltaY,
+        onNodesChange?.([
+          {
+            id,
+            change: {
+              position: {
+                x: node.position.x,
+                y: node.position.y,
+              },
+              isDragging: true,
+            },
           },
-          isDragging: true,
-        });
+        ]);
       },
       [id, node, onNodeDrag]
     );
@@ -185,10 +181,14 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           return;
         }
 
-        updateNodePosDiff({
-          id: node.id,
-          isDragging: false,
-        });
+        onNodesChange?.([
+          {
+            id: node.id,
+            change: {
+              isDragging: true,
+            },
+          },
+        ]);
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
@@ -202,11 +202,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       [node, onNodeDoubleClick]
     );
 
-    useLayoutEffect(() => {
-      if (nodeElement.current && !isHidden) {
-        updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
-      }
-    }, [id, isHidden, sourcePosition, targetPosition]);
+    // useEffect(() => {
+    //   if (nodeElement.current && !isHidden) {
+    //     updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
+    //   }
+    // }, [id, isHidden, sourcePosition, targetPosition]);
 
     useEffect(() => {
       if (nodeElement.current) {

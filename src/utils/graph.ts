@@ -15,6 +15,7 @@ import {
   FlowExportObject,
   ReactFlowState,
   NodeExtent,
+  ElementChange,
 } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -68,10 +69,10 @@ const connectionExists = (edge: Edge, elements: Elements) => {
   );
 };
 
-export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elements => {
+export const addEdge = (edgeParams: Edge | Connection, nodes: Node[], edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
     console.warn("Can't create edge. An edge needs a source and a target.");
-    return elements;
+    return edges;
   }
 
   let edge: Edge;
@@ -84,11 +85,11 @@ export const addEdge = (edgeParams: Edge | Connection, elements: Elements): Elem
     } as Edge;
   }
 
-  if (connectionExists(edge, elements)) {
-    return elements;
+  if (connectionExists(edge, nodes)) {
+    return edges;
   }
 
-  return elements.concat(edge);
+  return edges.concat(edge);
 };
 
 export const updateEdge = (oldEdge: Edge, newConnection: Connection, elements: Elements): Elements => {
@@ -147,30 +148,23 @@ export const onLoadProject = (currentStore: Store<ReactFlowState>) => {
 };
 
 export const parseNode = (node: Node, nodeExtent: NodeExtent): Node => {
-  return {
-    ...node,
-    id: node.id.toString(),
-    type: node.type || 'default',
-    __rf: {
-      position: clampPosition(node.position, nodeExtent),
-      width: null,
-      height: null,
-      handleBounds: {},
-      isDragging: false,
-    },
-  };
+  if (!node.type) {
+    node.type = 'default';
+  }
+
+  if (nodeExtent) {
+    node.position = clampPosition(node.position, nodeExtent);
+  }
+
+  return node;
 };
 
 export const parseEdge = (edge: Edge): Edge => {
-  return {
-    ...edge,
-    source: edge.source.toString(),
-    target: edge.target.toString(),
-    sourceHandle: edge.sourceHandle ? edge.sourceHandle.toString() : null,
-    targetHandle: edge.targetHandle ? edge.targetHandle.toString() : null,
-    id: edge.id.toString(),
-    type: edge.type || 'default',
-  };
+  if (!edge.type) {
+    edge.type = 'default';
+  }
+
+  return edge;
 };
 
 const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
@@ -199,8 +193,8 @@ export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
 
 export const getRectOfNodes = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
-    (currBox, { __rf: { position, width, height } = {} }) =>
-      getBoundsOfBoxes(currBox, rectToBox({ ...position, width, height })),
+    (currBox, { position, width, height }) =>
+      getBoundsOfBoxes(currBox, rectToBox({ ...position, width: width || 0, height: height || 0 })),
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
@@ -227,12 +221,12 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  return nodes.filter(({ selectable = true, __rf: { position, width, height, isDragging } }) => {
+  return nodes.filter(({ selectable = true, position, width, height, isDragging }) => {
     if (excludeNonSelectableNodes && !selectable) {
       return false;
     }
 
-    const nBox = rectToBox({ ...position, width, height });
+    const nBox = rectToBox({ ...position, width: width || 0, height: height || 0 });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
@@ -246,7 +240,7 @@ export const getNodesInside = (
       return overlappingArea > 0;
     }
 
-    const area = width * height;
+    const area = (width || 0) * (height || 0);
 
     return overlappingArea >= area;
   });
@@ -259,17 +253,7 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
 };
 
 const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
-  return [
-    ...nodes.map((node) => {
-      const n = { ...node };
-
-      n.position = n.__rf.position;
-
-      delete n.__rf;
-      return n;
-    }),
-    ...edges.map((e) => ({ ...e })),
-  ];
+  return [...nodes.map((n) => ({ ...n })), ...edges.map((e) => ({ ...e }))];
 };
 
 export const onLoadGetElements = (currentStore: Store<ReactFlowState>) => {
@@ -311,3 +295,31 @@ export const getTransformForBounds = (
 
   return [x, y, clampedZoom];
 };
+
+function applyChanges(changes: ElementChange[], elements: any[]): any[] {
+  const initElements: any[] = [];
+
+  return elements.reduce((res: any[], node: any) => {
+    const hasChange = changes.find((c) => c.id === node.id);
+
+    if (hasChange?.delete) {
+      return res;
+    }
+
+    if (hasChange?.change) {
+      res.push({ ...node, ...hasChange.change });
+    } else {
+      res.push(node);
+    }
+
+    return res;
+  }, initElements);
+}
+
+export function applyNodeChanges(changes: ElementChange[], nodes: Node[]): Node[] {
+  return applyChanges(changes, nodes) as Node[];
+}
+
+export function applyEdgeChanges(changes: ElementChange[], edges: Edge[]): Edge[] {
+  return applyChanges(changes, edges) as Edge[];
+}

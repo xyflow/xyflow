@@ -1,9 +1,9 @@
 import React, { memo, useContext, useCallback, HTMLAttributes, forwardRef } from 'react';
 import cc from 'classcat';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
+import { useStoreActions, useStoreState, useStore } from '../../store/hooks';
 import NodeIdContext from '../../contexts/NodeIdContext';
-import { HandleProps, Connection, ElementId, Position } from '../../types';
+import { HandleProps, Connection, ElementId, Position, Node } from '../../types';
 
 import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
@@ -26,6 +26,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     },
     ref
   ) => {
+    const store = useStore();
     const nodeId = useContext(NodeIdContext) as ElementId;
     const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
     const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
@@ -38,9 +39,9 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const isTarget = type === 'target';
 
     const onConnectExtended = useCallback(
-      (params: Connection) => {
-        onConnectAction?.(params);
-        onConnect?.(params);
+      (params: Connection, nodes: Node[]) => {
+        onConnectAction?.(params, nodes);
+        onConnect?.(params, nodes);
       },
       [onConnectAction, onConnect]
     );
@@ -61,7 +62,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           undefined,
           onConnectStart,
           onConnectStop,
-          onConnectEnd
+          onConnectEnd,
+          store
         );
       },
       [

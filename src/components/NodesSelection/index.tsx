@@ -45,7 +45,7 @@ export default ({
 
             return {
               ...matchingNode,
-              position: matchingNode?.__rf.position,
+              position: matchingNode?.position,
             } as Node;
           })
         : [],

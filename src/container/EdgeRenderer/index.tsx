@@ -4,7 +4,7 @@ import { useStoreState } from '../../store/hooks';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes } from './utils';
+import { getEdgePositions, getHandle } from './utils';
 import {
   Position,
   Edge,
@@ -14,7 +14,6 @@ import {
   ConnectionLineType,
   ConnectionLineComponent,
   ConnectionMode,
-  Transform,
   OnEdgeUpdateFunc,
 } from '../../types';
 
@@ -41,151 +40,167 @@ interface EdgeRendererProps {
 
 interface EdgeWrapperProps {
   edge: Edge;
-  props: EdgeRendererProps;
-  nodes: Node[];
+  edgeTypes: any;
+  markerEndId?: string;
+  onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
+  onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
+  edgeUpdaterRadius?: number;
+  onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
+  targetNode?: Node;
+  sourceNode?: Node;
   selectedElements: Elements | null;
   elementsSelectable: boolean;
-  transform: Transform;
-  width: number;
-  height: number;
-  onlyRenderVisibleElements: boolean;
   connectionMode?: ConnectionMode;
 }
 
-const Edge = ({
-  edge,
-  props,
-  nodes,
-  selectedElements,
-  elementsSelectable,
-  transform,
-  width,
-  height,
-  onlyRenderVisibleElements,
-  connectionMode,
-}: EdgeWrapperProps) => {
-  const sourceHandleId = edge.sourceHandle || null;
-  const targetHandleId = edge.targetHandle || null;
-  const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
-
-  const onConnectEdge = useCallback(
-    (connection: Connection) => {
-      props.onEdgeUpdate?.(edge, connection);
-    },
-    [edge, props.onEdgeUpdate]
-  );
-
-  if (!sourceNode) {
-    console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  if (!targetNode) {
-    console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  // source and target node need to be initialized
-  if (!sourceNode.__rf.width || !targetNode.__rf.width) {
-    return null;
-  }
-
-  const edgeType = edge.type || 'default';
-  const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  const targetNodeBounds = targetNode.__rf.handleBounds;
-  // when connection type is loose we can define all handles as sources
-  const targetNodeHandles =
-    connectionMode === ConnectionMode.Strict
-      ? targetNodeBounds.target
-      : targetNodeBounds.target || targetNodeBounds.source;
-  const sourceHandle = getHandle(sourceNode.__rf.handleBounds.source, sourceHandleId);
-  const targetHandle = getHandle(targetNodeHandles, targetHandleId);
-  const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
-  const targetPosition = targetHandle ? targetHandle.position : Position.Top;
-
-  if (!sourceHandle) {
-    console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  if (!targetHandle) {
-    console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-    sourceNode,
-    sourceHandle,
-    sourcePosition,
+const Edge = memo(
+  ({
+    edge,
+    edgeTypes,
+    markerEndId,
+    onElementClick,
+    onEdgeContextMenu,
+    onEdgeMouseEnter,
+    onEdgeMouseMove,
+    onEdgeMouseLeave,
+    edgeUpdaterRadius,
+    onEdgeDoubleClick,
+    onEdgeUpdateStart,
+    onEdgeUpdateEnd,
+    onEdgeUpdate,
     targetNode,
-    targetHandle,
-    targetPosition
-  );
+    sourceNode,
+    selectedElements,
+    elementsSelectable,
+    connectionMode,
+  }: EdgeWrapperProps) => {
+    const sourceHandleId = edge.sourceHandle || null;
+    const targetHandleId = edge.targetHandle || null;
 
-  const isVisible = onlyRenderVisibleElements
-    ? isEdgeVisible({
-        sourcePos: { x: sourceX, y: sourceY },
-        targetPos: { x: targetX, y: targetY },
-        width,
-        height,
-        transform,
-      })
-    : true;
+    const onConnectEdge = useCallback(
+      (connection: Connection) => {
+        onEdgeUpdate?.(edge, connection);
+      },
+      [edge, onEdgeUpdate]
+    );
 
-  if (!isVisible) {
-    return null;
+    if (!sourceNode) {
+      console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
+      return null;
+    }
+
+    if (!targetNode) {
+      console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
+      return null;
+    }
+
+    // source and target node need to be initialized
+    if (!sourceNode.width || !targetNode.width) {
+      return null;
+    }
+
+    const edgeType = edge.type || 'default';
+    const EdgeComponent = edgeTypes[edgeType] || edgeTypes.default;
+    const targetNodeBounds = targetNode.handleBounds;
+    // when connection type is loose we can define all handles as sources
+    const targetNodeHandles =
+      connectionMode === ConnectionMode.Strict
+        ? targetNodeBounds.target
+        : targetNodeBounds.target || targetNodeBounds.source;
+    const sourceHandle = getHandle(sourceNode.handleBounds.source, sourceHandleId);
+    const targetHandle = getHandle(targetNodeHandles, targetHandleId);
+    const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
+    const targetPosition = targetHandle ? targetHandle.position : Position.Top;
+
+    if (!sourceHandle) {
+      console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
+      return null;
+    }
+
+    if (!targetHandle) {
+      console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
+      return null;
+    }
+
+    const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
+      sourceNode,
+      sourceHandle,
+      sourcePosition,
+      targetNode,
+      targetHandle,
+      targetPosition
+    );
+
+    // const isVisible = onlyRenderVisibleElements
+    //   ? isEdgeVisible({
+    //       sourcePos: { x: sourceX, y: sourceY },
+    //       targetPos: { x: targetX, y: targetY },
+    //       width,
+    //       height,
+    //       transform,
+    //     })
+    //   : true;
+
+    // if (!isVisible) {
+    //   return null;
+    // }
+
+    const isSelected = selectedElements?.some((elm) => isEdge(elm) && elm.id === edge.id) || false;
+
+    return (
+      <EdgeComponent
+        key={edge.id}
+        id={edge.id}
+        className={edge.className}
+        type={edge.type}
+        data={edge.data}
+        onClick={onElementClick}
+        selected={isSelected}
+        animated={edge.animated}
+        label={edge.label}
+        labelStyle={edge.labelStyle}
+        labelShowBg={edge.labelShowBg}
+        labelBgStyle={edge.labelBgStyle}
+        labelBgPadding={edge.labelBgPadding}
+        labelBgBorderRadius={edge.labelBgBorderRadius}
+        style={edge.style}
+        arrowHeadType={edge.arrowHeadType}
+        source={edge.source}
+        target={edge.target}
+        sourceHandleId={sourceHandleId}
+        targetHandleId={targetHandleId}
+        sourceX={sourceX}
+        sourceY={sourceY}
+        targetX={targetX}
+        targetY={targetY}
+        sourcePosition={sourcePosition}
+        targetPosition={targetPosition}
+        elementsSelectable={elementsSelectable}
+        markerEndId={markerEndId}
+        isHidden={edge.isHidden}
+        onConnectEdge={onConnectEdge}
+        handleEdgeUpdate={typeof onEdgeUpdate !== 'undefined'}
+        onContextMenu={onEdgeContextMenu}
+        onMouseEnter={onEdgeMouseEnter}
+        onMouseMove={onEdgeMouseMove}
+        onMouseLeave={onEdgeMouseLeave}
+        edgeUpdaterRadius={edgeUpdaterRadius}
+        onEdgeDoubleClick={onEdgeDoubleClick}
+        onEdgeUpdateStart={onEdgeUpdateStart}
+        onEdgeUpdateEnd={onEdgeUpdateEnd}
+      />
+    );
   }
-
-  const isSelected = selectedElements?.some((elm) => isEdge(elm) && elm.id === edge.id) || false;
-
-  return (
-    <EdgeComponent
-      key={edge.id}
-      id={edge.id}
-      className={edge.className}
-      type={edge.type}
-      data={edge.data}
-      onClick={props.onElementClick}
-      selected={isSelected}
-      animated={edge.animated}
-      label={edge.label}
-      labelStyle={edge.labelStyle}
-      labelShowBg={edge.labelShowBg}
-      labelBgStyle={edge.labelBgStyle}
-      labelBgPadding={edge.labelBgPadding}
-      labelBgBorderRadius={edge.labelBgBorderRadius}
-      style={edge.style}
-      arrowHeadType={edge.arrowHeadType}
-      source={edge.source}
-      target={edge.target}
-      sourceHandleId={sourceHandleId}
-      targetHandleId={targetHandleId}
-      sourceX={sourceX}
-      sourceY={sourceY}
-      targetX={targetX}
-      targetY={targetY}
-      sourcePosition={sourcePosition}
-      targetPosition={targetPosition}
-      elementsSelectable={elementsSelectable}
-      markerEndId={props.markerEndId}
-      isHidden={edge.isHidden}
-      onConnectEdge={onConnectEdge}
-      handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
-      onContextMenu={props.onEdgeContextMenu}
-      onMouseEnter={props.onEdgeMouseEnter}
-      onMouseMove={props.onEdgeMouseMove}
-      onMouseLeave={props.onEdgeMouseLeave}
-      edgeUpdaterRadius={props.edgeUpdaterRadius}
-      onEdgeDoubleClick={props.onEdgeDoubleClick}
-      onEdgeUpdateStart={props.onEdgeUpdateStart}
-      onEdgeUpdateEnd={props.onEdgeUpdateEnd}
-    />
-  );
-};
+);
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const transform = useStoreState((state) => state.transform);
-  const nodes = useStoreState((state) => state.nodes);
   const edges = useStoreState((state) => state.edges);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
@@ -201,13 +216,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     return null;
   }
 
-  const {
-    connectionLineType,
-    arrowHeadColor,
-    connectionLineStyle,
-    connectionLineComponent,
-    onlyRenderVisibleElements,
-  } = props;
+  const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
   const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
@@ -219,19 +228,25 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           <Edge
             key={edge.id}
             edge={edge}
-            props={props}
-            nodes={nodes}
+            sourceNode={edge.sourceNode}
+            targetNode={edge.targetNode}
             selectedElements={selectedElements}
             elementsSelectable={elementsSelectable}
-            transform={transform}
-            width={width}
-            height={height}
-            onlyRenderVisibleElements={onlyRenderVisibleElements}
+            markerEndId={props.markerEndId}
+            onEdgeContextMenu={props.onEdgeContextMenu}
+            onEdgeMouseEnter={props.onEdgeMouseEnter}
+            onEdgeMouseMove={props.onEdgeMouseMove}
+            onEdgeMouseLeave={props.onEdgeMouseLeave}
+            edgeUpdaterRadius={props.edgeUpdaterRadius}
+            onEdgeDoubleClick={props.onEdgeDoubleClick}
+            onEdgeUpdateStart={props.onEdgeUpdateStart}
+            onEdgeUpdateEnd={props.onEdgeUpdateEnd}
+            onEdgeUpdate={props.onEdgeUpdate}
+            edgeTypes={props.edgeTypes}
           />
         ))}
         {renderConnectionLine && (
           <ConnectionLine
-            nodes={nodes}
             connectionNodeId={connectionNodeId!}
             connectionHandleId={connectionHandleId}
             connectionHandleType={connectionHandleType!}

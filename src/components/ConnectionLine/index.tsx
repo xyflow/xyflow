@@ -1,5 +1,6 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 
+import { useStoreState } from '../../store/hooks';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
@@ -20,7 +21,6 @@ interface ConnectionLineProps {
   connectionPositionX: number;
   connectionPositionY: number;
   connectionLineType: ConnectionLineType;
-  nodes: Node[];
   transform: Transform;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
@@ -35,11 +35,11 @@ export default ({
   connectionPositionX,
   connectionPositionY,
   connectionLineType = ConnectionLineType.Bezier,
-  nodes = [],
   transform,
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
+  const nodes = useStoreState((state) => state.nodes);
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
@@ -54,12 +54,12 @@ export default ({
   }
 
   const sourceHandle = handleId
-    ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
-    : sourceNode.__rf.handleBounds[connectionHandleType][0];
-  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rf.width / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rf.height;
-  const sourceX = sourceNode.__rf.position.x + sourceHandleX;
-  const sourceY = sourceNode.__rf.position.y + sourceHandleY;
+    ? sourceNode.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
+    : sourceNode.handleBounds[connectionHandleType][0];
+  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.width! / 2;
+  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.height;
+  const sourceX = sourceNode.position.x + sourceHandleX;
+  const sourceY = sourceNode.position.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];

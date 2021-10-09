@@ -1,6 +1,8 @@
 import { createAction } from './utils';
 
 import {
+  Node,
+  Edge,
   Elements,
   OnConnectEndFunc,
   OnConnectFunc,
@@ -18,6 +20,7 @@ import {
   SnapGrid,
   ConnectionMode,
   NodeExtent,
+  OnElementsChange,
 } from '../types';
 
 import * as constants from './contants';
@@ -42,7 +45,8 @@ export const setOnConnectEnd = (onConnectEnd: OnConnectEndFunc) =>
     onConnectEnd,
   });
 
-export const setElements = (elements: Elements) => createAction(constants.SET_ELEMENTS, elements);
+export const setNodes = (nodes: Node[]) => createAction(constants.SET_NODES, nodes);
+export const setEdges = (edges: Edge[]) => createAction(constants.SET_EDGES, edges);
 
 export const updateNodeDimensions = (updates: NodeDimensionUpdate[]) =>
   createAction(constants.UPDATE_NODE_DIMENSIONS, updates);
@@ -126,12 +130,19 @@ export const setConnectionMode = (connectionMode: ConnectionMode) =>
 
 export const setNodeExtent = (nodeExtent: NodeExtent) => createAction(constants.SET_NODE_EXTENT, nodeExtent);
 
+export const setOnNodesChange = (onNodesChange: OnElementsChange) =>
+  createAction(constants.SET_ON_NODES_CHANGE, { onNodesChange });
+
+export const setOnEdgesChange = (onEdgesChange: OnElementsChange) =>
+  createAction(constants.SET_ON_EDGES_CHANGE, { onEdgesChange });
+
 export type ReactFlowAction = ReturnType<
   | typeof setOnConnect
   | typeof setOnConnectStart
   | typeof setOnConnectStop
   | typeof setOnConnectEnd
-  | typeof setElements
+  | typeof setNodes
+  | typeof setEdges
   | typeof updateNodeDimensions
   | typeof updateNodePos
   | typeof updateNodePosDiff
@@ -160,4 +171,6 @@ export type ReactFlowAction = ReturnType<
   | typeof setMultiSelectionActive
   | typeof setConnectionMode
   | typeof setNodeExtent
+  | typeof setOnNodesChange
+  | typeof setOnEdgesChange
 >;

@@ -30,7 +30,6 @@ const FlowRenderer = ({
   onPaneClick,
   onPaneContextMenu,
   onPaneScroll,
-  onElementsRemove,
   deleteKeyCode,
   onMove,
   onMoveStart,
@@ -61,7 +60,7 @@ const FlowRenderer = ({
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode, multiSelectionKeyCode });
+  useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
   const onClick = useCallback(
     (event: MouseEvent) => {

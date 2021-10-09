@@ -9,6 +9,12 @@ export type Elements<T = any> = Array<FlowElement<T>>;
 
 export type Transform = [number, number, number];
 
+export type ElementChange = {
+  id: string;
+  change?: any;
+  delete?: boolean;
+};
+
 export enum Position {
   Left = 'left',
   Top = 'top',
@@ -50,6 +56,10 @@ export interface Node<T = any> {
   selectable?: boolean;
   connectable?: boolean;
   dragHandle?: string;
+  isDragging?: boolean;
+  width?: number | null;
+  height?: number | null;
+  handleBounds?: any;
 }
 
 export enum ArrowHeadType {
@@ -76,6 +86,8 @@ export interface Edge<T = any> {
   isHidden?: boolean;
   data?: T;
   className?: string;
+  sourceNode?: Node;
+  targetNode?: Node;
 }
 
 export enum BackgroundVariant {
@@ -313,7 +325,7 @@ export type ConnectionLineComponentProps = {
 
 export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponentProps>;
 
-export type OnConnectFunc = (connection: Connection) => void;
+export type OnConnectFunc = (connection: Connection, nodes: Node[]) => void;
 export type OnConnectStartParams = {
   nodeId: ElementId | null;
   handleId: ElementId | null;
@@ -398,6 +410,8 @@ export type InitD3ZoomPayload = {
   transform: Transform;
 };
 
+export type OnElementsChange = (nodes: ElementChange[]) => void;
+
 export interface ReactFlowState {
   width: number;
   height: number;
@@ -406,6 +420,8 @@ export interface ReactFlowState {
   edges: Edge[];
   selectedElements: Elements | null;
   selectedNodesBbox: Rect;
+  onNodesChange: OnElementsChange | null;
+  onEdgesChange: OnElementsChange | null;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;

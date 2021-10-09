@@ -1,18 +1,24 @@
 import { useEffect } from 'react';
 
 import { useStoreActions } from '../../store/hooks';
-import { Elements } from '../../types';
+import { Node, Edge } from '../../types';
 
 interface ElementUpdaterProps {
-  elements: Elements;
+  nodes: Node[];
+  edges: Edge[];
 }
 
-const ElementUpdater = ({ elements }: ElementUpdaterProps) => {
-  const setElements = useStoreActions((actions) => actions.setElements);
+const ElementUpdater = ({ nodes, edges }: ElementUpdaterProps) => {
+  const setNodes = useStoreActions((actions) => actions.setNodes);
+  const setEdges = useStoreActions((actions) => actions.setEdges);
 
   useEffect(() => {
-    setElements(elements);
-  }, [elements]);
+    setNodes(nodes);
+  }, [nodes]);
+
+  useEffect(() => {
+    setEdges(edges);
+  }, [edges]);
 
   return null;
 };

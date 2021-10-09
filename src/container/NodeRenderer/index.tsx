@@ -1,6 +1,5 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
-import { getNodesInside } from '../../utils/graph';
 import { useStoreState, useStoreActions } from '../../store/hooks';
 import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
 interface NodeRendererProps {
@@ -26,14 +25,12 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const nodesDraggable = useStoreState((state) => state.nodesDraggable);
   const nodesConnectable = useStoreState((state) => state.nodesConnectable);
   const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const width = useStoreState((state) => state.width);
-  const height = useStoreState((state) => state.height);
   const nodes = useStoreState((state) => state.nodes);
   const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
 
-  const visibleNodes = props.onlyRenderVisibleElements
-    ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
-    : nodes;
+  // const visibleNodes = props.onlyRenderVisibleElements
+  //   ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
+  //   : nodes;
 
   const transformStyle = useMemo(
     () => ({
@@ -59,7 +56,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {visibleNodes.map((node) => {
+      {nodes.map((node) => {
         const nodeType = node.type || 'default';
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
 
@@ -82,10 +79,10 @@ const NodeRenderer = (props: NodeRendererProps) => {
             sourcePosition={node.sourcePosition}
             targetPosition={node.targetPosition}
             isHidden={node.isHidden}
-            xPos={node.__rf.position.x}
-            yPos={node.__rf.position.y}
-            isDragging={node.__rf.isDragging}
-            isInitialized={node.__rf.width !== null && node.__rf.height !== null}
+            xPos={node.position.x}
+            yPos={node.position.y}
+            isDragging={node.isDragging}
+            isInitialized={node.width !== null && node.height !== null}
             snapGrid={props.snapGrid}
             snapToGrid={props.snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}

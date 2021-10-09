@@ -1,22 +1,23 @@
 import { useEffect } from 'react';
 
-import { useStore, useStoreActions } from '../store/hooks';
+import { useStore, useStoreActions, useStoreState } from '../store/hooks';
 import useKeyPress from './useKeyPress';
-import { isNode, getConnectedEdges } from '../utils/graph';
-import { Elements, KeyCode, ElementId, FlowElement } from '../types';
+import { isNode, isEdge, getConnectedEdges } from '../utils/graph';
+import { KeyCode } from '../types';
 
 interface HookParams {
   deleteKeyCode: KeyCode;
   multiSelectionKeyCode: KeyCode;
-  onElementsRemove?: (elements: Elements) => void;
 }
 
-export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: HookParams): void => {
+export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStore();
 
   const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
   const setMultiSelectionActive = useStoreActions((actions) => actions.setMultiSelectionActive);
   const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
+  const onNodesChange = useStoreState((state) => state.onNodesChange);
+  const onEdgesChange = useStoreState((state) => state.onEdgesChange);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
@@ -24,19 +25,21 @@ export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: Hook
   useEffect(() => {
     const { edges, selectedElements } = store.getState();
 
-    if (onElementsRemove && deleteKeyPressed && selectedElements) {
+    if (deleteKeyPressed && selectedElements) {
       const selectedNodes = selectedElements.filter(isNode);
+      const selectedEdges = selectedElements.filter(isEdge);
       const connectedEdges = getConnectedEdges(selectedNodes, edges);
-      const elementsToRemove = [...selectedElements, ...connectedEdges].reduce(
-        (res, item) => res.set(item.id, item),
-        new Map<ElementId, FlowElement>()
-      );
 
-      onElementsRemove(Array.from(elementsToRemove.values()));
+      const nodeChanges = selectedNodes.map((n) => ({ id: n.id, delete: true }));
+      const edgeChanges = [...selectedEdges, ...connectedEdges].map((e) => ({ id: e.id, delete: true }));
+
+      onNodesChange?.(nodeChanges);
+      onEdgesChange?.(edgeChanges);
+
       unsetNodesSelection();
       resetSelectedElements();
     }
-  }, [deleteKeyPressed, onElementsRemove]);
+  }, [deleteKeyPressed, onNodesChange, onEdgesChange]);
 
   useEffect(() => {
     setMultiSelectionActive(multiSelectionKeyPressed);

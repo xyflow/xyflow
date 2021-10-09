@@ -21,6 +21,8 @@ export {
   updateEdge,
   getTransformForBounds,
   getRectOfNodes,
+  applyNodeChanges,
+  applyEdgeChanges,
 } from './utils/graph';
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';

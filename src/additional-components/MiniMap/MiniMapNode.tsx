@@ -26,7 +26,7 @@ const MiniMapNode = ({
   strokeWidth,
   className,
   borderRadius,
-  shapeRendering
+  shapeRendering,
 }: MiniMapNodeProps) => {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;

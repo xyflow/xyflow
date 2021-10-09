@@ -8,6 +8,9 @@ export const initialState: ReactFlowState = {
   transform: [0, 0, 1],
   nodes: [],
   edges: [],
+  onNodesChange: null,
+  onEdgesChange: null,
+
   selectedElements: null,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 

@@ -25,7 +25,6 @@ import {
   OnLoadFunc,
   Node,
   Edge,
-  Connection,
   ConnectionMode,
   ConnectionLineType,
   ConnectionLineComponent,
@@ -33,11 +32,13 @@ import {
   OnConnectStartFunc,
   OnConnectStopFunc,
   OnConnectEndFunc,
+  OnConnectFunc,
   TranslateExtent,
   KeyCode,
   PanOnScrollMode,
   OnEdgeUpdateFunc,
   NodeExtent,
+  ElementChange,
 } from '../../types';
 
 import '../../style.css';
@@ -57,9 +58,11 @@ const defaultEdgeTypes = {
 };
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
-  elements: Elements;
+  nodes: Node[];
+  edges: Edge[];
+  onNodesChange?: (nodeChanges: ElementChange[]) => void;
+  onEdgesChange?: (edgeChanges: ElementChange[]) => void;
   onElementClick?: (event: ReactMouseEvent, element: Node | Edge) => void;
-  onElementsRemove?: (elements: Elements) => void;
   onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
   onNodeMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
   onNodeMouseMove?: (event: ReactMouseEvent, node: Node) => void;
@@ -68,7 +71,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
-  onConnect?: (connection: Edge | Connection) => void;
+  onConnect?: OnConnectFunc;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;
   onConnectEnd?: OnConnectEndFunc;
@@ -132,10 +135,14 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
 
 export type ReactFlowRefType = HTMLDivElement;
 
+const initSnapGrid: [number, number] = [15, 15];
+const initDefaultPosition: [number, number] = [0, 0];
+
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
     {
-      elements = [],
+      nodes = [],
+      edges = [],
       className,
       nodeTypes = defaultNodeTypes,
       edgeTypes = defaultEdgeTypes,
@@ -144,7 +151,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onMove,
       onMoveStart,
       onMoveEnd,
-      onElementsRemove,
       onConnect,
       onConnectStart,
       onConnectStop,
@@ -171,7 +177,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       multiSelectionKeyCode = 'Meta',
       zoomActivationKeyCode = 'Meta',
       snapToGrid = false,
-      snapGrid = [15, 15],
+      snapGrid = initSnapGrid,
       onlyRenderVisibleElements = false,
       selectNodesOnDrag = true,
       nodesDraggable,
@@ -180,7 +186,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       minZoom,
       maxZoom,
       defaultZoom = 1,
-      defaultPosition = [0, 0],
+      defaultPosition = initDefaultPosition,
       translateExtent,
       preventScrolling = true,
       nodeExtent,
@@ -208,6 +214,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       edgeUpdaterRadius = 10,
       nodeTypesId = '1',
       edgeTypesId = '1',
+      onNodesChange,
+      onEdgesChange,
       ...rest
     },
     ref
@@ -240,7 +248,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionLineStyle={connectionLineStyle}
             connectionLineComponent={connectionLineComponent}
             selectionKeyCode={selectionKeyCode}
-            onElementsRemove={onElementsRemove}
             deleteKeyCode={deleteKeyCode}
             multiSelectionKeyCode={multiSelectionKeyCode}
             zoomActivationKeyCode={zoomActivationKeyCode}
@@ -287,8 +294,10 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
           />
-          <ElementUpdater elements={elements} />
+          <ElementUpdater nodes={nodes} edges={edges} />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
         </Wrapper>

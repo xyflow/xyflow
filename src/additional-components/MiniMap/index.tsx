@@ -41,9 +41,9 @@ const MiniMap = ({
   const elementWidth = (style?.width || defaultWidth)! as number;
   const elementHeight = (style?.height || defaultHeight)! as number;
   const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
-  const nodeStrokeColorFunc = (nodeStrokeColor instanceof Function
-    ? nodeStrokeColor
-    : () => nodeStrokeColor) as StringFunc;
+  const nodeStrokeColorFunc = (
+    nodeStrokeColor instanceof Function ? nodeStrokeColor : () => nodeStrokeColor
+  ) as StringFunc;
   const nodeClassNameFunc = (nodeClassName instanceof Function ? nodeClassName : () => nodeClassName) as StringFunc;
   const hasNodes = nodes && nodes.length;
   const bb = getRectOfNodes(nodes);
@@ -64,7 +64,7 @@ const MiniMap = ({
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
-  const shapeRendering = (typeof window === "undefined" || !!window.chrome) ?  "crispEdges" : "geometricPrecision";
+  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
   return (
     <svg
@@ -75,14 +75,14 @@ const MiniMap = ({
       className={mapClasses}
     >
       {nodes
-        .filter((node) => !node.isHidden)
+        .filter((node) => !node.isHidden && node.width && node.height)
         .map((node) => (
           <MiniMapNode
             key={node.id}
-            x={node.__rf.position.x}
-            y={node.__rf.position.y}
-            width={node.__rf.width}
-            height={node.__rf.height}
+            x={node.position.x}
+            y={node.position.y}
+            width={node.width!}
+            height={node.height!}
             style={node.style}
             className={nodeClassNameFunc(node)}
             color={nodeColorFunc(node)}
