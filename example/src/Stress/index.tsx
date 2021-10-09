@@ -1,15 +1,13 @@
-import React, { useState, CSSProperties } from 'react';
+import { useState, CSSProperties, useCallback } from 'react';
 import ReactFlow, {
-  removeElements,
-  addEdge,
   MiniMap,
-  isNode,
   Controls,
   Background,
   OnLoadParams,
-  Elements,
-  Connection,
   Edge,
+  Node,
+  ElementChange,
+  applyNodeChanges,
 } from 'react-flow-renderer';
 
 import { getElements } from './utils';
@@ -21,38 +19,41 @@ const onLoad = (reactFlowInstance: OnLoadParams) => {
   console.log(reactFlowInstance.getElements());
 };
 
-const initialElements: Elements = getElements(30, 30);
+const initialElements = getElements(30, 30);
 
 const StressFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, setNodes] = useState<Node[]>(initialElements.nodes);
+  const [edges, setEdges] = useState<Edge[]>(initialElements.edges);
+  // const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
+  // const onConnect = (params: Connection | Edge, nds: Node[]) => setElements((els) => addEdge(params, els));
 
   const updatePos = () => {
-    setElements((elms) => {
-      return elms.map((el) => {
-        if (isNode(el)) {
-          return {
-            ...el,
-            position: {
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            },
-          };
-        }
-
-        return el;
+    setNodes((nds) => {
+      return nds.map((n) => {
+        return {
+          ...n,
+          position: {
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+          },
+        };
       });
     });
   };
 
   const updateElements = () => {
     const grid = Math.ceil(Math.random() * 10);
-    setElements(getElements(grid, grid));
+    const initialElements = getElements(grid, grid);
+    setNodes(initialElements.nodes);
+    setEdges(initialElements.edges);
   };
 
+  const onNodesChange = useCallback((changes: ElementChange[]) => {
+    setNodes((ns) => applyNodeChanges(changes, ns));
+  }, []);
+
   return (
-    <ReactFlow elements={elements} onLoad={onLoad} onElementsRemove={onElementsRemove} onConnect={onConnect}>
+    <ReactFlow nodes={nodes} edges={edges} onLoad={onLoad} onNodesChange={onNodesChange}>
       <MiniMap />
       <Controls />
       <Background />
