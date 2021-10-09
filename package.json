@@ -1,5 +1,5 @@
 {
-  "name": "react-flow-renderer",
+  "name": "@usebirch/react-flow-renderer",
   "version": "9.6.8",
   "engines": {
     "node": ">=12"
