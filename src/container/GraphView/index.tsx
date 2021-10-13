@@ -9,7 +9,7 @@ import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
 import { ReactFlowProps } from '../ReactFlow';
 
-import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
+import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode, ReactFlowState } from '../../types';
 
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
   nodeTypes: NodeTypesType;
@@ -26,6 +26,25 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
   arrowHeadColor: string;
   selectNodesOnDrag: boolean;
 }
+
+const selector = (s: ReactFlowState) => ({
+  setOnConnect: s.setOnConnect,
+  setOnConnectStart: s.setOnConnectStart,
+  setOnConnectStop: s.setOnConnectStop,
+  setOnConnectEnd: s.setOnConnectEnd,
+  setSnapGrid: s.setSnapGrid,
+  setSnapToGrid: s.setSnapToGrid,
+  setNodesDraggable: s.setNodesDraggable,
+  setNodesConnectable: s.setNodesConnectable,
+  setElementsSelectable: s.setElementsSelectable,
+  setMinZoom: s.setMinZoom,
+  setMaxZoom: s.setMaxZoom,
+  setTranslateExtent: s.setTranslateExtent,
+  setNodeExtent: s.setNodeExtent,
+  setConnectionMode: s.setConnectionMode,
+  setOnNodesChange: s.setOnNodesChange,
+  setOnEdgesChange: s.setOnEdgesChange,
+});
 
 const GraphView = ({
   nodeTypes,
@@ -99,22 +118,25 @@ const GraphView = ({
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
-  const setOnConnect = useStore((s) => s.setOnConnect);
-  const setOnConnectStart = useStore((s) => s.setOnConnectStart);
-  const setOnConnectStop = useStore((s) => s.setOnConnectStop);
-  const setOnConnectEnd = useStore((s) => s.setOnConnectEnd);
-  const setSnapGrid = useStore((s) => s.setSnapGrid);
-  const setSnapToGrid = useStore((s) => s.setSnapToGrid);
-  const setNodesDraggable = useStore((s) => s.setNodesDraggable);
-  const setNodesConnectable = useStore((s) => s.setNodesConnectable);
-  const setElementsSelectable = useStore((s) => s.setElementsSelectable);
-  const setMinZoom = useStore((s) => s.setMinZoom);
-  const setMaxZoom = useStore((s) => s.setMaxZoom);
-  const setTranslateExtent = useStore((s) => s.setTranslateExtent);
-  const setNodeExtent = useStore((s) => s.setNodeExtent);
-  const setConnectionMode = useStore((s) => s.setConnectionMode);
-  const setOnNodesChange = useStore((s) => s.setOnNodesChange);
-  const setOnEdgesChange = useStore((s) => s.setOnEdgesChange);
+
+  const {
+    setOnConnect,
+    setOnConnectStart,
+    setOnConnectStop,
+    setOnConnectEnd,
+    setSnapGrid,
+    setSnapToGrid,
+    setNodesDraggable,
+    setNodesConnectable,
+    setElementsSelectable,
+    setMinZoom,
+    setMaxZoom,
+    setTranslateExtent,
+    setNodeExtent,
+    setConnectionMode,
+    setOnNodesChange,
+    setOnEdgesChange,
+  } = useStore(selector);
 
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 

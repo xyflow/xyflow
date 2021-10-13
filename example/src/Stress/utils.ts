@@ -7,7 +7,7 @@ type ElementsCollection = {
 
 export function getElements(xElements: number = 10, yElements: number = 10): ElementsCollection {
   const initialNodes = [];
-  const initialEdges = [];
+  const initialEdges: Edge[] = [];
   let nodeId = 1;
   let recentNodeId = null;
 
