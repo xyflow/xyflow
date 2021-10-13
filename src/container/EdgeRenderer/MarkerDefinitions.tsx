@@ -1,5 +1,6 @@
-import React, { ReactNode } from 'react';
-
+import React, { Fragment, ReactNode } from 'react';
+import { ArrowHeadType } from '../..';
+import { getMarkerId } from '../../components/Edges/utils';
 interface MarkerProps {
   id: string;
   children: ReactNode;
@@ -21,32 +22,52 @@ const Marker = ({ id, children }: MarkerProps) => (
 );
 
 interface MarkerDefinitionsProps {
+  defaultColor: string;
+  colors: string[];
+}
+
+interface ArrowMarkerProps {
+  id?: string;
   color: string;
 }
 
-const MarkerDefinitions = ({ color }: MarkerDefinitionsProps) => {
+const ArrowClosedMarker = ({ id, color }: ArrowMarkerProps) => (
+  <Marker id={id || getMarkerId(ArrowHeadType.ArrowClosed, color)}>
+    <polyline
+      stroke={color}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1"
+      fill={color}
+      points="-5,-4 0,0 -5,4 -5,-4"
+    />
+  </Marker>
+);
+
+const ArrowMarker = ({ id, color }: ArrowMarkerProps) => (
+  <Marker id={id || getMarkerId(ArrowHeadType.Arrow, color)}>
+    <polyline
+      stroke={color}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      fill="none"
+      points="-5,-4 0,0 -5,4"
+    />
+  </Marker>
+);
+
+const MarkerDefinitions = ({ defaultColor, colors }: MarkerDefinitionsProps) => {
   return (
     <defs>
-      <Marker id="react-flow__arrowclosed">
-        <polyline
-          stroke={color}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1"
-          fill={color}
-          points="-5,-4 0,0 -5,4 -5,-4"
-        />
-      </Marker>
-      <Marker id="react-flow__arrow">
-        <polyline
-          stroke={color}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          fill="none"
-          points="-5,-4 0,0 -5,4"
-        />
-      </Marker>
+      <ArrowMarker id={getMarkerId(ArrowHeadType.Arrow)} color={defaultColor} />
+      <ArrowClosedMarker id={getMarkerId(ArrowHeadType.ArrowClosed)} color={defaultColor} />
+      {colors.map((color) => (
+        <Fragment key={color}>
+          <ArrowMarker color={color} />
+          <ArrowClosedMarker color={color} />
+        </Fragment>
+      ))}
     </defs>
   );
 };

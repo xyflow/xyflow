@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { EdgeProps, getBezierPath, getMarkerEnd } from 'react-flow-renderer';
+import { EdgeProps, getBezierPath } from 'react-flow-renderer';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,
@@ -11,10 +11,9 @@ const CustomEdge: FC<EdgeProps> = ({
   targetPosition,
   data,
   arrowHeadType,
-  markerEndId,
+  markerEnd,
 }) => {
   const edgePath = getBezierPath({ sourceX, sourceY, sourcePosition, targetX, targetY, targetPosition });
-  const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
 
   return (
     <>

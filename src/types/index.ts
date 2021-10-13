@@ -73,6 +73,7 @@ export interface Edge<T = any> {
   style?: CSSProperties;
   animated?: boolean;
   arrowHeadType?: ArrowHeadType;
+  arrowHeadColor?: string;
   isHidden?: boolean;
   data?: T;
   className?: string;
@@ -112,6 +113,7 @@ export interface WrapEdgeProps<T = any> {
   labelBgBorderRadius?: number;
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
+  arrowHeadColor?: string;
   source: ElementId;
   target: ElementId;
   sourceHandleId: ElementId | null;
@@ -157,6 +159,7 @@ export interface EdgeProps<T = any> {
   style?: CSSProperties;
   arrowHeadType?: ArrowHeadType;
   markerEndId?: string;
+  markerEnd?: string;
   data?: T;
   sourceHandleId?: ElementId | null;
   targetHandleId?: ElementId | null;

@@ -65,6 +65,8 @@ const initialElements: Elements = [
     labelBgBorderRadius: 4,
     labelBgStyle: { fill: '#FFCC00', color: '#fff', fillOpacity: 0.7 },
     arrowHeadType: ArrowHeadType.ArrowClosed,
+    arrowHeadColor: '#FFCC00',
+    style: { stroke: '#FFCC00' },
   },
   {
     id: 'e5-8',

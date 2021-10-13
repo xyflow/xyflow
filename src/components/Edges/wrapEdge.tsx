@@ -5,6 +5,7 @@ import { useStoreActions, useStoreState } from '../../store/hooks';
 import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
+import { getMarkerEnd } from './utils';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -24,6 +25,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     labelBgBorderRadius,
     style,
     arrowHeadType,
+    arrowHeadColor,
     source,
     target,
     sourceX,
@@ -160,7 +162,18 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           _onEdgeUpdate
         );
       },
-      [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement, onConnectEdge]
+      [
+        id,
+        source,
+        target,
+        type,
+        sourceHandleId,
+        targetHandleId,
+        setConnectionNodeId,
+        setPosition,
+        edgeElement,
+        onConnectEdge,
+      ]
     );
 
     const onEdgeUpdaterSourceMouseDown = useCallback(
@@ -183,6 +196,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     if (isHidden) {
       return null;
     }
+
+    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId, arrowHeadColor);
 
     return (
       <g
@@ -215,6 +230,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           targetY={targetY}
           sourcePosition={sourcePosition}
           targetPosition={targetPosition}
+          markerEnd={markerEnd}
           markerEndId={markerEndId}
           sourceHandleId={sourceHandleId}
           targetHandleId={targetHandleId}

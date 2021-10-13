@@ -16,6 +16,7 @@ import {
   ConnectionMode,
   Transform,
   OnEdgeUpdateFunc,
+  ReactFlowState,
 } from '../../types';
 
 interface EdgeRendererProps {
@@ -156,6 +157,7 @@ const Edge = ({
       labelBgBorderRadius={edge.labelBgBorderRadius}
       style={edge.style}
       arrowHeadType={edge.arrowHeadType}
+      arrowHeadColor={edge.arrowHeadColor}
       source={edge.source}
       target={edge.target}
       sourceHandleId={sourceHandleId}
@@ -183,10 +185,20 @@ const Edge = ({
   );
 };
 
+const getUniqueArrowHeadColors = (state: ReactFlowState) =>
+  state.edges.reduce<string[]>((colors, edge) => {
+    const { arrowHeadColor } = edge;
+    if (typeof arrowHeadColor === 'string' && !colors.includes(arrowHeadColor)) {
+      colors.push(arrowHeadColor);
+    }
+    return colors;
+  }, []);
+
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const transform = useStoreState((state) => state.transform);
   const nodes = useStoreState((state) => state.nodes);
   const edges = useStoreState((state) => state.edges);
+  const arrowHeadColors = useStoreState(getUniqueArrowHeadColors);
   const connectionNodeId = useStoreState((state) => state.connectionNodeId);
   const connectionHandleId = useStoreState((state) => state.connectionHandleId);
   const connectionHandleType = useStoreState((state) => state.connectionHandleType);
@@ -213,7 +225,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
-      <MarkerDefinitions color={arrowHeadColor} />
+      <MarkerDefinitions defaultColor={arrowHeadColor} colors={arrowHeadColors} />
       <g transform={transformStyle}>
         {edges.map((edge: Edge) => (
           <Edge

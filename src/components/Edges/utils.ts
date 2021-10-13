@@ -1,11 +1,23 @@
 import { ArrowHeadType, Position } from '../../types';
 
-export const getMarkerEnd = (arrowHeadType?: ArrowHeadType, markerEndId?: string): string => {
+export const getMarkerId = (arrowHeadType?: ArrowHeadType, arrowHeadColor?: string) => {
+  if (typeof arrowHeadType !== 'undefined' && typeof arrowHeadColor === 'string') {
+    return `react-flow__${arrowHeadType}--${arrowHeadColor}`;
+  }
+
+  if (typeof arrowHeadType !== 'undefined') {
+    return `react-flow__${arrowHeadType}`;
+  }
+
+  return 'none';
+};
+
+export const getMarkerEnd = (arrowHeadType?: ArrowHeadType, markerEndId?: string, arrowHeadColor?: string): string => {
   if (typeof markerEndId !== 'undefined' && markerEndId) {
     return `url(#${markerEndId})`;
   }
 
-  return typeof arrowHeadType !== 'undefined' ? `url(#react-flow__${arrowHeadType})` : 'none';
+  return `url("#${getMarkerId(arrowHeadType, arrowHeadColor)}"`;
 };
 
 export interface GetCenterParams {

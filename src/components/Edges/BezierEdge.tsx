@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
 
-import { getMarkerEnd, getCenter } from './utils';
+import { getCenter } from './utils';
 import { EdgeProps, Position } from '../../types';
 
 interface GetBezierPathParams {
@@ -60,8 +60,7 @@ export default memo(
     labelBgPadding,
     labelBgBorderRadius,
     style,
-    arrowHeadType,
-    markerEndId,
+    markerEnd,
   }: EdgeProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
     const path = getBezierPath({
@@ -85,8 +84,6 @@ export default memo(
         labelBgBorderRadius={labelBgBorderRadius}
       />
     ) : null;
-
-    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
 
     return (
       <>
