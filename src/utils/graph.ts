@@ -1,6 +1,7 @@
-import { Store } from 'redux';
+import { GetState } from 'zustand';
 
 import { clampPosition, clamp } from '../utils';
+import { ReactFlowState } from '../types';
 
 import {
   ElementId,
@@ -13,7 +14,6 @@ import {
   Box,
   Connection,
   FlowExportObject,
-  ReactFlowState,
   NodeExtent,
   ElementChange,
 } from '../types';
@@ -139,9 +139,9 @@ export const pointToRendererPoint = (
   return position;
 };
 
-export const onLoadProject = (currentStore: Store<ReactFlowState>) => {
+export const onLoadProject = (getState: GetState<ReactFlowState>) => {
   return (position: XYPosition): XYPosition => {
-    const { transform, snapToGrid, snapGrid } = currentStore.getState();
+    const { transform, snapToGrid, snapGrid } = getState();
 
     return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
   };
@@ -256,17 +256,17 @@ const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
   return [...nodes.map((n) => ({ ...n })), ...edges.map((e) => ({ ...e }))];
 };
 
-export const onLoadGetElements = (currentStore: Store<ReactFlowState>) => {
+export const onLoadGetElements = (getState: GetState<ReactFlowState>) => {
   return (): Elements => {
-    const { nodes = [], edges = [] } = currentStore.getState();
+    const { nodes = [], edges = [] } = getState();
 
     return parseElements(nodes, edges);
   };
 };
 
-export const onLoadToObject = (currentStore: Store<ReactFlowState>) => {
+export const onLoadToObject = (getState: GetState<ReactFlowState>) => {
   return (): FlowExportObject => {
-    const { nodes = [], edges = [], transform } = currentStore.getState();
+    const { nodes = [], edges = [], transform } = getState();
 
     return {
       elements: parseElements(nodes, edges),

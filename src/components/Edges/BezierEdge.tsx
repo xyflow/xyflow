@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 
 import EdgeText from './EdgeText';
-
 import { getMarkerEnd, getCenter } from './utils';
 import { EdgeProps, Position } from '../../types';
 

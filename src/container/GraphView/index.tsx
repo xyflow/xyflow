@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo } from 'react';
 
-import { useStoreActions, useStore } from '../../store/hooks';
+import { useStore, useStoreApi } from '../../store';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
@@ -98,24 +98,24 @@ const GraphView = ({
   onEdgesChange,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
-  const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
-  const setOnConnectStart = useStoreActions((actions) => actions.setOnConnectStart);
-  const setOnConnectStop = useStoreActions((actions) => actions.setOnConnectStop);
-  const setOnConnectEnd = useStoreActions((actions) => actions.setOnConnectEnd);
-  const setSnapGrid = useStoreActions((actions) => actions.setSnapGrid);
-  const setSnapToGrid = useStoreActions((actions) => actions.setSnapToGrid);
-  const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
-  const setNodesConnectable = useStoreActions((actions) => actions.setNodesConnectable);
-  const setElementsSelectable = useStoreActions((actions) => actions.setElementsSelectable);
-  const setMinZoom = useStoreActions((actions) => actions.setMinZoom);
-  const setMaxZoom = useStoreActions((actions) => actions.setMaxZoom);
-  const setTranslateExtent = useStoreActions((actions) => actions.setTranslateExtent);
-  const setNodeExtent = useStoreActions((actions) => actions.setNodeExtent);
-  const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
-  const setOnNodesChange = useStoreActions((actions) => actions.setOnNodesChange);
-  const setOnEdgesChange = useStoreActions((actions) => actions.setOnEdgesChange);
+  const store = useStoreApi();
+  const setOnConnect = useStore((s) => s.setOnConnect);
+  const setOnConnectStart = useStore((s) => s.setOnConnectStart);
+  const setOnConnectStop = useStore((s) => s.setOnConnectStop);
+  const setOnConnectEnd = useStore((s) => s.setOnConnectEnd);
+  const setSnapGrid = useStore((s) => s.setSnapGrid);
+  const setSnapToGrid = useStore((s) => s.setSnapToGrid);
+  const setNodesDraggable = useStore((s) => s.setNodesDraggable);
+  const setNodesConnectable = useStore((s) => s.setNodesConnectable);
+  const setElementsSelectable = useStore((s) => s.setElementsSelectable);
+  const setMinZoom = useStore((s) => s.setMinZoom);
+  const setMaxZoom = useStore((s) => s.setMaxZoom);
+  const setTranslateExtent = useStore((s) => s.setTranslateExtent);
+  const setNodeExtent = useStore((s) => s.setNodeExtent);
+  const setConnectionMode = useStore((s) => s.setConnectionMode);
+  const setOnNodesChange = useStore((s) => s.setOnNodesChange);
+  const setOnEdgesChange = useStore((s) => s.setOnEdgesChange);
 
-  const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
   useEffect(() => {
@@ -127,9 +127,9 @@ const GraphView = ({
           zoomOut,
           zoomTo,
           setTransform: transform,
-          project: onLoadProject(currentStore),
-          getElements: onLoadGetElements(currentStore),
-          toObject: onLoadToObject(currentStore),
+          project: onLoadProject(store.getState),
+          getElements: onLoadGetElements(store.getState),
+          toObject: onLoadToObject(store.getState),
         });
       }
 

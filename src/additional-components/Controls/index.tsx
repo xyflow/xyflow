@@ -1,7 +1,7 @@
 import React, { memo, useCallback, HTMLAttributes, FC, useEffect, useState } from 'react';
 import cc from 'classcat';
 
-import { useStoreState, useStoreActions } from '../../store/hooks';
+import { useStore } from '../../store';
 
 import PlusIcon from '../../../assets/icons/plus.svg';
 import MinusIcon from '../../../assets/icons/minus.svg';
@@ -10,7 +10,7 @@ import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
-import { FitViewParams } from '../../types';
+import { FitViewParams, ReactFlowState } from '../../types';
 
 export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
@@ -31,6 +31,9 @@ export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...
   </button>
 );
 
+const setInteractiveSelector = (s: ReactFlowState) => s.setInteractive;
+const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
+
 const Controls: FC<ControlProps> = ({
   style,
   showZoom = true,
@@ -45,10 +48,10 @@ const Controls: FC<ControlProps> = ({
   children,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const setInteractive = useStoreActions((actions) => actions.setInteractive);
+  const setInteractive = useStore(setInteractiveSelector);
+  const isInteractive = useStore(isInteractiveSelector);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
 
-  const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
   const mapClasses = cc(['react-flow__controls', className]);
 
   const onZoomInHandler = useCallback(() => {

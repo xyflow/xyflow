@@ -1,7 +1,7 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 
-import { useStoreState, useStoreActions } from '../../store/hooks';
-import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
+import { useStore } from '../../store';
+import { Node, NodeTypesType, ReactFlowState, Edge, WrapNodeProps } from '../../types';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
@@ -19,14 +19,26 @@ interface NodeRendererProps {
   onlyRenderVisibleElements: boolean;
 }
 
+const selector = (s: ReactFlowState) => ({
+  transform: s.transform,
+  selectedElements: s.selectedElements,
+  nodesDraggable: s.nodesDraggable,
+  nodesConnectable: s.nodesConnectable,
+  elementsSelectable: s.elementsSelectable,
+  nodes: s.nodes,
+  updateNodeDimensions: s.updateNodeDimensions,
+});
+
 const NodeRenderer = (props: NodeRendererProps) => {
-  const transform = useStoreState((state) => state.transform);
-  const selectedElements = useStoreState((state) => state.selectedElements);
-  const nodesDraggable = useStoreState((state) => state.nodesDraggable);
-  const nodesConnectable = useStoreState((state) => state.nodesConnectable);
-  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const nodes = useStoreState((state) => state.nodes);
-  const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
+  const {
+    transform,
+    selectedElements,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
+    nodes,
+    updateNodeDimensions,
+  } = useStore(selector);
 
   // const visibleNodes = props.onlyRenderVisibleElements
   //   ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)

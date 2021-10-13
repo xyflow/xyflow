@@ -6,9 +6,9 @@
 import React, { useMemo, useCallback, useRef, MouseEvent } from 'react';
 import ReactDraggable, { DraggableData } from 'react-draggable';
 
-import { useStoreState, useStoreActions } from '../../store/hooks';
+import { useStore } from '../../store';
 import { isNode } from '../../utils/graph';
-import { Node } from '../../types';
+import { Node, ReactFlowState } from '../../types';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -17,21 +17,34 @@ export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
 }
 
+const selector = (s: ReactFlowState) => ({
+  transform: s.transform,
+  selectedNodesBbox: s.selectedNodesBbox,
+  selectionActive: s.selectionActive,
+  selectedElements: s.selectedElements,
+  snapToGrid: s.snapToGrid,
+  snapGrid: s.snapGrid,
+  nodes: s.nodes,
+  updateNodePosDiff: s.updateNodePosDiff,
+});
+
 export default ({
   onSelectionDragStart,
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
 }: NodesSelectionProps) => {
-  const [tX, tY, tScale] = useStoreState((state) => state.transform);
-  const selectedNodesBbox = useStoreState((state) => state.selectedNodesBbox);
-  const selectionActive = useStoreState((state) => state.selectionActive);
-  const selectedElements = useStoreState((state) => state.selectedElements);
-  const snapToGrid = useStoreState((state) => state.snapToGrid);
-  const snapGrid = useStoreState((state) => state.snapGrid);
-  const nodes = useStoreState((state) => state.nodes);
-
-  const updateNodePosDiff = useStoreActions((actions) => actions.updateNodePosDiff);
+  const {
+    transform,
+    selectedNodesBbox,
+    selectionActive,
+    selectedElements,
+    snapToGrid,
+    snapGrid,
+    nodes,
+    updateNodePosDiff,
+  } = useStore(selector);
+  const [tX, tY, tScale] = transform;
 
   const nodeRef = useRef(null);
 

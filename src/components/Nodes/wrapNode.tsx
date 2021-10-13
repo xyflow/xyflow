@@ -2,9 +2,15 @@ import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, 
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import cc from 'classcat';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
+import { useStore } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
-import { NodeComponentProps, WrapNodeProps } from '../../types';
+import { NodeComponentProps, WrapNodeProps, ReactFlowState } from '../../types';
+
+const selector = (s: ReactFlowState) => ({
+  addSelectedElements: s.addSelectedElements,
+  onNodesChange: s.onNodesChange,
+  unsetNodesSelection: s.unsetNodesSelection,
+});
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
   const NodeWrapper = ({
@@ -41,10 +47,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     dragHandle,
   }: WrapNodeProps) => {
     // const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
-    const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
-    const onNodesChange = useStoreState((state) => state.onNodesChange);
-    const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-
+    const { addSelectedElements, onNodesChange, unsetNodesSelection } = useStore(selector);
     const nodeElement = useRef<HTMLDivElement>(null);
 
     const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
@@ -114,7 +117,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             unsetNodesSelection();
 
             if (!selected) {
-              addSelectedElements(node);
+              addSelectedElements([node]);
             }
           }
 
@@ -132,7 +135,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           unsetNodesSelection();
 
           if (!selected) {
-            addSelectedElements(node);
+            addSelectedElements([node]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unsetNodesSelection();
@@ -173,7 +176,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!isDragging) {
           if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedElements(node);
+            addSelectedElements([node]);
           }
 
           onClick?.(event as MouseEvent, node);

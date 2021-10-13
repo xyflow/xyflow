@@ -453,6 +453,41 @@ export interface ReactFlowState {
 
   reactFlowVersion: string;
 
+  setNodes: (nodes: Node[]) => void;
+  setEdges: (edges: Edge[]) => void;
+  updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
+  updateNodePosDiff: (update: NodeDiffUpdate) => void;
+  setUserSelection: (mousePos: XYPosition) => void;
+  updateUserSelection: (mousePos: XYPosition) => void;
+  unsetUserSelection: () => void;
+  unsetNodesSelection: () => void;
+  resetSelectedElements: () => void;
+  setSelectedElements: (elements: Elements) => void;
+  addSelectedElements: (elements: Elements) => void;
+  updateTransform: (transform: Transform) => void;
+  updateSize: (size: Dimensions) => void;
+  initD3Zoom: (payload: InitD3ZoomPayload) => void;
+  setMinZoom: (minZoom: number) => void;
+  setMaxZoom: (maxZoom: number) => void;
+  setTranslateExtent: (translateExtent: TranslateExtent) => void;
+  setNodeExtent: (nodeExtent: NodeExtent) => void;
+  setOnConnect: (onConnectFunction: OnConnectFunc) => void;
+  setOnConnectStart: (onConnectFunction: OnConnectStartFunc) => void;
+  setOnConnectStop: (onConnectFunction: OnConnectStopFunc) => void;
+  setOnConnectEnd: (onConnectFunction: OnConnectEndFunc) => void;
+  setConnectionPosition: (connectionPosition: XYPosition) => void;
+  setConnectionNodeId: (payload: SetConnectionId) => void;
+  setSnapToGrid: (snapToGrid: boolean) => void;
+  setSnapGrid: (snapGrid: SnapGrid) => void;
+  setInteractive: (isInteractive: boolean) => void;
+  setNodesDraggable: (nodesDraggable: boolean) => void;
+  setNodesConnectable: (nodesConnectable: boolean) => void;
+  setElementsSelectable: (elementsSelectable: boolean) => void;
+  setMultiSelectionActive: (multiSelectionActive: boolean) => void;
+  setConnectionMode: (connectionMode: ConnectionMode) => void;
+  setOnNodesChange: (onNodesChange: OnElementsChange) => void;
+  setOnEdgesChange: (onEdgesChange: OnElementsChange) => void;
+
   onConnect?: OnConnectFunc;
   onConnectStart?: OnConnectStartFunc;
   onConnectStop?: OnConnectStopFunc;

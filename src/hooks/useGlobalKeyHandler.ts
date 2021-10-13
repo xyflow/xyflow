@@ -1,23 +1,27 @@
 import { useEffect } from 'react';
 
-import { useStore, useStoreActions, useStoreState } from '../store/hooks';
+import { useStore, useStoreApi } from '../store';
 import useKeyPress from './useKeyPress';
 import { isNode, isEdge, getConnectedEdges } from '../utils/graph';
-import { KeyCode } from '../types';
+import { KeyCode, ReactFlowState } from '../types';
 
 interface HookParams {
   deleteKeyCode: KeyCode;
   multiSelectionKeyCode: KeyCode;
 }
 
-export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
-  const store = useStore();
+const selector = (s: ReactFlowState) => ({
+  unsetNodesSelection: s.unsetNodesSelection,
+  setMultiSelectionActive: s.setMultiSelectionActive,
+  resetSelectedElements: s.resetSelectedElements,
+  onNodesChange: s.onNodesChange,
+  onEdgesChange: s.onEdgesChange,
+});
 
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-  const setMultiSelectionActive = useStoreActions((actions) => actions.setMultiSelectionActive);
-  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
-  const onNodesChange = useStoreState((state) => state.onNodesChange);
-  const onEdgesChange = useStoreState((state) => state.onEdgesChange);
+export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
+  const store = useStoreApi();
+  const { unsetNodesSelection, setMultiSelectionActive, resetSelectedElements, onNodesChange, onEdgesChange } =
+    useStore(selector);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);

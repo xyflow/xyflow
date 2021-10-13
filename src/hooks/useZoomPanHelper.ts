@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
 
-import { useStoreState, useStore } from '../store/hooks';
+import { useStoreApi, useStore } from '../store';
 import { getRectOfNodes, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, XYPosition } from '../types';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, XYPosition, ReactFlowState } from '../types';
 
 const DEFAULT_PADDING = 0.1;
 
@@ -19,10 +19,14 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   initialized: false,
 };
 
+const selector = (s: ReactFlowState) => ({
+  d3Zoom: s.d3Zoom,
+  d3Selection: s.d3Selection,
+});
+
 const useZoomPanHelper = (): ZoomPanHelperFunctions => {
-  const store = useStore();
-  const d3Zoom = useStoreState((s) => s.d3Zoom);
-  const d3Selection = useStoreState((s) => s.d3Selection);
+  const store = useStoreApi();
+  const { d3Zoom, d3Selection } = useStore(selector);
 
   const zoomPanHelperFunctions = useMemo<ZoomPanHelperFunctions>(() => {
     if (d3Selection && d3Zoom) {

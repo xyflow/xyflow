@@ -41,7 +41,8 @@
     "react-draggable": "^4.4.4",
     "react-redux": "^7.2.5",
     "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "zustand": "^3.5.13"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

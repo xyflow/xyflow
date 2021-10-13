@@ -5,8 +5,8 @@ import { select, pointer } from 'd3-selection';
 import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
-import { FlowTransform, TranslateExtent, PanOnScrollMode, KeyCode } from '../../types';
+import { useStore, useStoreApi } from '../../store';
+import { FlowTransform, TranslateExtent, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -42,6 +42,15 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
 
 const hasNoWheelClass = (event: any) => event.target.closest('.nowheel');
 
+const selector = (s: ReactFlowState) => ({
+  d3Zoom: s.d3Zoom,
+  d3Selection: s.d3Selection,
+  d3ZoomHandler: s.d3ZoomHandler,
+
+  initD3Zoom: s.initD3Zoom,
+  updateTransform: s.updateTransform,
+});
+
 const ZoomPane = ({
   onMove,
   onMoveStart,
@@ -62,17 +71,10 @@ const ZoomPane = ({
   preventScrolling = true,
   children,
 }: ZoomPaneProps) => {
+  const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
-
-  const store = useStore();
-  const d3Zoom = useStoreState((s) => s.d3Zoom);
-  const d3Selection = useStoreState((s) => s.d3Selection);
-  const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
-
-  const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
-  const updateTransform = useStoreActions((actions) => actions.updateTransform);
-
+  const { d3Zoom, d3Selection, d3ZoomHandler, initD3Zoom, updateTransform } = useStore(selector);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
   useResizeHandler(zoomPane);

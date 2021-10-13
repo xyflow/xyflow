@@ -1,6 +1,6 @@
 import React, { memo, CSSProperties, useCallback } from 'react';
 
-import { useStoreState } from '../../store/hooks';
+import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
@@ -15,6 +15,7 @@ import {
   ConnectionLineComponent,
   ConnectionMode,
   OnEdgeUpdateFunc,
+  ReactFlowState,
 } from '../../types';
 
 interface EdgeRendererProps {
@@ -199,18 +200,34 @@ const Edge = memo(
   }
 );
 
+const selector = (s: ReactFlowState) => ({
+  transform: s.transform,
+  edges: s.edges,
+  connectionNodeId: s.connectionNodeId,
+  connectionHandleId: s.connectionHandleId,
+  connectionHandleType: s.connectionHandleType,
+  connectionPosition: s.connectionPosition,
+  selectedElements: s.selectedElements,
+  nodesConnectable: s.nodesConnectable,
+  elementsSelectable: s.elementsSelectable,
+  width: s.width,
+  height: s.height,
+});
+
 const EdgeRenderer = (props: EdgeRendererProps) => {
-  const transform = useStoreState((state) => state.transform);
-  const edges = useStoreState((state) => state.edges);
-  const connectionNodeId = useStoreState((state) => state.connectionNodeId);
-  const connectionHandleId = useStoreState((state) => state.connectionHandleId);
-  const connectionHandleType = useStoreState((state) => state.connectionHandleType);
-  const connectionPosition = useStoreState((state) => state.connectionPosition);
-  const selectedElements = useStoreState((state) => state.selectedElements);
-  const nodesConnectable = useStoreState((state) => state.nodesConnectable);
-  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const width = useStoreState((state) => state.width);
-  const height = useStoreState((state) => state.height);
+  const {
+    transform,
+    edges,
+    connectionNodeId,
+    connectionHandleId,
+    connectionHandleType,
+    connectionPosition,
+    selectedElements,
+    nodesConnectable,
+    elementsSelectable,
+    width,
+    height,
+  } = useStore(selector);
 
   if (!width) {
     return null;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 
-import { useStoreState } from '../../store/hooks';
+import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
@@ -12,6 +12,7 @@ import {
   ConnectionLineType,
   ConnectionLineComponent,
   HandleType,
+  ReactFlowState,
 } from '../../types';
 
 interface ConnectionLineProps {
@@ -27,6 +28,8 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
+const nodesSelector = (s: ReactFlowState) => s.nodes;
+
 export default ({
   connectionNodeId,
   connectionHandleId,
@@ -39,7 +42,7 @@ export default ({
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const nodes = useStoreState((state) => state.nodes);
+  const nodes = useStore(nodesSelector);
   const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;

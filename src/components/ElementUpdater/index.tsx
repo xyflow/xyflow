@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 
-import { useStoreActions } from '../../store/hooks';
-import { Node, Edge } from '../../types';
+import { useStore } from '../../store';
+import { Node, Edge, ReactFlowState } from '../../types';
 
 interface ElementUpdaterProps {
   nodes: Node[];
   edges: Edge[];
 }
 
+const selector = (s: ReactFlowState) => ({
+  setNodes: s.setNodes,
+  setEdges: s.setEdges,
+});
+
 const ElementUpdater = ({ nodes, edges }: ElementUpdaterProps) => {
-  const setNodes = useStoreActions((actions) => actions.setNodes);
-  const setEdges = useStoreActions((actions) => actions.setEdges);
+  const { setNodes, setEdges } = useStore(selector);
 
   useEffect(() => {
     setNodes(nodes);

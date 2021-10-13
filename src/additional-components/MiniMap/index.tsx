@@ -1,9 +1,9 @@
 import React, { memo, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
-import { useStoreState } from '../../store/hooks';
+import { useStore } from '../../store';
 import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
-import { Node, Rect } from '../../types';
+import { Node, Rect, ReactFlowState } from '../../types';
 import MiniMapNode from './MiniMapNode';
 
 type StringFunc = (node: Node) => string;
@@ -22,6 +22,8 @@ declare const window: any;
 const defaultWidth = 200;
 const defaultHeight = 150;
 
+const selector = (s: ReactFlowState) => ({ width: s.width, height: s.height, transform: s.transform, nodes: s.nodes });
+
 const MiniMap = ({
   style,
   className,
@@ -32,10 +34,8 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const containerWidth = useStoreState((s) => s.width);
-  const containerHeight = useStoreState((s) => s.height);
-  const [tX, tY, tScale] = useStoreState((s) => s.transform);
-  const nodes = useStoreState((s) => s.nodes);
+  const { width: containerWidth, height: containerHeight, transform, nodes } = useStore(selector);
+  const [tX, tY, tScale] = transform;
 
   const mapClasses = cc(['react-flow__minimap', className]);
   const elementWidth = (style?.width || defaultWidth)! as number;

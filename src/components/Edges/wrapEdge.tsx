@@ -1,10 +1,18 @@
 import React, { memo, ComponentType, useCallback, useState, useMemo } from 'react';
 import cc from 'classcat';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
-import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
+import { useStore, useStoreApi } from '../../store';
+import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
+
+const selector = (s: ReactFlowState) => ({
+  addSelectedElements: s.addSelectedElements,
+  setConnectionNodeId: s.setConnectionNodeId,
+  unsetNodesSelection: s.unsetNodesSelection,
+  setPosition: s.setConnectionPosition,
+  connectionMode: s.connectionMode,
+});
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -47,11 +55,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     onEdgeUpdateStart,
     onEdgeUpdateEnd,
   }: WrapEdgeProps): JSX.Element | null => {
-    const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
-    const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
-    const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-    const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
-    const connectionMode = useStoreState((state) => state.connectionMode);
+    const store = useStoreApi();
+    const { addSelectedElements, setConnectionNodeId, unsetNodesSelection, setPosition, connectionMode } =
+      useStore(selector);
 
     const [updating, setUpdating] = useState<boolean>(false);
 
@@ -90,7 +96,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         if (elementsSelectable) {
           unsetNodesSelection();
-          addSelectedElements(edgeElement);
+          addSelectedElements([edgeElement]);
         }
 
         onClick?.(event, edgeElement);
@@ -157,10 +163,22 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           isValidConnection,
           connectionMode,
           isSourceHandle ? 'target' : 'source',
-          _onEdgeUpdate
+          _onEdgeUpdate,
+          store.getState
         );
       },
-      [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement, onConnectEdge]
+      [
+        id,
+        source,
+        target,
+        type,
+        sourceHandleId,
+        targetHandleId,
+        setConnectionNodeId,
+        setPosition,
+        edgeElement,
+        onConnectEdge,
+      ]
     );
 
     const onEdgeUpdaterSourceMouseDown = useCallback(

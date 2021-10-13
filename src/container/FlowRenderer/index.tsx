@@ -1,13 +1,13 @@
 import React, { useCallback, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
-import { useStoreActions, useStoreState } from '../../store/hooks';
 
+import { useStore } from '../../store';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
-
 import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
+import { ReactFlowState } from '../../types';
 
 interface FlowRendererProps
   extends Omit<
@@ -24,6 +24,12 @@ interface FlowRendererProps
   > {
   children: ReactNode;
 }
+
+const selector = (s: ReactFlowState) => ({
+  unsetNodesSelection: s.unsetNodesSelection,
+  resetSelectedElements: s.resetSelectedElements,
+  nodesSelectionActive: s.nodesSelectionActive,
+});
 
 const FlowRenderer = ({
   children,
@@ -54,9 +60,7 @@ const FlowRenderer = ({
   onSelectionDragStop,
   onSelectionContextMenu,
 }: FlowRendererProps) => {
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
-  const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
+  const { unsetNodesSelection, resetSelectedElements, nodesSelectionActive } = useStore(selector);
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
