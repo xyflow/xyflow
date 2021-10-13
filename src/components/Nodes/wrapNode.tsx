@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
 import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
@@ -10,6 +11,7 @@ const selector = (s: ReactFlowState) => ({
   addSelectedElements: s.addSelectedElements,
   onNodesChange: s.onNodesChange,
   unsetNodesSelection: s.unsetNodesSelection,
+  updateNodePosDiff: s.updateNodePosDiff,
 });
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
@@ -47,7 +49,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     dragHandle,
   }: WrapNodeProps) => {
     // const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
-    const { addSelectedElements, onNodesChange, unsetNodesSelection } = useStore(selector);
+    const { addSelectedElements, onNodesChange, unsetNodesSelection, updateNodePosDiff } = useStore(selector, shallow);
     const nodeElement = useRef<HTMLDivElement>(null);
 
     const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
@@ -154,18 +156,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onNodeDrag(event as MouseEvent, node);
         }
 
-        onNodesChange?.([
-          {
-            id,
-            change: {
-              position: {
-                x: node.position.x,
-                y: node.position.y,
-              },
-              isDragging: true,
-            },
-          },
-        ]);
+        updateNodePosDiff({ id, isDragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },
       [id, node, onNodeDrag]
     );

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, memo } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import FlowRenderer from '../FlowRenderer';
@@ -136,7 +137,7 @@ const GraphView = ({
     setConnectionMode,
     setOnNodesChange,
     setOnEdgesChange,
-  } = useStore(selector);
+  } = useStore(selector, shallow);
 
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 

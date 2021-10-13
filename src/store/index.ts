@@ -1,6 +1,5 @@
 import create from 'zustand';
 import createContext from 'zustand/context';
-import isEqual from 'fast-deep-equal';
 
 import { clampPosition, getDimensions } from '../utils';
 import {
@@ -26,8 +25,16 @@ import {
   SnapGrid,
   OnElementsChange,
 } from '../types';
-import { parseNode, parseEdge, isNode, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
-import { getSourceTargetNodes } from '../container/EdgeRenderer/utils';
+import {
+  parseNode,
+  parseEdge,
+  isNode,
+  isEdge,
+  getRectOfNodes,
+  getNodesInside,
+  getConnectedEdges,
+} from '../utils/graph';
+import { extendEdgeWithSourceAndTarget } from '../container/EdgeRenderer/utils';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -42,7 +49,6 @@ const createStore = () =>
     onNodesChange: null,
     onEdgesChange: null,
 
-    selectedElements: null,
     selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
 
     d3Zoom: null,
@@ -110,18 +116,7 @@ const createStore = () =>
         return parseNode(propNode, nodeExtent);
       });
 
-      const updatedEdges = edges.map((edge) => {
-        const { sourceNode, targetNode } = getSourceTargetNodes(edge, nextNodes);
-
-        if (sourceNode) {
-          edge.sourceNode = sourceNode;
-        }
-        if (targetNode) {
-          edge.targetNode = targetNode;
-        }
-
-        return edge;
-      });
+      const updatedEdges = edges.map((edge) => extendEdgeWithSourceAndTarget(edge, nextNodes));
 
       set({
         nodes: nextNodes,
@@ -137,17 +132,7 @@ const createStore = () =>
         if (storeEdge) {
           return parseEdge(propEdge);
         } else {
-          const parsedEdge = parseEdge(propEdge);
-          const { sourceNode, targetNode } = getSourceTargetNodes(parsedEdge, nodes);
-
-          if (sourceNode) {
-            parsedEdge.sourceNode = sourceNode;
-          }
-          if (targetNode) {
-            parsedEdge.targetNode = targetNode;
-          }
-
-          return parsedEdge;
+          return extendEdgeWithSourceAndTarget(parseEdge(propEdge), nodes);
         }
       });
 
@@ -190,23 +175,21 @@ const createStore = () =>
     updateNodePosDiff: ({ id, diff, isDragging }: NodeDiffUpdate) => {
       const { onNodesChange, nodes } = get();
 
-      if (onNodesChange && id && diff) {
-        const matchingNode = nodes.find((n) => n.id === id);
+      if (onNodesChange && diff) {
+        const matchingNodes = nodes.filter((n) => n.id === id || n.selected);
 
-        if (matchingNode) {
-          requestAnimationFrame(() =>
-            onNodesChange([
-              {
-                id,
-                change: {
-                  position: {
-                    x: matchingNode.position.x + diff.x,
-                    y: matchingNode.position.y + diff.y,
-                    isDragging,
-                  },
+        if (matchingNodes?.length) {
+          onNodesChange(
+            matchingNodes.map((n) => ({
+              id: n.id,
+              change: {
+                position: {
+                  x: n.position.x + diff.x,
+                  y: n.position.y + diff.y,
+                  isDragging,
                 },
               },
-            ])
+            }))
           );
         }
       }
@@ -226,7 +209,7 @@ const createStore = () =>
       });
     },
     updateUserSelection: (mousePos: XYPosition) => {
-      const { userSelectionRect, nodes, edges, transform, selectedElements } = get();
+      const { userSelectionRect, nodes, edges, transform, onNodesChange, onEdgesChange } = get();
       const startX = userSelectionRect.startX ?? 0;
       const startY = userSelectionRect.startY ?? 0;
 
@@ -241,23 +224,21 @@ const createStore = () =>
       const selectedNodes = getNodesInside(nodes, nextUserSelectRect, transform, false, true);
       const selectedEdges = getConnectedEdges(selectedNodes, edges);
 
-      const nextSelectedElements = [...selectedNodes, ...selectedEdges];
-      const selectedElementsChanged = !isEqual(nextSelectedElements, selectedElements);
-
-      if (selectedElementsChanged) {
-        set({
-          selectedElements: nextSelectedElements.length > 0 ? nextSelectedElements : null,
-          userSelectionRect: nextUserSelectRect,
-        });
-      } else {
-        set({
-          userSelectionRect: nextUserSelectRect,
-        });
+      if (selectedNodes?.length) {
+        onNodesChange?.(selectedNodes.map((n) => ({ id: n.id, change: { selected: true } })));
       }
+
+      if (selectedEdges?.length) {
+        onEdgesChange?.(selectedEdges.map((n) => ({ id: n.id, change: { selected: true } })));
+      }
+
+      set({
+        userSelectionRect: nextUserSelectRect,
+      });
     },
     unsetUserSelection: () => {
-      const { selectedElements, userSelectionRect } = get();
-      const selectedNodes = selectedElements?.filter((node) => isNode(node) && node.position) as Node[];
+      const { userSelectionRect, nodes } = get();
+      const selectedNodes = nodes.filter((node) => node.selected);
 
       const stateUpdate = {
         selectionActive: false,
@@ -265,7 +246,6 @@ const createStore = () =>
           ...userSelectionRect,
           draw: false,
         },
-        selectedElements: null,
         selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
         nodesSelectionActive: false,
       };
@@ -278,28 +258,29 @@ const createStore = () =>
 
       set(stateUpdate);
     },
-    setSelectedElements: (elements: Elements) => {
-      const { selectedElements } = get();
-      const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
-      const selectedElementsUpdated = !isEqual(selectedElementsArr, selectedElements);
-
-      set({
-        selectedElements: selectedElementsUpdated ? selectedElementsArr : selectedElements,
-      });
-    },
     addSelectedElements: (elements: Elements) => {
-      const { multiSelectionActive, selectedElements } = get();
+      const { multiSelectionActive, onNodesChange, onEdgesChange, nodes, edges } = get();
       const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
 
-      let nextElements = selectedElementsArr;
+      let selectedNodes;
+      let selectedEdges;
 
       if (multiSelectionActive) {
-        nextElements = selectedElements ? [...selectedElements, ...selectedElementsArr] : selectedElementsArr;
+        selectedNodes = selectedElementsArr.filter(isNode).map((node) => ({ id: node.id, change: { selected: true } }));
+        selectedEdges = selectedElementsArr.filter(isEdge).map((edge) => ({ id: edge.id, change: { selected: true } }));
+      } else {
+        selectedNodes = nodes.map((node) => ({
+          id: node.id,
+          change: { selected: selectedElementsArr.some((e) => e.id === node.id) },
+        }));
+        selectedEdges = edges.map((edge) => ({
+          id: edge.id,
+          change: { selected: selectedElementsArr.some((e) => e.id === edge.id) },
+        }));
       }
 
-      const selectedElementsUpdated = !isEqual(nextElements, selectedElements);
-
-      set({ selectedElements: selectedElementsUpdated ? nextElements : selectedElements });
+      onNodesChange?.(selectedNodes);
+      onEdgesChange?.(selectedEdges);
     },
     initD3Zoom: ({ d3Zoom, d3Selection, d3ZoomHandler, transform }: InitD3ZoomPayload) => {
       set({
@@ -334,77 +315,53 @@ const createStore = () =>
           return {
             ...node,
             position: clampPosition(node.position, nodeExtent),
-            __rf: {
-              ...node.__rf,
-            },
           };
         }),
       });
     },
-    unsetNodesSelection: () => {
-      set({ nodesSelectionActive: false });
-    },
     resetSelectedElements: () => {
-      set({ selectedElements: null });
+      const { nodes, edges, onNodesChange, onEdgesChange } = get();
+      const selectedNodes = nodes
+        .filter((n) => n.selected)
+        .map((n) => ({
+          id: n.id,
+          change: { selected: false },
+        }));
+
+      const selectedEdges = edges
+        .filter((e) => e.selected)
+        .map((e) => ({
+          id: e.id,
+          change: { selected: false },
+        }));
+
+      onNodesChange?.(selectedNodes);
+      onEdgesChange?.(selectedEdges);
     },
-    updateTransform: (transform: Transform) => {
-      set({ transform });
-    },
-    updateSize: (size: Dimensions) => {
-      set({ width: size.width || 500, height: size.height || 500 });
-    },
-    setOnConnect: (onConnect: OnConnectFunc) => {
-      set({ onConnect });
-    },
-    setOnConnectStart: (onConnectStart: OnConnectStartFunc) => {
-      set({ onConnectStart });
-    },
-    setOnConnectStop: (onConnectStop: OnConnectStopFunc) => {
-      set({ onConnectStop });
-    },
-    setOnConnectEnd: (onConnectEnd: OnConnectEndFunc) => {
-      set({ onConnectEnd });
-    },
-    setConnectionPosition: (connectionPosition: XYPosition) => {
-      set({ connectionPosition });
-    },
-    setConnectionNodeId: (params: SetConnectionId) => {
-      set({ ...params });
-    },
-    setSnapToGrid: (snapToGrid: boolean) => {
-      set({ snapToGrid });
-    },
-    setSnapGrid: (snapGrid: SnapGrid) => {
-      set({ snapGrid });
-    },
-    setInteractive: (isInteractive: boolean) => {
+    unsetNodesSelection: () => set({ nodesSelectionActive: false }),
+    updateTransform: (transform: Transform) => set({ transform }),
+    updateSize: (size: Dimensions) => set({ width: size.width || 500, height: size.height || 500 }),
+    setOnConnect: (onConnect: OnConnectFunc) => set({ onConnect }),
+    setOnConnectStart: (onConnectStart: OnConnectStartFunc) => set({ onConnectStart }),
+    setOnConnectStop: (onConnectStop: OnConnectStopFunc) => set({ onConnectStop }),
+    setOnConnectEnd: (onConnectEnd: OnConnectEndFunc) => set({ onConnectEnd }),
+    setConnectionPosition: (connectionPosition: XYPosition) => set({ connectionPosition }),
+    setConnectionNodeId: (params: SetConnectionId) => set({ ...params }),
+    setSnapToGrid: (snapToGrid: boolean) => set({ snapToGrid }),
+    setSnapGrid: (snapGrid: SnapGrid) => set({ snapGrid }),
+    setInteractive: (isInteractive: boolean) =>
       set({
         nodesDraggable: isInteractive,
         nodesConnectable: isInteractive,
         elementsSelectable: isInteractive,
-      });
-    },
-    setNodesDraggable: (nodesDraggable: boolean) => {
-      set({ nodesDraggable });
-    },
-    setNodesConnectable: (nodesConnectable: boolean) => {
-      set({ nodesConnectable });
-    },
-    setElementsSelectable: (elementsSelectable: boolean) => {
-      set({ elementsSelectable });
-    },
-    setMultiSelectionActive: (multiSelectionActive: boolean) => {
-      set({ multiSelectionActive });
-    },
-    setConnectionMode: (connectionMode: ConnectionMode) => {
-      set({ connectionMode });
-    },
-    setOnNodesChange: (onNodesChange: OnElementsChange) => {
-      set({ onNodesChange });
-    },
-    setOnEdgesChange: (onEdgesChange: OnElementsChange) => {
-      set({ onEdgesChange });
-    },
+      }),
+    setNodesDraggable: (nodesDraggable: boolean) => set({ nodesDraggable }),
+    setNodesConnectable: (nodesConnectable: boolean) => set({ nodesConnectable }),
+    setElementsSelectable: (elementsSelectable: boolean) => set({ elementsSelectable }),
+    setMultiSelectionActive: (multiSelectionActive: boolean) => set({ multiSelectionActive }),
+    setConnectionMode: (connectionMode: ConnectionMode) => set({ connectionMode }),
+    setOnNodesChange: (onNodesChange: OnElementsChange) => set({ onNodesChange }),
+    setOnEdgesChange: (onEdgesChange: OnElementsChange) => set({ onEdgesChange }),
   }));
 
 export { Provider, useStore, createStore, useStoreApi };

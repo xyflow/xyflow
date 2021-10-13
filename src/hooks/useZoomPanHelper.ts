@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
+import shallow from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../store';
 import { getRectOfNodes, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
@@ -26,7 +27,7 @@ const selector = (s: ReactFlowState) => ({
 
 const useZoomPanHelper = (): ZoomPanHelperFunctions => {
   const store = useStoreApi();
-  const { d3Zoom, d3Selection } = useStore(selector);
+  const { d3Zoom, d3Selection } = useStore(selector, shallow);
 
   const zoomPanHelperFunctions = useMemo<ZoomPanHelperFunctions>(() => {
     if (d3Selection && d3Zoom) {

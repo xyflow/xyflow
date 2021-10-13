@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
+import shallow from 'zustand/shallow';
 
 import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
@@ -74,7 +75,7 @@ const ZoomPane = ({
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
-  const { d3Zoom, d3Selection, d3ZoomHandler, initD3Zoom, updateTransform } = useStore(selector);
+  const { d3Zoom, d3Selection, d3ZoomHandler, initD3Zoom, updateTransform } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
   useResizeHandler(zoomPane);

@@ -1,5 +1,6 @@
 import React, { memo, useContext, useCallback, HTMLAttributes, forwardRef } from 'react';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
@@ -45,7 +46,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onConnectStop,
       onConnectEnd,
       connectionMode,
-    } = useStore(selector);
+    } = useStore(selector, shallow);
 
     const handleId = id || null;
     const isTarget = type === 'target';

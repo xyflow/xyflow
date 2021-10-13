@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, Edge, ReactFlowState } from '../../types';
@@ -14,7 +15,7 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const ElementUpdater = ({ nodes, edges }: ElementUpdaterProps) => {
-  const { setNodes, setEdges } = useStore(selector);
+  const { setNodes, setEdges } = useStore(selector, shallow);
 
   useEffect(() => {
     setNodes(nodes);

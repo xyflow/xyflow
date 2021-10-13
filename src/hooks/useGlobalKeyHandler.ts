@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../store';
 import useKeyPress from './useKeyPress';
-import { isNode, isEdge, getConnectedEdges } from '../utils/graph';
+import { getConnectedEdges } from '../utils/graph';
 import { KeyCode, ReactFlowState } from '../types';
 
 interface HookParams {
@@ -21,17 +22,17 @@ const selector = (s: ReactFlowState) => ({
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
   const { unsetNodesSelection, setMultiSelectionActive, resetSelectedElements, onNodesChange, onEdgesChange } =
-    useStore(selector);
+    useStore(selector, shallow);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { edges, selectedElements } = store.getState();
+    const { nodes, edges } = store.getState();
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
 
-    if (deleteKeyPressed && selectedElements) {
-      const selectedNodes = selectedElements.filter(isNode);
-      const selectedEdges = selectedElements.filter(isEdge);
+    if (deleteKeyPressed && (selectedNodes || selectedEdges)) {
       const connectedEdges = getConnectedEdges(selectedNodes, edges);
 
       const nodeChanges = selectedNodes.map((n) => ({ id: n.id, delete: true }));

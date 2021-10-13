@@ -7,7 +7,6 @@ import React, { useMemo, useCallback, useRef, MouseEvent } from 'react';
 import ReactDraggable, { DraggableData } from 'react-draggable';
 
 import { useStore } from '../../store';
-import { isNode } from '../../utils/graph';
 import { Node, ReactFlowState } from '../../types';
 
 export interface NodesSelectionProps {
@@ -21,10 +20,9 @@ const selector = (s: ReactFlowState) => ({
   transform: s.transform,
   selectedNodesBbox: s.selectedNodesBbox,
   selectionActive: s.selectionActive,
-  selectedElements: s.selectedElements,
+  selectedNodes: s.nodes.filter((n) => n.selected),
   snapToGrid: s.snapToGrid,
   snapGrid: s.snapGrid,
-  nodes: s.nodes,
   updateNodePosDiff: s.updateNodePosDiff,
 });
 
@@ -34,36 +32,12 @@ export default ({
   onSelectionDragStop,
   onSelectionContextMenu,
 }: NodesSelectionProps) => {
-  const {
-    transform,
-    selectedNodesBbox,
-    selectionActive,
-    selectedElements,
-    snapToGrid,
-    snapGrid,
-    nodes,
-    updateNodePosDiff,
-  } = useStore(selector);
+  const { transform, selectedNodesBbox, selectionActive, selectedNodes, snapToGrid, snapGrid, updateNodePosDiff } =
+    useStore(selector);
   const [tX, tY, tScale] = transform;
-
   const nodeRef = useRef(null);
 
   const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
-
-  const selectedNodes = useMemo(
-    () =>
-      selectedElements
-        ? selectedElements.filter(isNode).map((selectedNode) => {
-            const matchingNode = nodes.find((node) => node.id === selectedNode.id);
-
-            return {
-              ...matchingNode,
-              position: matchingNode?.position,
-            } as Node;
-          })
-        : [],
-    [selectedElements, nodes]
-  );
 
   const style = useMemo(
     () => ({
@@ -119,16 +93,12 @@ export default ({
 
   const onContextMenu = useCallback(
     (event: MouseEvent) => {
-      const selectedNodes = selectedElements
-        ? selectedElements.filter(isNode).map((selectedNode) => nodes.find((node) => node.id === selectedNode.id)!)
-        : [];
-
       onSelectionContextMenu?.(event, selectedNodes);
     },
-    [onSelectionContextMenu]
+    [onSelectionContextMenu, selectedNodes]
   );
 
-  if (!selectedElements || selectionActive) {
+  if (!selectedNodes || selectionActive) {
     return null;
   }
 

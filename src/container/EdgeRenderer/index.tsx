@@ -1,15 +1,14 @@
 import React, { memo, CSSProperties, useCallback } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
-import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle } from './utils';
 import {
   Position,
   Edge,
   Node,
-  Elements,
   Connection,
   ConnectionLineType,
   ConnectionLineComponent,
@@ -55,7 +54,6 @@ interface EdgeWrapperProps {
   onEdgeUpdate?: OnEdgeUpdateFunc;
   targetNode?: Node;
   sourceNode?: Node;
-  selectedElements: Elements | null;
   elementsSelectable: boolean;
   connectionMode?: ConnectionMode;
 }
@@ -77,7 +75,6 @@ const Edge = memo(
     onEdgeUpdate,
     targetNode,
     sourceNode,
-    selectedElements,
     elementsSelectable,
     connectionMode,
   }: EdgeWrapperProps) => {
@@ -152,8 +149,6 @@ const Edge = memo(
     //   return null;
     // }
 
-    const isSelected = selectedElements?.some((elm) => isEdge(elm) && elm.id === edge.id) || false;
-
     return (
       <EdgeComponent
         key={edge.id}
@@ -162,7 +157,7 @@ const Edge = memo(
         type={edge.type}
         data={edge.data}
         onClick={onElementClick}
-        selected={isSelected}
+        selected={!!edge.selected}
         animated={edge.animated}
         label={edge.label}
         labelStyle={edge.labelStyle}
@@ -207,7 +202,6 @@ const selector = (s: ReactFlowState) => ({
   connectionHandleId: s.connectionHandleId,
   connectionHandleType: s.connectionHandleType,
   connectionPosition: s.connectionPosition,
-  selectedElements: s.selectedElements,
   nodesConnectable: s.nodesConnectable,
   elementsSelectable: s.elementsSelectable,
   width: s.width,
@@ -222,12 +216,11 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionHandleId,
     connectionHandleType,
     connectionPosition,
-    selectedElements,
     nodesConnectable,
     elementsSelectable,
     width,
     height,
-  } = useStore(selector);
+  } = useStore(selector, shallow);
 
   if (!width) {
     return null;
@@ -247,7 +240,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
             edge={edge}
             sourceNode={edge.sourceNode}
             targetNode={edge.targetNode}
-            selectedElements={selectedElements}
             elementsSelectable={elementsSelectable}
             markerEndId={props.markerEndId}
             onEdgeContextMenu={props.onEdgeContextMenu}

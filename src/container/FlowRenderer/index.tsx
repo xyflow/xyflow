@@ -1,4 +1,5 @@
 import React, { useCallback, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
@@ -60,7 +61,7 @@ const FlowRenderer = ({
   onSelectionDragStop,
   onSelectionContextMenu,
 }: FlowRendererProps) => {
-  const { unsetNodesSelection, resetSelectedElements, nodesSelectionActive } = useStore(selector);
+  const { unsetNodesSelection, resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 

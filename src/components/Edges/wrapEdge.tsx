@@ -1,5 +1,6 @@
 import React, { memo, ComponentType, useCallback, useState, useMemo } from 'react';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState } from '../../types';
@@ -56,8 +57,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     onEdgeUpdateEnd,
   }: WrapEdgeProps): JSX.Element | null => {
     const store = useStoreApi();
-    const { addSelectedElements, setConnectionNodeId, unsetNodesSelection, setPosition, connectionMode } =
-      useStore(selector);
+    const { addSelectedElements, setConnectionNodeId, unsetNodesSelection, setPosition, connectionMode } = useStore(
+      selector,
+      shallow
+    );
 
     const [updating, setUpdating] = useState<boolean>(false);
 

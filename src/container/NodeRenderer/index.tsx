@@ -1,4 +1,5 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, Edge, WrapNodeProps } from '../../types';
@@ -21,7 +22,6 @@ interface NodeRendererProps {
 
 const selector = (s: ReactFlowState) => ({
   transform: s.transform,
-  selectedElements: s.selectedElements,
   nodesDraggable: s.nodesDraggable,
   nodesConnectable: s.nodesConnectable,
   elementsSelectable: s.elementsSelectable,
@@ -30,15 +30,10 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const {
-    transform,
-    selectedElements,
-    nodesDraggable,
-    nodesConnectable,
-    elementsSelectable,
-    nodes,
-    updateNodeDimensions,
-  } = useStore(selector);
+  const { transform, nodesDraggable, nodesConnectable, elementsSelectable, nodes, updateNodeDimensions } = useStore(
+    selector,
+    shallow
+  );
 
   // const visibleNodes = props.onlyRenderVisibleElements
   //   ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
@@ -108,7 +103,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
             scale={transform[2]}
-            selected={selectedElements?.some(({ id }) => id === node.id) || false}
+            selected={!!node.selected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}
             isConnectable={isConnectable}

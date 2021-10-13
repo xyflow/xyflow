@@ -60,6 +60,7 @@ export interface Node<T = any> {
   width?: number | null;
   height?: number | null;
   handleBounds?: any;
+  selected?: boolean;
 }
 
 export enum ArrowHeadType {
@@ -88,6 +89,7 @@ export interface Edge<T = any> {
   className?: string;
   sourceNode?: Node;
   targetNode?: Node;
+  selected?: boolean;
 }
 
 export enum BackgroundVariant {
@@ -418,7 +420,6 @@ export interface ReactFlowState {
   transform: Transform;
   nodes: Node[];
   edges: Edge[];
-  selectedElements: Elements | null;
   selectedNodesBbox: Rect;
   onNodesChange: OnElementsChange | null;
   onEdgesChange: OnElementsChange | null;
@@ -462,7 +463,6 @@ export interface ReactFlowState {
   unsetUserSelection: () => void;
   unsetNodesSelection: () => void;
   resetSelectedElements: () => void;
-  setSelectedElements: (elements: Elements) => void;
   addSelectedElements: (elements: Elements) => void;
   updateTransform: (transform: Transform) => void;
   updateSize: (size: Dimensions) => void;

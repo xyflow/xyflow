@@ -169,3 +169,16 @@ export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNod
     { sourceNode: null, targetNode: null } as SourceTargetNode
   );
 };
+
+export const extendEdgeWithSourceAndTarget = (edge: Edge, nodes: Node[]): Edge => {
+  const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
+
+  if (sourceNode) {
+    edge.sourceNode = sourceNode;
+  }
+  if (targetNode) {
+    edge.targetNode = targetNode;
+  }
+
+  return edge;
+};

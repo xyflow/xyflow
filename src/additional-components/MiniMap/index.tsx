@@ -1,5 +1,6 @@
 import React, { memo, HTMLAttributes } from 'react';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
@@ -34,7 +35,7 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const { width: containerWidth, height: containerHeight, transform, nodes } = useStore(selector);
+  const { width: containerWidth, height: containerHeight, transform, nodes } = useStore(selector, shallow);
   const [tX, tY, tScale] = transform;
 
   const mapClasses = cc(['react-flow__minimap', className]);
