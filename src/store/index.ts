@@ -39,6 +39,14 @@ import { getHandleBounds } from '../components/Nodes/utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
+const unselectElements = (elements: Elements) =>
+  elements
+    .filter((e) => e.selected)
+    .map((e) => ({
+      id: e.id,
+      change: { selected: false },
+    }));
+
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
     width: 0,
@@ -262,34 +270,33 @@ const createStore = () =>
       const { multiSelectionActive, onNodesChange, onEdgesChange, nodes, edges } = get();
       const selectedElementsArr = Array.isArray(elements) ? elements : [elements];
 
-      let selectedNodes;
-      let selectedEdges;
+      let changedNodes;
+      let changedEdges;
 
       if (multiSelectionActive) {
-        selectedNodes = selectedElementsArr.filter(isNode).map((node) => ({ id: node.id, change: { selected: true } }));
-        selectedEdges = selectedElementsArr.filter(isEdge).map((edge) => ({ id: edge.id, change: { selected: true } }));
+        changedNodes = selectedElementsArr.filter(isNode).map((node) => ({ id: node.id, change: { selected: true } }));
+        changedEdges = selectedElementsArr.filter(isEdge).map((edge) => ({ id: edge.id, change: { selected: true } }));
       } else {
-        selectedNodes = nodes.map((node) => ({
+        changedNodes = nodes.map((node) => ({
           id: node.id,
           change: { selected: selectedElementsArr.some((e) => e.id === node.id) },
         }));
-        selectedEdges = edges.map((edge) => ({
+        changedEdges = edges.map((edge) => ({
           id: edge.id,
           change: { selected: selectedElementsArr.some((e) => e.id === edge.id) },
         }));
       }
 
-      onNodesChange?.(selectedNodes);
-      onEdgesChange?.(selectedEdges);
+      onNodesChange?.(changedNodes);
+      onEdgesChange?.(changedEdges);
     },
-    initD3Zoom: ({ d3Zoom, d3Selection, d3ZoomHandler, transform }: InitD3ZoomPayload) => {
+    initD3Zoom: ({ d3Zoom, d3Selection, d3ZoomHandler, transform }: InitD3ZoomPayload) =>
       set({
         d3Zoom,
         d3Selection,
         d3ZoomHandler,
         transform,
-      });
-    },
+      }),
     setMinZoom: (minZoom: number) => {
       const { d3Zoom, maxZoom } = get();
       d3Zoom?.scaleExtent([minZoom, maxZoom]);
@@ -308,7 +315,14 @@ const createStore = () =>
 
       set({ translateExtent });
     },
-    setNodeExtent: (nodeExtent: NodeExtent) => {
+
+    resetSelectedElements: () => {
+      const { nodes, edges, onNodesChange, onEdgesChange } = get();
+
+      onNodesChange?.(unselectElements(nodes));
+      onEdgesChange?.(unselectElements(edges));
+    },
+    setNodeExtent: (nodeExtent: NodeExtent) =>
       set({
         nodeExtent,
         nodes: get().nodes.map((node) => {
@@ -317,27 +331,7 @@ const createStore = () =>
             position: clampPosition(node.position, nodeExtent),
           };
         }),
-      });
-    },
-    resetSelectedElements: () => {
-      const { nodes, edges, onNodesChange, onEdgesChange } = get();
-      const selectedNodes = nodes
-        .filter((n) => n.selected)
-        .map((n) => ({
-          id: n.id,
-          change: { selected: false },
-        }));
-
-      const selectedEdges = edges
-        .filter((e) => e.selected)
-        .map((e) => ({
-          id: e.id,
-          change: { selected: false },
-        }));
-
-      onNodesChange?.(selectedNodes);
-      onEdgesChange?.(selectedEdges);
-    },
+      }),
     unsetNodesSelection: () => set({ nodesSelectionActive: false }),
     updateTransform: (transform: Transform) => set({ transform }),
     updateSize: (size: Dimensions) => set({ width: size.width || 500, height: size.height || 500 }),
