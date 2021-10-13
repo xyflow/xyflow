@@ -37,9 +37,9 @@ export function getBezierPath({
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
     path = `M${sourceX},${sourceY} C${cX},${sourceY} ${cX},${targetY} ${targetX},${targetY}`;
   } else if (leftAndRight.includes(targetPosition)) {
-    path = `M${sourceX},${sourceY} C${sourceX},${targetY} ${sourceX},${targetY} ${targetX},${targetY}`;
+    path = `M${sourceX},${sourceY} Q${sourceX},${targetY} ${targetX},${targetY}`;
   } else if (leftAndRight.includes(sourcePosition)) {
-    path = `M${sourceX},${sourceY} C${targetX},${sourceY} ${targetX},${sourceY} ${targetX},${targetY}`;
+    path = `M${sourceX},${sourceY} Q${targetX},${sourceY} ${targetX},${targetY}`;
   }
 
   return path;
