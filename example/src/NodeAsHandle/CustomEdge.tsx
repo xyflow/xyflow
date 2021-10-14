@@ -131,25 +131,25 @@ const CustomEdge: FC<EdgeProps> = ({
 };
 
 export const ConnectionLine: FC<ConnectionLineComponentProps> = ({
-  sourceX,
-  sourceY,
   targetX,
   targetY,
+  sourcePosition,
+  targetPosition,
   sourceNode,
 }) => {
   if (!sourceNode) {
     return null;
   }
 
-  const targetNode = { __rf: { width: 100, height: 100, position: { x: targetX, y: targetY - 50 } } };
-  const { sx, sy, tx, ty, label, sourcePos, targetPos } = getArrow(sourceNode, targetNode);
+  const targetNode = { __rf: { width: 1, height: 1, position: { x: targetX, y: targetY } } };
+  const { sx, sy } = getArrow(sourceNode, targetNode);
   const d = getBezierPath({
     sourceX: sx,
     sourceY: sy,
-    sourcePosition: sourcePos,
-    targetPosition: targetPos,
-    targetX: tx,
-    targetY: ty,
+    sourcePosition,
+    targetPosition,
+    targetX,
+    targetY,
   });
 
   return (

@@ -12,13 +12,9 @@ import ReactFlow, {
   Connection,
   Edge,
   ArrowHeadType,
-  NodeTypesType,
 } from 'react-flow-renderer';
 
 import CustomEdge, { ConnectionLine } from './CustomEdge';
-import CustomNode from './CustomNode';
-
-import './style.css';
 
 const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
 
@@ -32,7 +28,7 @@ function createElements() {
   const elements = [];
   const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-  elements.push({ type: 'custom', id: 'source', data: { label: 'Source', isTarget: false }, position: center });
+  elements.push({ id: 'source', data: { label: 'Source', isTarget: false }, position: center });
 
   for (let i = 0; i < 8; i++) {
     const degrees = i * (360 / 8);
@@ -40,7 +36,7 @@ function createElements() {
     const x = 250 * Math.cos(radians) + center.x;
     const y = 250 * Math.sin(radians) + center.y;
 
-    elements.push({ type: 'custom', id: `${i}`, data: { label: 'Target', isTarget: true }, position: { x, y } });
+    elements.push({ id: `${i}`, data: { label: 'Target', isTarget: true }, position: { x, y } });
 
     if (i % 2 === 0) {
       elements.push(
@@ -62,10 +58,6 @@ const edgeTypes: EdgeTypesType = {
   custom: CustomEdge,
 };
 
-const nodeTypes: NodeTypesType = {
-  custom: CustomNode,
-};
-
 const NodeAsHandleFlow = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
 
@@ -79,7 +71,6 @@ const NodeAsHandleFlow = () => {
       onConnect={onConnect}
       onLoad={onLoad}
       edgeTypes={edgeTypes}
-      nodeTypes={nodeTypes}
       connectionLineComponent={ConnectionLine}
     >
       <MiniMap />
