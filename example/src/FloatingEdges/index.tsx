@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import ReactFlow, {
   removeElements,
   addEdge,
-  MiniMap,
-  Controls,
   Background,
   OnLoadParams,
   EdgeTypesType,
@@ -13,6 +11,8 @@ import ReactFlow, {
   Edge,
   ArrowHeadType,
 } from 'react-flow-renderer';
+
+import './style.css';
 
 import FloatingEdge from './FloatingEdge';
 import FloatingConnectionLine from './FloatingConnectionLine';
@@ -30,22 +30,23 @@ const NodeAsHandleFlow = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
 
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
+
   const onConnect = (params: Connection | Edge) =>
     setElements((els) => addEdge({ ...params, type: 'floating', arrowHeadType: ArrowHeadType.Arrow }, els));
 
   return (
-    <ReactFlow
-      elements={elements}
-      onElementsRemove={onElementsRemove}
-      onConnect={onConnect}
-      onLoad={onLoad}
-      edgeTypes={edgeTypes}
-      connectionLineComponent={FloatingConnectionLine}
-    >
-      <MiniMap />
-      <Controls />
-      <Background />
-    </ReactFlow>
+    <div className="floatingedges">
+      <ReactFlow
+        elements={elements}
+        onElementsRemove={onElementsRemove}
+        onConnect={onConnect}
+        onLoad={onLoad}
+        edgeTypes={edgeTypes}
+        connectionLineComponent={FloatingConnectionLine}
+      >
+        <Background />
+      </ReactFlow>
+    </div>
   );
 };
 

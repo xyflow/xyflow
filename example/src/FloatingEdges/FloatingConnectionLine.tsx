@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { getBezierPath, ConnectionLineComponentProps } from 'react-flow-renderer';
+import { getBezierPath, ConnectionLineComponentProps, Node } from 'react-flow-renderer';
 
-import { getArrow } from './utils';
+import { getEdgeParams } from './utils';
 
 const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
   targetX,
@@ -14,8 +14,12 @@ const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
     return null;
   }
 
-  const targetNode = { __rf: { width: 1, height: 1, position: { x: targetX, y: targetY } } };
-  const { sx, sy } = getArrow(sourceNode, targetNode);
+  const targetNode = {
+    id: 'connection-target',
+    __rf: { width: 1, height: 1, position: { x: targetX, y: targetY } },
+  } as Node;
+
+  const { sx, sy } = getEdgeParams(sourceNode, targetNode);
   const d = getBezierPath({
     sourceX: sx,
     sourceY: sy,
