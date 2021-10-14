@@ -14,7 +14,7 @@ import Provider from './Provider';
 import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
 import CustomConnectionLine from './CustomConnectionLine';
-import NodeAsHandle from './NodeAsHandle';
+import FloatingEdges from './FloatingEdges';
 import NodeTypeChange from './NodeTypeChange';
 import NodeTypesObjectChange from './NodeTypesObjectChange';
 import UpdatableEdge from './UpdatableEdge';
@@ -81,8 +81,8 @@ const routes = [
     component: CustomConnectionLine,
   },
   {
-    path: '/node-as-handle',
-    component: NodeAsHandle,
+    path: '/floating-edges',
+    component: FloatingEdges,
   },
   {
     path: '/nodetype-change',
