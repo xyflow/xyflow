@@ -15,6 +15,7 @@ import {
   FlowExportObject,
   ReactFlowState,
   NodeExtent,
+  EdgeMarkerType,
 } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -56,6 +57,21 @@ export const removeElements = (elementsToRemove: Elements, elements: Elements): 
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId =>
   `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
+
+export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
+  if (typeof marker === 'undefined') {
+    return '';
+  }
+
+  if (typeof marker === 'string') {
+    return marker;
+  }
+
+  return Object.keys(marker)
+    .sort()
+    .map((key: string) => `${key}=${(marker as any)[key]}`)
+    .join('&');
+};
 
 const connectionExists = (edge: Edge, elements: Elements) => {
   return elements.some(

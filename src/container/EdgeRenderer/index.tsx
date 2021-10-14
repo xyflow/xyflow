@@ -26,8 +26,7 @@ interface EdgeRendererProps {
   connectionMode?: ConnectionMode;
   onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  arrowHeadColor: string;
-  markerEndId?: string;
+  defaultMarkerColor: string;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
@@ -155,7 +154,8 @@ const Edge = ({
       labelBgPadding={edge.labelBgPadding}
       labelBgBorderRadius={edge.labelBgBorderRadius}
       style={edge.style}
-      arrowHeadType={edge.arrowHeadType}
+      markerEnd={edge.markerEnd}
+      markerStart={edge.markerStart}
       source={edge.source}
       target={edge.target}
       sourceHandleId={sourceHandleId}
@@ -167,7 +167,6 @@ const Edge = ({
       sourcePosition={sourcePosition}
       targetPosition={targetPosition}
       elementsSelectable={elementsSelectable}
-      markerEndId={props.markerEndId}
       isHidden={edge.isHidden}
       onConnectEdge={onConnectEdge}
       handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
@@ -203,7 +202,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
 
   const {
     connectionLineType,
-    arrowHeadColor,
+    defaultMarkerColor,
     connectionLineStyle,
     connectionLineComponent,
     onlyRenderVisibleElements,
@@ -213,7 +212,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
-      <MarkerDefinitions color={arrowHeadColor} />
+      <MarkerDefinitions defaultColor={defaultMarkerColor} />
       <g transform={transformStyle}>
         {edges.map((edge: Edge) => (
           <Edge
