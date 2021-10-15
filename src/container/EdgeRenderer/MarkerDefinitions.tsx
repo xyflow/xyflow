@@ -42,7 +42,16 @@ const markerSymbols = {
   [ArrowHeadType.ArrowClosed]: ArrowClosedSymbol,
 };
 
-const Marker = ({ id, type, color, width = 12.5, height = 12.5, units = 'strokeWidth', strokeWidth }: MarkerProps) => {
+const Marker = ({
+  id,
+  type,
+  color,
+  width = 12.5,
+  height = 12.5,
+  units = 'strokeWidth',
+  strokeWidth,
+  orient = 'auto',
+}: MarkerProps) => {
   const Symbol = markerSymbols[type];
 
   return (
@@ -53,7 +62,7 @@ const Marker = ({ id, type, color, width = 12.5, height = 12.5, units = 'strokeW
       markerWidth={`${width}`}
       markerHeight={`${height}`}
       viewBox="-10 -10 20 20"
-      orient="auto"
+      orient={orient}
       refX="0"
       refY="0"
     >
@@ -93,6 +102,7 @@ const MarkerDefinitions = ({ defaultColor }: MarkerDefinitionsProps) => {
           height={marker.height}
           units={marker.units}
           strokeWidth={marker.strokeWidth}
+          orient={marker.orient}
         />
       ))}
     </defs>

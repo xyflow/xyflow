@@ -62,7 +62,8 @@ export interface EdgeMarker {
   color?: string;
   width?: number;
   height?: number;
-  units?: 'userSpaceOnUse' | 'strokeWidth';
+  units?: string;
+  orient?: string;
   strokeWidth?: number;
 }
 

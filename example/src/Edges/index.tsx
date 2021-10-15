@@ -42,33 +42,6 @@ const initialElements: Elements = [
   { id: 'e3-3a', source: '3', target: '3a', type: 'straight', label: 'label only edge', style: { stroke: 'none' } },
   { id: 'e3-5', source: '4', target: '5', animated: true, label: 'animated styled edge', style: { stroke: 'red' } },
   {
-    id: 'e5-6',
-    source: '5',
-    target: '6',
-    label: (
-      <>
-        <tspan>i am using</tspan>
-        <tspan dy={10} x={0}>
-          {'<tspan>'}
-        </tspan>
-      </>
-    ),
-    labelStyle: { fill: 'red', fontWeight: 700 },
-    style: { stroke: '#ffcc00' },
-    markerEnd: {
-      type: ArrowHeadType.Arrow,
-      color: '#FFCC00',
-      units: 'userSpaceOnUse',
-      width: 20,
-      height: 20,
-      strokeWidth: 2,
-    },
-    markerStart: {
-      type: ArrowHeadType.Arrow,
-      color: '#FFCC00',
-    },
-  },
-  {
     id: 'e5-7',
     source: '5',
     target: '7',
@@ -93,6 +66,37 @@ const initialElements: Elements = [
     target: '9',
     type: 'custom2',
     data: { text: 'custom edge 2' },
+  },
+  {
+    id: 'e5-6',
+    source: '5',
+    target: '6',
+    label: (
+      <>
+        <tspan>i am using</tspan>
+        <tspan dy={10} x={0}>
+          {'<tspan>'}
+        </tspan>
+      </>
+    ),
+    labelStyle: { fill: 'red', fontWeight: 700 },
+    style: { stroke: '#ffcc00' },
+    markerEnd: {
+      type: ArrowHeadType.Arrow,
+      color: '#FFCC00',
+      units: 'userSpaceOnUse',
+      width: 20,
+      height: 20,
+      strokeWidth: 2,
+    },
+    markerStart: {
+      type: ArrowHeadType.ArrowClosed,
+      color: '#FFCC00',
+      orient: 'auto-start-reverse',
+      units: 'userSpaceOnUse',
+      width: 20,
+      height: 20,
+    },
   },
 ];
 

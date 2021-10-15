@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "9.6.9",
+  "version": "10.0.0-next.1",
   "engines": {
     "node": ">=12"
   },
@@ -28,7 +28,7 @@
     "cy:open": "cypress open",
     "release": "npm run test && release-it",
     "release:notest": "release-it",
-    "release:next": "release-it --preRelease=next"
+    "release:next": "release-it --preRelease=next --no-git"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
