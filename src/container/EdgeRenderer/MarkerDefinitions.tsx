@@ -2,43 +2,35 @@ import React, { useMemo } from 'react';
 import { useStoreState } from '../../store/hooks';
 import { EdgeMarker, ArrowHeadType } from '../../types';
 import { getMarkerId } from '../../utils/graph';
-interface MarkerProps {
+interface MarkerProps extends EdgeMarker {
   id: string;
-  type: ArrowHeadType;
-  color: string;
 }
 interface MarkerDefinitionsProps {
   defaultColor: string;
 }
 
-interface SymbolProps {
-  color: string;
-}
+type SymbolProps = Omit<MarkerProps, 'id' | 'type'>;
 
-interface EdgeMarkerExtended extends EdgeMarker {
-  id: string;
-}
-
-const ArrowSymbol = ({ color }: SymbolProps) => {
+const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   return (
     <polyline
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="1"
-      fill={color}
-      points="-5,-4 0,0 -5,4 -5,-4"
+      strokeWidth={strokeWidth}
+      fill="none"
+      points="-5,-4 0,0 -5,4"
     />
   );
 };
 
-const ArrowClosedSymbol = ({ color }: SymbolProps) => {
+const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   return (
     <polyline
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="1"
+      strokeWidth={strokeWidth}
       fill={color}
       points="-5,-4 0,0 -5,4 -5,-4"
     />
@@ -50,21 +42,22 @@ const markerSymbols = {
   [ArrowHeadType.ArrowClosed]: ArrowClosedSymbol,
 };
 
-const Marker = ({ id, type, color }: MarkerProps) => {
+const Marker = ({ id, type, color, width = 12.5, height = 12.5, units = 'strokeWidth', strokeWidth }: MarkerProps) => {
   const Symbol = markerSymbols[type];
 
   return (
     <marker
       className="react-flow__arrowhead"
       id={id}
-      markerWidth="12.5"
-      markerHeight="12.5"
+      markerUnits={units}
+      markerWidth={`${width}`}
+      markerHeight={`${height}`}
       viewBox="-10 -10 20 20"
       orient="auto"
       refX="0"
       refY="0"
     >
-      <Symbol color={color} />
+      <Symbol color={color} strokeWidth={strokeWidth} />
     </marker>
   );
 };
@@ -74,24 +67,33 @@ const MarkerDefinitions = ({ defaultColor }: MarkerDefinitionsProps) => {
   const markers = useMemo(() => {
     const ids: string[] = [];
 
-    return edges.reduce<EdgeMarkerExtended[]>((markers, edge) => {
+    return edges.reduce<MarkerProps[]>((markers, edge) => {
       [edge.markerStart, edge.markerEnd].forEach((marker) => {
         if (marker && typeof marker === 'object') {
           const markerId = getMarkerId(marker);
           if (!ids.includes(markerId)) {
-            markers.push({ id: markerId, ...marker });
+            markers.push({ id: markerId, color: marker.color || defaultColor, ...marker });
             ids.push(markerId);
           }
         }
       });
       return markers.sort((a, b) => a.id.localeCompare(b.id));
     }, []);
-  }, [edges]);
+  }, [edges, defaultColor]);
 
   return (
     <defs>
-      {markers.map((marker: EdgeMarkerExtended) => (
-        <Marker id={marker.id} key={marker.id} type={marker.type} color={marker.color || defaultColor} />
+      {markers.map((marker: MarkerProps) => (
+        <Marker
+          id={marker.id}
+          key={marker.id}
+          type={marker.type}
+          color={marker.color}
+          width={marker.width}
+          height={marker.height}
+          units={marker.units}
+          strokeWidth={marker.strokeWidth}
+        />
       ))}
     </defs>
   );

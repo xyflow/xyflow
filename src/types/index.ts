@@ -60,6 +60,10 @@ export enum ArrowHeadType {
 export interface EdgeMarker {
   type: ArrowHeadType;
   color?: string;
+  width?: number;
+  height?: number;
+  units?: 'userSpaceOnUse' | 'strokeWidth';
+  strokeWidth?: number;
 }
 
 export type EdgeMarkerType = string | EdgeMarker;

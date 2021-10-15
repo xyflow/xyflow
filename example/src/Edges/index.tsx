@@ -56,7 +56,12 @@ const initialElements: Elements = [
     labelStyle: { fill: 'red', fontWeight: 700 },
     style: { stroke: '#ffcc00' },
     markerEnd: {
-      type: ArrowHeadType.ArrowClosed,
+      type: ArrowHeadType.Arrow,
+      color: '#FFCC00',
+      units: 'userSpaceOnUse',
+      width: 20,
+      height: 20,
+      strokeWidth: 2,
     },
     markerStart: {
       type: ArrowHeadType.Arrow,
@@ -73,7 +78,6 @@ const initialElements: Elements = [
     labelBgStyle: { fill: '#FFCC00', color: '#fff', fillOpacity: 0.7 },
     markerEnd: {
       type: ArrowHeadType.ArrowClosed,
-      color: '#FFCC00',
     },
   },
   {
