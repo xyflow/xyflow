@@ -1,8 +1,6 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
-import { GetState } from 'zustand';
 
 import { getHostForElement } from '../../utils';
-import { ReactFlowState } from '../../types';
 
 import {
   ElementId,
@@ -105,8 +103,7 @@ export function onMouseDown(
   onEdgeUpdateEnd?: (evt: MouseEvent) => void,
   onConnectStart?: OnConnectStartFunc,
   onConnectStop?: OnConnectStopFunc,
-  onConnectEnd?: OnConnectEndFunc,
-  getState?: GetState<ReactFlowState>
+  onConnectEnd?: OnConnectEndFunc
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   // when react-flow is used inside a shadow root we can't use document
@@ -180,8 +177,7 @@ export function onMouseDown(
     onConnectStop?.(event);
 
     if (isValid) {
-      const nodes = getState?.().nodes;
-      onConnect?.(connection, nodes || []);
+      onConnect?.(connection);
     }
 
     onConnectEnd?.(event);

@@ -4,11 +4,10 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, getSourceTargetNodes } from './utils';
+import { getEdgePositions, getHandle, getSourceTargetNodes, isEdgeVisible } from './utils';
 import {
   Position,
   Edge,
-  Node,
   Connection,
   ConnectionLineType,
   ConnectionLineComponent,
@@ -19,8 +18,6 @@ import {
 } from '../../types';
 
 interface EdgeRendererProps {
-  nodes: Node[];
-  edges: Edge[];
   edgeTypes: any;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
@@ -162,26 +159,12 @@ const Edge = memo(
       targetPosition
     );
 
-    // const isVisible = onlyRenderVisibleElements
-    //   ? isEdgeVisible({
-    //       sourcePos: { x: sourceX, y: sourceY },
-    //       targetPos: { x: targetX, y: targetY },
-    //       width,
-    //       height,
-    //       transform,
-    //     })
-    //   : true;
-
-    // if (!isVisible) {
-    //   return null;
-    // }
-
     return (
       <EdgeComponent
         key={edge.id}
         id={edge.id}
         className={edge.className}
-        type={edge.type}
+        type={edgeType}
         data={edge.data}
         onClick={onEdgeClick}
         isSelected={!!edge.isSelected}
@@ -233,6 +216,7 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   connectionMode: s.connectionMode,
+  nodes: s.nodes,
 });
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
@@ -247,7 +231,41 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     width,
     height,
     connectionMode,
+    nodes,
   } = useStore(selector, shallow);
+
+  const edges = useStore(
+    useCallback(
+      (s: ReactFlowState) => {
+        if (!props.onlyRenderVisibleElements) {
+          return s.edges;
+        }
+
+        return s.edges.filter((e) => {
+          const { sourceNode, targetNode } = getSourceTargetNodes(e, s.nodes);
+
+          return (
+            sourceNode?.width &&
+            sourceNode?.height &&
+            targetNode?.width &&
+            targetNode?.height &&
+            isEdgeVisible({
+              sourcePos: sourceNode.position,
+              targetPos: targetNode.position,
+              sourceWidth: sourceNode.width,
+              sourceHeight: sourceNode.height,
+              targetWidth: targetNode.width,
+              targetHeight: targetNode.height,
+              width: s.width,
+              height: s.height,
+              transform: s.transform,
+            })
+          );
+        });
+      },
+      [props.onlyRenderVisibleElements]
+    )
+  );
 
   if (!width) {
     return null;
@@ -260,8 +278,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
       <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
-        {props.edges.map((edge: Edge) => {
-          const { sourceNode, targetNode } = getSourceTargetNodes(edge, props.nodes);
+        {edges.map((edge: Edge) => {
+          const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
           return (
             <Edge
               key={edge.id}

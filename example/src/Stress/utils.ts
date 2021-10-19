@@ -5,7 +5,7 @@ type ElementsCollection = {
   edges: Edge[];
 };
 
-export function getElements(xElements: number = 10, yElements: number = 10): ElementsCollection {
+export function getNodesAndEdges(xElements: number = 10, yElements: number = 10): ElementsCollection {
   const initialNodes = [];
   const initialEdges: Edge[] = [];
   let nodeId = 1;

@@ -19,7 +19,7 @@ import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../compon
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {
-  Elements,
+  OnSelectionChangeFunc,
   NodeTypesType,
   EdgeTypesType,
   OnLoadFunc,
@@ -81,7 +81,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  onSelectionChange?: (elements: Elements | null) => void;
+  onSelectionChange?: OnSelectionChangeFunc;
   onSelectionDragStart?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onSelectionDrag?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onSelectionDragStop?: (event: ReactMouseEvent, nodes: Node[]) => void;
@@ -227,8 +227,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       <div {...rest} ref={ref} className={reactFlowClasses}>
         <Wrapper>
           <GraphView
-            nodes={nodes}
-            edges={edges}
             onLoad={onLoad}
             onMove={onMove}
             onMoveStart={onMoveStart}

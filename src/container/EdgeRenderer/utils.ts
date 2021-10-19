@@ -116,17 +116,31 @@ export const getEdgePositions = (
 interface IsEdgeVisibleParams {
   sourcePos: XYPosition;
   targetPos: XYPosition;
+  sourceWidth: number;
+  sourceHeight: number;
+  targetWidth: number;
+  targetHeight: number;
   width: number;
   height: number;
   transform: Transform;
 }
 
-export function isEdgeVisible({ sourcePos, targetPos, width, height, transform }: IsEdgeVisibleParams): boolean {
+export function isEdgeVisible({
+  sourcePos,
+  targetPos,
+  sourceWidth,
+  sourceHeight,
+  targetWidth,
+  targetHeight,
+  width,
+  height,
+  transform,
+}: IsEdgeVisibleParams): boolean {
   const edgeBox = {
     x: Math.min(sourcePos.x, targetPos.x),
     y: Math.min(sourcePos.y, targetPos.y),
-    x2: Math.max(sourcePos.x, targetPos.x),
-    y2: Math.max(sourcePos.y, targetPos.y),
+    x2: Math.max(sourcePos.x + sourceWidth, targetPos.x + targetWidth),
+    y2: Math.max(sourcePos.y + sourceHeight, targetPos.y + targetHeight),
   };
 
   if (edgeBox.x === edgeBox.x2) {

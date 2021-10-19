@@ -12,6 +12,7 @@ const selector = (s: ReactFlowState) => ({
   unsetNodesSelection: s.unsetNodesSelection,
   updateNodePosition: s.updateNodePosition,
   updateNodeDimensions: s.updateNodeDimensions,
+  unselectNodesAndEdges: s.unselectNodesAndEdges,
 });
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
@@ -48,10 +49,13 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     resizeObserver,
     dragHandle,
   }: WrapNodeProps) => {
-    const { addSelectedElements, unsetNodesSelection, updateNodePosition, updateNodeDimensions } = useStore(
-      selector,
-      shallow
-    );
+    const {
+      addSelectedElements,
+      unselectNodesAndEdges,
+      unsetNodesSelection,
+      updateNodePosition,
+      updateNodeDimensions,
+    } = useStore(selector, shallow);
     const nodeElement = useRef<HTMLDivElement>(null);
 
     const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
@@ -142,8 +146,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
             addSelectedElements([node]);
           }
         } else if (!selectNodesOnDrag && !isSelected && isSelectable) {
+          unselectNodesAndEdges();
           unsetNodesSelection();
-          addSelectedElements([]);
         }
       },
       [node, isSelected, selectNodesOnDrag, isSelectable, onNodeDragStart]

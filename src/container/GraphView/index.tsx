@@ -4,14 +4,14 @@ import { useStoreApi } from '../../store';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import { onLoadProject, onLoadGetElements, onLoadToObject } from '../../utils/graph';
+import { onLoadProject, onLoadGetNodes, onLoadGetEdges, onLoadToObject } from '../../utils/graph';
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
 import { ReactFlowProps } from '../ReactFlow';
 
 import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
 
-export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'> {
+export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   selectionKeyCode: KeyCode;
@@ -26,8 +26,6 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
 }
 
 const GraphView = ({
-  nodes,
-  edges,
   nodeTypes,
   edgeTypes,
   onMove,
@@ -97,7 +95,8 @@ const GraphView = ({
           zoomTo,
           setTransform: transform,
           project: onLoadProject(store.getState),
-          getElements: onLoadGetElements(store.getState),
+          getNodes: onLoadGetNodes(store.getState),
+          getEdges: onLoadGetEdges(store.getState),
           toObject: onLoadToObject(store.getState),
         });
       }
@@ -147,7 +146,6 @@ const GraphView = ({
         onNodeDragStart={onNodeDragStart}
         selectNodesOnDrag={selectNodesOnDrag}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
-        nodes={nodes}
       />
       <EdgeRenderer
         edgeTypes={edgeTypes}
@@ -167,8 +165,6 @@ const GraphView = ({
         onEdgeUpdateStart={onEdgeUpdateStart}
         onEdgeUpdateEnd={onEdgeUpdateEnd}
         edgeUpdaterRadius={edgeUpdaterRadius}
-        nodes={nodes}
-        edges={edges}
       />
     </FlowRenderer>
   );

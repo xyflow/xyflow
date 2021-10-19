@@ -312,7 +312,8 @@ export type OnLoadParams<T = any> = {
   zoomTo: (zoomLevel: number) => void;
   fitView: FitViewFunc;
   project: ProjectFunc;
-  getElements: () => Elements<T>;
+  getNodes: () => Node<T>[];
+  getEdges: () => Edge<T>[];
   setTransform: (transform: FlowTransform) => void;
   toObject: ToObjectFunc<T>;
 };
@@ -353,7 +354,7 @@ export type ConnectionLineComponentProps = {
 
 export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponentProps>;
 
-export type OnConnectFunc = (connection: Connection, nodes: Node[]) => void;
+export type OnConnectFunc = (connection: Connection) => void;
 export type OnConnectStartParams = {
   nodeId: ElementId | null;
   handleId: ElementId | null;
@@ -490,6 +491,7 @@ export interface ReactFlowState {
   unsetUserSelection: () => void;
   unsetNodesSelection: () => void;
   resetSelectedElements: () => void;
+  unselectNodesAndEdges: () => void;
   addSelectedElements: (elements: Elements) => void;
   updateTransform: (transform: Transform) => void;
   updateSize: (size: Dimensions) => void;
@@ -522,3 +524,5 @@ export interface ReactFlowState {
 }
 
 export type UpdateNodeInternals = (nodeId: ElementId) => void;
+
+export type OnSelectionChangeFunc = (params: { nodes: Node[]; edges: Edge[] }) => void;

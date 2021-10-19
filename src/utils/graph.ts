@@ -24,52 +24,38 @@ export const isEdge = (element: Node | Connection | Edge): element is Edge =>
 export const isNode = (element: Node | Connection | Edge): element is Node =>
   'id' in element && !('source' in element) && !('target' in element);
 
-export const getOutgoers = (node: Node, elements: Elements): Node[] => {
+export const getOutgoers = (node: Node, nodes: Node[], edges: Edge[]): Node[] => {
   if (!isNode(node)) {
     return [];
   }
 
-  const outgoerIds = elements.filter((e) => isEdge(e) && e.source === node.id).map((e) => (e as Edge).target);
-  return elements.filter((e) => outgoerIds.includes(e.id)) as Node[];
+  const outgoerIds = edges.filter((e) => e.source === node.id).map((e) => e.target);
+  return nodes.filter((n) => outgoerIds.includes(n.id));
 };
 
-export const getIncomers = (node: Node, elements: Elements): Node[] => {
+export const getIncomers = (node: Node, nodes: Node[], edges: Edge[]): Node[] => {
   if (!isNode(node)) {
     return [];
   }
 
-  const incomersIds = elements.filter((e) => isEdge(e) && e.target === node.id).map((e) => (e as Edge).source);
-  return elements.filter((e) => incomersIds.includes(e.id)) as Node[];
-};
-
-export const removeElements = (elementsToRemove: Elements, elements: Elements): Elements => {
-  const nodeIdsToRemove = elementsToRemove.map((n) => n.id);
-
-  return elements.filter((element) => {
-    const edgeElement = element as Edge;
-    return !(
-      nodeIdsToRemove.includes(element.id) ||
-      nodeIdsToRemove.includes(edgeElement.target) ||
-      nodeIdsToRemove.includes(edgeElement.source)
-    );
-  });
+  const incomersIds = edges.filter((e) => e.target === node.id).map((e) => e.source);
+  return nodes.filter((n) => incomersIds.includes(n.id));
 };
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId =>
   `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
 
-const connectionExists = (edge: Edge, elements: Elements) => {
-  return elements.some(
-    (el) =>
-      isEdge(el) &&
-      el.source === edge.source &&
-      el.target === edge.target &&
-      (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
-      (el.targetHandle === edge.targetHandle || (!el.targetHandle && !edge.targetHandle))
+const connectionExists = (edge: Edge, edges: Edge[]) => {
+  return edges.some(
+    (e) =>
+      edge.source === e.source &&
+      edge.target === e.target &&
+      (edge.sourceHandle === e.sourceHandle || (!edge.sourceHandle && !e.sourceHandle)) &&
+      (edge.targetHandle === e.targetHandle || (!edge.targetHandle && !e.targetHandle))
   );
 };
 
-export const addEdge = (edgeParams: Edge | Connection, nodes: Node[], edges: Edge[]): Edge[] => {
+export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
     console.warn("Can't create edge. An edge needs a source and a target.");
     return edges;
@@ -85,7 +71,7 @@ export const addEdge = (edgeParams: Edge | Connection, nodes: Node[], edges: Edg
     } as Edge;
   }
 
-  if (connectionExists(edge, nodes)) {
+  if (connectionExists(edge, edges)) {
     return edges;
   }
 
@@ -211,7 +197,13 @@ export const getNodesInside = (
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
 
-    if (width === null || height === null || isDragging) {
+    if (
+      typeof width === 'undefined' ||
+      typeof height === 'undefined' ||
+      width === null ||
+      height === null ||
+      isDragging
+    ) {
       // nodes are initialized with width and height = null
       return true;
     }
@@ -232,15 +224,19 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
   return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
 };
 
-const parseElements = (nodes: Node[], edges: Edge[]): Elements => {
-  return [...nodes.map((n) => ({ ...n })), ...edges.map((e) => ({ ...e }))];
+export const onLoadGetNodes = (getState: GetState<ReactFlowState>) => {
+  return (): Node[] => {
+    const { nodes = [] } = getState();
+
+    return nodes.map((n) => ({ ...n }));
+  };
 };
 
-export const onLoadGetElements = (getState: GetState<ReactFlowState>) => {
-  return (): Elements => {
-    const { nodes = [], edges = [] } = getState();
+export const onLoadGetEdges = (getState: GetState<ReactFlowState>) => {
+  return (): Edge[] => {
+    const { edges = [] } = getState();
 
-    return parseElements(nodes, edges);
+    return edges.map((e) => ({ ...e }));
   };
 };
 

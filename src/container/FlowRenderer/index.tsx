@@ -13,7 +13,6 @@ import { ReactFlowState } from '../../types';
 interface FlowRendererProps
   extends Omit<
     GraphViewProps,
-    | 'elements'
     | 'snapToGrid'
     | 'nodeTypes'
     | 'edgeTypes'
@@ -22,8 +21,6 @@ interface FlowRendererProps
     | 'arrowHeadColor'
     | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
-    | 'nodes'
-    | 'edges'
   > {
   children: ReactNode;
 }

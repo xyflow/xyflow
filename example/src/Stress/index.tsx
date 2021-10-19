@@ -8,25 +8,27 @@ import ReactFlow, {
   Node,
   NodeChange,
   applyNodeChanges,
+  Connection,
+  addEdge,
 } from 'react-flow-renderer';
 
-import { getElements } from './utils';
+import { getNodesAndEdges } from './utils';
 
 const buttonWrapperStyles: CSSProperties = { position: 'absolute', right: 10, top: 10, zIndex: 4 };
 
 const onLoad = (reactFlowInstance: OnLoadParams) => {
   reactFlowInstance.fitView();
-  console.log(reactFlowInstance.getElements());
+  console.log(reactFlowInstance.getNodes());
 };
 
-const initialElements = getElements(30, 30);
+const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(30, 30);
 
 const StressFlow = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialElements.nodes);
-  const [edges, setEdges] = useState<Edge[]>(initialElements.edges);
-  // const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  // const onConnect = (params: Connection | Edge, nds: Node[]) => setElements((els) => addEdge(params, els));
-
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const onConnect = useCallback((params: Edge | Connection) => {
+    setEdges((eds) => addEdge(params, eds));
+  }, []);
   const updatePos = () => {
     setNodes((nds) => {
       return nds.map((n) => {
@@ -43,7 +45,7 @@ const StressFlow = () => {
 
   const updateElements = () => {
     const grid = Math.ceil(Math.random() * 10);
-    const initialElements = getElements(grid, grid);
+    const initialElements = getNodesAndEdges(grid, grid);
     setNodes(initialElements.nodes);
     setEdges(initialElements.edges);
   };
@@ -53,7 +55,14 @@ const StressFlow = () => {
   }, []);
 
   return (
-    <ReactFlow nodes={nodes} edges={edges} onLoad={onLoad} onNodesChange={onNodesChange}>
+    <ReactFlow
+      onlyRenderVisibleElements
+      nodes={nodes}
+      edges={edges}
+      onLoad={onLoad}
+      onConnect={onConnect}
+      onNodesChange={onNodesChange}
+    >
       <MiniMap />
       <Controls />
       <Background />

@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
-import { HandleProps, Connection, ElementId, Position, Node, ReactFlowState } from '../../types';
+import { HandleProps, Connection, ElementId, Position, ReactFlowState } from '../../types';
 
 import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
@@ -52,9 +52,9 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const isTarget = type === 'target';
 
     const onConnectExtended = useCallback(
-      (params: Connection, nodes: Node[]) => {
-        onConnectAction?.(params, nodes);
-        onConnect?.(params, nodes);
+      (params: Connection) => {
+        onConnectAction?.(params);
+        onConnect?.(params);
       },
       [onConnectAction, onConnect]
     );

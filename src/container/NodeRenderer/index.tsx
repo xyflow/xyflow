@@ -1,8 +1,9 @@
-import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent, useCallback } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
+import { getNodesInside } from '../../utils/graph';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
@@ -16,7 +17,6 @@ interface NodeRendererProps {
   onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onlyRenderVisibleElements: boolean;
-  nodes: Node[];
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -40,9 +40,16 @@ const NodeRenderer = (props: NodeRendererProps) => {
     snapToGrid,
   } = useStore(selector, shallow);
 
-  // const visibleNodes = props.onlyRenderVisibleElements
-  //   ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
-  //   : nodes;
+  const nodes = useStore(
+    useCallback(
+      (s: ReactFlowState) => {
+        return props.onlyRenderVisibleElements
+          ? getNodesInside(s.nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
+          : s.nodes;
+      },
+      [props.onlyRenderVisibleElements]
+    )
+  );
 
   const transformStyle = useMemo(
     () => ({
@@ -68,7 +75,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {props.nodes.map((node) => {
+      {nodes.map((node) => {
         const nodeType = node.type || 'default';
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
 

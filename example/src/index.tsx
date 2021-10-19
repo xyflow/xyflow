@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router
 import Basic from './Basic';
 import UpdateNode from './UpdateNode';
 import Stress from './Stress';
+import CustomNode from './CustomNode';
 
 import './index.css';
 
@@ -20,6 +21,10 @@ const routes = [
   {
     path: '/stress',
     component: Stress,
+  },
+  {
+    path: '/custom-node',
+    component: CustomNode,
   },
 ];
 

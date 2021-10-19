@@ -36,8 +36,8 @@ const BasicFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
-  const onConnect = useCallback((params: Edge | Connection, nds: Node[]) => {
-    setEdges((eds) => addEdge(params, nds, eds));
+  const onConnect = useCallback((params: Edge | Connection) => {
+    setEdges((eds) => addEdge(params, eds));
   }, []);
   const onLoad = useCallback((reactFlowInstance: OnLoadParams) => setRfInstance(reactFlowInstance), []);
 
