@@ -22,6 +22,8 @@ interface FlowRendererProps
     | 'arrowHeadColor'
     | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
+    | 'nodes'
+    | 'edges'
   > {
   children: ReactNode;
 }
@@ -54,7 +56,6 @@ const FlowRenderer = ({
   paneMoveable,
   defaultPosition,
   defaultZoom,
-  translateExtent,
   preventScrolling,
   onSelectionDragStart,
   onSelectionDrag,
@@ -106,7 +107,6 @@ const FlowRenderer = ({
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
-      translateExtent={translateExtent}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
     >

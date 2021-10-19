@@ -9,9 +9,9 @@ import { NodeComponentProps, WrapNodeProps, ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedElements: s.addSelectedElements,
-  onNodesChange: s.onNodesChange,
   unsetNodesSelection: s.unsetNodesSelection,
-  updateNodePosDiff: s.updateNodePosDiff,
+  updateNodePosition: s.updateNodePosition,
+  updateNodeDimensions: s.updateNodeDimensions,
 });
 
 export default (NodeComponent: ComponentType<NodeComponentProps>) => {
@@ -22,7 +22,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     scale,
     xPos,
     yPos,
-    selected,
+    isSelected,
     onClick,
     onMouseEnter,
     onMouseMove,
@@ -48,8 +48,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     resizeObserver,
     dragHandle,
   }: WrapNodeProps) => {
-    // const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
-    const { addSelectedElements, onNodesChange, unsetNodesSelection, updateNodePosDiff } = useStore(selector, shallow);
+    const { addSelectedElements, unsetNodesSelection, updateNodePosition, updateNodeDimensions } = useStore(
+      selector,
+      shallow
+    );
     const nodeElement = useRef<HTMLDivElement>(null);
 
     const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
@@ -57,7 +59,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const nodeStyle: CSSProperties = useMemo(
       () => ({
-        zIndex: selected ? 10 : 3,
+        zIndex: isSelected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents:
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
@@ -66,7 +68,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         ...style,
       }),
       [
-        selected,
+        isSelected,
         xPos,
         yPos,
         isSelectable,
@@ -118,7 +120,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           if (isSelectable) {
             unsetNodesSelection();
 
-            if (!selected) {
+            if (!isSelected) {
               addSelectedElements([node]);
             }
           }
@@ -126,7 +128,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onClick?.(event, node);
         }
       },
-      [isSelectable, selected, isDraggable, onClick, node]
+      [isSelectable, isSelected, isDraggable, onClick, node]
     );
 
     const onDragStart = useCallback(
@@ -136,15 +138,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         if (selectNodesOnDrag && isSelectable) {
           unsetNodesSelection();
 
-          if (!selected) {
+          if (!isSelected) {
             addSelectedElements([node]);
           }
-        } else if (!selectNodesOnDrag && !selected && isSelectable) {
+        } else if (!selectNodesOnDrag && !isSelected && isSelectable) {
           unsetNodesSelection();
           addSelectedElements([]);
         }
       },
-      [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [node, isSelected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
@@ -156,7 +158,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onNodeDrag(event as MouseEvent, node);
         }
 
-        updateNodePosDiff({ id, isDragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
+        updateNodePosition({ id, isDragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },
       [id, node, onNodeDrag]
     );
@@ -166,7 +168,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         // onDragStop also gets called when user just clicks on a node.
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!isDragging) {
-          if (isSelectable && !selectNodesOnDrag && !selected) {
+          if (isSelectable && !selectNodesOnDrag && !isSelected) {
             addSelectedElements([node]);
           }
 
@@ -175,18 +177,14 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           return;
         }
 
-        onNodesChange?.([
-          {
-            id: node.id,
-            change: {
-              isDragging: true,
-            },
-          },
-        ]);
+        updateNodePosition({
+          id: node.id,
+          isDragging: false,
+        });
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
-      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging, selected]
+      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging, isSelected]
     );
 
     const onNodeDoubleClickHandler = useCallback(
@@ -196,11 +194,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       [node, onNodeDoubleClick]
     );
 
-    // useEffect(() => {
-    //   if (nodeElement.current && !isHidden) {
-    //     updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
-    //   }
-    // }, [id, isHidden, sourcePosition, targetPosition]);
+    useEffect(() => {
+      if (nodeElement.current && !isHidden && !isInitialized) {
+        updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
+      }
+    }, [id, isHidden, sourcePosition, targetPosition, isInitialized]);
 
     useEffect(() => {
       if (nodeElement.current) {
@@ -220,7 +218,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       `react-flow__node-${type}`,
       className,
       {
-        selected,
+        selected: isSelected,
         selectable: isSelectable,
       },
     ]);
@@ -257,7 +255,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               type={type}
               xPos={xPos}
               yPos={yPos}
-              selected={selected}
+              isSelected={isSelected}
               isConnectable={isConnectable}
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}

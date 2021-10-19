@@ -9,8 +9,8 @@ interface SelectionListenerProps {
 }
 
 const selectedElementsSelector = (s: ReactFlowState) => [
-  ...s.nodes.filter((n) => n.selected),
-  ...s.edges.filter((e) => e.selected),
+  ...s.nodes.filter((n) => n.isSelected),
+  ...s.edges.filter((e) => e.isSelected),
 ];
 
 // This is just a helper component for calling the onSelectionChange listener.

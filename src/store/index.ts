@@ -7,7 +7,6 @@ import {
   ConnectionMode,
   Node,
   Edge,
-  ElementChange,
   NodeDimensionUpdate,
   NodeDiffUpdate,
   XYPosition,
@@ -23,28 +22,24 @@ import {
   OnConnectEndFunc,
   SetConnectionId,
   SnapGrid,
-  OnElementsChange,
+  NodeChange,
+  OnNodesChange,
+  OnEdgesChange,
+  EdgeChange,
+  NodePositionChange,
 } from '../types';
-import {
-  parseNode,
-  parseEdge,
-  isNode,
-  isEdge,
-  getRectOfNodes,
-  getNodesInside,
-  getConnectedEdges,
-} from '../utils/graph';
-import { extendEdgeWithSourceAndTarget } from '../container/EdgeRenderer/utils';
+import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
-const unselectElements = (elements: Elements) =>
+const unselectElements = (elements: Elements): NodeChange[] | EdgeChange[] =>
   elements
-    .filter((e) => e.selected)
+    .filter((e) => e.isSelected)
     .map((e) => ({
       id: e.id,
-      change: { selected: false },
+      type: 'select',
+      isSelected: false,
     }));
 
 const createStore = () =>
@@ -104,53 +99,37 @@ const createStore = () =>
     reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
     setNodes: (propNodes: Node[]) => {
-      const { nodes, edges, nodeExtent } = get();
+      const { nodes } = get();
       const nextNodes = propNodes.map((propNode: Node) => {
         const storeNode = nodes.find((node) => node.id === propNode.id);
 
         if (storeNode) {
           if (typeof propNode.type !== 'undefined' && propNode.type !== storeNode.type) {
-            const updatedNode: Node = {
-              ...storeNode,
-              ...propNode,
-            };
             // we reset the elements dimensions here in order to force a re-calculation of the bounds.
             // When the type of a node changes it is possible that the number or positions of handles changes too.
-            updatedNode.width = null;
-            return updatedNode;
+            return {
+              ...propNode,
+              width: null,
+              height: null,
+            };
           }
         }
 
-        return parseNode(propNode, nodeExtent);
+        return propNode;
       });
-
-      const updatedEdges = edges.map((edge) => extendEdgeWithSourceAndTarget(edge, nextNodes));
 
       set({
         nodes: nextNodes,
-        edges: updatedEdges,
       });
     },
-    setEdges: (propEdges: Edge[]) => {
-      const { edges, nodes } = get();
-
-      const nextEdges = propEdges.map((propEdge: Edge) => {
-        const storeEdge = edges.find((se) => se.id === propEdge.id);
-
-        if (storeEdge) {
-          return parseEdge(propEdge);
-        } else {
-          return extendEdgeWithSourceAndTarget(parseEdge(propEdge), nodes);
-        }
-      });
-
-      set({ edges: nextEdges });
+    setEdges: (edges: Edge[]) => {
+      set({ edges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
       const { onNodesChange, nodes, transform } = get();
 
-      const initialChanges: ElementChange[] = [];
-      const nodesToChange: ElementChange[] = nodes.reduce((res, node) => {
+      const initialChanges: NodeChange[] = [];
+      const nodesToChange: NodeChange[] = nodes.reduce((res, node) => {
         const update = updates.find((u) => u.id === node.id);
         if (update) {
           const dimensions = getDimensions(update.nodeElement);
@@ -163,12 +142,10 @@ const createStore = () =>
             const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
             const change = {
               id: node.id,
-              change: {
-                ...dimensions,
-                handleBounds,
-              },
-            } as ElementChange;
-
+              type: 'dimensions',
+              dimensions,
+              handleBounds,
+            } as NodeChange;
             res.push(change);
           }
         }
@@ -176,28 +153,37 @@ const createStore = () =>
         return res;
       }, initialChanges);
 
-      if (onNodesChange) {
-        onNodesChange(nodesToChange);
-      }
+      onNodesChange?.(nodesToChange);
     },
-    updateNodePosDiff: ({ id, diff, isDragging }: NodeDiffUpdate) => {
-      const { onNodesChange, nodes } = get();
+    updateNodePosition: ({ id, diff, isDragging }: NodeDiffUpdate) => {
+      const { onNodesChange, nodes, nodeExtent } = get();
 
-      if (onNodesChange && diff) {
-        const matchingNodes = nodes.filter((n) => n.id === id || n.selected);
+      if (onNodesChange) {
+        const matchingNodes = nodes.filter((n) => n.id === id || n.isSelected);
 
         if (matchingNodes?.length) {
           onNodesChange(
-            matchingNodes.map((n) => ({
-              id: n.id,
-              change: {
-                position: {
-                  x: n.position.x + diff.x,
-                  y: n.position.y + diff.y,
-                  isDragging,
-                },
-              },
-            }))
+            matchingNodes.map((n) => {
+              const change: NodePositionChange = {
+                id: n.id,
+                type: 'position',
+                isDragging: !!isDragging,
+              };
+
+              if (diff) {
+                change.position = nodeExtent
+                  ? clampPosition(
+                      {
+                        x: n.position.x + diff.x,
+                        y: n.position.y + diff.y,
+                      },
+                      nodeExtent
+                    )
+                  : { x: n.position.x + diff.x, y: n.position.y + diff.y };
+              }
+
+              return change;
+            })
           );
         }
       }
@@ -230,15 +216,11 @@ const createStore = () =>
       };
 
       const selectedNodes = getNodesInside(nodes, nextUserSelectRect, transform, false, true);
-      const selectedEdges = getConnectedEdges(selectedNodes, edges);
+      const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
+      const selectedNodeIds = selectedNodes.map((n) => n.id);
 
-      if (selectedNodes?.length) {
-        onNodesChange?.(selectedNodes.map((n) => ({ id: n.id, change: { selected: true } })));
-      }
-
-      if (selectedEdges?.length) {
-        onEdgesChange?.(selectedEdges.map((n) => ({ id: n.id, change: { selected: true } })));
-      }
+      onNodesChange?.(nodes.map((n) => ({ id: n.id, type: 'select', isSelected: selectedNodeIds.includes(n.id) })));
+      onEdgesChange?.(edges.map((e) => ({ id: e.id, type: 'select', isSelected: selectedEdgeIds.includes(e.id) })));
 
       set({
         userSelectionRect: nextUserSelectRect,
@@ -246,7 +228,7 @@ const createStore = () =>
     },
     unsetUserSelection: () => {
       const { userSelectionRect, nodes } = get();
-      const selectedNodes = nodes.filter((node) => node.selected);
+      const selectedNodes = nodes.filter((node) => node.isSelected);
 
       const stateUpdate = {
         selectionActive: false,
@@ -274,21 +256,32 @@ const createStore = () =>
       let changedEdges;
 
       if (multiSelectionActive) {
-        changedNodes = selectedElementsArr.filter(isNode).map((node) => ({ id: node.id, change: { selected: true } }));
-        changedEdges = selectedElementsArr.filter(isEdge).map((edge) => ({ id: edge.id, change: { selected: true } }));
+        changedNodes = selectedElementsArr
+          .filter(isNode)
+          .map((node) => ({ id: node.id, type: 'select', isSelected: true }));
+        changedEdges = selectedElementsArr
+          .filter(isEdge)
+          .map((edge) => ({ id: edge.id, type: 'select', isSelected: true }));
       } else {
         changedNodes = nodes.map((node) => ({
           id: node.id,
-          change: { selected: selectedElementsArr.some((e) => e.id === node.id) },
+          type: 'select',
+          isSelected: selectedElementsArr.some((e) => e.id === node.id),
         }));
         changedEdges = edges.map((edge) => ({
           id: edge.id,
-          change: { selected: selectedElementsArr.some((e) => e.id === edge.id) },
+          type: 'select',
+          isSelected: selectedElementsArr.some((e) => e.id === edge.id),
         }));
       }
 
-      onNodesChange?.(changedNodes);
-      onEdgesChange?.(changedEdges);
+      if (changedNodes.length) {
+        onNodesChange?.(changedNodes as NodeChange[]);
+      }
+
+      if (changedEdges.length) {
+        onEdgesChange?.(changedEdges as EdgeChange[]);
+      }
     },
     initD3Zoom: ({ d3Zoom, d3Selection, d3ZoomHandler, transform }: InitD3ZoomPayload) =>
       set({
@@ -319,8 +312,15 @@ const createStore = () =>
     resetSelectedElements: () => {
       const { nodes, edges, onNodesChange, onEdgesChange } = get();
 
-      onNodesChange?.(unselectElements(nodes));
-      onEdgesChange?.(unselectElements(edges));
+      const nodesToUnselect = unselectElements(nodes) as NodeChange[];
+      const edgesToUnselect = unselectElements(edges) as EdgeChange[];
+
+      if (nodesToUnselect.length) {
+        onNodesChange?.(nodesToUnselect);
+      }
+      if (edgesToUnselect.length) {
+        onEdgesChange?.(edgesToUnselect);
+      }
     },
     setNodeExtent: (nodeExtent: NodeExtent) =>
       set({
@@ -354,8 +354,8 @@ const createStore = () =>
     setElementsSelectable: (elementsSelectable: boolean) => set({ elementsSelectable }),
     setMultiSelectionActive: (multiSelectionActive: boolean) => set({ multiSelectionActive }),
     setConnectionMode: (connectionMode: ConnectionMode) => set({ connectionMode }),
-    setOnNodesChange: (onNodesChange: OnElementsChange) => set({ onNodesChange }),
-    setOnEdgesChange: (onEdgesChange: OnElementsChange) => set({ onEdgesChange }),
+    setOnNodesChange: (onNodesChange: OnNodesChange) => set({ onNodesChange }),
+    setOnEdgesChange: (onEdgesChange: OnEdgesChange) => set({ onEdgesChange }),
   }));
 
 export { Provider, useStore, createStore, useStoreApi };

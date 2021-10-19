@@ -23,7 +23,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     data,
     onClick,
     onEdgeDoubleClick,
-    selected,
+    isSelected,
     animated,
     label,
     labelStyle,
@@ -69,7 +69,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       'react-flow__edge',
       `react-flow__edge-${type}`,
       className,
-      { selected, animated, inactive, updating },
+      { selected: isSelected, animated, inactive, updating },
     ]);
 
     const edgeElement = useMemo<Edge>(() => {
@@ -219,7 +219,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           id={id}
           source={source}
           target={target}
-          selected={selected}
+          isSelected={isSelected}
           animated={animated}
           label={label}
           labelStyle={labelStyle}

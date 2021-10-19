@@ -6,7 +6,7 @@ import ReactFlow, {
   OnLoadParams,
   Edge,
   Node,
-  ElementChange,
+  NodeChange,
   applyNodeChanges,
 } from 'react-flow-renderer';
 
@@ -48,7 +48,7 @@ const StressFlow = () => {
     setEdges(initialElements.edges);
   };
 
-  const onNodesChange = useCallback((changes: ElementChange[]) => {
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 

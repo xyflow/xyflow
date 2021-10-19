@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, memo } from 'react';
-import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStoreApi } from '../../store';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
@@ -10,17 +9,15 @@ import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
 import { ReactFlowProps } from '../ReactFlow';
 
-import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode, ReactFlowState } from '../../types';
+import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
 
-export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
+export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'> {
   nodeTypes: NodeTypesType;
   edgeTypes: EdgeTypesType;
   selectionKeyCode: KeyCode;
   deleteKeyCode: KeyCode;
   multiSelectionKeyCode: KeyCode;
   connectionLineType: ConnectionLineType;
-  snapToGrid: boolean;
-  snapGrid: [number, number];
   onlyRenderVisibleElements: boolean;
   defaultZoom: number;
   defaultPosition: [number, number];
@@ -28,33 +25,17 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
   selectNodesOnDrag: boolean;
 }
 
-const selector = (s: ReactFlowState) => ({
-  setOnConnect: s.setOnConnect,
-  setOnConnectStart: s.setOnConnectStart,
-  setOnConnectStop: s.setOnConnectStop,
-  setOnConnectEnd: s.setOnConnectEnd,
-  setSnapGrid: s.setSnapGrid,
-  setSnapToGrid: s.setSnapToGrid,
-  setNodesDraggable: s.setNodesDraggable,
-  setNodesConnectable: s.setNodesConnectable,
-  setElementsSelectable: s.setElementsSelectable,
-  setMinZoom: s.setMinZoom,
-  setMaxZoom: s.setMaxZoom,
-  setTranslateExtent: s.setTranslateExtent,
-  setNodeExtent: s.setNodeExtent,
-  setConnectionMode: s.setConnectionMode,
-  setOnNodesChange: s.setOnNodesChange,
-  setOnEdgesChange: s.setOnEdgesChange,
-});
-
 const GraphView = ({
+  nodes,
+  edges,
   nodeTypes,
   edgeTypes,
   onMove,
   onMoveStart,
   onMoveEnd,
   onLoad,
-  onElementClick,
+  onNodeClick,
+  onEdgeClick,
   onNodeDoubleClick,
   onEdgeDoubleClick,
   onNodeMouseEnter,
@@ -68,7 +49,6 @@ const GraphView = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
-  connectionMode,
   connectionLineType,
   connectionLineStyle,
   connectionLineComponent,
@@ -76,24 +56,12 @@ const GraphView = ({
   multiSelectionKeyCode,
   zoomActivationKeyCode,
   deleteKeyCode,
-  onConnect,
-  onConnectStart,
-  onConnectStop,
-  onConnectEnd,
-  snapToGrid,
-  snapGrid,
   onlyRenderVisibleElements,
-  nodesDraggable,
-  nodesConnectable,
   elementsSelectable,
   selectNodesOnDrag,
-  minZoom,
-  maxZoom,
   defaultZoom,
   defaultPosition,
-  translateExtent,
   preventScrolling,
-  nodeExtent,
   arrowHeadColor,
   markerEndId,
   zoomOnScroll,
@@ -114,31 +82,9 @@ const GraphView = ({
   edgeUpdaterRadius,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
-  onNodesChange,
-  onEdgesChange,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
-
-  const {
-    setOnConnect,
-    setOnConnectStart,
-    setOnConnectStop,
-    setOnConnectEnd,
-    setSnapGrid,
-    setSnapToGrid,
-    setNodesDraggable,
-    setNodesConnectable,
-    setElementsSelectable,
-    setMinZoom,
-    setMaxZoom,
-    setTranslateExtent,
-    setNodeExtent,
-    setConnectionMode,
-    setOnNodesChange,
-    setOnEdgesChange,
-  } = useStore(selector, shallow);
-
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
 
   useEffect(() => {
@@ -159,102 +105,6 @@ const GraphView = ({
       isInitialized.current = true;
     }
   }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView, initialized]);
-
-  useEffect(() => {
-    if (onConnect) {
-      setOnConnect(onConnect);
-    }
-  }, [onConnect]);
-
-  useEffect(() => {
-    if (onConnectStart) {
-      setOnConnectStart(onConnectStart);
-    }
-  }, [onConnectStart]);
-
-  useEffect(() => {
-    if (onConnectStop) {
-      setOnConnectStop(onConnectStop);
-    }
-  }, [onConnectStop]);
-
-  useEffect(() => {
-    if (onConnectEnd) {
-      setOnConnectEnd(onConnectEnd);
-    }
-  }, [onConnectEnd]);
-
-  useEffect(() => {
-    if (typeof snapToGrid !== 'undefined') {
-      setSnapToGrid(snapToGrid);
-    }
-  }, [snapToGrid]);
-
-  useEffect(() => {
-    if (typeof snapGrid !== 'undefined') {
-      setSnapGrid(snapGrid);
-    }
-  }, [snapGrid]);
-
-  useEffect(() => {
-    if (typeof nodesDraggable !== 'undefined') {
-      setNodesDraggable(nodesDraggable);
-    }
-  }, [nodesDraggable]);
-
-  useEffect(() => {
-    if (typeof nodesConnectable !== 'undefined') {
-      setNodesConnectable(nodesConnectable);
-    }
-  }, [nodesConnectable]);
-
-  useEffect(() => {
-    if (typeof elementsSelectable !== 'undefined') {
-      setElementsSelectable(elementsSelectable);
-    }
-  }, [elementsSelectable]);
-
-  useEffect(() => {
-    if (typeof minZoom !== 'undefined') {
-      setMinZoom(minZoom);
-    }
-  }, [minZoom]);
-
-  useEffect(() => {
-    if (typeof maxZoom !== 'undefined') {
-      setMaxZoom(maxZoom);
-    }
-  }, [maxZoom]);
-
-  useEffect(() => {
-    if (typeof translateExtent !== 'undefined') {
-      setTranslateExtent(translateExtent);
-    }
-  }, [translateExtent]);
-
-  useEffect(() => {
-    if (typeof nodeExtent !== 'undefined') {
-      setNodeExtent(nodeExtent);
-    }
-  }, [nodeExtent]);
-
-  useEffect(() => {
-    if (typeof connectionMode !== 'undefined') {
-      setConnectionMode(connectionMode);
-    }
-  }, [connectionMode]);
-
-  useEffect(() => {
-    if (typeof onNodesChange !== 'undefined') {
-      setOnNodesChange(onNodesChange);
-    }
-  }, [onNodesChange]);
-
-  useEffect(() => {
-    if (typeof onEdgesChange !== 'undefined') {
-      setOnEdgesChange(onEdgesChange);
-    }
-  }, [onEdgesChange]);
 
   return (
     <FlowRenderer
@@ -278,7 +128,6 @@ const GraphView = ({
       paneMoveable={paneMoveable}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
-      translateExtent={translateExtent}
       onSelectionDragStart={onSelectionDragStart}
       onSelectionDrag={onSelectionDrag}
       onSelectionDragStop={onSelectionDragStop}
@@ -287,7 +136,7 @@ const GraphView = ({
     >
       <NodeRenderer
         nodeTypes={nodeTypes}
-        onElementClick={onElementClick}
+        onNodeClick={onNodeClick}
         onNodeDoubleClick={onNodeDoubleClick}
         onNodeMouseEnter={onNodeMouseEnter}
         onNodeMouseMove={onNodeMouseMove}
@@ -297,18 +146,16 @@ const GraphView = ({
         onNodeDrag={onNodeDrag}
         onNodeDragStart={onNodeDragStart}
         selectNodesOnDrag={selectNodesOnDrag}
-        snapToGrid={snapToGrid}
-        snapGrid={snapGrid}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
+        nodes={nodes}
       />
       <EdgeRenderer
         edgeTypes={edgeTypes}
-        onElementClick={onElementClick}
+        onEdgeClick={onEdgeClick}
         onEdgeDoubleClick={onEdgeDoubleClick}
         connectionLineType={connectionLineType}
         connectionLineStyle={connectionLineStyle}
         connectionLineComponent={connectionLineComponent}
-        connectionMode={connectionMode}
         arrowHeadColor={arrowHeadColor}
         markerEndId={markerEndId}
         onEdgeUpdate={onEdgeUpdate}
@@ -320,6 +167,8 @@ const GraphView = ({
         onEdgeUpdateStart={onEdgeUpdateStart}
         onEdgeUpdateEnd={onEdgeUpdateEnd}
         edgeUpdaterRadius={edgeUpdaterRadius}
+        nodes={nodes}
+        edges={edges}
       />
     </FlowRenderer>
   );

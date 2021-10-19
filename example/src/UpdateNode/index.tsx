@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import ReactFlow, { Node, Edge, applyNodeChanges, ElementChange } from 'react-flow-renderer';
+import ReactFlow, { Node, Edge, applyNodeChanges, NodeChange } from 'react-flow-renderer';
 
 import './updatenode.css';
 
@@ -60,7 +60,7 @@ const UpdateNode = () => {
     );
   }, [nodeHidden]);
 
-  const onNodesChange = useCallback((changes: ElementChange[]) => {
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 

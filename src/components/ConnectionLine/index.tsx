@@ -52,15 +52,15 @@ export default ({
     setSourceNode(nextSourceNode);
   }, []);
 
-  if (!sourceNode || !isConnectable) {
+  if (!sourceNode || !isConnectable || !sourceNode.handleBounds?.[connectionHandleType]) {
     return null;
   }
 
   const sourceHandle = handleId
-    ? sourceNode.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
-    : sourceNode.handleBounds[connectionHandleType][0];
+    ? sourceNode.handleBounds[connectionHandleType]!.find((d: HandleElement) => d.id === handleId)
+    : sourceNode.handleBounds[connectionHandleType]![0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.width! / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.height;
+  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.height!;
   const sourceX = sourceNode.position.x + sourceHandleX;
   const sourceY = sourceNode.position.y + sourceHandleY;
 

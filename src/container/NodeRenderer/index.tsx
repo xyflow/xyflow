@@ -2,11 +2,11 @@ import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { Node, NodeTypesType, ReactFlowState, Edge, WrapNodeProps } from '../../types';
+import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
-  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
+  onNodeClick?: (event: MouseEvent, element: Node) => void;
   onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
   onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
   onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
@@ -15,9 +15,8 @@ interface NodeRendererProps {
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
   onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
-  snapToGrid: boolean;
-  snapGrid: [number, number];
   onlyRenderVisibleElements: boolean;
+  nodes: Node[];
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -25,15 +24,21 @@ const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
   nodesConnectable: s.nodesConnectable,
   elementsSelectable: s.elementsSelectable,
-  nodes: s.nodes,
   updateNodeDimensions: s.updateNodeDimensions,
+  snapGrid: s.snapGrid,
+  snapToGrid: s.snapToGrid,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const { transform, nodesDraggable, nodesConnectable, elementsSelectable, nodes, updateNodeDimensions } = useStore(
-    selector,
-    shallow
-  );
+  const {
+    transform,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
+    updateNodeDimensions,
+    snapGrid,
+    snapToGrid,
+  } = useStore(selector, shallow);
 
   // const visibleNodes = props.onlyRenderVisibleElements
   //   ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
@@ -63,7 +68,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
   return (
     <div className="react-flow__nodes" style={transformStyle}>
-      {nodes.map((node) => {
+      {props.nodes.map((node) => {
         const nodeType = node.type || 'default';
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
 
@@ -74,6 +79,11 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+        const isInitialized =
+          node.width !== null &&
+          node.height !== null &&
+          typeof node.width !== 'undefined' &&
+          typeof node.height !== 'undefined';
 
         return (
           <NodeComponent
@@ -89,11 +99,11 @@ const NodeRenderer = (props: NodeRendererProps) => {
             xPos={node.position.x}
             yPos={node.position.y}
             isDragging={node.isDragging}
-            isInitialized={node.width !== null && node.height !== null}
-            snapGrid={props.snapGrid}
-            snapToGrid={props.snapToGrid}
+            isInitialized={isInitialized}
+            snapGrid={snapGrid}
+            snapToGrid={snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}
-            onClick={props.onElementClick}
+            onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
@@ -103,7 +113,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
             scale={transform[2]}
-            selected={!!node.selected}
+            isSelected={!!node.isSelected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}
             isConnectable={isConnectable}

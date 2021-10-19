@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle } from './utils';
+import { getEdgePositions, getHandle, getSourceTargetNodes } from './utils';
 import {
   Position,
   Edge,
@@ -15,15 +15,17 @@ import {
   ConnectionMode,
   OnEdgeUpdateFunc,
   ReactFlowState,
+  NodeHandleBounds,
 } from '../../types';
 
 interface EdgeRendererProps {
+  nodes: Node[];
+  edges: Edge[];
   edgeTypes: any;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
-  connectionMode?: ConnectionMode;
-  onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
+  onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   arrowHeadColor: string;
   markerEndId?: string;
@@ -42,7 +44,7 @@ interface EdgeWrapperProps {
   edge: Edge;
   edgeTypes: any;
   markerEndId?: string;
-  onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
+  onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
@@ -52,10 +54,18 @@ interface EdgeWrapperProps {
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   onEdgeUpdate?: OnEdgeUpdateFunc;
-  targetNode?: Node;
-  sourceNode?: Node;
   elementsSelectable: boolean;
   connectionMode?: ConnectionMode;
+  sourceNodeWidth?: number | null;
+  sourceNodeHeight?: number | null;
+  sourceNodeX?: number;
+  sourceNodeY?: number;
+  sourceNodeHandleBounds?: NodeHandleBounds;
+  targetNodeWidth?: number | null;
+  targetNodeHeight?: number | null;
+  targetNodeX?: number;
+  targetNodeY?: number;
+  targetNodeHandleBounds?: NodeHandleBounds;
 }
 
 const Edge = memo(
@@ -63,7 +73,7 @@ const Edge = memo(
     edge,
     edgeTypes,
     markerEndId,
-    onElementClick,
+    onEdgeClick,
     onEdgeContextMenu,
     onEdgeMouseEnter,
     onEdgeMouseMove,
@@ -73,10 +83,18 @@ const Edge = memo(
     onEdgeUpdateStart,
     onEdgeUpdateEnd,
     onEdgeUpdate,
-    targetNode,
-    sourceNode,
-    elementsSelectable,
     connectionMode,
+    elementsSelectable,
+    sourceNodeWidth,
+    sourceNodeHeight,
+    sourceNodeX,
+    sourceNodeY,
+    sourceNodeHandleBounds,
+    targetNodeWidth,
+    targetNodeHeight,
+    targetNodeX,
+    targetNodeY,
+    targetNodeHandleBounds,
   }: EdgeWrapperProps) => {
     const sourceHandleId = edge.sourceHandle || null;
     const targetHandleId = edge.targetHandle || null;
@@ -88,31 +106,40 @@ const Edge = memo(
       [edge, onEdgeUpdate]
     );
 
-    if (!sourceNode) {
+    // source and target node need to be initialized
+    if (!sourceNodeHandleBounds || !targetNodeHandleBounds) {
+      return null;
+    }
+
+    if (
+      !sourceNodeWidth ||
+      !sourceNodeHeight ||
+      typeof sourceNodeX === 'undefined' ||
+      typeof sourceNodeY === 'undefined'
+    ) {
       console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
       return null;
     }
 
-    if (!targetNode) {
+    if (
+      !targetNodeWidth ||
+      !targetNodeHeight ||
+      typeof targetNodeX === 'undefined' ||
+      typeof targetNodeY === 'undefined'
+    ) {
       console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
-      return null;
-    }
-
-    // source and target node need to be initialized
-    if (!sourceNode.width || !targetNode.width) {
       return null;
     }
 
     const edgeType = edge.type || 'default';
     const EdgeComponent = edgeTypes[edgeType] || edgeTypes.default;
-    const targetNodeBounds = targetNode.handleBounds;
     // when connection type is loose we can define all handles as sources
     const targetNodeHandles =
       connectionMode === ConnectionMode.Strict
-        ? targetNodeBounds.target
-        : targetNodeBounds.target || targetNodeBounds.source;
-    const sourceHandle = getHandle(sourceNode.handleBounds.source, sourceHandleId);
-    const targetHandle = getHandle(targetNodeHandles, targetHandleId);
+        ? targetNodeHandleBounds.target
+        : targetNodeHandleBounds.target || targetNodeHandleBounds.source;
+    const sourceHandle = getHandle(sourceNodeHandleBounds.source!, sourceHandleId);
+    const targetHandle = getHandle(targetNodeHandles!, targetHandleId);
     const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
     const targetPosition = targetHandle ? targetHandle.position : Position.Top;
 
@@ -127,10 +154,10 @@ const Edge = memo(
     }
 
     const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-      sourceNode,
+      { x: sourceNodeX, y: sourceNodeY, width: sourceNodeWidth, height: sourceNodeHeight },
       sourceHandle,
       sourcePosition,
-      targetNode,
+      { x: targetNodeX, y: targetNodeY, width: targetNodeWidth, height: targetNodeHeight },
       targetHandle,
       targetPosition
     );
@@ -156,8 +183,8 @@ const Edge = memo(
         className={edge.className}
         type={edge.type}
         data={edge.data}
-        onClick={onElementClick}
-        selected={!!edge.selected}
+        onClick={onEdgeClick}
+        isSelected={!!edge.isSelected}
         animated={edge.animated}
         label={edge.label}
         labelStyle={edge.labelStyle}
@@ -197,7 +224,6 @@ const Edge = memo(
 
 const selector = (s: ReactFlowState) => ({
   transform: s.transform,
-  edges: s.edges,
   connectionNodeId: s.connectionNodeId,
   connectionHandleId: s.connectionHandleId,
   connectionHandleType: s.connectionHandleType,
@@ -206,12 +232,12 @@ const selector = (s: ReactFlowState) => ({
   elementsSelectable: s.elementsSelectable,
   width: s.width,
   height: s.height,
+  connectionMode: s.connectionMode,
 });
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const {
     transform,
-    edges,
     connectionNodeId,
     connectionHandleId,
     connectionHandleType,
@@ -220,6 +246,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     elementsSelectable,
     width,
     height,
+    connectionMode,
   } = useStore(selector, shallow);
 
   if (!width) {
@@ -227,33 +254,44 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   }
 
   const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
-  const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
-      <g transform={transformStyle}>
-        {edges.map((edge: Edge) => (
-          <Edge
-            key={edge.id}
-            edge={edge}
-            sourceNode={edge.sourceNode}
-            targetNode={edge.targetNode}
-            elementsSelectable={elementsSelectable}
-            markerEndId={props.markerEndId}
-            onEdgeContextMenu={props.onEdgeContextMenu}
-            onEdgeMouseEnter={props.onEdgeMouseEnter}
-            onEdgeMouseMove={props.onEdgeMouseMove}
-            onEdgeMouseLeave={props.onEdgeMouseLeave}
-            edgeUpdaterRadius={props.edgeUpdaterRadius}
-            onEdgeDoubleClick={props.onEdgeDoubleClick}
-            onEdgeUpdateStart={props.onEdgeUpdateStart}
-            onEdgeUpdateEnd={props.onEdgeUpdateEnd}
-            onEdgeUpdate={props.onEdgeUpdate}
-            edgeTypes={props.edgeTypes}
-          />
-        ))}
+      <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
+        {props.edges.map((edge: Edge) => {
+          const { sourceNode, targetNode } = getSourceTargetNodes(edge, props.nodes);
+          return (
+            <Edge
+              key={edge.id}
+              edge={edge}
+              sourceNodeWidth={sourceNode?.width}
+              sourceNodeHeight={sourceNode?.height}
+              sourceNodeX={sourceNode?.position.x}
+              sourceNodeY={sourceNode?.position.y}
+              sourceNodeHandleBounds={sourceNode?.handleBounds}
+              targetNodeWidth={targetNode?.width}
+              targetNodeHeight={targetNode?.height}
+              targetNodeX={targetNode?.position.x}
+              targetNodeY={targetNode?.position.y}
+              targetNodeHandleBounds={targetNode?.handleBounds}
+              elementsSelectable={elementsSelectable}
+              markerEndId={props.markerEndId}
+              onEdgeContextMenu={props.onEdgeContextMenu}
+              onEdgeMouseEnter={props.onEdgeMouseEnter}
+              onEdgeMouseMove={props.onEdgeMouseMove}
+              onEdgeMouseLeave={props.onEdgeMouseLeave}
+              edgeUpdaterRadius={props.edgeUpdaterRadius}
+              onEdgeDoubleClick={props.onEdgeDoubleClick}
+              onEdgeUpdateStart={props.onEdgeUpdateStart}
+              onEdgeUpdateEnd={props.onEdgeUpdateEnd}
+              onEdgeUpdate={props.onEdgeUpdate}
+              edgeTypes={props.edgeTypes}
+              connectionMode={connectionMode}
+            />
+          );
+        })}
         {renderConnectionLine && (
           <ConnectionLine
             connectionNodeId={connectionNodeId!}

@@ -7,16 +7,17 @@ import ReactFlow, {
   applyEdgeChanges,
   MiniMap,
   Controls,
-  FlowElement,
   Node,
   Edge,
-  ElementChange,
+  NodeChange,
+  EdgeChange,
   OnLoadParams,
   Connection,
 } from 'react-flow-renderer';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onElementClick = (_: MouseEvent, element: FlowElement) => console.log('click', element);
+const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
 const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 }, className: 'light' },
@@ -66,11 +67,11 @@ const BasicFlow = () => {
     });
   };
 
-  const onNodesChange = useCallback((changes: ElementChange[]) => {
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 
-  const onEdgesChange = useCallback((changes: ElementChange[]) => {
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
     setEdges((es) => applyEdgeChanges(changes, es));
   }, []);
 
@@ -81,7 +82,8 @@ const BasicFlow = () => {
       onLoad={onLoad}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      onElementClick={onElementClick}
+      onNodeClick={onNodeClick}
+      onEdgeClick={onEdgeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"

@@ -9,11 +9,32 @@ export type Elements<T = any> = Array<FlowElement<T>>;
 
 export type Transform = [number, number, number];
 
-export type ElementChange = {
+export type NodeDimensionChange = {
   id: string;
-  change?: any;
-  delete?: boolean;
+  type: 'dimensions';
+  dimensions: Dimensions;
+  handleBounds?: NodeHandleBounds;
 };
+export type NodePositionChange = {
+  id: string;
+  type: 'position';
+  position?: XYPosition;
+  isDragging?: boolean;
+};
+export type NodeSelectionChange = {
+  id: string;
+  type: 'select';
+  isSelected: boolean;
+};
+export type NodeRemoveChange = {
+  id: string;
+  type: 'remove';
+};
+export type NodeChange = NodeDimensionChange | NodePositionChange | NodeSelectionChange | NodeRemoveChange;
+
+export type EdgeSelectionChange = NodeSelectionChange;
+export type EdgeRemoveChange = NodeRemoveChange;
+export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange;
 
 export enum Position {
   Left = 'left',
@@ -41,26 +62,30 @@ export interface Box extends XYPosition {
 
 export type SnapGrid = [number, number];
 
+export type NodeHandleBounds = {
+  source: HandleElement[] | null;
+  target: HandleElement[] | null;
+};
+
 export interface Node<T = any> {
   id: ElementId;
   position: XYPosition;
   type?: string;
-  __rf?: any;
   data?: T;
   style?: CSSProperties;
   className?: string;
   targetPosition?: Position;
   sourcePosition?: Position;
   isHidden?: boolean;
+  isSelected?: boolean;
+  isDragging?: boolean;
   draggable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
   dragHandle?: string;
-  isDragging?: boolean;
   width?: number | null;
   height?: number | null;
-  handleBounds?: any;
-  selected?: boolean;
+  handleBounds?: NodeHandleBounds;
 }
 
 export enum ArrowHeadType {
@@ -89,7 +114,7 @@ export interface Edge<T = any> {
   className?: string;
   sourceNode?: Node;
   targetNode?: Node;
-  selected?: boolean;
+  isSelected?: boolean;
 }
 
 export enum BackgroundVariant {
@@ -116,7 +141,7 @@ export interface WrapEdgeProps<T = any> {
   data?: T;
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  selected: boolean;
+  isSelected: boolean;
   animated?: boolean;
   label?: string | ReactNode;
   labelStyle?: CSSProperties;
@@ -158,7 +183,7 @@ export interface EdgeProps<T = any> {
   sourceY: number;
   targetX: number;
   targetY: number;
-  selected?: boolean;
+  isSelected?: boolean;
   animated?: boolean;
   sourcePosition: Position;
   targetPosition: Position;
@@ -194,7 +219,7 @@ export interface NodeProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
-  selected: boolean;
+  isSelected: boolean;
   isConnectable: boolean;
   xPos?: number;
   yPos?: number;
@@ -208,7 +233,7 @@ export interface NodeComponentProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
-  selected?: boolean;
+  isSelected?: boolean;
   isConnectable: boolean;
   transform?: Transform;
   xPos?: number;
@@ -233,7 +258,7 @@ export interface WrapNodeProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
-  selected: boolean;
+  isSelected: boolean;
   scale: number;
   xPos: number;
   yPos: number;
@@ -271,7 +296,8 @@ export type FitViewParams = {
 };
 
 export type FlowExportObject<T = any> = {
-  elements: Elements<T>;
+  nodes: Node<T>[];
+  edges: Edge<T>[];
   position: [number, number];
   zoom: number;
 };
@@ -412,7 +438,8 @@ export type InitD3ZoomPayload = {
   transform: Transform;
 };
 
-export type OnElementsChange = (nodes: ElementChange[]) => void;
+export type OnNodesChange = (nodes: NodeChange[]) => void;
+export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
 export interface ReactFlowState {
   width: number;
@@ -421,8 +448,8 @@ export interface ReactFlowState {
   nodes: Node[];
   edges: Edge[];
   selectedNodesBbox: Rect;
-  onNodesChange: OnElementsChange | null;
-  onEdgesChange: OnElementsChange | null;
+  onNodesChange: OnNodesChange | null;
+  onEdgesChange: OnEdgesChange | null;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
@@ -455,9 +482,9 @@ export interface ReactFlowState {
   reactFlowVersion: string;
 
   setNodes: (nodes: Node[]) => void;
-  setEdges: (edges: Edge[]) => void;
+  setEdges: (edges: Edge[], nodes: Node[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePosDiff: (update: NodeDiffUpdate) => void;
+  updateNodePosition: (update: NodeDiffUpdate) => void;
   setUserSelection: (mousePos: XYPosition) => void;
   updateUserSelection: (mousePos: XYPosition) => void;
   unsetUserSelection: () => void;
@@ -485,8 +512,8 @@ export interface ReactFlowState {
   setElementsSelectable: (elementsSelectable: boolean) => void;
   setMultiSelectionActive: (multiSelectionActive: boolean) => void;
   setConnectionMode: (connectionMode: ConnectionMode) => void;
-  setOnNodesChange: (onNodesChange: OnElementsChange) => void;
-  setOnEdgesChange: (onEdgesChange: OnElementsChange) => void;
+  setOnNodesChange: (onNodesChange: OnNodesChange) => void;
+  setOnEdgesChange: (onEdgesChange: OnEdgesChange) => void;
 
   onConnect?: OnConnectFunc;
   onConnectStart?: OnConnectStartFunc;

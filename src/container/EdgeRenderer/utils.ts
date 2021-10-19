@@ -14,6 +14,7 @@ import {
   HandleElement,
   Transform,
   Edge,
+  Rect,
 } from '../../types';
 
 export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
@@ -39,11 +40,11 @@ export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
   };
 }
 
-export function getHandlePosition(position: Position, node: Node, handle: any | null = null): XYPosition {
-  const x = (handle?.x || 0) + node.position.x;
-  const y = (handle?.y || 0) + node.position.y;
-  const width = handle?.width || node.__rf.width;
-  const height = handle?.height || node.__rf.height;
+export function getHandlePosition(position: Position, nodeRect: Rect, handle: any | null = null): XYPosition {
+  const x = (handle?.x || 0) + nodeRect.x;
+  const y = (handle?.y || 0) + nodeRect.y;
+  const width = handle?.width || nodeRect.width;
+  const height = handle?.height || nodeRect.height;
 
   switch (position) {
     case Position.Top:
@@ -94,15 +95,15 @@ interface EdgePositions {
 }
 
 export const getEdgePositions = (
-  sourceNode: Node,
+  sourceNodeRect: Rect,
   sourceHandle: HandleElement | unknown,
   sourcePosition: Position,
-  targetNode: Node,
+  targetNodeRect: Rect,
   targetHandle: HandleElement | unknown,
   targetPosition: Position
 ): EdgePositions => {
-  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  const targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
+  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNodeRect, sourceHandle);
+  const targetHandlePos = getHandlePosition(targetPosition, targetNodeRect, targetHandle);
 
   return {
     sourceX: sourceHandlePos.x,
@@ -168,17 +169,4 @@ export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNod
     },
     { sourceNode: null, targetNode: null } as SourceTargetNode
   );
-};
-
-export const extendEdgeWithSourceAndTarget = (edge: Edge, nodes: Node[]): Edge => {
-  const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
-
-  if (sourceNode) {
-    edge.sourceNode = sourceNode;
-  }
-  if (targetNode) {
-    edge.targetNode = targetNode;
-  }
-
-  return edge;
 };

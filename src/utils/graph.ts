@@ -1,7 +1,6 @@
 import { GetState } from 'zustand';
 
-import { clampPosition, clamp } from '../utils';
-import { ReactFlowState } from '../types';
+import { clamp } from '../utils';
 
 import {
   ElementId,
@@ -14,8 +13,9 @@ import {
   Box,
   Connection,
   FlowExportObject,
-  NodeExtent,
-  ElementChange,
+  EdgeChange,
+  NodeChange,
+  ReactFlowState,
 } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -147,26 +147,6 @@ export const onLoadProject = (getState: GetState<ReactFlowState>) => {
   };
 };
 
-export const parseNode = (node: Node, nodeExtent: NodeExtent): Node => {
-  if (!node.type) {
-    node.type = 'default';
-  }
-
-  if (nodeExtent) {
-    node.position = clampPosition(node.position, nodeExtent);
-  }
-
-  return node;
-};
-
-export const parseEdge = (edge: Edge): Edge => {
-  if (!edge.type) {
-    edge.type = 'default';
-  }
-
-  return edge;
-};
-
 const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
   x: Math.min(box1.x, box2.x),
   y: Math.min(box1.y, box2.y),
@@ -269,7 +249,8 @@ export const onLoadToObject = (getState: GetState<ReactFlowState>) => {
     const { nodes = [], edges = [], transform } = getState();
 
     return {
-      elements: parseElements(nodes, edges),
+      nodes: nodes.map((n) => ({ ...n })),
+      edges: edges.map((e) => ({ ...e })),
       position: [transform[0], transform[1]],
       zoom: transform[2],
     };
@@ -296,30 +277,51 @@ export const getTransformForBounds = (
   return [x, y, clampedZoom];
 };
 
-function applyChanges(changes: ElementChange[], elements: any[]): any[] {
+function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): any[] {
   const initElements: any[] = [];
 
-  return elements.reduce((res: any[], node: any) => {
-    const hasChange = changes.find((c) => c.id === node.id);
+  return elements.reduce((res: any[], item: any) => {
+    const currentChange = changes.find((c) => c.id === item.id);
 
-    if (hasChange?.delete) {
-      return res;
+    if (currentChange) {
+      switch (currentChange.type) {
+        case 'dimensions': {
+          res.push({ ...item, ...currentChange.dimensions, handleBounds: currentChange.handleBounds });
+          return res;
+        }
+        case 'select': {
+          res.push({ ...item, isSelected: currentChange.isSelected });
+          return res;
+        }
+        case 'position': {
+          const updateItem = { ...item };
+
+          if (typeof currentChange.position !== 'undefined') {
+            updateItem.position = currentChange.position;
+          }
+
+          if (typeof currentChange.isDragging !== 'undefined') {
+            updateItem.isDragging = currentChange.isDragging;
+          }
+
+          res.push(updateItem);
+          return res;
+        }
+        case 'remove': {
+          return res;
+        }
+      }
     }
 
-    if (hasChange?.change) {
-      res.push({ ...node, ...hasChange.change });
-    } else {
-      res.push(node);
-    }
-
+    res.push(item);
     return res;
   }, initElements);
 }
 
-export function applyNodeChanges(changes: ElementChange[], nodes: Node[]): Node[] {
+export function applyNodeChanges(changes: NodeChange[], nodes: Node[]): Node[] {
   return applyChanges(changes, nodes) as Node[];
 }
 
-export function applyEdgeChanges(changes: ElementChange[], edges: Edge[]): Edge[] {
+export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]): Edge[] {
   return applyChanges(changes, edges) as Edge[];
 }

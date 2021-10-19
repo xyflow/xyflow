@@ -7,7 +7,7 @@ import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../store';
-import { FlowTransform, TranslateExtent, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
+import { FlowTransform, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -21,7 +21,6 @@ interface ZoomPaneProps {
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
   defaultZoom?: number;
-  translateExtent?: TranslateExtent;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
@@ -67,7 +66,6 @@ const ZoomPane = ({
   paneMoveable = true,
   defaultPosition = [0, 0],
   defaultZoom = 1,
-  translateExtent,
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
@@ -82,14 +80,13 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (zoomPane.current) {
-      const state = store.getState();
-      const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
-      const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
+      const { minZoom, maxZoom, translateExtent } = store.getState();
+      const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 
-      const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
-      const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
-      const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
+      const clampedX = clamp(defaultPosition[0], translateExtent[0][0], translateExtent[1][0]);
+      const clampedY = clamp(defaultPosition[1], translateExtent[0][1], translateExtent[1][1]);
+      const clampedZoom = clamp(defaultZoom, minZoom, maxZoom);
       const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
 
       d3ZoomInstance.transform(selection, updatedTransform);

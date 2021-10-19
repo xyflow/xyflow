@@ -1,0 +1,211 @@
+import { useEffect } from 'react';
+import shallow from 'zustand/shallow';
+
+import { useStore } from '../../store';
+import {
+  Node,
+  Edge,
+  ReactFlowState,
+  OnConnectFunc,
+  OnConnectStartFunc,
+  OnConnectStopFunc,
+  OnConnectEndFunc,
+  NodeExtent,
+  OnNodesChange,
+  OnEdgesChange,
+  ConnectionMode,
+  SnapGrid,
+  TranslateExtent,
+} from '../../types';
+
+interface StoreUpdaterProps {
+  nodes: Node[];
+  edges: Edge[];
+  onConnect?: OnConnectFunc;
+  onConnectStart?: OnConnectStartFunc;
+  onConnectStop?: OnConnectStopFunc;
+  onConnectEnd?: OnConnectEndFunc;
+  nodesDraggable?: boolean;
+  nodesConnectable?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
+  nodeExtent?: NodeExtent;
+  onNodesChange?: OnNodesChange;
+  onEdgesChange?: OnEdgesChange;
+  elementsSelectable?: boolean;
+  connectionMode?: ConnectionMode;
+  snapToGrid?: boolean;
+  snapGrid?: SnapGrid;
+  translateExtent?: TranslateExtent;
+}
+
+const selector = (s: ReactFlowState) => ({
+  setNodes: s.setNodes,
+  setEdges: s.setEdges,
+  setOnConnect: s.setOnConnect,
+  setOnConnectStart: s.setOnConnectStart,
+  setOnConnectStop: s.setOnConnectStop,
+  setOnConnectEnd: s.setOnConnectEnd,
+  setSnapGrid: s.setSnapGrid,
+  setSnapToGrid: s.setSnapToGrid,
+  setNodesDraggable: s.setNodesDraggable,
+  setNodesConnectable: s.setNodesConnectable,
+  setElementsSelectable: s.setElementsSelectable,
+  setMinZoom: s.setMinZoom,
+  setMaxZoom: s.setMaxZoom,
+  setTranslateExtent: s.setTranslateExtent,
+  setNodeExtent: s.setNodeExtent,
+  setConnectionMode: s.setConnectionMode,
+  setOnNodesChange: s.setOnNodesChange,
+  setOnEdgesChange: s.setOnEdgesChange,
+});
+
+const StoreUpdater = ({
+  nodes,
+  edges,
+  onConnect,
+  onConnectStart,
+  onConnectStop,
+  onConnectEnd,
+  nodesDraggable,
+  nodesConnectable,
+  minZoom,
+  maxZoom,
+  nodeExtent,
+  onNodesChange,
+  onEdgesChange,
+  elementsSelectable,
+  connectionMode,
+  snapGrid,
+  snapToGrid,
+  translateExtent,
+}: StoreUpdaterProps) => {
+  const {
+    setNodes,
+    setEdges,
+    setOnConnect,
+    setOnConnectStart,
+    setOnConnectStop,
+    setOnConnectEnd,
+    setNodesDraggable,
+    setSnapGrid,
+    setSnapToGrid,
+    setNodesConnectable,
+    setElementsSelectable,
+    setMinZoom,
+    setMaxZoom,
+    setTranslateExtent,
+    setNodeExtent,
+    setOnNodesChange,
+    setOnEdgesChange,
+    setConnectionMode,
+  } = useStore(selector, shallow);
+
+  useEffect(() => {
+    setNodes(nodes);
+  }, [nodes]);
+
+  useEffect(() => {
+    setEdges(edges, nodes);
+  }, [edges, nodes]);
+
+  useEffect(() => {
+    if (onConnect) {
+      setOnConnect(onConnect);
+    }
+  }, [onConnect]);
+
+  useEffect(() => {
+    if (onConnectStart) {
+      setOnConnectStart(onConnectStart);
+    }
+  }, [onConnectStart]);
+
+  useEffect(() => {
+    if (onConnectStop) {
+      setOnConnectStop(onConnectStop);
+    }
+  }, [onConnectStop]);
+
+  useEffect(() => {
+    if (onConnectEnd) {
+      setOnConnectEnd(onConnectEnd);
+    }
+  }, [onConnectEnd]);
+
+  useEffect(() => {
+    if (typeof snapToGrid !== 'undefined') {
+      setSnapToGrid(snapToGrid);
+    }
+  }, [snapToGrid]);
+
+  useEffect(() => {
+    if (typeof snapGrid !== 'undefined') {
+      setSnapGrid(snapGrid);
+    }
+  }, [snapGrid]);
+
+  useEffect(() => {
+    if (typeof nodesDraggable !== 'undefined') {
+      setNodesDraggable(nodesDraggable);
+    }
+  }, [nodesDraggable]);
+
+  useEffect(() => {
+    if (typeof nodesConnectable !== 'undefined') {
+      setNodesConnectable(nodesConnectable);
+    }
+  }, [nodesConnectable]);
+
+  useEffect(() => {
+    if (typeof elementsSelectable !== 'undefined') {
+      setElementsSelectable(elementsSelectable);
+    }
+  }, [elementsSelectable]);
+
+  useEffect(() => {
+    if (typeof minZoom !== 'undefined') {
+      setMinZoom(minZoom);
+    }
+  }, [minZoom]);
+
+  useEffect(() => {
+    if (typeof maxZoom !== 'undefined') {
+      setMaxZoom(maxZoom);
+    }
+  }, [maxZoom]);
+
+  useEffect(() => {
+    if (typeof translateExtent !== 'undefined') {
+      setTranslateExtent(translateExtent);
+    }
+  }, [translateExtent]);
+
+  useEffect(() => {
+    if (typeof nodeExtent !== 'undefined') {
+      setNodeExtent(nodeExtent);
+    }
+  }, [nodeExtent]);
+
+  useEffect(() => {
+    if (typeof connectionMode !== 'undefined') {
+      setConnectionMode(connectionMode);
+    }
+  }, [connectionMode]);
+
+  useEffect(() => {
+    if (typeof onNodesChange !== 'undefined') {
+      setOnNodesChange(onNodesChange);
+    }
+  }, [onNodesChange]);
+
+  useEffect(() => {
+    if (typeof onEdgesChange !== 'undefined') {
+      setOnEdgesChange(onEdgesChange);
+    }
+  }, [onEdgesChange]);
+
+  return null;
+};
+
+export default StoreUpdater;
