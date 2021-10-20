@@ -343,12 +343,28 @@ export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]): Edge[] {
   return applyChanges(changes, edges) as Edge[];
 }
 
-export function flattenNodes(nodes: Node[] | undefined): Node[] {
-  if (!nodes) {
-    return [];
-  }
+function flat(arr: Node[], target: Node[]) {
+  arr.forEach(function (el) {
+    if (el.childNodes) {
+      flat(el.childNodes, target);
+    } else {
+      target.push(el);
+    }
+  });
+}
 
-  return nodes.reduce<Node[]>((result, node) => {
-    return result.concat([node, ...flattenNodes(node.childNodes)]);
-  }, []);
+export function flattenNodes(nodes: Node[]): Node[] {
+  const flattened: Node[] = [];
+  flat(nodes, flattened);
+  return flattened;
+
+  // return nodes.reduce<Node[]>((result, node) => {
+  //   result.push(node);
+
+  //   if (node.childNodes) {
+  //     result.push(...flattenNodes(node.childNodes));
+  //   }
+
+  //   return result;
+  // }, []);
 }

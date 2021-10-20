@@ -38,6 +38,50 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
   isSelected,
 });
 
+const findNodeById = (id: string, nodes: Node[]): Node | null => {
+  let res = null;
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+
+    if (n.id === id) {
+      return n;
+    }
+
+    if (n.childNodes) {
+      res = findNodeById(id, n.childNodes);
+
+      if (res) {
+        return res;
+      }
+    }
+  }
+
+  return res;
+};
+
+const findNodes = (condition: (node: Node) => boolean, nodes: Node[]): Node[] => {
+  let res = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+
+    if (condition(n)) {
+      res.push(n);
+    }
+
+    if (n.childNodes) {
+      const matches = findNodes(condition, n.childNodes);
+
+      for (let j = 0; j < matches.length; j++) {
+        res.push(matches[j]);
+      }
+    }
+  }
+
+  return res;
+};
+
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
     width: 0,
@@ -96,6 +140,7 @@ const createStore = () =>
 
     setNodes: (propNodes: Node[]) => {
       const { nodes } = get();
+
       const nextNodes = propNodes.map((propNode: Node) => {
         const storeNode = nodes.find((node) => node.id === propNode.id);
 
@@ -124,10 +169,10 @@ const createStore = () =>
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
       const { onNodesChange, nodes, transform } = get();
 
-      const initialChanges: NodeChange[] = [];
-      const nodesToChange: NodeChange[] = flattenNodes(nodes).reduce((res, node) => {
-        const update = updates.find((u) => u.id === node.id);
-        if (update) {
+      const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
+        const node = findNodeById(update.id, nodes);
+
+        if (node) {
           const dimensions = getDimensions(update.nodeElement);
           const doUpdate =
             dimensions.width &&
@@ -147,7 +192,31 @@ const createStore = () =>
         }
 
         return res;
-      }, initialChanges);
+      }, []);
+
+      // const nodesToChange: NodeChange[] = flattenNodes(nodes).reduce((res, node) => {
+      //   const update = updates.find((u) => u.id === node.id);
+      //   if (update) {
+      //     const dimensions = getDimensions(update.nodeElement);
+      //     const doUpdate =
+      //       dimensions.width &&
+      //       dimensions.height &&
+      //       (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate);
+
+      //     if (doUpdate) {
+      //       const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
+      //       const change = {
+      //         id: node.id,
+      //         type: 'dimensions',
+      //         dimensions,
+      //         handleBounds,
+      //       } as NodeChange;
+      //       res.push(change);
+      //     }
+      //   }
+
+      //   return res;
+      // }, initialChanges);
 
       onNodesChange?.(nodesToChange);
     },
@@ -155,12 +224,11 @@ const createStore = () =>
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = flattenNodes(nodes).filter((n) => n.id === id || n.isSelected);
-        const matchingChildNodes = flattenNodes(matchingNodes); //.filter(n => !!n.childNodes).reduce<Node[]>((result, node) => result.concat(node.childNodes!), []));
+        const matchingNodes = flattenNodes(findNodes((n) => n.id === id || !!n.isSelected, nodes));
 
-        if (matchingChildNodes?.length) {
+        if (matchingNodes?.length) {
           onNodesChange(
-            matchingChildNodes.map((n) => {
+            matchingNodes.map((n) => {
               const change: NodePositionChange = {
                 id: n.id,
                 type: 'position',
