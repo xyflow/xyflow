@@ -6,6 +6,7 @@ import { useStore, useStoreApi } from '../../store';
 import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
+import { getMarkerId } from '../../utils/graph';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedElements: s.addSelectedElements,
@@ -32,7 +33,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     labelBgPadding,
     labelBgBorderRadius,
     style,
-    arrowHeadType,
     source,
     target,
     sourceX,
@@ -42,7 +42,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     sourcePosition,
     targetPosition,
     elementsSelectable,
-    markerEndId,
     isHidden,
     sourceHandleId,
     targetHandleId,
@@ -55,6 +54,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     edgeUpdaterRadius,
     onEdgeUpdateStart,
     onEdgeUpdateEnd,
+    markerEnd,
+    markerStart,
   }: WrapEdgeProps): JSX.Element | null => {
     const store = useStoreApi();
     const { addSelectedElements, setConnectionNodeId, unsetNodesSelection, setPosition, connectionMode } = useStore(
@@ -200,6 +201,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
     const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
+    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart)})`, [markerStart]);
+    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd)})`, [markerEnd]);
 
     if (isHidden) {
       return null;
@@ -229,16 +232,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           labelBgBorderRadius={labelBgBorderRadius}
           data={data}
           style={style}
-          arrowHeadType={arrowHeadType}
           sourceX={sourceX}
           sourceY={sourceY}
           targetX={targetX}
           targetY={targetY}
           sourcePosition={sourcePosition}
           targetPosition={targetPosition}
-          markerEndId={markerEndId}
           sourceHandleId={sourceHandleId}
           targetHandleId={targetHandleId}
+          markerStart={markerStartUrl}
+          markerEnd={markerEndUrl}
         />
         {handleEdgeUpdate && (
           <g

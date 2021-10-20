@@ -12,7 +12,6 @@ import ReactFlow, {
   ConnectionLineType,
   ConnectionMode,
   updateEdge,
-  ArrowHeadType,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
@@ -68,8 +67,7 @@ const initialElements: Elements = [
     target: '01',
     sourceHandle: 'left',
     targetHandle: 'bottom',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-1b',
@@ -77,8 +75,7 @@ const initialElements: Elements = [
     target: '01',
     sourceHandle: 'top',
     targetHandle: 'right',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-2a',
@@ -86,8 +83,7 @@ const initialElements: Elements = [
     target: '02',
     sourceHandle: 'top',
     targetHandle: 'left',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-2b',
@@ -95,8 +91,7 @@ const initialElements: Elements = [
     target: '02',
     sourceHandle: 'right',
     targetHandle: 'bottom',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-3a',
@@ -104,8 +99,7 @@ const initialElements: Elements = [
     target: '03',
     sourceHandle: 'right',
     targetHandle: 'top',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-3b',
@@ -113,8 +107,7 @@ const initialElements: Elements = [
     target: '03',
     sourceHandle: 'bottom',
     targetHandle: 'left',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-4a',
@@ -122,8 +115,7 @@ const initialElements: Elements = [
     target: '04',
     sourceHandle: 'bottom',
     targetHandle: 'right',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-4b',
@@ -131,8 +123,7 @@ const initialElements: Elements = [
     target: '04',
     sourceHandle: 'left',
     targetHandle: 'top',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-10',
@@ -140,8 +131,7 @@ const initialElements: Elements = [
     target: '10',
     sourceHandle: 'top',
     targetHandle: 'bottom',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-20',
@@ -149,8 +139,7 @@ const initialElements: Elements = [
     target: '20',
     sourceHandle: 'right',
     targetHandle: 'left',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-30',
@@ -158,8 +147,7 @@ const initialElements: Elements = [
     target: '30',
     sourceHandle: 'bottom',
     targetHandle: 'top',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
   {
     id: 'e0-40',
@@ -167,8 +155,7 @@ const initialElements: Elements = [
     target: '40',
     sourceHandle: 'left',
     targetHandle: 'right',
-    type: 'smoothstep',
-    arrowHeadType: ArrowHeadType.Arrow,
+    type: 'default',
   },
 ];
 
@@ -181,8 +168,7 @@ const getId = (): ElementId => `${id++}`;
 
 const UpdateNodeInternalsFlow = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
-  const onConnect = (params: Connection | Edge) =>
-    setElements((els) => addEdge({ ...params, type: 'smoothstep' }, els));
+  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge({ ...params, type: 'default' }, els));
   const { project } = useZoomPanHelper();
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setElements((els) => updateEdge(oldEdge, newConnection, els));

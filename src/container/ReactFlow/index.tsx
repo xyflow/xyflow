@@ -114,8 +114,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   translateExtent?: TranslateExtent;
   preventScrolling?: boolean;
   nodeExtent?: NodeExtent;
-  arrowHeadColor?: string;
-  markerEndId?: string;
+  defaultMarkerColor?: string;
   zoomOnScroll?: boolean;
   zoomOnPinch?: boolean;
   panOnScroll?: boolean;
@@ -191,8 +190,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       translateExtent,
       preventScrolling = true,
       nodeExtent,
-      arrowHeadColor = '#b1b1b7',
-      markerEndId,
+      defaultMarkerColor = '#b1b1b7',
       zoomOnScroll = true,
       zoomOnPinch = true,
       panOnScroll = false,
@@ -255,8 +253,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             defaultZoom={defaultZoom}
             defaultPosition={defaultPosition}
             preventScrolling={preventScrolling}
-            arrowHeadColor={arrowHeadColor}
-            markerEndId={markerEndId}
             zoomOnScroll={zoomOnScroll}
             zoomOnPinch={zoomOnPinch}
             zoomOnDoubleClick={zoomOnDoubleClick}
@@ -280,6 +276,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
+            defaultMarkerColor={defaultMarkerColor}
           />
           <StoreUpdater
             nodes={nodes}

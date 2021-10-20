@@ -16,6 +16,7 @@ import {
   EdgeChange,
   NodeChange,
   ReactFlowState,
+  EdgeMarkerType,
 } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -45,13 +46,29 @@ export const getIncomers = (node: Node, nodes: Node[], edges: Edge[]): Node[] =>
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId =>
   `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
 
-const connectionExists = (edge: Edge, edges: Edge[]) => {
-  return edges.some(
-    (e) =>
-      edge.source === e.source &&
-      edge.target === e.target &&
-      (edge.sourceHandle === e.sourceHandle || (!edge.sourceHandle && !e.sourceHandle)) &&
-      (edge.targetHandle === e.targetHandle || (!edge.targetHandle && !e.targetHandle))
+export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
+  if (typeof marker === 'undefined') {
+    return '';
+  }
+
+  if (typeof marker === 'string') {
+    return marker;
+  }
+
+  return Object.keys(marker)
+    .sort()
+    .map((key: string) => `${key}=${(marker as any)[key]}`)
+    .join('&');
+};
+
+const connectionExists = (edge: Edge, elements: Elements) => {
+  return elements.some(
+    (el) =>
+      isEdge(el) &&
+      el.source === edge.source &&
+      el.target === edge.target &&
+      (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
+      (el.targetHandle === edge.targetHandle || (!el.targetHandle && !edge.targetHandle))
   );
 };
 

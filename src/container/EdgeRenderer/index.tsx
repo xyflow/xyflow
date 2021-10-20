@@ -24,8 +24,7 @@ interface EdgeRendererProps {
   connectionLineComponent?: ConnectionLineComponent;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  arrowHeadColor: string;
-  markerEndId?: string;
+  defaultMarkerColor: string;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
@@ -176,11 +175,12 @@ const Edge = memo(
         labelBgPadding={edge.labelBgPadding}
         labelBgBorderRadius={edge.labelBgBorderRadius}
         style={edge.style}
-        arrowHeadType={edge.arrowHeadType}
         source={edge.source}
         target={edge.target}
         sourceHandleId={sourceHandleId}
         targetHandleId={targetHandleId}
+        markerEnd={edge.markerEnd}
+        markerStart={edge.markerStart}
         sourceX={sourceX}
         sourceY={sourceY}
         targetX={targetX}
@@ -271,12 +271,12 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     return null;
   }
 
-  const { connectionLineType, arrowHeadColor, connectionLineStyle, connectionLineComponent } = props;
+  const { connectionLineType, defaultMarkerColor, connectionLineStyle, connectionLineComponent } = props;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
-      <MarkerDefinitions color={arrowHeadColor} />
+      <MarkerDefinitions defaultColor={defaultMarkerColor} />
       <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
         {edges.map((edge: Edge) => {
           const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
@@ -295,7 +295,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               targetNodeY={targetNode?.position.y}
               targetNodeHandleBounds={targetNode?.handleBounds}
               elementsSelectable={elementsSelectable}
-              markerEndId={props.markerEndId}
               onEdgeContextMenu={props.onEdgeContextMenu}
               onEdgeMouseEnter={props.onEdgeMouseEnter}
               onEdgeMouseMove={props.onEdgeMouseMove}

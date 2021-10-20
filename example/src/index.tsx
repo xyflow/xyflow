@@ -6,6 +6,7 @@ import Basic from './Basic';
 import UpdateNode from './UpdateNode';
 import Stress from './Stress';
 import CustomNode from './CustomNode';
+import FloatingEdges from './FloatingEdges';
 
 import './index.css';
 
@@ -25,6 +26,10 @@ const routes = [
   {
     path: '/custom-node',
     component: CustomNode,
+  },
+  {
+    path: '/floating-edges',
+    component: FloatingEdges,
   },
 ];
 

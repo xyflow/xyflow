@@ -21,6 +21,7 @@ interface FlowRendererProps
     | 'arrowHeadColor'
     | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
+    | 'defaultMarkerColor'
   > {
   children: ReactNode;
 }

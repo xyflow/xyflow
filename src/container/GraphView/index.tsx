@@ -21,7 +21,7 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
   onlyRenderVisibleElements: boolean;
   defaultZoom: number;
   defaultPosition: [number, number];
-  arrowHeadColor: string;
+  defaultMarkerColor: string;
   selectNodesOnDrag: boolean;
 }
 
@@ -60,8 +60,7 @@ const GraphView = ({
   defaultZoom,
   defaultPosition,
   preventScrolling,
-  arrowHeadColor,
-  markerEndId,
+  defaultMarkerColor,
   zoomOnScroll,
   zoomOnPinch,
   panOnScroll,
@@ -154,8 +153,6 @@ const GraphView = ({
         connectionLineType={connectionLineType}
         connectionLineStyle={connectionLineStyle}
         connectionLineComponent={connectionLineComponent}
-        arrowHeadColor={arrowHeadColor}
-        markerEndId={markerEndId}
         onEdgeUpdate={onEdgeUpdate}
         onlyRenderVisibleElements={onlyRenderVisibleElements}
         onEdgeContextMenu={onEdgeContextMenu}
@@ -165,6 +162,7 @@ const GraphView = ({
         onEdgeUpdateStart={onEdgeUpdateStart}
         onEdgeUpdateEnd={onEdgeUpdateEnd}
         edgeUpdaterRadius={edgeUpdaterRadius}
+        defaultMarkerColor={defaultMarkerColor}
       />
     </FlowRenderer>
   );
