@@ -48,6 +48,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     isDragging,
     resizeObserver,
     dragHandle,
+    zIndex,
   }: WrapNodeProps) => {
     const {
       addSelectedElements,
@@ -63,7 +64,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const nodeStyle: CSSProperties = useMemo(
       () => ({
-        zIndex: isSelected ? 10 : 3,
+        zIndex: isSelected ? zIndex + 1 : zIndex,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents:
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
