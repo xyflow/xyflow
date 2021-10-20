@@ -68,7 +68,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         pointerEvents:
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
         // prevents jumping of nodes on start
-        opacity: isInitialized ? 1 : 0,
+        // opacity: isInitialized ? 1 : 0,
         ...style,
       }),
       [

@@ -27,7 +27,7 @@ import {
   EdgeChange,
   NodePositionChange,
 } from '../types';
-import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
+import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges, flattenNodes } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -125,7 +125,7 @@ const createStore = () =>
       const { onNodesChange, nodes, transform } = get();
 
       const initialChanges: NodeChange[] = [];
-      const nodesToChange: NodeChange[] = nodes.reduce((res, node) => {
+      const nodesToChange: NodeChange[] = flattenNodes(nodes).reduce((res, node) => {
         const update = updates.find((u) => u.id === node.id);
         if (update) {
           const dimensions = getDimensions(update.nodeElement);
@@ -155,11 +155,12 @@ const createStore = () =>
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = nodes.filter((n) => n.id === id || n.isSelected);
+        const matchingNodes = flattenNodes(nodes).filter((n) => n.id === id || n.isSelected);
+        const matchingChildNodes = flattenNodes(matchingNodes); //.filter(n => !!n.childNodes).reduce<Node[]>((result, node) => result.concat(node.childNodes!), []));
 
-        if (matchingNodes?.length) {
+        if (matchingChildNodes?.length) {
           onNodesChange(
-            matchingNodes.map((n) => {
+            matchingChildNodes.map((n) => {
               const change: NodePositionChange = {
                 id: n.id,
                 type: 'position',
@@ -276,7 +277,8 @@ const createStore = () =>
     },
     unselectNodesAndEdges: () => {
       const { nodes, edges, onNodesChange, onEdgesChange } = get();
-      const nodesToUnselect = nodes.map((n) => {
+
+      const nodesToUnselect = flattenNodes(nodes).map((n) => {
         n.isSelected = false;
         return createNodeOrEdgeSelectionChange(false)(n);
       }) as NodeChange[];

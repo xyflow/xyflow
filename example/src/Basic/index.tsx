@@ -23,7 +23,27 @@ const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 }, className: 'light' },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 }, className: 'light' },
   { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 }, className: 'light' },
-  { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 }, className: 'light' },
+  {
+    id: '4',
+    data: { label: 'Node 4' },
+    position: { x: 400, y: 200 },
+    className: 'light',
+    style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
+    childNodes: [
+      { id: '4a', data: { label: 'Node 4a' }, position: { x: 400, y: 400 }, className: 'light' },
+      {
+        id: '4b',
+        data: { label: 'Node 4b' },
+        position: { x: 500, y: 500 },
+        className: 'light',
+        style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
+        childNodes: [
+          { id: '4b1', data: { label: 'Node 4b1' }, position: { x: 450, y: 450 }, className: 'light' },
+          { id: '4b2', data: { label: 'Node 4b2' }, position: { x: 550, y: 550 }, className: 'light' },
+        ],
+      },
+    ],
+  },
 ];
 
 const initialEdges: Edge[] = [

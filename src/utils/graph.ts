@@ -61,7 +61,7 @@ export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
     .join('&');
 };
 
-const connectionExists = (edge: Edge, elements: Elements) => {
+const connectionExists = (edge: Edge, elements: Edge[]) => {
   return elements.some(
     (el) =>
       isEdge(el) &&
@@ -294,6 +294,10 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
   const initElements: any[] = [];
 
   return elements.reduce((res: any[], item: any) => {
+    if (item.childNodes) {
+      item.childNodes = applyChanges(changes, item.childNodes);
+    }
+
     const currentChange = changes.find((c) => c.id === item.id);
 
     if (currentChange) {
@@ -337,4 +341,14 @@ export function applyNodeChanges(changes: NodeChange[], nodes: Node[]): Node[] {
 
 export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]): Edge[] {
   return applyChanges(changes, edges) as Edge[];
+}
+
+export function flattenNodes(nodes: Node[] | undefined): Node[] {
+  if (!nodes) {
+    return [];
+  }
+
+  return nodes.reduce<Node[]>((result, node) => {
+    return result.concat([node, ...flattenNodes(node.childNodes)]);
+  }, []);
 }

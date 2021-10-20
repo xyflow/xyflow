@@ -2,7 +2,7 @@ import { ComponentType } from 'react';
 
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
-import { rectToBox } from '../../utils/graph';
+import { rectToBox, flattenNodes } from '../../utils/graph';
 
 import {
   EdgeTypesType,
@@ -171,7 +171,7 @@ type SourceTargetNode = {
 };
 
 export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNode => {
-  return nodes.reduce(
+  return flattenNodes(nodes).reduce(
     (res, node) => {
       if (node.id === edge.source) {
         res.sourceNode = node;
