@@ -57,6 +57,18 @@ export enum ArrowHeadType {
   ArrowClosed = 'arrowclosed',
 }
 
+export interface EdgeMarker {
+  type: ArrowHeadType;
+  color?: string;
+  width?: number;
+  height?: number;
+  units?: string;
+  orient?: string;
+  strokeWidth?: number;
+}
+
+export type EdgeMarkerType = string | EdgeMarker;
+
 export interface Edge<T = any> {
   id: ElementId;
   type?: string;
@@ -72,10 +84,11 @@ export interface Edge<T = any> {
   labelBgBorderRadius?: number;
   style?: CSSProperties;
   animated?: boolean;
-  arrowHeadType?: ArrowHeadType;
   isHidden?: boolean;
   data?: T;
   className?: string;
+  markerStart?: EdgeMarkerType;
+  markerEnd?: EdgeMarkerType;
 }
 
 export enum BackgroundVariant {
@@ -111,7 +124,6 @@ export interface WrapEdgeProps<T = any> {
   labelBgPadding?: [number, number];
   labelBgBorderRadius?: number;
   style?: CSSProperties;
-  arrowHeadType?: ArrowHeadType;
   source: ElementId;
   target: ElementId;
   sourceHandleId: ElementId | null;
@@ -123,7 +135,6 @@ export interface WrapEdgeProps<T = any> {
   sourcePosition: Position;
   targetPosition: Position;
   elementsSelectable?: boolean;
-  markerEndId?: string;
   isHidden?: boolean;
   handleEdgeUpdate: boolean;
   onConnectEdge: OnConnectFunc;
@@ -134,6 +145,8 @@ export interface WrapEdgeProps<T = any> {
   edgeUpdaterRadius?: number;
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  markerStart?: EdgeMarkerType;
+  markerEnd?: EdgeMarkerType;
 }
 
 export interface EdgeProps<T = any> {
@@ -155,11 +168,11 @@ export interface EdgeProps<T = any> {
   labelBgPadding?: [number, number];
   labelBgBorderRadius?: number;
   style?: CSSProperties;
-  arrowHeadType?: ArrowHeadType;
-  markerEndId?: string;
   data?: T;
   sourceHandleId?: ElementId | null;
   targetHandleId?: ElementId | null;
+  markerStart?: string;
+  markerEnd?: string;
 }
 export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
   borderRadius?: number;

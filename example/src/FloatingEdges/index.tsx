@@ -9,7 +9,6 @@ import ReactFlow, {
   Elements,
   Connection,
   Edge,
-  ArrowHeadType,
 } from 'react-flow-renderer';
 
 import './style.css';
@@ -31,8 +30,7 @@ const NodeAsHandleFlow = () => {
 
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
 
-  const onConnect = (params: Connection | Edge) =>
-    setElements((els) => addEdge({ ...params, type: 'floating', arrowHeadType: ArrowHeadType.Arrow }, els));
+  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge({ ...params, type: 'floating' }, els));
 
   return (
     <div className="floatingedges">

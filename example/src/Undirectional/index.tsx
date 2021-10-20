@@ -12,7 +12,6 @@ import ReactFlow, {
   ConnectionLineType,
   ConnectionMode,
   updateEdge,
-  ArrowHeadType,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
@@ -69,7 +68,6 @@ const initialElements: Elements = [
     sourceHandle: 'left',
     targetHandle: 'bottom',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-1b',
@@ -78,7 +76,6 @@ const initialElements: Elements = [
     sourceHandle: 'top',
     targetHandle: 'right',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-2a',
@@ -87,7 +84,6 @@ const initialElements: Elements = [
     sourceHandle: 'top',
     targetHandle: 'left',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-2b',
@@ -96,7 +92,6 @@ const initialElements: Elements = [
     sourceHandle: 'right',
     targetHandle: 'bottom',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-3a',
@@ -105,7 +100,6 @@ const initialElements: Elements = [
     sourceHandle: 'right',
     targetHandle: 'top',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-3b',
@@ -114,7 +108,6 @@ const initialElements: Elements = [
     sourceHandle: 'bottom',
     targetHandle: 'left',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-4a',
@@ -123,7 +116,6 @@ const initialElements: Elements = [
     sourceHandle: 'bottom',
     targetHandle: 'right',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-4b',
@@ -132,7 +124,6 @@ const initialElements: Elements = [
     sourceHandle: 'left',
     targetHandle: 'top',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-10',
@@ -141,7 +132,6 @@ const initialElements: Elements = [
     sourceHandle: 'top',
     targetHandle: 'bottom',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-20',
@@ -150,7 +140,6 @@ const initialElements: Elements = [
     sourceHandle: 'right',
     targetHandle: 'left',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-30',
@@ -159,7 +148,6 @@ const initialElements: Elements = [
     sourceHandle: 'bottom',
     targetHandle: 'top',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
   {
     id: 'e0-40',
@@ -168,7 +156,6 @@ const initialElements: Elements = [
     sourceHandle: 'left',
     targetHandle: 'right',
     type: 'default',
-    arrowHeadType: ArrowHeadType.Arrow,
   },
 ];
 
