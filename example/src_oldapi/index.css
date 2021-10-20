@@ -1,0 +1,82 @@
+body {
+  font-family: sans-serif;
+  color: #111;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  font-weight: 700;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+  display: block;
+  line-height: 1;
+}
+
+header a,
+header a:focus,
+header a:active,
+header a:visited {
+  color: #111;
+}
+
+header a:hover {
+  color: #333;
+}
+
+header select {
+  margin-left: 1em;
+}
+
+.overview-example__add {
+  display: none;
+}
+
+.react-flow__node a {
+  font-weight: 700;
+  color: #111;
+}
+
+.react-flow__node.dark-node {
+  background: #0041d0;
+  color: #f8f8f8;
+}
+
+.react-flow__node.dark {
+  background: #557;
+  color: #f8f8f8;
+}
+
+.react-flow__node-selectorNode {
+  font-size: 12px;
+  background: #f0f2f3;
+  border: 1px solid 555;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.react-flow__node-selectorNode .react-flow__handle {
+  border-color: #f0f2f3;
+}
+
+@media screen and (min-width: 768px) {
+  .overview-example__add {
+    display: block;
+  }
+}
