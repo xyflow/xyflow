@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, getSourceTargetNodes, isEdgeVisible } from './utils';
+import { getEdgePositions, getHandle, getSourceTargetNodes } from './utils';
 import {
   Position,
   Edge,
@@ -16,6 +16,7 @@ import {
   ReactFlowState,
   NodeHandleBounds,
 } from '../../types';
+import useVisibleEdges from '../../hooks/useVisibleEdges';
 
 interface EdgeRendererProps {
   edgeTypes: any;
@@ -234,38 +235,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     nodes,
   } = useStore(selector, shallow);
 
-  const edges = useStore(
-    useCallback(
-      (s: ReactFlowState) => {
-        if (!props.onlyRenderVisibleElements) {
-          return s.edges;
-        }
-
-        return s.edges.filter((e) => {
-          const { sourceNode, targetNode } = getSourceTargetNodes(e, s.nodes);
-
-          return (
-            sourceNode?.width &&
-            sourceNode?.height &&
-            targetNode?.width &&
-            targetNode?.height &&
-            isEdgeVisible({
-              sourcePos: sourceNode.position,
-              targetPos: targetNode.position,
-              sourceWidth: sourceNode.width,
-              sourceHeight: sourceNode.height,
-              targetWidth: targetNode.width,
-              targetHeight: targetNode.height,
-              width: s.width,
-              height: s.height,
-              transform: s.transform,
-            })
-          );
-        });
-      },
-      [props.onlyRenderVisibleElements]
-    )
-  );
+  const edges = useVisibleEdges(props.onlyRenderVisibleElements);
 
   if (!width) {
     return null;

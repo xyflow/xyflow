@@ -1,9 +1,10 @@
-import React, { memo, useMemo, ComponentType, MouseEvent, useCallback, Fragment } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent, Fragment } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps, SnapGrid } from '../../types';
-import { getNodesInside, getRectOfNodes } from '../../utils/graph';
+import { getRectOfNodes } from '../../utils/graph';
+import useVisibleNodes from '../../hooks/useVisibleNodes';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
@@ -156,17 +157,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
     snapGrid,
     snapToGrid,
   } = useStore(selector, shallow);
-
-  const nodes = useStore(
-    useCallback(
-      (s: ReactFlowState) => {
-        return props.onlyRenderVisibleElements
-          ? getNodesInside(s.nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
-          : s.nodes;
-      },
-      [props.onlyRenderVisibleElements]
-    )
-  );
+  const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
 
   const transformStyle = useMemo(
     () => ({
