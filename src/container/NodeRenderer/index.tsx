@@ -104,6 +104,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isSelectable={isSelectable}
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
+            dragHandle={node.dragHandle}
           />
         );
       })}

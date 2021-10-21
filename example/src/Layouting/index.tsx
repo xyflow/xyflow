@@ -49,7 +49,7 @@ const LayoutFlow = () => {
         const nodeWithPosition = dagreGraph.node(el.id);
         el.targetPosition = isHorizontal ? Position.Left : Position.Top;
         el.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
-        // we need to pass a slighltiy different position in order to notify react flow about the change
+        // we need to pass a slightly different position in order to notify react flow about the change
         // @TODO how can we change the position handling so that we dont need this hack?
         el.position = { x: nodeWithPosition.x + Math.random() / 1000, y: nodeWithPosition.y };
       }

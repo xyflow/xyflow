@@ -14,6 +14,7 @@ import Provider from './Provider';
 import Hidden from './Hidden';
 import EdgeTypes from './EdgeTypes';
 import CustomConnectionLine from './CustomConnectionLine';
+import FloatingEdges from './FloatingEdges';
 import NodeTypeChange from './NodeTypeChange';
 import NodeTypesObjectChange from './NodeTypesObjectChange';
 import UpdatableEdge from './UpdatableEdge';
@@ -26,6 +27,7 @@ import UseZoomPanHelper from './UseZoomPanHelper';
 import UseUpdateNodeInternals from './UseUpdateNodeInternals';
 import Undirectional from './Undirectional';
 import MultiFlows from './MultiFlows';
+import DragHandle from './DragHandle';
 
 import './index.css';
 
@@ -79,6 +81,10 @@ const routes = [
     component: CustomConnectionLine,
   },
   {
+    path: '/floating-edges',
+    component: FloatingEdges,
+  },
+  {
     path: '/nodetype-change',
     component: NodeTypeChange,
   },
@@ -125,6 +131,10 @@ const routes = [
   {
     path: '/multiflows',
     component: MultiFlows,
+  },
+  {
+    path: '/draghandle',
+    component: DragHandle,
   },
 ];
 

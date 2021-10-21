@@ -48,6 +48,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     snapGrid,
     isDragging,
     resizeObserver,
+    dragHandle,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
@@ -241,6 +242,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         nodeRef={nodeElement}
         grid={grid}
         enableUserSelectHack={false}
+        handle={dragHandle}
       >
         <div
           className={nodeClasses}
@@ -266,6 +268,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}
               isDragging={isDragging}
+              dragHandle={dragHandle}
             />
           </Provider>
         </div>
