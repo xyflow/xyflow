@@ -249,6 +249,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
       <MarkerDefinitions defaultColor={defaultMarkerColor} />
       <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
         {edges.map((edge: Edge) => {
+          // @todo: getSourceTargetNodes is called many times during dragging/creating edges
           const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
           return (
             <Edge

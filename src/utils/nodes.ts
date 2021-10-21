@@ -2,10 +2,9 @@ import { Node } from '../types';
 
 function flat(arr: Node[], target: Node[]) {
   arr.forEach(function (el) {
+    target.push(el);
     if (el.childNodes) {
       flat(el.childNodes, target);
-    } else {
-      target.push(el);
     }
   });
 }
