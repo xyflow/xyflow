@@ -31,7 +31,13 @@ const initialNodes: Node[] = [
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
     childNodes: [
-      { id: '4a', data: { label: 'Node 4a' }, position: { x: 400, y: 400 }, className: 'light' },
+      {
+        id: '4a',
+        draggable: false,
+        data: { label: 'Node 4a', isNested: true },
+        position: { x: 400, y: 400 },
+        className: 'light',
+      },
       {
         id: '4b',
         data: { label: 'Node 4b' },
@@ -39,8 +45,20 @@ const initialNodes: Node[] = [
         className: 'light',
         style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
         childNodes: [
-          { id: '4b1', data: { label: 'Node 4b1' }, position: { x: 450, y: 450 }, className: 'light' },
-          { id: '4b2', data: { label: 'Node 4b2' }, position: { x: 550, y: 550 }, className: 'light' },
+          {
+            id: '4b1',
+            draggable: false,
+            data: { label: 'Node 4b1', isNested: true },
+            position: { x: 450, y: 450 },
+            className: 'light',
+          },
+          {
+            id: '4b2',
+            draggable: false,
+            data: { label: 'Node 4b2', isNested: true },
+            position: { x: 550, y: 550 },
+            className: 'light',
+          },
         ],
       },
     ],
@@ -58,7 +76,9 @@ const BasicFlow = () => {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
   const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => addEdge(params, eds));
+    setEdges((eds) => {
+      return addEdge(params, eds);
+    });
   }, []);
   const onLoad = useCallback((reactFlowInstance: OnLoadParams) => setRfInstance(reactFlowInstance), []);
 
@@ -82,6 +102,15 @@ const BasicFlow = () => {
     setNodes((nds) => {
       return nodeHelper(nds).map((n) => {
         n.className = n.className === 'light' ? 'dark' : 'light';
+        return n;
+      });
+    });
+  };
+
+  const toggleChildNodes = () => {
+    setNodes((nds) => {
+      return nodeHelper(nds).map((n) => {
+        n.isHidden = n.data.isNested && !n.isHidden;
         return n;
       });
     });
@@ -124,6 +153,9 @@ const BasicFlow = () => {
         </button>
         <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
           toggle classnames
+        </button>
+        <button style={{ marginRight: 5 }} onClick={toggleChildNodes}>
+          toggleChildNodes
         </button>
         <button onClick={logToObject}>toObject</button>
       </div>

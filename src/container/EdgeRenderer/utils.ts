@@ -172,18 +172,26 @@ type SourceTargetNode = {
 };
 
 export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNode => {
-  return nodeHelper(nodes)
-    .flatten()
-    .reduce(
-      (res, node) => {
-        if (node.id === edge.source) {
-          res.sourceNode = node;
-        }
-        if (node.id === edge.target) {
-          res.targetNode = node;
-        }
-        return res;
-      },
-      { sourceNode: null, targetNode: null } as SourceTargetNode
-    );
+  const sourceNode = nodeHelper(nodes).find((n) => n.id === edge.source) || null;
+  const targetNode = nodeHelper(nodes).find((n) => n.id === edge.target) || null;
+
+  return {
+    sourceNode,
+    targetNode,
+  };
+
+  // return nodeHelper(nodes)
+  //   .flatten()
+  //   .reduce(
+  //     (res, node) => {
+  //       if (node.id === edge.source) {
+  //         res.sourceNode = node;
+  //       }
+  //       if (node.id === edge.target) {
+  //         res.targetNode = node;
+  //       }
+  //       return res;
+  //     },
+  //     { sourceNode: null, targetNode: null } as SourceTargetNode
+  //   );
 };
