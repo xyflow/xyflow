@@ -61,10 +61,9 @@ export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
     .join('&');
 };
 
-const connectionExists = (edge: Edge, elements: Edge[]) => {
-  return elements.some(
+const connectionExists = (edge: Edge, edges: Edge[]) => {
+  return edges.some(
     (el) =>
-      isEdge(el) &&
       el.source === edge.source &&
       el.target === edge.target &&
       (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
