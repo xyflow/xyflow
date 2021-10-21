@@ -77,7 +77,7 @@ function Nodes({
       typeof node.height !== 'undefined';
     let childRect;
 
-    const childNodes = nodes.filter((n) => n.parentNode === node.id);
+    const childNodes = nodes.filter((n) => n.parentNode === node.id && !n.isHidden);
 
     // if (childNodes.length) {
     //   console.log(node.id, childNodes, getRectOfNodes(childNodes));

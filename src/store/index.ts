@@ -38,6 +38,39 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
   isSelected,
 });
 
+// @todo needs refactoring / improvements
+function findMatchingNodes(id: string | undefined, nodes: Node[]): Node[] {
+  if (!id) {
+    return nodes.filter((n) => !!n.isSelected);
+  }
+
+  const result = [];
+  const children = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+
+    if (n.id === id) {
+      result.push(n);
+    }
+
+    if (n.parentNode === id) {
+      children.push(n);
+    }
+  }
+
+  for (let i = 0; i < children.length; i++) {
+    const n = children[i];
+    const matches = findMatchingNodes(n.id, nodes);
+
+    for (let j = 0; j < matches.length; j++) {
+      result.push(matches[j]);
+    }
+  }
+
+  return result;
+}
+
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
     width: 0,
@@ -150,37 +183,13 @@ const createStore = () =>
         return res;
       }, []);
 
-      // const nodesToChange: NodeChange[] = flattenNodes(nodes).reduce((res, node) => {
-      //   const update = updates.find((u) => u.id === node.id);
-      //   if (update) {
-      //     const dimensions = getDimensions(update.nodeElement);
-      //     const doUpdate =
-      //       dimensions.width &&
-      //       dimensions.height &&
-      //       (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate);
-
-      //     if (doUpdate) {
-      //       const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
-      //       const change = {
-      //         id: node.id,
-      //         type: 'dimensions',
-      //         dimensions,
-      //         handleBounds,
-      //       } as NodeChange;
-      //       res.push(change);
-      //     }
-      //   }
-
-      //   return res;
-      // }, initialChanges);
-
       onNodesChange?.(nodesToChange);
     },
     updateNodePosition: ({ id, diff, isDragging }: NodeDiffUpdate) => {
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = nodes.filter((n) => n.id === id || n.parentNode === id || !!n.isSelected);
+        const matchingNodes = findMatchingNodes(id, nodes);
 
         if (matchingNodes?.length) {
           onNodesChange(
