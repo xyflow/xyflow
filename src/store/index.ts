@@ -28,7 +28,6 @@ import {
   NodePositionChange,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
-import { nodeHelper } from '../utils/nodes';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -127,7 +126,7 @@ const createStore = () =>
       const { onNodesChange, nodes, transform } = get();
 
       const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
-        const node = nodeHelper(nodes).find((n) => n.id === update.id);
+        const node = nodes.find((n) => n.id === update.id);
 
         if (node) {
           const dimensions = getDimensions(update.nodeElement);
@@ -181,12 +180,11 @@ const createStore = () =>
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = nodeHelper(nodes).filter((n) => n.id === id || !!n.isSelected);
-        const changingNodes = nodeHelper(matchingNodes).flatten();
+        const matchingNodes = nodes.filter((n) => n.id === id || n.parentNode === id || !!n.isSelected);
 
-        if (changingNodes?.length) {
+        if (matchingNodes?.length) {
           onNodesChange(
-            changingNodes.map((n) => {
+            matchingNodes.map((n) => {
               const change: NodePositionChange = {
                 id: n.id,
                 type: 'position',
@@ -304,12 +302,10 @@ const createStore = () =>
     unselectNodesAndEdges: () => {
       const { nodes, edges, onNodesChange, onEdgesChange } = get();
 
-      const nodesToUnselect = nodeHelper(nodes)
-        .flatten()
-        .map((n) => {
-          n.isSelected = false;
-          return createNodeOrEdgeSelectionChange(false)(n);
-        }) as NodeChange[];
+      const nodesToUnselect = nodes.map((n) => {
+        n.isSelected = false;
+        return createNodeOrEdgeSelectionChange(false)(n);
+      }) as NodeChange[];
       const edgesToUnselect = edges.map(createNodeOrEdgeSelectionChange(false)) as EdgeChange[];
 
       if (nodesToUnselect.length) {

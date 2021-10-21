@@ -77,8 +77,16 @@ function Nodes({
       typeof node.height !== 'undefined';
     let childRect;
 
-    if (node.childNodes) {
-      childRect = getRectOfNodes(node.childNodes);
+    const childNodes = nodes.filter((n) => n.parentNode === node.id);
+
+    // if (childNodes.length) {
+    //   console.log(node.id, childNodes, getRectOfNodes(childNodes));
+    // }
+
+    // console.log(childNodes);
+
+    if (childNodes.length) {
+      childRect = getRectOfNodes(childNodes);
       node.position = node.isDragging
         ? node.position
         : { x: Math.round(childRect.x) - 10, y: Math.round(childRect.y) - 10 };
@@ -126,20 +134,6 @@ function Nodes({
           dragHandle={node.dragHandle}
           zIndex={3 + recursionDepth}
         />
-        {node.childNodes && (
-          <MemoizedNodes
-            nodes={node.childNodes}
-            snapToGrid={snapToGrid}
-            snapGrid={snapGrid}
-            nodesDraggable={nodesDraggable}
-            nodesConnectable={nodesConnectable}
-            resizeObserver={resizeObserver}
-            elementsSelectable={elementsSelectable}
-            scale={scale}
-            recursionDepth={recursionDepth + 1}
-            {...props}
-          />
-        )}
       </Fragment>
     );
   });

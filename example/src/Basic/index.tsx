@@ -13,7 +13,6 @@ import ReactFlow, {
   EdgeChange,
   OnLoadParams,
   Connection,
-  nodeHelper,
 } from 'react-flow-renderer';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
@@ -30,38 +29,35 @@ const initialNodes: Node[] = [
     position: { x: 400, y: 200 },
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
-    childNodes: [
-      {
-        id: '4a',
-        draggable: false,
-        data: { label: 'Node 4a', isNested: true },
-        position: { x: 400, y: 400 },
-        className: 'light',
-      },
-      {
-        id: '4b',
-        data: { label: 'Node 4b' },
-        position: { x: 500, y: 500 },
-        className: 'light',
-        style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
-        childNodes: [
-          {
-            id: '4b1',
-            draggable: false,
-            data: { label: 'Node 4b1', isNested: true },
-            position: { x: 450, y: 450 },
-            className: 'light',
-          },
-          {
-            id: '4b2',
-            draggable: false,
-            data: { label: 'Node 4b2', isNested: true },
-            position: { x: 550, y: 550 },
-            className: 'light',
-          },
-        ],
-      },
-    ],
+  },
+  {
+    id: '4a',
+    data: { label: 'Node 4a', isNested: true },
+    position: { x: 400, y: 400 },
+    className: 'light',
+    parentNode: '4',
+  },
+  {
+    id: '4b',
+    data: { label: 'Node 4b' },
+    position: { x: 500, y: 500 },
+    className: 'light',
+    style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
+    parentNode: '4',
+  },
+  {
+    id: '4b1',
+    data: { label: 'Node 4b1', isNested: true },
+    position: { x: 450, y: 450 },
+    className: 'light',
+    parentNode: '4b',
+  },
+  {
+    id: '4b2',
+    data: { label: 'Node 4b2', isNested: true },
+    position: { x: 550, y: 550 },
+    className: 'light',
+    parentNode: '4b',
   },
 ];
 
@@ -100,7 +96,7 @@ const BasicFlow = () => {
 
   const toggleClassnames = () => {
     setNodes((nds) => {
-      return nodeHelper(nds).map((n) => {
+      return nds.map((n) => {
         n.className = n.className === 'light' ? 'dark' : 'light';
         return n;
       });
@@ -109,8 +105,8 @@ const BasicFlow = () => {
 
   const toggleChildNodes = () => {
     setNodes((nds) => {
-      return nodeHelper(nds).map((n) => {
-        n.isHidden = n.data.isNested && !n.isHidden;
+      return nds.map((n) => {
+        n.isHidden = !!n.parentNode && !n.isHidden;
         return n;
       });
     });
