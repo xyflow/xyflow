@@ -14,7 +14,7 @@ import {
   HandleType,
   ReactFlowState,
 } from '../../types';
-import { flattenNodes } from '../../utils/graph';
+import { nodeHelper } from '../../utils/nodes';
 
 interface ConnectionLineProps {
   connectionNodeId: ElementId;
@@ -29,7 +29,7 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const nodesSelector = (s: ReactFlowState) => flattenNodes(s.nodes);
+const nodesSelector = (s: ReactFlowState) => nodeHelper(s.nodes).flatten();
 
 export default ({
   connectionNodeId,

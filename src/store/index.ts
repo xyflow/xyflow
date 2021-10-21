@@ -27,7 +27,8 @@ import {
   EdgeChange,
   NodePositionChange,
 } from '../types';
-import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges, flattenNodes } from '../utils/graph';
+import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
+import { nodeHelper } from '../utils/nodes';
 import { getHandleBounds } from '../components/Nodes/utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -37,50 +38,6 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
   type: 'select',
   isSelected,
 });
-
-const findNodeById = (id: string, nodes: Node[]): Node | null => {
-  let res = null;
-
-  for (let i = 0; i < nodes.length; i++) {
-    const n = nodes[i];
-
-    if (n.id === id) {
-      return n;
-    }
-
-    if (n.childNodes) {
-      res = findNodeById(id, n.childNodes);
-
-      if (res) {
-        return res;
-      }
-    }
-  }
-
-  return res;
-};
-
-const findNodes = (condition: (node: Node) => boolean, nodes: Node[]): Node[] => {
-  let res = [];
-
-  for (let i = 0; i < nodes.length; i++) {
-    const n = nodes[i];
-
-    if (condition(n)) {
-      res.push(n);
-    }
-
-    if (n.childNodes) {
-      const matches = findNodes(condition, n.childNodes);
-
-      for (let j = 0; j < matches.length; j++) {
-        res.push(matches[j]);
-      }
-    }
-  }
-
-  return res;
-};
 
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
@@ -170,7 +127,7 @@ const createStore = () =>
       const { onNodesChange, nodes, transform } = get();
 
       const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
-        const node = findNodeById(update.id, nodes);
+        const node = nodeHelper(nodes).find((n) => n.id === update.id);
 
         if (node) {
           const dimensions = getDimensions(update.nodeElement);
@@ -224,11 +181,12 @@ const createStore = () =>
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = flattenNodes(findNodes((n) => n.id === id || !!n.isSelected, nodes));
+        const matchingNodes = nodeHelper(nodes).filter((n) => n.id === id || !!n.isSelected);
+        const changingNodes = nodeHelper(matchingNodes).flatten();
 
-        if (matchingNodes?.length) {
+        if (changingNodes?.length) {
           onNodesChange(
-            matchingNodes.map((n) => {
+            changingNodes.map((n) => {
               const change: NodePositionChange = {
                 id: n.id,
                 type: 'position',
@@ -346,10 +304,12 @@ const createStore = () =>
     unselectNodesAndEdges: () => {
       const { nodes, edges, onNodesChange, onEdgesChange } = get();
 
-      const nodesToUnselect = flattenNodes(nodes).map((n) => {
-        n.isSelected = false;
-        return createNodeOrEdgeSelectionChange(false)(n);
-      }) as NodeChange[];
+      const nodesToUnselect = nodeHelper(nodes)
+        .flatten()
+        .map((n) => {
+          n.isSelected = false;
+          return createNodeOrEdgeSelectionChange(false)(n);
+        }) as NodeChange[];
       const edgesToUnselect = edges.map(createNodeOrEdgeSelectionChange(false)) as EdgeChange[];
 
       if (nodesToUnselect.length) {

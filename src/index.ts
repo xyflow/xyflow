@@ -25,6 +25,9 @@ export {
   applyNodeChanges,
   applyEdgeChanges,
 } from './utils/graph';
+
+export { nodeHelper } from './utils/nodes';
+
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
 

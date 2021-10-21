@@ -13,6 +13,7 @@ import ReactFlow, {
   EdgeChange,
   OnLoadParams,
   Connection,
+  nodeHelper,
 } from 'react-flow-renderer';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
@@ -79,9 +80,8 @@ const BasicFlow = () => {
 
   const toggleClassnames = () => {
     setNodes((nds) => {
-      return nds.map((n) => {
+      return nodeHelper(nds).map((n) => {
         n.className = n.className === 'light' ? 'dark' : 'light';
-
         return n;
       });
     });
