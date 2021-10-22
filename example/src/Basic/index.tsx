@@ -1,4 +1,4 @@
-import { useState, MouseEvent, useCallback } from 'react';
+import { useState, useMemo, MouseEvent, useCallback } from 'react';
 
 import ReactFlow, {
   addEdge,
@@ -26,21 +26,23 @@ const initialNodes: Node[] = [
   {
     id: '4',
     data: { label: 'Node 4' },
-    position: { x: 400, y: 200 },
+    position: { x: 0, y: 0 },
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
+    width: 0,
+    height: 0,
   },
   {
     id: '4a',
     data: { label: 'Node 4a' },
-    position: { x: 400, y: 400 },
+    position: { x: 70, y: 200 },
     className: 'light',
     parentNode: '4',
   },
   {
     id: '4b',
     data: { label: 'Node 4b' },
-    position: { x: 500, y: 500 },
+    position: { x: 0, y: 0 },
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
     parentNode: '4',
@@ -48,14 +50,14 @@ const initialNodes: Node[] = [
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
-    position: { x: 450, y: 450 },
+    position: { x: 150, y: 270 },
     className: 'light',
     parentNode: '4b',
   },
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
-    position: { x: 550, y: 550 },
+    position: { x: 420, y: 370 },
     className: 'light',
     parentNode: '4b',
   },
@@ -64,6 +66,13 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
+  { id: 'e2-4a', source: '2', target: '4a', animated: true },
+  { id: 'e3-4', source: '3', target: '4' },
+  { id: 'e3-4b', source: '3', target: '4b' },
+  { id: 'e3-4b2', source: '3', target: '4b2' },
+  { id: 'e4a-4b1', source: '4a', target: '4b1' },
+  { id: 'e4a-4b2', source: '4a', target: '4b2' },
+  { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
 ];
 
 const BasicFlow = () => {
@@ -120,9 +129,18 @@ const BasicFlow = () => {
     setEdges((es) => applyEdgeChanges(changes, es));
   }, []);
 
+  const nodesWithLabel = useMemo(
+    () =>
+      nodes.map((n) => {
+        n.data = { ...n.data, label: `${n.width}x${n.height}` };
+        return n;
+      }),
+    [nodes]
+  );
+
   return (
     <ReactFlow
-      nodes={nodes}
+      nodes={nodesWithLabel}
       edges={edges}
       onLoad={onLoad}
       onNodesChange={onNodesChange}
