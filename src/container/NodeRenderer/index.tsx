@@ -31,7 +31,7 @@ const selector = (s: ReactFlowState) => ({
 });
 
 interface NodesProps extends NodeRendererProps {
-  nodes?: Node[];
+  nodes: Node[];
   isDraggable?: boolean;
   resizeObserver: ResizeObserver | null;
   scale: number;
@@ -41,10 +41,12 @@ interface NodesProps extends NodeRendererProps {
   nodesConnectable: boolean;
   elementsSelectable: boolean;
   recursionDepth: number;
+  parentId?: string;
 }
 
 function Nodes({
-  nodes = [],
+  nodes,
+  parentId,
   isDraggable,
   resizeObserver,
   scale,
@@ -56,7 +58,12 @@ function Nodes({
   recursionDepth,
   ...props
 }: NodesProps): any {
-  return nodes.map((node) => {
+  const rootNodes = useMemo(
+    () => (parentId ? nodes.filter((n) => n.parentNode === parentId) : nodes.filter((n) => !n.parentNode)),
+    [nodes, parentId]
+  );
+
+  return rootNodes.map((node) => {
     const nodeType = node.type || 'default';
 
     if (!props.nodeTypes[nodeType]) {
@@ -75,18 +82,11 @@ function Nodes({
       node.height !== null &&
       typeof node.width !== 'undefined' &&
       typeof node.height !== 'undefined';
-    let childRect;
 
     const childNodes = nodes.filter((n) => n.parentNode === node.id && !n.isHidden);
 
-    // if (childNodes.length) {
-    //   console.log(node.id, childNodes, getRectOfNodes(childNodes));
-    // }
-
-    // console.log(childNodes);
-
     if (childNodes.length) {
-      childRect = getRectOfNodes(childNodes);
+      const childRect = getRectOfNodes(childNodes);
       node.position = node.isDragging
         ? node.position
         : { x: Math.round(childRect.x) - 10, y: Math.round(childRect.y) - 10 };
@@ -130,9 +130,22 @@ function Nodes({
           isDraggable={isNodeDraggable}
           isSelectable={isSelectable}
           isConnectable={isConnectable}
-          resizeObserver={resizeObserver}
+          resizeObserver={childNodes.length ? resizeObserver : null}
           dragHandle={node.dragHandle}
           zIndex={3 + recursionDepth}
+        />
+        <MemoizedNodes
+          nodes={nodes}
+          parentId={node.id}
+          snapToGrid={snapToGrid}
+          snapGrid={snapGrid}
+          nodesDraggable={nodesDraggable}
+          nodesConnectable={nodesConnectable}
+          resizeObserver={resizeObserver}
+          elementsSelectable={elementsSelectable}
+          scale={scale}
+          recursionDepth={recursionDepth + 1}
+          {...props}
         />
       </Fragment>
     );

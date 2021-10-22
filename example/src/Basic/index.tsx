@@ -32,7 +32,7 @@ const initialNodes: Node[] = [
   },
   {
     id: '4a',
-    data: { label: 'Node 4a', isNested: true },
+    data: { label: 'Node 4a' },
     position: { x: 400, y: 400 },
     className: 'light',
     parentNode: '4',
@@ -47,14 +47,14 @@ const initialNodes: Node[] = [
   },
   {
     id: '4b1',
-    data: { label: 'Node 4b1', isNested: true },
+    data: { label: 'Node 4b1' },
     position: { x: 450, y: 450 },
     className: 'light',
     parentNode: '4b',
   },
   {
     id: '4b2',
-    data: { label: 'Node 4b2', isNested: true },
+    data: { label: 'Node 4b2' },
     position: { x: 550, y: 550 },
     className: 'light',
     parentNode: '4b',
@@ -135,6 +135,7 @@ const BasicFlow = () => {
       defaultZoom={1.5}
       minZoom={0.2}
       maxZoom={4}
+      onlyRenderVisibleElements={false}
     >
       <MiniMap />
       <Controls />
