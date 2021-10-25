@@ -83,14 +83,14 @@ function Node({
   const childRect = useMemo(() => getRectOfNodes(childNodes), [childNodes]);
   const isParentNode = !!childNodes.length;
 
-  node.style = useMemo(() => {
+  const style = useMemo(() => {
     if (isParentNode) {
       return {
         ...node.style,
         width: Math.floor(childRect.width) + 20,
         height: Math.floor(childRect.height) + 20,
         boxSizing: 'border-box',
-      };
+      } as React.CSSProperties;
     }
     return node.style;
   }, [childRect.width, childRect.height, isParentNode, node.style]);
@@ -111,7 +111,7 @@ function Node({
     <NodeComponent
       id={node.id}
       className={node.className}
-      style={node.style}
+      style={style}
       type={nodeType}
       data={node.data}
       sourcePosition={node.sourcePosition}
