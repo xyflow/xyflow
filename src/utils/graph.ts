@@ -301,16 +301,21 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
 
     if (currentChange) {
       switch (currentChange.type) {
-        case 'dimensions': {
-          res.push({ ...item, ...currentChange.dimensions, handleBounds: currentChange.handleBounds });
-          return res;
-        }
         case 'select': {
           res.push({ ...item, isSelected: currentChange.isSelected });
           return res;
         }
-        case 'position': {
+        case 'dimensions': {
           const updateItem = { ...item };
+
+          if (typeof currentChange.dimensions !== 'undefined') {
+            updateItem.width = currentChange.dimensions.width;
+            updateItem.height = currentChange.dimensions.height;
+          }
+
+          if (typeof currentChange.handleBounds !== 'undefined') {
+            updateItem.handleBounds = currentChange.handleBounds;
+          }
 
           if (typeof currentChange.position !== 'undefined') {
             updateItem.position = currentChange.position;

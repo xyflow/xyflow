@@ -26,38 +26,40 @@ const initialNodes: Node[] = [
   {
     id: '4',
     data: { label: 'Node 4' },
-    position: { x: 0, y: 0 },
+    position: { x: 100, y: 200 },
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
-    width: 0,
-    height: 0,
+    width: 600,
+    height: 300,
   },
   {
     id: '4a',
     data: { label: 'Node 4a' },
-    position: { x: 70, y: 200 },
+    position: { x: 115, y: 215 },
     className: 'light',
     parentNode: '4',
   },
   {
     id: '4b',
     data: { label: 'Node 4b' },
-    position: { x: 0, y: 0 },
+    position: { x: 250, y: 250 },
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
     parentNode: '4',
+    height: 200,
+    width: 350,
   },
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
-    position: { x: 150, y: 270 },
+    position: { x: 270, y: 270 },
     className: 'light',
     parentNode: '4b',
   },
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
-    position: { x: 420, y: 370 },
+    position: { x: 500, y: 400 },
     className: 'light',
     parentNode: '4b',
   },
@@ -129,18 +131,9 @@ const BasicFlow = () => {
     setEdges((es) => applyEdgeChanges(changes, es));
   }, []);
 
-  const nodesWithLabel = useMemo(
-    () =>
-      nodes.map((n) => {
-        n.data = { ...n.data, label: `${n.width}x${n.height}` };
-        return n;
-      }),
-    [nodes]
-  );
-
   return (
     <ReactFlow
-      nodes={nodesWithLabel}
+      nodes={nodes}
       edges={edges}
       onLoad={onLoad}
       onNodesChange={onNodesChange}

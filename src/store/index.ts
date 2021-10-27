@@ -25,7 +25,7 @@ import {
   OnNodesChange,
   OnEdgesChange,
   EdgeChange,
-  NodePositionChange,
+  NodeDimensionChange,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -194,9 +194,9 @@ const createStore = () =>
         if (matchingNodes?.length) {
           onNodesChange(
             matchingNodes.map((n) => {
-              const change: NodePositionChange = {
+              const change: NodeDimensionChange = {
                 id: n.id,
-                type: 'position',
+                type: 'dimensions',
                 isDragging: !!isDragging,
               };
 

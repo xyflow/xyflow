@@ -12,15 +12,12 @@ export type Transform = [number, number, number];
 export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
-  dimensions: Dimensions;
-  handleBounds?: NodeHandleBounds;
-};
-export type NodePositionChange = {
-  id: string;
-  type: 'position';
+  dimensions?: Dimensions;
   position?: XYPosition;
+  handleBounds?: NodeHandleBounds;
   isDragging?: boolean;
 };
+
 export type NodeSelectionChange = {
   id: string;
   type: 'select';
@@ -30,7 +27,7 @@ export type NodeRemoveChange = {
   id: string;
   type: 'remove';
 };
-export type NodeChange = NodeDimensionChange | NodePositionChange | NodeSelectionChange | NodeRemoveChange;
+export type NodeChange = NodeDimensionChange | NodeSelectionChange | NodeRemoveChange;
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;
@@ -277,6 +274,8 @@ export interface WrapNodeProps<T = any> {
   scale: number;
   xPos: number;
   yPos: number;
+  width?: number | null;
+  height?: number | null;
   isSelectable: boolean;
   isDraggable: boolean;
   isConnectable: boolean;
@@ -302,6 +301,7 @@ export interface WrapNodeProps<T = any> {
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;
   zIndex: number;
+  isParentNode: boolean;
 }
 
 export type FitViewParams = {

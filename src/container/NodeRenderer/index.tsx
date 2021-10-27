@@ -1,9 +1,8 @@
-import React, { memo, useMemo, ComponentType, MouseEvent, Fragment, useEffect } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent, Fragment } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps, SnapGrid } from '../../types';
-import { getRectOfNodes } from '../../utils/graph';
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -63,7 +62,7 @@ function Node({
   recursionDepth,
   ...props
 }: NodeProps) {
-  const onNodesChange = useStore((s) => s.onNodesChange);
+  // const onNodesChange = useStore((s) => s.onNodesChange);
   const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
   const isNodeDraggable =
     typeof isDraggable !== 'undefined'
@@ -77,39 +76,13 @@ function Node({
     typeof node.width !== 'undefined' &&
     typeof node.height !== 'undefined';
 
-  const { childNodes = [] } = node;
-  const childRect = useMemo(() => getRectOfNodes(childNodes), [childNodes]);
-  const isParentNode = !!childNodes.length;
-
-  const style = useMemo(() => {
-    if (isParentNode) {
-      return {
-        ...node.style,
-        width: Math.floor(childRect.width) + 20,
-        height: Math.floor(childRect.height) + 20,
-        boxSizing: 'border-box',
-      } as React.CSSProperties;
-    }
-    return node.style;
-  }, [childRect.width, childRect.height, isParentNode, node.style]);
-
-  useEffect(() => {
-    if (onNodesChange && isParentNode) {
-      onNodesChange([
-        {
-          type: 'position',
-          id: node.id,
-          position: { x: Math.floor(childRect.x) - 10, y: Math.floor(childRect.y) - 10 },
-        },
-      ]);
-    }
-  }, [childRect.width, childRect.height, childRect.x, childRect.y, isParentNode]);
+  const isParentNode = !!node.childNodes?.length;
 
   return (
     <NodeComponent
       id={node.id}
       className={node.className}
-      style={style}
+      style={node.style}
       type={nodeType}
       data={node.data}
       sourcePosition={node.sourcePosition}
@@ -117,6 +90,8 @@ function Node({
       isHidden={node.isHidden}
       xPos={node.position.x}
       yPos={node.position.y}
+      width={node.width}
+      height={node.height}
       isDragging={node.isDragging}
       isInitialized={isInitialized}
       snapGrid={snapGrid}
@@ -139,6 +114,7 @@ function Node({
       resizeObserver={resizeObserver}
       dragHandle={node.dragHandle}
       zIndex={3 + recursionDepth}
+      isParentNode={isParentNode}
     />
   );
 }

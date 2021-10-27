@@ -23,6 +23,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     scale,
     xPos,
     yPos,
+    width,
+    height,
     isSelected,
     onClick,
     onMouseEnter,
@@ -49,6 +51,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     resizeObserver,
     dragHandle,
     zIndex,
+    isParentNode,
   }: WrapNodeProps) => {
     const {
       addSelectedElements,
@@ -70,6 +73,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
         // prevents jumping of nodes on start
         // opacity: isInitialized ? 1 : 0,
+        width: isParentNode && width !== null ? width : 'auto',
+        height: isParentNode && height !== null ? height : 'auto',
         ...style,
       }),
       [
@@ -84,6 +89,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onMouseEnter,
         onMouseMove,
         onMouseLeave,
+        isParentNode,
       ]
     );
 
@@ -200,10 +206,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     useEffect(() => {
-      if (nodeElement.current && !isHidden && !isInitialized) {
+      if (nodeElement.current && !isHidden && (!isInitialized || isParentNode)) {
         updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
       }
-    }, [id, isHidden, sourcePosition, targetPosition, isInitialized]);
+    }, [id, isHidden, sourcePosition, targetPosition, isInitialized, isParentNode]);
 
     useEffect(() => {
       if (nodeElement.current) {
@@ -225,6 +231,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       {
         selected: isSelected,
         selectable: isSelectable,
+        parent: isParentNode,
       },
     ]);
 

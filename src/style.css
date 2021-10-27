@@ -95,6 +95,7 @@
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
+  box-sizing: border-box;
 }
 
 .react-flow__nodesselection {
