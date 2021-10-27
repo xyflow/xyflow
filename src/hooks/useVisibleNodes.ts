@@ -2,7 +2,26 @@ import { useCallback } from 'react';
 
 import { useStore } from '../store';
 import { getNodesInside } from '../utils/graph';
-import { ReactFlowState } from '../types';
+import { ReactFlowState, Node } from '../types';
+
+function getChildNodes(nodes: Node[], parent?: Node): Node[] {
+  const children: Node[] = [];
+  const remaining: Node[] = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n = nodes[i];
+    if ((!parent && !n.parentNode) || n.parentNode === parent?.id) {
+      children.push(n);
+    } else {
+      remaining.push(n);
+    }
+  }
+
+  return children.map((child) => {
+    child.childNodes = getChildNodes(remaining, child);
+    return child;
+  });
+}
 
 function useVisibleNodes(onlyRenderVisible: boolean) {
   const nodes = useStore(
@@ -16,7 +35,7 @@ function useVisibleNodes(onlyRenderVisible: boolean) {
     )
   );
 
-  return nodes;
+  return getChildNodes(nodes);
 }
 
 export default useVisibleNodes;

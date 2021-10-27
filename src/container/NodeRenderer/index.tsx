@@ -44,14 +44,12 @@ interface NodesProps extends NodeRendererProps {
   parentId?: string;
 }
 
-interface NodeProps extends NodesProps {
-  nodes: Node[];
+interface NodeProps extends Omit<NodesProps, 'nodes'> {
   node: Node;
   nodeType: string;
 }
 
 function Node({
-  nodes,
   node,
   nodeType,
   isDraggable,
@@ -79,7 +77,7 @@ function Node({
     typeof node.width !== 'undefined' &&
     typeof node.height !== 'undefined';
 
-  const childNodes = useMemo(() => nodes.filter((n) => n.parentNode === node.id && !n.isHidden), [nodes, node.id]);
+  const { childNodes = [] } = node;
   const childRect = useMemo(() => getRectOfNodes(childNodes), [childNodes]);
   const isParentNode = !!childNodes.length;
 
@@ -147,7 +145,6 @@ function Node({
 
 function Nodes({
   nodes,
-  parentId,
   isDraggable,
   resizeObserver,
   scale,
@@ -159,12 +156,7 @@ function Nodes({
   recursionDepth,
   ...props
 }: NodesProps): any {
-  const rootNodes = useMemo(
-    () => (parentId ? nodes.filter((n) => n.parentNode === parentId) : nodes.filter((n) => !n.parentNode)),
-    [nodes, parentId]
-  );
-
-  return rootNodes.map((node) => {
+  return nodes.map((node) => {
     const nodeType = node.type || 'default';
 
     if (!props.nodeTypes[nodeType]) {
@@ -175,7 +167,6 @@ function Nodes({
       <Fragment key={node.id}>
         <Node
           node={node}
-          nodes={nodes}
           nodeType={nodeType}
           parentId={node.id}
           snapToGrid={snapToGrid}
@@ -188,19 +179,21 @@ function Nodes({
           recursionDepth={recursionDepth}
           {...props}
         />
-        <MemoizedNodes
-          nodes={nodes}
-          parentId={node.id}
-          snapToGrid={snapToGrid}
-          snapGrid={snapGrid}
-          nodesDraggable={nodesDraggable}
-          nodesConnectable={nodesConnectable}
-          resizeObserver={resizeObserver}
-          elementsSelectable={elementsSelectable}
-          scale={scale}
-          recursionDepth={recursionDepth + 1}
-          {...props}
-        />
+        {node.childNodes && node.childNodes.length > 0 && (
+          <MemoizedNodes
+            nodes={node.childNodes}
+            parentId={node.id}
+            snapToGrid={snapToGrid}
+            snapGrid={snapGrid}
+            nodesDraggable={nodesDraggable}
+            nodesConnectable={nodesConnectable}
+            resizeObserver={resizeObserver}
+            elementsSelectable={elementsSelectable}
+            scale={scale}
+            recursionDepth={recursionDepth + 1}
+            {...props}
+          />
+        )}
       </Fragment>
     );
   });

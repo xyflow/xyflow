@@ -87,6 +87,7 @@ export interface Node<T = any> {
   height?: number | null;
   handleBounds?: NodeHandleBounds;
   parentNode?: ElementId;
+  childNodes?: Node[];
 }
 
 export enum ArrowHeadType {
