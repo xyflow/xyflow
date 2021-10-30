@@ -29,7 +29,8 @@ const initialElements: Elements = [
   { id: '2a', data: { label: 'Node 2a' }, position: { x: 0, y: 180 } },
   { id: '3', data: { label: 'Node 3' }, position: { x: 250, y: 200 } },
   { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 300 } },
-  { id: '3a', data: { label: 'Node 3a' }, position: { x: 150, y: 300 } },
+  { id: '3a', data: { label: 'Node 3a' }, position: { x: 200, y: 300 } },
+  { id: '3b', data: { label: 'Node 3b' }, position: { x: 0, y: 300 } },
   { id: '5', data: { label: 'Node 5' }, position: { x: 250, y: 400 } },
   { id: '6', type: 'output', data: { label: 'Output 6' }, position: { x: 50, y: 550 } },
   { id: '7', type: 'output', data: { label: 'Output 7' }, position: { x: 250, y: 550 } },
@@ -80,6 +81,13 @@ const initialElements: Elements = [
     target: '9',
     type: 'custom2',
     data: { text: 'custom edge 2' },
+  },
+  {
+    id: 'e3b-2',
+    source: '3b',
+    target: '2',
+    type: 'pathfinding',
+    arrowHeadType: ArrowHeadType.ArrowClosed,
   },
 ];
 

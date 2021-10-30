@@ -15,7 +15,7 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
-import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
+import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge, PathFindingEdge } from '../../components/Edges';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {
@@ -54,6 +54,7 @@ const defaultEdgeTypes = {
   straight: StraightEdge,
   step: StepEdge,
   smoothstep: SmoothStepEdge,
+  pathfinding: PathFindingEdge,
 };
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {

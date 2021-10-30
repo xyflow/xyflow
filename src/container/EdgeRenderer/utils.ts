@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 
-import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
+import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge, PathFindingEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
 import { rectToBox } from '../../utils/graph';
 
@@ -22,6 +22,7 @@ export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
     straight: wrapEdge((edgeTypes.bezier || StraightEdge) as ComponentType<EdgeProps>),
     step: wrapEdge((edgeTypes.step || StepEdge) as ComponentType<EdgeProps>),
     smoothstep: wrapEdge((edgeTypes.step || SmoothStepEdge) as ComponentType<EdgeProps>),
+    pathfinding: wrapEdge((edgeTypes.pathfinding || PathFindingEdge) as ComponentType<EdgeProps>),
   };
 
   const wrappedTypes = {} as EdgeTypesType;
