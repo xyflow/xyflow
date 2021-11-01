@@ -52,6 +52,8 @@ export function getSmoothStepPath({
   const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
   const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
 
+  console.log(sourcePosition, targetPosition);
+
   let firstCornerPath = null;
   let secondCornerPath = null;
 
@@ -73,8 +75,12 @@ export function getSmoothStepPath({
         sourceY <= targetY ? rightTopCorner(cX, sourceY, cornerSize) : rightBottomCorner(cX, sourceY, cornerSize);
       secondCornerPath =
         sourceY <= targetY ? bottomLeftCorner(cX, targetY, cornerSize) : topLeftCorner(cX, targetY, cornerSize);
-    } else if (sourcePosition === Position.Right && targetPosition === Position.Left){
-    // and sourceX > targetX
+    } else if (
+      (sourcePosition === Position.Right && targetPosition === Position.Left) ||
+      (sourcePosition === Position.Left && targetPosition === Position.Right) ||
+      (sourcePosition === Position.Left && targetPosition === Position.Left)
+    ) {
+      // and sourceX > targetX
       firstCornerPath =
         sourceY <= targetY ? leftTopCorner(cX, sourceY, cornerSize) : leftBottomCorner(cX, sourceY, cornerSize);
       secondCornerPath =
