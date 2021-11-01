@@ -293,10 +293,6 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
   const initElements: any[] = [];
 
   return elements.reduce((res: any[], item: any) => {
-    if (item.childNodes) {
-      item.childNodes = applyChanges(changes, item.childNodes);
-    }
-
     const currentChange = changes.find((c) => c.id === item.id);
 
     if (currentChange) {

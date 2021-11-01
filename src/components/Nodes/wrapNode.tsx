@@ -90,6 +90,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onMouseMove,
         onMouseLeave,
         isParentNode,
+        width,
+        height,
       ]
     );
 
