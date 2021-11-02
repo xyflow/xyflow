@@ -208,10 +208,10 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     useEffect(() => {
-      if (nodeElement.current && !isHidden) {
+      if (nodeElement.current && (!isHidden || !isInitialized)) {
         updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
       }
-    }, [id, isHidden, sourcePosition, targetPosition]);
+    }, [id, isHidden, sourcePosition, targetPosition, isInitialized]);
 
     useEffect(() => {
       if (nodeElement.current) {
