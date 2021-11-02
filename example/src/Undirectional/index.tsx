@@ -204,7 +204,7 @@ const UpdateNodeInternalsFlow = () => {
       nodeTypes={nodeTypes}
       onConnect={onConnect}
       onPaneClick={onPaneClick}
-      connectionLineType={ConnectionLineType.SmoothStep}
+      connectionLineType={ConnectionLineType.Bezier}
       connectionMode={ConnectionMode.Loose}
       onEdgeUpdate={onEdgeUpdate}
     />
