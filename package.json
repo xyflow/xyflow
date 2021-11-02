@@ -75,8 +75,8 @@
     "typescript": "^4.4.4"
   },
   "peerDependencies": {
-    "react": "16 || 17",
-    "react-dom": "16 || 17"
+    "react": "16 || 17",
+    "react-dom": "16 || 17"
   },
   "files": [
     "dist",
