@@ -19,7 +19,10 @@ import ReactFlow, {
 
 import ColorSelectorNode from './ColorSelectorNode';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => console.log('flow loaded:', reactFlowInstance);
+const onLoad = (reactFlowInstance: OnLoadParams) => {
+  console.log('flow loaded:', reactFlowInstance);
+  reactFlowInstance.fitView();
+};
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 

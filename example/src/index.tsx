@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import UpdateNode from './UpdateNode';
 import Stress from './Stress';
 import CustomNode from './CustomNode';
 import FloatingEdges from './FloatingEdges';
+import Layouting from './Layouting';
 
 import './index.css';
 
@@ -30,6 +31,10 @@ const routes = [
   {
     path: '/floating-edges',
     component: FloatingEdges,
+  },
+  {
+    path: '/layouting',
+    component: Layouting,
   },
 ];
 

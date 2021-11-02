@@ -1,8 +1,8 @@
-import { Elements, XYPosition } from 'react-flow-renderer';
+import { Node, Edge, XYPosition } from 'react-flow-renderer';
 
 const position: XYPosition = { x: 0, y: 0 };
 
-const elements: Elements = [
+const nodes: Node[] = [
   {
     id: '1',
     type: 'input',
@@ -56,6 +56,9 @@ const elements: Elements = [
     position,
   },
   { id: '7', type: 'output', data: { label: 'output' }, position: { x: 400, y: 450 } },
+];
+
+const edges: Edge[] = [
   { id: 'e12', source: '1', target: '2', type: 'smoothstep' },
   { id: 'e13', source: '1', target: '3', type: 'smoothstep' },
   { id: 'e22a', source: '2', target: '2a', type: 'smoothstep' },
@@ -68,4 +71,6 @@ const elements: Elements = [
   { id: 'e57', source: '5', target: '7', type: 'smoothstep' },
 ];
 
-export default elements;
+const nodesAndEdges = { nodes, edges };
+
+export default nodesAndEdges;
