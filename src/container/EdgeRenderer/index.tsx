@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, getSourceTargetNodes } from './utils';
+import { getEdgePositions, getHandle } from './utils';
 import {
   Position,
   Edge,
@@ -17,6 +17,7 @@ import {
   NodeHandleBounds,
 } from '../../types';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
+import useNodeLookup from '../../hooks/useNodeLookup';
 
 interface EdgeRendererProps {
   edgeTypes: any;
@@ -232,8 +233,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     width,
     height,
     connectionMode,
-    nodes,
   } = useStore(selector, shallow);
+  const nodeLookup = useNodeLookup();
 
   const edges = useVisibleEdges(props.onlyRenderVisibleElements);
 
@@ -250,20 +251,22 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
       <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
         {edges.map((edge: Edge) => {
           // @todo: getSourceTargetNodes is called many times during dragging/creating edges
-          const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
+          const sourceNode = nodeLookup.current.get(edge.source);
+          const targetNode = nodeLookup.current.get(edge.target);
+
           return (
             <Edge
               key={edge.id}
               edge={edge}
               sourceNodeWidth={sourceNode?.width}
               sourceNodeHeight={sourceNode?.height}
-              sourceNodeX={sourceNode?.position.x}
-              sourceNodeY={sourceNode?.position.y}
+              sourceNodeX={sourceNode?.positionAbsolute?.x}
+              sourceNodeY={sourceNode?.positionAbsolute?.y}
               sourceNodeHandleBounds={sourceNode?.handleBounds}
               targetNodeWidth={targetNode?.width}
               targetNodeHeight={targetNode?.height}
-              targetNodeX={targetNode?.position.x}
-              targetNodeY={targetNode?.position.y}
+              targetNodeX={targetNode?.positionAbsolute?.x}
+              targetNodeY={targetNode?.positionAbsolute?.y}
               targetNodeHandleBounds={targetNode?.handleBounds}
               elementsSelectable={elementsSelectable}
               onEdgeContextMenu={props.onEdgeContextMenu}

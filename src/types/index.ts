@@ -458,11 +458,23 @@ export type InitD3ZoomPayload = {
 export type OnNodesChange = (nodes: NodeChange[]) => void;
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
+export type NodeLookupItem = {
+  width?: number | null;
+  height?: number | null;
+  parentNode?: ElementId;
+  position?: XYPosition;
+  positionAbsolute?: XYPosition;
+  handleBounds?: NodeHandleBounds;
+};
+
+export type NodeLookup = Map<ElementId, NodeLookupItem>;
+
 export interface ReactFlowState {
   width: number;
   height: number;
   transform: Transform;
   nodes: Node[];
+  nodeLookup: NodeLookup;
   edges: Edge[];
   selectedNodesBbox: Rect;
   onNodesChange: OnNodesChange | null;
@@ -542,3 +554,8 @@ export interface ReactFlowState {
 export type UpdateNodeInternals = (nodeId: ElementId) => void;
 
 export type OnSelectionChangeFunc = (params: { nodes: Node[]; edges: Edge[] }) => void;
+
+export type NodeRendererNode = {
+  childNodes?: NodeRendererNode[];
+  node: Node;
+};

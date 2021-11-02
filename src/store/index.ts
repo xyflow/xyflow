@@ -26,6 +26,8 @@ import {
   OnEdgesChange,
   EdgeChange,
   NodeDimensionChange,
+  NodeLookup,
+  NodeLookupItem,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -39,36 +41,53 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
 });
 
 // @todo needs refactoring / improvements
-function findMatchingNodes(id: string | undefined, nodes: Node[]): Node[] {
-  if (!id) {
-    return nodes.filter((n) => !!n.isSelected);
+// function findMatchingNodes(id: string | undefined, nodes: Node[]): Node[] {
+//   if (!id) {
+//     return nodes.filter((n) => !!n.isSelected);
+//   }
+
+//   const result = [];
+//   const children = [];
+
+//   for (let i = 0; i < nodes.length; i++) {
+//     const n = nodes[i];
+
+//     if (n.id === id) {
+//       result.push(n);
+//     }
+
+//     if (n.parentNode === id) {
+//       children.push(n);
+//     }
+//   }
+
+//   for (let i = 0; i < children.length; i++) {
+//     const n = children[i];
+//     const matches = findMatchingNodes(n.id, nodes);
+
+//     for (let j = 0; j < matches.length; j++) {
+//       result.push(matches[j]);
+//     }
+//   }
+
+//   return result;
+// }
+
+function addPositions(posA: XYPosition, posB: XYPosition): XYPosition {
+  return {
+    x: (posA.x ?? 0) + (posB.x ?? 0),
+    y: (posA.y ?? 0) + (posB.y ?? 0),
+  };
+}
+
+function getAbsolutePosition(node: NodeLookupItem, nodeLookup: NodeLookup, result: XYPosition): XYPosition {
+  const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : false;
+
+  if (!parentNode) {
+    return result;
   }
 
-  const result = [];
-  const children = [];
-
-  for (let i = 0; i < nodes.length; i++) {
-    const n = nodes[i];
-
-    if (n.id === id) {
-      result.push(n);
-    }
-
-    if (n.parentNode === id) {
-      children.push(n);
-    }
-  }
-
-  for (let i = 0; i < children.length; i++) {
-    const n = children[i];
-    const matches = findMatchingNodes(n.id, nodes);
-
-    for (let j = 0; j < matches.length; j++) {
-      result.push(matches[j]);
-    }
-  }
-
-  return result;
+  return getAbsolutePosition(parentNode, nodeLookup, addPositions(result, parentNode.position || { x: 0, y: 0 }));
 }
 
 const createStore = () =>
@@ -127,36 +146,45 @@ const createStore = () =>
 
     reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
-    setNodes: (propNodes: Node[]) => {
-      const { nodes } = get();
+    nodeLookup: new Map(),
 
-      const nextNodes = propNodes.map((propNode: Node) => {
-        const storeNode = nodes.find((node) => node.id === propNode.id);
+    setNodes: (nodes: Node[]) => {
+      const { nodeLookup } = get();
 
-        if (storeNode) {
-          if (typeof propNode.type !== 'undefined' && propNode.type !== storeNode.type) {
-            // we reset the elements dimensions here in order to force a re-calculation of the bounds.
-            // When the type of a node changes it is possible that the number or positions of handles changes too.
-            return {
-              ...propNode,
-              width: null,
-              height: null,
-            };
-          }
+      nodes.forEach((node) => {
+        const lookupNode = {
+          ...nodeLookup.get(node.id),
+          width: node.width || null,
+          height: node.height || null,
+          position: node.position,
+          positionAbsolute: node.position,
+        };
+        if (node.parentNode) {
+          lookupNode.parentNode = node.parentNode;
         }
-
-        return propNode;
+        nodeLookup.set(node.id, lookupNode);
       });
 
-      set({
-        nodes: nextNodes,
-      });
+      nodes
+        .filter((node) => node.parentNode)
+        .forEach((node) => {
+          const positionAbsolute = getAbsolutePosition(node, nodeLookup, node.position);
+
+          if (positionAbsolute) {
+            nodeLookup.set(node.id, {
+              ...nodeLookup.get(node.id),
+              positionAbsolute,
+            });
+          }
+        });
+
+      set({ nodes });
     },
     setEdges: (edges: Edge[]) => {
       set({ edges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, nodes, transform } = get();
+      const { onNodesChange, nodes, transform, nodeLookup } = get();
 
       const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
         const node = nodes.find((n) => n.id === update.id);
@@ -170,6 +198,8 @@ const createStore = () =>
 
           if (doUpdate) {
             const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
+            nodeLookup.set(node.id, { ...nodeLookup.get(node.id), handleBounds });
+
             const change = {
               id: node.id,
               type: 'dimensions',
@@ -189,13 +219,13 @@ const createStore = () =>
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = findMatchingNodes(id, nodes);
+        const matchingNodes = nodes.filter((n) => !!n.isSelected || n.id === id);
 
         if (matchingNodes?.length) {
           onNodesChange(
-            matchingNodes.map((n) => {
+            matchingNodes.map((node) => {
               const change: NodeDimensionChange = {
-                id: n.id,
+                id: node.id,
                 type: 'dimensions',
                 isDragging: !!isDragging,
               };
@@ -204,12 +234,12 @@ const createStore = () =>
                 change.position = nodeExtent
                   ? clampPosition(
                       {
-                        x: n.position.x + diff.x,
-                        y: n.position.y + diff.y,
+                        x: node.position.x + diff.x,
+                        y: node.position.y + diff.y,
                       },
                       nodeExtent
                     )
-                  : { x: n.position.x + diff.x, y: n.position.y + diff.y };
+                  : { x: node.position.x + diff.x, y: node.position.y + diff.y };
               }
 
               return change;

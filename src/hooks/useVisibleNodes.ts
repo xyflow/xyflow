@@ -2,23 +2,23 @@ import { useCallback } from 'react';
 
 import { useStore } from '../store';
 import { getNodesInside } from '../utils/graph';
-import { ReactFlowState, Node } from '../types';
+import { ReactFlowState, Node, NodeRendererNode } from '../types';
 
-function getChildNodes(nodes: Node[], parent?: Node): Node[] {
-  const children: Node[] = [];
+function getChildNodes(nodes: Node[], parent?: Node): NodeRendererNode[] {
+  const children: NodeRendererNode[] = [];
   const remaining: Node[] = [];
 
   for (let i = 0; i < nodes.length; i++) {
     const n = nodes[i];
     if ((!parent && !n.parentNode) || n.parentNode === parent?.id) {
-      children.push(n);
+      children.push({ node: n });
     } else {
       remaining.push(n);
     }
   }
 
   return children.map((child) => {
-    child.childNodes = getChildNodes(remaining, child);
+    child.childNodes = getChildNodes(remaining, child.node);
     return child;
   });
 }

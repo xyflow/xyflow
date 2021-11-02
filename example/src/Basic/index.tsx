@@ -35,14 +35,14 @@ const initialNodes: Node[] = [
   {
     id: '4a',
     data: { label: 'Node 4a' },
-    position: { x: 115, y: 215 },
+    position: { x: 15, y: 15 },
     className: 'light',
     parentNode: '4',
   },
   {
     id: '4b',
     data: { label: 'Node 4b' },
-    position: { x: 250, y: 250 },
+    position: { x: 80, y: 80 },
     className: 'light',
     style: { backgroundColor: 'rgba(255, 0, 0, .2)' },
     parentNode: '4',
@@ -52,14 +52,14 @@ const initialNodes: Node[] = [
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
-    position: { x: 270, y: 270 },
+    position: { x: 20, y: 20 },
     className: 'light',
     parentNode: '4b',
   },
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
-    position: { x: 500, y: 400 },
+    position: { x: 100, y: 100 },
     className: 'light',
     parentNode: '4b',
   },

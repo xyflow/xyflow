@@ -2,8 +2,17 @@ import React, { memo, useMemo, ComponentType, MouseEvent, Fragment } from 'react
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { Node, NodeTypesType, ReactFlowState, WrapNodeProps, SnapGrid } from '../../types';
+import {
+  Node,
+  NodeTypesType,
+  ReactFlowState,
+  WrapNodeProps,
+  SnapGrid,
+  NodeRendererNode,
+  NodeLookup,
+} from '../../types';
 import useVisibleNodes from '../../hooks/useVisibleNodes';
+import useNodeLookup from '../../hooks/useNodeLookup';
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
@@ -27,10 +36,12 @@ const selector = (s: ReactFlowState) => ({
   updateNodeDimensions: s.updateNodeDimensions,
   snapGrid: s.snapGrid,
   snapToGrid: s.snapToGrid,
+  nodeLookup: s.nodeLookup,
 });
 
 interface NodesProps extends NodeRendererProps {
-  nodes: Node[];
+  nodes: NodeRendererNode[];
+  nodeLookup: NodeLookup;
   isDraggable?: boolean;
   resizeObserver: ResizeObserver | null;
   scale: number;
@@ -43,13 +54,17 @@ interface NodesProps extends NodeRendererProps {
   parentId?: string;
 }
 
-interface NodeProps extends Omit<NodesProps, 'nodes'> {
+interface NodeProps extends Omit<NodesProps, 'nodes' | 'nodeLookup'> {
   node: Node;
   nodeType: string;
+  childNodes?: NodeRendererNode[];
+  positionAbsoluteX?: number;
+  positionAbsoluteY?: number;
 }
 
 function Node({
   node,
+  childNodes,
   nodeType,
   isDraggable,
   resizeObserver,
@@ -60,6 +75,8 @@ function Node({
   nodesConnectable,
   elementsSelectable,
   recursionDepth,
+  positionAbsoluteX,
+  positionAbsoluteY,
   ...props
 }: NodeProps) {
   // const onNodesChange = useStore((s) => s.onNodesChange);
@@ -76,7 +93,7 @@ function Node({
     typeof node.width !== 'undefined' &&
     typeof node.height !== 'undefined';
 
-  const isParentNode = !!node.childNodes?.length;
+  const isParentNode = !!childNodes?.length;
 
   return (
     <NodeComponent
@@ -88,8 +105,8 @@ function Node({
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       isHidden={node.isHidden}
-      xPos={node.position.x}
-      yPos={node.position.y}
+      xPos={positionAbsoluteX || 0}
+      yPos={positionAbsoluteY || 0}
       width={node.width}
       height={node.height}
       isDragging={node.isDragging}
@@ -121,6 +138,7 @@ function Node({
 
 function Nodes({
   nodes,
+  nodeLookup,
   isDraggable,
   resizeObserver,
   scale,
@@ -132,8 +150,9 @@ function Nodes({
   recursionDepth,
   ...props
 }: NodesProps): any {
-  return nodes.map((node) => {
+  return nodes.map(({ node, childNodes }) => {
     const nodeType = node.type || 'default';
+    const lookupNode = nodeLookup.get(node.id);
 
     if (!props.nodeTypes[nodeType]) {
       console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
@@ -143,6 +162,7 @@ function Nodes({
       <Fragment key={node.id}>
         <Node
           node={node}
+          childNodes={childNodes}
           nodeType={nodeType}
           parentId={node.id}
           snapToGrid={snapToGrid}
@@ -153,11 +173,14 @@ function Nodes({
           elementsSelectable={elementsSelectable}
           scale={scale}
           recursionDepth={recursionDepth}
+          positionAbsoluteX={lookupNode?.positionAbsolute?.x}
+          positionAbsoluteY={lookupNode?.positionAbsolute?.y}
           {...props}
         />
-        {node.childNodes && node.childNodes.length > 0 && (
+        {childNodes && childNodes.length > 0 && (
           <MemoizedNodes
-            nodes={node.childNodes}
+            nodes={childNodes}
+            nodeLookup={nodeLookup}
             parentId={node.id}
             snapToGrid={snapToGrid}
             snapGrid={snapGrid}
@@ -187,6 +210,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
     snapGrid,
     snapToGrid,
   } = useStore(selector, shallow);
+  const nodeLookup = useNodeLookup();
+
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
 
   const transformStyle = useMemo(
@@ -215,6 +240,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
     <div className="react-flow__nodes" style={transformStyle}>
       <MemoizedNodes
         nodes={nodes}
+        nodeLookup={nodeLookup.current}
         snapToGrid={snapToGrid}
         snapGrid={snapGrid}
         nodesDraggable={nodesDraggable}
