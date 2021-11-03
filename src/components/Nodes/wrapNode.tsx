@@ -67,7 +67,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const nodeStyle: CSSProperties = useMemo(
       () => ({
-        zIndex: isSelected ? zIndex + 1 : zIndex,
+        zIndex,
+        // zIndex: isSelected ? zIndex + 1 : zIndex,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents:
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',

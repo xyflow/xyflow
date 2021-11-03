@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo } from 'react';
 
-import { useStoreApi } from '../../store';
+import { useStoreApi, useStore } from '../../store';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
@@ -82,7 +82,8 @@ const GraphView = ({
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
-  const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
+  const { zoomIn, zoomOut, zoomTo, transform: setTransform, fitView, initialized } = useZoomPanHelper();
+  const transform = useStore((s) => s.transform);
 
   useEffect(() => {
     if (!isInitialized.current && initialized) {
@@ -92,7 +93,7 @@ const GraphView = ({
           zoomIn,
           zoomOut,
           zoomTo,
-          setTransform: transform,
+          setTransform: setTransform,
           project: onLoadProject(store.getState),
           getNodes: onLoadGetNodes(store.getState),
           getEdges: onLoadGetEdges(store.getState),
@@ -103,6 +104,11 @@ const GraphView = ({
       isInitialized.current = true;
     }
   }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView, initialized]);
+
+  const transformStyle = {
+    transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
+    transformOrigin: '0 0',
+  };
 
   return (
     <FlowRenderer
@@ -132,38 +138,40 @@ const GraphView = ({
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
     >
-      <NodeRenderer
-        nodeTypes={nodeTypes}
-        onNodeClick={onNodeClick}
-        onNodeDoubleClick={onNodeDoubleClick}
-        onNodeMouseEnter={onNodeMouseEnter}
-        onNodeMouseMove={onNodeMouseMove}
-        onNodeMouseLeave={onNodeMouseLeave}
-        onNodeContextMenu={onNodeContextMenu}
-        onNodeDragStop={onNodeDragStop}
-        onNodeDrag={onNodeDrag}
-        onNodeDragStart={onNodeDragStart}
-        selectNodesOnDrag={selectNodesOnDrag}
-        onlyRenderVisibleElements={onlyRenderVisibleElements}
-      />
-      <EdgeRenderer
-        edgeTypes={edgeTypes}
-        onEdgeClick={onEdgeClick}
-        onEdgeDoubleClick={onEdgeDoubleClick}
-        connectionLineType={connectionLineType}
-        connectionLineStyle={connectionLineStyle}
-        connectionLineComponent={connectionLineComponent}
-        onEdgeUpdate={onEdgeUpdate}
-        onlyRenderVisibleElements={onlyRenderVisibleElements}
-        onEdgeContextMenu={onEdgeContextMenu}
-        onEdgeMouseEnter={onEdgeMouseEnter}
-        onEdgeMouseMove={onEdgeMouseMove}
-        onEdgeMouseLeave={onEdgeMouseLeave}
-        onEdgeUpdateStart={onEdgeUpdateStart}
-        onEdgeUpdateEnd={onEdgeUpdateEnd}
-        edgeUpdaterRadius={edgeUpdaterRadius}
-        defaultMarkerColor={defaultMarkerColor}
-      />
+      <div className="react-flow__container" style={{ zIndex: 2, ...transformStyle }}>
+        <EdgeRenderer
+          edgeTypes={edgeTypes}
+          onEdgeClick={onEdgeClick}
+          onEdgeDoubleClick={onEdgeDoubleClick}
+          connectionLineType={connectionLineType}
+          connectionLineStyle={connectionLineStyle}
+          connectionLineComponent={connectionLineComponent}
+          onEdgeUpdate={onEdgeUpdate}
+          onlyRenderVisibleElements={onlyRenderVisibleElements}
+          onEdgeContextMenu={onEdgeContextMenu}
+          onEdgeMouseEnter={onEdgeMouseEnter}
+          onEdgeMouseMove={onEdgeMouseMove}
+          onEdgeMouseLeave={onEdgeMouseLeave}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
+          edgeUpdaterRadius={edgeUpdaterRadius}
+          defaultMarkerColor={defaultMarkerColor}
+        />
+        <NodeRenderer
+          nodeTypes={nodeTypes}
+          onNodeClick={onNodeClick}
+          onNodeDoubleClick={onNodeDoubleClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseMove={onNodeMouseMove}
+          onNodeMouseLeave={onNodeMouseLeave}
+          onNodeContextMenu={onNodeContextMenu}
+          onNodeDragStop={onNodeDragStop}
+          onNodeDrag={onNodeDrag}
+          onNodeDragStart={onNodeDragStart}
+          selectNodesOnDrag={selectNodesOnDrag}
+          onlyRenderVisibleElements={onlyRenderVisibleElements}
+        />
+      </div>
     </FlowRenderer>
   );
 };

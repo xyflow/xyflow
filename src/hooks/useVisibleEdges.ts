@@ -1,10 +1,40 @@
 import { useCallback } from 'react';
 
 import { useStore } from '../store';
-import { isEdgeVisible, getSourceTargetNodes } from '../container/EdgeRenderer/utils';
-import { ReactFlowState } from '../types';
+import { isEdgeVisible } from '../container/EdgeRenderer/utils';
+import { ReactFlowState, NodeLookup, Edge } from '../types';
 
-function useVisibleEdges(onlyRenderVisible: boolean) {
+function groupEdgesByTreeLevel(edges: Edge[], nodeLookup: NodeLookup) {
+  let maxLevel = -1;
+
+  const levelLookup = edges.reduce<Record<string, Edge[]>>((tree, edge) => {
+    const treeLevel = Math.max(
+      nodeLookup.get(edge.source)?.treeLevel || 0,
+      nodeLookup.get(edge.target)?.treeLevel || 0
+    );
+    if (tree[treeLevel]) {
+      tree[treeLevel].push(edge);
+    } else {
+      tree[treeLevel] = [edge];
+    }
+
+    maxLevel = treeLevel > maxLevel ? treeLevel : maxLevel;
+
+    return tree;
+  }, {});
+
+  return Object.entries(levelLookup).map(([key, edges]) => {
+    const level = +key;
+
+    return {
+      edges,
+      level,
+      isMaxLevel: level === maxLevel,
+    };
+  });
+}
+
+function useVisibleEdges(onlyRenderVisible: boolean, nodeLookup: NodeLookup) {
   const edges = useStore(
     useCallback(
       (s: ReactFlowState) => {
@@ -13,7 +43,8 @@ function useVisibleEdges(onlyRenderVisible: boolean) {
         }
 
         return s.edges.filter((e) => {
-          const { sourceNode, targetNode } = getSourceTargetNodes(e, s.nodes);
+          const sourceNode = nodeLookup.get(e.source);
+          const targetNode = nodeLookup.get(e.target);
 
           return (
             sourceNode?.width &&
@@ -21,8 +52,8 @@ function useVisibleEdges(onlyRenderVisible: boolean) {
             targetNode?.width &&
             targetNode?.height &&
             isEdgeVisible({
-              sourcePos: sourceNode.position,
-              targetPos: targetNode.position,
+              sourcePos: sourceNode.position || { x: 0, y: 0 },
+              targetPos: targetNode.position || { x: 0, y: 0 },
               sourceWidth: sourceNode.width,
               sourceHeight: sourceNode.height,
               targetWidth: targetNode.width,
@@ -34,11 +65,11 @@ function useVisibleEdges(onlyRenderVisible: boolean) {
           );
         });
       },
-      [onlyRenderVisible]
+      [onlyRenderVisible, nodeLookup]
     )
   );
 
-  return edges;
+  return groupEdgesByTreeLevel(edges, nodeLookup);
 }
 
 export default useVisibleEdges;

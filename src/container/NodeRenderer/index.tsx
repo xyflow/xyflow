@@ -1,16 +1,8 @@
-import React, { memo, useMemo, ComponentType, MouseEvent, Fragment } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import {
-  Node,
-  NodeTypesType,
-  ReactFlowState,
-  WrapNodeProps,
-  SnapGrid,
-  NodeRendererNode,
-  NodeLookup,
-} from '../../types';
+import { Node, NodeTypesType, ReactFlowState, WrapNodeProps, SnapGrid, NodeRendererNode } from '../../types';
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import useNodeLookup from '../../hooks/useNodeLookup';
 interface NodeRendererProps {
@@ -39,9 +31,12 @@ const selector = (s: ReactFlowState) => ({
   nodeLookup: s.nodeLookup,
 });
 
-interface NodesProps extends NodeRendererProps {
-  nodes: NodeRendererNode[];
-  nodeLookup: NodeLookup;
+interface NodeProps extends NodeRendererProps {
+  node: Node;
+  nodeType: string;
+  childNodes?: NodeRendererNode[];
+  xPos?: number;
+  yPos?: number;
   isDraggable?: boolean;
   resizeObserver: ResizeObserver | null;
   scale: number;
@@ -50,16 +45,8 @@ interface NodesProps extends NodeRendererProps {
   nodesDraggable: boolean;
   nodesConnectable: boolean;
   elementsSelectable: boolean;
-  recursionDepth: number;
-  parentId?: string;
-}
-
-interface NodeProps extends Omit<NodesProps, 'nodes' | 'nodeLookup'> {
-  node: Node;
-  nodeType: string;
-  childNodes?: NodeRendererNode[];
-  positionAbsoluteX?: number;
-  positionAbsoluteY?: number;
+  treeLevel?: number;
+  isParentNode?: boolean;
 }
 
 function Node({
@@ -74,9 +61,10 @@ function Node({
   nodesDraggable,
   nodesConnectable,
   elementsSelectable,
-  recursionDepth,
-  positionAbsoluteX,
-  positionAbsoluteY,
+  treeLevel = 0,
+  xPos,
+  yPos,
+  isParentNode = false,
   ...props
 }: NodeProps) {
   // const onNodesChange = useStore((s) => s.onNodesChange);
@@ -93,8 +81,6 @@ function Node({
     typeof node.width !== 'undefined' &&
     typeof node.height !== 'undefined';
 
-  const isParentNode = !!childNodes?.length;
-
   return (
     <NodeComponent
       id={node.id}
@@ -105,8 +91,8 @@ function Node({
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       isHidden={node.isHidden}
-      xPos={positionAbsoluteX || 0}
-      yPos={positionAbsoluteY || 0}
+      xPos={xPos || 0}
+      yPos={yPos || 0}
       width={node.width}
       height={node.height}
       isDragging={node.isDragging}
@@ -130,75 +116,11 @@ function Node({
       isConnectable={isConnectable}
       resizeObserver={resizeObserver}
       dragHandle={node.dragHandle}
-      zIndex={3 + recursionDepth}
+      zIndex={6 + treeLevel}
       isParentNode={isParentNode}
     />
   );
 }
-
-function Nodes({
-  nodes,
-  nodeLookup,
-  isDraggable,
-  resizeObserver,
-  scale,
-  snapToGrid,
-  snapGrid,
-  nodesDraggable,
-  nodesConnectable,
-  elementsSelectable,
-  recursionDepth,
-  ...props
-}: NodesProps): any {
-  return nodes.map(({ node, childNodes }) => {
-    const nodeType = node.type || 'default';
-    const lookupNode = nodeLookup.get(node.id);
-
-    if (!props.nodeTypes[nodeType]) {
-      console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
-    }
-
-    return (
-      <Fragment key={node.id}>
-        <Node
-          node={node}
-          childNodes={childNodes}
-          nodeType={nodeType}
-          parentId={node.id}
-          snapToGrid={snapToGrid}
-          snapGrid={snapGrid}
-          nodesDraggable={nodesDraggable}
-          nodesConnectable={nodesConnectable}
-          resizeObserver={resizeObserver}
-          elementsSelectable={elementsSelectable}
-          scale={scale}
-          recursionDepth={recursionDepth}
-          positionAbsoluteX={lookupNode?.positionAbsolute?.x}
-          positionAbsoluteY={lookupNode?.positionAbsolute?.y}
-          {...props}
-        />
-        {childNodes && childNodes.length > 0 && (
-          <MemoizedNodes
-            nodes={childNodes}
-            nodeLookup={nodeLookup}
-            parentId={node.id}
-            snapToGrid={snapToGrid}
-            snapGrid={snapGrid}
-            nodesDraggable={nodesDraggable}
-            nodesConnectable={nodesConnectable}
-            resizeObserver={resizeObserver}
-            elementsSelectable={elementsSelectable}
-            scale={scale}
-            recursionDepth={recursionDepth + 1}
-            {...props}
-          />
-        )}
-      </Fragment>
-    );
-  });
-}
-
-const MemoizedNodes = memo(Nodes);
 
 const NodeRenderer = (props: NodeRendererProps) => {
   const {
@@ -210,16 +132,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
     snapGrid,
     snapToGrid,
   } = useStore(selector, shallow);
+
   const nodeLookup = useNodeLookup();
-
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
-
-  const transformStyle = useMemo(
-    () => ({
-      transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
-    }),
-    [transform[0], transform[1], transform[2]]
-  );
 
   const resizeObserver = useMemo(() => {
     if (typeof ResizeObserver === 'undefined') {
@@ -236,23 +151,36 @@ const NodeRenderer = (props: NodeRendererProps) => {
     });
   }, []);
 
-  console.log(nodeLookup);
-
   return (
-    <div className="react-flow__nodes" style={transformStyle}>
-      <MemoizedNodes
-        nodes={nodes}
-        nodeLookup={nodeLookup}
-        snapToGrid={snapToGrid}
-        snapGrid={snapGrid}
-        nodesDraggable={nodesDraggable}
-        nodesConnectable={nodesConnectable}
-        resizeObserver={resizeObserver}
-        elementsSelectable={elementsSelectable}
-        scale={transform[2]}
-        recursionDepth={0}
-        {...props}
-      />
+    <div className="react-flow__nodes">
+      {nodes.map((node) => {
+        const nodeType = node.type || 'default';
+        const lookupNode = nodeLookup.get(node.id);
+
+        if (!props.nodeTypes[nodeType]) {
+          console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
+        }
+
+        return (
+          <Node
+            key={node.id}
+            node={node}
+            nodeType={nodeType}
+            snapToGrid={snapToGrid}
+            snapGrid={snapGrid}
+            nodesDraggable={nodesDraggable}
+            nodesConnectable={nodesConnectable}
+            resizeObserver={resizeObserver}
+            elementsSelectable={elementsSelectable}
+            scale={transform[2]}
+            xPos={lookupNode?.positionAbsolute?.x}
+            yPos={lookupNode?.positionAbsolute?.y}
+            treeLevel={lookupNode?.treeLevel}
+            isParentNode={lookupNode?.isParentNode}
+            {...props}
+          />
+        );
+      })}
     </div>
   );
 };

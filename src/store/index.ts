@@ -40,39 +40,6 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
   isSelected,
 });
 
-// @todo needs refactoring / improvements
-// function findMatchingNodes(id: string | undefined, nodes: Node[]): Node[] {
-//   if (!id) {
-//     return nodes.filter((n) => !!n.isSelected);
-//   }
-
-//   const result = [];
-//   const children = [];
-
-//   for (let i = 0; i < nodes.length; i++) {
-//     const n = nodes[i];
-
-//     if (n.id === id) {
-//       result.push(n);
-//     }
-
-//     if (n.parentNode === id) {
-//       children.push(n);
-//     }
-//   }
-
-//   for (let i = 0; i < children.length; i++) {
-//     const n = children[i];
-//     const matches = findMatchingNodes(n.id, nodes);
-
-//     for (let j = 0; j < matches.length; j++) {
-//       result.push(matches[j]);
-//     }
-//   }
-
-//   return result;
-// }
-
 type XYPosAndTreeLevel = XYPosition & { treeLevel: number };
 
 function addPositions(a: XYPosAndTreeLevel, b: XYPosition): XYPosAndTreeLevel {
@@ -184,6 +151,8 @@ const createStore = () =>
             ...node.position,
             treeLevel: 0,
           });
+
+          nodeLookup.set(node.parentNode!, { ...nodeLookup.get(node.parentNode!), isParentNode: true });
 
           if (positionAbsoluteAndTreeLevel) {
             nodeLookup.set(node.id, {

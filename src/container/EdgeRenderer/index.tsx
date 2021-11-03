@@ -235,8 +235,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionMode,
   } = useStore(selector, shallow);
   const nodeLookup = useNodeLookup();
-
-  const edges = useVisibleEdges(props.onlyRenderVisibleElements);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeLookup);
 
   if (!width) {
     return null;
@@ -246,59 +245,62 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
-    <svg width={width} height={height} className="react-flow__edges">
-      <MarkerDefinitions defaultColor={defaultMarkerColor} />
-      <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
-        {edges.map((edge: Edge) => {
-          // @todo: getSourceTargetNodes is called many times during dragging/creating edges
-          const sourceNode = nodeLookup.get(edge.source);
-          const targetNode = nodeLookup.get(edge.target);
+    <>
+      {edgeTree.map(({ level, edges, isMaxLevel }) => (
+        <svg key={level} style={{ zIndex: 6 + level }} width={width} height={height} className="react-flow__edges">
+          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
+          <g>
+            {edges.map((edge: Edge) => {
+              const sourceNode = nodeLookup.get(edge.source);
+              const targetNode = nodeLookup.get(edge.target);
 
-          return (
-            <Edge
-              key={edge.id}
-              edge={edge}
-              sourceNodeWidth={sourceNode?.width}
-              sourceNodeHeight={sourceNode?.height}
-              sourceNodeX={sourceNode?.positionAbsolute?.x}
-              sourceNodeY={sourceNode?.positionAbsolute?.y}
-              sourceNodeHandleBounds={sourceNode?.handleBounds}
-              targetNodeWidth={targetNode?.width}
-              targetNodeHeight={targetNode?.height}
-              targetNodeX={targetNode?.positionAbsolute?.x}
-              targetNodeY={targetNode?.positionAbsolute?.y}
-              targetNodeHandleBounds={targetNode?.handleBounds}
-              elementsSelectable={elementsSelectable}
-              onEdgeContextMenu={props.onEdgeContextMenu}
-              onEdgeMouseEnter={props.onEdgeMouseEnter}
-              onEdgeMouseMove={props.onEdgeMouseMove}
-              onEdgeMouseLeave={props.onEdgeMouseLeave}
-              edgeUpdaterRadius={props.edgeUpdaterRadius}
-              onEdgeDoubleClick={props.onEdgeDoubleClick}
-              onEdgeUpdateStart={props.onEdgeUpdateStart}
-              onEdgeUpdateEnd={props.onEdgeUpdateEnd}
-              onEdgeUpdate={props.onEdgeUpdate}
-              edgeTypes={props.edgeTypes}
-              connectionMode={connectionMode}
-            />
-          );
-        })}
-        {renderConnectionLine && (
-          <ConnectionLine
-            connectionNodeId={connectionNodeId!}
-            connectionHandleId={connectionHandleId}
-            connectionHandleType={connectionHandleType!}
-            connectionPositionX={connectionPosition.x}
-            connectionPositionY={connectionPosition.y}
-            transform={transform}
-            connectionLineStyle={connectionLineStyle}
-            connectionLineType={connectionLineType}
-            isConnectable={nodesConnectable}
-            CustomConnectionLineComponent={connectionLineComponent}
-          />
-        )}
-      </g>
-    </svg>
+              return (
+                <Edge
+                  key={edge.id}
+                  edge={edge}
+                  sourceNodeWidth={sourceNode?.width}
+                  sourceNodeHeight={sourceNode?.height}
+                  sourceNodeX={sourceNode?.positionAbsolute?.x}
+                  sourceNodeY={sourceNode?.positionAbsolute?.y}
+                  sourceNodeHandleBounds={sourceNode?.handleBounds}
+                  targetNodeWidth={targetNode?.width}
+                  targetNodeHeight={targetNode?.height}
+                  targetNodeX={targetNode?.positionAbsolute?.x}
+                  targetNodeY={targetNode?.positionAbsolute?.y}
+                  targetNodeHandleBounds={targetNode?.handleBounds}
+                  elementsSelectable={elementsSelectable}
+                  onEdgeContextMenu={props.onEdgeContextMenu}
+                  onEdgeMouseEnter={props.onEdgeMouseEnter}
+                  onEdgeMouseMove={props.onEdgeMouseMove}
+                  onEdgeMouseLeave={props.onEdgeMouseLeave}
+                  edgeUpdaterRadius={props.edgeUpdaterRadius}
+                  onEdgeDoubleClick={props.onEdgeDoubleClick}
+                  onEdgeUpdateStart={props.onEdgeUpdateStart}
+                  onEdgeUpdateEnd={props.onEdgeUpdateEnd}
+                  onEdgeUpdate={props.onEdgeUpdate}
+                  edgeTypes={props.edgeTypes}
+                  connectionMode={connectionMode}
+                />
+              );
+            })}
+            {renderConnectionLine && isMaxLevel && (
+              <ConnectionLine
+                connectionNodeId={connectionNodeId!}
+                connectionHandleId={connectionHandleId}
+                connectionHandleType={connectionHandleType!}
+                connectionPositionX={connectionPosition.x}
+                connectionPositionY={connectionPosition.y}
+                transform={transform}
+                connectionLineStyle={connectionLineStyle}
+                connectionLineType={connectionLineType}
+                isConnectable={nodesConnectable}
+                CustomConnectionLineComponent={connectionLineComponent}
+              />
+            )}
+          </g>
+        </svg>
+      ))}
+    </>
   );
 };
 
