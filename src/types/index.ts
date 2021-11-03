@@ -465,6 +465,7 @@ export type NodeLookupItem = {
   position?: XYPosition;
   positionAbsolute?: XYPosition;
   handleBounds?: NodeHandleBounds;
+  treeLevel?: number;
 };
 
 export type NodeLookup = Map<ElementId, NodeLookupItem>;

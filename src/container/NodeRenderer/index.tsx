@@ -236,11 +236,13 @@ const NodeRenderer = (props: NodeRendererProps) => {
     });
   }, []);
 
+  console.log(nodeLookup);
+
   return (
     <div className="react-flow__nodes" style={transformStyle}>
       <MemoizedNodes
         nodes={nodes}
-        nodeLookup={nodeLookup.current}
+        nodeLookup={nodeLookup}
         snapToGrid={snapToGrid}
         snapGrid={snapGrid}
         nodesDraggable={nodesDraggable}

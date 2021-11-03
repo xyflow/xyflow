@@ -251,8 +251,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
       <g transform={`translate(${transform[0]},${transform[1]}) scale(${transform[2]})`}>
         {edges.map((edge: Edge) => {
           // @todo: getSourceTargetNodes is called many times during dragging/creating edges
-          const sourceNode = nodeLookup.current.get(edge.source);
-          const targetNode = nodeLookup.current.get(edge.target);
+          const sourceNode = nodeLookup.get(edge.source);
+          const targetNode = nodeLookup.get(edge.target);
 
           return (
             <Edge

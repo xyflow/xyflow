@@ -73,21 +73,32 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
 //   return result;
 // }
 
-function addPositions(posA: XYPosition, posB: XYPosition): XYPosition {
+type XYPosAndTreeLevel = XYPosition & { treeLevel: number };
+
+function addPositions(a: XYPosAndTreeLevel, b: XYPosition): XYPosAndTreeLevel {
   return {
-    x: (posA.x ?? 0) + (posB.x ?? 0),
-    y: (posA.y ?? 0) + (posB.y ?? 0),
+    x: (a.x ?? 0) + (b.x ?? 0),
+    y: (a.y ?? 0) + (b.y ?? 0),
+    treeLevel: a.treeLevel + 1,
   };
 }
 
-function getAbsolutePosition(node: NodeLookupItem, nodeLookup: NodeLookup, result: XYPosition): XYPosition {
+function getAbsolutePositionAndTreeLevel(
+  node: NodeLookupItem,
+  nodeLookup: NodeLookup,
+  result: XYPosAndTreeLevel
+): XYPosAndTreeLevel {
   const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : false;
 
   if (!parentNode) {
     return result;
   }
 
-  return getAbsolutePosition(parentNode, nodeLookup, addPositions(result, parentNode.position || { x: 0, y: 0 }));
+  return getAbsolutePositionAndTreeLevel(
+    parentNode,
+    nodeLookup,
+    addPositions(result, parentNode.position || { x: 0, y: 0 })
+  );
 }
 
 const createStore = () =>
@@ -158,6 +169,7 @@ const createStore = () =>
           height: node.height || null,
           position: node.position,
           positionAbsolute: node.position,
+          treeLevel: 0,
         };
         if (node.parentNode) {
           lookupNode.parentNode = node.parentNode;
@@ -168,12 +180,19 @@ const createStore = () =>
       nodes
         .filter((node) => node.parentNode)
         .forEach((node) => {
-          const positionAbsolute = getAbsolutePosition(node, nodeLookup, node.position);
+          const positionAbsoluteAndTreeLevel = getAbsolutePositionAndTreeLevel(node, nodeLookup, {
+            ...node.position,
+            treeLevel: 0,
+          });
 
-          if (positionAbsolute) {
+          if (positionAbsoluteAndTreeLevel) {
             nodeLookup.set(node.id, {
               ...nodeLookup.get(node.id),
-              positionAbsolute,
+              positionAbsolute: {
+                x: positionAbsoluteAndTreeLevel.x,
+                y: positionAbsoluteAndTreeLevel.y,
+              },
+              treeLevel: positionAbsoluteAndTreeLevel.treeLevel,
             });
           }
         });

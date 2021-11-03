@@ -6,7 +6,7 @@ function useNodeLookup() {
   const store = useStoreApi();
   const nodeLookup = useRef(store.getState().nodeLookup);
 
-  return nodeLookup;
+  return nodeLookup.current;
 }
 
 export default useNodeLookup;
