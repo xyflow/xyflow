@@ -23,7 +23,13 @@ declare const window: any;
 const defaultWidth = 200;
 const defaultHeight = 150;
 
-const selector = (s: ReactFlowState) => ({ width: s.width, height: s.height, transform: s.transform, nodes: s.nodes });
+const selector = (s: ReactFlowState) => ({
+  width: s.width,
+  height: s.height,
+  transform: s.transform,
+  nodes: s.nodes,
+  nodeLookup: s.nodeLookup,
+});
 
 const MiniMap = ({
   style,
@@ -35,7 +41,7 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const { width: containerWidth, height: containerHeight, transform, nodes } = useStore(selector, shallow);
+  const { width: containerWidth, height: containerHeight, transform, nodes, nodeLookup } = useStore(selector, shallow);
   const [tX, tY, tScale] = transform;
 
   const mapClasses = cc(['react-flow__minimap', className]);
@@ -77,22 +83,26 @@ const MiniMap = ({
     >
       {nodes
         .filter((node) => !node.isHidden && node.width && node.height)
-        .map((node) => (
-          <MiniMapNode
-            key={node.id}
-            x={node.position.x}
-            y={node.position.y}
-            width={node.width!}
-            height={node.height!}
-            style={node.style}
-            className={nodeClassNameFunc(node)}
-            color={nodeColorFunc(node)}
-            borderRadius={nodeBorderRadius}
-            strokeColor={nodeStrokeColorFunc(node)}
-            strokeWidth={nodeStrokeWidth}
-            shapeRendering={shapeRendering}
-          />
-        ))}
+        .map((node) => {
+          const positionAbsolute = nodeLookup.get(node.id)?.positionAbsolute;
+
+          return (
+            <MiniMapNode
+              key={node.id}
+              x={positionAbsolute?.x || 0}
+              y={positionAbsolute?.y || 0}
+              width={node.width!}
+              height={node.height!}
+              style={node.style}
+              className={nodeClassNameFunc(node)}
+              color={nodeColorFunc(node)}
+              borderRadius={nodeBorderRadius}
+              strokeColor={nodeStrokeColorFunc(node)}
+              strokeWidth={nodeStrokeWidth}
+              shapeRendering={shapeRendering}
+            />
+          );
+        })}
       <path
         className="react-flow__minimap-mask"
         d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
