@@ -136,7 +136,7 @@ const createStore = () =>
           height: node.height || null,
           position: node.position,
           positionAbsolute: node.position,
-          treeLevel: 0,
+          treeLevel: node.zIndex || 0,
         };
         if (node.parentNode) {
           lookupNode.parentNode = node.parentNode;
@@ -149,19 +149,21 @@ const createStore = () =>
         .forEach((node) => {
           const positionAbsoluteAndTreeLevel = getAbsolutePositionAndTreeLevel(node, nodeLookup, {
             ...node.position,
-            treeLevel: 0,
+            treeLevel: node.zIndex || 0,
           });
 
           nodeLookup.set(node.parentNode!, { ...nodeLookup.get(node.parentNode!), isParentNode: true });
 
           if (positionAbsoluteAndTreeLevel) {
+            const { treeLevel, x, y } = positionAbsoluteAndTreeLevel;
+
             nodeLookup.set(node.id, {
               ...nodeLookup.get(node.id),
               positionAbsolute: {
-                x: positionAbsoluteAndTreeLevel.x,
-                y: positionAbsoluteAndTreeLevel.y,
+                x,
+                y,
               },
-              treeLevel: positionAbsoluteAndTreeLevel.treeLevel,
+              treeLevel,
             });
           }
         });

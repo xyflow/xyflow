@@ -116,7 +116,7 @@ function Node({
       isConnectable={isConnectable}
       resizeObserver={resizeObserver}
       dragHandle={node.dragHandle}
-      zIndex={6 + treeLevel}
+      zIndex={treeLevel}
       isParentNode={isParentNode}
     />
   );

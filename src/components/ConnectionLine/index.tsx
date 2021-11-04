@@ -1,19 +1,19 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 
-import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
   ElementId,
-  Node,
+  NodeLookupItem,
   Transform,
   HandleElement,
   Position,
   ConnectionLineType,
   ConnectionLineComponent,
   HandleType,
-  ReactFlowState,
+  Node,
 } from '../../types';
+import useNodeLookup from '../../hooks/useNodeLookup';
 interface ConnectionLineProps {
   connectionNodeId: ElementId;
   connectionHandleId: ElementId | null;
@@ -27,8 +27,6 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const nodesSelector = (s: ReactFlowState) => s.nodes;
-
 export default ({
   connectionNodeId,
   connectionHandleId,
@@ -41,13 +39,13 @@ export default ({
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const nodes = useStore(nodesSelector);
-  const [sourceNode, setSourceNode] = useState<Node | null>(null);
+  const nodeLookup = useNodeLookup();
+  const [sourceNode, setSourceNode] = useState<NodeLookupItem | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
 
   useEffect(() => {
-    const nextSourceNode = nodes.find((n) => n.id === nodeId) || null;
+    const nextSourceNode = nodeLookup.get(nodeId) || null;
     setSourceNode(nextSourceNode);
   }, []);
 
@@ -60,8 +58,8 @@ export default ({
     : sourceNode.handleBounds[connectionHandleType]![0];
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.width! / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.height!;
-  const sourceX = sourceNode.position.x + sourceHandleX;
-  const sourceY = sourceNode.position.y + sourceHandleY;
+  const sourceX = sourceNode.position!.x + sourceHandleX;
+  const sourceY = sourceNode.position!.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];
@@ -81,7 +79,7 @@ export default ({
           targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          sourceNode={sourceNode}
+          sourceNode={sourceNode as Node}
           sourceHandle={sourceHandle}
         />
       </g>

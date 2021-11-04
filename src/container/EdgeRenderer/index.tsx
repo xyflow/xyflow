@@ -247,7 +247,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   return (
     <>
       {edgeTree.map(({ level, edges, isMaxLevel }) => (
-        <svg key={level} style={{ zIndex: 6 + level }} width={width} height={height} className="react-flow__edges">
+        <svg key={level} style={{ zIndex: level }} width={width} height={height} className="react-flow__edges">
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
           <g>
             {edges.map((edge: Edge) => {

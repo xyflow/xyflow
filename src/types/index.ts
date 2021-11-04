@@ -82,9 +82,8 @@ export interface Node<T = any> {
   dragHandle?: string;
   width?: number | null;
   height?: number | null;
-  handleBounds?: NodeHandleBounds;
   parentNode?: ElementId;
-  childNodes?: Node[];
+  zIndex?: number;
 }
 
 export enum ArrowHeadType {
