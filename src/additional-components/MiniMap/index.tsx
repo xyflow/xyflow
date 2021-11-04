@@ -3,7 +3,8 @@ import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { getRectOfNodes, getBoundsofRects } from '../../utils/graph';
+import { getRectOfNodes } from '../../utils/graph';
+import { getBoundsofRects } from '../../utils';
 import { Node, Rect, ReactFlowState } from '../../types';
 import MiniMapNode from './MiniMapNode';
 

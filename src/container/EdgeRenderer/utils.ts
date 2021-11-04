@@ -2,7 +2,7 @@ import { ComponentType } from 'react';
 
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
-import { rectToBox } from '../../utils/graph';
+import { rectToBox } from '../../utils';
 
 import { EdgeTypesType, EdgeProps, Position, XYPosition, ElementId, HandleElement, Transform, Rect } from '../../types';
 

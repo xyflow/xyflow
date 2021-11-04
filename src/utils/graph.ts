@@ -1,19 +1,6 @@
-import { clamp } from '../utils';
+import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
-import {
-  ElementId,
-  Node,
-  Edge,
-  Elements,
-  Transform,
-  XYPosition,
-  Rect,
-  Box,
-  Connection,
-  EdgeChange,
-  NodeChange,
-  EdgeMarkerType,
-} from '../types';
+import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, Connection, EdgeMarkerType } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -137,30 +124,6 @@ export const pointToRendererPoint = (
   return position;
 };
 
-const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
-  x: Math.min(box1.x, box2.x),
-  y: Math.min(box1.y, box2.y),
-  x2: Math.max(box1.x2, box2.x2),
-  y2: Math.max(box1.y2, box2.y2),
-});
-
-export const rectToBox = ({ x, y, width, height }: Rect): Box => ({
-  x,
-  y,
-  x2: x + width,
-  y2: y + height,
-});
-
-export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
-  x,
-  y,
-  width: x2 - x,
-  height: y2 - y,
-});
-
-export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
-  boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
-
 export const getRectOfNodes = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
     (currBox, { position, width, height }) =>
@@ -170,11 +133,6 @@ export const getRectOfNodes = (nodes: Node[]): Rect => {
 
   return boxToRect(box);
 };
-
-export const graphPosToZoomedPos = ({ x, y }: XYPosition, [tx, ty, tScale]: Transform): XYPosition => ({
-  x: x * tScale + tx,
-  y: y * tScale + ty,
-});
 
 export const getNodesInside = (
   nodes: Node[],
@@ -247,53 +205,3 @@ export const getTransformForBounds = (
 
   return [x, y, clampedZoom];
 };
-
-function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): any[] {
-  const initElements: any[] = [];
-
-  return elements.reduce((res: any[], item: any) => {
-    const currentChange = changes.find((c) => c.id === item.id);
-
-    if (currentChange) {
-      switch (currentChange.type) {
-        case 'select': {
-          res.push({ ...item, isSelected: currentChange.isSelected });
-          return res;
-        }
-        case 'dimensions': {
-          const updateItem = { ...item };
-
-          if (typeof currentChange.dimensions !== 'undefined') {
-            updateItem.width = currentChange.dimensions.width;
-            updateItem.height = currentChange.dimensions.height;
-          }
-
-          if (typeof currentChange.position !== 'undefined') {
-            updateItem.position = currentChange.position;
-          }
-
-          if (typeof currentChange.isDragging !== 'undefined') {
-            updateItem.isDragging = currentChange.isDragging;
-          }
-
-          res.push(updateItem);
-          return res;
-        }
-        case 'remove': {
-          return res;
-        }
-      }
-    }
-
-    res.push(item);
-    return res;
-  }, initElements);
-}
-
-export function applyNodeChanges(changes: NodeChange[], nodes: Node[]): Node[] {
-  return applyChanges(changes, nodes) as Node[];
-}
-
-export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]): Edge[] {
-  return applyChanges(changes, edges) as Edge[];
-}
