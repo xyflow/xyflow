@@ -1,4 +1,4 @@
-import React, { useEffect, useState, CSSProperties } from 'react';
+import React, { useRef, CSSProperties } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
@@ -28,7 +28,7 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const selector = (s: ReactFlowState) => ({ nodeLookup: s.nodeLookup, transform: s.transform });
+const selector = (s: ReactFlowState) => ({ nodeLookup: s.nodeLookup, nodes: s.nodes, transform: s.transform });
 
 export default ({
   connectionNodeId,
@@ -41,27 +41,29 @@ export default ({
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const { nodeLookup, transform } = useStore(selector, shallow);
-  const [sourceNode, setSourceNode] = useState<NodeLookupItem | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
 
-  useEffect(() => {
-    const nextSourceNode = nodeLookup.get(nodeId) || null;
-    setSourceNode(nextSourceNode);
-  }, []);
+  const { nodeLookup, nodes, transform } = useStore(selector, shallow);
+  const sourceNodeInternals = useRef<NodeLookupItem | undefined>(nodeLookup.get(nodeId));
+  const sourceNode = useRef<Node | undefined>(nodes.find((n) => n.id === nodeId));
 
-  if (!sourceNode || !isConnectable || !sourceNode.handleBounds?.[connectionHandleType]) {
+  if (
+    !sourceNode.current ||
+    !sourceNodeInternals.current ||
+    !isConnectable ||
+    !sourceNodeInternals.current.handleBounds?.[connectionHandleType]
+  ) {
     return null;
   }
 
   const sourceHandle = handleId
-    ? sourceNode.handleBounds[connectionHandleType]!.find((d: HandleElement) => d.id === handleId)
-    : sourceNode.handleBounds[connectionHandleType]![0];
-  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.width! / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.height!;
-  const sourceX = sourceNode.position!.x + sourceHandleX;
-  const sourceY = sourceNode.position!.y + sourceHandleY;
+    ? sourceNodeInternals.current.handleBounds[connectionHandleType]!.find((d: HandleElement) => d.id === handleId)
+    : sourceNodeInternals.current.handleBounds[connectionHandleType]![0];
+  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNodeInternals.current.width! / 2;
+  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNodeInternals.current.height!;
+  const sourceX = sourceNodeInternals.current.positionAbsolute!.x + sourceHandleX;
+  const sourceY = sourceNodeInternals.current.positionAbsolute!.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];
@@ -81,7 +83,7 @@ export default ({
           targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          sourceNode={sourceNode as Node}
+          sourceNode={sourceNode.current as Node}
           sourceHandle={sourceHandle}
         />
       </g>

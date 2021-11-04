@@ -74,6 +74,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
         return (
           <NodeComponent
+            key={node.id}
             id={node.id}
             className={node.className}
             style={node.style}

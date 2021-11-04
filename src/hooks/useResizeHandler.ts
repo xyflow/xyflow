@@ -6,7 +6,7 @@ import { ReactFlowState } from '../types';
 
 const updateSizeSelector = (state: ReactFlowState) => state.updateSize;
 
-export default (rendererNode: MutableRefObject<HTMLDivElement | null>) => {
+function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>) {
   const updateSize = useStore(updateSizeSelector);
 
   useEffect(() => {
@@ -42,4 +42,6 @@ export default (rendererNode: MutableRefObject<HTMLDivElement | null>) => {
       }
     };
   }, []);
-};
+}
+
+export default useResizeHandler;

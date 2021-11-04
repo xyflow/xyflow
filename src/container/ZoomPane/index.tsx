@@ -278,7 +278,7 @@ const ZoomPane = ({
   ]);
 
   return (
-    <div className="react-flow__renderer react-flow__zoompane" ref={zoomPane}>
+    <div className="react-flow__renderer react-flow__container" ref={zoomPane}>
       {children}
     </div>
   );
