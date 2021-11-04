@@ -1,4 +1,4 @@
-import { Dimensions, XYPosition, NodeExtent, Box, Rect } from '../types';
+import { Dimensions, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
@@ -7,7 +7,7 @@ export const getDimensions = (node: HTMLDivElement): Dimensions => ({
 
 export const clamp = (val: number, min: number = 0, max: number = 1): number => Math.min(Math.max(val, min), max);
 
-export const clampPosition = (position: XYPosition, extent: NodeExtent) => ({
+export const clampPosition = (position: XYPosition, extent: CoordinateExtent) => ({
   x: clamp(position.x, extent[0][0], extent[1][0]),
   y: clamp(position.y, extent[0][1], extent[1][1]),
 });

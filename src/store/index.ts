@@ -11,8 +11,7 @@ import {
   NodeDiffUpdate,
   XYPosition,
   InitD3ZoomPayload,
-  TranslateExtent,
-  NodeExtent,
+  CoordinateExtent,
   Transform,
   Dimensions,
   OnConnectFunc,
@@ -143,7 +142,7 @@ const createStore = () =>
       onNodesChange?.(nodesToChange);
     },
     updateNodePosition: ({ id, diff, isDragging }: NodeDiffUpdate) => {
-      const { onNodesChange, nodes, nodeExtent } = get();
+      const { onNodesChange, nodes, nodeExtent, nodeInternals } = get();
 
       if (onNodesChange) {
         const matchingNodes = nodes.filter((n) => !!(n.isSelected || n.id === id));
@@ -158,13 +157,26 @@ const createStore = () =>
               };
 
               if (diff) {
-                change.position = nodeExtent
+                let currentExtent = nodeExtent || node.extent;
+
+                if (node.extent === 'parent' && node.parentNode && node.width && node.height) {
+                  const parent = nodeInternals.get(node.parentNode);
+                  currentExtent =
+                    parent?.width && parent?.height
+                      ? [
+                          [0, 0],
+                          [parent.width - node.width, parent.height - node.height],
+                        ]
+                      : currentExtent;
+                }
+
+                change.position = currentExtent
                   ? clampPosition(
                       {
                         x: node.position.x + diff.x,
                         y: node.position.y + diff.y,
                       },
-                      nodeExtent
+                      currentExtent
                     )
                   : { x: node.position.x + diff.x, y: node.position.y + diff.y };
               }
@@ -300,7 +312,7 @@ const createStore = () =>
 
       set({ maxZoom });
     },
-    setTranslateExtent: (translateExtent: TranslateExtent) => {
+    setTranslateExtent: (translateExtent: CoordinateExtent) => {
       const { d3Zoom } = get();
       d3Zoom?.translateExtent(translateExtent);
 
@@ -320,7 +332,7 @@ const createStore = () =>
         onEdgesChange?.(edgesToUnselect as EdgeChange[]);
       }
     },
-    setNodeExtent: (nodeExtent: NodeExtent) =>
+    setNodeExtent: (nodeExtent: CoordinateExtent) =>
       set({
         nodeExtent,
         nodes: get().nodes.map((node) => {

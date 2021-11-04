@@ -36,6 +36,7 @@ const initialNodes: Node[] = [
     position: { x: 15, y: 15 },
     className: 'light',
     parentNode: '4',
+    extent: 'parent',
   },
   {
     id: '4b',

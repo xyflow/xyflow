@@ -33,11 +33,10 @@ import {
   OnConnectStopFunc,
   OnConnectEndFunc,
   OnConnectFunc,
-  TranslateExtent,
+  CoordinateExtent,
   KeyCode,
   PanOnScrollMode,
   OnEdgeUpdateFunc,
-  NodeExtent,
   NodeChange,
   EdgeChange,
 } from '../../types';
@@ -111,9 +110,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   maxZoom?: number;
   defaultZoom?: number;
   defaultPosition?: [number, number];
-  translateExtent?: TranslateExtent;
+  translateExtent?: CoordinateExtent;
   preventScrolling?: boolean;
-  nodeExtent?: NodeExtent;
+  nodeExtent?: CoordinateExtent;
   defaultMarkerColor?: string;
   zoomOnScroll?: boolean;
   zoomOnPinch?: boolean;

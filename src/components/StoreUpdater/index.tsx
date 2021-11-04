@@ -10,12 +10,11 @@ import {
   OnConnectStartFunc,
   OnConnectStopFunc,
   OnConnectEndFunc,
-  NodeExtent,
+  CoordinateExtent,
   OnNodesChange,
   OnEdgesChange,
   ConnectionMode,
   SnapGrid,
-  TranslateExtent,
 } from '../../types';
 
 interface StoreUpdaterProps {
@@ -29,14 +28,14 @@ interface StoreUpdaterProps {
   nodesConnectable?: boolean;
   minZoom?: number;
   maxZoom?: number;
-  nodeExtent?: NodeExtent;
+  nodeExtent?: CoordinateExtent;
   onNodesChange?: OnNodesChange;
   onEdgesChange?: OnEdgesChange;
   elementsSelectable?: boolean;
   connectionMode?: ConnectionMode;
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
-  translateExtent?: TranslateExtent;
+  translateExtent?: CoordinateExtent;
 }
 
 const selector = (s: ReactFlowState) => ({

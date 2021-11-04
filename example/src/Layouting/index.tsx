@@ -10,7 +10,7 @@ import ReactFlow, {
   Node,
   Connection,
   Edge,
-  NodeExtent,
+  CoordinateExtent,
   Position,
 } from 'react-flow-renderer';
 import dagre from 'dagre';
@@ -22,7 +22,7 @@ import './layouting.css';
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeExtent: NodeExtent = [
+const nodeExtent: CoordinateExtent = [
   [0, 0],
   [1000, 1000],
 ];

@@ -84,6 +84,7 @@ export interface Node<T = any> {
   height?: number | null;
   parentNode?: ElementId;
   zIndex?: number;
+  extent?: 'parent' | CoordinateExtent;
 }
 
 export enum ArrowHeadType {
@@ -416,8 +417,7 @@ export type FlowTransform = {
   zoom: number;
 };
 
-export type TranslateExtent = [[number, number], [number, number]];
-export type NodeExtent = TranslateExtent;
+export type CoordinateExtent = [[number, number], [number, number]];
 
 export type KeyCode = string | Array<string>;
 
@@ -486,8 +486,8 @@ export interface ReactFlowState {
   d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
   minZoom: number;
   maxZoom: number;
-  translateExtent: TranslateExtent;
-  nodeExtent: NodeExtent;
+  translateExtent: CoordinateExtent;
+  nodeExtent: CoordinateExtent;
 
   nodesSelectionActive: boolean;
   selectionActive: boolean;
@@ -527,8 +527,8 @@ export interface ReactFlowState {
   initD3Zoom: (payload: InitD3ZoomPayload) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
-  setTranslateExtent: (translateExtent: TranslateExtent) => void;
-  setNodeExtent: (nodeExtent: NodeExtent) => void;
+  setTranslateExtent: (translateExtent: CoordinateExtent) => void;
+  setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   setOnConnect: (onConnectFunction: OnConnectFunc) => void;
   setOnConnectStart: (onConnectFunction: OnConnectStartFunc) => void;
   setOnConnectStop: (onConnectFunction: OnConnectStopFunc) => void;
