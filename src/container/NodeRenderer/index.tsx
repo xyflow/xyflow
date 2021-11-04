@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps, SnapGrid, NodeRendererNode } from '../../types';
 import useVisibleNodes from '../../hooks/useVisibleNodes';
-import useNodeLookup from '../../hooks/useNodeLookup';
+
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
@@ -131,9 +131,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
     updateNodeDimensions,
     snapGrid,
     snapToGrid,
+    nodeLookup,
   } = useStore(selector, shallow);
 
-  const nodeLookup = useNodeLookup();
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
 
   const resizeObserver = useMemo(() => {

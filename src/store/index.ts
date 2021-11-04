@@ -28,6 +28,7 @@ import {
   NodeDimensionChange,
   NodeLookup,
   NodeLookupItem,
+  ElementId,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -128,9 +129,10 @@ const createStore = () =>
 
     setNodes: (nodes: Node[]) => {
       const { nodeLookup } = get();
+      const nextNodeLookup = new Map<ElementId, NodeLookupItem>();
 
       nodes.forEach((node) => {
-        const lookupNode = {
+        const lookupNode: NodeLookupItem = {
           ...nodeLookup.get(node.id),
           width: node.width || null,
           height: node.height || null,
@@ -141,24 +143,24 @@ const createStore = () =>
         if (node.parentNode) {
           lookupNode.parentNode = node.parentNode;
         }
-        nodeLookup.set(node.id, lookupNode);
+        nextNodeLookup.set(node.id, lookupNode);
       });
 
       nodes
         .filter((node) => node.parentNode)
         .forEach((node) => {
-          const positionAbsoluteAndTreeLevel = getAbsolutePositionAndTreeLevel(node, nodeLookup, {
+          const positionAbsoluteAndTreeLevel = getAbsolutePositionAndTreeLevel(node, nextNodeLookup, {
             ...node.position,
             treeLevel: node.zIndex || 0,
           });
 
-          nodeLookup.set(node.parentNode!, { ...nodeLookup.get(node.parentNode!), isParentNode: true });
+          nextNodeLookup.set(node.parentNode!, { ...nextNodeLookup.get(node.parentNode!), isParentNode: true });
 
           if (positionAbsoluteAndTreeLevel) {
             const { treeLevel, x, y } = positionAbsoluteAndTreeLevel;
 
-            nodeLookup.set(node.id, {
-              ...nodeLookup.get(node.id),
+            nextNodeLookup.set(node.id, {
+              ...nextNodeLookup.get(node.id),
               positionAbsolute: {
                 x,
                 y,
@@ -168,7 +170,7 @@ const createStore = () =>
           }
         });
 
-      set({ nodes });
+      set({ nodes, nodeLookup: nextNodeLookup });
     },
     setEdges: (edges: Edge[]) => {
       set({ edges });
@@ -188,13 +190,16 @@ const createStore = () =>
 
           if (doUpdate) {
             const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
-            nodeLookup.set(node.id, { ...nodeLookup.get(node.id), handleBounds });
+            nodeLookup.set(node.id, {
+              ...nodeLookup.get(node.id),
+              handleBounds,
+              ...dimensions,
+            });
 
             const change = {
               id: node.id,
               type: 'dimensions',
               dimensions,
-              handleBounds,
             } as NodeChange;
             res.push(change);
           }
@@ -202,6 +207,8 @@ const createStore = () =>
 
         return res;
       }, []);
+
+      set({ nodeLookup: new Map(nodeLookup) });
 
       onNodesChange?.(nodesToChange);
     },

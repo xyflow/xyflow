@@ -1,5 +1,6 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
 
+import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
@@ -12,8 +13,9 @@ import {
   ConnectionLineComponent,
   HandleType,
   Node,
+  ReactFlowState,
 } from '../../types';
-import useNodeLookup from '../../hooks/useNodeLookup';
+
 interface ConnectionLineProps {
   connectionNodeId: ElementId;
   connectionHandleId: ElementId | null;
@@ -27,6 +29,8 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
+const selector = (s: ReactFlowState) => s.nodeLookup;
+
 export default ({
   connectionNodeId,
   connectionHandleId,
@@ -39,7 +43,7 @@ export default ({
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const nodeLookup = useNodeLookup();
+  const nodeLookup = useStore(selector);
   const [sourceNode, setSourceNode] = useState<NodeLookupItem | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;

@@ -17,7 +17,6 @@ import {
   NodeHandleBounds,
 } from '../../types';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
-import useNodeLookup from '../../hooks/useNodeLookup';
 
 interface EdgeRendererProps {
   edgeTypes: any;
@@ -218,7 +217,7 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   connectionMode: s.connectionMode,
-  nodes: s.nodes,
+  nodeLookup: s.nodeLookup,
 });
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
@@ -233,8 +232,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     width,
     height,
     connectionMode,
+    nodeLookup,
   } = useStore(selector, shallow);
-  const nodeLookup = useNodeLookup();
   const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeLookup);
 
   if (!width) {
