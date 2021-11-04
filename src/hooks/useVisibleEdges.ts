@@ -2,15 +2,15 @@ import { useCallback } from 'react';
 
 import { useStore } from '../store';
 import { isEdgeVisible } from '../container/EdgeRenderer/utils';
-import { ReactFlowState, NodeLookup, Edge } from '../types';
+import { ReactFlowState, NodeInternals, Edge } from '../types';
 
-function groupEdgesByTreeLevel(edges: Edge[], nodeLookup: NodeLookup) {
+function groupEdgesByTreeLevel(edges: Edge[], nodeInternals: NodeInternals) {
   let maxLevel = -1;
 
   const levelLookup = edges.reduce<Record<string, Edge[]>>((tree, edge) => {
     const treeLevel = Math.max(
-      nodeLookup.get(edge.source)?.treeLevel || 0,
-      nodeLookup.get(edge.target)?.treeLevel || 0
+      nodeInternals.get(edge.source)?.treeLevel || 0,
+      nodeInternals.get(edge.target)?.treeLevel || 0
     );
     if (tree[treeLevel]) {
       tree[treeLevel].push(edge);
@@ -34,7 +34,7 @@ function groupEdgesByTreeLevel(edges: Edge[], nodeLookup: NodeLookup) {
   });
 }
 
-function useVisibleEdges(onlyRenderVisible: boolean, nodeLookup: NodeLookup) {
+function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternals) {
   const edges = useStore(
     useCallback(
       (s: ReactFlowState) => {
@@ -43,8 +43,8 @@ function useVisibleEdges(onlyRenderVisible: boolean, nodeLookup: NodeLookup) {
         }
 
         return s.edges.filter((e) => {
-          const sourceNode = nodeLookup.get(e.source);
-          const targetNode = nodeLookup.get(e.target);
+          const sourceNode = nodeInternals.get(e.source);
+          const targetNode = nodeInternals.get(e.target);
 
           return (
             sourceNode?.width &&
@@ -65,11 +65,11 @@ function useVisibleEdges(onlyRenderVisible: boolean, nodeLookup: NodeLookup) {
           );
         });
       },
-      [onlyRenderVisible, nodeLookup]
+      [onlyRenderVisible, nodeInternals]
     )
   );
 
-  return groupEdgesByTreeLevel(edges, nodeLookup);
+  return groupEdgesByTreeLevel(edges, nodeInternals);
 }
 
 export default useVisibleEdges;

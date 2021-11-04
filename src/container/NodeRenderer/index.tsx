@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
 import useVisibleNodes from '../../hooks/useVisibleNodes';
-import useNodeLookupRef from '../../hooks/useNodeLookupRef';
+import useNodeInternalsRef from '../../hooks/useNodeInternalsRef';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -34,7 +34,7 @@ const selector = (s: ReactFlowState) => ({
 const NodeRenderer = (props: NodeRendererProps) => {
   const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid } =
     useStore(selector, shallow);
-  const nodeLookup = useNodeLookupRef();
+  const nodeInternals = useNodeInternalsRef();
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
 
   const resizeObserver = useMemo(() => {
@@ -56,7 +56,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
     <div className="react-flow__nodes react-flow__container">
       {nodes.map((node) => {
         const nodeType = node.type || 'default';
-        const lookupNode = nodeLookup.current.get(node.id);
+        const internals = nodeInternals.current.get(node.id);
 
         if (!props.nodeTypes[nodeType]) {
           console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
@@ -83,8 +83,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             sourcePosition={node.sourcePosition}
             targetPosition={node.targetPosition}
             isHidden={node.isHidden}
-            xPos={lookupNode?.positionAbsolute?.x || 0}
-            yPos={lookupNode?.positionAbsolute?.y || 0}
+            xPos={internals?.positionAbsolute?.x || 0}
+            yPos={internals?.positionAbsolute?.y || 0}
             isDragging={node.isDragging}
             isInitialized={isInitialized}
             snapGrid={snapGrid}
@@ -106,8 +106,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
-            zIndex={lookupNode?.treeLevel || 0}
-            isParentNode={!!lookupNode?.isParentNode}
+            zIndex={internals?.treeLevel || 0}
+            isParentNode={!!internals?.isParentNode}
           />
         );
       })}

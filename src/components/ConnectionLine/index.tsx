@@ -6,7 +6,7 @@ import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
   ElementId,
-  NodeLookupItem,
+  NodeInternalsItem,
   HandleElement,
   Position,
   ConnectionLineType,
@@ -28,7 +28,7 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const selector = (s: ReactFlowState) => ({ nodeLookup: s.nodeLookup, nodes: s.nodes, transform: s.transform });
+const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, nodes: s.nodes, transform: s.transform });
 
 export default ({
   connectionNodeId,
@@ -44,8 +44,8 @@ export default ({
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
 
-  const { nodeLookup, nodes, transform } = useStore(selector, shallow);
-  const sourceNodeInternals = useRef<NodeLookupItem | undefined>(nodeLookup.get(nodeId));
+  const { nodeInternals, nodes, transform } = useStore(selector, shallow);
+  const sourceNodeInternals = useRef<NodeInternalsItem | undefined>(nodeInternals.get(nodeId));
   const sourceNode = useRef<Node | undefined>(nodes.find((n) => n.id === nodeId));
 
   if (

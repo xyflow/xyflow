@@ -20,6 +20,7 @@
 .react-flow__viewport {
   transform-origin: 0 0;
   z-index: 2;
+  pointer-events: none;
 }
 
 .react-flow__renderer {

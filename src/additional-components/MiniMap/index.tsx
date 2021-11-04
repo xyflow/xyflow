@@ -29,7 +29,7 @@ const selector = (s: ReactFlowState) => ({
   height: s.height,
   transform: s.transform,
   nodes: s.nodes,
-  nodeLookup: s.nodeLookup,
+  nodeInternals: s.nodeInternals,
 });
 
 const MiniMap = ({
@@ -42,7 +42,13 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const { width: containerWidth, height: containerHeight, transform, nodes, nodeLookup } = useStore(selector, shallow);
+  const {
+    width: containerWidth,
+    height: containerHeight,
+    transform,
+    nodes,
+    nodeInternals,
+  } = useStore(selector, shallow);
   const [tX, tY, tScale] = transform;
 
   const mapClasses = cc(['react-flow__minimap', className]);
@@ -85,7 +91,7 @@ const MiniMap = ({
       {nodes
         .filter((node) => !node.isHidden && node.width && node.height)
         .map((node) => {
-          const positionAbsolute = nodeLookup.get(node.id)?.positionAbsolute;
+          const positionAbsolute = nodeInternals.get(node.id)?.positionAbsolute;
 
           return (
             <MiniMapNode

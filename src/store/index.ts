@@ -26,12 +26,10 @@ import {
   OnEdgesChange,
   EdgeChange,
   NodeDimensionChange,
-  NodeLookup,
-  NodeLookupItem,
-  ElementId,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
+import { createNodeInternals } from './utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
@@ -40,34 +38,6 @@ const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | E
   type: 'select',
   isSelected,
 });
-
-type XYPosAndTreeLevel = XYPosition & { treeLevel: number };
-
-function addPositions(a: XYPosAndTreeLevel, b: XYPosition): XYPosAndTreeLevel {
-  return {
-    x: (a.x ?? 0) + (b.x ?? 0),
-    y: (a.y ?? 0) + (b.y ?? 0),
-    treeLevel: a.treeLevel + 1,
-  };
-}
-
-function getAbsolutePositionAndTreeLevel(
-  node: NodeLookupItem,
-  nodeLookup: NodeLookup,
-  result: XYPosAndTreeLevel
-): XYPosAndTreeLevel {
-  const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : false;
-
-  if (!parentNode) {
-    return result;
-  }
-
-  return getAbsolutePositionAndTreeLevel(
-    parentNode,
-    nodeLookup,
-    addPositions(result, parentNode.position || { x: 0, y: 0 })
-  );
-}
 
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
@@ -125,58 +95,18 @@ const createStore = () =>
 
     reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
 
-    nodeLookup: new Map(),
+    nodeInternals: new Map(),
 
     setNodes: (nodes: Node[]) => {
-      const { nodeLookup } = get();
-      const nextNodeLookup = new Map<ElementId, NodeLookupItem>();
+      const nodeInternals = createNodeInternals(nodes, get().nodeInternals);
 
-      nodes.forEach((node) => {
-        const lookupNode: NodeLookupItem = {
-          ...nodeLookup.get(node.id),
-          width: node.width || null,
-          height: node.height || null,
-          position: node.position,
-          positionAbsolute: node.position,
-          treeLevel: node.zIndex || 0,
-        };
-        if (node.parentNode) {
-          lookupNode.parentNode = node.parentNode;
-        }
-        nextNodeLookup.set(node.id, lookupNode);
-      });
-
-      nodes
-        .filter((node) => node.parentNode)
-        .forEach((node) => {
-          const positionAbsoluteAndTreeLevel = getAbsolutePositionAndTreeLevel(node, nextNodeLookup, {
-            ...node.position,
-            treeLevel: node.zIndex || 0,
-          });
-
-          nextNodeLookup.set(node.parentNode!, { ...nextNodeLookup.get(node.parentNode!), isParentNode: true });
-
-          if (positionAbsoluteAndTreeLevel) {
-            const { treeLevel, x, y } = positionAbsoluteAndTreeLevel;
-
-            nextNodeLookup.set(node.id, {
-              ...nextNodeLookup.get(node.id),
-              positionAbsolute: {
-                x,
-                y,
-              },
-              treeLevel,
-            });
-          }
-        });
-
-      set({ nodes, nodeLookup: nextNodeLookup });
+      set({ nodes, nodeInternals });
     },
     setEdges: (edges: Edge[]) => {
       set({ edges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, nodes, transform, nodeLookup } = get();
+      const { onNodesChange, nodes, transform, nodeInternals } = get();
 
       const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
         const node = nodes.find((n) => n.id === update.id);
@@ -190,8 +120,8 @@ const createStore = () =>
 
           if (doUpdate) {
             const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
-            nodeLookup.set(node.id, {
-              ...nodeLookup.get(node.id),
+            nodeInternals.set(node.id, {
+              ...nodeInternals.get(node.id),
               handleBounds,
               ...dimensions,
             });
@@ -208,7 +138,7 @@ const createStore = () =>
         return res;
       }, []);
 
-      set({ nodeLookup: new Map(nodeLookup) });
+      set({ nodeInternals: new Map(nodeInternals) });
 
       onNodesChange?.(nodesToChange);
     },
@@ -216,11 +146,11 @@ const createStore = () =>
       const { onNodesChange, nodes, nodeExtent } = get();
 
       if (onNodesChange) {
-        const matchingNodes = nodes.filter((n) => !!n.isSelected || n.id === id);
+        const matchingNodes = nodes.filter((n) => !!(n.isSelected || n.id === id));
 
         if (matchingNodes?.length) {
           onNodesChange(
-            matchingNodes.map((node) => {
+            matchingNodes?.map((node) => {
               const change: NodeDimensionChange = {
                 id: node.id,
                 type: 'dimensions',

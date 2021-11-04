@@ -216,7 +216,7 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   connectionMode: s.connectionMode,
-  nodeLookup: s.nodeLookup,
+  nodeInternals: s.nodeInternals,
 });
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
@@ -230,9 +230,9 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     width,
     height,
     connectionMode,
-    nodeLookup,
+    nodeInternals,
   } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeLookup);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals);
 
   if (!width) {
     return null;
@@ -254,8 +254,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
           <g>
             {edges.map((edge: Edge) => {
-              const sourceNode = nodeLookup.get(edge.source);
-              const targetNode = nodeLookup.get(edge.target);
+              const sourceNode = nodeInternals.get(edge.source);
+              const targetNode = nodeInternals.get(edge.target);
 
               return (
                 <Edge
