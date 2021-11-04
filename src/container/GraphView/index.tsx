@@ -1,15 +1,11 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { memo } from 'react';
 
-import { useStoreApi } from '../../store';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import Viewport from '../Viewport';
-import { onLoadProject, onLoadGetNodes, onLoadGetEdges, onLoadToObject } from '../../utils/graph';
-import useZoomPanHelper from '../../hooks/useZoomPanHelper';
-
 import { ReactFlowProps } from '../ReactFlow';
-
+import useOnLoadHandler from '../../hooks/useOnLoadHandler';
 import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
 
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
@@ -81,29 +77,7 @@ const GraphView = ({
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
 }: GraphViewProps) => {
-  const isInitialized = useRef<boolean>(false);
-  const store = useStoreApi();
-  const { zoomIn, zoomOut, zoomTo, transform: setTransform, fitView, initialized } = useZoomPanHelper();
-
-  useEffect(() => {
-    if (!isInitialized.current && initialized) {
-      if (onLoad) {
-        onLoad({
-          fitView: (params = { padding: 0.1 }) => fitView(params),
-          zoomIn,
-          zoomOut,
-          zoomTo,
-          setTransform,
-          project: onLoadProject(store.getState),
-          getNodes: onLoadGetNodes(store.getState),
-          getEdges: onLoadGetEdges(store.getState),
-          toObject: onLoadToObject(store.getState),
-        });
-      }
-
-      isInitialized.current = true;
-    }
-  }, [onLoad, zoomIn, zoomOut, zoomTo, setTransform, fitView, initialized]);
+  useOnLoadHandler(onLoad);
 
   return (
     <FlowRenderer

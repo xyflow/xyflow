@@ -4,18 +4,7 @@ import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../compon
 import wrapEdge from '../../components/Edges/wrapEdge';
 import { rectToBox } from '../../utils/graph';
 
-import {
-  EdgeTypesType,
-  EdgeProps,
-  Position,
-  Node,
-  XYPosition,
-  ElementId,
-  HandleElement,
-  Transform,
-  Edge,
-  Rect,
-} from '../../types';
+import { EdgeTypesType, EdgeProps, Position, XYPosition, ElementId, HandleElement, Transform, Rect } from '../../types';
 
 export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
   const standardTypes: EdgeTypesType = {
@@ -164,23 +153,3 @@ export function isEdgeVisible({
 
   return overlappingArea > 0;
 }
-
-type SourceTargetNode = {
-  sourceNode: Node | null;
-  targetNode: Node | null;
-};
-
-export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNode => {
-  return nodes.reduce(
-    (res, node) => {
-      if (node.id === edge.source) {
-        res.sourceNode = node;
-      }
-      if (node.id === edge.target) {
-        res.targetNode = node;
-      }
-      return res;
-    },
-    { sourceNode: null, targetNode: null } as SourceTargetNode
-  );
-};

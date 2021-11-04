@@ -1,5 +1,3 @@
-import { GetState } from 'zustand';
-
 import { clamp } from '../utils';
 
 import {
@@ -12,10 +10,8 @@ import {
   Rect,
   Box,
   Connection,
-  FlowExportObject,
   EdgeChange,
   NodeChange,
-  ReactFlowState,
   EdgeMarkerType,
 } from '../types';
 
@@ -141,14 +137,6 @@ export const pointToRendererPoint = (
   return position;
 };
 
-export const onLoadProject = (getState: GetState<ReactFlowState>) => {
-  return (position: XYPosition): XYPosition => {
-    const { transform, snapToGrid, snapGrid } = getState();
-
-    return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
-  };
-};
-
 const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
   x: Math.min(box1.x, box2.x),
   y: Math.min(box1.y, box2.y),
@@ -238,35 +226,6 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
   const nodeIds = nodes.map((node) => node.id);
 
   return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
-};
-
-export const onLoadGetNodes = (getState: GetState<ReactFlowState>) => {
-  return (): Node[] => {
-    const { nodes = [] } = getState();
-
-    return nodes.map((n) => ({ ...n }));
-  };
-};
-
-export const onLoadGetEdges = (getState: GetState<ReactFlowState>) => {
-  return (): Edge[] => {
-    const { edges = [] } = getState();
-
-    return edges.map((e) => ({ ...e }));
-  };
-};
-
-export const onLoadToObject = (getState: GetState<ReactFlowState>) => {
-  return (): FlowExportObject => {
-    const { nodes = [], edges = [], transform } = getState();
-
-    return {
-      nodes: nodes.map((n) => ({ ...n })),
-      edges: edges.map((e) => ({ ...e })),
-      position: [transform[0], transform[1]],
-      zoom: transform[2],
-    };
-  };
 };
 
 export const getTransformForBounds = (
