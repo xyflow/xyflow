@@ -4,6 +4,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps, SnapGrid, NodeRendererNode } from '../../types';
 import useVisibleNodes from '../../hooks/useVisibleNodes';
+import useNodeLookupRef from '../../hooks/useNodeLookupRef';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -28,7 +29,6 @@ const selector = (s: ReactFlowState) => ({
   updateNodeDimensions: s.updateNodeDimensions,
   snapGrid: s.snapGrid,
   snapToGrid: s.snapToGrid,
-  nodeLookup: s.nodeLookup,
 });
 
 interface NodeProps extends NodeRendererProps {
@@ -131,9 +131,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
     updateNodeDimensions,
     snapGrid,
     snapToGrid,
-    nodeLookup,
   } = useStore(selector, shallow);
-
+  const nodeLookup = useNodeLookupRef();
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
 
   const resizeObserver = useMemo(() => {
@@ -155,7 +154,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
     <div className="react-flow__nodes">
       {nodes.map((node) => {
         const nodeType = node.type || 'default';
-        const lookupNode = nodeLookup.get(node.id);
+        const lookupNode = nodeLookup.current.get(node.id);
 
         if (!props.nodeTypes[nodeType]) {
           console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);

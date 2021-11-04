@@ -309,10 +309,6 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
             updateItem.height = currentChange.dimensions.height;
           }
 
-          if (typeof currentChange.handleBounds !== 'undefined') {
-            updateItem.handleBounds = currentChange.handleBounds;
-          }
-
           if (typeof currentChange.position !== 'undefined') {
             updateItem.position = currentChange.position;
           }
