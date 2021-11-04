@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, memo } from 'react';
 
-import { useStoreApi, useStore } from '../../store';
+import { useStoreApi } from '../../store';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
+import Viewport from '../Viewport';
 import { onLoadProject, onLoadGetNodes, onLoadGetEdges, onLoadToObject } from '../../utils/graph';
 import useZoomPanHelper from '../../hooks/useZoomPanHelper';
 
@@ -83,7 +84,6 @@ const GraphView = ({
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
   const { zoomIn, zoomOut, zoomTo, transform: setTransform, fitView, initialized } = useZoomPanHelper();
-  const transform = useStore((s) => s.transform);
 
   useEffect(() => {
     if (!isInitialized.current && initialized) {
@@ -93,7 +93,7 @@ const GraphView = ({
           zoomIn,
           zoomOut,
           zoomTo,
-          setTransform: setTransform,
+          setTransform,
           project: onLoadProject(store.getState),
           getNodes: onLoadGetNodes(store.getState),
           getEdges: onLoadGetEdges(store.getState),
@@ -103,12 +103,7 @@ const GraphView = ({
 
       isInitialized.current = true;
     }
-  }, [onLoad, zoomIn, zoomOut, zoomTo, transform, fitView, initialized]);
-
-  const transformStyle = {
-    transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
-    transformOrigin: '0 0',
-  };
+  }, [onLoad, zoomIn, zoomOut, zoomTo, setTransform, fitView, initialized]);
 
   return (
     <FlowRenderer
@@ -138,7 +133,7 @@ const GraphView = ({
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
     >
-      <div className="react-flow__container" style={{ zIndex: 2, ...transformStyle }}>
+      <Viewport>
         <EdgeRenderer
           edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
@@ -171,7 +166,7 @@ const GraphView = ({
           selectNodesOnDrag={selectNodesOnDrag}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
         />
-      </div>
+      </Viewport>
     </FlowRenderer>
   );
 };

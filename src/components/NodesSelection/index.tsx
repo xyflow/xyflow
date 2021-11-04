@@ -103,7 +103,7 @@ export default ({
   }
 
   return (
-    <div className="react-flow__nodesselection" style={style}>
+    <div className="react-flow__nodesselection react-flow__container" style={style}>
       <ReactDraggable
         scale={tScale}
         grid={grid}

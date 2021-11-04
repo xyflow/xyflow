@@ -28,9 +28,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4' },
     position: { x: 100, y: 200 },
     className: 'light',
-    style: { backgroundColor: 'rgba(255, 0, 0, 0.8)' },
-    width: 600,
-    height: 300,
+    style: { backgroundColor: 'rgba(255, 0, 0, 0.8)', width: 600, height: 300 },
   },
   {
     id: '4a',
@@ -44,9 +42,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4b' },
     position: { x: 150, y: 50 },
     className: 'light',
-    style: { backgroundColor: 'rgba(255, 0, 255, 0.8)' },
-    height: 300,
-    width: 300,
+    style: { backgroundColor: 'rgba(255, 0, 255, 0.8)', height: 300, width: 300 },
     parentNode: '4',
   },
   {

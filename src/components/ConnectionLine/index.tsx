@@ -1,4 +1,5 @@
 import React, { useEffect, useState, CSSProperties } from 'react';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
@@ -6,7 +7,6 @@ import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
   ElementId,
   NodeLookupItem,
-  Transform,
   HandleElement,
   Position,
   ConnectionLineType,
@@ -23,13 +23,12 @@ interface ConnectionLineProps {
   connectionPositionX: number;
   connectionPositionY: number;
   connectionLineType: ConnectionLineType;
-  transform: Transform;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const selector = (s: ReactFlowState) => s.nodeLookup;
+const selector = (s: ReactFlowState) => ({ nodeLookup: s.nodeLookup, transform: s.transform });
 
 export default ({
   connectionNodeId,
@@ -39,11 +38,10 @@ export default ({
   connectionPositionX,
   connectionPositionY,
   connectionLineType = ConnectionLineType.Bezier,
-  transform,
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const nodeLookup = useStore(selector);
+  const { nodeLookup, transform } = useStore(selector, shallow);
   const [sourceNode, setSourceNode] = useState<NodeLookupItem | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;

@@ -36,7 +36,7 @@ const SelectionRect = () => {
 
   return (
     <div
-      className="react-flow__selection"
+      className="react-flow__selection react-flow__container"
       style={{
         width: userSelectionRect.width,
         height: userSelectionRect.height,
@@ -102,7 +102,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
   return (
     <div
-      className="react-flow__selectionpane"
+      className="react-flow__selectionpane react-flow__container"
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}

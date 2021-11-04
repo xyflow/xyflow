@@ -207,7 +207,6 @@ const Edge = memo(
 );
 
 const selector = (s: ReactFlowState) => ({
-  transform: s.transform,
   connectionNodeId: s.connectionNodeId,
   connectionHandleId: s.connectionHandleId,
   connectionHandleType: s.connectionHandleType,
@@ -222,7 +221,6 @@ const selector = (s: ReactFlowState) => ({
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const {
-    transform,
     connectionNodeId,
     connectionHandleId,
     connectionHandleType,
@@ -246,7 +244,13 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
   return (
     <>
       {edgeTree.map(({ level, edges, isMaxLevel }) => (
-        <svg key={level} style={{ zIndex: level }} width={width} height={height} className="react-flow__edges">
+        <svg
+          key={level}
+          style={{ zIndex: level }}
+          width={width}
+          height={height}
+          className="react-flow__edges react-flow__container"
+        >
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
           <g>
             {edges.map((edge: Edge) => {
@@ -289,7 +293,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 connectionHandleType={connectionHandleType!}
                 connectionPositionX={connectionPosition.x}
                 connectionPositionY={connectionPosition.y}
-                transform={transform}
                 connectionLineStyle={connectionLineStyle}
                 connectionLineType={connectionLineType}
                 isConnectable={nodesConnectable}

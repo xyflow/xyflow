@@ -23,8 +23,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     scale,
     xPos,
     yPos,
-    width,
-    height,
     isSelected,
     onClick,
     onMouseEnter,
@@ -74,8 +72,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
         // prevents jumping of nodes on start
         // opacity: isInitialized ? 1 : 0,
-        width: isParentNode && width !== null ? width : 'auto',
-        height: isParentNode && height !== null ? height : 'auto',
         ...style,
       }),
       [
@@ -91,8 +87,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onMouseMove,
         onMouseLeave,
         isParentNode,
-        width,
-        height,
       ]
     );
 
