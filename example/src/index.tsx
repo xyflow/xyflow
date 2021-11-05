@@ -8,12 +8,13 @@ import Stress from './Stress';
 import CustomNode from './CustomNode';
 import FloatingEdges from './FloatingEdges';
 import Layouting from './Layouting';
+import NestedNodes from './NestedNodes';
 
 import './index.css';
 
 const routes = [
   {
-    path: '/basic',
+    path: '/',
     component: Basic,
   },
   {
@@ -35,6 +36,10 @@ const routes = [
   {
     path: '/layouting',
     component: Layouting,
+  },
+  {
+    path: '/nested-nodes',
+    component: NestedNodes,
   },
 ];
 
