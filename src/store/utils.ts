@@ -2,11 +2,11 @@ import { ElementId, Node, NodeInternals, NodeInternalsItem, XYPosition } from '.
 
 type XYPosAndTreeLevel = XYPosition & { treeLevel: number };
 
-function addPositions(a: XYPosAndTreeLevel, b: XYPosition): XYPosAndTreeLevel {
+function addPositions(a: XYPosAndTreeLevel, b: XYPosAndTreeLevel): XYPosAndTreeLevel {
   return {
     x: (a.x ?? 0) + (b.x ?? 0),
     y: (a.y ?? 0) + (b.y ?? 0),
-    treeLevel: a.treeLevel + 1,
+    treeLevel: a.treeLevel + (b.treeLevel || 1),
   };
 }
 
@@ -24,7 +24,11 @@ function getAbsolutePosAndTreeLevel(
   return getAbsolutePosAndTreeLevel(
     parentNode,
     nodeInternals,
-    addPositions(result, parentNode.position || { x: 0, y: 0 })
+    addPositions(result, {
+      x: parentNode.position?.x || 0,
+      y: parentNode.position?.y || 0,
+      treeLevel: parentNode.treeLevel || 0,
+    })
   );
 }
 export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals): NodeInternals {
@@ -50,17 +54,21 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   nodes.forEach((node) => {
     const updatedInternals: NodeInternalsItem = nextNodeInternals.get(node.id)!;
 
-    if (node.parentNode) {
-      const parentNodeInternal = nextNodeInternals.get(node.parentNode);
+    if (node.parentNode || parentNodes[node.id]) {
+      if (node.parentNode) {
+        const parentNodeInternal = nextNodeInternals.get(node.parentNode);
+        if (parentNodeInternal) {
+          parentNodeInternal.isParentNode = true;
+        }
+      }
 
       const positionAbsoluteAndTreeLevel = getAbsolutePosAndTreeLevel(node, nextNodeInternals, {
         ...node.position,
-        treeLevel: updatedInternals.treeLevel || parentNodeInternal?.treeLevel || 0,
+        treeLevel: updatedInternals.treeLevel || 1,
       });
 
       const { treeLevel, x, y } = positionAbsoluteAndTreeLevel;
 
-      nextNodeInternals.set(node.parentNode!, { ...nextNodeInternals.get(node.parentNode!), isParentNode: true });
       updatedInternals.positionAbsolute = {
         x,
         y,
