@@ -270,6 +270,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               targetPosition={targetPosition}
               isDragging={isDragging}
               dragHandle={dragHandle}
+              zIndex={zIndex}
             />
           </Provider>
         </div>

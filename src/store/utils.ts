@@ -55,7 +55,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
       const positionAbsoluteAndTreeLevel = getAbsolutePosAndTreeLevel(node, nextNodeInternals, {
         ...node.position,
-        treeLevel: node.zIndex || updatedInternals?.treeLevel || parentNodeInternal?.treeLevel || 0,
+        treeLevel: updatedInternals.treeLevel || parentNodeInternal?.treeLevel || 0,
       });
 
       const { treeLevel, x, y } = positionAbsoluteAndTreeLevel;
@@ -67,12 +67,6 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
       };
       updatedInternals.treeLevel = treeLevel;
     }
-
-    // if (node.isDragging || node.isSelected) {
-    //   nextNodeInternals.set(node.id, { ...updatedInternals, treeLevel: 1000 });
-    // } else {
-    //   nextNodeInternals.set(node.id, { ...updatedInternals, treeLevel: updatedInternals?.treeLevel || 0 });
-    // }
   });
 
   return nextNodeInternals;

@@ -239,6 +239,7 @@ export interface NodeProps<T = any> {
   sourcePosition?: Position;
   isDragging?: boolean;
   dragHandle?: string;
+  zIndex?: number;
 }
 
 export interface NodeComponentProps<T = any> {
@@ -264,6 +265,7 @@ export interface NodeComponentProps<T = any> {
   style?: CSSProperties;
   isDragging?: boolean;
   dragHandle?: string;
+  zIndex?: number;
 }
 
 export interface WrapNodeProps<T = any> {
