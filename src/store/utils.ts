@@ -1,7 +1,6 @@
-import { ElementId, Node, NodeInternals, NodeInternalsItem, XYPosition } from '../types';
+import { Node, Edge, NodeInternals, NodeInternalsItem, XYZPosition } from '../types';
 
-type XYZPosition = XYPosition & { z: number };
-type ParentNodes = Record<ElementId, boolean>;
+type ParentNodes = Record<string, boolean>;
 
 function calculateXYZPosition(
   node: NodeInternalsItem,
@@ -33,7 +32,7 @@ function calculateXYZPosition(
   });
 }
 export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals): NodeInternals {
-  const nextNodeInternals = new Map<ElementId, NodeInternalsItem>();
+  const nextNodeInternals = new Map<string, NodeInternalsItem>();
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
@@ -86,3 +85,9 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
   return nextNodeInternals;
 }
+
+export const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge) => ({
+  id: item.id,
+  type: 'select',
+  selected,
+});

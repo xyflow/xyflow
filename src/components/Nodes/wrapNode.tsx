@@ -5,7 +5,7 @@ import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
-import { NodeComponentProps, WrapNodeProps, ReactFlowState } from '../../types';
+import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedElements: s.addSelectedElements,
@@ -15,7 +15,7 @@ const selector = (s: ReactFlowState) => ({
   unselectNodesAndEdges: s.unselectNodesAndEdges,
 });
 
-export default (NodeComponent: ComponentType<NodeComponentProps>) => {
+export default (NodeComponent: ComponentType<NodeProps>) => {
   const NodeWrapper = ({
     id,
     type,

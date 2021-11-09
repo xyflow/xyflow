@@ -5,20 +5,19 @@ import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
-  ElementId,
   NodeInternalsItem,
   HandleElement,
-  Position,
   ConnectionLineType,
   ConnectionLineComponent,
   HandleType,
   Node,
   ReactFlowState,
+  Position,
 } from '../../types';
 
 interface ConnectionLineProps {
-  connectionNodeId: ElementId;
-  connectionHandleId: ElementId | null;
+  connectionNodeId: string;
+  connectionHandleId: string | null;
   connectionHandleType: HandleType;
   connectionPositionX: number;
   connectionPositionY: number;

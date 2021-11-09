@@ -85,7 +85,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isHidden={node.isHidden}
             xPos={internals?.positionAbsolute?.x || 0}
             yPos={internals?.positionAbsolute?.y || 0}
-            dragging={node.dragging}
+            dragging={!!node.dragging}
             isInitialized={isInitialized}
             snapGrid={snapGrid}
             snapToGrid={snapToGrid}

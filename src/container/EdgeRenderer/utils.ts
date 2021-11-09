@@ -4,7 +4,7 @@ import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../compon
 import wrapEdge from '../../components/Edges/wrapEdge';
 import { rectToBox } from '../../utils';
 
-import { EdgeTypesType, EdgeProps, Position, XYPosition, ElementId, HandleElement, Transform, Rect } from '../../types';
+import { EdgeTypesType, EdgeProps, HandleElement, Position, XYPosition, Transform, Rect } from '../../types';
 
 export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
   const standardTypes: EdgeTypesType = {
@@ -59,7 +59,7 @@ export function getHandlePosition(position: Position, nodeRect: Rect, handle: an
   }
 }
 
-export function getHandle(bounds: HandleElement[], handleId: ElementId | null): HandleElement | null {
+export function getHandle(bounds: HandleElement[], handleId: string | null): HandleElement | null {
   if (!bounds) {
     return null;
   }

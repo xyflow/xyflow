@@ -5,7 +5,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import { getRectOfNodes } from '../../utils/graph';
 import { getBoundsofRects } from '../../utils';
-import { Node, Rect, ReactFlowState } from '../../types';
+import { Node, ReactFlowState, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
 
 type StringFunc = (node: Node) => string;

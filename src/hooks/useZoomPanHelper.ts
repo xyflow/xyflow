@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../store';
 import { getRectOfNodes, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, XYPosition, ReactFlowState } from '../types';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
 
 const DEFAULT_PADDING = 0.1;
 

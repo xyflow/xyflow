@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
-import { HandleProps, Connection, ElementId, Position, ReactFlowState } from '../../types';
+import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
 
 import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
@@ -37,7 +37,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     },
     ref
   ) => {
-    const nodeId = useContext(NodeIdContext) as ElementId;
+    const nodeId = useContext(NodeIdContext) as string;
     const {
       setPosition,
       setConnectionNodeId,

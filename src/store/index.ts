@@ -9,15 +9,12 @@ import {
   Edge,
   NodeDimensionUpdate,
   NodeDiffUpdate,
-  XYPosition,
   InitD3ZoomPayload,
   CoordinateExtent,
-  Transform,
-  Dimensions,
-  OnConnectFunc,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
+  OnConnect,
+  OnConnectStart,
+  OnConnectStop,
+  OnConnectEnd,
   SetConnectionId,
   SnapGrid,
   NodeChange,
@@ -25,18 +22,20 @@ import {
   OnEdgesChange,
   EdgeChange,
   NodeDimensionChange,
+  Transform,
+  Dimensions,
+  XYPosition,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
-import { createNodeInternals } from './utils';
+import { createNodeInternals, createNodeOrEdgeSelectionChange } from './utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
-const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge) => ({
-  id: item.id,
-  type: 'select',
-  selected,
-});
+const infiniteExtent: CoordinateExtent = [
+  [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+  [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+];
 
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
@@ -47,27 +46,16 @@ const createStore = () =>
     edges: [],
     onNodesChange: null,
     onEdgesChange: null,
-
     selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
-
     d3Zoom: null,
     d3Selection: null,
     d3ZoomHandler: undefined,
     minZoom: 0.5,
     maxZoom: 2,
-    translateExtent: [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-    ],
-
-    nodeExtent: [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-    ],
-
+    translateExtent: infiniteExtent,
+    nodeExtent: infiniteExtent,
     nodesSelectionActive: false,
     selectionActive: false,
-
     userSelectionRect: {
       startX: 0,
       startY: 0,
@@ -345,10 +333,10 @@ const createStore = () =>
     unsetNodesSelection: () => set({ nodesSelectionActive: false }),
     updateTransform: (transform: Transform) => set({ transform }),
     updateSize: (size: Dimensions) => set({ width: size.width || 500, height: size.height || 500 }),
-    setOnConnect: (onConnect: OnConnectFunc) => set({ onConnect }),
-    setOnConnectStart: (onConnectStart: OnConnectStartFunc) => set({ onConnectStart }),
-    setOnConnectStop: (onConnectStop: OnConnectStopFunc) => set({ onConnectStop }),
-    setOnConnectEnd: (onConnectEnd: OnConnectEndFunc) => set({ onConnectEnd }),
+    setOnConnect: (onConnect: OnConnect) => set({ onConnect }),
+    setOnConnectStart: (onConnectStart: OnConnectStart) => set({ onConnectStart }),
+    setOnConnectStop: (onConnectStop: OnConnectStop) => set({ onConnectStop }),
+    setOnConnectEnd: (onConnectEnd: OnConnectEnd) => set({ onConnectEnd }),
     setConnectionPosition: (connectionPosition: XYPosition) => set({ connectionPosition }),
     setConnectionNodeId: (params: SetConnectionId) => set({ ...params }),
     setSnapToGrid: (snapToGrid: boolean) => set({ snapToGrid }),

@@ -3,9 +3,9 @@ import { useEffect, useRef } from 'react';
 import { pointToRendererPoint } from '../utils/graph';
 import { useStoreApi } from '../store';
 import useZoomPanHelper from '../hooks/useZoomPanHelper';
-import { OnLoadFunc, XYPosition, Node, Edge, FlowExportObject } from '../types';
+import { OnLoad, XYPosition, Node, Edge, FlowExportObject } from '../types';
 
-function useOnLoadHandler(onLoad: OnLoadFunc<any> | undefined) {
+function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
   const { zoomIn, zoomOut, zoomTo, transform: setTransform, fitView, initialized } = useZoomPanHelper();

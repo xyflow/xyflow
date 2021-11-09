@@ -22,17 +22,17 @@ import {
   OnSelectionChangeFunc,
   NodeTypesType,
   EdgeTypesType,
-  OnLoadFunc,
+  OnLoad,
   Node,
   Edge,
   ConnectionMode,
   ConnectionLineType,
   ConnectionLineComponent,
   FlowTransform,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
-  OnConnectFunc,
+  OnConnectStart,
+  OnConnectStop,
+  OnConnectEnd,
+  OnConnect,
   CoordinateExtent,
   KeyCode,
   PanOnScrollMode,
@@ -72,11 +72,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
-  onConnect?: OnConnectFunc;
-  onConnectStart?: OnConnectStartFunc;
-  onConnectStop?: OnConnectStopFunc;
-  onConnectEnd?: OnConnectEndFunc;
-  onLoad?: OnLoadFunc;
+  onConnect?: OnConnect;
+  onConnectStart?: OnConnectStart;
+  onConnectStop?: OnConnectStop;
+  onConnectEnd?: OnConnectEnd;
+  onLoad?: OnLoad;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;

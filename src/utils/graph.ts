@@ -1,6 +1,6 @@
 import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
-import { ElementId, Node, Edge, Elements, Transform, XYPosition, Rect, Connection, EdgeMarkerType } from '../types';
+import { Node, Edge, Elements, Connection, EdgeMarkerType, Transform, XYPosition, Rect } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -26,7 +26,7 @@ export const getIncomers = (node: Node, nodes: Node[], edges: Edge[]): Node[] =>
   return nodes.filter((n) => incomersIds.includes(n.id));
 };
 
-const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): ElementId =>
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): string =>
   `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
 
 export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {

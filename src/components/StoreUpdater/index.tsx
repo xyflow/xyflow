@@ -6,10 +6,10 @@ import {
   Node,
   Edge,
   ReactFlowState,
-  OnConnectFunc,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
+  OnConnect,
+  OnConnectStart,
+  OnConnectStop,
+  OnConnectEnd,
   CoordinateExtent,
   OnNodesChange,
   OnEdgesChange,
@@ -20,10 +20,10 @@ import {
 interface StoreUpdaterProps {
   nodes: Node[];
   edges: Edge[];
-  onConnect?: OnConnectFunc;
-  onConnectStart?: OnConnectStartFunc;
-  onConnectStop?: OnConnectStopFunc;
-  onConnectEnd?: OnConnectEndFunc;
+  onConnect?: OnConnect;
+  onConnectStart?: OnConnectStart;
+  onConnectStop?: OnConnectStop;
+  onConnectEnd?: OnConnectEnd;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
   minZoom?: number;
