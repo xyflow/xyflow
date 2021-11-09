@@ -303,7 +303,7 @@ export interface WrapNodeProps<T = any> {
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;
   zIndex: number;
-  isParentNode: boolean;
+  isParent: boolean;
 }
 
 export type FitViewParams = {
@@ -460,14 +460,15 @@ export type OnNodesChange = (nodes: NodeChange[]) => void;
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
 export type NodeInternalsItem = {
+  id?: string;
   width?: number | null;
   height?: number | null;
   parentNode?: ElementId;
   position?: XYPosition;
   positionAbsolute?: XYPosition;
   handleBounds?: NodeHandleBounds;
-  treeLevel?: number;
-  isParentNode?: boolean;
+  z?: number;
+  isParent?: boolean;
 };
 
 export type NodeInternals = Map<ElementId, NodeInternalsItem>;

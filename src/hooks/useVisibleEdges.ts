@@ -4,21 +4,18 @@ import { useStore } from '../store';
 import { isEdgeVisible } from '../container/EdgeRenderer/utils';
 import { ReactFlowState, NodeInternals, Edge } from '../types';
 
-function groupEdgesByTreeLevel(edges: Edge[], nodeInternals: NodeInternals) {
+function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals) {
   let maxLevel = -1;
 
   const levelLookup = edges.reduce<Record<string, Edge[]>>((tree, edge) => {
-    const treeLevel = Math.max(
-      nodeInternals.get(edge.source)?.treeLevel || 0,
-      nodeInternals.get(edge.target)?.treeLevel || 0
-    );
-    if (tree[treeLevel]) {
-      tree[treeLevel].push(edge);
+    const z = Math.max(nodeInternals.get(edge.source)?.z || 0, nodeInternals.get(edge.target)?.z || 0);
+    if (tree[z]) {
+      tree[z].push(edge);
     } else {
-      tree[treeLevel] = [edge];
+      tree[z] = [edge];
     }
 
-    maxLevel = treeLevel > maxLevel ? treeLevel : maxLevel;
+    maxLevel = z > maxLevel ? z : maxLevel;
 
     return tree;
   }, {});
@@ -69,7 +66,7 @@ function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternal
     )
   );
 
-  return groupEdgesByTreeLevel(edges, nodeInternals);
+  return groupEdgesByZLevel(edges, nodeInternals);
 }
 
 export default useVisibleEdges;

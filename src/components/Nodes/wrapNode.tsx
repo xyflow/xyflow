@@ -49,7 +49,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     resizeObserver,
     dragHandle,
     zIndex,
-    isParentNode,
+    isParent,
   }: WrapNodeProps) => {
     const {
       addSelectedElements,
@@ -85,7 +85,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onMouseEnter,
         onMouseMove,
         onMouseLeave,
-        isParentNode,
+        isParent,
         zIndex,
       ]
     );
@@ -228,7 +228,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       {
         selected: isSelected,
         selectable: isSelectable,
-        parent: isParentNode,
+        parent: isParent,
       },
     ]);
 

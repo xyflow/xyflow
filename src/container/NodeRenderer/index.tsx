@@ -106,8 +106,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
-            zIndex={internals?.treeLevel || 0}
-            isParentNode={!!internals?.isParentNode}
+            zIndex={internals?.z || 0}
+            isParent={!!internals?.isParent}
           />
         );
       })}
