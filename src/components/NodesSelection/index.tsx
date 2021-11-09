@@ -20,7 +20,7 @@ const selector = (s: ReactFlowState) => ({
   transform: s.transform,
   selectedNodesBbox: s.selectedNodesBbox,
   selectionActive: s.selectionActive,
-  selectedNodes: s.nodes.filter((n) => n.isSelected),
+  selectedNodes: s.nodes.filter((n) => n.selected),
   snapToGrid: s.snapToGrid,
   snapGrid: s.snapGrid,
   updateNodePosition: s.updateNodePosition,
@@ -74,7 +74,7 @@ export default ({
           x: data.deltaX,
           y: data.deltaY,
         },
-        isDragging: true,
+        dragging: true,
       });
     },
     [onSelectionDrag, selectedNodes, updateNodePosition]
@@ -83,7 +83,7 @@ export default ({
   const onStop = useCallback(
     (event: MouseEvent) => {
       updateNodePosition({
-        isDragging: false,
+        dragging: false,
       });
 
       onSelectionDragStop?.(event, selectedNodes);

@@ -23,7 +23,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     scale,
     xPos,
     yPos,
-    isSelected,
+    selected,
     onClick,
     onMouseEnter,
     onMouseMove,
@@ -45,7 +45,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     isInitialized,
     snapToGrid,
     snapGrid,
-    isDragging,
+    dragging,
     resizeObserver,
     dragHandle,
     zIndex,
@@ -74,7 +74,6 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         ...style,
       }),
       [
-        isSelected,
         xPos,
         yPos,
         isSelectable,
@@ -91,28 +90,28 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     );
 
     const onMouseEnterHandler = useMemo(() => {
-      if (!onMouseEnter || isDragging) {
+      if (!onMouseEnter || dragging) {
         return;
       }
 
       return (event: MouseEvent) => onMouseEnter(event, node);
-    }, [onMouseEnter, isDragging, node]);
+    }, [onMouseEnter, dragging, node]);
 
     const onMouseMoveHandler = useMemo(() => {
-      if (!onMouseMove || isDragging) {
+      if (!onMouseMove || dragging) {
         return;
       }
 
       return (event: MouseEvent) => onMouseMove(event, node);
-    }, [onMouseMove, isDragging, node]);
+    }, [onMouseMove, dragging, node]);
 
     const onMouseLeaveHandler = useMemo(() => {
-      if (!onMouseLeave || isDragging) {
+      if (!onMouseLeave || dragging) {
         return;
       }
 
       return (event: MouseEvent) => onMouseLeave(event, node);
-    }, [onMouseLeave, isDragging, node]);
+    }, [onMouseLeave, dragging, node]);
 
     const onContextMenuHandler = useMemo(() => {
       if (!onContextMenu) {
@@ -128,7 +127,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           if (isSelectable) {
             unsetNodesSelection();
 
-            if (!isSelected) {
+            if (!selected) {
               addSelectedElements([node]);
             }
           }
@@ -136,7 +135,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onClick?.(event, node);
         }
       },
-      [isSelectable, isSelected, isDraggable, onClick, node]
+      [isSelectable, selected, isDraggable, onClick, node]
     );
 
     const onDragStart = useCallback(
@@ -146,15 +145,15 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         if (selectNodesOnDrag && isSelectable) {
           unsetNodesSelection();
 
-          if (!isSelected) {
+          if (!selected) {
             addSelectedElements([node]);
           }
-        } else if (!selectNodesOnDrag && !isSelected && isSelectable) {
+        } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unselectNodesAndEdges();
           unsetNodesSelection();
         }
       },
-      [node, isSelected, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
@@ -166,7 +165,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
           onNodeDrag(event as MouseEvent, node);
         }
 
-        updateNodePosition({ id, isDragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
+        updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },
       [id, node, onNodeDrag]
     );
@@ -175,8 +174,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       (event: DraggableEvent) => {
         // onDragStop also gets called when user just clicks on a node.
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
-        if (!isDragging) {
-          if (isSelectable && !selectNodesOnDrag && !isSelected) {
+        if (!dragging) {
+          if (isSelectable && !selectNodesOnDrag && !selected) {
             addSelectedElements([node]);
           }
 
@@ -187,12 +186,12 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
         updateNodePosition({
           id: node.id,
-          isDragging: false,
+          dragging: false,
         });
 
         onNodeDragStop?.(event as MouseEvent, node);
       },
-      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, isDragging, isSelected]
+      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
     );
 
     const onNodeDoubleClickHandler = useCallback(
@@ -226,7 +225,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
       `react-flow__node-${type}`,
       className,
       {
-        selected: isSelected,
+        selected,
         selectable: isSelectable,
         parent: isParent,
       },
@@ -264,11 +263,11 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
               type={type}
               xPos={xPos}
               yPos={yPos}
-              isSelected={isSelected}
+              selected={selected}
               isConnectable={isConnectable}
               sourcePosition={sourcePosition}
               targetPosition={targetPosition}
-              isDragging={isDragging}
+              dragging={dragging}
               dragHandle={dragHandle}
               zIndex={zIndex}
             />

@@ -149,7 +149,7 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  return nodes.filter(({ selectable = true, position, width, height, isDragging }) => {
+  return nodes.filter(({ selectable = true, position, width, height, dragging }) => {
     if (excludeNonSelectableNodes && !selectable) {
       return false;
     }
@@ -164,7 +164,7 @@ export const getNodesInside = (
       typeof height === 'undefined' ||
       width === null ||
       height === null ||
-      isDragging
+      dragging
     ) {
       // nodes are initialized with width and height = null
       return true;

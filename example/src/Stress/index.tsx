@@ -55,14 +55,7 @@ const StressFlow = () => {
   }, []);
 
   return (
-    <ReactFlow
-      onlyRenderVisibleElements
-      nodes={nodes}
-      edges={edges}
-      onLoad={onLoad}
-      onConnect={onConnect}
-      onNodesChange={onNodesChange}
-    >
+    <ReactFlow nodes={nodes} edges={edges} onLoad={onLoad} onConnect={onConnect} onNodesChange={onNodesChange}>
       <MiniMap />
       <Controls />
       <Background />

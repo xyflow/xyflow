@@ -29,8 +29,8 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
 
   useEffect(() => {
     const { nodes, edges } = store.getState();
-    const selectedNodes = nodes.filter((n) => n.isSelected);
-    const selectedEdges = edges.filter((e) => e.isSelected);
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
 
     if (deleteKeyPressed && (selectedNodes || selectedEdges)) {
       const connectedEdges = getConnectedEdges(selectedNodes, edges);

@@ -85,7 +85,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isHidden={node.isHidden}
             xPos={internals?.positionAbsolute?.x || 0}
             yPos={internals?.positionAbsolute?.y || 0}
-            isDragging={node.isDragging}
+            dragging={node.dragging}
             isInitialized={isInitialized}
             snapGrid={snapGrid}
             snapToGrid={snapToGrid}
@@ -100,7 +100,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
             scale={scale}
-            isSelected={!!node.isSelected}
+            selected={!!node.selected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}
             isConnectable={isConnectable}

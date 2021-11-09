@@ -32,10 +32,10 @@ import { createNodeInternals } from './utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
-const createNodeOrEdgeSelectionChange = (isSelected: boolean) => (item: Node | Edge) => ({
+const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge) => ({
   id: item.id,
   type: 'select',
-  isSelected,
+  selected,
 });
 
 const createStore = () =>
@@ -141,11 +141,11 @@ const createStore = () =>
 
       onNodesChange?.(nodesToChange);
     },
-    updateNodePosition: ({ id, diff, isDragging }: NodeDiffUpdate) => {
+    updateNodePosition: ({ id, diff, dragging }: NodeDiffUpdate) => {
       const { onNodesChange, nodes, nodeExtent, nodeInternals } = get();
 
       if (onNodesChange) {
-        const matchingNodes = nodes.filter((n) => !!(n.isSelected || n.id === id));
+        const matchingNodes = nodes.filter((n) => !!(n.selected || n.id === id));
 
         if (matchingNodes?.length) {
           onNodesChange(
@@ -153,7 +153,7 @@ const createStore = () =>
               const change: NodeDimensionChange = {
                 id: node.id,
                 type: 'dimensions',
-                isDragging: !!isDragging,
+                dragging: !!dragging,
               };
 
               if (diff) {
@@ -231,7 +231,7 @@ const createStore = () =>
     },
     unsetUserSelection: () => {
       const { userSelectionRect, nodes } = get();
-      const selectedNodes = nodes.filter((node) => node.isSelected);
+      const selectedNodes = nodes.filter((node) => node.selected);
 
       const stateUpdate = {
         selectionActive: false,
@@ -281,7 +281,7 @@ const createStore = () =>
       const { nodes, edges, onNodesChange, onEdgesChange } = get();
 
       const nodesToUnselect = nodes.map((n) => {
-        n.isSelected = false;
+        n.selected = false;
         return createNodeOrEdgeSelectionChange(false)(n);
       }) as NodeChange[];
       const edgesToUnselect = edges.map(createNodeOrEdgeSelectionChange(false)) as EdgeChange[];
@@ -322,8 +322,8 @@ const createStore = () =>
     resetSelectedElements: () => {
       const { nodes, edges, onNodesChange, onEdgesChange } = get();
 
-      const nodesToUnselect = nodes.filter((e) => e.isSelected).map(createNodeOrEdgeSelectionChange(false));
-      const edgesToUnselect = edges.filter((e) => e.isSelected).map(createNodeOrEdgeSelectionChange(false));
+      const nodesToUnselect = nodes.filter((e) => e.selected).map(createNodeOrEdgeSelectionChange(false));
+      const edgesToUnselect = edges.filter((e) => e.selected).map(createNodeOrEdgeSelectionChange(false));
 
       if (nodesToUnselect.length) {
         onNodesChange?.(nodesToUnselect as NodeChange[]);

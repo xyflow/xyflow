@@ -9,7 +9,7 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
     if (currentChange) {
       switch (currentChange.type) {
         case 'select': {
-          res.push({ ...item, isSelected: currentChange.isSelected });
+          res.push({ ...item, selected: currentChange.selected });
           return res;
         }
         case 'dimensions': {
@@ -24,8 +24,8 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
             updateItem.position = currentChange.position;
           }
 
-          if (typeof currentChange.isDragging !== 'undefined') {
-            updateItem.isDragging = currentChange.isDragging;
+          if (typeof currentChange.dragging !== 'undefined') {
+            updateItem.dragging = currentChange.dragging;
           }
 
           res.push(updateItem);

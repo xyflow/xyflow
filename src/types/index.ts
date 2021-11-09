@@ -15,13 +15,13 @@ export type NodeDimensionChange = {
   dimensions?: Dimensions;
   position?: XYPosition;
   handleBounds?: NodeHandleBounds;
-  isDragging?: boolean;
+  dragging?: boolean;
 };
 
 export type NodeSelectionChange = {
   id: string;
   type: 'select';
-  isSelected: boolean;
+  selected: boolean;
 };
 export type NodeRemoveChange = {
   id: string;
@@ -74,8 +74,8 @@ export interface Node<T = any> {
   targetPosition?: Position;
   sourcePosition?: Position;
   isHidden?: boolean;
-  isSelected?: boolean;
-  isDragging?: boolean;
+  selected?: boolean;
+  dragging?: boolean;
   draggable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
@@ -124,7 +124,7 @@ export interface Edge<T = any> {
   className?: string;
   sourceNode?: Node;
   targetNode?: Node;
-  isSelected?: boolean;
+  selected?: boolean;
   markerStart?: EdgeMarkerType;
   markerEnd?: EdgeMarkerType;
 }
@@ -153,7 +153,7 @@ export interface WrapEdgeProps<T = any> {
   data?: T;
   onClick?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  isSelected: boolean;
+  selected: boolean;
   animated?: boolean;
   label?: string | ReactNode;
   labelStyle?: CSSProperties;
@@ -195,7 +195,7 @@ export interface EdgeProps<T = any> {
   sourceY: number;
   targetX: number;
   targetY: number;
-  isSelected?: boolean;
+  selected?: boolean;
   animated?: boolean;
   sourcePosition: Position;
   targetPosition: Position;
@@ -231,13 +231,13 @@ export interface NodeProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
-  isSelected: boolean;
+  selected: boolean;
   isConnectable: boolean;
   xPos?: number;
   yPos?: number;
   targetPosition?: Position;
   sourcePosition?: Position;
-  isDragging?: boolean;
+  dragging?: boolean;
   dragHandle?: string;
   zIndex?: number;
 }
@@ -246,7 +246,7 @@ export interface NodeComponentProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
-  isSelected?: boolean;
+  selected?: boolean;
   isConnectable: boolean;
   transform?: Transform;
   xPos?: number;
@@ -263,7 +263,7 @@ export interface NodeComponentProps<T = any> {
   onNodeDrag?: (node: Node) => void;
   onNodeDragStop?: (node: Node) => void;
   style?: CSSProperties;
-  isDragging?: boolean;
+  dragging?: boolean;
   dragHandle?: string;
   zIndex?: number;
 }
@@ -272,7 +272,7 @@ export interface WrapNodeProps<T = any> {
   id: ElementId;
   type: string;
   data: T;
-  isSelected: boolean;
+  selected: boolean;
   scale: number;
   xPos: number;
   yPos: number;
@@ -299,7 +299,7 @@ export interface WrapNodeProps<T = any> {
   isInitialized?: boolean;
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
-  isDragging?: boolean;
+  dragging?: boolean;
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;
   zIndex: number;
@@ -410,7 +410,7 @@ export type NodePosUpdate = {
 export type NodeDiffUpdate = {
   id?: ElementId;
   diff?: XYPosition;
-  isDragging?: boolean;
+  dragging?: boolean;
 };
 
 export type FlowTransform = {

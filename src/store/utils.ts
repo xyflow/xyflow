@@ -44,7 +44,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
       height: node.height || null,
       position: node.position,
       positionAbsolute: node.position,
-      z: node.isDragging || node.isSelected ? 1000 : node.zIndex || 0,
+      z: node.dragging || node.selected ? 1000 : node.zIndex || 0,
     };
     if (node.parentNode) {
       internals.parentNode = node.parentNode;
@@ -57,7 +57,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     const updatedInternals: NodeInternalsItem = nextNodeInternals.get(node.id)!;
 
     if (node.parentNode || parentNodes[node.id]) {
-      let startingZ = updatedInternals.z;
+      let startingZ = updatedInternals.z || 0;
 
       if (!startingZ) {
         if (parentNodes[node.id] && node.parentNode) {
@@ -69,7 +69,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
       const { x, y, z } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
         ...node.position,
-        z: startingZ as number,
+        z: startingZ,
       });
 
       updatedInternals.positionAbsolute = {
