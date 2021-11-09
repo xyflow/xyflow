@@ -36,6 +36,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
+    const z = node.zIndex ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
     const internals: NodeInternalsItem = {
       ...nodeInternals.get(node.id),
       id: node.id,
@@ -43,7 +44,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
       height: node.height || null,
       position: node.position,
       positionAbsolute: node.position,
-      z: node.dragging || node.selected ? 1000 : node.zIndex || 0,
+      z,
     };
     if (node.parentNode) {
       internals.parentNode = node.parentNode;
@@ -59,7 +60,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
       let startingZ = updatedInternals.z || 0;
 
       if (!startingZ) {
-        if (parentNodes[node.id] && node.parentNode) {
+        if (parentNodes[node.id]) {
           startingZ = 2;
         } else if (node.parentNode) {
           startingZ = 1;
