@@ -23,6 +23,13 @@ const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 }, className: 'light' },
   {
+    id: '4',
+    data: { label: 'Node 4' },
+    position: { x: 100, y: 200 },
+    className: 'light',
+    style: { backgroundColor: 'rgba(255,50, 50, 0.5)', width: 500, height: 300 },
+  },
+  {
     id: '4a',
     data: { label: 'Node 4a' },
     position: { x: 15, y: 15 },
@@ -30,7 +37,14 @@ const initialNodes: Node[] = [
     parentNode: '4',
     extent: 'parent',
   },
-
+  {
+    id: '4b',
+    data: { label: 'Node 4b' },
+    position: { x: 150, y: 50 },
+    className: 'light',
+    style: { backgroundColor: 'rgba(50, 50, 255, 0.5)', height: 200, width: 300 },
+    parentNode: '4',
+  },
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
@@ -46,19 +60,12 @@ const initialNodes: Node[] = [
     parentNode: '4b',
   },
   {
-    id: '4b',
-    data: { label: 'Node 4b' },
-    position: { x: 150, y: 50 },
+    id: '5',
+    data: { label: 'Node 5' },
+    position: { x: 650, y: 250 },
     className: 'light',
-    style: { backgroundColor: 'rgba(50, 50, 255, 0.5)', height: 200, width: 300 },
-    parentNode: '4',
-  },
-  {
-    id: '4',
-    data: { label: 'Node 4' },
-    position: { x: 100, y: 200 },
-    className: 'light',
-    style: { backgroundColor: 'rgba(255,50, 50, 0.5)', width: 500, height: 300 },
+    style: { backgroundColor: 'rgba(20 ,200, 255, 1.5)', width: 400, height: 150 },
+    zIndex: 1000,
   },
   {
     id: '5a',
@@ -74,13 +81,6 @@ const initialNodes: Node[] = [
     className: 'light',
     parentNode: '5',
   },
-  {
-    id: '5',
-    data: { label: 'Node 5' },
-    position: { x: 650, y: 250 },
-    className: 'light',
-    style: { backgroundColor: 'rgba(20 ,200, 255, 1.5)', width: 400, height: 150 },
-  },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 }, className: 'light' },
   { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 }, className: 'light' },
 ];
@@ -88,10 +88,10 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
-  { id: 'e3-4', source: '3', target: '4' },
+  { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
   { id: 'e3-4b', source: '3', target: '4b' },
   { id: 'e4a-4b1', source: '4a', target: '4b1' },
-  { id: 'e4a-4b2', source: '4a', target: '4b2' },
+  { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
   { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
   { id: '3-5', source: '3', target: '5' },
 ];

@@ -31,6 +31,42 @@ function calculateXYZPosition(
     z: (result.z ?? 0) + zAddition,
   });
 }
+
+// function createTree(items: Node[]): any {
+//   const rootItems = [];
+//   const lookup: Record<any, any> = {};
+
+//   for (const item of items) {
+//     const parentId = item.parentNode;
+
+//     if (!lookup[item.id]) {
+//       lookup[item.id] = { childNodes: [], z: 0 };
+//     }
+
+//     lookup[item.id] = {
+//       node: item,
+//       childNodes: lookup[item.id].childNodes,
+//       z: lookup[item.id].z,
+//     };
+
+//     const treeItem = lookup[item.id];
+
+//     if (!parentId) {
+//       rootItems.push(treeItem);
+//     } else {
+//       if (!lookup[parentId]) {
+//         lookup[parentId] = { childNodes: [], z: 0 };
+//       }
+
+//       lookup[parentId].childNodes.push({ ...treeItem, z: lookup[parentId].z + 1 });
+//     }
+//   }
+
+//   console.log(lookup);
+
+//   return rootItems;
+// }
+
 export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals): NodeInternals {
   const nextNodeInternals = new Map<string, NodeInternalsItem>();
   const parentNodes: ParentNodes = {};
@@ -57,26 +93,15 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     const updatedInternals: NodeInternalsItem = nextNodeInternals.get(node.id)!;
 
     if (node.parentNode || parentNodes[node.id]) {
-      let startingZ = updatedInternals.z || 0;
-
-      if (!startingZ) {
-        if (parentNodes[node.id]) {
-          startingZ = 2;
-        } else if (node.parentNode) {
-          startingZ = 1;
-        }
-      }
-
-      const { x, y, z } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
+      const { x, y } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
         ...node.position,
-        z: startingZ,
+        z: 0,
       });
 
       updatedInternals.positionAbsolute = {
         x,
         y,
       };
-      updatedInternals.z = z;
 
       if (parentNodes[node.id]) {
         updatedInternals.isParent = true;

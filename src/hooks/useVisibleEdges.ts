@@ -8,7 +8,7 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals) {
   let maxLevel = -1;
 
   const levelLookup = edges.reduce<Record<string, Edge[]>>((tree, edge) => {
-    const z = Math.max(nodeInternals.get(edge.source)?.z || 0, nodeInternals.get(edge.target)?.z || 0);
+    const z = edge.zIndex || Math.max(nodeInternals.get(edge.source)?.z || 0, nodeInternals.get(edge.target)?.z || 0);
     if (tree[z]) {
       tree[z].push(edge);
     } else {

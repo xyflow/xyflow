@@ -29,6 +29,7 @@ export interface Edge<T = any> {
   selected?: boolean;
   markerStart?: EdgeMarkerType;
   markerEnd?: EdgeMarkerType;
+  zIndex?: number;
 }
 
 // props that get passed to a custom edge
