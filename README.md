@@ -35,6 +35,11 @@ const elements = [
 const BasicFlow = () => <ReactFlow elements={elements} />;
 ```
 
+## Community Packages
+
+* [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
+* [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
+
 ## Development
 
 Before you start you need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
