@@ -27,6 +27,9 @@ interface ZoomPaneProps {
   zoomActivationKeyCode?: KeyCode;
   preventScrolling?: boolean;
   children: ReactNode;
+  noDragClassName?: string;
+  noZoomClassName?: string;
+  noPanClassName?: string;
 }
 
 const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
@@ -40,7 +43,8 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
   zoom: eventTransform.k,
 });
 
-const hasNoWheelClass = (event: any) => event.target.closest('.nowheel');
+const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
+// const hasNoWheelClass = (event: any) => event.target.closest('.nowheel');
 
 const selector = (s: ReactFlowState) => ({
   d3Zoom: s.d3Zoom,
@@ -69,6 +73,8 @@ const ZoomPane = ({
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
+  noZoomClassName,
+  noPanClassName,
 }: ZoomPaneProps) => {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -106,7 +112,7 @@ const ZoomPane = ({
       if (panOnScroll && !zoomActivationKeyPressed) {
         d3Selection
           .on('wheel', (event: any) => {
-            if (hasNoWheelClass(event)) {
+            if (isWrappedWithClass(event, noZoomClassName)) {
               return false;
             }
             event.preventDefault();
@@ -140,7 +146,7 @@ const ZoomPane = ({
       } else if (typeof d3ZoomHandler !== 'undefined') {
         d3Selection
           .on('wheel', (event: any) => {
-            if (!preventScrolling || hasNoWheelClass(event)) {
+            if (!preventScrolling || isWrappedWithClass(event, noZoomClassName)) {
               return null;
             }
 
@@ -158,6 +164,7 @@ const ZoomPane = ({
     zoomActivationKeyPressed,
     zoomOnPinch,
     preventScrolling,
+    noZoomClassName,
   ]);
 
   useEffect(() => {
@@ -230,22 +237,28 @@ const ZoomPane = ({
           return false;
         }
 
-        if (hasNoWheelClass(event) && event.type === 'wheel') {
+        // if the target element is inside the nowheel class, we prevent zooming
+        if (isWrappedWithClass(event, noZoomClassName) && event.type === 'wheel') {
+          return false;
+        }
+
+        // if the target element is inside the nopan class, we prevent panning
+        if (isWrappedWithClass(event, noPanClassName) && event.type !== 'wheel') {
           return false;
         }
 
         // when the target element is a node, we still allow zooming
-        if (
-          (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge')) &&
-          event.type !== 'wheel'
-        ) {
-          return false;
-        }
+        // if (
+        //   (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge')) &&
+        //   event.type !== 'wheel'
+        // ) {
+        //   return false;
+        // }
 
-        // when the target element is a node selection, we still allow zooming
-        if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
-          return false;
-        }
+        // // when the target element is a node selection, we still allow zooming
+        // if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
+        //   return false;
+        // }
 
         if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
           return false;

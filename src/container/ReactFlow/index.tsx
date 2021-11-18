@@ -129,6 +129,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
+  noDragClassName?: string;
+  noZoomClassName?: string;
+  noPanClassName?: string;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -212,6 +215,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       edgeUpdaterRadius = 10,
       onNodesChange,
       onEdgesChange,
+      noDragClassName = 'nodrag',
+      noZoomClassName = 'nowheel',
+      noPanClassName = 'nopan',
       ...rest
     },
     ref
@@ -276,6 +282,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
             defaultMarkerColor={defaultMarkerColor}
+            noDragClassName={noDragClassName}
+            noZoomClassName={noZoomClassName}
+            noPanClassName={noPanClassName}
           />
           <StoreUpdater
             nodes={nodes}

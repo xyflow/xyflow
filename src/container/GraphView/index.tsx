@@ -76,6 +76,9 @@ const GraphView = ({
   edgeUpdaterRadius,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
+  noDragClassName,
+  noZoomClassName,
+  noPanClassName,
 }: GraphViewProps) => {
   useOnLoadHandler(onLoad);
 
@@ -106,6 +109,9 @@ const GraphView = ({
       onSelectionDragStop={onSelectionDragStop}
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
+      noDragClassName={noDragClassName}
+      noZoomClassName={noZoomClassName}
+      noPanClassName={noPanClassName}
     >
       <Viewport>
         <EdgeRenderer
@@ -125,6 +131,7 @@ const GraphView = ({
           onEdgeUpdateEnd={onEdgeUpdateEnd}
           edgeUpdaterRadius={edgeUpdaterRadius}
           defaultMarkerColor={defaultMarkerColor}
+          noPanClassName={noPanClassName}
         />
         <NodeRenderer
           nodeTypes={nodeTypes}
@@ -139,6 +146,7 @@ const GraphView = ({
           onNodeDragStart={onNodeDragStart}
           selectNodesOnDrag={selectNodesOnDrag}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
+          noPanClassName={noPanClassName}
         />
       </Viewport>
     </FlowRenderer>

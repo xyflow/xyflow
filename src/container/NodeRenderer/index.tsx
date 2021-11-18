@@ -1,5 +1,6 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
 import shallow from 'zustand/shallow';
+import cc from 'classcat';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
@@ -19,6 +20,7 @@ interface NodeRendererProps {
   onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onlyRenderVisibleElements: boolean;
+  noPanClassName?: string;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -76,7 +78,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           <NodeComponent
             key={node.id}
             id={node.id}
-            className={node.className}
+            className={cc([node.className, props.noPanClassName])}
             style={node.style}
             type={nodeType}
             data={node.data}
