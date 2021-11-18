@@ -1,4 +1,5 @@
 import { Node, Edge, NodeInternals, NodeInternalsItem, XYZPosition } from '../types';
+import { isNumeric } from '../utils';
 
 type ParentNodes = Record<string, boolean>;
 
@@ -13,22 +14,10 @@ function calculateXYZPosition(
   }
   const parentNode = nodeInternals.get(node.parentNode)!;
 
-  // +1 for each recursion level
-  let zAddition = 1;
-
-  // +2 if it's a parent node, so that groups/parents are always on top
-  if (parentNodes[node.parentNode!]) {
-    zAddition = 2;
-  }
-
-  if (parentNode.z) {
-    zAddition += parentNode.z;
-  }
-
   return calculateXYZPosition(parentNode, nodeInternals, parentNodes, {
     x: (result.x ?? 0) + (parentNode.position?.x ?? 0),
     y: (result.y ?? 0) + (parentNode.position?.y ?? 0),
-    z: (result.z ?? 0) + zAddition,
+    z: parentNode.z > node.z ? parentNode.z : node.z,
   });
 }
 
@@ -72,7 +61,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
-    const z = node.zIndex ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
+    const z = isNumeric(node.zIndex) ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
     const internals: NodeInternalsItem = {
       ...nodeInternals.get(node.id),
       ...node,
@@ -89,26 +78,26 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     nextNodeInternals.set(node.id, internals);
   });
 
-  nodes.forEach((node) => {
-    const updatedInternals: NodeInternalsItem = nextNodeInternals.get(node.id)!;
-
+  nextNodeInternals.forEach((node) => {
     if (node.parentNode && !nextNodeInternals.has(node.parentNode)) {
       throw new Error(`Parent node ${node.parentNode} not found`);
     }
 
     if (node.parentNode || parentNodes[node.id]) {
-      const { x, y } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
+      const { x, y, z } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
         ...node.position,
-        z: 0,
+        z: node.z,
       });
 
-      updatedInternals.positionAbsolute = {
+      node.positionAbsolute = {
         x,
         y,
       };
 
+      node.z = z;
+
       if (parentNodes[node.id]) {
-        updatedInternals.isParent = true;
+        node.isParent = true;
       }
     }
   });
