@@ -27,7 +27,7 @@ interface ConnectionLineProps {
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, nodes: s.nodes, transform: s.transform });
+const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, transform: s.transform });
 
 export default ({
   connectionNodeId,
@@ -43,9 +43,9 @@ export default ({
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
 
-  const { nodeInternals, nodes, transform } = useStore(selector, shallow);
+  const { nodeInternals, transform } = useStore(selector, shallow);
   const sourceNodeInternals = useRef<NodeInternalsItem | undefined>(nodeInternals.get(nodeId));
-  const sourceNode = useRef<Node | undefined>(nodes.find((n) => n.id === nodeId));
+  const sourceNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
 
   if (
     !sourceNode.current ||

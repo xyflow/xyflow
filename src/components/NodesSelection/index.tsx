@@ -15,12 +15,14 @@ export interface NodesSelectionProps {
   onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
 }
-
+// @TODO: work with nodeInternals instead of converting it to an array
 const selector = (s: ReactFlowState) => ({
   transform: s.transform,
   selectedNodesBbox: s.selectedNodesBbox,
   selectionActive: s.selectionActive,
-  selectedNodes: s.nodes.filter((n) => n.selected),
+  selectedNodes: Array.from(s.nodeInternals)
+    .filter(([_, n]) => n.selected)
+    .map(([_, n]) => n),
   snapToGrid: s.snapToGrid,
   snapGrid: s.snapGrid,
   updateNodePosition: s.updateNodePosition,

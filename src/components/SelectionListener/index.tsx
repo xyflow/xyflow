@@ -8,8 +8,11 @@ interface SelectionListenerProps {
   onSelectionChange: OnSelectionChangeFunc;
 }
 
+// @TODO: work with nodeInternals instead of converting it to an array
 const selectedElementsSelector = (s: ReactFlowState) => ({
-  selectedNodes: s.nodes.filter((n) => n.selected),
+  selectedNodes: Array.from(s.nodeInternals)
+    .filter(([_, n]) => n.selected)
+    .map(([_, node]) => node),
   selectedEdges: s.edges.filter((e) => e.selected),
 });
 

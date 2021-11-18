@@ -134,7 +134,6 @@ export interface ReactFlowState {
   width: number;
   height: number;
   transform: Transform;
-  nodes: Node[];
   nodeInternals: NodeInternals;
   edges: Edge[];
   selectedNodesBbox: Rect;

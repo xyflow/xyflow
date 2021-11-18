@@ -129,7 +129,7 @@ const NestedFlow = () => {
   const toggleChildNodes = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.isHidden = !!n.parentNode && !n.isHidden;
+        n.hidden = !!n.parentNode && !n.hidden;
         return n;
       });
     });

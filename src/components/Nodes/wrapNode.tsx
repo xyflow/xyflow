@@ -41,7 +41,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     selectNodesOnDrag,
     sourcePosition,
     targetPosition,
-    isHidden,
+    hidden,
     isInitialized,
     snapToGrid,
     snapGrid,
@@ -56,7 +56,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       unselectNodesAndEdges,
       unsetNodesSelection,
       updateNodePosition,
-      updateNodeDimensions,
+      //  updateNodeDimensions,
     } = useStore(selector, shallow);
     const nodeElement = useRef<HTMLDivElement>(null);
 
@@ -202,12 +202,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     );
 
     useEffect(() => {
-      if (nodeElement.current && (!isHidden || !isInitialized)) {
-        updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
-      }
-    }, [id, isHidden, sourcePosition, targetPosition, type, isInitialized]);
-
-    useEffect(() => {
       if (nodeElement.current) {
         const currNode = nodeElement.current;
         resizeObserver?.observe(currNode);
@@ -216,7 +210,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       }
     }, []);
 
-    if (isHidden) {
+    if (hidden) {
       return null;
     }
 

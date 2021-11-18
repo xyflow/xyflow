@@ -28,7 +28,9 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { nodes, edges } = store.getState();
+    const { nodeInternals, edges } = store.getState();
+    // @TODO: work with nodeInternals instead of converting it to an array
+    const nodes = Array.from(nodeInternals).map(([_, node]) => node);
     const selectedNodes = nodes.filter((n) => n.selected);
     const selectedEdges = edges.filter((e) => e.selected);
 

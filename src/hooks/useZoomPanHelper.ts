@@ -41,13 +41,14 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
           d3Zoom.transform(d3Selection, nextTransform);
         },
         fitView: (options: FitViewParams = { padding: DEFAULT_PADDING, includeHiddenNodes: false }) => {
-          const { nodes, width, height, minZoom, maxZoom } = store.getState();
-
+          const { nodeInternals, width, height, minZoom, maxZoom } = store.getState();
+          // @TODO: work with nodeInternals instead of converting it to an array
+          const nodes = Array.from(nodeInternals).map(([_, node]) => node);
           if (!nodes.length) {
             return;
           }
 
-          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.isHidden));
+          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.hidden));
           const [x, y, zoom] = getTransformForBounds(
             bounds,
             width,
