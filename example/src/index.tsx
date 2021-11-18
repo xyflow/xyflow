@@ -9,6 +9,7 @@ import CustomNode from './CustomNode';
 import FloatingEdges from './FloatingEdges';
 import Layouting from './Layouting';
 import NestedNodes from './NestedNodes';
+import Hidden from './Hidden';
 
 import './index.css';
 
@@ -40,6 +41,10 @@ const routes = [
   {
     path: '/nested-nodes',
     component: NestedNodes,
+  },
+  {
+    path: '/hidden',
+    component: Hidden,
   },
 ];
 

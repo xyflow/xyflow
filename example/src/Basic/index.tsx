@@ -147,6 +147,7 @@ const BasicFlow = () => {
   };
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
+    console.log('node change', changes);
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 

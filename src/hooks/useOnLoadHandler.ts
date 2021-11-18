@@ -19,7 +19,9 @@ function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
         };
 
         const getNodes = (): Node[] => {
-          const { nodes = [] } = store.getState();
+          const { nodeInternals } = store.getState();
+          // @TODO: work with nodeInternals instead of converting it to an array
+          const nodes = Array.from(nodeInternals).map(([_, node]) => node);
           return nodes.map((n) => ({ ...n }));
         };
 
@@ -29,8 +31,9 @@ function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
         };
 
         const toObject = (): FlowExportObject => {
-          const { nodes = [], edges = [], transform } = store.getState();
-
+          const { nodeInternals, edges = [], transform } = store.getState();
+          // @TODO: work with nodeInternals instead of converting it to an array
+          const nodes = Array.from(nodeInternals).map(([_, node]) => node);
           return {
             nodes: nodes.map((n) => ({ ...n })),
             edges: edges.map((e) => ({ ...e })),

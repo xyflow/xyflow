@@ -56,7 +56,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       unselectNodesAndEdges,
       unsetNodesSelection,
       updateNodePosition,
-      updateNodeDimensions,
+      //  updateNodeDimensions,
     } = useStore(selector, shallow);
     const nodeElement = useRef<HTMLDivElement>(null);
 
@@ -200,12 +200,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       },
       [node, onNodeDoubleClick]
     );
-
-    useEffect(() => {
-      if (nodeElement.current && (!isHidden || !isInitialized)) {
-        updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
-      }
-    }, [id, isHidden, sourcePosition, targetPosition, type, isInitialized]);
 
     useEffect(() => {
       if (nodeElement.current) {

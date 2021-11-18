@@ -39,11 +39,11 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     const z = node.zIndex ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
     const internals: NodeInternalsItem = {
       ...nodeInternals.get(node.id),
-      id: node.id,
-      width: node.width || null,
-      height: node.height || null,
-      position: node.position,
-      positionAbsolute: node.position,
+      ...node,
+      positionAbsolute: {
+        x: node.position.x,
+        y: node.position.y,
+      },
       z,
     };
     if (node.parentNode) {
@@ -55,6 +55,10 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
   nodes.forEach((node) => {
     const updatedInternals: NodeInternalsItem = nextNodeInternals.get(node.id)!;
+
+    if (node.parentNode && !nextNodeInternals.has(node.parentNode)) {
+      throw new Error(`Parent node ${node.parentNode} not found`);
+    }
 
     if (node.parentNode || parentNodes[node.id]) {
       let startingZ = updatedInternals.z || 0;

@@ -28,7 +28,6 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   transform: s.transform,
-  nodes: s.nodes,
   nodeInternals: s.nodeInternals,
 });
 
@@ -42,13 +41,7 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const {
-    width: containerWidth,
-    height: containerHeight,
-    transform,
-    nodes,
-    nodeInternals,
-  } = useStore(selector, shallow);
+  const { width: containerWidth, height: containerHeight, transform, nodeInternals } = useStore(selector, shallow);
   const [tX, tY, tScale] = transform;
 
   const mapClasses = cc(['react-flow__minimap', className]);
@@ -59,7 +52,9 @@ const MiniMap = ({
     nodeStrokeColor instanceof Function ? nodeStrokeColor : () => nodeStrokeColor
   ) as StringFunc;
   const nodeClassNameFunc = (nodeClassName instanceof Function ? nodeClassName : () => nodeClassName) as StringFunc;
-  const hasNodes = nodes && nodes.length;
+  const hasNodes = nodeInternals && nodeInternals.size > 0;
+  // @TODO: work with nodeInternals instead of converting it to an array
+  const nodes = Array.from(nodeInternals).map(([_, node]) => node);
   const bb = getRectOfNodes(nodes);
   const viewBB: Rect = {
     x: -tX / tScale,
@@ -88,9 +83,9 @@ const MiniMap = ({
       style={style}
       className={mapClasses}
     >
-      {nodes
-        .filter((node) => !node.isHidden && node.width && node.height)
-        .map((node) => {
+      {Array.from(nodeInternals)
+        .filter(([_, node]) => !node.isHidden && node.width && node.height)
+        .map(([_, node]) => {
           const positionAbsolute = nodeInternals.get(node.id)?.positionAbsolute;
 
           return (

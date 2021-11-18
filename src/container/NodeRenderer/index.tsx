@@ -3,8 +3,6 @@ import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
-import useVisibleNodes from '../../hooks/useVisibleNodes';
-import useNodeInternalsRef from '../../hooks/useNodeInternalsRef';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -29,13 +27,20 @@ const selector = (s: ReactFlowState) => ({
   updateNodeDimensions: s.updateNodeDimensions,
   snapGrid: s.snapGrid,
   snapToGrid: s.snapToGrid,
+  nodeInternals: s.nodeInternals,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid } =
-    useStore(selector, shallow);
-  const nodeInternals = useNodeInternalsRef();
-  const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
+  const {
+    scale,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
+    updateNodeDimensions,
+    snapGrid,
+    snapToGrid,
+    nodeInternals,
+  } = useStore(selector, shallow);
 
   const resizeObserver = useMemo(() => {
     if (typeof ResizeObserver === 'undefined') {
@@ -54,9 +59,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
   return (
     <div className="react-flow__nodes react-flow__container">
-      {nodes.map((node) => {
+      {Array.from(nodeInternals).map(([_, node]) => {
         const nodeType = node.type || 'default';
-        const internals = nodeInternals.current.get(node.id);
+        const internals = nodeInternals.get(node.id);
 
         if (!props.nodeTypes[nodeType]) {
           console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);

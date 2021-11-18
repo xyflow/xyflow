@@ -101,12 +101,7 @@ export type NodeDimensionUpdate = {
   forceUpdate?: boolean;
 };
 
-export type NodeInternalsItem = {
-  id?: string;
-  width?: number | null;
-  height?: number | null;
-  parentNode?: string;
-  position?: XYPosition;
+export type NodeInternalsItem = Node & {
   positionAbsolute?: XYPosition;
   handleBounds?: NodeHandleBounds;
   z?: number;

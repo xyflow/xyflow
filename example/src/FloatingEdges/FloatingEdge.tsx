@@ -3,13 +3,13 @@ import { EdgeProps, useStore, getBezierPath, ReactFlowState } from 'react-flow-r
 
 import { getEdgeParams } from './utils';
 
-const nodeSelector = (s: ReactFlowState) => s.nodes;
+const nodeSelector = (s: ReactFlowState) => s.nodeInternals;
 
 const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
-  const nodes = useStore(nodeSelector);
+  const nodeInternals = useStore(nodeSelector);
 
-  const sourceNode = useMemo(() => nodes.find((n) => n.id === source), [source, nodes]);
-  const targetNode = useMemo(() => nodes.find((n) => n.id === target), [target, nodes]);
+  const sourceNode = useMemo(() => nodeInternals.get(source), [source, nodeInternals]);
+  const targetNode = useMemo(() => nodeInternals.get(target), [target, nodeInternals]);
 
   if (!sourceNode || !targetNode) {
     return null;

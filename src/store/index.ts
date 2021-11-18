@@ -42,7 +42,6 @@ const createStore = () =>
     width: 0,
     height: 0,
     transform: [0, 0, 1],
-    nodes: [],
     edges: [],
     onNodesChange: null,
     onEdgesChange: null,
@@ -87,28 +86,29 @@ const createStore = () =>
     setNodes: (nodes: Node[]) => {
       const nodeInternals = createNodeInternals(nodes, get().nodeInternals);
 
-      set({ nodes, nodeInternals });
+      set({ nodeInternals });
     },
     setEdges: (edges: Edge[]) => {
       set({ edges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, nodes, transform, nodeInternals } = get();
+      const { onNodesChange, transform, nodeInternals } = get();
 
       const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
-        const node = nodes.find((n) => n.id === update.id);
+        const node = nodeInternals.get(update.id);
 
         if (node) {
           const dimensions = getDimensions(update.nodeElement);
-          const doUpdate =
+          const doUpdate = !!(
             dimensions.width &&
             dimensions.height &&
-            (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate);
+            (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
+          );
 
           if (doUpdate) {
             const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
             nodeInternals.set(node.id, {
-              ...nodeInternals.get(node.id),
+              ...node,
               handleBounds,
               ...dimensions,
             });
@@ -127,17 +127,19 @@ const createStore = () =>
 
       set({ nodeInternals: new Map(nodeInternals) });
 
-      onNodesChange?.(nodesToChange);
+      if (nodesToChange?.length > 0) {
+        onNodesChange?.(nodesToChange);
+      }
     },
     updateNodePosition: ({ id, diff, dragging }: NodeDiffUpdate) => {
-      const { onNodesChange, nodes, nodeExtent, nodeInternals } = get();
+      const { onNodesChange, nodeExtent, nodeInternals } = get();
 
       if (onNodesChange) {
-        const matchingNodes = nodes.filter((n) => !!(n.selected || n.id === id));
-
+        const nodes = Array.from(nodeInternals);
+        const matchingNodes = nodes.filter(([_, n]) => !!(n.selected || n.id === id));
         if (matchingNodes?.length) {
           onNodesChange(
-            matchingNodes?.map((node) => {
+            matchingNodes?.map(([_, node]) => {
               const change: NodeDimensionChange = {
                 id: node.id,
                 type: 'dimensions',
@@ -190,7 +192,7 @@ const createStore = () =>
       });
     },
     updateUserSelection: (mousePos: XYPosition) => {
-      const { userSelectionRect, nodes, edges, transform, onNodesChange, onEdgesChange } = get();
+      const { userSelectionRect, nodeInternals, edges, transform, onNodesChange, onEdgesChange } = get();
       const startX = userSelectionRect.startX ?? 0;
       const startY = userSelectionRect.startY ?? 0;
 
@@ -202,6 +204,8 @@ const createStore = () =>
         height: Math.abs(mousePos.y - startY),
       };
 
+      // @TODO: work with nodeInternals instead of converting it to an array
+      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
       const selectedNodes = getNodesInside(nodes, nextUserSelectRect, transform, false, true);
       const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
       const selectedNodeIds = selectedNodes.map((n) => n.id);
@@ -218,7 +222,9 @@ const createStore = () =>
       });
     },
     unsetUserSelection: () => {
-      const { userSelectionRect, nodes } = get();
+      const { userSelectionRect, nodeInternals } = get();
+      // @TODO: work with nodeInternals instead of converting it to an array
+      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
       const selectedNodes = nodes.filter((node) => node.selected);
 
       const stateUpdate = {
@@ -240,8 +246,9 @@ const createStore = () =>
       set(stateUpdate);
     },
     addSelectedElements: (selectedElementsArr: Array<Node | Edge>) => {
-      const { multiSelectionActive, onNodesChange, onEdgesChange, nodes, edges } = get();
-
+      const { multiSelectionActive, onNodesChange, onEdgesChange, nodeInternals, edges } = get();
+      // @TODO: work with nodeInternals instead of converting it to an array
+      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
       let changedNodes;
       let changedEdges;
 
@@ -266,7 +273,9 @@ const createStore = () =>
       }
     },
     unselectNodesAndEdges: () => {
-      const { nodes, edges, onNodesChange, onEdgesChange } = get();
+      const { nodeInternals, edges, onNodesChange, onEdgesChange } = get();
+      // @TODO: work with nodeInternals instead of converting it to an array
+      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
 
       const nodesToUnselect = nodes.map((n) => {
         n.selected = false;
@@ -308,8 +317,9 @@ const createStore = () =>
     },
 
     resetSelectedElements: () => {
-      const { nodes, edges, onNodesChange, onEdgesChange } = get();
-
+      const { nodeInternals, edges, onNodesChange, onEdgesChange } = get();
+      // @TODO: work with nodeInternals instead of converting it to an array
+      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
       const nodesToUnselect = nodes.filter((e) => e.selected).map(createNodeOrEdgeSelectionChange(false));
       const edgesToUnselect = edges.filter((e) => e.selected).map(createNodeOrEdgeSelectionChange(false));
 
@@ -320,16 +330,18 @@ const createStore = () =>
         onEdgesChange?.(edgesToUnselect as EdgeChange[]);
       }
     },
-    setNodeExtent: (nodeExtent: CoordinateExtent) =>
+    setNodeExtent: (nodeExtent: CoordinateExtent) => {
+      const { nodeInternals } = get();
+
+      nodeInternals.forEach((node) => {
+        node.positionAbsolute = clampPosition(node.position, nodeExtent);
+      });
+
       set({
         nodeExtent,
-        nodes: get().nodes.map((node) => {
-          return {
-            ...node,
-            position: clampPosition(node.position, nodeExtent),
-          };
-        }),
-      }),
+        nodeInternals: new Map(nodeInternals),
+      });
+    },
     unsetNodesSelection: () => set({ nodesSelectionActive: false }),
     updateTransform: (transform: Transform) => set({ transform }),
     updateSize: (size: Dimensions) => set({ width: size.width || 500, height: size.height || 500 }),

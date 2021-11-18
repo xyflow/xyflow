@@ -8,9 +8,11 @@ function useVisibleNodes(onlyRenderVisible: boolean) {
   const nodes = useStore(
     useCallback(
       (s: ReactFlowState) => {
+        // @TODO: work with nodeInternals instead of converting it to an array
+        const nodes = Array.from(s.nodeInternals).map(([_, node]) => node);
         return onlyRenderVisible
-          ? getNodesInside(s.nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
-          : s.nodes;
+          ? getNodesInside(nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
+          : nodes;
       },
       [onlyRenderVisible]
     )
