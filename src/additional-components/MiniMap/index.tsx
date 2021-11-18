@@ -84,7 +84,7 @@ const MiniMap = ({
       className={mapClasses}
     >
       {Array.from(nodeInternals)
-        .filter(([_, node]) => !node.isHidden && node.width && node.height)
+        .filter(([_, node]) => !node.hidden && node.width && node.height)
         .map(([_, node]) => {
           const positionAbsolute = nodeInternals.get(node.id)?.positionAbsolute;
 

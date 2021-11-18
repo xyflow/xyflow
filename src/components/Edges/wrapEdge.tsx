@@ -42,7 +42,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     sourcePosition,
     targetPosition,
     elementsSelectable,
-    isHidden,
+    hidden,
     sourceHandleId,
     targetHandleId,
     handleEdgeUpdate,
@@ -204,7 +204,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart)})`, [markerStart]);
     const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd)})`, [markerEnd]);
 
-    if (isHidden) {
+    if (hidden) {
       return null;
     }
 

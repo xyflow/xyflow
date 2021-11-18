@@ -48,7 +48,7 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
             return;
           }
 
-          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.isHidden));
+          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.hidden));
           const [x, y, zoom] = getTransformForBounds(
             bounds,
             width,

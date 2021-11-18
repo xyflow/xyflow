@@ -190,7 +190,7 @@ const Edge = memo(
         targetPosition={targetPosition}
         elementsSelectable={elementsSelectable}
         markerEndId={markerEndId}
-        isHidden={edge.isHidden}
+        hidden={edge.hidden}
         onConnectEdge={onConnectEdge}
         handleEdgeUpdate={typeof onEdgeUpdate !== 'undefined'}
         onContextMenu={onEdgeContextMenu}

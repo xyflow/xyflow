@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 import ReactFlow, { addEdge, MiniMap, Controls, Connection, Edge, Node } from 'react-flow-renderer';
 
 const initialNodes: Node[] = [
-  { id: '1', type: 'input', isHidden: true, data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  { id: '2', isHidden: true, data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
-  { id: '3', isHidden: true, data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
-  { id: '4', isHidden: true, data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
+  { id: '1', type: 'input', hidden: true, data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
+  { id: '2', hidden: true, data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
+  { id: '3', hidden: true, data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
+  { id: '4', hidden: true, data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
 ];
 
 const initialEdges: Edge[] = [
@@ -16,9 +16,9 @@ const initialEdges: Edge[] = [
   { id: 'e3-4', source: '3', target: '4' },
 ];
 
-const setHidden = (isHidden: boolean) => (els: any[]) =>
+const setHidden = (hidden: boolean) => (els: any[]) =>
   els.map((e: any) => {
-    e.isHidden = isHidden;
+    e.hidden = hidden;
     return e;
   });
 

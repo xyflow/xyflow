@@ -21,7 +21,7 @@ export interface Edge<T = any> {
   labelBgBorderRadius?: number;
   style?: CSSProperties;
   animated?: boolean;
-  isHidden?: boolean;
+  hidden?: boolean;
   data?: T;
   className?: string;
   sourceNode?: Node;
@@ -88,7 +88,7 @@ export interface WrapEdgeProps<T = any> {
   sourcePosition: Position;
   targetPosition: Position;
   elementsSelectable?: boolean;
-  isHidden?: boolean;
+  hidden?: boolean;
   handleEdgeUpdate: boolean;
   onConnectEdge: OnConnect;
   onContextMenu?: EdgeMouseHandler;

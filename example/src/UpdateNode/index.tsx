@@ -52,7 +52,7 @@ const UpdateNode = () => {
       nds.map((n) => {
         if (n.id === '1' || n.id === 'e1-2') {
           // when you update a simple type you can just update the value
-          n.isHidden = nodeHidden;
+          n.hidden = nodeHidden;
         }
 
         return n;

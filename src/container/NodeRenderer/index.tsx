@@ -87,7 +87,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             data={node.data}
             sourcePosition={node.sourcePosition}
             targetPosition={node.targetPosition}
-            isHidden={node.isHidden}
+            hidden={node.hidden}
             xPos={internals?.positionAbsolute?.x || 0}
             yPos={internals?.positionAbsolute?.y || 0}
             dragging={!!node.dragging}

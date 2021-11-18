@@ -14,7 +14,7 @@ export interface Node<T = any> {
   className?: string;
   targetPosition?: Position;
   sourcePosition?: Position;
-  isHidden?: boolean;
+  hidden?: boolean;
   selected?: boolean;
   dragging?: boolean;
   draggable?: boolean;
@@ -73,7 +73,7 @@ export interface WrapNodeProps<T = any> {
   className?: string;
   sourcePosition?: Position;
   targetPosition?: Position;
-  isHidden?: boolean;
+  hidden?: boolean;
   isInitialized?: boolean;
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;

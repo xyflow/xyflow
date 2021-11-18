@@ -41,7 +41,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     selectNodesOnDrag,
     sourcePosition,
     targetPosition,
-    isHidden,
+    hidden,
     isInitialized,
     snapToGrid,
     snapGrid,
@@ -210,7 +210,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       }
     }, []);
 
-    if (isHidden) {
+    if (hidden) {
       return null;
     }
 
