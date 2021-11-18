@@ -122,6 +122,7 @@ const FlowRenderer = ({
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
+          noPanClassName={noPanClassName}
         />
       )}
       <div
