@@ -106,7 +106,7 @@ export type NodeDimensionUpdate = {
 export type NodeInternalsItem = Node & {
   positionAbsolute?: XYPosition;
   handleBounds?: NodeHandleBounds;
-  z?: number;
+  z: number;
   isParent?: boolean;
 };
 
