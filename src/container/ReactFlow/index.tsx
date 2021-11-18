@@ -5,6 +5,7 @@ import React, {
   MouseEvent as ReactMouseEvent,
   WheelEvent,
   forwardRef,
+  FunctionComponent,
 } from 'react';
 import cc from 'classcat';
 
@@ -129,6 +130,9 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
+  noDragClassName?: string;
+  noWheelClassName?: string;
+  noPanClassName?: string;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -136,7 +140,7 @@ export type ReactFlowRefType = HTMLDivElement;
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultPosition: [number, number] = [0, 0];
 
-const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
+const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
     {
       nodes = [],
@@ -212,6 +216,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       edgeUpdaterRadius = 10,
       onNodesChange,
       onEdgesChange,
+      noDragClassName = 'nodrag',
+      noWheelClassName = 'nowheel',
+      noPanClassName = 'nopan',
       ...rest
     },
     ref
@@ -276,6 +283,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
             defaultMarkerColor={defaultMarkerColor}
+            noDragClassName={noDragClassName}
+            noWheelClassName={noWheelClassName}
+            noPanClassName={noPanClassName}
           />
           <StoreUpdater
             nodes={nodes}

@@ -50,6 +50,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     dragHandle,
     zIndex,
     isParent,
+    noPanClassName,
+    noDragClassName,
   }: WrapNodeProps) => {
     const {
       addSelectedElements,
@@ -217,6 +219,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const nodeClasses = cc([
       'react-flow__node',
       `react-flow__node-${type}`,
+      noPanClassName,
       className,
       {
         selected,
@@ -232,7 +235,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onStop={onDragStop}
         scale={scale}
         disabled={!isDraggable}
-        cancel=".nodrag"
+        cancel={`.${noDragClassName}`}
         nodeRef={nodeElement}
         grid={grid}
         enableUserSelectHack={false}

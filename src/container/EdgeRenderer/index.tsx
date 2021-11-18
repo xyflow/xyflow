@@ -1,5 +1,6 @@
 import React, { memo, CSSProperties, useCallback } from 'react';
 import shallow from 'zustand/shallow';
+import cc from 'classcat';
 
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
@@ -35,6 +36,7 @@ interface EdgeRendererProps {
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
+  noPanClassName?: string;
 }
 
 interface EdgeWrapperProps {
@@ -63,6 +65,7 @@ interface EdgeWrapperProps {
   targetNodeX?: number;
   targetNodeY?: number;
   targetNodeHandleBounds?: NodeHandleBounds;
+  noPanClassName?: string;
 }
 
 const Edge = memo(
@@ -92,6 +95,7 @@ const Edge = memo(
     targetNodeX,
     targetNodeY,
     targetNodeHandleBounds,
+    noPanClassName,
   }: EdgeWrapperProps) => {
     const sourceHandleId = edge.sourceHandle || null;
     const targetHandleId = edge.targetHandle || null;
@@ -163,7 +167,7 @@ const Edge = memo(
       <EdgeComponent
         key={edge.id}
         id={edge.id}
-        className={edge.className}
+        className={cc([edge.className, noPanClassName])}
         type={edgeType}
         data={edge.data}
         onClick={onEdgeClick}
@@ -283,6 +287,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   onEdgeUpdate={props.onEdgeUpdate}
                   edgeTypes={props.edgeTypes}
                   connectionMode={connectionMode}
+                  noPanClassName={props.noPanClassName}
                 />
               );
             })}

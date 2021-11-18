@@ -59,6 +59,8 @@ const FlowRenderer = ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  noWheelClassName,
+  noPanClassName,
 }: FlowRendererProps) => {
   const { unsetNodesSelection, resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
 
@@ -107,6 +109,8 @@ const FlowRenderer = ({
       defaultZoom={defaultZoom}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
+      noWheelClassName={noWheelClassName}
+      noPanClassName={noPanClassName}
     >
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
@@ -116,6 +120,7 @@ const FlowRenderer = ({
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
+          noPanClassName={noPanClassName}
         />
       )}
       <div

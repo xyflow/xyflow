@@ -5,6 +5,7 @@
 
 import React, { useMemo, useCallback, useRef, MouseEvent } from 'react';
 import ReactDraggable, { DraggableData } from 'react-draggable';
+import cc from 'classcat';
 
 import { useStore } from '../../store';
 import { Node, ReactFlowState } from '../../types';
@@ -14,6 +15,7 @@ export interface NodesSelectionProps {
   onSelectionDrag?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionDragStop?: (event: MouseEvent, nodes: Node[]) => void;
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
+  noPanClassName?: string;
 }
 // @TODO: work with nodeInternals instead of converting it to an array
 const selector = (s: ReactFlowState) => ({
@@ -33,6 +35,7 @@ export default ({
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  noPanClassName,
 }: NodesSelectionProps) => {
   const { transform, selectedNodesBbox, selectionActive, selectedNodes, snapToGrid, snapGrid, updateNodePosition } =
     useStore(selector);
@@ -105,7 +108,7 @@ export default ({
   }
 
   return (
-    <div className="react-flow__nodesselection react-flow__container" style={style}>
+    <div className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])} style={style}>
       <ReactDraggable
         scale={tScale}
         grid={grid}

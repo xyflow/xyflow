@@ -17,6 +17,8 @@ interface NodeRendererProps {
   onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
   onlyRenderVisibleElements: boolean;
+  noPanClassName: string;
+  noDragClassName: string;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -113,6 +115,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             dragHandle={node.dragHandle}
             zIndex={internals?.z || 0}
             isParent={!!internals?.isParent}
+            noDragClassName={props.noDragClassName}
+            noPanClassName={props.noPanClassName}
           />
         );
       })}
