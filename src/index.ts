@@ -1,3 +1,5 @@
+// import './wdyr';
+
 import ReactFlow from './container/ReactFlow';
 
 export default ReactFlow;
@@ -13,7 +15,6 @@ export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/uti
 export {
   isNode,
   isEdge,
-  removeElements,
   addEdge,
   getOutgoers,
   getIncomers,
@@ -22,11 +23,13 @@ export {
   getTransformForBounds,
   getRectOfNodes,
 } from './utils/graph';
+export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
+
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
 
 export * from './additional-components';
-export * from './store/hooks';
+export { useStore, useStoreApi } from './store';
 export * from './types';
 
 export { ReactFlowProps } from './container/ReactFlow';

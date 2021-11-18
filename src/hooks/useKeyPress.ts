@@ -6,14 +6,16 @@ type Keys = Array<string>;
 type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 export interface UseKeyPressOptions {
-  target: Document | HTMLElement | ShadowRoot;
+  target: Document | HTMLElement | ShadowRoot | null;
 }
+
+const doc = typeof document !== 'undefined' ? document : null;
 
 // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
 // a string means a single key 'a' or a combination when '+' is used 'a+d'
 // an array means different possibilites. Explainer: ['a', 'd+s'] here the
 // user can use the single key 'a' or the combination 'd' + 's'
-export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { target: document }): boolean => {
+export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { target: doc }): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // we need to remember the pressed keys in order to support combinations
@@ -64,16 +66,16 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         setKeyPressed(false);
       };
 
-      options.target.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
-      options.target.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
-      options.target.addEventListener('blur', resetHandler);
+      options?.target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
+      options?.target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+      options?.target?.addEventListener('blur', resetHandler);
 
       return () => {
         pressedKeys.current.clear();
 
-        options.target.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
-        options.target.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
-        options.target.removeEventListener('blur', resetHandler);
+        options?.target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
+        options?.target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+        options?.target?.removeEventListener('blur', resetHandler);
       };
     }
   }, [keyCode, setKeyPressed]);

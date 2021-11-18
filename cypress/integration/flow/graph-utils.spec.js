@@ -1,4 +1,4 @@
-import { isNode, isEdge, getOutgoers, getIncomers, removeElements, addEdge } from '../../../dist/ReactFlow.js';
+import { isNode, isEdge, getOutgoers, getIncomers, addEdge } from '../../../dist/ReactFlow.js';
 
 const nodes = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -67,68 +67,6 @@ describe('Graph Utils Testing', () => {
 
         expect(e.message).to.be.equal("Can't create edge. An edge needs a source and a target.");
       }
-    });
-  });
-
-  describe('tests removeElements function', () => {
-    it('removes a node', () => {
-      const nextElements = removeElements([nodes[0]], elements);
-
-      const nextNodes = nextElements.filter((e) => isNode(e));
-      const nextEdges = nextElements.filter((e) => isEdge(e));
-
-      expect(nextNodes.length).to.be.equal(nodes.length - 1);
-      expect(nextEdges.length).to.be.equal(edges.length - 2);
-    });
-
-    it('removes multiple nodes', () => {
-      const elementsToRemove = [nodes[0], nodes[1]];
-      const nextElements = removeElements(elementsToRemove, elements);
-      const nextNodes = nextElements.filter((e) => isNode(e));
-      const nextEdges = nextElements.filter((e) => isEdge(e));
-
-      expect(nextNodes.length).to.be.equal(nodes.length - 2);
-      expect(nextEdges.length).to.be.equal(0);
-    });
-
-    it('removes no node', () => {
-      const nextElementsNoRemove = removeElements([], elements);
-      expect(nextElementsNoRemove.length).to.be.equal(elements.length);
-    });
-
-    it('tries to removes node that does not exist', () => {
-      const nextElementsNoRemove = removeElements([{ id: 'id-that-does-not-exist' }], elements);
-      expect(nextElementsNoRemove.length).to.be.equal(elements.length);
-    });
-
-    it('removes an edge', () => {
-      const nextElements = removeElements([edges[0]], elements);
-
-      const nextNodes = nextElements.filter((e) => isNode(e));
-      const nextEdges = nextElements.filter((e) => isEdge(e));
-
-      expect(nextNodes.length).to.be.equal(nodes.length);
-      expect(nextEdges.length).to.be.equal(edges.length - 1);
-    });
-
-    it('removes multiple edges', () => {
-      const nextElements = removeElements([edges[0], edges[1]], elements);
-
-      const nextNodes = nextElements.filter((e) => isNode(e));
-      const nextEdges = nextElements.filter((e) => isEdge(e));
-
-      expect(nextNodes.length).to.be.equal(nodes.length);
-      expect(nextEdges.length).to.be.equal(edges.length - 2);
-    });
-
-    it('removes node and edge', () => {
-      const nextElements = removeElements([nodes[0], edges[0]], elements);
-
-      const nextNodes = nextElements.filter((e) => isNode(e));
-      const nextEdges = nextElements.filter((e) => isEdge(e));
-
-      expect(nextNodes.length).to.be.equal(nodes.length - 1);
-      expect(nextEdges.length).to.be.equal(edges.length - 2);
     });
   });
 });

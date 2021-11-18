@@ -1,12 +1,13 @@
 import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
+import shallow from 'zustand/shallow';
 
-import { getNodesInside } from '../../utils/graph';
-import { useStoreState, useStoreActions } from '../../store/hooks';
-import { Node, NodeTypesType, WrapNodeProps, Edge } from '../../types';
+import { useStore } from '../../store';
+import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
+
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
   selectNodesOnDrag: boolean;
-  onElementClick?: (event: MouseEvent, element: Node | Edge) => void;
+  onNodeClick?: (event: MouseEvent, element: Node) => void;
   onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
   onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
   onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
@@ -15,32 +16,33 @@ interface NodeRendererProps {
   onNodeDragStart?: (event: MouseEvent, node: Node) => void;
   onNodeDrag?: (event: MouseEvent, node: Node) => void;
   onNodeDragStop?: (event: MouseEvent, node: Node) => void;
-  snapToGrid: boolean;
-  snapGrid: [number, number];
   onlyRenderVisibleElements: boolean;
+  noPanClassName: string;
+  noDragClassName: string;
 }
 
+const selector = (s: ReactFlowState) => ({
+  scale: s.transform[2],
+  nodesDraggable: s.nodesDraggable,
+  nodesConnectable: s.nodesConnectable,
+  elementsSelectable: s.elementsSelectable,
+  updateNodeDimensions: s.updateNodeDimensions,
+  snapGrid: s.snapGrid,
+  snapToGrid: s.snapToGrid,
+  nodeInternals: s.nodeInternals,
+});
+
 const NodeRenderer = (props: NodeRendererProps) => {
-  const transform = useStoreState((state) => state.transform);
-  const selectedElements = useStoreState((state) => state.selectedElements);
-  const nodesDraggable = useStoreState((state) => state.nodesDraggable);
-  const nodesConnectable = useStoreState((state) => state.nodesConnectable);
-  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const width = useStoreState((state) => state.width);
-  const height = useStoreState((state) => state.height);
-  const nodes = useStoreState((state) => state.nodes);
-  const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
-
-  const visibleNodes = props.onlyRenderVisibleElements
-    ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
-    : nodes;
-
-  const transformStyle = useMemo(
-    () => ({
-      transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
-    }),
-    [transform[0], transform[1], transform[2]]
-  );
+  const {
+    scale,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
+    updateNodeDimensions,
+    snapGrid,
+    snapToGrid,
+    nodeInternals,
+  } = useStore(selector, shallow);
 
   const resizeObserver = useMemo(() => {
     if (typeof ResizeObserver === 'undefined') {
@@ -58,18 +60,24 @@ const NodeRenderer = (props: NodeRendererProps) => {
   }, []);
 
   return (
-    <div className="react-flow__nodes" style={transformStyle}>
-      {visibleNodes.map((node) => {
+    <div className="react-flow__nodes react-flow__container">
+      {Array.from(nodeInternals).map(([_, node]) => {
         const nodeType = node.type || 'default';
-        const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
+        const internals = nodeInternals.get(node.id);
 
         if (!props.nodeTypes[nodeType]) {
           console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
         }
 
+        const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+        const isInitialized =
+          node.width !== null &&
+          node.height !== null &&
+          typeof node.width !== 'undefined' &&
+          typeof node.height !== 'undefined';
 
         return (
           <NodeComponent
@@ -81,15 +89,15 @@ const NodeRenderer = (props: NodeRendererProps) => {
             data={node.data}
             sourcePosition={node.sourcePosition}
             targetPosition={node.targetPosition}
-            isHidden={node.isHidden}
-            xPos={node.__rf.position.x}
-            yPos={node.__rf.position.y}
-            isDragging={node.__rf.isDragging}
-            isInitialized={node.__rf.width !== null && node.__rf.height !== null}
-            snapGrid={props.snapGrid}
-            snapToGrid={props.snapToGrid}
+            hidden={node.hidden}
+            xPos={internals?.positionAbsolute?.x || 0}
+            yPos={internals?.positionAbsolute?.y || 0}
+            dragging={!!node.dragging}
+            isInitialized={isInitialized}
+            snapGrid={snapGrid}
+            snapToGrid={snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}
-            onClick={props.onElementClick}
+            onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
@@ -98,13 +106,17 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDragStart={props.onNodeDragStart}
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
-            scale={transform[2]}
-            selected={selectedElements?.some(({ id }) => id === node.id) || false}
+            scale={scale}
+            selected={!!node.selected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
+            zIndex={internals?.z || 0}
+            isParent={!!internals?.isParent}
+            noDragClassName={props.noDragClassName}
+            noPanClassName={props.noPanClassName}
           />
         );
       })}

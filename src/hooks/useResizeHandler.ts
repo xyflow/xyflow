@@ -1,10 +1,13 @@
 import { useEffect, MutableRefObject } from 'react';
-import { useStoreActions } from '../store/hooks';
 
+import { useStore } from '../store';
 import { getDimensions } from '../utils';
+import { ReactFlowState } from '../types';
 
-export default (rendererNode: MutableRefObject<HTMLDivElement | null>) => {
-  const updateSize = useStoreActions((actions) => actions.updateSize);
+const updateSizeSelector = (state: ReactFlowState) => state.updateSize;
+
+function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>) {
+  const updateSize = useStore(updateSizeSelector);
 
   useEffect(() => {
     let resizeObserver: ResizeObserver;
@@ -39,4 +42,6 @@ export default (rendererNode: MutableRefObject<HTMLDivElement | null>) => {
       }
     };
   }, []);
-};
+}
+
+export default useResizeHandler;

@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
+import shallow from 'zustand/shallow';
 
-import { useStoreState, useStore } from '../store/hooks';
+import { useStoreApi, useStore } from '../store';
 import { getRectOfNodes, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, Rect, XYPosition } from '../types';
+import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
 
 const DEFAULT_PADDING = 0.1;
 
@@ -19,10 +20,14 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   initialized: false,
 };
 
+const selector = (s: ReactFlowState) => ({
+  d3Zoom: s.d3Zoom,
+  d3Selection: s.d3Selection,
+});
+
 const useZoomPanHelper = (): ZoomPanHelperFunctions => {
-  const store = useStore();
-  const d3Zoom = useStoreState((s) => s.d3Zoom);
-  const d3Selection = useStoreState((s) => s.d3Selection);
+  const store = useStoreApi();
+  const { d3Zoom, d3Selection } = useStore(selector, shallow);
 
   const zoomPanHelperFunctions = useMemo<ZoomPanHelperFunctions>(() => {
     if (d3Selection && d3Zoom) {
@@ -36,13 +41,14 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
           d3Zoom.transform(d3Selection, nextTransform);
         },
         fitView: (options: FitViewParams = { padding: DEFAULT_PADDING, includeHiddenNodes: false }) => {
-          const { nodes, width, height, minZoom, maxZoom } = store.getState();
-
+          const { nodeInternals, width, height, minZoom, maxZoom } = store.getState();
+          // @TODO: work with nodeInternals instead of converting it to an array
+          const nodes = Array.from(nodeInternals).map(([_, node]) => node);
           if (!nodes.length) {
             return;
           }
 
-          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.isHidden));
+          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.hidden));
           const [x, y, zoom] = getTransformForBounds(
             bounds,
             width,

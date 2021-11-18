@@ -4,8 +4,8 @@
 
 import React, { memo } from 'react';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
-import { XYPosition } from '../../types';
+import { useStore } from '../../store';
+import { XYPosition, ReactFlowState } from '../../types';
 
 type UserSelectionProps = {
   selectionKeyPressed: boolean;
@@ -25,8 +25,10 @@ function getMousePosition(event: React.MouseEvent): XYPosition | void {
   };
 }
 
+const userSelectionRectSelector = (state: ReactFlowState) => state.userSelectionRect;
+
 const SelectionRect = () => {
-  const userSelectionRect = useStoreState((state) => state.userSelectionRect);
+  const userSelectionRect = useStore(userSelectionRectSelector);
 
   if (!userSelectionRect.draw) {
     return null;
@@ -34,7 +36,7 @@ const SelectionRect = () => {
 
   return (
     <div
-      className="react-flow__selection"
+      className="react-flow__selection react-flow__container"
       style={{
         width: userSelectionRect.width,
         height: userSelectionRect.height,
@@ -44,14 +46,25 @@ const SelectionRect = () => {
   );
 };
 
-export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
-  const selectionActive = useStoreState((state) => state.selectionActive);
-  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
+const selector = (s: ReactFlowState) => ({
+  selectionActive: s.selectionActive,
+  elementsSelectable: s.elementsSelectable,
+  setUserSelection: s.setUserSelection,
+  updateUserSelection: s.updateUserSelection,
+  unsetUserSelection: s.unsetUserSelection,
+  unsetNodesSelection: s.unsetNodesSelection,
+});
 
-  const setUserSelection = useStoreActions((actions) => actions.setUserSelection);
-  const updateUserSelection = useStoreActions((actions) => actions.updateUserSelection);
-  const unsetUserSelection = useStoreActions((actions) => actions.unsetUserSelection);
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
+export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
+  const {
+    selectionActive,
+    elementsSelectable,
+    setUserSelection,
+    updateUserSelection,
+    unsetUserSelection,
+    unsetNodesSelection,
+  } = useStore(selector);
+
   const renderUserSelectionPane = selectionActive || selectionKeyPressed;
 
   if (!elementsSelectable || !renderUserSelectionPane) {
@@ -89,7 +102,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
   return (
     <div
-      className="react-flow__selectionpane"
+      className="react-flow__selectionpane react-flow__container"
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}

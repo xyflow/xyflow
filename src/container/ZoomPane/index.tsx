@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
+import shallow from 'zustand/shallow';
 
 import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { useStoreState, useStoreActions, useStore } from '../../store/hooks';
-import { FlowTransform, TranslateExtent, PanOnScrollMode, KeyCode } from '../../types';
+import { useStore, useStoreApi } from '../../store';
+import { FlowTransform, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -20,13 +21,14 @@ interface ZoomPaneProps {
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
   defaultZoom?: number;
-  translateExtent?: TranslateExtent;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
   zoomActivationKeyCode?: KeyCode;
   preventScrolling?: boolean;
   children: ReactNode;
+  noWheelClassName: string;
+  noPanClassName: string;
 }
 
 const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
@@ -40,7 +42,16 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
   zoom: eventTransform.k,
 });
 
-const hasNoWheelClass = (event: any) => event.target.closest('.nowheel');
+const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
+
+const selector = (s: ReactFlowState) => ({
+  d3Zoom: s.d3Zoom,
+  d3Selection: s.d3Selection,
+  d3ZoomHandler: s.d3ZoomHandler,
+
+  initD3Zoom: s.initD3Zoom,
+  updateTransform: s.updateTransform,
+});
 
 const ZoomPane = ({
   onMove,
@@ -57,36 +68,29 @@ const ZoomPane = ({
   paneMoveable = true,
   defaultPosition = [0, 0],
   defaultZoom = 1,
-  translateExtent,
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
+  noWheelClassName,
+  noPanClassName,
 }: ZoomPaneProps) => {
+  const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
-
-  const store = useStore();
-  const d3Zoom = useStoreState((s) => s.d3Zoom);
-  const d3Selection = useStoreState((s) => s.d3Selection);
-  const d3ZoomHandler = useStoreState((s) => s.d3ZoomHandler);
-
-  const initD3Zoom = useStoreActions((actions) => actions.initD3Zoom);
-  const updateTransform = useStoreActions((actions) => actions.updateTransform);
-
+  const { d3Zoom, d3Selection, d3ZoomHandler, initD3Zoom, updateTransform } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
   useResizeHandler(zoomPane);
 
   useEffect(() => {
     if (zoomPane.current) {
-      const state = store.getState();
-      const currentTranslateExtent = typeof translateExtent !== 'undefined' ? translateExtent : state.translateExtent;
-      const d3ZoomInstance = zoom().scaleExtent([state.minZoom, state.maxZoom]).translateExtent(currentTranslateExtent);
+      const { minZoom, maxZoom, translateExtent } = store.getState();
+      const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 
-      const clampedX = clamp(defaultPosition[0], currentTranslateExtent[0][0], currentTranslateExtent[1][0]);
-      const clampedY = clamp(defaultPosition[1], currentTranslateExtent[0][1], currentTranslateExtent[1][1]);
-      const clampedZoom = clamp(defaultZoom, state.minZoom, state.maxZoom);
+      const clampedX = clamp(defaultPosition[0], translateExtent[0][0], translateExtent[1][0]);
+      const clampedY = clamp(defaultPosition[1], translateExtent[0][1], translateExtent[1][1]);
+      const clampedZoom = clamp(defaultZoom, minZoom, maxZoom);
       const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
 
       d3ZoomInstance.transform(selection, updatedTransform);
@@ -106,7 +110,7 @@ const ZoomPane = ({
       if (panOnScroll && !zoomActivationKeyPressed) {
         d3Selection
           .on('wheel', (event: any) => {
-            if (hasNoWheelClass(event)) {
+            if (isWrappedWithClass(event, noWheelClassName)) {
               return false;
             }
             event.preventDefault();
@@ -140,7 +144,7 @@ const ZoomPane = ({
       } else if (typeof d3ZoomHandler !== 'undefined') {
         d3Selection
           .on('wheel', (event: any) => {
-            if (!preventScrolling || hasNoWheelClass(event)) {
+            if (!preventScrolling || isWrappedWithClass(event, noWheelClassName)) {
               return null;
             }
 
@@ -158,6 +162,7 @@ const ZoomPane = ({
     zoomActivationKeyPressed,
     zoomOnPinch,
     preventScrolling,
+    noWheelClassName,
   ]);
 
   useEffect(() => {
@@ -230,22 +235,28 @@ const ZoomPane = ({
           return false;
         }
 
-        if (hasNoWheelClass(event) && event.type === 'wheel') {
+        // if the target element is inside the nowheel class, we prevent zooming
+        if (isWrappedWithClass(event, noWheelClassName) && event.type === 'wheel') {
+          return false;
+        }
+
+        // if the target element is inside the nopan class, we prevent panning
+        if (isWrappedWithClass(event, noPanClassName) && event.type !== 'wheel') {
           return false;
         }
 
         // when the target element is a node, we still allow zooming
-        if (
-          (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge')) &&
-          event.type !== 'wheel'
-        ) {
-          return false;
-        }
+        // if (
+        //   (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge')) &&
+        //   event.type !== 'wheel'
+        // ) {
+        //   return false;
+        // }
 
-        // when the target element is a node selection, we still allow zooming
-        if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
-          return false;
-        }
+        // // when the target element is a node selection, we still allow zooming
+        // if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
+        //   return false;
+        // }
 
         if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
           return false;
@@ -278,7 +289,7 @@ const ZoomPane = ({
   ]);
 
   return (
-    <div className="react-flow__renderer react-flow__zoompane" ref={zoomPane}>
+    <div className="react-flow__renderer react-flow__container" ref={zoomPane}>
       {children}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { useStoreState } from '../../store/hooks';
-import { EdgeMarker, ArrowHeadType } from '../../types';
+
+import { useStore } from '../../store';
+import { EdgeMarker, ArrowHeadType, ReactFlowState } from '../../types';
 import { getMarkerId } from '../../utils/graph';
 interface MarkerProps extends EdgeMarker {
   id: string;
@@ -71,8 +72,10 @@ const Marker = ({
   );
 };
 
+const edgesSelector = (s: ReactFlowState) => s.edges;
+
 const MarkerDefinitions = ({ defaultColor }: MarkerDefinitionsProps) => {
-  const edges = useStoreState((state) => state.edges);
+  const edges = useStore(edgesSelector);
   const markers = useMemo(() => {
     const ids: string[] = [];
 

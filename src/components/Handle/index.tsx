@@ -1,15 +1,26 @@
 import React, { memo, useContext, useCallback, HTMLAttributes, forwardRef } from 'react';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
+import { useStore } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
-import { HandleProps, Connection, ElementId, Position } from '../../types';
+import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
 
 import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
 const alwaysValid = () => true;
 
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
+
+const selector = (s: ReactFlowState) => ({
+  setPosition: s.setConnectionPosition,
+  setConnectionNodeId: s.setConnectionNodeId,
+  onConnectAction: s.onConnect,
+  onConnectStart: s.onConnectStart,
+  onConnectStop: s.onConnectStop,
+  onConnectEnd: s.onConnectEnd,
+  connectionMode: s.connectionMode,
+});
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   (
@@ -26,14 +37,17 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     },
     ref
   ) => {
-    const nodeId = useContext(NodeIdContext) as ElementId;
-    const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
-    const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
-    const onConnectAction = useStoreState((state) => state.onConnect);
-    const onConnectStart = useStoreState((state) => state.onConnectStart);
-    const onConnectStop = useStoreState((state) => state.onConnectStop);
-    const onConnectEnd = useStoreState((state) => state.onConnectEnd);
-    const connectionMode = useStoreState((state) => state.connectionMode);
+    const nodeId = useContext(NodeIdContext) as string;
+    const {
+      setPosition,
+      setConnectionNodeId,
+      onConnectAction,
+      onConnectStart,
+      onConnectStop,
+      onConnectEnd,
+      connectionMode,
+    } = useStore(selector, shallow);
+
     const handleId = id || null;
     const isTarget = type === 'target';
 

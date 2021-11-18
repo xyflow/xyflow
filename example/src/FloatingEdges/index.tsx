@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import ReactFlow, {
-  removeElements,
   addEdge,
   Background,
   OnLoadParams,
   EdgeTypesType,
-  Elements,
+  Node,
   Connection,
   Edge,
+  applyNodeChanges,
+  applyEdgeChanges,
+  NodeChange,
+  EdgeChange,
 } from 'react-flow-renderer';
 
 import './style.css';
@@ -19,24 +22,35 @@ import { createElements } from './utils';
 
 const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
 
-const initialElements: Elements = createElements();
+const { nodes: initialNodes, edges: initialEdges } = createElements();
 
 const edgeTypes: EdgeTypesType = {
   floating: FloatingEdge,
 };
 
-const NodeAsHandleFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
+const FloatingEdges = () => {
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
+  const onConnect = useCallback((params: Edge | Connection) => {
+    setEdges((eds) => addEdge(params, eds));
+  }, []);
 
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge({ ...params, type: 'floating' }, els));
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
+    setNodes((ns) => applyNodeChanges(changes, ns));
+  }, []);
+
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    setEdges((es) => applyEdgeChanges(changes, es));
+  }, []);
 
   return (
     <div className="floatingedges">
       <ReactFlow
-        elements={elements}
-        onElementsRemove={onElementsRemove}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onLoad={onLoad}
         edgeTypes={edgeTypes}
@@ -48,4 +62,4 @@ const NodeAsHandleFlow = () => {
   );
 };
 
-export default NodeAsHandleFlow;
+export default FloatingEdges;

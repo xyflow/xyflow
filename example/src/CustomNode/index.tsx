@@ -1,27 +1,30 @@
-import React, { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, MouseEvent, useCallback } from 'react';
 import { ChangeEvent } from 'react';
 
 import ReactFlow, {
-  isEdge,
-  removeElements,
   addEdge,
   MiniMap,
   Controls,
   Node,
-  FlowElement,
   OnLoadParams,
-  Elements,
   Position,
   SnapGrid,
   Connection,
   Edge,
+  NodeChange,
+  applyNodeChanges,
+  applyEdgeChanges,
+  EdgeChange,
 } from 'react-flow-renderer';
 
 import ColorSelectorNode from './ColorSelectorNode';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => console.log('flow loaded:', reactFlowInstance);
+const onLoad = (reactFlowInstance: OnLoadParams) => {
+  console.log('flow loaded:', reactFlowInstance);
+  reactFlowInstance.fitView();
+};
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onElementClick = (_: MouseEvent, element: FlowElement) => console.log('click', element);
+const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initBgColor = '#1A192B';
 
@@ -32,15 +35,16 @@ const nodeTypes = {
 };
 
 const CustomNodeFlow = () => {
-  const [elements, setElements] = useState<Elements>([]);
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
   const [bgColor, setBgColor] = useState<string>(initBgColor);
 
   useEffect(() => {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-      setElements((els) =>
-        els.map((e) => {
-          if (isEdge(e) || e.id !== '2') {
-            return e;
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id !== '2') {
+            return node;
           }
 
           const color = event.target.value;
@@ -48,9 +52,9 @@ const CustomNodeFlow = () => {
           setBgColor(color);
 
           return {
-            ...e,
+            ...node,
             data: {
-              ...e.data,
+              ...node.data,
               color,
             },
           };
@@ -58,7 +62,7 @@ const CustomNodeFlow = () => {
       );
     };
 
-    setElements([
+    setNodes([
       {
         id: '1',
         type: 'input',
@@ -87,22 +91,33 @@ const CustomNodeFlow = () => {
         position: { x: 550, y: 100 },
         targetPosition: Position.Left,
       },
+    ]);
 
+    setEdges([
       { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#fff' } },
       { id: 'e2a-3', source: '2', sourceHandle: 'a', target: '3', animated: true, style: { stroke: '#fff' } },
       { id: 'e2b-4', source: '2', sourceHandle: 'b', target: '4', animated: true, style: { stroke: '#fff' } },
     ]);
   }, []);
 
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params: Connection | Edge) =>
-    setElements((els) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, els));
+    setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, eds));
+
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
+    setNodes((ns) => applyNodeChanges(changes, ns));
+  }, []);
+
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    setEdges((es) => applyEdgeChanges(changes, es));
+  }, []);
 
   return (
     <ReactFlow
-      elements={elements}
-      onElementClick={onElementClick}
-      onElementsRemove={onElementsRemove}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
       style={{ background: bgColor }}

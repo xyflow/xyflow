@@ -1,20 +1,29 @@
 import { useEffect } from 'react';
+import shallow from 'zustand/shallow';
 
-import { Elements } from '../../types';
-import { useStoreState } from '../../store/hooks';
+import { ReactFlowState, OnSelectionChangeFunc } from '../../types';
+import { useStore } from '../../store';
 
 interface SelectionListenerProps {
-  onSelectionChange: (elements: Elements | null) => void;
+  onSelectionChange: OnSelectionChangeFunc;
 }
 
-// This is a helper component for calling the onSelectionChange listener
+// @TODO: work with nodeInternals instead of converting it to an array
+const selectedElementsSelector = (s: ReactFlowState) => ({
+  selectedNodes: Array.from(s.nodeInternals)
+    .filter(([_, n]) => n.selected)
+    .map(([_, node]) => node),
+  selectedEdges: s.edges.filter((e) => e.selected),
+});
+
+// This is just a helper component for calling the onSelectionChange listener.
 
 export default ({ onSelectionChange }: SelectionListenerProps) => {
-  const selectedElements = useStoreState((s) => s.selectedElements);
+  const { selectedNodes, selectedEdges } = useStore(selectedElementsSelector, shallow);
 
   useEffect(() => {
-    onSelectionChange(selectedElements);
-  }, [selectedElements]);
+    onSelectionChange({ nodes: selectedNodes, edges: selectedEdges });
+  }, [selectedNodes, selectedEdges]);
 
   return null;
 };

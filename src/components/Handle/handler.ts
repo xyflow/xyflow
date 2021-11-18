@@ -3,16 +3,15 @@ import { MouseEvent as ReactMouseEvent } from 'react';
 import { getHostForElement } from '../../utils';
 
 import {
-  ElementId,
-  XYPosition,
-  OnConnectFunc,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
+  OnConnect,
+  OnConnectStart,
+  OnConnectStop,
+  OnConnectEnd,
   ConnectionMode,
   SetConnectionId,
   Connection,
   HandleType,
+  XYPosition,
 } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
@@ -32,8 +31,8 @@ function checkElementBelowIsValid(
   event: MouseEvent,
   connectionMode: ConnectionMode,
   isTarget: boolean,
-  nodeId: ElementId,
-  handleId: ElementId | null,
+  nodeId: string,
+  handleId: string | null,
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
@@ -91,19 +90,19 @@ function resetRecentHandle(hoveredHandle: Element): void {
 
 export function onMouseDown(
   event: ReactMouseEvent,
-  handleId: ElementId | null,
-  nodeId: ElementId,
+  handleId: string | null,
+  nodeId: string,
   setConnectionNodeId: SetSourceIdFunc,
   setPosition: SetPosition,
-  onConnect: OnConnectFunc,
+  onConnect: OnConnect,
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
   connectionMode: ConnectionMode,
   elementEdgeUpdaterType?: HandleType,
   onEdgeUpdateEnd?: (evt: MouseEvent) => void,
-  onConnectStart?: OnConnectStartFunc,
-  onConnectStop?: OnConnectStopFunc,
-  onConnectEnd?: OnConnectEndFunc
+  onConnectStart?: OnConnectStart,
+  onConnectStop?: OnConnectStop,
+  onConnectEnd?: OnConnectEnd
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   // when react-flow is used inside a shadow root we can't use document

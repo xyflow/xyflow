@@ -2,19 +2,9 @@ import { ComponentType } from 'react';
 
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
-import { rectToBox } from '../../utils/graph';
+import { rectToBox } from '../../utils';
 
-import {
-  EdgeTypesType,
-  EdgeProps,
-  Position,
-  Node,
-  XYPosition,
-  ElementId,
-  HandleElement,
-  Transform,
-  Edge,
-} from '../../types';
+import { EdgeTypesType, EdgeProps, HandleElement, Position, XYPosition, Transform, Rect } from '../../types';
 
 export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
   const standardTypes: EdgeTypesType = {
@@ -39,11 +29,11 @@ export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
   };
 }
 
-export function getHandlePosition(position: Position, node: Node, handle: any | null = null): XYPosition {
-  const x = (handle?.x || 0) + node.__rf.position.x;
-  const y = (handle?.y || 0) + node.__rf.position.y;
-  const width = handle?.width || node.__rf.width;
-  const height = handle?.height || node.__rf.height;
+export function getHandlePosition(position: Position, nodeRect: Rect, handle: any | null = null): XYPosition {
+  const x = (handle?.x || 0) + nodeRect.x;
+  const y = (handle?.y || 0) + nodeRect.y;
+  const width = handle?.width || nodeRect.width;
+  const height = handle?.height || nodeRect.height;
 
   switch (position) {
     case Position.Top:
@@ -69,7 +59,7 @@ export function getHandlePosition(position: Position, node: Node, handle: any | 
   }
 }
 
-export function getHandle(bounds: HandleElement[], handleId: ElementId | null): HandleElement | null {
+export function getHandle(bounds: HandleElement[], handleId: string | null): HandleElement | null {
   if (!bounds) {
     return null;
   }
@@ -94,15 +84,15 @@ interface EdgePositions {
 }
 
 export const getEdgePositions = (
-  sourceNode: Node,
+  sourceNodeRect: Rect,
   sourceHandle: HandleElement | unknown,
   sourcePosition: Position,
-  targetNode: Node,
+  targetNodeRect: Rect,
   targetHandle: HandleElement | unknown,
   targetPosition: Position
 ): EdgePositions => {
-  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  const targetHandlePos = getHandlePosition(targetPosition, targetNode, targetHandle);
+  const sourceHandlePos = getHandlePosition(sourcePosition, sourceNodeRect, sourceHandle);
+  const targetHandlePos = getHandlePosition(targetPosition, targetNodeRect, targetHandle);
 
   return {
     sourceX: sourceHandlePos.x,
@@ -115,17 +105,31 @@ export const getEdgePositions = (
 interface IsEdgeVisibleParams {
   sourcePos: XYPosition;
   targetPos: XYPosition;
+  sourceWidth: number;
+  sourceHeight: number;
+  targetWidth: number;
+  targetHeight: number;
   width: number;
   height: number;
   transform: Transform;
 }
 
-export function isEdgeVisible({ sourcePos, targetPos, width, height, transform }: IsEdgeVisibleParams): boolean {
+export function isEdgeVisible({
+  sourcePos,
+  targetPos,
+  sourceWidth,
+  sourceHeight,
+  targetWidth,
+  targetHeight,
+  width,
+  height,
+  transform,
+}: IsEdgeVisibleParams): boolean {
   const edgeBox = {
     x: Math.min(sourcePos.x, targetPos.x),
     y: Math.min(sourcePos.y, targetPos.y),
-    x2: Math.max(sourcePos.x, targetPos.x),
-    y2: Math.max(sourcePos.y, targetPos.y),
+    x2: Math.max(sourcePos.x + sourceWidth, targetPos.x + targetWidth),
+    y2: Math.max(sourcePos.y + sourceHeight, targetPos.y + targetHeight),
   };
 
   if (edgeBox.x === edgeBox.x2) {
@@ -149,23 +153,3 @@ export function isEdgeVisible({ sourcePos, targetPos, width, height, transform }
 
   return overlappingArea > 0;
 }
-
-type SourceTargetNode = {
-  sourceNode: Node | null;
-  targetNode: Node | null;
-};
-
-export const getSourceTargetNodes = (edge: Edge, nodes: Node[]): SourceTargetNode => {
-  return nodes.reduce(
-    (res, node) => {
-      if (node.id === edge.source) {
-        res.sourceNode = node;
-      }
-      if (node.id === edge.target) {
-        res.targetNode = node;
-      }
-      return res;
-    },
-    { sourceNode: null, targetNode: null } as SourceTargetNode
-  );
-};

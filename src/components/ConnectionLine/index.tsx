@@ -1,31 +1,33 @@
-import React, { useEffect, useState, CSSProperties } from 'react';
+import React, { useRef, CSSProperties } from 'react';
+import shallow from 'zustand/shallow';
 
+import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
-  ElementId,
-  Node,
-  Transform,
+  NodeInternalsItem,
   HandleElement,
-  Position,
   ConnectionLineType,
   ConnectionLineComponent,
   HandleType,
+  Node,
+  ReactFlowState,
+  Position,
 } from '../../types';
 
 interface ConnectionLineProps {
-  connectionNodeId: ElementId;
-  connectionHandleId: ElementId | null;
+  connectionNodeId: string;
+  connectionHandleId: string | null;
   connectionHandleType: HandleType;
   connectionPositionX: number;
   connectionPositionY: number;
   connectionLineType: ConnectionLineType;
-  nodes: Node[];
-  transform: Transform;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
+
+const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, transform: s.transform });
 
 export default ({
   connectionNodeId,
@@ -35,31 +37,32 @@ export default ({
   connectionPositionX,
   connectionPositionY,
   connectionLineType = ConnectionLineType.Bezier,
-  nodes = [],
-  transform,
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
 
-  useEffect(() => {
-    const nextSourceNode = nodes.find((n) => n.id === nodeId) || null;
-    setSourceNode(nextSourceNode);
-  }, []);
+  const { nodeInternals, transform } = useStore(selector, shallow);
+  const sourceNodeInternals = useRef<NodeInternalsItem | undefined>(nodeInternals.get(nodeId));
+  const sourceNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
 
-  if (!sourceNode || !isConnectable) {
+  if (
+    !sourceNode.current ||
+    !sourceNodeInternals.current ||
+    !isConnectable ||
+    !sourceNodeInternals.current.handleBounds?.[connectionHandleType]
+  ) {
     return null;
   }
 
   const sourceHandle = handleId
-    ? sourceNode.__rf.handleBounds[connectionHandleType].find((d: HandleElement) => d.id === handleId)
-    : sourceNode.__rf.handleBounds[connectionHandleType][0];
-  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rf.width / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rf.height;
-  const sourceX = sourceNode.__rf.position.x + sourceHandleX;
-  const sourceY = sourceNode.__rf.position.y + sourceHandleY;
+    ? sourceNodeInternals.current.handleBounds[connectionHandleType]!.find((d: HandleElement) => d.id === handleId)
+    : sourceNodeInternals.current.handleBounds[connectionHandleType]![0];
+  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNodeInternals.current.width! / 2;
+  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNodeInternals.current.height!;
+  const sourceX = sourceNodeInternals.current.positionAbsolute!.x + sourceHandleX;
+  const sourceY = sourceNodeInternals.current.positionAbsolute!.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];
@@ -79,7 +82,7 @@ export default ({
           targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          sourceNode={sourceNode}
+          sourceNode={sourceNode.current as Node}
           sourceHandle={sourceHandle}
         />
       </g>
