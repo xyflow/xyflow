@@ -27,9 +27,8 @@ interface ZoomPaneProps {
   zoomActivationKeyCode?: KeyCode;
   preventScrolling?: boolean;
   children: ReactNode;
-  noDragClassName?: string;
-  noZoomClassName?: string;
-  noPanClassName?: string;
+  noWheelClassName: string;
+  noPanClassName: string;
 }
 
 const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
@@ -44,7 +43,6 @@ const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
 });
 
 const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
-// const hasNoWheelClass = (event: any) => event.target.closest('.nowheel');
 
 const selector = (s: ReactFlowState) => ({
   d3Zoom: s.d3Zoom,
@@ -73,7 +71,7 @@ const ZoomPane = ({
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
-  noZoomClassName,
+  noWheelClassName,
   noPanClassName,
 }: ZoomPaneProps) => {
   const store = useStoreApi();
@@ -112,7 +110,7 @@ const ZoomPane = ({
       if (panOnScroll && !zoomActivationKeyPressed) {
         d3Selection
           .on('wheel', (event: any) => {
-            if (isWrappedWithClass(event, noZoomClassName)) {
+            if (isWrappedWithClass(event, noWheelClassName)) {
               return false;
             }
             event.preventDefault();
@@ -146,7 +144,7 @@ const ZoomPane = ({
       } else if (typeof d3ZoomHandler !== 'undefined') {
         d3Selection
           .on('wheel', (event: any) => {
-            if (!preventScrolling || isWrappedWithClass(event, noZoomClassName)) {
+            if (!preventScrolling || isWrappedWithClass(event, noWheelClassName)) {
               return null;
             }
 
@@ -164,7 +162,7 @@ const ZoomPane = ({
     zoomActivationKeyPressed,
     zoomOnPinch,
     preventScrolling,
-    noZoomClassName,
+    noWheelClassName,
   ]);
 
   useEffect(() => {
@@ -238,7 +236,7 @@ const ZoomPane = ({
         }
 
         // if the target element is inside the nowheel class, we prevent zooming
-        if (isWrappedWithClass(event, noZoomClassName) && event.type === 'wheel') {
+        if (isWrappedWithClass(event, noWheelClassName) && event.type === 'wheel') {
           return false;
         }
 

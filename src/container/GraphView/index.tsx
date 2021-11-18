@@ -20,6 +20,9 @@ export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange'
   defaultPosition: [number, number];
   defaultMarkerColor: string;
   selectNodesOnDrag: boolean;
+  noDragClassName: string;
+  noWheelClassName: string;
+  noPanClassName: string;
 }
 
 const GraphView = ({
@@ -77,7 +80,7 @@ const GraphView = ({
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
   noDragClassName,
-  noZoomClassName,
+  noWheelClassName,
   noPanClassName,
 }: GraphViewProps) => {
   useOnLoadHandler(onLoad);
@@ -110,7 +113,7 @@ const GraphView = ({
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
       noDragClassName={noDragClassName}
-      noZoomClassName={noZoomClassName}
+      noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
     >
       <Viewport>
@@ -147,6 +150,7 @@ const GraphView = ({
           selectNodesOnDrag={selectNodesOnDrag}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           noPanClassName={noPanClassName}
+          noDragClassName={noDragClassName}
         />
       </Viewport>
     </FlowRenderer>

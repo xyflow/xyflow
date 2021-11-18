@@ -82,6 +82,8 @@ export interface WrapNodeProps<T = any> {
   dragHandle?: string;
   zIndex: number;
   isParent: boolean;
+  noPanClassName: string;
+  noDragClassName: string;
 }
 
 export type NodeHandleBounds = {
