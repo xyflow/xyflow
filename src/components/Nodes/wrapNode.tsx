@@ -64,7 +64,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const nodeStyle: CSSProperties = useMemo(
       () => ({
-        zIndex: isAlwaysOnTop ? (selected ? 20 : 15) : isAlwaysOnBottom ? (selected ? -1 : -5) : selected ? 10 : 3,
+        zIndex: isAlwaysOnTop ? (selected ? 999 : 990) : isAlwaysOnBottom ? (selected ? -990 : -999) : selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents:
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
