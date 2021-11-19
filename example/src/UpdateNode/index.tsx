@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import ReactFlow, { Elements } from 'react-flow-renderer';
+import React, {useEffect, useState} from 'react';
+import ReactFlow, {Elements, isNode} from 'react-flow-renderer';
 
 import './updatenode.css';
 
@@ -14,6 +14,8 @@ const UpdateNode = () => {
   const [nodeName, setNodeName] = useState<string>('Node 1');
   const [nodeBg, setNodeBg] = useState<string>('#eee');
   const [nodeHidden, setNodeHidden] = useState<boolean>(false);
+  const [nodeAlwaysOnTop, setNodeAlwaysOnTop] = useState<boolean>(false);
+  const [nodeAlwaysOnBottom, setNodeAlwaysOnBottom] = useState<boolean>(false);
 
   useEffect(() => {
     setElements((els) =>
@@ -57,6 +59,20 @@ const UpdateNode = () => {
     );
   }, [nodeHidden, setElements]);
 
+  useEffect(() => {
+    setElements((els) =>
+      els.map((el) => {
+        if (isNode(el) && el.id === '1') {
+          // when you update a simple type you can just update the value
+          el.isAlwaysOnTop = nodeAlwaysOnTop;
+          el.isAlwaysOnBottom = nodeAlwaysOnBottom;
+        }
+
+        return el;
+      })
+    );
+  }, [nodeAlwaysOnTop, nodeAlwaysOnBottom, setElements]);
+
   return (
     <ReactFlow elements={elements} defaultZoom={1.5} minZoom={0.2} maxZoom={4}>
       <div className="updatenode__controls">
@@ -69,6 +85,26 @@ const UpdateNode = () => {
         <div className="updatenode__checkboxwrapper">
           <label>hidden:</label>
           <input type="checkbox" checked={nodeHidden} onChange={(evt) => setNodeHidden(evt.target.checked)} />
+        </div>
+
+        <div className="updatenode__checkboxwrapper">
+          <label>always on top:</label>
+          <input
+            type="checkbox"
+            checked={nodeAlwaysOnTop}
+            onChange={(evt) => setNodeAlwaysOnTop(evt.target.checked)}
+            className="react-flow__nodealwaysontop"
+          />
+        </div>
+
+        <div className="updatenode__checkboxwrapper">
+          <label>always on bottom:</label>
+          <input
+            type="checkbox"
+            checked={nodeAlwaysOnBottom}
+            onChange={(evt) => setNodeAlwaysOnBottom(evt.target.checked)}
+            className="react-flow__nodealwaysonbottom"
+          />
         </div>
       </div>
     </ReactFlow>
