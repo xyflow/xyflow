@@ -49,6 +49,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
     isDragging,
     resizeObserver,
     dragHandle,
+    isAlwaysOnTop,
+    isAlwaysOnBottom,
   }: WrapNodeProps) => {
     const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
     const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
@@ -62,7 +64,7 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
 
     const nodeStyle: CSSProperties = useMemo(
       () => ({
-        zIndex: selected ? 10 : 3,
+        zIndex: isAlwaysOnTop ? (selected ? 20 : 15) : isAlwaysOnBottom ? (selected ? -1 : -5) : selected ? 10 : 3,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents:
           isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
@@ -82,6 +84,8 @@ export default (NodeComponent: ComponentType<NodeComponentProps>) => {
         onMouseEnter,
         onMouseMove,
         onMouseLeave,
+        isAlwaysOnTop,
+        isAlwaysOnBottom,
       ]
     );
     const onMouseEnterHandler = useMemo(() => {

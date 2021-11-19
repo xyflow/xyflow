@@ -51,6 +51,7 @@ export const initialState: ReactFlowState = {
   nodesDraggable: true,
   nodesConnectable: true,
   elementsSelectable: true,
+  nodesAlwaysOnTopOrBottom: true,
 
   multiSelectionActive: false,
 

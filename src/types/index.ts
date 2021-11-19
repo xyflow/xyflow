@@ -50,6 +50,8 @@ export interface Node<T = any> {
   selectable?: boolean;
   connectable?: boolean;
   dragHandle?: string;
+  isAlwaysOnTop?: boolean;
+  isAlwaysOnBottom?: boolean;
 }
 
 export enum ArrowHeadType {
@@ -247,6 +249,8 @@ export interface WrapNodeProps<T = any> {
   isDragging?: boolean;
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;
+  isAlwaysOnTop?: boolean;
+  isAlwaysOnBottom?: boolean;
 }
 
 export type FitViewParams = {
@@ -432,6 +436,7 @@ export interface ReactFlowState {
   nodesDraggable: boolean;
   nodesConnectable: boolean;
   elementsSelectable: boolean;
+  nodesAlwaysOnTopOrBottom: boolean;
 
   multiSelectionActive: boolean;
 

@@ -128,6 +128,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   edgeUpdaterRadius?: number;
   nodeTypesId?: string;
   edgeTypesId?: string;
+  nodesAlwaysOnTopOrBottom?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -208,6 +209,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       edgeUpdaterRadius = 10,
       nodeTypesId = '1',
       edgeTypesId = '1',
+      nodesAlwaysOnTopOrBottom,
       ...rest
     },
     ref
@@ -287,6 +289,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
+            nodesAlwaysOnTopOrBottom={nodesAlwaysOnTopOrBottom}
           />
           <ElementUpdater elements={elements} />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}

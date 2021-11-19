@@ -333,6 +333,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
     case constants.SET_NODES_CONNECTABLE:
     case constants.SET_ELEMENTS_SELECTABLE:
     case constants.SET_MULTI_SELECTION_ACTIVE:
+    case constants.SET_NODES_AlWAYS_ON_TOP_OR_BOTTOM:
     case constants.SET_CONNECTION_MODE:
       return { ...state, ...action.payload };
     default:

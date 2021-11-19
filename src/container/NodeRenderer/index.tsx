@@ -30,6 +30,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const height = useStoreState((state) => state.height);
   const nodes = useStoreState((state) => state.nodes);
   const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
+  const nodesAlwaysOnTopOrBottom = useStoreState((state) => state.nodesAlwaysOnTopOrBottom);
 
   const visibleNodes = props.onlyRenderVisibleElements
     ? getNodesInside(nodes, { x: 0, y: 0, width, height }, transform, true)
@@ -70,6 +71,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+        const isAlwaysOnTop = !!(nodesAlwaysOnTopOrBottom && node.isAlwaysOnBottom ? false : node.isAlwaysOnTop);
+        const isAlwaysOnBottom = !!(nodesAlwaysOnTopOrBottom && node.isAlwaysOnTop ? false :  node.isAlwaysOnBottom);
 
         return (
           <NodeComponent
@@ -105,6 +108,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
+            isAlwaysOnTop={isAlwaysOnTop}
+            isAlwaysOnBottom={isAlwaysOnBottom}
           />
         );
       })}

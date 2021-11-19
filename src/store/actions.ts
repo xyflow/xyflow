@@ -107,6 +107,7 @@ export const setInteractive = (isInteractive: boolean) =>
     nodesDraggable: isInteractive,
     nodesConnectable: isInteractive,
     elementsSelectable: isInteractive,
+    nodesAlwaysOnTopOrBottom: isInteractive,
   });
 
 export const setNodesDraggable = (nodesDraggable: boolean) =>
@@ -117,6 +118,9 @@ export const setNodesConnectable = (nodesConnectable: boolean) =>
 
 export const setElementsSelectable = (elementsSelectable: boolean) =>
   createAction(constants.SET_ELEMENTS_SELECTABLE, { elementsSelectable });
+
+export const setNodesAlwaysOnTopOrBottom = (nodesAlwaysOnTopOrBottom: boolean) =>
+    createAction(constants.SET_NODES_AlWAYS_ON_TOP_OR_BOTTOM, { nodesAlwaysOnTopOrBottom });
 
 export const setMultiSelectionActive = (multiSelectionActive: boolean) =>
   createAction(constants.SET_MULTI_SELECTION_ACTIVE, { multiSelectionActive });
@@ -160,4 +164,5 @@ export type ReactFlowAction = ReturnType<
   | typeof setMultiSelectionActive
   | typeof setConnectionMode
   | typeof setNodeExtent
+  | typeof setNodesAlwaysOnTopOrBottom
 >;

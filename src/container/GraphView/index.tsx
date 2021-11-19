@@ -95,6 +95,7 @@ const GraphView = ({
   edgeUpdaterRadius,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
+  nodesAlwaysOnTopOrBottom,
 }: GraphViewProps) => {
   const isInitialized = useRef<boolean>(false);
   const setOnConnect = useStoreActions((actions) => actions.setOnConnect);
@@ -113,6 +114,7 @@ const GraphView = ({
   const setConnectionMode = useStoreActions((actions) => actions.setConnectionMode);
   const currentStore = useStore();
   const { zoomIn, zoomOut, zoomTo, transform, fitView, initialized } = useZoomPanHelper();
+  const setNodesAlwaysOnTopOrBottom = useStoreActions((actions) => actions.setNodesAlwaysOnTopOrBottom);
 
   useEffect(() => {
     if (!isInitialized.current && initialized) {
@@ -216,6 +218,12 @@ const GraphView = ({
       setConnectionMode(connectionMode);
     }
   }, [connectionMode]);
+
+  useEffect(() => {
+    if (typeof nodesAlwaysOnTopOrBottom !== 'undefined') {
+      setNodesAlwaysOnTopOrBottom(nodesAlwaysOnTopOrBottom);
+    }
+  }, [nodesAlwaysOnTopOrBottom]);
 
   return (
     <FlowRenderer
