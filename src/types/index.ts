@@ -262,7 +262,7 @@ export type FlowExportObject<T = any> = {
   zoom: number;
 };
 
-export type FitViewFunc = (fitViewOptions?: FitViewParams) => void;
+export type FitViewFunc = (fitViewOptions?: FitViewParams, duration?: number) => void;
 export type ProjectFunc = (position: XYPosition) => XYPosition;
 export type ToObjectFunc<T = any> = () => FlowExportObject<T>;
 
@@ -372,13 +372,13 @@ export enum PanOnScrollMode {
 }
 
 export interface ZoomPanHelperFunctions {
-  zoomIn: () => void;
-  zoomOut: () => void;
-  zoomTo: (zoomLevel: number) => void;
-  transform: (transform: FlowTransform) => void;
+  zoomIn: (duration?: number) => void;
+  zoomOut: (duration?: number) => void;
+  zoomTo: (zoomLevel: number, duration?: number) => void;
+  transform: (transform: FlowTransform, duration?: number) => void;
   fitView: FitViewFunc;
-  setCenter: (x: number, y: number, zoom?: number) => void;
-  fitBounds: (bounds: Rect, padding?: number) => void;
+  setCenter: (x: number, y: number, zoom?: number, duration?: number) => void;
+  fitBounds: (bounds: Rect, padding?: number, duration?: number) => void;
   project: (position: XYPosition) => XYPosition;
   initialized: boolean;
 }
