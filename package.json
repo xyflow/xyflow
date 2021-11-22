@@ -58,7 +58,7 @@
     "babel-preset-react-app": "^10.0.0",
     "cypress": "^9.0.0",
     "postcss": "^8.3.11",
-    "postcss-cli": "^9.0.1",
+    "postcss-cli": "^9.0.2",
     "postcss-nested": "^5.0.6",
     "prettier": "2.4.1",
     "prop-types": "^15.7.2",
