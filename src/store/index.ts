@@ -25,6 +25,7 @@ import {
   Transform,
   Dimensions,
   XYPosition,
+  ReactFlowStore,
 } from '../types';
 import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
@@ -37,51 +38,54 @@ const infiniteExtent: CoordinateExtent = [
   [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
 ];
 
-const createStore = () =>
-  create<ReactFlowState>((set, get) => ({
+const initialState: ReactFlowStore = {
+  width: 0,
+  height: 0,
+  transform: [0, 0, 1],
+  nodeInternals: new Map(),
+  edges: [],
+  onNodesChange: null,
+  onEdgesChange: null,
+  selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
+  d3Zoom: null,
+  d3Selection: null,
+  d3ZoomHandler: undefined,
+  minZoom: 0.5,
+  maxZoom: 2,
+  translateExtent: infiniteExtent,
+  nodeExtent: infiniteExtent,
+  nodesSelectionActive: false,
+  selectionActive: false,
+  userSelectionRect: {
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
     width: 0,
     height: 0,
-    transform: [0, 0, 1],
-    edges: [],
-    onNodesChange: null,
-    onEdgesChange: null,
-    selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
-    d3Zoom: null,
-    d3Selection: null,
-    d3ZoomHandler: undefined,
-    minZoom: 0.5,
-    maxZoom: 2,
-    translateExtent: infiniteExtent,
-    nodeExtent: infiniteExtent,
-    nodesSelectionActive: false,
-    selectionActive: false,
-    userSelectionRect: {
-      startX: 0,
-      startY: 0,
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      draw: false,
-    },
-    connectionNodeId: null,
-    connectionHandleId: null,
-    connectionHandleType: 'source',
-    connectionPosition: { x: 0, y: 0 },
-    connectionMode: ConnectionMode.Strict,
+    draw: false,
+  },
+  connectionNodeId: null,
+  connectionHandleId: null,
+  connectionHandleType: 'source',
+  connectionPosition: { x: 0, y: 0 },
+  connectionMode: ConnectionMode.Strict,
 
-    snapGrid: [15, 15],
-    snapToGrid: false,
+  snapGrid: [15, 15],
+  snapToGrid: false,
 
-    nodesDraggable: true,
-    nodesConnectable: true,
-    elementsSelectable: true,
+  nodesDraggable: true,
+  nodesConnectable: true,
+  elementsSelectable: true,
 
-    multiSelectionActive: false,
+  multiSelectionActive: false,
 
-    reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
+  reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
+};
 
-    nodeInternals: new Map(),
+const createStore = () =>
+  create<ReactFlowState>((set, get) => ({
+    ...initialState,
 
     setNodes: (nodes: Node[]) => {
       const nodeInternals = createNodeInternals(nodes, get().nodeInternals);
@@ -366,6 +370,7 @@ const createStore = () =>
     setConnectionMode: (connectionMode: ConnectionMode) => set({ connectionMode }),
     setOnNodesChange: (onNodesChange: OnNodesChange) => set({ onNodesChange }),
     setOnEdgesChange: (onEdgesChange: OnEdgesChange) => set({ onEdgesChange }),
+    reset: () => set({ ...initialState }),
   }));
 
 export { Provider, useStore, createStore, useStoreApi };

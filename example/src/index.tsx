@@ -68,7 +68,7 @@ const Header = withRouter(({ history, location }) => {
 });
 
 ReactDOM.render(
-  <Router forceRefresh={true}>
+  <Router>
     <Header />
     <Switch>
       {routes.map((route) => (

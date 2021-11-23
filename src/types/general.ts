@@ -130,7 +130,7 @@ export type InitD3ZoomPayload = {
   transform: Transform;
 };
 
-export interface ReactFlowState {
+export type ReactFlowStore = {
   width: number;
   height: number;
   transform: Transform;
@@ -169,9 +169,11 @@ export interface ReactFlowState {
   multiSelectionActive: boolean;
 
   reactFlowVersion: string;
+};
 
+export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
-  setEdges: (edges: Edge[], nodes: Node[]) => void;
+  setEdges: (edges: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;
   setUserSelection: (mousePos: XYPosition) => void;
@@ -209,7 +211,11 @@ export interface ReactFlowState {
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
-}
+
+  reset: () => void;
+};
+
+export type ReactFlowState = ReactFlowStore & ReactFlowActions;
 
 export type UpdateNodeInternals = (nodeId: string) => void;
 

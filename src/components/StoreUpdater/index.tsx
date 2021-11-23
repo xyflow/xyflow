@@ -57,6 +57,7 @@ const selector = (s: ReactFlowState) => ({
   setConnectionMode: s.setConnectionMode,
   setOnNodesChange: s.setOnNodesChange,
   setOnEdgesChange: s.setOnEdgesChange,
+  reset: s.reset,
 });
 
 const StoreUpdater = ({
@@ -98,15 +99,22 @@ const StoreUpdater = ({
     setOnNodesChange,
     setOnEdgesChange,
     setConnectionMode,
+    reset,
   } = useStore(selector, shallow);
+
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
   useEffect(() => {
     setNodes(nodes);
   }, [nodes]);
 
   useEffect(() => {
-    setEdges(edges, nodes);
-  }, [edges, nodes]);
+    setEdges(edges);
+  }, [edges]);
 
   useEffect(() => {
     if (onConnect) {
