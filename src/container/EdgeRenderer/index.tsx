@@ -41,6 +41,7 @@ interface EdgeRendererProps {
 
 interface EdgeWrapperProps {
   edge: Edge;
+  hidden: boolean;
   edgeTypes: any;
   markerEndId?: string;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
@@ -71,6 +72,7 @@ interface EdgeWrapperProps {
 const Edge = memo(
   ({
     edge,
+    hidden,
     edgeTypes,
     markerEndId,
     onEdgeClick,
@@ -194,7 +196,7 @@ const Edge = memo(
         targetPosition={targetPosition}
         elementsSelectable={elementsSelectable}
         markerEndId={markerEndId}
-        hidden={edge.hidden}
+        hidden={hidden}
         onConnectEdge={onConnectEdge}
         handleEdgeUpdate={typeof onEdgeUpdate !== 'undefined'}
         onContextMenu={onEdgeContextMenu}
@@ -265,6 +267,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 <Edge
                   key={edge.id}
                   edge={edge}
+                  hidden={!!edge.hidden}
                   sourceNodeWidth={sourceNode?.width}
                   sourceNodeHeight={sourceNode?.height}
                   sourceNodeX={sourceNode?.positionAbsolute?.x}

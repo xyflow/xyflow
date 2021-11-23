@@ -204,13 +204,13 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     );
 
     useEffect(() => {
-      if (nodeElement.current) {
+      if (nodeElement.current && !hidden) {
         const currNode = nodeElement.current;
         resizeObserver?.observe(currNode);
 
         return () => resizeObserver?.unobserve(currNode);
       }
-    }, []);
+    }, [hidden]);
 
     if (hidden) {
       return null;

@@ -33,7 +33,7 @@ const HiddenFlow = () => {
 
   useEffect(() => {
     setNodes(setHidden(isHidden));
-    setNodes(setHidden(isHidden));
+    setEdges(setHidden(isHidden));
   }, [isHidden]);
 
   return (
