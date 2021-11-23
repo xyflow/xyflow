@@ -1,4 +1,4 @@
-import React, { memo, useMemo, ComponentType, MouseEvent } from 'react';
+import React, { memo, useMemo, ComponentType, MouseEvent, useEffect, useRef } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
@@ -43,20 +43,32 @@ const NodeRenderer = (props: NodeRendererProps) => {
     snapToGrid,
     nodeInternals,
   } = useStore(selector, shallow);
+  const reseizeObserverRef = useRef<ResizeObserver>();
 
   const resizeObserver = useMemo(() => {
     if (typeof ResizeObserver === 'undefined') {
       return null;
     }
 
-    return new ResizeObserver((entries: ResizeObserverEntry[]) => {
+    const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       const updates = entries.map((entry: ResizeObserverEntry) => ({
         id: entry.target.getAttribute('data-id') as string,
         nodeElement: entry.target as HTMLDivElement,
+        forceUpdate: true,
       }));
 
       updateNodeDimensions(updates);
     });
+
+    reseizeObserverRef.current = observer;
+
+    return observer;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      reseizeObserverRef?.current?.disconnect();
+    };
   }, []);
 
   return (
