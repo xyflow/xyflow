@@ -142,18 +142,18 @@ export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponen
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
 
 export interface EdgeMarker {
-  type: ArrowHeadType;
+  type: MarkerType;
   color?: string;
   width?: number;
   height?: number;
-  units?: string;
+  markerUnits?: string;
   orient?: string;
   strokeWidth?: number;
 }
 
 export type EdgeMarkerType = string | EdgeMarker;
 
-export enum ArrowHeadType {
+export enum MarkerType {
   Arrow = 'arrow',
   ArrowClosed = 'arrowclosed',
 }

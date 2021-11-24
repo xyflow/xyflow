@@ -13,6 +13,7 @@ import ReactFlow, {
   EdgeChange,
   OnLoadParams,
   Connection,
+  MarkerType,
 } from 'react-flow-renderer';
 import DebugNode from './DebugNode';
 
@@ -86,7 +87,12 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
+  {
+    id: 'e1-2',
+    source: '1',
+    target: '2',
+    markerEnd: { type: MarkerType.Arrow, strokeWidth: 2, width: 15, height: 15, color: '#f00' },
+  },
   { id: 'e1-3', source: '1', target: '3' },
   { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
   { id: 'e3-4b', source: '3', target: '4b' },

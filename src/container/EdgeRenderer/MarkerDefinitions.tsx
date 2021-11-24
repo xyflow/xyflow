@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 
 import { useStore } from '../../store';
-import { EdgeMarker, ArrowHeadType, ReactFlowState } from '../../types';
+import { EdgeMarker, ReactFlowState } from '../../types';
 import { getMarkerId } from '../../utils/graph';
+import { useMarkerSymbol } from './MarkerSymbols';
 interface MarkerProps extends EdgeMarker {
   id: string;
 }
@@ -10,59 +11,26 @@ interface MarkerDefinitionsProps {
   defaultColor: string;
 }
 
-type SymbolProps = Omit<MarkerProps, 'id' | 'type'>;
-
-const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
-  return (
-    <polyline
-      stroke={color}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-      fill="none"
-      points="-5,-4 0,0 -5,4"
-    />
-  );
-};
-
-const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
-  return (
-    <polyline
-      stroke={color}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-      fill={color}
-      points="-5,-4 0,0 -5,4 -5,-4"
-    />
-  );
-};
-
-const markerSymbols = {
-  [ArrowHeadType.Arrow]: ArrowSymbol,
-  [ArrowHeadType.ArrowClosed]: ArrowClosedSymbol,
-};
-
 const Marker = ({
   id,
   type,
   color,
   width = 12.5,
   height = 12.5,
-  units = 'strokeWidth',
+  markerUnits = 'strokeWidth',
   strokeWidth,
   orient = 'auto',
 }: MarkerProps) => {
-  const Symbol = markerSymbols[type];
+  const Symbol = useMarkerSymbol(type);
 
   return (
     <marker
       className="react-flow__arrowhead"
       id={id}
-      markerUnits={units}
       markerWidth={`${width}`}
       markerHeight={`${height}`}
       viewBox="-10 -10 20 20"
+      markerUnits={markerUnits}
       orient={orient}
       refX="0"
       refY="0"
@@ -103,7 +71,7 @@ const MarkerDefinitions = ({ defaultColor }: MarkerDefinitionsProps) => {
           color={marker.color}
           width={marker.width}
           height={marker.height}
-          units={marker.units}
+          markerUnits={marker.markerUnits}
           strokeWidth={marker.strokeWidth}
           orient={marker.orient}
         />

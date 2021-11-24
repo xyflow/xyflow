@@ -1,4 +1,4 @@
-import { Position, ArrowHeadType, XYPosition, Node, Edge } from 'react-flow-renderer';
+import { Position, XYPosition, Node, Edge } from 'react-flow-renderer';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
