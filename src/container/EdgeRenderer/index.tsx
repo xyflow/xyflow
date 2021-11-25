@@ -1,4 +1,4 @@
-import React, { memo, CSSProperties, useCallback } from 'react';
+import React, { memo, CSSProperties } from 'react';
 import shallow from 'zustand/shallow';
 import cc from 'classcat';
 
@@ -15,7 +15,6 @@ import {
   ConnectionMode,
   OnEdgeUpdateFunc,
   ReactFlowState,
-  NodeHandleBounds,
 } from '../../types';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 
@@ -38,179 +37,6 @@ interface EdgeRendererProps {
   edgeUpdaterRadius?: number;
   noPanClassName?: string;
 }
-
-interface EdgeWrapperProps {
-  edge: Edge;
-  hidden: boolean;
-  edgeTypes: any;
-  markerEndId?: string;
-  onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
-  onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
-  edgeUpdaterRadius?: number;
-  onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
-  elementsSelectable: boolean;
-  connectionMode?: ConnectionMode;
-  sourceNodeWidth?: number | null;
-  sourceNodeHeight?: number | null;
-  sourceNodeX?: number;
-  sourceNodeY?: number;
-  sourceNodeHandleBounds?: NodeHandleBounds;
-  targetNodeWidth?: number | null;
-  targetNodeHeight?: number | null;
-  targetNodeX?: number;
-  targetNodeY?: number;
-  targetNodeHandleBounds?: NodeHandleBounds;
-  noPanClassName?: string;
-}
-
-const Edge = memo(
-  ({
-    edge,
-    hidden,
-    edgeTypes,
-    markerEndId,
-    onEdgeClick,
-    onEdgeContextMenu,
-    onEdgeMouseEnter,
-    onEdgeMouseMove,
-    onEdgeMouseLeave,
-    edgeUpdaterRadius,
-    onEdgeDoubleClick,
-    onEdgeUpdateStart,
-    onEdgeUpdateEnd,
-    onEdgeUpdate,
-    connectionMode,
-    elementsSelectable,
-    sourceNodeWidth,
-    sourceNodeHeight,
-    sourceNodeX,
-    sourceNodeY,
-    sourceNodeHandleBounds,
-    targetNodeWidth,
-    targetNodeHeight,
-    targetNodeX,
-    targetNodeY,
-    targetNodeHandleBounds,
-    noPanClassName,
-  }: EdgeWrapperProps) => {
-    const sourceHandleId = edge.sourceHandle || null;
-    const targetHandleId = edge.targetHandle || null;
-
-    const onConnectEdge = useCallback(
-      (connection: Connection) => {
-        onEdgeUpdate?.(edge, connection);
-      },
-      [edge, onEdgeUpdate]
-    );
-
-    // source and target node need to be initialized
-    if (!sourceNodeHandleBounds || !targetNodeHandleBounds) {
-      return null;
-    }
-
-    if (
-      !sourceNodeWidth ||
-      !sourceNodeHeight ||
-      typeof sourceNodeX === 'undefined' ||
-      typeof sourceNodeY === 'undefined'
-    ) {
-      console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
-      return null;
-    }
-
-    if (
-      !targetNodeWidth ||
-      !targetNodeHeight ||
-      typeof targetNodeX === 'undefined' ||
-      typeof targetNodeY === 'undefined'
-    ) {
-      console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
-      return null;
-    }
-
-    const edgeType = edge.type || 'default';
-    const EdgeComponent = edgeTypes[edgeType] || edgeTypes.default;
-    // when connection type is loose we can define all handles as sources
-    const targetNodeHandles =
-      connectionMode === ConnectionMode.Strict
-        ? targetNodeHandleBounds.target
-        : targetNodeHandleBounds.target || targetNodeHandleBounds.source;
-    const sourceHandle = getHandle(sourceNodeHandleBounds.source!, sourceHandleId);
-    const targetHandle = getHandle(targetNodeHandles!, targetHandleId);
-    const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
-    const targetPosition = targetHandle ? targetHandle.position : Position.Top;
-
-    if (!sourceHandle) {
-      console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
-      return null;
-    }
-
-    if (!targetHandle) {
-      console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
-      return null;
-    }
-
-    const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-      { x: sourceNodeX, y: sourceNodeY, width: sourceNodeWidth, height: sourceNodeHeight },
-      sourceHandle,
-      sourcePosition,
-      { x: targetNodeX, y: targetNodeY, width: targetNodeWidth, height: targetNodeHeight },
-      targetHandle,
-      targetPosition
-    );
-
-    return (
-      <EdgeComponent
-        key={edge.id}
-        id={edge.id}
-        className={cc([edge.className, noPanClassName])}
-        type={edgeType}
-        data={edge.data}
-        onClick={onEdgeClick}
-        selected={!!edge.selected}
-        animated={edge.animated}
-        label={edge.label}
-        labelStyle={edge.labelStyle}
-        labelShowBg={edge.labelShowBg}
-        labelBgStyle={edge.labelBgStyle}
-        labelBgPadding={edge.labelBgPadding}
-        labelBgBorderRadius={edge.labelBgBorderRadius}
-        style={edge.style}
-        source={edge.source}
-        target={edge.target}
-        sourceHandleId={sourceHandleId}
-        targetHandleId={targetHandleId}
-        markerEnd={edge.markerEnd}
-        markerStart={edge.markerStart}
-        sourceX={sourceX}
-        sourceY={sourceY}
-        targetX={targetX}
-        targetY={targetY}
-        sourcePosition={sourcePosition}
-        targetPosition={targetPosition}
-        elementsSelectable={elementsSelectable}
-        markerEndId={markerEndId}
-        hidden={hidden}
-        onConnectEdge={onConnectEdge}
-        handleEdgeUpdate={typeof onEdgeUpdate !== 'undefined'}
-        onContextMenu={onEdgeContextMenu}
-        onMouseEnter={onEdgeMouseEnter}
-        onMouseMove={onEdgeMouseMove}
-        onMouseLeave={onEdgeMouseLeave}
-        edgeUpdaterRadius={edgeUpdaterRadius}
-        onEdgeDoubleClick={onEdgeDoubleClick}
-        onEdgeUpdateStart={onEdgeUpdateStart}
-        onEdgeUpdateEnd={onEdgeUpdateEnd}
-      />
-    );
-  }
-);
 
 const selector = (s: ReactFlowState) => ({
   connectionNodeId: s.connectionNodeId,
@@ -263,34 +89,121 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const sourceNode = nodeInternals.get(edge.source);
               const targetNode = nodeInternals.get(edge.target);
 
+              const sourceHandleId = edge.sourceHandle || null;
+              const targetHandleId = edge.targetHandle || null;
+
+              const onConnectEdge = (connection: Connection) => {
+                props.onEdgeUpdate?.(edge, connection);
+              };
+
+              const sourceNodeWidth = sourceNode?.width;
+              const sourceNodeHeight = sourceNode?.height;
+              const sourceNodeX = sourceNode?.positionAbsolute?.x;
+              const sourceNodeY = sourceNode?.positionAbsolute?.y;
+              const sourceNodeHandleBounds = sourceNode?.handleBounds;
+              const targetNodeWidth = targetNode?.width;
+              const targetNodeHeight = targetNode?.height;
+              const targetNodeX = targetNode?.positionAbsolute?.x;
+              const targetNodeY = targetNode?.positionAbsolute?.y;
+              const targetNodeHandleBounds = targetNode?.handleBounds;
+
+              // source and target node need to be initialized
+              if (!sourceNodeHandleBounds || !targetNodeHandleBounds) {
+                return null;
+              }
+
+              if (
+                !sourceNodeWidth ||
+                !sourceNodeHeight ||
+                typeof sourceNodeX === 'undefined' ||
+                typeof sourceNodeY === 'undefined'
+              ) {
+                console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
+                return null;
+              }
+
+              if (
+                !targetNodeWidth ||
+                !targetNodeHeight ||
+                typeof targetNodeX === 'undefined' ||
+                typeof targetNodeY === 'undefined'
+              ) {
+                console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
+                return null;
+              }
+
+              const edgeType = edge.type || 'default';
+              const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
+              // when connection type is loose we can define all handles as sources
+              const targetNodeHandles =
+                connectionMode === ConnectionMode.Strict
+                  ? targetNodeHandleBounds.target
+                  : targetNodeHandleBounds.target || targetNodeHandleBounds.source;
+              const sourceHandle = getHandle(sourceNodeHandleBounds.source!, sourceHandleId);
+              const targetHandle = getHandle(targetNodeHandles!, targetHandleId);
+              const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
+              const targetPosition = targetHandle ? targetHandle.position : Position.Top;
+
+              if (!sourceHandle) {
+                console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
+                return null;
+              }
+
+              if (!targetHandle) {
+                console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
+                return null;
+              }
+
+              const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
+                { x: sourceNodeX, y: sourceNodeY, width: sourceNodeWidth, height: sourceNodeHeight },
+                sourceHandle,
+                sourcePosition,
+                { x: targetNodeX, y: targetNodeY, width: targetNodeWidth, height: targetNodeHeight },
+                targetHandle,
+                targetPosition
+              );
+
               return (
-                <Edge
+                <EdgeComponent
                   key={edge.id}
-                  edge={edge}
+                  id={edge.id}
+                  className={cc([edge.className, props.noPanClassName])}
+                  type={edgeType}
+                  data={edge.data}
+                  selected={!!edge.selected}
+                  animated={!!edge.animated}
                   hidden={!!edge.hidden}
-                  sourceNodeWidth={sourceNode?.width}
-                  sourceNodeHeight={sourceNode?.height}
-                  sourceNodeX={sourceNode?.positionAbsolute?.x}
-                  sourceNodeY={sourceNode?.positionAbsolute?.y}
-                  sourceNodeHandleBounds={sourceNode?.handleBounds}
-                  targetNodeWidth={targetNode?.width}
-                  targetNodeHeight={targetNode?.height}
-                  targetNodeX={targetNode?.positionAbsolute?.x}
-                  targetNodeY={targetNode?.positionAbsolute?.y}
-                  targetNodeHandleBounds={targetNode?.handleBounds}
+                  label={edge.label}
+                  labelStyle={edge.labelStyle}
+                  labelShowBg={edge.labelShowBg}
+                  labelBgStyle={edge.labelBgStyle}
+                  labelBgPadding={edge.labelBgPadding}
+                  labelBgBorderRadius={edge.labelBgBorderRadius}
+                  style={edge.style}
+                  source={edge.source}
+                  target={edge.target}
+                  sourceHandleId={sourceHandleId}
+                  targetHandleId={targetHandleId}
+                  markerEnd={edge.markerEnd}
+                  markerStart={edge.markerStart}
+                  sourceX={sourceX}
+                  sourceY={sourceY}
+                  targetX={targetX}
+                  targetY={targetY}
+                  sourcePosition={sourcePosition}
+                  targetPosition={targetPosition}
                   elementsSelectable={elementsSelectable}
-                  onEdgeContextMenu={props.onEdgeContextMenu}
-                  onEdgeMouseEnter={props.onEdgeMouseEnter}
-                  onEdgeMouseMove={props.onEdgeMouseMove}
-                  onEdgeMouseLeave={props.onEdgeMouseLeave}
+                  onConnectEdge={onConnectEdge}
+                  handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
+                  onContextMenu={props.onEdgeContextMenu}
+                  onMouseEnter={props.onEdgeMouseEnter}
+                  onMouseMove={props.onEdgeMouseMove}
+                  onMouseLeave={props.onEdgeMouseLeave}
+                  onClick={props.onEdgeClick}
                   edgeUpdaterRadius={props.edgeUpdaterRadius}
                   onEdgeDoubleClick={props.onEdgeDoubleClick}
                   onEdgeUpdateStart={props.onEdgeUpdateStart}
                   onEdgeUpdateEnd={props.onEdgeUpdateEnd}
-                  onEdgeUpdate={props.onEdgeUpdate}
-                  edgeTypes={props.edgeTypes}
-                  connectionMode={connectionMode}
-                  noPanClassName={props.noPanClassName}
                 />
               );
             })}
