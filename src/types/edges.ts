@@ -1,7 +1,7 @@
 import { CSSProperties, ReactNode, HTMLAttributes } from 'react';
 
 import { Position } from './utils';
-import { OnConnect, Connection } from './general';
+import { Connection } from './general';
 import { HandleElement } from './handles';
 import { Node } from './nodes';
 
@@ -90,7 +90,7 @@ export interface WrapEdgeProps<T = any> {
   elementsSelectable?: boolean;
   hidden?: boolean;
   handleEdgeUpdate: boolean;
-  onConnectEdge: OnConnect;
+  onEdgeUpdate: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;
   onMouseMove?: EdgeMouseHandler;

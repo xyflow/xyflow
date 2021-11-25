@@ -9,7 +9,6 @@ import { getEdgePositions, getHandle } from './utils';
 import {
   Position,
   Edge,
-  Connection,
   ConnectionLineType,
   ConnectionLineComponent,
   ConnectionMode,
@@ -92,12 +91,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const sourceHandleId = edge.sourceHandle || null;
               const targetHandleId = edge.targetHandle || null;
 
-              const onConnectEdge = (connection: Connection) => {
-                props.onEdgeUpdate?.(edge, connection);
-              };
-
-              const sourceNodeWidth = sourceNode?.width;
-              const sourceNodeHeight = sourceNode?.height;
               const sourceNodeX = sourceNode?.positionAbsolute?.x;
               const sourceNodeY = sourceNode?.positionAbsolute?.y;
               const sourceNodeHandleBounds = sourceNode?.handleBounds;
@@ -113,8 +106,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               }
 
               if (
-                !sourceNodeWidth ||
-                !sourceNodeHeight ||
+                !sourceNode?.width ||
+                !sourceNode?.height ||
                 typeof sourceNodeX === 'undefined' ||
                 typeof sourceNodeY === 'undefined'
               ) {
@@ -155,7 +148,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               }
 
               const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-                { x: sourceNodeX, y: sourceNodeY, width: sourceNodeWidth, height: sourceNodeHeight },
+                { x: sourceNodeX, y: sourceNodeY, width: sourceNode?.width, height: sourceNode?.height },
                 sourceHandle,
                 sourcePosition,
                 { x: targetNodeX, y: targetNodeY, width: targetNodeWidth, height: targetNodeHeight },
@@ -193,8 +186,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   sourcePosition={sourcePosition}
                   targetPosition={targetPosition}
                   elementsSelectable={elementsSelectable}
-                  onConnectEdge={onConnectEdge}
                   handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
+                  onEdgeUpdate={props.onEdgeUpdate}
                   onContextMenu={props.onEdgeContextMenu}
                   onMouseEnter={props.onEdgeMouseEnter}
                   onMouseMove={props.onEdgeMouseMove}

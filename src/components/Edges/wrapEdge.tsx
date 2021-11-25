@@ -3,7 +3,7 @@ import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
-import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState } from '../../types';
+import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState, Connection } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
@@ -46,12 +46,12 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     sourceHandleId,
     targetHandleId,
     handleEdgeUpdate,
-    onConnectEdge,
     onContextMenu,
     onMouseEnter,
     onMouseMove,
     onMouseLeave,
     edgeUpdaterRadius,
+    onEdgeUpdate,
     onEdgeUpdateStart,
     onEdgeUpdateEnd,
     markerEnd,
@@ -156,6 +156,15 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
           : undefined;
 
+        const onConnectEdge = (connection: Connection) => {
+          const { edges } = store.getState();
+          const edge = edges.find((e) => e.id === id);
+
+          if (edge && onEdgeUpdate) {
+            onEdgeUpdate(edge, connection);
+          }
+        };
+
         onMouseDown(
           event,
           handleId,
@@ -181,7 +190,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         setConnectionNodeId,
         setPosition,
         edgeElement,
-        onConnectEdge,
+        onEdgeUpdate,
       ]
     );
 
