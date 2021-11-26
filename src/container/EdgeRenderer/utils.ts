@@ -169,9 +169,9 @@ export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect
   const handleBounds = node?.handleBounds;
   const isInvalid =
     !node ||
-    !node?.handleBounds ||
-    !node?.width ||
-    !node?.height ||
+    !node.handleBounds ||
+    !node.width ||
+    !node.height ||
     typeof node.positionAbsolute?.x === 'undefined' ||
     typeof node.positionAbsolute?.y === 'undefined';
 

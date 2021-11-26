@@ -10,6 +10,7 @@ import FloatingEdges from './FloatingEdges';
 import Layouting from './Layouting';
 import NestedNodes from './NestedNodes';
 import Hidden from './Hidden';
+import UpdatableEdge from './UpdatableEdge';
 
 import './index.css';
 
@@ -45,6 +46,10 @@ const routes = [
   {
     path: '/hidden',
     component: Hidden,
+  },
+  {
+    path: '/updatable-edge',
+    component: UpdatableEdge,
   },
 ];
 

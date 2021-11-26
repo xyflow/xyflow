@@ -1,6 +1,6 @@
 import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
-import { Node, Edge, Elements, Connection, EdgeMarkerType, Transform, XYPosition, Rect } from '../types';
+import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -77,17 +77,17 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
   return edges.concat(edge);
 };
 
-export const updateEdge = (oldEdge: Edge, newConnection: Connection, elements: Elements): Elements => {
+export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
   if (!newConnection.source || !newConnection.target) {
     console.warn("Can't create new edge. An edge needs a source and a target.");
-    return elements;
+    return edges;
   }
 
-  const foundEdge = elements.find((e) => isEdge(e) && e.id === oldEdge.id) as Edge;
+  const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
 
   if (!foundEdge) {
     console.warn(`The old edge with id=${oldEdge.id} does not exist.`);
-    return elements;
+    return edges;
   }
 
   // Remove old edge and create the new edge with parameters of old edge.
@@ -100,7 +100,7 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, elements: E
     targetHandle: newConnection.targetHandle,
   } as Edge;
 
-  return elements.filter((e) => e.id !== oldEdge.id).concat(edge);
+  return edges.filter((e) => e.id !== oldEdge.id).concat(edge);
 };
 
 export const pointToRendererPoint = (
