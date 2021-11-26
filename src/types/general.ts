@@ -24,12 +24,6 @@ export type OnNodesChange = (nodes: NodeChange[]) => void;
 
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
-export interface SelectionRect extends Rect {
-  startX: number;
-  startY: number;
-  draw: boolean;
-}
-
 export type OnLoadParams<T = any> = {
   zoomIn: () => void;
   zoomOut: () => void;
@@ -150,8 +144,6 @@ export type ReactFlowStore = {
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
-
-  userSelectionRect: SelectionRect;
 
   connectionNodeId: string | null;
   connectionHandleId: string | null;

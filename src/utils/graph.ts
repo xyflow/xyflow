@@ -1,6 +1,16 @@
 import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
-import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect } from '../types';
+import {
+  Node,
+  Edge,
+  Connection,
+  EdgeMarkerType,
+  Transform,
+  XYPosition,
+  Rect,
+  NodeInternals,
+  NodeInternalsItem,
+} from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -124,6 +134,7 @@ export const pointToRendererPoint = (
   return position;
 };
 
+// @TODO: use one function for getRectOfNodes and getRectOfNodeInternals
 export const getRectOfNodes = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
     (currBox, { position, width, height }) =>
@@ -134,14 +145,24 @@ export const getRectOfNodes = (nodes: Node[]): Rect => {
   return boxToRect(box);
 };
 
+export const getRectOfNodeInternals = (nodes: NodeInternalsItem[]): Rect => {
+  const box = nodes.reduce(
+    (currBox, { positionAbsolute, width, height }) =>
+      getBoundsOfBoxes(currBox, rectToBox({ ...positionAbsolute, width: width || 0, height: height || 0 })),
+    { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
+  );
+
+  return boxToRect(box);
+};
+
 export const getNodesInside = (
-  nodes: Node[],
+  nodeInternals: NodeInternals,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially: boolean = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes: boolean = false
-): Node[] => {
+): NodeInternalsItem[] => {
   const rBox = rectToBox({
     x: (rect.x - tx) / tScale,
     y: (rect.y - ty) / tScale,
@@ -149,35 +170,32 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  return nodes.filter(({ selectable = true, position, width, height, dragging }) => {
+  const visibleNodes: NodeInternalsItem[] = [];
+
+  nodeInternals.forEach((node) => {
+    const { positionAbsolute, width, height, dragging, selectable = true } = node;
+
     if (excludeNonSelectableNodes && !selectable) {
       return false;
     }
 
-    const nBox = rectToBox({ ...position, width: width || 0, height: height || 0 });
+    const nBox = rectToBox({ ...positionAbsolute, width: width || 0, height: height || 0 });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
+    const notInitialized =
+      typeof width === 'undefined' || typeof height === 'undefined' || width === null || height === null || dragging;
 
-    if (
-      typeof width === 'undefined' ||
-      typeof height === 'undefined' ||
-      width === null ||
-      height === null ||
-      dragging
-    ) {
-      // nodes are initialized with width and height = null
-      return true;
-    }
-
-    if (partially) {
-      return overlappingArea > 0;
-    }
-
+    const partiallyVisible = partially && overlappingArea > 0;
     const area = (width || 0) * (height || 0);
+    const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
 
-    return overlappingArea >= area;
+    if (isVisible) {
+      visibleNodes.push(node);
+    }
   });
+
+  return visibleNodes;
 };
 
 export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {

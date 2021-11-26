@@ -9,7 +9,7 @@ import cc from 'classcat';
 
 import { useStore } from '../../store';
 import { Node, ReactFlowState } from '../../types';
-import { getRectOfNodes } from '../..';
+import { getRectOfNodeInternals } from '../../utils/graph';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -52,7 +52,7 @@ function NodesSelection({
     [tX, tY, tScale]
   );
 
-  const selectedNodesBbox = useMemo(() => getRectOfNodes(selectedNodes), [selectedNodes]);
+  const selectedNodesBbox = useMemo(() => getRectOfNodeInternals(selectedNodes), [selectedNodes]);
 
   const innerStyle = useMemo(
     () => ({

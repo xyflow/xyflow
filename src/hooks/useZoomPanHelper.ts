@@ -3,7 +3,7 @@ import { zoomIdentity } from 'd3-zoom';
 import shallow from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../store';
-import { getRectOfNodes, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
+import { getRectOfNodeInternals, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
 import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
 
 const DEFAULT_PADDING = 0.1;
@@ -48,7 +48,9 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
             return;
           }
 
-          const bounds = getRectOfNodes(options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.hidden));
+          const bounds = getRectOfNodeInternals(
+            options.includeHiddenNodes ? nodes : nodes.filter((node) => !node.hidden)
+          );
           const [x, y, zoom] = getTransformForBounds(
             bounds,
             width,

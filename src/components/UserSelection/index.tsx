@@ -7,8 +7,14 @@ import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import { getSelectionChanges } from '../../utils/changes';
-import { XYPosition, ReactFlowState, SelectionRect, NodeChange, EdgeChange } from '../../types';
+import { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
+
+type SelectionRect = Rect & {
+  startX: number;
+  startY: number;
+  draw: boolean;
+};
 
 type UserSelectionProps = {
   selectionKeyPressed: boolean;
@@ -98,7 +104,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
     const { nodeInternals, edges, transform, onNodesChange, onEdgesChange } = store.getState();
     const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-    const selectedNodes = getNodesInside(nodes, nextUserSelectRect, transform, false, true);
+    const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, false, true);
     const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 

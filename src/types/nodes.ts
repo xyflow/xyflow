@@ -104,9 +104,9 @@ export type NodeDimensionUpdate = {
 };
 
 export type NodeInternalsItem = Node & {
-  positionAbsolute?: XYPosition;
-  handleBounds?: NodeHandleBounds;
+  positionAbsolute: XYPosition;
   z: number;
+  handleBounds?: NodeHandleBounds;
   isParent?: boolean;
 };
 
