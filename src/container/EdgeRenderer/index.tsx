@@ -88,13 +88,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals, edge.source);
               const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals, edge.target);
 
-              if (!sourceIsValid) {
-                console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
-                return null;
-              }
-
-              if (!targetIsValid) {
-                console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
+              if (!sourceIsValid || !targetIsValid) {
                 return null;
               }
 

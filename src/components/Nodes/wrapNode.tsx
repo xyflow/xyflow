@@ -8,7 +8,7 @@ import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
-  addSelectedElements: s.addSelectedElements,
+  addSelectedNodes: s.addSelectedNodes,
   unsetNodesSelection: s.unsetNodesSelection,
   updateNodePosition: s.updateNodePosition,
   updateNodeDimensions: s.updateNodeDimensions,
@@ -54,7 +54,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noDragClassName,
   }: WrapNodeProps) => {
     const {
-      addSelectedElements,
+      addSelectedNodes,
       unselectNodesAndEdges,
       unsetNodesSelection,
       updateNodePosition,
@@ -130,7 +130,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             unsetNodesSelection();
 
             if (!selected) {
-              addSelectedElements([node]);
+              addSelectedNodes([node.id]);
             }
           }
 
@@ -148,7 +148,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           unsetNodesSelection();
 
           if (!selected) {
-            addSelectedElements([node]);
+            addSelectedNodes([node.id]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unselectNodesAndEdges();
@@ -178,7 +178,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!dragging) {
           if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedElements([node]);
+            addSelectedNodes([node.id]);
           }
 
           onClick?.(event as MouseEvent, node);

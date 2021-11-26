@@ -105,8 +105,8 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   return nextNodeInternals;
 }
 
-export const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge) => ({
-  id: item.id,
+export const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge | string) => ({
+  id: typeof item === 'string' ? item : item.id,
   type: 'select',
   selected,
 });

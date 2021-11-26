@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import ReactFlow, { Node, Edge, applyNodeChanges, NodeChange } from 'react-flow-renderer';
+import { useEffect, useState } from 'react';
+import ReactFlow, { Node, Edge, useNodesState, useEdgesState } from 'react-flow-renderer';
 
 import './updatenode.css';
 
@@ -11,8 +11,8 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
 
 const UpdateNode = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const [nodeName, setNodeName] = useState<string>('Node 1');
   const [nodeBg, setNodeBg] = useState<string>('#eee');
@@ -60,12 +60,16 @@ const UpdateNode = () => {
     );
   }, [nodeHidden]);
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
-  }, []);
-
   return (
-    <ReactFlow nodes={nodes} edges={edges} defaultZoom={1.5} minZoom={0.2} maxZoom={4} onNodesChange={onNodesChange}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      defaultZoom={1.5}
+      minZoom={0.2}
+      maxZoom={4}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+    >
       <div className="updatenode__controls">
         <label>label:</label>
         <input value={nodeName} onChange={(evt) => setNodeName(evt.target.value)} />

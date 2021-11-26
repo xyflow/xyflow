@@ -27,7 +27,7 @@ import {
   XYPosition,
   ReactFlowStore,
 } from '../types';
-import { isNode, isEdge, getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
+import { getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createNodeInternals, createNodeOrEdgeSelectionChange } from './utils';
 
@@ -249,27 +249,35 @@ const createStore = () =>
 
       set(stateUpdate);
     },
-    addSelectedElements: (selectedElementsArr: Array<Node | Edge>) => {
-      const { multiSelectionActive, onNodesChange, onEdgesChange, nodeInternals, edges } = get();
+    addSelectedNodes: (selectedNodeIds: string[]) => {
+      const { multiSelectionActive, onNodesChange, nodeInternals } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
       const nodes = Array.from(nodeInternals).map(([_, node]) => node);
       let changedNodes;
-      let changedEdges;
 
       if (multiSelectionActive) {
-        changedNodes = selectedElementsArr.filter(isNode).map(createNodeOrEdgeSelectionChange(true));
-        changedEdges = selectedElementsArr.filter(isEdge).map(createNodeOrEdgeSelectionChange(true));
+        changedNodes = selectedNodeIds.map(createNodeOrEdgeSelectionChange(true));
       } else {
         changedNodes = nodes.map((node) =>
-          createNodeOrEdgeSelectionChange(selectedElementsArr.some((e) => e.id === node.id))(node)
-        );
-        changedEdges = edges.map((edge) =>
-          createNodeOrEdgeSelectionChange(selectedElementsArr.some((e) => e.id === edge.id))(edge)
+          createNodeOrEdgeSelectionChange(selectedNodeIds.some((nodeId) => nodeId === node.id))(node.id)
         );
       }
 
       if (changedNodes.length) {
         onNodesChange?.(changedNodes as NodeChange[]);
+      }
+    },
+    addSelectedEdges: (selectedEdgeIds: string[]) => {
+      const { multiSelectionActive, onEdgesChange, edges } = get();
+
+      let changedEdges;
+
+      if (multiSelectionActive) {
+        changedEdges = selectedEdgeIds.map(createNodeOrEdgeSelectionChange(true));
+      } else {
+        changedEdges = edges.map((edge) =>
+          createNodeOrEdgeSelectionChange(selectedEdgeIds.some((edgeId) => edgeId === edge.id))(edge.id)
+        );
       }
 
       if (changedEdges.length) {
