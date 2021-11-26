@@ -45,7 +45,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     hidden,
     sourceHandleId,
     targetHandleId,
-    handleEdgeUpdate,
     onContextMenu,
     onMouseEnter,
     onMouseMove,
@@ -66,6 +65,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const [updating, setUpdating] = useState<boolean>(false);
 
     const inactive = !elementsSelectable && !onClick;
+    const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
     const edgeClasses = cc([
       'react-flow__edge',
       `react-flow__edge-${type}`,

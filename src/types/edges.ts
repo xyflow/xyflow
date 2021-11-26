@@ -89,7 +89,6 @@ export interface WrapEdgeProps<T = any> {
   targetPosition: Position;
   elementsSelectable?: boolean;
   hidden?: boolean;
-  handleEdgeUpdate: boolean;
   onEdgeUpdate: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;

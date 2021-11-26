@@ -4,7 +4,17 @@ import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../compon
 import wrapEdge from '../../components/Edges/wrapEdge';
 import { rectToBox } from '../../utils';
 
-import { EdgeTypesType, EdgeProps, HandleElement, Position, XYPosition, Transform, Rect } from '../../types';
+import {
+  EdgeTypesType,
+  EdgeProps,
+  HandleElement,
+  Position,
+  XYPosition,
+  Transform,
+  Rect,
+  NodeInternals,
+  NodeHandleBounds,
+} from '../../types';
 
 export function createEdgeTypes(edgeTypes: EdgeTypesType): EdgeTypesType {
   const standardTypes: EdgeTypesType = {
@@ -152,4 +162,27 @@ export function isEdgeVisible({
   const overlappingArea = Math.ceil(xOverlap * yOverlap);
 
   return overlappingArea > 0;
+}
+
+export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect, NodeHandleBounds | null, boolean] {
+  const node = nodeInternals.get(nodeId);
+  const handleBounds = node?.handleBounds;
+  const isInvalid =
+    !node ||
+    !node?.handleBounds ||
+    !node?.width ||
+    !node?.height ||
+    typeof node.positionAbsolute?.x === 'undefined' ||
+    typeof node.positionAbsolute?.y === 'undefined';
+
+  return [
+    {
+      x: node?.positionAbsolute?.x || 0,
+      y: node?.positionAbsolute?.y || 0,
+      width: node?.width || 0,
+      height: node?.height || 0,
+    },
+    handleBounds || null,
+    !isInvalid,
+  ];
 }

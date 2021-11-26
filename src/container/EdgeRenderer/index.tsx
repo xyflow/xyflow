@@ -5,7 +5,7 @@ import cc from 'classcat';
 import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle } from './utils';
+import { getEdgePositions, getHandle, getNodeData } from './utils';
 import {
   Position,
   Edge,
@@ -85,42 +85,15 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
           <g>
             {edges.map((edge: Edge) => {
-              const sourceNode = nodeInternals.get(edge.source);
-              const targetNode = nodeInternals.get(edge.target);
+              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals, edge.source);
+              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals, edge.target);
 
-              const sourceHandleId = edge.sourceHandle || null;
-              const targetHandleId = edge.targetHandle || null;
-
-              const sourceNodeX = sourceNode?.positionAbsolute?.x;
-              const sourceNodeY = sourceNode?.positionAbsolute?.y;
-              const sourceNodeHandleBounds = sourceNode?.handleBounds;
-              const targetNodeWidth = targetNode?.width;
-              const targetNodeHeight = targetNode?.height;
-              const targetNodeX = targetNode?.positionAbsolute?.x;
-              const targetNodeY = targetNode?.positionAbsolute?.y;
-              const targetNodeHandleBounds = targetNode?.handleBounds;
-
-              // source and target node need to be initialized
-              if (!sourceNodeHandleBounds || !targetNodeHandleBounds) {
-                return null;
-              }
-
-              if (
-                !sourceNode?.width ||
-                !sourceNode?.height ||
-                typeof sourceNodeX === 'undefined' ||
-                typeof sourceNodeY === 'undefined'
-              ) {
+              if (!sourceIsValid) {
                 console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
                 return null;
               }
 
-              if (
-                !targetNodeWidth ||
-                !targetNodeHeight ||
-                typeof targetNodeX === 'undefined' ||
-                typeof targetNodeY === 'undefined'
-              ) {
+              if (!targetIsValid) {
                 console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
                 return null;
               }
@@ -130,28 +103,28 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               // when connection type is loose we can define all handles as sources
               const targetNodeHandles =
                 connectionMode === ConnectionMode.Strict
-                  ? targetNodeHandleBounds.target
-                  : targetNodeHandleBounds.target || targetNodeHandleBounds.source;
-              const sourceHandle = getHandle(sourceNodeHandleBounds.source!, sourceHandleId);
-              const targetHandle = getHandle(targetNodeHandles!, targetHandleId);
-              const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
-              const targetPosition = targetHandle ? targetHandle.position : Position.Top;
+                  ? targetHandleBounds!.target
+                  : targetHandleBounds!.target || targetHandleBounds!.source;
+              const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle || null);
+              const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle || null);
+              const sourcePosition = sourceHandle?.position || Position.Bottom;
+              const targetPosition = targetHandle?.position || Position.Top;
 
               if (!sourceHandle) {
-                console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
+                console.warn(`couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}`);
                 return null;
               }
 
               if (!targetHandle) {
-                console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
+                console.warn(`couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}`);
                 return null;
               }
 
               const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-                { x: sourceNodeX, y: sourceNodeY, width: sourceNode?.width, height: sourceNode?.height },
+                sourceNodeRect,
                 sourceHandle,
                 sourcePosition,
-                { x: targetNodeX, y: targetNodeY, width: targetNodeWidth, height: targetNodeHeight },
+                targetNodeRect,
                 targetHandle,
                 targetPosition
               );
@@ -175,8 +148,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   style={edge.style}
                   source={edge.source}
                   target={edge.target}
-                  sourceHandleId={sourceHandleId}
-                  targetHandleId={targetHandleId}
+                  sourceHandleId={edge.sourceHandle}
+                  targetHandleId={edge.targetHandle}
                   markerEnd={edge.markerEnd}
                   markerStart={edge.markerStart}
                   sourceX={sourceX}
@@ -186,7 +159,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   sourcePosition={sourcePosition}
                   targetPosition={targetPosition}
                   elementsSelectable={elementsSelectable}
-                  handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
                   onEdgeUpdate={props.onEdgeUpdate}
                   onContextMenu={props.onEdgeContextMenu}
                   onMouseEnter={props.onEdgeMouseEnter}
