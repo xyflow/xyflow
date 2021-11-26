@@ -85,19 +85,13 @@ const initialEdges: Edge[] = [
   { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
 ];
 
-function shuffle() {
-  return Math.random() - Math.random();
-}
-
 const NestedFlow = () => {
   const [rfInstance, setRfInstance] = useState<OnLoadParams | null>(null);
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => {
-      return addEdge(params, eds);
-    });
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
   const onLoad = useCallback((reactFlowInstance: OnLoadParams) => setRfInstance(reactFlowInstance), []);
 

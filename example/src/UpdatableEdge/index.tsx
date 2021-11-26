@@ -62,7 +62,7 @@ const UpdatableEdge = () => {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
-  const onConnect = (params: Connection | Edge) => setEdges((els) => addEdge(params, els));
+  const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((ns) => applyNodeChanges(changes, ns));

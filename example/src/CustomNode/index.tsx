@@ -100,8 +100,8 @@ const CustomNodeFlow = () => {
     ]);
   }, []);
 
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, eds));
+  const onConnect = (connection: Connection) =>
+    setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds));
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((ns) => applyNodeChanges(changes, ns));

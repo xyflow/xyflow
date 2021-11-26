@@ -31,10 +31,8 @@ const LayoutFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodesAndEdges.nodes);
   const [edges, setEdges] = useState<Edge[]>(initialNodesAndEdges.edges);
 
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => {
-      return addEdge(params, eds);
-    });
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
 
   const onLayout = (direction: string) => {

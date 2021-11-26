@@ -26,8 +26,8 @@ const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(30, 30);
 const StressFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
   const updatePos = () => {
     setNodes((nds) => {
@@ -51,8 +51,6 @@ const StressFlow = () => {
   };
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
-    console.log('node change', changes);
-
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 

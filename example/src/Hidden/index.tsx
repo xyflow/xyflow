@@ -27,8 +27,8 @@ const HiddenFlow = () => {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const [isHidden, setIsHidden] = useState<boolean>(true);
 
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
 
   useEffect(() => {
