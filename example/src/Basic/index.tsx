@@ -3,17 +3,15 @@ import { useState, MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
-  applyNodeChanges,
-  applyEdgeChanges,
   MiniMap,
   Controls,
   Node,
   Edge,
-  NodeChange,
-  EdgeChange,
   OnLoadParams,
   Connection,
   MarkerType,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 import DebugNode from './DebugNode';
 
@@ -108,8 +106,8 @@ const nodeTypes = {
 
 const BasicFlow = () => {
   const [rfInstance, setRfInstance] = useState<OnLoadParams | null>(null);
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => {
@@ -151,14 +149,6 @@ const BasicFlow = () => {
       });
     });
   };
-
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
-  }, []);
-
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
-  }, []);
 
   return (
     <ReactFlow
