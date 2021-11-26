@@ -9,7 +9,7 @@ import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedNodes: s.addSelectedNodes,
-  unsetNodesSelection: s.unsetNodesSelection,
+  setNodesSelectionActive: s.setNodesSelectionActive,
   updateNodePosition: s.updateNodePosition,
   updateNodeDimensions: s.updateNodeDimensions,
   unselectNodesAndEdges: s.unselectNodesAndEdges,
@@ -56,7 +56,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const {
       addSelectedNodes,
       unselectNodesAndEdges,
-      unsetNodesSelection,
+      setNodesSelectionActive,
       updateNodePosition,
       //  updateNodeDimensions,
     } = useStore(selector, shallow);
@@ -127,7 +127,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: MouseEvent) => {
         if (!isDraggable) {
           if (isSelectable) {
-            unsetNodesSelection();
+            setNodesSelectionActive(false);
 
             if (!selected) {
               addSelectedNodes([node.id]);
@@ -145,14 +145,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onNodeDragStart?.(event as MouseEvent, node);
 
         if (selectNodesOnDrag && isSelectable) {
-          unsetNodesSelection();
+          setNodesSelectionActive(false);
 
           if (!selected) {
             addSelectedNodes([node.id]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unselectNodesAndEdges();
-          unsetNodesSelection();
+          setNodesSelectionActive(false);
         }
       },
       [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
@@ -163,9 +163,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         node.position.x += draggableData.deltaX;
         node.position.y += draggableData.deltaY;
 
-        if (onNodeDrag) {
-          onNodeDrag(event as MouseEvent, node);
-        }
+        onNodeDrag?.(event as MouseEvent, node);
 
         updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },

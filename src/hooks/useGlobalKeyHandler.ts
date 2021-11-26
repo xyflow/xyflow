@@ -12,7 +12,7 @@ interface HookParams {
 }
 
 const selector = (s: ReactFlowState) => ({
-  unsetNodesSelection: s.unsetNodesSelection,
+  setNodesSelectionActive: s.setNodesSelectionActive,
   setMultiSelectionActive: s.setMultiSelectionActive,
   resetSelectedElements: s.resetSelectedElements,
   onNodesChange: s.onNodesChange,
@@ -21,7 +21,7 @@ const selector = (s: ReactFlowState) => ({
 
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
-  const { unsetNodesSelection, setMultiSelectionActive, resetSelectedElements, onNodesChange, onEdgesChange } =
+  const { setNodesSelectionActive, setMultiSelectionActive, resetSelectedElements, onNodesChange, onEdgesChange } =
     useStore(selector, shallow);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
@@ -46,7 +46,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
       onNodesChange?.(nodeChanges);
       onEdgesChange?.(edgeChanges);
 
-      unsetNodesSelection();
+      setNodesSelectionActive(false);
       resetSelectedElements();
     }
   }, [deleteKeyPressed, onNodesChange, onEdgesChange]);

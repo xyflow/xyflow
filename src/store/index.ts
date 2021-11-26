@@ -27,9 +27,9 @@ import {
   XYPosition,
   ReactFlowStore,
 } from '../types';
-import { getRectOfNodes, getNodesInside, getConnectedEdges } from '../utils/graph';
 import { getHandleBounds } from '../components/Nodes/utils';
-import { createNodeInternals, createNodeOrEdgeSelectionChange } from './utils';
+import { createSelectionChange, getSelectionChanges } from '../utils/changes';
+import { createNodeInternals } from './utils';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
@@ -55,7 +55,7 @@ const initialState: ReactFlowStore = {
   translateExtent: infiniteExtent,
   nodeExtent: infiniteExtent,
   nodesSelectionActive: false,
-  selectionActive: false,
+  userSelectionActive: false,
   userSelectionRect: {
     startX: 0,
     startY: 0,
@@ -181,74 +181,6 @@ const createStore = () =>
         }
       }
     },
-    setUserSelection: (mousePos: XYPosition) => {
-      set({
-        selectionActive: true,
-        userSelectionRect: {
-          width: 0,
-          height: 0,
-          startX: mousePos.x,
-          startY: mousePos.y,
-          x: mousePos.x,
-          y: mousePos.y,
-          draw: true,
-        },
-      });
-    },
-    updateUserSelection: (mousePos: XYPosition) => {
-      const { userSelectionRect, nodeInternals, edges, transform, onNodesChange, onEdgesChange } = get();
-      const startX = userSelectionRect.startX ?? 0;
-      const startY = userSelectionRect.startY ?? 0;
-
-      const nextUserSelectRect = {
-        ...userSelectionRect,
-        x: mousePos.x < startX ? mousePos.x : userSelectionRect.x,
-        y: mousePos.y < startY ? mousePos.y : userSelectionRect.y,
-        width: Math.abs(mousePos.x - startX),
-        height: Math.abs(mousePos.y - startY),
-      };
-
-      // @TODO: work with nodeInternals instead of converting it to an array
-      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-      const selectedNodes = getNodesInside(nodes, nextUserSelectRect, transform, false, true);
-      const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
-      const selectedNodeIds = selectedNodes.map((n) => n.id);
-
-      onNodesChange?.(
-        nodes.map((n) => createNodeOrEdgeSelectionChange(selectedNodeIds.includes(n.id))(n)) as NodeChange[]
-      );
-      onEdgesChange?.(
-        edges.map((e) => createNodeOrEdgeSelectionChange(selectedEdgeIds.includes(e.id))(e)) as EdgeChange[]
-      );
-
-      set({
-        userSelectionRect: nextUserSelectRect,
-      });
-    },
-    unsetUserSelection: () => {
-      const { userSelectionRect, nodeInternals } = get();
-      // @TODO: work with nodeInternals instead of converting it to an array
-      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-      const selectedNodes = nodes.filter((node) => node.selected);
-
-      const stateUpdate = {
-        selectionActive: false,
-        userSelectionRect: {
-          ...userSelectionRect,
-          draw: false,
-        },
-        selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
-        nodesSelectionActive: false,
-      };
-
-      if (selectedNodes && selectedNodes.length > 0) {
-        const selectedNodesBbox = getRectOfNodes(selectedNodes);
-        stateUpdate.selectedNodesBbox = selectedNodesBbox;
-        stateUpdate.nodesSelectionActive = true;
-      }
-
-      set(stateUpdate);
-    },
     addSelectedNodes: (selectedNodeIds: string[]) => {
       const { multiSelectionActive, onNodesChange, nodeInternals } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
@@ -256,11 +188,9 @@ const createStore = () =>
       let changedNodes;
 
       if (multiSelectionActive) {
-        changedNodes = selectedNodeIds.map(createNodeOrEdgeSelectionChange(true));
+        changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
       } else {
-        changedNodes = nodes.map((node) =>
-          createNodeOrEdgeSelectionChange(selectedNodeIds.some((nodeId) => nodeId === node.id))(node.id)
-        );
+        changedNodes = getSelectionChanges(nodes, selectedNodeIds);
       }
 
       if (changedNodes.length) {
@@ -273,11 +203,9 @@ const createStore = () =>
       let changedEdges;
 
       if (multiSelectionActive) {
-        changedEdges = selectedEdgeIds.map(createNodeOrEdgeSelectionChange(true));
+        changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
       } else {
-        changedEdges = edges.map((edge) =>
-          createNodeOrEdgeSelectionChange(selectedEdgeIds.some((edgeId) => edgeId === edge.id))(edge.id)
-        );
+        changedEdges = getSelectionChanges(edges, selectedEdgeIds);
       }
 
       if (changedEdges.length) {
@@ -291,9 +219,9 @@ const createStore = () =>
 
       const nodesToUnselect = nodes.map((n) => {
         n.selected = false;
-        return createNodeOrEdgeSelectionChange(false)(n);
+        return createSelectionChange(n.id, false);
       }) as NodeChange[];
-      const edgesToUnselect = edges.map(createNodeOrEdgeSelectionChange(false)) as EdgeChange[];
+      const edgesToUnselect = edges.map((edge) => createSelectionChange(edge.id, false)) as EdgeChange[];
 
       if (nodesToUnselect.length) {
         onNodesChange?.(nodesToUnselect);
@@ -332,8 +260,8 @@ const createStore = () =>
       const { nodeInternals, edges, onNodesChange, onEdgesChange } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
       const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-      const nodesToUnselect = nodes.filter((e) => e.selected).map(createNodeOrEdgeSelectionChange(false));
-      const edgesToUnselect = edges.filter((e) => e.selected).map(createNodeOrEdgeSelectionChange(false));
+      const nodesToUnselect = nodes.filter((e) => e.selected).map((n) => createSelectionChange(n.id, false));
+      const edgesToUnselect = edges.filter((e) => e.selected).map((e) => createSelectionChange(e.id, false));
 
       if (nodesToUnselect.length) {
         onNodesChange?.(nodesToUnselect as NodeChange[]);
@@ -354,7 +282,8 @@ const createStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    unsetNodesSelection: () => set({ nodesSelectionActive: false }),
+    setUserSelectionActive: (userSelectionActive: boolean) => set({ userSelectionActive }),
+    setNodesSelectionActive: (nodesSelectionActive: boolean) => set({ nodesSelectionActive }),
     updateTransform: (transform: Transform) => set({ transform }),
     updateSize: (size: Dimensions) => set({ width: size.width || 500, height: size.height || 500 }),
     setOnConnect: (onConnect: OnConnect) => set({ onConnect }),

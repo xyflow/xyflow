@@ -49,3 +49,23 @@ export function applyNodeChanges(changes: NodeChange[], nodes: Node[]): Node[] {
 export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]): Edge[] {
   return applyChanges(changes, edges) as Edge[];
 }
+
+export const createSelectionChange = (id: string, selected: boolean) => ({
+  id,
+  type: 'select',
+  selected,
+});
+
+export function getSelectionChanges(items: any[], selectedIds: string[]) {
+  return items.reduce((res, item) => {
+    const willBeSelected = selectedIds.includes(item.id);
+
+    if (!item.selected && willBeSelected) {
+      res.push(createSelectionChange(item.id, true));
+    } else if (item.selected && !willBeSelected) {
+      res.push(createSelectionChange(item.id, false));
+    }
+
+    return res;
+  }, []);
+}

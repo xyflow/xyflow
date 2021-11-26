@@ -1,4 +1,4 @@
-import { Node, Edge, NodeInternals, NodeInternalsItem, XYZPosition } from '../types';
+import { Node, NodeInternals, NodeInternalsItem, XYZPosition } from '../types';
 import { isNumeric } from '../utils';
 
 type ParentNodes = Record<string, boolean>;
@@ -104,9 +104,3 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
   return nextNodeInternals;
 }
-
-export const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge | string) => ({
-  id: typeof item === 'string' ? item : item.id,
-  type: 'select',
-  selected,
-});

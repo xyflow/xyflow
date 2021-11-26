@@ -27,7 +27,7 @@ interface FlowRendererProps
 }
 
 const selector = (s: ReactFlowState) => ({
-  unsetNodesSelection: s.unsetNodesSelection,
+  setNodesSelectionActive: s.setNodesSelectionActive,
   resetSelectedElements: s.resetSelectedElements,
   nodesSelectionActive: s.nodesSelectionActive,
 });
@@ -62,7 +62,7 @@ const FlowRenderer = ({
   noWheelClassName,
   noPanClassName,
 }: FlowRendererProps) => {
-  const { unsetNodesSelection, resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
+  const { setNodesSelectionActive, resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
@@ -71,7 +71,7 @@ const FlowRenderer = ({
   const onClick = useCallback(
     (event: MouseEvent) => {
       onPaneClick?.(event);
-      unsetNodesSelection();
+      setNodesSelectionActive(false);
       resetSelectedElements();
     },
     [onPaneClick]

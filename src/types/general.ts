@@ -149,7 +149,7 @@ export type ReactFlowStore = {
   nodeExtent: CoordinateExtent;
 
   nodesSelectionActive: boolean;
-  selectionActive: boolean;
+  userSelectionActive: boolean;
 
   userSelectionRect: SelectionRect;
 
@@ -176,10 +176,8 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;
-  setUserSelection: (mousePos: XYPosition) => void;
-  updateUserSelection: (mousePos: XYPosition) => void;
-  unsetUserSelection: () => void;
-  unsetNodesSelection: () => void;
+  setNodesSelectionActive: (isActive: boolean) => void;
+  setUserSelectionActive: (isActive: boolean) => void;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: () => void;
   addSelectedNodes: (nodeIds: string[]) => void;

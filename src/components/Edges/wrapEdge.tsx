@@ -11,7 +11,7 @@ import { getMarkerId } from '../../utils/graph';
 const selector = (s: ReactFlowState) => ({
   addSelectedEdges: s.addSelectedEdges,
   setConnectionNodeId: s.setConnectionNodeId,
-  unsetNodesSelection: s.unsetNodesSelection,
+  setNodesSelectionActive: s.setNodesSelectionActive,
   setPosition: s.setConnectionPosition,
   connectionMode: s.connectionMode,
 });
@@ -57,7 +57,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerStart,
   }: WrapEdgeProps): JSX.Element | null => {
     const store = useStoreApi();
-    const { addSelectedEdges, setConnectionNodeId, unsetNodesSelection, setPosition, connectionMode } = useStore(
+    const { addSelectedEdges, setConnectionNodeId, setNodesSelectionActive, setPosition, connectionMode } = useStore(
       selector,
       shallow
     );
@@ -99,7 +99,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         if (elementsSelectable) {
-          unsetNodesSelection();
+          setNodesSelectionActive(false);
           addSelectedEdges([edgeElement.id]);
         }
 
