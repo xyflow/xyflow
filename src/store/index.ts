@@ -25,54 +25,13 @@ import {
   Transform,
   Dimensions,
   XYPosition,
-  ReactFlowStore,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { createNodeInternals } from './utils';
+import { createNodeInternals, createPositionChange, isParentSelected } from './utils';
+import initialState from './initialState';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
-
-const infiniteExtent: CoordinateExtent = [
-  [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-  [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-];
-
-const initialState: ReactFlowStore = {
-  width: 0,
-  height: 0,
-  transform: [0, 0, 1],
-  nodeInternals: new Map(),
-  edges: [],
-  onNodesChange: null,
-  onEdgesChange: null,
-  selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
-  d3Zoom: null,
-  d3Selection: null,
-  d3ZoomHandler: undefined,
-  minZoom: 0.5,
-  maxZoom: 2,
-  translateExtent: infiniteExtent,
-  nodeExtent: infiniteExtent,
-  nodesSelectionActive: false,
-  userSelectionActive: false,
-  connectionNodeId: null,
-  connectionHandleId: null,
-  connectionHandleType: 'source',
-  connectionPosition: { x: 0, y: 0 },
-  connectionMode: ConnectionMode.Strict,
-
-  snapGrid: [15, 15],
-  snapToGrid: false,
-
-  nodesDraggable: true,
-  nodesConnectable: true,
-  elementsSelectable: true,
-
-  multiSelectionActive: false,
-
-  reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
-};
 
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
@@ -89,7 +48,7 @@ const createStore = () =>
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
       const { onNodesChange, transform, nodeInternals } = get();
 
-      const nodesToChange: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
+      const changes: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
 
         if (node) {
@@ -108,12 +67,11 @@ const createStore = () =>
               ...dimensions,
             });
 
-            const change = {
+            res.push({
               id: node.id,
               type: 'dimensions',
               dimensions,
-            } as NodeChange;
-            res.push(change);
+            } as NodeChange);
           }
         }
 
@@ -122,53 +80,30 @@ const createStore = () =>
 
       set({ nodeInternals: new Map(nodeInternals) });
 
-      if (nodesToChange?.length > 0) {
-        onNodesChange?.(nodesToChange);
+      if (changes?.length > 0) {
+        onNodesChange?.(changes);
       }
     },
     updateNodePosition: ({ id, diff, dragging }: NodeDiffUpdate) => {
       const { onNodesChange, nodeExtent, nodeInternals } = get();
 
       if (onNodesChange) {
-        const nodes = Array.from(nodeInternals);
-        const matchingNodes = nodes.filter(([_, n]) => !!(n.selected || n.id === id));
-        if (matchingNodes?.length) {
-          onNodesChange(
-            matchingNodes?.map(([_, node]) => {
-              const change: NodeDimensionChange = {
-                id: node.id,
-                type: 'dimensions',
-                dragging: !!dragging,
-              };
+        const changes: NodeDimensionChange[] = [];
 
-              if (diff) {
-                let currentExtent = nodeExtent || node.extent;
+        nodeInternals.forEach((node) => {
+          if (node.selected) {
+            if (!node.parentNode) {
+              changes.push(createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals }));
+            } else if (!isParentSelected(node, nodeInternals)) {
+              changes.push(createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals }));
+            }
+          } else if (node.id === id) {
+            changes.push(createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals }));
+          }
+        });
 
-                if (node.extent === 'parent' && node.parentNode && node.width && node.height) {
-                  const parent = nodeInternals.get(node.parentNode);
-                  currentExtent =
-                    parent?.width && parent?.height
-                      ? [
-                          [0, 0],
-                          [parent.width - node.width, parent.height - node.height],
-                        ]
-                      : currentExtent;
-                }
-
-                change.position = currentExtent
-                  ? clampPosition(
-                      {
-                        x: node.position.x + diff.x,
-                        y: node.position.y + diff.y,
-                      },
-                      currentExtent
-                    )
-                  : { x: node.position.x + diff.x, y: node.position.y + diff.y };
-              }
-
-              return change;
-            })
-          );
+        if (changes?.length) {
+          onNodesChange(changes);
         }
       }
     },
