@@ -51,7 +51,7 @@
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-replace": "^3.0.0",
-    "@svgr/rollup": "^5.5.0",
+    "@svgr/rollup": "^6.0.0",
     "@types/redux": "^3.6.31",
     "@types/resize-observer-browser": "^0.1.6",
     "autoprefixer": "^10.4.0",
