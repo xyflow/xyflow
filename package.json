@@ -68,7 +68,7 @@
     "rollup": "^2.60.1",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-postcss": "^4.0.1",
+    "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-typescript2": "^0.31.0",
     "start-server-and-test": "^1.14.0",
