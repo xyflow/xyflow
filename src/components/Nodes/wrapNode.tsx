@@ -8,10 +8,9 @@ import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
-  addSelectedElements: s.addSelectedElements,
-  unsetNodesSelection: s.unsetNodesSelection,
+  addSelectedNodes: s.addSelectedNodes,
+  setNodesSelectionActive: s.setNodesSelectionActive,
   updateNodePosition: s.updateNodePosition,
-  updateNodeDimensions: s.updateNodeDimensions,
   unselectNodesAndEdges: s.unselectNodesAndEdges,
 });
 
@@ -53,84 +52,67 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
   }: WrapNodeProps) => {
-    const {
-      addSelectedElements,
-      unselectNodesAndEdges,
-      unsetNodesSelection,
-      updateNodePosition,
-      //  updateNodeDimensions,
-    } = useStore(selector, shallow);
+    const { addSelectedNodes, unselectNodesAndEdges, setNodesSelectionActive, updateNodePosition } = useStore(
+      selector,
+      shallow
+    );
     const nodeElement = useRef<HTMLDivElement>(null);
-
-    const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
-    const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
-
+    const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
     const nodeStyle: CSSProperties = useMemo(
       () => ({
         zIndex,
         transform: `translate(${xPos}px,${yPos}px)`,
-        pointerEvents:
-          isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave ? 'all' : 'none',
+        pointerEvents: hasPointerEvents ? 'all' : 'none',
         // prevents jumping of nodes on start
         opacity: isInitialized ? 1 : 0,
         ...style,
       }),
-      [
-        xPos,
-        yPos,
-        isSelectable,
-        isDraggable,
-        onClick,
-        isInitialized,
-        style,
-        onMouseEnter,
-        onMouseMove,
-        onMouseLeave,
-        isParent,
-        zIndex,
-      ]
+      [zIndex, xPos, yPos, hasPointerEvents, isInitialized, style]
     );
 
-    const onMouseEnterHandler = useMemo(() => {
-      if (!onMouseEnter || dragging) {
-        return;
-      }
+    const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
+    const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
 
-      return (event: MouseEvent) => onMouseEnter(event, node);
-    }, [onMouseEnter, dragging, node]);
+    const onMouseEnterHandler = useCallback(
+      (event: MouseEvent) => {
+        if (onMouseEnter && !dragging) {
+          onMouseEnter(event, node);
+        }
+      },
+      [onMouseEnter, dragging, node]
+    );
 
-    const onMouseMoveHandler = useMemo(() => {
-      if (!onMouseMove || dragging) {
-        return;
-      }
+    const onMouseMoveHandler = useCallback(
+      (event: MouseEvent) => {
+        if (onMouseMove && !dragging) {
+          onMouseMove(event, node);
+        }
+      },
+      [onMouseMove, dragging, node]
+    );
 
-      return (event: MouseEvent) => onMouseMove(event, node);
-    }, [onMouseMove, dragging, node]);
+    const onMouseLeaveHandler = useCallback(
+      (event: MouseEvent) => {
+        if (onMouseLeave && !dragging) {
+          onMouseLeave?.(event, node);
+        }
+      },
+      [onMouseLeave, dragging, node]
+    );
 
-    const onMouseLeaveHandler = useMemo(() => {
-      if (!onMouseLeave || dragging) {
-        return;
-      }
-
-      return (event: MouseEvent) => onMouseLeave(event, node);
-    }, [onMouseLeave, dragging, node]);
-
-    const onContextMenuHandler = useMemo(() => {
-      if (!onContextMenu) {
-        return;
-      }
-
-      return (event: MouseEvent) => onContextMenu(event, node);
-    }, [onContextMenu, node]);
+    const onContextMenuHandler = useCallback(
+      (event: MouseEvent) => onContextMenu?.(event, node),
+      [onContextMenu, node]
+    );
 
     const onSelectNodeHandler = useCallback(
       (event: MouseEvent) => {
         if (!isDraggable) {
           if (isSelectable) {
-            unsetNodesSelection();
+            setNodesSelectionActive(false);
 
             if (!selected) {
-              addSelectedElements([node]);
+              addSelectedNodes([node.id]);
             }
           }
 
@@ -145,14 +127,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onNodeDragStart?.(event as MouseEvent, node);
 
         if (selectNodesOnDrag && isSelectable) {
-          unsetNodesSelection();
+          setNodesSelectionActive(false);
 
           if (!selected) {
-            addSelectedElements([node]);
+            addSelectedNodes([node.id]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unselectNodesAndEdges();
-          unsetNodesSelection();
+          setNodesSelectionActive(false);
         }
       },
       [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
@@ -163,9 +145,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         node.position.x += draggableData.deltaX;
         node.position.y += draggableData.deltaY;
 
-        if (onNodeDrag) {
-          onNodeDrag(event as MouseEvent, node);
-        }
+        onNodeDrag?.(event as MouseEvent, node);
 
         updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },
@@ -178,7 +158,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
         if (!dragging) {
           if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedElements([node]);
+            addSelectedNodes([node.id]);
           }
 
           onClick?.(event as MouseEvent, node);

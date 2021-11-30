@@ -1,7 +1,16 @@
 import { useState, useCallback } from 'react';
 
 import { useEffect } from 'react';
-import ReactFlow, { addEdge, MiniMap, Controls, Connection, Edge, Node } from 'react-flow-renderer';
+import ReactFlow, {
+  addEdge,
+  MiniMap,
+  Controls,
+  Connection,
+  Edge,
+  Node,
+  useNodesState,
+  useEdgesState,
+} from 'react-flow-renderer';
 
 const initialNodes: Node[] = [
   { id: '1', type: 'input', hidden: true, data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -23,12 +32,13 @@ const setHidden = (hidden: boolean) => (els: any[]) =>
   });
 
 const HiddenFlow = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [nodes, setNodes] = useNodesState(initialNodes);
+  const [edges, setEdges] = useEdgesState(initialEdges);
+
   const [isHidden, setIsHidden] = useState<boolean>(true);
 
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
 
   useEffect(() => {

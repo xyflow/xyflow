@@ -3,7 +3,7 @@ import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { getRectOfNodes } from '../../utils/graph';
+import { getRectOfNodeInternals } from '../../utils/graph';
 import { getBoundsofRects } from '../../utils';
 import { Node, ReactFlowState, Rect } from '../../types';
 import MiniMapNode from './MiniMapNode';
@@ -55,7 +55,7 @@ const MiniMap = ({
   const hasNodes = nodeInternals && nodeInternals.size > 0;
   // @TODO: work with nodeInternals instead of converting it to an array
   const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-  const bb = getRectOfNodes(nodes);
+  const bb = getRectOfNodeInternals(nodes);
   const viewBB: Rect = {
     x: -tX / tScale,
     y: -tY / tScale,

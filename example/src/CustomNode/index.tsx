@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent, useCallback } from 'react';
+import { useState, useEffect, MouseEvent } from 'react';
 import { ChangeEvent } from 'react';
 
 import ReactFlow, {
@@ -10,11 +10,8 @@ import ReactFlow, {
   Position,
   SnapGrid,
   Connection,
-  Edge,
-  NodeChange,
-  applyNodeChanges,
-  applyEdgeChanges,
-  EdgeChange,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -35,8 +32,9 @@ const nodeTypes = {
 };
 
 const CustomNodeFlow = () => {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
   const [bgColor, setBgColor] = useState<string>(initBgColor);
 
   useEffect(() => {
@@ -100,16 +98,8 @@ const CustomNodeFlow = () => {
     ]);
   }, []);
 
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: '#fff' } }, eds));
-
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
-  }, []);
-
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
-  }, []);
+  const onConnect = (connection: Connection) =>
+    setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds));
 
   return (
     <ReactFlow

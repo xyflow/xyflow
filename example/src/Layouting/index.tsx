@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -7,15 +7,15 @@ import ReactFlow, {
   Controls,
   NodeChange,
   EdgeChange,
-  Node,
   Connection,
-  Edge,
   CoordinateExtent,
   Position,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 import dagre from 'dagre';
 
-import initialNodesAndEdges from './initial-elements';
+import initialItems from './initial-elements';
 
 import './layouting.css';
 
@@ -28,13 +28,11 @@ const nodeExtent: CoordinateExtent = [
 ];
 
 const LayoutFlow = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodesAndEdges.nodes);
-  const [edges, setEdges] = useState<Edge[]>(initialNodesAndEdges.edges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialItems.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialItems.edges);
 
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => {
-      return addEdge(params, eds);
-    });
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
 
   const onLayout = (direction: string) => {
@@ -64,12 +62,6 @@ const LayoutFlow = () => {
 
     setNodes(layoutedNodes);
   };
-
-  const onNodesChange = useCallback((changes: NodeChange[]) => setNodes((ns) => applyNodeChanges(changes, ns)), []);
-
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
-  }, []);
 
   return (
     <div className="layoutflow">

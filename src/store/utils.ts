@@ -1,5 +1,13 @@
-import { Node, Edge, NodeInternals, NodeInternalsItem, XYZPosition } from '../types';
-import { isNumeric } from '../utils';
+import {
+  CoordinateExtent,
+  Node,
+  NodeDimensionChange,
+  NodeInternals,
+  NodeInternalsItem,
+  XYPosition,
+  XYZPosition,
+} from '../types';
+import { clampPosition, isNumeric } from '../utils';
 
 type ParentNodes = Record<string, boolean>;
 
@@ -105,8 +113,62 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   return nextNodeInternals;
 }
 
-export const createNodeOrEdgeSelectionChange = (selected: boolean) => (item: Node | Edge) => ({
-  id: item.id,
-  type: 'select',
-  selected,
-});
+export function isParentSelected(node: NodeInternalsItem, nodeInternals: NodeInternals): boolean {
+  if (!node.parentNode) {
+    return false;
+  }
+
+  const parentNode = nodeInternals.get(node.parentNode);
+
+  if (!parentNode) {
+    return false;
+  }
+
+  if (parentNode.selected) {
+    return true;
+  }
+
+  return isParentSelected(parentNode, nodeInternals);
+}
+
+type CreatePostiionChangeParams = {
+  node: NodeInternalsItem;
+  nodeExtent: CoordinateExtent;
+  nodeInternals: NodeInternals;
+  diff?: XYPosition;
+  dragging?: boolean;
+};
+
+export function createPositionChange({
+  node,
+  diff,
+  dragging,
+  nodeExtent,
+  nodeInternals,
+}: CreatePostiionChangeParams): NodeDimensionChange {
+  const change: NodeDimensionChange = {
+    id: node.id,
+    type: 'dimensions',
+    dragging: !!dragging,
+  };
+
+  if (diff) {
+    const nextPosition = { x: node.position.x + diff.x, y: node.position.y + diff.y };
+    let currentExtent = nodeExtent || node.extent;
+
+    if (node.extent === 'parent' && node.parentNode && node.width && node.height) {
+      const parent = nodeInternals.get(node.parentNode);
+      currentExtent =
+        parent?.width && parent?.height
+          ? [
+              [0, 0],
+              [parent.width - node.width, parent.height - node.height],
+            ]
+          : currentExtent;
+    }
+
+    change.position = currentExtent ? clampPosition(nextPosition, currentExtent) : nextPosition;
+  }
+
+  return change;
+}

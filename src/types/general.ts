@@ -24,12 +24,6 @@ export type OnNodesChange = (nodes: NodeChange[]) => void;
 
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
-export interface SelectionRect extends Rect {
-  startX: number;
-  startY: number;
-  draw: boolean;
-}
-
 export type OnLoadParams<T = any> = {
   zoomIn: () => void;
   zoomOut: () => void;
@@ -149,9 +143,7 @@ export type ReactFlowStore = {
   nodeExtent: CoordinateExtent;
 
   nodesSelectionActive: boolean;
-  selectionActive: boolean;
-
-  userSelectionRect: SelectionRect;
+  userSelectionActive: boolean;
 
   connectionNodeId: string | null;
   connectionHandleId: string | null;
@@ -176,13 +168,12 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;
-  setUserSelection: (mousePos: XYPosition) => void;
-  updateUserSelection: (mousePos: XYPosition) => void;
-  unsetUserSelection: () => void;
-  unsetNodesSelection: () => void;
+  setNodesSelectionActive: (isActive: boolean) => void;
+  setUserSelectionActive: (isActive: boolean) => void;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: () => void;
-  addSelectedElements: (elements: Elements) => void;
+  addSelectedNodes: (nodeIds: string[]) => void;
+  addSelectedEdges: (edgeIds: string[]) => void;
   updateTransform: (transform: Transform) => void;
   updateSize: (size: Dimensions) => void;
   initD3Zoom: (payload: InitD3ZoomPayload) => void;

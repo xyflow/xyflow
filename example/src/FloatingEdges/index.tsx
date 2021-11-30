@@ -1,17 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 
 import ReactFlow, {
   addEdge,
   Background,
   OnLoadParams,
   EdgeTypesType,
-  Node,
   Connection,
-  Edge,
-  applyNodeChanges,
-  applyEdgeChanges,
-  NodeChange,
-  EdgeChange,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
 import './style.css';
@@ -29,19 +25,11 @@ const edgeTypes: EdgeTypesType = {
 };
 
 const FloatingEdges = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback((params: Edge | Connection) => {
-    setEdges((eds) => addEdge(params, eds));
-  }, []);
-
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
-  }, []);
-
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
 
   return (

@@ -1,5 +1,6 @@
 import React, { memo, useMemo, ComponentType, MouseEvent, useEffect, useRef } from 'react';
 import shallow from 'zustand/shallow';
+import useVisibleNodes from '../../hooks/useVisibleNodes';
 
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
@@ -43,6 +44,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
     snapToGrid,
     nodeInternals,
   } = useStore(selector, shallow);
+  const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const reseizeObserverRef = useRef<ResizeObserver>();
 
   const resizeObserver = useMemo(() => {
@@ -73,7 +75,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
   return (
     <div className="react-flow__nodes react-flow__container">
-      {Array.from(nodeInternals).map(([_, node]) => {
+      {nodes.map((node) => {
         const nodeType = node.type || 'default';
         const internals = nodeInternals.get(node.id);
 
