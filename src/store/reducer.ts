@@ -137,7 +137,7 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
       const { id, diff, isDragging } = action.payload;
 
       const nextNodes = state.nodes.map((node) => {
-        if (id === node.id || (id == null && state.selectedElements?.find((sNode) => sNode.id === node.id))) {
+        if (id === node.id || state.selectedElements?.find((sNode) => sNode.id === node.id)) {
           const updatedNode = {
             ...node,
             __rf: {
