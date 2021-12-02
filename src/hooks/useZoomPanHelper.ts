@@ -20,7 +20,7 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   initialized: false,
 };
 
-const getTransition = (selection: D3Selection<Element, unknown, null, undefined>, duration: number = 300) => {
+const getTransition = (selection: D3Selection<Element, unknown, null, undefined>, duration: number = 0) => {
   return selection.transition().duration(duration);
 };
 
