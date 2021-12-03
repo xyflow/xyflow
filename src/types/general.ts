@@ -64,6 +64,7 @@ export type FitViewParams = {
   includeHiddenNodes?: boolean;
   minZoom?: number;
   maxZoom?: number;
+  duration?: number;
 };
 
 export type OnConnectStartParams = {
@@ -105,14 +106,25 @@ export enum PanOnScrollMode {
   Horizontal = 'horizontal',
 }
 
+export type ZoomPanHelperFunctionOptions = {
+  duration?: number;
+};
+
+export type SetCenterOptions = ZoomPanHelperFunctionOptions & {
+  zoom?: number;
+};
+
+export type FitBoundsOptions = ZoomPanHelperFunctionOptions & {
+  padding?: number;
+};
 export interface ZoomPanHelperFunctions {
-  zoomIn: () => void;
-  zoomOut: () => void;
-  zoomTo: (zoomLevel: number) => void;
-  transform: (transform: FlowTransform) => void;
+  zoomIn: (options?: ZoomPanHelperFunctionOptions) => void;
+  zoomOut: (options?: ZoomPanHelperFunctionOptions) => void;
+  zoomTo: (zoomLevel: number, options?: ZoomPanHelperFunctionOptions) => void;
+  transform: (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
   fitView: FitView;
-  setCenter: (x: number, y: number, zoom?: number) => void;
-  fitBounds: (bounds: Rect, padding?: number) => void;
+  setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
+  fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
   project: (position: XYPosition) => XYPosition;
   initialized: boolean;
 }
