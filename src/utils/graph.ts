@@ -153,8 +153,8 @@ export const parseNode = (node: Node, nodeExtent: NodeExtent): Node => {
     type: node.type || 'default',
     __rf: {
       position: clampPosition(node.position, nodeExtent),
-      width: null,
-      height: null,
+      width:  node.style?.width || null,
+      height: node.style?.height || null,
       handleBounds: {},
       isDragging: false,
     },
