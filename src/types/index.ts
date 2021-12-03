@@ -254,6 +254,7 @@ export type FitViewParams = {
   includeHiddenNodes?: boolean;
   minZoom?: number;
   maxZoom?: number;
+  duration?: number;
 };
 
 export type FlowExportObject<T = any> = {
