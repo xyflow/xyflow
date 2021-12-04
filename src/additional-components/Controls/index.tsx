@@ -26,7 +26,7 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
 export interface ControlButtonProps extends HTMLAttributes<HTMLButtonElement> {}
 
 export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
-  <button className={cc(['react-flow__controls-button', className])} {...rest}>
+  <button type="button" className={cc(['react-flow__controls-button', className])} {...rest}>
     {children}
   </button>
 );

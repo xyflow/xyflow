@@ -29,6 +29,14 @@ interface ConnectionLineProps {
 
 const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, transform: s.transform });
 
+const getSourceHandle = (handleId: string | null, sourceNode: NodeInternalsItem, connectionHandleType: HandleType) => {
+  const handleTypeInverted = connectionHandleType === 'source' ? 'target' : 'source';
+  const handleBound =
+    sourceNode.handleBounds?.[connectionHandleType] || sourceNode.handleBounds?.[handleTypeInverted];
+
+  return handleId ? handleBound?.find((d: HandleElement) => d.id === handleId) : handleBound?.[0];
+};
+
 export default ({
   connectionNodeId,
   connectionHandleId,
@@ -44,25 +52,22 @@ export default ({
   const handleId = connectionHandleId;
 
   const { nodeInternals, transform } = useStore(selector, shallow);
-  const sourceNodeInternals = useRef<NodeInternalsItem | undefined>(nodeInternals.get(nodeId));
-  const sourceNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
+  const sourceNode = useRef<NodeInternalsItem | undefined>(nodeInternals.get(nodeId));
 
   if (
     !sourceNode.current ||
-    !sourceNodeInternals.current ||
+    !sourceNode.current ||
     !isConnectable ||
-    !sourceNodeInternals.current.handleBounds?.[connectionHandleType]
+    !sourceNode.current.handleBounds?.[connectionHandleType]
   ) {
     return null;
   }
 
-  const sourceHandle = handleId
-    ? sourceNodeInternals.current.handleBounds[connectionHandleType]!.find((d: HandleElement) => d.id === handleId)
-    : sourceNodeInternals.current.handleBounds[connectionHandleType]![0];
-  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNodeInternals.current.width! / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNodeInternals.current.height!;
-  const sourceX = sourceNodeInternals.current.positionAbsolute!.x + sourceHandleX;
-  const sourceY = sourceNodeInternals.current.positionAbsolute!.y + sourceHandleY;
+  const sourceHandle = getSourceHandle(handleId, sourceNode.current, connectionHandleType);
+  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : (sourceNode.current?.width ?? 0) / 2;
+  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.current?.height ?? 0;
+  const sourceX = sourceNode.current.positionAbsolute!.x + sourceHandleX;
+  const sourceY = sourceNode.current.positionAbsolute!.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];

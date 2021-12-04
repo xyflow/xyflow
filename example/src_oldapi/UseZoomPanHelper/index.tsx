@@ -29,7 +29,7 @@ const UseZoomPanHelperFlow = () => {
   const [elements, setElements] = useState<Elements>(initialElements);
   const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
   const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
-  const { project } = useZoomPanHelper();
+  const { project, setCenter, zoomIn, zoomOut } = useZoomPanHelper();
 
   const onPaneClick = useCallback(
     (evt) => {
@@ -48,8 +48,26 @@ const UseZoomPanHelperFlow = () => {
     [project]
   );
 
+  const onElementClick = useCallback(
+    (_, element) => {
+      const { x, y } = element.position;
+      setCenter(x, y, 1);
+    },
+    [setCenter]
+  );
+
   return (
-    <ReactFlow elements={elements} onElementsRemove={onElementsRemove} onConnect={onConnect} onPaneClick={onPaneClick}>
+    <ReactFlow
+      elements={elements}
+      onElementClick={onElementClick}
+      onElementsRemove={onElementsRemove}
+      onConnect={onConnect}
+      onPaneClick={onPaneClick}
+    >
+      <div style={{ position: 'absolute', left: 0, top: 0, zIndex: 100 }}>
+        <button onClick={() => zoomIn(1200)}>zoomIn</button>
+        <button onClick={() => zoomOut(0)}>zoomOut</button>
+      </div>
       <Background />
       <MiniMap />
     </ReactFlow>
