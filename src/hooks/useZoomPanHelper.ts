@@ -13,7 +13,9 @@ const initialZoomPanHelper: ZoomPanHelperFunctions = {
   zoomIn: () => {},
   zoomOut: () => {},
   zoomTo: (_: number) => {},
-  transform: (_: FlowTransform) => {},
+  getZoom: () => 1,
+  setTransform: (_: FlowTransform) => {},
+  getTransform: () => ({ x: 0, y: 0, zoom: 1 }),
   fitView: (_: FitViewParams = { padding: DEFAULT_PADDING, includeHiddenNodes: false }) => {},
   setCenter: (_: number, __: number) => {},
   fitBounds: (_: Rect) => {},
@@ -39,12 +41,18 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
       return {
         zoomIn: (options) => d3Zoom.scaleBy(getTransition(d3Selection, options?.duration), 1.2),
         zoomOut: (options) => d3Zoom.scaleBy(getTransition(d3Selection, options?.duration), 1 / 1.2),
-        zoomTo: (zoomLevel, options) =>
-          d3Zoom.scaleTo(getTransition(d3Selection, options?.duration), zoomLevel),
-        transform: (transform: FlowTransform) => {
+        zoomTo: (zoomLevel, options) => d3Zoom.scaleTo(getTransition(d3Selection, options?.duration), zoomLevel),
+        getZoom: () => {
+          const [, , zoom] = store.getState().transform;
+          return zoom;
+        },
+        setTransform: (transform, options) => {
           const nextTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.zoom);
-
-          d3Zoom.transform(getTransition(d3Selection), nextTransform);
+          d3Zoom.transform(getTransition(d3Selection, options?.duration), nextTransform);
+        },
+        getTransform: () => {
+          const [x, y, zoom] = store.getState().transform;
+          return { x, y, zoom };
         },
         fitView: (options) => {
           const { nodeInternals, width, height, minZoom, maxZoom } = store.getState();
@@ -81,7 +89,14 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
         },
         fitBounds: (bounds, options) => {
           const { width, height, minZoom, maxZoom } = store.getState();
-          const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? DEFAULT_PADDING);
+          const [x, y, zoom] = getTransformForBounds(
+            bounds,
+            width,
+            height,
+            minZoom,
+            maxZoom,
+            options?.padding ?? DEFAULT_PADDING
+          );
           const transform = zoomIdentity.translate(x, y).scale(zoom);
 
           d3Zoom.transform(getTransition(d3Selection, options?.duration), transform);

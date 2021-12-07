@@ -121,7 +121,9 @@ export interface ZoomPanHelperFunctions {
   zoomIn: (options?: ZoomPanHelperFunctionOptions) => void;
   zoomOut: (options?: ZoomPanHelperFunctionOptions) => void;
   zoomTo: (zoomLevel: number, options?: ZoomPanHelperFunctionOptions) => void;
-  transform: (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
+  getZoom: () => number;
+  setTransform: (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
+  getTransform: () => FlowTransform;
   fitView: FitView;
   setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
