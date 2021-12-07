@@ -24,15 +24,23 @@ export type OnNodesChange = (nodes: NodeChange[]) => void;
 
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
+export type ZoomInOut = (options?: ZoomPanHelperFunctionOptions) => void;
+export type ZoomTo = (zoomLevel: number, options?: ZoomPanHelperFunctionOptions) => void;
+export type SetTransform = (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
+export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
+
 export type OnLoadParams<T = any> = {
-  zoomIn: () => void;
-  zoomOut: () => void;
-  zoomTo: (zoomLevel: number) => void;
+  zoomIn: ZoomInOut;
+  zoomOut: ZoomInOut;
+  zoomTo: ZoomTo;
+  getZoom: () => number;
+  setCenter: SetCenter;
   fitView: FitView;
   project: Project;
   getNodes: () => Node<T>[];
   getEdges: () => Edge<T>[];
-  setTransform: (transform: FlowTransform) => void;
+  setTransform: SetTransform;
+  getTransform: () => FlowTransform;
   toObject: ToObject<T>;
 };
 
@@ -118,14 +126,14 @@ export type FitBoundsOptions = ZoomPanHelperFunctionOptions & {
   padding?: number;
 };
 export interface ZoomPanHelperFunctions {
-  zoomIn: (options?: ZoomPanHelperFunctionOptions) => void;
-  zoomOut: (options?: ZoomPanHelperFunctionOptions) => void;
-  zoomTo: (zoomLevel: number, options?: ZoomPanHelperFunctionOptions) => void;
+  zoomIn: ZoomInOut;
+  zoomOut: ZoomInOut;
+  zoomTo: ZoomTo;
   getZoom: () => number;
-  setTransform: (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
+  setTransform: SetTransform;
   getTransform: () => FlowTransform;
   fitView: FitView;
-  setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
+  setCenter: SetCenter;
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
   project: (position: XYPosition) => XYPosition;
   initialized: boolean;

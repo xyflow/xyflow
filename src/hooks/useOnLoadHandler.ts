@@ -8,7 +8,8 @@ import { OnLoad, XYPosition, Node, Edge, FlowExportObject } from '../types';
 function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
-  const { zoomIn, zoomOut, zoomTo, transform: setTransform, fitView, initialized } = useZoomPanHelper();
+  const { zoomIn, zoomOut, zoomTo, getZoom, setTransform, getTransform, setCenter, fitView, initialized } =
+    useZoomPanHelper();
 
   useEffect(() => {
     if (!isInitialized.current && initialized) {
@@ -47,7 +48,10 @@ function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
           zoomIn,
           zoomOut,
           zoomTo,
+          getZoom,
           setTransform,
+          getTransform,
+          setCenter,
           project,
           getNodes,
           getEdges,
