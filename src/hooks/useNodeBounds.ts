@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import shallow from 'zustand/shallow';
 
-import { Rect } from '../types';
+import { NodeBounds } from '../types';
 import { useStore } from '../store';
 
-function useNodeDimensions(id: string): Rect | null {
-  const nodeDimensions = useStore(
+function useNodeBounds(id: string): NodeBounds | null {
+  const nodeBounds = useStore(
     useCallback(
       (s) => {
         const nodeItem = s.nodeInternals.get(id);
@@ -16,8 +16,8 @@ function useNodeDimensions(id: string): Rect | null {
 
         return {
           ...nodeItem.positionAbsolute,
-          width: nodeItem.width ?? 0,
-          height: nodeItem.height ?? 0,
+          width: nodeItem.width ?? null,
+          height: nodeItem.height ?? null,
         };
       },
       [id]
@@ -25,7 +25,7 @@ function useNodeDimensions(id: string): Rect | null {
     shallow
   );
 
-  return nodeDimensions;
+  return nodeBounds;
 }
 
-export default useNodeDimensions;
+export default useNodeBounds;

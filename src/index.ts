@@ -27,6 +27,7 @@ export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 
 export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
+export { default as useNodeBounds } from './hooks/useNodeBounds';
 export * from './hooks/useNodesEdgesState';
 
 export * from './additional-components';

@@ -111,3 +111,8 @@ export type NodeInternalsItem = Node & {
 };
 
 export type NodeInternals = Map<string, NodeInternalsItem>;
+
+export type NodeBounds = XYPosition & {
+  width: number | null;
+  height: number | null;
+};
