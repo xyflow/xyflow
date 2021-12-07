@@ -16,8 +16,8 @@ function useNodeDimensions(id: string): Rect | null {
 
         return {
           ...nodeItem.positionAbsolute,
-          width: nodeItem.width,
-          height: nodeItem.height,
+          width: nodeItem.width ?? 0,
+          height: nodeItem.height ?? 0,
         };
       },
       [id]
