@@ -19,6 +19,7 @@ import SelectionListener from '../../components/SelectionListener';
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
+import ViewFitter from '../../components/ViewFitter';
 import {
   OnSelectionChangeFunc,
   NodeTypesType,
@@ -133,6 +134,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   noDragClassName?: string;
   noWheelClassName?: string;
   noPanClassName?: string;
+  fitViewOnInit?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -219,6 +221,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       noDragClassName = 'nodrag',
       noWheelClassName = 'nowheel',
       noPanClassName = 'nopan',
+      fitViewOnInit = false,
       ...rest
     },
     ref
@@ -307,7 +310,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
             connectionMode={connectionMode}
             translateExtent={translateExtent}
           />
-
+          {fitViewOnInit && <ViewFitter nodes={nodes} />}
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
         </Wrapper>
