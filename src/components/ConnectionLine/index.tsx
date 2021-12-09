@@ -31,8 +31,7 @@ const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, trans
 
 const getSourceHandle = (handleId: string | null, sourceNode: NodeInternalsItem, connectionHandleType: HandleType) => {
   const handleTypeInverted = connectionHandleType === 'source' ? 'target' : 'source';
-  const handleBound =
-    sourceNode.handleBounds?.[connectionHandleType] || sourceNode.handleBounds?.[handleTypeInverted];
+  const handleBound = sourceNode.handleBounds?.[connectionHandleType] || sourceNode.handleBounds?.[handleTypeInverted];
 
   return handleId ? handleBound?.find((d: HandleElement) => d.id === handleId) : handleBound?.[0];
 };
@@ -66,8 +65,8 @@ export default ({
   const sourceHandle = getSourceHandle(handleId, sourceNode.current, connectionHandleType);
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : (sourceNode.current?.width ?? 0) / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.current?.height ?? 0;
-  const sourceX = sourceNode.current.positionAbsolute!.x + sourceHandleX;
-  const sourceY = sourceNode.current.positionAbsolute!.y + sourceHandleY;
+  const sourceX = sourceNode.current.positionAbsolute.x + sourceHandleX;
+  const sourceY = sourceNode.current.positionAbsolute.y + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];
@@ -96,34 +95,24 @@ export default ({
 
   let dAttr: string = '';
 
+  const pathParams = {
+    sourceX,
+    sourceY,
+    sourcePosition: sourceHandle?.position,
+    targetX,
+    targetY,
+    targetPosition,
+  };
+
   if (connectionLineType === ConnectionLineType.Bezier) {
-    dAttr = getBezierPath({
-      sourceX,
-      sourceY,
-      sourcePosition: sourceHandle?.position,
-      targetX,
-      targetY,
-      targetPosition,
-    });
+    dAttr = getBezierPath(pathParams);
   } else if (connectionLineType === ConnectionLineType.Step) {
     dAttr = getSmoothStepPath({
-      sourceX,
-      sourceY,
-      sourcePosition: sourceHandle?.position,
-      targetX,
-      targetY,
-      targetPosition,
+      ...pathParams,
       borderRadius: 0,
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
-    dAttr = getSmoothStepPath({
-      sourceX,
-      sourceY,
-      sourcePosition: sourceHandle?.position,
-      targetX,
-      targetY,
-      targetPosition,
-    });
+    dAttr = getSmoothStepPath(pathParams);
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }

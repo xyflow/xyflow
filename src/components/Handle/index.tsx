@@ -5,7 +5,6 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
-
 import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
 
 const alwaysValid = () => true;

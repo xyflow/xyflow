@@ -9,7 +9,7 @@ interface SelectionListenerProps {
 }
 
 // @TODO: work with nodeInternals instead of converting it to an array
-const selectedElementsSelector = (s: ReactFlowState) => ({
+const selector = (s: ReactFlowState) => ({
   selectedNodes: Array.from(s.nodeInternals)
     .filter(([_, n]) => n.selected)
     .map(([_, node]) => node),
@@ -17,9 +17,9 @@ const selectedElementsSelector = (s: ReactFlowState) => ({
 });
 
 // This is just a helper component for calling the onSelectionChange listener.
-
+// @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
 export default ({ onSelectionChange }: SelectionListenerProps) => {
-  const { selectedNodes, selectedEdges } = useStore(selectedElementsSelector, shallow);
+  const { selectedNodes, selectedEdges } = useStore(selector, shallow);
 
   useEffect(() => {
     onSelectionChange({ nodes: selectedNodes, edges: selectedEdges });

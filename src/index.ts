@@ -1,5 +1,3 @@
-// import './wdyr';
-
 import ReactFlow from './container/ReactFlow';
 
 export default ReactFlow;

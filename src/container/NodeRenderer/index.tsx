@@ -1,7 +1,7 @@
 import React, { memo, useMemo, ComponentType, MouseEvent, useEffect, useRef } from 'react';
 import shallow from 'zustand/shallow';
-import useVisibleNodes from '../../hooks/useVisibleNodes';
 
+import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
 import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
 
@@ -34,16 +34,8 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const {
-    scale,
-    nodesDraggable,
-    nodesConnectable,
-    elementsSelectable,
-    updateNodeDimensions,
-    snapGrid,
-    snapToGrid,
-    nodeInternals,
-  } = useStore(selector, shallow);
+  const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid } =
+    useStore(selector, shallow);
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const reseizeObserverRef = useRef<ResizeObserver>();
 
@@ -77,7 +69,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
     <div className="react-flow__nodes react-flow__container">
       {nodes.map((node) => {
         const nodeType = node.type || 'default';
-        const internals = nodeInternals.get(node.id);
 
         if (!props.nodeTypes[nodeType]) {
           console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
@@ -88,10 +79,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
         const isInitialized =
-          node.width !== null &&
-          node.height !== null &&
-          typeof node.width !== 'undefined' &&
-          typeof node.height !== 'undefined';
+          node.width && node.height && typeof node.width !== 'undefined' && typeof node.height !== 'undefined';
 
         return (
           <NodeComponent
@@ -104,10 +92,10 @@ const NodeRenderer = (props: NodeRendererProps) => {
             sourcePosition={node.sourcePosition}
             targetPosition={node.targetPosition}
             hidden={node.hidden}
-            xPos={internals?.positionAbsolute?.x || 0}
-            yPos={internals?.positionAbsolute?.y || 0}
+            xPos={node.positionAbsolute.x}
+            yPos={node.positionAbsolute.y}
             dragging={!!node.dragging}
-            isInitialized={isInitialized}
+            isInitialized={!!isInitialized}
             snapGrid={snapGrid}
             snapToGrid={snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}
@@ -127,8 +115,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
-            zIndex={internals?.z || 0}
-            isParent={!!internals?.isParent}
+            zIndex={node.z}
+            isParent={!!node.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
           />

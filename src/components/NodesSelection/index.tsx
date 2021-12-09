@@ -1,11 +1,12 @@
 /**
  * The nodes selection rectangle gets displayed when a user
- * made a selectio  with on or several nodes
+ * made a selection with on or several nodes
  */
 
 import React, { memo, useMemo, useCallback, useRef, MouseEvent } from 'react';
 import { DraggableCore, DraggableData } from 'react-draggable';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, ReactFlowState } from '../../types';
@@ -38,8 +39,10 @@ function NodesSelection({
   onSelectionContextMenu,
   noPanClassName,
 }: NodesSelectionProps) {
-  const { transform, userSelectionActive, selectedNodes, snapToGrid, snapGrid, updateNodePosition } =
-    useStore(selector);
+  const { transform, userSelectionActive, selectedNodes, snapToGrid, snapGrid, updateNodePosition } = useStore(
+    selector,
+    shallow
+  );
   const [tX, tY, tScale] = transform;
   const nodeRef = useRef(null);
 

@@ -26,8 +26,11 @@ export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
 export type ZoomInOut = (options?: ZoomPanHelperFunctionOptions) => void;
 export type ZoomTo = (zoomLevel: number, options?: ZoomPanHelperFunctionOptions) => void;
+export type GetZoom = () => number;
+export type GetTransform = () => FlowTransform;
 export type SetTransform = (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
+export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
 
 export type ReactFlowInstance<T = any> = {
   zoomIn: ZoomInOut;
@@ -125,17 +128,18 @@ export type SetCenterOptions = ZoomPanHelperFunctionOptions & {
 export type FitBoundsOptions = ZoomPanHelperFunctionOptions & {
   padding?: number;
 };
+
 export interface ZoomPanHelperFunctions {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
   zoomTo: ZoomTo;
-  getZoom: () => number;
+  getZoom: GetZoom;
   setTransform: SetTransform;
-  getTransform: () => FlowTransform;
+  getTransform: GetTransform;
   fitView: FitView;
   setCenter: SetCenter;
-  fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
-  project: (position: XYPosition) => XYPosition;
+  fitBounds: FitBounds;
+  project: Project;
   initialized: boolean;
 }
 

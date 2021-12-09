@@ -7,7 +7,7 @@ type ApplyChanges<ItemType, ChangesType> = (changes: ChangesType[], items: ItemT
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
 // returns a hook that can be used liked this:
-// const [nodes, setNodes, onNodesChange] = useNodesState(intialNodes);
+// const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 function createUseItemsState<ItemType, ChangesType>(
   applyChangesFunction: ApplyChanges<ItemType, ChangesType>
 ): (initialItems: ItemType[]) => [ItemType[], Dispatch<SetStateAction<ItemType[]>>, OnChange<ChangesType>] {

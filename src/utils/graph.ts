@@ -37,7 +37,7 @@ export const getIncomers = (node: Node, nodes: Node[], edges: Edge[]): Node[] =>
 };
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): string =>
-  `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`;
+  `reactflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
 export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
   if (typeof marker === 'undefined') {

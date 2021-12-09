@@ -63,7 +63,6 @@ const FlowRenderer = ({
   noPanClassName,
 }: FlowRendererProps) => {
   const { setNodesSelectionActive, resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
-
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
@@ -77,19 +76,8 @@ const FlowRenderer = ({
     [onPaneClick]
   );
 
-  const onContextMenu = useCallback(
-    (event: MouseEvent) => {
-      onPaneContextMenu?.(event);
-    },
-    [onPaneContextMenu]
-  );
-
-  const onWheel = useCallback(
-    (event: WheelEvent) => {
-      onPaneScroll?.(event);
-    },
-    [onPaneScroll]
-  );
+  const onContextMenu = useCallback((event: MouseEvent) => onPaneContextMenu?.(event), [onPaneContextMenu]);
+  const onWheel = useCallback((event: WheelEvent) => onPaneScroll?.(event), [onPaneScroll]);
 
   return (
     <ZoomPane

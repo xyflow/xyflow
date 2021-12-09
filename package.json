@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.0.0-next.25",
+  "version": "10.0.0-next.26",
   "engines": {
     "node": ">=12"
   },
@@ -38,7 +38,7 @@
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
     "react-draggable": "^4.4.4",
-    "zustand": "^3.6.6"
+    "zustand": "^3.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -52,7 +52,6 @@
     "@svgr/rollup": "^6.1.1",
     "@types/redux": "^3.6.31",
     "@types/resize-observer-browser": "^0.1.6",
-    "@welldone-software/why-did-you-render": "^6.2.1",
     "autoprefixer": "^10.3.6",
     "babel-preset-react-app": "^10.0.0",
     "cypress": "^9.1.0",
@@ -64,7 +63,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "release-it": "^14.11.8",
-    "rollup": "^2.60.2",
+    "rollup": "^2.61.0",
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.2",

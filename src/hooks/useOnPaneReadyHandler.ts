@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { pointToRendererPoint } from '../utils/graph';
 import { useStoreApi } from '../store';
-import useZoomPanHelper from './useZoomPanHelper';
+import useZoomPanHelper from '../hooks/useZoomPanHelper';
 import { OnPaneReady, XYPosition, Node, Edge, FlowExportObject } from '../types';
 
 function useOnPaneReadyHandler(onPaneReady: OnPaneReady<any> | undefined) {

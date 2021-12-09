@@ -80,11 +80,11 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
         },
         setCenter: (x, y, options) => {
           const { width, height, maxZoom } = store.getState();
-
           const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
           const centerX = width / 2 - x * nextZoom;
           const centerY = height / 2 - y * nextZoom;
           const transform = zoomIdentity.translate(centerX, centerY).scale(nextZoom);
+
           d3Zoom.transform(getTransition(d3Selection, options?.duration), transform);
         },
         fitBounds: (bounds, options) => {
