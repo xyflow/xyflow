@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
-  OnLoadParams,
+  ReactFlowInstance,
   EdgeTypesType,
   Connection,
   useNodesState,
@@ -16,7 +16,7 @@ import FloatingEdge from './FloatingEdge';
 import FloatingConnectionLine from './FloatingConnectionLine';
 import { createElements } from './utils';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
+const onPaneReady = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 
 const { nodes: initialNodes, edges: initialEdges } = createElements();
 
@@ -40,7 +40,7 @@ const FloatingEdges = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onLoad={onLoad}
+        onPaneReady={onPaneReady}
         edgeTypes={edgeTypes}
         connectionLineComponent={FloatingConnectionLine}
       >

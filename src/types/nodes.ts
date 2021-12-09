@@ -8,8 +8,8 @@ import { HandleElement } from './handles';
 export interface Node<T = any> {
   id: string;
   position: XYPosition;
+  data: T;
   type?: string;
-  data?: T;
   style?: CSSProperties;
   className?: string;
   targetPosition?: Position;

@@ -29,7 +29,7 @@ export type ZoomTo = (zoomLevel: number, options?: ZoomPanHelperFunctionOptions)
 export type SetTransform = (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
 
-export type OnLoadParams<T = any> = {
+export type ReactFlowInstance<T = any> = {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
   zoomTo: ZoomTo;
@@ -44,7 +44,7 @@ export type OnLoadParams<T = any> = {
   toObject: ToObject<T>;
 };
 
-export type OnLoad<T = any> = (params: OnLoadParams<T>) => void;
+export type OnPaneReady<T = any> = (reactFlowInstance: ReactFlowInstance<T>) => void;
 
 export interface Connection {
   source: string | null;
@@ -183,6 +183,9 @@ export type ReactFlowStore = {
   multiSelectionActive: boolean;
 
   reactFlowVersion: string;
+
+  fitViewOnInit: boolean;
+  fitViewOnInitDone: boolean;
 };
 
 export type ReactFlowActions = {
@@ -226,6 +229,7 @@ export type ReactFlowActions = {
   onConnectEnd?: OnConnectEnd;
 
   reset: () => void;
+  setFitViewOnInit: (fitViewOnInit: boolean) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

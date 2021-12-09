@@ -9,7 +9,7 @@ import ReactFlow, {
   Controls,
   Node,
   Edge,
-  OnLoadParams,
+  ReactFlowInstance,
   Connection,
 } from 'react-flow-renderer';
 
@@ -84,14 +84,14 @@ const initialEdges: Edge[] = [
 ];
 
 const NestedFlow = () => {
-  const [rfInstance, setRfInstance] = useState<OnLoadParams | null>(null);
+  const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, []);
-  const onLoad = useCallback((reactFlowInstance: OnLoadParams) => setRfInstance(reactFlowInstance), []);
+  const onPaneReady = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
     setNodes((nds) => {
@@ -131,7 +131,7 @@ const NestedFlow = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onLoad={onLoad}
+      onPaneReady={onPaneReady}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}

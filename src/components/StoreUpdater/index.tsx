@@ -36,6 +36,7 @@ interface StoreUpdaterProps {
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
   translateExtent?: CoordinateExtent;
+  fitViewOnInit: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -58,6 +59,7 @@ const selector = (s: ReactFlowState) => ({
   setOnNodesChange: s.setOnNodesChange,
   setOnEdgesChange: s.setOnEdgesChange,
   reset: s.reset,
+  setFitViewOnInit: s.setFitViewOnInit,
 });
 
 const StoreUpdater = ({
@@ -79,6 +81,7 @@ const StoreUpdater = ({
   snapGrid,
   snapToGrid,
   translateExtent,
+  fitViewOnInit,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -100,6 +103,7 @@ const StoreUpdater = ({
     setOnEdgesChange,
     setConnectionMode,
     reset,
+    setFitViewOnInit,
   } = useStore(selector, shallow);
 
   useEffect(() => {
@@ -211,6 +215,10 @@ const StoreUpdater = ({
       setOnEdgesChange(onEdgesChange);
     }
   }, [onEdgesChange]);
+
+  useEffect(() => {
+    setFitViewOnInit(fitViewOnInit);
+  }, [fitViewOnInit]);
 
   return null;
 };

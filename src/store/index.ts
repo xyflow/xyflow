@@ -28,7 +28,7 @@ import {
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { createNodeInternals, createPositionChange, isParentSelected } from './utils';
+import { createNodeInternals, createPositionChange, fitView, isParentSelected } from './utils';
 import initialState from './initialState';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -46,7 +46,7 @@ const createStore = () =>
       set({ edges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, transform, nodeInternals } = get();
+      const { onNodesChange, transform, nodeInternals, fitViewOnInit } = get();
 
       const changes: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
@@ -78,7 +78,9 @@ const createStore = () =>
         return res;
       }, []);
 
-      set({ nodeInternals: new Map(nodeInternals) });
+      const fitViewOnInitDone = fitViewOnInit && fitView(get);
+
+      set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone });
 
       if (changes?.length > 0) {
         onNodesChange?.(changes);
@@ -234,6 +236,7 @@ const createStore = () =>
     setOnNodesChange: (onNodesChange: OnNodesChange) => set({ onNodesChange }),
     setOnEdgesChange: (onEdgesChange: OnEdgesChange) => set({ onEdgesChange }),
     reset: () => set({ ...initialState }),
+    setFitViewOnInit: (fitViewOnInit: boolean) => set({ fitViewOnInit }),
   }));
 
 export { Provider, useStore, createStore, useStoreApi };

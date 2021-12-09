@@ -39,6 +39,9 @@ const initialState: ReactFlowStore = {
   multiSelectionActive: false,
 
   reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
+
+  fitViewOnInit: false,
+  fitViewOnInitDone: false,
 };
 
 export default initialState;

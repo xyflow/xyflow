@@ -2,11 +2,7 @@ import { useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
   Controls,
-  NodeChange,
-  EdgeChange,
   Connection,
   CoordinateExtent,
   Position,
@@ -71,7 +67,7 @@ const LayoutFlow = () => {
           edges={edges}
           onConnect={onConnect}
           nodeExtent={nodeExtent}
-          onLoad={() => onLayout('TB')}
+          onPaneReady={() => onLayout('TB')}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
         >

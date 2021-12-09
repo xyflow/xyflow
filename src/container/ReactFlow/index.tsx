@@ -19,12 +19,10 @@ import SelectionListener from '../../components/SelectionListener';
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
-import ViewFitter from '../../components/ViewFitter';
 import {
   OnSelectionChangeFunc,
   NodeTypesType,
   EdgeTypesType,
-  OnLoad,
   Node,
   Edge,
   ConnectionMode,
@@ -41,6 +39,7 @@ import {
   OnEdgeUpdateFunc,
   NodeChange,
   EdgeChange,
+  OnPaneReady,
 } from '../../types';
 
 import '../../style.css';
@@ -59,7 +58,7 @@ const defaultEdgeTypes = {
   smoothstep: SmoothStepEdge,
 };
 
-export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
+export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onPaneReady'> {
   nodes: Node[];
   edges: Edge[];
   onNodesChange?: (nodeChanges: NodeChange[]) => void;
@@ -78,7 +77,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
-  onLoad?: OnLoad;
+  onPaneReady?: OnPaneReady;
   onMove?: (flowTransform?: FlowTransform) => void;
   onMoveStart?: (flowTransform?: FlowTransform) => void;
   onMoveEnd?: (flowTransform?: FlowTransform) => void;
@@ -152,7 +151,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       edgeTypes = defaultEdgeTypes,
       onNodeClick,
       onEdgeClick,
-      onLoad,
+      onPaneReady,
       onMove,
       onMoveStart,
       onMoveEnd,
@@ -234,7 +233,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       <div {...rest} ref={ref} className={reactFlowClasses}>
         <Wrapper>
           <GraphView
-            onLoad={onLoad}
+            onPaneReady={onPaneReady}
             onMove={onMove}
             onMoveStart={onMoveStart}
             onMoveEnd={onMoveEnd}
@@ -309,8 +308,8 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
             snapGrid={snapGrid}
             connectionMode={connectionMode}
             translateExtent={translateExtent}
+            fitViewOnInit={fitViewOnInit}
           />
-          {fitViewOnInit && <ViewFitter nodes={nodes} />}
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
         </Wrapper>

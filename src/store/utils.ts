@@ -1,13 +1,17 @@
+import { zoomIdentity } from 'd3-zoom';
+import { GetState } from 'zustand';
 import {
   CoordinateExtent,
   Node,
   NodeDimensionChange,
   NodeInternals,
   NodeInternalsItem,
+  ReactFlowState,
   XYPosition,
   XYZPosition,
 } from '../types';
 import { clampPosition, isNumeric } from '../utils';
+import { getRectOfNodes, getTransformForBounds } from '../utils/graph';
 
 type ParentNodes = Record<string, boolean>;
 
@@ -171,4 +175,26 @@ export function createPositionChange({
   }
 
   return change;
+}
+
+export function fitView(get: GetState<ReactFlowState>) {
+  let { nodeInternals, width, height, minZoom, maxZoom, d3Zoom, d3Selection, fitViewOnInitDone, fitViewOnInit } = get();
+
+  if (fitViewOnInit && !fitViewOnInitDone && d3Zoom && d3Selection) {
+    const rootNodes = Array.from(nodeInternals)
+      .filter(([_, n]) => !n.parentNode)
+      .map(([_, n]) => n);
+    const nodesInitialized = rootNodes.every((n) => n.width && n.height);
+
+    if (rootNodes.length > 0 && nodesInitialized) {
+      const bounds = getRectOfNodes(rootNodes);
+      const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom ?? 0.5, maxZoom ?? 2);
+
+      const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
+      d3Zoom.transform(d3Selection, nextTransform);
+      fitViewOnInitDone = true;
+    }
+  }
+
+  return fitViewOnInitDone;
 }

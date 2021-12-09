@@ -2,10 +2,10 @@ import { useEffect, useRef } from 'react';
 
 import { pointToRendererPoint } from '../utils/graph';
 import { useStoreApi } from '../store';
-import useZoomPanHelper from '../hooks/useZoomPanHelper';
-import { OnLoad, XYPosition, Node, Edge, FlowExportObject } from '../types';
+import useZoomPanHelper from './useZoomPanHelper';
+import { OnPaneReady, XYPosition, Node, Edge, FlowExportObject } from '../types';
 
-function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
+function useOnPaneReadyHandler(onPaneReady: OnPaneReady<any> | undefined) {
   const isInitialized = useRef<boolean>(false);
   const store = useStoreApi();
   const { zoomIn, zoomOut, zoomTo, getZoom, setTransform, getTransform, setCenter, fitView, initialized } =
@@ -13,7 +13,7 @@ function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
 
   useEffect(() => {
     if (!isInitialized.current && initialized) {
-      if (onLoad) {
+      if (onPaneReady) {
         const project = (position: XYPosition): XYPosition => {
           const { transform, snapToGrid, snapGrid } = store.getState();
           return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
@@ -43,7 +43,7 @@ function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
           };
         };
 
-        onLoad({
+        onPaneReady({
           fitView: (params = { padding: 0.1 }) => fitView(params),
           zoomIn,
           zoomOut,
@@ -61,7 +61,7 @@ function useOnLoadHandler(onLoad: OnLoad<any> | undefined) {
 
       isInitialized.current = true;
     }
-  }, [onLoad, zoomIn, zoomOut, zoomTo, setTransform, fitView, initialized]);
+  }, [onPaneReady, zoomIn, zoomOut, zoomTo, setTransform, fitView, initialized]);
 }
 
-export default useOnLoadHandler;
+export default useOnPaneReadyHandler;
