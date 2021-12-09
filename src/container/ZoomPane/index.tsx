@@ -235,28 +235,15 @@ const ZoomPane = ({
           return false;
         }
 
-        // if the target element is inside the nowheel class, we prevent zooming
+        // if the target element is inside an element with the nowheel class, we prevent zooming
         if (isWrappedWithClass(event, noWheelClassName) && event.type === 'wheel') {
           return false;
         }
 
-        // if the target element is inside the nopan class, we prevent panning
+        // if the target element is inside an element with the nopan class, we prevent panning
         if (isWrappedWithClass(event, noPanClassName) && event.type !== 'wheel') {
           return false;
         }
-
-        // when the target element is a node, we still allow zooming
-        // if (
-        //   (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge')) &&
-        //   event.type !== 'wheel'
-        // ) {
-        //   return false;
-        // }
-
-        // // when the target element is a node selection, we still allow zooming
-        // if (event.target.closest('.react-flow__nodesselection') && event.type !== 'wheel') {
-        //   return false;
-        // }
 
         if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
           return false;
