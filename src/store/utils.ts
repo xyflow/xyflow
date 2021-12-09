@@ -33,41 +33,6 @@ function calculateXYZPosition(
   });
 }
 
-// function createTree(items: Node[]): any {
-//   const rootItems = [];
-//   const lookup: Record<any, any> = {};
-
-//   for (const item of items) {
-//     const parentId = item.parentNode;
-
-//     if (!lookup[item.id]) {
-//       lookup[item.id] = { childNodes: [], z: 0 };
-//     }
-
-//     lookup[item.id] = {
-//       node: item,
-//       childNodes: lookup[item.id].childNodes,
-//       z: lookup[item.id].z,
-//     };
-
-//     const treeItem = lookup[item.id];
-
-//     if (!parentId) {
-//       rootItems.push(treeItem);
-//     } else {
-//       if (!lookup[parentId]) {
-//         lookup[parentId] = { childNodes: [], z: 0 };
-//       }
-
-//       lookup[parentId].childNodes.push({ ...treeItem, z: lookup[parentId].z + 1 });
-//     }
-//   }
-
-//   console.log(lookup);
-
-//   return rootItems;
-// }
-
 export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals): NodeInternals {
   const nextNodeInternals = new Map<string, NodeInternalsItem>();
   const parentNodes: ParentNodes = {};
