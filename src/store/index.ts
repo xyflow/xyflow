@@ -4,27 +4,14 @@ import createContext from 'zustand/context';
 import { clampPosition, getDimensions } from '../utils';
 import {
   ReactFlowState,
-  ConnectionMode,
   Node,
   Edge,
   NodeDimensionUpdate,
   NodeDiffUpdate,
-  InitD3ZoomPayload,
   CoordinateExtent,
-  OnConnect,
-  OnConnectStart,
-  OnConnectStop,
-  OnConnectEnd,
-  SetConnectionId,
-  SnapGrid,
   NodeChange,
-  OnNodesChange,
-  OnEdgesChange,
   EdgeChange,
   NodeDimensionChange,
-  Transform,
-  Dimensions,
-  XYPosition,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -36,7 +23,6 @@ const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
     ...initialState,
-
     setNodes: (nodes: Node[]) => {
       const nodeInternals = createNodeInternals(nodes, get().nodeInternals);
 
@@ -158,13 +144,6 @@ const createStore = () =>
         onEdgesChange?.(edgesToUnselect);
       }
     },
-    initD3Zoom: ({ d3Zoom, d3Selection, d3ZoomHandler, transform }: InitD3ZoomPayload) =>
-      set({
-        d3Zoom,
-        d3Selection,
-        d3ZoomHandler,
-        transform,
-      }),
     setMinZoom: (minZoom: number) => {
       const { d3Zoom, maxZoom } = get();
       d3Zoom?.scaleExtent([minZoom, maxZoom]);
@@ -183,7 +162,6 @@ const createStore = () =>
 
       set({ translateExtent });
     },
-
     resetSelectedElements: () => {
       const { nodeInternals, edges, onNodesChange, onEdgesChange } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
@@ -210,33 +188,7 @@ const createStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    setUserSelectionActive: (userSelectionActive: boolean) => set({ userSelectionActive }),
-    setNodesSelectionActive: (nodesSelectionActive: boolean) => set({ nodesSelectionActive }),
-    updateTransform: (transform: Transform) => set({ transform }),
-    updateSize: (size: Dimensions) => set({ width: size.width || 500, height: size.height || 500 }),
-    setOnConnect: (onConnect: OnConnect) => set({ onConnect }),
-    setOnConnectStart: (onConnectStart: OnConnectStart) => set({ onConnectStart }),
-    setOnConnectStop: (onConnectStop: OnConnectStop) => set({ onConnectStop }),
-    setOnConnectEnd: (onConnectEnd: OnConnectEnd) => set({ onConnectEnd }),
-    setConnectionPosition: (connectionPosition: XYPosition) => set({ connectionPosition }),
-    setConnectionNodeId: (params: SetConnectionId) => set({ ...params }),
-    setSnapToGrid: (snapToGrid: boolean) => set({ snapToGrid }),
-    setSnapGrid: (snapGrid: SnapGrid) => set({ snapGrid }),
-    setInteractive: (isInteractive: boolean) =>
-      set({
-        nodesDraggable: isInteractive,
-        nodesConnectable: isInteractive,
-        elementsSelectable: isInteractive,
-      }),
-    setNodesDraggable: (nodesDraggable: boolean) => set({ nodesDraggable }),
-    setNodesConnectable: (nodesConnectable: boolean) => set({ nodesConnectable }),
-    setElementsSelectable: (elementsSelectable: boolean) => set({ elementsSelectable }),
-    setMultiSelectionActive: (multiSelectionActive: boolean) => set({ multiSelectionActive }),
-    setConnectionMode: (connectionMode: ConnectionMode) => set({ connectionMode }),
-    setOnNodesChange: (onNodesChange: OnNodesChange) => set({ onNodesChange }),
-    setOnEdgesChange: (onEdgesChange: OnEdgesChange) => set({ onEdgesChange }),
     reset: () => set({ ...initialState }),
-    setFitViewOnInit: (fitViewOnInit: boolean) => set({ fitViewOnInit }),
   }));
 
 export { Provider, useStore, createStore, useStoreApi };

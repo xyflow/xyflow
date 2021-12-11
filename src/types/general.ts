@@ -1,7 +1,7 @@
 import { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
-import { XYPosition, Rect, Transform, CoordinateExtent, Dimensions } from './utils';
+import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
 import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './nodes';
 import { Edge } from './edges';
@@ -90,12 +90,6 @@ export type OnConnectStop = (event: MouseEvent) => void;
 
 export type OnConnectEnd = (event: MouseEvent) => void;
 
-export type SetConnectionId = {
-  connectionNodeId: string | null;
-  connectionHandleId: string | null;
-  connectionHandleType: HandleType | null;
-};
-
 export enum BackgroundVariant {
   Lines = 'lines',
   Dots = 'dots',
@@ -143,13 +137,6 @@ export interface ZoomPanHelperFunctions {
   initialized: boolean;
 }
 
-export type InitD3ZoomPayload = {
-  d3Zoom: ZoomBehavior<Element, unknown>;
-  d3Selection: D3Selection<Element, unknown, null, undefined>;
-  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
-  transform: Transform;
-};
-
 export type ReactFlowStore = {
   width: number;
   height: number;
@@ -190,6 +177,11 @@ export type ReactFlowStore = {
 
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
+
+  onConnect?: OnConnect;
+  onConnectStart?: OnConnectStart;
+  onConnectStop?: OnConnectStop;
+  onConnectEnd?: OnConnectEnd;
 };
 
 export type ReactFlowActions = {
@@ -197,43 +189,15 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;
-  setNodesSelectionActive: (isActive: boolean) => void;
-  setUserSelectionActive: (isActive: boolean) => void;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: () => void;
   addSelectedNodes: (nodeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
-  updateTransform: (transform: Transform) => void;
-  updateSize: (size: Dimensions) => void;
-  initD3Zoom: (payload: InitD3ZoomPayload) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
-  setOnConnect: (onConnectFunction: OnConnect) => void;
-  setOnConnectStart: (onConnectFunction: OnConnectStart) => void;
-  setOnConnectStop: (onConnectFunction: OnConnectStop) => void;
-  setOnConnectEnd: (onConnectFunction: OnConnectEnd) => void;
-  setConnectionPosition: (connectionPosition: XYPosition) => void;
-  setConnectionNodeId: (payload: SetConnectionId) => void;
-  setSnapToGrid: (snapToGrid: boolean) => void;
-  setSnapGrid: (snapGrid: SnapGrid) => void;
-  setInteractive: (isInteractive: boolean) => void;
-  setNodesDraggable: (nodesDraggable: boolean) => void;
-  setNodesConnectable: (nodesConnectable: boolean) => void;
-  setElementsSelectable: (elementsSelectable: boolean) => void;
-  setMultiSelectionActive: (multiSelectionActive: boolean) => void;
-  setConnectionMode: (connectionMode: ConnectionMode) => void;
-  setOnNodesChange: (onNodesChange: OnNodesChange) => void;
-  setOnEdgesChange: (onEdgesChange: OnEdgesChange) => void;
-
-  onConnect?: OnConnect;
-  onConnectStart?: OnConnectStart;
-  onConnectStop?: OnConnectStop;
-  onConnectEnd?: OnConnectEnd;
-
   reset: () => void;
-  setFitViewOnInit: (fitViewOnInit: boolean) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

@@ -3,13 +3,12 @@ import { DraggableCore, DraggableData, DraggableEvent } from 'react-draggable';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
-import { useStore } from '../../store';
+import { useStore, useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedNodes: s.addSelectedNodes,
-  setNodesSelectionActive: s.setNodesSelectionActive,
   updateNodePosition: s.updateNodePosition,
   unselectNodesAndEdges: s.unselectNodesAndEdges,
 });
@@ -52,10 +51,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
   }: WrapNodeProps) => {
-    const { addSelectedNodes, unselectNodesAndEdges, setNodesSelectionActive, updateNodePosition } = useStore(
-      selector,
-      shallow
-    );
+    const store = useStoreApi();
+    const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition } = useStore(selector, shallow);
     const nodeElement = useRef<HTMLDivElement>(null);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
     const nodeStyle: CSSProperties = useMemo(
@@ -109,7 +106,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: MouseEvent) => {
         if (!isDraggable) {
           if (isSelectable) {
-            setNodesSelectionActive(false);
+            store.setState({ nodesSelectionActive: false });
 
             if (!selected) {
               addSelectedNodes([node.id]);
@@ -127,14 +124,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onNodeDragStart?.(event as MouseEvent, node);
 
         if (selectNodesOnDrag && isSelectable) {
-          setNodesSelectionActive(false);
+          store.setState({ nodesSelectionActive: false });
 
           if (!selected) {
             addSelectedNodes([node.id]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unselectNodesAndEdges();
-          setNodesSelectionActive(false);
+          store.setState({ nodesSelectionActive: false });
         }
       },
       [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]

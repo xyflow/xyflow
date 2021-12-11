@@ -48,9 +48,6 @@ const selector = (s: ReactFlowState) => ({
   d3Zoom: s.d3Zoom,
   d3Selection: s.d3Selection,
   d3ZoomHandler: s.d3ZoomHandler,
-
-  initD3Zoom: s.initD3Zoom,
-  updateTransform: s.updateTransform,
 });
 
 const ZoomPane = ({
@@ -77,7 +74,7 @@ const ZoomPane = ({
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
-  const { d3Zoom, d3Selection, d3ZoomHandler, initD3Zoom, updateTransform } = useStore(selector, shallow);
+  const { d3Zoom, d3Selection, d3ZoomHandler } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
   useResizeHandler(zoomPane);
@@ -95,7 +92,7 @@ const ZoomPane = ({
 
       d3ZoomInstance.transform(selection, updatedTransform);
 
-      initD3Zoom({
+      store.setState({
         d3Zoom: d3ZoomInstance,
         d3Selection: selection,
         d3ZoomHandler: selection.on('wheel.zoom'),
@@ -171,7 +168,7 @@ const ZoomPane = ({
         d3Zoom.on('zoom', null);
       } else {
         d3Zoom.on('zoom', (event: any) => {
-          updateTransform([event.transform.x, event.transform.y, event.transform.k]);
+          store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
 
           if (onMove) {
             const flowTransform = eventToFlowTransform(event.transform);
@@ -180,7 +177,7 @@ const ZoomPane = ({
         });
       }
     }
-  }, [selectionKeyPressed, d3Zoom, updateTransform, onMove]);
+  }, [selectionKeyPressed, d3Zoom, onMove]);
 
   useEffect(() => {
     if (d3Zoom) {

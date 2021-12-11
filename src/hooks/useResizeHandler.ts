@@ -1,13 +1,10 @@
 import { useEffect, MutableRefObject } from 'react';
 
-import { useStore } from '../store';
+import { useStoreApi } from '../store';
 import { getDimensions } from '../utils';
-import { ReactFlowState } from '../types';
-
-const updateSizeSelector = (state: ReactFlowState) => state.updateSize;
 
 function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>): void {
-  const updateSize = useStore(updateSizeSelector);
+  const store = useStoreApi();
 
   useEffect(() => {
     let resizeObserver: ResizeObserver;
@@ -23,7 +20,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
         console.warn('The React Flow parent container needs a width and a height to render the graph.');
       }
 
-      updateSize(size);
+      store.setState({ width: size.width || 500, height: size.height || 500 });
     };
 
     updateDimensions();

@@ -1,23 +1,19 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
+import { SetState } from 'zustand';
 
 import { getHostForElement } from '../../utils';
-
 import {
   OnConnect,
   OnConnectStart,
   OnConnectStop,
   OnConnectEnd,
   ConnectionMode,
-  SetConnectionId,
   Connection,
   HandleType,
-  XYPosition,
+  ReactFlowState,
 } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
-export type SetSourceIdFunc = (params: SetConnectionId) => void;
-
-export type SetPosition = (pos: XYPosition) => void;
 
 type Result = {
   elementBelow: Element | null;
@@ -90,8 +86,7 @@ export function onMouseDown(
   event: ReactMouseEvent,
   handleId: string | null,
   nodeId: string,
-  setConnectionNodeId: SetSourceIdFunc,
-  setPosition: SetPosition,
+  setState: SetState<ReactFlowState>,
   onConnect: OnConnect,
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
@@ -122,18 +117,24 @@ export function onMouseDown(
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 
-  setPosition({
-    x: event.clientX - containerBounds.left,
-    y: event.clientY - containerBounds.top,
+  setState({
+    connectionPosition: {
+      x: event.clientX - containerBounds.left,
+      y: event.clientY - containerBounds.top,
+    },
+    connectionNodeId: nodeId,
+    connectionHandleId: handleId,
+    connectionHandleType: handleType,
   });
 
-  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
   function onMouseMove(event: MouseEvent) {
-    setPosition({
-      x: event.clientX - containerBounds.left,
-      y: event.clientY - containerBounds.top,
+    setState({
+      connectionPosition: {
+        x: event.clientX - containerBounds.left,
+        y: event.clientY - containerBounds.top,
+      },
     });
 
     const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(
@@ -183,7 +184,11 @@ export function onMouseDown(
     }
 
     resetRecentHandle(recentHoveredHandle);
-    setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
+    setState({
+      connectionNodeId: null,
+      connectionHandleId: null,
+      connectionHandleType: null,
+    });
 
     doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
     doc.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);

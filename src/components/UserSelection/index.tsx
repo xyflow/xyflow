@@ -30,8 +30,6 @@ function getMousePosition(event: React.MouseEvent, containerBounds: DOMRect): XY
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
-  setUserSelectionActive: s.setUserSelectionActive,
-  setNodesSelectionActive: s.setNodesSelectionActive,
 });
 
 const initialRect: SelectionRect = {
@@ -50,16 +48,14 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   const prevSelectedEdgesCount = useRef<number>(0);
   const containerBounds = useRef<DOMRect>();
   const [userSelectionRect, setUserSelectionRect] = useState<SelectionRect>(initialRect);
-  const { userSelectionActive, elementsSelectable, setUserSelectionActive, setNodesSelectionActive } = useStore(
-    selector,
-    shallow
-  );
+  const { userSelectionActive, elementsSelectable } = useStore(selector, shallow);
 
   const renderUserSelectionPane = userSelectionActive || selectionKeyPressed;
 
   const resetUserSelection = useCallback(() => {
     setUserSelectionRect(initialRect);
-    setUserSelectionActive(false);
+
+    store.setState({ userSelectionActive: false });
 
     prevSelectedNodesCount.current = 0;
     prevSelectedEdgesCount.current = 0;
@@ -81,8 +77,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
       draw: true,
     });
 
-    setUserSelectionActive(true);
-    setNodesSelectionActive(false);
+    store.setState({ userSelectionActive: true, nodesSelectionActive: false });
   }, []);
 
   const onMouseMove = (event: React.MouseEvent): void => {
@@ -128,12 +123,14 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   };
 
   const onMouseUp = useCallback(() => {
-    setNodesSelectionActive(prevSelectedNodesCount.current > 0);
+    store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
+
     resetUserSelection();
   }, []);
 
   const onMouseLeave = useCallback(() => {
-    setNodesSelectionActive(false);
+    store.setState({ nodesSelectionActive: false });
+
     resetUserSelection();
   }, []);
 

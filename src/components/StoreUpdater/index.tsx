@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
+import { SetState } from 'zustand';
 import shallow from 'zustand/shallow';
 
-import { useStore } from '../../store';
+import { useStore, useStoreApi } from '../../store';
 import {
   Node,
   Edge,
@@ -42,30 +43,26 @@ interface StoreUpdaterProps {
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
   setEdges: s.setEdges,
-  setOnConnect: s.setOnConnect,
-  setOnConnectStart: s.setOnConnectStart,
-  setOnConnectStop: s.setOnConnectStop,
-  setOnConnectEnd: s.setOnConnectEnd,
-  setSnapGrid: s.setSnapGrid,
-  setSnapToGrid: s.setSnapToGrid,
-  setNodesDraggable: s.setNodesDraggable,
-  setNodesConnectable: s.setNodesConnectable,
-  setElementsSelectable: s.setElementsSelectable,
   setMinZoom: s.setMinZoom,
   setMaxZoom: s.setMaxZoom,
   setTranslateExtent: s.setTranslateExtent,
   setNodeExtent: s.setNodeExtent,
-  setConnectionMode: s.setConnectionMode,
-  setOnNodesChange: s.setOnNodesChange,
-  setOnEdgesChange: s.setOnEdgesChange,
   reset: s.reset,
-  setFitViewOnInit: s.setFitViewOnInit,
 });
 
 function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => void) {
   useEffect(() => {
     if (typeof value !== 'undefined') {
       setStoreState(value);
+    }
+  }, [value]);
+}
+
+function useDirectStoreUpdater(key: keyof ReactFlowState, value: any, setState: SetState<ReactFlowState>) {
+  useEffect(() => {
+    if (typeof value !== 'undefined') {
+      // @ts-ignore
+      setState({ [key]: value });
     }
   }, [value]);
 }
@@ -91,28 +88,11 @@ const StoreUpdater = ({
   translateExtent,
   fitViewOnInit,
 }: StoreUpdaterProps) => {
-  const {
-    setNodes,
-    setEdges,
-    setOnConnect,
-    setOnConnectStart,
-    setOnConnectStop,
-    setOnConnectEnd,
-    setNodesDraggable,
-    setSnapGrid,
-    setSnapToGrid,
-    setNodesConnectable,
-    setElementsSelectable,
-    setMinZoom,
-    setMaxZoom,
-    setTranslateExtent,
-    setNodeExtent,
-    setOnNodesChange,
-    setOnEdgesChange,
-    setConnectionMode,
-    reset,
-    setFitViewOnInit,
-  } = useStore(selector, shallow);
+  const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent, reset } = useStore(
+    selector,
+    shallow
+  );
+  const store = useStoreApi();
 
   useEffect(() => {
     return () => {
@@ -122,24 +102,24 @@ const StoreUpdater = ({
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);
-  useStoreUpdater<OnConnect>(onConnect, setOnConnect);
-  useStoreUpdater<OnConnect>(onConnect, setOnConnect);
-  useStoreUpdater<OnConnectStart>(onConnectStart, setOnConnectStart);
-  useStoreUpdater<OnConnectStop>(onConnectStop, setOnConnectStop);
-  useStoreUpdater<OnConnectEnd>(onConnectEnd, setOnConnectEnd);
-  useStoreUpdater<boolean>(snapToGrid, setSnapToGrid);
-  useStoreUpdater<SnapGrid>(snapGrid, setSnapGrid);
-  useStoreUpdater<boolean>(nodesDraggable, setNodesDraggable);
-  useStoreUpdater<boolean>(nodesConnectable, setNodesConnectable);
-  useStoreUpdater<boolean>(elementsSelectable, setElementsSelectable);
   useStoreUpdater<number>(minZoom, setMinZoom);
   useStoreUpdater<number>(maxZoom, setMaxZoom);
   useStoreUpdater<CoordinateExtent>(translateExtent, setTranslateExtent);
   useStoreUpdater<CoordinateExtent>(nodeExtent, setNodeExtent);
-  useStoreUpdater<ConnectionMode>(connectionMode, setConnectionMode);
-  useStoreUpdater<OnNodesChange>(onNodesChange, setOnNodesChange);
-  useStoreUpdater<OnEdgesChange>(onEdgesChange, setOnEdgesChange);
-  useStoreUpdater<boolean>(fitViewOnInit, setFitViewOnInit);
+
+  useDirectStoreUpdater('connectionMode', connectionMode, store.setState);
+  useDirectStoreUpdater('onConnect', onConnect, store.setState);
+  useDirectStoreUpdater('onConnectStart', onConnectStart, store.setState);
+  useDirectStoreUpdater('onConnectStop', onConnectStop, store.setState);
+  useDirectStoreUpdater('onConnectEnd', onConnectEnd, store.setState);
+  useDirectStoreUpdater('nodesDraggable', nodesDraggable, store.setState);
+  useDirectStoreUpdater('nodesConnectable', nodesConnectable, store.setState);
+  useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);
+  useDirectStoreUpdater('fitViewOnInit', fitViewOnInit, store.setState);
+  useDirectStoreUpdater('snapToGrid', snapToGrid, store.setState);
+  useDirectStoreUpdater('snapGrid', snapGrid, store.setState);
+  useDirectStoreUpdater('onNodesChange', onNodesChange, store.setState);
+  useDirectStoreUpdater('onEdgesChange', onEdgesChange, store.setState);
 
   return null;
 };

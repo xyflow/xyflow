@@ -10,9 +10,6 @@ import { getMarkerId } from '../../utils/graph';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedEdges: s.addSelectedEdges,
-  setConnectionNodeId: s.setConnectionNodeId,
-  setNodesSelectionActive: s.setNodesSelectionActive,
-  setPosition: s.setConnectionPosition,
   connectionMode: s.connectionMode,
 });
 
@@ -57,10 +54,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerStart,
   }: WrapEdgeProps): JSX.Element | null => {
     const store = useStoreApi();
-    const { addSelectedEdges, setConnectionNodeId, setNodesSelectionActive, setPosition, connectionMode } = useStore(
-      selector,
-      shallow
-    );
+    const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
 
     const [updating, setUpdating] = useState<boolean>(false);
 
@@ -99,7 +93,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         if (elementsSelectable) {
-          setNodesSelectionActive(false);
+          store.setState({ nodesSelectionActive: false });
           addSelectedEdges([edgeElement.id]);
         }
 
@@ -169,8 +163,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           event,
           handleId,
           nodeId,
-          setConnectionNodeId,
-          setPosition,
+          store.setState,
           onConnectEdge,
           isTarget,
           isValidConnection,
@@ -180,18 +173,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           store.getState
         );
       },
-      [
-        id,
-        source,
-        target,
-        type,
-        sourceHandleId,
-        targetHandleId,
-        setConnectionNodeId,
-        setPosition,
-        edgeElement,
-        onEdgeUpdate,
-      ]
+      [id, source, target, type, sourceHandleId, targetHandleId, edgeElement, onEdgeUpdate]
     );
 
     const onEdgeUpdaterSourceMouseDown = useCallback(

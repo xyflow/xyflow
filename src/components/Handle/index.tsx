@@ -2,18 +2,16 @@ import React, { memo, useContext, useCallback, HTMLAttributes, forwardRef } from
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
-import { useStore } from '../../store';
+import { useStore, useStoreApi } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
-import { onMouseDown, SetSourceIdFunc, SetPosition } from './handler';
+import { onMouseDown } from './handler';
 
 const alwaysValid = () => true;
 
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
 
 const selector = (s: ReactFlowState) => ({
-  setPosition: s.setConnectionPosition,
-  setConnectionNodeId: s.setConnectionNodeId,
   onConnectAction: s.onConnect,
   onConnectStart: s.onConnectStart,
   onConnectStop: s.onConnectStop,
@@ -36,16 +34,12 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     },
     ref
   ) => {
+    const store = useStoreApi();
     const nodeId = useContext(NodeIdContext) as string;
-    const {
-      setPosition,
-      setConnectionNodeId,
-      onConnectAction,
-      onConnectStart,
-      onConnectStop,
-      onConnectEnd,
-      connectionMode,
-    } = useStore(selector, shallow);
+    const { onConnectAction, onConnectStart, onConnectStop, onConnectEnd, connectionMode } = useStore(
+      selector,
+      shallow
+    );
 
     const handleId = id || null;
     const isTarget = type === 'target';
@@ -64,8 +58,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           event,
           handleId,
           nodeId,
-          setConnectionNodeId as unknown as SetSourceIdFunc,
-          setPosition as unknown as SetPosition,
+          store.setState,
           onConnectExtended,
           isTarget,
           isValidConnection,
@@ -80,8 +73,6 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       [
         handleId,
         nodeId,
-        setConnectionNodeId,
-        setPosition,
         onConnectExtended,
         isTarget,
         isValidConnection,

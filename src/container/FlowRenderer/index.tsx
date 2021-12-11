@@ -1,7 +1,7 @@
 import React, { useCallback, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
 import shallow from 'zustand/shallow';
 
-import { useStore } from '../../store';
+import { useStore, useStoreApi } from '../../store';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
@@ -27,7 +27,6 @@ interface FlowRendererProps
 }
 
 const selector = (s: ReactFlowState) => ({
-  setNodesSelectionActive: s.setNodesSelectionActive,
   resetSelectedElements: s.resetSelectedElements,
   nodesSelectionActive: s.nodesSelectionActive,
 });
@@ -62,7 +61,8 @@ const FlowRenderer = ({
   noWheelClassName,
   noPanClassName,
 }: FlowRendererProps) => {
-  const { setNodesSelectionActive, resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
+  const store = useStoreApi();
+  const { resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
@@ -70,8 +70,9 @@ const FlowRenderer = ({
   const onClick = useCallback(
     (event: MouseEvent) => {
       onPaneClick?.(event);
-      setNodesSelectionActive(false);
       resetSelectedElements();
+
+      store.setState({ nodesSelectionActive: false });
     },
     [onPaneClick]
   );

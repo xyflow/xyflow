@@ -1,7 +1,7 @@
 import React, { memo, useCallback, HTMLAttributes, FC, useEffect, useState } from 'react';
 import cc from 'classcat';
 
-import { useStore } from '../../store';
+import { useStore, useStoreApi } from '../../store';
 
 import PlusIcon from '../../../assets/icons/plus.svg';
 import MinusIcon from '../../../assets/icons/minus.svg';
@@ -31,7 +31,6 @@ export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...
   </button>
 );
 
-const setInteractiveSelector = (s: ReactFlowState) => s.setInteractive;
 const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
 
 const Controls: FC<ControlProps> = ({
@@ -47,8 +46,8 @@ const Controls: FC<ControlProps> = ({
   className,
   children,
 }) => {
+  const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const setInteractive = useStore(setInteractiveSelector);
   const isInteractive = useStore(isInteractiveSelector);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
 
@@ -70,9 +69,14 @@ const Controls: FC<ControlProps> = ({
   }, [fitView, fitViewParams, onFitView]);
 
   const onInteractiveChangeHandler = useCallback(() => {
-    setInteractive?.(!isInteractive);
+    store.setState({
+      nodesDraggable: !isInteractive,
+      nodesConnectable: !isInteractive,
+      elementsSelectable: !isInteractive,
+    });
+
     onInteractiveChange?.(!isInteractive);
-  }, [isInteractive, setInteractive, onInteractiveChange]);
+  }, [isInteractive, onInteractiveChange]);
 
   useEffect(() => {
     setIsVisible(true);
