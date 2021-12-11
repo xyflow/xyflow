@@ -7,6 +7,7 @@ import replace from '@rollup/plugin-replace';
 import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 import pkg from './package.json';
 
@@ -60,6 +61,7 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
       exclude: 'node_modules/**',
       babelHelpers: 'runtime',
     }),
+    visualizer(),
   ],
 });
 
