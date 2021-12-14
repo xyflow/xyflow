@@ -1,15 +1,19 @@
 [![react-flow](https://user-images.githubusercontent.com/2857535/95224198-b2540000-07fa-11eb-832d-361d72d60345.jpg)](https://reactflow.dev)
 
-React Flow is a library for building node-based graphs. You can easily implement custom node types and it comes with components like a mini-map and graph controls. Feel free to check out the [examples](https://reactflow.dev/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
+React Flow is a library for building node based graphs. You can easily implement custom node types and it comes with components like a mini map and graph controls. Feel free to check out the [examples](https://reactflow.dev/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
+
+## 👉 Next Major Release 👈
+
+We are currently working on the next version. You can find the installation instructions and breaking changes in [this PR](https://github.com/wbkd/react-flow/pull/1555). Your feedback is highly apprectiated :) 
 
 - **Website:** https://reactflow.dev
 - **Documentation:** https://reactflow.dev/docs
 - **Examples:** https://reactflow.dev/examples
 - **Website/Docs Repository:** https://github.com/wbkd/react-flow-docs
 - **Community:** https://discord.gg/Bqt6xrs
+- **Sponsorship:** https://github.com/sponsors/wbkd
 
 React Flow was initially created for [datablocks](https://datablocks.pro). A node-based editor for transforming, analyzing and visualizing data.
-
 
 ## Installation
 
