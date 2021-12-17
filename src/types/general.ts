@@ -206,4 +206,9 @@ export type ReactFlowState = ReactFlowStore & ReactFlowActions;
 
 export type UpdateNodeInternals = (nodeId: string) => void;
 
-export type OnSelectionChangeFunc = (params: { nodes: Node[]; edges: Edge[] }) => void;
+export type OnSelectionChangeParams = {
+  nodes: Node[];
+  edges: Edge[];
+};
+
+export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;

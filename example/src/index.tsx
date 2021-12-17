@@ -2,6 +2,7 @@ import { ChangeEvent } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 
+import Overview from './Overview';
 import Basic from './Basic';
 import UpdateNode from './UpdateNode';
 import Stress from './Stress';
@@ -18,6 +19,10 @@ import './index.css';
 const routes = [
   {
     path: '/',
+    component: Overview,
+  },
+  {
+    path: '/basic',
     component: Basic,
   },
   {

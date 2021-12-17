@@ -42,6 +42,7 @@ const TouchDeviceFlow = () => {
       onConnect={onConnect}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      className="touchdevice-flow"
     />
   );
 };
