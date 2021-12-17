@@ -42,6 +42,8 @@ const initialState: ReactFlowStore = {
 
   fitViewOnInit: false,
   fitViewOnInitDone: false,
+
+  connectionStartHandle: null,
 };
 
 export default initialState;

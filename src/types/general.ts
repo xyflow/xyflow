@@ -5,7 +5,7 @@ import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
 import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './nodes';
 import { Edge } from './edges';
-import { HandleType } from './handles';
+import { HandleType, StartHandle } from './handles';
 
 export type FlowElement<T = any> = Node<T> | Edge<T>;
 
@@ -177,6 +177,8 @@ export type ReactFlowStore = {
 
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
+
+  connectionStartHandle: StartHandle | null;
 
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
