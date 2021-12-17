@@ -1,20 +1,18 @@
-import React, { useState, MouseEvent, CSSProperties } from 'react';
-
+import { MouseEvent, CSSProperties } from 'react';
 import ReactFlow, {
-  removeElements,
   addEdge,
   MiniMap,
   Controls,
   Background,
-  isNode,
   Node,
-  Elements,
-  FlowElement,
-  OnLoadParams,
   FlowTransform,
   SnapGrid,
   Connection,
   Edge,
+  ReactFlowInstance,
+  useNodesState,
+  useEdgesState,
+  OnSelectionChangeParams,
 } from 'react-flow-renderer';
 
 const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
@@ -31,10 +29,10 @@ const onSelectionContextMenu = (event: MouseEvent, nodes: Node[]) => {
   event.preventDefault();
   console.log('selection context menu', nodes);
 };
-const onElementClick = (_: MouseEvent, element: FlowElement) =>
-  console.log(`${isNode(element) ? 'node' : 'edge'} click:`, element);
-const onSelectionChange = (elements: Elements | null) => console.log('selection change', elements);
-const onLoad = (reactFlowInstance: OnLoadParams) => {
+const onNodeClick = (_: MouseEvent, node: Node) => console.log('node click:', node);
+
+const onSelectionChange = ({ nodes, edges }: OnSelectionChangeParams) => console.log('selection change', nodes, edges);
+const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
   reactFlowInstance.fitView();
 };
@@ -47,7 +45,7 @@ const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('edge mouse m
 const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
 const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('edge double click', edge);
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
@@ -121,6 +119,9 @@ const initialElements: Elements = [
     position: { x: 100, y: 480 },
   },
   { id: '7', type: 'output', data: { label: 'Another output node' }, position: { x: 400, y: 450 } },
+];
+
+const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', label: 'this is an edge label' },
   { id: 'e1-3', source: '1', target: '3' },
   { id: 'e3-4', source: '3', target: '4', animated: true, label: 'animated edge' },
@@ -157,15 +158,17 @@ const nodeColor = (n: Node): string => {
 };
 
 const OverviewFlow = () => {
-  const [elements, setElements] = useState(initialElements);
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 
   return (
     <ReactFlow
-      elements={elements}
-      onElementClick={onElementClick}
-      onElementsRemove={onElementsRemove}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onNodeClick={onNodeClick}
       onConnect={onConnect}
       onPaneClick={onPaneClick}
       onPaneScroll={onPaneScroll}
@@ -181,7 +184,7 @@ const OverviewFlow = () => {
       onSelectionChange={onSelectionChange}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
-      onLoad={onLoad}
+      onPaneReady={onPaneReady}
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}

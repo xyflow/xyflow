@@ -5,7 +5,8 @@ import shallow from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
-import { onMouseDown } from './handler';
+import { checkElementBelowIsValid, onMouseDown } from './handler';
+import { getHostForElement } from '../../utils';
 
 const alwaysValid = () => true;
 
@@ -17,6 +18,8 @@ const selector = (s: ReactFlowState) => ({
   onConnectStop: s.onConnectStop,
   onConnectEnd: s.onConnectEnd,
   connectionMode: s.connectionMode,
+  connectionStartHandle: s.connectionStartHandle,
+  connectOnClick: s.connectOnClick,
 });
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
@@ -36,10 +39,15 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   ) => {
     const store = useStoreApi();
     const nodeId = useContext(NodeIdContext) as string;
-    const { onConnectAction, onConnectStart, onConnectStop, onConnectEnd, connectionMode } = useStore(
-      selector,
-      shallow
-    );
+    const {
+      onConnectAction,
+      onConnectStart,
+      onConnectStop,
+      onConnectEnd,
+      connectionMode,
+      connectionStartHandle,
+      connectOnClick,
+    } = useStore(selector, shallow);
 
     const handleId = id || null;
     const isTarget = type === 'target';
@@ -83,6 +91,47 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       ]
     );
 
+    const onClick = useCallback(
+      (event: React.MouseEvent) => {
+        if (!connectionStartHandle) {
+          onConnectStart?.(event, { nodeId, handleId, handleType: type });
+          store.setState({ connectionStartHandle: { nodeId, type, handleId } });
+        } else {
+          const doc = getHostForElement(event.target as HTMLElement);
+          const { connection, isValid } = checkElementBelowIsValid(
+            event as unknown as MouseEvent,
+            connectionMode,
+            connectionStartHandle.type === 'target',
+            connectionStartHandle.nodeId,
+            connectionStartHandle.handleId || null,
+            isValidConnection,
+            doc
+          );
+
+          onConnectStop?.(event as unknown as MouseEvent);
+
+          if (isValid) {
+            onConnectExtended(connection);
+          }
+
+          onConnectEnd?.(event as unknown as MouseEvent);
+
+          store.setState({ connectionStartHandle: null });
+        }
+      },
+      [
+        connectionStartHandle,
+        onConnectStart,
+        onConnectExtended,
+        onConnectStop,
+        onConnectEnd,
+        isTarget,
+        nodeId,
+        handleId,
+        type,
+      ]
+    );
+
     const handleClasses = cc([
       'react-flow__handle',
       `react-flow__handle-${position}`,
@@ -92,6 +141,10 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         source: !isTarget,
         target: isTarget,
         connectable: isConnectable,
+        connecting:
+          connectionStartHandle?.nodeId === nodeId &&
+          connectionStartHandle?.handleId === handleId &&
+          connectionStartHandle?.type === type,
       },
     ]);
 
@@ -102,6 +155,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         data-handlepos={position}
         className={handleClasses}
         onMouseDown={onMouseDownHandler}
+        onClick={connectOnClick ? onClick : undefined}
         ref={ref}
         {...rest}
       >

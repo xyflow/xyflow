@@ -134,6 +134,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   noWheelClassName?: string;
   noPanClassName?: string;
   fitViewOnInit?: boolean;
+  connectOnClick?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -221,6 +222,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       noWheelClassName = 'nowheel',
       noPanClassName = 'nopan',
       fitViewOnInit = false,
+      connectOnClick = true,
       ...rest
     },
     ref
@@ -309,6 +311,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
             connectionMode={connectionMode}
             translateExtent={translateExtent}
             fitViewOnInit={fitViewOnInit}
+            connectOnClick={connectOnClick}
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}

@@ -8,6 +8,12 @@ export interface HandleElement extends XYPosition, Dimensions {
   position: Position;
 }
 
+export interface StartHandle {
+  nodeId: string;
+  type: HandleType;
+  handleId?: string | null;
+}
+
 export interface HandleProps {
   type: HandleType;
   position: Position;

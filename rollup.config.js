@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import bundleSize from 'rollup-plugin-bundle-size';
 import replace from '@rollup/plugin-replace';
+import alias from '@rollup/plugin-alias';
 import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
@@ -38,6 +39,9 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
     },
   ],
   plugins: [
+    alias({
+      entries: [{ find: 'd3-color', replacement: __dirname + '/src/d3-color-alias' }],
+    }),
     replace({
       __ENV__: JSON.stringify(processEnv),
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),

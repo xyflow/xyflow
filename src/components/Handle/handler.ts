@@ -23,7 +23,7 @@ type Result = {
 };
 
 // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
-function checkElementBelowIsValid(
+export function checkElementBelowIsValid(
   event: MouseEvent,
   connectionMode: ConnectionMode,
   isTarget: boolean,
