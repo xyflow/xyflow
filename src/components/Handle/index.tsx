@@ -19,6 +19,7 @@ const selector = (s: ReactFlowState) => ({
   onConnectEnd: s.onConnectEnd,
   connectionMode: s.connectionMode,
   connectionStartHandle: s.connectionStartHandle,
+  connectOnClick: s.connectOnClick,
 });
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
@@ -38,8 +39,15 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   ) => {
     const store = useStoreApi();
     const nodeId = useContext(NodeIdContext) as string;
-    const { onConnectAction, onConnectStart, onConnectStop, onConnectEnd, connectionMode, connectionStartHandle } =
-      useStore(selector, shallow);
+    const {
+      onConnectAction,
+      onConnectStart,
+      onConnectStop,
+      onConnectEnd,
+      connectionMode,
+      connectionStartHandle,
+      connectOnClick,
+    } = useStore(selector, shallow);
 
     const handleId = id || null;
     const isTarget = type === 'target';
@@ -147,7 +155,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         data-handlepos={position}
         className={handleClasses}
         onMouseDown={onMouseDownHandler}
-        onClick={onClick}
+        onClick={connectOnClick ? onClick : undefined}
         ref={ref}
         {...rest}
       >

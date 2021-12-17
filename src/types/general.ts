@@ -184,6 +184,8 @@ export type ReactFlowStore = {
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
+
+  connectOnClick: boolean;
 };
 
 export type ReactFlowActions = {

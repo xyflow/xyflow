@@ -38,6 +38,7 @@ interface StoreUpdaterProps {
   snapGrid?: SnapGrid;
   translateExtent?: CoordinateExtent;
   fitViewOnInit: boolean;
+  connectOnClick: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -87,6 +88,7 @@ const StoreUpdater = ({
   snapToGrid,
   translateExtent,
   fitViewOnInit,
+  connectOnClick,
 }: StoreUpdaterProps) => {
   const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent, reset } = useStore(
     selector,
@@ -120,6 +122,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('snapGrid', snapGrid, store.setState);
   useDirectStoreUpdater('onNodesChange', onNodesChange, store.setState);
   useDirectStoreUpdater('onEdgesChange', onEdgesChange, store.setState);
+  useDirectStoreUpdater('connectOnClick', connectOnClick, store.setState);
 
   return null;
 };
