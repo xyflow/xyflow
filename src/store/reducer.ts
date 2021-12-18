@@ -185,8 +185,8 @@ export default function reactFlowReducer(state = initialState, action: ReactFlow
 
       const nextUserSelectRect = {
         ...state.userSelectionRect,
-        x: mousePos.x < startX ? mousePos.x : state.userSelectionRect.x,
-        y: mousePos.y < startY ? mousePos.y : state.userSelectionRect.y,
+        x: mousePos.x < startX ? mousePos.x : startX,
+        y: mousePos.y < startY ? mousePos.y : startY,
         width: Math.abs(mousePos.x - startX),
         height: Math.abs(mousePos.y - startY),
       };
