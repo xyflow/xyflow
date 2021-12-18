@@ -91,8 +91,8 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
     const nextUserSelectRect = {
       ...userSelectionRect,
-      x: mousePos.x < startX ? mousePos.x : userSelectionRect.x,
-      y: mousePos.y < startY ? mousePos.y : userSelectionRect.y,
+      x: mousePos.x < startX ? mousePos.x : startX,
+      y: mousePos.y < startY ? mousePos.y : startY,
       width: Math.abs(mousePos.x - startX),
       height: Math.abs(mousePos.y - startY),
     };
