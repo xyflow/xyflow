@@ -1,5 +1,5 @@
 name: '🐛 Bug report'
-description: Create a report to help us improve
+description: Create a report to help us improve React Flow
 body:
   - type: markdown
     attributes:
@@ -9,6 +9,7 @@ body:
         This issue tracker is for reporting bugs found in react-flow (https://github.com/wbkd/react-flow)
         If you have a question about how to achieve something and are struggling, please post a question
         inside of react-flow's Discussion's tab: https://github.com/wbkd/react-flow/discussions
+        If it's an issue about the docs please go to the react-flow-docs (https://github.com/wbkd/react-flow-docs)
         
         Before submitting a new bug/issue, please check the links below to see if there is a solution or question posted there already:
          - react-flow's Open Issue's tab: https://github.com/wbkd/react-flow/issues?q=is%3Aissue+sort%3Aupdated-desc+position
@@ -19,7 +20,7 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: Describe the bug
+      label: Describe the Bug
       description: Provide a clear and concise description of the challenge you are running into.
     validations:
       required: true
@@ -31,12 +32,12 @@ body:
         Which website or app were you using when the bug happened?
         Note:
         - Your bug will may get fixed much faster if we can run your code and it doesn't have dependencies other than the `react-flow-renderer` npm package.
-        - To create a shareable code example you can use Stackblitz (https://stackblitz.com/). Please no localhost URLs.
+        - To create a shareable code example you can use Codesandbox (https://codesandbox.io/s/react-flow-starter-ou8or) or Stackblitz (https://stackblitz.com/). 
         - Please read these tips for providing a minimal example: https://stackoverflow.com/help/mcve.
       placeholder: |
         e.g. https://stackblitz.com/edit/...... OR Github Repo
     validations:
-      required: true
+      required: false
   - type: textarea
     id: steps
     attributes:
