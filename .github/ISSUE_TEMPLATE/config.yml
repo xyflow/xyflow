@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🤔 Feature Requests & Questions 
+    url: https://github.com/wbkd/react-flow/discussions
+    about: Please ask and answer questions in the discussions section
