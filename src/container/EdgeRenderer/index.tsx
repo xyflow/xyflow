@@ -208,13 +208,13 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionLineComponent,
     onlyRenderVisibleElements,
   } = props;
-  const transformStyle = `translate(${transform[0]},${transform[1]}) scale(${transform[2]})`;
+  const transformStyle = `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
     <svg width={width} height={height} className="react-flow__edges">
       <MarkerDefinitions color={arrowHeadColor} />
-      <g transform={transformStyle}>
+      <g style={{ transform: transformStyle }}>
         {edges.map((edge: Edge) => (
           <Edge
             key={edge.id}
