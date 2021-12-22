@@ -5,6 +5,8 @@ import { isEdgeVisible } from '../container/EdgeRenderer/utils';
 import { ReactFlowState, NodeInternals, Edge } from '../types';
 import { isNumeric } from '../utils';
 
+const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
+
 function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals) {
   let maxLevel = -1;
 
@@ -23,7 +25,7 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals) {
     return tree;
   }, {});
 
-  return Object.entries(levelLookup).map(([key, edges]) => {
+  const edgeTree = Object.entries(levelLookup).map(([key, edges]) => {
     const level = +key;
 
     return {
@@ -32,6 +34,12 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals) {
       isMaxLevel: level === maxLevel,
     };
   });
+
+  if (edgeTree.length === 0) {
+    return defaultEdgeTree;
+  }
+
+  return edgeTree;
 }
 
 function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternals) {
