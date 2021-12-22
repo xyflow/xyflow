@@ -127,29 +127,29 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('drags the pane', () => {
-    const styleBeforeDrag = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeDrag = Cypress.$('.react-flow__viewport').css('transform');
 
     // for d3 we have to pass the window to the event
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
-      cy.get('.react-flow__renderer')
+      cy.get('.react-flow__pane')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
         .trigger('mousemove', 'bottomLeft')
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
-          const styleAfterDrag = Cypress.$('.react-flow__nodes').css('transform');
+          const styleAfterDrag = Cypress.$('.react-flow__viewport').css('transform');
           expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
         });
     });
   });
 
   it('zooms the pane', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
-    cy.get('.react-flow__renderer')
+    cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
       });
   });

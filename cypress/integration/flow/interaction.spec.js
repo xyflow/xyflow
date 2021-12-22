@@ -120,12 +120,12 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('zooms by scroll', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
-    cy.get('.react-flow__renderer')
+    cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: 200 })
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
       });
   });
@@ -136,12 +136,12 @@ describe('Interaction Flow Rendering', () => {
 
   it('zooms by double click', () => {
     cy.get('.react-flow__controls-zoomout').click();
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
-    cy.get('.react-flow__renderer')
+    cy.get('.react-flow__pane')
       .dblclick()
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
       });
   });

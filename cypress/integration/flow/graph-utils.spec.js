@@ -27,41 +27,41 @@ describe('Graph Utils Testing', () => {
   });
 
   it('tests getOutgoers function', () => {
-    const outgoers = getOutgoers(nodes[0], elements);
+    const outgoers = getOutgoers(nodes[0], nodes, edges);
     expect(outgoers.length).to.be.equal(2);
 
-    const noOutgoers = getOutgoers(nodes[2], elements);
+    const noOutgoers = getOutgoers(nodes[2], nodes, edges);
     expect(noOutgoers.length).to.be.equal(0);
   });
 
   it('tests getIncomers function', () => {
-    const incomers = getIncomers(nodes[2], elements);
+    const incomers = getIncomers(nodes[2], nodes, edges);
     expect(incomers.length).to.be.equal(2);
 
-    const noIncomers = getIncomers(nodes[0], elements);
+    const noIncomers = getIncomers(nodes[0], nodes, edges);
     expect(noIncomers.length).to.be.equal(0);
   });
 
   describe('tests addEdge function', () => {
     it('adds edge', () => {
       const newEdge = { source: '1', target: '4' };
-      const nextElements = addEdge(newEdge, elements);
+      const nextEdges = addEdge(newEdge, edges);
 
-      expect(nextElements.length).to.be.equal(elements.length + 1);
+      expect(nextEdges.length).to.be.equal(edges.length + 1);
     });
 
     it('tries to add existing edge', () => {
       const newEdge = { source: '2', target: '3' };
-      const nextElements = addEdge(newEdge, elements);
+      const nextEdges = addEdge(newEdge, edges);
 
-      expect(nextElements.length).to.be.equal(elements.length);
+      expect(nextEdges.length).to.be.equal(edges.length);
     });
 
     it('tries to add invalid edge', () => {
       const newEdge = { nosource: '1', notarget: '3' };
 
       try {
-        addEdge(newEdge, elements);
+        addEdge(newEdge, edges);
       } catch (e) {
         console.log(e.message);
 

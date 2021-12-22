@@ -13,6 +13,10 @@ import NestedNodes from './NestedNodes';
 import Hidden from './Hidden';
 import UpdatableEdge from './UpdatableEdge';
 import TouchDevice from './TouchDevice';
+import Subflow from './Subflow';
+import Interaction from './Interaction';
+import Empty from './Empty';
+import DragHandle from './DragHandle';
 
 import './index.css';
 
@@ -60,6 +64,22 @@ const routes = [
   {
     path: '/touch-device',
     component: TouchDevice,
+  },
+  {
+    path: '/subflow',
+    component: Subflow,
+  },
+  {
+    path: '/interaction',
+    component: Interaction,
+  },
+  {
+    path: '/empty',
+    component: Empty,
+  },
+  {
+    path: '/draghandle',
+    component: DragHandle,
   },
 ];
 

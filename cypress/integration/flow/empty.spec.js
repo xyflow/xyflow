@@ -20,11 +20,6 @@ describe('Empty Flow Rendering', () => {
     cy.get('body').type('{shift}', { release: true });
   });
 
-  it('renders an empty mini map', () => {
-    cy.get('.react-flow__minimap');
-    cy.get('.react-flow__minimap-node').should('not.exist');
-  });
-
   it('adds two nodes', () => {
     cy.contains('add node').click();
     cy.contains('add node').click();
@@ -40,10 +35,5 @@ describe('Empty Flow Rendering', () => {
       .trigger('mouseup', { force: true });
 
     cy.get('.react-flow__edge').should('have.length', 1);
-  });
-
-  it('renders mini map with two nodes', () => {
-    cy.get('.react-flow__minimap');
-    cy.get('.react-flow__minimap-node').should('have.length', 2);
   });
 });

@@ -8,30 +8,30 @@ describe('Controls Testing', () => {
   });
 
   it('zooms in', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
     cy.get('.react-flow__controls-zoomin')
       .click()
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
       });
   });
 
   it('zooms out', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
     cy.get('.react-flow__controls-zoomout')
       .click()
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
       });
   });
 
   // view is already fitted so we drag the pane to un-fit it
   it('drags the pane', () => {
-    const styleBeforeDrag = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeDrag = Cypress.$('.react-flow__viewport').css('transform');
 
     // for d3 we have to pass the window to the event
     // https://github.com/cypress-io/cypress/issues/3441
@@ -41,19 +41,19 @@ describe('Controls Testing', () => {
         .trigger('mousemove', 'bottomLeft')
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
-          const styleAfterDrag = Cypress.$('.react-flow__nodes').css('transform');
+          const styleAfterDrag = Cypress.$('.react-flow__viewport').css('transform');
           expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
         });
     });
   });
 
   it('fits view', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
     cy.get('.react-flow__controls-fitview')
       .click()
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
       });
   });
