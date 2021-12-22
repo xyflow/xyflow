@@ -127,8 +127,19 @@ const ZoomPane = ({
             // increase scroll speed in firefox
             // firefox: deltaMode === 1; chrome: deltaMode === 0
             const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
-            const deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
-            const deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
+            let deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
+            let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
+
+            /**
+             * In windows chrome the deltaX is not set properly on horizontal scroll with mouse wheel,
+             * Horizontal scroll = shiftKey + mouse wheel
+             * In such case check if shift key is press and only deltaY is changed but not deltaX, the
+             * changes on deltaY belongs to horizontal scroll.
+             */
+            if (panOnScrollMode !== PanOnScrollMode.Vertical && event.shiftKey && !deltaX && deltaY) {
+              deltaX = deltaY;
+              deltaY = 0;
+            }
 
             d3Zoom.translateBy(
               d3Selection,
