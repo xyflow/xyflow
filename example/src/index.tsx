@@ -17,6 +17,10 @@ import Subflow from './Subflow';
 import Interaction from './Interaction';
 import Empty from './Empty';
 import DragHandle from './DragHandle';
+import Undirectional from './Undirectional';
+import Provider from './Provider';
+import CustomConnectionLine from './CustomConnectionLine';
+import UseZoomPanHelper from './UseZoomPanHelper';
 
 import './index.css';
 
@@ -80,6 +84,22 @@ const routes = [
   {
     path: '/draghandle',
     component: DragHandle,
+  },
+  {
+    path: '/undirectional',
+    component: Undirectional,
+  },
+  {
+    path: '/provider',
+    component: Provider,
+  },
+  {
+    path: '/custom-connectionline',
+    component: CustomConnectionLine,
+  },
+  {
+    path: '/usezoompanhelper',
+    component: UseZoomPanHelper,
   },
 ];
 

@@ -1,66 +1,79 @@
-import React, { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 
 import ReactFlow, {
   NodeTypesType,
   addEdge,
   useZoomPanHelper,
   ReactFlowProvider,
-  Elements,
+  Node,
   Connection,
   Edge,
-  ElementId,
   ConnectionLineType,
   ConnectionMode,
   updateEdge,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   {
     id: '00',
     type: 'custom',
     position: { x: 300, y: 250 },
+    data: null,
   },
   {
     id: '01',
     type: 'custom',
     position: { x: 100, y: 50 },
+    data: null,
   },
   {
     id: '02',
     type: 'custom',
     position: { x: 500, y: 50 },
+    data: null,
   },
   {
     id: '03',
     type: 'custom',
     position: { x: 500, y: 500 },
+    data: null,
   },
   {
     id: '04',
     type: 'custom',
     position: { x: 100, y: 500 },
+    data: null,
   },
   {
     id: '10',
     type: 'custom',
     position: { x: 300, y: 5 },
+    data: null,
   },
   {
     id: '20',
     type: 'custom',
     position: { x: 600, y: 250 },
+    data: null,
   },
   {
     id: '30',
     type: 'custom',
     position: { x: 300, y: 600 },
+    data: null,
   },
   {
     id: '40',
     type: 'custom',
     position: { x: 5, y: 250 },
+    data: null,
   },
+];
+
+const initialEdges: Edge[] = [
   {
     id: 'e0-1a',
     source: '00',
@@ -164,22 +177,25 @@ const nodeTypes: NodeTypesType = {
 };
 
 let id = 4;
-const getId = (): ElementId => `${id++}`;
+const getId = () => `${id++}`;
 
 const UpdateNodeInternalsFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge({ ...params, type: 'default' }, els));
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
   const { project } = useZoomPanHelper();
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
-    setElements((els) => updateEdge(oldEdge, newConnection, els));
+    setEdges((els) => updateEdge(oldEdge, newConnection, els));
 
   const onPaneClick = useCallback(
     (evt) =>
-      setElements((els) =>
-        els.concat({
+      setNodes((nds) =>
+        nds.concat({
           id: getId(),
           position: project({ x: evt.clientX, y: evt.clientY - 40 }),
           type: 'custom',
+          data: null,
         })
       ),
     [project]
@@ -187,7 +203,10 @@ const UpdateNodeInternalsFlow = () => {
 
   return (
     <ReactFlow
-      elements={elements}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
       nodeTypes={nodeTypes}
       onConnect={onConnect}
       onPaneClick={onPaneClick}

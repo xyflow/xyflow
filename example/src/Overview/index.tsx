@@ -33,8 +33,7 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('node click:', no
 
 const onSelectionChange = ({ nodes, edges }: OnSelectionChangeParams) => console.log('selection change', nodes, edges);
 const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
-  console.log('flow loaded:', reactFlowInstance);
-  reactFlowInstance.fitView();
+  console.log('pane ready:', reactFlowInstance);
 };
 
 const onMoveStart = (transform?: FlowTransform) => console.log('zoom/move start', transform);
@@ -158,7 +157,7 @@ const nodeColor = (n: Node): string => {
 };
 
 const OverviewFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 
@@ -193,6 +192,7 @@ const OverviewFlow = () => {
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
+      fitViewOnInit
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
