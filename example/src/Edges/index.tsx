@@ -1,29 +1,28 @@
-import React, { useState, MouseEvent } from 'react';
+import { MouseEvent } from 'react';
 
 import ReactFlow, {
-  removeElements,
   addEdge,
   MiniMap,
   Controls,
   Background,
-  OnLoadParams,
-  FlowElement,
+  ReactFlowInstance,
   EdgeTypesType,
-  Elements,
   Connection,
   Edge,
-  ArrowHeadType,
+  MarkerType,
   Node,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
+const onPaneReady = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onElementClick = (_: MouseEvent, element: FlowElement) => console.log('click', element);
+const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Input 1' }, position: { x: 250, y: 0 } },
   { id: '2', data: { label: 'Node 2' }, position: { x: 150, y: 100 } },
   { id: '2a', data: { label: 'Node 2a' }, position: { x: 0, y: 180 } },
@@ -35,6 +34,9 @@ const initialElements: Elements = [
   { id: '7', type: 'output', data: { label: 'Output 7' }, position: { x: 250, y: 550 } },
   { id: '8', type: 'output', data: { label: 'Output 8' }, position: { x: 525, y: 600 } },
   { id: '9', type: 'output', data: { label: 'Output 9' }, position: { x: 675, y: 500 } },
+];
+
+const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', label: 'bezier edge (default)', className: 'normal-edge' },
   { id: 'e2-2a', source: '2', target: '2a', type: 'smoothstep', label: 'smoothstep edge' },
   { id: 'e2-3', source: '2', target: '3', type: 'step', label: 'step edge' },
@@ -50,7 +52,7 @@ const initialElements: Elements = [
     labelBgBorderRadius: 4,
     labelBgStyle: { fill: '#FFCC00', color: '#fff', fillOpacity: 0.7 },
     markerEnd: {
-      type: ArrowHeadType.ArrowClosed,
+      type: MarkerType.ArrowClosed,
     },
   },
   {
@@ -82,18 +84,18 @@ const initialElements: Elements = [
     labelStyle: { fill: 'red', fontWeight: 700 },
     style: { stroke: '#ffcc00' },
     markerEnd: {
-      type: ArrowHeadType.Arrow,
+      type: MarkerType.Arrow,
       color: '#FFCC00',
-      units: 'userSpaceOnUse',
+      markerUnits: 'userSpaceOnUse',
       width: 20,
       height: 20,
       strokeWidth: 2,
     },
     markerStart: {
-      type: ArrowHeadType.ArrowClosed,
+      type: MarkerType.ArrowClosed,
       color: '#FFCC00',
       orient: 'auto-start-reverse',
-      units: 'userSpaceOnUse',
+      markerUnits: 'userSpaceOnUse',
       width: 20,
       height: 20,
     },
@@ -106,19 +108,20 @@ const edgeTypes: EdgeTypesType = {
 };
 
 const EdgesFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 
   return (
     <ReactFlow
-      elements={elements}
-      onElementClick={onElementClick}
-      onElementsRemove={onElementsRemove}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      onLoad={onLoad}
+      onPaneReady={onPaneReady}
       snapToGrid={true}
       edgeTypes={edgeTypes}
     >

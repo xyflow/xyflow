@@ -4,7 +4,6 @@ import ReactFlow, {
   addEdge,
   Background,
   BackgroundVariant,
-  FlowElement,
   Node,
   Edge,
   Connection,
@@ -14,7 +13,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onNodeClick = (_: MouseEvent, element: FlowElement) => console.log('click', element);
+const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 }, className: 'light' },

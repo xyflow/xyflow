@@ -1,4 +1,4 @@
-import { ElementId, Elements, Position } from 'react-flow-renderer';
+import { Node, Edge, Position } from 'react-flow-renderer';
 
 const nodeWidth = 80;
 const nodeGapWidth = nodeWidth * 2;
@@ -49,10 +49,10 @@ const offsets = [
 ];
 
 let id = 0;
-const getNodeId = (): ElementId => (id++).toString();
+const getNodeId = (): string => (id++).toString();
 
-export function getElements(): Elements {
-  const initialElements = [];
+export function getElements(): { nodes: Node[]; edges: Edge[] } {
+  const initialElements = { nodes: [] as Node[], edges: [] as Edge[] };
 
   for (let sourceTargetIndex = 0; sourceTargetIndex < sourceTargetPositions.length; sourceTargetIndex++) {
     const currSourceTargetPos = sourceTargetPositions[sourceTargetIndex];
@@ -70,7 +70,7 @@ export function getElements(): Elements {
         };
         const sourceId = getNodeId();
         const sourceData = { label: `Source ${sourceId}` };
-        const sourceNode = {
+        const sourceNode: Node = {
           id: sourceId,
           style,
           data: sourceData,
@@ -85,7 +85,7 @@ export function getElements(): Elements {
           x: sourcePosition.x + currOffset.x,
           y: sourcePosition.y + currOffset.y,
         };
-        const targetNode = {
+        const targetNode: Node = {
           id: targetId,
           style,
           data: targetData,
@@ -94,10 +94,15 @@ export function getElements(): Elements {
           targetPosition: currSourceTargetPos.target,
         };
 
-        initialElements.push(sourceNode);
-        initialElements.push(targetNode);
+        initialElements.nodes.push(sourceNode);
+        initialElements.nodes.push(targetNode);
 
-        initialElements.push({ id: `${sourceId}-${targetId}`, source: sourceId, target: targetId, type: currEdgeType });
+        initialElements.edges.push({
+          id: `${sourceId}-${targetId}`,
+          source: sourceId,
+          target: targetId,
+          type: currEdgeType,
+        } as Edge);
       }
     }
   }

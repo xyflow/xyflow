@@ -7,10 +7,6 @@ import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './node
 import { Edge } from './edges';
 import { HandleType, StartHandle } from './handles';
 
-export type FlowElement<T = any> = Node<T> | Edge<T>;
-
-export type Elements<T = any> = Array<FlowElement<T>>;
-
 export type NodeTypesType = { [key: string]: ReactNode };
 export type EdgeTypesType = NodeTypesType;
 

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, Dispatch, FC } from 'react';
-import { useZoomPanHelper, OnLoadParams, Elements, FlowExportObject } from 'react-flow-renderer';
+import { useZoomPanHelper, ReactFlowInstance, Edge, Node, FlowExportObject } from 'react-flow-renderer';
 import localforage from 'localforage';
 
 localforage.config({
@@ -12,12 +12,13 @@ const flowKey = 'example-flow';
 const getNodeId = () => `randomnode_${+new Date()}`;
 
 type ControlsProps = {
-  rfInstance?: OnLoadParams;
-  setElements: Dispatch<React.SetStateAction<Elements<any>>>;
+  rfInstance?: ReactFlowInstance;
+  setNodes: Dispatch<React.SetStateAction<Node<any>[]>>;
+  setEdges: Dispatch<React.SetStateAction<Edge<any>[]>>;
 };
 
-const Controls: FC<ControlsProps> = ({ rfInstance, setElements }) => {
-  const { transform } = useZoomPanHelper();
+const Controls: FC<ControlsProps> = ({ rfInstance, setNodes, setEdges }) => {
+  const { setTransform } = useZoomPanHelper();
 
   const onSave = useCallback(() => {
     if (rfInstance) {
@@ -32,13 +33,14 @@ const Controls: FC<ControlsProps> = ({ rfInstance, setElements }) => {
 
       if (flow) {
         const [x = 0, y = 0] = flow.position;
-        setElements(flow.elements || []);
-        transform({ x, y, zoom: flow.zoom || 0 });
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setTransform({ x, y, zoom: flow.zoom || 0 });
       }
     };
 
     restoreFlow();
-  }, [setElements, transform]);
+  }, [setNodes, setEdges, setTransform]);
 
   const onAdd = useCallback(() => {
     const newNode = {
@@ -46,8 +48,8 @@ const Controls: FC<ControlsProps> = ({ rfInstance, setElements }) => {
       data: { label: 'Added node' },
       position: { x: Math.random() * window.innerWidth - 100, y: Math.random() * window.innerHeight },
     };
-    setElements((els) => els.concat(newNode));
-  }, [setElements]);
+    setNodes((nds) => nds.concat(newNode));
+  }, [setNodes]);
 
   return (
     <div className="save__controls">

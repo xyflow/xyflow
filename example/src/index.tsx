@@ -21,6 +21,16 @@ import Undirectional from './Undirectional';
 import Provider from './Provider';
 import CustomConnectionLine from './CustomConnectionLine';
 import UseZoomPanHelper from './UseZoomPanHelper';
+import DragNDrop from './DragNDrop';
+import UseUpdateNodeInternals from './UseUpdateNodeInternals';
+import Edges from './Edges';
+import EdgeTypes from './EdgeTypes';
+import MultiFlows from './MultiFlows';
+import NodeTypeChange from './NodeTypeChange';
+import NodeTypesObjectChange from './NodeTypesObjectChange';
+import SaveRestore from './SaveRestore';
+import SwitchFlow from './Switch';
+import Validation from './Validation';
 
 import './index.css';
 
@@ -34,72 +44,112 @@ const routes = [
     component: Basic,
   },
   {
-    path: '/update-node',
-    component: UpdateNode,
-  },
-  {
-    path: '/stress',
-    component: Stress,
+    path: '/custom-connectionline',
+    component: CustomConnectionLine,
   },
   {
     path: '/custom-node',
     component: CustomNode,
   },
   {
-    path: '/floating-edges',
-    component: FloatingEdges,
+    path: '/draghandle',
+    component: DragHandle,
   },
   {
-    path: '/layouting',
-    component: Layouting,
+    path: '/dragndrop',
+    component: DragNDrop,
   },
   {
-    path: '/nested-nodes',
-    component: NestedNodes,
+    path: '/edges',
+    component: Edges,
   },
   {
-    path: '/hidden',
-    component: Hidden,
-  },
-  {
-    path: '/updatable-edge',
-    component: UpdatableEdge,
-  },
-  {
-    path: '/touch-device',
-    component: TouchDevice,
-  },
-  {
-    path: '/subflow',
-    component: Subflow,
-  },
-  {
-    path: '/interaction',
-    component: Interaction,
+    path: '/edge-types',
+    component: EdgeTypes,
   },
   {
     path: '/empty',
     component: Empty,
   },
   {
-    path: '/draghandle',
-    component: DragHandle,
+    path: '/floating-edges',
+    component: FloatingEdges,
   },
   {
-    path: '/undirectional',
-    component: Undirectional,
+    path: '/hidden',
+    component: Hidden,
+  },
+  {
+    path: '/interaction',
+    component: Interaction,
+  },
+  {
+    path: '/layouting',
+    component: Layouting,
+  },
+  {
+    path: '/multiflows',
+    component: MultiFlows,
+  },
+  {
+    path: '/nested-nodes',
+    component: NestedNodes,
+  },
+  {
+    path: '/nodetype-change',
+    component: NodeTypeChange,
+  },
+  {
+    path: '/nodetypesobject-change',
+    component: NodeTypesObjectChange,
   },
   {
     path: '/provider',
     component: Provider,
   },
   {
-    path: '/custom-connectionline',
-    component: CustomConnectionLine,
+    path: '/save-restore',
+    component: SaveRestore,
+  },
+  {
+    path: '/stress',
+    component: Stress,
+  },
+  {
+    path: '/subflow',
+    component: Subflow,
+  },
+  {
+    path: '/switch',
+    component: SwitchFlow,
+  },
+  {
+    path: '/touch-device',
+    component: TouchDevice,
+  },
+  {
+    path: '/undirectional',
+    component: Undirectional,
+  },
+  {
+    path: '/updatable-edge',
+    component: UpdatableEdge,
+  },
+  {
+    path: '/update-node',
+    component: UpdateNode,
   },
   {
     path: '/usezoompanhelper',
     component: UseZoomPanHelper,
+  },
+  {
+    path: '/useupdatenodeinternals',
+    component: UseUpdateNodeInternals,
+  },
+  {
+    path: '/validation',
+    component: Validation,
   },
 ];
 
