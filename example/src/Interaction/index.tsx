@@ -51,8 +51,6 @@ const InteractionFlow = () => {
   const [captureZoomScroll, setCaptureZoomScroll] = useState<boolean>(false);
   const [captureElementClick, setCaptureElementClick] = useState<boolean>(false);
 
-  console.log(11, captureElementClick);
-
   return (
     <ReactFlow
       nodes={nodes}

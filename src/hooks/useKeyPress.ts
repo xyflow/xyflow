@@ -30,7 +30,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
   const [keyCodes, keysToWatch] = useMemo<[Array<Keys>, Keys]>(() => {
     if (keyCode !== null) {
       const keyCodeArr = Array.isArray(keyCode) ? keyCode : [keyCode];
-      const keys = keyCodeArr.map((kc) => kc.split('+'));
+      const keys = keyCodeArr.filter((kc) => typeof kc === 'string').map((kc) => kc.split('+'));
       const keysFlat = keys.reduce((res: Keys, item) => res.concat(...item), []);
 
       return [keys, keysFlat];
