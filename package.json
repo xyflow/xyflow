@@ -54,7 +54,7 @@
     "@svgr/rollup": "^6.1.2",
     "@types/redux": "^3.6.31",
     "@types/resize-observer-browser": "^0.1.6",
-    "autoprefixer": "^10.4.0",
+    "autoprefixer": "^10.4.1",
     "babel-preset-react-app": "^10.0.1",
     "cypress": "^9.1.1",
     "postcss": "^8.4.5",
