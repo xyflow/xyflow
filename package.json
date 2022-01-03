@@ -43,7 +43,7 @@
     "redux": "^4.1.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.5",
+    "@babel/core": "^7.16.7",
     "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/preset-env": "^7.16.5",
     "@babel/preset-react": "^7.16.7",
