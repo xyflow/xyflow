@@ -43,6 +43,7 @@ const initialNodes: Node[] = [
     className: 'light',
     style: { backgroundColor: 'rgba(50, 50, 255, 0.5)', height: 200, width: 300 },
     parentNode: '4',
+    expandParent: true,
   },
   {
     id: '4b1',
@@ -110,9 +111,7 @@ const BasicFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => {
-      return addEdge(connection, eds);
-    });
+    setEdges((eds) => addEdge(connection, eds));
   }, []);
   const onPaneReady = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
@@ -149,6 +148,8 @@ const BasicFlow = () => {
       });
     });
   };
+
+  console.log(nodes);
 
   return (
     <ReactFlow

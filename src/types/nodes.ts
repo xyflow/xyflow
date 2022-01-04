@@ -26,6 +26,7 @@ export interface Node<T = any> {
   parentNode?: string;
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
+  expandParent?: boolean;
 }
 
 // props that get passed to a custom node
