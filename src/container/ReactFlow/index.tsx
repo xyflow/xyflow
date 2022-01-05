@@ -17,6 +17,7 @@ import OutputNode from '../../components/Nodes/OutputNode';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
 import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
+import Attribution from '../../components/Attribution';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 import {
@@ -40,6 +41,8 @@ import {
   NodeChange,
   EdgeChange,
   OnPaneReady,
+  ProOptions,
+  AttributionPosition,
 } from '../../types';
 
 import '../../style.css';
@@ -135,6 +138,8 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   noPanClassName?: string;
   fitViewOnInit?: boolean;
   connectOnClick?: boolean;
+  attributionPosition?: AttributionPosition;
+  pro?: ProOptions;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -223,6 +228,8 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       noPanClassName = 'nopan',
       fitViewOnInit = false,
       connectOnClick = true,
+      attributionPosition,
+      pro,
       ...rest
     },
     ref
@@ -315,6 +322,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
+          <Attribution pro={pro} position={attributionPosition} />
         </Wrapper>
       </div>
     );

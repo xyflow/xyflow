@@ -193,6 +193,7 @@ const OverviewFlow = () => {
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
       fitViewOnInit
+      attributionPosition="top-right"
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
