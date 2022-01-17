@@ -80,9 +80,7 @@ const createStore = () =>
 
         nodeInternals.forEach((node) => {
           if (node.selected) {
-            if (!node.parentNode) {
-              changes.push(createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals }));
-            } else if (!isParentSelected(node, nodeInternals)) {
+            if (!node.parentNode || !isParentSelected(node, nodeInternals)) {
               changes.push(createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals }));
             }
           } else if (node.id === id) {

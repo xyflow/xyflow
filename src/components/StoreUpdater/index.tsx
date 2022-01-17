@@ -100,7 +100,7 @@ const StoreUpdater = ({
     return () => {
       reset();
     };
-  }, [reset]);
+  }, []);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);
