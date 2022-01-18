@@ -32,6 +32,11 @@ export interface Edge<T = any> {
   zIndex?: number;
 }
 
+export type DefaultEdgeOptions = Omit<
+  Edge,
+  'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'sourceNode' | 'targetNode'
+>;
+
 // props that get passed to a custom edge
 export interface EdgeProps<T = any> {
   id: string;

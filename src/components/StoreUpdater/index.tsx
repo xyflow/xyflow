@@ -16,11 +16,14 @@ import {
   OnEdgesChange,
   ConnectionMode,
   SnapGrid,
+  DefaultEdgeOptions,
 } from '../../types';
 
 interface StoreUpdaterProps {
-  nodes: Node[];
-  edges: Edge[];
+  nodes?: Node[];
+  edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
@@ -39,11 +42,13 @@ interface StoreUpdaterProps {
   translateExtent?: CoordinateExtent;
   fitViewOnInit: boolean;
   connectOnClick: boolean;
+  defaultEdgeOptions?: DefaultEdgeOptions;
 }
 
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
   setEdges: s.setEdges,
+  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
   setMinZoom: s.setMinZoom,
   setMaxZoom: s.setMaxZoom,
   setTranslateExtent: s.setTranslateExtent,
@@ -71,6 +76,8 @@ function useDirectStoreUpdater(key: keyof ReactFlowState, value: any, setState: 
 const StoreUpdater = ({
   nodes,
   edges,
+  defaultNodes,
+  defaultEdges,
   onConnect,
   onConnectStart,
   onConnectStop,
@@ -89,26 +96,31 @@ const StoreUpdater = ({
   translateExtent,
   fitViewOnInit,
   connectOnClick,
+  defaultEdgeOptions,
 }: StoreUpdaterProps) => {
-  const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent, reset } = useStore(
-    selector,
-    shallow
-  );
+  const {
+    setNodes,
+    setEdges,
+    setDefaultNodesAndEdges,
+    setMinZoom,
+    setMaxZoom,
+    setTranslateExtent,
+    setNodeExtent,
+    reset,
+  } = useStore(selector, shallow);
   const store = useStoreApi();
 
   useEffect(() => {
+    if (defaultNodes) {
+      setDefaultNodesAndEdges(defaultNodes, defaultEdges);
+    }
+
     return () => {
       reset();
     };
   }, []);
 
-  useStoreUpdater<Node[]>(nodes, setNodes);
-  useStoreUpdater<Edge[]>(edges, setEdges);
-  useStoreUpdater<number>(minZoom, setMinZoom);
-  useStoreUpdater<number>(maxZoom, setMaxZoom);
-  useStoreUpdater<CoordinateExtent>(translateExtent, setTranslateExtent);
-  useStoreUpdater<CoordinateExtent>(nodeExtent, setNodeExtent);
-
+  useDirectStoreUpdater('defaultEdgeOptions', defaultEdgeOptions, store.setState);
   useDirectStoreUpdater('connectionMode', connectionMode, store.setState);
   useDirectStoreUpdater('onConnect', onConnect, store.setState);
   useDirectStoreUpdater('onConnectStart', onConnectStart, store.setState);
@@ -123,6 +135,15 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onNodesChange', onNodesChange, store.setState);
   useDirectStoreUpdater('onEdgesChange', onEdgesChange, store.setState);
   useDirectStoreUpdater('connectOnClick', connectOnClick, store.setState);
+
+  useStoreUpdater<Node[]>(nodes, setNodes);
+  useStoreUpdater<Edge[]>(edges, setEdges);
+  useStoreUpdater<Node[]>(defaultNodes, setNodes);
+  useStoreUpdater<Edge[]>(defaultEdges, setEdges);
+  useStoreUpdater<number>(minZoom, setMinZoom);
+  useStoreUpdater<number>(maxZoom, setMaxZoom);
+  useStoreUpdater<CoordinateExtent>(translateExtent, setTranslateExtent);
+  useStoreUpdater<CoordinateExtent>(nodeExtent, setNodeExtent);
 
   return null;
 };

@@ -31,6 +31,7 @@ import NodeTypesObjectChange from './NodeTypesObjectChange';
 import SaveRestore from './SaveRestore';
 import SwitchFlow from './Switch';
 import Validation from './Validation';
+import DefaultNodes from './DefaultNodes';
 
 import './index.css';
 
@@ -42,6 +43,10 @@ const routes = [
   {
     path: '/basic',
     component: Basic,
+  },
+  {
+    path: '/default-nodes',
+    component: DefaultNodes,
   },
   {
     path: '/custom-connectionline',

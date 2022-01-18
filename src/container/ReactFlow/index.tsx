@@ -43,6 +43,7 @@ import {
   OnPaneReady,
   ProOptions,
   AttributionPosition,
+  DefaultEdgeOptions,
 } from '../../types';
 
 import '../../style.css';
@@ -62,8 +63,11 @@ const defaultEdgeTypes = {
 };
 
 export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onPaneReady'> {
-  nodes: Node[];
-  edges: Edge[];
+  nodes?: Node[];
+  edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
+  defaultEdgeOptions?: DefaultEdgeOptions;
   onNodesChange?: (nodeChanges: NodeChange[]) => void;
   onEdgesChange?: (edgeChanges: EdgeChange[]) => void;
   onNodeClick?: (event: React.MouseEvent, node: Node) => void;
@@ -150,8 +154,10 @@ const initDefaultPosition: [number, number] = [0, 0];
 const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
     {
-      nodes = [],
-      edges = [],
+      nodes,
+      edges,
+      defaultNodes,
+      defaultEdges,
       className,
       nodeTypes = defaultNodeTypes,
       edgeTypes = defaultEdgeTypes,
@@ -230,6 +236,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       connectOnClick = true,
       attributionPosition,
       pro,
+      defaultEdgeOptions,
       ...rest
     },
     ref
@@ -301,6 +308,8 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
           <StoreUpdater
             nodes={nodes}
             edges={edges}
+            defaultNodes={defaultNodes}
+            defaultEdges={defaultEdges}
             onConnect={onConnect}
             onConnectStart={onConnectStart}
             onConnectStop={onConnectStop}
@@ -319,6 +328,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
             translateExtent={translateExtent}
             fitViewOnInit={fitViewOnInit}
             connectOnClick={connectOnClick}
+            defaultEdgeOptions={defaultEdgeOptions}
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
