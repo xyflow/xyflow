@@ -90,21 +90,41 @@ const Controls: FC<ControlProps> = ({
     <div className={mapClasses} style={style}>
       {showZoom && (
         <>
-          <ControlButton onClick={onZoomInHandler} className="react-flow__controls-zoomin">
+          <ControlButton
+            onClick={onZoomInHandler}
+            className="react-flow__controls-zoomin"
+            title="zoom in"
+            aria-label="zoom in"
+          >
             <PlusIcon />
           </ControlButton>
-          <ControlButton onClick={onZoomOutHandler} className="react-flow__controls-zoomout">
+          <ControlButton
+            onClick={onZoomOutHandler}
+            className="react-flow__controls-zoomout"
+            title="zoom out"
+            aria-label="zoom out"
+          >
             <MinusIcon />
           </ControlButton>
         </>
       )}
       {showFitView && (
-        <ControlButton className="react-flow__controls-fitview" onClick={onFitViewHandler}>
+        <ControlButton
+          className="react-flow__controls-fitview"
+          onClick={onFitViewHandler}
+          title="fit view"
+          aria-label="fit view"
+        >
           <FitviewIcon />
         </ControlButton>
       )}
       {showInteractive && (
-        <ControlButton className="react-flow__controls-interactive" onClick={onInteractiveChangeHandler}>
+        <ControlButton
+          className="react-flow__controls-interactive"
+          onClick={onInteractiveChangeHandler}
+          title="toggle interactivity"
+          aria-label="toggle interactivity"
+        >
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </ControlButton>
       )}
