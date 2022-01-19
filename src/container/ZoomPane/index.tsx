@@ -7,7 +7,7 @@ import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../store';
-import { FlowTransform, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
+import { Viewport, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -21,9 +21,9 @@ interface ZoomPaneProps {
   paneMoveable?: boolean;
   defaultPosition?: [number, number];
   defaultZoom?: number;
-  onMove?: (flowTransform?: FlowTransform) => void;
-  onMoveStart?: (flowTransform?: FlowTransform) => void;
-  onMoveEnd?: (flowTransform?: FlowTransform) => void;
+  onMove?: (viewport?: Viewport) => void;
+  onMoveStart?: (viewport?: Viewport) => void;
+  onMoveEnd?: (viewport?: Viewport) => void;
   zoomActivationKeyCode?: KeyCode;
   preventScrolling?: boolean;
   children: ReactNode;
@@ -31,15 +31,13 @@ interface ZoomPaneProps {
   noPanClassName: string;
 }
 
-const viewChanged = (prevTransform: FlowTransform, eventTransform: any): boolean =>
-  prevTransform.x !== eventTransform.x ||
-  prevTransform.y !== eventTransform.y ||
-  prevTransform.zoom !== eventTransform.k;
+const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
+  prevViewport.x !== eventViewport.x || prevViewport.y !== eventViewport.y || prevViewport.zoom !== eventViewport.k;
 
-const eventToFlowTransform = (eventTransform: any): FlowTransform => ({
-  x: eventTransform.x,
-  y: eventTransform.y,
-  zoom: eventTransform.k,
+const eventToFlowTransform = (eventViewport: any): Viewport => ({
+  x: eventViewport.x,
+  y: eventViewport.y,
+  zoom: eventViewport.k,
 });
 
 const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
@@ -73,7 +71,7 @@ const ZoomPane = ({
 }: ZoomPaneProps) => {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const prevTransform = useRef<FlowTransform>({ x: 0, y: 0, zoom: 0 });
+  const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 

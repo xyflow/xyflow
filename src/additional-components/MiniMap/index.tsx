@@ -1,23 +1,14 @@
-import React, { memo, HTMLAttributes } from 'react';
+import React, { memo } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
+
+import MiniMapNode from './MiniMapNode';
 
 import { useStore } from '../../store';
 import { getRectOfNodeInternals } from '../../utils/graph';
 import { getBoundsofRects } from '../../utils';
-import { Node, ReactFlowState, Rect } from '../../types';
-import MiniMapNode from './MiniMapNode';
 
-type StringFunc = (node: Node) => string;
-
-export interface MiniMapProps extends HTMLAttributes<SVGSVGElement> {
-  nodeColor?: string | StringFunc;
-  nodeStrokeColor?: string | StringFunc;
-  nodeClassName?: string | StringFunc;
-  nodeBorderRadius?: number;
-  nodeStrokeWidth?: number;
-  maskColor?: string;
-}
+import { MiniMapProps, GetMiniMapNodeAttribute, ReactFlowState, Rect } from '../../types';
 
 declare const window: any;
 
@@ -47,11 +38,13 @@ const MiniMap = ({
   const mapClasses = cc(['react-flow__minimap', className]);
   const elementWidth = (style?.width || defaultWidth)! as number;
   const elementHeight = (style?.height || defaultHeight)! as number;
-  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as StringFunc;
+  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as GetMiniMapNodeAttribute;
   const nodeStrokeColorFunc = (
     nodeStrokeColor instanceof Function ? nodeStrokeColor : () => nodeStrokeColor
-  ) as StringFunc;
-  const nodeClassNameFunc = (nodeClassName instanceof Function ? nodeClassName : () => nodeClassName) as StringFunc;
+  ) as GetMiniMapNodeAttribute;
+  const nodeClassNameFunc = (
+    nodeClassName instanceof Function ? nodeClassName : () => nodeClassName
+  ) as GetMiniMapNodeAttribute;
   const hasNodes = nodeInternals && nodeInternals.size > 0;
   // @TODO: work with nodeInternals instead of converting it to an array
   const nodes = Array.from(nodeInternals).map(([_, node]) => node);

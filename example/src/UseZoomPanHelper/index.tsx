@@ -5,7 +5,7 @@ import ReactFlow, {
   addEdge,
   Background,
   MiniMap,
-  useZoomPanHelper,
+  useReactFlow,
   ReactFlowProvider,
   Connection,
   Edge,
@@ -33,7 +33,7 @@ const UseZoomPanHelperFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
-  const { project, setCenter, zoomIn, zoomOut } = useZoomPanHelper();
+  const { project, setCenter, zoomIn, zoomOut } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt) => {

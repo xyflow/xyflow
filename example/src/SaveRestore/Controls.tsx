@@ -1,5 +1,5 @@
 import React, { memo, useCallback, Dispatch, FC } from 'react';
-import { useZoomPanHelper, ReactFlowInstance, Edge, Node, FlowExportObject } from 'react-flow-renderer';
+import { useReactFlow, ReactFlowInstance, Edge, Node, ReactFlowJsonObject } from 'react-flow-renderer';
 import localforage from 'localforage';
 
 localforage.config({
@@ -18,7 +18,7 @@ type ControlsProps = {
 };
 
 const Controls: FC<ControlsProps> = ({ rfInstance, setNodes, setEdges }) => {
-  const { setTransform } = useZoomPanHelper();
+  const { setViewport } = useReactFlow();
 
   const onSave = useCallback(() => {
     if (rfInstance) {
@@ -29,18 +29,18 @@ const Controls: FC<ControlsProps> = ({ rfInstance, setNodes, setEdges }) => {
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
-      const flow: FlowExportObject | null = await localforage.getItem(flowKey);
+      const flow: ReactFlowJsonObject | null = await localforage.getItem(flowKey);
 
       if (flow) {
-        const [x = 0, y = 0] = flow.position;
+        const { x, y, zoom } = flow.viewport;
         setNodes(flow.nodes || []);
         setEdges(flow.edges || []);
-        setTransform({ x, y, zoom: flow.zoom || 0 });
+        setViewport({ x, y, zoom: zoom || 0 });
       }
     };
 
     restoreFlow();
-  }, [setNodes, setEdges, setTransform]);
+  }, [setNodes, setEdges, setViewport]);
 
   const onAdd = useCallback(() => {
     const newNode = {

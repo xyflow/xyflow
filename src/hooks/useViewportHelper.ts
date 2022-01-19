@@ -5,17 +5,17 @@ import { Selection as D3Selection } from 'd3';
 
 import { useStoreApi, useStore } from '../store';
 import { getRectOfNodeInternals, pointToRendererPoint, getTransformForBounds } from '../utils/graph';
-import { FitViewParams, FlowTransform, ZoomPanHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
+import { FitViewParams, Viewport, ViewportHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
 
 const DEFAULT_PADDING = 0.1;
 
-const initialZoomPanHelper: ZoomPanHelperFunctions = {
+const initialViewportHelper: ViewportHelperFunctions = {
   zoomIn: () => {},
   zoomOut: () => {},
   zoomTo: (_: number) => {},
   getZoom: () => 1,
-  setTransform: (_: FlowTransform) => {},
-  getTransform: () => ({ x: 0, y: 0, zoom: 1 }),
+  setViewport: (_: Viewport) => {},
+  getViewport: () => ({ x: 0, y: 0, zoom: 1 }),
   fitView: (_: FitViewParams = { padding: DEFAULT_PADDING, includeHiddenNodes: false }) => {},
   setCenter: (_: number, __: number) => {},
   fitBounds: (_: Rect) => {},
@@ -32,11 +32,11 @@ const getTransition = (selection: D3Selection<Element, unknown, null, undefined>
   return selection.transition().duration(duration);
 };
 
-const useZoomPanHelper = (): ZoomPanHelperFunctions => {
+const useViewportHelper = (): ViewportHelperFunctions => {
   const store = useStoreApi();
   const { d3Zoom, d3Selection } = useStore(selector, shallow);
 
-  const zoomPanHelperFunctions = useMemo<ZoomPanHelperFunctions>(() => {
+  const viewportHelperFunctions = useMemo<ViewportHelperFunctions>(() => {
     if (d3Selection && d3Zoom) {
       return {
         zoomIn: (options) => d3Zoom.scaleBy(getTransition(d3Selection, options?.duration), 1.2),
@@ -46,11 +46,11 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
           const [, , zoom] = store.getState().transform;
           return zoom;
         },
-        setTransform: (transform, options) => {
+        setViewport: (transform, options) => {
           const nextTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.zoom);
           d3Zoom.transform(getTransition(d3Selection, options?.duration), nextTransform);
         },
-        getTransform: () => {
+        getViewport: () => {
           const [x, y, zoom] = store.getState().transform;
           return { x, y, zoom };
         },
@@ -109,10 +109,10 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
       };
     }
 
-    return initialZoomPanHelper;
+    return initialViewportHelper;
   }, [d3Zoom, d3Selection]);
 
-  return zoomPanHelperFunctions;
+  return viewportHelperFunctions;
 };
 
-export default useZoomPanHelper;
+export default useViewportHelper;

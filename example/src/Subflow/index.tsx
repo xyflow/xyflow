@@ -129,7 +129,7 @@ const BasicFlow = () => {
   };
 
   const logToObject = () => console.log(rfInstance?.toObject());
-  const resetTransform = () => rfInstance?.setTransform({ x: 0, y: 0, zoom: 1 });
+  const resetTransform = () => rfInstance?.setViewport({ x: 0, y: 0, zoom: 1 });
 
   const toggleClassnames = () => {
     setNodes((nds) => {

@@ -5,7 +5,7 @@ import ReactFlow, {
   Controls,
   Background,
   Node,
-  FlowTransform,
+  Viewport,
   SnapGrid,
   Connection,
   Edge,
@@ -36,8 +36,8 @@ const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
   console.log('pane ready:', reactFlowInstance);
 };
 
-const onMoveStart = (transform?: FlowTransform) => console.log('zoom/move start', transform);
-const onMoveEnd = (transform?: FlowTransform) => console.log('zoom/move end', transform);
+const onMoveStart = (transform?: Viewport) => console.log('zoom/move start', transform);
+const onMoveEnd = (transform?: Viewport) => console.log('zoom/move end', transform);
 const onEdgeContextMenu = (_: MouseEvent, edge: Edge) => console.log('edge context menu', edge);
 const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
 const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('edge mouse move', edge);

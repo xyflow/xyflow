@@ -4,9 +4,8 @@ import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import Viewport from '../Viewport';
-import { ReactFlowProps } from '../ReactFlow';
 import useOnPaneReadyHandler from '../../hooks/useOnPaneReadyHandler';
-import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode } from '../../types';
+import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
 
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
   nodeTypes: NodeTypesType;

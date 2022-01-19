@@ -7,6 +7,7 @@ import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './node
 import { Edge } from './edges';
 import { HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
+import { ReactFlowInstance } from './instance';
 
 export type NodeTypesType = { [key: string]: ReactNode };
 export type EdgeTypesType = NodeTypesType;
@@ -15,36 +16,21 @@ export type FitView = (fitViewOptions?: FitViewParams) => void;
 
 export type Project = (position: XYPosition) => XYPosition;
 
-export type ToObject<T = any> = () => FlowExportObject<T>;
-
 export type OnNodesChange = (nodes: NodeChange[]) => void;
 
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
-export type ZoomInOut = (options?: ZoomPanHelperFunctionOptions) => void;
-export type ZoomTo = (zoomLevel: number, options?: ZoomPanHelperFunctionOptions) => void;
+export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => void;
+export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
 export type GetZoom = () => number;
-export type GetTransform = () => FlowTransform;
-export type SetTransform = (transform: FlowTransform, options?: ZoomPanHelperFunctionOptions) => void;
+export type GetViewport = () => Viewport;
+export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
 
-export type ReactFlowInstance<T = any> = {
-  zoomIn: ZoomInOut;
-  zoomOut: ZoomInOut;
-  zoomTo: ZoomTo;
-  getZoom: () => number;
-  setCenter: SetCenter;
-  fitView: FitView;
-  project: Project;
-  getNodes: () => Node<T>[];
-  getEdges: () => Edge<T>[];
-  setTransform: SetTransform;
-  getTransform: () => FlowTransform;
-  toObject: ToObject<T>;
-};
-
-export type OnPaneReady<T = any> = (reactFlowInstance: ReactFlowInstance<T>) => void;
+export type OnPaneReady<NodeData = any, EdgeData = any> = (
+  reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>
+) => void;
 
 export interface Connection {
   source: string | null;
@@ -57,13 +43,6 @@ export enum ConnectionMode {
   Strict = 'strict',
   Loose = 'loose',
 }
-
-export type FlowExportObject<T = any> = {
-  nodes: Node<T>[];
-  edges: Edge<T>[];
-  position: [number, number];
-  zoom: number;
-};
 
 export type OnConnect = (connection: Connection) => void;
 
@@ -92,7 +71,7 @@ export enum BackgroundVariant {
   Dots = 'dots',
 }
 
-export type FlowTransform = {
+export type Viewport = {
   x: number;
   y: number;
   zoom: number;
@@ -108,25 +87,25 @@ export enum PanOnScrollMode {
   Horizontal = 'horizontal',
 }
 
-export type ZoomPanHelperFunctionOptions = {
+export type ViewportHelperFunctionOptions = {
   duration?: number;
 };
 
-export type SetCenterOptions = ZoomPanHelperFunctionOptions & {
+export type SetCenterOptions = ViewportHelperFunctionOptions & {
   zoom?: number;
 };
 
-export type FitBoundsOptions = ZoomPanHelperFunctionOptions & {
+export type FitBoundsOptions = ViewportHelperFunctionOptions & {
   padding?: number;
 };
 
-export interface ZoomPanHelperFunctions {
+export interface ViewportHelperFunctions {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
   zoomTo: ZoomTo;
   getZoom: GetZoom;
-  setTransform: SetTransform;
-  getTransform: GetTransform;
+  setViewport: SetViewport;
+  getViewport: GetViewport;
   fitView: FitView;
   setCenter: SetCenter;
   fitBounds: FitBounds;

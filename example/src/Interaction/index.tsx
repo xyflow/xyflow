@@ -7,7 +7,7 @@ import ReactFlow, {
   Connection,
   Edge,
   PanOnScrollMode,
-  FlowTransform,
+  Viewport,
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
@@ -31,7 +31,7 @@ const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 const onPaneClick = (event: MouseEvent) => console.log('onPaneClick', event);
 const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
 const onPaneContextMenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
-const onMoveEnd = (flowTranasform?: FlowTransform) => console.log('onMoveEnd', flowTranasform);
+const onMoveEnd = (viewport?: Viewport) => console.log('onMoveEnd', viewport);
 
 const InteractionFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);

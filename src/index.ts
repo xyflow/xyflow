@@ -8,7 +8,7 @@ export { default as StraightEdge } from './components/Edges/StraightEdge';
 export { default as StepEdge } from './components/Edges/StepEdge';
 export { default as BezierEdge, getBezierPath } from './components/Edges/BezierEdge';
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
-export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
+export * from './additional-components';
 
 export {
   isNode,
@@ -22,19 +22,11 @@ export {
   getRectOfNodes,
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
+export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
 
-export { default as useZoomPanHelper } from './hooks/useZoomPanHelper';
+export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
-export { default as useNodeBounds } from './hooks/useNodeBounds';
-export { default as useUpdateNodes } from './hooks/useUpdateNodes';
-export { default as useUpdateEdges } from './hooks/useUpdateEdges';
 export * from './hooks/useNodesEdgesState';
-
-export * from './additional-components';
 export { useStore, useStoreApi } from './store';
-export * from './types';
 
-export { ReactFlowProps } from './container/ReactFlow';
-export { MiniMapProps } from './additional-components/MiniMap';
-export { ControlProps } from './additional-components/Controls';
-export { BackgroundProps } from './additional-components/Background';
+export * from './types';

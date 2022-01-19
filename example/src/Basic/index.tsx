@@ -1,15 +1,12 @@
-import { useState, MouseEvent } from 'react';
+import { MouseEvent } from 'react';
 
 import ReactFlow, {
-  addEdge,
+  ReactFlowProvider,
   Background,
   BackgroundVariant,
   Node,
   Edge,
-  Connection,
-  useNodesState,
-  useEdgesState,
-  ReactFlowInstance,
+  useReactFlow,
 } from 'react-flow-renderer';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
@@ -28,52 +25,45 @@ const initialEdges: Edge[] = [
 ];
 
 const BasicFlow = () => {
-  const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
-  const onPaneReady = (reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance);
+  const instance = useReactFlow();
 
   const updatePos = () => {
-    setNodes((nds) => {
-      return nds.map((node) => {
+    instance.setNodes((nodes) =>
+      nodes.map((node) => {
         node.position = {
           x: Math.random() * 400,
           y: Math.random() * 400,
         };
 
         return node;
-      });
-    });
+      })
+    );
   };
 
-  const logToObject = () => console.log(rfInstance?.toObject());
-  const resetTransform = () => rfInstance?.setTransform({ x: 0, y: 0, zoom: 1 });
+  const logToObject = () => console.log(instance.toObject());
+  const resetTransform = () => instance.setViewport({ x: 0, y: 0, zoom: 1 });
 
   const toggleClassnames = () => {
-    setNodes((nds) => {
-      return nds.map((node) => {
+    instance.setNodes((nodes) =>
+      nodes.map((node) => {
         node.className = node.className === 'light' ? 'dark' : 'light';
 
         return node;
-      });
-    });
+      })
+    );
   };
 
   return (
     <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onPaneReady={onPaneReady}
+      defaultNodes={initialNodes}
+      defaultEdges={initialEdges}
       onNodeClick={onNodeClick}
-      onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
       defaultZoom={1.5}
       minZoom={0.2}
       maxZoom={4}
+      fitViewOnInit
     >
       <Background variant={BackgroundVariant.Lines} />
 
@@ -93,4 +83,10 @@ const BasicFlow = () => {
   );
 };
 
-export default BasicFlow;
+export default function App() {
+  return (
+    <ReactFlowProvider>
+      <BasicFlow />
+    </ReactFlowProvider>
+  );
+}

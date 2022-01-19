@@ -1,7 +1,8 @@
-import React, { memo, useCallback, HTMLAttributes, FC, useEffect, useState } from 'react';
+import React, { memo, useCallback, FC, useEffect, useState } from 'react';
 import cc from 'classcat';
 
 import { useStore, useStoreApi } from '../../store';
+import useViewportHelper from '../../hooks/useViewportHelper';
 
 import PlusIcon from '../../../assets/icons/plus.svg';
 import MinusIcon from '../../../assets/icons/minus.svg';
@@ -9,21 +10,7 @@ import FitviewIcon from '../../../assets/icons/fitview.svg';
 import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
-import useZoomPanHelper from '../../hooks/useZoomPanHelper';
-import { FitViewParams, ReactFlowState } from '../../types';
-
-export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
-  showZoom?: boolean;
-  showFitView?: boolean;
-  showInteractive?: boolean;
-  fitViewParams?: FitViewParams;
-  onZoomIn?: () => void;
-  onZoomOut?: () => void;
-  onFitView?: () => void;
-  onInteractiveChange?: (interactiveStatus: boolean) => void;
-}
-
-export interface ControlButtonProps extends HTMLAttributes<HTMLButtonElement> {}
+import { ControlProps, ControlButtonProps, ReactFlowState } from '../../types';
 
 export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
   <button type="button" className={cc(['react-flow__controls-button', className])} {...rest}>
@@ -49,7 +36,7 @@ const Controls: FC<ControlProps> = ({
   const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const isInteractive = useStore(isInteractiveSelector);
-  const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
+  const { zoomIn, zoomOut, fitView } = useViewportHelper();
 
   const mapClasses = cc(['react-flow__controls', className]);
 

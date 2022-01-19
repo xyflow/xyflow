@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import ReactFlow, {
+  useReactFlow,
   NodeTypesType,
   addEdge,
-  useZoomPanHelper,
   ReactFlowProvider,
   Node,
   Connection,
@@ -184,7 +184,7 @@ const UpdateNodeInternalsFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
-  const { project } = useZoomPanHelper();
+  const { project } = useReactFlow();
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
 

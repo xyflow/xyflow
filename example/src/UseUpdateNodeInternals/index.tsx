@@ -3,7 +3,7 @@ import { useCallback, CSSProperties } from 'react';
 import ReactFlow, {
   NodeTypesType,
   addEdge,
-  useZoomPanHelper,
+  useReactFlow,
   ReactFlowProvider,
   Node,
   Connection,
@@ -41,7 +41,7 @@ const UpdateNodeInternalsFlow = () => {
   const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
 
   const updateNodeInternals = useUpdateNodeInternals();
-  const { project } = useZoomPanHelper();
+  const { project } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt) =>

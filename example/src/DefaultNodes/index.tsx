@@ -1,13 +1,10 @@
-import { useState } from 'react';
 import ReactFlow, {
+  useReactFlow,
   Background,
   BackgroundVariant,
   Node,
   Edge,
-  ReactFlowInstance,
   ReactFlowProvider,
-  useUpdateNodes,
-  useUpdateEdges,
 } from 'react-flow-renderer';
 
 const defaultNodes: Node[] = [
@@ -27,40 +24,34 @@ const defaultEdgeOptions = {
 };
 
 const DefaultNodes = () => {
-  const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
-  const updateNodes = useUpdateNodes();
-  const updateEdges = useUpdateEdges();
+  const instance = useReactFlow();
 
-  const logToObject = () => console.log(rfInstance?.toObject());
-  const resetTransform = () => rfInstance?.setTransform({ x: 0, y: 0, zoom: 1 });
+  const logToObject = () => console.log(instance.toObject());
+  const resetTransform = () => instance.setViewport({ x: 0, y: 0, zoom: 1 });
 
   const updateNodePositions = () => {
-    updateNodes((nodes, setNodes) => {
-      setNodes(
-        nodes.map((node) => {
-          node.position = {
-            x: Math.random() * 400,
-            y: Math.random() * 400,
-          };
+    instance.setNodes((nodes) =>
+      nodes.map((node) => {
+        node.position = {
+          x: Math.random() * 400,
+          y: Math.random() * 400,
+        };
 
-          return node;
-        })
-      );
-    });
+        return node;
+      })
+    );
   };
 
   const updateEdgeColors = () => {
-    updateEdges((edges, setEdges) => {
-      setEdges(
-        edges.map((edge) => {
-          edge.style = {
-            stroke: '#ff5050',
-          };
+    instance.setEdges((edges) =>
+      edges.map((edge) => {
+        edge.style = {
+          stroke: '#ff5050',
+        };
 
-          return edge;
-        })
-      );
-    });
+        return edge;
+      })
+    );
   };
 
   return (
@@ -68,7 +59,6 @@ const DefaultNodes = () => {
       defaultNodes={defaultNodes}
       defaultEdges={defaultEdges}
       defaultEdgeOptions={defaultEdgeOptions}
-      onPaneReady={setRfInstance}
       fitViewOnInit
     >
       <Background variant={BackgroundVariant.Lines} />

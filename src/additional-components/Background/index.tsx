@@ -1,16 +1,9 @@
-import React, { memo, useMemo, FC, HTMLAttributes } from 'react';
+import React, { memo, useMemo, FC } from 'react';
 import cc from 'classcat';
 
 import { useStore } from '../../store';
-import { BackgroundVariant, ReactFlowState } from '../../types';
 import { createGridLinesPath, createGridDotsPath } from './utils';
-
-export interface BackgroundProps extends HTMLAttributes<SVGElement> {
-  variant?: BackgroundVariant;
-  gap?: number;
-  color?: string;
-  size?: number;
-}
+import { BackgroundVariant, ReactFlowState, BackgroundProps } from '../../types';
 
 const defaultColors = {
   [BackgroundVariant.Dots]: '#81818a',
