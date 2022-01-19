@@ -7,6 +7,7 @@ import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
 import { checkElementBelowIsValid, onMouseDown } from './handler';
 import { getHostForElement } from '../../utils';
+import { addEdge } from '../../utils/graph';
 
 const alwaysValid = () => true;
 
@@ -20,6 +21,7 @@ const selector = (s: ReactFlowState) => ({
   connectionMode: s.connectionMode,
   connectionStartHandle: s.connectionStartHandle,
   connectOnClick: s.connectOnClick,
+  isControlled: s.isControlled,
 });
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
@@ -47,6 +49,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       connectionMode,
       connectionStartHandle,
       connectOnClick,
+      isControlled,
     } = useStore(selector, shallow);
 
     const handleId = id || null;
@@ -54,10 +57,21 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
 
     const onConnectExtended = useCallback(
       (params: Connection) => {
-        onConnectAction?.(params);
-        onConnect?.(params);
+        const { defaultEdgeOptions } = store.getState();
+
+        const edgeParams = {
+          ...defaultEdgeOptions,
+          ...params,
+        };
+        if (isControlled) {
+          const { edges } = store.getState();
+          store.setState({ edges: addEdge(edgeParams, edges) });
+        } else {
+          onConnectAction?.(edgeParams);
+        }
+        onConnect?.(edgeParams);
       },
-      [onConnectAction, onConnect]
+      [isControlled, onConnectAction, onConnect]
     );
 
     const onMouseDownHandler = useCallback(

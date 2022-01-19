@@ -13,6 +13,7 @@ const initialState: ReactFlowStore = {
   edges: [],
   onNodesChange: null,
   onEdgesChange: null,
+  isControlled: false,
   selectedNodesBbox: { x: 0, y: 0, width: 0, height: 0 },
   d3Zoom: null,
   d3Selection: null,

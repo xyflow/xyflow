@@ -6,6 +6,7 @@ import { NodeChange, EdgeChange } from './changes';
 import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './nodes';
 import { Edge } from './edges';
 import { HandleType, StartHandle } from './handles';
+import { DefaultEdgeOptions } from '.';
 
 export type NodeTypesType = { [key: string]: ReactNode };
 export type EdgeTypesType = NodeTypesType;
@@ -142,6 +143,7 @@ export type ReactFlowStore = {
   selectedNodesBbox: Rect;
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
+  isControlled: boolean;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
@@ -182,11 +184,13 @@ export type ReactFlowStore = {
   onConnectEnd?: OnConnectEnd;
 
   connectOnClick: boolean;
+  defaultEdgeOptions?: DefaultEdgeOptions;
 };
 
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  setDefaultNodesAndEdges: (nodes: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;
   resetSelectedElements: () => void;

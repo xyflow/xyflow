@@ -2,6 +2,7 @@ import create from 'zustand';
 import createContext from 'zustand/context';
 
 import { clampPosition, getDimensions } from '../utils';
+import { applyNodeChanges } from '../utils/changes';
 import {
   ReactFlowState,
   Node,
@@ -9,13 +10,20 @@ import {
   NodeDimensionUpdate,
   NodeDiffUpdate,
   CoordinateExtent,
-  NodeChange,
-  EdgeChange,
   NodeDimensionChange,
+  EdgeSelectionChange,
+  NodeSelectionChange,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { createNodeInternals, createPositionChange, fitView, isParentSelected } from './utils';
+import {
+  createNodeInternals,
+  createPositionChange,
+  fitView,
+  handleControlledEdgeSelectionChange,
+  handleControlledNodeSelectionChange,
+  isParentSelected,
+} from './utils';
 import initialState from './initialState';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -24,17 +32,25 @@ const createStore = () =>
   create<ReactFlowState>((set, get) => ({
     ...initialState,
     setNodes: (nodes: Node[]) => {
-      const nodeInternals = createNodeInternals(nodes, get().nodeInternals);
-
-      set({ nodeInternals });
+      set({ nodeInternals: createNodeInternals(nodes, get().nodeInternals) });
     },
     setEdges: (edges: Edge[]) => {
-      set({ edges });
+      const { defaultEdgeOptions } = get();
+
+      if (defaultEdgeOptions) {
+        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+      } else {
+        set({ edges });
+      }
+    },
+    setDefaultNodesAndEdges: (nodes: Node[], edges: Edge[] = []) => {
+      const nodeInternals = createNodeInternals(nodes, get().nodeInternals);
+      set({ nodeInternals, edges, isControlled: true });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
       const { onNodesChange, transform, nodeInternals, fitViewOnInit } = get();
 
-      const changes: NodeChange[] = updates.reduce<NodeChange[]>((res, update) => {
+      const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
 
         if (node) {
@@ -57,7 +73,7 @@ const createStore = () =>
               id: node.id,
               type: 'dimensions',
               dimensions,
-            } as NodeChange);
+            });
           }
         }
 
@@ -65,7 +81,6 @@ const createStore = () =>
       }, []);
 
       const fitViewOnInitDone = fitViewOnInit && fitView(get);
-
       set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone });
 
       if (changes?.length > 0) {
@@ -73,9 +88,9 @@ const createStore = () =>
       }
     },
     updateNodePosition: ({ id, diff, dragging }: NodeDiffUpdate) => {
-      const { onNodesChange, nodeExtent, nodeInternals } = get();
+      const { onNodesChange, nodeExtent, nodeInternals, isControlled } = get();
 
-      if (onNodesChange) {
+      if (isControlled || onNodesChange) {
         const changes: NodeDimensionChange[] = [];
 
         nodeInternals.forEach((node) => {
@@ -89,57 +104,83 @@ const createStore = () =>
         });
 
         if (changes?.length) {
-          onNodesChange(changes);
+          if (isControlled) {
+            const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
+            const nextNodeInternals = createNodeInternals(nodes, nodeInternals);
+            set({ nodeInternals: nextNodeInternals });
+          } else {
+            onNodesChange?.(changes);
+          }
         }
       }
     },
     addSelectedNodes: (selectedNodeIds: string[]) => {
-      const { multiSelectionActive, onNodesChange, nodeInternals } = get();
+      const { multiSelectionActive, onNodesChange, nodeInternals, isControlled } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
       const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-      let changedNodes;
+      let changedNodes: NodeSelectionChange[];
 
       if (multiSelectionActive) {
-        changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
+        changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
       } else {
         changedNodes = getSelectionChanges(nodes, selectedNodeIds);
       }
 
       if (changedNodes.length) {
-        onNodesChange?.(changedNodes as NodeChange[]);
+        if (isControlled) {
+          set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
+        } else if (onNodesChange) {
+          onNodesChange(changedNodes);
+        }
       }
     },
     addSelectedEdges: (selectedEdgeIds: string[]) => {
-      const { multiSelectionActive, onEdgesChange, edges } = get();
+      const { multiSelectionActive, onEdgesChange, edges, isControlled } = get();
 
-      let changedEdges;
+      let changedEdges: EdgeSelectionChange[];
 
       if (multiSelectionActive) {
-        changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
+        changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
       } else {
         changedEdges = getSelectionChanges(edges, selectedEdgeIds);
       }
 
       if (changedEdges.length) {
-        onEdgesChange?.(changedEdges as EdgeChange[]);
+        if (isControlled) {
+          set({
+            edges: handleControlledEdgeSelectionChange(changedEdges, edges),
+          });
+        } else if (onEdgesChange) {
+          onEdgesChange(changedEdges);
+        }
       }
     },
     unselectNodesAndEdges: () => {
-      const { nodeInternals, edges, onNodesChange, onEdgesChange } = get();
+      const { nodeInternals, edges, onNodesChange, onEdgesChange, isControlled } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
       const nodes = Array.from(nodeInternals).map(([_, node]) => node);
 
       const nodesToUnselect = nodes.map((n) => {
         n.selected = false;
         return createSelectionChange(n.id, false);
-      }) as NodeChange[];
-      const edgesToUnselect = edges.map((edge) => createSelectionChange(edge.id, false)) as EdgeChange[];
+      }) as NodeSelectionChange[];
+      const edgesToUnselect = edges.map((edge) => createSelectionChange(edge.id, false)) as EdgeSelectionChange[];
 
       if (nodesToUnselect.length) {
-        onNodesChange?.(nodesToUnselect);
+        if (isControlled) {
+          set({ nodeInternals: handleControlledNodeSelectionChange(nodesToUnselect, nodeInternals) });
+        } else if (onNodesChange) {
+          onNodesChange(nodesToUnselect);
+        }
       }
       if (edgesToUnselect.length) {
-        onEdgesChange?.(edgesToUnselect);
+        if (isControlled) {
+          set({
+            edges: handleControlledEdgeSelectionChange(edgesToUnselect, edges),
+          });
+        } else if (onEdgesChange) {
+          onEdgesChange(edgesToUnselect);
+        }
       }
     },
     setMinZoom: (minZoom: number) => {
@@ -161,17 +202,34 @@ const createStore = () =>
       set({ translateExtent });
     },
     resetSelectedElements: () => {
-      const { nodeInternals, edges, onNodesChange, onEdgesChange } = get();
+      const { nodeInternals, edges, onNodesChange, onEdgesChange, isControlled } = get();
       // @TODO: work with nodeInternals instead of converting it to an array
-      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-      const nodesToUnselect = nodes.filter((e) => e.selected).map((n) => createSelectionChange(n.id, false));
-      const edgesToUnselect = edges.filter((e) => e.selected).map((e) => createSelectionChange(e.id, false));
+      const nodes = Array.from(nodeInternals.values());
+
+      const nodesToUnselect = nodes
+        .filter((e) => e.selected)
+        .map((n) => createSelectionChange(n.id, false)) as NodeSelectionChange[];
+      const edgesToUnselect = edges
+        .filter((e) => e.selected)
+        .map((e) => createSelectionChange(e.id, false)) as EdgeSelectionChange[];
 
       if (nodesToUnselect.length) {
-        onNodesChange?.(nodesToUnselect as NodeChange[]);
+        if (isControlled) {
+          set({
+            nodeInternals: handleControlledNodeSelectionChange(nodesToUnselect, nodeInternals),
+          });
+        } else if (onNodesChange) {
+          onNodesChange(nodesToUnselect);
+        }
       }
       if (edgesToUnselect.length) {
-        onEdgesChange?.(edgesToUnselect as EdgeChange[]);
+        if (isControlled) {
+          set({
+            edges: handleControlledEdgeSelectionChange(edgesToUnselect, edges),
+          });
+        } else if (onEdgesChange) {
+          onEdgesChange(edgesToUnselect);
+        }
       }
     },
     setNodeExtent: (nodeExtent: CoordinateExtent) => {

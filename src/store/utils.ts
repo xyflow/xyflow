@@ -2,10 +2,13 @@ import { zoomIdentity } from 'd3-zoom';
 import { GetState } from 'zustand';
 import {
   CoordinateExtent,
+  Edge,
+  EdgeSelectionChange,
   Node,
   NodeDimensionChange,
   NodeInternals,
   NodeInternalsItem,
+  NodeSelectionChange,
   ReactFlowState,
   XYPosition,
   XYZPosition,
@@ -162,4 +165,28 @@ export function fitView(get: GetState<ReactFlowState>) {
   }
 
   return fitViewOnInitDone;
+}
+
+export function handleControlledNodeSelectionChange(nodeChanges: NodeSelectionChange[], nodeInternals: NodeInternals) {
+  nodeChanges.forEach((change) => {
+    const node = nodeInternals.get(change.id);
+    if (node) {
+      nodeInternals.set(node.id, {
+        ...node,
+        selected: change.selected,
+      });
+    }
+  });
+
+  return new Map(nodeInternals);
+}
+
+export function handleControlledEdgeSelectionChange(edgeChanges: EdgeSelectionChange[], edges: Edge[]) {
+  return edges.map((e) => {
+    const change = edgeChanges.find((change) => change.id === e.id);
+    if (change) {
+      e.selected = change.selected;
+    }
+    return e;
+  });
 }
