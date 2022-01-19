@@ -5,7 +5,6 @@ import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
-  NodeInternalsItem,
   HandleElement,
   ConnectionLineType,
   ConnectionLineComponent,
@@ -29,7 +28,7 @@ interface ConnectionLineProps {
 
 const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, transform: s.transform });
 
-const getSourceHandle = (handleId: string | null, sourceNode: NodeInternalsItem, connectionHandleType: HandleType) => {
+const getSourceHandle = (handleId: string | null, sourceNode: Node, connectionHandleType: HandleType) => {
   const handleTypeInverted = connectionHandleType === 'source' ? 'target' : 'source';
   const handleBound = sourceNode.handleBounds?.[connectionHandleType] || sourceNode.handleBounds?.[handleTypeInverted];
 
@@ -51,7 +50,7 @@ export default ({
   const handleId = connectionHandleId;
 
   const { nodeInternals, transform } = useStore(selector, shallow);
-  const sourceNode = useRef<NodeInternalsItem | undefined>(nodeInternals.get(nodeId));
+  const sourceNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
 
   if (
     !sourceNode.current ||
@@ -65,8 +64,8 @@ export default ({
   const sourceHandle = getSourceHandle(handleId, sourceNode.current, connectionHandleType);
   const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : (sourceNode.current?.width ?? 0) / 2;
   const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.current?.height ?? 0;
-  const sourceX = sourceNode.current.positionAbsolute.x + sourceHandleX;
-  const sourceY = sourceNode.current.positionAbsolute.y + sourceHandleY;
+  const sourceX = (sourceNode.current.positionAbsolute?.x || 0) + sourceHandleX;
+  const sourceY = (sourceNode.current.positionAbsolute?.y || 0) + sourceHandleY;
 
   const targetX = (connectionPositionX - transform[0]) / transform[2];
   const targetY = (connectionPositionY - transform[1]) / transform[2];

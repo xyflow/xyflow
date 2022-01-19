@@ -27,6 +27,12 @@ export interface Node<T = any> {
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
+
+  // only used internally
+  positionAbsolute?: XYPosition;
+  z?: number;
+  handleBounds?: NodeHandleBounds;
+  isParent?: boolean;
 }
 
 // props that get passed to a custom node
@@ -104,14 +110,7 @@ export type NodeDimensionUpdate = {
   forceUpdate?: boolean;
 };
 
-export type NodeInternalsItem = Node & {
-  positionAbsolute: XYPosition;
-  z: number;
-  handleBounds?: NodeHandleBounds;
-  isParent?: boolean;
-};
-
-export type NodeInternals = Map<string, NodeInternalsItem>;
+export type NodeInternals = Map<string, Node>;
 
 export type NodeBounds = XYPosition & {
   width: number | null;

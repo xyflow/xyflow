@@ -172,13 +172,13 @@ export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect
     !node.handleBounds ||
     !node.width ||
     !node.height ||
-    typeof node.positionAbsolute.x === 'undefined' ||
-    typeof node.positionAbsolute.y === 'undefined';
+    typeof node.positionAbsolute?.x === 'undefined' ||
+    typeof node.positionAbsolute?.y === 'undefined';
 
   return [
     {
-      x: node?.positionAbsolute.x || 0,
-      y: node?.positionAbsolute.y || 0,
+      x: node?.positionAbsolute?.x || 0,
+      y: node?.positionAbsolute?.y || 0,
       width: node?.width || 0,
       height: node?.height || 0,
     },

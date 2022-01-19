@@ -92,8 +92,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             sourcePosition={node.sourcePosition}
             targetPosition={node.targetPosition}
             hidden={node.hidden}
-            xPos={node.positionAbsolute.x}
-            yPos={node.positionAbsolute.y}
+            xPos={node.positionAbsolute?.x ?? 0}
+            yPos={node.positionAbsolute?.y ?? 0}
             dragging={!!node.dragging}
             isInitialized={!!isInitialized}
             snapGrid={snapGrid}
@@ -115,7 +115,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
-            zIndex={node.z}
+            zIndex={node.z ?? 0}
             isParent={!!node.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}

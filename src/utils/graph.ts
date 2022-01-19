@@ -1,16 +1,6 @@
 import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
-import {
-  Node,
-  Edge,
-  Connection,
-  EdgeMarkerType,
-  Transform,
-  XYPosition,
-  Rect,
-  NodeInternals,
-  NodeInternalsItem,
-} from '../types';
+import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -145,10 +135,10 @@ export const getRectOfNodes = (nodes: Node[]): Rect => {
   return boxToRect(box);
 };
 
-export const getRectOfNodeInternals = (nodes: NodeInternalsItem[]): Rect => {
+export const getRectOfNodeInternals = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
     (currBox, { positionAbsolute, width, height }) =>
-      getBoundsOfBoxes(currBox, rectToBox({ ...positionAbsolute, width: width || 0, height: height || 0 })),
+      getBoundsOfBoxes(currBox, rectToBox({ ...positionAbsolute!, width: width || 0, height: height || 0 })),
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
@@ -162,7 +152,7 @@ export const getNodesInside = (
   partially: boolean = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes: boolean = false
-): NodeInternalsItem[] => {
+): Node[] => {
   const rBox = rectToBox({
     x: (rect.x - tx) / tScale,
     y: (rect.y - ty) / tScale,
@@ -170,7 +160,7 @@ export const getNodesInside = (
     height: rect.height / tScale,
   });
 
-  const visibleNodes: NodeInternalsItem[] = [];
+  const visibleNodes: Node[] = [];
 
   nodeInternals.forEach((node) => {
     const { positionAbsolute, width, height, dragging, selectable = true } = node;
@@ -179,7 +169,7 @@ export const getNodesInside = (
       return false;
     }
 
-    const nBox = rectToBox({ ...positionAbsolute, width: width || 0, height: height || 0 });
+    const nBox = rectToBox({ ...positionAbsolute!, width: width || 0, height: height || 0 });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = Math.ceil(xOverlap * yOverlap);

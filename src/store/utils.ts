@@ -1,5 +1,8 @@
 import { zoomIdentity } from 'd3-zoom';
 import { GetState } from 'zustand';
+
+import { clampPosition, isNumeric } from '../utils';
+import { getRectOfNodes, getTransformForBounds } from '../utils/graph';
 import {
   CoordinateExtent,
   Edge,
@@ -7,19 +10,16 @@ import {
   Node,
   NodeDimensionChange,
   NodeInternals,
-  NodeInternalsItem,
   NodeSelectionChange,
   ReactFlowState,
   XYPosition,
   XYZPosition,
 } from '../types';
-import { clampPosition, isNumeric } from '../utils';
-import { getRectOfNodes, getTransformForBounds } from '../utils/graph';
 
 type ParentNodes = Record<string, boolean>;
 
 function calculateXYZPosition(
-  node: NodeInternalsItem,
+  node: Node,
   nodeInternals: NodeInternals,
   parentNodes: ParentNodes,
   result: XYZPosition
@@ -32,17 +32,17 @@ function calculateXYZPosition(
   return calculateXYZPosition(parentNode, nodeInternals, parentNodes, {
     x: (result.x ?? 0) + (parentNode.position?.x ?? 0),
     y: (result.y ?? 0) + (parentNode.position?.y ?? 0),
-    z: parentNode.z > node.z ? parentNode.z : node.z,
+    z: (parentNode.z ?? 0) > (node.z ?? 0) ? parentNode.z ?? 0 : node.z ?? 0,
   });
 }
 
 export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals): NodeInternals {
-  const nextNodeInternals = new Map<string, NodeInternalsItem>();
+  const nextNodeInternals = new Map<string, Node>();
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
     const z = isNumeric(node.zIndex) ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
-    const internals: NodeInternalsItem = {
+    const internals: Node = {
       ...nodeInternals.get(node.id),
       ...node,
       positionAbsolute: {
@@ -66,7 +66,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     if (node.parentNode || parentNodes[node.id]) {
       const { x, y, z } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
         ...node.position,
-        z: node.z,
+        z: node.z ?? 0,
       });
 
       node.positionAbsolute = {
@@ -85,7 +85,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   return nextNodeInternals;
 }
 
-export function isParentSelected(node: NodeInternalsItem, nodeInternals: NodeInternals): boolean {
+export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
   if (!node.parentNode) {
     return false;
   }
@@ -104,7 +104,7 @@ export function isParentSelected(node: NodeInternalsItem, nodeInternals: NodeInt
 }
 
 type CreatePostiionChangeParams = {
-  node: NodeInternalsItem;
+  node: Node;
   nodeExtent: CoordinateExtent;
   nodeInternals: NodeInternals;
   diff?: XYPosition;
