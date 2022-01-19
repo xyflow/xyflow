@@ -12,7 +12,7 @@ const DefaultNode = ({
   return (
     <>
       <Handle type="target" position={targetPosition} isConnectable={isConnectable} />
-      {data.label}
+      {data?.label}
       <Handle type="source" position={sourcePosition} isConnectable={isConnectable} />
     </>
   );
