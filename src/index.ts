@@ -26,6 +26,9 @@ export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/uti
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
+export { default as useNodes } from './hooks/useNodes';
+export { default as useEdges } from './hooks/useEdges';
+export { default as useViewport } from './hooks/useViewport';
 export * from './hooks/useNodesEdgesState';
 export { useStore, useStoreApi } from './store';
 
