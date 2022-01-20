@@ -122,7 +122,8 @@ export type ReactFlowStore = {
   selectedNodesBbox: Rect;
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
-  isControlled: boolean;
+  hasDefaultNodes: boolean;
+  hasDefaultEdges: boolean;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;
@@ -169,7 +170,7 @@ export type ReactFlowStore = {
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
-  setDefaultNodesAndEdges: (nodes: Node[], edges?: Edge[]) => void;
+  setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;
   resetSelectedElements: () => void;

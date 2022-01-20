@@ -111,9 +111,7 @@ const StoreUpdater = ({
   const store = useStoreApi();
 
   useEffect(() => {
-    if (defaultNodes) {
-      setDefaultNodesAndEdges(defaultNodes, defaultEdges);
-    }
+    setDefaultNodesAndEdges(defaultNodes, defaultEdges);
 
     return () => {
       reset();

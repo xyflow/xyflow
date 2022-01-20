@@ -21,7 +21,7 @@ const selector = (s: ReactFlowState) => ({
   connectionMode: s.connectionMode,
   connectionStartHandle: s.connectionStartHandle,
   connectOnClick: s.connectOnClick,
-  isControlled: s.isControlled,
+  hasDefaultEdges: s.hasDefaultEdges,
 });
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
@@ -49,7 +49,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       connectionMode,
       connectionStartHandle,
       connectOnClick,
-      isControlled,
+      hasDefaultEdges,
     } = useStore(selector, shallow);
 
     const handleId = id || null;
@@ -63,15 +63,15 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           ...defaultEdgeOptions,
           ...params,
         };
-        if (isControlled) {
+        if (hasDefaultEdges) {
           const { edges } = store.getState();
           store.setState({ edges: addEdge(edgeParams, edges) });
-        } else {
-          onConnectAction?.(edgeParams);
         }
+
+        onConnectAction?.(edgeParams);
         onConnect?.(edgeParams);
       },
-      [isControlled, onConnectAction, onConnect]
+      [hasDefaultEdges, onConnectAction, onConnect]
     );
 
     const onMouseDownHandler = useCallback(

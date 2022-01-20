@@ -32,6 +32,7 @@ import SaveRestore from './SaveRestore';
 import SwitchFlow from './Switch';
 import Validation from './Validation';
 import DefaultNodes from './DefaultNodes';
+import ControlledUncontrolled from './ControlledUncontrolled';
 
 import './index.css';
 
@@ -155,6 +156,10 @@ const routes = [
   {
     path: '/validation',
     component: Validation,
+  },
+  {
+    path: '/controlled-uncontrolled',
+    component: ControlledUncontrolled,
   },
 ];
 
