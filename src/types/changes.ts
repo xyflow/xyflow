@@ -4,9 +4,14 @@ import { NodeHandleBounds } from './nodes';
 export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
-  dimensions?: Dimensions;
-  position?: XYPosition;
+  dimensions: Dimensions;
   handleBounds?: NodeHandleBounds;
+};
+
+export type NodePositionChange = {
+  id: string;
+  type: 'position';
+  position?: XYPosition;
   dragging?: boolean;
 };
 
@@ -21,7 +26,7 @@ export type NodeRemoveChange = {
   type: 'remove';
 };
 
-export type NodeChange = NodeDimensionChange | NodeSelectionChange | NodeRemoveChange;
+export type NodeChange = NodeDimensionChange | NodePositionChange | NodeSelectionChange | NodeRemoveChange;
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;

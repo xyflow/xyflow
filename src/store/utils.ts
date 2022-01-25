@@ -8,8 +8,8 @@ import {
   Edge,
   EdgeSelectionChange,
   Node,
-  NodeDimensionChange,
   NodeInternals,
+  NodePositionChange,
   NodeSelectionChange,
   ReactFlowState,
   XYPosition,
@@ -103,7 +103,7 @@ export function isParentSelected(node: Node, nodeInternals: NodeInternals): bool
   return isParentSelected(parentNode, nodeInternals);
 }
 
-type CreatePostiionChangeParams = {
+type CreatePostionChangeParams = {
   node: Node;
   nodeExtent: CoordinateExtent;
   nodeInternals: NodeInternals;
@@ -117,10 +117,10 @@ export function createPositionChange({
   dragging,
   nodeExtent,
   nodeInternals,
-}: CreatePostiionChangeParams): NodeDimensionChange {
-  const change: NodeDimensionChange = {
+}: CreatePostionChangeParams): NodePositionChange {
+  const change: NodePositionChange = {
     id: node.id,
-    type: 'dimensions',
+    type: 'position',
     dragging: !!dragging,
   };
 

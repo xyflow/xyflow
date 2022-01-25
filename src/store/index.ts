@@ -13,6 +13,7 @@ import {
   NodeDimensionChange,
   EdgeSelectionChange,
   NodeSelectionChange,
+  NodePositionChange,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -96,7 +97,7 @@ const createStore = () =>
       const { onNodesChange, nodeExtent, nodeInternals, hasDefaultNodes } = get();
 
       if (hasDefaultNodes || onNodesChange) {
-        const changes: NodeDimensionChange[] = [];
+        const changes: NodePositionChange[] = [];
 
         nodeInternals.forEach((node) => {
           if (node.selected) {

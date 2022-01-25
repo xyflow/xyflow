@@ -12,13 +12,8 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
           res.push({ ...item, selected: currentChange.selected });
           return res;
         }
-        case 'dimensions': {
+        case 'position': {
           const updateItem = { ...item };
-
-          if (typeof currentChange.dimensions !== 'undefined') {
-            updateItem.width = currentChange.dimensions.width;
-            updateItem.height = currentChange.dimensions.height;
-          }
 
           if (typeof currentChange.position !== 'undefined') {
             updateItem.position = currentChange.position;
@@ -64,6 +59,17 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
                 parent.height = parent.style.height;
               }
             }
+          }
+
+          res.push(updateItem);
+          return res;
+        }
+        case 'dimensions': {
+          const updateItem = { ...item };
+
+          if (typeof currentChange.dimensions !== 'undefined') {
+            updateItem.width = currentChange.dimensions.width;
+            updateItem.height = currentChange.dimensions.height;
           }
 
           res.push(updateItem);
