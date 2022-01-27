@@ -16,7 +16,7 @@ import { getNodesAndEdges } from './utils';
 
 const buttonWrapperStyles: CSSProperties = { position: 'absolute', right: 10, top: 10, zIndex: 4 };
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
+const onInit = (reactFlowInstance: ReactFlowInstance) => {
   reactFlowInstance.fitView();
   console.log(reactFlowInstance.getNodes());
 };
@@ -55,13 +55,7 @@ const StressFlow = () => {
   }, []);
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onPaneReady={onPaneReady}
-      onConnect={onConnect}
-      onNodesChange={onNodesChange}
-    >
+    <ReactFlow nodes={nodes} edges={edges} onInit={onInit} onConnect={onConnect} onNodesChange={onNodesChange}>
       <MiniMap />
       <Controls />
       <Background />

@@ -91,7 +91,7 @@ const NestedFlow = () => {
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, []);
-  const onPaneReady = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
+  const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
     setNodes((nds) => {
@@ -131,7 +131,7 @@ const NestedFlow = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}

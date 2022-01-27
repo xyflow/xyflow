@@ -55,12 +55,7 @@ const DefaultNodes = () => {
   };
 
   return (
-    <ReactFlow
-      defaultNodes={defaultNodes}
-      defaultEdges={defaultEdges}
-      defaultEdgeOptions={defaultEdgeOptions}
-      fitViewOnInit
-    >
+    <ReactFlow defaultNodes={defaultNodes} defaultEdges={defaultEdges} defaultEdgeOptions={defaultEdgeOptions} fitView>
       <Background variant={BackgroundVariant.Lines} />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>

@@ -2,7 +2,7 @@ import { zoomIdentity } from 'd3-zoom';
 import { GetState } from 'zustand';
 
 import { clampPosition, isNumeric } from '../utils';
-import { getRectOfNodes, getTransformForBounds } from '../utils/graph';
+import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
 import {
   CoordinateExtent,
   Edge,
@@ -14,6 +14,7 @@ import {
   ReactFlowState,
   XYPosition,
   XYZPosition,
+  FitViewOptions,
 } from '../types';
 
 type ParentNodes = Record<string, boolean>;
@@ -145,26 +146,46 @@ export function createPositionChange({
   return change;
 }
 
-export function fitView(get: GetState<ReactFlowState>) {
+type InternalFitViewOptions = {
+  initial?: boolean;
+} & FitViewOptions;
+
+export function fitView(get: GetState<ReactFlowState>, options: InternalFitViewOptions = {}) {
   let { nodeInternals, width, height, minZoom, maxZoom, d3Zoom, d3Selection, fitViewOnInitDone, fitViewOnInit } = get();
 
-  if (fitViewOnInit && !fitViewOnInitDone && d3Zoom && d3Selection) {
-    const rootNodes = Array.from(nodeInternals)
-      .filter(([_, n]) => !n.parentNode)
-      .map(([_, n]) => n);
-    const nodesInitialized = rootNodes.every((n) => n.width && n.height);
+  if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
+    if (d3Zoom && d3Selection) {
+      const nodes = Array.from(nodeInternals.values()).filter((n) =>
+        options.includeHiddenNodes ? !n.parentNode && n.width && n.height : !n.parentNode && !n.hidden
+      );
 
-    if (rootNodes.length > 0 && nodesInitialized) {
-      const bounds = getRectOfNodes(rootNodes);
-      const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom ?? 0.5, maxZoom ?? 2);
+      const nodesInitialized = nodes.every((n) => n.width && n.height);
 
-      const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
-      d3Zoom.transform(d3Selection, nextTransform);
-      fitViewOnInitDone = true;
+      if (nodes.length > 0 && nodesInitialized) {
+        const bounds = getRectOfNodes(nodes);
+        const [x, y, zoom] = getTransformForBounds(
+          bounds,
+          width,
+          height,
+          options.minZoom ?? minZoom,
+          options.maxZoom ?? maxZoom,
+          options.padding ?? 0.1
+        );
+
+        const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
+
+        if (typeof options.duration === 'number' && options.duration > 0) {
+          d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
+        } else {
+          d3Zoom.transform(d3Selection, nextTransform);
+        }
+
+        return true;
+      }
     }
   }
 
-  return fitViewOnInitDone;
+  return false;
 }
 
 export function handleControlledNodeSelectionChange(nodeChanges: NodeSelectionChange[], nodeInternals: NodeInternals) {

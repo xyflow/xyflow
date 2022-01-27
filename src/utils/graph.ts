@@ -1,3 +1,4 @@
+import { Selection as D3Selection } from 'd3';
 import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
 import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
@@ -124,21 +125,18 @@ export const pointToRendererPoint = (
   return position;
 };
 
-// @TODO: use one function for getRectOfNodes and getRectOfNodeInternals
 export const getRectOfNodes = (nodes: Node[]): Rect => {
   const box = nodes.reduce(
-    (currBox, { position, width, height }) =>
-      getBoundsOfBoxes(currBox, rectToBox({ ...position, width: width || 0, height: height || 0 })),
-    { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
-  );
-
-  return boxToRect(box);
-};
-
-export const getRectOfNodeInternals = (nodes: Node[]): Rect => {
-  const box = nodes.reduce(
-    (currBox, { positionAbsolute, width, height }) =>
-      getBoundsOfBoxes(currBox, rectToBox({ ...positionAbsolute!, width: width || 0, height: height || 0 })),
+    (currBox, { positionAbsolute, position, width, height }) =>
+      getBoundsOfBoxes(
+        currBox,
+        rectToBox({
+          x: positionAbsolute ? positionAbsolute.x : position.x,
+          y: positionAbsolute ? positionAbsolute.y : position.y,
+          width: width || 0,
+          height: height || 0,
+        })
+      ),
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
@@ -212,4 +210,8 @@ export const getTransformForBounds = (
   const y = height / 2 - boundsCenterY * clampedZoom;
 
   return [x, y, clampedZoom];
+};
+
+export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration: number = 0) => {
+  return selection.transition().duration(duration);
 };

@@ -17,7 +17,7 @@ import Sidebar from './Sidebar';
 import './provider.css';
 
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => console.log('pane ready:', reactFlowInstance);
+const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('pane ready:', reactFlowInstance);
 
 const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -48,7 +48,7 @@ const ProviderFlow = () => {
             onEdgesChange={onEdgesChange}
             onNodeClick={onNodeClick}
             onConnect={onConnect}
-            onPaneReady={onPaneReady}
+            onInit={onInit}
             connectionMode={ConnectionMode.Loose}
           >
             <Controls />

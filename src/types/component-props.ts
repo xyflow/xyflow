@@ -20,15 +20,15 @@ import {
   OnEdgeUpdateFunc,
   NodeChange,
   EdgeChange,
-  OnPaneReady,
+  OnInit,
   ProOptions,
   AttributionPosition,
   DefaultEdgeOptions,
-  FitViewParams,
+  FitViewOptions,
   BackgroundVariant,
 } from '.';
 
-export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onPaneReady'> {
+export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   nodes?: Node[];
   edges?: Edge[];
   defaultNodes?: Node[];
@@ -50,7 +50,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
-  onPaneReady?: OnPaneReady;
+  onInit?: OnInit;
   onMove?: (viewport?: Viewport) => void;
   onMoveStart?: (viewport?: Viewport) => void;
   onMoveEnd?: (viewport?: Viewport) => void;
@@ -106,10 +106,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   noDragClassName?: string;
   noWheelClassName?: string;
   noPanClassName?: string;
-  fitViewOnInit?: boolean;
+  fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
   connectOnClick?: boolean;
   attributionPosition?: AttributionPosition;
-  pro?: ProOptions;
+  proOptions?: ProOptions;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -129,7 +130,7 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;
-  fitViewParams?: FitViewParams;
+  fitViewOptions?: FitViewOptions;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
   onFitView?: () => void;

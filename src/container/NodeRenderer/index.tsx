@@ -37,7 +37,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid } =
     useStore(selector, shallow);
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
-  const reseizeObserverRef = useRef<ResizeObserver>();
+  const resizeObserverRef = useRef<ResizeObserver>();
 
   const resizeObserver = useMemo(() => {
     if (typeof ResizeObserver === 'undefined') {
@@ -54,14 +54,14 @@ const NodeRenderer = (props: NodeRendererProps) => {
       updateNodeDimensions(updates);
     });
 
-    reseizeObserverRef.current = observer;
+    resizeObserverRef.current = observer;
 
     return observer;
   }, []);
 
   useEffect(() => {
     return () => {
-      reseizeObserverRef?.current?.disconnect();
+      resizeObserverRef?.current?.disconnect();
     };
   }, []);
 
@@ -78,8 +78,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
-        const isInitialized =
-          node.width && node.height && typeof node.width !== 'undefined' && typeof node.height !== 'undefined';
 
         return (
           <NodeComponent
@@ -95,7 +93,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             xPos={node.positionAbsolute?.x ?? 0}
             yPos={node.positionAbsolute?.y ?? 0}
             dragging={!!node.dragging}
-            isInitialized={!!isInitialized}
             snapGrid={snapGrid}
             snapToGrid={snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}

@@ -3,6 +3,7 @@ import createContext from 'zustand/context';
 
 import { clampPosition, getDimensions } from '../utils';
 import { applyNodeChanges } from '../utils/changes';
+
 import {
   ReactFlowState,
   Node,
@@ -20,10 +21,10 @@ import { createSelectionChange, getSelectionChanges } from '../utils/changes';
 import {
   createNodeInternals,
   createPositionChange,
-  fitView,
   handleControlledEdgeSelectionChange,
   handleControlledNodeSelectionChange,
   isParentSelected,
+  fitView,
 } from './utils';
 import initialState from './initialState';
 
@@ -54,7 +55,7 @@ const createStore = () =>
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, transform, nodeInternals, fitViewOnInit } = get();
+      const { onNodesChange, transform, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
 
       const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
@@ -86,8 +87,9 @@ const createStore = () =>
         return res;
       }, []);
 
-      const fitViewOnInitDone = fitViewOnInit && fitView(get);
-      set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone });
+      const nextFitViewOnInitDone =
+        fitViewOnInit && !fitViewOnInitDone && fitView(get, { initial: true, ...fitViewOnInitOptions });
+      set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone: nextFitViewOnInitDone });
 
       if (changes?.length > 0) {
         onNodesChange?.(changes);
@@ -186,6 +188,7 @@ const createStore = () =>
         onEdgesChange?.(edgesToUnselect);
       }
     },
+
     setMinZoom: (minZoom: number) => {
       const { d3Zoom, maxZoom } = get();
       d3Zoom?.scaleExtent([minZoom, maxZoom]);

@@ -36,7 +36,7 @@
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
     "react-draggable": "^4.4.4",
-    "zustand": "^3.6.7"
+    "zustand": "^3.6.9"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",

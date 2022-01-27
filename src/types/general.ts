@@ -12,7 +12,7 @@ import { ReactFlowInstance } from './instance';
 export type NodeTypesType = { [key: string]: ReactNode };
 export type EdgeTypesType = NodeTypesType;
 
-export type FitView = (fitViewOptions?: FitViewParams) => void;
+export type FitView = (fitViewOptions?: FitViewOptions) => void;
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -28,9 +28,7 @@ export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionO
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
 
-export type OnPaneReady<NodeData = any, EdgeData = any> = (
-  reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>
-) => void;
+export type OnInit<NodeData = any, EdgeData = any> = (reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>) => void;
 
 export interface Connection {
   source: string | null;
@@ -46,7 +44,7 @@ export enum ConnectionMode {
 
 export type OnConnect = (connection: Connection) => void;
 
-export type FitViewParams = {
+export type FitViewOptions = {
   padding?: number;
   includeHiddenNodes?: boolean;
   minZoom?: number;
@@ -153,9 +151,6 @@ export type ReactFlowStore = {
 
   reactFlowVersion: string;
 
-  fitViewOnInit: boolean;
-  fitViewOnInitDone: boolean;
-
   connectionStartHandle: StartHandle | null;
 
   onConnect?: OnConnect;
@@ -165,6 +160,10 @@ export type ReactFlowStore = {
 
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
+
+  fitViewOnInit: boolean;
+  fitViewOnInitDone: boolean;
+  fitViewOnInitOptions: FitViewOptions | undefined;
 };
 
 export type ReactFlowActions = {

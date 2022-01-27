@@ -69,7 +69,7 @@ const ControlledUncontrolled = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       defaultEdgeOptions={defaultEdgeOptions}
-      fitViewOnInit
+      fitView
     >
       <Background variant={BackgroundVariant.Lines} />
 

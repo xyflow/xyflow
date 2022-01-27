@@ -16,7 +16,7 @@ import ReactFlow, {
 
 import ColorSelectorNode from './ColorSelectorNode';
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
+const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
   reactFlowInstance.fitView();
 };
@@ -111,13 +111,13 @@ const CustomNodeFlow = () => {
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
       style={{ background: bgColor }}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       nodeTypes={nodeTypes}
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
       defaultZoom={1.5}
-      fitViewOnInit
+      fitView
     >
       <MiniMap
         nodeStrokeColor={(n: Node): string => {

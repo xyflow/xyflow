@@ -16,7 +16,7 @@ import FloatingEdge from './FloatingEdge';
 import FloatingConnectionLine from './FloatingConnectionLine';
 import { createElements } from './utils';
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
+const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 
 const { nodes: initialNodes, edges: initialEdges } = createElements();
 
@@ -40,7 +40,7 @@ const FloatingEdges = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onPaneReady={onPaneReady}
+        onInit={onInit}
         edgeTypes={edgeTypes}
         connectionLineComponent={FloatingConnectionLine}
       >

@@ -31,7 +31,7 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
-  const onPaneReady = (rfi: ReactFlowInstance) => setReactFlowInstance(rfi);
+  const onInit = (rfi: ReactFlowInstance) => setReactFlowInstance(rfi);
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -60,7 +60,7 @@ const DnDFlow = () => {
             onEdgesChange={onEdgesChange}
             onNodesChange={onNodesChange}
             onConnect={onConnect}
-            onPaneReady={onPaneReady}
+            onInit={onInit}
             onDrop={onDrop}
             onDragOver={onDragOver}
           >

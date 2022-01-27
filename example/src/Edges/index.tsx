@@ -18,7 +18,7 @@ import ReactFlow, {
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
+const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
@@ -121,7 +121,7 @@ const EdgesFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       snapToGrid={true}
       edgeTypes={edgeTypes}
     >

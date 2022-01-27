@@ -67,7 +67,7 @@ const LayoutFlow = () => {
           edges={edges}
           onConnect={onConnect}
           nodeExtent={nodeExtent}
-          onPaneReady={() => onLayout('TB')}
+          onInit={() => onLayout('TB')}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
         >

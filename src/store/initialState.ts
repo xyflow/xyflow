@@ -37,13 +37,13 @@ const initialState: ReactFlowStore = {
   nodesDraggable: true,
   nodesConnectable: true,
   elementsSelectable: true,
+  fitViewOnInit: false,
+  fitViewOnInitDone: false,
+  fitViewOnInitOptions: undefined,
 
   multiSelectionActive: false,
 
   reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
-
-  fitViewOnInit: false,
-  fitViewOnInitDone: false,
 
   connectionStartHandle: null,
   connectOnClick: true,

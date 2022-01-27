@@ -32,7 +32,7 @@ const onSelectionContextMenu = (event: MouseEvent, nodes: Node[]) => {
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('node click:', node);
 
 const onSelectionChange = ({ nodes, edges }: OnSelectionChangeParams) => console.log('selection change', nodes, edges);
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
+const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log('pane ready:', reactFlowInstance);
 };
 
@@ -183,7 +183,7 @@ const OverviewFlow = () => {
       onSelectionChange={onSelectionChange}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
@@ -192,8 +192,10 @@ const OverviewFlow = () => {
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
-      fitViewOnInit
+      fitView
+      fitViewOptions={{ padding: 0.2 }}
       attributionPosition="top-right"
+      maxZoom={Infinity}
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />

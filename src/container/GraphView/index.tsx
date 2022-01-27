@@ -4,7 +4,7 @@ import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import Viewport from '../Viewport';
-import useOnPaneReadyHandler from '../../hooks/useOnPaneReadyHandler';
+import useOnInitHandler from '../../hooks/useOnInitHandler';
 import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
 
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
@@ -30,7 +30,7 @@ const GraphView = ({
   onMove,
   onMoveStart,
   onMoveEnd,
-  onPaneReady,
+  onInit,
   onNodeClick,
   onEdgeClick,
   onNodeDoubleClick,
@@ -82,7 +82,7 @@ const GraphView = ({
   noWheelClassName,
   noPanClassName,
 }: GraphViewProps) => {
-  useOnPaneReadyHandler(onPaneReady);
+  useOnInitHandler(onInit);
 
   return (
     <FlowRenderer

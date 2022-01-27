@@ -4,12 +4,12 @@ import cc from 'classcat';
 import { AttributionPosition, ProOptions } from '../../types';
 
 type AttributionProps = {
-  pro?: ProOptions;
+  proOptions?: ProOptions;
   position?: AttributionPosition;
 };
 
-function Attribution({ pro, position = 'bottom-right' }: AttributionProps) {
-  if (pro?.account === 'paid-subscription' && pro?.hideAttribution) {
+function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
+  if (proOptions?.account === 'paid-subscription' && proOptions?.hideAttribution) {
     return null;
   }
 

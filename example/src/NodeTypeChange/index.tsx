@@ -58,7 +58,7 @@ const NodeTypeChangeFlow = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      fitViewOnInit
+      fitView
     >
       <button onClick={changeType} style={buttonStyle}>
         change type

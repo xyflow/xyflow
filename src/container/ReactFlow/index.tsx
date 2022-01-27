@@ -46,7 +46,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       edgeTypes = defaultEdgeTypes,
       onNodeClick,
       onEdgeClick,
-      onPaneReady,
+      onInit,
       onMove,
       onMoveStart,
       onMoveEnd,
@@ -115,10 +115,11 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       noDragClassName = 'nodrag',
       noWheelClassName = 'nowheel',
       noPanClassName = 'nopan',
-      fitViewOnInit = false,
+      fitView = false,
+      fitViewOptions,
       connectOnClick = true,
       attributionPosition,
-      pro,
+      proOptions,
       defaultEdgeOptions,
       ...rest
     },
@@ -132,7 +133,7 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
       <div {...rest} ref={ref} className={reactFlowClasses}>
         <Wrapper>
           <GraphView
-            onPaneReady={onPaneReady}
+            onInit={onInit}
             onMove={onMove}
             onMoveStart={onMoveStart}
             onMoveEnd={onMoveEnd}
@@ -209,13 +210,14 @@ const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType
             snapGrid={snapGrid}
             connectionMode={connectionMode}
             translateExtent={translateExtent}
-            fitViewOnInit={fitViewOnInit}
             connectOnClick={connectOnClick}
             defaultEdgeOptions={defaultEdgeOptions}
+            fitView={fitView}
+            fitViewOptions={fitViewOptions}
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
-          <Attribution pro={pro} position={attributionPosition} />
+          <Attribution proOptions={proOptions} position={attributionPosition} />
         </Wrapper>
       </div>
     );

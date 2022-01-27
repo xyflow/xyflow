@@ -17,6 +17,7 @@ import {
   ConnectionMode,
   SnapGrid,
   DefaultEdgeOptions,
+  FitViewOptions,
 } from '../../types';
 
 interface StoreUpdaterProps {
@@ -40,9 +41,10 @@ interface StoreUpdaterProps {
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
   translateExtent?: CoordinateExtent;
-  fitViewOnInit: boolean;
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
+  fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -94,9 +96,10 @@ const StoreUpdater = ({
   snapGrid,
   snapToGrid,
   translateExtent,
-  fitViewOnInit,
   connectOnClick,
   defaultEdgeOptions,
+  fitView,
+  fitViewOptions,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -127,12 +130,13 @@ const StoreUpdater = ({
   useDirectStoreUpdater('nodesDraggable', nodesDraggable, store.setState);
   useDirectStoreUpdater('nodesConnectable', nodesConnectable, store.setState);
   useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);
-  useDirectStoreUpdater('fitViewOnInit', fitViewOnInit, store.setState);
   useDirectStoreUpdater('snapToGrid', snapToGrid, store.setState);
   useDirectStoreUpdater('snapGrid', snapGrid, store.setState);
   useDirectStoreUpdater('onNodesChange', onNodesChange, store.setState);
   useDirectStoreUpdater('onEdgesChange', onEdgesChange, store.setState);
   useDirectStoreUpdater('connectOnClick', connectOnClick, store.setState);
+  useDirectStoreUpdater('fitViewOnInit', fitView, store.setState);
+  useDirectStoreUpdater('fitViewOnInitOptions', fitViewOptions, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

@@ -70,7 +70,7 @@ const ValidationFlow = () => {
       onConnectStart={onConnectStart}
       onConnectStop={onConnectStop}
       onConnectEnd={onConnectEnd}
-      fitViewOnInit
+      fitView
     />
   );
 };

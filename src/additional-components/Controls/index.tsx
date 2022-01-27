@@ -25,7 +25,7 @@ const Controls: FC<ControlProps> = ({
   showZoom = true,
   showFitView = true,
   showInteractive = true,
-  fitViewParams,
+  fitViewOptions,
   onZoomIn,
   onZoomOut,
   onFitView,
@@ -51,9 +51,9 @@ const Controls: FC<ControlProps> = ({
   }, [zoomOut, onZoomOut]);
 
   const onFitViewHandler = useCallback(() => {
-    fitView?.(fitViewParams);
+    fitView?.(fitViewOptions);
     onFitView?.();
-  }, [fitView, fitViewParams, onFitView]);
+  }, [fitView, fitViewOptions, onFitView]);
 
   const onInteractiveChangeHandler = useCallback(() => {
     store.setState({

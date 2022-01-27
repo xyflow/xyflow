@@ -35,7 +35,7 @@ const SaveRestore = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onPaneReady={setRfInstance}
+        onInit={setRfInstance}
       >
         <Controls rfInstance={rfInstance} setNodes={setNodes} setEdges={setEdges} />
       </ReactFlow>

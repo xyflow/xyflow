@@ -63,7 +63,7 @@ const BasicFlow = () => {
       defaultZoom={1.5}
       minZoom={0.2}
       maxZoom={4}
-      fitViewOnInit
+      fitView
     >
       <Background variant={BackgroundVariant.Lines} />
 

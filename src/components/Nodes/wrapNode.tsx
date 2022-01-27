@@ -40,7 +40,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     sourcePosition,
     targetPosition,
     hidden,
-    isInitialized,
     snapToGrid,
     snapGrid,
     dragging,
@@ -60,11 +59,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         zIndex,
         transform: `translate(${xPos}px,${yPos}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
-        // prevents jumping of nodes on start
-        opacity: isInitialized ? 1 : 0,
         ...style,
       }),
-      [zIndex, xPos, yPos, hasPointerEvents, isInitialized, style]
+      [zIndex, xPos, yPos, hasPointerEvents, style]
     );
 
     const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);

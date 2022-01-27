@@ -13,7 +13,7 @@ import ReactFlow, {
   ReactFlowInstance,
 } from 'react-flow-renderer';
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
+const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 
@@ -38,7 +38,7 @@ const EmptyFlow = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}

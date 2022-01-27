@@ -53,7 +53,7 @@ const initialNodes: Node[] = [
 
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' }];
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
+const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge) => console.log('start update', edge);
 const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge) => console.log('end update', edge);
 
@@ -79,7 +79,7 @@ const UpdatableEdge = () => {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       snapToGrid={true}
       onEdgeUpdate={onEdgeUpdate}
       onConnect={onConnect}

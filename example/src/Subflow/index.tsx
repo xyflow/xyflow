@@ -113,7 +113,7 @@ const BasicFlow = () => {
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, []);
-  const onPaneReady = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
+  const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
     setNodes((nds) => {
@@ -155,7 +155,7 @@ const BasicFlow = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}
@@ -168,7 +168,7 @@ const BasicFlow = () => {
       maxZoom={4}
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
-      fitViewOnInit
+      fitView
     >
       <MiniMap />
       <Controls />

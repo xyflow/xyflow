@@ -15,7 +15,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import { getElements } from './utils';
 
-const onPaneReady = (reactFlowInstance: ReactFlowInstance) => {
+const onInit = (reactFlowInstance: ReactFlowInstance) => {
   reactFlowInstance.fitView();
   console.log(reactFlowInstance.getNodes());
 };
@@ -36,7 +36,7 @@ const EdgeTypesFlow = () => {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      onPaneReady={onPaneReady}
+      onInit={onInit}
       onConnect={onConnect}
       minZoom={0.2}
       zoomOnScroll={false}
