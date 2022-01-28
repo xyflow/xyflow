@@ -6,6 +6,7 @@ import shallow from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
+import useMemoizedMouseHandler from './useMemoizedMouseHandler';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedNodes: s.addSelectedNodes,
@@ -76,45 +77,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       [snapToGrid, snapGrid?.[0], snapGrid?.[1]]
     );
 
-    const onMouseEnterHandler = useCallback(
-      (event: MouseEvent) => {
-        if (onMouseEnter && !dragging) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onMouseEnter(event, node);
-        }
-      },
-      [onMouseEnter, dragging, id]
-    );
-
-    const onMouseMoveHandler = useCallback(
-      (event: MouseEvent) => {
-        if (onMouseMove && !dragging) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onMouseMove(event, node);
-        }
-      },
-      [onMouseMove, dragging, id]
-    );
-
-    const onMouseLeaveHandler = useCallback(
-      (event: MouseEvent) => {
-        if (onMouseLeave && !dragging) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onMouseLeave?.(event, node);
-        }
-      },
-      [onMouseLeave, dragging, id]
-    );
-
-    const onContextMenuHandler = useCallback(
-      (event: MouseEvent) => {
-        if (onContextMenu) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onContextMenu(event, node);
-        }
-      },
-      [onContextMenu, id]
-    );
+    const onMouseEnterHandler = useMemoizedMouseHandler(id, dragging, store.getState, onMouseEnter);
+    const onMouseMoveHandler = useMemoizedMouseHandler(id, dragging, store.getState, onMouseMove);
+    const onMouseLeaveHandler = useMemoizedMouseHandler(id, dragging, store.getState, onMouseLeave);
+    const onContextMenuHandler = useMemoizedMouseHandler(id, false, store.getState, onContextMenu);
+    const onNodeDoubleClickHandler = useMemoizedMouseHandler(id, false, store.getState, onNodeDoubleClick);
 
     const onSelectNodeHandler = useCallback(
       (event: MouseEvent) => {
@@ -129,7 +96,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
           if (onClick) {
             const node = store.getState().nodeInternals.get(id)!;
-            onClick(event, node);
+            onClick(event, { ...node });
           }
         }
       },
@@ -138,11 +105,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onDragStart = useCallback(
       (event: DraggableEvent) => {
-        if (onNodeDragStart) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onNodeDragStart(event as MouseEvent, { ...node });
-        }
-
         if (selectNodesOnDrag && isSelectable) {
           store.setState({ nodesSelectionActive: false });
 
@@ -153,12 +115,19 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           unselectNodesAndEdges();
           store.setState({ nodesSelectionActive: false });
         }
+
+        if (onNodeDragStart) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onNodeDragStart(event as MouseEvent, { ...node });
+        }
       },
       [id, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
       (event: DraggableEvent, draggableData: DraggableData) => {
+        updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
+
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
           onNodeDrag(event as MouseEvent, {
@@ -174,8 +143,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             },
           });
         }
-
-        updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },
       [id, onNodeDrag]
     );
@@ -212,16 +179,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         }
       },
       [id, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
-    );
-
-    const onNodeDoubleClickHandler = useCallback(
-      (event: MouseEvent) => {
-        if (onNodeDoubleClick) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onNodeDoubleClick(event, { ...node });
-        }
-      },
-      [id, onNodeDoubleClick]
     );
 
     useEffect(() => {
