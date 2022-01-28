@@ -3,7 +3,7 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
-import { Node, NodeTypesType, ReactFlowState, WrapNodeProps } from '../../types';
+import { Node, NodeTypesType, Position, ReactFlowState, WrapNodeProps } from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesType;
@@ -87,8 +87,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             style={node.style}
             type={nodeType}
             data={node.data}
-            sourcePosition={node.sourcePosition}
-            targetPosition={node.targetPosition}
+            sourcePosition={node.sourcePosition || Position.Bottom}
+            targetPosition={node.targetPosition || Position.Top}
             hidden={node.hidden}
             xPos={node.positionAbsolute?.x ?? 0}
             yPos={node.positionAbsolute?.y ?? 0}

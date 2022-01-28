@@ -78,8 +78,8 @@ export interface WrapNodeProps<T = any> {
   onNodeDragStop?: NodeMouseHandler;
   style?: CSSProperties;
   className?: string;
-  sourcePosition?: Position;
-  targetPosition?: Position;
+  sourcePosition: Position;
+  targetPosition: Position;
   hidden?: boolean;
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;

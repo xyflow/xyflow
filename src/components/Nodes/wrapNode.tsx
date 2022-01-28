@@ -11,6 +11,7 @@ const selector = (s: ReactFlowState) => ({
   addSelectedNodes: s.addSelectedNodes,
   updateNodePosition: s.updateNodePosition,
   unselectNodesAndEdges: s.unselectNodesAndEdges,
+  updateNodeDimensions: s.updateNodeDimensions,
 });
 
 export default (NodeComponent: ComponentType<NodeProps>) => {
@@ -51,8 +52,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noDragClassName,
   }: WrapNodeProps) => {
     const store = useStoreApi();
-    const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition } = useStore(selector, shallow);
+    const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition, updateNodeDimensions } = useStore(
+      selector,
+      shallow
+    );
     const nodeElement = useRef<HTMLDivElement>(null);
+    const prevSourcePosition = useRef(sourcePosition);
+    const prevTargetPosition = useRef(targetPosition);
+    const prevType = useRef(type);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
     const nodeStyle: CSSProperties = useMemo(
       () => ({
@@ -185,6 +192,26 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         return () => resizeObserver?.unobserve(currNode);
       }
     }, [hidden]);
+
+    useEffect(() => {
+      // when the user programmatically changes the source or handle position, we re-initialize the node
+      const typeChanged = prevType.current !== type;
+      const sourcePosChanged = prevSourcePosition.current !== sourcePosition;
+      const targetPosChanged = prevTargetPosition.current !== targetPosition;
+
+      if (nodeElement.current && (typeChanged || sourcePosChanged || targetPosChanged)) {
+        if (typeChanged) {
+          prevType.current = type;
+        }
+        if (sourcePosChanged) {
+          prevSourcePosition.current = sourcePosition;
+        }
+        if (targetPosChanged) {
+          prevTargetPosition.current = targetPosition;
+        }
+        updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
+      }
+    }, [id, type, sourcePosition, targetPosition]);
 
     if (hidden) {
       return null;
