@@ -140,7 +140,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: DraggableEvent) => {
         if (onNodeDragStart) {
           const node = store.getState().nodeInternals.get(id)!;
-          onNodeDragStart(event as MouseEvent, node);
+          onNodeDragStart(event as MouseEvent, { ...node });
         }
 
         if (selectNodesOnDrag && isSelectable) {
@@ -161,10 +161,18 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: DraggableEvent, draggableData: DraggableData) => {
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
-          // node.position.x += draggableData.deltaX;
-          // node.position.y += draggableData.deltaY;
-
-          onNodeDrag(event as MouseEvent, node);
+          onNodeDrag(event as MouseEvent, {
+            ...node,
+            dragging: true,
+            position: {
+              x: node.position.x + draggableData.deltaX,
+              y: node.position.y + draggableData.deltaY,
+            },
+            positionAbsolute: {
+              x: (node.positionAbsolute?.x || 0) + draggableData.deltaX,
+              y: (node.positionAbsolute?.y || 0) + draggableData.deltaY,
+            },
+          });
         }
 
         updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
@@ -188,7 +196,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           }
 
           if (onClick && node) {
-            onClick(event as MouseEvent, node);
+            onClick(event as MouseEvent, { ...node });
           }
 
           return;
@@ -200,7 +208,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         });
 
         if (onNodeDragStop && node) {
-          onNodeDragStop(event as MouseEvent, node);
+          onNodeDragStop(event as MouseEvent, { ...node, dragging: false });
         }
       },
       [id, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
@@ -210,7 +218,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: MouseEvent) => {
         if (onNodeDoubleClick) {
           const node = store.getState().nodeInternals.get(id)!;
-          onNodeDoubleClick(event, node);
+          onNodeDoubleClick(event, { ...node });
         }
       },
       [id, onNodeDoubleClick]
