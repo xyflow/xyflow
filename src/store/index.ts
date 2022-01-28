@@ -88,7 +88,8 @@ const createStore = () =>
       }, []);
 
       const nextFitViewOnInitDone =
-        fitViewOnInit && !fitViewOnInitDone && fitView(get, { initial: true, ...fitViewOnInitOptions });
+        fitViewOnInitDone ||
+        (fitViewOnInit && !fitViewOnInitDone && fitView(get, { initial: true, ...fitViewOnInitOptions }));
       set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone: nextFitViewOnInitDone });
 
       if (changes?.length > 0) {
