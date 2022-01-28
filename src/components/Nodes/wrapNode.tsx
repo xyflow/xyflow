@@ -71,39 +71,49 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       [zIndex, xPos, yPos, hasPointerEvents, style]
     );
 
-    const node = useMemo(() => ({ id, type, position: { x: xPos, y: yPos }, data }), [id, type, xPos, yPos, data]);
-    const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
+    const grid = useMemo(
+      () => (snapToGrid ? snapGrid : [1, 1])! as [number, number],
+      [snapToGrid, snapGrid?.[0], snapGrid?.[1]]
+    );
 
     const onMouseEnterHandler = useCallback(
       (event: MouseEvent) => {
         if (onMouseEnter && !dragging) {
+          const node = store.getState().nodeInternals.get(id)!;
           onMouseEnter(event, node);
         }
       },
-      [onMouseEnter, dragging, node]
+      [onMouseEnter, dragging, id]
     );
 
     const onMouseMoveHandler = useCallback(
       (event: MouseEvent) => {
         if (onMouseMove && !dragging) {
+          const node = store.getState().nodeInternals.get(id)!;
           onMouseMove(event, node);
         }
       },
-      [onMouseMove, dragging, node]
+      [onMouseMove, dragging, id]
     );
 
     const onMouseLeaveHandler = useCallback(
       (event: MouseEvent) => {
         if (onMouseLeave && !dragging) {
+          const node = store.getState().nodeInternals.get(id)!;
           onMouseLeave?.(event, node);
         }
       },
-      [onMouseLeave, dragging, node]
+      [onMouseLeave, dragging, id]
     );
 
     const onContextMenuHandler = useCallback(
-      (event: MouseEvent) => onContextMenu?.(event, node),
-      [onContextMenu, node]
+      (event: MouseEvent) => {
+        if (onContextMenu) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onContextMenu(event, node);
+        }
+      },
+      [onContextMenu, id]
     );
 
     const onSelectNodeHandler = useCallback(
@@ -113,75 +123,97 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             store.setState({ nodesSelectionActive: false });
 
             if (!selected) {
-              addSelectedNodes([node.id]);
+              addSelectedNodes([id]);
             }
           }
 
-          onClick?.(event, node);
+          if (onClick) {
+            const node = store.getState().nodeInternals.get(id)!;
+            onClick(event, node);
+          }
         }
       },
-      [isSelectable, selected, isDraggable, onClick, node]
+      [isSelectable, selected, isDraggable, onClick, id]
     );
 
     const onDragStart = useCallback(
       (event: DraggableEvent) => {
-        onNodeDragStart?.(event as MouseEvent, node);
+        if (onNodeDragStart) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onNodeDragStart(event as MouseEvent, node);
+        }
 
         if (selectNodesOnDrag && isSelectable) {
           store.setState({ nodesSelectionActive: false });
 
           if (!selected) {
-            addSelectedNodes([node.id]);
+            addSelectedNodes([id]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
           unselectNodesAndEdges();
           store.setState({ nodesSelectionActive: false });
         }
       },
-      [node, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [id, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
     const onDrag = useCallback(
       (event: DraggableEvent, draggableData: DraggableData) => {
-        node.position.x += draggableData.deltaX;
-        node.position.y += draggableData.deltaY;
+        if (onNodeDrag) {
+          const node = store.getState().nodeInternals.get(id)!;
+          // node.position.x += draggableData.deltaX;
+          // node.position.y += draggableData.deltaY;
 
-        onNodeDrag?.(event as MouseEvent, node);
+          onNodeDrag(event as MouseEvent, node);
+        }
 
         updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
       },
-      [id, node, onNodeDrag]
+      [id, onNodeDrag]
     );
 
     const onDragStop = useCallback(
       (event: DraggableEvent) => {
         // onDragStop also gets called when user just clicks on a node.
         // Because of that we set dragging to true inside the onDrag handler and handle the click here
+        let node;
+
+        if (onClick || onNodeDragStop) {
+          node = store.getState().nodeInternals.get(id)!;
+        }
+
         if (!dragging) {
           if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedNodes([node.id]);
+            addSelectedNodes([id]);
           }
 
-          onClick?.(event as MouseEvent, node);
+          if (onClick && node) {
+            onClick(event as MouseEvent, node);
+          }
 
           return;
         }
 
         updateNodePosition({
-          id: node.id,
+          id,
           dragging: false,
         });
 
-        onNodeDragStop?.(event as MouseEvent, node);
+        if (onNodeDragStop && node) {
+          onNodeDragStop(event as MouseEvent, node);
+        }
       },
-      [node, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
+      [id, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
     );
 
     const onNodeDoubleClickHandler = useCallback(
       (event: MouseEvent) => {
-        onNodeDoubleClick?.(event, node);
+        if (onNodeDoubleClick) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onNodeDoubleClick(event, node);
+        }
       },
-      [node, onNodeDoubleClick]
+      [id, onNodeDoubleClick]
     );
 
     useEffect(() => {
