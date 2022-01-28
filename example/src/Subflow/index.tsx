@@ -55,7 +55,7 @@ const initialNodes: Node[] = [
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
-    position: { x: 100, y: 100 },
+    position: { x: 20, y: 100 },
     className: 'light',
     parentNode: '4b',
   },
@@ -113,15 +113,18 @@ const BasicFlow = () => {
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, []);
+
   const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.position = {
-          x: Math.random() * 400,
-          y: Math.random() * 400,
-        };
+        if (!n.parentNode) {
+          n.position = {
+            x: Math.random() * 400,
+            y: Math.random() * 400,
+          };
+        }
 
         return n;
       });
@@ -148,8 +151,6 @@ const BasicFlow = () => {
       });
     });
   };
-
-  console.log(nodes);
 
   return (
     <ReactFlow
