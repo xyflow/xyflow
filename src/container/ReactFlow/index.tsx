@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef, FunctionComponent } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import cc from 'classcat';
 
 import GraphView from '../GraphView';
