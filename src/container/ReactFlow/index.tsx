@@ -34,7 +34,7 @@ const defaultEdgeTypes = {
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultPosition: [number, number] = [0, 0];
 
-const ReactFlow: FunctionComponent<ReactFlowProps> = forwardRef<ReactFlowRefType, ReactFlowProps>(
+const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
     {
       nodes,
