@@ -61,10 +61,11 @@ const initialNodes: Node[] = [
   },
   {
     id: '5',
+    type: 'group',
     data: { label: 'Node 5' },
     position: { x: 650, y: 250 },
     className: 'light',
-    style: { backgroundColor: 'rgba(20 ,200, 255, 1.5)', width: 400, height: 150 },
+    style: { width: 400, height: 150 },
     zIndex: 1000,
   },
   {
@@ -98,7 +99,6 @@ const initialEdges: Edge[] = [
   { id: 'e4a-4b1', source: '4a', target: '4b1' },
   { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
   { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
-  { id: '3-5', source: '3', target: '5' },
 ];
 
 const nodeTypes = {
