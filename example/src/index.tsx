@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 
 import Overview from './Overview';
 import Basic from './Basic';
@@ -163,33 +163,35 @@ const routes = [
   },
 ];
 
-const Header = withRouter(({ history, location }) => {
-  const onChange = (event: ChangeEvent<HTMLSelectElement>) => history.push(event.target.value);
+const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const onChange = (event: ChangeEvent<HTMLSelectElement>) => navigate(event.target.value);
 
   return (
-    <header>
-      <a className="logo" href="https://github.com/wbkd/react-flow">
-        React Flow Dev
-      </a>
-      <select defaultValue={location.pathname} onChange={onChange}>
-        {routes.map((route) => (
-          <option value={route.path} key={route.path}>
-            {route.path === '/' ? 'overview' : route.path.substr(1, route.path.length)}
-          </option>
-        ))}
-      </select>
-    </header>
+      <header>
+        <a className="logo" href="https://github.com/wbkd/react-flow">
+          React Flow Dev
+        </a>
+        <select defaultValue={location.pathname} onChange={onChange}>
+          {routes.map((route) => (
+              <option value={route.path} key={route.path}>
+                {route.path === '/' ? 'overview' : route.path.substring(1, route.path.length)}
+              </option>
+          ))}
+        </select>
+      </header>
   );
-});
+};
 
 ReactDOM.render(
-  <Router>
+  <BrowserRouter>
     <Header />
-    <Switch>
+    <Routes>
       {routes.map((route) => (
-        <Route exact path={route.path} render={() => <route.component />} key={route.path} />
+        <Route path={route.path} key={route.path} element={<route.component />}/>
       ))}
-    </Switch>
-  </Router>,
+    </Routes>
+  </BrowserRouter>,
   document.getElementById('root')
 );
