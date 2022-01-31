@@ -79,7 +79,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   nodesConnectable?: boolean;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
-  paneMoveable?: boolean;
+  panOnDrag?: boolean;
   minZoom?: number;
   maxZoom?: number;
   defaultZoom?: number;

@@ -96,7 +96,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       panOnScrollSpeed = 0.5,
       panOnScrollMode = PanOnScrollMode.Free,
       zoomOnDoubleClick = true,
-      paneMoveable = true,
+      panOnDrag = true,
       onPaneClick,
       onPaneScroll,
       onPaneContextMenu,
@@ -167,7 +167,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             panOnScroll={panOnScroll}
             panOnScrollSpeed={panOnScrollSpeed}
             panOnScrollMode={panOnScrollMode}
-            paneMoveable={paneMoveable}
+            panOnDrag={panOnDrag}
             onPaneClick={onPaneClick}
             onPaneScroll={onPaneScroll}
             onPaneContextMenu={onPaneContextMenu}

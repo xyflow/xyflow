@@ -46,7 +46,7 @@ const InteractionFlow = () => {
   const [panOnScroll, setPanOnScroll] = useState<boolean>(false);
   const [panOnScrollMode, setPanOnScrollMode] = useState<PanOnScrollMode>(PanOnScrollMode.Free);
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState<boolean>(false);
-  const [paneMoveable, setPaneMoveable] = useState<boolean>(true);
+  const [panOnDrag, setPanOnDrag] = useState<boolean>(true);
   const [captureZoomClick, setCaptureZoomClick] = useState<boolean>(false);
   const [captureZoomScroll, setCaptureZoomScroll] = useState<boolean>(false);
   const [captureElementClick, setCaptureElementClick] = useState<boolean>(false);
@@ -70,7 +70,7 @@ const InteractionFlow = () => {
       onEdgeClick={captureElementClick ? onEdgeClick : undefined}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
-      paneMoveable={paneMoveable}
+      panOnDrag={panOnDrag}
       onPaneClick={captureZoomClick ? onPaneClick : undefined}
       onPaneScroll={captureZoomScroll ? onPaneScroll : undefined}
       onPaneContextMenu={captureZoomClick ? onPaneContextMenu : undefined}
@@ -180,14 +180,14 @@ const InteractionFlow = () => {
           </label>
         </div>
         <div>
-          <label htmlFor="panemoveable">
-            paneMoveable
+          <label htmlFor="panondrag">
+            panOnDrag
             <input
-              id="panemoveable"
+              id="panondrag"
               type="checkbox"
-              checked={paneMoveable}
-              onChange={(event) => setPaneMoveable(event.target.checked)}
-              className="react-flow__panemoveable"
+              checked={panOnDrag}
+              onChange={(event) => setPanOnDrag(event.target.checked)}
+              className="react-flow__panondrag"
             />
           </label>
         </div>

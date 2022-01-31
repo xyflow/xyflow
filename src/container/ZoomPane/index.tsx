@@ -18,7 +18,7 @@ interface ZoomPaneProps {
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
-  paneMoveable?: boolean;
+  panOnDrag?: boolean;
   defaultPosition?: [number, number];
   defaultZoom?: number;
   onMove?: (viewport?: Viewport) => void;
@@ -60,7 +60,7 @@ const ZoomPane = ({
   zoomOnDoubleClick = true,
   selectionKeyPressed,
   elementsSelectable,
-  paneMoveable = true,
+  panOnDrag = true,
   defaultPosition = [0, 0],
   defaultZoom = 1,
   zoomActivationKeyCode,
@@ -216,7 +216,7 @@ const ZoomPane = ({
         const pinchZoom = zoomOnPinch && event.ctrlKey;
 
         // if all interactions are disabled, we prevent all zoom events
-        if (!paneMoveable && !zoomScroll && !panOnScroll && !zoomOnDoubleClick && !zoomOnPinch) {
+        if (!panOnDrag && !zoomScroll && !panOnScroll && !zoomOnDoubleClick && !zoomOnPinch) {
           return false;
         }
 
@@ -250,7 +250,7 @@ const ZoomPane = ({
         }
 
         // if the pane is not movable, we prevent dragging it with mousestart or touchstart
-        if (!paneMoveable && (event.type === 'mousedown' || event.type === 'touchstart')) {
+        if (!panOnDrag && (event.type === 'mousedown' || event.type === 'touchstart')) {
           return false;
         }
 
@@ -264,7 +264,7 @@ const ZoomPane = ({
     zoomOnPinch,
     panOnScroll,
     zoomOnDoubleClick,
-    paneMoveable,
+    panOnDrag,
     selectionKeyPressed,
     elementsSelectable,
     zoomActivationKeyPressed,
