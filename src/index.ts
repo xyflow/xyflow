@@ -29,6 +29,7 @@ export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternal
 export { default as useNodes } from './hooks/useNodes';
 export { default as useEdges } from './hooks/useEdges';
 export { default as useViewport } from './hooks/useViewport';
+export { default as useKeyPress } from './hooks/useKeyPress';
 export * from './hooks/useNodesEdgesState';
 export { useStore, useStoreApi } from './store';
 
