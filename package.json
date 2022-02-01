@@ -51,7 +51,7 @@
     "@rollup/plugin-replace": "^3.0.1",
     "@svgr/rollup": "^6.2.0",
     "@types/d3": "^7.1.0",
-    "@types/react-redux": "^7.1.21",
+    "@types/react-redux": "^7.1.22",
     "@types/redux": "^3.6.31",
     "@types/resize-observer-browser": "^0.1.6",
     "autoprefixer": "^10.4.1",
