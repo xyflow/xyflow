@@ -36,10 +36,10 @@ const useZoomPanHelper = (): ZoomPanHelperFunctions => {
         zoomOut: (duration?: number) => d3Zoom.scaleBy(getTransition(d3Selection, duration), 1 / 1.2),
         zoomTo: (zoomLevel: number, duration?: number) =>
           d3Zoom.scaleTo(getTransition(d3Selection, duration), zoomLevel),
-        transform: (transform: FlowTransform) => {
+        transform: (transform: FlowTransform, duration?: number) => {
           const nextTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.zoom);
 
-          d3Zoom.transform(getTransition(d3Selection), nextTransform);
+          d3Zoom.transform(getTransition(d3Selection, duration), nextTransform);
         },
         fitView: (options: FitViewParams = { padding: DEFAULT_PADDING, includeHiddenNodes: false, duration: 0 }) => {
           const { nodes, width, height, minZoom, maxZoom } = store.getState();
