@@ -9,7 +9,7 @@ export const isEdge = (element: Node | Connection | Edge): element is Edge =>
 export const isNode = (element: Node | Connection | Edge): element is Node =>
   'id' in element && !('source' in element) && !('target' in element);
 
-export const getOutgoers = (node: Node, nodes: Node[], edges: Edge[]): Node[] => {
+export const getOutgoers = <T = any, U extends T = T>(node: Node<U>, nodes: Node<T>[], edges: Edge[]): Node<T>[] => {
   if (!isNode(node)) {
     return [];
   }
@@ -18,7 +18,7 @@ export const getOutgoers = (node: Node, nodes: Node[], edges: Edge[]): Node[] =>
   return nodes.filter((n) => outgoerIds.includes(n.id));
 };
 
-export const getIncomers = (node: Node, nodes: Node[], edges: Edge[]): Node[] => {
+export const getIncomers = <T = any, U extends T = T>(node: Node<U>, nodes: Node<T>[], edges: Edge[]): Node<T>[] => {
   if (!isNode(node)) {
     return [];
   }
