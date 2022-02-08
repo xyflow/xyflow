@@ -5,6 +5,8 @@ body:
     attributes:
       value: |
         Thank you for reporting an issue :pray:.
+        
+        **Please only file issues for v10. Will will no longer fix issues for v9.** 
 
         This issue tracker is for reporting bugs found in react-flow (https://github.com/wbkd/react-flow)
         If you have a question about how to achieve something and are struggling, please post a question
