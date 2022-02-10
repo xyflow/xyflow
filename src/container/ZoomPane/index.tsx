@@ -21,9 +21,9 @@ interface ZoomPaneProps {
   panOnDrag?: boolean;
   defaultPosition?: [number, number];
   defaultZoom?: number;
-  onMove?: (viewport?: Viewport) => void;
-  onMoveStart?: (viewport?: Viewport) => void;
-  onMoveEnd?: (viewport?: Viewport) => void;
+  onMove?: (viewport: Viewport) => void;
+  onMoveStart?: (viewport: Viewport) => void;
+  onMoveEnd?: (viewport: Viewport) => void;
   zoomActivationKeyCode?: KeyCode;
   preventScrolling?: boolean;
   children: ReactNode;

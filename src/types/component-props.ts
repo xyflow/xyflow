@@ -51,9 +51,9 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
   onInit?: OnInit;
-  onMove?: (viewport?: Viewport) => void;
-  onMoveStart?: (viewport?: Viewport) => void;
-  onMoveEnd?: (viewport?: Viewport) => void;
+  onMove?: (viewport: Viewport) => void;
+  onMoveStart?: (viewport: Viewport) => void;
+  onMoveEnd?: (viewport: Viewport) => void;
   onSelectionChange?: OnSelectionChangeFunc;
   onSelectionDragStart?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onSelectionDrag?: (event: ReactMouseEvent, nodes: Node[]) => void;
