@@ -25,7 +25,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { nodeInternals, edges, hasDefaultNodes, hasDefaultEdges } = store.getState();
+    const { nodeInternals, edges, hasDefaultNodes, hasDefaultEdges, onNodesDelete, onEdgesDelete } = store.getState();
     // @TODO: work with nodeInternals instead of converting it to an array
     const nodes = Array.from(nodeInternals).map(([_, node]) => node);
     const selectedNodes = nodes.filter((n) => n.selected);
@@ -33,7 +33,8 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
 
     if (deleteKeyPressed && (selectedNodes || selectedEdges)) {
       const connectedEdges = getConnectedEdges(selectedNodes, edges);
-      const edgeIdsToRemove = [...selectedEdges, ...connectedEdges].map((e) => e.id);
+      const edgesToRemove = [...selectedEdges, ...connectedEdges];
+      const edgeIdsToRemove = edgesToRemove.map((e) => e.id);
 
       if (hasDefaultNodes) {
         selectedNodes.forEach((node) => {
@@ -47,6 +48,9 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
           edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
         });
       }
+
+      onNodesDelete?.(selectedNodes);
+      onEdgesDelete?.(edgesToRemove);
 
       if (onNodesChange) {
         const nodeChanges: NodeChange[] = selectedNodes.map((n) => ({ id: n.id, type: 'remove' }));

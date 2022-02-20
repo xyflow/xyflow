@@ -45,6 +45,8 @@ interface StoreUpdaterProps {
   defaultEdgeOptions?: DefaultEdgeOptions;
   fitView?: boolean;
   fitViewOptions?: FitViewOptions;
+  onNodesDelete?: (nodes: Node[]) => void;
+  onEdgesDelete?: (edges: Edge[]) => void;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -100,6 +102,8 @@ const StoreUpdater = ({
   defaultEdgeOptions,
   fitView,
   fitViewOptions,
+  onNodesDelete,
+  onEdgesDelete,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -137,6 +141,8 @@ const StoreUpdater = ({
   useDirectStoreUpdater('connectOnClick', connectOnClick, store.setState);
   useDirectStoreUpdater('fitViewOnInit', fitView, store.setState);
   useDirectStoreUpdater('fitViewOnInitOptions', fitViewOptions, store.setState);
+  useDirectStoreUpdater('onNodesDelete', onNodesDelete, store.setState);
+  useDirectStoreUpdater('onEdgesDelete', onEdgesDelete, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

@@ -43,6 +43,8 @@ const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('edge mouse 
 const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('edge mouse move', edge);
 const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
 const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('edge double click', edge);
+const onNodesDelete = (nodes: Node[]) => console.log('nodes delete', nodes);
+const onEdgesDelete = (edges: Edge[]) => console.log('edges delete', edges);
 
 const initialNodes: Node[] = [
   {
@@ -196,6 +198,8 @@ const OverviewFlow = () => {
       fitViewOptions={{ padding: 0.2 }}
       attributionPosition="top-right"
       maxZoom={Infinity}
+      onNodesDelete={onNodesDelete}
+      onEdgesDelete={onEdgesDelete}
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />

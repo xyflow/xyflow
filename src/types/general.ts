@@ -164,6 +164,9 @@ export type ReactFlowStore = {
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
   fitViewOnInitOptions: FitViewOptions | undefined;
+
+  onNodesDelete?: (nodes: Node[]) => void;
+  onEdgesDelete?: (edges: Edge[]) => void;
 };
 
 export type ReactFlowActions = {
