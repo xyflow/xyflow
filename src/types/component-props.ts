@@ -18,14 +18,16 @@ import {
   KeyCode,
   PanOnScrollMode,
   OnEdgeUpdateFunc,
-  NodeChange,
-  EdgeChange,
   OnInit,
   ProOptions,
   AttributionPosition,
   DefaultEdgeOptions,
   FitViewOptions,
   BackgroundVariant,
+  OnNodesDelete,
+  OnEdgesDelete,
+  OnNodesChange,
+  OnEdgesChange
 } from '.';
 
 export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
@@ -34,8 +36,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   defaultNodes?: Node[];
   defaultEdges?: Edge[];
   defaultEdgeOptions?: DefaultEdgeOptions;
-  onNodesChange?: (nodeChanges: NodeChange[]) => void;
-  onEdgesChange?: (edgeChanges: EdgeChange[]) => void;
+  onNodesChange?: OnNodesChange;
+  onEdgesChange?: OnEdgesChange;
   onNodeClick?: (event: React.MouseEvent, node: Node) => void;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
@@ -46,8 +48,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
   onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
-  onNodesDelete?: (nodes: Node[]) => void;
-  onEdgesDelete?: (edges: Edge[]) => void;
+  onNodesDelete?: OnNodesDelete;
+  onEdgesDelete?: OnEdgesDelete;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
