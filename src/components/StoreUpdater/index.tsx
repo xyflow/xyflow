@@ -18,6 +18,8 @@ import {
   SnapGrid,
   DefaultEdgeOptions,
   FitViewOptions,
+  OnNodesDelete,
+  OnEdgesDelete
 } from '../../types';
 
 interface StoreUpdaterProps {
@@ -45,8 +47,8 @@ interface StoreUpdaterProps {
   defaultEdgeOptions?: DefaultEdgeOptions;
   fitView?: boolean;
   fitViewOptions?: FitViewOptions;
-  onNodesDelete?: (nodes: Node[]) => void;
-  onEdgesDelete?: (edges: Edge[]) => void;
+  onNodesDelete?: OnNodesDelete;
+  onEdgesDelete?: OnEdgesDelete;
 }
 
 const selector = (s: ReactFlowState) => ({
