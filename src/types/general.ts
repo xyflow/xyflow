@@ -22,6 +22,10 @@ export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 export type OnNodesDelete = (nodes: Node[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
 
+export type OnMove = (event: MouseEvent | TouchEvent, viweport: Viewport) => void;
+export type OnMoveStart = OnMove;
+export type OnMoveEnd = OnMove;
+
 export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => void;
 export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
 export type GetZoom = () => number;

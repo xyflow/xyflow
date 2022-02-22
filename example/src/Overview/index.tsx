@@ -1,4 +1,4 @@
-import { MouseEvent, CSSProperties } from 'react';
+import { MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -15,34 +15,34 @@ import ReactFlow, {
   OnSelectionChangeParams,
 } from 'react-flow-renderer';
 
-const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
-const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onNodeDoubleClick = (_: MouseEvent, node: Node) => console.log('node double click', node);
-const onPaneClick = (event: MouseEvent) => console.log('pane click', event);
-const onPaneScroll = (event?: MouseEvent) => console.log('pane scroll', event);
-const onPaneContextMenu = (event: MouseEvent) => console.log('pane context menu', event);
-const onSelectionDrag = (_: MouseEvent, nodes: Node[]) => console.log('selection drag', nodes);
-const onSelectionDragStart = (_: MouseEvent, nodes: Node[]) => console.log('selection drag start', nodes);
-const onSelectionDragStop = (_: MouseEvent, nodes: Node[]) => console.log('selection drag stop', nodes);
-const onSelectionContextMenu = (event: MouseEvent, nodes: Node[]) => {
+const onNodeDragStart = (_: ReactMouseEvent, node: Node) => console.log('drag start', node);
+const onNodeDrag = (_: ReactMouseEvent, node: Node) => console.log('drag', node);
+const onNodeDragStop = (_: ReactMouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) => console.log('node double click', node);
+const onPaneClick = (event: ReactMouseEvent) => console.log('pane click', event);
+const onPaneScroll = (event?: ReactMouseEvent) => console.log('pane scroll', event);
+const onPaneContextMenu = (event: ReactMouseEvent) => console.log('pane context menu', event);
+const onSelectionDrag = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag', nodes);
+const onSelectionDragStart = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag start', nodes);
+const onSelectionDragStop = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag stop', nodes);
+const onSelectionContextMenu = (event: ReactMouseEvent, nodes: Node[]) => {
   event.preventDefault();
   console.log('selection context menu', nodes);
 };
-const onNodeClick = (_: MouseEvent, node: Node) => console.log('node click:', node);
+const onNodeClick = (_: ReactMouseEvent, node: Node) => console.log('node click:', node);
 
 const onSelectionChange = ({ nodes, edges }: OnSelectionChangeParams) => console.log('selection change', nodes, edges);
 const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log('pane ready:', reactFlowInstance);
 };
 
-const onMoveStart = (transform?: Viewport) => console.log('zoom/move start', transform);
-const onMoveEnd = (transform?: Viewport) => console.log('zoom/move end', transform);
-const onEdgeContextMenu = (_: MouseEvent, edge: Edge) => console.log('edge context menu', edge);
-const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
-const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('edge mouse move', edge);
-const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
-const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('edge double click', edge);
+const onMoveStart = (_: MouseEvent | TouchEvent, viewport: Viewport) => console.log('zoom/move start', viewport);
+const onMoveEnd = (_: MouseEvent | TouchEvent, viewport: Viewport) => console.log('zoom/move end', viewport);
+const onEdgeContextMenu = (_: ReactMouseEvent, edge: Edge) => console.log('edge context menu', edge);
+const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
+const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse move', edge);
+const onEdgeMouseLeave = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
+const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) => console.log('edge double click', edge);
 const onNodesDelete = (nodes: Node[]) => console.log('nodes delete', nodes);
 const onEdgesDelete = (edges: Edge[]) => console.log('edges delete', edges);
 

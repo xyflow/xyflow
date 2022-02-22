@@ -1,4 +1,4 @@
-import { useState, MouseEvent, WheelEvent } from 'react';
+import { useState, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -24,14 +24,14 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
-const onPaneClick = (event: MouseEvent) => console.log('onPaneClick', event);
+const onNodeDragStart = (_: ReactMouseEvent, node: Node) => console.log('drag start', node);
+const onNodeDragStop = (_: ReactMouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeClick = (_: ReactMouseEvent, node: Node) => console.log('click', node);
+const onEdgeClick = (_: ReactMouseEvent, edge: Edge) => console.log('click', edge);
+const onPaneClick = (event: ReactMouseEvent) => console.log('onPaneClick', event);
 const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
-const onPaneContextMenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
-const onMoveEnd = (viewport?: Viewport) => console.log('onMoveEnd', viewport);
+const onPaneContextMenu = (event: ReactMouseEvent) => console.log('onPaneContextMenu', event);
+const onMoveEnd = (_: TouchEvent | MouseEvent, viewport: Viewport) => console.log('onMoveEnd', viewport);
 
 const InteractionFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);

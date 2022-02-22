@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, ReactNode } from 'react';
-import { zoom, zoomIdentity } from 'd3-zoom';
+import { D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import shallow from 'zustand/shallow';
 
@@ -7,7 +7,7 @@ import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../store';
-import { Viewport, PanOnScrollMode, KeyCode, ReactFlowState } from '../../types';
+import { Viewport, PanOnScrollMode, KeyCode, ReactFlowState, OnMove, OnMoveStart, OnMoveEnd } from '../../types';
 
 interface ZoomPaneProps {
   selectionKeyPressed: boolean;
@@ -21,9 +21,9 @@ interface ZoomPaneProps {
   panOnDrag?: boolean;
   defaultPosition?: [number, number];
   defaultZoom?: number;
-  onMove?: (viewport: Viewport) => void;
-  onMoveStart?: (viewport: Viewport) => void;
-  onMoveEnd?: (viewport: Viewport) => void;
+  onMove?: OnMove;
+  onMoveStart?: OnMoveStart;
+  onMoveEnd?: OnMoveEnd;
   zoomActivationKeyCode?: KeyCode;
   preventScrolling?: boolean;
   children: ReactNode;
@@ -165,12 +165,12 @@ const ZoomPane = ({
       if (selectionKeyPressed) {
         d3Zoom.on('zoom', null);
       } else {
-        d3Zoom.on('zoom', (event: any) => {
+        d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
 
           if (onMove) {
             const flowTransform = eventToFlowTransform(event.transform);
-            onMove(flowTransform);
+            onMove(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
           }
         });
       }
@@ -180,11 +180,11 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       if (onMoveStart) {
-        d3Zoom.on('start', (event: any) => {
+        d3Zoom.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
-          onMoveStart(flowTransform);
+          onMoveStart(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
         });
       } else {
         d3Zoom.on('start', null);
@@ -195,12 +195,12 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       if (onMoveEnd) {
-        d3Zoom.on('end', (event: any) => {
+        d3Zoom.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           if (viewChanged(prevTransform.current, event.transform)) {
             const flowTransform = eventToFlowTransform(event.transform);
             prevTransform.current = flowTransform;
 
-            onMoveEnd(flowTransform);
+            onMoveEnd(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
           }
         });
       } else {
