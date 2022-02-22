@@ -17,12 +17,10 @@ export type FitView = (fitViewOptions?: FitViewOptions) => void;
 export type Project = (position: XYPosition) => XYPosition;
 
 export type OnNodesChange = (nodes: NodeChange[]) => void;
-
 export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 
 export type OnNodesDelete = (nodes: Node[]) => void;
-
-export type OnEdgesDelete = (nodes: Node[]) => void;
+export type OnEdgesDelete = (edges: Edge[]) => void;
 
 export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => void;
 export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
@@ -169,8 +167,8 @@ export type ReactFlowStore = {
   fitViewOnInitDone: boolean;
   fitViewOnInitOptions: FitViewOptions | undefined;
 
-  onNodesDelete?: (nodes: Node[]) => void;
-  onEdgesDelete?: (edges: Edge[]) => void;
+  onNodesDelete?: OnNodesDelete;
+  onEdgesDelete?: OnEdgesDelete;
 };
 
 export type ReactFlowActions = {
