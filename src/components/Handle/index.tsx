@@ -76,21 +76,23 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
 
     const onMouseDownHandler = useCallback(
       (event: React.MouseEvent) => {
-        onMouseDown(
-          event,
-          handleId,
-          nodeId,
-          store.setState,
-          onConnectExtended,
-          isTarget,
-          isValidConnection,
-          connectionMode,
-          undefined,
-          undefined,
-          onConnectStart,
-          onConnectStop,
-          onConnectEnd
-        );
+        if (event.button === 0) {
+          onMouseDown(
+            event,
+            handleId,
+            nodeId,
+            store.setState,
+            onConnectExtended,
+            isTarget,
+            isValidConnection,
+            connectionMode,
+            undefined,
+            undefined,
+            onConnectStart,
+            onConnectStop,
+            onConnectEnd
+          );
+        }
       },
       [
         handleId,
