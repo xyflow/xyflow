@@ -22,7 +22,7 @@ export type OnEdgesChange = (nodes: EdgeChange[]) => void;
 export type OnNodesDelete = (nodes: Node[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
 
-export type OnMove = (event: MouseEvent | TouchEvent, viweport: Viewport) => void;
+export type OnMove = (event: MouseEvent | TouchEvent, viewport: Viewport) => void;
 export type OnMoveStart = OnMove;
 export type OnMoveEnd = OnMove;
 
