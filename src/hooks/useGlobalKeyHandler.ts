@@ -7,8 +7,8 @@ import { getConnectedEdges } from '../utils/graph';
 import { EdgeChange, KeyCode, NodeChange, ReactFlowState } from '../types';
 
 interface HookParams {
-  deleteKeyCode: KeyCode;
-  multiSelectionKeyCode: KeyCode;
+  deleteKeyCode: KeyCode | null;
+  multiSelectionKeyCode: KeyCode | null;
 }
 
 const selector = (s: ReactFlowState) => ({

@@ -10,9 +10,9 @@ import { NodeTypes, EdgeTypes, ConnectionLineType, KeyCode, ReactFlowProps } fro
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
   nodeTypes: NodeTypes;
   edgeTypes: EdgeTypes;
-  selectionKeyCode: KeyCode;
-  deleteKeyCode: KeyCode;
-  multiSelectionKeyCode: KeyCode;
+  selectionKeyCode: KeyCode | null;
+  deleteKeyCode: KeyCode | null;
+  multiSelectionKeyCode: KeyCode | null;
   connectionLineType: ConnectionLineType;
   onlyRenderVisibleElements: boolean;
   defaultZoom: number;

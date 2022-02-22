@@ -200,6 +200,7 @@ const OverviewFlow = () => {
       maxZoom={Infinity}
       onNodesDelete={onNodesDelete}
       onEdgesDelete={onEdgesDelete}
+      deleteKeyCode={null}
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
