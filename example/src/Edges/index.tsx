@@ -6,7 +6,7 @@ import ReactFlow, {
   Controls,
   Background,
   ReactFlowInstance,
-  EdgeTypesType,
+  EdgeTypes,
   Connection,
   Edge,
   MarkerType,
@@ -102,7 +102,7 @@ const initialEdges: Edge[] = [
   },
 ];
 
-const edgeTypes: EdgeTypesType = {
+const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
   custom2: CustomEdge2,
 };

@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import cc from 'classcat';
 
 import GraphView from '../GraphView';
@@ -13,10 +13,19 @@ import Attribution from '../../components/Attribution';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
 
-import { ConnectionMode, ConnectionLineType, PanOnScrollMode, ReactFlowProps, ReactFlowRefType } from '../../types';
+import {
+  ConnectionMode,
+  ConnectionLineType,
+  PanOnScrollMode,
+  ReactFlowProps,
+  ReactFlowRefType,
+  NodeTypes,
+  EdgeTypes,
+} from '../../types';
 
 import '../../style.css';
 import '../../theme-default.css';
+import { useNodeOrEdgeTypes } from './utils';
 
 const defaultNodeTypes = {
   input: InputNode,
@@ -127,8 +136,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     },
     ref
   ) => {
-    const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypes]);
-    const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypes]);
+    const nodeTypesParsed = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypes;
+    const edgeTypesParsed = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypes;
     const reactFlowClasses = cc(['react-flow', className]);
 
     return (

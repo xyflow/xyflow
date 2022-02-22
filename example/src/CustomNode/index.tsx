@@ -27,6 +27,7 @@ const initBgColor = '#1A192B';
 
 const connectionLineStyle = { stroke: '#fff' };
 const snapGrid: SnapGrid = [16, 16];
+
 const nodeTypes = {
   selectorNode: ColorSelectorNode,
 };

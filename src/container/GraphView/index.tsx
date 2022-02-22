@@ -5,11 +5,11 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import Viewport from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
-import { NodeTypesType, EdgeTypesType, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
+import { NodeTypes, EdgeTypes, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
 
 export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
-  nodeTypes: NodeTypesType;
-  edgeTypes: EdgeTypesType;
+  nodeTypes: NodeTypes;
+  edgeTypes: EdgeTypes;
   selectionKeyCode: KeyCode;
   deleteKeyCode: KeyCode;
   multiSelectionKeyCode: KeyCode;

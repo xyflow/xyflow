@@ -8,7 +8,7 @@ import ReactFlow, {
   Edge,
   OnConnectStartParams,
   NodeProps,
-  NodeTypesType,
+  NodeTypes,
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
@@ -43,7 +43,7 @@ const CustomNode: FC<NodeProps> = ({ id }) => (
   </>
 );
 
-const nodeTypes: NodeTypesType = {
+const nodeTypes: NodeTypes = {
   custominput: CustomInput,
   customnode: CustomNode,
 };

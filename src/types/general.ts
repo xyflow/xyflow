@@ -9,8 +9,8 @@ import { HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
 import { ReactFlowInstance } from './instance';
 
-export type NodeTypesType = { [key: string]: ReactNode };
-export type EdgeTypesType = NodeTypesType;
+export type NodeTypes = { [key: string]: ReactNode };
+export type EdgeTypes = NodeTypes;
 
 export type FitView = (fitViewOptions?: FitViewOptions) => void;
 

@@ -1,7 +1,7 @@
 import { useCallback, CSSProperties } from 'react';
 
 import ReactFlow, {
-  NodeTypesType,
+  NodeTypes,
   addEdge,
   useReactFlow,
   ReactFlowProvider,
@@ -28,7 +28,7 @@ const initialNodes: Node[] = [
 
 const buttonWrapperStyles: CSSProperties = { position: 'absolute', right: 10, top: 10, zIndex: 10 };
 
-const nodeTypes: NodeTypesType = {
+const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 

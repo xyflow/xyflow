@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import ReactFlow, {
   useReactFlow,
-  NodeTypesType,
+  NodeTypes,
   addEdge,
   ReactFlowProvider,
   Node,
@@ -172,7 +172,7 @@ const initialEdges: Edge[] = [
   },
 ];
 
-const nodeTypes: NodeTypesType = {
+const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 

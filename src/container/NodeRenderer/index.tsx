@@ -3,10 +3,10 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
-import { Node, NodeTypesType, Position, ReactFlowState, WrapNodeProps } from '../../types';
+import { Node, NodeTypes, Position, ReactFlowState, WrapNodeProps } from '../../types';
 
 interface NodeRendererProps {
-  nodeTypes: NodeTypesType;
+  nodeTypes: NodeTypes;
   selectNodesOnDrag: boolean;
   onNodeClick?: (event: MouseEvent, element: Node) => void;
   onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;

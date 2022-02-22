@@ -2,8 +2,8 @@ import React, { CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, Wh
 
 import {
   OnSelectionChangeFunc,
-  NodeTypesType,
-  EdgeTypesType,
+  NodeTypes,
+  EdgeTypes,
   Node,
   Edge,
   ConnectionMode,
@@ -68,8 +68,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: ReactMouseEvent) => void;
   onPaneContextMenu?: (event: ReactMouseEvent) => void;
-  nodeTypes?: NodeTypesType;
-  edgeTypes?: EdgeTypesType;
+  nodeTypes?: NodeTypes;
+  edgeTypes?: EdgeTypes;
   connectionMode?: ConnectionMode;
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;

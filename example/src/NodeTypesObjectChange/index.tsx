@@ -7,7 +7,7 @@ import ReactFlow, {
   Connection,
   Edge,
   NodeProps,
-  NodeTypesType,
+  NodeTypes,
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
@@ -43,7 +43,7 @@ const NodeB: FC<NodeProps> = () => {
 };
 
 type NodeTypesObject = {
-  [key: string]: NodeTypesType;
+  [key: string]: NodeTypes;
 };
 
 const nodeTypesObjects: NodeTypesObject = {

@@ -4,7 +4,7 @@ import ReactFlow, {
   addEdge,
   Background,
   ReactFlowInstance,
-  EdgeTypesType,
+  EdgeTypes,
   Connection,
   useNodesState,
   useEdgesState,
@@ -20,7 +20,7 @@ const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitVi
 
 const { nodes: initialNodes, edges: initialEdges } = createElements();
 
-const edgeTypes: EdgeTypesType = {
+const edgeTypes: EdgeTypes = {
   floating: FloatingEdge,
 };
 
