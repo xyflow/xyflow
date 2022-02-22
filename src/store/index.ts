@@ -123,16 +123,25 @@ const createStore = () =>
         }
       }
     },
+    // @TODO: can we unify addSelectedNodes and addSelectedEdges somehow?
     addSelectedNodes: (selectedNodeIds: string[]) => {
-      const { multiSelectionActive, onNodesChange, nodeInternals, hasDefaultNodes } = get();
-      // @TODO: work with nodeInternals instead of converting it to an array
-      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
+      const {
+        multiSelectionActive,
+        onNodesChange,
+        nodeInternals,
+        hasDefaultNodes,
+        onEdgesChange,
+        hasDefaultEdges,
+        edges,
+      } = get();
       let changedNodes: NodeSelectionChange[];
+      let changedEdges: EdgeSelectionChange[] | null = null;
 
       if (multiSelectionActive) {
         changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
       } else {
-        changedNodes = getSelectionChanges(nodes, selectedNodeIds);
+        changedNodes = getSelectionChanges(Array.from(nodeInternals.values()), selectedNodeIds);
+        changedEdges = getSelectionChanges(edges, []);
       }
 
       if (changedNodes.length) {
@@ -142,16 +151,33 @@ const createStore = () =>
 
         onNodesChange?.(changedNodes);
       }
+
+      if (changedEdges?.length) {
+        if (hasDefaultEdges) {
+          set({ edges: handleControlledEdgeSelectionChange(changedEdges, edges) });
+        }
+
+        onEdgesChange?.(changedEdges);
+      }
     },
     addSelectedEdges: (selectedEdgeIds: string[]) => {
-      const { multiSelectionActive, onEdgesChange, edges, hasDefaultEdges } = get();
-
+      const {
+        multiSelectionActive,
+        onEdgesChange,
+        edges,
+        hasDefaultEdges,
+        nodeInternals,
+        hasDefaultNodes,
+        onNodesChange,
+      } = get();
       let changedEdges: EdgeSelectionChange[];
+      let changedNodes: NodeSelectionChange[] | null = null;
 
       if (multiSelectionActive) {
         changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
       } else {
         changedEdges = getSelectionChanges(edges, selectedEdgeIds);
+        changedNodes = getSelectionChanges(Array.from(nodeInternals.values()), []);
       }
 
       if (changedEdges.length) {
@@ -162,11 +188,18 @@ const createStore = () =>
         }
         onEdgesChange?.(changedEdges);
       }
+
+      if (changedNodes?.length) {
+        if (hasDefaultNodes) {
+          set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
+        }
+
+        onNodesChange?.(changedNodes);
+      }
     },
     unselectNodesAndEdges: () => {
       const { nodeInternals, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
-      // @TODO: work with nodeInternals instead of converting it to an array
-      const nodes = Array.from(nodeInternals).map(([_, node]) => node);
+      const nodes = Array.from(nodeInternals.values());
 
       const nodesToUnselect = nodes.map((n) => {
         n.selected = false;
