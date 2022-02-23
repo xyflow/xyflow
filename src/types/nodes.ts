@@ -101,6 +101,7 @@ export type NodeDiffUpdate = {
   id?: string;
   diff?: XYPosition;
   dragging?: boolean;
+  forceUpdate?: boolean;
 };
 
 export type NodeDimensionUpdate = {
