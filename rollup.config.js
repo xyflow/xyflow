@@ -18,7 +18,18 @@ const processEnv = isProd || isTesting ? 'production' : 'development';
 
 export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
   input: 'src/index.ts',
-  external: ['react', 'react-dom', (id) => id.includes('@babel/runtime')],
+  external: [
+    'react',
+    'react-dom',
+    'classcat',
+    'd3-selection',
+    'd3-zoom',
+    'react-draggable',
+    'zustand',
+    'zustand/shallow',
+    'zustand/context',
+    (id) => id.includes('@babel/runtime'),
+  ],
   onwarn(warning, rollupWarn) {
     if (warning.code !== 'CIRCULAR_DEPENDENCY') {
       rollupWarn(warning);
