@@ -71,3 +71,12 @@ Testing is done with cypress. You can find the tests in the [`integration/flow`]
 ```sh
 npm run test
 ```
+
+## Maintainers
+
+React Flow is developed and maintained by [webkid](https://webkid.io), a data visualization studio from Berlin. It was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. If you need help or want to talk to us about a collaboration, feel free to contact us:
+
+* Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+* Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+
+You can also use our [contact form](https://webkid.io/contact/) or join the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
