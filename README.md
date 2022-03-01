@@ -8,7 +8,8 @@
   ![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
   ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
 
-**Wire Your Ideas With React Flow! A highly customizable React component for building interactive graphs and node-based editors.**
+### Wire Your Ideas With React Flow!  
+A highly customizable React component for building interactive graphs and node-based editors.
 
 [Getting Started](https://reactflow.dev/docs/getting-started/installation) | [Documentation](https://reactflow.dev/docs/api/react-flow-props) | [Examples](https://reactflow.dev/docs/examples/overview) | [Discord](https://discord.gg/Bqt6xrs)
 </div>
