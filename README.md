@@ -1,5 +1,5 @@
-[![react-flow-dark](https://user-images.githubusercontent.com/3797215/156254036-83f8cd4e-bd20-476d-bc58-fff8b739a1dc.svg#gh-dark-mode-only)](https://reactflow.dev)
-[![react-flow-light](https://user-images.githubusercontent.com/3797215/156254371-0147ce58-a59d-44d6-8279-c89f36ac4f6b.svg#gh-light-mode-only)](https://reactflow.dev)
+![react-flow-dark](https://user-images.githubusercontent.com/3797215/156254036-83f8cd4e-bd20-476d-bc58-fff8b739a1dc.svg#gh-dark-mode-only)
+![react-flow-light](https://user-images.githubusercontent.com/3797215/156254371-0147ce58-a59d-44d6-8279-c89f36ac4f6b.svg#gh-light-mode-only)
 
 
 <div align="center">
