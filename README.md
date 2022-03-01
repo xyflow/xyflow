@@ -1,5 +1,5 @@
-![react-flow-dark](https://user-images.githubusercontent.com/3797215/156256366-faeedfdd-f4af-4c32-b608-242e3f5189cf.svg#gh-dark-mode-only)
-![react-flow-light](https://user-images.githubusercontent.com/3797215/156256419-612b0133-26cb-4540-92fc-7bb3bff4726d.svg#gh-light-mode-only)
+![readme-header-dark](https://user-images.githubusercontent.com/3797215/156258604-73ab192f-e13c-4caf-aabb-e46f5d6b26af.svg#gh-dark-mode-only)
+![readme-header](https://user-images.githubusercontent.com/3797215/156258608-8a9faff1-d7bd-426c-872c-cbcaa7143edf.svg#gh-light-mode-only)
 
 <div align="center">
 
