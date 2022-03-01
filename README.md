@@ -8,9 +8,9 @@
   ![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
   ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
 
-**React Flow is a library for building node based graphs. You can easily implement custom node types and it comes with components like a mini map and graph controls.**
+**Wire Your Ideas With React Flow! A highly customizable React component for building interactive graphs and node-based editors.**
 
-[Getting Started](https://reactflow.dev) | [Website](https://reactflow.dev) | [Documentation](https://reactflow.dev/docs) | [Examples](https://reactflow.dev/examples)
+[Getting Started](https://reactflow.dev/docs/getting-started/installation) | [Documentation](https://reactflow.dev/docs/api/react-flow-props) | [Examples](https://reactflow.dev/docs/examples/overview) | [Discord](https://discord.gg/Bqt6xrs)
 </div>
 
 ----
