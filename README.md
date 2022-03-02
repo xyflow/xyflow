@@ -28,7 +28,7 @@ A highly customizable React component for building interactive graphs and node-b
 
 ## Installation
 
-The easiest way to install the latest version of React Flow is to install it via npm:
+The easiest way to get the latest version of React Flow is to install it via npm:
 
 ```bash
 npm install react-flow-renderer
