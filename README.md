@@ -11,11 +11,20 @@
 ### Wire Your Ideas With React Flow!  
 A highly customizable React component for building interactive graphs and node-based editors.
 
-[Getting Started](https://reactflow.dev/docs/getting-started/installation) | [Documentation](https://reactflow.dev/docs/api/react-flow-props) | [Examples](https://reactflow.dev/docs/examples/overview) | [Discord](https://discord.gg/Bqt6xrs)
+[🚀 Getting Started](https://reactflow.dev/docs/getting-started/installation) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/Bqt6xrs)
   
 </div>
 
 ----
+
+## Key Features
+
+- **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
+- **Customizable:** Different [node](https://reactflow.dev/docs/api/nodes/node-types) and [edge types](https://reactflow.dev/docs/api/edges/edge-types) and support for custom nodes with multiple handles and custom edges
+- **Fast rendering:** Only nodes that have changed are re-rendered and only those in the viewport are displayed
+- **Hooks and Utils:** [Hooks](https://reactflow.dev/docs/api/hooks/use-react-flow) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/docs/api/graph-util-functions)
+- **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
+- **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
 ## Installation
 
@@ -27,11 +36,28 @@ npm install react-flow-renderer
 
 ## Usage Example
 
-```javascript
-// @todo
+```jsx
+import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer';
+
+function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+    >
+      <MiniMap />
+      <Controls />
+    </ReactFlow>
+  );
+}
 ```
 
+## Local Development
 
+@todo
 
 ## Maintainers
 
