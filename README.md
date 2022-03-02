@@ -12,13 +12,30 @@
 A highly customizable React component for building interactive graphs and node-based editors.
 
 [Getting Started](https://reactflow.dev/docs/getting-started/installation) | [Documentation](https://reactflow.dev/docs/api/react-flow-props) | [Examples](https://reactflow.dev/docs/examples/overview) | [Discord](https://discord.gg/Bqt6xrs)
+  
 </div>
 
 ----
 
+## Installation
+
+The easiest way to install the latest version of React Flow is to install it via npm:
+
+```bash
+npm install react-flow-renderer
+```
+
+## Usage Example
+
+```javascript
+// @todo
+```
+
+
+
 ## Maintainers
 
-React Flow is developed and maintained by [webkid](https://webkid.io), a data visualization studio from Berlin. It was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. If you need help or want to talk to us about a collaboration, feel free to contact us:
+React Flow is developed and maintained by [webkid](https://webkid.io), a data visualization studio from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
 
 * Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 * Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
@@ -30,3 +47,15 @@ You can also use our [contact form](https://webkid.io/contact/) or join the [Rea
 * [useUndoable](https://github.com/Infinium8/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
 * [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
 * [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
+
+## Credits
+
+React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. Under the hood, React Flow depends on these great libraries:
+
+* [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
+* [react-draggable](https://github.com/react-grid-layout/react-draggable) - used for making the nodes draggable
+* [zustand](https://github.com/pmndrs/zustand) - internal state management
+
+## License
+
+React Flow is [MIT licensed](https://github.com/wbkd/react-flow/blob/main/LICENSE).
