@@ -34,7 +34,9 @@ The easiest way to install the latest version of React Flow is to install it via
 npm install react-flow-renderer
 ```
 
-## Usage Example
+## Quick Start
+
+This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and [API reference](https://reactflow.dev/docs/api/react-flow-props).
 
 ```jsx
 import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer';
@@ -57,7 +59,29 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
 
 ## Local Development
 
-@todo
+Before you start you need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
+
+If you want to contribute or develop custom features the easiest way is to start the dev server:
+
+```sh
+npm start
+```
+
+and the example app via:
+
+```sh
+cd example && npm start 
+```
+
+The example app serves the content of the `example` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
+
+## Testing
+
+Testing is done with cypress. You can find the tests in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the tests do:
+
+```sh
+npm run test
+```
 
 ## Maintainers
 
