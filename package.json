@@ -1,13 +1,13 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.0.0-next.46",
+  "version": "10.0.0-next.48",
   "engines": {
     "node": ">=12"
   },
   "type": "module",
-  "main": "dist/ReactFlow.js",
-  "module": "dist/ReactFlow.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/esm/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -45,7 +45,6 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
-    "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.3",
@@ -65,7 +64,6 @@
     "react-dom": "^17.0.2",
     "release-it": "^14.12.4",
     "rollup": "^2.66.1",
-    "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-serve": "^1.1.0",

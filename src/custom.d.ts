@@ -14,3 +14,4 @@ declare module '*.svg' {
 
 declare var __REACT_FLOW_VERSION__: string;
 declare var __ENV__: string;
+declare var __INJECT_STYLES__: boolean;

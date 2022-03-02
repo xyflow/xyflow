@@ -12,6 +12,7 @@ import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../compon
 import Attribution from '../../components/Attribution';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import Wrapper from './Wrapper';
+import injectStyle, { useNodeOrEdgeTypes } from './utils';
 
 import {
   ConnectionMode,
@@ -23,9 +24,13 @@ import {
   EdgeTypes,
 } from '../../types';
 
-import '../../style.css';
-import '../../theme-default.css';
-import { useNodeOrEdgeTypes } from './utils';
+import css from '../../style.css';
+import theme from '../../theme-default.css';
+
+if (__INJECT_STYLES__) {
+  injectStyle(css as unknown as string);
+  injectStyle(theme as unknown as string);
+}
 
 const defaultNodeTypes = {
   input: InputNode,

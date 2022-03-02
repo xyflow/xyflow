@@ -2,7 +2,7 @@ import React, { memo, useCallback, FC, useEffect, useState } from 'react';
 import cc from 'classcat';
 
 import { useStore, useStoreApi } from '../../store';
-import useViewportHelper from '../../hooks/useViewportHelper';
+import useReactFlow from '../../hooks/useReactFlow';
 
 import PlusIcon from '../../../assets/icons/plus.svg';
 import MinusIcon from '../../../assets/icons/minus.svg';
@@ -36,7 +36,7 @@ const Controls: FC<ControlProps> = ({
   const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const isInteractive = useStore(isInteractiveSelector);
-  const { zoomIn, zoomOut, fitView } = useViewportHelper();
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const mapClasses = cc(['react-flow__controls', className]);
 

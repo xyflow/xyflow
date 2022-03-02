@@ -2,9 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
-import bundleSize from 'rollup-plugin-bundle-size';
 import replace from '@rollup/plugin-replace';
-import alias from '@rollup/plugin-alias';
 import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
@@ -16,8 +14,18 @@ const isProd = process.env.NODE_ENV === 'production';
 const isTesting = process.env.NODE_ENV === 'testing';
 const processEnv = isProd || isTesting ? 'production' : 'development';
 
-export const baseConfig = ({ outputFile = pkg.module, injectCSS = true } = {}) => ({
-  input: 'src/index.ts',
+export const baseConfig = ({ outputDir = 'dist/esm', injectCSS = true } = {}) => ({
+  input: [
+    'src/index.ts',
+    'src/additional-components/Controls/index.tsx',
+    'src/additional-components/Background/index.tsx',
+    'src/additional-components/MiniMap/index.tsx',
+    'src/hooks/useReactFlow.ts',
+    'src/hooks/useNodes.ts',
+    'src/hooks/useEdges.ts',
+    'src/hooks/useViewport.ts',
+    'src/hooks/useUpdateNodeInternals.ts',
+  ],
   external: [
     'react',
     'react-dom',
@@ -36,25 +44,21 @@ export const baseConfig = ({ outputFile = pkg.module, injectCSS = true } = {}) =
     }
   },
   output: {
-    file: outputFile,
+    dir: outputDir,
     format: 'esm',
     sourcemap: true,
-    exports: 'named',
   },
 
   plugins: [
-    alias({
-      entries: [{ find: 'd3-color', replacement: __dirname + '/src/d3-color-alias' }],
-    }),
     replace({
       __ENV__: JSON.stringify(processEnv),
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
+      __INJECT_STYLES__: injectCSS,
       preventAssignment: true,
     }),
-    bundleSize(),
     postcss({
       minimize: isProd,
-      inject: injectCSS,
+      inject: false,
     }),
     svgr(),
     resolve(),
@@ -77,7 +81,7 @@ export default isProd && !isTesting
   ? [
       baseConfig(),
       baseConfig({
-        outputFile: 'dist/nocss/ReactFlow-nocss.js',
+        outputDir: 'dist/nocss',
         injectCSS: false,
       }),
     ]
