@@ -77,7 +77,7 @@ export default isProd && !isTesting
   ? [
       baseConfig(),
       baseConfig({
-        outputFile: 'dist/nocss/ReactFlow-nocss.esm.js',
+        outputFile: 'dist/nocss/ReactFlow-nocss.js',
         injectCSS: false,
       }),
     ]

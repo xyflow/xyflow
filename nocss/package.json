@@ -1,6 +1,7 @@
 {
   "internal": true,
+  "type": "module",
   "main": "../dist/nocss/ReactFlow-nocss.js",
-  "module": "../dist/nocss/ReactFlow-nocss.esm.js",
+  "module": "../dist/nocss/ReactFlow-nocss.js",
   "types": "../dist/nocss/index.d.ts"
 }
