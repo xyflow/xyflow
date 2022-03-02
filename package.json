@@ -1,11 +1,12 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.0.0-next.45",
+  "version": "10.0.0-next.46",
   "engines": {
     "node": ">=12"
   },
+  "type": "module",
   "main": "dist/ReactFlow.js",
-  "module": "dist/ReactFlow.esm.js",
+  "module": "dist/ReactFlow.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "repository": {

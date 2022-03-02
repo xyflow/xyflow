@@ -16,7 +16,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const isTesting = process.env.NODE_ENV === 'testing';
 const processEnv = isProd || isTesting ? 'production' : 'development';
 
-export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
+export const baseConfig = ({ outputFile = pkg.module, injectCSS = true } = {}) => ({
   input: 'src/index.ts',
   external: [
     'react',
@@ -35,20 +35,13 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
       rollupWarn(warning);
     }
   },
-  output: [
-    {
-      file: mainFile,
-      format: 'cjs',
-      sourcemap: true,
-      exports: 'named',
-    },
-    {
-      file: moduleFile,
-      format: 'esm',
-      sourcemap: true,
-      exports: 'named',
-    },
-  ],
+  output: {
+    file: outputFile,
+    format: 'esm',
+    sourcemap: true,
+    exports: 'named',
+  },
+
   plugins: [
     alias({
       entries: [{ find: 'd3-color', replacement: __dirname + '/src/d3-color-alias' }],
@@ -84,8 +77,7 @@ export default isProd && !isTesting
   ? [
       baseConfig(),
       baseConfig({
-        mainFile: 'dist/nocss/ReactFlow-nocss.js',
-        moduleFile: 'dist/nocss/ReactFlow-nocss.esm.js',
+        outputFile: 'dist/nocss/ReactFlow-nocss.esm.js',
         injectCSS: false,
       }),
     ]
