@@ -8,20 +8,27 @@ type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
 // returns a hook that can be used liked this:
 // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-function createUseItemsState<ItemType, ChangesType>(
-  applyChangesFunction: ApplyChanges<ItemType, ChangesType>
-): (initialItems: ItemType[]) => [ItemType[], Dispatch<SetStateAction<ItemType[]>>, OnChange<ChangesType>] {
-  return (initialItems: ItemType[]) => {
-    const [items, setItems] = useState<ItemType[]>(initialItems);
+function createUseItemsState(
+  applyChanges: ApplyChanges<Node, NodeChange>
+): <NodeData = any>(
+  initialItems: Node<NodeData>[]
+) => [Node<NodeData>[], Dispatch<SetStateAction<Node<NodeData>>>, OnChange<NodeChange>];
+function createUseItemsState(
+  applyChanges: ApplyChanges<Edge, EdgeChange>
+): <EdgeData = any>(
+  initialItems: Edge<EdgeData>[]
+) => [Edge<EdgeData>[], Dispatch<SetStateAction<Edge<EdgeData>>>, OnChange<EdgeChange>];
+function createUseItemsState(
+  applyChanges: ApplyChanges<any, any>
+): (initialItems: any[]) => [any[], Dispatch<SetStateAction<any>>, OnChange<any>] {
+  return (initialItems: any) => {
+    const [items, setItems] = useState(initialItems);
 
-    const onItemsChange = useCallback(
-      (changes: ChangesType[]) => setItems((items) => applyChangesFunction(changes, items)),
-      []
-    );
+    const onItemsChange = useCallback((changes: any[]) => setItems((items: any) => applyChanges(changes, items)), []);
 
     return [items, setItems, onItemsChange];
   };
 }
 
-export const useNodesState = createUseItemsState<Node, NodeChange>(applyNodeChanges as ApplyChanges<Node, NodeChange>);
-export const useEdgesState = createUseItemsState<Edge, EdgeChange>(applyEdgeChanges as ApplyChanges<Edge, EdgeChange>);
+export const useNodesState = createUseItemsState(applyNodeChanges);
+export const useEdgesState = createUseItemsState(applyEdgeChanges);

@@ -1,6 +1,6 @@
 import { Selection as D3Selection } from 'd3';
-import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 
+import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
 import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>

@@ -100,12 +100,12 @@ function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): an
   }, initElements);
 }
 
-export function applyNodeChanges(changes: NodeChange[], nodes: Node[]): Node[] {
-  return applyChanges(changes, nodes) as Node[];
+export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: Node<NodeData>[]): Node<NodeData>[] {
+  return applyChanges(changes, nodes) as Node<NodeData>[];
 }
 
-export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]): Edge[] {
-  return applyChanges(changes, edges) as Edge[];
+export function applyEdgeChanges<EdgeData = any>(changes: EdgeChange[], edges: Edge<EdgeData>[]): Edge<EdgeData>[] {
+  return applyChanges(changes, edges) as Edge<EdgeData>[];
 }
 
 export const createSelectionChange = (id: string, selected: boolean) => ({

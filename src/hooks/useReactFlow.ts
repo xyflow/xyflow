@@ -4,7 +4,7 @@ import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../store';
 import { ReactFlowInstance, Instance } from '../types';
 
-export default function useReactFlow<NodeData, EdgeData>(): ReactFlowInstance<NodeData, EdgeData> {
+export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
   const { initialized: viewportInitialized, ...viewportHelperFunctions } = useViewportHelper();
   const store = useStoreApi();
 
