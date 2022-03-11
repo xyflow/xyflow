@@ -140,7 +140,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         const isValidConnection = () => true;
         const isTarget = isSourceHandle;
 
-        onEdgeUpdateStart?.(event, edgeElement);
+        onEdgeUpdateStart?.(event, edgeElement, isSourceHandle);
 
         const _onEdgeUpdate = onEdgeUpdateEnd
           ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
