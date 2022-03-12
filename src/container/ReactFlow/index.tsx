@@ -1,31 +1,28 @@
-import React, { forwardRef } from 'react';
 import cc from 'classcat';
-
-import GraphView from '../GraphView';
-import StoreUpdater from '../../components/StoreUpdater';
+import React, { forwardRef } from 'react';
+import Attribution from '../../components/Attribution';
+import { BezierEdge, QuarticBezierEdge, SmoothStepEdge, StepEdge, StraightEdge } from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
-import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
-import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
-import Attribution from '../../components/Attribution';
-import { createEdgeTypes } from '../EdgeRenderer/utils';
-import Wrapper from './Wrapper';
-import injectStyle, { useNodeOrEdgeTypes } from './utils';
-
-import {
-  ConnectionMode,
-  ConnectionLineType,
-  PanOnScrollMode,
-  ReactFlowProps,
-  ReactFlowRefType,
-  NodeTypes,
-  EdgeTypes,
-} from '../../types';
-
+import StoreUpdater from '../../components/StoreUpdater';
 import css from '../../style.css';
 import theme from '../../theme-default.css';
+import {
+  ConnectionLineType, ConnectionMode, EdgeTypes, NodeTypes, PanOnScrollMode,
+  ReactFlowProps,
+  ReactFlowRefType
+} from '../../types';
+import { createEdgeTypes } from '../EdgeRenderer/utils';
+import GraphView from '../GraphView';
+import { createNodeTypes } from '../NodeRenderer/utils';
+import injectStyle, { useNodeOrEdgeTypes } from './utils';
+import Wrapper from './Wrapper';
+
+
+
+
 
 if (__INJECT_STYLES__) {
   injectStyle(css as unknown as string);
@@ -43,6 +40,7 @@ const defaultEdgeTypes = {
   straight: StraightEdge,
   step: StepEdge,
   smoothstep: SmoothStepEdge,
+  quartic: QuarticBezierEdge,
 };
 
 const initSnapGrid: [number, number] = [15, 15];
