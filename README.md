@@ -83,7 +83,7 @@ npm run test
 
 ## Attribution
 
-Since v10.0.0 the React Flow renderer includes a small attribution that links to the React Flow website. It is only allowed to remove the attribution if you are subscribed to one of the [pro plans](https://pro.reactflow.dev/pricing). A subscription also provides more features such as a private Discord channel with the creators of React Flow or access to the source code of Datablocks (a node-based data editor built with React Flow).
+Since v10.0.0 the React Flow renderer includes a small attribution that links to the React Flow website. It is only allowed to remove the attribution if you are subscribed to one of the [pro plans](https://pro.reactflow.dev/pricing). A subscription also provides more features such as a private Discord channel with the creators of React Flow.
 
 ## Maintainers
 
