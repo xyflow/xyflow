@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, UnrealBezierEdge } from '../../components/Edges';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
 import {
   EdgeProps,
@@ -22,7 +22,7 @@ export function createEdgeTypes(edgeTypes: EdgeTypes): EdgeTypes {
     straight: wrapEdge((edgeTypes.bezier || StraightEdge) as ComponentType<EdgeProps>),
     step: wrapEdge((edgeTypes.step || StepEdge) as ComponentType<EdgeProps>),
     smoothstep: wrapEdge((edgeTypes.step || SmoothStepEdge) as ComponentType<EdgeProps>),
-    unreal: wrapEdge((edgeTypes.unreal || UnrealBezierEdge) as ComponentType<EdgeProps>),
+    simplebezier: wrapEdge((edgeTypes.simplebezier || SimpleBezierEdge) as ComponentType<EdgeProps>),
   };
 
   const wrappedTypes = {} as EdgeTypes;

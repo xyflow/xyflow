@@ -2,7 +2,7 @@ import React, { useRef, CSSProperties } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { getBezierPath } from '../Edges/BezierEdge';
+import { getBezierPath } from '../Edges/SimpleBezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
   HandleElement,

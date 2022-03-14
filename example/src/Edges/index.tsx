@@ -1,11 +1,21 @@
 import { MouseEvent } from 'react';
 import ReactFlow, {
-  addEdge, Background, Connection, Controls, Edge, EdgeTypes, MarkerType, MiniMap, Node, ReactFlowInstance, useEdgesState, useNodesState
+  addEdge,
+  Background,
+  Connection,
+  Controls,
+  Edge,
+  EdgeTypes,
+  MarkerType,
+  MiniMap,
+  Node,
+  Position,
+  ReactFlowInstance,
+  useEdgesState,
+  useNodesState,
 } from 'react-flow-renderer';
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
-
-
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
@@ -15,7 +25,7 @@ const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Input 1' }, position: { x: 250, y: 0 } },
   { id: '2', data: { label: 'Node 2' }, position: { x: 150, y: 100 } },
   { id: '2a', data: { label: 'Node 2a' }, position: { x: 0, y: 180 } },
-  { id: '2b', data: { label: 'Node 2b' }, position: { x: -80, y: 100 } },
+  { id: '2b', data: { label: 'Node 2b' }, position: { x: -80, y: 100 }, targetPosition: Position.Left },
   { id: '3', data: { label: 'Node 3' }, position: { x: 250, y: 200 } },
   { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 300 } },
   { id: '3a', data: { label: 'Node 3a' }, position: { x: 150, y: 300 } },
@@ -29,7 +39,13 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', label: 'bezier edge (default)', className: 'normal-edge' },
   { id: 'e2-2a', source: '2', target: '2a', type: 'smoothstep', label: 'smoothstep edge' },
-  { id: 'e2a-2b', source: '2a', target: '2b', type: 'unreal', label: 'unreal bezier edge', className: 'unreal-edge' },
+  {
+    id: 'e2a-2b',
+    source: '2a',
+    target: '2b',
+    type: 'simplebezier',
+    label: 'simple bezier edge',
+  },
   { id: 'e2-3', source: '2', target: '3', type: 'step', label: 'step edge' },
   { id: 'e3-4', source: '3', target: '4', type: 'straight', label: 'straight edge' },
   { id: 'e3-3a', source: '3', target: '3a', type: 'straight', label: 'label only edge', style: { stroke: 'none' } },
@@ -99,7 +115,7 @@ const edgeTypes: EdgeTypes = {
 };
 
 const EdgesFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 

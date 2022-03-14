@@ -1,7 +1,7 @@
 import cc from 'classcat';
 import React, { forwardRef } from 'react';
 import Attribution from '../../components/Attribution';
-import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, UnrealBezierEdge } from '../../components/Edges';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
@@ -10,19 +10,19 @@ import StoreUpdater from '../../components/StoreUpdater';
 import css from '../../style.css';
 import theme from '../../theme-default.css';
 import {
-  ConnectionLineType, ConnectionMode, EdgeTypes, NodeTypes, PanOnScrollMode,
+  ConnectionLineType,
+  ConnectionMode,
+  EdgeTypes,
+  NodeTypes,
+  PanOnScrollMode,
   ReactFlowProps,
-  ReactFlowRefType
+  ReactFlowRefType,
 } from '../../types';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import GraphView from '../GraphView';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import injectStyle, { useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
-
-
-
-
 
 if (__INJECT_STYLES__) {
   injectStyle(css as unknown as string);
@@ -40,7 +40,7 @@ const defaultEdgeTypes = {
   straight: StraightEdge,
   step: StepEdge,
   smoothstep: SmoothStepEdge,
-  unreal: UnrealBezierEdge,
+  simplebezier: SimpleBezierEdge,
 };
 
 const initSnapGrid: [number, number] = [15, 15];

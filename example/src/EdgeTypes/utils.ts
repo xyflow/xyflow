@@ -12,7 +12,7 @@ const nodeColors = [
   ['#1e9e99', '#4cb3ac', '#6ec9c0', '#8ddfd4', '#c4fff7'],
   ['#0f4c75', '#1b5d8b', '#276fa1', '#3282b8', '#4fa6e0'],
 ];
-const edgeTypes = ['default', 'step', 'smoothstep', 'straight', 'unreal'];
+const edgeTypes = ['default', 'step', 'smoothstep', 'straight', 'simplebezier'];
 const offsets = [
   {
     x: 0,
