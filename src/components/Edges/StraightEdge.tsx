@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import EdgeText from './EdgeText';
+import BaseEdge from './BaseEdge';
 import { EdgeProps } from '../../types';
 
 export default memo(
@@ -24,31 +24,23 @@ export default memo(
 
     const xOffset = Math.abs(targetX - sourceX) / 2;
     const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+    const path = `M ${sourceX},${sourceY}L ${targetX},${targetY}`;
 
-    const text = label ? (
-      <EdgeText
-        x={centerX}
-        y={centerY}
+    return (
+      <BaseEdge
+        path={path}
+        centerX={centerX}
+        centerY={centerY}
         label={label}
         labelStyle={labelStyle}
         labelShowBg={labelShowBg}
         labelBgStyle={labelBgStyle}
         labelBgPadding={labelBgPadding}
         labelBgBorderRadius={labelBgBorderRadius}
+        style={style}
+        markerEnd={markerEnd}
+        markerStart={markerStart}
       />
-    ) : null;
-
-    return (
-      <>
-        <path
-          style={style}
-          className="react-flow__edge-path"
-          d={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
-          markerEnd={markerEnd}
-          markerStart={markerStart}
-        />
-        {text}
-      </>
     );
   }
 );

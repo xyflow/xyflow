@@ -2,7 +2,7 @@ import React, { useRef, CSSProperties } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
-import { getBezierPath } from '../Edges/SimpleBezierEdge';
+import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import {
   HandleElement,
@@ -13,6 +13,7 @@ import {
   ReactFlowState,
   Position,
 } from '../../types';
+import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 
 interface ConnectionLineProps {
   connectionNodeId: string;
@@ -112,6 +113,8 @@ export default ({
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
     dAttr = getSmoothStepPath(pathParams);
+  } else if (connectionLineType === ConnectionLineType.SimpleBezier) {
+    dAttr = getSimpleBezierPath(pathParams);
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }

@@ -25,7 +25,7 @@ const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Input 1' }, position: { x: 250, y: 0 } },
   { id: '2', data: { label: 'Node 2' }, position: { x: 150, y: 100 } },
   { id: '2a', data: { label: 'Node 2a' }, position: { x: 0, y: 180 } },
-  { id: '2b', data: { label: 'Node 2b' }, position: { x: -80, y: 100 }, targetPosition: Position.Left },
+  { id: '2b', data: { label: 'Node 2b' }, position: { x: -40, y: 300 } },
   { id: '3', data: { label: 'Node 3' }, position: { x: 250, y: 200 } },
   { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 300 } },
   { id: '3a', data: { label: 'Node 3a' }, position: { x: 150, y: 300 } },

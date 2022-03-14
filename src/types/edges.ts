@@ -4,7 +4,6 @@ import { HandleElement } from './handles';
 import { Node } from './nodes';
 import { Position } from './utils';
 
-
 // interface for the user edge items
 export interface Edge<T = any> {
   id: string;
@@ -64,6 +63,23 @@ export interface EdgeProps<T = any> {
   markerEnd?: string;
   curvature?: number;
 }
+
+export type BaseEdgeProps = Pick<
+  EdgeProps,
+  | 'label'
+  | 'labelStyle'
+  | 'labelShowBg'
+  | 'labelBgStyle'
+  | 'labelBgPadding'
+  | 'labelBgBorderRadius'
+  | 'style'
+  | 'markerStart'
+  | 'markerEnd'
+> & {
+  centerX: number;
+  centerY: number;
+  path: string;
+};
 
 export type EdgeMouseHandler = (event: React.MouseEvent, edge: Edge) => void;
 
@@ -127,6 +143,7 @@ export enum ConnectionLineType {
   Straight = 'straight',
   Step = 'step',
   SmoothStep = 'smoothstep',
+  SimpleBezier = 'simplebezier',
 }
 
 export type ConnectionLineComponentProps = {
