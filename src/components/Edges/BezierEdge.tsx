@@ -40,7 +40,6 @@ export function getBezierPath({
     const absDistanceX = Math.abs(Math.min(0, distanceX));
     const amtX = (Math.sqrt(absDistanceX) / 2) * (50 * curvature);
 
-<<<<<<< HEAD
     const hx1 = hasCurvature && distanceX < 0 ? sourceX + amtX : cX;
     const hx2 = hasCurvature && distanceX < 0 ? targetX - amtX : cX;
 
@@ -61,33 +60,6 @@ export function getBezierPath({
   const hy2 = hasCurvature && distanceY < 0 ? targetY - amtY : cY;
 
   return `M${sourceX},${sourceY} C${sourceX},${hy1} ${targetX},${hy2} ${targetX},${targetY}`
-=======
-  let path = '';
-
-  if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    const distanceX = sourceX - targetX;
-    const scalarX = Math.min(curvature, Math.max(0, distanceX / 10000));
-    const hx1 = sourceX + Math.abs(targetX - sourceX) * (curvature - scalarX);
-    const hx2 = targetX - Math.abs(targetX - sourceX) * (curvature - scalarX);
-
-    path = hasCurvature
-      ? `M${sourceX},${sourceY} C${hx1},${sourceY} ${hx2},${targetY}, ${targetX},${targetY}`
-      : `M${sourceX},${sourceY} C${cX},${sourceY} ${cX},${targetY} ${targetX},${targetY}`;
-  } else if (leftAndRight.includes(targetPosition)) {
-    path = `M${sourceX},${sourceY} Q${sourceX},${targetY} ${targetX},${targetY}`;
-  } else if (leftAndRight.includes(sourcePosition)) {
-    path = `M${sourceX},${sourceY} Q${targetX},${sourceY} ${targetX},${targetY}`;
-  } else {
-    const distanceY = sourceY - targetY;
-    const scalarY = Math.min(curvature, Math.max(0, distanceY / 10000));
-    const hy1 = sourceY + Math.abs(targetY - sourceY) * (curvature - scalarY);
-    const hy2 = targetY - Math.abs(targetY - sourceY) * (curvature - scalarY);
-
-    path = hasCurvature
-      ? `M${sourceX},${sourceY} C${sourceX},${hy1} ${targetX},${hy2} ${targetX},${targetY}`
-      : `M${sourceX},${sourceY} C${sourceX},${cY} ${targetX},${cY} ${targetX},${targetY}`;
-  }
->>>>>>> v10
 
 }
 
