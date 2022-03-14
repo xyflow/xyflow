@@ -38,24 +38,14 @@ export function getBezierPath({
     cY = typeof centerY !== 'undefined' ? centerY : _centerY;
   }
 
-  const distanceX = sourceX - targetX;
-  const distanceY = sourceY - targetY;
-
-  // A scalar value to fix the curve size getting larger
-  const scalarX = Math.min(curvature, Math.max(0, distanceX / 10000));
-  const scalarY = Math.min(curvature, Math.max(0, distanceY / 10000));
-
-  const hx1 = sourceX + Math.abs(targetX - sourceX) * (curvature - scalarX);
-  const hx2 = targetX - Math.abs(targetX - sourceX) * (curvature - scalarX);
-
-  const hy1 = sourceY + Math.abs(targetY - sourceY) * (curvature - scalarY);
-  const hy2 = targetY - Math.abs(targetY - sourceY) * (curvature - scalarY);
-
-  let path = hasCurvature
-    ? `M${sourceX},${sourceY} C${sourceX},${hy1} ${targetX},${hy2} ${targetX},${targetY}`
-    : `M${sourceX},${sourceY} C${sourceX},${cY} ${targetX},${cY} ${targetX},${targetY}`;
+  let path = '';
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
+    const distanceX = sourceX - targetX;
+    const scalarX = Math.min(curvature, Math.max(0, distanceX / 10000));
+    const hx1 = sourceX + Math.abs(targetX - sourceX) * (curvature - scalarX);
+    const hx2 = targetX - Math.abs(targetX - sourceX) * (curvature - scalarX);
+
     path = hasCurvature
       ? `M${sourceX},${sourceY} C${hx1},${sourceY} ${hx2},${targetY}, ${targetX},${targetY}`
       : `M${sourceX},${sourceY} C${cX},${sourceY} ${cX},${targetY} ${targetX},${targetY}`;
@@ -63,6 +53,15 @@ export function getBezierPath({
     path = `M${sourceX},${sourceY} Q${sourceX},${targetY} ${targetX},${targetY}`;
   } else if (leftAndRight.includes(sourcePosition)) {
     path = `M${sourceX},${sourceY} Q${targetX},${sourceY} ${targetX},${targetY}`;
+  } else {
+    const distanceY = sourceY - targetY;
+    const scalarY = Math.min(curvature, Math.max(0, distanceY / 10000));
+    const hy1 = sourceY + Math.abs(targetY - sourceY) * (curvature - scalarY);
+    const hy2 = targetY - Math.abs(targetY - sourceY) * (curvature - scalarY);
+
+    path = hasCurvature
+      ? `M${sourceX},${sourceY} C${sourceX},${hy1} ${targetX},${hy2} ${targetX},${targetY}`
+      : `M${sourceX},${sourceY} C${sourceX},${cY} ${targetX},${cY} ${targetX},${targetY}`;
   }
 
   return path;
