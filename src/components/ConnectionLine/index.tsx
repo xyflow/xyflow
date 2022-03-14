@@ -13,6 +13,7 @@ import {
   ReactFlowState,
   Position,
 } from '../../types';
+import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 
 interface ConnectionLineProps {
   connectionNodeId: string;
@@ -112,6 +113,8 @@ export default ({
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
     dAttr = getSmoothStepPath(pathParams);
+  } else if (connectionLineType === ConnectionLineType.SimpleBezier) {
+    dAttr = getSimpleBezierPath(pathParams);
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }

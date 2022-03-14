@@ -1,20 +1,18 @@
 import { ComponentType } from 'react';
-
-import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
-import { rectToBox } from '../../utils';
-
 import {
-  EdgeTypes,
   EdgeProps,
+  EdgeTypes,
   HandleElement,
-  Position,
-  XYPosition,
-  Transform,
-  Rect,
-  NodeInternals,
   NodeHandleBounds,
+  NodeInternals,
+  Position,
+  Rect,
+  Transform,
+  XYPosition,
 } from '../../types';
+import { rectToBox } from '../../utils';
 
 export type CreateEdgeTypes = (edgeTypes: EdgeTypes) => EdgeTypes;
 
@@ -24,6 +22,7 @@ export function createEdgeTypes(edgeTypes: EdgeTypes): EdgeTypes {
     straight: wrapEdge((edgeTypes.bezier || StraightEdge) as ComponentType<EdgeProps>),
     step: wrapEdge((edgeTypes.step || StepEdge) as ComponentType<EdgeProps>),
     smoothstep: wrapEdge((edgeTypes.step || SmoothStepEdge) as ComponentType<EdgeProps>),
+    simplebezier: wrapEdge((edgeTypes.simplebezier || SimpleBezierEdge) as ComponentType<EdgeProps>),
   };
 
   const wrappedTypes = {} as EdgeTypes;

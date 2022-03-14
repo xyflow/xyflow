@@ -7,6 +7,7 @@ export { default as EdgeText } from './components/Edges/EdgeText';
 export { default as StraightEdge } from './components/Edges/StraightEdge';
 export { default as StepEdge } from './components/Edges/StepEdge';
 export { default as BezierEdge, getBezierPath } from './components/Edges/BezierEdge';
+export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 export * from './additional-components';
 

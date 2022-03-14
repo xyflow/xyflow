@@ -27,5 +27,5 @@ Please use a meaningful commit message and add a little description of your chan
 
 1. Install dependencies `npm install` and example dependencies `cd example && npm install`
 2. Run library start task `npm start` and example start task `cd example && npm start`
-3. No you can test your changes with the exisiting examples. Feel free to add a new one if it's needed for your changes
+3. Now you can test your changes with the existing examples. Feel free to add a new one if it's needed for your changes
 4. Run tests `npm test` and add new ones if you are introducing a new feature
