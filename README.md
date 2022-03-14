@@ -87,7 +87,7 @@ Since v10.0.0 the React Flow renderer includes a small attribution that links to
 
 ## Maintainers
 
-React Flow is developed and maintained by [webkid](https://webkid.io), a data visualization studio from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
+React Flow is developed and maintained by [webkid](https://webkid.io), a web development agency with the focus on data driven applications from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
 
 * Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 * Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
