@@ -1,74 +1,75 @@
-import React, { useState } from 'react';
+import { useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  removeElements,
   Controls,
-  isNode,
-  Elements,
   Connection,
-  Edge,
-  NodeExtent,
+  CoordinateExtent,
   Position,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 import dagre from 'dagre';
 
-import initialElements from './initial-elements';
+import initialItems from './initial-elements';
 
 import './layouting.css';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeExtent: NodeExtent = [
+const nodeExtent: CoordinateExtent = [
   [0, 0],
   [1000, 1000],
 ];
 
 const LayoutFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialItems.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialItems.edges);
+
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
+  }, []);
 
   const onLayout = (direction: string) => {
     const isHorizontal = direction === 'LR';
     dagreGraph.setGraph({ rankdir: direction });
 
-    elements.forEach((el) => {
-      if (isNode(el)) {
-        dagreGraph.setNode(el.id, { width: 150, height: 50 });
-      } else {
-        dagreGraph.setEdge(el.source, el.target);
-      }
+    nodes.forEach((node) => {
+      dagreGraph.setNode(node.id, { width: 150, height: 50 });
+    });
+
+    edges.forEach((edge) => {
+      dagreGraph.setEdge(edge.source, edge.target);
     });
 
     dagre.layout(dagreGraph);
 
-    const layoutedElements = elements.map((el) => {
-      if (isNode(el)) {
-        const nodeWithPosition = dagreGraph.node(el.id);
-        el.targetPosition = isHorizontal ? Position.Left : Position.Top;
-        el.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
-        // we need to pass a slightly different position in order to notify react flow about the change
-        // @TODO how can we change the position handling so that we dont need this hack?
-        el.position = { x: nodeWithPosition.x + Math.random() / 1000, y: nodeWithPosition.y };
-      }
+    const layoutedNodes = nodes.map((node) => {
+      const nodeWithPosition = dagreGraph.node(node.id);
+      node.targetPosition = isHorizontal ? Position.Left : Position.Top;
+      node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
+      // we need to pass a slightly different position in order to notify react flow about the change
+      // @TODO how can we change the position handling so that we dont need this hack?
+      node.position = { x: nodeWithPosition.x + Math.random() / 1000, y: nodeWithPosition.y };
 
-      return el;
+      return node;
     });
 
-    setElements(layoutedElements);
+    setNodes(layoutedNodes);
   };
 
   return (
     <div className="layoutflow">
       <ReactFlowProvider>
         <ReactFlow
-          elements={elements}
+          nodes={nodes}
+          edges={edges}
           onConnect={onConnect}
-          onElementsRemove={onElementsRemove}
           nodeExtent={nodeExtent}
-          onLoad={() => onLayout('TB')}
+          onInit={() => onLayout('TB')}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
         >
           <Controls />
         </ReactFlow>

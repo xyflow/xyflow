@@ -2,11 +2,11 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
-import bundleSize from 'rollup-plugin-bundle-size';
 import replace from '@rollup/plugin-replace';
 import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 import pkg from './package.json';
 
@@ -14,38 +14,51 @@ const isProd = process.env.NODE_ENV === 'production';
 const isTesting = process.env.NODE_ENV === 'testing';
 const processEnv = isProd || isTesting ? 'production' : 'development';
 
-export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
-  input: 'src/index.ts',
-  external: ['react', 'react-dom', (id) => id.includes('@babel/runtime')],
+export const baseConfig = ({ outputDir = 'dist/esm', injectCSS = true } = {}) => ({
+  input: [
+    'src/index.ts',
+    'src/additional-components/Controls/index.tsx',
+    'src/additional-components/Background/index.tsx',
+    'src/additional-components/MiniMap/index.tsx',
+    'src/hooks/useReactFlow.ts',
+    'src/hooks/useNodes.ts',
+    'src/hooks/useEdges.ts',
+    'src/hooks/useViewport.ts',
+    'src/hooks/useUpdateNodeInternals.ts',
+  ],
+  external: [
+    'react',
+    'react-dom',
+    'classcat',
+    'd3-selection',
+    'd3-zoom',
+    'react-draggable',
+    'zustand',
+    'zustand/shallow',
+    'zustand/context',
+    (id) => id.includes('@babel/runtime'),
+  ],
   onwarn(warning, rollupWarn) {
     if (warning.code !== 'CIRCULAR_DEPENDENCY') {
       rollupWarn(warning);
     }
   },
-  output: [
-    {
-      file: mainFile,
-      format: 'cjs',
-      sourcemap: true,
-      exports: 'named',
-    },
-    {
-      file: moduleFile,
-      format: 'esm',
-      sourcemap: true,
-      exports: 'named',
-    },
-  ],
+  output: {
+    dir: outputDir,
+    format: 'esm',
+    sourcemap: true,
+  },
+
   plugins: [
     replace({
       __ENV__: JSON.stringify(processEnv),
       __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
+      __INJECT_STYLES__: injectCSS,
       preventAssignment: true,
     }),
-    bundleSize(),
     postcss({
       minimize: isProd,
-      inject: injectCSS,
+      inject: false,
     }),
     svgr(),
     resolve(),
@@ -60,6 +73,7 @@ export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injec
       exclude: 'node_modules/**',
       babelHelpers: 'runtime',
     }),
+    visualizer(),
   ],
 });
 
@@ -67,8 +81,7 @@ export default isProd && !isTesting
   ? [
       baseConfig(),
       baseConfig({
-        mainFile: 'dist/nocss/ReactFlow-nocss.js',
-        moduleFile: 'dist/nocss/ReactFlow-nocss.esm.js',
+        outputDir: 'dist/nocss',
         injectCSS: false,
       }),
     ]

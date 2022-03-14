@@ -1,24 +1,19 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
+import { SetState } from 'zustand';
 
 import { getHostForElement } from '../../utils';
-
 import {
-  ElementId,
-  XYPosition,
-  OnConnectFunc,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
+  OnConnect,
+  OnConnectStart,
+  OnConnectStop,
+  OnConnectEnd,
   ConnectionMode,
-  SetConnectionId,
   Connection,
   HandleType,
+  ReactFlowState,
 } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
-export type SetSourceIdFunc = (params: SetConnectionId) => void;
-
-export type SetPosition = (pos: XYPosition) => void;
 
 type Result = {
   elementBelow: Element | null;
@@ -28,17 +23,15 @@ type Result = {
 };
 
 // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
-function checkElementBelowIsValid(
+export function checkElementBelowIsValid(
   event: MouseEvent,
   connectionMode: ConnectionMode,
   isTarget: boolean,
-  nodeId: ElementId,
-  handleId: ElementId | null,
+  nodeId: string,
+  handleId: string | null,
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
-  // TODO: why does this throw an error? elementFromPoint should be available for ShadowRoot too
-  // @ts-ignore
   const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
   const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
@@ -91,19 +84,18 @@ function resetRecentHandle(hoveredHandle: Element): void {
 
 export function onMouseDown(
   event: ReactMouseEvent,
-  handleId: ElementId | null,
-  nodeId: ElementId,
-  setConnectionNodeId: SetSourceIdFunc,
-  setPosition: SetPosition,
-  onConnect: OnConnectFunc,
+  handleId: string | null,
+  nodeId: string,
+  setState: SetState<ReactFlowState>,
+  onConnect: OnConnect,
   isTarget: boolean,
   isValidConnection: ValidConnectionFunc,
   connectionMode: ConnectionMode,
   elementEdgeUpdaterType?: HandleType,
   onEdgeUpdateEnd?: (evt: MouseEvent) => void,
-  onConnectStart?: OnConnectStartFunc,
-  onConnectStop?: OnConnectStopFunc,
-  onConnectEnd?: OnConnectEndFunc
+  onConnectStart?: OnConnectStart,
+  onConnectStop?: OnConnectStop,
+  onConnectEnd?: OnConnectEnd
 ): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   // when react-flow is used inside a shadow root we can't use document
@@ -113,7 +105,6 @@ export function onMouseDown(
     return;
   }
 
-  // @ts-ignore
   const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
   const elementBelowIsSource = elementBelow?.classList.contains('source');
@@ -126,18 +117,24 @@ export function onMouseDown(
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 
-  setPosition({
-    x: event.clientX - containerBounds.left,
-    y: event.clientY - containerBounds.top,
+  setState({
+    connectionPosition: {
+      x: event.clientX - containerBounds.left,
+      y: event.clientY - containerBounds.top,
+    },
+    connectionNodeId: nodeId,
+    connectionHandleId: handleId,
+    connectionHandleType: handleType,
   });
 
-  setConnectionNodeId({ connectionNodeId: nodeId, connectionHandleId: handleId, connectionHandleType: handleType });
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
   function onMouseMove(event: MouseEvent) {
-    setPosition({
-      x: event.clientX - containerBounds.left,
-      y: event.clientY - containerBounds.top,
+    setState({
+      connectionPosition: {
+        x: event.clientX - containerBounds.left,
+        y: event.clientY - containerBounds.top,
+      },
     });
 
     const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(
@@ -187,7 +184,11 @@ export function onMouseDown(
     }
 
     resetRecentHandle(recentHoveredHandle);
-    setConnectionNodeId({ connectionNodeId: null, connectionHandleId: null, connectionHandleType: null });
+    setState({
+      connectionNodeId: null,
+      connectionHandleId: null,
+      connectionHandleType: null,
+    });
 
     doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
     doc.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);

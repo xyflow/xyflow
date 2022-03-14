@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import ReactFlow, {
   Controls,
   updateEdge,
   addEdge,
-  Elements,
-  OnLoadParams,
+  applyNodeChanges,
+  applyEdgeChanges,
+  ReactFlowInstance,
   Connection,
   Edge,
-  removeElements,
+  Node,
+  NodeChange,
+  EdgeChange,
 } from 'react-flow-renderer';
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
@@ -46,29 +49,41 @@ const initialElements: Elements = [
     position: { x: 400, y: 100 },
     style: { background: '#D6D5E6', color: '#333', border: '1px solid #222138', width: 180 },
   },
-  { id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' },
 ];
 
-const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
+const initialEdges = [{ id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' }];
+
+const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge) => console.log('start update', edge);
 const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge) => console.log('end update', edge);
 
 const UpdatableEdge = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
-    setElements((els) => updateEdge(oldEdge, newConnection, els));
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
+    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+  const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
+
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
+    console.log(changes);
+    setNodes((ns) => applyNodeChanges(changes, ns));
+  }, []);
+
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    setEdges((es) => applyEdgeChanges(changes, es));
+  }, []);
 
   return (
     <ReactFlow
-      elements={elements}
-      onLoad={onLoad}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onInit={onInit}
       snapToGrid={true}
       onEdgeUpdate={onEdgeUpdate}
       onConnect={onConnect}
       onEdgeUpdateStart={onEdgeUpdateStart}
-      onElementsRemove={onElementsRemove}
       onEdgeUpdateEnd={onEdgeUpdateEnd}
     >
       <Controls />

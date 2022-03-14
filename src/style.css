@@ -5,18 +5,22 @@
   overflow: hidden;
 }
 
-.react-flow__renderer,
-.react-flow__pane,
-.react-flow__selectionpane {
+.react-flow__container {
+  position: absolute;
   width: 100%;
   height: 100%;
-  position: absolute;
   top: 0;
   left: 0;
 }
 
 .react-flow__pane {
   z-index: 1;
+}
+
+.react-flow__viewport {
+  transform-origin: 0 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .react-flow__renderer {
@@ -27,18 +31,9 @@
   z-index: 5;
 }
 
-.react-flow__selection {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 .react-flow__edges {
-  position: absolute;
-  top: 0;
-  left: 0;
   pointer-events: none;
-  z-index: 2;
+  overflow: visible;
 }
 
 .react-flow__edge {
@@ -82,12 +77,8 @@
 }
 
 .react-flow__nodes {
-  position: absolute;
-  width: 100%;
-  height: 100%;
   pointer-events: none;
   transform-origin: 0 0;
-  z-index: 3;
 }
 
 .react-flow__node {
@@ -95,15 +86,11 @@
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
+  box-sizing: border-box;
 }
 
 .react-flow__nodesselection {
   z-index: 3;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
   transform-origin: left top;
   pointer-events: none;
 
@@ -154,19 +141,11 @@
 
 /* additional components */
 
-.react-flow__background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
 .react-flow__controls {
   position: absolute;
   z-index: 5;
-  bottom: 10px;
-  left: 10px;
+  bottom: 20px;
+  left: 15px;
 
   &-button {
     width: 24px;
@@ -182,6 +161,41 @@
 .react-flow__minimap {
   position: absolute;
   z-index: 5;
-  bottom: 10px;
-  right: 10px;
+  bottom: 20px;
+  right: 15px;
+}
+
+.react-flow__attribution {
+  font-size: 10px;
+  position: absolute;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 2px 3px;
+  color: #999;
+
+  a {
+    color: #555;
+    text-decoration: none;
+  }
+
+  &.top {
+    top: 0;
+  }
+
+  &.bottom {
+    bottom: 0;
+  }
+
+  &.left {
+    left: 0;
+  }
+
+  &.right {
+    right: 0;
+  }
+
+  &.center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }

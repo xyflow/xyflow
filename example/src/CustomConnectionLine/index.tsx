@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
 import ReactFlow, {
-  removeElements,
+  Node,
   addEdge,
   Background,
   BackgroundVariant,
-  Elements,
   Connection,
   Edge,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
 import ConnectionLine from './ConnectionLine';
 
-const initialElements: Elements = [{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }];
+const initialNodes: Node[] = [{ id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } }];
+const initialEdges: Edge[] = [];
 
 const ConnectionLineFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 
   return (
     <ReactFlow
-      elements={elements}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
       connectionLineComponent={ConnectionLine}
-      onElementsRemove={onElementsRemove}
       onConnect={onConnect}
     >
       <Background variant={BackgroundVariant.Lines} />

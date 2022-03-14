@@ -1,47 +1,33 @@
-import React, {
-  useMemo,
-  CSSProperties,
-  HTMLAttributes,
-  MouseEvent as ReactMouseEvent,
-  WheelEvent,
-  forwardRef,
-} from 'react';
 import cc from 'classcat';
-
-import GraphView from '../GraphView';
-import ElementUpdater from '../../components/ElementUpdater';
+import React, { forwardRef } from 'react';
+import Attribution from '../../components/Attribution';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
-import { createNodeTypes } from '../NodeRenderer/utils';
 import SelectionListener from '../../components/SelectionListener';
-import { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '../../components/Edges';
-import { createEdgeTypes } from '../EdgeRenderer/utils';
-import Wrapper from './Wrapper';
+import StoreUpdater from '../../components/StoreUpdater';
+import css from '../../style.css';
+import theme from '../../theme-default.css';
 import {
-  Elements,
-  NodeTypesType,
-  EdgeTypesType,
-  OnLoadFunc,
-  Node,
-  Edge,
-  Connection,
-  ConnectionMode,
   ConnectionLineType,
-  ConnectionLineComponent,
-  FlowTransform,
-  OnConnectStartFunc,
-  OnConnectStopFunc,
-  OnConnectEndFunc,
-  TranslateExtent,
-  KeyCode,
+  ConnectionMode,
+  EdgeTypes,
+  NodeTypes,
   PanOnScrollMode,
-  OnEdgeUpdateFunc,
-  NodeExtent,
+  ReactFlowProps,
+  ReactFlowRefType,
 } from '../../types';
+import { createEdgeTypes } from '../EdgeRenderer/utils';
+import GraphView from '../GraphView';
+import { createNodeTypes } from '../NodeRenderer/utils';
+import injectStyle, { useNodeOrEdgeTypes } from './utils';
+import Wrapper from './Wrapper';
 
-import '../../style.css';
-import '../../theme-default.css';
+if (__INJECT_STYLES__) {
+  injectStyle(css as unknown as string);
+  injectStyle(theme as unknown as string);
+}
 
 const defaultNodeTypes = {
   input: InputNode,
@@ -54,97 +40,28 @@ const defaultEdgeTypes = {
   straight: StraightEdge,
   step: StepEdge,
   smoothstep: SmoothStepEdge,
+  simplebezier: SimpleBezierEdge,
 };
 
-export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onLoad'> {
-  elements: Elements;
-  onElementClick?: (event: ReactMouseEvent, element: Node | Edge) => void;
-  onElementsRemove?: (elements: Elements) => void;
-  onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
-  onConnect?: (connection: Edge | Connection) => void;
-  onConnectStart?: OnConnectStartFunc;
-  onConnectStop?: OnConnectStopFunc;
-  onConnectEnd?: OnConnectEndFunc;
-  onLoad?: OnLoadFunc;
-  onMove?: (flowTransform?: FlowTransform) => void;
-  onMoveStart?: (flowTransform?: FlowTransform) => void;
-  onMoveEnd?: (flowTransform?: FlowTransform) => void;
-  onSelectionChange?: (elements: Elements | null) => void;
-  onSelectionDragStart?: (event: ReactMouseEvent, nodes: Node[]) => void;
-  onSelectionDrag?: (event: ReactMouseEvent, nodes: Node[]) => void;
-  onSelectionDragStop?: (event: ReactMouseEvent, nodes: Node[]) => void;
-  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
-  onPaneScroll?: (event?: WheelEvent) => void;
-  onPaneClick?: (event: ReactMouseEvent) => void;
-  onPaneContextMenu?: (event: ReactMouseEvent) => void;
-  nodeTypes?: NodeTypesType;
-  edgeTypes?: EdgeTypesType;
-  connectionMode?: ConnectionMode;
-  connectionLineType?: ConnectionLineType;
-  connectionLineStyle?: CSSProperties;
-  connectionLineComponent?: ConnectionLineComponent;
-  deleteKeyCode?: KeyCode;
-  selectionKeyCode?: KeyCode;
-  multiSelectionKeyCode?: KeyCode;
-  zoomActivationKeyCode?: KeyCode;
-  snapToGrid?: boolean;
-  snapGrid?: [number, number];
-  onlyRenderVisibleElements?: boolean;
-  nodesDraggable?: boolean;
-  nodesConnectable?: boolean;
-  elementsSelectable?: boolean;
-  selectNodesOnDrag?: boolean;
-  paneMoveable?: boolean;
-  minZoom?: number;
-  maxZoom?: number;
-  defaultZoom?: number;
-  defaultPosition?: [number, number];
-  translateExtent?: TranslateExtent;
-  preventScrolling?: boolean;
-  nodeExtent?: NodeExtent;
-  arrowHeadColor?: string;
-  markerEndId?: string;
-  zoomOnScroll?: boolean;
-  zoomOnPinch?: boolean;
-  panOnScroll?: boolean;
-  panOnScrollSpeed?: number;
-  panOnScrollMode?: PanOnScrollMode;
-  zoomOnDoubleClick?: boolean;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeMouseEnter?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
-  edgeUpdaterRadius?: number;
-  nodeTypesId?: string;
-  edgeTypesId?: string;
-}
-
-export type ReactFlowRefType = HTMLDivElement;
+const initSnapGrid: [number, number] = [15, 15];
+const initDefaultPosition: [number, number] = [0, 0];
 
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
     {
-      elements = [],
+      nodes,
+      edges,
+      defaultNodes,
+      defaultEdges,
       className,
       nodeTypes = defaultNodeTypes,
       edgeTypes = defaultEdgeTypes,
-      onElementClick,
-      onLoad,
+      onNodeClick,
+      onEdgeClick,
+      onInit,
       onMove,
       onMoveStart,
       onMoveEnd,
-      onElementsRemove,
       onConnect,
       onConnectStart,
       onConnectStop,
@@ -157,6 +74,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onNodeDragStart,
       onNodeDrag,
       onNodeDragStop,
+      onNodesDelete,
+      onEdgesDelete,
       onSelectionChange,
       onSelectionDragStart,
       onSelectionDrag,
@@ -171,7 +90,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       multiSelectionKeyCode = 'Meta',
       zoomActivationKeyCode = 'Meta',
       snapToGrid = false,
-      snapGrid = [15, 15],
+      snapGrid = initSnapGrid,
       onlyRenderVisibleElements = false,
       selectNodesOnDrag = true,
       nodesDraggable,
@@ -180,19 +99,18 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       minZoom,
       maxZoom,
       defaultZoom = 1,
-      defaultPosition = [0, 0],
+      defaultPosition = initDefaultPosition,
       translateExtent,
       preventScrolling = true,
       nodeExtent,
-      arrowHeadColor = '#b1b1b7',
-      markerEndId,
+      defaultMarkerColor = '#b1b1b7',
       zoomOnScroll = true,
       zoomOnPinch = true,
       panOnScroll = false,
       panOnScrollSpeed = 0.5,
       panOnScrollMode = PanOnScrollMode.Free,
       zoomOnDoubleClick = true,
-      paneMoveable = true,
+      panOnDrag = true,
       onPaneClick,
       onPaneScroll,
       onPaneContextMenu,
@@ -206,25 +124,35 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onEdgeUpdateStart,
       onEdgeUpdateEnd,
       edgeUpdaterRadius = 10,
-      nodeTypesId = '1',
-      edgeTypesId = '1',
+      onNodesChange,
+      onEdgesChange,
+      noDragClassName = 'nodrag',
+      noWheelClassName = 'nowheel',
+      noPanClassName = 'nopan',
+      fitView = false,
+      fitViewOptions,
+      connectOnClick = true,
+      attributionPosition,
+      proOptions,
+      defaultEdgeOptions,
       ...rest
     },
     ref
   ) => {
-    const nodeTypesParsed = useMemo(() => createNodeTypes(nodeTypes), [nodeTypesId]);
-    const edgeTypesParsed = useMemo(() => createEdgeTypes(edgeTypes), [edgeTypesId]);
+    const nodeTypesParsed = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypes;
+    const edgeTypesParsed = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypes;
     const reactFlowClasses = cc(['react-flow', className]);
 
     return (
       <div {...rest} ref={ref} className={reactFlowClasses}>
         <Wrapper>
           <GraphView
-            onLoad={onLoad}
+            onInit={onInit}
             onMove={onMove}
             onMoveStart={onMoveStart}
             onMoveEnd={onMoveEnd}
-            onElementClick={onElementClick}
+            onNodeClick={onNodeClick}
+            onEdgeClick={onEdgeClick}
             onNodeMouseEnter={onNodeMouseEnter}
             onNodeMouseMove={onNodeMouseMove}
             onNodeMouseLeave={onNodeMouseLeave}
@@ -235,42 +163,25 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onNodeDragStop={onNodeDragStop}
             nodeTypes={nodeTypesParsed}
             edgeTypes={edgeTypesParsed}
-            connectionMode={connectionMode}
             connectionLineType={connectionLineType}
             connectionLineStyle={connectionLineStyle}
             connectionLineComponent={connectionLineComponent}
             selectionKeyCode={selectionKeyCode}
-            onElementsRemove={onElementsRemove}
             deleteKeyCode={deleteKeyCode}
             multiSelectionKeyCode={multiSelectionKeyCode}
             zoomActivationKeyCode={zoomActivationKeyCode}
-            onConnect={onConnect}
-            onConnectStart={onConnectStart}
-            onConnectStop={onConnectStop}
-            onConnectEnd={onConnectEnd}
-            snapToGrid={snapToGrid}
-            snapGrid={snapGrid}
             onlyRenderVisibleElements={onlyRenderVisibleElements}
-            nodesDraggable={nodesDraggable}
-            nodesConnectable={nodesConnectable}
-            elementsSelectable={elementsSelectable}
             selectNodesOnDrag={selectNodesOnDrag}
-            minZoom={minZoom}
-            maxZoom={maxZoom}
             defaultZoom={defaultZoom}
             defaultPosition={defaultPosition}
-            translateExtent={translateExtent}
             preventScrolling={preventScrolling}
-            nodeExtent={nodeExtent}
-            arrowHeadColor={arrowHeadColor}
-            markerEndId={markerEndId}
             zoomOnScroll={zoomOnScroll}
             zoomOnPinch={zoomOnPinch}
             zoomOnDoubleClick={zoomOnDoubleClick}
             panOnScroll={panOnScroll}
             panOnScrollSpeed={panOnScrollSpeed}
             panOnScrollMode={panOnScrollMode}
-            paneMoveable={paneMoveable}
+            panOnDrag={panOnDrag}
             onPaneClick={onPaneClick}
             onPaneScroll={onPaneScroll}
             onPaneContextMenu={onPaneContextMenu}
@@ -287,10 +198,42 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             edgeUpdaterRadius={edgeUpdaterRadius}
+            defaultMarkerColor={defaultMarkerColor}
+            noDragClassName={noDragClassName}
+            noWheelClassName={noWheelClassName}
+            noPanClassName={noPanClassName}
           />
-          <ElementUpdater elements={elements} />
+          <StoreUpdater
+            nodes={nodes}
+            edges={edges}
+            defaultNodes={defaultNodes}
+            defaultEdges={defaultEdges}
+            onConnect={onConnect}
+            onConnectStart={onConnectStart}
+            onConnectStop={onConnectStop}
+            onConnectEnd={onConnectEnd}
+            nodesDraggable={nodesDraggable}
+            nodesConnectable={nodesConnectable}
+            elementsSelectable={elementsSelectable}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
+            nodeExtent={nodeExtent}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            snapToGrid={snapToGrid}
+            snapGrid={snapGrid}
+            connectionMode={connectionMode}
+            translateExtent={translateExtent}
+            connectOnClick={connectOnClick}
+            defaultEdgeOptions={defaultEdgeOptions}
+            fitView={fitView}
+            fitViewOptions={fitViewOptions}
+            onNodesDelete={onNodesDelete}
+            onEdgesDelete={onEdgesDelete}
+          />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
+          <Attribution proOptions={proOptions} position={attributionPosition} />
         </Wrapper>
       </div>
     );

@@ -1,51 +1,61 @@
-[![react-flow](https://user-images.githubusercontent.com/2857535/95224198-b2540000-07fa-11eb-832d-361d72d60345.jpg)](https://reactflow.dev)
+![readme-header-dark](https://user-images.githubusercontent.com/3797215/156384064-08a889d6-73c0-4cbf-8ff3-28dc601d1f5f.svg#gh-dark-mode-only)
+![readme-header](https://user-images.githubusercontent.com/3797215/156259138-fb9f59f8-52f2-474a-b78c-6570867e4ead.svg#gh-light-mode-only)
 
-React Flow is a library for building node based graphs. You can easily implement custom node types and it comes with components like a mini map and graph controls. Feel free to check out the [examples](https://reactflow.dev/) or read the [blog post](https://webkid.io/blog/react-flow-node-based-graph-library/) to get started.
+<div align="center">
 
-## 👉 Next Major Release 👈
+  ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23FF0072)
+  ![npm downloads](https://img.shields.io/npm/dt/react-flow-renderer?color=%23FF0072&label=downloads)
+  ![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
+  ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
 
-We are currently working on the next version. You can find the installation instructions and breaking changes in [this PR](https://github.com/wbkd/react-flow/pull/1555). Your feedback is highly appreciated :) 
+### Wire Your Ideas With React Flow!  
+A highly customizable React component for building interactive graphs and node-based editors.
 
-- **Website:** https://reactflow.dev
-- **Documentation:** https://reactflow.dev/docs
-- **Examples:** https://reactflow.dev/examples
-- **Website/Docs Repository:** https://github.com/wbkd/react-flow-docs
-- **Community:** https://discord.gg/Bqt6xrs
-- **Sponsorship:** https://github.com/sponsors/wbkd
+[🚀 Getting Started](https://reactflow.dev/docs/getting-started/installation) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/Bqt6xrs) | [💎 React Flow Pro](https://pro.reactflow.dev/pricing)
+  
+</div>
 
-React Flow was initially created for [datablocks](https://datablocks.pro). A node-based editor for transforming, analyzing and visualizing data.
+----
+
+## Key Features
+
+- **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
+- **Customizable:** Different [node](https://reactflow.dev/docs/api/nodes/node-types) and [edge types](https://reactflow.dev/docs/api/edges/edge-types) and support for custom nodes with multiple handles and custom edges
+- **Fast rendering:** Only nodes that have changed are re-rendered and only those in the viewport are displayed
+- **Hooks and Utils:** [Hooks](https://reactflow.dev/docs/api/hooks/use-react-flow) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/docs/api/graph-util-functions)
+- **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
+- **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
 ## Installation
 
-```
+The easiest way to get the latest version of React Flow is to install it via npm:
+
+```bash
 npm install react-flow-renderer
 ```
 
 ## Quick Start
 
-This is a very basic example of how to use React Flow. You can find more advanced examples on the [website](https://reactflow.dev/examples).
+This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and [API reference](https://reactflow.dev/docs/api/react-flow-props).
 
-```js
-import React from 'react';
-import ReactFlow from 'react-flow-renderer';
+```jsx
+import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer';
 
-const elements = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-  // you can also pass a React component as a label
-  { id: '2', data: { label: <div>Node 2</div> }, position: { x: 100, y: 100 } },
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-];
-
-const BasicFlow = () => <ReactFlow elements={elements} />;
+function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+    >
+      <MiniMap />
+      <Controls />
+    </ReactFlow>
+  );
+}
 ```
-
-## Community Packages
-
-* [useUndoable](https://github.com/Infinium8/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
-* [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
-* [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
-
-## Development
 
 Before you start you need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
 
@@ -71,19 +81,33 @@ Testing is done with cypress. You can find the tests in the [`integration/flow`]
 npm run test
 ```
 
-## Maintainer
+## Attribution
 
-Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+Since v10.0.0 the React Flow renderer includes a small attribution that links to the React Flow website. It is only allowed to remove the attribution if you are subscribed to one of the [pro plans](https://pro.reactflow.dev/pricing). A subscription also provides more features such as a private Discord channel with the creators of React Flow or access to the source code of Datablocks (a node-based data editor built with React Flow).
 
-## Support
+## Maintainers
 
-If you need custom support or features for your application we are [happy to hear from you](https://webkid.io/contact).
+React Flow is developed and maintained by [webkid](https://webkid.io), a web development agency with the focus on data driven applications from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
 
+* Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+* Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
 
-### Thanks!
+You can also use our [contact form](https://webkid.io/contact/) or join the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
 
-Special thanks to [Andy Lindemann](https://github.com/AndyLnd) for a lot of helpful contributions!
+## Community Packages
 
----
+* [useUndoable](https://github.com/Infinium8/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
+* [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
+* [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
 
-React Flow is maintained by [webkid](https://webkid.io), a data visualization agency from Berlin. If you need help or want to develop react-based tools or data visualizations, [get in touch](https://webkid.io/contact)!
+## Credits
+
+React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. Under the hood, React Flow depends on these great libraries:
+
+* [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
+* [react-draggable](https://github.com/react-grid-layout/react-draggable) - used for making the nodes draggable
+* [zustand](https://github.com/pmndrs/zustand) - internal state management
+
+## License
+
+React Flow is [MIT licensed](https://github.com/wbkd/react-flow/blob/main/LICENSE).

@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 
-import EdgeText from './EdgeText';
-import { getMarkerEnd, getCenter } from './utils';
+import { getCenter } from './utils';
 import { EdgeSmoothStepProps, Position } from '../../types';
+import BaseEdge from './BaseEdge';
 
 // These are some helper methods for drawing the round corners
 // The name indicates the direction of the path. "bottomLeftCorner" goes
@@ -21,7 +21,7 @@ const topLeftCorner = (x: number, y: number, size: number): string => `L ${x},${
 const topRightCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x - size},${y}`;
 const rightTopCorner = (x: number, y: number, size: number): string => `L ${x - size},${y}Q ${x},${y} ${x},${y + size}`;
 
-interface GetSmoothStepPathParams {
+export interface GetSmoothStepPathParams {
   sourceX: number;
   sourceY: number;
   sourcePosition?: Position;
@@ -130,8 +130,8 @@ export default memo(
     style,
     sourcePosition = Position.Bottom,
     targetPosition = Position.Top,
-    arrowHeadType,
-    markerEndId,
+    markerEnd,
+    markerStart,
     borderRadius = 5,
   }: EdgeSmoothStepProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
@@ -146,26 +146,21 @@ export default memo(
       borderRadius,
     });
 
-    const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
-
-    const text = label ? (
-      <EdgeText
-        x={centerX}
-        y={centerY}
+    return (
+      <BaseEdge
+        path={path}
+        centerX={centerX}
+        centerY={centerY}
         label={label}
         labelStyle={labelStyle}
         labelShowBg={labelShowBg}
         labelBgStyle={labelBgStyle}
         labelBgPadding={labelBgPadding}
         labelBgBorderRadius={labelBgBorderRadius}
+        style={style}
+        markerEnd={markerEnd}
+        markerStart={markerStart}
       />
-    ) : null;
-
-    return (
-      <>
-        <path style={style} className="react-flow__edge-path" d={path} markerEnd={markerEnd} />
-        {text}
-      </>
     );
   }
 );

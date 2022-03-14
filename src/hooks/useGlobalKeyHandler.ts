@@ -1,44 +1,78 @@
 import { useEffect } from 'react';
+import shallow from 'zustand/shallow';
 
-import { useStore, useStoreActions } from '../store/hooks';
+import { useStore, useStoreApi } from '../store';
 import useKeyPress from './useKeyPress';
-import { isNode, getConnectedEdges } from '../utils/graph';
-import { Elements, KeyCode, ElementId, FlowElement } from '../types';
+import { getConnectedEdges } from '../utils/graph';
+import { EdgeChange, KeyCode, NodeChange, ReactFlowState } from '../types';
 
 interface HookParams {
-  deleteKeyCode: KeyCode;
-  multiSelectionKeyCode: KeyCode;
-  onElementsRemove?: (elements: Elements) => void;
+  deleteKeyCode: KeyCode | null;
+  multiSelectionKeyCode: KeyCode | null;
 }
 
-export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: HookParams): void => {
-  const store = useStore();
+const selector = (s: ReactFlowState) => ({
+  resetSelectedElements: s.resetSelectedElements,
+  onNodesChange: s.onNodesChange,
+  onEdgesChange: s.onEdgesChange,
+});
 
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-  const setMultiSelectionActive = useStoreActions((actions) => actions.setMultiSelectionActive);
-  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
+export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
+  const store = useStoreApi();
+  const { resetSelectedElements, onNodesChange, onEdgesChange } = useStore(selector, shallow);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { edges, selectedElements } = store.getState();
+    const { nodeInternals, edges, hasDefaultNodes, hasDefaultEdges, onNodesDelete, onEdgesDelete } = store.getState();
+    // @TODO: work with nodeInternals instead of converting it to an array
+    const nodes = Array.from(nodeInternals).map(([_, node]) => node);
+    const selectedNodes = nodes.filter((n) => n.selected);
+    const selectedEdges = edges.filter((e) => e.selected);
 
-    if (onElementsRemove && deleteKeyPressed && selectedElements) {
-      const selectedNodes = selectedElements.filter(isNode);
+    if (deleteKeyPressed && (selectedNodes || selectedEdges)) {
       const connectedEdges = getConnectedEdges(selectedNodes, edges);
-      const elementsToRemove = [...selectedElements, ...connectedEdges].reduce(
-        (res, item) => res.set(item.id, item),
-        new Map<ElementId, FlowElement>()
-      );
+      const edgesToRemove = [...selectedEdges, ...connectedEdges];
+      const edgeIdsToRemove = edgesToRemove.map((e) => e.id);
 
-      onElementsRemove(Array.from(elementsToRemove.values()));
-      unsetNodesSelection();
+      if (hasDefaultNodes) {
+        selectedNodes.forEach((node) => {
+          nodeInternals.delete(node.id);
+        });
+      }
+
+      if (hasDefaultEdges) {
+        store.setState({
+          nodeInternals: new Map(nodeInternals),
+          edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
+        });
+      }
+
+      onNodesDelete?.(selectedNodes);
+      onEdgesDelete?.(edgesToRemove);
+
+      if (onNodesChange) {
+        const nodeChanges: NodeChange[] = selectedNodes.map((n) => ({ id: n.id, type: 'remove' }));
+        onNodesChange(nodeChanges);
+      }
+
+      if (onEdgesChange) {
+        const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
+          id,
+          type: 'remove',
+        }));
+
+        onEdgesChange(edgeChanges);
+      }
+
+      store.setState({ nodesSelectionActive: false });
+
       resetSelectedElements();
     }
-  }, [deleteKeyPressed]);
+  }, [deleteKeyPressed, onNodesChange, onEdgesChange]);
 
   useEffect(() => {
-    setMultiSelectionActive(multiSelectionKeyPressed);
+    store.setState({ multiSelectionActive: multiSelectionKeyPressed });
   }, [multiSelectionKeyPressed]);
 };

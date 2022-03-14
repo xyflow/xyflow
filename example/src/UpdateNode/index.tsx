@@ -1,64 +1,75 @@
-import React, { useEffect, useState } from 'react';
-import ReactFlow, { Elements } from 'react-flow-renderer';
+import { useEffect, useState } from 'react';
+import ReactFlow, { Node, Edge, useNodesState, useEdgesState } from 'react-flow-renderer';
 
 import './updatenode.css';
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   { id: '1', data: { label: '-' }, position: { x: 100, y: 100 } },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 200 } },
-  { id: 'e1-2', source: '1', target: '2' },
 ];
 
+const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
+
 const UpdateNode = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
   const [nodeName, setNodeName] = useState<string>('Node 1');
   const [nodeBg, setNodeBg] = useState<string>('#eee');
   const [nodeHidden, setNodeHidden] = useState<boolean>(false);
 
   useEffect(() => {
-    setElements((els) =>
-      els.map((el) => {
-        if (el.id === '1') {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.id === '1') {
           // it's important that you create a new object here in order to notify react flow about the change
-          el.data = {
-            ...el.data,
+          n.data = {
+            ...n.data,
             label: nodeName,
           };
         }
 
-        return el;
+        return n;
       })
     );
-  }, [nodeName, setElements]);
+  }, [nodeName]);
 
   useEffect(() => {
-    setElements((els) =>
-      els.map((el) => {
-        if (el.id === '1') {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.id === '1') {
           // it's important that you create a new object here in order to notify react flow about the change
-          el.style = { ...el.style, backgroundColor: nodeBg };
+          n.style = { ...n.style, backgroundColor: nodeBg };
         }
 
-        return el;
+        return n;
       })
     );
-  }, [nodeBg, setElements]);
+  }, [nodeBg]);
 
   useEffect(() => {
-    setElements((els) =>
-      els.map((el) => {
-        if (el.id === '1' || el.id === 'e1-2') {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.id === '1' || n.id === 'e1-2') {
           // when you update a simple type you can just update the value
-          el.isHidden = nodeHidden;
+          n.hidden = nodeHidden;
         }
 
-        return el;
+        return n;
       })
     );
-  }, [nodeHidden, setElements]);
+  }, [nodeHidden]);
 
   return (
-    <ReactFlow elements={elements} defaultZoom={1.5} minZoom={0.2} maxZoom={4}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      defaultZoom={1.5}
+      minZoom={0.2}
+      maxZoom={4}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+    >
       <div className="updatenode__controls">
         <label>label:</label>
         <input value={nodeName} onChange={(evt) => setNodeName(evt.target.value)} />
