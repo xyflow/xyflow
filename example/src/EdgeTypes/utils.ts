@@ -1,4 +1,4 @@
-import { Node, Edge, Position } from 'react-flow-renderer';
+import { Edge, Node, Position } from 'react-flow-renderer';
 
 const nodeWidth = 80;
 const nodeGapWidth = nodeWidth * 2;
@@ -9,10 +9,10 @@ const sourceTargetPositions = [
   { source: Position.Right, target: Position.Left },
 ];
 const nodeColors = [
-  ['#1e9e99', '#4cb3ac', '#6ec9c0', '#8ddfd4'],
-  ['#0f4c75', '#1b5d8b', '#276fa1', '#3282b8'],
+  ['#1e9e99', '#4cb3ac', '#6ec9c0', '#8ddfd4', '#c4fff7'],
+  ['#0f4c75', '#1b5d8b', '#276fa1', '#3282b8', '#4fa6e0'],
 ];
-const edgeTypes = ['default', 'step', 'smoothstep', 'straight'];
+const edgeTypes = ['default', 'step', 'smoothstep', 'straight', 'unreal'];
 const offsets = [
   {
     x: 0,

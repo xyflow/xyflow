@@ -1,7 +1,7 @@
 import cc from 'classcat';
 import React, { forwardRef } from 'react';
 import Attribution from '../../components/Attribution';
-import { BezierEdge, QuarticBezierEdge, SmoothStepEdge, StepEdge, StraightEdge } from '../../components/Edges';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, UnrealBezierEdge } from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
@@ -40,7 +40,7 @@ const defaultEdgeTypes = {
   straight: StraightEdge,
   step: StepEdge,
   smoothstep: SmoothStepEdge,
-  quartic: QuarticBezierEdge,
+  unreal: UnrealBezierEdge,
 };
 
 const initSnapGrid: [number, number] = [15, 15];
