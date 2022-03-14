@@ -81,6 +81,10 @@ Testing is done with cypress. You can find the tests in the [`integration/flow`]
 npm run test
 ```
 
+## Attribution
+
+Since v10.0.0 the React Flow renderer includes a small attribution that links to the React Flow website. It is only allowed to remove the attribution if you are subscribed to one of the [pro plans](https://pro.reactflow.dev/pricing). A subscription also provides more features such as a private Discord channel with the creators of React Flow or access to the source code of Datablocks (a node-based data editor built with React Flow).
+
 ## Maintainers
 
 React Flow is developed and maintained by [webkid](https://webkid.io), a data visualization studio from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
