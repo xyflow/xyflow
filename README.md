@@ -31,7 +31,7 @@ A highly customizable React component for building interactive graphs and node-b
 The easiest way to get the latest version of React Flow is to install it via npm:
 
 ```bash
-npm install react-flow-renderer
+npm install @react-flow/core
 ```
 
 ## Quick Start
@@ -39,7 +39,7 @@ npm install react-flow-renderer
 This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and [API reference](https://reactflow.dev/docs/api/react-flow-props).
 
 ```jsx
-import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { MiniMap, Controls } from '@react-flow/core';
 
 function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
   return (
