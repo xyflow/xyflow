@@ -33,7 +33,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('deselects node', () => {
-    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__renderer').click('bottomLeft');
     cy.get('.react-flow__node:first').should('not.have.class', 'selected');
   });
 
@@ -42,7 +42,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('deselects edge', () => {
-    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__renderer').click('bottomLeft');
     cy.get('.react-flow__edge:first').should('not.have.class', 'selected');
   });
 
@@ -50,9 +50,9 @@ describe('Basic Flow Rendering', () => {
     cy.get('body')
       .type('{shift}', { release: false })
       .get('.react-flow__selectionpane')
-      .trigger('mousedown', 'topLeft', { which: 1, force: true })
-      .trigger('mousemove', 800, 75, { which: 1 })
-      .trigger('mouseup', 'bottomRight', { force: true })
+      .trigger('mousedown', 1000, 1, { which: 1, force: true })
+      .trigger('mousemove', 1, 200, { which: 1 })
+      .trigger('mouseup', 1, 200, { force: true })
       .get('.react-flow__node')
       .first()
       .should('have.class', 'selected')
@@ -68,9 +68,9 @@ describe('Basic Flow Rendering', () => {
     cy.get('body')
       .type('{shift}', { release: false })
       .get('.react-flow__selectionpane')
-      .trigger('mousedown', 'topLeft', { which: 1, force: true })
-      .trigger('mousemove', 'bottomRight', { which: 1 })
-      .trigger('mouseup', 'bottomRight', { force: true })
+      .trigger('mousedown', 'topRight', { which: 1, force: true })
+      .trigger('mousemove', 'bottomLeft', { which: 1 })
+      .trigger('mouseup', 'bottomLeft', { force: true })
       .get('.react-flow__node')
       .should('have.class', 'selected')
       .get('.react-flow__nodesselection-rect');
@@ -79,7 +79,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('removes selection', () => {
-    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__renderer').click('bottomLeft');
     cy.get('.react-flow__nodesselection-rect').should('not.exist');
   });
 
@@ -108,12 +108,12 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-flow__node')
       .contains('Node 3')
       .find('.react-flow__handle.source')
-      .trigger('mousedown', { which: 1 });
+      .trigger('mousedown', { button: 0 });
 
     cy.get('.react-flow__node')
       .contains('Node 4')
       .find('.react-flow__handle.target')
-      .trigger('mousemove')
+      .trigger('mousemove', { force: true })
       .trigger('mouseup', { force: true });
 
     cy.get('.react-flow__edge').should('have.length', 2);

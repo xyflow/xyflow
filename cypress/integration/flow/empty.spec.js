@@ -26,7 +26,7 @@ describe('Empty Flow Rendering', () => {
   });
 
   it('connects nodes', () => {
-    cy.get('.react-flow__node').first().find('.react-flow__handle.source').trigger('mousedown', { which: 1 });
+    cy.get('.react-flow__node').first().find('.react-flow__handle.source').trigger('mousedown', { button: 0 });
 
     cy.get('.react-flow__node')
       .last()

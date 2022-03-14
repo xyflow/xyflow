@@ -1,4 +1,4 @@
-import { isNode, isEdge, getOutgoers, getIncomers, addEdge } from '../../../dist/ReactFlow.js';
+import { isNode, isEdge, getOutgoers, getIncomers, addEdge } from '../../../dist/esm/index.js';
 
 const nodes = [
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
@@ -13,8 +13,6 @@ const edges = [
   { id: 'e2-3', source: '2', target: '3' },
 ];
 
-const elements = [...nodes, ...edges];
-
 describe('Graph Utils Testing', () => {
   it('tests isNode function', () => {
     expect(isNode(nodes[0])).to.be.true;
@@ -28,6 +26,7 @@ describe('Graph Utils Testing', () => {
 
   it('tests getOutgoers function', () => {
     const outgoers = getOutgoers(nodes[0], nodes, edges);
+
     expect(outgoers.length).to.be.equal(2);
 
     const noOutgoers = getOutgoers(nodes[2], nodes, edges);

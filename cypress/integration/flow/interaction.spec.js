@@ -93,7 +93,8 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('selects an edge by click', () => {
-    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
+    cy.get('.react-flow__edge:first').click({ force: true });
+    cy.get('.react-flow__edge:first').should('have.class', 'selected');
   });
 
   it('toggles connectable mode', () => {
@@ -104,7 +105,7 @@ describe('Interaction Flow Rendering', () => {
     cy.get('.react-flow__node')
       .contains('Node 3')
       .find('.react-flow__handle.source')
-      .trigger('mousedown', { which: 1 });
+      .trigger('mousedown', { button: 0 });
 
     cy.get('.react-flow__node')
       .contains('Node 4')
