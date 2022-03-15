@@ -28,38 +28,45 @@ export function getBezierPath({
   centerY,
 }: GetBezierPathParams): string {
   const leftAndRight = [Position.Left, Position.Right];
+
+  const inverted = sourcePosition === Position.Left || sourcePosition === Position.Top
+  const _targetX = inverted ? sourceX : targetX;
+  const _targetY  = inverted ? sourceY : targetY;
+  const _sourceX = inverted ? targetX : sourceX;
+  const _sourceY = inverted ? targetY : sourceY;
+
   const hasCurvature = curvature > 0;
   let cX,
     cY = 0;
 
-  const [_centerX, _centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
+  const [_centerX, _centerY] = getCenter({ sourceX: _sourceX, sourceY: _sourceY, targetX: _targetX, targetY: _targetY });
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
     cX = typeof centerX !== 'undefined' ? centerX : _centerX;
-    const distanceX = targetX - sourceX;
+    const distanceX = _targetX - _sourceX;
     const absDistanceX = Math.abs(Math.min(0, distanceX));
     const amtX = (Math.sqrt(absDistanceX) / 2) * (50 * curvature);
 
-    const hx1 = hasCurvature && distanceX < 0 ? sourceX + amtX : cX;
-    const hx2 = hasCurvature && distanceX < 0 ? targetX - amtX : cX;
+    const hx1 = hasCurvature && distanceX < 0 ? _sourceX + amtX : cX;
+    const hx2 = hasCurvature && distanceX < 0 ? _targetX - amtX : cX;
 
-    return `M${sourceX},${sourceY} C${hx1},${sourceY} ${hx2},${targetY}, ${targetX},${targetY}`
+    return `M${_sourceX},${_sourceY} C${hx1},${_sourceY} ${hx2},${_targetY}, ${_targetX},${_targetY}`
   } else if (leftAndRight.includes(targetPosition)) {
-    return `M${sourceX},${sourceY} Q${sourceX},${targetY} ${targetX},${targetY}`;
+    return `M${_sourceX},${_sourceY} Q${_sourceX},${_targetY} ${_targetX},${_targetY}`;
   } else if (leftAndRight.includes(sourcePosition)) {
-    return `M${sourceX},${sourceY} Q${targetX},${sourceY} ${targetX},${targetY}`;
+    return `M${_sourceX},${_sourceY} Q${_targetX},${_sourceY} ${_targetX},${_targetY}`;
   }
 
   cY = typeof centerY !== 'undefined' ? centerY : _centerY;
-  const distanceY = targetY - sourceY;
+  const distanceY = _targetY - _sourceY;
 
   const absDistanceY = Math.abs(Math.min(0, distanceY));
   const amtY = (Math.sqrt(absDistanceY) / 2) * (50 * curvature);
 
-  const hy1 = hasCurvature && distanceY < 0 ? sourceY + amtY : cY;
-  const hy2 = hasCurvature && distanceY < 0 ? targetY - amtY : cY;
+  const hy1 = hasCurvature && distanceY < 0 ? _sourceY + amtY : cY;
+  const hy2 = hasCurvature && distanceY < 0 ? _targetY - amtY : cY;
 
-  return `M${sourceX},${sourceY} C${sourceX},${hy1} ${targetX},${hy2} ${targetX},${targetY}`
+  return `M${_sourceX},${_sourceY} C${_sourceX},${hy1} ${_targetX},${hy2} ${_targetX},${_targetY}`
 
 }
 
