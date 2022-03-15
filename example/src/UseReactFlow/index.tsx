@@ -33,7 +33,7 @@ const UseZoomPanHelperFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
-  const { project, setCenter, zoomIn, zoomOut, fitView } = useReactFlow();
+  const { project, setCenter, zoomIn, zoomOut, fitView, addNodes, setNodes: setNodesHook } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt) => {
@@ -49,7 +49,7 @@ const UseZoomPanHelperFlow = () => {
         })
       );
     },
-    [project]
+    [project, setNodes]
   );
 
   const onNodeClick = useCallback(
@@ -59,6 +59,22 @@ const UseZoomPanHelperFlow = () => {
     },
     [setCenter]
   );
+
+  const onAddNode = useCallback(() => {
+    const newNode = {
+      id: getId(),
+      position: { x: Math.random() * 500, y: Math.random() * 500 },
+      data: {
+        label: 'New Node',
+      },
+    };
+
+    addNodes(newNode);
+  }, [addNodes]);
+
+  const onResetNodes = useCallback(() => {
+    setNodesHook(initialNodes);
+  }, [setNodesHook]);
 
   return (
     <ReactFlow
@@ -77,6 +93,8 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={() => zoomIn({ duration: 1200 })}>zoomIn</button>
         <button onClick={() => zoomOut({ duration: 0 })}>zoomOut</button>
         <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>fitView</button>
+        <button onClick={onAddNode}>add node</button>
+        <button onClick={onResetNodes}>reset nodes</button>
       </div>
       <Background />
       <MiniMap />

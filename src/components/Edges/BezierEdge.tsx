@@ -3,7 +3,6 @@ import { EdgeProps, Position } from '../../types';
 import BaseEdge from './BaseEdge';
 import { getCenter } from './utils';
 
-
 export interface GetBezierPathParams {
   sourceX: number;
   sourceY: number;
@@ -23,7 +22,7 @@ export function getBezierPath({
   targetX,
   targetY,
   targetPosition = Position.Top,
-  curvature = 0.4,
+  curvature = 0.25,
   centerX,
   centerY,
 }: GetBezierPathParams): string {
@@ -50,7 +49,7 @@ export function getBezierPath({
     const hx1 = hasCurvature && distanceX < 0 ? _sourceX + amtX : cX;
     const hx2 = hasCurvature && distanceX < 0 ? _targetX - amtX : cX;
 
-    return `M${_sourceX},${_sourceY} C${hx1},${_sourceY} ${hx2},${_targetY}, ${_targetX},${_targetY}`
+    return `M${_sourceX},${_sourceY} C${hx1},${_sourceY} ${hx2},${_targetY}, ${_targetX},${_targetY}`;
   } else if (leftAndRight.includes(targetPosition)) {
     return `M${_sourceX},${_sourceY} Q${_sourceX},${_targetY} ${_targetX},${_targetY}`;
   } else if (leftAndRight.includes(sourcePosition)) {
@@ -66,8 +65,7 @@ export function getBezierPath({
   const hy1 = hasCurvature && distanceY < 0 ? _sourceY + amtY : cY;
   const hy2 = hasCurvature && distanceY < 0 ? _targetY - amtY : cY;
 
-  return `M${_sourceX},${_sourceY} C${_sourceX},${hy1} ${_targetX},${hy2} ${_targetX},${_targetY}`
-
+  return `M${_sourceX},${_sourceY} C${_sourceX},${hy1} ${_targetX},${hy2} ${_targetX},${_targetY}`;
 }
 
 export default memo(

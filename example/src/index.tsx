@@ -31,10 +31,8 @@ import Undirectional from './Undirectional';
 import UpdatableEdge from './UpdatableEdge';
 import UpdateNode from './UpdateNode';
 import UseUpdateNodeInternals from './UseUpdateNodeInternals';
-import UseZoomPanHelper from './UseZoomPanHelper';
+import UseReactFlow from './UseReactFlow';
 import Validation from './Validation';
-
-
 
 const routes = [
   {
@@ -146,8 +144,8 @@ const routes = [
     component: UpdateNode,
   },
   {
-    path: '/usezoompanhelper',
-    component: UseZoomPanHelper,
+    path: '/usereactflow',
+    component: UseReactFlow,
   },
   {
     path: '/useupdatenodeinternals',
@@ -169,18 +167,18 @@ const Header = () => {
   const onChange = (event: ChangeEvent<HTMLSelectElement>) => navigate(event.target.value);
 
   return (
-      <header>
-        <a className="logo" href="https://github.com/wbkd/react-flow">
-          React Flow Dev
-        </a>
-        <select defaultValue={location.pathname} onChange={onChange}>
-          {routes.map((route) => (
-              <option value={route.path} key={route.path}>
-                {route.path === '/' ? 'overview' : route.path.substring(1, route.path.length)}
-              </option>
-          ))}
-        </select>
-      </header>
+    <header>
+      <a className="logo" href="https://github.com/wbkd/react-flow">
+        React Flow Dev
+      </a>
+      <select defaultValue={location.pathname} onChange={onChange}>
+        {routes.map((route) => (
+          <option value={route.path} key={route.path}>
+            {route.path === '/' ? 'overview' : route.path.substring(1, route.path.length)}
+          </option>
+        ))}
+      </select>
+    </header>
   );
 };
 
@@ -189,7 +187,7 @@ ReactDOM.render(
     <Header />
     <Routes>
       {routes.map((route) => (
-        <Route path={route.path} key={route.path} element={<route.component />}/>
+        <Route path={route.path} key={route.path} element={<route.component />} />
       ))}
     </Routes>
   </BrowserRouter>,

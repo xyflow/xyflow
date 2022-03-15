@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../store';
-import { ReactFlowInstance, Instance } from '../types';
+import { ReactFlowInstance, Instance, NodeAddChange, EdgeAddChange, NodeResetChange, EdgeResetChange } from '../types';
 
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
   const { initialized: viewportInitialized, ...viewportHelperFunctions } = useViewportHelper();
@@ -30,30 +30,54 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const setNodes = useCallback<Instance.SetNodes<NodeData>>((payload) => {
-    const { nodeInternals, setNodes } = store.getState();
+    const { nodeInternals, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
     const nodes = Array.from(nodeInternals.values());
     const nextNodes = typeof payload === 'function' ? payload(nodes) : payload;
-    setNodes(nextNodes);
+
+    if (hasDefaultNodes) {
+      setNodes(nextNodes);
+    } else if (onNodesChange) {
+      const changes = nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeData>));
+      onNodesChange(changes);
+    }
   }, []);
 
   const setEdges = useCallback<Instance.SetEdges<EdgeData>>((payload) => {
-    const { edges = [], setEdges } = store.getState();
+    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
     const nextEdges = typeof payload === 'function' ? payload(edges) : payload;
-    setEdges(nextEdges);
+
+    if (hasDefaultEdges) {
+      setEdges(nextEdges);
+    } else if (onEdgesChange) {
+      const changes = nextEdges.map((edge) => ({ item: edge, type: 'reset' } as EdgeResetChange<EdgeData>));
+      onEdgesChange(changes);
+    }
   }, []);
 
   const addNodes = useCallback<Instance.AddNodes<NodeData>>((payload) => {
     const nodes = Array.isArray(payload) ? payload : [payload];
-    const { nodeInternals, setNodes } = store.getState();
-    const currentNodes = Array.from(nodeInternals.values());
-    const nextNodes = [...currentNodes, ...nodes];
-    setNodes(nextNodes);
+    const { nodeInternals, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
+
+    if (hasDefaultNodes) {
+      const currentNodes = Array.from(nodeInternals.values());
+      const nextNodes = [...currentNodes, ...nodes];
+      setNodes(nextNodes);
+    } else if (onNodesChange) {
+      const changes = nodes.map((node) => ({ item: node, type: 'add' } as NodeAddChange<NodeData>));
+      onNodesChange(changes);
+    }
   }, []);
 
   const addEdges = useCallback<Instance.AddEdges<EdgeData>>((payload) => {
     const nextEdges = Array.isArray(payload) ? payload : [payload];
-    const { edges = [], setEdges } = store.getState();
-    setEdges([...edges, ...nextEdges]);
+    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
+
+    if (hasDefaultEdges) {
+      setEdges([...edges, ...nextEdges]);
+    } else if (onEdgesChange) {
+      const changes = nextEdges.map((edge) => ({ item: edge, type: 'add' } as EdgeAddChange<EdgeData>));
+      onEdgesChange(changes);
+    }
   }, []);
 
   const toObject = useCallback<Instance.ToObject<NodeData, EdgeData>>(() => {

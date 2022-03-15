@@ -44,8 +44,14 @@ function handleParentExpand(res: any[], updateItem: any) {
   }
 }
 
-function applyChanges(changes: NodeChange[] | EdgeChange[], elements: any[]): any[] {
-  const initElements: any[] = [];
+function applyChanges(changes: any[], elements: any[]): any[] {
+  // unfortunately we need this hack to handle the setNodes and setEdges function of the
+  // useReactFlow hook.
+  if (changes.some((c) => c.type === 'reset')) {
+    return changes.filter((c) => c.type === 'reset').map((c) => c.item);
+  }
+
+  const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
 
   return elements.reduce((res: any[], item: any) => {
     const currentChange = changes.find((c) => c.id === item.id);

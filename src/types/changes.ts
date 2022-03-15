@@ -1,5 +1,6 @@
 import { XYPosition, Dimensions } from './utils';
-import { NodeHandleBounds } from './nodes';
+import { NodeHandleBounds, Node } from './nodes';
+import { Edge } from './edges';
 
 export type NodeDimensionChange = {
   id: string;
@@ -26,8 +27,32 @@ export type NodeRemoveChange = {
   type: 'remove';
 };
 
-export type NodeChange = NodeDimensionChange | NodePositionChange | NodeSelectionChange | NodeRemoveChange;
+export type NodeAddChange<NodeData = any> = {
+  item: Node<NodeData>;
+  type: 'add';
+};
+
+export type NodeResetChange<NodeData = any> = {
+  item: Node<NodeData>;
+  type: 'reset';
+};
+
+export type NodeChange =
+  | NodeDimensionChange
+  | NodePositionChange
+  | NodeSelectionChange
+  | NodeRemoveChange
+  | NodeAddChange
+  | NodeResetChange;
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;
-export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange;
+export type EdgeAddChange<EdgeData = any> = {
+  item: Edge<EdgeData>;
+  type: 'add';
+};
+export type EdgeResetChange<EdgeData = any> = {
+  item: Edge<EdgeData>;
+  type: 'reset';
+};
+export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange | EdgeAddChange | EdgeResetChange;
