@@ -26,6 +26,10 @@ A highly customizable React component for building interactive graphs and node-b
 - **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
+## Attribution
+
+React Flow includes a small attribution that links to the React Flow website. We expect you to only remove the attribution if you are subscribed to one of our React Flow [Pro plans](https://pro.reactflow.dev/pricing) or [sponsor us](https://github.com/sponsors/wbkd) on Github with at least 129$ per month. You can find more information regarding the attribution in the React Flow docs.
+
 ## Installation
 
 The easiest way to get the latest version of React Flow is to install it via npm:
@@ -80,10 +84,6 @@ Testing is done with cypress. You can find the tests in the [`integration/flow`]
 ```sh
 npm run test
 ```
-
-## Attribution
-
-Since v10.0.0 the React Flow renderer includes a small attribution that links to the React Flow website. It is only allowed to remove the attribution if you are subscribed to one of the [pro plans](https://pro.reactflow.dev/pricing). You can find more information on the attribution guidelines in [our FAQs](https://pro.reactflow.dev/faq). A subscription also provides more features such as a private Discord channel with the creators of React Flow.
 
 ## Maintainers
 
