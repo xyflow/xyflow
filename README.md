@@ -28,7 +28,7 @@ A highly customizable React component for building interactive graphs and node-b
 
 ## Attribution
 
-React Flow includes a small attribution that links to the React Flow website. We expect you to only remove the attribution if you are subscribed to one of our React Flow [Pro plans](https://pro.reactflow.dev/pricing) or [sponsor us](https://github.com/sponsors/wbkd) on Github with at least 129$ per month. You can find more information regarding the attribution in the React Flow docs.
+React Flow includes a small attribution that links to the React Flow website. We expect you to only remove the attribution if you are subscribed to one of our React Flow [Pro plans](https://pro.reactflow.dev/pricing) or [sponsor us](https://github.com/sponsors/wbkd) on Github with at least 129$ per month. You can find more information regarding the attribution in our [FAQs](https://pro.reactflow.dev/faq).
 
 ## Installation
 
