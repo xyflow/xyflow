@@ -10,7 +10,9 @@ type AttributionProps = {
 
 function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
   if (
-    (proOptions?.account === 'paid-starter' || proOptions?.account === 'paid-enterprise') &&
+    (proOptions?.account === 'paid-sponsor' ||
+      proOptions?.account === 'paid-enterprise' ||
+      proOptions?.account === 'paid-custom') &&
     proOptions?.hideAttribution
   ) {
     return null;
