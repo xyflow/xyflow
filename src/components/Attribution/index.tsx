@@ -21,7 +21,7 @@ function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps
   return (
     <div
       className={cc(['react-flow__attribution', ...positionClasses])}
-      data-message="Please only hide this attribution when you have a pro account: https://pro.reactflow.dev/plans"
+      data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev/pricing"
     >
       <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer">
         React Flow
