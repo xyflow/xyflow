@@ -105,7 +105,9 @@ export default ({
   };
 
   if (connectionLineType === ConnectionLineType.Bezier) {
-    dAttr = getBezierPath(pathParams);
+    // @TODO: we need another getBezier function, that handles a connection line.
+    // Since we don't know the target position, we can't use the default bezier function here.
+    dAttr = getBezierPath({ ...pathParams, curvature: 0 });
   } else if (connectionLineType === ConnectionLineType.Step) {
     dAttr = getSmoothStepPath({
       ...pathParams,

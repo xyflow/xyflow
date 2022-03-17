@@ -15,6 +15,8 @@ export interface GetBezierPathParams {
   centerY?: number;
 }
 
+// @TODO: refactor getBezierPath function. It's too long and hard to understand.
+// We should reuse the curvature handling for top/bottom and left/right.
 export function getBezierPath({
   sourceX,
   sourceY,
@@ -28,19 +30,36 @@ export function getBezierPath({
 }: GetBezierPathParams): string {
   const leftAndRight = [Position.Left, Position.Right];
   const hasCurvature = curvature > 0;
-  let cX,
-    cY = 0;
-
   const [_centerX, _centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
 
   if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    cX = typeof centerX !== 'undefined' ? centerX : _centerX;
+    const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
     const distanceX = targetX - sourceX;
-    const absDistanceX = Math.abs(Math.min(0, distanceX));
+    const absDistanceX = Math.abs(distanceX);
     const amtX = (Math.sqrt(absDistanceX) / 2) * (50 * curvature);
 
-    const hx1 = hasCurvature && distanceX < 0 ? sourceX + amtX : cX;
-    const hx2 = hasCurvature && distanceX < 0 ? targetX - amtX : cX;
+    let hx1 = cX;
+    let hx2 = cX;
+
+    if (hasCurvature) {
+      const sourceAndTargetRight = sourcePosition === Position.Right && targetPosition === Position.Right;
+      const sourceAndTargetLeft = sourcePosition === Position.Left && targetPosition === Position.Left;
+
+      hx1 = sourceX + amtX;
+      hx2 = targetX - amtX;
+
+      if (sourceAndTargetLeft) {
+        hx1 = sourceX - amtX;
+      } else if (sourceAndTargetRight) {
+        hx2 = targetX + amtX;
+      } else if (sourcePosition === Position.Left && targetX <= sourceX) {
+        hx1 = cX;
+        hx2 = cX;
+      } else if (sourcePosition === Position.Left && targetX > sourceX) {
+        hx1 = sourceX - amtX;
+        hx2 = targetX + amtX;
+      }
+    }
 
     return `M${sourceX},${sourceY} C${hx1},${sourceY} ${hx2},${targetY}, ${targetX},${targetY}`;
   } else if (leftAndRight.includes(targetPosition)) {
@@ -49,14 +68,33 @@ export function getBezierPath({
     return `M${sourceX},${sourceY} Q${targetX},${sourceY} ${targetX},${targetY}`;
   }
 
-  cY = typeof centerY !== 'undefined' ? centerY : _centerY;
+  const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
   const distanceY = targetY - sourceY;
-
-  const absDistanceY = Math.abs(Math.min(0, distanceY));
+  const absDistanceY = Math.abs(distanceY);
   const amtY = (Math.sqrt(absDistanceY) / 2) * (50 * curvature);
 
-  const hy1 = hasCurvature && distanceY < 0 ? sourceY + amtY : cY;
-  const hy2 = hasCurvature && distanceY < 0 ? targetY - amtY : cY;
+  let hy1 = cY;
+  let hy2 = cY;
+
+  if (hasCurvature) {
+    hy1 = sourceY + amtY;
+    hy2 = targetY - amtY;
+
+    const sourceAndTargetTop = sourcePosition === Position.Top && targetPosition === Position.Top;
+    const sourceAndTargetBottom = sourcePosition === Position.Bottom && targetPosition === Position.Bottom;
+
+    if (sourceAndTargetTop) {
+      hy1 = targetY - amtY;
+    } else if (sourceAndTargetBottom) {
+      hy2 = targetY + amtY;
+    } else if (sourcePosition === Position.Top && targetY <= sourceY) {
+      hy1 = cY;
+      hy2 = cY;
+    } else if (sourcePosition === Position.Top && targetY > sourceY) {
+      hy1 = sourceY - amtY;
+      hy2 = targetY + amtY;
+    }
+  }
 
   return `M${sourceX},${sourceY} C${sourceX},${hy1} ${targetX},${hy2} ${targetX},${targetY}`;
 }
