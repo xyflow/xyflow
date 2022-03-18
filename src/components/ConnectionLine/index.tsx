@@ -57,21 +57,21 @@ export default ({
   const toX = (connectionPositionX - transform[0]) / transform[2];
   const toY = (connectionPositionY - transform[1]) / transform[2];
 
-  const fromPostion = fromHandle?.position;
+  const fromPosition = fromHandle?.position;
 
-  let toPostion: Position | undefined;
-  switch (fromPostion) {
+  let toPosition: Position | undefined;
+  switch (fromPosition) {
     case Position.Left:
-      toPostion = Position.Right;
+      toPosition = Position.Right;
       break;
     case Position.Right:
-      toPostion = Position.Left;
+      toPosition = Position.Left;
       break;
     case Position.Top:
-      toPostion = Position.Bottom;
+      toPosition = Position.Bottom;
       break;
     case Position.Bottom:
-      toPostion = Position.Top;
+      toPosition = Position.Top;
       break;
   }
 
@@ -87,20 +87,20 @@ export default ({
       {
         sourceX = fromX;
         sourceY = fromY;
-        sourcePosition = fromPostion;
+        sourcePosition = fromPosition;
         targetX = toX;
         targetY = toY;
-        targetPosition = toPostion;
+        targetPosition = toPosition;
       }
       break;
     case 'target':
       {
         sourceX = toX;
         sourceY = toY;
-        sourcePosition = toPostion;
+        sourcePosition = toPosition;
         targetX = fromX;
         targetY = fromY;
-        targetPosition = fromPostion;
+        targetPosition = fromPosition;
       }
       break;
   }
