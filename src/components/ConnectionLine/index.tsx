@@ -82,6 +82,8 @@ export default ({
     targetY: number,
     targetPosition: Position | undefined;
 
+  let toCurvature: 'sourceCurvature' | 'targetCurvature';
+
   switch (connectionHandleType) {
     case 'source':
       {
@@ -91,6 +93,7 @@ export default ({
         targetX = toX;
         targetY = toY;
         targetPosition = toPosition;
+        toCurvature = 'targetCurvature';
       }
       break;
     case 'target':
@@ -101,6 +104,7 @@ export default ({
         targetX = fromX;
         targetY = fromY;
         targetPosition = fromPosition;
+        toCurvature = 'sourceCurvature';
       }
       break;
   }
@@ -139,9 +143,10 @@ export default ({
   };
 
   if (connectionLineType === ConnectionLineType.Bezier) {
-    // @TODO: we need another getBezier function, that handles a connection line.
-    // Since we don't know the target position, we can't use the default bezier function here.
-    dAttr = getBezierPath({ ...pathParams, curvature: 0 });
+    // we don't know the destination position, so we can zero the to curvature
+    dAttr = getBezierPath({ ...pathParams, [toCurvature]: 0 });
+    // or we assume the destination position is opposite to the source position
+    // dAttr = getBezierPath(pathParams);
   } else if (connectionLineType === ConnectionLineType.Step) {
     dAttr = getSmoothStepPath({
       ...pathParams,
