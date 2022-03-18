@@ -155,6 +155,9 @@ export type ConnectionLineComponentProps = {
   targetPosition?: Position;
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
+  fromNode?: Node;
+  fromHandle?: HandleElement;
+  // backward compatibility, mark as deprecated?
   sourceNode?: Node;
   sourceHandle?: HandleElement;
 };
