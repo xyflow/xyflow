@@ -112,8 +112,13 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             addSelectedNodes([id]);
           }
         } else if (!selectNodesOnDrag && !selected && isSelectable) {
-          unselectNodesAndEdges();
-          store.setState({ nodesSelectionActive: false });
+          const { multiSelectionActive } = store.getState();
+          if (multiSelectionActive) {
+            addSelectedNodes([id]);
+          } else {
+            unselectNodesAndEdges();
+            store.setState({ nodesSelectionActive: false });
+          }
         }
 
         if (onNodeDragStart) {
