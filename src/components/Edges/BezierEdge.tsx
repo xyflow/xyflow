@@ -117,7 +117,7 @@ export function getBezierCenter({
     y2: sourceY,
     c: curvature,
   });
-  // quadratic bezier t=0.5 mid point, not the actual mid point, but easy to calculate
+  // cubic bezier t=0.5 mid point, not the actual mid point, but easy to calculate
   // https://stackoverflow.com/questions/67516101/how-to-find-distance-mid-point-of-bezier-curve
   const centerX = sourceX * 0.125 + sourceControlX * 0.375 + targetControlX * 0.375 + targetX * 0.125;
   const centerY = sourceY * 0.125 + sourceControlY * 0.375 + targetControlY * 0.375 + targetY * 0.125;
