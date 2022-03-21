@@ -33,7 +33,7 @@ function calculateXYZPosition(
   return calculateXYZPosition(parentNode, nodeInternals, parentNodes, {
     x: (result.x ?? 0) + (parentNode.position?.x ?? 0),
     y: (result.y ?? 0) + (parentNode.position?.y ?? 0),
-    z: (parentNode.z ?? 0) > (node.z ?? 0) ? parentNode.z ?? 0 : node.z ?? 0,
+    z: (parentNode.z ?? 0) > (result.z ?? 0) ? parentNode.z ?? 0 : result.z ?? 0,
   });
 }
 
@@ -43,6 +43,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
   nodes.forEach((node) => {
     const z = isNumeric(node.zIndex) ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
+
     const internals: Node = {
       ...nodeInternals.get(node.id),
       ...node,
