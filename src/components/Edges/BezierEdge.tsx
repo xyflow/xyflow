@@ -10,8 +10,6 @@ export interface GetBezierPathParams {
   targetY: number;
   targetPosition?: Position;
   curvature?: number;
-  centerX?: number;
-  centerY?: number;
 }
 
 interface GetControlWithCurvatureParams {
