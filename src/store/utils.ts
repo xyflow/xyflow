@@ -16,6 +16,7 @@ import {
   XYZPosition,
   FitViewOptions,
 } from '../types';
+import { infiniteExtent } from './initialState';
 
 type ParentNodes = Record<string, boolean>;
 
@@ -128,20 +129,25 @@ export function createPositionChange({
 
   if (diff) {
     const nextPosition = { x: node.position.x + diff.x, y: node.position.y + diff.y };
-    let currentExtent = nodeExtent || node.extent;
+    let currentExtent = node.extent || nodeExtent;
 
-    if (node.extent === 'parent' && node.parentNode && node.width && node.height) {
-      const parent = nodeInternals.get(node.parentNode);
-      currentExtent =
-        parent?.width && parent?.height
-          ? [
-              [0, 0],
-              [parent.width - node.width, parent.height - node.height],
-            ]
-          : currentExtent;
+    if (node.extent === 'parent') {
+      if (node.parentNode && node.width && node.height) {
+        const parent = nodeInternals.get(node.parentNode);
+        currentExtent =
+          parent?.width && parent?.height
+            ? [
+                [0, 0],
+                [parent.width - node.width, parent.height - node.height],
+              ]
+            : currentExtent;
+      } else {
+        console.warn('Only child nodes can use parent extent');
+        currentExtent = infiniteExtent;
+      }
     }
 
-    change.position = currentExtent ? clampPosition(nextPosition, currentExtent) : nextPosition;
+    change.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
   }
 
   return change;
