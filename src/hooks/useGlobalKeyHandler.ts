@@ -56,13 +56,8 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
         });
       }
 
-      onNodesDelete?.(nodesToRemove);
       onEdgesDelete?.(edgesToRemove);
-
-      if (onNodesChange) {
-        const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
-        onNodesChange(nodeChanges);
-      }
+      onNodesDelete?.(nodesToRemove);
 
       if (onEdgesChange) {
         const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
@@ -71,6 +66,11 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
         }));
 
         onEdgesChange(edgeChanges);
+      }
+
+      if (onNodesChange) {
+        const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
+        onNodesChange(nodeChanges);
       }
 
       store.setState({ nodesSelectionActive: false });
