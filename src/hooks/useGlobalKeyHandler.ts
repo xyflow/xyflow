@@ -43,34 +43,43 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
       const edgesToRemove = [...selectedEdges, ...connectedEdges];
       const edgeIdsToRemove = edgesToRemove.map((e) => e.id);
 
-      if (hasDefaultNodes) {
-        nodesToRemove.forEach((node) => {
-          nodeInternals.delete(node.id);
-        });
+      if (hasDefaultEdges || hasDefaultNodes) {
+        if (hasDefaultEdges) {
+          store.setState({
+            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
+          });
+        }
+
+        if (hasDefaultNodes) {
+          nodesToRemove.forEach((node) => {
+            nodeInternals.delete(node.id);
+          });
+
+          store.setState({
+            nodeInternals: new Map(nodeInternals),
+          });
+        }
       }
 
-      if (hasDefaultEdges) {
-        store.setState({
-          nodeInternals: new Map(nodeInternals),
-          edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
-        });
+      if (edgeIdsToRemove.length > 0) {
+        onEdgesDelete?.(edgesToRemove);
+
+        if (onEdgesChange) {
+          const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
+            id,
+            type: 'remove',
+          }));
+          onEdgesChange(edgeChanges);
+        }
       }
 
-      onEdgesDelete?.(edgesToRemove);
-      onNodesDelete?.(nodesToRemove);
+      if (nodesToRemove.length > 0) {
+        onNodesDelete?.(nodesToRemove);
 
-      if (onEdgesChange) {
-        const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
-          id,
-          type: 'remove',
-        }));
-
-        onEdgesChange(edgeChanges);
-      }
-
-      if (onNodesChange) {
-        const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
-        onNodesChange(nodeChanges);
+        if (onNodesChange) {
+          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
+          onNodesChange(nodeChanges);
+        }
       }
 
       store.setState({ nodesSelectionActive: false });
