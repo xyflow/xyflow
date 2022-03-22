@@ -16,7 +16,6 @@ import {
   XYZPosition,
   FitViewOptions,
 } from '../types';
-import { infiniteExtent } from './initialState';
 
 type ParentNodes = Record<string, boolean>;
 
@@ -143,7 +142,7 @@ export function createPositionChange({
             : currentExtent;
       } else {
         console.warn('Only child nodes can use parent extent');
-        currentExtent = infiniteExtent;
+        currentExtent = nodeExtent;
       }
     }
 
