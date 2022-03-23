@@ -66,9 +66,16 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         setKeyPressed(false);
       };
 
+      const onVisibilityChange = () => {
+        if (document.hidden) {
+          resetHandler();
+        }
+      };
+
       options?.target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       options?.target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       options?.target?.addEventListener('blur', resetHandler);
+      options?.target?.addEventListener('visibilitychange', onVisibilityChange);
 
       return () => {
         pressedKeys.current.clear();
@@ -76,6 +83,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         options?.target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         options?.target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         options?.target?.removeEventListener('blur', resetHandler);
+        options?.target?.removeEventListener('visibilitychange', onVisibilityChange);
       };
     }
   }, [keyCode, setKeyPressed]);
