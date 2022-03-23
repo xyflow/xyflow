@@ -6,7 +6,7 @@ type Keys = Array<string>;
 type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 export interface UseKeyPressOptions {
-  target: Document | HTMLElement | ShadowRoot | null;
+  target: Window | Document | HTMLElement | ShadowRoot | null;
 }
 
 const doc = typeof document !== 'undefined' ? document : null;
@@ -66,24 +66,16 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         setKeyPressed(false);
       };
 
-      const onVisibilityChange = () => {
-        if (document.hidden) {
-          resetHandler();
-        }
-      };
-
       options?.target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       options?.target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
-      options?.target?.addEventListener('blur', resetHandler);
-      options?.target?.addEventListener('visibilitychange', onVisibilityChange);
+      window.addEventListener('blur', resetHandler);
 
       return () => {
         pressedKeys.current.clear();
 
         options?.target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         options?.target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
-        options?.target?.removeEventListener('blur', resetHandler);
-        options?.target?.removeEventListener('visibilitychange', onVisibilityChange);
+        window.removeEventListener('blur', resetHandler);
       };
     }
   }, [keyCode, setKeyPressed]);
