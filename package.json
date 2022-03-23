@@ -32,7 +32,7 @@
     "release:next": "release-it --preRelease=next --no-git"
   },
   "dependencies": {
-    "@babel/runtime": "^7.17.2",
+    "@babel/runtime": "^7.17.8",
     "classcat": "^5.0.3",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
