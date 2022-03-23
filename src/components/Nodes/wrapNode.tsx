@@ -83,56 +83,73 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const onContextMenuHandler = useMemoizedMouseHandler(id, false, store.getState, onContextMenu);
     const onNodeDoubleClickHandler = useMemoizedMouseHandler(id, false, store.getState, onNodeDoubleClick);
 
-    const onSelectNodeHandler = useCallback(
+    // execution order of events and their tasks:
+    // mouse down: handle selection related logics ->
+    // drag start: call onNodeDragStart() ->
+    // mouse move: nothing ->
+    // drag: update node position with dragging status set to true and call onNodeDrag() ->
+    // mouse up: nothing ->
+    // drag stop: update node position with drag status set to false and call onNodeDragStop() ->
+    // click: call onClick()
+
+    // on mouse down handler
+    const onMouseDownHandler = useCallback(() => {
+      // handle selection related behaviors
+      if (isSelectable) {
+        // deactive drag selection mode (drag selection cannot start from a node)
+        if (selectNodesOnDrag) {
+          store.setState({ nodesSelectionActive: false });
+        }
+        // deselect other nodes if multiselection is not active
+        // a little complicated here
+        // because we don't have the proper action to do this
+        const { multiSelectionActive } = store.getState();
+        if (!multiSelectionActive) {
+          // deselect all
+          unselectNodesAndEdges();
+          // if this node is already selected
+          // reselect it becasue we just deselected all
+          if (selected) {
+            addSelectedNodes([id]);
+          }
+        }
+        // select this node if it's not already selected
+        if (!selected) {
+          addSelectedNodes([id]);
+        }
+      }
+    }, [isSelectable, selectNodesOnDrag, selected, id]);
+
+    // on click handler
+    const onClickNodeHandler = useCallback(
       (event: MouseEvent) => {
-        if (!isDraggable) {
-          if (isSelectable) {
-            store.setState({ nodesSelectionActive: false });
-
-            if (!selected) {
-              addSelectedNodes([id]);
-            }
-          }
-
-          if (onClick) {
-            const node = store.getState().nodeInternals.get(id)!;
-            onClick(event, { ...node });
-          }
+        // if there's a corresponding onClick handler, execute it
+        if (onClick) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onClick(event, { ...node });
         }
       },
-      [isSelectable, selected, isDraggable, onClick, id]
+      [onClick, id]
     );
 
+    // on drag start handler
     const onDragStart = useCallback(
       (event: DraggableEvent) => {
-        if (selectNodesOnDrag && isSelectable) {
-          store.setState({ nodesSelectionActive: false });
-
-          if (!selected) {
-            addSelectedNodes([id]);
-          }
-        } else if (!selectNodesOnDrag && !selected && isSelectable) {
-          const { multiSelectionActive } = store.getState();
-          if (multiSelectionActive) {
-            addSelectedNodes([id]);
-          } else {
-            unselectNodesAndEdges();
-            store.setState({ nodesSelectionActive: false });
-          }
-        }
-
+        // if there's a corresponding onNodeDragStart handler, execute it
         if (onNodeDragStart) {
           const node = store.getState().nodeInternals.get(id)!;
           onNodeDragStart(event as MouseEvent, { ...node });
         }
       },
-      [id, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
+      [onNodeDragStart, id]
     );
 
+    // on drag handler
     const onDrag = useCallback(
       (event: DraggableEvent, draggableData: DraggableData) => {
+        // update node position
         updateNodePosition({ id, dragging: true, diff: { x: draggableData.deltaX, y: draggableData.deltaY } });
-
+        // if there's a corresponding onNodeDrag handler, execute it
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
           onNodeDrag(event as MouseEvent, {
@@ -149,41 +166,26 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           });
         }
       },
-      [id, onNodeDrag]
+      [onNodeDrag, id]
     );
 
+    // on drag stop handler, will get triggered by click
+    // but click is already handled in onClickNodeHandler
+    // so we don't need to handle it in this handler
     const onDragStop = useCallback(
       (event: DraggableEvent) => {
-        // onDragStop also gets called when user just clicks on a node.
-        // Because of that we set dragging to true inside the onDrag handler and handle the click here
-        let node;
-
-        if (onClick || onNodeDragStop) {
-          node = store.getState().nodeInternals.get(id)!;
-        }
-
-        if (!dragging) {
-          if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedNodes([id]);
-          }
-
-          if (onClick && node) {
-            onClick(event as MouseEvent, { ...node });
-          }
-
-          return;
-        }
-
+        // update node position
         updateNodePosition({
           id,
           dragging: false,
         });
-
-        if (onNodeDragStop && node) {
+        // if there's a corresponding onNodeDragStop handler, execute it
+        if (onNodeDragStop) {
+          const node = store.getState().nodeInternals.get(id)!;
           onNodeDragStop(event as MouseEvent, { ...node, dragging: false });
         }
       },
-      [id, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
+      [onNodeDragStop, id]
     );
 
     useEffect(() => {
@@ -236,6 +238,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onStart={onDragStart}
         onDrag={onDrag}
         onStop={onDragStop}
+        // onMouseDown is intercepted by this parent node
+        // so we cannot set onMouseDown on the <div>
+        onMouseDown={onMouseDownHandler}
         scale={scale}
         disabled={!isDraggable}
         cancel={`.${noDragClassName}`}
@@ -252,7 +257,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           onMouseMove={onMouseMoveHandler}
           onMouseLeave={onMouseLeaveHandler}
           onContextMenu={onContextMenuHandler}
-          onClick={onSelectNodeHandler}
+          onClick={onClickNodeHandler}
           onDoubleClick={onNodeDoubleClickHandler}
           data-id={id}
         >
