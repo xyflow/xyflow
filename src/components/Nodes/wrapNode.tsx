@@ -130,7 +130,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     );
 
     // on click handler
-    const onClickNodeHandler = useCallback(
+    const onNodeClickHandler = useCallback(
       (event: MouseEvent) => {
         // if there's a corresponding onClick handler, execute it
         if (onClick) {
@@ -271,7 +271,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onDrag={onDrag}
         onStop={onDragStop}
         // we cannot set onMouseDown on the <div>
-        // because it will be overriden by what is defined here
+        // because it will be overridden by what is defined here
         onMouseDown={onMouseDownHandler}
         scale={scale}
         disabled={!isDraggable}
@@ -289,7 +289,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           onMouseMove={onMouseMoveHandler}
           onMouseLeave={onMouseLeaveHandler}
           onContextMenu={onContextMenuHandler}
-          onClick={onClickNodeHandler}
+          onClick={onNodeClickHandler}
           onDoubleClick={onNodeDoubleClickHandler}
           data-id={id}
         >
