@@ -15,6 +15,10 @@ const selector = (s: ReactFlowState) => ({
   updateNodeDimensions: s.updateNodeDimensions,
 });
 
+const stopSelectionPropagation: EventListener = (event) => {
+  event.stopImmediatePropagation();
+};
+
 export default (NodeComponent: ComponentType<NodeProps>) => {
   const NodeWrapper = ({
     id,
@@ -93,32 +97,38 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     // click: call onClick()
 
     // on mouse down handler
-    const onMouseDownHandler = useCallback(() => {
-      // handle selection related behaviors
-      if (isSelectable) {
-        // deactive drag selection mode (drag selection cannot start from a node)
-        if (selectNodesOnDrag) {
-          store.setState({ nodesSelectionActive: false });
-        }
-        // deselect other nodes if multiselection is not active
-        // a little complicated here
-        // because we don't have the proper action to do this
-        const { multiSelectionActive } = store.getState();
-        if (!multiSelectionActive) {
-          // deselect all
-          unselectNodesAndEdges();
-          // if this node is already selected
-          // reselect it becasue we just deselected all
-          if (selected) {
+    // @TODO: should we change noDragClassName to noSelectClassName?
+    // because select and drag are two different actions
+    const onMouseDownHandler = useCallback(
+      (event: globalThis.MouseEvent) => {
+        console.log(event.target);
+        // handle selection related behaviors
+        if (isSelectable && !(event.currentTarget as Element).classList.contains(noDragClassName)) {
+          // deactive drag selection mode (drag selection cannot start from a node)
+          if (selectNodesOnDrag) {
+            store.setState({ nodesSelectionActive: false });
+          }
+          // deselect other nodes if multiselection is not active
+          // a little complicated here
+          // because we don't have the proper action to do this
+          const { multiSelectionActive } = store.getState();
+          if (!multiSelectionActive) {
+            // deselect all
+            unselectNodesAndEdges();
+            // if this node is already selected
+            // reselect it becasue we just deselected all
+            if (selected) {
+              addSelectedNodes([id]);
+            }
+          }
+          // select this node if it's not already selected
+          if (!selected) {
             addSelectedNodes([id]);
           }
         }
-        // select this node if it's not already selected
-        if (!selected) {
-          addSelectedNodes([id]);
-        }
-      }
-    }, [isSelectable, selectNodesOnDrag, selected, id]);
+      },
+      [isSelectable, noDragClassName, selectNodesOnDrag, selected, id]
+    );
 
     // on click handler
     const onClickNodeHandler = useCallback(
@@ -188,6 +198,29 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       [onNodeDragStop, id]
     );
 
+    // mouse down triggered selection is handled in the node div
+    // stop immediate propagation will prevent elements with noselection classname from triggering selection
+    // @TODO: should we change noDragClassName to noSelectClassName?
+    // because select and drag are two different actions
+    useEffect(() => {
+      if (nodeElement.current) {
+        const currNode = nodeElement.current;
+        const noSelectionElements = currNode.getElementsByClassName(noDragClassName);
+        // sometimes the child elements get rendered later and can't be got here
+        // best practice would still be adding a stopimmediatepropagation of mousedown, or a hook api
+        // in one's own code, instead of using "noselection" classnames
+        // @TODO: better api design
+        for (let ind = 0; ind < noSelectionElements.length; ++ind) {
+          noSelectionElements[ind].addEventListener('mousedown', stopSelectionPropagation);
+        }
+        return () => {
+          for (let ind = 0; ind < noSelectionElements.length; ++ind) {
+            noSelectionElements[ind].removeEventListener('mousedown', stopSelectionPropagation);
+          }
+        };
+      }
+    }, [noDragClassName]);
+
     useEffect(() => {
       if (nodeElement.current && !hidden) {
         const currNode = nodeElement.current;
@@ -238,8 +271,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onStart={onDragStart}
         onDrag={onDrag}
         onStop={onDragStop}
-        // onMouseDown is intercepted by this parent node
-        // so we cannot set onMouseDown on the <div>
+        // we cannot set onMouseDown on the <div>
+        // because it will be overriden by what is defined here
         onMouseDown={onMouseDownHandler}
         scale={scale}
         disabled={!isDraggable}
