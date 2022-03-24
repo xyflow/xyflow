@@ -179,7 +179,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     );
 
     // on drag stop handler, will get triggered by click
-    // but click is already handled in onClickNodeHandler
+    // but click is already handled in onNodeClickHandler
     // so we don't need to handle it in this handler
     const onDragStop = useCallback(
       (event: DraggableEvent) => {
