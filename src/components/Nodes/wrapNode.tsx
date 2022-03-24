@@ -101,7 +101,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     // because select and drag are two different actions
     const onMouseDownHandler = useCallback(
       (event: globalThis.MouseEvent) => {
-        console.log(event.target);
         // handle selection related behaviors
         if (isSelectable && !(event.currentTarget as Element).classList.contains(noDragClassName)) {
           // deactive drag selection mode (drag selection cannot start from a node)
