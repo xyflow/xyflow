@@ -37,6 +37,7 @@
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
     "react-draggable": "^4.4.4",
+    "react-hotkeys-hook": "^3.4.4",
     "zustand": "^3.7.1"
   },
   "devDependencies": {
