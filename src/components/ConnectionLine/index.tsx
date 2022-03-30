@@ -38,12 +38,7 @@ export default ({
   const { nodeInternals, transform } = useStore(selector, shallow);
   const fromNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
 
-  if (
-    !fromNode.current ||
-    !fromNode.current ||
-    !isConnectable ||
-    !fromNode.current.handleBounds?.[connectionHandleType]
-  ) {
+  if (!fromNode.current || !isConnectable || !fromNode.current.handleBounds?.[connectionHandleType]) {
     return null;
   }
 
