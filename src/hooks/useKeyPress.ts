@@ -45,7 +45,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
-        if (isMatchingKey(event, keyCodes, pressedKeys.current)) {
+        if (isMatchingKey(event, keyCodes, pressedKeys.current, false)) {
           event.preventDefault();
           setKeyPressed(true);
         }
@@ -54,11 +54,12 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
       const upHandler = (event: KeyboardEvent) => {
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
 
-        if (isMatchingKey(event, keyCodes, pressedKeys.current)) {
+        if (isMatchingKey(event, keyCodes, pressedKeys.current, true)) {
           setKeyPressed(false);
+          pressedKeys.current.clear();
+        } else {
+          pressedKeys.current.delete(event[keyOrCode]);
         }
-
-        pressedKeys.current.delete(event[keyOrCode]);
       };
 
       const resetHandler = () => {
@@ -71,8 +72,6 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
       window.addEventListener('blur', resetHandler);
 
       return () => {
-        pressedKeys.current.clear();
-
         options?.target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         options?.target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
@@ -85,7 +84,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
 
 // utils
 
-function isMatchingKey(event: KeyboardEvent, keyCodes: Array<Keys>, pressedKeys: PressedKeys): boolean {
+function isMatchingKey(event: KeyboardEvent, keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: boolean): boolean {
   if (isInputDOMNode(event)) {
     return false;
   }
@@ -95,7 +94,7 @@ function isMatchingKey(event: KeyboardEvent, keyCodes: Array<Keys>, pressedKeys:
       // we only want to compare same sizes of keyCode definitions
       // and pressed keys. When the user specified 'Meta' as a key somewhere
       // this would also be truthy without this filter when user presses 'Meta' + 'r'
-      .filter((keys) => keys.length === pressedKeys.size)
+      .filter((keys) => isUp || keys.length === pressedKeys.size)
       // since we want to support multiple possibilities only one of the
       // combinations need to be part of the pressed keys
       .some((keys) => keys.every((k) => pressedKeys.has(k)))

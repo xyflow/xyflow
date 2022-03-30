@@ -33,6 +33,7 @@ import UpdateNode from './UpdateNode';
 import UseUpdateNodeInternals from './UseUpdateNodeInternals';
 import UseReactFlow from './UseReactFlow';
 import Validation from './Validation';
+import UseKeyPress from './UseKeyPress';
 
 const routes = [
   {
@@ -158,6 +159,10 @@ const routes = [
   {
     path: '/controlled-uncontrolled',
     component: ControlledUncontrolled,
+  },
+  {
+    path: '/use-key-press',
+    component: UseKeyPress,
   },
 ];
 
