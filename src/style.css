@@ -31,7 +31,7 @@
   z-index: 5;
 }
 
-.react-flow__edges {
+.react-flow .react-flow__edges {
   pointer-events: none;
   overflow: visible;
 }
