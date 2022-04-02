@@ -12,14 +12,13 @@ interface HookParams {
 }
 
 const selector = (s: ReactFlowState) => ({
-  resetSelectedElements: s.resetSelectedElements,
   onNodesChange: s.onNodesChange,
   onEdgesChange: s.onEdgesChange,
 });
 
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
-  const { resetSelectedElements, onNodesChange, onEdgesChange } = useStore(selector, shallow);
+  const { onNodesChange, onEdgesChange } = useStore(selector, shallow);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
@@ -41,7 +40,12 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
     if (deleteKeyPressed && (nodesToRemove || selectedEdges)) {
       const connectedEdges = getConnectedEdges(nodesToRemove, edges);
       const edgesToRemove = [...selectedEdges, ...connectedEdges];
-      const edgeIdsToRemove = edgesToRemove.map((e) => e.id);
+      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
+        if (!res.includes(edge.id)) {
+          res.push(edge.id);
+        }
+        return res;
+      }, []);
 
       if (hasDefaultEdges || hasDefaultNodes) {
         if (hasDefaultEdges) {
@@ -83,8 +87,6 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
       }
 
       store.setState({ nodesSelectionActive: false });
-
-      resetSelectedElements();
     }
   }, [deleteKeyPressed, onNodesChange, onEdgesChange]);
 
