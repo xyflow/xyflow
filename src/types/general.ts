@@ -1,13 +1,12 @@
-import { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
-
-import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
-import { NodeChange, EdgeChange } from './changes';
-import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './nodes';
+import { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
+import { DefaultEdgeOptions } from '.';
+import { EdgeChange, NodeChange } from './changes';
 import { Edge } from './edges';
 import { HandleType, StartHandle } from './handles';
-import { DefaultEdgeOptions } from '.';
 import { ReactFlowInstance } from './instance';
+import { Node, NodeDiffUpdate, NodeDimensionUpdate, NodeInternals } from './nodes';
+import { CoordinateExtent, Rect, Transform, XYPosition } from './utils';
 
 export type NodeTypes = { [key: string]: ReactNode };
 export type EdgeTypes = NodeTypes;
@@ -166,6 +165,7 @@ export type ReactFlowStore = {
 
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
+  defaultZLevel?: number;
 
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;

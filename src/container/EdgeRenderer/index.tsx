@@ -48,6 +48,7 @@ const selector = (s: ReactFlowState) => ({
   height: s.height,
   connectionMode: s.connectionMode,
   nodeInternals: s.nodeInternals,
+  defaultZLevel: s.defaultZLevel,
 });
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
@@ -62,8 +63,9 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     height,
     connectionMode,
     nodeInternals,
+    defaultZLevel,
   } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals, defaultZLevel || 0);
 
   if (!width) {
     return null;

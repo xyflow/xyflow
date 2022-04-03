@@ -1,4 +1,4 @@
-import { CoordinateExtent, ReactFlowStore, ConnectionMode } from '../types';
+import { ConnectionMode, CoordinateExtent, ReactFlowStore } from '../types';
 
 export const infiniteExtent: CoordinateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
@@ -47,6 +47,8 @@ const initialState: ReactFlowStore = {
 
   connectionStartHandle: null,
   connectOnClick: true,
+
+  defaultZLevel: 0,
 };
 
 export default initialState;
