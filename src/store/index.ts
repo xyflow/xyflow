@@ -1,32 +1,29 @@
 import create from 'zustand';
 import createContext from 'zustand/context';
-
-import { clampPosition, getDimensions } from '../utils';
-import { applyNodeChanges } from '../utils/changes';
-
-import {
-  ReactFlowState,
-  Node,
-  Edge,
-  NodeDimensionUpdate,
-  NodeDiffUpdate,
-  CoordinateExtent,
-  NodeDimensionChange,
-  EdgeSelectionChange,
-  NodeSelectionChange,
-  NodePositionChange,
-} from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
-import { createSelectionChange, getSelectionChanges } from '../utils/changes';
+import {
+  CoordinateExtent,
+  Edge,
+  EdgeSelectionChange,
+  Node,
+  NodeDiffUpdate,
+  NodeDimensionChange,
+  NodeDimensionUpdate,
+  NodePositionChange,
+  NodeSelectionChange,
+  ReactFlowState,
+} from '../types';
+import { clampPosition, getDimensions } from '../utils';
+import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
+import initialState from './initialState';
 import {
   createNodeInternals,
   createPositionChange,
+  fitView,
   handleControlledEdgeSelectionChange,
   handleControlledNodeSelectionChange,
   isParentSelected,
-  fitView,
 } from './utils';
-import initialState from './initialState';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 
@@ -282,6 +279,7 @@ const createStore = () =>
       });
     },
     reset: () => set({ ...initialState }),
+    setDefaultZLevel: (defaultZLevel: number) => set({ defaultZLevel }),
   }));
 
 export { Provider, useStore, createStore, useStoreApi };

@@ -32,6 +32,7 @@ import {
   OnMoveEnd,
 } from '.';
 
+
 export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   nodes?: Node[];
   edges?: Edge[];
@@ -117,6 +118,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   connectOnClick?: boolean;
   attributionPosition?: AttributionPosition;
   proOptions?: ProOptions;
+  defaultZLevel?: number,
 }
 
 export type ReactFlowRefType = HTMLDivElement;

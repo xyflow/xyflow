@@ -135,6 +135,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       attributionPosition,
       proOptions,
       defaultEdgeOptions,
+      defaultZLevel = 0,
       ...rest
     },
     ref
@@ -230,6 +231,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             fitViewOptions={fitViewOptions}
             onNodesDelete={onNodesDelete}
             onEdgesDelete={onEdgesDelete}
+            defaultZLevel={defaultZLevel}
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}

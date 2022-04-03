@@ -190,6 +190,7 @@ export type ReactFlowActions = {
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   reset: () => void;
+  setDefaultZLevel: (defaultZLevel: number) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

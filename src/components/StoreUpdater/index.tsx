@@ -49,6 +49,7 @@ interface StoreUpdaterProps {
   fitViewOptions?: FitViewOptions;
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  defaultZLevel?: number,
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -60,6 +61,7 @@ const selector = (s: ReactFlowState) => ({
   setTranslateExtent: s.setTranslateExtent,
   setNodeExtent: s.setNodeExtent,
   reset: s.reset,
+  defaultZLevel: s.defaultZLevel,
 });
 
 function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => void) {
@@ -106,6 +108,7 @@ const StoreUpdater = ({
   fitViewOptions,
   onNodesDelete,
   onEdgesDelete,
+  defaultZLevel,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -116,11 +119,13 @@ const StoreUpdater = ({
     setTranslateExtent,
     setNodeExtent,
     reset,
+    setDefaultZLevel,
   } = useStore(selector, shallow);
   const store = useStoreApi();
 
   useEffect(() => {
     setDefaultNodesAndEdges(defaultNodes, defaultEdges);
+    setDefaultZLevel(defaultZLevel);
 
     return () => {
       reset();
