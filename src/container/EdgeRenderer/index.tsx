@@ -16,6 +16,7 @@ import {
   ConnectionMode,
   Transform,
   OnEdgeUpdateFunc,
+  HandleType,
 } from '../../types';
 
 interface EdgeRendererProps {
@@ -34,7 +35,7 @@ interface EdgeRendererProps {
   onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, isSourceHandle: boolean) => void;
+  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
 }

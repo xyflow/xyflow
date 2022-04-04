@@ -132,7 +132,7 @@ export interface WrapEdgeProps<T = any> {
   onMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
   onMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
-  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, isSourceHandle: boolean) => void;
+  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
 }
 

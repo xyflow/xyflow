@@ -38,6 +38,7 @@ import {
   PanOnScrollMode,
   OnEdgeUpdateFunc,
   NodeExtent,
+  HandleType,
 } from '../../types';
 
 import '../../style.css';
@@ -123,7 +124,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, isSourceHandle: boolean) => void;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
   nodeTypesId?: string;
