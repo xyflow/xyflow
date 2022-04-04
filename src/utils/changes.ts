@@ -86,6 +86,12 @@ function applyChanges(changes: any[], elements: any[]): any[] {
           if (typeof currentChange.dimensions !== 'undefined') {
             updateItem.width = currentChange.dimensions.width;
             updateItem.height = currentChange.dimensions.height;
+            /**
+             * when the "dimensions" event is fired, we only change
+             * the width and the height of the current node. Now we also
+             * update the handleBounds 
+             */
+            updateItem.handleBounds = currentChange.handleBounds;
           }
 
           if (updateItem.expandParent) {
