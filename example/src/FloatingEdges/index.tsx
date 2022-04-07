@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import { useCallback } from 'react';
 
 import ReactFlow, {
-  removeElements,
   addEdge,
   Background,
-  OnLoadParams,
-  EdgeTypesType,
-  Elements,
+  ReactFlowInstance,
+  EdgeTypes,
   Connection,
-  Edge,
-  ArrowHeadType,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
 import './style.css';
@@ -18,29 +16,31 @@ import FloatingEdge from './FloatingEdge';
 import FloatingConnectionLine from './FloatingConnectionLine';
 import { createElements } from './utils';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
+const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 
-const initialElements: Elements = createElements();
+const { nodes: initialNodes, edges: initialEdges } = createElements();
 
-const edgeTypes: EdgeTypesType = {
+const edgeTypes: EdgeTypes = {
   floating: FloatingEdge,
 };
 
-const NodeAsHandleFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
+const FloatingEdges = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-
-  const onConnect = (params: Connection | Edge) =>
-    setElements((els) => addEdge({ ...params, type: 'floating', arrowHeadType: ArrowHeadType.Arrow }, els));
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge(connection, eds));
+  }, []);
 
   return (
     <div className="floatingedges">
       <ReactFlow
-        elements={elements}
-        onElementsRemove={onElementsRemove}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onLoad={onLoad}
+        onInit={onInit}
         edgeTypes={edgeTypes}
         connectionLineComponent={FloatingConnectionLine}
       >
@@ -50,4 +50,4 @@ const NodeAsHandleFlow = () => {
   );
 };
 
-export default NodeAsHandleFlow;
+export default FloatingEdges;

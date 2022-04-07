@@ -16,7 +16,9 @@ const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
 
   const targetNode = {
     id: 'connection-target',
-    __rf: { width: 1, height: 1, position: { x: targetX, y: targetY } },
+    width: 1,
+    height: 1,
+    position: { x: targetX, y: targetY },
   } as Node;
 
   const { sx, sy } = getEdgeParams(sourceNode, targetNode);

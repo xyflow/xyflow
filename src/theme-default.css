@@ -1,8 +1,3 @@
-.react-flow__selection {
-  background: rgba(0, 89, 220, 0.08);
-  border: 1px dotted rgba(0, 89, 220, 0.8);
-}
-
 .react-flow__edge {
   &.selected {
     .react-flow__edge-path {
@@ -46,7 +41,8 @@
 
 .react-flow__node-default,
 .react-flow__node-input,
-.react-flow__node-output {
+.react-flow__node-output,
+.react-flow__node-group {
   padding: 10px;
   border-radius: 3px;
   width: 150px;
@@ -55,31 +51,6 @@
   text-align: center;
   border-width: 1px;
   border-style: solid;
-}
-
-.react-flow__node-default.selectable,
-.react-flow__node-input.selectable,
-.react-flow__node-output.selectable {
-  &:hover {
-    box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
-  }
-}
-
-.react-flow__node-input {
-  background: #fff;
-  border-color: #0041d0;
-
-  &.selected,
-  &.selected:hover {
-    box-shadow: 0 0 0 0.5px #0041d0;
-  }
-
-  .react-flow__handle {
-    background: #0041d0;
-  }
-}
-
-.react-flow__node-default {
   background: #fff;
   border-color: #1a192b;
 
@@ -93,21 +64,27 @@
   }
 }
 
-.react-flow__node-output {
-  background: #fff;
-  border-color: #ff0072;
-
-  &.selected,
-  &.selected:hover {
-    box-shadow: 0 0 0 0.5px #ff0072;
-  }
-
-  .react-flow__handle {
-    background: #ff0072;
+.react-flow__node-default.selectable,
+.react-flow__node-input.selectable,
+.react-flow__node-output.selectable,
+.react-flow__node-group.selectable {
+  &:hover {
+    box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
   }
 }
 
-.react-flow__nodesselection-rect {
+.react-flow__node-group {
+  background: rgba(240, 240, 240, 0.25);
+  border-color: #1a192b;
+
+  &.selected,
+  &.selected:hover {
+    box-shadow: 0 0 0 0.5px #1a192b;
+  }
+}
+
+.react-flow__nodesselection-rect,
+.react-flow__selection {
   background: rgba(0, 89, 220, 0.08);
   border: 1px dotted rgba(0, 89, 220, 0.8);
 }

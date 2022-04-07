@@ -1,4 +1,4 @@
-import { ElementId, Elements, Position } from 'react-flow-renderer';
+import { Edge, Node, Position } from 'react-flow-renderer';
 
 const nodeWidth = 80;
 const nodeGapWidth = nodeWidth * 2;
@@ -9,10 +9,10 @@ const sourceTargetPositions = [
   { source: Position.Right, target: Position.Left },
 ];
 const nodeColors = [
-  ['#1e9e99', '#4cb3ac', '#6ec9c0', '#8ddfd4'],
-  ['#0f4c75', '#1b5d8b', '#276fa1', '#3282b8'],
+  ['#0c5956', '#1e9e99', '#4cb3ac', '#6ec9c0', '#8ddfd4'],
+  ['#0f4c75', '#1b5d8b', '#276fa1', '#3282b8', '#4fa6e0'],
 ];
-const edgeTypes = ['default', 'step', 'smoothstep', 'straight'];
+const edgeTypes = ['default', 'step', 'smoothstep', 'straight', 'simplebezier'];
 const offsets = [
   {
     x: 0,
@@ -49,10 +49,10 @@ const offsets = [
 ];
 
 let id = 0;
-const getNodeId = (): ElementId => (id++).toString();
+const getNodeId = (): string => (id++).toString();
 
-export function getElements(): Elements {
-  const initialElements = [];
+export function getElements(): { nodes: Node[]; edges: Edge[] } {
+  const initialElements = { nodes: [] as Node[], edges: [] as Edge[] };
 
   for (let sourceTargetIndex = 0; sourceTargetIndex < sourceTargetPositions.length; sourceTargetIndex++) {
     const currSourceTargetPos = sourceTargetPositions[sourceTargetIndex];
@@ -70,7 +70,7 @@ export function getElements(): Elements {
         };
         const sourceId = getNodeId();
         const sourceData = { label: `Source ${sourceId}` };
-        const sourceNode = {
+        const sourceNode: Node = {
           id: sourceId,
           style,
           data: sourceData,
@@ -85,7 +85,7 @@ export function getElements(): Elements {
           x: sourcePosition.x + currOffset.x,
           y: sourcePosition.y + currOffset.y,
         };
-        const targetNode = {
+        const targetNode: Node = {
           id: targetId,
           style,
           data: targetData,
@@ -94,10 +94,15 @@ export function getElements(): Elements {
           targetPosition: currSourceTargetPos.target,
         };
 
-        initialElements.push(sourceNode);
-        initialElements.push(targetNode);
+        initialElements.nodes.push(sourceNode);
+        initialElements.nodes.push(targetNode);
 
-        initialElements.push({ id: `${sourceId}-${targetId}`, source: sourceId, target: targetId, type: currEdgeType });
+        initialElements.edges.push({
+          id: `${sourceId}-${targetId}`,
+          source: sourceId,
+          target: targetId,
+          type: currEdgeType,
+        } as Edge);
       }
     }
   }

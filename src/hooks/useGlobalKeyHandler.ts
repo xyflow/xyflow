@@ -1,44 +1,96 @@
 import { useEffect } from 'react';
+import shallow from 'zustand/shallow';
 
-import { useStore, useStoreActions } from '../store/hooks';
+import { useStore, useStoreApi } from '../store';
 import useKeyPress from './useKeyPress';
-import { isNode, getConnectedEdges } from '../utils/graph';
-import { Elements, KeyCode, ElementId, FlowElement } from '../types';
+import { getConnectedEdges } from '../utils/graph';
+import { EdgeChange, KeyCode, NodeChange, Node, ReactFlowState } from '../types';
 
 interface HookParams {
-  deleteKeyCode: KeyCode;
-  multiSelectionKeyCode: KeyCode;
-  onElementsRemove?: (elements: Elements) => void;
+  deleteKeyCode: KeyCode | null;
+  multiSelectionKeyCode: KeyCode | null;
 }
 
-export default ({ deleteKeyCode, multiSelectionKeyCode, onElementsRemove }: HookParams): void => {
-  const store = useStore();
+const selector = (s: ReactFlowState) => ({
+  onNodesChange: s.onNodesChange,
+  onEdgesChange: s.onEdgesChange,
+});
 
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-  const setMultiSelectionActive = useStoreActions((actions) => actions.setMultiSelectionActive);
-  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
+export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
+  const store = useStoreApi();
+  const { onNodesChange, onEdgesChange } = useStore(selector, shallow);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { edges, selectedElements } = store.getState();
+    const { nodeInternals, edges, hasDefaultNodes, hasDefaultEdges, onNodesDelete, onEdgesDelete } = store.getState();
+    const nodes = Array.from(nodeInternals.values());
+    const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
+      if (!node.selected && node.parentNode && res.find((n) => n.id === node.parentNode)) {
+        res.push(node);
+      } else if (node.selected) {
+        res.push(node);
+      }
 
-    if (onElementsRemove && deleteKeyPressed && selectedElements) {
-      const selectedNodes = selectedElements.filter(isNode);
-      const connectedEdges = getConnectedEdges(selectedNodes, edges);
-      const elementsToRemove = [...selectedElements, ...connectedEdges].reduce(
-        (res, item) => res.set(item.id, item),
-        new Map<ElementId, FlowElement>()
-      );
+      return res;
+    }, []);
+    const selectedEdges = edges.filter((e) => e.selected);
 
-      onElementsRemove(Array.from(elementsToRemove.values()));
-      unsetNodesSelection();
-      resetSelectedElements();
+    if (deleteKeyPressed && (nodesToRemove || selectedEdges)) {
+      const connectedEdges = getConnectedEdges(nodesToRemove, edges);
+      const edgesToRemove = [...selectedEdges, ...connectedEdges];
+      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
+        if (!res.includes(edge.id)) {
+          res.push(edge.id);
+        }
+        return res;
+      }, []);
+
+      if (hasDefaultEdges || hasDefaultNodes) {
+        if (hasDefaultEdges) {
+          store.setState({
+            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
+          });
+        }
+
+        if (hasDefaultNodes) {
+          nodesToRemove.forEach((node) => {
+            nodeInternals.delete(node.id);
+          });
+
+          store.setState({
+            nodeInternals: new Map(nodeInternals),
+          });
+        }
+      }
+
+      if (edgeIdsToRemove.length > 0) {
+        onEdgesDelete?.(edgesToRemove);
+
+        if (onEdgesChange) {
+          const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
+            id,
+            type: 'remove',
+          }));
+          onEdgesChange(edgeChanges);
+        }
+      }
+
+      if (nodesToRemove.length > 0) {
+        onNodesDelete?.(nodesToRemove);
+
+        if (onNodesChange) {
+          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
+          onNodesChange(nodeChanges);
+        }
+      }
+
+      store.setState({ nodesSelectionActive: false });
     }
-  }, [deleteKeyPressed]);
+  }, [deleteKeyPressed, onNodesChange, onEdgesChange]);
 
   useEffect(() => {
-    setMultiSelectionActive(multiSelectionKeyPressed);
+    store.setState({ multiSelectionActive: multiSelectionKeyPressed });
   }, [multiSelectionKeyPressed]);
 };

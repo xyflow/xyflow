@@ -1,10 +1,16 @@
-import React, { useState, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 
-import ReactFlow, { addEdge, isEdge, OnLoadParams, Elements, Position, Connection, Edge } from 'react-flow-renderer';
+import ReactFlow, {
+  addEdge,
+  Node,
+  Position,
+  Connection,
+  Edge,
+  useNodesState,
+  useEdgesState,
+} from 'react-flow-renderer';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
-
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   {
     id: '1',
     sourcePosition: Position.Right,
@@ -20,31 +26,40 @@ const initialElements: Elements = [
     data: { label: 'A Node' },
     position: { x: 250, y: 0 },
   },
-  { id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true },
 ];
+
+const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true }];
 
 const buttonStyle: CSSProperties = { position: 'absolute', right: 10, top: 30, zIndex: 4 };
 
 const NodeTypeChangeFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
   const changeType = () => {
-    setElements((elms) =>
-      elms.map((el) => {
-        if (isEdge(el) || el.type === 'input') {
-          return el;
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.type === 'input') {
+          return node;
         }
 
         return {
-          ...el,
-          type: el.type === 'default' ? 'output' : 'default',
+          ...node,
+          type: node.type === 'default' ? 'output' : 'default',
         };
       })
     );
   };
 
   return (
-    <ReactFlow elements={elements} onConnect={onConnect} onLoad={onLoad}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      fitView
+    >
       <button onClick={changeType} style={buttonStyle}>
         change type
       </button>

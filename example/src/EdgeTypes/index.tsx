@@ -1,40 +1,49 @@
 /**
  * Example for checking the different edge types and source and target positions
  */
-import React, { useState } from 'react';
 
 import ReactFlow, {
-  removeElements,
   addEdge,
   MiniMap,
   Controls,
   Background,
-  OnLoadParams,
+  ReactFlowInstance,
   Connection,
   Edge,
-  Elements,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 import { getElements } from './utils';
 
-const onLoad = (reactFlowInstance: OnLoadParams) => {
+const onInit = (reactFlowInstance: ReactFlowInstance) => {
   reactFlowInstance.fitView();
-  console.log(reactFlowInstance.getElements());
+  console.log(reactFlowInstance.getNodes());
 };
 
-const initialElements = getElements();
+const { nodes: initialNodes, edges: initialEdges } = getElements();
+
+const multiSelectionKeyCode = ['ShiftLeft', 'ShiftRight'];
+const deleteKeyCode = ['AltLeft+KeyD', 'Backspace'];
 
 const EdgeTypesFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 
   return (
     <ReactFlow
-      elements={elements}
-      onLoad={onLoad}
-      onElementsRemove={onElementsRemove}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onInit={onInit}
       onConnect={onConnect}
       minZoom={0.2}
+      zoomOnScroll={false}
+      selectionKeyCode="a+s"
+      multiSelectionKeyCode={multiSelectionKeyCode}
+      deleteKeyCode={deleteKeyCode}
+      zoomActivationKeyCode="z"
     >
       <MiniMap />
       <Controls />

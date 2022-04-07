@@ -1,18 +1,19 @@
-import { Position, ArrowHeadType, Node, XYPosition } from 'react-flow-renderer';
+import { Position, XYPosition, Node, Edge } from 'react-flow-renderer';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
 function getNodeIntersection(intersectionNode: Node, targetNode: Node): XYPosition {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
+
   const {
     width: intersectionNodeWidth,
     height: intersectionNodeHeight,
     position: intersectionNodePosition,
-  } = intersectionNode.__rf;
-  const targetPosition = targetNode.__rf.position;
+  } = intersectionNode;
+  const targetPosition = targetNode.position;
 
-  const w = intersectionNodeWidth / 2;
-  const h = intersectionNodeHeight / 2;
+  const w = (intersectionNodeWidth ?? 0) / 2;
+  const h = (intersectionNodeHeight ?? 0) / 2;
 
   const x2 = intersectionNodePosition.x + w;
   const y2 = intersectionNodePosition.y + h;
@@ -32,7 +33,7 @@ function getNodeIntersection(intersectionNode: Node, targetNode: Node): XYPositi
 
 // returns the position (top,right,bottom or right) passed node compared to the intersection point
 function getEdgePosition(node: Node, intersectionPoint: XYPosition) {
-  const n = { ...node.__rf.position, ...node.__rf };
+  const n = { ...node.position, ...node };
   const nx = Math.round(n.x);
   const ny = Math.round(n.y);
   const px = Math.round(intersectionPoint.x);
@@ -41,13 +42,13 @@ function getEdgePosition(node: Node, intersectionPoint: XYPosition) {
   if (px <= nx + 1) {
     return Position.Left;
   }
-  if (px >= nx + n.width - 1) {
+  if (px >= nx + (n.width ?? 0) - 1) {
     return Position.Right;
   }
   if (py <= ny + 1) {
     return Position.Top;
   }
-  if (py >= n.y + n.height - 1) {
+  if (py >= n.y + (n.height ?? 0) - 1) {
     return Position.Bottom;
   }
 
@@ -72,11 +73,18 @@ export function getEdgeParams(source: Node, target: Node) {
   };
 }
 
-export function createElements() {
-  const elements = [];
+type NodesAndEdges = {
+  nodes: Node[];
+  edges: Edge[];
+};
+
+export function createElements(): NodesAndEdges {
+  const nodes: Node[] = [];
+  const edges: Edge[] = [];
+
   const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-  elements.push({ id: 'target', data: { label: 'Target' }, position: center });
+  nodes.push({ id: 'target', data: { label: 'Target' }, position: center });
 
   for (let i = 0; i < 8; i++) {
     const degrees = i * (360 / 8);
@@ -84,16 +92,15 @@ export function createElements() {
     const x = 250 * Math.cos(radians) + center.x;
     const y = 250 * Math.sin(radians) + center.y;
 
-    elements.push({ id: `${i}`, data: { label: 'Source' }, position: { x, y } });
+    nodes.push({ id: `${i}`, data: { label: 'Source' }, position: { x, y } });
 
-    elements.push({
+    edges.push({
       id: `edge-${i}`,
       target: 'target',
       source: `${i}`,
       type: 'floating',
-      arrowHeadType: ArrowHeadType.Arrow,
     });
   }
 
-  return elements;
+  return { nodes, edges };
 }

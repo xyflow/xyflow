@@ -1,10 +1,17 @@
 import React, { memo, ComponentType, useCallback, useState, useMemo } from 'react';
 import cc from 'classcat';
+import shallow from 'zustand/shallow';
 
-import { useStoreActions, useStoreState } from '../../store/hooks';
-import { Edge, EdgeProps, WrapEdgeProps } from '../../types';
+import { useStore, useStoreApi } from '../../store';
+import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState, Connection } from '../../types';
 import { onMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
+import { getMarkerId } from '../../utils/graph';
+
+const selector = (s: ReactFlowState) => ({
+  addSelectedEdges: s.addSelectedEdges,
+  connectionMode: s.connectionMode,
+});
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -23,7 +30,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     labelBgPadding,
     labelBgBorderRadius,
     style,
-    arrowHeadType,
     source,
     target,
     sourceX,
@@ -33,29 +39,27 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     sourcePosition,
     targetPosition,
     elementsSelectable,
-    markerEndId,
-    isHidden,
+    hidden,
     sourceHandleId,
     targetHandleId,
-    handleEdgeUpdate,
-    onConnectEdge,
     onContextMenu,
     onMouseEnter,
     onMouseMove,
     onMouseLeave,
     edgeUpdaterRadius,
+    onEdgeUpdate,
     onEdgeUpdateStart,
     onEdgeUpdateEnd,
+    markerEnd,
+    markerStart,
   }: WrapEdgeProps): JSX.Element | null => {
-    const addSelectedElements = useStoreActions((actions) => actions.addSelectedElements);
-    const setConnectionNodeId = useStoreActions((actions) => actions.setConnectionNodeId);
-    const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-    const setPosition = useStoreActions((actions) => actions.setConnectionPosition);
-    const connectionMode = useStoreState((state) => state.connectionMode);
+    const store = useStoreApi();
+    const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
 
     const [updating, setUpdating] = useState<boolean>(false);
 
     const inactive = !elementsSelectable && !onClick;
+    const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
     const edgeClasses = cc([
       'react-flow__edge',
       `react-flow__edge-${type}`,
@@ -89,8 +93,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeClick = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
         if (elementsSelectable) {
-          unsetNodesSelection();
-          addSelectedElements(edgeElement);
+          store.setState({ nodesSelectionActive: false });
+          addSelectedEdges([edgeElement.id]);
         }
 
         onClick?.(event, edgeElement);
@@ -146,21 +150,30 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
           : undefined;
 
+        const onConnectEdge = (connection: Connection) => {
+          const { edges } = store.getState();
+          const edge = edges.find((e) => e.id === id);
+
+          if (edge && onEdgeUpdate) {
+            onEdgeUpdate(edge, connection);
+          }
+        };
+
         onMouseDown(
           event,
           handleId,
           nodeId,
-          setConnectionNodeId,
-          setPosition,
+          store.setState,
           onConnectEdge,
           isTarget,
           isValidConnection,
           connectionMode,
           isSourceHandle ? 'target' : 'source',
-          _onEdgeUpdate
+          _onEdgeUpdate,
+          store.getState
         );
       },
-      [id, source, target, type, sourceHandleId, targetHandleId, setConnectionNodeId, setPosition, edgeElement, onConnectEdge]
+      [id, source, target, type, sourceHandleId, targetHandleId, edgeElement, onEdgeUpdate]
     );
 
     const onEdgeUpdaterSourceMouseDown = useCallback(
@@ -179,8 +192,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
     const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
+    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart)})`, [markerStart]);
+    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd)})`, [markerEnd]);
 
-    if (isHidden) {
+    if (hidden) {
       return null;
     }
 
@@ -208,16 +223,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           labelBgBorderRadius={labelBgBorderRadius}
           data={data}
           style={style}
-          arrowHeadType={arrowHeadType}
           sourceX={sourceX}
           sourceY={sourceY}
           targetX={targetX}
           targetY={targetY}
           sourcePosition={sourcePosition}
           targetPosition={targetPosition}
-          markerEndId={markerEndId}
           sourceHandleId={sourceHandleId}
           targetHandleId={targetHandleId}
+          markerStart={markerStartUrl}
+          markerEnd={markerEndUrl}
         />
         {handleEdgeUpdate && (
           <g

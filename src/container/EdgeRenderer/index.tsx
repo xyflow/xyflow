@@ -1,33 +1,30 @@
-import React, { memo, CSSProperties, useCallback } from 'react';
+import React, { memo, CSSProperties } from 'react';
+import shallow from 'zustand/shallow';
+import cc from 'classcat';
 
-import { useStoreState } from '../../store/hooks';
+import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
-import { isEdge } from '../../utils/graph';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getHandle, isEdgeVisible, getSourceTargetNodes } from './utils';
+import { getEdgePositions, getHandle, getNodeData } from './utils';
 import {
   Position,
   Edge,
-  Node,
-  Elements,
-  Connection,
   ConnectionLineType,
   ConnectionLineComponent,
   ConnectionMode,
-  Transform,
   OnEdgeUpdateFunc,
+  ReactFlowState,
 } from '../../types';
+import useVisibleEdges from '../../hooks/useVisibleEdges';
 
 interface EdgeRendererProps {
   edgeTypes: any;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
-  connectionMode?: ConnectionMode;
-  onElementClick?: (event: React.MouseEvent, element: Node | Edge) => void;
+  onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  arrowHeadColor: string;
-  markerEndId?: string;
+  defaultMarkerColor: string;
   onlyRenderVisibleElements: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
@@ -37,215 +34,155 @@ interface EdgeRendererProps {
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
   edgeUpdaterRadius?: number;
+  noPanClassName?: string;
 }
 
-interface EdgeWrapperProps {
-  edge: Edge;
-  props: EdgeRendererProps;
-  nodes: Node[];
-  selectedElements: Elements | null;
-  elementsSelectable: boolean;
-  transform: Transform;
-  width: number;
-  height: number;
-  onlyRenderVisibleElements: boolean;
-  connectionMode?: ConnectionMode;
-}
-
-const Edge = ({
-  edge,
-  props,
-  nodes,
-  selectedElements,
-  elementsSelectable,
-  transform,
-  width,
-  height,
-  onlyRenderVisibleElements,
-  connectionMode,
-}: EdgeWrapperProps) => {
-  const sourceHandleId = edge.sourceHandle || null;
-  const targetHandleId = edge.targetHandle || null;
-  const { sourceNode, targetNode } = getSourceTargetNodes(edge, nodes);
-
-  const onConnectEdge = useCallback(
-    (connection: Connection) => {
-      props.onEdgeUpdate?.(edge, connection);
-    },
-    [edge, props.onEdgeUpdate]
-  );
-
-  if (!sourceNode) {
-    console.warn(`couldn't create edge for source id: ${edge.source}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  if (!targetNode) {
-    console.warn(`couldn't create edge for target id: ${edge.target}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  // source and target node need to be initialized
-  if (!sourceNode.__rf.width || !targetNode.__rf.width) {
-    return null;
-  }
-
-  const edgeType = edge.type || 'default';
-  const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-  const targetNodeBounds = targetNode.__rf.handleBounds;
-  // when connection type is loose we can define all handles as sources
-  const targetNodeHandles =
-    connectionMode === ConnectionMode.Strict
-      ? targetNodeBounds.target
-      : targetNodeBounds.target || targetNodeBounds.source;
-  const sourceHandle = getHandle(sourceNode.__rf.handleBounds.source, sourceHandleId);
-  const targetHandle = getHandle(targetNodeHandles, targetHandleId);
-  const sourcePosition = sourceHandle ? sourceHandle.position : Position.Bottom;
-  const targetPosition = targetHandle ? targetHandle.position : Position.Top;
-
-  if (!sourceHandle) {
-    console.warn(`couldn't create edge for source handle id: ${sourceHandleId}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  if (!targetHandle) {
-    console.warn(`couldn't create edge for target handle id: ${targetHandleId}; edge id: ${edge.id}`);
-    return null;
-  }
-
-  const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-    sourceNode,
-    sourceHandle,
-    sourcePosition,
-    targetNode,
-    targetHandle,
-    targetPosition
-  );
-
-  const isVisible = onlyRenderVisibleElements
-    ? isEdgeVisible({
-        sourcePos: { x: sourceX, y: sourceY },
-        targetPos: { x: targetX, y: targetY },
-        width,
-        height,
-        transform,
-      })
-    : true;
-
-  if (!isVisible) {
-    return null;
-  }
-
-  const isSelected = selectedElements?.some((elm) => isEdge(elm) && elm.id === edge.id) || false;
-
-  return (
-    <EdgeComponent
-      key={edge.id}
-      id={edge.id}
-      className={edge.className}
-      type={edge.type}
-      data={edge.data}
-      onClick={props.onElementClick}
-      selected={isSelected}
-      animated={edge.animated}
-      label={edge.label}
-      labelStyle={edge.labelStyle}
-      labelShowBg={edge.labelShowBg}
-      labelBgStyle={edge.labelBgStyle}
-      labelBgPadding={edge.labelBgPadding}
-      labelBgBorderRadius={edge.labelBgBorderRadius}
-      style={edge.style}
-      arrowHeadType={edge.arrowHeadType}
-      source={edge.source}
-      target={edge.target}
-      sourceHandleId={sourceHandleId}
-      targetHandleId={targetHandleId}
-      sourceX={sourceX}
-      sourceY={sourceY}
-      targetX={targetX}
-      targetY={targetY}
-      sourcePosition={sourcePosition}
-      targetPosition={targetPosition}
-      elementsSelectable={elementsSelectable}
-      markerEndId={props.markerEndId}
-      isHidden={edge.isHidden}
-      onConnectEdge={onConnectEdge}
-      handleEdgeUpdate={typeof props.onEdgeUpdate !== 'undefined'}
-      onContextMenu={props.onEdgeContextMenu}
-      onMouseEnter={props.onEdgeMouseEnter}
-      onMouseMove={props.onEdgeMouseMove}
-      onMouseLeave={props.onEdgeMouseLeave}
-      edgeUpdaterRadius={props.edgeUpdaterRadius}
-      onEdgeDoubleClick={props.onEdgeDoubleClick}
-      onEdgeUpdateStart={props.onEdgeUpdateStart}
-      onEdgeUpdateEnd={props.onEdgeUpdateEnd}
-    />
-  );
-};
+const selector = (s: ReactFlowState) => ({
+  connectionNodeId: s.connectionNodeId,
+  connectionHandleId: s.connectionHandleId,
+  connectionHandleType: s.connectionHandleType,
+  connectionPosition: s.connectionPosition,
+  nodesConnectable: s.nodesConnectable,
+  elementsSelectable: s.elementsSelectable,
+  width: s.width,
+  height: s.height,
+  connectionMode: s.connectionMode,
+  nodeInternals: s.nodeInternals,
+});
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
-  const transform = useStoreState((state) => state.transform);
-  const nodes = useStoreState((state) => state.nodes);
-  const edges = useStoreState((state) => state.edges);
-  const connectionNodeId = useStoreState((state) => state.connectionNodeId);
-  const connectionHandleId = useStoreState((state) => state.connectionHandleId);
-  const connectionHandleType = useStoreState((state) => state.connectionHandleType);
-  const connectionPosition = useStoreState((state) => state.connectionPosition);
-  const selectedElements = useStoreState((state) => state.selectedElements);
-  const nodesConnectable = useStoreState((state) => state.nodesConnectable);
-  const elementsSelectable = useStoreState((state) => state.elementsSelectable);
-  const width = useStoreState((state) => state.width);
-  const height = useStoreState((state) => state.height);
+  const {
+    connectionNodeId,
+    connectionHandleId,
+    connectionHandleType,
+    connectionPosition,
+    nodesConnectable,
+    elementsSelectable,
+    width,
+    height,
+    connectionMode,
+    nodeInternals,
+  } = useStore(selector, shallow);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals);
 
   if (!width) {
     return null;
   }
 
-  const {
-    connectionLineType,
-    arrowHeadColor,
-    connectionLineStyle,
-    connectionLineComponent,
-    onlyRenderVisibleElements,
-  } = props;
-  const transformStyle = `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`;
+  const { connectionLineType, defaultMarkerColor, connectionLineStyle, connectionLineComponent } = props;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
-    <svg width={width} height={height} className="react-flow__edges">
-      <MarkerDefinitions color={arrowHeadColor} />
-      <g style={{ transform: transformStyle }}>
-        {edges.map((edge: Edge) => (
-          <Edge
-            key={edge.id}
-            edge={edge}
-            props={props}
-            nodes={nodes}
-            selectedElements={selectedElements}
-            elementsSelectable={elementsSelectable}
-            transform={transform}
-            width={width}
-            height={height}
-            onlyRenderVisibleElements={onlyRenderVisibleElements}
-          />
-        ))}
-        {renderConnectionLine && (
-          <ConnectionLine
-            nodes={nodes}
-            connectionNodeId={connectionNodeId!}
-            connectionHandleId={connectionHandleId}
-            connectionHandleType={connectionHandleType!}
-            connectionPositionX={connectionPosition.x}
-            connectionPositionY={connectionPosition.y}
-            transform={transform}
-            connectionLineStyle={connectionLineStyle}
-            connectionLineType={connectionLineType}
-            isConnectable={nodesConnectable}
-            CustomConnectionLineComponent={connectionLineComponent}
-          />
-        )}
-      </g>
-    </svg>
+    <>
+      {edgeTree.map(({ level, edges, isMaxLevel }) => (
+        <svg
+          key={level}
+          style={{ zIndex: level }}
+          width={width}
+          height={height}
+          className="react-flow__edges react-flow__container"
+        >
+          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
+          <g>
+            {edges.map((edge: Edge) => {
+              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals, edge.source);
+              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals, edge.target);
+
+              if (!sourceIsValid || !targetIsValid) {
+                return null;
+              }
+
+              const edgeType = edge.type || 'default';
+              const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
+              // when connection type is loose we can define all handles as sources
+              const targetNodeHandles =
+                connectionMode === ConnectionMode.Strict
+                  ? targetHandleBounds!.target
+                  : targetHandleBounds!.target || targetHandleBounds!.source;
+              const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle || null);
+              const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle || null);
+              const sourcePosition = sourceHandle?.position || Position.Bottom;
+              const targetPosition = targetHandle?.position || Position.Top;
+
+              if (!sourceHandle) {
+                console.warn(`couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}`);
+                return null;
+              }
+
+              if (!targetHandle) {
+                console.warn(`couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}`);
+                return null;
+              }
+
+              const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
+                sourceNodeRect,
+                sourceHandle,
+                sourcePosition,
+                targetNodeRect,
+                targetHandle,
+                targetPosition
+              );
+
+              return (
+                <EdgeComponent
+                  key={edge.id}
+                  id={edge.id}
+                  className={cc([edge.className, props.noPanClassName])}
+                  type={edgeType}
+                  data={edge.data}
+                  selected={!!edge.selected}
+                  animated={!!edge.animated}
+                  hidden={!!edge.hidden}
+                  label={edge.label}
+                  labelStyle={edge.labelStyle}
+                  labelShowBg={edge.labelShowBg}
+                  labelBgStyle={edge.labelBgStyle}
+                  labelBgPadding={edge.labelBgPadding}
+                  labelBgBorderRadius={edge.labelBgBorderRadius}
+                  style={edge.style}
+                  source={edge.source}
+                  target={edge.target}
+                  sourceHandleId={edge.sourceHandle}
+                  targetHandleId={edge.targetHandle}
+                  markerEnd={edge.markerEnd}
+                  markerStart={edge.markerStart}
+                  sourceX={sourceX}
+                  sourceY={sourceY}
+                  targetX={targetX}
+                  targetY={targetY}
+                  sourcePosition={sourcePosition}
+                  targetPosition={targetPosition}
+                  elementsSelectable={elementsSelectable}
+                  onEdgeUpdate={props.onEdgeUpdate}
+                  onContextMenu={props.onEdgeContextMenu}
+                  onMouseEnter={props.onEdgeMouseEnter}
+                  onMouseMove={props.onEdgeMouseMove}
+                  onMouseLeave={props.onEdgeMouseLeave}
+                  onClick={props.onEdgeClick}
+                  edgeUpdaterRadius={props.edgeUpdaterRadius}
+                  onEdgeDoubleClick={props.onEdgeDoubleClick}
+                  onEdgeUpdateStart={props.onEdgeUpdateStart}
+                  onEdgeUpdateEnd={props.onEdgeUpdateEnd}
+                />
+              );
+            })}
+            {renderConnectionLine && isMaxLevel && (
+              <ConnectionLine
+                connectionNodeId={connectionNodeId!}
+                connectionHandleId={connectionHandleId}
+                connectionHandleType={connectionHandleType!}
+                connectionPositionX={connectionPosition.x}
+                connectionPositionY={connectionPosition.y}
+                connectionLineStyle={connectionLineStyle}
+                connectionLineType={connectionLineType}
+                isConnectable={nodesConnectable}
+                CustomConnectionLineComponent={connectionLineComponent}
+              />
+            )}
+          </g>
+        </svg>
+      ))}
+    </>
   );
 };
 

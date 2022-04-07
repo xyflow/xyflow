@@ -1,7 +1,8 @@
-import React, { memo, useCallback, HTMLAttributes, FC, useEffect, useState } from 'react';
+import React, { memo, useCallback, FC, useEffect, useState } from 'react';
 import cc from 'classcat';
 
-import { useStoreState, useStoreActions } from '../../store/hooks';
+import { useStore, useStoreApi } from '../../store';
+import useReactFlow from '../../hooks/useReactFlow';
 
 import PlusIcon from '../../../assets/icons/plus.svg';
 import MinusIcon from '../../../assets/icons/minus.svg';
@@ -9,21 +10,7 @@ import FitviewIcon from '../../../assets/icons/fitview.svg';
 import LockIcon from '../../../assets/icons/lock.svg';
 import UnlockIcon from '../../../assets/icons/unlock.svg';
 
-import useZoomPanHelper from '../../hooks/useZoomPanHelper';
-import { FitViewParams } from '../../types';
-
-export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
-  showZoom?: boolean;
-  showFitView?: boolean;
-  showInteractive?: boolean;
-  fitViewParams?: FitViewParams;
-  onZoomIn?: () => void;
-  onZoomOut?: () => void;
-  onFitView?: () => void;
-  onInteractiveChange?: (interactiveStatus: boolean) => void;
-}
-
-export interface ControlButtonProps extends HTMLAttributes<HTMLButtonElement> {}
+import { ControlProps, ControlButtonProps, ReactFlowState } from '../../types';
 
 export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
   <button type="button" className={cc(['react-flow__controls-button', className])} {...rest}>
@@ -31,12 +18,14 @@ export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...
   </button>
 );
 
+const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
+
 const Controls: FC<ControlProps> = ({
   style,
   showZoom = true,
   showFitView = true,
   showInteractive = true,
-  fitViewParams,
+  fitViewOptions,
   onZoomIn,
   onZoomOut,
   onFitView,
@@ -44,11 +33,11 @@ const Controls: FC<ControlProps> = ({
   className,
   children,
 }) => {
+  const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const setInteractive = useStoreActions((actions) => actions.setInteractive);
-  const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
+  const isInteractive = useStore(isInteractiveSelector);
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
 
-  const isInteractive = useStoreState((s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable);
   const mapClasses = cc(['react-flow__controls', className]);
 
   const onZoomInHandler = useCallback(() => {
@@ -62,14 +51,19 @@ const Controls: FC<ControlProps> = ({
   }, [zoomOut, onZoomOut]);
 
   const onFitViewHandler = useCallback(() => {
-    fitView?.(fitViewParams);
+    fitView?.(fitViewOptions);
     onFitView?.();
-  }, [fitView, fitViewParams, onFitView]);
+  }, [fitView, fitViewOptions, onFitView]);
 
   const onInteractiveChangeHandler = useCallback(() => {
-    setInteractive?.(!isInteractive);
+    store.setState({
+      nodesDraggable: !isInteractive,
+      nodesConnectable: !isInteractive,
+      elementsSelectable: !isInteractive,
+    });
+
     onInteractiveChange?.(!isInteractive);
-  }, [isInteractive, setInteractive, onInteractiveChange]);
+  }, [isInteractive, onInteractiveChange]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -83,21 +77,41 @@ const Controls: FC<ControlProps> = ({
     <div className={mapClasses} style={style}>
       {showZoom && (
         <>
-          <ControlButton onClick={onZoomInHandler} className="react-flow__controls-zoomin">
+          <ControlButton
+            onClick={onZoomInHandler}
+            className="react-flow__controls-zoomin"
+            title="zoom in"
+            aria-label="zoom in"
+          >
             <PlusIcon />
           </ControlButton>
-          <ControlButton onClick={onZoomOutHandler} className="react-flow__controls-zoomout">
+          <ControlButton
+            onClick={onZoomOutHandler}
+            className="react-flow__controls-zoomout"
+            title="zoom out"
+            aria-label="zoom out"
+          >
             <MinusIcon />
           </ControlButton>
         </>
       )}
       {showFitView && (
-        <ControlButton className="react-flow__controls-fitview" onClick={onFitViewHandler}>
+        <ControlButton
+          className="react-flow__controls-fitview"
+          onClick={onFitViewHandler}
+          title="fit view"
+          aria-label="fit view"
+        >
           <FitviewIcon />
         </ControlButton>
       )}
       {showInteractive && (
-        <ControlButton className="react-flow__controls-interactive" onClick={onInteractiveChangeHandler}>
+        <ControlButton
+          className="react-flow__controls-interactive"
+          onClick={onInteractiveChangeHandler}
+          title="toggle interactivity"
+          aria-label="toggle interactivity"
+        >
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </ControlButton>
       )}

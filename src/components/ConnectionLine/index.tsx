@@ -1,39 +1,25 @@
-import React, { useEffect, useState, CSSProperties } from 'react';
+import React, { useRef, CSSProperties } from 'react';
+import shallow from 'zustand/shallow';
 
+import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
-import {
-  ElementId,
-  Node,
-  Transform,
-  HandleElement,
-  Position,
-  ConnectionLineType,
-  ConnectionLineComponent,
-  HandleType,
-} from '../../types';
+import { ConnectionLineType, ConnectionLineComponent, HandleType, Node, ReactFlowState, Position } from '../../types';
+import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 
 interface ConnectionLineProps {
-  connectionNodeId: ElementId;
-  connectionHandleId: ElementId | null;
+  connectionNodeId: string;
+  connectionHandleId: string | null;
   connectionHandleType: HandleType;
   connectionPositionX: number;
   connectionPositionY: number;
   connectionLineType: ConnectionLineType;
-  nodes: Node[];
-  transform: Transform;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const getSourceHandle = (handleId: ElementId | null, sourceNode: Node, connectionHandleType: HandleType) => {
-  const handleTypeInverted = connectionHandleType === 'source' ? 'target' : 'source';
-  const handleBound =
-    sourceNode.__rf.handleBounds[connectionHandleType] || sourceNode.__rf.handleBounds[handleTypeInverted];
-
-  return handleId ? handleBound.find((d: HandleElement) => d.id === handleId) : handleBound[0];
-};
+const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, transform: s.transform });
 
 export default ({
   connectionNodeId,
@@ -43,35 +29,81 @@ export default ({
   connectionPositionX,
   connectionPositionY,
   connectionLineType = ConnectionLineType.Bezier,
-  nodes = [],
-  transform,
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const [sourceNode, setSourceNode] = useState<Node | null>(null);
   const nodeId = connectionNodeId;
   const handleId = connectionHandleId;
 
-  useEffect(() => {
-    const nextSourceNode = nodes.find((n) => n.id === nodeId) || null;
-    setSourceNode(nextSourceNode);
-  }, []);
+  const { nodeInternals, transform } = useStore(selector, shallow);
+  const fromNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
 
-  if (!sourceNode || !isConnectable) {
+  if (
+    !fromNode.current ||
+    !fromNode.current ||
+    !isConnectable ||
+    !fromNode.current.handleBounds?.[connectionHandleType]
+  ) {
     return null;
   }
 
-  const sourceHandle = getSourceHandle(handleId, sourceNode, connectionHandleType);
-  const sourceHandleX = sourceHandle ? sourceHandle.x + sourceHandle.width / 2 : sourceNode.__rf.width / 2;
-  const sourceHandleY = sourceHandle ? sourceHandle.y + sourceHandle.height / 2 : sourceNode.__rf.height;
-  const sourceX = sourceNode.__rf.position.x + sourceHandleX;
-  const sourceY = sourceNode.__rf.position.y + sourceHandleY;
+  const handleBound = fromNode.current.handleBounds?.[connectionHandleType];
+  const fromHandle = handleId ? handleBound?.find((d) => d.id === handleId) : handleBound?.[0];
+  const fromHandleX = fromHandle ? fromHandle.x + fromHandle.width / 2 : (fromNode.current?.width ?? 0) / 2;
+  const fromHandleY = fromHandle ? fromHandle.y + fromHandle.height / 2 : fromNode.current?.height ?? 0;
+  const fromX = (fromNode.current.positionAbsolute?.x || 0) + fromHandleX;
+  const fromY = (fromNode.current.positionAbsolute?.y || 0) + fromHandleY;
 
-  const targetX = (connectionPositionX - transform[0]) / transform[2];
-  const targetY = (connectionPositionY - transform[1]) / transform[2];
+  const toX = (connectionPositionX - transform[0]) / transform[2];
+  const toY = (connectionPositionY - transform[1]) / transform[2];
 
-  const isRightOrLeft = sourceHandle?.position === Position.Left || sourceHandle?.position === Position.Right;
-  const targetPosition = isRightOrLeft ? Position.Left : Position.Top;
+  const fromPosition = fromHandle?.position;
+
+  let toPosition: Position | undefined;
+  switch (fromPosition) {
+    case Position.Left:
+      toPosition = Position.Right;
+      break;
+    case Position.Right:
+      toPosition = Position.Left;
+      break;
+    case Position.Top:
+      toPosition = Position.Bottom;
+      break;
+    case Position.Bottom:
+      toPosition = Position.Top;
+      break;
+  }
+
+  let sourceX: number,
+    sourceY: number,
+    sourcePosition: Position | undefined,
+    targetX: number,
+    targetY: number,
+    targetPosition: Position | undefined;
+
+  switch (connectionHandleType) {
+    case 'source':
+      {
+        sourceX = fromX;
+        sourceY = fromY;
+        sourcePosition = fromPosition;
+        targetX = toX;
+        targetY = toY;
+        targetPosition = toPosition;
+      }
+      break;
+    case 'target':
+      {
+        sourceX = toX;
+        sourceY = toY;
+        sourcePosition = toPosition;
+        targetX = fromX;
+        targetY = fromY;
+        targetPosition = fromPosition;
+      }
+      break;
+  }
 
   if (CustomConnectionLineComponent) {
     return (
@@ -79,14 +111,17 @@ export default ({
         <CustomConnectionLineComponent
           sourceX={sourceX}
           sourceY={sourceY}
-          sourcePosition={sourceHandle?.position}
+          sourcePosition={sourcePosition}
           targetX={targetX}
           targetY={targetY}
           targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          sourceNode={sourceNode}
-          sourceHandle={sourceHandle}
+          fromNode={fromNode.current}
+          fromHandle={fromHandle}
+          // backward compatibility, mark as deprecated?
+          sourceNode={fromNode.current}
+          sourceHandle={fromHandle}
         />
       </g>
     );
@@ -94,34 +129,27 @@ export default ({
 
   let dAttr: string = '';
 
+  const pathParams = {
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+  };
+
   if (connectionLineType === ConnectionLineType.Bezier) {
-    dAttr = getBezierPath({
-      sourceX,
-      sourceY,
-      sourcePosition: sourceHandle?.position,
-      targetX,
-      targetY,
-      targetPosition,
-    });
+    // we assume the destination position is opposite to the source position
+    dAttr = getBezierPath(pathParams);
   } else if (connectionLineType === ConnectionLineType.Step) {
     dAttr = getSmoothStepPath({
-      sourceX,
-      sourceY,
-      sourcePosition: sourceHandle?.position,
-      targetX,
-      targetY,
-      targetPosition,
+      ...pathParams,
       borderRadius: 0,
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
-    dAttr = getSmoothStepPath({
-      sourceX,
-      sourceY,
-      sourcePosition: sourceHandle?.position,
-      targetX,
-      targetY,
-      targetPosition,
-    });
+    dAttr = getSmoothStepPath(pathParams);
+  } else if (connectionLineType === ConnectionLineType.SimpleBezier) {
+    dAttr = getSimpleBezierPath(pathParams);
   } else {
     dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
   }
