@@ -31,6 +31,7 @@ import {
   OnMoveStart,
   OnMoveEnd,
 } from '.';
+import { HandleType } from './handles';
 
 export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   nodes?: Node[];
@@ -106,8 +107,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
   noDragClassName?: string;
   noWheelClassName?: string;

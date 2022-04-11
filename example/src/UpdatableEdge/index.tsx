@@ -11,8 +11,8 @@ import ReactFlow, {
   Node,
   NodeChange,
   EdgeChange,
+  HandleType,
 } from 'react-flow-renderer';
-import {HandleType} from "../../../dist";
 
 const initialNodes: Node[] = [
   {
@@ -55,8 +55,10 @@ const initialNodes: Node[] = [
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' }];
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
-const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge, handleType: HandleType) => console.log(`start update ${handleType} handle`, edge);
-const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge, handleType: HandleType) => console.log(`end update ${handleType} handle`, edge);
+const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge, handleType: HandleType) =>
+  console.log(`start update ${handleType} handle`, edge);
+const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge, handleType: HandleType) =>
+  console.log(`end update ${handleType} handle`, edge);
 
 const UpdatableEdge = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
