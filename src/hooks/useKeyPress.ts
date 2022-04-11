@@ -42,19 +42,25 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
   useEffect(() => {
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
+        if (isInputDOMNode(event)) {
+          return false;
+        }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
-        if (isMatchingKey(event, keyCodes, pressedKeys.current, false)) {
+        if (isMatchingKey(keyCodes, pressedKeys.current, false)) {
           event.preventDefault();
           setKeyPressed(true);
         }
       };
 
       const upHandler = (event: KeyboardEvent) => {
+        if (isInputDOMNode(event)) {
+          return false;
+        }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
 
-        if (isMatchingKey(event, keyCodes, pressedKeys.current, true)) {
+        if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
           setKeyPressed(false);
           pressedKeys.current.clear();
         } else {
@@ -84,11 +90,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
 
 // utils
 
-function isMatchingKey(event: KeyboardEvent, keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: boolean): boolean {
-  if (isInputDOMNode(event)) {
-    return false;
-  }
-
+function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: boolean): boolean {
   return (
     keyCodes
       // we only want to compare same sizes of keyCode definitions
@@ -105,8 +107,8 @@ function useKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
   return keysToWatch.includes(eventCode) ? 'code' : 'key';
 }
 
-function isInputDOMNode(e: KeyboardEvent): boolean {
-  const target = e?.target as HTMLElement;
+function isInputDOMNode(event: KeyboardEvent): boolean {
+  const target = event.target as HTMLElement;
 
   return ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) || target?.hasAttribute('contenteditable');
 }

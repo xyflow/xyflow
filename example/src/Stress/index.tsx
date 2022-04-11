@@ -10,6 +10,8 @@ import ReactFlow, {
   applyNodeChanges,
   Connection,
   addEdge,
+  applyEdgeChanges,
+  EdgeChange,
 } from 'react-flow-renderer';
 
 import { getNodesAndEdges } from './utils';
@@ -21,7 +23,7 @@ const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log(reactFlowInstance.getNodes());
 };
 
-const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(30, 30);
+const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(5, 5);
 
 const StressFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
@@ -54,8 +56,19 @@ const StressFlow = () => {
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 
+  const onEdgeChange = useCallback((changes: EdgeChange[]) => {
+    setEdges((es) => applyEdgeChanges(changes, es));
+  }, []);
+
   return (
-    <ReactFlow nodes={nodes} edges={edges} onInit={onInit} onConnect={onConnect} onNodesChange={onNodesChange}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onInit={onInit}
+      onConnect={onConnect}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgeChange}
+    >
       <MiniMap />
       <Controls />
       <Background />
