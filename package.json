@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.0.8",
+  "version": "10.0.9-next.0",
   "engines": {
     "node": ">=14"
   },
@@ -12,7 +12,8 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/umd/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "types": "dist/esm/index.d.ts",
   "license": "MIT",
