@@ -4,11 +4,11 @@ import cc from 'classcat';
 import { useStore, useStoreApi } from '../../store';
 import useReactFlow from '../../hooks/useReactFlow';
 
-import PlusIcon from '../../../assets/icons/plus.svg';
-import MinusIcon from '../../../assets/icons/minus.svg';
-import FitviewIcon from '../../../assets/icons/fitview.svg';
-import LockIcon from '../../../assets/icons/lock.svg';
-import UnlockIcon from '../../../assets/icons/unlock.svg';
+import PlusIcon from './Icons/Plus';
+import MinusIcon from './Icons/Minus';
+import FitviewIcon from './Icons/FitView';
+import LockIcon from './Icons/Lock';
+import UnlockIcon from './Icons/Unlock';
 
 import { ControlProps, ControlButtonProps, ReactFlowState } from '../../types';
 

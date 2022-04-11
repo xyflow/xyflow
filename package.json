@@ -1,12 +1,20 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.0.8",
+  "version": "10.0.9-next.0",
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
-  "type": "module",
-  "main": "dist/esm/index.js",
+  "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
+  "jsdelivr": "dist/umd/index.js",
+  "unpkg": "dist/umd/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/umd/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "types": "dist/esm/index.d.ts",
   "license": "MIT",
   "repository": {
@@ -14,7 +22,7 @@
     "url": "https://github.com/wbkd/react-flow.git"
   },
   "scripts": {
-    "build": "rollup -c --environment NODE_ENV:production && postcss src/*.css --dir dist",
+    "build": "rimraf dist && rollup -c --environment NODE_ENV:production && postcss src/*.css --dir dist",
     "start": "rollup -w -c",
     "start:examples": "cd example && npm start",
     "build:examples": "cd example && npm run build",
@@ -49,7 +57,6 @@
     "@rollup/plugin-commonjs": "^21.0.2",
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@rollup/plugin-replace": "^4.0.0",
-    "@svgr/rollup": "^6.2.1",
     "@types/d3": "^7.1.0",
     "@types/react": "^17.0.40",
     "@types/resize-observer-browser": "^0.1.7",
@@ -63,10 +70,12 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "release-it": "^14.12.5",
+    "rimraf": "^3.0.2",
     "rollup": "^2.70.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2",
     "rollup-plugin-visualizer": "^5.6.0",
     "start-server-and-test": "^1.14.0",
