@@ -113,6 +113,7 @@ function NodesSelection({
 
   return (
     <div className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])} style={style}>
+      {/* @ts-ignore */}
       <DraggableCore
         scale={tScale}
         grid={grid}

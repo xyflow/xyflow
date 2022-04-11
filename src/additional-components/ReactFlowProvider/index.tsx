@@ -2,7 +2,9 @@ import React, { FC, PropsWithChildren } from 'react';
 
 import { Provider, createStore } from '../../store';
 
-const ReactFlowProvider: FC<PropsWithChildren<{}>> = ({ children }) => <Provider createStore={createStore}>{children}</Provider>;
+const ReactFlowProvider: FC<PropsWithChildren<{}>> = ({ children }) => (
+  <Provider createStore={createStore}>{children}</Provider>
+);
 
 ReactFlowProvider.displayName = 'ReactFlowProvider';
 

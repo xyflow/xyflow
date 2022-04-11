@@ -37,7 +37,7 @@
     "@types/dagre": "^0.7.47",
     "@types/localforage": "0.0.34",
     "@types/react": "file:../node_modules/@types/react",
-    "@types/react-dom": "^17.0.11",
+    "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "^5.3.3"
   }
 }

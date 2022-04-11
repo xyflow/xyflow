@@ -15,11 +15,12 @@ import {
   OnEdgeUpdateFunc,
   HandleType,
   ReactFlowState,
+  EdgeTypesWrapped,
 } from '../../types';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 
 interface EdgeRendererProps {
-  edgeTypes: any;
+  edgeTypes: EdgeTypesWrapped;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;

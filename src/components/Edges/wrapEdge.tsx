@@ -140,7 +140,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const handleEdgeUpdater = useCallback(
       (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
         const nodeId = isSourceHandle ? target : source;
-        const handleId = isSourceHandle ? targetHandleId : sourceHandleId;
+        const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
         const handleType = isSourceHandle ? 'target' : 'source';
         const isValidConnection = () => true;
         const isTarget = isSourceHandle;
