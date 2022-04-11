@@ -1,21 +1,16 @@
-import React, { memo, useMemo, FC, HTMLAttributes } from 'react';
+import React, { memo, useMemo, FC } from 'react';
 import cc from 'classcat';
 
-import { useStoreState } from '../../store/hooks';
-import { BackgroundVariant } from '../../types';
+import { useStore } from '../../store';
 import { createGridLinesPath, createGridDotsPath } from './utils';
-
-export interface BackgroundProps extends HTMLAttributes<SVGElement> {
-  variant?: BackgroundVariant;
-  gap?: number;
-  color?: string;
-  size?: number;
-}
+import { BackgroundVariant, ReactFlowState, BackgroundProps } from '../../types';
 
 const defaultColors = {
   [BackgroundVariant.Dots]: '#81818a',
   [BackgroundVariant.Lines]: '#eee',
 };
+
+const transformSelector = (s: ReactFlowState) => s.transform;
 
 const Background: FC<BackgroundProps> = ({
   variant = BackgroundVariant.Dots,
@@ -25,11 +20,11 @@ const Background: FC<BackgroundProps> = ({
   style,
   className,
 }) => {
-  const [x, y, scale] = useStoreState((s) => s.transform);
+  const [x, y, scale] = useStore(transformSelector);
   // when there are multiple flows on a page we need to make sure that every background gets its own pattern.
   const patternId = useMemo(() => `pattern-${Math.floor(Math.random() * 100000)}`, []);
 
-  const bgClasses = cc(['react-flow__background', className]);
+  const bgClasses = cc(['react-flow__background', 'react-flow__container', className]);
   const scaledGap = gap * scale;
   const xOffset = x % scaledGap;
   const yOffset = y % scaledGap;

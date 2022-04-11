@@ -1,18 +1,18 @@
 import React, { useCallback, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
-import { useStoreActions, useStoreState } from '../../store/hooks';
+import shallow from 'zustand/shallow';
 
+import { useStore, useStoreApi } from '../../store';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
-
 import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
+import { ReactFlowState } from '../../types';
 
 interface FlowRendererProps
   extends Omit<
     GraphViewProps,
-    | 'elements'
     | 'snapToGrid'
     | 'nodeTypes'
     | 'edgeTypes'
@@ -21,16 +21,21 @@ interface FlowRendererProps
     | 'arrowHeadColor'
     | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
+    | 'defaultMarkerColor'
   > {
   children: ReactNode;
 }
+
+const selector = (s: ReactFlowState) => ({
+  resetSelectedElements: s.resetSelectedElements,
+  nodesSelectionActive: s.nodesSelectionActive,
+});
 
 const FlowRenderer = ({
   children,
   onPaneClick,
   onPaneContextMenu,
   onPaneScroll,
-  onElementsRemove,
   deleteKeyCode,
   onMove,
   onMoveStart,
@@ -45,46 +50,35 @@ const FlowRenderer = ({
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
-  paneMoveable,
+  panOnDrag,
   defaultPosition,
   defaultZoom,
-  translateExtent,
   preventScrolling,
   onSelectionDragStart,
   onSelectionDrag,
   onSelectionDragStop,
   onSelectionContextMenu,
+  noWheelClassName,
+  noPanClassName,
 }: FlowRendererProps) => {
-  const unsetNodesSelection = useStoreActions((actions) => actions.unsetNodesSelection);
-  const resetSelectedElements = useStoreActions((actions) => actions.resetSelectedElements);
-  const nodesSelectionActive = useStoreState((state) => state.nodesSelectionActive);
-
+  const store = useStoreApi();
+  const { resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  useGlobalKeyHandler({ onElementsRemove, deleteKeyCode, multiSelectionKeyCode });
+  useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
   const onClick = useCallback(
     (event: MouseEvent) => {
       onPaneClick?.(event);
-      unsetNodesSelection();
       resetSelectedElements();
+
+      store.setState({ nodesSelectionActive: false });
     },
     [onPaneClick]
   );
 
-  const onContextMenu = useCallback(
-    (event: MouseEvent) => {
-      onPaneContextMenu?.(event);
-    },
-    [onPaneContextMenu]
-  );
-
-  const onWheel = useCallback(
-    (event: WheelEvent) => {
-      onPaneScroll?.(event);
-    },
-    [onPaneScroll]
-  );
+  const onContextMenu = useCallback((event: MouseEvent) => onPaneContextMenu?.(event), [onPaneContextMenu]);
+  const onWheel = useCallback((event: WheelEvent) => onPaneScroll?.(event), [onPaneScroll]);
 
   return (
     <ZoomPane
@@ -99,12 +93,13 @@ const FlowRenderer = ({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
-      paneMoveable={paneMoveable}
+      panOnDrag={panOnDrag}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
-      translateExtent={translateExtent}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
+      noWheelClassName={noWheelClassName}
+      noPanClassName={noPanClassName}
     >
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
@@ -114,9 +109,15 @@ const FlowRenderer = ({
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStop={onSelectionDragStop}
           onSelectionContextMenu={onSelectionContextMenu}
+          noPanClassName={noPanClassName}
         />
       )}
-      <div className="react-flow__pane" onClick={onClick} onContextMenu={onContextMenu} onWheel={onWheel} />
+      <div
+        className="react-flow__pane react-flow__container"
+        onClick={onClick}
+        onContextMenu={onContextMenu}
+        onWheel={onWheel}
+      />
     </ZoomPane>
   );
 };

@@ -8,9 +8,9 @@
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "react-flow-renderer": "file:../",
-    "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
-    "typescript": "^4.4.3"
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "5.0.0",
+    "typescript": "^4.5.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,10 +34,10 @@
     ]
   },
   "devDependencies": {
-    "@types/dagre": "^0.7.46",
+    "@types/dagre": "^0.7.47",
     "@types/localforage": "0.0.34",
-    "@types/react": "^17.0.27",
-    "@types/react-dom": "^17.0.9",
-    "@types/react-router-dom": "^5.3.0"
+    "@types/react": "file:../node_modules/@types/react",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-router-dom": "^5.3.3"
   }
 }

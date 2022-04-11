@@ -1,7 +1,13 @@
-import { Elements } from 'react-flow-renderer';
+import { Node, Edge } from 'react-flow-renderer';
 
-export function getElements(xElements: number = 10, yElements: number = 10): Elements {
-  const initialElements = [];
+type ElementsCollection = {
+  nodes: Node[];
+  edges: Edge[];
+};
+
+export function getNodesAndEdges(xElements: number = 10, yElements: number = 10): ElementsCollection {
+  const initialNodes = [];
+  const initialEdges: Edge[] = [];
   let nodeId = 1;
   let recentNodeId = null;
 
@@ -15,10 +21,10 @@ export function getElements(xElements: number = 10, yElements: number = 10): Ele
         data,
         position,
       };
-      initialElements.push(node);
+      initialNodes.push(node);
 
       if (recentNodeId && nodeId <= xElements * yElements) {
-        initialElements.push({ id: `${x}-${y}`, source: recentNodeId.toString(), target: nodeId.toString() });
+        initialEdges.push({ id: `${x}-${y}`, source: recentNodeId.toString(), target: nodeId.toString() });
       }
 
       recentNodeId = nodeId;
@@ -26,5 +32,8 @@ export function getElements(xElements: number = 10, yElements: number = 10): Ele
     }
   }
 
-  return initialElements;
+  return {
+    nodes: initialNodes,
+    edges: initialEdges,
+  };
 }

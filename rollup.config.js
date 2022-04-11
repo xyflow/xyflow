@@ -2,11 +2,11 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
-import bundleSize from 'rollup-plugin-bundle-size';
 import replace from '@rollup/plugin-replace';
-import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json';
 
@@ -14,61 +14,113 @@ const isProd = process.env.NODE_ENV === 'production';
 const isTesting = process.env.NODE_ENV === 'testing';
 const processEnv = isProd || isTesting ? 'production' : 'development';
 
-export const baseConfig = ({ mainFile = pkg.main, moduleFile = pkg.module, injectCSS = true } = {}) => ({
-  input: 'src/index.ts',
-  external: ['react', 'react-dom', (id) => id.includes('@babel/runtime')],
-  onwarn(warning, rollupWarn) {
-    if (warning.code !== 'CIRCULAR_DEPENDENCY') {
-      rollupWarn(warning);
-    }
-  },
-  output: [
-    {
-      file: mainFile,
-      format: 'cjs',
-      sourcemap: true,
-      exports: 'named',
+const defaultOutputOptions = {
+  dir: 'dist/esm',
+  format: 'esm',
+  sourcemap: true,
+};
+
+export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
+  const output = {
+    ...defaultOutputOptions,
+    ...outputOptions,
+  };
+
+  const isEsm = output.format === 'esm';
+  const replaceOptions = isEsm ? {} : { 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) };
+
+  return {
+    input: isEsm
+      ? [
+          'src/index.ts',
+          'src/additional-components/Controls/index.tsx',
+          'src/additional-components/Background/index.tsx',
+          'src/additional-components/MiniMap/index.tsx',
+          'src/hooks/useReactFlow.ts',
+          'src/hooks/useNodes.ts',
+          'src/hooks/useEdges.ts',
+          'src/hooks/useViewport.ts',
+          'src/hooks/useUpdateNodeInternals.ts',
+        ]
+      : 'src/index.ts',
+    external: isEsm
+      ? [
+          'react',
+          'react-dom',
+          'classcat',
+          'd3-selection',
+          'd3-zoom',
+          'react-draggable',
+          'zustand',
+          'zustand/shallow',
+          'zustand/context',
+          (id) => id.includes('@babel/runtime'),
+        ]
+      : ['react', 'react-dom'],
+    onwarn(warning, rollupWarn) {
+      if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+        rollupWarn(warning);
+      }
     },
-    {
-      file: moduleFile,
-      format: 'esm',
-      sourcemap: true,
-      exports: 'named',
-    },
-  ],
-  plugins: [
-    replace({
-      __ENV__: JSON.stringify(processEnv),
-      __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
-      preventAssignment: true,
-    }),
-    bundleSize(),
-    postcss({
-      minimize: isProd,
-      inject: injectCSS,
-    }),
-    svgr(),
-    resolve(),
-    typescript({
-      clean: true,
-    }),
-    commonjs({
-      include: 'node_modules/**',
-    }),
-    babel({
-      extensions: [...DEFAULT_BABEL_EXTENSIONS, '.ts', '.tsx'],
-      exclude: 'node_modules/**',
-      babelHelpers: 'runtime',
-    }),
-  ],
-});
+    output,
+
+    plugins: [
+      replace({
+        __ENV__: JSON.stringify(processEnv),
+        __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
+        __INJECT_STYLES__: injectCSS,
+        preventAssignment: true,
+        ...replaceOptions,
+      }),
+      postcss({
+        minimize: isProd,
+        inject: false,
+      }),
+      resolve(),
+      typescript({
+        clean: true,
+      }),
+      commonjs({
+        include: 'node_modules/**',
+      }),
+      babel({
+        extensions: [...DEFAULT_BABEL_EXTENSIONS, '.ts', '.tsx'],
+        exclude: 'node_modules/**',
+        babelHelpers: 'runtime',
+      }),
+      visualizer(),
+      !isEsm && terser(),
+    ],
+  };
+};
 
 export default isProd && !isTesting
   ? [
       baseConfig(),
       baseConfig({
-        mainFile: 'dist/nocss/ReactFlow-nocss.js',
-        moduleFile: 'dist/nocss/ReactFlow-nocss.esm.js',
+        outputOptions: {
+          dir: 'dist/umd',
+          format: 'umd',
+          exports: 'named',
+          name: 'ReactFlow',
+          globals: {
+            react: 'React',
+            'react-dom': 'ReactDOM',
+            classcat: 'cc',
+            'd3-selection': 'd3',
+            'd3-zoom': 'd3',
+            'react-draggable': 'ReactDraggable',
+            zustand: 'zustand',
+            'zustand/shallow': 'zustandShallow',
+            'zustand/context': 'zustandContext',
+          },
+        },
+      }),
+      baseConfig({
+        outputOptions: {
+          dir: 'dist/nocss',
+        },
+
         injectCSS: false,
       }),
     ]

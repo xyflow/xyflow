@@ -1,22 +1,21 @@
-import React, { useState, DragEvent } from 'react';
+import { useState, DragEvent } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  removeElements,
   Controls,
-  OnLoadParams,
-  Elements,
+  ReactFlowInstance,
   Connection,
   Edge,
-  ElementId,
   Node,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
 import Sidebar from './Sidebar';
 
 import './dnd.css';
 
-const initialElements = [{ id: '1', type: 'input', data: { label: 'input node' }, position: { x: 250, y: 5 } }];
+const initialNodes: Node[] = [{ id: '1', type: 'input', data: { label: 'input node' }, position: { x: 250, y: 5 } }];
 
 const onDragOver = (event: DragEvent) => {
   event.preventDefault();
@@ -24,15 +23,15 @@ const onDragOver = (event: DragEvent) => {
 };
 
 let id = 0;
-const getId = (): ElementId => `dndnode_${id++}`;
+const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
-  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
-  const [elements, setElements] = useState<Elements>(initialElements);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
-  const onElementsRemove = (elementsToRemove: Elements) => setElements((els) => removeElements(elementsToRemove, els));
-  const onLoad = (_reactFlowInstance: OnLoadParams) => setReactFlowInstance(_reactFlowInstance);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
+  const onInit = (rfi: ReactFlowInstance) => setReactFlowInstance(rfi);
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -47,7 +46,7 @@ const DnDFlow = () => {
         data: { label: `${type} node` },
       };
 
-      setElements((es) => es.concat(newNode));
+      setNodes((nds) => nds.concat(newNode));
     }
   };
 
@@ -56,10 +55,12 @@ const DnDFlow = () => {
       <ReactFlowProvider>
         <div className="reactflow-wrapper">
           <ReactFlow
-            elements={elements}
+            nodes={nodes}
+            edges={edges}
+            onEdgesChange={onEdgesChange}
+            onNodesChange={onNodesChange}
             onConnect={onConnect}
-            onElementsRemove={onElementsRemove}
-            onLoad={onLoad}
+            onInit={onInit}
             onDrop={onDrop}
             onDragOver={onDragOver}
           >

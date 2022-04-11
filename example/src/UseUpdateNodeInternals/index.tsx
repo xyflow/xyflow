@@ -1,23 +1,23 @@
-import React, { useState, useCallback, CSSProperties } from 'react';
+import { useCallback, CSSProperties } from 'react';
 
 import ReactFlow, {
-  NodeTypesType,
+  NodeTypes,
   addEdge,
-  useZoomPanHelper,
+  useReactFlow,
   ReactFlowProvider,
-  Elements,
+  Node,
   Connection,
   Edge,
-  ElementId,
   useUpdateNodeInternals,
   Position,
-  isEdge,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
 const initialHandleCount = 1;
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   {
     id: '1',
     type: 'custom',
@@ -28,23 +28,25 @@ const initialElements: Elements = [
 
 const buttonWrapperStyles: CSSProperties = { position: 'absolute', right: 10, top: 10, zIndex: 10 };
 
-const nodeTypes: NodeTypesType = {
+const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 
 let id = 5;
-const getId = (): ElementId => `${id++}`;
+const getId = (): string => `${id++}`;
 
 const UpdateNodeInternalsFlow = () => {
-  const [elements, setElements] = useState<Elements>(initialElements);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
+
   const updateNodeInternals = useUpdateNodeInternals();
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
-  const { project } = useZoomPanHelper();
+  const { project } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt) =>
-      setElements((els) =>
-        els.concat({
+      setNodes((nds) =>
+        nds.concat({
           id: getId(),
           position: project({ x: evt.clientX, y: evt.clientY - 40 }),
           data: { label: 'new node' },
@@ -56,25 +58,17 @@ const UpdateNodeInternalsFlow = () => {
   );
 
   const toggleHandleCount = useCallback(() => {
-    setElements((els) =>
-      els.map((el) => {
-        if (isEdge(el)) {
-          return el;
-        }
-
-        return { ...el, data: { ...el.data, handleCount: el.data?.handleCount === 1 ? 2 : 1 } };
+    setNodes((nds) =>
+      nds.map((node) => {
+        return { ...node, data: { ...node.data, handleCount: node.data?.handleCount === 1 ? 2 : 1 } };
       })
     );
   }, []);
 
   const toggleHandlePosition = useCallback(() => {
-    setElements((els) =>
-      els.map((el) => {
-        if (isEdge(el)) {
-          return el;
-        }
-
-        return { ...el, data: { ...el.data, handlePosition: el.data?.handlePosition === 0 ? 1 : 0 } };
+    setNodes((nds) =>
+      nds.map((node) => {
+        return { ...node, data: { ...node.data, handlePosition: node.data?.handlePosition === 0 ? 1 : 0 } };
       })
     );
   }, []);
@@ -82,7 +76,15 @@ const UpdateNodeInternalsFlow = () => {
   const updateNode = useCallback(() => updateNodeInternals('1'), [updateNodeInternals]);
 
   return (
-    <ReactFlow elements={elements} nodeTypes={nodeTypes} onConnect={onConnect} onPaneClick={onPaneClick}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      nodeTypes={nodeTypes}
+      onConnect={onConnect}
+      onPaneClick={onPaneClick}
+    >
       <div style={buttonWrapperStyles}>
         <button onClick={toggleHandleCount}>toggle handle count</button>
         <button onClick={toggleHandlePosition}>toggle handle position</button>

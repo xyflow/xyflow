@@ -1,16 +1,18 @@
-import React, { useState, CSSProperties, FC } from 'react';
+import { useState, CSSProperties, FC } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Elements,
+  Node,
   Position,
   Connection,
   Edge,
   NodeProps,
-  NodeTypesType,
+  NodeTypes,
+  useNodesState,
+  useEdgesState,
 } from 'react-flow-renderer';
 
-const initialElements: Elements = [
+const initialNodes: Node[] = [
   {
     id: '1',
     sourcePosition: Position.Right,
@@ -41,7 +43,7 @@ const NodeB: FC<NodeProps> = () => {
 };
 
 type NodeTypesObject = {
-  [key: string]: NodeTypesType;
+  [key: string]: NodeTypes;
 };
 
 const nodeTypesObjects: NodeTypesObject = {
@@ -55,16 +57,19 @@ const nodeTypesObjects: NodeTypesObject = {
 
 const NodeTypeChangeFlow = () => {
   const [nodeTypesId, setNodeTypesId] = useState<string>('a');
-  const [elements, setElements] = useState<Elements>(initialElements);
-  const onConnect = (params: Connection | Edge) => setElements((els) => addEdge(params, els));
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
   const changeType = () => setNodeTypesId((nt) => (nt === 'a' ? 'b' : 'a'));
 
   return (
     <ReactFlow
-      elements={elements}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypesObjects[nodeTypesId]}
-      nodeTypesId={nodeTypesId}
     >
       <button onClick={changeType} style={buttonStyle}>
         change type

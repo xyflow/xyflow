@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
 
-import { useStoreActions } from '../store/hooks';
-import { ElementId, UpdateNodeInternals } from '../types';
+import { useStore } from '../store';
+import { UpdateNodeInternals, ReactFlowState } from '../types';
+
+const selector = (state: ReactFlowState) => state.updateNodeDimensions;
 
 function useUpdateNodeInternals(): UpdateNodeInternals {
-  const updateNodeDimensions = useStoreActions((actions) => actions.updateNodeDimensions);
+  const updateNodeDimensions = useStore(selector);
 
-  return useCallback<UpdateNodeInternals>((id: ElementId) => {
-    const nodeElement = document.querySelector(`.react-flow__node[data-id="${id}"]`);
+  return useCallback<UpdateNodeInternals>((id: string) => {
+    const nodeElement = document.querySelector(`.react-flow__node[data-id="${id}"]`) as HTMLDivElement;
 
     if (nodeElement) {
       updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]);

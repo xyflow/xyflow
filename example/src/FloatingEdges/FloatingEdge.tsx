@@ -1,14 +1,15 @@
 import { FC, useMemo, CSSProperties } from 'react';
-import { EdgeProps, getMarkerEnd, useStoreState, getBezierPath } from 'react-flow-renderer';
+import { EdgeProps, useStore, getBezierPath, ReactFlowState } from 'react-flow-renderer';
 
 import { getEdgeParams } from './utils';
 
-const FloatingEdge: FC<EdgeProps> = ({ id, source, target, arrowHeadType, markerEndId, style }) => {
-  const nodes = useStoreState((state) => state.nodes);
-  const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
+const nodeSelector = (s: ReactFlowState) => s.nodeInternals;
 
-  const sourceNode = useMemo(() => nodes.find((n) => n.id === source), [source, nodes]);
-  const targetNode = useMemo(() => nodes.find((n) => n.id === target), [target, nodes]);
+const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
+  const nodeInternals = useStore(nodeSelector);
+
+  const sourceNode = useMemo(() => nodeInternals.get(source), [source, nodeInternals]);
+  const targetNode = useMemo(() => nodeInternals.get(target), [target, nodeInternals]);
 
   if (!sourceNode || !targetNode) {
     return null;
@@ -27,7 +28,7 @@ const FloatingEdge: FC<EdgeProps> = ({ id, source, target, arrowHeadType, marker
 
   return (
     <g className="react-flow__connection">
-      <path id={id} className="react-flow__edge-path" d={d} markerEnd={markerEnd} style={style as CSSProperties} />
+      <path id={id} className="react-flow__edge-path" d={d} style={style as CSSProperties} />
     </g>
   );
 };

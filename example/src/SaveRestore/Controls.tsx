@@ -1,5 +1,5 @@
 import React, { memo, useCallback, Dispatch, FC } from 'react';
-import { useZoomPanHelper, OnLoadParams, Elements, FlowExportObject } from 'react-flow-renderer';
+import { useReactFlow, ReactFlowInstance, Edge, Node, ReactFlowJsonObject } from 'react-flow-renderer';
 import localforage from 'localforage';
 
 localforage.config({
@@ -12,12 +12,13 @@ const flowKey = 'example-flow';
 const getNodeId = () => `randomnode_${+new Date()}`;
 
 type ControlsProps = {
-  rfInstance?: OnLoadParams;
-  setElements: Dispatch<React.SetStateAction<Elements<any>>>;
+  rfInstance?: ReactFlowInstance;
+  setNodes: Dispatch<React.SetStateAction<Node<any>[]>>;
+  setEdges: Dispatch<React.SetStateAction<Edge<any>[]>>;
 };
 
-const Controls: FC<ControlsProps> = ({ rfInstance, setElements }) => {
-  const { transform } = useZoomPanHelper();
+const Controls: FC<ControlsProps> = ({ rfInstance, setNodes, setEdges }) => {
+  const { setViewport } = useReactFlow();
 
   const onSave = useCallback(() => {
     if (rfInstance) {
@@ -28,17 +29,18 @@ const Controls: FC<ControlsProps> = ({ rfInstance, setElements }) => {
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
-      const flow: FlowExportObject | null = await localforage.getItem(flowKey);
+      const flow: ReactFlowJsonObject | null = await localforage.getItem(flowKey);
 
       if (flow) {
-        const [x = 0, y = 0] = flow.position;
-        setElements(flow.elements || []);
-        transform({ x, y, zoom: flow.zoom || 0 });
+        const { x, y, zoom } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom: zoom || 0 });
       }
     };
 
     restoreFlow();
-  }, [setElements, transform]);
+  }, [setNodes, setEdges, setViewport]);
 
   const onAdd = useCallback(() => {
     const newNode = {
@@ -46,8 +48,8 @@ const Controls: FC<ControlsProps> = ({ rfInstance, setElements }) => {
       data: { label: 'Added node' },
       position: { x: Math.random() * window.innerWidth - 100, y: Math.random() * window.innerHeight },
     };
-    setElements((els) => els.concat(newNode));
-  }, [setElements]);
+    setNodes((nds) => nds.concat(newNode));
+  }, [setNodes]);
 
   return (
     <div className="save__controls">

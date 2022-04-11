@@ -19,7 +19,7 @@ describe('Minimap Testing', () => {
     const viewBoxBeforeZoom = Cypress.$('.react-flow__minimap').attr('viewBox');
     const maskPathBeforeZoom = Cypress.$('.react-flow__minimap-mask').attr('d');
 
-    cy.get('.react-flow__renderer')
+    cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .then(() => {
         const viewBoxAfterZoom = Cypress.$('.react-flow__minimap').attr('viewBox');
@@ -33,16 +33,14 @@ describe('Minimap Testing', () => {
   it('changes node position', () => {
     const xPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
     const yPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
-    const maskPathBeforeDrag = Cypress.$('.react-flow__minimap-mask').attr('d');
 
     cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el) => {
+      cy.wait(1000);
       const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
       const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
-      const maskPathAfterDrag = Cypress.$('.react-flow__minimap-mask').attr('d');
 
       expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
       expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
-      expect(maskPathBeforeDrag).to.not.equal(maskPathAfterDrag);
     });
   });
 
@@ -53,7 +51,7 @@ describe('Minimap Testing', () => {
     // for d3 we have to pass the window to the event
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
-      cy.get('.react-flow__renderer')
+      cy.get('.react-flow__pane')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
         .trigger('mousemove', 'bottomLeft')
         .trigger('mouseup', { force: true, view: win })
