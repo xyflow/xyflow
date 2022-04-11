@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 
 import { Provider, createStore, useStoreApi } from '../../store';
 
-const Wrapper: FC = ({ children }) => {
+const Wrapper: FC<PropsWithChildren<{}>> = ({ children }) => {
   let isWrapped = true;
 
   try {
