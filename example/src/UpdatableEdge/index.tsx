@@ -9,6 +9,7 @@ import ReactFlow, {
   Edge,
   removeElements,
 } from 'react-flow-renderer';
+import {HandleType} from "../../../dist";
 
 const initialElements: Elements = [
   {
@@ -50,8 +51,8 @@ const initialElements: Elements = [
 ];
 
 const onLoad = (reactFlowInstance: OnLoadParams) => reactFlowInstance.fitView();
-const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge) => console.log('start update', edge);
-const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge) => console.log('end update', edge);
+const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge, handleType: HandleType) => console.log(`start update ${handleType} handle`, edge);
+const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge, handleType: HandleType) => console.log(`end update ${handleType} handle`, edge);
 
 const UpdatableEdge = () => {
   const [elements, setElements] = useState<Elements>(initialElements);

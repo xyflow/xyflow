@@ -144,7 +144,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onEdgeUpdateStart?.(event, edgeElement, handleType);
 
         const _onEdgeUpdate = onEdgeUpdateEnd
-          ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
+          ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement, handleType)
           : undefined;
 
         onMouseDown(

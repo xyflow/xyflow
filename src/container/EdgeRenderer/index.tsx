@@ -36,7 +36,7 @@ interface EdgeRendererProps {
   onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
 }
 
