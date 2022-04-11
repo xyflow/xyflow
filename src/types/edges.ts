@@ -1,6 +1,6 @@
-import { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import React, { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import { Connection } from './general';
-import { HandleElement } from './handles';
+import { HandleElement, HandleType } from './handles';
 import { Node } from './nodes';
 import { Position } from './utils';
 
@@ -117,8 +117,8 @@ export interface WrapEdgeProps<T = any> {
   onMouseMove?: EdgeMouseHandler;
   onMouseLeave?: EdgeMouseHandler;
   edgeUpdaterRadius?: number;
-  onEdgeUpdateStart?: EdgeMouseHandler;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   markerStart?: EdgeMarkerType;
   markerEnd?: EdgeMarkerType;
 }

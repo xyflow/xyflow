@@ -141,13 +141,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
         const nodeId = isSourceHandle ? target : source;
         const handleId = isSourceHandle ? targetHandleId : sourceHandleId;
+        const handleType = isSourceHandle ? 'target' : 'source';
         const isValidConnection = () => true;
         const isTarget = isSourceHandle;
 
-        onEdgeUpdateStart?.(event, edgeElement);
+        onEdgeUpdateStart?.(event, edgeElement, handleType);
 
         const _onEdgeUpdate = onEdgeUpdateEnd
-          ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
+          ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement, handleType)
           : undefined;
 
         const onConnectEdge = (connection: Connection) => {
@@ -168,7 +169,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           isTarget,
           isValidConnection,
           connectionMode,
-          isSourceHandle ? 'target' : 'source',
+          handleType,
           _onEdgeUpdate,
           store.getState
         );
