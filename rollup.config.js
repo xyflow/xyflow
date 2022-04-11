@@ -3,7 +3,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import postcss from 'rollup-plugin-postcss';
 import replace from '@rollup/plugin-replace';
-import svgr from '@svgr/rollup';
 import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -77,7 +76,6 @@ export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
         minimize: isProd,
         inject: false,
       }),
-      svgr(),
       resolve(),
       typescript({
         clean: true,
