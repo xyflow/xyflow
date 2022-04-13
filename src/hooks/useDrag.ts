@@ -2,7 +2,7 @@ import { RefObject, useEffect } from 'react';
 import { D3DragEvent, drag, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
 
-import { useStoreApi } from '../../store';
+import { useStoreApi } from '../store';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 export type UseDragData = { dx: number; dy: number };
