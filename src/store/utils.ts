@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { zoomIdentity } from 'd3-zoom';
 import { GetState } from 'zustand';
 
@@ -15,6 +16,7 @@ import {
   XYPosition,
   XYZPosition,
   FitViewOptions,
+  SnapGrid,
 } from '../types';
 
 type ParentNodes = Record<string, boolean>;
@@ -111,6 +113,8 @@ type CreatePostionChangeParams = {
   nodeInternals: NodeInternals;
   diff?: XYPosition;
   dragging?: boolean;
+  snapToGrid?: boolean;
+  snapGrid?: SnapGrid;
 };
 
 export function createPositionChange({
@@ -119,6 +123,8 @@ export function createPositionChange({
   dragging,
   nodeExtent,
   nodeInternals,
+  snapToGrid,
+  snapGrid,
 }: CreatePostionChangeParams): NodePositionChange {
   const change: NodePositionChange = {
     id: node.id,
@@ -128,6 +134,7 @@ export function createPositionChange({
 
   if (diff) {
     const nextPosition = { x: node.position.x + diff.x, y: node.position.y + diff.y };
+
     let currentExtent = node.extent || nodeExtent;
 
     if (node.extent === 'parent') {

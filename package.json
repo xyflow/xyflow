@@ -42,9 +42,9 @@
   "dependencies": {
     "@babel/runtime": "^7.17.8",
     "classcat": "^5.0.3",
+    "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "react-draggable": "^4.4.4",
     "zustand": "^3.7.1"
   },
   "devDependencies": {

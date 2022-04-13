@@ -4,13 +4,13 @@
  */
 
 import React, { memo, useMemo, useCallback, useRef, MouseEvent } from 'react';
-import { DraggableCore, DraggableData } from 'react-draggable';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
+import useDrag, { UseDragData, UseDragEvent } from '../../hooks/useDrag';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -27,8 +27,6 @@ const selector = (s: ReactFlowState) => ({
   selectedNodes: Array.from(s.nodeInternals)
     .filter(([_, n]) => n.selected)
     .map(([_, n]) => n),
-  snapToGrid: s.snapToGrid,
-  snapGrid: s.snapGrid,
   updateNodePosition: s.updateNodePosition,
 });
 
@@ -39,14 +37,9 @@ function NodesSelection({
   onSelectionContextMenu,
   noPanClassName,
 }: NodesSelectionProps) {
-  const { transform, userSelectionActive, selectedNodes, snapToGrid, snapGrid, updateNodePosition } = useStore(
-    selector,
-    shallow
-  );
+  const { transform, userSelectionActive, selectedNodes, updateNodePosition } = useStore(selector, shallow);
   const [tX, tY, tScale] = transform;
   const nodeRef = useRef(null);
-
-  const grid = useMemo(() => (snapToGrid ? snapGrid : [1, 1])! as [number, number], [snapToGrid, snapGrid]);
 
   const style = useMemo(
     () => ({
@@ -68,34 +61,34 @@ function NodesSelection({
   );
 
   const onStart = useCallback(
-    (event: MouseEvent) => {
-      onSelectionDragStart?.(event, selectedNodes);
+    (event: UseDragEvent) => {
+      onSelectionDragStart?.(event.sourceEvent, selectedNodes);
     },
     [onSelectionDragStart, selectedNodes]
   );
 
   const onDrag = useCallback(
-    (event: MouseEvent, data: DraggableData) => {
+    (event: UseDragEvent, data: UseDragData) => {
       updateNodePosition({
         diff: {
-          x: data.deltaX,
-          y: data.deltaY,
+          x: data.dx,
+          y: data.dy,
         },
         dragging: true,
       });
 
-      onSelectionDrag?.(event, selectedNodes);
+      onSelectionDrag?.(event.sourceEvent, selectedNodes);
     },
     [onSelectionDrag, selectedNodes, updateNodePosition]
   );
 
   const onStop = useCallback(
-    (event: MouseEvent) => {
+    (event: UseDragEvent) => {
       updateNodePosition({
         dragging: false,
       });
 
-      onSelectionDragStop?.(event, selectedNodes);
+      onSelectionDragStop?.(event.sourceEvent, selectedNodes);
     },
     [selectedNodes, onSelectionDragStop]
   );
@@ -107,28 +100,20 @@ function NodesSelection({
     [onSelectionContextMenu, selectedNodes]
   );
 
+  useDrag({
+    onStart,
+    onDrag,
+    onStop,
+    nodeRef,
+  });
+
   if (!selectedNodes?.length || userSelectionActive) {
     return null;
   }
 
   return (
     <div className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])} style={style}>
-      <DraggableCore
-        scale={tScale}
-        grid={grid}
-        onStart={(event) => onStart(event as MouseEvent)}
-        onDrag={(event, data) => onDrag(event as MouseEvent, data)}
-        onStop={(event) => onStop(event as MouseEvent)}
-        nodeRef={nodeRef}
-        enableUserSelectHack={false}
-      >
-        <div
-          ref={nodeRef}
-          className="react-flow__nodesselection-rect"
-          onContextMenu={onContextMenu}
-          style={innerStyle}
-        />
-      </DraggableCore>
+      <div ref={nodeRef} className="react-flow__nodesselection-rect" onContextMenu={onContextMenu} style={innerStyle} />
     </div>
   );
 }

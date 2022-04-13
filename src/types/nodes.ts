@@ -1,6 +1,5 @@
 import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 
-import { SnapGrid } from './general';
 import { XYPosition, Position, CoordinateExtent } from './utils';
 import { HandleElement } from './handles';
 
@@ -59,7 +58,6 @@ export interface WrapNodeProps<T = any> {
   data: T;
   selected: boolean;
   isConnectable: boolean;
-  scale: number;
   xPos: number;
   yPos: number;
   width?: number | null;
@@ -81,8 +79,6 @@ export interface WrapNodeProps<T = any> {
   sourcePosition: Position;
   targetPosition: Position;
   hidden?: boolean;
-  snapToGrid?: boolean;
-  snapGrid?: SnapGrid;
   dragging: boolean;
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;

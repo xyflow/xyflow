@@ -23,7 +23,7 @@ const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log(reactFlowInstance.getNodes());
 };
 
-const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(5, 5);
+const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(25, 25);
 
 const StressFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);

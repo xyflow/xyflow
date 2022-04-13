@@ -23,19 +23,15 @@ interface NodeRendererProps {
 }
 
 const selector = (s: ReactFlowState) => ({
-  scale: s.transform[2],
   nodesDraggable: s.nodesDraggable,
   nodesConnectable: s.nodesConnectable,
   elementsSelectable: s.elementsSelectable,
   updateNodeDimensions: s.updateNodeDimensions,
-  snapGrid: s.snapGrid,
-  snapToGrid: s.snapToGrid,
   nodeInternals: s.nodeInternals,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid } =
-    useStore(selector, shallow);
+  const { nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions } = useStore(selector, shallow);
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const resizeObserverRef = useRef<ResizeObserver>();
 
@@ -93,8 +89,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             xPos={node.positionAbsolute?.x ?? 0}
             yPos={node.positionAbsolute?.y ?? 0}
             dragging={!!node.dragging}
-            snapGrid={snapGrid}
-            snapToGrid={snapToGrid}
             selectNodesOnDrag={props.selectNodesOnDrag}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
@@ -105,7 +99,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onNodeDragStart={props.onNodeDragStart}
             onNodeDrag={props.onNodeDrag}
             onNodeDragStop={props.onNodeDragStop}
-            scale={scale}
             selected={!!node.selected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}
