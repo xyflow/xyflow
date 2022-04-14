@@ -133,7 +133,7 @@ export function createPositionChange({
   };
 
   if (diff) {
-    const nextPosition = { x: node.position.x + diff.x, y: node.position.y + diff.y };
+    const nextPosition = { x: diff.x, y: diff.y };
 
     let currentExtent = node.extent || nodeExtent;
 

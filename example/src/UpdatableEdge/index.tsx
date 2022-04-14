@@ -86,8 +86,8 @@ const UpdatableEdge = () => {
       snapToGrid={true}
       onEdgeUpdate={onEdgeUpdate}
       onConnect={onConnect}
-      onEdgeUpdateStart={onEdgeUpdateStart}
-      onEdgeUpdateEnd={onEdgeUpdateEnd}
+      // onEdgeUpdateStart={onEdgeUpdateStart}
+      // onEdgeUpdateEnd={onEdgeUpdateEnd}
     >
       <Controls />
     </ReactFlow>
