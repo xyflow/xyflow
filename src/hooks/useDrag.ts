@@ -23,7 +23,6 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
   const store = useStoreApi();
 
   useEffect(() => {
-    console.log(nodeId);
     if (nodeRef?.current && nodeId) {
       const selection = select(nodeRef.current);
       const startPos = { x: 0, y: 0 };
@@ -36,8 +35,8 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
             const node = store.getState().nodeInternals.get(nodeId);
             const [tx, ty, scale] = store.getState().transform;
 
-            startPos.x = event.x / scale - (node?.position?.x || 0) - tx;
-            startPos.y = event.y / scale - (node?.position?.y || 0) - ty;
+            startPos.x = event.x / scale - (node?.positionAbsolute?.x || 0) - tx;
+            startPos.y = event.y / scale - (node?.positionAbsolute?.y || 0) - ty;
 
             // @TODO: we need to use snapGrid and snapToGrid from the store here
             // @TODO: don't use event.dx but work with event.x somehow in order to prevent lagging / slower node movement than mouse movement
