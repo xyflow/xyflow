@@ -1,10 +1,10 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { D3DragEvent, drag, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { useStoreApi } from '../store';
 import { pointToRendererPoint } from '../utils/graph';
-import { XYPosition } from '../types';
+import { NodeInternals, XYPosition } from '../types';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 export type UseDragData = { dx: number; dy: number };
@@ -18,38 +18,53 @@ type UseDragParams = {
   noDragClassName?: string;
   // @TODO: implement handleSelector functionality
   handleSelector?: string;
+  nodeId?: string;
 };
 
-function getOffset(event: UseDragEvent, nodeRef: RefObject<Element>) {
+function getOffset(event: UseDragEvent, nodeRef: RefObject<Element>): XYPosition {
   const bounds = nodeRef.current?.getBoundingClientRect() || { x: 0, y: 0 };
   const parent = (nodeRef.current as HTMLDivElement)?.offsetParent;
   const parentBounds = parent?.getBoundingClientRect() || { x: 0, y: 0 };
 
   return {
-    x: event.x - (bounds?.x - parentBounds?.x - (parent?.scrollLeft || 0)),
-    y: event.y - (bounds?.y - parentBounds?.y - (parent?.scrollTop || 0)),
+    x: event.x - (bounds.x - parentBounds.x - (parent?.scrollLeft || 0)),
+    y: event.y - (bounds.y - parentBounds.y - (parent?.scrollTop || 0)),
   };
 }
 
-function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragClassName }: UseDragParams) {
+function getParentNodePosition(nodeInternals: NodeInternals, nodeId?: string): XYPosition {
+  const parentNodeId = nodeId ? nodeInternals.get(nodeId)?.parentNode : null;
+  const parentNode = parentNodeId ? nodeInternals.get(parentNodeId) : null;
+
+  return {
+    x: parentNode?.positionAbsolute?.x || 0,
+    y: parentNode?.positionAbsolute?.y || 0,
+  };
+}
+
+function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragClassName, nodeId }: UseDragParams) {
   const store = useStoreApi();
+  const startPos = useRef<XYPosition>({ x: 0, y: 0 });
+  const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
+  const parentPos = useRef<XYPosition>({ x: 0, y: 0 });
 
   useEffect(() => {
     if (nodeRef?.current) {
       const selection = select(nodeRef.current);
-      const startPos: XYPosition = { x: 0, y: 0 };
-      const lastPos: { x: number | null; y: number | null } = { x: null, y: null };
 
       if (disabled) {
         selection.on('.drag', null);
       } else {
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
-            const [tx, ty] = store.getState().transform;
+            const { transform, nodeInternals } = store.getState();
             const offset = getOffset(event, nodeRef);
+            parentPos.current = getParentNodePosition(nodeInternals, nodeId);
 
-            startPos.x = offset.x - tx;
-            startPos.y = offset.y - ty;
+            startPos.current = {
+              x: offset.x - transform[0],
+              y: offset.y - transform[1],
+            };
 
             onStart(event);
           })
@@ -57,18 +72,21 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
             const { transform, snapGrid, snapToGrid } = store.getState();
             const pos = pointToRendererPoint(
               {
-                x: event.x - startPos.x,
-                y: event.y - startPos.y,
+                x: event.x - startPos.current.x,
+                y: event.y - startPos.current.y,
               },
               transform,
               snapToGrid,
               snapGrid
             );
 
+            pos.x -= parentPos.current.x;
+            pos.y -= parentPos.current.y;
+
             // skip events without movement
-            if (lastPos.x !== pos.x || lastPos.y !== pos.y) {
-              lastPos.x = pos.x;
-              lastPos.y = pos.y;
+            if (lastPos.current.x !== pos.x || lastPos.current.y !== pos.y) {
+              lastPos.current = pos;
+
               onDrag(event, {
                 dx: pos.x,
                 dy: pos.y,
@@ -85,7 +103,7 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
         };
       }
     }
-  }, [disabled, noDragClassName]);
+  }, [disabled, noDragClassName, nodeId]);
 
   return null;
 }
