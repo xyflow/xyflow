@@ -3,6 +3,8 @@ import { D3DragEvent, drag, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { useStoreApi } from '../store';
+import { pointToRendererPoint } from '../utils/graph';
+import { XYPosition } from '../types';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 export type UseDragData = { dx: number; dy: number };
@@ -16,38 +18,62 @@ type UseDragParams = {
   noDragClassName?: string;
   // @TODO: implement handleSelector functionality
   handleSelector?: string;
-  nodeId?: string;
 };
 
-function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragClassName, nodeId }: UseDragParams) {
+function getOffset(event: UseDragEvent, nodeRef: RefObject<Element>) {
+  const bounds = nodeRef.current?.getBoundingClientRect() || { x: 0, y: 0 };
+  const parent = (nodeRef.current as HTMLDivElement)?.offsetParent;
+  const parentBounds = parent?.getBoundingClientRect() || { x: 0, y: 0 };
+
+  return {
+    x: event.x - (bounds?.x - parentBounds?.x - (parent?.scrollLeft || 0)),
+    y: event.y - (bounds?.y - parentBounds?.y - (parent?.scrollTop || 0)),
+  };
+}
+
+function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragClassName }: UseDragParams) {
   const store = useStoreApi();
 
   useEffect(() => {
-    if (nodeRef?.current && nodeId) {
+    if (nodeRef?.current) {
       const selection = select(nodeRef.current);
-      const startPos = { x: 0, y: 0 };
+      const startPos: XYPosition = { x: 0, y: 0 };
+      const lastPos: { x: number | null; y: number | null } = { x: null, y: null };
 
       if (disabled) {
         selection.on('.drag', null);
       } else {
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
-            const node = store.getState().nodeInternals.get(nodeId);
-            const [tx, ty, scale] = store.getState().transform;
+            const [tx, ty] = store.getState().transform;
+            const offset = getOffset(event, nodeRef);
 
-            startPos.x = event.x / scale - (node?.positionAbsolute?.x || 0) - tx;
-            startPos.y = event.y / scale - (node?.positionAbsolute?.y || 0) - ty;
+            startPos.x = offset.x - tx;
+            startPos.y = offset.y - ty;
 
-            // @TODO: we need to use snapGrid and snapToGrid from the store here
-            // @TODO: don't use event.dx but work with event.x somehow in order to prevent lagging / slower node movement than mouse movement
             onStart(event);
           })
           .on('drag', (event: UseDragEvent) => {
-            const [tx, ty, scale] = store.getState().transform;
-            // @TODO: we need to use snapGrid and snapToGrid from the store here
-            // @TODO: don't use event.dx but work with event.x somehow in order to prevent lagging / slower node movement than mouse movement
+            const { transform, snapGrid, snapToGrid } = store.getState();
+            const pos = pointToRendererPoint(
+              {
+                x: event.x - startPos.x,
+                y: event.y - startPos.y,
+              },
+              transform,
+              snapToGrid,
+              snapGrid
+            );
 
-            onDrag(event, { dx: event.x / scale - startPos.x - tx, dy: event.y / scale - startPos.y - ty });
+            // skip events without movement
+            if (lastPos.x !== pos.x || lastPos.y !== pos.y) {
+              lastPos.x = pos.x;
+              lastPos.y = pos.y;
+              onDrag(event, {
+                dx: pos.x,
+                dy: pos.y,
+              });
+            }
           })
           .on('end', onStop)
           .filter((event: any) => !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName));
@@ -59,7 +85,7 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
         };
       }
     }
-  }, [disabled, noDragClassName, nodeId]);
+  }, [disabled, noDragClassName]);
 
   return null;
 }

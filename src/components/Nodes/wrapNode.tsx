@@ -215,7 +215,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       disabled: !isDraggable,
       noDragClassName,
       handleSelector: dragHandle,
-      nodeId: id,
     });
 
     if (hidden) {
