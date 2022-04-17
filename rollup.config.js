@@ -20,6 +20,18 @@ const defaultOutputOptions = {
   sourcemap: true,
 };
 
+const globals = {
+  react: 'React',
+  'react-dom': 'ReactDOM',
+  classcat: 'cc',
+  'd3-selection': 'd3',
+  'd3-zoom': 'd3',
+  'react-draggable': 'ReactDraggable',
+  zustand: 'zustand',
+  'zustand/shallow': 'zustandShallow',
+  'zustand/context': 'zustandContext',
+};
+
 export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
   const output = {
     ...defaultOutputOptions,
@@ -96,29 +108,33 @@ export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
 
 export default isProd && !isTesting
   ? [
+      // esm build
       baseConfig(),
+      // umd build
       baseConfig({
         outputOptions: {
           dir: 'dist/umd',
           format: 'umd',
           exports: 'named',
           name: 'ReactFlow',
-          globals: {
-            react: 'React',
-            'react-dom': 'ReactDOM',
-            classcat: 'cc',
-            'd3-selection': 'd3',
-            'd3-zoom': 'd3',
-            'react-draggable': 'ReactDraggable',
-            zustand: 'zustand',
-            'zustand/shallow': 'zustandShallow',
-            'zustand/context': 'zustandContext',
-          },
+          globals,
         },
       }),
+      // nocsss esm build
       baseConfig({
         outputOptions: {
-          dir: 'dist/nocss',
+          dir: 'dist/nocss/esm',
+        },
+        injectCSS: false,
+      }),
+      // nocsss umd build
+      baseConfig({
+        outputOptions: {
+          dir: 'dist/nocss/umd',
+          format: 'umd',
+          exports: 'named',
+          name: 'ReactFlow',
+          globals,
         },
 
         injectCSS: false,
