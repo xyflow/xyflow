@@ -13,6 +13,10 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/umd/index.js"
     },
+    "./nocss": {
+      "import": "./dist/nocss/esm/index.js",
+      "require": "./dist/nocss/umd/index.js"
+    },
     "./package.json": "./package.json"
   },
   "types": "dist/esm/index.d.ts",
