@@ -29,7 +29,7 @@ A highly customizable React component for building interactive graphs and node-b
 ## Attribution
 
 React Flow includes a small attribution that links to the React Flow website. Per default the attribution is displayed in the bottom right corner. With the attribution we want to achieve that companies who are using React Flow in commercial applications finance the development of the library.
-We expect users who are using React Flow commercially to subscribe to React Flow Pro if they want to remove the attribution. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+We expect users who are using React Flow commercially to subscribe to [React Flow Pro](https://pro.reactflow.dev/pricing) if they want to remove the attribution. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
 
 ## Installation
 
