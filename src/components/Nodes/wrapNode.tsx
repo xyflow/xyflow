@@ -171,6 +171,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           dragging: false,
         });
 
+        // @TODO: Fix the bug "onNodeDragStop not getting called on first render"
         if (onNodeDragStop && node) {
           onNodeDragStop(event.sourceEvent as MouseEvent, { ...node, dragging: false });
         }
