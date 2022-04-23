@@ -41,7 +41,7 @@ function getParentNodePosition(nodeInternals: NodeInternals, nodeId?: string): X
   };
 }
 
-export function selectorExistsTargetToNode(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
+function selectorExistsTargetToNode(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
   let current = target;
   do {
     if (current?.matches(selector)) return true;
