@@ -71,7 +71,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
+          console.warn(
+            `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/docs/guides/troubleshooting`
+          );
         }
 
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;

@@ -106,12 +106,16 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetPosition = targetHandle?.position || Position.Top;
 
               if (!sourceHandle) {
-                console.warn(`couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}`);
+                console.warn(
+                  `[React Flow]: couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/docs/guides/troubleshooting`
+                );
                 return null;
               }
 
               if (!targetHandle) {
-                console.warn(`couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}`);
+                console.warn(
+                  `[React Flow]: couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/docs/guides/troubleshooting`
+                );
                 return null;
               }
 
