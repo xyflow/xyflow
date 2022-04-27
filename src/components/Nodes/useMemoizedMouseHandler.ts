@@ -5,18 +5,17 @@ import { ReactFlowState, Node } from '../../types';
 
 function useMemoizedMouseHandler(
   id: string,
-  dragging: boolean,
   getState: GetState<ReactFlowState>,
   handler?: (event: MouseEvent, node: Node) => void
 ) {
   const memoizedHandler = useCallback(
     (event: MouseEvent) => {
-      if (typeof handler !== 'undefined' && !dragging) {
+      if (typeof handler !== 'undefined') {
         const node = getState().nodeInternals.get(id)!;
         handler(event, { ...node });
       }
     },
-    [handler, dragging, id]
+    [handler, id]
   );
 
   return memoizedHandler;

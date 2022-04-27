@@ -44,7 +44,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
-    const z = isNumeric(node.zIndex) ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
+    const z = isNumeric(node.zIndex) ? node.zIndex : node.selected ? 1000 : 0;
 
     const internals: Node = {
       ...nodeInternals.get(node.id),
@@ -112,7 +112,6 @@ type CreatePostionChangeParams = {
   nodeExtent: CoordinateExtent;
   nodeInternals: NodeInternals;
   diff?: XYPosition;
-  dragging?: boolean;
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
 };
@@ -120,7 +119,6 @@ type CreatePostionChangeParams = {
 export function createPositionChange({
   node,
   diff,
-  dragging,
   nodeExtent,
   nodeInternals,
   snapToGrid,
@@ -129,7 +127,6 @@ export function createPositionChange({
   const change: NodePositionChange = {
     id: node.id,
     type: 'position',
-    dragging: !!dragging,
   };
 
   if (diff) {

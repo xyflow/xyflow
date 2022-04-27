@@ -15,7 +15,6 @@ export interface Node<T = any> {
   sourcePosition?: Position;
   hidden?: boolean;
   selected?: boolean;
-  dragging?: boolean;
   draggable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
@@ -79,7 +78,6 @@ export interface WrapNodeProps<T = any> {
   sourcePosition: Position;
   targetPosition: Position;
   hidden?: boolean;
-  dragging: boolean;
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;
   zIndex: number;
@@ -96,7 +94,6 @@ export type NodeHandleBounds = {
 export type NodeDiffUpdate = {
   id?: string;
   diff?: XYPosition;
-  dragging?: boolean;
 };
 
 export type NodeDimensionUpdate = {

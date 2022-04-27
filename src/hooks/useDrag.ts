@@ -118,11 +118,12 @@ function useDrag({
                   dy: pos.y,
                 });
               }
-            }
-          })
-          .on('end', (event) => {
-            if (isDragAllowedBySelector) {
-              onStop(event);
+
+              event.on('end', (event) => {
+                if (isDragAllowedBySelector) {
+                  onStop(event);
+                }
+              });
             }
           })
           .filter((event: any) => !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName));
@@ -134,7 +135,7 @@ function useDrag({
         };
       }
     }
-  }, [disabled, noDragClassName, nodeId]);
+  }, [onStart, onDrag, onStop, nodeRef, disabled, noDragClassName, handleSelector, nodeId]);
 
   return null;
 }
