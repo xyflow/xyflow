@@ -71,62 +71,57 @@ function useDrag({
     if (nodeRef?.current) {
       const selection = select(nodeRef.current);
 
-      let isDragAllowedBySelector = true;
       if (disabled) {
         selection.on('.drag', null);
       } else {
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
-            if (handleSelector) {
-              isDragAllowedBySelector = selectorExistsTargetToNode(event.sourceEvent.target, handleSelector, nodeRef);
-            }
-            if (isDragAllowedBySelector) {
-              const { transform, nodeInternals } = store.getState();
-              const offset = getOffset(event, nodeRef);
-              parentPos.current = getParentNodePosition(nodeInternals, nodeId);
+            const { transform, nodeInternals } = store.getState();
+            const offset = getOffset(event, nodeRef);
+            parentPos.current = getParentNodePosition(nodeInternals, nodeId);
 
-              startPos.current = {
-                x: offset.x - transform[0],
-                y: offset.y - transform[1],
-              };
+            startPos.current = {
+              x: offset.x - transform[0],
+              y: offset.y - transform[1],
+            };
 
-              onStart(event);
-            }
+            onStart(event);
           })
           .on('drag', (event: UseDragEvent) => {
-            if (isDragAllowedBySelector) {
-              const { transform, snapGrid, snapToGrid } = store.getState();
-              const pos = pointToRendererPoint(
-                {
-                  x: event.x - startPos.current.x,
-                  y: event.y - startPos.current.y,
-                },
-                transform,
-                snapToGrid,
-                snapGrid
-              );
+            const { transform, snapGrid, snapToGrid } = store.getState();
+            const pos = pointToRendererPoint(
+              {
+                x: event.x - startPos.current.x,
+                y: event.y - startPos.current.y,
+              },
+              transform,
+              snapToGrid,
+              snapGrid
+            );
 
-              pos.x -= parentPos.current.x;
-              pos.y -= parentPos.current.y;
+            pos.x -= parentPos.current.x;
+            pos.y -= parentPos.current.y;
 
-              // skip events without movement
-              if (lastPos.current.x !== pos.x || lastPos.current.y !== pos.y) {
-                lastPos.current = pos;
+            // skip events without movement
+            if (lastPos.current.x !== pos.x || lastPos.current.y !== pos.y) {
+              lastPos.current = pos;
 
-                onDrag(event, {
-                  dx: pos.x,
-                  dy: pos.y,
-                });
-              }
+              onDrag(event, {
+                dx: pos.x,
+                dy: pos.y,
+              });
 
               event.on('end', (event) => {
-                if (isDragAllowedBySelector) {
-                  onStop(event);
-                }
+                onStop(event);
               });
             }
           })
-          .filter((event: any) => !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName));
+          .filter((event: any) => {
+            const filter = !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName);
+            return handleSelector
+              ? selectorExistsTargetToNode(event.target, handleSelector, nodeRef) && filter
+              : filter;
+          });
 
         selection.call(dragHandler);
 
