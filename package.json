@@ -44,12 +44,12 @@
     "release:next": "release-it --preRelease=next --no-git"
   },
   "dependencies": {
-    "@babel/runtime": "^7.17.8",
+    "@babel/runtime": "^7.17.9",
     "classcat": "^5.0.3",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "react-draggable": "^4.4.4",
-    "zustand": "^3.7.1"
+    "react-draggable": "^4.4.5",
+    "zustand": "^3.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
@@ -67,7 +67,7 @@
     "@types/resize-observer-browser": "^0.1.7",
     "autoprefixer": "^10.4.2",
     "babel-preset-react-app": "^10.0.1",
-    "cypress": "^9.5.1",
+    "cypress": "^9.6.0",
     "postcss": "^8.4.8",
     "postcss-cli": "^9.1.0",
     "postcss-nested": "^5.0.6",
