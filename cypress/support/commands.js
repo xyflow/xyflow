@@ -24,10 +24,14 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-
 Cypress.Commands.add('drag', (selector, { x, y }) => {
-  return cy.get(selector)
-    .trigger('mousedown', { which: 1 })
-    .trigger('mousemove', { clientX: x, clientY: y })
-    .trigger('mouseup', { force: true });
+  return cy
+    .window()
+    .then((window) =>
+      cy
+        .get(selector)
+        .trigger('mousedown', { which: 1, view: window })
+        .trigger('mousemove', { clientX: x, clientY: y, force: true })
+        .trigger('mouseup', { view: window })
+    );
 });
