@@ -27,7 +27,8 @@
 Cypress.Commands.add('drag', (selector, { x, y }) => {
   return cy
     .get(selector)
-    .trigger('mousedown', { which: 1, force: true })
-    .trigger('mousemove', { clientX: x, clientY: y, force: true })
+    .trigger('mousedown', { which: 1 })
+    .trigger('mousemove', { clientX: x, clientY: y })
+    .wait(50)
     .trigger('mouseup', { force: true });
 });
