@@ -39,9 +39,7 @@ export function useMarkerSymbol(type: MarkerType) {
     const symbolExists = MarkerSymbols.hasOwnProperty(type);
 
     if (!symbolExists) {
-      console.warn(
-        `[React Flow]: marker type "${type}" doesn't exist. Help: https://reactflow.dev/docs/guides/troubleshooting`
-      );
+      console.warn(`[React Flow]: Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error-decoder#900`);
       return () => null;
     }
 

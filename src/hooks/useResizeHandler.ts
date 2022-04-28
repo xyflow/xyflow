@@ -18,7 +18,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
 
       if (size.height === 0 || size.width === 0) {
         console.warn(
-          '[React Flow]: The React Flow parent container needs a width and a height to render the graph. Help: https://reactflow.dev/docs/guides/troubleshooting'
+          '[React Flow]: The React Flow parent container needs a width and a height to render the graph. Help: https://reactflow.dev/error-decoder#400'
         );
       }
 
