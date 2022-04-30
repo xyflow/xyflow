@@ -37,6 +37,7 @@ interface EdgeRendererProps {
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
   noPanClassName?: string;
+  isEdgeAutoZIndex: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -65,7 +66,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionMode,
     nodeInternals,
   } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals, props.isEdgeAutoZIndex);
 
   if (!width) {
     return null;

@@ -137,6 +137,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       attributionPosition,
       proOptions,
       defaultEdgeOptions,
+      isEdgeAutoZIndex = false,
       ...rest
     },
     ref
@@ -204,6 +205,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noDragClassName={noDragClassName}
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
+            isEdgeAutoZIndex={isEdgeAutoZIndex}
           />
           <StoreUpdater
             nodes={nodes}
