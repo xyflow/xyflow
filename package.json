@@ -17,7 +17,9 @@
       "import": "./dist/nocss/esm/index.js",
       "require": "./dist/nocss/umd/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./dist/style.css": "./dist/style.css",
+    "./dist/theme-default.css": "./dist/theme-default.css"
   },
   "types": "dist/esm/index.d.ts",
   "license": "MIT",
