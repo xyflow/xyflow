@@ -70,10 +70,12 @@ const NodeRenderer = (props: NodeRendererProps) => {
       {nodes.map((node) => {
         const nodeType = node.type || 'default';
 
-        if (!props.nodeTypes[nodeType]) {
-          console.warn(
-            `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error-decoder#300`
-          );
+        if (process.env.NODE_ENV === 'development') {
+          if (!props.nodeTypes[nodeType]) {
+            console.warn(
+              `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error-decoder#300`
+            );
+          }
         }
 
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;

@@ -38,9 +38,13 @@ export function useMarkerSymbol(type: MarkerType) {
   const symbol = useMemo(() => {
     const symbolExists = MarkerSymbols.hasOwnProperty(type);
 
-    if (!symbolExists) {
-      console.warn(`[React Flow]: Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error-decoder#900`);
-      return () => null;
+    if (process.env.NODE_ENV === 'development') {
+      if (!symbolExists) {
+        console.warn(
+          `[React Flow]: Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error-decoder#900`
+        );
+        return () => null;
+      }
     }
 
     return MarkerSymbols[type];
