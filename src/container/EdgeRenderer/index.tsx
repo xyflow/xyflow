@@ -111,7 +111,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 // @ts-ignore
                 if (process.env.NODE_ENV === 'development') {
                   console.warn(
-                    `[React Flow]: Couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error-decoder#800`
+                    `[React Flow]: Couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
                   );
                 }
                 return null;
@@ -121,7 +121,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 // @ts-ignore
                 if (process.env.NODE_ENV === 'development') {
                   console.warn(
-                    `[React Flow]: Couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error-decoder#800`
+                    `[React Flow]: Couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
                   );
                 }
                 return null;

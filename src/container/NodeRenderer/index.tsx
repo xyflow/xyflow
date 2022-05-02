@@ -74,7 +74,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         if (process.env.NODE_ENV === 'development') {
           if (!props.nodeTypes[nodeType]) {
             console.warn(
-              `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error-decoder#300`
+              `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
             );
           }
         }

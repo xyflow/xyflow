@@ -41,9 +41,7 @@ export function useMarkerSymbol(type: MarkerType) {
     if (!symbolExists) {
       // @ts-ignore
       if (process.env.NODE_ENV === 'development') {
-        console.warn(
-          `[React Flow]: Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error-decoder#900`
-        );
+        console.warn(`[React Flow]: Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error#900`);
       }
       return () => null;
     }
