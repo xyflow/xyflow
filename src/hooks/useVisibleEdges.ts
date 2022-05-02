@@ -7,14 +7,14 @@ import { isNumeric } from '../utils';
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
 
-function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, isEdgeAutoZIndex: boolean = false) {
+function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, elevateEdgesOnSelect: boolean = false) {
   let maxLevel = -1;
 
   const levelLookup = edges.reduce<Record<string, Edge[]>>((tree, edge) => {
     const hasZIndex = isNumeric(edge.zIndex);
     let z = hasZIndex ? edge.zIndex! : 0;
 
-    if (isEdgeAutoZIndex) {
+    if (elevateEdgesOnSelect) {
       z = hasZIndex
         ? edge.zIndex!
         : Math.max(nodeInternals.get(edge.source)?.z || 0, nodeInternals.get(edge.target)?.z || 0);
@@ -48,7 +48,7 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, isEdgeA
   return edgeTree;
 }
 
-function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternals, isEdgeAutoZIndex: boolean) {
+function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternals, elevateEdgesOnSelect: boolean) {
   const edges = useStore(
     useCallback(
       (s: ReactFlowState) => {
@@ -83,7 +83,7 @@ function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternal
     )
   );
 
-  return groupEdgesByZLevel(edges, nodeInternals, isEdgeAutoZIndex);
+  return groupEdgesByZLevel(edges, nodeInternals, elevateEdgesOnSelect);
 }
 
 export default useVisibleEdges;

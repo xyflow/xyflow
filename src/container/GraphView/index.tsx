@@ -82,7 +82,7 @@ const GraphView = ({
   noDragClassName,
   noWheelClassName,
   noPanClassName,
-  isEdgeAutoZIndex,
+  elevateEdgesOnSelect,
 }: GraphViewProps) => {
   useOnInitHandler(onInit);
 
@@ -136,7 +136,7 @@ const GraphView = ({
           edgeUpdaterRadius={edgeUpdaterRadius}
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
-          isEdgeAutoZIndex={!!isEdgeAutoZIndex}
+          elevateEdgesOnSelect={!!elevateEdgesOnSelect}
         />
         <NodeRenderer
           nodeTypes={nodeTypes}
