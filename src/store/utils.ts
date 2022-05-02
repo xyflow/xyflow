@@ -141,6 +141,7 @@ export function createPositionChange({
               ]
             : currentExtent;
       } else {
+        // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             '[React Flow]: Only child nodes can use a parent extent. Help: https://reactflow.dev/error-decoder#500'

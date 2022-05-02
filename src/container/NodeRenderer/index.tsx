@@ -70,6 +70,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
       {nodes.map((node) => {
         const nodeType = node.type || 'default';
 
+        // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
           if (!props.nodeTypes[nodeType]) {
             console.warn(
