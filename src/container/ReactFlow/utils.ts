@@ -16,7 +16,7 @@ export function useNodeOrEdgeTypes(nodeOrEdgeTypes: any, createTypes: any): any 
       const typeKeys = Object.keys(nodeOrEdgeTypes);
       if (shallow(typesKeysRef.current, typeKeys)) {
         console.warn(
-          "React Flow: It looks like that you created a new nodeTypes or edgeTypes object. If this wasn't on purpose please define the nodeTypes/edgeTypes outside of the component or memoize them."
+          "[React Flow]: It looks like you have created a new nodeTypes or edgeTypes object. If this wasn't on purpose please define the nodeTypes/edgeTypes outside of the component or memoize them. Help: https://reactflow.dev/error-decoder#200"
         );
       }
 

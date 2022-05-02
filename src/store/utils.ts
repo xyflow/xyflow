@@ -141,7 +141,11 @@ export function createPositionChange({
               ]
             : currentExtent;
       } else {
-        console.warn('Only child nodes can use parent extent');
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            '[React Flow]: Only child nodes can use a parent extent. Help: https://reactflow.dev/error-decoder#500'
+          );
+        }
         currentExtent = nodeExtent;
       }
     }
