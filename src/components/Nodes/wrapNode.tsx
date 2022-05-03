@@ -232,7 +232,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     ]);
 
     return (
-      // @ts-ignore
       <DraggableCore
         onStart={onDragStart}
         onDrag={onDrag}

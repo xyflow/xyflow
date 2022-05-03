@@ -24,9 +24,7 @@ const selector = (s: ReactFlowState) => ({
   transform: s.transform,
   selectedNodesBbox: s.selectedNodesBbox,
   userSelectionActive: s.userSelectionActive,
-  selectedNodes: Array.from(s.nodeInternals)
-    .filter(([_, n]) => n.selected)
-    .map(([_, n]) => n),
+  selectedNodes: Array.from(s.nodeInternals.values()).filter((n) => n.selected),
   snapToGrid: s.snapToGrid,
   snapGrid: s.snapGrid,
   updateNodePosition: s.updateNodePosition,
@@ -113,7 +111,6 @@ function NodesSelection({
 
   return (
     <div className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])} style={style}>
-      {/* @ts-ignore */}
       <DraggableCore
         scale={tScale}
         grid={grid}
