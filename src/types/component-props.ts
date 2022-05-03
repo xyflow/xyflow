@@ -1,4 +1,10 @@
-import React, { CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
+import React, {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  HTMLAttributes,
+  MouseEvent as ReactMouseEvent,
+  WheelEvent,
+} from 'react';
 
 import {
   OnSelectionChangeFunc,
@@ -145,7 +151,7 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   onInteractiveChange?: (interactiveStatus: boolean) => void;
 }
 
-export interface ControlButtonProps extends HTMLAttributes<HTMLButtonElement> {}
+export interface ControlButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export interface BackgroundProps extends HTMLAttributes<SVGElement> {
   variant?: BackgroundVariant;
