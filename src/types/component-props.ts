@@ -118,6 +118,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   connectOnClick?: boolean;
   attributionPosition?: AttributionPosition;
   proOptions?: ProOptions;
+  elevateEdgesOnSelect?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, MouseEvent } from 'react';
 
 import ReactFlow, {
   Node,
@@ -36,7 +36,7 @@ const UseZoomPanHelperFlow = () => {
   const { project, setCenter, zoomIn, zoomOut, fitView, addNodes, setNodes: setNodesHook } = useReactFlow();
 
   const onPaneClick = useCallback(
-    (evt) => {
+    (evt: MouseEvent) => {
       const projectedPosition = project({ x: evt.clientX, y: evt.clientY - 40 });
 
       setNodes((nds) =>
@@ -53,8 +53,8 @@ const UseZoomPanHelperFlow = () => {
   );
 
   const onNodeClick = useCallback(
-    (_, element) => {
-      const { x, y } = element.position;
+    (_: MouseEvent, node: Node) => {
+      const { x, y } = node.position;
       setCenter(x, y, { zoom: 1, duration: 1200 });
     },
     [setCenter]
@@ -72,9 +72,7 @@ const UseZoomPanHelperFlow = () => {
     addNodes(newNode);
   }, [addNodes]);
 
-  const onResetNodes = useCallback(() => {
-    setNodesHook(initialNodes);
-  }, [setNodesHook]);
+  const onResetNodes = useCallback(() => setNodesHook(initialNodes), [setNodesHook]);
 
   return (
     <ReactFlow

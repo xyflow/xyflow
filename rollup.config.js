@@ -11,7 +11,7 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
-const isTesting = process.env.NODE_ENV === 'testing';
+const isTesting = process.env.NODE_ENV === 'test';
 const processEnv = isProd || isTesting ? 'production' : 'development';
 
 const defaultOutputOptions = {

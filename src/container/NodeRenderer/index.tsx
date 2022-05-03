@@ -3,10 +3,10 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
-import { Node, NodeTypes, Position, ReactFlowState, WrapNodeProps } from '../../types';
+import { Node, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
 
 interface NodeRendererProps {
-  nodeTypes: NodeTypes;
+  nodeTypes: NodeTypesWrapped;
   selectNodesOnDrag: boolean;
   onNodeClick?: (event: MouseEvent, element: Node) => void;
   onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
@@ -70,8 +70,13 @@ const NodeRenderer = (props: NodeRendererProps) => {
       {nodes.map((node) => {
         const nodeType = node.type || 'default';
 
-        if (!props.nodeTypes[nodeType]) {
-          console.warn(`Node type "${nodeType}" not found. Using fallback type "default".`);
+        // @ts-ignore
+        if (process.env.NODE_ENV === 'development') {
+          if (!props.nodeTypes[nodeType]) {
+            console.warn(
+              `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
+            );
+          }
         }
 
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;

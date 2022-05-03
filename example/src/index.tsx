@@ -1,6 +1,7 @@
 import { ChangeEvent } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+
 import Basic from './Basic';
 import ControlledUncontrolled from './ControlledUncontrolled';
 import CustomConnectionLine from './CustomConnectionLine';
@@ -187,7 +188,10 @@ const Header = () => {
   );
 };
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container!);
+
+root.render(
   <BrowserRouter>
     <Header />
     <Routes>
@@ -195,6 +199,5 @@ ReactDOM.render(
         <Route path={route.path} key={route.path} element={<route.component />} />
       ))}
     </Routes>
-  </BrowserRouter>,
-  document.getElementById('root')
+  </BrowserRouter>
 );

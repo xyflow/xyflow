@@ -21,6 +21,7 @@ describe('Minimap Testing', () => {
 
     cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
+      .wait(50)
       .then(() => {
         const viewBoxAfterZoom = Cypress.$('.react-flow__minimap').attr('viewBox');
         const maskPathAfterZoom = Cypress.$('.react-flow__minimap-mask').attr('d');
@@ -54,6 +55,7 @@ describe('Minimap Testing', () => {
       cy.get('.react-flow__pane')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
         .trigger('mousemove', 'bottomLeft')
+        .wait(50)
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
           const viewBoxAfterDrag = Cypress.$('.react-flow__minimap').attr('viewBox');
