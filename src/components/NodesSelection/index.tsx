@@ -24,9 +24,7 @@ const selector = (s: ReactFlowState) => ({
   transform: s.transform,
   selectedNodesBbox: s.selectedNodesBbox,
   userSelectionActive: s.userSelectionActive,
-  selectedNodes: Array.from(s.nodeInternals)
-    .filter(([_, n]) => n.selected)
-    .map(([_, n]) => n),
+  selectedNodes: Array.from(s.nodeInternals.values()).filter((n) => n.selected),
   updateNodePosition: s.updateNodePosition,
 });
 

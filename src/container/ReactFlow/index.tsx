@@ -13,7 +13,9 @@ import {
   ConnectionLineType,
   ConnectionMode,
   EdgeTypes,
+  EdgeTypesWrapped,
   NodeTypes,
+  NodeTypesWrapped,
   PanOnScrollMode,
   ReactFlowProps,
   ReactFlowRefType,
@@ -21,7 +23,7 @@ import {
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import GraphView from '../GraphView';
 import { createNodeTypes } from '../NodeRenderer/utils';
-import injectStyle, { useNodeOrEdgeTypes } from './utils';
+import { injectStyle, useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
 
 if (__INJECT_STYLES__) {
@@ -29,13 +31,13 @@ if (__INJECT_STYLES__) {
   injectStyle(theme as unknown as string);
 }
 
-const defaultNodeTypes = {
+const defaultNodeTypes: NodeTypes = {
   input: InputNode,
   default: DefaultNode,
   output: OutputNode,
 };
 
-const defaultEdgeTypes = {
+const defaultEdgeTypes: EdgeTypes = {
   default: BezierEdge,
   straight: StraightEdge,
   step: StepEdge,
@@ -135,12 +137,13 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       attributionPosition,
       proOptions,
       defaultEdgeOptions,
+      elevateEdgesOnSelect = false,
       ...rest
     },
     ref
   ) => {
-    const nodeTypesParsed = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypes;
-    const edgeTypesParsed = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypes;
+    const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
+    const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
     const reactFlowClasses = cc(['react-flow', className]);
 
     return (
@@ -161,8 +164,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onNodeDragStart={onNodeDragStart}
             onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}
-            nodeTypes={nodeTypesParsed}
-            edgeTypes={edgeTypesParsed}
+            nodeTypes={nodeTypesWrapped}
+            edgeTypes={edgeTypesWrapped}
             connectionLineType={connectionLineType}
             connectionLineStyle={connectionLineStyle}
             connectionLineComponent={connectionLineComponent}
@@ -202,6 +205,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noDragClassName={noDragClassName}
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
+            elevateEdgesOnSelect={elevateEdgesOnSelect}
           />
           <StoreUpdater
             nodes={nodes}

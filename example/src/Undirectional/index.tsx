@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 
 import ReactFlow, {
   useReactFlow,
@@ -189,7 +189,7 @@ const UpdateNodeInternalsFlow = () => {
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
 
   const onPaneClick = useCallback(
-    (evt) =>
+    (evt: MouseEvent) =>
       setNodes((nds) =>
         nds.concat({
           id: getId(),
@@ -198,7 +198,7 @@ const UpdateNodeInternalsFlow = () => {
           data: null,
         })
       ),
-    [project]
+    [project, setNodes]
   );
 
   return (

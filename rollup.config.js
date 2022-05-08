@@ -11,13 +11,25 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const isProd = process.env.NODE_ENV === 'production';
-const isTesting = process.env.NODE_ENV === 'testing';
+const isTesting = process.env.NODE_ENV === 'test';
 const processEnv = isProd || isTesting ? 'production' : 'development';
 
 const defaultOutputOptions = {
   dir: 'dist/esm',
   format: 'esm',
   sourcemap: true,
+};
+
+const globals = {
+  react: 'React',
+  'react-dom': 'ReactDOM',
+  classcat: 'cc',
+  'd3-selection': 'd3',
+  'd3-zoom': 'd3',
+  'react-draggable': 'ReactDraggable',
+  zustand: 'zustand',
+  'zustand/shallow': 'zustandShallow',
+  'zustand/context': 'zustandContext',
 };
 
 export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
@@ -97,30 +109,33 @@ export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
 
 export default isProd && !isTesting
   ? [
+      // esm build
       baseConfig(),
+      // umd build
       baseConfig({
         outputOptions: {
           dir: 'dist/umd',
           format: 'umd',
           exports: 'named',
           name: 'ReactFlow',
-          globals: {
-            react: 'React',
-            'react-dom': 'ReactDOM',
-            classcat: 'cc',
-            'd3-selection': 'd3',
-            'd3-zoom': 'd3',
-            'd3-drag': 'd3',
-            'react-draggable': 'ReactDraggable',
-            zustand: 'zustand',
-            'zustand/shallow': 'zustandShallow',
-            'zustand/context': 'zustandContext',
-          },
+          globals,
         },
       }),
+      // nocsss esm build
       baseConfig({
         outputOptions: {
-          dir: 'dist/nocss',
+          dir: 'dist/nocss/esm',
+        },
+        injectCSS: false,
+      }),
+      // nocsss umd build
+      baseConfig({
+        outputOptions: {
+          dir: 'dist/nocss/umd',
+          format: 'umd',
+          exports: 'named',
+          name: 'ReactFlow',
+          globals,
         },
 
         injectCSS: false,

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, FC, useEffect, useState } from 'react';
+import React, { memo, useCallback, FC, useEffect, useState, PropsWithChildren } from 'react';
 import cc from 'classcat';
 
 import { useStore, useStoreApi } from '../../store';
@@ -12,7 +12,7 @@ import UnlockIcon from './Icons/Unlock';
 
 import { ControlProps, ControlButtonProps, ReactFlowState } from '../../types';
 
-export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...rest }) => (
+export const ControlButton: FC<PropsWithChildren<ControlButtonProps>> = ({ children, className, ...rest }) => (
   <button type="button" className={cc(['react-flow__controls-button', className])} {...rest}>
     {children}
   </button>
@@ -20,7 +20,7 @@ export const ControlButton: FC<ControlButtonProps> = ({ children, className, ...
 
 const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
 
-const Controls: FC<ControlProps> = ({
+const Controls: FC<PropsWithChildren<ControlProps>> = ({
   style,
   showZoom = true,
   showFitView = true,

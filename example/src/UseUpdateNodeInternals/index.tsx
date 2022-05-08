@@ -1,4 +1,4 @@
-import { useCallback, CSSProperties } from 'react';
+import { useCallback, CSSProperties, MouseEvent } from 'react';
 
 import ReactFlow, {
   NodeTypes,
@@ -44,7 +44,7 @@ const UpdateNodeInternalsFlow = () => {
   const { project } = useReactFlow();
 
   const onPaneClick = useCallback(
-    (evt) =>
+    (evt: MouseEvent) =>
       setNodes((nds) =>
         nds.concat({
           id: getId(),
@@ -54,7 +54,7 @@ const UpdateNodeInternalsFlow = () => {
           sourcePosition: Position.Right,
         })
       ),
-    [project]
+    [project, setNodes]
   );
 
   const toggleHandleCount = useCallback(() => {
@@ -63,7 +63,7 @@ const UpdateNodeInternalsFlow = () => {
         return { ...node, data: { ...node.data, handleCount: node.data?.handleCount === 1 ? 2 : 1 } };
       })
     );
-  }, []);
+  }, [setNodes]);
 
   const toggleHandlePosition = useCallback(() => {
     setNodes((nds) =>
@@ -71,7 +71,7 @@ const UpdateNodeInternalsFlow = () => {
         return { ...node, data: { ...node.data, handlePosition: node.data?.handlePosition === 0 ? 1 : 0 } };
       })
     );
-  }, []);
+  }, [setNodes]);
 
   const updateNode = useCallback(() => updateNodeInternals('1'), [updateNodeInternals]);
 

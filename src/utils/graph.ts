@@ -57,7 +57,12 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
 
 export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    console.warn("Can't create edge. An edge needs a source and a target.");
+    // @ts-ignore
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        "[React Flow]: Can't create edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600"
+      );
+    }
     return edges;
   }
 
@@ -80,14 +85,24 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
 
 export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
   if (!newConnection.source || !newConnection.target) {
-    console.warn("Can't create new edge. An edge needs a source and a target.");
+    // @ts-ignore
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        "[React Flow]: Can't create a new edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600"
+      );
+    }
     return edges;
   }
 
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
 
   if (!foundEdge) {
-    console.warn(`The old edge with id=${oldEdge.id} does not exist.`);
+    // @ts-ignore
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `[React Flow]: The old edge with id=${oldEdge.id} does not exist. Help: https://reactflow.dev/error#700`
+      );
+    }
     return edges;
   }
 
