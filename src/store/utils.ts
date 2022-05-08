@@ -43,9 +43,12 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
 
   nodes.forEach((node) => {
     const z = isNumeric(node.zIndex) ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
+    const currInternals = nodeInternals.get(node.id);
 
     const internals: Node = {
-      ...nodeInternals.get(node.id),
+      width: currInternals?.width,
+      height: currInternals?.height,
+      handleBounds: currInternals?.handleBounds,
       ...node,
       positionAbsolute: {
         x: node.position.x,
