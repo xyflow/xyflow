@@ -1,9 +1,9 @@
-import React, { memo, useRef, useState, useEffect, FC } from 'react';
+import React, { memo, useRef, useState, useEffect, FC, PropsWithChildren } from 'react';
 import cc from 'classcat';
 
 import { EdgeTextProps, Rect } from '../../types';
 
-const EdgeText: FC<EdgeTextProps> = ({
+const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
   x,
   y,
   label,

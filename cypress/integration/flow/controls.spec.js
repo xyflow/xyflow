@@ -38,8 +38,9 @@ describe('Controls Testing', () => {
     cy.window().then((win) => {
       cy.get('.react-flow__renderer')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
-        .trigger('mousemove', 'bottomLeft')
-        .trigger('mouseup', { force: true, view: win })
+        .trigger('mousemove', 10, 400)
+        .wait(50)
+        .trigger('mouseup', 10, 400, { force: true, view: win })
         .then(() => {
           const styleAfterDrag = Cypress.$('.react-flow__viewport').css('transform');
           expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
@@ -60,7 +61,7 @@ describe('Controls Testing', () => {
 
   it('uses interactive control - not interactive', () => {
     cy.get('.react-flow__node:first').click().should('have.class', 'selected');
-    cy.get('.react-flow__renderer').click('bottomRight');
+    cy.get('.react-flow__pane').click('topLeft');
     cy.get('.react-flow__node:first').should('not.have.class', 'selected');
 
     cy.get('.react-flow__controls-interactive')
@@ -74,7 +75,7 @@ describe('Controls Testing', () => {
     cy.get('.react-flow__controls-interactive')
       .click()
       .then(() => {
-        cy.get('.react-flow__node:first').click().should('have.class', 'selected');
+        cy.get('.react-flow__node:first').click({ force: true }).should('have.class', 'selected');
       });
   });
 });

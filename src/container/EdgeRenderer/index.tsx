@@ -15,11 +15,12 @@ import {
   OnEdgeUpdateFunc,
   HandleType,
   ReactFlowState,
+  EdgeTypesWrapped,
 } from '../../types';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 
 interface EdgeRendererProps {
-  edgeTypes: any;
+  edgeTypes: EdgeTypesWrapped;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
@@ -36,6 +37,7 @@ interface EdgeRendererProps {
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
   noPanClassName?: string;
+  elevateEdgesOnSelect: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -64,7 +66,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionMode,
     nodeInternals,
   } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals, props.elevateEdgesOnSelect);
 
   if (!width) {
     return null;
@@ -106,12 +108,22 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetPosition = targetHandle?.position || Position.Top;
 
               if (!sourceHandle) {
-                console.warn(`couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}`);
+                // @ts-ignore
+                if (process.env.NODE_ENV === 'development') {
+                  console.warn(
+                    `[React Flow]: Couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                  );
+                }
                 return null;
               }
 
               if (!targetHandle) {
-                console.warn(`couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}`);
+                // @ts-ignore
+                if (process.env.NODE_ENV === 'development') {
+                  console.warn(
+                    `[React Flow]: Couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                  );
+                }
                 return null;
               }
 

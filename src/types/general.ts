@@ -1,16 +1,18 @@
-import { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
+import { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
-import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate } from './nodes';
-import { Edge } from './edges';
+import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate, NodeProps, WrapNodeProps } from './nodes';
+import { Edge, EdgeProps, WrapEdgeProps } from './edges';
 import { HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
 import { ReactFlowInstance } from './instance';
 
-export type NodeTypes = { [key: string]: ReactNode };
-export type EdgeTypes = NodeTypes;
+export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
+export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };
+export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
+export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };
 
 export type FitView = (fitViewOptions?: FitViewOptions) => void;
 
