@@ -1,4 +1,4 @@
-import React, { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import React, { CSSProperties, ComponentType, HTMLAttributes, ReactNode } from 'react';
 import { Connection } from './general';
 import { HandleElement, HandleType } from './handles';
 import { Node } from './nodes';
@@ -101,8 +101,8 @@ export interface WrapEdgeProps<T = any> {
   style?: CSSProperties;
   source: string;
   target: string;
-  sourceHandleId: string | null;
-  targetHandleId: string | null;
+  sourceHandleId?: string | null;
+  targetHandleId?: string | null;
   sourceX: number;
   sourceY: number;
   targetX: number;
@@ -111,7 +111,7 @@ export interface WrapEdgeProps<T = any> {
   targetPosition: Position;
   elementsSelectable?: boolean;
   hidden?: boolean;
-  onEdgeUpdate: OnEdgeUpdateFunc;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;
   onMouseMove?: EdgeMouseHandler;
@@ -162,7 +162,7 @@ export type ConnectionLineComponentProps = {
   sourceHandle?: HandleElement;
 };
 
-export type ConnectionLineComponent = React.ComponentType<ConnectionLineComponentProps>;
+export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
 
