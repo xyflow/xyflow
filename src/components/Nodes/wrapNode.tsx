@@ -58,6 +58,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
   }: WrapNodeProps) => {
+    const draggingRef = useRef<boolean>(false);
+    const [dragging, setDragging] = useState<boolean>(false);
     const store = useStoreApi();
     const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition, updateNodeDimensions } = useStore(
       selector,
@@ -130,13 +132,12 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       [id, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
 
-    // As one of the props passed to a custom node
-    const [dragging, setDragging] = useState(false);
-
     const onDrag = useCallback(
       (event: UseDragEvent, dragPos: UseDragData) => {
         updateNodePosition({ id, diff: { x: dragPos.dx, y: dragPos.dy } });
         setDragging(true);
+        draggingRef.current = true;
+
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
           onNodeDrag(event.sourceEvent as MouseEvent, {
@@ -157,13 +158,31 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onDragStop = useCallback(
       (event: UseDragEvent) => {
+        let node;
+
+        if (onClick || onNodeDragStop) {
+          node = store.getState().nodeInternals.get(id)!;
+        }
+
+        if (!draggingRef.current) {
+          if (isSelectable && !selectNodesOnDrag && !selected) {
+            addSelectedNodes([id]);
+          }
+
+          if (onClick && node) {
+            onClick(event.sourceEvent as MouseEvent, { ...node });
+          }
+
+          return;
+        }
+        draggingRef.current = false;
         setDragging(false);
-        if (onNodeDragStop) {
-          const node = store.getState().nodeInternals.get(id)!;
+
+        if (onNodeDragStop && node) {
           onNodeDragStop(event.sourceEvent as MouseEvent, { ...node });
         }
       },
-      [id, onNodeDragStop]
+      [id, onNodeDragStop, onClick]
     );
 
     useEffect(() => {
