@@ -1,4 +1,14 @@
-import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  memo,
+  ComponentType,
+  CSSProperties,
+  useMemo,
+  MouseEvent,
+  useCallback,
+  useState,
+} from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
@@ -41,7 +51,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     sourcePosition,
     targetPosition,
     hidden,
-    dragging,
     resizeObserver,
     dragHandle,
     zIndex,
@@ -49,6 +58,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
   }: WrapNodeProps) => {
+    const draggingRef = useRef<boolean>(false);
+    const [dragging, setDragging] = useState<boolean>(false);
     const store = useStoreApi();
     const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition, updateNodeDimensions } = useStore(
       selector,
@@ -69,11 +80,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       [zIndex, xPos, yPos, hasPointerEvents, style]
     );
 
-    const onMouseEnterHandler = useMemoizedMouseHandler(id, dragging, store.getState, onMouseEnter);
-    const onMouseMoveHandler = useMemoizedMouseHandler(id, dragging, store.getState, onMouseMove);
-    const onMouseLeaveHandler = useMemoizedMouseHandler(id, dragging, store.getState, onMouseLeave);
-    const onContextMenuHandler = useMemoizedMouseHandler(id, false, store.getState, onContextMenu);
-    const onNodeDoubleClickHandler = useMemoizedMouseHandler(id, false, store.getState, onNodeDoubleClick);
+    const onMouseEnterHandler = useMemoizedMouseHandler(id, store.getState, onMouseEnter);
+    const onMouseMoveHandler = useMemoizedMouseHandler(id, store.getState, onMouseMove);
+    const onMouseLeaveHandler = useMemoizedMouseHandler(id, store.getState, onMouseLeave);
+    const onContextMenuHandler = useMemoizedMouseHandler(id, store.getState, onContextMenu);
+    const onNodeDoubleClickHandler = useMemoizedMouseHandler(id, store.getState, onNodeDoubleClick);
 
     const onSelectNodeHandler = useCallback(
       (event: MouseEvent) => {
@@ -123,13 +134,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onDrag = useCallback(
       (event: UseDragEvent, dragPos: UseDragData) => {
-        updateNodePosition({ id, dragging: true, diff: { x: dragPos.dx, y: dragPos.dy } });
+        updateNodePosition({ id, diff: { x: dragPos.dx, y: dragPos.dy } });
+        setDragging(true);
+        draggingRef.current = true;
 
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
           onNodeDrag(event.sourceEvent as MouseEvent, {
             ...node,
-            dragging: true,
             position: {
               x: node.position.x + dragPos.dx,
               y: node.position.y + dragPos.dy,
@@ -146,15 +158,13 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onDragStop = useCallback(
       (event: UseDragEvent) => {
-        // onDragStop also gets called when user just clicks on a node.
-        // Because of that we set dragging to true inside the onDrag handler and handle the click here
         let node;
 
         if (onClick || onNodeDragStop) {
           node = store.getState().nodeInternals.get(id)!;
         }
 
-        if (!dragging) {
+        if (!draggingRef.current) {
           if (isSelectable && !selectNodesOnDrag && !selected) {
             addSelectedNodes([id]);
           }
@@ -165,17 +175,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
           return;
         }
-
-        updateNodePosition({
-          id,
-          dragging: false,
-        });
+        draggingRef.current = false;
+        setDragging(false);
 
         if (onNodeDragStop && node) {
-          onNodeDragStop(event.sourceEvent as MouseEvent, { ...node, dragging: false });
+          onNodeDragStop(event.sourceEvent as MouseEvent, { ...node });
         }
       },
-      [id, isSelectable, selectNodesOnDrag, onClick, onNodeDragStop, dragging, selected]
+      [id, onNodeDragStop, onClick]
     );
 
     useEffect(() => {

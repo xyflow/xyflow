@@ -93,7 +93,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             hidden={node.hidden}
             xPos={node.positionAbsolute?.x ?? 0}
             yPos={node.positionAbsolute?.y ?? 0}
-            dragging={!!node.dragging}
             selectNodesOnDrag={props.selectNodesOnDrag}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}

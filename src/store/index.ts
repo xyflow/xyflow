@@ -96,7 +96,7 @@ const createStore = () =>
         onNodesChange?.(changes);
       }
     },
-    updateNodePosition: ({ id, diff, dragging }: NodeDiffUpdate) => {
+    updateNodePosition: ({ id, diff }: NodeDiffUpdate) => {
       const { onNodesChange, nodeExtent, nodeInternals, hasDefaultNodes, snapGrid, snapToGrid } = get();
 
       if (hasDefaultNodes || onNodesChange) {
@@ -105,14 +105,10 @@ const createStore = () =>
         nodeInternals.forEach((node) => {
           if (node.selected) {
             if (!node.parentNode || !isParentSelected(node, nodeInternals)) {
-              changes.push(
-                createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals, snapToGrid, snapGrid })
-              );
+              changes.push(createPositionChange({ node, diff, nodeExtent, nodeInternals, snapToGrid, snapGrid }));
             }
           } else if (node.id === id) {
-            changes.push(
-              createPositionChange({ node, diff, dragging, nodeExtent, nodeInternals, snapToGrid, snapGrid })
-            );
+            changes.push(createPositionChange({ node, diff, nodeExtent, nodeInternals, snapToGrid, snapGrid }));
           }
         });
 

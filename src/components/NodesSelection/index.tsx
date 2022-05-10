@@ -72,7 +72,6 @@ function NodesSelection({
           x: data.dx,
           y: data.dy,
         },
-        dragging: true,
       });
 
       onSelectionDrag?.(event.sourceEvent, selectedNodes);
@@ -82,10 +81,6 @@ function NodesSelection({
 
   const onStop = useCallback(
     (event: UseDragEvent) => {
-      updateNodePosition({
-        dragging: false,
-      });
-
       onSelectionDragStop?.(event.sourceEvent, selectedNodes);
     },
     [selectedNodes, onSelectionDragStop]

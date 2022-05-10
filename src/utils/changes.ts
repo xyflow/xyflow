@@ -69,10 +69,6 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             updateItem.position = currentChange.position;
           }
 
-          if (typeof currentChange.dragging !== 'undefined') {
-            updateItem.dragging = currentChange.dragging;
-          }
-
           if (updateItem.expandParent) {
             handleParentExpand(res, updateItem);
           }

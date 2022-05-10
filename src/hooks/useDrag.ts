@@ -16,7 +16,6 @@ type UseDragParams = {
   nodeRef: RefObject<Element>;
   disabled?: boolean;
   noDragClassName?: string;
-  // @TODO: implement handleSelector functionality
   handleSelector?: string;
   nodeId?: string;
 };
@@ -42,7 +41,27 @@ function getParentNodePosition(nodeInternals: NodeInternals, nodeId?: string): X
   };
 }
 
-function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragClassName, nodeId }: UseDragParams) {
+function selectorExistsTargetToNode(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
+  let current = target;
+  do {
+    if (current?.matches(selector)) return true;
+    if (current === nodeRef.current) return false;
+    current = current.parentElement as Element;
+  } while (current);
+
+  return false;
+}
+
+function useDrag({
+  onStart,
+  onDrag,
+  onStop,
+  nodeRef,
+  disabled = false,
+  noDragClassName,
+  handleSelector,
+  nodeId,
+}: UseDragParams) {
   const store = useStoreApi();
   const startPos = useRef<XYPosition>({ x: 0, y: 0 });
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
@@ -93,8 +112,15 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
               });
             }
           })
-          .on('end', onStop)
-          .filter((event: any) => !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName));
+          .on('end', (event) => {
+            onStop(event);
+          })
+          .filter((event: any) => {
+            const filter = !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName);
+            return handleSelector
+              ? selectorExistsTargetToNode(event.target, handleSelector, nodeRef) && filter
+              : filter;
+          });
 
         selection.call(dragHandler);
 
@@ -103,7 +129,7 @@ function useDrag({ onStart, onDrag, onStop, nodeRef, disabled = false, noDragCla
         };
       }
     }
-  }, [disabled, noDragClassName, nodeId]);
+  }, [onStart, onDrag, onStop, nodeRef, disabled, noDragClassName, handleSelector, nodeId]);
 
   return null;
 }
