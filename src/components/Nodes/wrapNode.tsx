@@ -58,6 +58,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
   }: WrapNodeProps) => {
+    const [dragging, setDragging] = useState(false);
     const store = useStoreApi();
     const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition, updateNodeDimensions } = useStore(
       selector,
@@ -86,22 +87,20 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onSelectNodeHandler = useCallback(
       (event: MouseEvent) => {
-        if (!isDraggable) {
-          if (isSelectable) {
-            store.setState({ nodesSelectionActive: false });
+        if (isSelectable) {
+          store.setState({ nodesSelectionActive: false });
 
-            if (!selected) {
-              addSelectedNodes([id]);
-            }
-          }
-
-          if (onClick) {
-            const node = store.getState().nodeInternals.get(id)!;
-            onClick(event, { ...node });
+          if (!selected) {
+            addSelectedNodes([id]);
           }
         }
+
+        if (onClick) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onClick(event, { ...node });
+        }
       },
-      [isSelectable, selected, isDraggable, onClick, id]
+      [isSelectable, selected, onClick, id]
     );
 
     const onDragStart = useCallback(
@@ -129,9 +128,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       },
       [id, selected, selectNodesOnDrag, isSelectable, onNodeDragStart]
     );
-
-    // As one of the props passed to a custom node
-    const [dragging, setDragging] = useState(false);
 
     const onDrag = useCallback(
       (event: UseDragEvent, dragPos: UseDragData) => {
