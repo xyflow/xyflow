@@ -133,6 +133,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: UseDragEvent, dragPos: UseDragData) => {
         updateNodePosition({ id, diff: { x: dragPos.dx, y: dragPos.dy } });
         setDragging(true);
+
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
           onNodeDrag(event.sourceEvent as MouseEvent, {
@@ -153,6 +154,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onDragStop = useCallback(
       (event: UseDragEvent) => {
+
         setDragging(false);
         if (onNodeDragStop) {
           const node = store.getState().nodeInternals.get(id)!;
