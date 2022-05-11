@@ -110,10 +110,11 @@ function useDrag({
                 dx: pos.x,
                 dy: pos.y,
               });
+
+              event.on('end', (event) => {
+                onStop(event);
+              });
             }
-          })
-          .on('end', (event) => {
-            onStop(event);
           })
           .filter((event: any) => {
             const filter = !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName);

@@ -58,8 +58,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
   }: WrapNodeProps) => {
-    const draggingRef = useRef<boolean>(false);
-    const [dragging, setDragging] = useState<boolean>(false);
+    const [dragging, setDragging] = useState(false);
     const store = useStoreApi();
     const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition, updateNodeDimensions } = useStore(
       selector,
@@ -88,22 +87,20 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onSelectNodeHandler = useCallback(
       (event: MouseEvent) => {
-        if (!isDraggable) {
-          if (isSelectable) {
-            store.setState({ nodesSelectionActive: false });
+        if (isSelectable) {
+          store.setState({ nodesSelectionActive: false });
 
-            if (!selected) {
-              addSelectedNodes([id]);
-            }
-          }
-
-          if (onClick) {
-            const node = store.getState().nodeInternals.get(id)!;
-            onClick(event, { ...node });
+          if (!selected) {
+            addSelectedNodes([id]);
           }
         }
+
+        if (onClick) {
+          const node = store.getState().nodeInternals.get(id)!;
+          onClick(event, { ...node });
+        }
       },
-      [isSelectable, selected, isDraggable, onClick, id]
+      [isSelectable, selected, onClick, id]
     );
 
     const onDragStart = useCallback(
@@ -136,7 +133,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       (event: UseDragEvent, dragPos: UseDragData) => {
         updateNodePosition({ id, diff: { x: dragPos.dx, y: dragPos.dy } });
         setDragging(true);
-        draggingRef.current = true;
 
         if (onNodeDrag) {
           const node = store.getState().nodeInternals.get(id)!;
@@ -158,31 +154,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onDragStop = useCallback(
       (event: UseDragEvent) => {
-        let node;
 
-        if (onClick || onNodeDragStop) {
-          node = store.getState().nodeInternals.get(id)!;
-        }
-
-        if (!draggingRef.current) {
-          if (isSelectable && !selectNodesOnDrag && !selected) {
-            addSelectedNodes([id]);
-          }
-
-          if (onClick && node) {
-            onClick(event.sourceEvent as MouseEvent, { ...node });
-          }
-
-          return;
-        }
-        draggingRef.current = false;
         setDragging(false);
-
-        if (onNodeDragStop && node) {
+        if (onNodeDragStop) {
+          const node = store.getState().nodeInternals.get(id)!;
           onNodeDragStop(event.sourceEvent as MouseEvent, { ...node });
         }
       },
-      [id, onNodeDragStop, onClick]
+      [id, onNodeDragStop]
     );
 
     useEffect(() => {
