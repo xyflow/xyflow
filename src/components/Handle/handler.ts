@@ -82,7 +82,7 @@ function resetRecentHandle(hoveredHandle: Element): void {
   hoveredHandle?.classList.remove('react-flow__handle-connecting');
 }
 
-export function onMouseDown(
+export function handleMouseDown(
   event: ReactMouseEvent,
   handleId: string | null,
   nodeId: string,

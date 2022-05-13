@@ -4,7 +4,7 @@ import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState, Connection } from '../../types';
-import { onMouseDown } from '../../components/Handle/handler';
+import { handleMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 
@@ -160,7 +160,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           }
         };
 
-        onMouseDown(
+        handleMouseDown(
           event,
           handleId,
           nodeId,
