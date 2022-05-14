@@ -2,7 +2,16 @@ import { useCallback } from 'react';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../store';
-import { ReactFlowInstance, Instance, NodeAddChange, EdgeAddChange, NodeResetChange, EdgeResetChange } from '../types';
+import {
+  ReactFlowInstance,
+  Instance,
+  NodeAddChange,
+  EdgeAddChange,
+  NodeResetChange,
+  EdgeResetChange,
+  NodeRemoveChange,
+  EdgeRemoveChange,
+} from '../types';
 
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
   const { initialized: viewportInitialized, ...viewportHelperFunctions } = useViewportHelper();
@@ -37,7 +46,10 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     if (hasDefaultNodes) {
       setNodes(nextNodes);
     } else if (onNodesChange) {
-      const changes = nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeData>));
+      const changes =
+        nextNodes.length === 0
+          ? nodes.map((node) => ({ type: 'remove', id: node.id } as NodeRemoveChange))
+          : nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeData>));
       onNodesChange(changes);
     }
   }, []);
@@ -49,7 +61,10 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     if (hasDefaultEdges) {
       setEdges(nextEdges);
     } else if (onEdgesChange) {
-      const changes = nextEdges.map((edge) => ({ item: edge, type: 'reset' } as EdgeResetChange<EdgeData>));
+      const changes =
+        nextEdges.length === 0
+          ? edges.map((edge) => ({ type: 'remove', id: edge.id } as EdgeRemoveChange))
+          : nextEdges.map((edge) => ({ item: edge, type: 'reset' } as EdgeResetChange<EdgeData>));
       onEdgesChange(changes);
     }
   }, []);
