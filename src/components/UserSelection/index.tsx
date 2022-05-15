@@ -19,7 +19,7 @@ type SelectionRect = Rect & {
 
 type UserSelectionProps = {
   selectionKeyPressed: boolean;
-  selectionKeyCode: KeyCode | null;
+  selectionKeyCode: KeyCode | null | boolean;
   onClick: (e: MouseEvent) => void;
 };
 

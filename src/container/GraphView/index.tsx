@@ -8,10 +8,10 @@ import useOnInitHandler from '../../hooks/useOnInitHandler';
 import { NodeTypesWrapped, EdgeTypesWrapped, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
 
 export interface GraphViewProps
-  extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> {
+  extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes' | 'selectionKeyCode'> {
   nodeTypes: NodeTypesWrapped;
   edgeTypes: EdgeTypesWrapped;
-  selectionKeyCode: KeyCode | null;
+  selectionKeyCode: KeyCode | null | boolean;
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
   connectionLineType: ConnectionLineType;
