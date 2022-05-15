@@ -13,7 +13,7 @@ const selector = (s: ReactFlowState) => ({
   connectionMode: s.connectionMode,
 });
 
-export default (EdgeComponent: ComponentType<EdgeProps>) => {
+export default (EdgeComponent: ComponentType<EdgeProps>, allowPanOverNodes: boolean) => {
   const EdgeWrapper = ({
     id,
     className,
@@ -64,7 +64,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       'react-flow__edge',
       `react-flow__edge-${type}`,
       className,
-      { selected, animated, inactive, updating },
+      { selected, animated, inactive, updating, unclickable: allowPanOverNodes },
     ]);
 
     const edgeElement = useMemo<Edge>(() => {

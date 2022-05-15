@@ -102,7 +102,7 @@ const FlowRenderer = ({
       noPanClassName={noPanClassName}
     >
       {children}
-      <UserSelection selectionKeyPressed={selectionKeyPressed} />
+      <UserSelection selectionKeyCode={selectionKeyCode} onClick={onClick} selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (
         <NodesSelection
           onSelectionDragStart={onSelectionDragStart}

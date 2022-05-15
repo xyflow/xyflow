@@ -1,5 +1,5 @@
 import cc from 'classcat';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import Attribution from '../../components/Attribution';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
@@ -25,6 +25,8 @@ import GraphView from '../GraphView';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import { injectStyle, useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
+import { useStore } from '../../store';
+import { ReactFlowState } from '../../types';
 
 if (__INJECT_STYLES__) {
   injectStyle(css as unknown as string);
@@ -47,6 +49,8 @@ const defaultEdgeTypes: EdgeTypes = {
 
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultPosition: [number, number] = [0, 0];
+
+const setAllowPanOverNodesSelector = (s: ReactFlowState) => s.setAllowPanOverNodes;
 
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
@@ -138,13 +142,19 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       proOptions,
       defaultEdgeOptions,
       elevateEdgesOnSelect = false,
+      allowPanOverNodes = false,
       ...rest
     },
     ref
   ) => {
+    const setAllowPanOverNodes = useStore(setAllowPanOverNodesSelector);
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
     const reactFlowClasses = cc(['react-flow', className]);
+
+    useEffect(() => {
+      setAllowPanOverNodes(allowPanOverNodes && panOnDrag)
+    }, [allowPanOverNodes, panOnDrag])
 
     return (
       <div {...rest} ref={ref} className={reactFlowClasses}>

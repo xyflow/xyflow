@@ -33,6 +33,9 @@ const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
 const createStore = () =>
   create<ReactFlowState>((set, get) => ({
     ...initialState,
+    setAllowPanOverNodes: (allow: boolean) => {
+      set({ allowPanOverNodes: allow });
+    },
     setNodes: (nodes: Node[]) => {
       set({ nodeInternals: createNodeInternals(nodes, get().nodeInternals) });
     },

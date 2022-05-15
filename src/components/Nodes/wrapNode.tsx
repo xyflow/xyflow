@@ -51,6 +51,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     isParent,
     noPanClassName,
     noDragClassName,
+    allowPanOverNodes,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const { addSelectedNodes, unselectNodesAndEdges, updateNodePosition, updateNodeDimensions } = useStore(
@@ -228,6 +229,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         selected,
         selectable: isSelectable,
         parent: isParent,
+        unclickable: allowPanOverNodes,
       },
     ]);
 
@@ -280,4 +282,5 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
   NodeWrapper.displayName = 'NodeWrapper';
 
   return memo(NodeWrapper);
+  memo
 };

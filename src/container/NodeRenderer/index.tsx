@@ -31,10 +31,11 @@ const selector = (s: ReactFlowState) => ({
   snapGrid: s.snapGrid,
   snapToGrid: s.snapToGrid,
   nodeInternals: s.nodeInternals,
+  allowPanOverNodes: s.allowPanOverNodes,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid } =
+  const { scale, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions, snapGrid, snapToGrid, allowPanOverNodes } =
     useStore(selector, shallow);
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const resizeObserverRef = useRef<ResizeObserver>();
@@ -88,6 +89,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           <NodeComponent
             key={node.id}
             id={node.id}
+            allowPanOverNodes={allowPanOverNodes}
             className={node.className}
             style={node.style}
             type={nodeType}

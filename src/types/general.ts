@@ -126,6 +126,7 @@ export type ReactFlowStore = {
   nodeInternals: NodeInternals;
   edges: Edge[];
   selectedNodesBbox: Rect;
+  allowPanOverNodes: boolean;
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;
@@ -180,6 +181,7 @@ export type ReactFlowStore = {
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  setAllowPanOverNodes: (allow: boolean) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePosition: (update: NodeDiffUpdate) => void;

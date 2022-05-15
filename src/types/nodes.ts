@@ -58,6 +58,7 @@ export interface WrapNodeProps<T = any> {
   type: string;
   data: T;
   selected: boolean;
+  allowPanOverNodes: boolean;
   isConnectable: boolean;
   scale: number;
   xPos: number;

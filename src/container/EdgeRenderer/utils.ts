@@ -15,22 +15,22 @@ import {
 } from '../../types';
 import { rectToBox } from '../../utils';
 
-export type CreateEdgeTypes = (edgeTypes: EdgeTypes) => EdgeTypesWrapped;
+export type CreateEdgeTypes = (edgeTypes: EdgeTypes, allowPanOverNodes: boolean) => EdgeTypesWrapped;
 
-export function createEdgeTypes(edgeTypes: EdgeTypes): EdgeTypesWrapped {
+export function createEdgeTypes(edgeTypes: EdgeTypes, allowPanOverNodes: boolean): EdgeTypesWrapped {
   const standardTypes: EdgeTypesWrapped = {
-    default: wrapEdge((edgeTypes.default || BezierEdge) as ComponentType<EdgeProps>),
-    straight: wrapEdge((edgeTypes.bezier || StraightEdge) as ComponentType<EdgeProps>),
-    step: wrapEdge((edgeTypes.step || StepEdge) as ComponentType<EdgeProps>),
-    smoothstep: wrapEdge((edgeTypes.step || SmoothStepEdge) as ComponentType<EdgeProps>),
-    simplebezier: wrapEdge((edgeTypes.simplebezier || SimpleBezierEdge) as ComponentType<EdgeProps>),
+    default: wrapEdge((edgeTypes.default || BezierEdge) as ComponentType<EdgeProps>, allowPanOverNodes),
+    straight: wrapEdge((edgeTypes.bezier || StraightEdge) as ComponentType<EdgeProps>, allowPanOverNodes),
+    step: wrapEdge((edgeTypes.step || StepEdge) as ComponentType<EdgeProps>, allowPanOverNodes),
+    smoothstep: wrapEdge((edgeTypes.step || SmoothStepEdge) as ComponentType<EdgeProps>, allowPanOverNodes),
+    simplebezier: wrapEdge((edgeTypes.simplebezier || SimpleBezierEdge) as ComponentType<EdgeProps>, allowPanOverNodes),
   };
 
   const wrappedTypes = {} as EdgeTypesWrapped;
   const specialTypes: EdgeTypesWrapped = Object.keys(edgeTypes)
     .filter((k) => !['default', 'bezier'].includes(k))
     .reduce((res, key) => {
-      res[key] = wrapEdge((edgeTypes[key] || BezierEdge) as ComponentType<EdgeProps>);
+      res[key] = wrapEdge((edgeTypes[key] || BezierEdge) as ComponentType<EdgeProps>, allowPanOverNodes);
 
       return res;
     }, wrappedTypes);

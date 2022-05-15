@@ -2,9 +2,10 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import React, { memo, useState, useRef, useCallback } from 'react';
+import React, { memo, useState, useRef, useCallback, MouseEvent } from 'react';
 import shallow from 'zustand/shallow';
 
+import { KeyCode } from '../../types';
 import { useStore, useStoreApi } from '../../store';
 import { getSelectionChanges } from '../../utils/changes';
 import { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
@@ -18,6 +19,8 @@ type SelectionRect = Rect & {
 
 type UserSelectionProps = {
   selectionKeyPressed: boolean;
+  selectionKeyCode: KeyCode | null;
+  onClick: (e: MouseEvent) => void;
 };
 
 function getMousePosition(event: React.MouseEvent, containerBounds: DOMRect): XYPosition {
@@ -42,7 +45,7 @@ const initialRect: SelectionRect = {
   draw: false,
 };
 
-export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
+export default memo(({ selectionKeyPressed, onClick, selectionKeyCode }: UserSelectionProps) => {
   const store = useStoreApi();
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
@@ -62,6 +65,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   }, []);
 
   const onMouseDown = useCallback((event: React.MouseEvent): void => {
+    if (onClick) onClick(event);
     const reactFlowNode = (event.target as Element).closest('.react-flow')!;
     containerBounds.current = reactFlowNode.getBoundingClientRect();
 
@@ -81,9 +85,9 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
   }, []);
 
   const onMouseMove = (event: React.MouseEvent): void => {
-    if (!selectionKeyPressed || !userSelectionRect.draw || !containerBounds.current) {
-      return;
-    }
+    if (typeof selectionKeyCode === 'boolean') {
+      if (!userSelectionRect.draw || !containerBounds.current) return;
+    } else if (!selectionKeyPressed || !userSelectionRect.draw || !containerBounds.current) return;
 
     const mousePos = getMousePosition(event, containerBounds.current!);
     const startX = userSelectionRect.startX ?? 0;
@@ -134,13 +138,13 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     resetUserSelection();
   }, []);
 
-  if (!elementsSelectable || !renderUserSelectionPane) {
+  if (typeof selectionKeyCode !== 'boolean' && (!elementsSelectable || !renderUserSelectionPane)) {
     return null;
   }
 
   return (
     <div
-      className="react-flow__selectionpane react-flow__container"
+      className={`react-flow__selectionpane react-flow__container${userSelectionActive ? ' active' : ''}`}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
