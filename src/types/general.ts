@@ -186,6 +186,7 @@ export type ReactFlowActions = {
   resetSelectedElements: () => void;
   unselectNodesAndEdges: () => void;
   addSelectedNodes: (nodeIds: string[]) => void;
+  unselectNodes: (edgeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
