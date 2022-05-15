@@ -51,6 +51,7 @@ const selector = (s: ReactFlowState) => ({
   height: s.height,
   connectionMode: s.connectionMode,
   nodeInternals: s.nodeInternals,
+  allowPanOverNodes: s.allowPanOverNodes,
 });
 
 const EdgeRenderer = (props: EdgeRendererProps) => {
@@ -65,6 +66,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     height,
     connectionMode,
     nodeInternals,
+    allowPanOverNodes,
   } = useStore(selector, shallow);
   const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals, props.elevateEdgesOnSelect);
 
@@ -138,6 +140,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
 
               return (
                 <EdgeComponent
+                  allowPanOverNodes={allowPanOverNodes}
                   key={edge.id}
                   id={edge.id}
                   className={cc([edge.className, props.noPanClassName])}

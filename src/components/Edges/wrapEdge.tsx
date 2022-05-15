@@ -13,7 +13,7 @@ const selector = (s: ReactFlowState) => ({
   connectionMode: s.connectionMode,
 });
 
-export default (EdgeComponent: ComponentType<EdgeProps>, allowPanOverNodes: boolean) => {
+export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
     id,
     className,
@@ -52,6 +52,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>, allowPanOverNodes: bool
     onEdgeUpdateEnd,
     markerEnd,
     markerStart,
+    allowPanOverNodes,
   }: WrapEdgeProps): JSX.Element | null => {
     const store = useStoreApi();
     const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
