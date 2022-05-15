@@ -125,7 +125,6 @@ const createStore = () =>
     },
     unselectNodes: (selectedNodeIds: string[]) => {
       const { onNodesChange, nodeInternals, hasDefaultNodes } = get();
-      console.log('olha')
 
       const changedNodes: NodeSelectionChange[] = selectedNodeIds.map((nodeId) =>
         createSelectionChange(nodeId, false)
