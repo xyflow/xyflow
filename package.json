@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.2.2",
+  "version": "10.2.3-next.0",
   "engines": {
     "node": ">=14"
   },
@@ -61,6 +61,7 @@
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
+    "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.2.1",
@@ -81,6 +82,7 @@
     "release-it": "^14.14.3",
     "rimraf": "^3.0.2",
     "rollup": "^2.71.0",
+    "rollup-plugin-filesize": "^9.1.2",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-serve": "^1.1.0",
