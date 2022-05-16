@@ -50,6 +50,7 @@ export interface NodeProps<T = any> {
 }
 
 export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
+export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 
 export interface WrapNodeProps<T = any> {
   id: string;
@@ -70,9 +71,9 @@ export interface WrapNodeProps<T = any> {
   onMouseMove?: NodeMouseHandler;
   onMouseLeave?: NodeMouseHandler;
   onContextMenu?: NodeMouseHandler;
-  onNodeDragStart?: NodeMouseHandler;
-  onNodeDrag?: NodeMouseHandler;
-  onNodeDragStop?: NodeMouseHandler;
+  onNodeDragStart?: NodeDragHandler;
+  onNodeDrag?: NodeDragHandler;
+  onNodeDragStop?: NodeDragHandler;
   style?: CSSProperties;
   className?: string;
   sourcePosition: Position;
@@ -91,11 +92,6 @@ export type NodeHandleBounds = {
   target: HandleElement[] | null;
 };
 
-export type NodeDiffUpdate = {
-  id?: string;
-  diff?: XYPosition;
-};
-
 export type NodeDimensionUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
@@ -107,4 +103,18 @@ export type NodeInternals = Map<string, Node>;
 export type NodeBounds = XYPosition & {
   width: number | null;
   height: number | null;
+};
+
+export type NodeDragItem = {
+  id: string;
+  // relative node position
+  position: XYPosition;
+  // distance from the mouse cursor to the node when start dragging
+  distance: XYPosition;
+  // delta to previous position
+  delta: XYPosition;
+  width?: number | null;
+  height?: number | null;
+  extent?: 'parent' | CoordinateExtent;
+  parentNode?: string;
 };

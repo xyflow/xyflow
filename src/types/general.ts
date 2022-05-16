@@ -3,7 +3,7 @@ import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
-import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate, NodeProps, WrapNodeProps } from './nodes';
+import { Node, NodeInternals, NodeDimensionUpdate, NodeProps, WrapNodeProps, NodeDragItem } from './nodes';
 import { Edge, EdgeProps, WrapEdgeProps } from './edges';
 import { HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
@@ -125,7 +125,6 @@ export type ReactFlowStore = {
   transform: Transform;
   nodeInternals: NodeInternals;
   edges: Edge[];
-  selectedNodesBbox: Rect;
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;
@@ -182,7 +181,7 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePosition: (update: NodeDiffUpdate) => void;
+  updateNodePositions: (nodeDragItems: NodeDragItem[]) => void;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: () => void;
   addSelectedNodes: (nodeIds: string[]) => void;

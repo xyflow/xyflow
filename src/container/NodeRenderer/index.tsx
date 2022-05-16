@@ -1,22 +1,29 @@
-import React, { memo, useMemo, ComponentType, MouseEvent, useEffect, useRef } from 'react';
+import React, { memo, useMemo, ComponentType, useEffect, useRef } from 'react';
 import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
-import { Node, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
+import {
+  NodeDragHandler,
+  NodeMouseHandler,
+  NodeTypesWrapped,
+  Position,
+  ReactFlowState,
+  WrapNodeProps,
+} from '../../types';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesWrapped;
   selectNodesOnDrag: boolean;
-  onNodeClick?: (event: MouseEvent, element: Node) => void;
-  onNodeDoubleClick?: (event: MouseEvent, element: Node) => void;
-  onNodeMouseEnter?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: MouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: MouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: MouseEvent, node: Node) => void;
-  onNodeDrag?: (event: MouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: MouseEvent, node: Node) => void;
+  onNodeClick?: NodeMouseHandler;
+  onNodeDoubleClick?: NodeMouseHandler;
+  onNodeMouseEnter?: NodeMouseHandler;
+  onNodeMouseMove?: NodeMouseHandler;
+  onNodeMouseLeave?: NodeMouseHandler;
+  onNodeContextMenu?: NodeMouseHandler;
+  onNodeDragStart?: NodeDragHandler;
+  onNodeDrag?: NodeDragHandler;
+  onNodeDragStop?: NodeDragHandler;
   onlyRenderVisibleElements: boolean;
   noPanClassName: string;
   noDragClassName: string;

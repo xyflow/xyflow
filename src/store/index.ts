@@ -9,21 +9,19 @@ import {
   Node,
   Edge,
   NodeDimensionUpdate,
-  NodeDiffUpdate,
   CoordinateExtent,
   NodeDimensionChange,
   EdgeSelectionChange,
   NodeSelectionChange,
   NodePositionChange,
+  NodeDragItem,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
 import {
   createNodeInternals,
-  createPositionChange,
   handleControlledEdgeSelectionChange,
   handleControlledNodeSelectionChange,
-  isParentSelected,
   fitView,
 } from './utils';
 import initialState from './initialState';
@@ -96,20 +94,19 @@ const createStore = () =>
         onNodesChange?.(changes);
       }
     },
-    updateNodePosition: ({ id, diff }: NodeDiffUpdate) => {
-      const { onNodesChange, nodeExtent, nodeInternals, hasDefaultNodes, snapGrid, snapToGrid } = get();
+    updateNodePositions: (nodeDragItems: NodeDragItem[]) => {
+      const { onNodesChange, nodeInternals, hasDefaultNodes } = get();
 
       if (hasDefaultNodes || onNodesChange) {
         const changes: NodePositionChange[] = [];
 
-        nodeInternals.forEach((node) => {
-          if (node.selected) {
-            if (!node.parentNode || !isParentSelected(node, nodeInternals)) {
-              changes.push(createPositionChange({ node, diff, nodeExtent, nodeInternals, snapToGrid, snapGrid }));
-            }
-          } else if (node.id === id) {
-            changes.push(createPositionChange({ node, diff, nodeExtent, nodeInternals, snapToGrid, snapGrid }));
-          }
+        nodeDragItems.forEach((node) => {
+          const change: NodePositionChange = {
+            id: node.id,
+            type: 'position',
+            position: node.position,
+          };
+          changes.push(change);
         });
 
         if (changes?.length) {

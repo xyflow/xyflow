@@ -10,7 +10,7 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../store';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
-import useDrag, { UseDragData, UseDragEvent } from '../../hooks/useDrag';
+import useDragNode from '../../hooks/useDragNode';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -19,13 +19,11 @@ export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
   noPanClassName?: string;
 }
-// @TODO: work with nodeInternals instead of converting it to an array
+
 const selector = (s: ReactFlowState) => ({
   transform: s.transform,
-  selectedNodesBbox: s.selectedNodesBbox,
   userSelectionActive: s.userSelectionActive,
   selectedNodes: Array.from(s.nodeInternals.values()).filter((n) => n.selected),
-  updateNodePosition: s.updateNodePosition,
 });
 
 function NodesSelection({
@@ -35,65 +33,32 @@ function NodesSelection({
   onSelectionContextMenu,
   noPanClassName,
 }: NodesSelectionProps) {
-  const { transform, userSelectionActive, selectedNodes, updateNodePosition } = useStore(selector, shallow);
+  const { transform, userSelectionActive, selectedNodes } = useStore(selector, shallow);
   const [tX, tY, tScale] = transform;
   const nodeRef = useRef(null);
-
-  const style = useMemo(
-    () => ({
-      transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
-    }),
-    [tX, tY, tScale]
-  );
-
   const selectedNodesBbox = useMemo(() => getRectOfNodes(selectedNodes), [selectedNodes]);
 
-  const innerStyle = useMemo(
-    () => ({
-      width: selectedNodesBbox.width,
-      height: selectedNodesBbox.height,
-      top: selectedNodesBbox.y,
-      left: selectedNodesBbox.x,
-    }),
-    [selectedNodesBbox]
-  );
-
   const onStart = useCallback(
-    (event: UseDragEvent) => {
-      onSelectionDragStart?.(event.sourceEvent, selectedNodes);
-    },
-    [onSelectionDragStart, selectedNodes]
+    (event: MouseEvent, _: Node, nodes: Node[]) => onSelectionDragStart?.(event, nodes),
+    [onSelectionDragStart]
   );
 
   const onDrag = useCallback(
-    (event: UseDragEvent, data: UseDragData) => {
-      updateNodePosition({
-        diff: {
-          x: data.dx,
-          y: data.dy,
-        },
-      });
-
-      onSelectionDrag?.(event.sourceEvent, selectedNodes);
-    },
-    [onSelectionDrag, selectedNodes, updateNodePosition]
+    (event: MouseEvent, _: Node, nodes: Node[]) => onSelectionDrag?.(event, nodes),
+    [onSelectionDrag]
   );
 
   const onStop = useCallback(
-    (event: UseDragEvent) => {
-      onSelectionDragStop?.(event.sourceEvent, selectedNodes);
-    },
-    [selectedNodes, onSelectionDragStop]
+    (event: MouseEvent, _: Node, nodes: Node[]) => onSelectionDragStop?.(event, nodes),
+    [onSelectionDragStop]
   );
 
   const onContextMenu = useCallback(
-    (event: MouseEvent) => {
-      onSelectionContextMenu?.(event, selectedNodes);
-    },
+    (event: MouseEvent) => onSelectionContextMenu?.(event, selectedNodes),
     [onSelectionContextMenu, selectedNodes]
   );
 
-  useDrag({
+  useDragNode({
     onStart,
     onDrag,
     onStop,
@@ -105,8 +70,23 @@ function NodesSelection({
   }
 
   return (
-    <div className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])} style={style}>
-      <div ref={nodeRef} className="react-flow__nodesselection-rect" onContextMenu={onContextMenu} style={innerStyle} />
+    <div
+      className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])}
+      style={{
+        transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
+      }}
+    >
+      <div
+        ref={nodeRef}
+        className="react-flow__nodesselection-rect"
+        onContextMenu={onContextMenu}
+        style={{
+          width: selectedNodesBbox.width,
+          height: selectedNodesBbox.height,
+          top: selectedNodesBbox.y,
+          left: selectedNodesBbox.x,
+        }}
+      />
     </div>
   );
 }

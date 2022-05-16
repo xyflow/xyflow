@@ -92,24 +92,6 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   return nextNodeInternals;
 }
 
-export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
-  if (!node.parentNode) {
-    return false;
-  }
-
-  const parentNode = nodeInternals.get(node.parentNode);
-
-  if (!parentNode) {
-    return false;
-  }
-
-  if (parentNode.selected) {
-    return true;
-  }
-
-  return isParentSelected(parentNode, nodeInternals);
-}
-
 type CreatePostionChangeParams = {
   node: Node;
   nodeExtent: CoordinateExtent;
@@ -118,49 +100,6 @@ type CreatePostionChangeParams = {
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
 };
-
-export function createPositionChange({
-  node,
-  diff,
-  nodeExtent,
-  nodeInternals,
-  snapToGrid,
-  snapGrid,
-}: CreatePostionChangeParams): NodePositionChange {
-  const change: NodePositionChange = {
-    id: node.id,
-    type: 'position',
-  };
-
-  if (diff) {
-    const nextPosition = { x: diff.x, y: diff.y };
-
-    let currentExtent = node.extent || nodeExtent;
-
-    if (node.extent === 'parent') {
-      if (node.parentNode && node.width && node.height) {
-        const parent = nodeInternals.get(node.parentNode);
-        currentExtent =
-          parent?.width && parent?.height
-            ? [
-                [0, 0],
-                [parent.width - node.width, parent.height - node.height],
-              ]
-            : currentExtent;
-      } else {
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[React Flow]: Only child nodes can use a parent extent. Help: https://reactflow.dev/error#500');
-        }
-        currentExtent = nodeExtent;
-      }
-    }
-
-    change.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
-  }
-
-  return change;
-}
 
 type InternalFitViewOptions = {
   initial?: boolean;

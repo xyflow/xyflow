@@ -36,6 +36,8 @@ import {
   OnMove,
   OnMoveStart,
   OnMoveEnd,
+  NodeDragHandler,
+  NodeMouseHandler,
 } from '.';
 import { HandleType } from './handles';
 
@@ -47,16 +49,16 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   defaultEdgeOptions?: DefaultEdgeOptions;
   onNodesChange?: OnNodesChange;
   onEdgesChange?: OnEdgesChange;
-  onNodeClick?: (event: React.MouseEvent, node: Node) => void;
+  onNodeClick?: NodeMouseHandler;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
-  onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDoubleClick?: NodeMouseHandler;
+  onNodeMouseEnter?: NodeMouseHandler;
+  onNodeMouseMove?: NodeMouseHandler;
+  onNodeMouseLeave?: NodeMouseHandler;
+  onNodeContextMenu?: NodeMouseHandler;
+  onNodeDragStart?: NodeDragHandler;
+  onNodeDrag?: NodeDragHandler;
+  onNodeDragStop?: NodeDragHandler;
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
   onConnect?: OnConnect;
