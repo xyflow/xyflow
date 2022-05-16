@@ -8,7 +8,6 @@ import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { terser } from 'rollup-plugin-terser';
 import filesize from 'rollup-plugin-filesize';
-import alias from '@rollup/plugin-alias';
 
 import pkg from './package.json';
 
@@ -78,9 +77,6 @@ export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
     output,
 
     plugins: [
-      alias({
-        entries: [{ find: 'd3-color', replacement: __dirname + '/src/d3-color-alias' }],
-      }),
       replace({
         __ENV__: JSON.stringify(processEnv),
         __REACT_FLOW_VERSION__: JSON.stringify(pkg.version),
