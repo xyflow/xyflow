@@ -5,7 +5,7 @@ import shallow from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../store';
 import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
-import { checkElementBelowIsValid, onMouseDown } from './handler';
+import { checkElementBelowIsValid, handleMouseDown } from './handler';
 import { getHostForElement } from '../../utils';
 import { addEdge } from '../../utils/graph';
 
@@ -35,6 +35,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onConnect,
       children,
       className,
+      onMouseDown,
       ...rest
     },
     ref
@@ -75,9 +76,9 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     );
 
     const onMouseDownHandler = useCallback(
-      (event: React.MouseEvent) => {
+      (event: React.MouseEvent<HTMLDivElement>) => {
         if (event.button === 0) {
-          onMouseDown(
+          handleMouseDown(
             event,
             handleId,
             nodeId,
@@ -93,6 +94,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
             onConnectEnd
           );
         }
+        onMouseDown?.(event);
       },
       [
         handleId,
