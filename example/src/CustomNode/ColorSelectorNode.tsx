@@ -16,7 +16,16 @@ const ColorSelectorNode: FC<NodeProps> = ({ data, isConnectable }) => {
         Custom Color Picker Node: <strong>{data.color}</strong>
       </div>
       <input className="nodrag" type="color" onChange={data.onChange} defaultValue={data.color} />
-      <Handle type="source" position={Position.Right} id="a" style={sourceHandleStyleA} isConnectable={isConnectable} />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="a"
+        style={sourceHandleStyleA}
+        isConnectable={isConnectable}
+        onMouseDown={(e) => {
+          console.log('You trigger mousedown event', e);
+        }}
+      />
       <Handle type="source" position={Position.Right} id="b" style={sourceHandleStyleB} isConnectable={isConnectable} />
     </>
   );
