@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, MouseEvent, useState, useMemo, useCallback } from 'react';
+import { RefObject, useEffect, useRef, MouseEvent, useState, useCallback } from 'react';
 import { D3DragEvent, drag, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
 
@@ -47,39 +47,28 @@ function useDrag({
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
   const parentPos = useRef<XYPosition>({ x: 0, y: 0 });
 
-  // TODO: should we store the ref or the bounds in the store?
-  // So that it is easier / more reliable to access?
-  const countainerBounds = useMemo(() => {
-    if (typeof document !== 'undefined') {
-      return document.querySelector('.react-flow')?.getBoundingClientRect();
-    }
+  // returns the mouse position projected to the RF coordinate system
+  const getMousePosition = useCallback((event: UseDragEvent) => {
+    const { transform, snapGrid, snapToGrid } = store.getState();
+
+    const mousePos = pointToRendererPoint(
+      {
+        x: event.sourceEvent.clientX,
+        y: event.sourceEvent.clientY,
+      },
+      transform,
+      snapToGrid,
+      snapGrid
+    );
+
+    mousePos.x -= parentPos.current.x;
+    mousePos.y -= parentPos.current.y;
+
+    return mousePos;
   }, []);
 
-  // returns the mouse position projected to the RF coordinate system
-  const getMousePosition = useCallback(
-    (event: UseDragEvent) => {
-      const { transform, snapGrid, snapToGrid } = store.getState();
-
-      const mousePos = pointToRendererPoint(
-        {
-          x: event.sourceEvent.clientX - (countainerBounds?.x || 0) - (window.scrollX || 0),
-          y: event.sourceEvent.clientY - (countainerBounds?.y || 0) - (window.scrollY || 0),
-        },
-        transform,
-        snapToGrid,
-        snapGrid
-      );
-
-      mousePos.x -= parentPos.current.x;
-      mousePos.y -= parentPos.current.y;
-
-      return mousePos;
-    },
-    [countainerBounds?.x, countainerBounds?.y, store]
-  );
-
   useEffect(() => {
-    if (nodeRef?.current && countainerBounds) {
+    if (nodeRef?.current) {
       const selection = select(nodeRef.current);
 
       if (disabled) {
@@ -182,7 +171,6 @@ function useDrag({
     store,
     nodeId,
     selectNodesOnDrag,
-    countainerBounds,
     getMousePosition,
   ]);
 
