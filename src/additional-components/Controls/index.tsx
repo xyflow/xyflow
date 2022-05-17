@@ -1,4 +1,4 @@
-import React, { memo, useCallback, FC, useEffect, useState, PropsWithChildren } from 'react';
+import React, { memo, FC, useEffect, useState, PropsWithChildren } from 'react';
 import cc from 'classcat';
 
 import { useStore, useStoreApi } from '../../store';
@@ -38,33 +38,6 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   const isInteractive = useStore(isInteractiveSelector);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
-  const mapClasses = cc(['react-flow__controls', className]);
-
-  const onZoomInHandler = useCallback(() => {
-    zoomIn?.();
-    onZoomIn?.();
-  }, [zoomIn, onZoomIn]);
-
-  const onZoomOutHandler = useCallback(() => {
-    zoomOut?.();
-    onZoomOut?.();
-  }, [zoomOut, onZoomOut]);
-
-  const onFitViewHandler = useCallback(() => {
-    fitView?.(fitViewOptions);
-    onFitView?.();
-  }, [fitView, fitViewOptions, onFitView]);
-
-  const onInteractiveChangeHandler = useCallback(() => {
-    store.setState({
-      nodesDraggable: !isInteractive,
-      nodesConnectable: !isInteractive,
-      elementsSelectable: !isInteractive,
-    });
-
-    onInteractiveChange?.(!isInteractive);
-  }, [isInteractive, onInteractiveChange]);
-
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -73,8 +46,33 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
     return null;
   }
 
+  const onZoomInHandler = () => {
+    zoomIn?.();
+    onZoomIn?.();
+  };
+
+  const onZoomOutHandler = () => {
+    zoomOut?.();
+    onZoomOut?.();
+  };
+
+  const onFitViewHandler = () => {
+    fitView?.(fitViewOptions);
+    onFitView?.();
+  };
+
+  const onToggleInteractivity = () => {
+    store.setState({
+      nodesDraggable: !isInteractive,
+      nodesConnectable: !isInteractive,
+      elementsSelectable: !isInteractive,
+    });
+
+    onInteractiveChange?.(!isInteractive);
+  };
+
   return (
-    <div className={mapClasses} style={style}>
+    <div className={cc(['react-flow__controls', className])} style={style}>
       {showZoom && (
         <>
           <ControlButton
@@ -108,7 +106,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
       {showInteractive && (
         <ControlButton
           className="react-flow__controls-interactive"
-          onClick={onInteractiveChangeHandler}
+          onClick={onToggleInteractivity}
           title="toggle interactivity"
           aria-label="toggle interactivity"
         >
