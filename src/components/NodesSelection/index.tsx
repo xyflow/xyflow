@@ -10,7 +10,7 @@ import shallow from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../store';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
-import useDragNode from '../../hooks/useDragNode';
+import useDrag from '../../hooks/useDrag';
 
 export interface NodesSelectionProps {
   onSelectionDragStart?: (event: MouseEvent, nodes: Node[]) => void;
@@ -51,7 +51,7 @@ function NodesSelection({
   const onDrag = useGetMemoizedHandler(onSelectionDrag);
   const onStop = useGetMemoizedHandler(onSelectionDragStop);
 
-  useDragNode({
+  useDrag({
     onStart,
     onDrag,
     onStop,

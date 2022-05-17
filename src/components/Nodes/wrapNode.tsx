@@ -5,7 +5,7 @@ import shallow from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
-import useDragNode from '../../hooks/useDragNode';
+import useDrag from '../../hooks/useDrag';
 import { getMouseHandler } from './utils';
 
 const selector = (s: ReactFlowState) => ({
@@ -103,7 +103,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       }
     }, [id, type, sourcePosition, targetPosition]);
 
-    const dragging = useDragNode({
+    const dragging = useDrag({
       onStart: onNodeDragStart,
       onDrag: onNodeDrag,
       onStop: onNodeDragStop,
