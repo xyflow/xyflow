@@ -1,8 +1,6 @@
 import { createContext } from 'react';
 
-type ContextProps = string | null;
-
-export const NodeIdContext = createContext<Partial<ContextProps>>(null);
+export const NodeIdContext = createContext<string | null>(null);
 export const Provider = NodeIdContext.Provider;
 export const Consumer = NodeIdContext.Consumer;
 
