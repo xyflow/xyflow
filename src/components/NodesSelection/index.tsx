@@ -3,11 +3,11 @@
  * made a selection with on or several nodes
  */
 
-import React, { memo, useMemo, useCallback, useRef, MouseEvent } from 'react';
+import React, { memo, useCallback, useRef, MouseEvent } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
-import { useStore } from '../../store';
+import { useStore, useStoreApi } from '../../store';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
 import useDragNode from '../../hooks/useDragNode';
@@ -23,8 +23,16 @@ export interface NodesSelectionProps {
 const selector = (s: ReactFlowState) => ({
   transform: s.transform,
   userSelectionActive: s.userSelectionActive,
-  selectedNodes: Array.from(s.nodeInternals.values()).filter((n) => n.selected),
 });
+
+const bboxSelector = (s: ReactFlowState) => {
+  const selectedNodes = Array.from(s.nodeInternals.values()).filter((n) => n.selected);
+  return getRectOfNodes(selectedNodes);
+};
+
+function useGetMemoizedHandler(handler?: (event: MouseEvent, nodes: Node[]) => void) {
+  return useCallback((event: MouseEvent, _: Node, nodes: Node[]) => handler?.(event, nodes), [handler]);
+}
 
 function NodesSelection({
   onSelectionDragStart,
@@ -33,30 +41,15 @@ function NodesSelection({
   onSelectionContextMenu,
   noPanClassName,
 }: NodesSelectionProps) {
-  const { transform, userSelectionActive, selectedNodes } = useStore(selector, shallow);
-  const [tX, tY, tScale] = transform;
+  const store = useStoreApi();
+  const { transform, userSelectionActive } = useStore(selector, shallow);
+  const { width, height, x, y } = useStore(bboxSelector, shallow);
   const nodeRef = useRef(null);
-  const selectedNodesBbox = useMemo(() => getRectOfNodes(selectedNodes), [selectedNodes]);
 
-  const onStart = useCallback(
-    (event: MouseEvent, _: Node, nodes: Node[]) => onSelectionDragStart?.(event, nodes),
-    [onSelectionDragStart]
-  );
-
-  const onDrag = useCallback(
-    (event: MouseEvent, _: Node, nodes: Node[]) => onSelectionDrag?.(event, nodes),
-    [onSelectionDrag]
-  );
-
-  const onStop = useCallback(
-    (event: MouseEvent, _: Node, nodes: Node[]) => onSelectionDragStop?.(event, nodes),
-    [onSelectionDragStop]
-  );
-
-  const onContextMenu = useCallback(
-    (event: MouseEvent) => onSelectionContextMenu?.(event, selectedNodes),
-    [onSelectionContextMenu, selectedNodes]
-  );
+  // it's important that these handlers are memoized to avoid multiple creation of d3 drag handler
+  const onStart = useGetMemoizedHandler(onSelectionDragStart);
+  const onDrag = useGetMemoizedHandler(onSelectionDrag);
+  const onStop = useGetMemoizedHandler(onSelectionDragStop);
 
   useDragNode({
     onStart,
@@ -65,15 +58,22 @@ function NodesSelection({
     nodeRef,
   });
 
-  if (!selectedNodes?.length || userSelectionActive) {
+  if (userSelectionActive || !width || !height) {
     return null;
   }
+
+  const onContextMenu = onSelectionContextMenu
+    ? (event: MouseEvent) => {
+        const selectedNodes = Array.from(store.getState().nodeInternals.values()).filter((n) => n.selected);
+        onSelectionContextMenu(event, selectedNodes);
+      }
+    : undefined;
 
   return (
     <div
       className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])}
       style={{
-        transform: `translate(${tX}px,${tY}px) scale(${tScale})`,
+        transform: `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]})`,
       }}
     >
       <div
@@ -81,10 +81,10 @@ function NodesSelection({
         className="react-flow__nodesselection-rect"
         onContextMenu={onContextMenu}
         style={{
-          width: selectedNodesBbox.width,
-          height: selectedNodesBbox.height,
-          top: selectedNodesBbox.y,
-          left: selectedNodesBbox.x,
+          width,
+          height,
+          top: y,
+          left: x,
         }}
       />
     </div>
