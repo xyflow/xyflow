@@ -3,7 +3,6 @@ import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import MiniMapNode from './MiniMapNode';
-
 import { useStore } from '../../store';
 import { getRectOfNodes } from '../../utils/graph';
 import { getBoundsofRects } from '../../utils';
@@ -19,8 +18,10 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   transform: s.transform,
-  nodeInternals: s.nodeInternals,
+  nodes: Array.from(s.nodeInternals.values()),
 });
+
+const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 const MiniMap = ({
   style,
@@ -32,30 +33,19 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const { width: containerWidth, height: containerHeight, transform, nodeInternals } = useStore(selector, shallow);
-  const [tX, tY, tScale] = transform;
-
-  const mapClasses = cc(['react-flow__minimap', className]);
-  const elementWidth = (style?.width || defaultWidth)! as number;
-  const elementHeight = (style?.height || defaultHeight)! as number;
-  const nodeColorFunc = (nodeColor instanceof Function ? nodeColor : () => nodeColor) as GetMiniMapNodeAttribute;
-  const nodeStrokeColorFunc = (
-    nodeStrokeColor instanceof Function ? nodeStrokeColor : () => nodeStrokeColor
-  ) as GetMiniMapNodeAttribute;
-  const nodeClassNameFunc = (
-    nodeClassName instanceof Function ? nodeClassName : () => nodeClassName
-  ) as GetMiniMapNodeAttribute;
-  const hasNodes = nodeInternals && nodeInternals.size > 0;
-  // @TODO: work with nodeInternals instead of converting it to an array
-  const nodes = Array.from(nodeInternals).map(([_, node]) => node);
-  const bb = getRectOfNodes(nodes);
+  const { width: containerWidth, height: containerHeight, transform, nodes } = useStore(selector, shallow);
+  const elementWidth = (style?.width as number) ?? defaultWidth;
+  const elementHeight = (style?.height as number) ?? defaultHeight;
+  const nodeColorFunc = getAttrFunction(nodeColor);
+  const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
+  const nodeClassNameFunc = getAttrFunction(nodeClassName);
   const viewBB: Rect = {
-    x: -tX / tScale,
-    y: -tY / tScale,
-    width: containerWidth / tScale,
-    height: containerHeight / tScale,
+    x: -transform[0] / transform[2],
+    y: -transform[1] / transform[2],
+    width: containerWidth / transform[2],
+    height: containerHeight / transform[2],
   };
-  const boundingRect = hasNodes ? getBoundsofRects(bb, viewBB) : viewBB;
+  const boundingRect = nodes.length > 0 ? getBoundsofRects(getRectOfNodes(nodes), viewBB) : viewBB;
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
@@ -74,18 +64,16 @@ const MiniMap = ({
       height={elementHeight}
       viewBox={`${x} ${y} ${width} ${height}`}
       style={style}
-      className={mapClasses}
+      className={cc(['react-flow__minimap', className])}
     >
-      {Array.from(nodeInternals)
-        .filter(([_, node]) => !node.hidden && node.width && node.height)
-        .map(([_, node]) => {
-          const positionAbsolute = nodeInternals.get(node.id)?.positionAbsolute;
-
+      {nodes
+        .filter((node) => !node.hidden && node.width && node.height)
+        .map((node) => {
           return (
             <MiniMapNode
               key={node.id}
-              x={positionAbsolute?.x || 0}
-              y={positionAbsolute?.y || 0}
+              x={node.positionAbsolute?.x ?? 0}
+              y={node.positionAbsolute?.y ?? 0}
               width={node.width!}
               height={node.height!}
               style={node.style}
