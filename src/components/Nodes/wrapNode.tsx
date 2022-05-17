@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, memo, ComponentType, CSSProperties, useMemo, MouseEvent, useCallback } from 'react';
+import React, { useEffect, useRef, memo, ComponentType, MouseEvent } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
-import useMemoizedMouseHandler from './useMemoizedMouseHandler';
 import useDragNode from '../../hooks/useDragNode';
+import { getMouseHandler } from './utils';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedNodes: s.addSelectedNodes,
@@ -53,39 +53,26 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
-    const nodeStyle: CSSProperties = useMemo(
-      () => ({
-        zIndex,
-        transform: `translate(${xPos}px,${yPos}px)`,
-        pointerEvents: hasPointerEvents ? 'all' : 'none',
-        ...style,
-      }),
-      [zIndex, xPos, yPos, hasPointerEvents, style]
-    );
 
-    const onMouseEnterHandler = useMemoizedMouseHandler(id, store.getState, onMouseEnter);
-    const onMouseMoveHandler = useMemoizedMouseHandler(id, store.getState, onMouseMove);
-    const onMouseLeaveHandler = useMemoizedMouseHandler(id, store.getState, onMouseLeave);
-    const onContextMenuHandler = useMemoizedMouseHandler(id, store.getState, onContextMenu);
-    const onNodeDoubleClickHandler = useMemoizedMouseHandler(id, store.getState, onNodeDoubleClick);
+    const onMouseEnterHandler = getMouseHandler(id, store.getState, onMouseEnter);
+    const onMouseMoveHandler = getMouseHandler(id, store.getState, onMouseMove);
+    const onMouseLeaveHandler = getMouseHandler(id, store.getState, onMouseLeave);
+    const onContextMenuHandler = getMouseHandler(id, store.getState, onContextMenu);
+    const onNodeDoubleClickHandler = getMouseHandler(id, store.getState, onNodeDoubleClick);
+    const onSelectNodeHandler = (event: MouseEvent) => {
+      if (isSelectable) {
+        store.setState({ nodesSelectionActive: false });
 
-    const onSelectNodeHandler = useCallback(
-      (event: MouseEvent) => {
-        if (isSelectable) {
-          store.setState({ nodesSelectionActive: false });
-
-          if (!selected) {
-            addSelectedNodes([id]);
-          }
+        if (!selected) {
+          addSelectedNodes([id]);
         }
+      }
 
-        if (onClick) {
-          const node = store.getState().nodeInternals.get(id)!;
-          onClick(event, { ...node });
-        }
-      },
-      [isSelectable, selected, onClick, id]
-    );
+      if (onClick) {
+        const node = store.getState().nodeInternals.get(id)!;
+        onClick(event, { ...node });
+      }
+    };
 
     useEffect(() => {
       if (nodeElement.current && !hidden) {
@@ -149,7 +136,12 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       <div
         className={nodeClasses}
         ref={nodeElement}
-        style={nodeStyle}
+        style={{
+          zIndex,
+          transform: `translate(${xPos}px,${yPos}px)`,
+          pointerEvents: hasPointerEvents ? 'all' : 'none',
+          ...style,
+        }}
         onMouseEnter={onMouseEnterHandler}
         onMouseMove={onMouseMoveHandler}
         onMouseLeave={onMouseLeaveHandler}

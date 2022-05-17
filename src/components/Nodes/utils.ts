@@ -1,4 +1,7 @@
-import { HandleElement, Position } from '../../types';
+import { MouseEvent } from 'react';
+import { GetState } from 'zustand';
+
+import { HandleElement, Node, Position, ReactFlowState } from '../../types';
 import { getDimensions } from '../../utils';
 
 export const getHandleBounds = (nodeElement: HTMLDivElement, scale: number) => {
@@ -39,3 +42,16 @@ export const getHandleBoundsByHandleType = (
     };
   });
 };
+
+export function getMouseHandler(
+  id: string,
+  getState: GetState<ReactFlowState>,
+  handler?: (event: MouseEvent, node: Node) => void
+) {
+  return handler === undefined
+    ? handler
+    : (event: MouseEvent) => {
+        const node = getState().nodeInternals.get(id)!;
+        handler(event, { ...node });
+      };
+}
