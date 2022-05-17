@@ -6,6 +6,8 @@ import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';
+import useVisibleEdges from '../../hooks/useVisibleEdges';
+
 import {
   Position,
   Edge,
@@ -17,7 +19,6 @@ import {
   ReactFlowState,
   EdgeTypesWrapped,
 } from '../../types';
-import useVisibleEdges from '../../hooks/useVisibleEdges';
 
 interface EdgeRendererProps {
   edgeTypes: EdgeTypesWrapped;

@@ -34,7 +34,6 @@ const selector = (s: ReactFlowState) => ({
   nodesConnectable: s.nodesConnectable,
   elementsSelectable: s.elementsSelectable,
   updateNodeDimensions: s.updateNodeDimensions,
-  nodeInternals: s.nodeInternals,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
