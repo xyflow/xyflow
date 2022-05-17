@@ -145,10 +145,12 @@ function useDrag({
               }
             });
           })
-          .filter((event: any) => {
-            const filter = !event.ctrlKey && !event.button && !event.target.className.includes(noDragClassName);
+          .filter((event: MouseEvent) => {
+            const target = event.target as HTMLDivElement;
+            const filter =
+              !event.ctrlKey && !event.button && (!noDragClassName || !target.className?.includes?.(noDragClassName));
             return handleSelector
-              ? selectorExistsTargetToNode(event.target, handleSelector, nodeRef) && filter
+              ? selectorExistsTargetToNode(target as HTMLDivElement, handleSelector, nodeRef) && filter
               : filter;
           });
 
