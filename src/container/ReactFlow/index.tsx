@@ -68,6 +68,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onConnectStart,
       onConnectStop,
       onConnectEnd,
+      onClickConnectStart,
+      onClickConnectStop,
+      onClickConnectEnd,
       onNodeMouseEnter,
       onNodeMouseMove,
       onNodeMouseLeave,
@@ -216,6 +219,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onConnectStart={onConnectStart}
             onConnectStop={onConnectStop}
             onConnectEnd={onConnectEnd}
+            onClickConnectStart={onClickConnectStart}
+            onClickConnectStop={onClickConnectStop}
+            onClickConnectEnd={onClickConnectEnd}
             nodesDraggable={nodesDraggable}
             nodesConnectable={nodesConnectable}
             elementsSelectable={elementsSelectable}

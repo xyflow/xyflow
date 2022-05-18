@@ -65,6 +65,9 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
+  onClickConnectStart?: OnConnectStart;
+  onClickConnectStop?: OnConnectStop;
+  onClickConnectEnd?: OnConnectEnd;
   onInit?: OnInit;
   onMove?: OnMove;
   onMoveStart?: OnMoveStart;

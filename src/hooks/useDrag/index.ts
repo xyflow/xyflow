@@ -148,7 +148,7 @@ function useDrag({
           .filter((event: MouseEvent) => {
             const target = event.target as HTMLDivElement;
             const filter =
-              !event.ctrlKey && !event.button && (!noDragClassName || !target.className?.includes?.(noDragClassName));
+              !event.ctrlKey && !event.button && (!noDragClassName || !target.classList?.contains?.(noDragClassName));
             return handleSelector
               ? selectorExistsTargetToNode(target as HTMLDivElement, handleSelector, nodeRef) && filter
               : filter;

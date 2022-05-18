@@ -165,6 +165,10 @@ export type ReactFlowStore = {
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
 
+  onClickConnectStart?: OnConnectStart;
+  onClickConnectStop?: OnConnectStop;
+  onClickConnectEnd?: OnConnectEnd;
+
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
 

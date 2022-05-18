@@ -1,4 +1,4 @@
-import { MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
+import { MouseEvent as ReactMouseEvent, CSSProperties, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -162,7 +162,7 @@ const nodeColor = (n: Node): string => {
 const OverviewFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow

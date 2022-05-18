@@ -18,6 +18,9 @@ const selector = (s: ReactFlowState) => ({
   onConnectStart: s.onConnectStart,
   onConnectStop: s.onConnectStop,
   onConnectEnd: s.onConnectEnd,
+  onClickConnectStart: s.onClickConnectStart,
+  onClickConnectStop: s.onClickConnectStop,
+  onClickConnectEnd: s.onClickConnectEnd,
   connectionMode: s.connectionMode,
   connectionStartHandle: s.connectionStartHandle,
   connectOnClick: s.connectOnClick,
@@ -47,6 +50,9 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onConnectStart,
       onConnectStop,
       onConnectEnd,
+      onClickConnectStart,
+      onClickConnectStop,
+      onClickConnectEnd,
       connectionMode,
       connectionStartHandle,
       connectOnClick,
@@ -95,7 +101,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
 
     const onClick = (event: React.MouseEvent) => {
       if (!connectionStartHandle) {
-        onConnectStart?.(event, { nodeId, handleId, handleType: type });
+        onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
         store.setState({ connectionStartHandle: { nodeId, type, handleId } });
         return;
       }
@@ -111,13 +117,13 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         doc
       );
 
-      onConnectStop?.(event as unknown as MouseEvent);
+      onClickConnectStop?.(event as unknown as MouseEvent);
 
       if (isValid) {
         onConnectExtended(connection);
       }
 
-      onConnectEnd?.(event as unknown as MouseEvent);
+      onClickConnectEnd?.(event as unknown as MouseEvent);
 
       store.setState({ connectionStartHandle: null });
     };
