@@ -81,6 +81,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
+  connectionLineContainerStyle?: CSSProperties;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
   multiSelectionKeyCode?: KeyCode | null;

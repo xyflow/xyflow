@@ -87,6 +87,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
       connectionLineComponent,
+      connectionLineContainerStyle,
       deleteKeyCode = 'Backspace',
       selectionKeyCode = 'Shift',
       multiSelectionKeyCode = 'Meta',
@@ -169,6 +170,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionLineType={connectionLineType}
             connectionLineStyle={connectionLineStyle}
             connectionLineComponent={connectionLineComponent}
+            connectionLineContainerStyle={connectionLineContainerStyle}
             selectionKeyCode={selectionKeyCode}
             deleteKeyCode={deleteKeyCode}
             multiSelectionKeyCode={multiSelectionKeyCode}

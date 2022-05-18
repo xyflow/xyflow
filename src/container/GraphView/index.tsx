@@ -50,6 +50,7 @@ const GraphView = ({
   connectionLineType,
   connectionLineStyle,
   connectionLineComponent,
+  connectionLineContainerStyle,
   selectionKeyCode,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
@@ -125,6 +126,7 @@ const GraphView = ({
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           connectionLineComponent={connectionLineComponent}
+          connectionLineContainerStyle={connectionLineContainerStyle}
           onEdgeUpdate={onEdgeUpdate}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           onEdgeContextMenu={onEdgeContextMenu}

@@ -24,6 +24,7 @@ interface EdgeRendererProps {
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
+  connectionLineContainerStyle?: CSSProperties;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   defaultMarkerColor: string;
@@ -74,6 +75,15 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
 
   const { connectionLineType, defaultMarkerColor, connectionLineStyle, connectionLineComponent } = props;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
+
+  let { connectionLineContainerStyle } = props
+  if (connectionLineContainerStyle?.zIndex === undefined) {
+    // if not set already, set the zIndex to the max level of the any edge
+    connectionLineContainerStyle = {
+      ...connectionLineContainerStyle,
+      zIndex: edgeTree.find(({ isMaxLevel }) => isMaxLevel)?.level
+    }
+  }
 
   return (
     <>
@@ -179,22 +189,29 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 />
               );
             })}
-            {renderConnectionLine && isMaxLevel && (
-              <ConnectionLine
-                connectionNodeId={connectionNodeId!}
-                connectionHandleId={connectionHandleId}
-                connectionHandleType={connectionHandleType!}
-                connectionPositionX={connectionPosition.x}
-                connectionPositionY={connectionPosition.y}
-                connectionLineStyle={connectionLineStyle}
-                connectionLineType={connectionLineType}
-                isConnectable={nodesConnectable}
-                CustomConnectionLineComponent={connectionLineComponent}
-              />
-            )}
           </g>
         </svg>
       ))}
+      {renderConnectionLine && <svg
+        style={connectionLineContainerStyle}
+        width={width}
+        height={height}
+        className="react-flow__edges react-flow__container"
+      >
+        <g>
+          <ConnectionLine
+            connectionNodeId={connectionNodeId!}
+            connectionHandleId={connectionHandleId}
+            connectionHandleType={connectionHandleType!}
+            connectionPositionX={connectionPosition.x}
+            connectionPositionY={connectionPosition.y}
+            connectionLineStyle={connectionLineStyle}
+            connectionLineType={connectionLineType}
+            isConnectable={nodesConnectable}
+            CustomConnectionLineComponent={connectionLineComponent}
+          />
+        </g>
+      </svg>}
     </>
   );
 };
