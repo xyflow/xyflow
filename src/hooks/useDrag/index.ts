@@ -101,7 +101,7 @@ function useDrag({
             }
 
             const mousePos = getMousePosition(event);
-            dragItems.current = getDragItems(nodeInternals, mousePos);
+            dragItems.current = getDragItems(nodeInternals, mousePos, nodeId);
 
             if (onStart && dragItems.current) {
               const [currentNode, nodes] = getEventHandlerParams({

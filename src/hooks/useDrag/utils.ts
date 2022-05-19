@@ -44,9 +44,9 @@ export function selectorExistsTargetToNode(target: Element, selector: string, no
 }
 
 // looks for all selected nodes and created a NodeDragItem for each of them
-export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition): NodeDragItem[] {
+export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition, nodeId?: string): NodeDragItem[] {
   return Array.from(nodeInternals.values())
-    .filter((n) => n.selected && (!n.parentNode || !isParentSelected(n, nodeInternals)))
+    .filter((n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodeInternals)))
     .map((n) => ({
       id: n.id,
       position: n.position,
