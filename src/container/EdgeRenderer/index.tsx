@@ -93,7 +93,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           style={{ zIndex: level }}
           width={width}
           height={height}
-          className="react-flow__edges react-flow__container"
+          className="react-flow__edges react-flow__connectionline react-flow__container"
         >
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
           <g>
