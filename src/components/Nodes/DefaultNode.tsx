@@ -4,11 +4,14 @@ import Handle from '../../components/Handle';
 import { NodeProps, Position } from '../../types';
 
 const DefaultNode = ({
+  id,
   data,
   isConnectable,
   targetPosition = Position.Top,
   sourcePosition = Position.Bottom,
 }: NodeProps) => {
+  console.log('render', id);
+
   return (
     <>
       <Handle type="target" position={targetPosition} isConnectable={isConnectable} />
