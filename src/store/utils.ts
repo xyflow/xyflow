@@ -1,22 +1,17 @@
-// @ts-nocheck
 import { zoomIdentity } from 'd3-zoom';
-import { GetState } from 'zustand';
+import { GetState, SetState } from 'zustand';
 
-import { clampPosition, isNumeric } from '../utils';
+import { isNumeric } from '../utils';
 import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
 import {
-  CoordinateExtent,
   Edge,
   EdgeSelectionChange,
   Node,
   NodeInternals,
-  NodePositionChange,
   NodeSelectionChange,
   ReactFlowState,
-  XYPosition,
   XYZPosition,
   FitViewOptions,
-  SnapGrid,
 } from '../types';
 
 type ParentNodes = Record<string, boolean>;
@@ -92,15 +87,6 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   return nextNodeInternals;
 }
 
-type CreatePostionChangeParams = {
-  node: Node;
-  nodeExtent: CoordinateExtent;
-  nodeInternals: NodeInternals;
-  diff?: XYPosition;
-  snapToGrid?: boolean;
-  snapGrid?: SnapGrid;
-};
-
 type InternalFitViewOptions = {
   initial?: boolean;
 } & FitViewOptions;
@@ -165,4 +151,31 @@ export function handleControlledEdgeSelectionChange(edgeChanges: EdgeSelectionCh
     }
     return e;
   });
+}
+
+type UpdateNodesAndEdgesParams = {
+  changedNodes: NodeSelectionChange[] | null;
+  changedEdges: EdgeSelectionChange[] | null;
+  get: GetState<ReactFlowState>;
+  set: SetState<ReactFlowState>;
+};
+
+export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get, set }: UpdateNodesAndEdgesParams) {
+  const { nodeInternals, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
+
+  if (changedNodes?.length) {
+    if (hasDefaultNodes) {
+      set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
+    }
+
+    onNodesChange?.(changedNodes);
+  }
+
+  if (changedEdges?.length) {
+    if (hasDefaultEdges) {
+      set({ edges: handleControlledEdgeSelectionChange(changedEdges, edges) });
+    }
+
+    onEdgesChange?.(changedEdges);
+  }
 }

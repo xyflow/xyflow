@@ -3,7 +3,6 @@ import createContext from 'zustand/context';
 
 import { clampPosition, getDimensions } from '../utils';
 import { applyNodeChanges } from '../utils/changes';
-
 import {
   ReactFlowState,
   Node,
@@ -18,12 +17,7 @@ import {
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
-import {
-  createNodeInternals,
-  handleControlledEdgeSelectionChange,
-  handleControlledNodeSelectionChange,
-  fitView,
-} from './utils';
+import { createNodeInternals, fitView, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 
 const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
@@ -120,17 +114,8 @@ const createStore = () =>
         }
       }
     },
-    // @TODO: can we unify addSelectedNodes and addSelectedEdges somehow?
     addSelectedNodes: (selectedNodeIds: string[]) => {
-      const {
-        multiSelectionActive,
-        onNodesChange,
-        nodeInternals,
-        hasDefaultNodes,
-        onEdgesChange,
-        hasDefaultEdges,
-        edges,
-      } = get();
+      const { multiSelectionActive, nodeInternals, edges } = get();
       let changedNodes: NodeSelectionChange[];
       let changedEdges: EdgeSelectionChange[] | null = null;
 
@@ -141,32 +126,15 @@ const createStore = () =>
         changedEdges = getSelectionChanges(edges, []);
       }
 
-      if (changedNodes.length) {
-        if (hasDefaultNodes) {
-          set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
-        }
-
-        onNodesChange?.(changedNodes);
-      }
-
-      if (changedEdges?.length) {
-        if (hasDefaultEdges) {
-          set({ edges: handleControlledEdgeSelectionChange(changedEdges, edges) });
-        }
-
-        onEdgesChange?.(changedEdges);
-      }
+      updateNodesAndEdgesSelections({
+        changedNodes,
+        changedEdges,
+        get,
+        set,
+      });
     },
     addSelectedEdges: (selectedEdgeIds: string[]) => {
-      const {
-        multiSelectionActive,
-        onEdgesChange,
-        edges,
-        hasDefaultEdges,
-        nodeInternals,
-        hasDefaultNodes,
-        onNodesChange,
-      } = get();
+      const { multiSelectionActive, edges, nodeInternals } = get();
       let changedEdges: EdgeSelectionChange[];
       let changedNodes: NodeSelectionChange[] | null = null;
 
@@ -177,25 +145,15 @@ const createStore = () =>
         changedNodes = getSelectionChanges(Array.from(nodeInternals.values()), []);
       }
 
-      if (changedEdges.length) {
-        if (hasDefaultEdges) {
-          set({
-            edges: handleControlledEdgeSelectionChange(changedEdges, edges),
-          });
-        }
-        onEdgesChange?.(changedEdges);
-      }
-
-      if (changedNodes?.length) {
-        if (hasDefaultNodes) {
-          set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
-        }
-
-        onNodesChange?.(changedNodes);
-      }
+      updateNodesAndEdgesSelections({
+        changedNodes,
+        changedEdges,
+        get,
+        set,
+      });
     },
     unselectNodesAndEdges: () => {
-      const { nodeInternals, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
+      const { nodeInternals, edges } = get();
       const nodes = Array.from(nodeInternals.values());
 
       const nodesToUnselect = nodes.map((n) => {
@@ -204,22 +162,13 @@ const createStore = () =>
       }) as NodeSelectionChange[];
       const edgesToUnselect = edges.map((edge) => createSelectionChange(edge.id, false)) as EdgeSelectionChange[];
 
-      if (nodesToUnselect.length) {
-        if (hasDefaultNodes) {
-          set({ nodeInternals: handleControlledNodeSelectionChange(nodesToUnselect, nodeInternals) });
-        }
-        onNodesChange?.(nodesToUnselect);
-      }
-      if (edgesToUnselect.length) {
-        if (hasDefaultEdges) {
-          set({
-            edges: handleControlledEdgeSelectionChange(edgesToUnselect, edges),
-          });
-        }
-        onEdgesChange?.(edgesToUnselect);
-      }
+      updateNodesAndEdgesSelections({
+        changedNodes: nodesToUnselect,
+        changedEdges: edgesToUnselect,
+        get,
+        set,
+      });
     },
-
     setMinZoom: (minZoom: number) => {
       const { d3Zoom, maxZoom } = get();
       d3Zoom?.scaleExtent([minZoom, maxZoom]);
@@ -239,7 +188,7 @@ const createStore = () =>
       set({ translateExtent });
     },
     resetSelectedElements: () => {
-      const { nodeInternals, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
+      const { nodeInternals, edges } = get();
       const nodes = Array.from(nodeInternals.values());
 
       const nodesToUnselect = nodes
@@ -249,22 +198,12 @@ const createStore = () =>
         .filter((e) => e.selected)
         .map((e) => createSelectionChange(e.id, false)) as EdgeSelectionChange[];
 
-      if (nodesToUnselect.length) {
-        if (hasDefaultNodes) {
-          set({
-            nodeInternals: handleControlledNodeSelectionChange(nodesToUnselect, nodeInternals),
-          });
-        }
-        onNodesChange?.(nodesToUnselect);
-      }
-      if (edgesToUnselect.length) {
-        if (hasDefaultEdges) {
-          set({
-            edges: handleControlledEdgeSelectionChange(edgesToUnselect, edges),
-          });
-        }
-        onEdgesChange?.(edgesToUnselect);
-      }
+      updateNodesAndEdgesSelections({
+        changedNodes: nodesToUnselect,
+        changedEdges: edgesToUnselect,
+        get,
+        set,
+      });
     },
     setNodeExtent: (nodeExtent: CoordinateExtent) => {
       const { nodeInternals } = get();
