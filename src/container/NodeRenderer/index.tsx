@@ -70,15 +70,17 @@ const NodeRenderer = (props: NodeRendererProps) => {
   return (
     <div className="react-flow__nodes react-flow__container">
       {nodes.map((node) => {
-        const nodeType = node.type || 'default';
+        let nodeType = node.type || 'default';
 
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          if (!props.nodeTypes[nodeType]) {
+        if (!props.nodeTypes[nodeType]) {
+          // @ts-ignore
+          if (process.env.NODE_ENV === 'development') {
             console.warn(
               `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
             );
           }
+
+          nodeType = 'default';
         }
 
         const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
