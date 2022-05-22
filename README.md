@@ -106,7 +106,7 @@ You can also use our [contact form](https://pro.reactflow.dev/contact) or join t
 React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. Under the hood, React Flow depends on these great libraries:
 
 * [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
-* [react-draggable](https://github.com/react-grid-layout/react-draggable) - used for making the nodes draggable
+* [d3-drag](https://github.com/d3/d3-drag) - used for making the nodes draggable
 * [zustand](https://github.com/pmndrs/zustand) - internal state management
 
 ## License
