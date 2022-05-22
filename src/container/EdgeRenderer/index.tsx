@@ -73,17 +73,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     return null;
   }
 
-  const { connectionLineType, defaultMarkerColor, connectionLineStyle, connectionLineComponent } = props;
+  const { connectionLineType, defaultMarkerColor, connectionLineStyle, connectionLineComponent, connectionLineContainerStyle } = props;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
-
-  let { connectionLineContainerStyle } = props
-  if (connectionLineContainerStyle?.zIndex === undefined) {
-    // if not set already, set the zIndex to the max level of the any edge
-    connectionLineContainerStyle = {
-      ...connectionLineContainerStyle,
-      zIndex: edgeTree.find(({ isMaxLevel }) => isMaxLevel)?.level
-    }
-  }
 
   return (
     <>
