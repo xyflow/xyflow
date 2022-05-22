@@ -105,10 +105,10 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
             onContextMenu={props.onNodeContextMenu}
-            onNodeDoubleClick={props.onNodeDoubleClick}
-            onNodeDragStart={props.onNodeDragStart}
-            onNodeDrag={props.onNodeDrag}
-            onNodeDragStop={props.onNodeDragStop}
+            onDoubleClick={props.onNodeDoubleClick}
+            onDragStart={props.onNodeDragStart}
+            onDrag={props.onNodeDrag}
+            onDragStop={props.onNodeDragStop}
             selected={!!node.selected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}

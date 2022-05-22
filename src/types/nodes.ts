@@ -66,7 +66,7 @@ export interface WrapNodeProps<T = any> {
   isDraggable: boolean;
   selectNodesOnDrag: boolean;
   onClick?: NodeMouseHandler;
-  onNodeDoubleClick?: NodeMouseHandler;
+  onDoubleClick?: NodeMouseHandler;
   onMouseEnter?: NodeMouseHandler;
   onMouseMove?: NodeMouseHandler;
   onMouseLeave?: NodeMouseHandler;

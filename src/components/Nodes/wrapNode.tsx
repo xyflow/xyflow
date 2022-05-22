@@ -22,7 +22,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     onMouseMove,
     onMouseLeave,
     onContextMenu,
-    onNodeDoubleClick,
+    onDoubleClick,
     onDragStart,
     onDrag,
     onDragStop,
@@ -54,7 +54,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const onMouseMoveHandler = getMouseHandler(id, store.getState, onMouseMove);
     const onMouseLeaveHandler = getMouseHandler(id, store.getState, onMouseLeave);
     const onContextMenuHandler = getMouseHandler(id, store.getState, onContextMenu);
-    const onNodeDoubleClickHandler = getMouseHandler(id, store.getState, onNodeDoubleClick);
+    const onDoubleClickHandler = getMouseHandler(id, store.getState, onDoubleClick);
     const onSelectNodeHandler = (event: MouseEvent) => {
       if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
         // this handler gets called within the drag start event when selectNodesOnDrag=true
@@ -141,7 +141,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onMouseLeave={onMouseLeaveHandler}
         onContextMenu={onContextMenuHandler}
         onClick={onSelectNodeHandler}
-        onDoubleClick={onNodeDoubleClickHandler}
+        onDoubleClick={onDoubleClickHandler}
         data-id={id}
       >
         <Provider value={id}>
