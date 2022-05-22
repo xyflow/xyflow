@@ -105,6 +105,11 @@ export type FitBoundsOptions = ViewportHelperFunctionOptions & {
   padding?: number;
 };
 
+export type UnselectNodesAndEdgesParams = {
+  nodes?: Node[];
+  edges?: Edge[];
+};
+
 export interface ViewportHelperFunctions {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
@@ -187,7 +192,7 @@ export type ReactFlowActions = {
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   updateNodePositions: (nodeDragItems: NodeDragItem[]) => void;
   resetSelectedElements: () => void;
-  unselectNodesAndEdges: () => void;
+  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
   setMinZoom: (minZoom: number) => void;

@@ -14,6 +14,7 @@ import {
   NodeSelectionChange,
   NodePositionChange,
   NodeDragItem,
+  UnselectNodesAndEdgesParams,
 } from '../types';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -152,19 +153,22 @@ const createStore = () =>
         set,
       });
     },
-    unselectNodesAndEdges: () => {
-      const { nodeInternals, edges } = get();
-      const nodes = Array.from(nodeInternals.values());
+    unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
+      const { nodeInternals, edges: storeEdges } = get();
+      const nodesToUnselect = nodes ? nodes : Array.from(nodeInternals.values());
+      const edgesToUnselect = edges ? edges : storeEdges;
 
-      const nodesToUnselect = nodes.map((n) => {
+      const changedNodes = nodesToUnselect.map((n) => {
         n.selected = false;
         return createSelectionChange(n.id, false);
       }) as NodeSelectionChange[];
-      const edgesToUnselect = edges.map((edge) => createSelectionChange(edge.id, false)) as EdgeSelectionChange[];
+      const changedEdges = edgesToUnselect.map((edge) =>
+        createSelectionChange(edge.id, false)
+      ) as EdgeSelectionChange[];
 
       updateNodesAndEdgesSelections({
-        changedNodes: nodesToUnselect,
-        changedEdges: edgesToUnselect,
+        changedNodes,
+        changedEdges,
         get,
         set,
       });

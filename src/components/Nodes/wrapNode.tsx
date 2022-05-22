@@ -1,17 +1,13 @@
 import React, { useEffect, useRef, memo, ComponentType, MouseEvent } from 'react';
 import cc from 'classcat';
-import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
 import useDrag from '../../hooks/useDrag';
-import { getMouseHandler } from './utils';
+import { getMouseHandler, handleNodeClick } from './utils';
 
-const selector = (s: ReactFlowState) => ({
-  addSelectedNodes: s.addSelectedNodes,
-  updateNodeDimensions: s.updateNodeDimensions,
-});
+const selector = (s: ReactFlowState) => s.updateNodeDimensions;
 
 export default (NodeComponent: ComponentType<NodeProps>) => {
   const NodeWrapper = ({
@@ -27,9 +23,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     onMouseLeave,
     onContextMenu,
     onNodeDoubleClick,
-    onNodeDragStart,
-    onNodeDrag,
-    onNodeDragStop,
+    onDragStart,
+    onDrag,
+    onDragStop,
     style,
     className,
     isDraggable,
@@ -47,8 +43,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noDragClassName,
   }: WrapNodeProps) => {
     const store = useStoreApi();
-    const { addSelectedNodes, updateNodeDimensions } = useStore(selector, shallow);
-    const nodeElement = useRef<HTMLDivElement>(null);
+    const updateNodeDimensions = useStore(selector);
+    const nodeRef = useRef<HTMLDivElement>(null);
     const prevSourcePosition = useRef(sourcePosition);
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
@@ -60,12 +56,12 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const onContextMenuHandler = getMouseHandler(id, store.getState, onContextMenu);
     const onNodeDoubleClickHandler = getMouseHandler(id, store.getState, onNodeDoubleClick);
     const onSelectNodeHandler = (event: MouseEvent) => {
-      if (isSelectable) {
-        store.setState({ nodesSelectionActive: false });
-
-        if (!selected) {
-          addSelectedNodes([id]);
-        }
+      if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
+        // this handler gets called within the drag start event when selectNodesOnDrag=true
+        handleNodeClick({
+          id,
+          store,
+        });
       }
 
       if (onClick) {
@@ -75,8 +71,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     useEffect(() => {
-      if (nodeElement.current && !hidden) {
-        const currNode = nodeElement.current;
+      if (nodeRef.current && !hidden) {
+        const currNode = nodeRef.current;
         resizeObserver?.observe(currNode);
 
         return () => resizeObserver?.unobserve(currNode);
@@ -89,7 +85,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       const sourcePosChanged = prevSourcePosition.current !== sourcePosition;
       const targetPosChanged = prevTargetPosition.current !== targetPosition;
 
-      if (nodeElement.current && (typeChanged || sourcePosChanged || targetPosChanged)) {
+      if (nodeRef.current && (typeChanged || sourcePosChanged || targetPosChanged)) {
         if (typeChanged) {
           prevType.current = type;
         }
@@ -99,15 +95,15 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         if (targetPosChanged) {
           prevTargetPosition.current = targetPosition;
         }
-        updateNodeDimensions([{ id, nodeElement: nodeElement.current, forceUpdate: true }]);
+        updateNodeDimensions([{ id, nodeElement: nodeRef.current, forceUpdate: true }]);
       }
     }, [id, type, sourcePosition, targetPosition]);
 
     const dragging = useDrag({
-      onStart: onNodeDragStart,
-      onDrag: onNodeDrag,
-      onStop: onNodeDragStop,
-      nodeRef: nodeElement,
+      onStart: onDragStart,
+      onDrag: onDrag,
+      onStop: onDragStop,
+      nodeRef,
       disabled: !isDraggable,
       noDragClassName,
       handleSelector: dragHandle,
@@ -120,22 +116,20 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       return null;
     }
 
-    const nodeClasses = cc([
-      'react-flow__node',
-      `react-flow__node-${type}`,
-      noPanClassName,
-      className,
-      {
-        selected,
-        selectable: isSelectable,
-        parent: isParent,
-      },
-    ]);
-
     return (
       <div
-        className={nodeClasses}
-        ref={nodeElement}
+        className={cc([
+          'react-flow__node',
+          `react-flow__node-${type}`,
+          noPanClassName,
+          className,
+          {
+            selected,
+            selectable: isSelectable,
+            parent: isParent,
+          },
+        ])}
+        ref={nodeRef}
         style={{
           zIndex,
           transform: `translate(${xPos}px,${yPos}px)`,

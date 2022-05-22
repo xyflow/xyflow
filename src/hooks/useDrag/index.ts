@@ -12,6 +12,7 @@ import {
   selectorExistsTargetToNode,
   updatePosition,
 } from './utils';
+import { handleNodeClick } from '../../components/Nodes/utils';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 export type UseDragData = { dx: number; dy: number };
@@ -76,28 +77,21 @@ function useDrag({
       } else {
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
-            const { nodeInternals, addSelectedNodes, unselectNodesAndEdges, multiSelectionActive } = store.getState();
+            const { nodeInternals, multiSelectionActive, unselectNodesAndEdges } = store.getState();
             parentPos.current = getParentNodePosition(nodeInternals, nodeId);
 
-            // this part is the regular drag handler for a single node
-            // it selects the dragged node and deselects all other nodes if multiSelectionActive = false
-            if (nodeId && isSelectable) {
-              const node = nodeInternals.get(nodeId)!;
-
-              if (selectNodesOnDrag) {
-                store.setState({ nodesSelectionActive: false });
-
-                if (!node.selected) {
-                  addSelectedNodes([nodeId]);
-                }
-              } else if (!selectNodesOnDrag && !node.selected) {
-                if (multiSelectionActive) {
-                  addSelectedNodes([nodeId]);
-                } else {
-                  unselectNodesAndEdges();
-                  store.setState({ nodesSelectionActive: false });
-                }
+            if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {
+              if (!nodeInternals.get(nodeId)?.selected) {
+                // we need to reset selected nodes when selectNodesOnDrag=false
+                unselectNodesAndEdges();
               }
+            }
+
+            if (nodeId && isSelectable && selectNodesOnDrag) {
+              handleNodeClick({
+                id: nodeId,
+                store,
+              });
             }
 
             const mousePos = getMousePosition(event);

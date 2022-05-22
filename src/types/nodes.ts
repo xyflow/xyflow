@@ -71,9 +71,9 @@ export interface WrapNodeProps<T = any> {
   onMouseMove?: NodeMouseHandler;
   onMouseLeave?: NodeMouseHandler;
   onContextMenu?: NodeMouseHandler;
-  onNodeDragStart?: NodeDragHandler;
-  onNodeDrag?: NodeDragHandler;
-  onNodeDragStop?: NodeDragHandler;
+  onDragStart?: NodeDragHandler;
+  onDrag?: NodeDragHandler;
+  onDragStop?: NodeDragHandler;
   style?: CSSProperties;
   className?: string;
   sourcePosition: Position;

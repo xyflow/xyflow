@@ -66,6 +66,7 @@ const BasicFlow = () => {
       maxZoom={4}
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
+      selectNodesOnDrag={false}
     >
       <Background variant={BackgroundVariant.Lines} />
 
