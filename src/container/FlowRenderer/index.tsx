@@ -19,6 +19,7 @@ interface FlowRendererProps
     | 'edgeTypes'
     | 'snapGrid'
     | 'connectionLineType'
+    | 'connectionLineContainerStyle'
     | 'arrowHeadColor'
     | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
