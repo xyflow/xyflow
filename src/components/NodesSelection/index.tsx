@@ -43,7 +43,7 @@ function NodesSelection({
 }: NodesSelectionProps) {
   const store = useStoreApi();
   const { transform, userSelectionActive } = useStore(selector, shallow);
-  const { width, height, x, y } = useStore(bboxSelector, shallow);
+  const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
   const nodeRef = useRef(null);
 
   // it's important that these handlers are memoized to avoid multiple creation of d3 drag handler
@@ -83,8 +83,8 @@ function NodesSelection({
         style={{
           width,
           height,
-          top: y,
-          left: x,
+          top,
+          left,
         }}
       />
     </div>
