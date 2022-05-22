@@ -197,19 +197,17 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           height={height}
           className="react-flow__edges react-flow__connectionline react-flow__container"
         >
-          <g>
-            <ConnectionLine
-              connectionNodeId={connectionNodeId!}
-              connectionHandleId={connectionHandleId}
-              connectionHandleType={connectionHandleType!}
-              connectionPositionX={connectionPosition.x}
-              connectionPositionY={connectionPosition.y}
-              connectionLineStyle={connectionLineStyle}
-              connectionLineType={connectionLineType}
-              isConnectable={nodesConnectable}
-              CustomConnectionLineComponent={connectionLineComponent}
-            />
-          </g>
+          <ConnectionLine
+            connectionNodeId={connectionNodeId!}
+            connectionHandleId={connectionHandleId}
+            connectionHandleType={connectionHandleType!}
+            connectionPositionX={connectionPosition.x}
+            connectionPositionY={connectionPosition.y}
+            connectionLineStyle={connectionLineStyle}
+            connectionLineType={connectionLineType}
+            isConnectable={nodesConnectable}
+            CustomConnectionLineComponent={connectionLineComponent}
+          />
         </svg>
       )}
     </>
