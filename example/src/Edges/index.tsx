@@ -9,7 +9,6 @@ import ReactFlow, {
   MarkerType,
   MiniMap,
   Node,
-  Position,
   ReactFlowInstance,
   useEdgesState,
   useNodesState,
@@ -20,6 +19,11 @@ import CustomEdge2 from './CustomEdge2';
 const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
+const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('dblclick', edge);
+const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('enter', edge);
+const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('move', edge);
+const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('leave', edge);
 
 const initialNodes: Node[] = [
   { id: '1', type: 'input', data: { label: 'Input 1' }, position: { x: 250, y: 0 } },
@@ -131,6 +135,11 @@ const EdgesFlow = () => {
       onInit={onInit}
       snapToGrid={true}
       edgeTypes={edgeTypes}
+      onEdgeClick={onEdgeClick}
+      onEdgeDoubleClick={onEdgeDoubleClick}
+      onEdgeMouseEnter={onEdgeMouseEnter}
+      onEdgeMouseMove={onEdgeMouseMove}
+      onEdgeMouseLeave={onEdgeMouseLeave}
     >
       <MiniMap />
       <Controls />

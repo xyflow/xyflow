@@ -33,7 +33,11 @@ const initialEdges: Edge[] = [];
 const TouchDeviceFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), []);
+  const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
+  const onConnectStart = useCallback(() => console.log('connect start'), []);
+  const onConnectStop = useCallback(() => console.log('connect end'), []);
+  const onClickConnectStart = useCallback(() => console.log('click connect start'), []);
+  const onClickConnectStop = useCallback(() => console.log('click connect end'), []);
 
   return (
     <ReactFlow
@@ -42,6 +46,10 @@ const TouchDeviceFlow = () => {
       onConnect={onConnect}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onConnectStart={onConnectStart}
+      onConnectStop={onConnectStop}
+      onClickConnectStart={onClickConnectStart}
+      onClickConnectStop={onClickConnectStop}
       className="touchdevice-flow"
     />
   );

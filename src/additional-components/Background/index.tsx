@@ -22,7 +22,7 @@ const Background: FC<BackgroundProps> = ({
 }) => {
   const ref = useRef<SVGSVGElement>(null);
   const [patternId, setPatternId] = useState<string | null>(null);
-  const [x, y, scale] = useStore(transformSelector);
+  const [tX, tY, tScale] = useStore(transformSelector);
 
   useEffect(() => {
     // when there are multiple flows on a page we need to make sure that every background gets its own pattern.
@@ -31,18 +31,17 @@ const Background: FC<BackgroundProps> = ({
     setPatternId(`pattern-${index}`);
   }, []);
 
-  const bgClasses = cc(['react-flow__background', 'react-flow__container', className]);
-  const scaledGap = gap * scale;
-  const xOffset = x % scaledGap;
-  const yOffset = y % scaledGap;
+  const scaledGap = gap * tScale;
+  const xOffset = tX % scaledGap;
+  const yOffset = tY % scaledGap;
 
   const isLines = variant === BackgroundVariant.Lines;
   const bgColor = color ? color : defaultColors[variant];
-  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size * scale, bgColor);
+  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size * tScale, bgColor);
 
   return (
     <svg
-      className={bgClasses}
+      className={cc(['react-flow__background', 'react-flow__container', className])}
       style={{
         ...style,
         width: '100%',

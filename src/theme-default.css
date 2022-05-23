@@ -54,8 +54,7 @@
   background: #fff;
   border-color: #1a192b;
 
-  &.selected,
-  &.selected:hover {
+  &.selected {
     box-shadow: 0 0 0 0.5px #1a192b;
   }
 
@@ -71,16 +70,15 @@
   &:hover {
     box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
   }
+
+  &.selected {
+    box-shadow: 0 0 0 0.5px #1a192b;
+  }
 }
 
 .react-flow__node-group {
   background: rgba(240, 240, 240, 0.25);
   border-color: #1a192b;
-
-  &.selected,
-  &.selected:hover {
-    box-shadow: 0 0 0 0.5px #1a192b;
-  }
 }
 
 .react-flow__nodesselection-rect,

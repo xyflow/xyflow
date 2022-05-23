@@ -45,8 +45,7 @@ function handleParentExpand(res: any[], updateItem: any) {
 }
 
 function applyChanges(changes: any[], elements: any[]): any[] {
-  // unfortunately we need this hack to handle the setNodes and setEdges function of the
-  // useReactFlow hook.
+  // we need this hack to handle the setNodes and setEdges function of the useReactFlow hook for controlled flows
   if (changes.some((c) => c.type === 'reset')) {
     return changes.filter((c) => c.type === 'reset').map((c) => c.item);
   }
@@ -67,10 +66,6 @@ function applyChanges(changes: any[], elements: any[]): any[] {
 
           if (typeof currentChange.position !== 'undefined') {
             updateItem.position = currentChange.position;
-          }
-
-          if (typeof currentChange.dragging !== 'undefined') {
-            updateItem.dragging = currentChange.dragging;
           }
 
           if (updateItem.expandParent) {

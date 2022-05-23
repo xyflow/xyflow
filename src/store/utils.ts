@@ -1,18 +1,15 @@
 import { zoomIdentity } from 'd3-zoom';
-import { GetState } from 'zustand';
+import { GetState, SetState } from 'zustand';
 
-import { clampPosition, isNumeric } from '../utils';
+import { isNumeric } from '../utils';
 import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
 import {
-  CoordinateExtent,
   Edge,
   EdgeSelectionChange,
   Node,
   NodeInternals,
-  NodePositionChange,
   NodeSelectionChange,
   ReactFlowState,
-  XYPosition,
   XYZPosition,
   FitViewOptions,
 } from '../types';
@@ -42,7 +39,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
-    const z = isNumeric(node.zIndex) ? node.zIndex : node.dragging || node.selected ? 1000 : 0;
+    const z = isNumeric(node.zIndex) ? node.zIndex : node.selected ? 1000 : 0;
     const currInternals = nodeInternals.get(node.id);
 
     const internals: Node = {
@@ -88,74 +85,6 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   });
 
   return nextNodeInternals;
-}
-
-export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
-  if (!node.parentNode) {
-    return false;
-  }
-
-  const parentNode = nodeInternals.get(node.parentNode);
-
-  if (!parentNode) {
-    return false;
-  }
-
-  if (parentNode.selected) {
-    return true;
-  }
-
-  return isParentSelected(parentNode, nodeInternals);
-}
-
-type CreatePostionChangeParams = {
-  node: Node;
-  nodeExtent: CoordinateExtent;
-  nodeInternals: NodeInternals;
-  diff?: XYPosition;
-  dragging?: boolean;
-};
-
-export function createPositionChange({
-  node,
-  diff,
-  dragging,
-  nodeExtent,
-  nodeInternals,
-}: CreatePostionChangeParams): NodePositionChange {
-  const change: NodePositionChange = {
-    id: node.id,
-    type: 'position',
-    dragging: !!dragging,
-  };
-
-  if (diff) {
-    const nextPosition = { x: node.position.x + diff.x, y: node.position.y + diff.y };
-    let currentExtent = node.extent || nodeExtent;
-
-    if (node.extent === 'parent') {
-      if (node.parentNode && node.width && node.height) {
-        const parent = nodeInternals.get(node.parentNode);
-        currentExtent =
-          parent?.width && parent?.height
-            ? [
-                [0, 0],
-                [parent.width - node.width, parent.height - node.height],
-              ]
-            : currentExtent;
-      } else {
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[React Flow]: Only child nodes can use a parent extent. Help: https://reactflow.dev/error#500');
-        }
-        currentExtent = nodeExtent;
-      }
-    }
-
-    change.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
-  }
-
-  return change;
 }
 
 type InternalFitViewOptions = {
@@ -222,4 +151,31 @@ export function handleControlledEdgeSelectionChange(edgeChanges: EdgeSelectionCh
     }
     return e;
   });
+}
+
+type UpdateNodesAndEdgesParams = {
+  changedNodes: NodeSelectionChange[] | null;
+  changedEdges: EdgeSelectionChange[] | null;
+  get: GetState<ReactFlowState>;
+  set: SetState<ReactFlowState>;
+};
+
+export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get, set }: UpdateNodesAndEdgesParams) {
+  const { nodeInternals, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
+
+  if (changedNodes?.length) {
+    if (hasDefaultNodes) {
+      set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
+    }
+
+    onNodesChange?.(changedNodes);
+  }
+
+  if (changedEdges?.length) {
+    if (hasDefaultEdges) {
+      set({ edges: handleControlledEdgeSelectionChange(changedEdges, edges) });
+    }
+
+    onEdgesChange?.(changedEdges);
+  }
 }

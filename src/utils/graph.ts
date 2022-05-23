@@ -176,7 +176,7 @@ export const getNodesInside = (
   const visibleNodes: Node[] = [];
 
   nodeInternals.forEach((node) => {
-    const { positionAbsolute, width, height, dragging, selectable = true } = node;
+    const { positionAbsolute, width, height, selectable = true } = node;
 
     if (excludeNonSelectableNodes && !selectable) {
       return false;
@@ -187,7 +187,7 @@ export const getNodesInside = (
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
     const notInitialized =
-      typeof width === 'undefined' || typeof height === 'undefined' || width === null || height === null || dragging;
+      typeof width === 'undefined' || typeof height === 'undefined' || width === null || height === null;
 
     const partiallyVisible = partially && overlappingArea > 0;
     const area = (width || 0) * (height || 0);

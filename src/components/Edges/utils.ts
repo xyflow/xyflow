@@ -1,4 +1,7 @@
-import { MarkerType, Position } from '../../types';
+import { MouseEvent as ReactMouseEvent } from 'react';
+import { GetState } from 'zustand';
+
+import { Edge, MarkerType, Position, ReactFlowState } from '../../types';
 
 export const getMarkerEnd = (markerType?: MarkerType, markerEndId?: string): string => {
   if (typeof markerEndId !== 'undefined' && markerEndId) {
@@ -52,3 +55,16 @@ export const getCenter = ({
 
   return [centerX, centerY, xOffset, yOffset];
 };
+
+export function getMouseHandler(
+  id: string,
+  getState: GetState<ReactFlowState>,
+  handler?: (event: ReactMouseEvent<SVGGElement, MouseEvent>, edge: Edge) => void
+) {
+  return handler === undefined
+    ? handler
+    : (event: ReactMouseEvent<SVGGElement, MouseEvent>) => {
+        const edge = getState().edges.find((e) => e.id === id)!;
+        handler(event, { ...edge });
+      };
+}

@@ -56,7 +56,9 @@ describe('Basic Flow Rendering', () => {
       .wait(50)
       .trigger('mouseup', 1, 200, { force: true });
 
-    cy.get('.react-flow__node').eq(3).should('have.class', 'selected');
+    cy.wait(100);
+
+    cy.get('.react-flow__node').eq(1).should('have.class', 'selected');
 
     cy.get('.react-flow__node').eq(0).should('have.not.class', 'selected');
 
@@ -120,7 +122,7 @@ describe('Basic Flow Rendering', () => {
       .wait(50)
       .trigger('mouseup', { force: true });
 
-    cy.get('.react-flow__edge').should('have.length', 2);
+    cy.get('.react-flow__edge').should('have.length', 3);
   });
 
   // @TODO: why does this fail since react18?

@@ -68,6 +68,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onConnectStart,
       onConnectStop,
       onConnectEnd,
+      onClickConnectStart,
+      onClickConnectStop,
+      onClickConnectEnd,
       onNodeMouseEnter,
       onNodeMouseMove,
       onNodeMouseLeave,
@@ -87,6 +90,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
       connectionLineComponent,
+      connectionLineContainerStyle,
       deleteKeyCode = 'Backspace',
       selectionKeyCode = 'Shift',
       multiSelectionKeyCode = 'Meta',
@@ -169,6 +173,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionLineType={connectionLineType}
             connectionLineStyle={connectionLineStyle}
             connectionLineComponent={connectionLineComponent}
+            connectionLineContainerStyle={connectionLineContainerStyle}
             selectionKeyCode={selectionKeyCode}
             deleteKeyCode={deleteKeyCode}
             multiSelectionKeyCode={multiSelectionKeyCode}
@@ -216,6 +221,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onConnectStart={onConnectStart}
             onConnectStop={onConnectStop}
             onConnectEnd={onConnectEnd}
+            onClickConnectStart={onClickConnectStart}
+            onClickConnectStop={onClickConnectStop}
+            onClickConnectEnd={onClickConnectEnd}
             nodesDraggable={nodesDraggable}
             nodesConnectable={nodesConnectable}
             elementsSelectable={elementsSelectable}

@@ -3,7 +3,7 @@ import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
-import { Node, NodeInternals, NodeDimensionUpdate, NodeDiffUpdate, NodeProps, WrapNodeProps } from './nodes';
+import { Node, NodeInternals, NodeDimensionUpdate, NodeProps, WrapNodeProps, NodeDragItem } from './nodes';
 import { Edge, EdgeProps, WrapEdgeProps } from './edges';
 import { HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
@@ -105,6 +105,11 @@ export type FitBoundsOptions = ViewportHelperFunctionOptions & {
   padding?: number;
 };
 
+export type UnselectNodesAndEdgesParams = {
+  nodes?: Node[];
+  edges?: Edge[];
+};
+
 export interface ViewportHelperFunctions {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
@@ -125,7 +130,6 @@ export type ReactFlowStore = {
   transform: Transform;
   nodeInternals: NodeInternals;
   edges: Edge[];
-  selectedNodesBbox: Rect;
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;
@@ -166,6 +170,10 @@ export type ReactFlowStore = {
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
 
+  onClickConnectStart?: OnConnectStart;
+  onClickConnectStop?: OnConnectStop;
+  onClickConnectEnd?: OnConnectEnd;
+
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
 
@@ -182,9 +190,9 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePosition: (update: NodeDiffUpdate) => void;
+  updateNodePositions: (nodeDragItems: NodeDragItem[]) => void;
   resetSelectedElements: () => void;
-  unselectNodesAndEdges: () => void;
+  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
   setMinZoom: (minZoom: number) => void;

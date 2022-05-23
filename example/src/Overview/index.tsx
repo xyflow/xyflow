@@ -1,4 +1,4 @@
-import { MouseEvent as ReactMouseEvent, CSSProperties } from 'react';
+import { MouseEvent as ReactMouseEvent, CSSProperties, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -15,9 +15,9 @@ import ReactFlow, {
   OnSelectionChangeParams,
 } from 'react-flow-renderer';
 
-const onNodeDragStart = (_: ReactMouseEvent, node: Node) => console.log('drag start', node);
-const onNodeDrag = (_: ReactMouseEvent, node: Node) => console.log('drag', node);
-const onNodeDragStop = (_: ReactMouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
+const onNodeDrag = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
+const onNodeDragStop = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
 const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) => console.log('node double click', node);
 const onPaneClick = (event: ReactMouseEvent) => console.log('pane click', event);
 const onPaneScroll = (event?: ReactMouseEvent) => console.log('pane scroll', event);
@@ -161,7 +161,7 @@ const nodeColor = (n: Node): string => {
 const OverviewFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow
