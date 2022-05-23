@@ -31,7 +31,7 @@ const Background: FC<BackgroundProps> = ({
     setPatternId(`pattern-${index}`);
   }, []);
 
-  const scaledGap = gap * tScale;
+  const scaledGap = gap * tScale || 1;
   const xOffset = tX % scaledGap;
   const yOffset = tY % scaledGap;
 
