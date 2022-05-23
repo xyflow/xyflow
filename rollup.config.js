@@ -7,7 +7,6 @@ import typescript from 'rollup-plugin-typescript2';
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from '@babel/core';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { terser } from 'rollup-plugin-terser';
-import filesize from 'rollup-plugin-filesize';
 
 import pkg from './package.json';
 
@@ -101,7 +100,6 @@ export const baseConfig = ({ outputOptions = {}, injectCSS = true } = {}) => {
         babelHelpers: 'runtime',
       }),
       visualizer(),
-      filesize(),
       !isEsm && terser(),
     ],
   };
