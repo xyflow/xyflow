@@ -50,7 +50,6 @@ const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
-    draggable: false,
     data: {
       label: (
         <>

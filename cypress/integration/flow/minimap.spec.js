@@ -37,14 +37,15 @@ describe('Minimap Testing', () => {
     const xPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
     const yPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
 
-    cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el) => {
-      cy.wait(1000);
-      const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
-      const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
+    cy.drag('.react-flow__node:first', { x: 500, y: 25 })
+      .wait(100)
+      .then(() => {
+        const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
+        const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
 
-      expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
-      expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
-    });
+        expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
+        expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
+      });
   });
 
   it('changes node positions via pane drag', () => {
