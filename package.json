@@ -1,6 +1,6 @@
 {
   "name": "react-flow-renderer",
-  "version": "10.2.4-next.3",
+  "version": "10.3.0",
   "engines": {
     "node": ">=14"
   },
