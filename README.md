@@ -26,10 +26,11 @@ A highly customizable React component for building interactive graphs and node-b
 - **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
-## Attribution
+## Commercial Usage / Attribution
 
-React Flow includes a small attribution that links to the React Flow website. Per default the attribution is displayed in the bottom right corner. With the attribution we want to achieve that companies who are using React Flow in commercial applications finance the development of the library.
-We expect users who are using React Flow commercially to subscribe to [React Flow Pro](https://pro.reactflow.dev/pricing) if they want to remove the attribution. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+React Flow includes a small attribution that links to the React Flow website. **We expect companies who are using React Flow commercially to subscribe to [React Flow Pro](https://pro.reactflow.dev/pricing) if they want to remove the attribution.** By subscribing you get access to other exclusive services like advanced examples, individual support or prioritized bug reports. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+
+You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/faq).
 
 ## Installation
 
