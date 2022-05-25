@@ -49,23 +49,16 @@ function useDrag({
   const parentPos = useRef<XYPosition>({ x: 0, y: 0 });
 
   // returns the mouse position projected to the RF coordinate system
-  const getMousePosition = useCallback((event: UseDragEvent) => {
+  const getPointerPosition = useCallback(({ sourceEvent }: UseDragEvent) => {
     const { transform, snapGrid, snapToGrid } = store.getState();
+    const x = sourceEvent.touches ? sourceEvent.touches[0].clientX : sourceEvent.clientX;
+    const y = sourceEvent.touches ? sourceEvent.touches[0].clientY : sourceEvent.clientY;
+    const pointerPos = pointToRendererPoint({ x, y }, transform, snapToGrid, snapGrid);
 
-    const mousePos = pointToRendererPoint(
-      {
-        x: event.sourceEvent.clientX,
-        y: event.sourceEvent.clientY,
-      },
-      transform,
-      snapToGrid,
-      snapGrid
-    );
+    pointerPos.x -= parentPos.current.x;
+    pointerPos.y -= parentPos.current.y;
 
-    mousePos.x -= parentPos.current.x;
-    mousePos.y -= parentPos.current.y;
-
-    return mousePos;
+    return pointerPos;
   }, []);
 
   useEffect(() => {
@@ -94,8 +87,9 @@ function useDrag({
               });
             }
 
-            const mousePos = getMousePosition(event);
-            dragItems.current = getDragItems(nodeInternals, mousePos, nodeId);
+            const pointerPos = getPointerPosition(event);
+            dragItems.current = getDragItems(nodeInternals, pointerPos, nodeId);
+            console.log(pointerPos);
 
             if (onStart && dragItems.current) {
               const [currentNode, nodes] = getEventHandlerParams({
@@ -108,12 +102,14 @@ function useDrag({
           })
           .on('drag', (event: UseDragEvent) => {
             const { updateNodePositions, nodeInternals, nodeExtent } = store.getState();
-            const mousePos = getMousePosition(event);
+            const pointerPos = getPointerPosition(event);
 
             // skip events without movement
-            if ((lastPos.current.x !== mousePos.x || lastPos.current.y !== mousePos.y) && dragItems.current) {
-              lastPos.current = mousePos;
-              dragItems.current = dragItems.current.map((n) => updatePosition(n, mousePos, nodeInternals, nodeExtent));
+            if ((lastPos.current.x !== pointerPos.x || lastPos.current.y !== pointerPos.y) && dragItems.current) {
+              lastPos.current = pointerPos;
+              dragItems.current = dragItems.current.map((n) =>
+                updatePosition(n, pointerPos, nodeInternals, nodeExtent)
+              );
 
               updateNodePositions(dragItems.current);
               setDragging(true);
@@ -167,7 +163,7 @@ function useDrag({
     store,
     nodeId,
     selectNodesOnDrag,
-    getMousePosition,
+    getPointerPosition,
   ]);
 
   return dragging;
