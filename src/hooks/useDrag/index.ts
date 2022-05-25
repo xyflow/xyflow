@@ -89,7 +89,6 @@ function useDrag({
 
             const pointerPos = getPointerPosition(event);
             dragItems.current = getDragItems(nodeInternals, pointerPos, nodeId);
-            console.log(pointerPos);
 
             if (onStart && dragItems.current) {
               const [currentNode, nodes] = getEventHandlerParams({
