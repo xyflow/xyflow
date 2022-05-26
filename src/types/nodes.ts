@@ -26,9 +26,9 @@ export interface Node<T = any> {
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
+  positionAbsolute?: XYPosition;
 
   // only used internally
-  positionAbsolute?: XYPosition;
   [zSymbol]?: number;
   [handleBoundsSymbol]?: NodeHandleBounds;
   [isParentSymbol]?: boolean;

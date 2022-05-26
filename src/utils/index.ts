@@ -41,6 +41,6 @@ export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
 
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 
-export const handleBoundsSymbol = Symbol('handleBound');
+export const handleBoundsSymbol = Symbol('handleBounds');
 export const zSymbol = Symbol('z');
 export const isParentSymbol = Symbol('isParent');
