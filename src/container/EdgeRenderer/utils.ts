@@ -168,7 +168,7 @@ export function isEdgeVisible({
 
 export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect, NodeHandleBounds | null, boolean] {
   const node = nodeInternals.get(nodeId);
-  const handleBounds = node?.[internalsSymbol].handleBounds || null;
+  const handleBounds = node?.[internalsSymbol]?.handleBounds || null;
 
   const isInvalid =
     !node ||

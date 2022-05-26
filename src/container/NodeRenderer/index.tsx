@@ -118,8 +118,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
-            zIndex={node[internalsSymbol].z ?? 0}
-            isParent={!!node[internalsSymbol].isParent}
+            zIndex={node[internalsSymbol]?.z ?? 0}
+            isParent={!!node[internalsSymbol]?.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
           />

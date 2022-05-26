@@ -29,7 +29,7 @@ export interface Node<T = any> {
   positionAbsolute?: XYPosition;
 
   // only used internally
-  [internalsSymbol]: {
+  [internalsSymbol]?: {
     z?: number;
     handleBounds?: NodeHandleBounds;
     isParent?: boolean;

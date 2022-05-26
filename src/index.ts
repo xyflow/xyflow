@@ -32,7 +32,6 @@ export {
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
-export { internalsSymbol } from './utils';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';

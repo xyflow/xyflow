@@ -18,8 +18,8 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, elevate
       z = hasZIndex
         ? edge.zIndex!
         : Math.max(
-            nodeInternals.get(edge.source)?.[internalsSymbol].z || 0,
-            nodeInternals.get(edge.target)?.[internalsSymbol].z || 0
+            nodeInternals.get(edge.source)?.[internalsSymbol]?.z || 0,
+            nodeInternals.get(edge.target)?.[internalsSymbol]?.z || 0
           );
     }
 
