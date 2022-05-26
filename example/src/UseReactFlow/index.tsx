@@ -1,4 +1,4 @@
-import { useCallback, MouseEvent } from 'react';
+import { useCallback, MouseEvent, useEffect } from 'react';
 
 import ReactFlow, {
   Node,
@@ -33,7 +33,7 @@ const UseZoomPanHelperFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
-  const { project, setCenter, zoomIn, zoomOut, fitView, addNodes, setNodes: setNodesHook } = useReactFlow();
+  const { project, setCenter, zoomIn, zoomOut, fitView, addNodes, setNodes: setNodesHook, addEdges } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt: MouseEvent) => {
@@ -71,6 +71,10 @@ const UseZoomPanHelperFlow = () => {
 
     addNodes(newNode);
   }, [addNodes]);
+
+  useEffect(() => {
+    addEdges({ id: 'e3-4', source: '3', target: '4' });
+  }, [addEdges]);
 
   const onResetNodes = useCallback(() => setNodesHook(initialNodes), [setNodesHook]);
 
