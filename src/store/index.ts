@@ -30,13 +30,8 @@ const createStore = () =>
       set({ nodeInternals: createNodeInternals(nodes, get().nodeInternals) });
     },
     setEdges: (edges: Edge[]) => {
-      const { defaultEdgeOptions } = get();
-
-      if (defaultEdgeOptions) {
-        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
-      } else {
-        set({ edges });
-      }
+      const { defaultEdgeOptions = {} } = get();
+      set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
     },
     setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
       const hasDefaultNodes = typeof nodes !== 'undefined';

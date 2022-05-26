@@ -49,7 +49,6 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   if (changes.some((c) => c.type === 'reset')) {
     return changes.filter((c) => c.type === 'reset').map((c) => c.item);
   }
-  console.log(changes);
   const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
 
   return elements.reduce((res: any[], item: any) => {
