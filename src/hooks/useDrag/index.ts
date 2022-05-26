@@ -5,13 +5,7 @@ import { select } from 'd3-selection';
 import { useStoreApi } from '../../store';
 import { pointToRendererPoint } from '../../utils/graph';
 import { NodeDragItem, NodeDragHandler, XYPosition } from '../../types';
-import {
-  getDragItems,
-  getEventHandlerParams,
-  getParentNodePosition,
-  selectorExistsTargetToNode,
-  updatePosition,
-} from './utils';
+import { getDragItems, getEventHandlerParams, getParentNodePosition, hasSelector, updatePosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
@@ -136,11 +130,13 @@ function useDrag({
           })
           .filter((event: MouseEvent) => {
             const target = event.target as HTMLDivElement;
-            const filter =
-              !event.ctrlKey && !event.button && (!noDragClassName || !target.classList?.contains?.(noDragClassName));
-            return handleSelector
-              ? selectorExistsTargetToNode(target as HTMLDivElement, handleSelector, nodeRef) && filter
-              : filter;
+            const isDraggable =
+              !event.ctrlKey &&
+              !event.button &&
+              (!noDragClassName || !hasSelector(target, `.${noDragClassName}`, nodeRef)) &&
+              (!handleSelector || hasSelector(target, handleSelector, nodeRef));
+
+            return isDraggable;
           });
 
         selection.call(dragHandler);

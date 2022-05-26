@@ -31,7 +31,7 @@ export function getParentNodePosition(nodeInternals: NodeInternals, nodeId?: str
   };
 }
 
-export function selectorExistsTargetToNode(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
+export function hasSelector(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
   let current = target;
 
   do {
