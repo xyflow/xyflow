@@ -11,7 +11,7 @@ import {
   ReactFlowState,
   WrapNodeProps,
 } from '../../types';
-import { isParentSymbol, zSymbol } from '../../utils';
+import { internalsSymbol } from '../../utils';
 
 interface NodeRendererProps {
   nodeTypes: NodeTypesWrapped;
@@ -118,8 +118,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isConnectable={isConnectable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
-            zIndex={node[zSymbol] ?? 0}
-            isParent={!!node[isParentSymbol]}
+            zIndex={node[internalsSymbol].z ?? 0}
+            isParent={!!node[internalsSymbol].isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
           />

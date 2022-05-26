@@ -13,7 +13,7 @@ import {
   Transform,
   XYPosition,
 } from '../../types';
-import { handleBoundsSymbol, rectToBox } from '../../utils';
+import { internalsSymbol, rectToBox } from '../../utils';
 
 export type CreateEdgeTypes = (edgeTypes: EdgeTypes) => EdgeTypesWrapped;
 
@@ -168,7 +168,7 @@ export function isEdgeVisible({
 
 export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect, NodeHandleBounds | null, boolean] {
   const node = nodeInternals.get(nodeId);
-  const handleBounds = node?.[handleBoundsSymbol] || null;
+  const handleBounds = node?.[internalsSymbol].handleBounds || null;
 
   const isInvalid =
     !node ||

@@ -1,7 +1,7 @@
 import { zoomIdentity } from 'd3-zoom';
 import { GetState, SetState } from 'zustand';
 
-import { handleBoundsSymbol, isNumeric, isParentSymbol, zSymbol } from '../utils';
+import { internalsSymbol, isNumeric } from '../utils';
 import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
 import {
   Edge,
@@ -30,7 +30,7 @@ function calculateXYZPosition(
   return calculateXYZPosition(parentNode, nodeInternals, parentNodes, {
     x: (result.x ?? 0) + (parentNode.position?.x ?? 0),
     y: (result.y ?? 0) + (parentNode.position?.y ?? 0),
-    z: (parentNode[zSymbol] ?? 0) > (result.z ?? 0) ? parentNode[zSymbol] ?? 0 : result.z ?? 0,
+    z: (parentNode[internalsSymbol].z ?? 0) > (result.z ?? 0) ? parentNode[internalsSymbol].z ?? 0 : result.z ?? 0,
   });
 }
 
@@ -57,14 +57,12 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
       parentNodes[node.parentNode] = true;
     }
 
-    Object.defineProperty(internals, handleBoundsSymbol, {
+    Object.defineProperty(internals, internalsSymbol, {
       enumerable: false,
-      value: currInternals?.[handleBoundsSymbol],
-    });
-
-    Object.defineProperty(internals, zSymbol, {
-      enumerable: false,
-      value: z,
+      value: {
+        handleBounds: currInternals?.[internalsSymbol].handleBounds,
+        z,
+      },
     });
 
     nextNodeInternals.set(node.id, internals);
@@ -78,7 +76,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     if (node.parentNode || parentNodes[node.id]) {
       const { x, y, z } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
         ...node.position,
-        z: node[zSymbol] ?? 0,
+        z: node[internalsSymbol].z ?? 0,
       });
 
       node.positionAbsolute = {
@@ -86,10 +84,10 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
         y,
       };
 
-      node[zSymbol] = z;
+      node[internalsSymbol].z = z;
 
       if (parentNodes[node.id]) {
-        node[isParentSymbol] = true;
+        node[internalsSymbol].isParent = true;
       }
     }
   });

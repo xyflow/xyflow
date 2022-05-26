@@ -6,7 +6,7 @@ import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { ConnectionLineType, ConnectionLineComponent, HandleType, Node, ReactFlowState, Position } from '../../types';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
-import { handleBoundsSymbol } from '../../utils';
+import { internalsSymbol } from '../../utils';
 
 interface ConnectionLineProps {
   connectionNodeId: string;
@@ -38,7 +38,7 @@ export default ({
 
   const { nodeInternals, transform } = useStore(selector, shallow);
   const fromNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
-  const fromHandleBounds = fromNode.current?.[handleBoundsSymbol];
+  const fromHandleBounds = fromNode.current?.[internalsSymbol].handleBounds;
 
   if (!fromNode.current || !isConnectable || !fromHandleBounds?.[connectionHandleType]) {
     return null;

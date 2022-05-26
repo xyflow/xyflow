@@ -2,7 +2,7 @@ import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 
 import { XYPosition, Position, CoordinateExtent } from './utils';
 import { HandleElement } from './handles';
-import { handleBoundsSymbol, isParentSymbol, zSymbol } from '../utils';
+import { internalsSymbol } from '../utils';
 
 // interface for the user node items
 export interface Node<T = any> {
@@ -29,9 +29,11 @@ export interface Node<T = any> {
   positionAbsolute?: XYPosition;
 
   // only used internally
-  [zSymbol]?: number;
-  [handleBoundsSymbol]?: NodeHandleBounds;
-  [isParentSymbol]?: boolean;
+  [internalsSymbol]: {
+    z?: number;
+    handleBounds?: NodeHandleBounds;
+    isParent?: boolean;
+  };
 }
 
 // props that get passed to a custom node
