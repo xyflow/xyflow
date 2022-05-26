@@ -1,7 +1,7 @@
 import create from 'zustand';
 import createContext from 'zustand/context';
 
-import { clampPosition, getDimensions } from '../utils';
+import { clampPosition, getDimensions, handleBoundsSymbol } from '../utils';
 import { applyNodeChanges } from '../utils/changes';
 import {
   ReactFlowState,
@@ -60,7 +60,7 @@ const createStore = () =>
             const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
             nodeInternals.set(node.id, {
               ...node,
-              handleBounds,
+              [handleBoundsSymbol]: handleBounds,
               ...dimensions,
             });
 

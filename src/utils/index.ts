@@ -40,3 +40,7 @@ export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
 
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
+
+export const handleBoundsSymbol = Symbol('handleBound');
+export const zSymbol = Symbol('z');
+export const isParentSymbol = Symbol('isParent');
