@@ -42,7 +42,7 @@ function useDrag({
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
   const parentPos = useRef<XYPosition>({ x: 0, y: 0 });
 
-  // returns the mouse position projected to the RF coordinate system
+  // returns the pointer position projected to the RF coordinate system
   const getPointerPosition = useCallback(({ sourceEvent }: UseDragEvent) => {
     const { transform, snapGrid, snapToGrid } = store.getState();
     const x = sourceEvent.touches ? sourceEvent.touches[0].clientX : sourceEvent.clientX;
@@ -104,7 +104,7 @@ function useDrag({
                 updatePosition(n, pointerPos, nodeInternals, nodeExtent)
               );
 
-              updateNodePositions(dragItems.current);
+              updateNodePositions(dragItems.current, true, true);
               setDragging(true);
 
               if (onDrag) {
@@ -118,13 +118,17 @@ function useDrag({
             }
 
             event.on('end', (event) => {
-              if (onStop && dragItems.current) {
-                const [currentNode, nodes] = getEventHandlerParams({
-                  nodeId,
-                  dragItems: dragItems.current,
-                  nodeInternals,
-                });
-                onStop(event.sourceEvent as MouseEvent, currentNode, nodes);
+              if (dragItems.current) {
+                updateNodePositions(dragItems.current, false, false);
+
+                if (onStop) {
+                  const [currentNode, nodes] = getEventHandlerParams({
+                    nodeId,
+                    dragItems: dragItems.current,
+                    nodeInternals,
+                  });
+                  onStop(event.sourceEvent as MouseEvent, currentNode, nodes);
+                }
               }
             });
           })

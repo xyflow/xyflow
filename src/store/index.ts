@@ -89,19 +89,22 @@ const createStore = () =>
         onNodesChange?.(changes);
       }
     },
-    updateNodePositions: (nodeDragItems: NodeDragItem[]) => {
+    updateNodePositions: (nodeDragItems: NodeDragItem[], positionChanged = true, dragging = false) => {
       const { onNodesChange, nodeInternals, hasDefaultNodes } = get();
 
       if (hasDefaultNodes || onNodesChange) {
-        const changes: NodePositionChange[] = [];
-
-        nodeDragItems.forEach((node) => {
+        const changes = nodeDragItems.map((node) => {
           const change: NodePositionChange = {
             id: node.id,
             type: 'position',
-            position: node.position,
+            dragging,
           };
-          changes.push(change);
+
+          if (positionChanged) {
+            change.position = node.position;
+          }
+
+          return change;
         });
 
         if (changes?.length) {

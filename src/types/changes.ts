@@ -13,6 +13,7 @@ export type NodePositionChange = {
   id: string;
   type: 'position';
   position?: XYPosition;
+  dragging?: boolean;
 };
 
 export type NodeSelectionChange = {

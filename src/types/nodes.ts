@@ -117,4 +117,5 @@ export type NodeDragItem = {
   height?: number | null;
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
+  dragging?: boolean;
 };
