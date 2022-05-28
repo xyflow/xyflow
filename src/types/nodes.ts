@@ -15,6 +15,7 @@ export interface Node<T = any> {
   sourcePosition?: Position;
   hidden?: boolean;
   selected?: boolean;
+  dragging?: boolean;
   draggable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
