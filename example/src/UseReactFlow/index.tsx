@@ -33,7 +33,18 @@ const UseZoomPanHelperFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
-  const { project, setCenter, zoomIn, zoomOut, fitView, addNodes, setNodes: setNodesHook, addEdges } = useReactFlow();
+  const {
+    project,
+    setCenter,
+    zoomIn,
+    zoomOut,
+    fitView,
+    addNodes,
+    setNodes: setNodesHook,
+    addEdges,
+    getNodes,
+    getEdges,
+  } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt: MouseEvent) => {
@@ -72,6 +83,11 @@ const UseZoomPanHelperFlow = () => {
     addNodes(newNode);
   }, [addNodes]);
 
+  const logNodes = useCallback(() => {
+    console.log('nodes', getNodes());
+    console.log('edges', getEdges());
+  }, [getNodes]);
+
   useEffect(() => {
     addEdges({ id: 'e3-4', source: '3', target: '4' });
   }, [addEdges]);
@@ -97,6 +113,7 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>fitView</button>
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>
+        <button onClick={logNodes}>useNodes</button>
       </div>
       <Background />
       <MiniMap />

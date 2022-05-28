@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useStore } from '../store';
 import { isEdgeVisible } from '../container/EdgeRenderer/utils';
 import { ReactFlowState, NodeInternals, Edge } from '../types';
-import { isNumeric } from '../utils';
+import { internalsSymbol, isNumeric } from '../utils';
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
 
@@ -17,7 +17,10 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, elevate
     if (elevateEdgesOnSelect) {
       z = hasZIndex
         ? edge.zIndex!
-        : Math.max(nodeInternals.get(edge.source)?.z || 0, nodeInternals.get(edge.target)?.z || 0);
+        : Math.max(
+            nodeInternals.get(edge.source)?.[internalsSymbol]?.z || 0,
+            nodeInternals.get(edge.target)?.[internalsSymbol]?.z || 0
+          );
     }
 
     if (tree[z]) {

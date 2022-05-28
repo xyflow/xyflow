@@ -13,7 +13,7 @@ import {
   Transform,
   XYPosition,
 } from '../../types';
-import { rectToBox } from '../../utils';
+import { internalsSymbol, rectToBox } from '../../utils';
 
 export type CreateEdgeTypes = (edgeTypes: EdgeTypes) => EdgeTypesWrapped;
 
@@ -168,10 +168,11 @@ export function isEdgeVisible({
 
 export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect, NodeHandleBounds | null, boolean] {
   const node = nodeInternals.get(nodeId);
-  const handleBounds = node?.handleBounds;
+  const handleBounds = node?.[internalsSymbol]?.handleBounds || null;
+
   const isInvalid =
     !node ||
-    !node.handleBounds ||
+    !handleBounds ||
     !node.width ||
     !node.height ||
     typeof node.positionAbsolute?.x === 'undefined' ||
@@ -184,7 +185,7 @@ export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect
       width: node?.width || 0,
       height: node?.height || 0,
     },
-    handleBounds || null,
+    handleBounds,
     !isInvalid,
   ];
 }
