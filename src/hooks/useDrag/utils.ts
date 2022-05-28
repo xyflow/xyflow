@@ -78,10 +78,13 @@ export function updatePosition(
     if (dragItem.parentNode && dragItem.width && dragItem.height) {
       const parent = nodeInternals.get(dragItem.parentNode);
       currentExtent =
-        parent?.width && parent?.height
+        parent?.positionAbsolute && parent?.width && parent?.height
           ? [
-              [0, 0],
-              [parent.width - dragItem.width, parent.height - dragItem.height],
+              [parent.positionAbsolute.x, parent.positionAbsolute.y],
+              [
+                parent.positionAbsolute.x + parent.width - dragItem.width,
+                parent.positionAbsolute.y + parent.height - dragItem.height,
+              ],
             ]
           : currentExtent;
     } else {
