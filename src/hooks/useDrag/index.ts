@@ -49,8 +49,8 @@ function useDrag({
     const y = sourceEvent.touches ? sourceEvent.touches[0].clientY : sourceEvent.clientY;
     const pointerPos = pointToRendererPoint({ x, y }, transform, snapToGrid, snapGrid);
 
-    pointerPos.x -= parentPos.current.x;
-    pointerPos.y -= parentPos.current.y;
+    // pointerPos.x -= parentPos.current.x;
+    // pointerPos.y -= parentPos.current.y;
 
     return pointerPos;
   }, []);
@@ -118,7 +118,7 @@ function useDrag({
             }
 
             event.on('end', (event) => {
-              setDragging(false)
+              setDragging(false);
               if (dragItems.current) {
                 updateNodePositions(dragItems.current, false, false);
 

@@ -49,10 +49,10 @@ export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition,
     .filter((n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodeInternals)))
     .map((n) => ({
       id: n.id,
-      position: n.position,
+      position: n.positionAbsolute || { x: 0, y: 0 },
       distance: {
-        x: mousePos.x - n.position.x,
-        y: mousePos.y - n.position.y,
+        x: mousePos.x - (n.positionAbsolute?.x ?? 0),
+        y: mousePos.y - (n.positionAbsolute?.y ?? 0),
       },
       delta: {
         x: 0,

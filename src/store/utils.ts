@@ -79,7 +79,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
         z: node[internalsSymbol]?.z ?? 0,
       });
 
-      node.positionAbsolute = {
+      node.positionAbsolute = node.positionAbsolute || {
         x,
         y,
       };
