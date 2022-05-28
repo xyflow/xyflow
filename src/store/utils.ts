@@ -143,6 +143,7 @@ export function handleControlledNodeSelectionChange(nodeChanges: NodeSelectionCh
     if (node) {
       nodeInternals.set(node.id, {
         ...node,
+        [internalsSymbol]: node[internalsSymbol],
         selected: change.selected,
       });
     }

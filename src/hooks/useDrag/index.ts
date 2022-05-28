@@ -118,7 +118,7 @@ function useDrag({
             }
 
             event.on('end', (event) => {
-              setDragging(false)
+              setDragging(false);
               if (dragItems.current) {
                 updateNodePositions(dragItems.current, false, false);
 
