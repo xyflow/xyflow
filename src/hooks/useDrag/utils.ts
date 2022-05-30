@@ -72,7 +72,7 @@ export function updatePosition(
   nodeExtent?: CoordinateExtent
 ): NodeDragItem {
   let currentExtent = dragItem.extent || nodeExtent;
-  let nextPosition = { x: mousePos.x - dragItem.distance.x, y: mousePos.y - dragItem.distance.y };
+  const nextPosition = { x: mousePos.x - dragItem.distance.x, y: mousePos.y - dragItem.distance.y };
 
   if (dragItem.extent === 'parent') {
     if (dragItem.parentNode && dragItem.width && dragItem.height) {
@@ -96,13 +96,7 @@ export function updatePosition(
     }
   }
 
-  nextPosition = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
-
-  dragItem.delta = {
-    x: nextPosition.x - dragItem.position.x,
-    y: nextPosition.y - dragItem.position.y,
-  };
-  dragItem.position = nextPosition;
+  dragItem.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
 
   return dragItem;
 }
@@ -124,11 +118,6 @@ export function getEventHandlerParams({
 
     return {
       ...node,
-      position: n.position,
-      positionAbsolute: {
-        x: (node.positionAbsolute?.x || 0) + n.delta.x,
-        y: (node.positionAbsolute?.y || 0) + n.delta.y,
-      },
     };
   });
 
