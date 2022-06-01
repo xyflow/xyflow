@@ -21,16 +21,6 @@ export function isParentSelected(node: Node, nodeInternals: NodeInternals): bool
   return isParentSelected(parentNode, nodeInternals);
 }
 
-export function getParentNodePosition(nodeInternals: NodeInternals, nodeId?: string): XYPosition {
-  const parentNodeId = nodeId ? nodeInternals.get(nodeId)?.parentNode : null;
-  const parentNode = parentNodeId ? nodeInternals.get(parentNodeId) : null;
-
-  return {
-    x: parentNode?.positionAbsolute?.x || 0,
-    y: parentNode?.positionAbsolute?.y || 0,
-  };
-}
-
 export function hasSelector(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
   let current = target;
 

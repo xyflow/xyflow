@@ -141,7 +141,7 @@ const initialEdges: Edge[] = [
 ];
 
 const connectionLineStyle: CSSProperties = { stroke: '#ddd' };
-const snapGrid: SnapGrid = [16, 16];
+const snapGrid: SnapGrid = [25, 25];
 
 const nodeStrokeColor = (n: Node): string => {
   if (n.style?.background) return n.style.background as string;
@@ -203,7 +203,7 @@ const OverviewFlow = () => {
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
-      <Background color="#aaa" gap={20} />
+      <Background color="#aaa" gap={25} />
     </ReactFlow>
   );
 };
