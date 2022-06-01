@@ -21,16 +21,6 @@ export function isParentSelected(node: Node, nodeInternals: NodeInternals): bool
   return isParentSelected(parentNode, nodeInternals);
 }
 
-export function getParentNodePosition(nodeInternals: NodeInternals, nodeId?: string): XYPosition {
-  const parentNodeId = nodeId ? nodeInternals.get(nodeId)?.parentNode : null;
-  const parentNode = parentNodeId ? nodeInternals.get(parentNodeId) : null;
-
-  return {
-    x: parentNode?.positionAbsolute?.x || 0,
-    y: parentNode?.positionAbsolute?.y || 0,
-  };
-}
-
 export function hasSelector(target: Element, selector: string, nodeRef: RefObject<Element>): boolean {
   let current = target;
 
@@ -49,10 +39,10 @@ export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition,
     .filter((n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodeInternals)))
     .map((n) => ({
       id: n.id,
-      position: n.position,
+      position: n.positionAbsolute || { x: 0, y: 0 },
       distance: {
-        x: mousePos.x - n.position.x,
-        y: mousePos.y - n.position.y,
+        x: mousePos.x - (n.positionAbsolute?.x ?? 0),
+        y: mousePos.y - (n.positionAbsolute?.y ?? 0),
       },
       delta: {
         x: 0,
@@ -72,16 +62,19 @@ export function updatePosition(
   nodeExtent?: CoordinateExtent
 ): NodeDragItem {
   let currentExtent = dragItem.extent || nodeExtent;
-  let nextPosition = { x: mousePos.x - dragItem.distance.x, y: mousePos.y - dragItem.distance.y };
+  const nextPosition = { x: mousePos.x - dragItem.distance.x, y: mousePos.y - dragItem.distance.y };
 
   if (dragItem.extent === 'parent') {
     if (dragItem.parentNode && dragItem.width && dragItem.height) {
       const parent = nodeInternals.get(dragItem.parentNode);
       currentExtent =
-        parent?.width && parent?.height
+        parent?.positionAbsolute && parent?.width && parent?.height
           ? [
-              [0, 0],
-              [parent.width - dragItem.width, parent.height - dragItem.height],
+              [parent.positionAbsolute.x, parent.positionAbsolute.y],
+              [
+                parent.positionAbsolute.x + parent.width - dragItem.width,
+                parent.positionAbsolute.y + parent.height - dragItem.height,
+              ],
             ]
           : currentExtent;
     } else {
@@ -93,13 +86,7 @@ export function updatePosition(
     }
   }
 
-  nextPosition = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
-
-  dragItem.delta = {
-    x: nextPosition.x - dragItem.position.x,
-    y: nextPosition.y - dragItem.position.y,
-  };
-  dragItem.position = nextPosition;
+  dragItem.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
 
   return dragItem;
 }
@@ -121,11 +108,6 @@ export function getEventHandlerParams({
 
     return {
       ...node,
-      position: n.position,
-      positionAbsolute: {
-        x: (node.positionAbsolute?.x || 0) + n.delta.x,
-        y: (node.positionAbsolute?.y || 0) + n.delta.y,
-      },
     };
   });
 

@@ -115,8 +115,6 @@ export type NodeDragItem = {
   position: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  // delta to previous position
-  delta: XYPosition;
   width?: number | null;
   height?: number | null;
   extent?: 'parent' | CoordinateExtent;

@@ -67,6 +67,10 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             updateItem.position = currentChange.position;
           }
 
+          if (typeof currentChange.positionAbsolute !== 'undefined') {
+            updateItem.positionAbsolute = currentChange.positionAbsolute;
+          }
+
           if (typeof currentChange.dragging !== 'undefined') {
             updateItem.dragging = currentChange.dragging;
           }

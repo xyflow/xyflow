@@ -4,8 +4,8 @@ import { select } from 'd3-selection';
 
 import { useStoreApi } from '../../store';
 import { pointToRendererPoint } from '../../utils/graph';
-import { NodeDragItem, NodeDragHandler, XYPosition } from '../../types';
-import { getDragItems, getEventHandlerParams, getParentNodePosition, hasSelector, updatePosition } from './utils';
+import { NodeDragItem, NodeDragHandler } from '../../types';
+import { getDragItems, getEventHandlerParams, hasSelector, updatePosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
@@ -40,7 +40,6 @@ function useDrag({
   const store = useStoreApi();
   const dragItems = useRef<NodeDragItem[]>();
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
-  const parentPos = useRef<XYPosition>({ x: 0, y: 0 });
 
   // returns the pointer position projected to the RF coordinate system
   const getPointerPosition = useCallback(({ sourceEvent }: UseDragEvent) => {
@@ -48,9 +47,6 @@ function useDrag({
     const x = sourceEvent.touches ? sourceEvent.touches[0].clientX : sourceEvent.clientX;
     const y = sourceEvent.touches ? sourceEvent.touches[0].clientY : sourceEvent.clientY;
     const pointerPos = pointToRendererPoint({ x, y }, transform, snapToGrid, snapGrid);
-
-    pointerPos.x -= parentPos.current.x;
-    pointerPos.y -= parentPos.current.y;
 
     return pointerPos;
   }, []);
@@ -65,7 +61,6 @@ function useDrag({
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
             const { nodeInternals, multiSelectionActive, unselectNodesAndEdges } = store.getState();
-            parentPos.current = getParentNodePosition(nodeInternals, nodeId);
 
             if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {
               if (!nodeInternals.get(nodeId)?.selected) {
