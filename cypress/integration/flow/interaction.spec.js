@@ -125,6 +125,7 @@ describe('Interaction Flow Rendering', () => {
 
     cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: 200 })
+      .wait(50)
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
@@ -141,6 +142,7 @@ describe('Interaction Flow Rendering', () => {
 
     cy.get('.react-flow__pane')
       .dblclick()
+      .wait(50)
       .then(() => {
         const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).not.to.equal(styleAfterZoom);

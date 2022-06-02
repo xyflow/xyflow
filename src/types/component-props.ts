@@ -1,4 +1,10 @@
-import React, { CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
+import React, {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  HTMLAttributes,
+  MouseEvent as ReactMouseEvent,
+  WheelEvent,
+} from 'react';
 
 import {
   OnSelectionChangeFunc,
@@ -30,7 +36,10 @@ import {
   OnMove,
   OnMoveStart,
   OnMoveEnd,
+  NodeDragHandler,
+  NodeMouseHandler,
 } from '.';
+import { HandleType } from './handles';
 
 export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   nodes?: Node[];
@@ -40,22 +49,25 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   defaultEdgeOptions?: DefaultEdgeOptions;
   onNodesChange?: OnNodesChange;
   onEdgesChange?: OnEdgesChange;
-  onNodeClick?: (event: React.MouseEvent, node: Node) => void;
+  onNodeClick?: NodeMouseHandler;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
-  onNodeDoubleClick?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseEnter?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseMove?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeMouseLeave?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeContextMenu?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDragStart?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDrag?: (event: ReactMouseEvent, node: Node) => void;
-  onNodeDragStop?: (event: ReactMouseEvent, node: Node) => void;
+  onNodeDoubleClick?: NodeMouseHandler;
+  onNodeMouseEnter?: NodeMouseHandler;
+  onNodeMouseMove?: NodeMouseHandler;
+  onNodeMouseLeave?: NodeMouseHandler;
+  onNodeContextMenu?: NodeMouseHandler;
+  onNodeDragStart?: NodeDragHandler;
+  onNodeDrag?: NodeDragHandler;
+  onNodeDragStop?: NodeDragHandler;
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
+  onClickConnectStart?: OnConnectStart;
+  onClickConnectStop?: OnConnectStop;
+  onClickConnectEnd?: OnConnectEnd;
   onInit?: OnInit;
   onMove?: OnMove;
   onMoveStart?: OnMoveStart;
@@ -74,6 +86,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
+  connectionLineContainerStyle?: CSSProperties;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
   multiSelectionKeyCode?: KeyCode | null;
@@ -106,8 +119,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
   noDragClassName?: string;
   noWheelClassName?: string;
@@ -117,6 +130,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   connectOnClick?: boolean;
   attributionPosition?: AttributionPosition;
   proOptions?: ProOptions;
+  elevateEdgesOnSelect?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
@@ -143,7 +157,7 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   onInteractiveChange?: (interactiveStatus: boolean) => void;
 }
 
-export interface ControlButtonProps extends HTMLAttributes<HTMLButtonElement> {}
+export interface ControlButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export interface BackgroundProps extends HTMLAttributes<SVGElement> {
   variant?: BackgroundVariant;

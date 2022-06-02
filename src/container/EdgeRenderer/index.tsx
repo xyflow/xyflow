@@ -6,6 +6,8 @@ import { useStore } from '../../store';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';
+import useVisibleEdges from '../../hooks/useVisibleEdges';
+
 import {
   Position,
   Edge,
@@ -13,15 +15,17 @@ import {
   ConnectionLineComponent,
   ConnectionMode,
   OnEdgeUpdateFunc,
+  HandleType,
   ReactFlowState,
+  EdgeTypesWrapped,
 } from '../../types';
-import useVisibleEdges from '../../hooks/useVisibleEdges';
 
 interface EdgeRendererProps {
-  edgeTypes: any;
+  edgeTypes: EdgeTypesWrapped;
   connectionLineType: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
+  connectionLineContainerStyle?: CSSProperties;
   onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
   defaultMarkerColor: string;
@@ -31,10 +35,11 @@ interface EdgeRendererProps {
   onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
   onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge) => void;
+  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
   noPanClassName?: string;
+  elevateEdgesOnSelect: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -63,13 +68,19 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionMode,
     nodeInternals,
   } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals);
+  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals, props.elevateEdgesOnSelect);
 
   if (!width) {
     return null;
   }
 
-  const { connectionLineType, defaultMarkerColor, connectionLineStyle, connectionLineComponent } = props;
+  const {
+    connectionLineType,
+    defaultMarkerColor,
+    connectionLineStyle,
+    connectionLineComponent,
+    connectionLineContainerStyle,
+  } = props;
   const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
@@ -105,12 +116,22 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetPosition = targetHandle?.position || Position.Top;
 
               if (!sourceHandle) {
-                console.warn(`couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}`);
+                // @ts-ignore
+                if (process.env.NODE_ENV === 'development') {
+                  console.warn(
+                    `[React Flow]: Couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                  );
+                }
                 return null;
               }
 
               if (!targetHandle) {
-                console.warn(`couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}`);
+                // @ts-ignore
+                if (process.env.NODE_ENV === 'development') {
+                  console.warn(
+                    `[React Flow]: Couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                  );
+                }
                 return null;
               }
 
@@ -166,22 +187,29 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 />
               );
             })}
-            {renderConnectionLine && isMaxLevel && (
-              <ConnectionLine
-                connectionNodeId={connectionNodeId!}
-                connectionHandleId={connectionHandleId}
-                connectionHandleType={connectionHandleType!}
-                connectionPositionX={connectionPosition.x}
-                connectionPositionY={connectionPosition.y}
-                connectionLineStyle={connectionLineStyle}
-                connectionLineType={connectionLineType}
-                isConnectable={nodesConnectable}
-                CustomConnectionLineComponent={connectionLineComponent}
-              />
-            )}
           </g>
         </svg>
       ))}
+      {renderConnectionLine && (
+        <svg
+          style={connectionLineContainerStyle}
+          width={width}
+          height={height}
+          className="react-flow__edges react-flow__connectionline react-flow__container"
+        >
+          <ConnectionLine
+            connectionNodeId={connectionNodeId!}
+            connectionHandleId={connectionHandleId}
+            connectionHandleType={connectionHandleType!}
+            connectionPositionX={connectionPosition.x}
+            connectionPositionY={connectionPosition.y}
+            connectionLineStyle={connectionLineStyle}
+            connectionLineType={connectionLineType}
+            isConnectable={nodesConnectable}
+            CustomConnectionLineComponent={connectionLineComponent}
+          />
+        </svg>
+      )}
     </>
   );
 };

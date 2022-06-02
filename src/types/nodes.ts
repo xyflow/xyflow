@@ -1,8 +1,8 @@
 import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 
-import { SnapGrid } from './general';
 import { XYPosition, Position, CoordinateExtent } from './utils';
 import { HandleElement } from './handles';
+import { internalsSymbol } from '../utils';
 
 // interface for the user node items
 export interface Node<T = any> {
@@ -27,12 +27,14 @@ export interface Node<T = any> {
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
+  positionAbsolute?: XYPosition;
 
   // only used internally
-  positionAbsolute?: XYPosition;
-  z?: number;
-  handleBounds?: NodeHandleBounds;
-  isParent?: boolean;
+  [internalsSymbol]?: {
+    z?: number;
+    handleBounds?: NodeHandleBounds;
+    isParent?: boolean;
+  };
 }
 
 // props that get passed to a custom node
@@ -52,6 +54,7 @@ export interface NodeProps<T = any> {
 }
 
 export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
+export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 
 export interface WrapNodeProps<T = any> {
   id: string;
@@ -59,7 +62,6 @@ export interface WrapNodeProps<T = any> {
   data: T;
   selected: boolean;
   isConnectable: boolean;
-  scale: number;
   xPos: number;
   yPos: number;
   width?: number | null;
@@ -68,22 +70,19 @@ export interface WrapNodeProps<T = any> {
   isDraggable: boolean;
   selectNodesOnDrag: boolean;
   onClick?: NodeMouseHandler;
-  onNodeDoubleClick?: NodeMouseHandler;
+  onDoubleClick?: NodeMouseHandler;
   onMouseEnter?: NodeMouseHandler;
   onMouseMove?: NodeMouseHandler;
   onMouseLeave?: NodeMouseHandler;
   onContextMenu?: NodeMouseHandler;
-  onNodeDragStart?: NodeMouseHandler;
-  onNodeDrag?: NodeMouseHandler;
-  onNodeDragStop?: NodeMouseHandler;
+  onDragStart?: NodeDragHandler;
+  onDrag?: NodeDragHandler;
+  onDragStop?: NodeDragHandler;
   style?: CSSProperties;
   className?: string;
   sourcePosition: Position;
   targetPosition: Position;
   hidden?: boolean;
-  snapToGrid?: boolean;
-  snapGrid?: SnapGrid;
-  dragging: boolean;
   resizeObserver: ResizeObserver | null;
   dragHandle?: string;
   zIndex: number;
@@ -97,12 +96,6 @@ export type NodeHandleBounds = {
   target: HandleElement[] | null;
 };
 
-export type NodeDiffUpdate = {
-  id?: string;
-  diff?: XYPosition;
-  dragging?: boolean;
-};
-
 export type NodeDimensionUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
@@ -114,4 +107,17 @@ export type NodeInternals = Map<string, Node>;
 export type NodeBounds = XYPosition & {
   width: number | null;
   height: number | null;
+};
+
+export type NodeDragItem = {
+  id: string;
+  // relative node position
+  position: XYPosition;
+  // distance from the mouse cursor to the node when start dragging
+  distance: XYPosition;
+  width?: number | null;
+  height?: number | null;
+  extent?: 'parent' | CoordinateExtent;
+  parentNode?: string;
+  dragging?: boolean;
 };

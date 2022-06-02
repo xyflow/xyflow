@@ -5,11 +5,12 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import Viewport from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
-import { NodeTypes, EdgeTypes, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
+import { NodeTypesWrapped, EdgeTypesWrapped, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
 
-export interface GraphViewProps extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges'> {
-  nodeTypes: NodeTypes;
-  edgeTypes: EdgeTypes;
+export interface GraphViewProps
+  extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> {
+  nodeTypes: NodeTypesWrapped;
+  edgeTypes: EdgeTypesWrapped;
   selectionKeyCode: KeyCode | null;
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
@@ -49,6 +50,7 @@ const GraphView = ({
   connectionLineType,
   connectionLineStyle,
   connectionLineComponent,
+  connectionLineContainerStyle,
   selectionKeyCode,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
@@ -81,6 +83,7 @@ const GraphView = ({
   noDragClassName,
   noWheelClassName,
   noPanClassName,
+  elevateEdgesOnSelect,
 }: GraphViewProps) => {
   useOnInitHandler(onInit);
 
@@ -123,6 +126,7 @@ const GraphView = ({
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           connectionLineComponent={connectionLineComponent}
+          connectionLineContainerStyle={connectionLineContainerStyle}
           onEdgeUpdate={onEdgeUpdate}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           onEdgeContextMenu={onEdgeContextMenu}
@@ -134,6 +138,7 @@ const GraphView = ({
           edgeUpdaterRadius={edgeUpdaterRadius}
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
+          elevateEdgesOnSelect={!!elevateEdgesOnSelect}
         />
         <NodeRenderer
           nodeTypes={nodeTypes}

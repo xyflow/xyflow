@@ -8,13 +8,10 @@ type AttributionProps = {
   position?: AttributionPosition;
 };
 
+const accounts = ['paid-pro', 'paid-sponsor', 'paid-enterprise', 'paid-custom'];
+
 function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
-  if (
-    (proOptions?.account === 'paid-sponsor' ||
-      proOptions?.account === 'paid-enterprise' ||
-      proOptions?.account === 'paid-custom') &&
-    proOptions?.hideAttribution
-  ) {
+  if (proOptions?.account && accounts.includes(proOptions?.account) && proOptions?.hideAttribution) {
     return null;
   }
 

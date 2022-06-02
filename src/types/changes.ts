@@ -1,18 +1,18 @@
 import { XYPosition, Dimensions } from './utils';
-import { NodeHandleBounds, Node } from './nodes';
+import { Node } from './nodes';
 import { Edge } from './edges';
 
 export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
   dimensions: Dimensions;
-  handleBounds?: NodeHandleBounds;
 };
 
 export type NodePositionChange = {
   id: string;
   type: 'position';
   position?: XYPosition;
+  positionAbsolute?: XYPosition;
   dragging?: boolean;
 };
 

@@ -1,12 +1,13 @@
-import React, { memo, ComponentType, useCallback, useState, useMemo } from 'react';
+import React, { memo, ComponentType, useState, useMemo } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
-import { Edge, EdgeProps, WrapEdgeProps, ReactFlowState, Connection } from '../../types';
-import { onMouseDown } from '../../components/Handle/handler';
+import { EdgeProps, WrapEdgeProps, ReactFlowState, Connection } from '../../types';
+import { handleMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
+import { getMouseHandler } from './utils';
 
 const selector = (s: ReactFlowState) => ({
   addSelectedEdges: s.addSelectedEdges,
@@ -53,10 +54,78 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerEnd,
     markerStart,
   }: WrapEdgeProps): JSX.Element | null => {
-    const store = useStoreApi();
-    const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
-
     const [updating, setUpdating] = useState<boolean>(false);
+    const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
+    const store = useStoreApi();
+
+    const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+      const edge = store.getState().edges.find((e) => e.id === id)!;
+
+      if (elementsSelectable) {
+        store.setState({ nodesSelectionActive: false });
+        addSelectedEdges([id]);
+      }
+
+      onClick?.(event, edge);
+    };
+
+    const onEdgeDoubleClickHandler = getMouseHandler(id, store.getState, onEdgeDoubleClick);
+    const onEdgeContextMenu = getMouseHandler(id, store.getState, onContextMenu);
+    const onEdgeMouseEnter = getMouseHandler(id, store.getState, onMouseEnter);
+    const onEdgeMouseMove = getMouseHandler(id, store.getState, onMouseMove);
+    const onEdgeMouseLeave = getMouseHandler(id, store.getState, onMouseLeave);
+
+    const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
+      const nodeId = isSourceHandle ? target : source;
+      const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
+      const handleType = isSourceHandle ? 'target' : 'source';
+      const isValidConnection = () => true;
+      const isTarget = isSourceHandle;
+      const edge = store.getState().edges.find((e) => e.id === id)!;
+
+      onEdgeUpdateStart?.(event, edge, handleType);
+
+      const _onEdgeUpdate = onEdgeUpdateEnd
+        ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edge, handleType)
+        : undefined;
+
+      const onConnectEdge = (connection: Connection) => {
+        const { edges } = store.getState();
+        const edge = edges.find((e) => e.id === id);
+
+        if (edge && onEdgeUpdate) {
+          onEdgeUpdate(edge, connection);
+        }
+      };
+
+      handleMouseDown(
+        event,
+        handleId,
+        nodeId,
+        store.setState,
+        onConnectEdge,
+        isTarget,
+        isValidConnection,
+        connectionMode,
+        handleType,
+        _onEdgeUpdate,
+        store.getState
+      );
+    };
+
+    const onEdgeUpdaterSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
+      handleEdgeUpdater(event, true);
+    const onEdgeUpdaterTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
+      handleEdgeUpdater(event, false);
+
+    const onEdgeUpdaterMouseEnter = () => setUpdating(true);
+    const onEdgeUpdaterMouseOut = () => setUpdating(false);
+    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart)})`, [markerStart]);
+    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd)})`, [markerEnd]);
+
+    if (hidden) {
+      return null;
+    }
 
     const inactive = !elementsSelectable && !onClick;
     const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
@@ -66,138 +135,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       className,
       { selected, animated, inactive, updating },
     ]);
-
-    const edgeElement = useMemo<Edge>(() => {
-      const el: Edge = {
-        id,
-        source,
-        target,
-        type,
-      };
-
-      if (sourceHandleId) {
-        el.sourceHandle = sourceHandleId;
-      }
-
-      if (targetHandleId) {
-        el.targetHandle = targetHandleId;
-      }
-
-      if (typeof data !== 'undefined') {
-        el.data = data;
-      }
-
-      return el;
-    }, [id, source, target, type, sourceHandleId, targetHandleId, data]);
-
-    const onEdgeClick = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        if (elementsSelectable) {
-          store.setState({ nodesSelectionActive: false });
-          addSelectedEdges([edgeElement.id]);
-        }
-
-        onClick?.(event, edgeElement);
-      },
-      [elementsSelectable, edgeElement, onClick]
-    );
-
-    const onEdgeDoubleClickHandler = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
-        onEdgeDoubleClick?.(event, edgeElement);
-      },
-      [edgeElement, onEdgeDoubleClick]
-    );
-
-    const onEdgeContextMenu = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        onContextMenu?.(event, edgeElement);
-      },
-      [edgeElement, onContextMenu]
-    );
-
-    const onEdgeMouseEnter = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        onMouseEnter?.(event, edgeElement);
-      },
-      [edgeElement, onContextMenu]
-    );
-
-    const onEdgeMouseMove = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        onMouseMove?.(event, edgeElement);
-      },
-      [edgeElement, onContextMenu]
-    );
-
-    const onEdgeMouseLeave = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        onMouseLeave?.(event, edgeElement);
-      },
-      [edgeElement, onContextMenu]
-    );
-
-    const handleEdgeUpdater = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
-        const nodeId = isSourceHandle ? target : source;
-        const handleId = isSourceHandle ? targetHandleId : sourceHandleId;
-        const isValidConnection = () => true;
-        const isTarget = isSourceHandle;
-
-        onEdgeUpdateStart?.(event, edgeElement);
-
-        const _onEdgeUpdate = onEdgeUpdateEnd
-          ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edgeElement)
-          : undefined;
-
-        const onConnectEdge = (connection: Connection) => {
-          const { edges } = store.getState();
-          const edge = edges.find((e) => e.id === id);
-
-          if (edge && onEdgeUpdate) {
-            onEdgeUpdate(edge, connection);
-          }
-        };
-
-        onMouseDown(
-          event,
-          handleId,
-          nodeId,
-          store.setState,
-          onConnectEdge,
-          isTarget,
-          isValidConnection,
-          connectionMode,
-          isSourceHandle ? 'target' : 'source',
-          _onEdgeUpdate,
-          store.getState
-        );
-      },
-      [id, source, target, type, sourceHandleId, targetHandleId, edgeElement, onEdgeUpdate]
-    );
-
-    const onEdgeUpdaterSourceMouseDown = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        handleEdgeUpdater(event, true);
-      },
-      [id, source, sourceHandleId, handleEdgeUpdater]
-    );
-
-    const onEdgeUpdaterTargetMouseDown = useCallback(
-      (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-        handleEdgeUpdater(event, false);
-      },
-      [id, target, targetHandleId, handleEdgeUpdater]
-    );
-
-    const onEdgeUpdaterMouseEnter = useCallback(() => setUpdating(true), [setUpdating]);
-    const onEdgeUpdaterMouseOut = useCallback(() => setUpdating(false), [setUpdating]);
-    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart)})`, [markerStart]);
-    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd)})`, [markerEnd]);
-
-    if (hidden) {
-      return null;
-    }
 
     return (
       <g

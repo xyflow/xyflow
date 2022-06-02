@@ -12,6 +12,8 @@ describe('Minimap Testing', () => {
     const paneNodes = Cypress.$('.react-flow__node').length;
     const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
 
+    cy.wait(100);
+
     expect(paneNodes).equal(minimapNodes);
   });
 
@@ -21,6 +23,7 @@ describe('Minimap Testing', () => {
 
     cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
+      .wait(50)
       .then(() => {
         const viewBoxAfterZoom = Cypress.$('.react-flow__minimap').attr('viewBox');
         const maskPathAfterZoom = Cypress.$('.react-flow__minimap-mask').attr('d');
@@ -34,14 +37,15 @@ describe('Minimap Testing', () => {
     const xPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
     const yPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
 
-    cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el) => {
-      cy.wait(1000);
-      const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
-      const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
+    cy.drag('.react-flow__node:first', { x: 500, y: 25 })
+      .wait(100)
+      .then(() => {
+        const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
+        const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
 
-      expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
-      expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
-    });
+        expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
+        expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
+      });
   });
 
   it('changes node positions via pane drag', () => {
@@ -54,6 +58,7 @@ describe('Minimap Testing', () => {
       cy.get('.react-flow__pane')
         .trigger('mousedown', 'topLeft', { which: 1, view: win })
         .trigger('mousemove', 'bottomLeft')
+        .wait(50)
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
           const viewBoxAfterDrag = Cypress.$('.react-flow__minimap').attr('viewBox');

@@ -1,4 +1,4 @@
-import React, { useCallback, memo, ReactNode, WheelEvent, MouseEvent } from 'react';
+import React, { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
@@ -8,6 +8,7 @@ import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
+
 import { ReactFlowState } from '../../types';
 
 interface FlowRendererProps
@@ -18,6 +19,7 @@ interface FlowRendererProps
     | 'edgeTypes'
     | 'snapGrid'
     | 'connectionLineType'
+    | 'connectionLineContainerStyle'
     | 'arrowHeadColor'
     | 'onlyRenderVisibleElements'
     | 'selectNodesOnDrag'
@@ -67,18 +69,14 @@ const FlowRenderer = ({
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
-  const onClick = useCallback(
-    (event: MouseEvent) => {
-      onPaneClick?.(event);
-      resetSelectedElements();
+  const onClick = (event: MouseEvent) => {
+    onPaneClick?.(event);
+    resetSelectedElements();
 
-      store.setState({ nodesSelectionActive: false });
-    },
-    [onPaneClick]
-  );
-
-  const onContextMenu = useCallback((event: MouseEvent) => onPaneContextMenu?.(event), [onPaneContextMenu]);
-  const onWheel = useCallback((event: WheelEvent) => onPaneScroll?.(event), [onPaneScroll]);
+    store.setState({ nodesSelectionActive: false });
+  };
+  const onContextMenu = (event: MouseEvent) => onPaneContextMenu?.(event);
+  const onWheel = (event: WheelEvent) => onPaneScroll?.(event);
 
   return (
     <ZoomPane

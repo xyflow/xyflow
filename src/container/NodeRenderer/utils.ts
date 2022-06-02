@@ -5,20 +5,20 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import GroupNode from '../../components/Nodes/GroupNode';
 import wrapNode from '../../components/Nodes/wrapNode';
-import { NodeTypes, NodeProps } from '../../types';
+import { NodeTypes, NodeProps, NodeTypesWrapped } from '../../types';
 
-export type CreateNodeTypes = (nodeTypes: NodeTypes) => NodeTypes;
+export type CreateNodeTypes = (nodeTypes: NodeTypes) => NodeTypesWrapped;
 
-export function createNodeTypes(nodeTypes: NodeTypes): NodeTypes {
-  const standardTypes: NodeTypes = {
+export function createNodeTypes(nodeTypes: NodeTypes): NodeTypesWrapped {
+  const standardTypes: NodeTypesWrapped = {
     input: wrapNode((nodeTypes.input || InputNode) as ComponentType<NodeProps>),
     default: wrapNode((nodeTypes.default || DefaultNode) as ComponentType<NodeProps>),
     output: wrapNode((nodeTypes.output || OutputNode) as ComponentType<NodeProps>),
     group: wrapNode((nodeTypes.group || GroupNode) as ComponentType<NodeProps>),
   };
 
-  const wrappedTypes = {} as NodeTypes;
-  const specialTypes: NodeTypes = Object.keys(nodeTypes)
+  const wrappedTypes = {} as NodeTypesWrapped;
+  const specialTypes: NodeTypesWrapped = Object.keys(nodeTypes)
     .filter((k) => !['input', 'default', 'output', 'group'].includes(k))
     .reduce((res, key) => {
       res[key] = wrapNode((nodeTypes[key] || DefaultNode) as ComponentType<NodeProps>);

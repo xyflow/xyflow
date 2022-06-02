@@ -19,7 +19,7 @@ import {
   DefaultEdgeOptions,
   FitViewOptions,
   OnNodesDelete,
-  OnEdgesDelete
+  OnEdgesDelete,
 } from '../../types';
 
 interface StoreUpdaterProps {
@@ -31,6 +31,9 @@ interface StoreUpdaterProps {
   onConnectStart?: OnConnectStart;
   onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
+  onClickConnectStart?: OnConnectStart;
+  onClickConnectStop?: OnConnectStop;
+  onClickConnectEnd?: OnConnectEnd;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
   minZoom?: number;
@@ -88,6 +91,9 @@ const StoreUpdater = ({
   onConnectStart,
   onConnectStop,
   onConnectEnd,
+  onClickConnectStart,
+  onClickConnectStop,
+  onClickConnectEnd,
   nodesDraggable,
   nodesConnectable,
   minZoom,
@@ -133,6 +139,9 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onConnectStart', onConnectStart, store.setState);
   useDirectStoreUpdater('onConnectStop', onConnectStop, store.setState);
   useDirectStoreUpdater('onConnectEnd', onConnectEnd, store.setState);
+  useDirectStoreUpdater('onClickConnectStart', onClickConnectStart, store.setState);
+  useDirectStoreUpdater('onClickConnectStop', onClickConnectStop, store.setState);
+  useDirectStoreUpdater('onClickConnectEnd', onClickConnectEnd, store.setState);
   useDirectStoreUpdater('nodesDraggable', nodesDraggable, store.setState);
   useDirectStoreUpdater('nodesConnectable', nodesConnectable, store.setState);
   useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);

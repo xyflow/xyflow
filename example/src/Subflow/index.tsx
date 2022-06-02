@@ -15,7 +15,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import DebugNode from './DebugNode';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
@@ -105,15 +105,12 @@ const nodeTypes = {
   default: DebugNode,
 };
 
-const BasicFlow = () => {
+const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => addEdge(connection, eds));
-  }, []);
-
+  const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
   const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
@@ -194,4 +191,4 @@ const BasicFlow = () => {
   );
 };
 
-export default BasicFlow;
+export default Subflow;

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, MouseEvent, useEffect } from 'react';
 
 import ReactFlow, {
   Node,
@@ -33,10 +33,21 @@ const UseZoomPanHelperFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
-  const { project, setCenter, zoomIn, zoomOut, fitView, addNodes, setNodes: setNodesHook } = useReactFlow();
+  const {
+    project,
+    setCenter,
+    zoomIn,
+    zoomOut,
+    fitView,
+    addNodes,
+    setNodes: setNodesHook,
+    addEdges,
+    getNodes,
+    getEdges,
+  } = useReactFlow();
 
   const onPaneClick = useCallback(
-    (evt) => {
+    (evt: MouseEvent) => {
       const projectedPosition = project({ x: evt.clientX, y: evt.clientY - 40 });
 
       setNodes((nds) =>
@@ -53,8 +64,8 @@ const UseZoomPanHelperFlow = () => {
   );
 
   const onNodeClick = useCallback(
-    (_, element) => {
-      const { x, y } = element.position;
+    (_: MouseEvent, node: Node) => {
+      const { x, y } = node.position;
       setCenter(x, y, { zoom: 1, duration: 1200 });
     },
     [setCenter]
@@ -72,9 +83,16 @@ const UseZoomPanHelperFlow = () => {
     addNodes(newNode);
   }, [addNodes]);
 
-  const onResetNodes = useCallback(() => {
-    setNodesHook(initialNodes);
-  }, [setNodesHook]);
+  const logNodes = useCallback(() => {
+    console.log('nodes', getNodes());
+    console.log('edges', getEdges());
+  }, [getNodes]);
+
+  useEffect(() => {
+    addEdges({ id: 'e3-4', source: '3', target: '4' });
+  }, [addEdges]);
+
+  const onResetNodes = useCallback(() => setNodesHook(initialNodes), [setNodesHook]);
 
   return (
     <ReactFlow
@@ -95,6 +113,7 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>fitView</button>
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>
+        <button onClick={logNodes}>useNodes</button>
       </div>
       <Background />
       <MiniMap />

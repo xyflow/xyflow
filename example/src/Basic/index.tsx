@@ -24,6 +24,8 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
+const defaultEdgeOptions = { zIndex: 0 };
+
 const BasicFlow = () => {
   const instance = useReactFlow();
 
@@ -60,10 +62,11 @@ const BasicFlow = () => {
       onNodeClick={onNodeClick}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
-      defaultZoom={1.5}
       minZoom={0.2}
       maxZoom={4}
       fitView
+      defaultEdgeOptions={defaultEdgeOptions}
+      selectNodesOnDrag={false}
     >
       <Background variant={BackgroundVariant.Lines} />
 

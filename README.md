@@ -11,7 +11,7 @@
 ### Wire Your Ideas With React Flow!  
 A highly customizable React component for building interactive graphs and node-based editors.
 
-[🚀 Getting Started](https://reactflow.dev/docs/getting-started/installation) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/6ZcAMJmJ) | [💎 React Flow Pro](https://pro.reactflow.dev/pricing)
+[🚀 Getting Started](https://reactflow.dev/docs/getting-started/installation) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) | [💎 React Flow Pro](https://pro.reactflow.dev/pricing)
   
 </div>
 
@@ -26,10 +26,11 @@ A highly customizable React component for building interactive graphs and node-b
 - **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
-## Attribution
+## Commercial Usage / Attribution
 
-React Flow includes a small attribution that links to the React Flow website. Per default the attribution is displayed in the bottom right corner. With the attribution we want to achieve that companies who are using React Flow in commercial applications finance the development of the library.
-We expect users who are using React Flow commercially to subscribe to React Flow Pro if they want to remove the attribution. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+React Flow includes a small attribution that links to the React Flow website. **We expect companies who are using React Flow commercially to subscribe to [React Flow Pro](https://pro.reactflow.dev/pricing) if they want to remove the attribution.** By subscribing you get access to other exclusive services like advanced examples, individual support or prioritized bug reports. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+
+You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/faq).
 
 ## Installation
 
@@ -62,7 +63,7 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
 }
 ```
 
-Before you start you need to install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
+Before you start you need to build the project using `npm run build`.  Then install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
 
 If you want to contribute or develop custom features the easiest way is to start the dev server:
 
@@ -106,7 +107,7 @@ You can also use our [contact form](https://pro.reactflow.dev/contact) or join t
 React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. Under the hood, React Flow depends on these great libraries:
 
 * [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
-* [react-draggable](https://github.com/react-grid-layout/react-draggable) - used for making the nodes draggable
+* [d3-drag](https://github.com/d3/d3-drag) - used for making the nodes draggable
 * [zustand](https://github.com/pmndrs/zustand) - internal state management
 
 ## License

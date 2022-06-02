@@ -36,6 +36,10 @@
   overflow: visible;
 }
 
+.react-flow .react-flow__connectionline {
+  z-index: 1001;
+}
+
 .react-flow__edge {
   pointer-events: visibleStroke;
 

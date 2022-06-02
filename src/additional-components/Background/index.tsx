@@ -1,4 +1,4 @@
-import React, { memo, useMemo, FC } from 'react';
+import React, { memo, FC, useEffect, useState, useRef } from 'react';
 import cc from 'classcat';
 
 import { useStore } from '../../store';
@@ -20,39 +20,50 @@ const Background: FC<BackgroundProps> = ({
   style,
   className,
 }) => {
-  const [x, y, scale] = useStore(transformSelector);
-  // when there are multiple flows on a page we need to make sure that every background gets its own pattern.
-  const patternId = useMemo(() => `pattern-${Math.floor(Math.random() * 100000)}`, []);
+  const ref = useRef<SVGSVGElement>(null);
+  const [patternId, setPatternId] = useState<string | null>(null);
+  const [tX, tY, tScale] = useStore(transformSelector);
 
-  const bgClasses = cc(['react-flow__background', 'react-flow__container', className]);
-  const scaledGap = gap * scale;
-  const xOffset = x % scaledGap;
-  const yOffset = y % scaledGap;
+  useEffect(() => {
+    // when there are multiple flows on a page we need to make sure that every background gets its own pattern.
+    const bgs = document.querySelectorAll('.react-flow__background');
+    const index = Array.from(bgs).findIndex((bg) => bg === ref.current);
+    setPatternId(`pattern-${index}`);
+  }, []);
+
+  const scaledGap = gap * tScale || 1;
+  const xOffset = tX % scaledGap;
+  const yOffset = tY % scaledGap;
 
   const isLines = variant === BackgroundVariant.Lines;
   const bgColor = color ? color : defaultColors[variant];
-  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size * scale, bgColor);
+  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size * tScale, bgColor);
 
   return (
     <svg
-      className={bgClasses}
+      className={cc(['react-flow__background', 'react-flow__container', className])}
       style={{
         ...style,
         width: '100%',
         height: '100%',
       }}
+      ref={ref}
     >
-      <pattern
-        id={patternId}
-        x={xOffset}
-        y={yOffset}
-        width={scaledGap}
-        height={scaledGap}
-        patternUnits="userSpaceOnUse"
-      >
-        {path}
-      </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
+      {patternId && (
+        <>
+          <pattern
+            id={patternId}
+            x={xOffset}
+            y={yOffset}
+            width={scaledGap}
+            height={scaledGap}
+            patternUnits="userSpaceOnUse"
+          >
+            {path}
+          </pattern>
+          <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
+        </>
+      )}
     </svg>
   );
 };

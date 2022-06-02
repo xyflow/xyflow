@@ -2,7 +2,7 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import React, { memo, useState, useRef, useCallback } from 'react';
+import React, { memo, useState, useRef } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
@@ -52,16 +52,20 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
   const renderUserSelectionPane = userSelectionActive || selectionKeyPressed;
 
-  const resetUserSelection = useCallback(() => {
+  if (!elementsSelectable || !renderUserSelectionPane) {
+    return null;
+  }
+
+  const resetUserSelection = () => {
     setUserSelectionRect(initialRect);
 
     store.setState({ userSelectionActive: false });
 
     prevSelectedNodesCount.current = 0;
     prevSelectedEdgesCount.current = 0;
-  }, []);
+  };
 
-  const onMouseDown = useCallback((event: React.MouseEvent): void => {
+  const onMouseDown = (event: React.MouseEvent): void => {
     const reactFlowNode = (event.target as Element).closest('.react-flow')!;
     containerBounds.current = reactFlowNode.getBoundingClientRect();
 
@@ -78,7 +82,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     });
 
     store.setState({ userSelectionActive: true, nodesSelectionActive: false });
-  }, []);
+  };
 
   const onMouseMove = (event: React.MouseEvent): void => {
     if (!selectionKeyPressed || !userSelectionRect.draw || !containerBounds.current) {
@@ -98,7 +102,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     };
 
     const { nodeInternals, edges, transform, onNodesChange, onEdgesChange } = store.getState();
-    const nodes = Array.from(nodeInternals).map(([_, node]) => node);
+    const nodes = Array.from(nodeInternals.values());
     const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, false, true);
     const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
@@ -122,21 +126,15 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     setUserSelectionRect(nextUserSelectRect);
   };
 
-  const onMouseUp = useCallback(() => {
+  const onMouseUp = () => {
     store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
-
     resetUserSelection();
-  }, []);
+  };
 
-  const onMouseLeave = useCallback(() => {
+  const onMouseLeave = () => {
     store.setState({ nodesSelectionActive: false });
-
     resetUserSelection();
-  }, []);
-
-  if (!elementsSelectable || !renderUserSelectionPane) {
-    return null;
-  }
+  };
 
   return (
     <div
