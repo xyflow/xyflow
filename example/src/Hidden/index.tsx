@@ -32,22 +32,33 @@ const setHidden = (hidden: boolean) => (els: any[]) =>
   });
 
 const HiddenFlow = () => {
-  const [nodes, setNodes] = useNodesState(initialNodes);
-  const [edges, setEdges] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const [isHidden, setIsHidden] = useState<boolean>(true);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => addEdge(connection, eds));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) => addEdge(connection, eds));
+    },
+    [setEdges]
+  );
 
   useEffect(() => {
     setNodes(setHidden(isHidden));
     setEdges(setHidden(isHidden));
-  }, [isHidden]);
+  }, [isHidden, setEdges, setNodes]);
+
+  console.log(nodes);
 
   return (
-    <ReactFlow nodes={nodes} edges={edges} onConnect={onConnect}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onConnect={onConnect}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+    >
       <MiniMap />
       <Controls />
 

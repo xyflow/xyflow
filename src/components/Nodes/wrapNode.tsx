@@ -104,7 +104,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       onDrag: onDrag,
       onStop: onDragStop,
       nodeRef,
-      disabled: !isDraggable,
+      disabled: hidden || !isDraggable,
       noDragClassName,
       handleSelector: dragHandle,
       nodeId: id,
