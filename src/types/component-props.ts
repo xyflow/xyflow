@@ -90,7 +90,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
   multiSelectionKeyCode?: KeyCode | null;
-  zoomActivationKeyCode?: KeyCode;
+  zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
   onlyRenderVisibleElements?: boolean;
