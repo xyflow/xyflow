@@ -131,7 +131,6 @@ function useDrag({
           .filter((event: MouseEvent) => {
             const target = event.target as HTMLDivElement;
             const isDraggable =
-              !event.ctrlKey &&
               !event.button &&
               (!noDragClassName || !hasSelector(target, `.${noDragClassName}`, nodeRef)) &&
               (!handleSelector || hasSelector(target, handleSelector, nodeRef));
