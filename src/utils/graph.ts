@@ -141,6 +141,10 @@ export const pointToRendererPoint = (
 };
 
 export const getRectOfNodes = (nodes: Node[]): Rect => {
+  if (nodes.length === 0) {
+    return { x: 0, y: 0, width: 0, height: 0 };
+  }
+
   const box = nodes.reduce(
     (currBox, { positionAbsolute, position, width, height }) =>
       getBoundsOfBoxes(

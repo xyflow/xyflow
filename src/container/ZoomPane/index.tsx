@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, ReactNode } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import shallow from 'zustand/shallow';
@@ -7,29 +7,13 @@ import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../store';
-import { Viewport, PanOnScrollMode, KeyCode, ReactFlowState, OnMove, OnMoveStart, OnMoveEnd } from '../../types';
+import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
+import { FlowRendererProps } from '../FlowRenderer';
 
-interface ZoomPaneProps {
-  selectionKeyPressed: boolean;
-  elementsSelectable?: boolean;
-  zoomOnScroll?: boolean;
-  zoomOnPinch?: boolean;
-  panOnScroll?: boolean;
-  panOnScrollSpeed?: number;
-  panOnScrollMode?: PanOnScrollMode;
-  zoomOnDoubleClick?: boolean;
-  panOnDrag?: boolean;
-  defaultPosition?: [number, number];
-  defaultZoom?: number;
-  onMove?: OnMove;
-  onMoveStart?: OnMoveStart;
-  onMoveEnd?: OnMoveEnd;
-  zoomActivationKeyCode?: KeyCode;
-  preventScrolling?: boolean;
-  children: ReactNode;
-  noWheelClassName: string;
-  noPanClassName: string;
-}
+type ZoomPaneProps = Omit<
+  FlowRendererProps,
+  'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName'
+> & { selectionKeyPressed: boolean };
 
 const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
   prevViewport.x !== eventViewport.x || prevViewport.y !== eventViewport.y || prevViewport.zoom !== eventViewport.k;

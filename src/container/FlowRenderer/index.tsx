@@ -11,22 +11,21 @@ import NodesSelection from '../../components/NodesSelection';
 
 import { ReactFlowState } from '../../types';
 
-interface FlowRendererProps
-  extends Omit<
-    GraphViewProps,
-    | 'snapToGrid'
-    | 'nodeTypes'
-    | 'edgeTypes'
-    | 'snapGrid'
-    | 'connectionLineType'
-    | 'connectionLineContainerStyle'
-    | 'arrowHeadColor'
-    | 'onlyRenderVisibleElements'
-    | 'selectNodesOnDrag'
-    | 'defaultMarkerColor'
-  > {
+export type FlowRendererProps = Omit<
+  GraphViewProps,
+  | 'snapToGrid'
+  | 'nodeTypes'
+  | 'edgeTypes'
+  | 'snapGrid'
+  | 'connectionLineType'
+  | 'connectionLineContainerStyle'
+  | 'arrowHeadColor'
+  | 'onlyRenderVisibleElements'
+  | 'selectNodesOnDrag'
+  | 'defaultMarkerColor'
+> & {
   children: ReactNode;
-}
+};
 
 const selector = (s: ReactFlowState) => ({
   resetSelectedElements: s.resetSelectedElements,

@@ -59,6 +59,10 @@ const LayoutFlow = () => {
     setNodes(layoutedNodes);
   };
 
+  const unselect = () => {
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
+  };
+
   return (
     <div className="layoutflow">
       <ReactFlowProvider>
@@ -77,7 +81,10 @@ const LayoutFlow = () => {
           <button onClick={() => onLayout('TB')} style={{ marginRight: 10 }}>
             vertical layout
           </button>
-          <button onClick={() => onLayout('LR')}>horizontal layout</button>
+          <button onClick={() => onLayout('LR')} style={{ marginRight: 10 }}>
+            horizontal layout
+          </button>
+          <button onClick={() => unselect()}>unselect nodes</button>
         </div>
       </ReactFlowProvider>
     </div>

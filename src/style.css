@@ -106,6 +106,7 @@
 }
 
 .react-flow__handle {
+  position: absolute;
   pointer-events: none;
 
   &.connectable {
