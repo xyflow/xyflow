@@ -39,16 +39,15 @@ const initialNodes: Node[] = [
   {
     id: '4b',
     data: { label: 'Node 4b' },
-    position: { x: 150, y: 50 },
+    position: { x: 100, y: 60 },
     className: 'light',
     style: { backgroundColor: 'rgba(50, 50, 255, 0.5)', height: 200, width: 300 },
     parentNode: '4',
-    expandParent: true,
   },
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
-    position: { x: 20, y: 20 },
+    position: { x: 40, y: 20 },
     className: 'light',
     parentNode: '4b',
   },

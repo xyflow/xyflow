@@ -105,7 +105,7 @@ export function fitView(get: GetState<ReactFlowState>, options: InternalFitViewO
   if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
     if (d3Zoom && d3Selection) {
       const nodes = Array.from(nodeInternals.values()).filter((n) =>
-        options.includeHiddenNodes ? !n.parentNode && n.width && n.height : !n.parentNode && !n.hidden
+        options.includeHiddenNodes ? n.width && n.height : !n.hidden
       );
 
       const nodesInitialized = nodes.every((n) => n.width && n.height);
