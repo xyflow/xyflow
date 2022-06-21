@@ -53,6 +53,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     onEdgeUpdateEnd,
     markerEnd,
     markerStart,
+    rfId,
   }: WrapEdgeProps): JSX.Element | null => {
     const [updating, setUpdating] = useState<boolean>(false);
     const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
@@ -120,8 +121,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeUpdaterMouseEnter = () => setUpdating(true);
     const onEdgeUpdaterMouseOut = () => setUpdating(false);
-    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart)})`, [markerStart]);
-    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd)})`, [markerEnd]);
+    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
+    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
 
     if (hidden) {
       return null;

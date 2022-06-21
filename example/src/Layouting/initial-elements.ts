@@ -1,4 +1,4 @@
-import { Node, Edge, XYPosition } from 'react-flow-renderer';
+import { Node, Edge, XYPosition, MarkerType } from 'react-flow-renderer';
 
 const position: XYPosition = { x: 0, y: 0 };
 
@@ -59,16 +59,16 @@ const nodes: Node[] = [
 ];
 
 const edges: Edge[] = [
-  { id: 'e12', source: '1', target: '2', type: 'smoothstep' },
-  { id: 'e13', source: '1', target: '3', type: 'smoothstep' },
-  { id: 'e22a', source: '2', target: '2a', type: 'smoothstep' },
-  { id: 'e22b', source: '2', target: '2b', type: 'smoothstep' },
-  { id: 'e22c', source: '2', target: '2c', type: 'smoothstep' },
-  { id: 'e2c2d', source: '2c', target: '2d', type: 'smoothstep' },
+  { id: 'e12', source: '1', target: '2', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e13', source: '1', target: '3', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e22a', source: '2', target: '2a', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e22b', source: '2', target: '2b', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e22c', source: '2', target: '2c', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e2c2d', source: '2c', target: '2d', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
 
-  { id: 'e45', source: '4', target: '5', type: 'smoothstep' },
-  { id: 'e56', source: '5', target: '6', type: 'smoothstep' },
-  { id: 'e57', source: '5', target: '7', type: 'smoothstep' },
+  { id: 'e45', source: '4', target: '5', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e56', source: '5', target: '6', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
+  { id: 'e57', source: '5', target: '7', type: 'smoothstep', markerEnd: { type: MarkerType.Arrow } },
 ];
 
 const nodesAndEdges = { nodes, edges };
