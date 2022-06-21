@@ -19,6 +19,7 @@ export {
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 export * from './additional-components';
 
+export { internalsSymbol } from './utils';
 export {
   isNode,
   isEdge,
