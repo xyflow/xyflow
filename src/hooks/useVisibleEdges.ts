@@ -69,8 +69,8 @@ function useVisibleEdges(onlyRenderVisible: boolean, nodeInternals: NodeInternal
             targetNode?.width &&
             targetNode?.height &&
             isEdgeVisible({
-              sourcePos: sourceNode.position || { x: 0, y: 0 },
-              targetPos: targetNode.position || { x: 0, y: 0 },
+              sourcePos: sourceNode.positionAbsolute || { x: 0, y: 0 },
+              targetPos: targetNode.positionAbsolute || { x: 0, y: 0 },
               sourceWidth: sourceNode.width,
               sourceHeight: sourceNode.height,
               targetWidth: targetNode.width,
