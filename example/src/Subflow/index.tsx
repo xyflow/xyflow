@@ -20,7 +20,13 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
 const initialNodes: Node[] = [
-  { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 }, className: 'light' },
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'Node 1' },
+    position: { x: 250, y: 5 },
+    className: 'light',
+  },
   {
     id: '4',
     data: { label: 'Node 4' },
@@ -34,7 +40,10 @@ const initialNodes: Node[] = [
     position: { x: 15, y: 15 },
     className: 'light',
     parentNode: '4',
-    extent: 'parent',
+    extent: [
+      [0, 0],
+      [100, 100],
+    ],
   },
   {
     id: '4b',

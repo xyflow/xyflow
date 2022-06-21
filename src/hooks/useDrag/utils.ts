@@ -84,6 +84,14 @@ export function updatePosition(
       }
       currentExtent = nodeExtent;
     }
+  } else if (dragItem.extent && dragItem.parentNode) {
+    const parent = nodeInternals.get(dragItem.parentNode);
+    const parentX = parent?.positionAbsolute?.x ?? 0;
+    const parentY = parent?.positionAbsolute?.y ?? 0;
+    currentExtent = [
+      [dragItem.extent[0][0] + parentX, dragItem.extent[0][1] + parentY],
+      [dragItem.extent[1][0] + parentX, dragItem.extent[1][1] + parentY],
+    ];
   }
 
   dragItem.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
