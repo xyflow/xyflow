@@ -211,6 +211,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
             elevateEdgesOnSelect={elevateEdgesOnSelect}
+            id={rest?.id}
           />
           <StoreUpdater
             nodes={nodes}

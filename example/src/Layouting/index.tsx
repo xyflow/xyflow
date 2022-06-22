@@ -8,6 +8,8 @@ import ReactFlow, {
   Position,
   useNodesState,
   useEdgesState,
+  MarkerType,
+  EdgeMarker,
 } from 'react-flow-renderer';
 import dagre from 'dagre';
 
@@ -27,9 +29,12 @@ const LayoutFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialItems.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialItems.edges);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => addEdge(connection, eds));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) => addEdge(connection, eds));
+    },
+    [setEdges]
+  );
 
   const onLayout = (direction: string) => {
     const isHorizontal = direction === 'LR';
@@ -63,6 +68,17 @@ const LayoutFlow = () => {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
   };
 
+  const changeMarker = () => {
+    setEdges((eds) =>
+      eds.map((e) => ({
+        ...e,
+        markerEnd: {
+          type: (e.markerEnd as EdgeMarker)?.type === MarkerType.Arrow ? MarkerType.ArrowClosed : MarkerType.Arrow,
+        },
+      }))
+    );
+  };
+
   return (
     <div className="layoutflow">
       <ReactFlowProvider>
@@ -85,6 +101,7 @@ const LayoutFlow = () => {
             horizontal layout
           </button>
           <button onClick={() => unselect()}>unselect nodes</button>
+          <button onClick={() => changeMarker()}>change marker</button>
         </div>
       </ReactFlowProvider>
     </div>

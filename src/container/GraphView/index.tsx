@@ -84,6 +84,7 @@ const GraphView = ({
   noWheelClassName,
   noPanClassName,
   elevateEdgesOnSelect,
+  id,
 }: GraphViewProps) => {
   useOnInitHandler(onInit);
 
@@ -139,6 +140,7 @@ const GraphView = ({
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
           elevateEdgesOnSelect={!!elevateEdgesOnSelect}
+          rfId={id}
         />
         <NodeRenderer
           nodeTypes={nodeTypes}

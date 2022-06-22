@@ -30,7 +30,7 @@ export const getIncomers = <T = any, U extends T = T>(node: Node<U>, nodes: Node
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): string =>
   `reactflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
-export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
+export const getMarkerId = (marker: EdgeMarkerType | undefined, rfId?: string): string => {
   if (typeof marker === 'undefined') {
     return '';
   }
@@ -39,10 +39,12 @@ export const getMarkerId = (marker: EdgeMarkerType | undefined): string => {
     return marker;
   }
 
-  return Object.keys(marker)
+  const idPrefix = rfId ? `${rfId}__` : '';
+
+  return `${idPrefix}${Object.keys(marker)
     .sort()
     .map((key: string) => `${key}=${(marker as any)[key]}`)
-    .join('&');
+    .join('&')}`;
 };
 
 const connectionExists = (edge: Edge, edges: Edge[]) => {

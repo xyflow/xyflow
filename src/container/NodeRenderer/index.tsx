@@ -122,6 +122,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isParent={!!node[internalsSymbol]?.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
+            initialized={!!node.width && !!node.height}
           />
         );
       })}

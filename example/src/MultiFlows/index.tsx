@@ -9,6 +9,7 @@ import ReactFlow, {
   ReactFlowProvider,
   useNodesState,
   useEdgesState,
+  MarkerType,
 } from 'react-flow-renderer';
 
 import './multiflows.css';
@@ -21,12 +22,12 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
+  { id: 'e1-2', source: '1', target: '2', animated: true, markerEnd: { type: MarkerType.Arrow } },
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const Flow: FC = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+const Flow: FC<{ id: string }> = ({ id }) => {
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds));
@@ -39,6 +40,7 @@ const Flow: FC = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        id={id}
       >
         <Background />
       </ReactFlow>
@@ -48,8 +50,8 @@ const Flow: FC = () => {
 
 const MultiFlows: FC = () => (
   <div className="react-flow__example-multiflows">
-    <Flow />
-    <Flow />
+    <Flow id="flow-a" />
+    <Flow id="flow-b" />
   </div>
 );
 

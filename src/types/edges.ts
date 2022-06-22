@@ -121,6 +121,7 @@ export interface WrapEdgeProps<T = any> {
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   markerStart?: EdgeMarkerType;
   markerEnd?: EdgeMarkerType;
+  rfId?: string;
 }
 
 export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {

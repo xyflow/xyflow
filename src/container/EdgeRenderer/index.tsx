@@ -40,6 +40,7 @@ interface EdgeRendererProps {
   edgeUpdaterRadius?: number;
   noPanClassName?: string;
   elevateEdgesOnSelect: boolean;
+  rfId?: string;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -93,7 +94,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           height={height}
           className="react-flow__edges react-flow__container"
         >
-          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} />}
+          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={props.rfId} />}
           <g>
             {edges.map((edge: Edge) => {
               const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals, edge.source);
@@ -184,6 +185,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   onEdgeDoubleClick={props.onEdgeDoubleClick}
                   onEdgeUpdateStart={props.onEdgeUpdateStart}
                   onEdgeUpdateEnd={props.onEdgeUpdateEnd}
+                  rfId={props.rfId}
                 />
               );
             })}
