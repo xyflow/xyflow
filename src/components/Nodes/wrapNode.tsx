@@ -41,6 +41,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     isParent,
     noPanClassName,
     noDragClassName,
+    initialized,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const updateNodeDimensions = useStore(selector);
@@ -134,6 +135,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           zIndex,
           transform: `translate(${xPos}px,${yPos}px)`,
           pointerEvents: hasPointerEvents ? 'all' : 'none',
+          visibility: initialized ? 'visible' : 'hidden',
           ...style,
         }}
         onMouseEnter={onMouseEnterHandler}

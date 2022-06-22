@@ -64,8 +64,7 @@ export interface WrapNodeProps<T = any> {
   isConnectable: boolean;
   xPos: number;
   yPos: number;
-  width?: number | null;
-  height?: number | null;
+  initialized: boolean;
   isSelectable: boolean;
   isDraggable: boolean;
   selectNodesOnDrag: boolean;
