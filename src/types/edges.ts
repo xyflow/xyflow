@@ -59,8 +59,8 @@ export interface EdgeProps<T = any> {
   data?: T;
   sourceHandleId?: string | null;
   targetHandleId?: string | null;
-  markerStart?: string;
-  markerEnd?: string;
+  markerStart?: EdgeMarkerType;
+  markerEnd?: EdgeMarkerType;
   curvature?: number;
 }
 
