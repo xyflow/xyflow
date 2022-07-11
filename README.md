@@ -63,6 +63,8 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
 }
 ```
 
+## Development
+
 Before you start you need to build the project using `npm run build`.  Then install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
 
 If you want to contribute or develop custom features the easiest way is to start the dev server:
