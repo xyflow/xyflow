@@ -11,7 +11,7 @@ const idStyle: CSSProperties = {
   left: 2,
 };
 
-const ColorSelectorNode: FC<NodeProps> = ({ zIndex, xPos, yPos, id }) => {
+const DebugNode: FC<NodeProps> = ({ zIndex, xPos, yPos, id }) => {
   return (
     <>
       <Handle type="target" position={Position.Top} />
@@ -24,4 +24,4 @@ const ColorSelectorNode: FC<NodeProps> = ({ zIndex, xPos, yPos, id }) => {
   );
 };
 
-export default memo(ColorSelectorNode);
+export default memo(DebugNode);

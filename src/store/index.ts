@@ -99,16 +99,8 @@ const createStore = () =>
           };
 
           if (positionChanged) {
-            change.positionAbsolute = node.position;
+            change.positionAbsolute = node.positionAbsolute;
             change.position = node.position;
-
-            if (node.parentNode) {
-              const parentNode = nodeInternals.get(node.parentNode);
-              change.position = {
-                x: change.position.x - (parentNode?.positionAbsolute?.x ?? 0),
-                y: change.position.y - (parentNode?.positionAbsolute?.y ?? 0),
-              };
-            }
           }
 
           return change;
