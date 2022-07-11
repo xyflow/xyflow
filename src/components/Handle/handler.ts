@@ -46,6 +46,24 @@ export function checkElementBelowIsValid(
   if (elementBelow && (elementBelowIsTarget || elementBelowIsSource)) {
     result.isHoveringHandle = true;
 
+    const elementBelowNodeId = elementBelow.getAttribute('data-nodeid');
+    const elementBelowHandleId = elementBelow.getAttribute('data-handleid');
+    const connection: Connection = isTarget
+      ? {
+          source: elementBelowNodeId,
+          sourceHandle: elementBelowHandleId,
+          target: nodeId,
+          targetHandle: handleId,
+        }
+      : {
+          source: nodeId,
+          sourceHandle: handleId,
+          target: elementBelowNodeId,
+          targetHandle: elementBelowHandleId,
+        };
+
+    result.connection = connection;
+
     // in strict mode we don't allow target to target or source to source connections
     const isValid =
       connectionMode === ConnectionMode.Strict
@@ -53,23 +71,6 @@ export function checkElementBelowIsValid(
         : true;
 
     if (isValid) {
-      const elementBelowNodeId = elementBelow.getAttribute('data-nodeid');
-      const elementBelowHandleId = elementBelow.getAttribute('data-handleid');
-      const connection: Connection = isTarget
-        ? {
-            source: elementBelowNodeId,
-            sourceHandle: elementBelowHandleId,
-            target: nodeId,
-            targetHandle: handleId,
-          }
-        : {
-            source: nodeId,
-            sourceHandle: handleId,
-            target: elementBelowNodeId,
-            targetHandle: elementBelowHandleId,
-          };
-
-      result.connection = connection;
       result.isValid = isValidConnection(connection);
     }
   }
@@ -151,9 +152,7 @@ export function handleMouseDown(
       return resetRecentHandle(recentHoveredHandle);
     }
 
-    const isOwnHandle = connection.source === connection.target;
-
-    if (!isOwnHandle && elementBelow) {
+    if (connection.source !== connection.target && elementBelow) {
       recentHoveredHandle = elementBelow;
       elementBelow.classList.add('react-flow__handle-connecting');
       elementBelow.classList.toggle('react-flow__handle-valid', isValid);
