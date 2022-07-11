@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
     "module": "esnext",
     "target": "esnext",
     "lib": ["dom", "esnext"],
@@ -21,6 +20,6 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js"]
+  "include": ["packages"],
+  "exclude": ["**/node_modules"]
 }

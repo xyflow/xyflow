@@ -1,0 +1,34 @@
+{
+  "name": "@react-flow/core",
+  "version": "11.0.0",
+  "engines": {
+    "node": ">=14"
+  },
+  "main": "dist/react-flow-core.cjs.js",
+  "module": "dist/react-flow-core.esm.js",
+  "sideEffects": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.18.0",
+    "classcat": "^5.0.3",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0",
+    "zustand": "^3.7.2"
+  },
+  "peerDependencies": {
+    "react": "16 || 17 || 18",
+    "react-dom": "16 || 17 || 18"
+  },
+  "files": [
+    "dist",
+    "nocss"
+  ],
+  "devDependencies": {
+    "@types/react": "^18.0.15"
+  }
+}

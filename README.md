@@ -3,19 +3,20 @@
 
 <div align="center">
 
-  ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23FF0072)
-  ![npm downloads](https://img.shields.io/npm/dt/react-flow-renderer?color=%23FF0072&label=downloads)
-  ![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
-  ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
+![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23FF0072)
+![npm downloads](https://img.shields.io/npm/dt/react-flow-renderer?color=%23FF0072&label=downloads)
+![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
 
-### Wire Your Ideas With React Flow!  
+### Wire Your Ideas With React Flow!
+
 A highly customizable React component for building interactive graphs and node-based editors.
 
 [🚀 Getting Started](https://reactflow.dev/docs/getting-started/installation) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) | [💎 React Flow Pro](https://pro.reactflow.dev/pricing)
-  
+
 </div>
 
-----
+---
 
 ## Key Features
 
@@ -63,21 +64,11 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
 }
 ```
 
-Before you start you need to build the project using `npm run build`.  Then install the React Flow dependencies via `npm install` and the ones of the examples `cd example && npm install`.
+## Development
 
-If you want to contribute or develop custom features the easiest way is to start the dev server:
+Before you can start developing please make sure that you have yarn classic installed (`npm i -g yarn`). Then install the dependencies using yarn: `yarn`.
 
-```sh
-npm start
-```
-
-and the example app via:
-
-```sh
-cd example && npm start 
-```
-
-The example app serves the content of the `example` folder and watches changes inside the `src` folder. The examples are using the source of the `src` folder.
+For local development, you can use `yarn dev`. This will run preconstruct and build all the packages.
 
 ## Testing
 
@@ -91,24 +82,24 @@ npm run test
 
 React Flow is developed and maintained by [webkid](https://webkid.io), a web development agency with focus on data driven applications from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
 
-* Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-* Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
 
 You can also use our [contact form](https://pro.reactflow.dev/contact) or join the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
 
 ## Community Packages
 
-* [useUndoable](https://github.com/Infinium8/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
-* [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
-* [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
+- [useUndoable](https://github.com/Infinium8/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
+- [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
+- [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
 
 ## Credits
 
 React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. Under the hood, React Flow depends on these great libraries:
 
-* [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
-* [d3-drag](https://github.com/d3/d3-drag) - used for making the nodes draggable
-* [zustand](https://github.com/pmndrs/zustand) - internal state management
+- [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
+- [d3-drag](https://github.com/d3/d3-drag) - used for making the nodes draggable
+- [zustand](https://github.com/pmndrs/zustand) - internal state management
 
 ## License
 
