@@ -1,5 +1,5 @@
 import React, { memo, useCallback, Dispatch, FC } from 'react';
-import { useReactFlow, ReactFlowInstance, Edge, Node, ReactFlowJsonObject } from 'react-flow-renderer';
+import { useReactFlow, Edge, Node, ReactFlowJsonObject } from 'react-flow-renderer';
 import localforage from 'localforage';
 
 localforage.config({
@@ -12,20 +12,17 @@ const flowKey = 'example-flow';
 const getNodeId = () => `randomnode_${+new Date()}`;
 
 type ControlsProps = {
-  rfInstance?: ReactFlowInstance;
   setNodes: Dispatch<React.SetStateAction<Node<any>[]>>;
   setEdges: Dispatch<React.SetStateAction<Edge<any>[]>>;
 };
 
-const Controls: FC<ControlsProps> = ({ rfInstance, setNodes, setEdges }) => {
-  const { setViewport } = useReactFlow();
+const Controls: FC<ControlsProps> = ({ setNodes, setEdges }) => {
+  const { setViewport, toObject } = useReactFlow();
 
   const onSave = useCallback(() => {
-    if (rfInstance) {
-      const flow = rfInstance.toObject();
-      localforage.setItem(flowKey, flow);
-    }
-  }, [rfInstance]);
+    const flow = toObject();
+    localforage.setItem(flowKey, flow);
+  }, [toObject]);
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -33,6 +30,7 @@ const Controls: FC<ControlsProps> = ({ rfInstance, setNodes, setEdges }) => {
 
       if (flow) {
         const { x, y, zoom } = flow.viewport;
+
         setNodes(flow.nodes || []);
         setEdges(flow.edges || []);
         setViewport({ x, y, zoom: zoom || 0 });

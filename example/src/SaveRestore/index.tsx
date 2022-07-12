@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   Node,
   addEdge,
   Connection,
   Edge,
-  ReactFlowInstance,
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
@@ -22,10 +21,9 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
 
 const SaveRestore = () => {
-  const [rfInstance, setRfInstance] = useState<ReactFlowInstance>();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlowProvider>
@@ -35,9 +33,8 @@ const SaveRestore = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onInit={setRfInstance}
       >
-        <Controls rfInstance={rfInstance} setNodes={setNodes} setEdges={setEdges} />
+        <Controls setNodes={setNodes} setEdges={setEdges} />
       </ReactFlow>
     </ReactFlowProvider>
   );

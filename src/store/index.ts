@@ -43,7 +43,7 @@ const createStore = () =>
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, transform, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
+      const { onNodesChange, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
 
       const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
@@ -57,12 +57,14 @@ const createStore = () =>
           );
 
           if (doUpdate) {
-            const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
             nodeInternals.set(node.id, {
               ...node,
               [internalsSymbol]: {
                 ...node[internalsSymbol],
-                handleBounds,
+                handleBounds: {
+                  source: getHandleBounds('.source', update.nodeElement),
+                  target: getHandleBounds('.target', update.nodeElement),
+                },
               },
               ...dimensions,
             });
