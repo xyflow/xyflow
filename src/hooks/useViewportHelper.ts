@@ -38,12 +38,12 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         zoomIn: (options) => d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1.2),
         zoomOut: (options) => d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1 / 1.2),
         zoomTo: (zoomLevel, options) => d3Zoom.scaleTo(getD3Transition(d3Selection, options?.duration), zoomLevel),
-        getZoom: () => {
-          const [, , zoom] = store.getState().transform;
-          return zoom;
-        },
+        getZoom: () => store.getState().transform[2],
         setViewport: (transform, options) => {
-          const nextTransform = zoomIdentity.translate(transform.x, transform.y).scale(transform.zoom);
+          const [x, y, zoom] = store.getState().transform;
+          const nextTransform = zoomIdentity
+            .translate(transform.x ?? x, transform.y ?? y)
+            .scale(transform.zoom ?? zoom);
           d3Zoom.transform(getD3Transition(d3Selection, options?.duration), nextTransform);
         },
         getViewport: () => {
