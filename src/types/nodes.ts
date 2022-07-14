@@ -110,8 +110,8 @@ export type NodeBounds = XYPosition & {
 
 export type NodeDragItem = {
   id: string;
-  // relative node position
   position: XYPosition;
+  positionAbsolute: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
   width?: number | null;

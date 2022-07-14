@@ -54,6 +54,7 @@ const ZoomPane = ({
   noPanClassName,
 }: ZoomPaneProps) => {
   const store = useStoreApi();
+  const isZoomingOrPanning = useRef(false);
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler } = useStore(selector, shallow);
@@ -146,12 +147,11 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Zoom) {
-      if (selectionKeyPressed) {
+      if (selectionKeyPressed && !isZoomingOrPanning.current) {
         d3Zoom.on('zoom', null);
-      } else {
+      } else if (!selectionKeyPressed) {
         d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
-
           if (onMove) {
             const flowTransform = eventToFlowTransform(event.transform);
             onMove(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
@@ -163,33 +163,31 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Zoom) {
-      if (onMoveStart) {
-        d3Zoom.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+      d3Zoom.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        isZoomingOrPanning.current = true;
+
+        if (onMoveStart) {
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
           onMoveStart(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
-        });
-      } else {
-        d3Zoom.on('start', null);
-      }
+        }
+      });
     }
   }, [d3Zoom, onMoveStart]);
 
   useEffect(() => {
     if (d3Zoom) {
-      if (onMoveEnd) {
-        d3Zoom.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-          if (viewChanged(prevTransform.current, event.transform)) {
-            const flowTransform = eventToFlowTransform(event.transform);
-            prevTransform.current = flowTransform;
+      d3Zoom.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        isZoomingOrPanning.current = false;
 
-            onMoveEnd(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
-          }
-        });
-      } else {
-        d3Zoom.on('end', null);
-      }
+        if (onMoveEnd && viewChanged(prevTransform.current, event.transform)) {
+          const flowTransform = eventToFlowTransform(event.transform);
+          prevTransform.current = flowTransform;
+
+          onMoveEnd(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+        }
+      });
     }
   }, [d3Zoom, onMoveEnd]);
 
