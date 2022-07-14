@@ -45,6 +45,9 @@ const createStore = () =>
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
       const { onNodesChange, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
 
+      const style = window.getComputedStyle(document.querySelector('.react-flow__viewport')!);
+      const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
+
       const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
 
@@ -62,8 +65,8 @@ const createStore = () =>
               [internalsSymbol]: {
                 ...node[internalsSymbol],
                 handleBounds: {
-                  source: getHandleBounds('.source', update.nodeElement),
-                  target: getHandleBounds('.target', update.nodeElement),
+                  source: getHandleBounds('.source', update.nodeElement, zoom),
+                  target: getHandleBounds('.target', update.nodeElement, zoom),
                 },
               },
               ...dimensions,

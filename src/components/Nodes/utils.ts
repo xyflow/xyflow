@@ -4,17 +4,11 @@ import { GetState, SetState } from 'zustand';
 import { HandleElement, Node, Position, ReactFlowState } from '../../types';
 import { getDimensions } from '../../utils';
 
-function getTranslateValues(domNode: HTMLDivElement): [number, number] {
-  if (typeof window === 'undefined' || !window.DOMMatrixReadOnly) {
-    return [0, 0];
-  }
-
-  const style = window.getComputedStyle(domNode);
-  const { m41, m42 } = new window.DOMMatrixReadOnly(style.transform);
-  return [m41, m42];
-}
-
-export const getHandleBounds = (selector: string, nodeElement: HTMLDivElement): HandleElement[] | null => {
+export const getHandleBounds = (
+  selector: string,
+  nodeElement: HTMLDivElement,
+  zoom: number
+): HandleElement[] | null => {
   const handles = nodeElement.querySelectorAll(selector);
 
   if (!handles || !handles.length) {
@@ -22,17 +16,16 @@ export const getHandleBounds = (selector: string, nodeElement: HTMLDivElement): 
   }
 
   const handlesArray = Array.from(handles) as HTMLDivElement[];
+  const nodeBounds = nodeElement.getBoundingClientRect();
 
   return handlesArray.map((handle): HandleElement => {
-    // we don't use getBoundingClientRect here, because it includes the transform of the parent (scaled viewport)
-    // that we would then need to calculate out again in order to get the correct position.
-    const [translateX, translateY] = getTranslateValues(handle);
+    const handleBounds = handle.getBoundingClientRect();
 
     return {
       id: handle.getAttribute('data-handleid'),
       position: handle.getAttribute('data-handlepos') as unknown as Position,
-      x: handle.offsetLeft + nodeElement.clientLeft + translateX,
-      y: handle.offsetTop + nodeElement.clientTop + translateY,
+      x: (handleBounds.left - nodeBounds.left) / zoom,
+      y: (handleBounds.top - nodeBounds.top) / zoom,
       ...getDimensions(handle),
     };
   });
