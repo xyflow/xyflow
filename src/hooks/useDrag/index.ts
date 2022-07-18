@@ -4,7 +4,7 @@ import { select } from 'd3-selection';
 
 import { useStoreApi } from '../../store';
 import { pointToRendererPoint } from '../../utils/graph';
-import { NodeDragItem, NodeDragHandler } from '../../types';
+import { NodeDragItem, Node, SelectionDragHandler } from '../../types';
 import { getDragItems, getEventHandlerParams, hasSelector, updatePosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 
@@ -13,9 +13,6 @@ export type UseDragData = { dx: number; dy: number };
 
 type UseDragParams = {
   nodeRef: RefObject<Element>;
-  onStart?: NodeDragHandler;
-  onDrag?: NodeDragHandler;
-  onStop?: NodeDragHandler;
   disabled?: boolean;
   noDragClassName?: string;
   handleSelector?: string;
@@ -24,10 +21,11 @@ type UseDragParams = {
   selectNodesOnDrag?: boolean;
 };
 
+function wrapSelectionDragFunc(selectionFunc?: SelectionDragHandler) {
+  return (event: MouseEvent, _: Node, nodes: Node[]) => selectionFunc?.(event, nodes);
+}
+
 function useDrag({
-  onStart,
-  onDrag,
-  onStop,
   nodeRef,
   disabled = false,
   noDragClassName,
@@ -60,7 +58,15 @@ function useDrag({
       } else {
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
-            const { nodeInternals, multiSelectionActive, unselectNodesAndEdges } = store.getState();
+            const {
+              nodeInternals,
+              multiSelectionActive,
+              unselectNodesAndEdges,
+              onNodeDragStart,
+              onSelectionDragStart,
+            } = store.getState();
+
+            const onStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
 
             if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {
               if (!nodeInternals.get(nodeId)?.selected) {
@@ -90,7 +96,7 @@ function useDrag({
             }
           })
           .on('drag', (event: UseDragEvent) => {
-            const { updateNodePositions, nodeInternals, nodeExtent } = store.getState();
+            const { updateNodePositions, nodeInternals, nodeExtent, onNodeDrag, onSelectionDrag } = store.getState();
             const pointerPos = getPointerPosition(event);
 
             // skip events without movement
@@ -99,6 +105,8 @@ function useDrag({
               dragItems.current = dragItems.current.map((n) =>
                 updatePosition(n, pointerPos, nodeInternals, nodeExtent)
               );
+
+              const onDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 
               updateNodePositions(dragItems.current, true, true);
               setDragging(true);
@@ -116,6 +124,9 @@ function useDrag({
             event.on('end', (event) => {
               setDragging(false);
               if (dragItems.current) {
+                const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();
+                const onStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
+
                 updateNodePositions(dragItems.current, false, false);
 
                 if (onStop) {
@@ -147,9 +158,6 @@ function useDrag({
       }
     }
   }, [
-    onStart,
-    onDrag,
-    onStop,
     nodeRef,
     disabled,
     noDragClassName,

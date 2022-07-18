@@ -1,18 +1,12 @@
 import React, { memo, ComponentType, useState, useMemo } from 'react';
 import cc from 'classcat';
-import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
-import { EdgeProps, WrapEdgeProps, ReactFlowState, Connection } from '../../types';
+import { useStoreApi } from '../../store';
+import { EdgeProps, WrapEdgeProps, Connection } from '../../types';
 import { handleMouseDown } from '../../components/Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler } from './utils';
-
-const selector = (s: ReactFlowState) => ({
-  addSelectedEdges: s.addSelectedEdges,
-  connectionMode: s.connectionMode,
-});
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -56,11 +50,11 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     rfId,
   }: WrapEdgeProps): JSX.Element | null => {
     const [updating, setUpdating] = useState<boolean>(false);
-    const { addSelectedEdges, connectionMode } = useStore(selector, shallow);
     const store = useStoreApi();
 
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-      const edge = store.getState().edges.find((e) => e.id === id)!;
+      const { edges, addSelectedEdges } = store.getState();
+      const edge = edges.find((e) => e.id === id)!;
 
       if (elementsSelectable) {
         store.setState({ nodesSelectionActive: false });
@@ -86,32 +80,24 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
       onEdgeUpdateStart?.(event, edge, handleType);
 
-      const _onEdgeUpdate = onEdgeUpdateEnd
+      const _onEdgeUpdateEnd = onEdgeUpdateEnd
         ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edge, handleType)
         : undefined;
 
-      const onConnectEdge = (connection: Connection) => {
-        const { edges } = store.getState();
-        const edge = edges.find((e) => e.id === id);
+      const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
 
-        if (edge && onEdgeUpdate) {
-          onEdgeUpdate(edge, connection);
-        }
-      };
-
-      handleMouseDown(
+      handleMouseDown({
         event,
         handleId,
         nodeId,
-        store.setState,
-        onConnectEdge,
+        onConnect: onConnectEdge,
         isTarget,
+        getState: store.getState,
+        setState: store.setState,
         isValidConnection,
-        connectionMode,
-        handleType,
-        _onEdgeUpdate,
-        store.getState
-      );
+        elementEdgeUpdaterType: handleType,
+        onEdgeUpdateEnd: _onEdgeUpdateEnd,
+      });
     };
 
     const onEdgeUpdaterSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>

@@ -1,5 +1,4 @@
 import React, { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
-import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
@@ -27,10 +26,7 @@ export type FlowRendererProps = Omit<
   children: ReactNode;
 };
 
-const selector = (s: ReactFlowState) => ({
-  resetSelectedElements: s.resetSelectedElements,
-  nodesSelectionActive: s.nodesSelectionActive,
-});
+const selector = (s: ReactFlowState) => s.nodesSelectionActive;
 
 const FlowRenderer = ({
   children,
@@ -55,27 +51,24 @@ const FlowRenderer = ({
   defaultPosition,
   defaultZoom,
   preventScrolling,
-  onSelectionDragStart,
-  onSelectionDrag,
-  onSelectionDragStop,
   onSelectionContextMenu,
   noWheelClassName,
   noPanClassName,
 }: FlowRendererProps) => {
   const store = useStoreApi();
-  const { resetSelectedElements, nodesSelectionActive } = useStore(selector, shallow);
+  const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
   const onClick = (event: MouseEvent) => {
     onPaneClick?.(event);
-    resetSelectedElements();
-
+    store.getState().resetSelectedElements();
     store.setState({ nodesSelectionActive: false });
   };
-  const onContextMenu = (event: MouseEvent) => onPaneContextMenu?.(event);
-  const onWheel = (event: WheelEvent) => onPaneScroll?.(event);
+
+  const onContextMenu = onPaneContextMenu ? (event: MouseEvent) => onPaneContextMenu(event) : undefined;
+  const onWheel = onPaneScroll ? (event: WheelEvent) => onPaneScroll(event) : undefined;
 
   return (
     <ZoomPane
@@ -101,13 +94,7 @@ const FlowRenderer = ({
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (
-        <NodesSelection
-          onSelectionDragStart={onSelectionDragStart}
-          onSelectionDrag={onSelectionDrag}
-          onSelectionDragStop={onSelectionDragStop}
-          onSelectionContextMenu={onSelectionContextMenu}
-          noPanClassName={noPanClassName}
-        />
+        <NodesSelection onSelectionContextMenu={onSelectionContextMenu} noPanClassName={noPanClassName} />
       )}
       <div
         className="react-flow__pane react-flow__container"

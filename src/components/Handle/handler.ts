@@ -1,17 +1,8 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
-import { SetState } from 'zustand';
+import { GetState, SetState } from 'zustand';
 
 import { getHostForElement } from '../../utils';
-import {
-  OnConnect,
-  OnConnectStart,
-  OnConnectStop,
-  OnConnectEnd,
-  ConnectionMode,
-  Connection,
-  HandleType,
-  ReactFlowState,
-} from '../../types';
+import { OnConnect, ConnectionMode, Connection, HandleType, ReactFlowState } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 
@@ -83,21 +74,29 @@ function resetRecentHandle(hoveredHandle: Element): void {
   hoveredHandle?.classList.remove('react-flow__handle-connecting');
 }
 
-export function handleMouseDown(
-  event: ReactMouseEvent,
-  handleId: string | null,
-  nodeId: string,
-  setState: SetState<ReactFlowState>,
-  onConnect: OnConnect,
-  isTarget: boolean,
-  isValidConnection: ValidConnectionFunc,
-  connectionMode: ConnectionMode,
-  elementEdgeUpdaterType?: HandleType,
-  onEdgeUpdateEnd?: (evt: MouseEvent) => void,
-  onConnectStart?: OnConnectStart,
-  onConnectStop?: OnConnectStop,
-  onConnectEnd?: OnConnectEnd
-): void {
+export function handleMouseDown({
+  event,
+  handleId,
+  nodeId,
+  onConnect,
+  isTarget,
+  getState,
+  setState,
+  isValidConnection,
+  elementEdgeUpdaterType,
+  onEdgeUpdateEnd,
+}: {
+  event: ReactMouseEvent;
+  handleId: string | null;
+  nodeId: string;
+  onConnect: OnConnect;
+  isTarget: boolean;
+  getState: GetState<ReactFlowState>;
+  setState: SetState<ReactFlowState>;
+  isValidConnection: ValidConnectionFunc;
+  elementEdgeUpdaterType?: HandleType;
+  onEdgeUpdateEnd?: (evt: MouseEvent) => void;
+}): void {
   const reactFlowNode = (event.target as Element).closest('.react-flow');
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
@@ -114,6 +113,7 @@ export function handleMouseDown(
     return;
   }
 
+  const { onConnectStart, connectionMode } = getState();
   const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementBelowIsTarget ? 'target' : 'source';
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
@@ -160,6 +160,7 @@ export function handleMouseDown(
   }
 
   function onMouseUp(event: MouseEvent) {
+    const { onConnectStop, onConnectEnd } = getState();
     const { connection, isValid } = checkElementBelowIsValid(
       event,
       connectionMode,

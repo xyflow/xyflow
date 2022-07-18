@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ConnectionLineComponentProps } from 'react-flow-renderer';
 
-const ConnectionLine: FC<ConnectionLineComponentProps> = ({ sourceX, sourceY, targetX, targetY }) => {
+const ConnectionLine: FC<ConnectionLineComponentProps> = ({ sourceX, sourceY, targetX, targetY, toX, toY }) => {
   return (
     <g>
       <path
@@ -11,7 +11,7 @@ const ConnectionLine: FC<ConnectionLineComponentProps> = ({ sourceX, sourceY, ta
         className="animated"
         d={`M${sourceX},${sourceY} C ${sourceX} ${targetY} ${sourceX} ${targetY} ${targetX},${targetY}`}
       />
-      <circle cx={targetX} cy={targetY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
+      <circle cx={toX} cy={toY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
     </g>
   );
 };

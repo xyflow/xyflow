@@ -38,6 +38,7 @@ import {
   OnMoveEnd,
   NodeDragHandler,
   NodeMouseHandler,
+  SelectionDragHandler,
 } from '.';
 import { HandleType } from './handles';
 
@@ -73,9 +74,9 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onMoveStart?: OnMoveStart;
   onMoveEnd?: OnMoveEnd;
   onSelectionChange?: OnSelectionChangeFunc;
-  onSelectionDragStart?: (event: ReactMouseEvent, nodes: Node[]) => void;
-  onSelectionDrag?: (event: ReactMouseEvent, nodes: Node[]) => void;
-  onSelectionDragStop?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionDragStart?: SelectionDragHandler;
+  onSelectionDrag?: SelectionDragHandler;
+  onSelectionDragStop?: SelectionDragHandler;
   onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: ReactMouseEvent) => void;
