@@ -55,6 +55,7 @@ export interface NodeProps<T = any> {
 
 export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
 export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
+export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
 
 export interface WrapNodeProps<T = any> {
   id: string;
@@ -74,9 +75,6 @@ export interface WrapNodeProps<T = any> {
   onMouseMove?: NodeMouseHandler;
   onMouseLeave?: NodeMouseHandler;
   onContextMenu?: NodeMouseHandler;
-  onDragStart?: NodeDragHandler;
-  onDrag?: NodeDragHandler;
-  onDragStop?: NodeDragHandler;
   style?: CSSProperties;
   className?: string;
   sourcePosition: Position;
@@ -110,8 +108,8 @@ export type NodeBounds = XYPosition & {
 
 export type NodeDragItem = {
   id: string;
-  // relative node position
   position: XYPosition;
+  positionAbsolute: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
   width?: number | null;

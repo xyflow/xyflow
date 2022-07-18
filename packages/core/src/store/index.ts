@@ -43,7 +43,10 @@ const createStore = () =>
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, transform, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
+      const { onNodesChange, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
+
+      const style = window.getComputedStyle(document.querySelector('.react-flow__viewport')!);
+      const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
 
       const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
         const node = nodeInternals.get(update.id);
@@ -57,12 +60,14 @@ const createStore = () =>
           );
 
           if (doUpdate) {
-            const handleBounds = getHandleBounds(update.nodeElement, transform[2]);
             nodeInternals.set(node.id, {
               ...node,
               [internalsSymbol]: {
                 ...node[internalsSymbol],
-                handleBounds,
+                handleBounds: {
+                  source: getHandleBounds('.source', update.nodeElement, zoom),
+                  target: getHandleBounds('.target', update.nodeElement, zoom),
+                },
               },
               ...dimensions,
             });
@@ -99,16 +104,8 @@ const createStore = () =>
           };
 
           if (positionChanged) {
-            change.positionAbsolute = node.position;
+            change.positionAbsolute = node.positionAbsolute;
             change.position = node.position;
-
-            if (node.parentNode) {
-              const parentNode = nodeInternals.get(node.parentNode);
-              change.position = {
-                x: change.position.x - (parentNode?.positionAbsolute?.x ?? 0),
-                y: change.position.y - (parentNode?.positionAbsolute?.y ?? 0),
-              };
-            }
           }
 
           return change;
