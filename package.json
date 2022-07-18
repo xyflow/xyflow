@@ -15,13 +15,18 @@
     "build": "preconstruct build"
   },
   "dependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  },
+  "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
     "@preconstruct/cli": "^2.1.8",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "postcss-nested": "^5.0.6",
     "typescript": "^4.7.4"
   },
   "preconstruct": {

@@ -7,8 +7,10 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
-// import css from '../../style.css';
-// import theme from '../../theme-default.css';
+
+import '../../style.css';
+import '../../theme-default.css';
+
 import {
   ConnectionLineType,
   ConnectionMode,
@@ -25,11 +27,6 @@ import GraphView from '../GraphView';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import { useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
-
-// if (__INJECT_STYLES__) {
-//   injectStyle(css as unknown as string);
-//   injectStyle(theme as unknown as string);
-// }
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,

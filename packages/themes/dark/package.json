@@ -1,0 +1,4 @@
+{
+  "main": "dist/react-flow-themes-dark.cjs.js",
+  "module": "dist/react-flow-themes-dark.esm.js"
+}
