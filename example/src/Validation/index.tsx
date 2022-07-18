@@ -1,4 +1,4 @@
-import { MouseEvent as ReactMouseEvent, FC } from 'react';
+import { FC, useCallback, useState } from 'react';
 import ReactFlow, {
   addEdge,
   Handle,
@@ -6,11 +6,11 @@ import ReactFlow, {
   Position,
   Node,
   Edge,
-  OnConnectStartParams,
   NodeProps,
   NodeTypes,
   useNodesState,
   useEdgesState,
+  OnConnectStartParams,
 } from 'react-flow-renderer';
 
 import './validation.css';
@@ -23,10 +23,6 @@ const initialNodes: Node[] = [
 ];
 
 const isValidConnection = (connection: Connection) => connection.target === 'B';
-const onConnectStart = (_: ReactMouseEvent, { nodeId, handleType }: OnConnectStartParams) =>
-  console.log('on connect start', { nodeId, handleType });
-const onConnectStop = (event: MouseEvent) => console.log('on connect stop', event);
-const onConnectEnd = (event: MouseEvent) => console.log('on connect end', event);
 
 const CustomInput: FC<NodeProps> = () => (
   <>
@@ -49,13 +45,33 @@ const nodeTypes: NodeTypes = {
 };
 
 const ValidationFlow = () => {
+  const [value, setValue] = useState(0);
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const onConnect = (params: Connection | Edge) => {
-    console.log('on connect', params);
-    setEdges((eds) => addEdge(params, eds));
-  };
+  const onConnectStart = useCallback(
+    (event: React.MouseEvent, params: OnConnectStartParams) => {
+      console.log('on connect start', params, event, value);
+      setValue(1);
+    },
+    [value]
+  );
+
+  const onConnect = useCallback(
+    (params: Connection | Edge) => {
+      console.log('on connect', params);
+      setEdges((eds) => addEdge(params, eds));
+    },
+    [setEdges]
+  );
+
+  const onConnectEnd = useCallback(
+    (event: MouseEvent) => {
+      console.log('on connect end', event, value);
+      setValue(0);
+    },
+    [value]
+  );
 
   return (
     <ReactFlow
@@ -68,7 +84,6 @@ const ValidationFlow = () => {
       className="validationflow"
       nodeTypes={nodeTypes}
       onConnectStart={onConnectStart}
-      onConnectStop={onConnectStop}
       onConnectEnd={onConnectEnd}
       fitView
     />
