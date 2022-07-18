@@ -23,9 +23,16 @@ const selector = (s: ReactFlowState) => ({
   ...getRectOfNodes(Array.from(s.nodeInternals.values()).filter((n) => n.selected)),
 });
 
+const bboxSelector = (s: ReactFlowState) => {
+  const selectedNodes = Array.from(s.nodeInternals.values()).filter((n) => n.selected);
+  return getRectOfNodes(selectedNodes);
+};
+
 function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelectionProps) {
   const store = useStoreApi();
-  const { transformString, userSelectionActive, width, height, x: top, y: left } = useStore(selector, shallow);
+  const { transformString, userSelectionActive } = useStore(selector, shallow);
+  const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
+
   const nodeRef = useRef(null);
 
   useDrag({
