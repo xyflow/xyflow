@@ -3,7 +3,16 @@ import { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
-import { Node, NodeInternals, NodeDimensionUpdate, NodeProps, WrapNodeProps, NodeDragItem } from './nodes';
+import {
+  Node,
+  NodeInternals,
+  NodeDimensionUpdate,
+  NodeProps,
+  WrapNodeProps,
+  NodeDragItem,
+  NodeDragHandler,
+  SelectionDragHandler,
+} from './nodes';
 import { Edge, EdgeProps, WrapEdgeProps } from './edges';
 import { HandleType, StartHandle } from './handles';
 import { DefaultEdgeOptions } from '.';
@@ -164,6 +173,14 @@ export type ReactFlowStore = {
   reactFlowVersion: string;
 
   connectionStartHandle: StartHandle | null;
+
+  onNodeDragStart?: NodeDragHandler;
+  onNodeDrag?: NodeDragHandler;
+  onNodeDragStop?: NodeDragHandler;
+
+  onSelectionDragStart?: SelectionDragHandler;
+  onSelectionDrag?: SelectionDragHandler;
+  onSelectionDragStop?: SelectionDragHandler;
 
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;

@@ -39,7 +39,8 @@ export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition,
     .filter((n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodeInternals)))
     .map((n) => ({
       id: n.id,
-      position: n.positionAbsolute || { x: 0, y: 0 },
+      position: n.position || { x: 0, y: 0 },
+      positionAbsolute: n.positionAbsolute || { x: 0, y: 0 },
       distance: {
         x: mousePos.x - (n.positionAbsolute?.x ?? 0),
         y: mousePos.y - (n.positionAbsolute?.y ?? 0),
@@ -94,14 +95,28 @@ export function updatePosition(
     ];
   }
 
-  dragItem.position = currentExtent ? clampPosition(nextPosition, currentExtent as CoordinateExtent) : nextPosition;
+  let parentPosition = { x: 0, y: 0 };
+
+  if (dragItem.parentNode) {
+    const parentNode = nodeInternals.get(dragItem.parentNode);
+    parentPosition = { x: parentNode?.positionAbsolute?.x ?? 0, y: parentNode?.positionAbsolute?.y ?? 0 };
+  }
+
+  dragItem.positionAbsolute = currentExtent
+    ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
+    : nextPosition;
+
+  dragItem.position = {
+    x: dragItem.positionAbsolute.x - parentPosition.x,
+    y: dragItem.positionAbsolute.y - parentPosition.y,
+  };
 
   return dragItem;
 }
 
 // returns two params:
 // 1. the dragged node (or the first of the list, if we are dragging a node selection)
-// 2. array of selected nodes (handy when multi selection is active)
+// 2. array of selected nodes (for multi selections)
 export function getEventHandlerParams({
   nodeId,
   dragItems,
@@ -116,6 +131,8 @@ export function getEventHandlerParams({
 
     return {
       ...node,
+      position: n.position,
+      positionAbsolute: n.positionAbsolute,
     };
   });
 

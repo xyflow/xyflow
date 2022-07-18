@@ -7,7 +7,7 @@ import { useStore } from '../../store';
 import { getRectOfNodes } from '../../utils/graph';
 import { getBoundsofRects } from '../../utils';
 
-import { MiniMapProps, GetMiniMapNodeAttribute, ReactFlowState, Rect } from '../../types';
+import { MiniMapProps, GetMiniMapNodeAttribute, ReactFlowState } from '../../types';
 
 declare const window: any;
 
@@ -15,9 +15,12 @@ const defaultWidth = 200;
 const defaultHeight = 150;
 
 const selector = (s: ReactFlowState) => ({
-  width: s.width,
-  height: s.height,
-  transform: s.transform,
+  viewBBox: {
+    x: -s.transform[0] / s.transform[2],
+    y: -s.transform[1] / s.transform[2],
+    width: s.width / s.transform[2],
+    height: s.height / s.transform[2],
+  },
   nodes: Array.from(s.nodeInternals.values()),
 });
 
@@ -33,19 +36,13 @@ const MiniMap = ({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
 }: MiniMapProps) => {
-  const { width: containerWidth, height: containerHeight, transform, nodes } = useStore(selector, shallow);
+  const { viewBBox, nodes } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
-  const viewBB: Rect = {
-    x: -transform[0] / transform[2],
-    y: -transform[1] / transform[2],
-    width: containerWidth / transform[2],
-    height: containerHeight / transform[2],
-  };
-  const boundingRect = nodes.length > 0 ? getBoundsofRects(getRectOfNodes(nodes), viewBB) : viewBB;
+  const boundingRect = nodes.length > 0 ? getBoundsofRects(getRectOfNodes(nodes), viewBBox) : viewBBox;
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
@@ -89,7 +86,7 @@ const MiniMap = ({
       <path
         className="react-flow__minimap-mask"
         d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
-        M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
+        M${viewBBox.x},${viewBBox.y}h${viewBBox.width}v${viewBBox.height}h${-viewBBox.width}z`}
         fill={maskColor}
         fillRule="evenodd"
       />

@@ -10,7 +10,7 @@
     "react-flow-renderer": "file:../",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
-    "typescript": "^4.6.4"
+    "typescript": "^4.7.4"
   },
   "scripts": {
     "start": "react-scripts start",

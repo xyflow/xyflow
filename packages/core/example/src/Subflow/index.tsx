@@ -15,6 +15,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import DebugNode from './DebugNode';
 
+const onNodeDrag = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
 const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
@@ -82,6 +83,7 @@ const initialNodes: Node[] = [
     position: { x: 25, y: 50 },
     className: 'light',
     parentNode: '5',
+    extent: 'parent',
   },
   {
     id: '5b',
@@ -89,6 +91,7 @@ const initialNodes: Node[] = [
     position: { x: 225, y: 50 },
     className: 'light',
     parentNode: '5',
+    expandParent: true,
   },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 }, className: 'light' },
   { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 }, className: 'light' },
@@ -167,6 +170,7 @@ const Subflow = () => {
       onNodeClick={onNodeClick}
       onEdgeClick={onEdgeClick}
       onConnect={onConnect}
+      onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
       defaultZoom={1.5}

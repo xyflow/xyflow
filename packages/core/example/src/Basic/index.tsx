@@ -9,6 +9,7 @@ import ReactFlow, {
   useReactFlow,
 } from 'react-flow-renderer';
 
+const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
@@ -61,6 +62,7 @@ const BasicFlow = () => {
       defaultEdges={initialEdges}
       onNodeClick={onNodeClick}
       onNodeDragStop={onNodeDragStop}
+      onNodeDrag={onNodeDrag}
       className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}

@@ -9,3 +9,4 @@ dist
 stats.html
 .eslintcache
 .idea
+.yarn

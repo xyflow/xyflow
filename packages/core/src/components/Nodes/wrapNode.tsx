@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, memo, ComponentType, MouseEvent } from 'react';
 import cc from 'classcat';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
-import { NodeProps, WrapNodeProps, ReactFlowState } from '../../types';
+import { NodeProps, WrapNodeProps } from '../../types';
 import useDrag from '../../hooks/useDrag';
 import { getMouseHandler, handleNodeClick } from './utils';
-
-const selector = (s: ReactFlowState) => s.updateNodeDimensions;
 
 export default (NodeComponent: ComponentType<NodeProps>) => {
   const NodeWrapper = ({
@@ -23,9 +21,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     onMouseLeave,
     onContextMenu,
     onDoubleClick,
-    onDragStart,
-    onDrag,
-    onDragStop,
     style,
     className,
     isDraggable,
@@ -44,7 +39,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     initialized,
   }: WrapNodeProps) => {
     const store = useStoreApi();
-    const updateNodeDimensions = useStore(selector);
     const nodeRef = useRef<HTMLDivElement>(null);
     const prevSourcePosition = useRef(sourcePosition);
     const prevTargetPosition = useRef(targetPosition);
@@ -96,14 +90,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         if (targetPosChanged) {
           prevTargetPosition.current = targetPosition;
         }
-        updateNodeDimensions([{ id, nodeElement: nodeRef.current, forceUpdate: true }]);
+        store.getState().updateNodeDimensions([{ id, nodeElement: nodeRef.current, forceUpdate: true }]);
       }
     }, [id, type, sourcePosition, targetPosition]);
 
     const dragging = useDrag({
-      onStart: onDragStart,
-      onDrag: onDrag,
-      onStop: onDragStop,
       nodeRef,
       disabled: hidden || !isDraggable,
       noDragClassName,

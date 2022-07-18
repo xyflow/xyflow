@@ -148,17 +148,23 @@ export enum ConnectionLineType {
 }
 
 export type ConnectionLineComponentProps = {
+  connectionLineStyle?: CSSProperties;
+  connectionLineType: ConnectionLineType;
+  fromNode?: Node;
+  fromHandle?: HandleElement;
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  fromPosition: Position;
+  toPosition: Position;
+  // remove in v11
   sourceX: number;
   sourceY: number;
   sourcePosition?: Position;
   targetX: number;
   targetY: number;
   targetPosition?: Position;
-  connectionLineStyle?: CSSProperties;
-  connectionLineType: ConnectionLineType;
-  fromNode?: Node;
-  fromHandle?: HandleElement;
-  // backward compatibility, mark as deprecated?
   sourceNode?: Node;
   sourceHandle?: HandleElement;
 };

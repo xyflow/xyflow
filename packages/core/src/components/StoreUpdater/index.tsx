@@ -3,56 +3,46 @@ import { SetState } from 'zustand';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../store';
-import {
-  Node,
-  Edge,
-  ReactFlowState,
-  OnConnect,
-  OnConnectStart,
-  OnConnectStop,
-  OnConnectEnd,
-  CoordinateExtent,
-  OnNodesChange,
-  OnEdgesChange,
-  ConnectionMode,
-  SnapGrid,
-  DefaultEdgeOptions,
-  FitViewOptions,
-  OnNodesDelete,
-  OnEdgesDelete,
-} from '../../types';
+import { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps } from '../../types';
 
-interface StoreUpdaterProps {
-  nodes?: Node[];
-  edges?: Edge[];
-  defaultNodes?: Node[];
-  defaultEdges?: Edge[];
-  onConnect?: OnConnect;
-  onConnectStart?: OnConnectStart;
-  onConnectStop?: OnConnectStop;
-  onConnectEnd?: OnConnectEnd;
-  onClickConnectStart?: OnConnectStart;
-  onClickConnectStop?: OnConnectStop;
-  onClickConnectEnd?: OnConnectEnd;
-  nodesDraggable?: boolean;
-  nodesConnectable?: boolean;
-  minZoom?: number;
-  maxZoom?: number;
-  nodeExtent?: CoordinateExtent;
-  onNodesChange?: OnNodesChange;
-  onEdgesChange?: OnEdgesChange;
-  elementsSelectable?: boolean;
-  connectionMode?: ConnectionMode;
-  snapToGrid?: boolean;
-  snapGrid?: SnapGrid;
-  translateExtent?: CoordinateExtent;
-  connectOnClick: boolean;
-  defaultEdgeOptions?: DefaultEdgeOptions;
-  fitView?: boolean;
-  fitViewOptions?: FitViewOptions;
-  onNodesDelete?: OnNodesDelete;
-  onEdgesDelete?: OnEdgesDelete;
-}
+type StoreUpdaterProps = Pick<
+  ReactFlowProps,
+  | 'nodes'
+  | 'edges'
+  | 'defaultNodes'
+  | 'defaultEdges'
+  | 'onConnect'
+  | 'onConnectStart'
+  | 'onConnectStop'
+  | 'onConnectEnd'
+  | 'onClickConnectStart'
+  | 'onClickConnectStop'
+  | 'onClickConnectEnd'
+  | 'nodesDraggable'
+  | 'nodesConnectable'
+  | 'minZoom'
+  | 'maxZoom'
+  | 'nodeExtent'
+  | 'onNodesChange'
+  | 'onEdgesChange'
+  | 'elementsSelectable'
+  | 'connectionMode'
+  | 'snapToGrid'
+  | 'snapGrid'
+  | 'translateExtent'
+  | 'connectOnClick'
+  | 'defaultEdgeOptions'
+  | 'fitView'
+  | 'fitViewOptions'
+  | 'onNodesDelete'
+  | 'onEdgesDelete'
+  | 'onNodeDragStart'
+  | 'onNodeDrag'
+  | 'onNodeDragStop'
+  | 'onSelectionDragStart'
+  | 'onSelectionDrag'
+  | 'onSelectionDragStop'
+>;
 
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
@@ -112,6 +102,12 @@ const StoreUpdater = ({
   fitViewOptions,
   onNodesDelete,
   onEdgesDelete,
+  onNodeDrag,
+  onNodeDragStart,
+  onNodeDragStop,
+  onSelectionDrag,
+  onSelectionDragStart,
+  onSelectionDragStop,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -154,6 +150,12 @@ const StoreUpdater = ({
   useDirectStoreUpdater('fitViewOnInitOptions', fitViewOptions, store.setState);
   useDirectStoreUpdater('onNodesDelete', onNodesDelete, store.setState);
   useDirectStoreUpdater('onEdgesDelete', onEdgesDelete, store.setState);
+  useDirectStoreUpdater('onNodeDrag', onNodeDrag, store.setState);
+  useDirectStoreUpdater('onNodeDragStart', onNodeDragStart, store.setState);
+  useDirectStoreUpdater('onNodeDragStop', onNodeDragStop, store.setState);
+  useDirectStoreUpdater('onSelectionDrag', onSelectionDrag, store.setState);
+  useDirectStoreUpdater('onSelectionDragStart', onSelectionDragStart, store.setState);
+  useDirectStoreUpdater('onSelectionDragStop', onSelectionDragStop, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

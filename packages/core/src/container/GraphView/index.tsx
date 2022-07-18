@@ -40,12 +40,6 @@ const GraphView = ({
   onNodeMouseMove,
   onNodeMouseLeave,
   onNodeContextMenu,
-  onNodeDragStart,
-  onNodeDrag,
-  onNodeDragStop,
-  onSelectionDragStart,
-  onSelectionDrag,
-  onSelectionDragStop,
   onSelectionContextMenu,
   connectionLineType,
   connectionLineStyle,
@@ -110,9 +104,6 @@ const GraphView = ({
       panOnDrag={panOnDrag}
       defaultPosition={defaultPosition}
       defaultZoom={defaultZoom}
-      onSelectionDragStart={onSelectionDragStart}
-      onSelectionDrag={onSelectionDrag}
-      onSelectionDragStop={onSelectionDragStop}
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
       noDragClassName={noDragClassName}
@@ -150,9 +141,6 @@ const GraphView = ({
           onNodeMouseMove={onNodeMouseMove}
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
-          onNodeDragStop={onNodeDragStop}
-          onNodeDrag={onNodeDrag}
-          onNodeDragStart={onNodeDragStart}
           selectNodesOnDrag={selectNodesOnDrag}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           noPanClassName={noPanClassName}
