@@ -91,6 +91,7 @@ const initialNodes: Node[] = [
     position: { x: 225, y: 50 },
     className: 'light',
     parentNode: '5',
+    expandParent: true,
   },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 }, className: 'light' },
   { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 }, className: 'light' },

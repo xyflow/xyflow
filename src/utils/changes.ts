@@ -10,17 +10,14 @@ function handleParentExpand(res: any[], updateItem: any) {
     if (extendWidth > 0 || extendHeight > 0 || updateItem.position.x < 0 || updateItem.position.y < 0) {
       parent.style = { ...parent.style } || {};
 
+      parent.style.width = parent.style.width ?? parent.width;
+      parent.style.height = parent.style.height ?? parent.height;
+
       if (extendWidth > 0) {
-        if (!parent.style.width) {
-          parent.style.width = parent.width;
-        }
         parent.style.width += extendWidth;
       }
 
       if (extendHeight > 0) {
-        if (!parent.style.height) {
-          parent.style.height = parent.height;
-        }
         parent.style.height += extendHeight;
       }
 
