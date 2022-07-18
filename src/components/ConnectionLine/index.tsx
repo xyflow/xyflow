@@ -8,14 +8,21 @@ import { ConnectionLineType, ConnectionLineComponent, HandleType, Position } fro
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import { internalsSymbol } from '../../utils';
 
-interface ConnectionLineProps {
+type ConnectionLineProps = {
   connectionNodeId: string;
   connectionHandleType: HandleType;
   connectionLineType: ConnectionLineType;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   CustomConnectionLineComponent?: ConnectionLineComponent;
-}
+};
+
+const oppositePosition = {
+  [Position.Left]: Position.Right,
+  [Position.Right]: Position.Left,
+  [Position.Top]: Position.Bottom,
+  [Position.Bottom]: Position.Top,
+};
 
 export default ({
   connectionNodeId,
@@ -43,8 +50,8 @@ export default ({
     return null;
   }
 
-  const handleBound = fromHandleBounds[connectionHandleType];
-  const fromHandle = handleId ? handleBound?.find((d) => d.id === handleId) : handleBound?.[0];
+  const handleBound = fromHandleBounds[connectionHandleType]!;
+  const fromHandle = handleId ? handleBound.find((d) => d.id === handleId) : handleBound[0];
   const fromHandleX = fromHandle ? fromHandle.x + fromHandle.width / 2 : (fromNode?.width ?? 0) / 2;
   const fromHandleY = fromHandle ? fromHandle.y + fromHandle.height / 2 : fromNode?.height ?? 0;
   const fromX = (fromNode?.positionAbsolute?.x || 0) + fromHandleX;
@@ -52,21 +59,11 @@ export default ({
 
   const fromPosition = fromHandle?.position;
 
-  let toPosition: Position | undefined;
-  switch (fromPosition) {
-    case Position.Left:
-      toPosition = Position.Right;
-      break;
-    case Position.Right:
-      toPosition = Position.Left;
-      break;
-    case Position.Top:
-      toPosition = Position.Bottom;
-      break;
-    case Position.Bottom:
-      toPosition = Position.Top;
-      break;
+  if (!fromPosition) {
+    return null;
   }
+
+  let toPosition: Position = oppositePosition[fromPosition];
 
   let sourceX: number,
     sourceY: number,
@@ -102,19 +99,25 @@ export default ({
     return (
       <g className="react-flow__connection">
         <CustomConnectionLineComponent
-          sourceX={sourceX}
-          sourceY={sourceY}
-          sourcePosition={sourcePosition}
-          targetX={targetX}
-          targetY={targetY}
-          targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
           fromNode={fromNode}
           fromHandle={fromHandle}
-          // backward compatibility, mark as deprecated?
+          fromX={fromX}
+          fromY={fromY}
+          toX={toX}
+          toY={toY}
+          fromPosition={fromPosition}
+          toPosition={toPosition}
+          // remove in v11
+          sourcePosition={sourcePosition}
+          targetPosition={targetPosition}
           sourceNode={fromNode}
           sourceHandle={fromHandle}
+          targetX={targetX}
+          targetY={targetY}
+          sourceX={sourceX}
+          sourceY={sourceY}
         />
       </g>
     );
