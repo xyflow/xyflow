@@ -1,58 +1,54 @@
-import React, { useRef, CSSProperties } from 'react';
+import React, { CSSProperties, useCallback } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../store';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
-import { ConnectionLineType, ConnectionLineComponent, HandleType, Node, ReactFlowState, Position } from '../../types';
+import { ConnectionLineType, ConnectionLineComponent, HandleType, Position } from '../../types';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import { internalsSymbol } from '../../utils';
 
 interface ConnectionLineProps {
   connectionNodeId: string;
-  connectionHandleId: string | null;
   connectionHandleType: HandleType;
-  connectionPositionX: number;
-  connectionPositionY: number;
   connectionLineType: ConnectionLineType;
   isConnectable: boolean;
   connectionLineStyle?: CSSProperties;
   CustomConnectionLineComponent?: ConnectionLineComponent;
 }
 
-const selector = (s: ReactFlowState) => ({ nodeInternals: s.nodeInternals, transform: s.transform });
-
 export default ({
   connectionNodeId,
-  connectionHandleId,
   connectionHandleType,
   connectionLineStyle,
-  connectionPositionX,
-  connectionPositionY,
   connectionLineType = ConnectionLineType.Bezier,
   isConnectable,
   CustomConnectionLineComponent,
 }: ConnectionLineProps) => {
-  const nodeId = connectionNodeId;
-  const handleId = connectionHandleId;
+  const { fromNode, handleId, toX, toY } = useStore(
+    useCallback(
+      (s) => ({
+        fromNode: s.nodeInternals.get(connectionNodeId),
+        handleId: s.connectionHandleId,
+        toX: (s.connectionPosition.x - s.transform[0]) / s.transform[2],
+        toY: (s.connectionPosition.y - s.transform[1]) / s.transform[2],
+      }),
+      [connectionNodeId]
+    ),
+    shallow
+  );
+  const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
 
-  const { nodeInternals, transform } = useStore(selector, shallow);
-  const fromNode = useRef<Node | undefined>(nodeInternals.get(nodeId));
-  const fromHandleBounds = fromNode.current?.[internalsSymbol]?.handleBounds;
-
-  if (!fromNode.current || !isConnectable || !fromHandleBounds?.[connectionHandleType]) {
+  if (!fromNode || !isConnectable || !fromHandleBounds?.[connectionHandleType]) {
     return null;
   }
 
   const handleBound = fromHandleBounds[connectionHandleType];
   const fromHandle = handleId ? handleBound?.find((d) => d.id === handleId) : handleBound?.[0];
-  const fromHandleX = fromHandle ? fromHandle.x + fromHandle.width / 2 : (fromNode.current?.width ?? 0) / 2;
-  const fromHandleY = fromHandle ? fromHandle.y + fromHandle.height / 2 : fromNode.current?.height ?? 0;
-  const fromX = (fromNode.current.positionAbsolute?.x || 0) + fromHandleX;
-  const fromY = (fromNode.current.positionAbsolute?.y || 0) + fromHandleY;
-
-  const toX = (connectionPositionX - transform[0]) / transform[2];
-  const toY = (connectionPositionY - transform[1]) / transform[2];
+  const fromHandleX = fromHandle ? fromHandle.x + fromHandle.width / 2 : (fromNode?.width ?? 0) / 2;
+  const fromHandleY = fromHandle ? fromHandle.y + fromHandle.height / 2 : fromNode?.height ?? 0;
+  const fromX = (fromNode?.positionAbsolute?.x || 0) + fromHandleX;
+  const fromY = (fromNode?.positionAbsolute?.y || 0) + fromHandleY;
 
   const fromPosition = fromHandle?.position;
 
@@ -114,10 +110,10 @@ export default ({
           targetPosition={targetPosition}
           connectionLineType={connectionLineType}
           connectionLineStyle={connectionLineStyle}
-          fromNode={fromNode.current}
+          fromNode={fromNode}
           fromHandle={fromHandle}
           // backward compatibility, mark as deprecated?
-          sourceNode={fromNode.current}
+          sourceNode={fromNode}
           sourceHandle={fromHandle}
         />
       </g>

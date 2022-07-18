@@ -45,9 +45,7 @@ interface EdgeRendererProps {
 
 const selector = (s: ReactFlowState) => ({
   connectionNodeId: s.connectionNodeId,
-  connectionHandleId: s.connectionHandleId,
   connectionHandleType: s.connectionHandleType,
-  connectionPosition: s.connectionPosition,
   nodesConnectable: s.nodesConnectable,
   elementsSelectable: s.elementsSelectable,
   width: s.width,
@@ -59,9 +57,7 @@ const selector = (s: ReactFlowState) => ({
 const EdgeRenderer = (props: EdgeRendererProps) => {
   const {
     connectionNodeId,
-    connectionHandleId,
     connectionHandleType,
-    connectionPosition,
     nodesConnectable,
     elementsSelectable,
     width,
@@ -201,10 +197,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
         >
           <ConnectionLine
             connectionNodeId={connectionNodeId!}
-            connectionHandleId={connectionHandleId}
             connectionHandleType={connectionHandleType!}
-            connectionPositionX={connectionPosition.x}
-            connectionPositionY={connectionPosition.y}
             connectionLineStyle={connectionLineStyle}
             connectionLineType={connectionLineType}
             isConnectable={nodesConnectable}

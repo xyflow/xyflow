@@ -16,7 +16,6 @@ export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElem
 const selector = (s: ReactFlowState) => ({
   connectionStartHandle: s.connectionStartHandle,
   connectOnClick: s.connectOnClick,
-  hasDefaultEdges: s.hasDefaultEdges,
 });
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
@@ -37,13 +36,13 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   ) => {
     const store = useStoreApi();
     const nodeId = useContext(NodeIdContext) as string;
-    const { connectionStartHandle, connectOnClick, hasDefaultEdges } = useStore(selector, shallow);
+    const { connectionStartHandle, connectOnClick } = useStore(selector, shallow);
 
     const handleId = id || null;
     const isTarget = type === 'target';
 
     const onConnectExtended = (params: Connection) => {
-      const { defaultEdgeOptions, onConnect: onConnectAction } = store.getState();
+      const { defaultEdgeOptions, onConnect: onConnectAction, hasDefaultEdges } = store.getState();
 
       const edgeParams = {
         ...defaultEdgeOptions,
@@ -104,28 +103,26 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       store.setState({ connectionStartHandle: null });
     };
 
-    const handleClasses = cc([
-      'react-flow__handle',
-      `react-flow__handle-${position}`,
-      'nodrag',
-      className,
-      {
-        source: !isTarget,
-        target: isTarget,
-        connectable: isConnectable,
-        connecting:
-          connectionStartHandle?.nodeId === nodeId &&
-          connectionStartHandle?.handleId === handleId &&
-          connectionStartHandle?.type === type,
-      },
-    ]);
-
     return (
       <div
         data-handleid={handleId}
         data-nodeid={nodeId}
         data-handlepos={position}
-        className={handleClasses}
+        className={cc([
+          'react-flow__handle',
+          `react-flow__handle-${position}`,
+          'nodrag',
+          className,
+          {
+            source: !isTarget,
+            target: isTarget,
+            connectable: isConnectable,
+            connecting:
+              connectionStartHandle?.nodeId === nodeId &&
+              connectionStartHandle?.handleId === handleId &&
+              connectionStartHandle?.type === type,
+          },
+        ])}
         onMouseDown={onMouseDownHandler}
         onClick={connectOnClick ? onClick : undefined}
         ref={ref}

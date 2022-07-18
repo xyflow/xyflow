@@ -3,14 +3,7 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
-import {
-  NodeDragHandler,
-  NodeMouseHandler,
-  NodeTypesWrapped,
-  Position,
-  ReactFlowState,
-  WrapNodeProps,
-} from '../../types';
+import { NodeMouseHandler, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
 import { internalsSymbol } from '../../utils';
 
 interface NodeRendererProps {
@@ -22,9 +15,6 @@ interface NodeRendererProps {
   onNodeMouseMove?: NodeMouseHandler;
   onNodeMouseLeave?: NodeMouseHandler;
   onNodeContextMenu?: NodeMouseHandler;
-  onNodeDragStart?: NodeDragHandler;
-  onNodeDrag?: NodeDragHandler;
-  onNodeDragStop?: NodeDragHandler;
   onlyRenderVisibleElements: boolean;
   noPanClassName: string;
   noDragClassName: string;
@@ -109,9 +99,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onMouseLeave={props.onNodeMouseLeave}
             onContextMenu={props.onNodeContextMenu}
             onDoubleClick={props.onNodeDoubleClick}
-            onDragStart={props.onNodeDragStart}
-            onDrag={props.onNodeDrag}
-            onDragStop={props.onNodeDragStop}
             selected={!!node.selected}
             isDraggable={isDraggable}
             isSelectable={isSelectable}

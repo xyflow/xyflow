@@ -84,14 +84,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edge, handleType)
         : undefined;
 
-      const onConnectEdge = (connection: Connection) => {
-        const { edges } = store.getState();
-        const edge = edges.find((e) => e.id === id);
-
-        if (edge && onEdgeUpdate) {
-          onEdgeUpdate(edge, connection);
-        }
-      };
+      const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
 
       handleMouseDown({
         event,
