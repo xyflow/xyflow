@@ -1,4 +1,0 @@
-{
-  "main": "dist/react-flow-themes-light.cjs.js",
-  "module": "dist/react-flow-themes-light.esm.js"
-}

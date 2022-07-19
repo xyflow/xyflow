@@ -1,0 +1,7 @@
+{
+  "name": "@react-flow/minimap",
+  "version": "11.0.0",
+  "description": "A minimap component for usage with React Flow",
+  "main": "index.js",
+  "license": "MIT"
+}
