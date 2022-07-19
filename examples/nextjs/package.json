@@ -1,5 +1,5 @@
 {
-  "name": "nextjs",
+  "name": "react-flow-examples",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,11 +11,13 @@
   "dependencies": {
     "@preconstruct/next": "^4.0.0",
     "@react-flow/core": "11.0.0",
+    "dagre": "^0.8.5",
     "next": "12.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@types/dagre": "^0.7.47",
     "eslint": "8.19.0",
     "eslint-config-next": "12.2.2"
   }

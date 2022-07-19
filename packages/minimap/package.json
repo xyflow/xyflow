@@ -1,7 +1,22 @@
 {
   "name": "@react-flow/minimap",
   "version": "11.0.0",
-  "description": "A minimap component for usage with React Flow",
+  "description": "A minimap component that shows the React Flow graph.",
   "main": "dist/react-flow-minimap.cjs.js",
-  "license": "MIT"
+  "module": "dist/react-flow-minimap.esm.js",
+  "license": "MIT",
+  "dependencies": {
+    "classcat": "^5.0.3",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "zustand": "^4.0.0-rc.1"
+  },
+  "peerDependencies": {
+    "react": "^18.1.0",
+    "react-flow-renderer": "^10.3.5"
+  },
+  "devDependencies": {
+    "@types/d3-drag": "^3.0.1",
+    "@types/d3-selection": "^3.0.2"
+  }
 }

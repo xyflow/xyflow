@@ -1,0 +1,45 @@
+.providerflow {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+}
+
+.aside {
+  border-right: 1px solid #eee;
+  padding: 15px 10px;
+  font-size: 12px;
+  background: #fcfcfc;
+}
+
+.description {
+  margin-bottom: 10px;
+}
+
+.title {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.transform {
+  margin-bottom: 20px;
+}
+
+.wrapper {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.selectall {
+  margin-top: 10px;
+}
+
+@media screen and (min-width: 768px) {
+  .providerflow {
+    flex-direction: row;
+  }
+
+  .aside {
+    width: 20%;
+    max-width: 250px;
+  }
+}
