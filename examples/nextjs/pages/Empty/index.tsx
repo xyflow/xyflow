@@ -2,7 +2,6 @@ import React, { MouseEvent, CSSProperties } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Controls,
   Node,
   Connection,
   Edge,
@@ -11,6 +10,7 @@ import ReactFlow, {
   ReactFlowInstance,
 } from '@react-flow/core';
 
+import Controls from '@react-flow/controls';
 import Background, { BackgroundVariant } from '@react-flow/background';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) =>

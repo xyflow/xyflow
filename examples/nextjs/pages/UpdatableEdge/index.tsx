@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import ReactFlow, {
-  Controls,
   updateEdge,
   addEdge,
   applyNodeChanges,
@@ -13,6 +12,8 @@ import ReactFlow, {
   EdgeChange,
   HandleType,
 } from '@react-flow/core';
+
+import Controls from '@react-flow/controls';
 
 const initialNodes: Node[] = [
   {
@@ -48,15 +49,26 @@ const initialNodes: Node[] = [
       ),
     },
     position: { x: 400, y: 100 },
-    style: { background: '#D6D5E6', color: '#333', border: '1px solid #222138', width: 180 },
+    style: {
+      background: '#D6D5E6',
+      color: '#333',
+      border: '1px solid #222138',
+      width: 180,
+    },
   },
 ];
 
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' }];
+const initialEdges = [
+  { id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' },
+];
 
-const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
-const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge, handleType: HandleType) =>
-  console.log(`start update ${handleType} handle`, edge);
+const onInit = (reactFlowInstance: ReactFlowInstance) =>
+  reactFlowInstance.fitView();
+const onEdgeUpdateStart = (
+  _: React.MouseEvent,
+  edge: Edge,
+  handleType: HandleType
+) => console.log(`start update ${handleType} handle`, edge);
 const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge, handleType: HandleType) =>
   console.log(`end update ${handleType} handle`, edge);
 
@@ -65,7 +77,8 @@ const UpdatableEdge = () => {
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setEdges((els) => updateEdge(oldEdge, newConnection, els));
-  const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
+  const onConnect = (connection: Connection) =>
+    setEdges((els) => addEdge(connection, els));
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     console.log(changes);

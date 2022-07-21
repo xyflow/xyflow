@@ -6,7 +6,6 @@ import React, {
 
 import ReactFlow, {
   addEdge,
-  Controls,
   Node,
   Viewport,
   SnapGrid,
@@ -18,6 +17,7 @@ import ReactFlow, {
   OnSelectionChangeParams,
 } from '@react-flow/core';
 
+import Controls from '@react-flow/controls';
 import Background from '@react-flow/background';
 import MiniMap from '@react-flow/minimap';
 

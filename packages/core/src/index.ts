@@ -17,7 +17,6 @@ export {
   getSimpleBezierCenter as getSimpleBezierEdgeCenter,
 } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
-export * from './additional-components';
 
 export { internalsSymbol } from './utils';
 export {
@@ -33,6 +32,7 @@ export {
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
+export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';

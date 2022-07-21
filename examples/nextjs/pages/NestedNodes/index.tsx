@@ -4,13 +4,13 @@ import ReactFlow, {
   addEdge,
   useNodesState,
   useEdgesState,
-  Controls,
   Node,
   Edge,
   ReactFlowInstance,
   Connection,
 } from '@react-flow/core';
 
+import Controls from '@react-flow/controls';
 import MiniMap from '@react-flow/minimap';
 import Background from '@react-flow/background';
 

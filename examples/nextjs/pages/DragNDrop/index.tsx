@@ -2,7 +2,6 @@ import React, { useState, DragEvent } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  Controls,
   ReactFlowInstance,
   Connection,
   Edge,
@@ -10,6 +9,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+import Controls from '@react-flow/controls';
 
 import Sidebar from './Sidebar';
 

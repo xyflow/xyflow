@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  Controls,
   Connection,
   CoordinateExtent,
   Position,
@@ -11,6 +10,8 @@ import ReactFlow, {
   MarkerType,
   EdgeMarker,
 } from '@react-flow/core';
+
+import Controls from '@react-flow/controls';
 import dagre from 'dagre';
 
 import initialItems from './initial-elements';

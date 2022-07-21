@@ -5,7 +5,6 @@ import React from 'react';
 
 import ReactFlow, {
   addEdge,
-  Controls,
   ReactFlowInstance,
   Connection,
   Edge,
@@ -14,7 +13,7 @@ import ReactFlow, {
 } from '@react-flow/core';
 
 import Background from '@react-flow/background';
-
+import Controls from '@react-flow/controls';
 import MiniMap from '@react-flow/minimap';
 
 import { getElements } from './utils';

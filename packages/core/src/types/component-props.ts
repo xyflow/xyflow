@@ -134,16 +134,3 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export type ReactFlowRefType = HTMLDivElement;
-
-export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
-  showZoom?: boolean;
-  showFitView?: boolean;
-  showInteractive?: boolean;
-  fitViewOptions?: FitViewOptions;
-  onZoomIn?: () => void;
-  onZoomOut?: () => void;
-  onFitView?: () => void;
-  onInteractiveChange?: (interactiveStatus: boolean) => void;
-}
-
-export interface ControlButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}

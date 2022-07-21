@@ -3,7 +3,6 @@ import ReactFlow, {
   ReactFlowProvider,
   addEdge,
   Node,
-  Controls,
   Connection,
   Edge,
   ConnectionMode,
@@ -11,6 +10,7 @@ import ReactFlow, {
   useEdgesState,
   ReactFlowInstance,
 } from '@react-flow/core';
+import Controls from '@react-flow/controls';
 
 import Sidebar from './Sidebar';
 

@@ -1,0 +1,15 @@
+{
+  "name": "@react-flow/controls",
+  "version": "11.0.0",
+  "description": "A component that controls the viewport of React Flow",
+  "main": "dist/react-flow-controls.cjs.js",
+  "module": "dist/react-flow-controls.esm.js",
+  "license": "MIT",
+  "dependencies": {
+    "@react-flow/core": "11.0.0"
+  },
+  "peerDependencies": {
+    "classcat": "^5.0.3",
+    "react": "^18.2.0"
+  }
+}

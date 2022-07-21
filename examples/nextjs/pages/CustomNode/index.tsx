@@ -3,7 +3,6 @@ import { ChangeEvent } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Controls,
   Node,
   ReactFlowInstance,
   Position,
@@ -14,6 +13,7 @@ import ReactFlow, {
 } from '@react-flow/core';
 
 import MiniMap from '@react-flow/minimap';
+import Controls from '@react-flow/controls';
 
 import ColorSelectorNode from './ColorSelectorNode';
 

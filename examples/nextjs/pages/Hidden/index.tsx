@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Controls,
   Connection,
   Edge,
   Node,
@@ -10,6 +9,7 @@ import ReactFlow, {
   useEdgesState,
 } from '@react-flow/core';
 
+import Controls from '@react-flow/controls';
 import MiniMap from '@react-flow/minimap';
 
 const initialNodes: Node[] = [

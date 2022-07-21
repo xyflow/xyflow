@@ -2,7 +2,6 @@ import React, { useState, MouseEvent, useCallback } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Controls,
   Node,
   Edge,
   ReactFlowInstance,
@@ -12,6 +11,7 @@ import ReactFlow, {
   useEdgesState,
 } from '@react-flow/core';
 
+import Controls from '@react-flow/controls';
 import Background from '@react-flow/background';
 import MiniMap from '@react-flow/minimap';
 
