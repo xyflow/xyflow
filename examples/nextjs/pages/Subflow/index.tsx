@@ -3,7 +3,6 @@ import React, { useState, MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
-  MiniMap,
   Controls,
   Node,
   Edge,
@@ -13,6 +12,9 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+
+import MiniMap from '@react-flow/minimap';
+
 import DebugNode from './DebugNode';
 
 const onNodeDrag = (_: MouseEvent, node: Node, nodes: Node[]) =>

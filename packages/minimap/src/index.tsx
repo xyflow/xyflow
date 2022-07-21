@@ -9,7 +9,7 @@ import {
   GetMiniMapNodeAttribute,
   ReactFlowState,
   Rect,
-} from 'react-flow-renderer';
+} from '@react-flow/core';
 
 import MiniMapNode from './MiniMapNode';
 import MiniMapDrag from './MiniMapDrag';

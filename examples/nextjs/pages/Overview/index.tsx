@@ -6,7 +6,6 @@ import React, {
 
 import ReactFlow, {
   addEdge,
-  MiniMap,
   Controls,
   Background,
   Node,
@@ -19,6 +18,8 @@ import ReactFlow, {
   useEdgesState,
   OnSelectionChangeParams,
 } from '@react-flow/core';
+
+import MiniMap from '@react-flow/minimap';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) =>
   console.log('drag start', node, nodes);

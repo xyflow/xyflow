@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { drag, D3DragEvent, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
-import { useReactFlow } from 'react-flow-renderer';
+import { useReactFlow } from '@react-flow/core';
 
 function MiniMapDrag({ x = 0, y = 0, width = 0, height = 0 }) {
   const dragRef = useRef<SVGRectElement>(null);

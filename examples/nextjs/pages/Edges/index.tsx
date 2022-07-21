@@ -7,12 +7,14 @@ import ReactFlow, {
   Edge,
   EdgeTypes,
   MarkerType,
-  MiniMap,
   Node,
   ReactFlowInstance,
   useEdgesState,
   useNodesState,
 } from '@react-flow/core';
+
+import MiniMap from '@react-flow/minimap';
+
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 

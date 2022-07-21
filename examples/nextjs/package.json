@@ -11,6 +11,7 @@
   "dependencies": {
     "@preconstruct/next": "^4.0.0",
     "@react-flow/core": "11.0.0",
+    "@react-flow/minimap": "11.0.0",
     "dagre": "^0.8.5",
     "next": "12.2.2",
     "react": "18.2.0",

@@ -5,7 +5,6 @@ import React from 'react';
 
 import ReactFlow, {
   addEdge,
-  MiniMap,
   Controls,
   Background,
   ReactFlowInstance,
@@ -14,6 +13,9 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+
+import MiniMap from '@react-flow/minimap';
+
 import { getElements } from './utils';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => {
