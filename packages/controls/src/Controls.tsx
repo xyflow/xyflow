@@ -15,6 +15,8 @@ import UnlockIcon from './Icons/Unlock';
 
 import { ControlProps, ControlButtonProps } from './types';
 
+import './style.css';
+
 export const ControlButton: FC<PropsWithChildren<ControlButtonProps>> = ({
   children,
   className,

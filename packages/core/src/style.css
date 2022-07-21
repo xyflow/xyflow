@@ -144,32 +144,6 @@
   pointer-events: all;
 }
 
-/* additional components */
-
-.react-flow__controls {
-  position: absolute;
-  z-index: 5;
-  bottom: 20px;
-  left: 15px;
-
-  &-button {
-    width: 24px;
-    height: 24px;
-    border: none;
-
-    svg {
-      width: 100%;
-    }
-  }
-}
-
-.react-flow__minimap {
-  position: absolute;
-  z-index: 5;
-  bottom: 20px;
-  right: 15px;
-}
-
 .react-flow__attribution {
   font-size: 10px;
   position: absolute;

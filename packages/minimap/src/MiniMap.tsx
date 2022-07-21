@@ -13,6 +13,8 @@ import MiniMapNode from './MiniMapNode';
 import MiniMapDrag from './MiniMapDrag';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
 
+import './style.css';
+
 declare const window: any;
 
 const defaultWidth = 200;
