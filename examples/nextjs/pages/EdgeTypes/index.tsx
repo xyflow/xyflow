@@ -6,13 +6,14 @@ import React from 'react';
 import ReactFlow, {
   addEdge,
   Controls,
-  Background,
   ReactFlowInstance,
   Connection,
   Edge,
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+
+import Background from '@react-flow/background';
 
 import MiniMap from '@react-flow/minimap';
 

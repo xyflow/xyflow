@@ -1,7 +1,6 @@
 import React, { useState, CSSProperties, useCallback } from 'react';
 import ReactFlow, {
   Controls,
-  Background,
   ReactFlowInstance,
   Edge,
   Node,
@@ -13,6 +12,7 @@ import ReactFlow, {
   EdgeChange,
 } from '@react-flow/core';
 
+import Background from '@react-flow/background';
 import MiniMap from '@react-flow/minimap';
 
 import { getNodesAndEdges } from './utils';

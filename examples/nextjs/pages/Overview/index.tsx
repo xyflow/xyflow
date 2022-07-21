@@ -7,7 +7,6 @@ import React, {
 import ReactFlow, {
   addEdge,
   Controls,
-  Background,
   Node,
   Viewport,
   SnapGrid,
@@ -19,6 +18,7 @@ import ReactFlow, {
   OnSelectionChangeParams,
 } from '@react-flow/core';
 
+import Background from '@react-flow/background';
 import MiniMap from '@react-flow/minimap';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) =>

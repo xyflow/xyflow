@@ -3,15 +3,15 @@ import React, { MouseEvent, CSSProperties } from 'react';
 import ReactFlow, {
   addEdge,
   Controls,
-  Background,
   Node,
-  BackgroundVariant,
   Connection,
   Edge,
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
 } from '@react-flow/core';
+
+import Background, { BackgroundVariant } from '@react-flow/background';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log('flow loaded:', reactFlowInstance);

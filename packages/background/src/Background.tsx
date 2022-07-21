@@ -1,9 +1,9 @@
 import React, { memo, FC, useEffect, useState, useRef } from 'react';
 import cc from 'classcat';
+import { useStore, ReactFlowState } from '@react-flow/core';
 
-import { useStore } from '../../store';
+import { BackgroundProps, BackgroundVariant } from './types';
 import { createGridLinesPath, createGridDotsPath } from './utils';
-import { BackgroundVariant, ReactFlowState, BackgroundProps } from '../../types';
 
 const defaultColors = {
   [BackgroundVariant.Dots]: '#81818a',
@@ -37,11 +37,17 @@ const Background: FC<BackgroundProps> = ({
 
   const isLines = variant === BackgroundVariant.Lines;
   const bgColor = color ? color : defaultColors[variant];
-  const path = isLines ? createGridLinesPath(scaledGap, size, bgColor) : createGridDotsPath(size * tScale, bgColor);
+  const path = isLines
+    ? createGridLinesPath(scaledGap, size, bgColor)
+    : createGridDotsPath(size * tScale, bgColor);
 
   return (
     <svg
-      className={cc(['react-flow__background', 'react-flow__container', className])}
+      className={cc([
+        'react-flow__background',
+        'react-flow__container',
+        className,
+      ])}
       style={{
         ...style,
         width: '100%',
@@ -57,11 +63,17 @@ const Background: FC<BackgroundProps> = ({
             y={yOffset}
             width={scaledGap}
             height={scaledGap}
-            patternUnits="userSpaceOnUse"
+            patternUnits='userSpaceOnUse'
           >
             {path}
           </pattern>
-          <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
+          <rect
+            x='0'
+            y='0'
+            width='100%'
+            height='100%'
+            fill={`url(#${patternId})`}
+          />
         </>
       )}
     </svg>

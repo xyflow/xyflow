@@ -3,7 +3,6 @@ import React, { useCallback, MouseEvent, useEffect } from 'react';
 import ReactFlow, {
   Node,
   addEdge,
-  Background,
   useReactFlow,
   ReactFlowProvider,
   Connection,
@@ -12,6 +11,7 @@ import ReactFlow, {
   useEdgesState,
 } from '@react-flow/core';
 
+import Background from '@react-flow/background';
 import MiniMap from '@react-flow/minimap';
 
 const initialNodes: Node[] = [

@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 import ReactFlow, {
   Node,
   addEdge,
-  Background,
-  BackgroundVariant,
   Connection,
   Edge,
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+
+import Background, { BackgroundVariant } from '@react-flow/background';
 
 import ConnectionLine from './ConnectionLine';
 

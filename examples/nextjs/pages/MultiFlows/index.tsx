@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Background,
   Node,
   Edge,
   Connection,
@@ -11,6 +10,8 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
 } from '@react-flow/core';
+
+import Background from '@react-flow/background';
 
 import styles from './multiflows.module.css';
 

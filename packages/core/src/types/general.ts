@@ -81,11 +81,6 @@ export type OnConnectStop = (event: MouseEvent) => void;
 
 export type OnConnectEnd = (event: MouseEvent) => void;
 
-export enum BackgroundVariant {
-  Lines = 'lines',
-  Dots = 'dots',
-}
-
 export type Viewport = {
   x: number;
   y: number;

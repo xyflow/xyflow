@@ -2,7 +2,6 @@ import React, { useState, MouseEvent, useCallback } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Background,
   useNodesState,
   useEdgesState,
   Controls,
@@ -13,6 +12,7 @@ import ReactFlow, {
 } from '@react-flow/core';
 
 import MiniMap from '@react-flow/minimap';
+import Background from '@react-flow/background';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) =>
   console.log('drag stop', node);

@@ -1,7 +1,6 @@
 import React, { MouseEvent } from 'react';
 import ReactFlow, {
   addEdge,
-  Background,
   Connection,
   Controls,
   Edge,
@@ -12,6 +11,8 @@ import ReactFlow, {
   useEdgesState,
   useNodesState,
 } from '@react-flow/core';
+
+import Background from '@react-flow/background';
 
 import MiniMap from '@react-flow/minimap';
 

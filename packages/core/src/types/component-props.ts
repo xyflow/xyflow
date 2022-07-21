@@ -28,7 +28,6 @@ import {
   AttributionPosition,
   DefaultEdgeOptions,
   FitViewOptions,
-  BackgroundVariant,
   OnNodesDelete,
   OnEdgesDelete,
   OnNodesChange,
@@ -136,17 +135,6 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
 
 export type ReactFlowRefType = HTMLDivElement;
 
-export type GetMiniMapNodeAttribute<NodeData = any> = (node: Node<NodeData>) => string;
-
-export interface MiniMapProps<NodeData = any> extends HTMLAttributes<SVGSVGElement> {
-  nodeColor?: string | GetMiniMapNodeAttribute<NodeData>;
-  nodeStrokeColor?: string | GetMiniMapNodeAttribute<NodeData>;
-  nodeClassName?: string | GetMiniMapNodeAttribute<NodeData>;
-  nodeBorderRadius?: number;
-  nodeStrokeWidth?: number;
-  maskColor?: string;
-}
-
 export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
@@ -159,10 +147,3 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export interface ControlButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
-
-export interface BackgroundProps extends HTMLAttributes<SVGElement> {
-  variant?: BackgroundVariant;
-  gap?: number;
-  color?: string;
-  size?: number;
-}

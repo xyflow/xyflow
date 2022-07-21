@@ -2,12 +2,12 @@ import React from 'react';
 
 import ReactFlow, {
   useReactFlow,
-  Background,
-  BackgroundVariant,
   Node,
   Edge,
   ReactFlowProvider,
 } from '@react-flow/core';
+
+import Background, { BackgroundVariant } from '@react-flow/background';
 
 const defaultNodes: Node[] = [
   {

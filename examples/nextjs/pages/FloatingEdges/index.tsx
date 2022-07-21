@@ -2,13 +2,14 @@ import React, { useCallback } from 'react';
 
 import ReactFlow, {
   addEdge,
-  Background,
   ReactFlowInstance,
   EdgeTypes,
   Connection,
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+
+import Background from '@react-flow/background';
 
 import styles from './style.module.css';
 
