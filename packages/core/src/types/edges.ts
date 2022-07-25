@@ -158,15 +158,6 @@ export type ConnectionLineComponentProps = {
   toY: number;
   fromPosition: Position;
   toPosition: Position;
-  // remove in v11
-  sourceX: number;
-  sourceY: number;
-  sourcePosition?: Position;
-  targetX: number;
-  targetY: number;
-  targetPosition?: Position;
-  sourceNode?: Node;
-  sourceHandle?: HandleElement;
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;

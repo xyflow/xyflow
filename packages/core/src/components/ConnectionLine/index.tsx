@@ -65,36 +65,6 @@ export default ({
 
   let toPosition: Position = oppositePosition[fromPosition];
 
-  let sourceX: number,
-    sourceY: number,
-    sourcePosition: Position | undefined,
-    targetX: number,
-    targetY: number,
-    targetPosition: Position | undefined;
-
-  switch (connectionHandleType) {
-    case 'source':
-      {
-        sourceX = fromX;
-        sourceY = fromY;
-        sourcePosition = fromPosition;
-        targetX = toX;
-        targetY = toY;
-        targetPosition = toPosition;
-      }
-      break;
-    case 'target':
-      {
-        sourceX = toX;
-        sourceY = toY;
-        sourcePosition = toPosition;
-        targetX = fromX;
-        targetY = fromY;
-        targetPosition = fromPosition;
-      }
-      break;
-  }
-
   if (CustomConnectionLineComponent) {
     return (
       <g className="react-flow__connection">
@@ -109,15 +79,6 @@ export default ({
           toY={toY}
           fromPosition={fromPosition}
           toPosition={toPosition}
-          // remove in v11
-          sourcePosition={sourcePosition}
-          targetPosition={targetPosition}
-          sourceNode={fromNode}
-          sourceHandle={fromHandle}
-          targetX={targetX}
-          targetY={targetY}
-          sourceX={sourceX}
-          sourceY={sourceY}
         />
       </g>
     );
@@ -126,12 +87,12 @@ export default ({
   let dAttr: string = '';
 
   const pathParams = {
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
+    sourceX: fromX,
+    sourceY: fromY,
+    sourcePosition: fromPosition,
+    targetX: toX,
+    targetY: toY,
+    targetPosition: toPosition,
   };
 
   if (connectionLineType === ConnectionLineType.Bezier) {
@@ -147,7 +108,7 @@ export default ({
   } else if (connectionLineType === ConnectionLineType.SimpleBezier) {
     dAttr = getSimpleBezierPath(pathParams);
   } else {
-    dAttr = `M${sourceX},${sourceY} ${targetX},${targetY}`;
+    dAttr = `M${fromX},${fromY} ${toX},${toY}`;
   }
 
   return (

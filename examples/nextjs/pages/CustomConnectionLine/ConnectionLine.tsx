@@ -2,26 +2,26 @@ import React, { FC } from 'react';
 import { ConnectionLineComponentProps } from '@react-flow/core';
 
 const ConnectionLine: FC<ConnectionLineComponentProps> = ({
-  sourceX,
-  sourceY,
-  targetX,
-  targetY,
+  fromX,
+  fromY,
+  toX,
+  toY,
 }) => {
   return (
     <g>
       <path
-        fill='none'
-        stroke='#222'
+        fill="none"
+        stroke="#222"
         strokeWidth={1.5}
-        className='animated'
-        d={`M${sourceX},${sourceY} C ${sourceX} ${targetY} ${sourceX} ${targetY} ${targetX},${targetY}`}
+        className="animated"
+        d={`M${fromX},${fromY} C ${fromX} ${toY} ${fromX} ${toY} ${toX},${toY}`}
       />
       <circle
-        cx={targetX}
-        cy={targetY}
-        fill='#fff'
+        cx={toX}
+        cy={toY}
+        fill="#fff"
         r={3}
-        stroke='#222'
+        stroke="#222"
         strokeWidth={1.5}
       />
     </g>
