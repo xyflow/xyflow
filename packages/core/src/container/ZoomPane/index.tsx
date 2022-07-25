@@ -45,8 +45,7 @@ const ZoomPane = ({
   selectionKeyPressed,
   elementsSelectable,
   panOnDrag = true,
-  defaultPosition = [0, 0],
-  defaultZoom = 1,
+  defaultViewport,
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
@@ -68,9 +67,9 @@ const ZoomPane = ({
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 
-      const clampedX = clamp(defaultPosition[0], translateExtent[0][0], translateExtent[1][0]);
-      const clampedY = clamp(defaultPosition[1], translateExtent[0][1], translateExtent[1][1]);
-      const clampedZoom = clamp(defaultZoom, minZoom, maxZoom);
+      const clampedX = clamp(defaultViewport.x, translateExtent[0][0], translateExtent[1][0]);
+      const clampedY = clamp(defaultViewport.y, translateExtent[0][1], translateExtent[1][1]);
+      const clampedZoom = clamp(defaultViewport.zoom, minZoom, maxZoom);
       const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
 
       d3ZoomInstance.transform(selection, updatedTransform);

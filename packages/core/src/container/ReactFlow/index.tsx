@@ -22,6 +22,7 @@ import {
   PanOnScrollMode,
   ReactFlowProps,
   ReactFlowRefType,
+  Viewport,
 } from '../../types';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import GraphView from '../GraphView';
@@ -44,7 +45,7 @@ const defaultEdgeTypes: EdgeTypes = {
 };
 
 const initSnapGrid: [number, number] = [15, 15];
-const initDefaultPosition: [number, number] = [0, 0];
+const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
@@ -102,8 +103,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       elementsSelectable,
       minZoom,
       maxZoom,
-      defaultZoom = 1,
-      defaultPosition = initDefaultPosition,
+      defaultViewport = initDefaultViewport,
       translateExtent,
       preventScrolling = true,
       nodeExtent,
@@ -177,8 +177,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             zoomActivationKeyCode={zoomActivationKeyCode}
             onlyRenderVisibleElements={onlyRenderVisibleElements}
             selectNodesOnDrag={selectNodesOnDrag}
-            defaultZoom={defaultZoom}
-            defaultPosition={defaultPosition}
+            defaultViewport={defaultViewport}
             preventScrolling={preventScrolling}
             zoomOnScroll={zoomOnScroll}
             zoomOnPinch={zoomOnPinch}

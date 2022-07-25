@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Connection,
@@ -18,8 +18,6 @@ import MiniMap from '@react-flow/minimap';
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 
-const onInit = (reactFlowInstance: ReactFlowInstance) =>
-  reactFlowInstance.fitView();
 const onNodeDragStop = (_: MouseEvent, node: Node) =>
   console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
@@ -183,11 +181,19 @@ const edgeTypes: EdgeTypes = {
   custom2: CustomEdge2,
 };
 
+const defaultViewport = {
+  x: 200,
+  y: 200,
+  zoom: 0.8,
+};
+
 const EdgesFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
+    []
+  );
 
   return (
     <ReactFlow
@@ -198,7 +204,6 @@ const EdgesFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      onInit={onInit}
       snapToGrid={true}
       edgeTypes={edgeTypes}
       onEdgeClick={onEdgeClick}
@@ -206,6 +211,7 @@ const EdgesFlow = () => {
       onEdgeMouseEnter={onEdgeMouseEnter}
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
+      defaultViewport={defaultViewport}
     >
       <MiniMap />
       <Controls />

@@ -3,9 +3,9 @@ import React, { memo } from 'react';
 import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
-import Viewport from '../Viewport';
+import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
-import { NodeTypesWrapped, EdgeTypesWrapped, ConnectionLineType, KeyCode, ReactFlowProps } from '../../types';
+import { NodeTypesWrapped, EdgeTypesWrapped, ConnectionLineType, KeyCode, ReactFlowProps, Viewport } from '../../types';
 
 export interface GraphViewProps
   extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> {
@@ -16,13 +16,12 @@ export interface GraphViewProps
   multiSelectionKeyCode: KeyCode | null;
   connectionLineType: ConnectionLineType;
   onlyRenderVisibleElements: boolean;
-  defaultZoom: number;
-  defaultPosition: [number, number];
   defaultMarkerColor: string;
   selectNodesOnDrag: boolean;
   noDragClassName: string;
   noWheelClassName: string;
   noPanClassName: string;
+  defaultViewport: Viewport;
 }
 
 const GraphView = ({
@@ -52,8 +51,7 @@ const GraphView = ({
   onlyRenderVisibleElements,
   elementsSelectable,
   selectNodesOnDrag,
-  defaultZoom,
-  defaultPosition,
+  defaultViewport,
   preventScrolling,
   defaultMarkerColor,
   zoomOnScroll,
@@ -108,15 +106,14 @@ const GraphView = ({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       panOnDrag={panOnDrag}
-      defaultPosition={defaultPosition}
-      defaultZoom={defaultZoom}
+      defaultViewport={defaultViewport}
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
       noDragClassName={noDragClassName}
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
     >
-      <Viewport>
+      <ViewportWrapper>
         <EdgeRenderer
           edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
@@ -152,7 +149,7 @@ const GraphView = ({
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}
         />
-      </Viewport>
+      </ViewportWrapper>
     </FlowRenderer>
   );
 };

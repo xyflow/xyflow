@@ -32,6 +32,7 @@ import {
   NodeDragHandler,
   NodeMouseHandler,
   SelectionDragHandler,
+  Viewport,
 } from '.';
 import { HandleType } from './handles';
 
@@ -98,8 +99,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   panOnDrag?: boolean;
   minZoom?: number;
   maxZoom?: number;
-  defaultZoom?: number;
-  defaultPosition?: [number, number];
+  defaultViewport?: Viewport;
   translateExtent?: CoordinateExtent;
   preventScrolling?: boolean;
   nodeExtent?: CoordinateExtent;
