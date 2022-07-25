@@ -160,7 +160,6 @@ export function handleMouseDown({
   }
 
   function onMouseUp(event: MouseEvent) {
-    const { onConnectStop, onConnectEnd } = getState();
     const { connection, isValid } = checkElementBelowIsValid(
       event,
       connectionMode,
@@ -171,13 +170,11 @@ export function handleMouseDown({
       doc
     );
 
-    onConnectStop?.(event);
-
     if (isValid) {
       onConnect?.(connection);
     }
 
-    onConnectEnd?.(event);
+    getState().onConnectEnd?.(event);
 
     if (elementEdgeUpdaterType && onEdgeUpdateEnd) {
       onEdgeUpdateEnd(event);

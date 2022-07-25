@@ -10,7 +10,6 @@ import {
   ConnectionLineType,
   ConnectionLineComponent,
   OnConnectStart,
-  OnConnectStop,
   OnConnectEnd,
   OnConnect,
   CoordinateExtent,
@@ -58,10 +57,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onEdgesDelete?: OnEdgesDelete;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
-  onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
   onClickConnectStart?: OnConnectStart;
-  onClickConnectStop?: OnConnectStop;
   onClickConnectEnd?: OnConnectEnd;
   onInit?: OnInit;
   onMove?: OnMove;

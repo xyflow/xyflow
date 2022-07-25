@@ -74,7 +74,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     };
 
     const onClick = (event: React.MouseEvent) => {
-      const { onClickConnectStart, onClickConnectStop, onClickConnectEnd, connectionMode } = store.getState();
+      const { onClickConnectStart, onClickConnectEnd, connectionMode } = store.getState();
       if (!connectionStartHandle) {
         onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
         store.setState({ connectionStartHandle: { nodeId, type, handleId } });
@@ -91,8 +91,6 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         isValidConnection,
         doc
       );
-
-      onClickConnectStop?.(event as unknown as MouseEvent);
 
       if (isValid) {
         onConnectExtended(connection);

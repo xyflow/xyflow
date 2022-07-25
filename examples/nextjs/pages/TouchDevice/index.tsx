@@ -38,12 +38,12 @@ const TouchDeviceFlow = () => {
     [setEdges]
   );
   const onConnectStart = useCallback(() => console.log('connect start'), []);
-  const onConnectStop = useCallback(() => console.log('connect end'), []);
+  const onConnectEnd = useCallback(() => console.log('connect end'), []);
   const onClickConnectStart = useCallback(
     () => console.log('click connect start'),
     []
   );
-  const onClickConnectStop = useCallback(
+  const onClickConnectEnd = useCallback(
     () => console.log('click connect end'),
     []
   );
@@ -56,9 +56,9 @@ const TouchDeviceFlow = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnectStart={onConnectStart}
-      onConnectStop={onConnectStop}
+      onConnectEnd={onConnectEnd}
       onClickConnectStart={onClickConnectStart}
-      onClickConnectStop={onClickConnectStop}
+      onClickConnectEnd={onClickConnectEnd}
       className={styles.flow}
     />
   );

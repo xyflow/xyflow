@@ -76,9 +76,6 @@ export type OnConnectStartParams = {
 };
 
 export type OnConnectStart = (event: ReactMouseEvent, params: OnConnectStartParams) => void;
-
-export type OnConnectStop = (event: MouseEvent) => void;
-
 export type OnConnectEnd = (event: MouseEvent) => void;
 
 export type Viewport = {
@@ -180,11 +177,9 @@ export type ReactFlowStore = {
 
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
-  onConnectStop?: OnConnectStop;
   onConnectEnd?: OnConnectEnd;
 
   onClickConnectStart?: OnConnectStart;
-  onClickConnectStop?: OnConnectStop;
   onClickConnectEnd?: OnConnectEnd;
 
   connectOnClick: boolean;
