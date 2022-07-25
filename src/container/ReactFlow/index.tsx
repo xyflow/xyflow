@@ -1,5 +1,6 @@
-import cc from 'classcat';
 import React, { forwardRef } from 'react';
+import cc from 'classcat';
+
 import Attribution from '../../components/Attribution';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
@@ -148,10 +149,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   ) => {
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
-    const reactFlowClasses = cc(['react-flow', className]);
 
     return (
-      <div {...rest} ref={ref} className={reactFlowClasses}>
+      <div {...rest} ref={ref} className={cc(['react-flow', className])}>
         <Wrapper>
           <GraphView
             onInit={onInit}

@@ -43,9 +43,14 @@ const createStore = () =>
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions } = get();
+      const { onNodesChange, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions, domNode } = get();
+      const viewportNode = domNode?.querySelector('.react-flow__viewport');
 
-      const style = window.getComputedStyle(document.querySelector('.react-flow__viewport')!);
+      if (!viewportNode) {
+        return;
+      }
+
+      const style = window.getComputedStyle(viewportNode);
       const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
 
       const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
