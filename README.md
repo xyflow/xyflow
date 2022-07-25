@@ -3,12 +3,10 @@
 
 <div align="center">
 
-![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23FF0072)
+![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23ff0072)
 ![npm downloads](https://img.shields.io/npm/dt/react-flow-renderer?color=%23FF0072&label=downloads)
 ![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
-
-### Wire Your Ideas With React Flow!
 
 A highly customizable React component for building interactive graphs and node-based editors.
 

@@ -29,6 +29,7 @@ const initialState: ReactFlowStore = {
   connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
   connectionMode: ConnectionMode.Strict,
+  domNode: null,
 
   snapGrid: [15, 15],
   snapToGrid: false,

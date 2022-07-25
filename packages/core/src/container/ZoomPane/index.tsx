@@ -81,6 +81,7 @@ const ZoomPane = ({
         d3ZoomHandler: selection.on('wheel.zoom'),
         // we need to pass transform because zoom handler is not registered when we set the initial transform
         transform: [clampedX, clampedY, clampedZoom],
+        domNode: selection.node()?.closest('.react-flow') as HTMLElement,
       });
     }
   }, []);
