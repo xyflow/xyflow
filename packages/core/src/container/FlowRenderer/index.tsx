@@ -31,6 +31,9 @@ const selector = (s: ReactFlowState) => s.nodesSelectionActive;
 const FlowRenderer = ({
   children,
   onPaneClick,
+  onPaneMouseEnter,
+  onPaneMouseMove,
+  onPaneMouseLeave,
   onPaneContextMenu,
   onPaneScroll,
   deleteKeyCode,
@@ -99,6 +102,9 @@ const FlowRenderer = ({
       <div
         className="react-flow__pane react-flow__container"
         onClick={onClick}
+        onMouseEnter={onPaneMouseEnter}
+        onMouseMove={onPaneMouseMove}
+        onMouseLeave={onPaneMouseLeave}
         onContextMenu={onContextMenu}
         onWheel={onWheel}
       />

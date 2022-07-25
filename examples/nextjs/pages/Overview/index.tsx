@@ -70,6 +70,8 @@ const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) =>
   console.log('edge double click', edge);
 const onNodesDelete = (nodes: Node[]) => console.log('nodes delete', nodes);
 const onEdgesDelete = (edges: Edge[]) => console.log('edges delete', edges);
+const onPaneMouseMove = (e: ReactMouseEvent) =>
+  console.log('pane move', e.clientX);
 
 const initialNodes: Node[] = [
   {
@@ -120,9 +122,9 @@ const initialNodes: Node[] = [
         <>
           You can find the docs on{' '}
           <a
-            href='https://github.com/wbkd/react-flow'
-            target='_blank'
-            rel='noopener noreferrer'
+            href="https://github.com/wbkd/react-flow"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Github
           </a>
@@ -250,10 +252,11 @@ const OverviewFlow = () => {
       onEdgeDoubleClick={onEdgeDoubleClick}
       fitView
       fitViewOptions={{ padding: 0.2 }}
-      attributionPosition='top-right'
+      attributionPosition="top-right"
       maxZoom={Infinity}
       onNodesDelete={onNodesDelete}
       onEdgesDelete={onEdgesDelete}
+      onPaneMouseMove={onPaneMouseMove}
     >
       <MiniMap
         nodeStrokeColor={nodeStrokeColor}
@@ -261,7 +264,7 @@ const OverviewFlow = () => {
         nodeBorderRadius={2}
       />
       <Controls />
-      <Background color='#aaa' gap={25} />
+      <Background color="#aaa" gap={25} />
     </ReactFlow>
   );
 };

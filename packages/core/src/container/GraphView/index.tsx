@@ -64,6 +64,9 @@ const GraphView = ({
   zoomOnDoubleClick,
   panOnDrag,
   onPaneClick,
+  onPaneMouseEnter,
+  onPaneMouseMove,
+  onPaneMouseLeave,
   onPaneScroll,
   onPaneContextMenu,
   onEdgeUpdate,
@@ -85,6 +88,9 @@ const GraphView = ({
   return (
     <FlowRenderer
       onPaneClick={onPaneClick}
+      onPaneMouseEnter={onPaneMouseEnter}
+      onPaneMouseMove={onPaneMouseMove}
+      onPaneMouseLeave={onPaneMouseLeave}
       onPaneContextMenu={onPaneContextMenu}
       onPaneScroll={onPaneScroll}
       deleteKeyCode={deleteKeyCode}

@@ -1,10 +1,4 @@
-import React, {
-  ButtonHTMLAttributes,
-  CSSProperties,
-  HTMLAttributes,
-  MouseEvent as ReactMouseEvent,
-  WheelEvent,
-} from 'react';
+import React, { CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
 
 import {
   OnSelectionChangeFunc,
@@ -80,6 +74,9 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: ReactMouseEvent) => void;
   onPaneContextMenu?: (event: ReactMouseEvent) => void;
+  onPaneMouseEnter?: (event: ReactMouseEvent) => void;
+  onPaneMouseMove?: (event: ReactMouseEvent) => void;
+  onPaneMouseLeave?: (event: ReactMouseEvent) => void;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
   connectionMode?: ConnectionMode;
