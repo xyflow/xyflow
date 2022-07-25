@@ -6,10 +6,11 @@
   "module": "dist/react-flow-controls.esm.js",
   "license": "MIT",
   "dependencies": {
-    "@react-flow/core": "11.0.0"
+    "@react-flow/core": "11.0.0",
+    "classcat": "^5.0.3"
   },
   "peerDependencies": {
-    "classcat": "^5.0.3",
-    "react": "^18.2.0"
+    "react": ">=18",
+    "react-dom": ">=18"
   }
 }
