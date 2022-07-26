@@ -1,6 +1,6 @@
 describe('Basic Flow Rendering', () => {
   before(() => {
-    cy.visit('/basic');
+    cy.visit('/');
   });
 
   it('renders a flow with three nodes', () => {
@@ -29,7 +29,9 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects a node by click', () => {
-    cy.get('.react-flow__node:first').click({ force: true }).should('have.class', 'selected');
+    cy.get('.react-flow__node:first')
+      .click({ force: true })
+      .should('have.class', 'selected');
   });
 
   it('deselects node', () => {
@@ -38,7 +40,9 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects an edge by click', () => {
-    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
+    cy.get('.react-flow__edge:first')
+      .click({ force: true })
+      .should('have.class', 'selected');
   });
 
   it('deselects edge', () => {
@@ -89,11 +93,15 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects an edge', () => {
-    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
+    cy.get('.react-flow__edge:first')
+      .click({ force: true })
+      .should('have.class', 'selected');
   });
 
   it('drags a node', () => {
-    const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
+    const styleBeforeDrag = Cypress.$('.react-flow__node:first').css(
+      'transform'
+    );
 
     cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el) => {
       const styleAfterDrag = $el.css('transform');
@@ -145,7 +153,9 @@ describe('Basic Flow Rendering', () => {
         .wait(50)
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
-          const styleAfterDrag = Cypress.$('.react-flow__viewport').css('transform');
+          const styleAfterDrag = Cypress.$('.react-flow__viewport').css(
+            'transform'
+          );
           expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
         });
     });
@@ -158,7 +168,9 @@ describe('Basic Flow Rendering', () => {
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .wait(50)
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css(
+          'transform'
+        );
         expect(styleBeforeZoom).to.not.equal(styleAfterZoom);
       });
   });
