@@ -3,7 +3,7 @@ import cc from 'classcat';
 import { useStore, ReactFlowState } from '@react-flow/core';
 
 import { BackgroundProps, BackgroundVariant } from './types';
-import { createGridLinesPath, createGridDotsPath } from './utils';
+import { DotPattern, LinePattern } from './utils';
 
 const defaultColors = {
   [BackgroundVariant.Dots]: '#91919a',
@@ -56,10 +56,6 @@ const Background: FC<BackgroundProps> = ({
     ? [scaledSize, scaledSize]
     : scaledGap;
 
-  const path = isDots
-    ? createGridDotsPath(scaledSize / 2, patternColor)
-    : createGridLinesPath(patternDimensions, lineWidth, patternColor);
-
   const patternOffset = isDots
     ? [scaledSize / 2, scaledSize / 2]
     : [patternDimensions[0] / 2, patternDimensions[1] / 2];
@@ -89,7 +85,15 @@ const Background: FC<BackgroundProps> = ({
             patternUnits="userSpaceOnUse"
             patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
           >
-            {path}
+            {isDots ? (
+              <DotPattern color={patternColor} radius={scaledSize / 2} />
+            ) : (
+              <LinePattern
+                dimensions={patternDimensions}
+                color={patternColor}
+                lineWidth={lineWidth}
+              />
+            )}
           </pattern>
           <rect
             x="0"

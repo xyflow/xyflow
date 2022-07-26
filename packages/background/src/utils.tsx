@@ -1,24 +1,32 @@
 import React from 'react';
 
-export const createGridLinesPath = (
-  dimensions: [number, number],
-  strokeWidth: number,
-  stroke: string
-): React.ReactElement => {
+type LinePatternProps = {
+  dimensions: [number, number];
+  lineWidth?: number;
+  color: string;
+};
+
+export function LinePattern({
+  color,
+  dimensions,
+  lineWidth,
+}: LinePatternProps) {
   return (
     <path
-      stroke={stroke}
-      strokeWidth={strokeWidth}
+      stroke={color}
+      strokeWidth={lineWidth}
       d={`M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${
         dimensions[0]
       }`}
     />
   );
+}
+
+type DotPatternProps = {
+  radius: number;
+  color: string;
 };
 
-export const createGridDotsPath = (
-  size: number,
-  fill: string
-): React.ReactElement => {
-  return <circle cx={size} cy={size} r={size} fill={fill} />;
+export const DotPattern = ({ color, radius }: DotPatternProps) => {
+  return <circle cx={radius} cy={radius} r={radius} fill={color} />;
 };
