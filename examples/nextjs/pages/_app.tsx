@@ -4,6 +4,7 @@ import '../styles/globals.css';
 
 const routes = [
   '/',
+  '/Backgrounds',
   '/ControlledUncontrolled',
   '/CustomConnectionLine',
   '/CustomNode',
@@ -47,7 +48,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <header>
-        <a className='logo' href='https://github.com/wbkd/react-flow'>
+        <a className="logo" href="https://github.com/wbkd/react-flow">
           React Flow Dev
         </a>
         <select defaultValue={router.pathname} onChange={onRouteChange}>

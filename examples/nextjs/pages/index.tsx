@@ -86,7 +86,7 @@ const BasicFlow = () => {
       onNodeClick={onNodeClick}
       onNodeDragStop={onNodeDragStop}
       onNodeDrag={onNodeDrag}
-      className='react-flow-basic-example'
+      className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}
       fitView
