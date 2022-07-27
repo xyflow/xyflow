@@ -1,11 +1,19 @@
-import React, { useEffect, useRef, memo, ComponentType, MouseEvent } from 'react';
+import React, { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
-import { NodeProps, WrapNodeProps } from '../../types';
+import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 import useDrag from '../../hooks/useDrag';
 import { getMouseHandler, handleNodeClick } from './utils';
+import useUpdateNode from '../../hooks/useUpdateNode';
+
+const arrowKeyDiffs: Record<string, XYPosition> = {
+  ArrowUp: { x: 0, y: -10 },
+  ArrowDown: { x: 0, y: 10 },
+  ArrowLeft: { x: -10, y: 0 },
+  ArrowRight: { x: 10, y: 0 },
+};
 
 export default (NodeComponent: ComponentType<NodeProps>) => {
   const NodeWrapper = ({
@@ -44,6 +52,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
+    const { updateSelected, updatePosition } = useUpdateNode();
 
     const onMouseEnterHandler = getMouseHandler(id, store.getState, onMouseEnter);
     const onMouseMoveHandler = getMouseHandler(id, store.getState, onMouseMove);
@@ -62,6 +71,14 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       if (onClick) {
         const node = store.getState().nodeInternals.get(id)!;
         onClick(event, { ...node });
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        updateSelected(id, true);
+      } else if (arrowKeyDiffs[event.key]) {
+        updatePosition(id, arrowKeyDiffs[event.key]);
       }
     };
 
@@ -135,7 +152,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onContextMenu={onContextMenuHandler}
         onClick={onSelectNodeHandler}
         onDoubleClick={onDoubleClickHandler}
+        onKeyDown={onKeyDown}
         data-id={id}
+        tabIndex={0}
       >
         <Provider value={id}>
           <NodeComponent
