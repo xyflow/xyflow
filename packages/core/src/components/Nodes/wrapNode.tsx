@@ -6,7 +6,7 @@ import { Provider } from '../../contexts/NodeIdContext';
 import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 import useDrag from '../../hooks/useDrag';
 import { getMouseHandler, handleNodeClick } from './utils';
-import useUpdateNode from '../../hooks/useUpdateNode';
+import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -10 },
@@ -52,7 +52,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
-    const { updateSelected, updatePositions } = useUpdateNode();
+    const updatePositions = useUpdateNodePositions();
 
     const onMouseEnterHandler = getMouseHandler(id, store.getState, onMouseEnter);
     const onMouseMoveHandler = getMouseHandler(id, store.getState, onMouseMove);
@@ -75,8 +75,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        updateSelected([id], !selected);
+      if (event.key === 'Enter' && isSelectable) {
+        handleNodeClick({
+          id,
+          store,
+        });
       } else if (arrowKeyDiffs.hasOwnProperty(event.key)) {
         updatePositions(arrowKeyDiffs[event.key]);
       }
@@ -154,7 +157,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onDoubleClick={onDoubleClickHandler}
         onKeyDown={onKeyDown}
         data-id={id}
-        tabIndex={0}
+        tabIndex={1}
       >
         <Provider value={id}>
           <NodeComponent

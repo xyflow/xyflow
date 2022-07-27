@@ -1,4 +1,4 @@
-import React, { memo, ComponentType, useState, useMemo } from 'react';
+import React, { memo, ComponentType, useState, useMemo, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../store';
@@ -51,6 +51,13 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
   }: WrapEdgeProps): JSX.Element | null => {
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
+
+    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
+    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
+
+    if (hidden) {
+      return null;
+    }
 
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       const { edges, addSelectedEdges } = store.getState();
@@ -107,12 +114,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeUpdaterMouseEnter = () => setUpdating(true);
     const onEdgeUpdaterMouseOut = () => setUpdating(false);
-    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
-    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
-
-    if (hidden) {
-      return null;
-    }
 
     const inactive = !elementsSelectable && !onClick;
     const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
@@ -123,6 +124,18 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       { selected, animated, inactive, updating },
     ]);
 
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && elementsSelectable) {
+        const { unselectNodesAndEdges, addSelectedEdges, edges } = store.getState();
+        if (selected) {
+          const edge = edges.find((e) => e.id === id)!;
+          unselectNodesAndEdges({ edges: [edge] });
+        } else {
+          addSelectedEdges([id]);
+        }
+      }
+    };
+
     return (
       <g
         className={edgeClasses}
@@ -132,6 +145,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
+        onKeyDown={onKeyDown}
+        tabIndex={2}
       >
         <EdgeComponent
           id={id}

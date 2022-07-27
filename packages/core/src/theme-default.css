@@ -1,5 +1,8 @@
 .react-flow__edge {
-  &.selected {
+  &.selected,
+  &:focus,
+  &:focus-visible {
+    outline: none;
     .react-flow__edge-path {
       stroke: #555;
     }

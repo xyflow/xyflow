@@ -12,7 +12,7 @@ import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
 import useDrag from '../../hooks/useDrag';
 import { arrowKeyDiffs } from '../Nodes/wrapNode';
-import useUpdateNode from '../../hooks/useUpdateNode';
+import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 
 export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
@@ -34,7 +34,7 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
   const store = useStoreApi();
   const { transformString, userSelectionActive } = useStore(selector, shallow);
   const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
-  const { updatePositions } = useUpdateNode();
+  const updatePositions = useUpdateNodePositions();
 
   const nodeRef = useRef<HTMLDivElement>(null);
 
