@@ -1,6 +1,6 @@
 describe('Hidden Flow Rendering', () => {
   before(() => {
-    cy.visit('/hidden');
+    cy.visit('/Hidden');
   });
 
   it('renders empty flow', () => {

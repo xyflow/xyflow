@@ -1,7 +1,18 @@
-import { isNode, isEdge, getOutgoers, getIncomers, addEdge } from '../../../dist/esm/index.js';
+import {
+  isNode,
+  isEdge,
+  getOutgoers,
+  getIncomers,
+  addEdge,
+} from '../../packages/core/dist/react-flow-core.esm.js';
 
 const nodes = [
-  { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'Node 1' },
+    position: { x: 250, y: 5 },
+  },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
   { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
   { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
@@ -64,7 +75,9 @@ describe('Graph Utils Testing', () => {
       } catch (e) {
         console.log(e.message);
 
-        expect(e.message).to.be.equal("Can't create edge. An edge needs a source and a target.");
+        expect(e.message).to.be.equal(
+          "Can't create edge. An edge needs a source and a target."
+        );
       }
     });
   });

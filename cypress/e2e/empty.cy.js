@@ -1,6 +1,6 @@
 describe('Empty Flow Rendering', () => {
   before(() => {
-    cy.visit('/empty');
+    cy.visit('/Empty');
   });
 
   it('renders an empty flow', () => {
@@ -26,7 +26,10 @@ describe('Empty Flow Rendering', () => {
   });
 
   it('connects nodes', () => {
-    cy.get('.react-flow__node').first().find('.react-flow__handle.source').trigger('mousedown', { button: 0 });
+    cy.get('.react-flow__node')
+      .first()
+      .find('.react-flow__handle.source')
+      .trigger('mousedown', { button: 0 });
 
     cy.get('.react-flow__node')
       .last()

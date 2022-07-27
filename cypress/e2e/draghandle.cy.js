@@ -1,6 +1,6 @@
 describe('DragHandle Flow Rendering', () => {
   before(() => {
-    cy.visit('/draghandle');
+    cy.visit('/DragHandle');
   });
 
   it('renders a flow with a node', () => {

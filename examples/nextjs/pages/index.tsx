@@ -9,6 +9,7 @@ import ReactFlow, {
 
 import Minimap from '@react-flow/minimap';
 import Background, { BackgroundVariant } from '@react-flow/background';
+import Controls from '@react-flow/controls';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) =>
@@ -95,6 +96,7 @@ const BasicFlow = () => {
     >
       <Background variant={BackgroundVariant.Lines} />
       <Minimap />
+      <Controls />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
         <button onClick={resetTransform} style={{ marginRight: 5 }}>

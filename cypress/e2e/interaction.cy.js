@@ -1,6 +1,6 @@
 describe('Interaction Flow Rendering', () => {
   before(() => {
-    cy.visit('/interaction');
+    cy.visit('/Interaction');
   });
 
   it('renders initial flow', () => {
@@ -11,12 +11,16 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('tries to select a node by click', () => {
-    const pointerEvents = Cypress.$('.react-flow__node:first').css('pointer-events');
+    const pointerEvents = Cypress.$('.react-flow__node:first').css(
+      'pointer-events'
+    );
     expect(pointerEvents).to.equal('none');
   });
 
   it('tries to select an edge by click', () => {
-    const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
+    const pointerEvents = Cypress.$('.react-flow__edge:first').css(
+      'pointer-events'
+    );
     expect(pointerEvents).to.equal('none');
   });
 
@@ -25,17 +29,24 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('allows node clicks when enabled', () => {
-    const pointerEvents = Cypress.$('.react-flow__node:first').css('pointer-events');
+    const pointerEvents = Cypress.$('.react-flow__node:first').css(
+      'pointer-events'
+    );
     expect(pointerEvents).to.equal('all');
   });
 
   it('allows edge clicks when enabled', () => {
-    const pointerEvents = Cypress.$('.react-flow__edge:first').css('pointer-events');
+    const pointerEvents = Cypress.$('.react-flow__edge:first').css(
+      'pointer-events'
+    );
     expect(pointerEvents.toLowerCase()).to.equal('visiblestroke');
   });
 
   it('tries to do a selection', () => {
-    cy.get('body').type('{shift}', { release: false }).get('.react-flow__selectionpane').should('not.exist');
+    cy.get('body')
+      .type('{shift}', { release: false })
+      .get('.react-flow__selectionpane')
+      .should('not.exist');
     cy.get('body').type('{shift}', { release: true });
   });
 
@@ -76,7 +87,9 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('drags a node', () => {
-    const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
+    const styleBeforeDrag = Cypress.$('.react-flow__node:first').css(
+      'transform'
+    );
 
     cy.drag('.react-flow__node:first', { x: 325, y: 100 }).then(($el) => {
       const styleAfterDrag = $el.css('transform');
@@ -127,7 +140,9 @@ describe('Interaction Flow Rendering', () => {
       .trigger('wheel', 'topLeft', { deltaY: 200 })
       .wait(50)
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css(
+          'transform'
+        );
         expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
       });
   });
@@ -144,7 +159,9 @@ describe('Interaction Flow Rendering', () => {
       .dblclick()
       .wait(50)
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css(
+          'transform'
+        );
         expect(styleBeforeZoom).not.to.equal(styleAfterZoom);
       });
   });
