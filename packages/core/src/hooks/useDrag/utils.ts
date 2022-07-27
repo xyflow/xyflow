@@ -56,25 +56,24 @@ export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition,
     }));
 }
 
-export function updatePosition(
-  dragItem: NodeDragItem,
-  mousePos: XYPosition,
+export function calcNextPosition(
+  node: NodeDragItem | Node,
+  nextPosition: XYPosition,
   nodeInternals: NodeInternals,
   nodeExtent?: CoordinateExtent
-): NodeDragItem {
-  let currentExtent = dragItem.extent || nodeExtent;
-  const nextPosition = { x: mousePos.x - dragItem.distance.x, y: mousePos.y - dragItem.distance.y };
+): { position: XYPosition; positionAbsolute: XYPosition } {
+  let currentExtent = node.extent || nodeExtent;
 
-  if (dragItem.extent === 'parent') {
-    if (dragItem.parentNode && dragItem.width && dragItem.height) {
-      const parent = nodeInternals.get(dragItem.parentNode);
+  if (node.extent === 'parent') {
+    if (node.parentNode && node.width && node.height) {
+      const parent = nodeInternals.get(node.parentNode);
       currentExtent =
         parent?.positionAbsolute && parent?.width && parent?.height
           ? [
               [parent.positionAbsolute.x, parent.positionAbsolute.y],
               [
-                parent.positionAbsolute.x + parent.width - dragItem.width,
-                parent.positionAbsolute.y + parent.height - dragItem.height,
+                parent.positionAbsolute.x + parent.width - node.width,
+                parent.positionAbsolute.y + parent.height - node.height,
               ],
             ]
           : currentExtent;
@@ -85,33 +84,34 @@ export function updatePosition(
       }
       currentExtent = nodeExtent;
     }
-  } else if (dragItem.extent && dragItem.parentNode) {
-    const parent = nodeInternals.get(dragItem.parentNode);
+  } else if (node.extent && node.parentNode) {
+    const parent = nodeInternals.get(node.parentNode);
     const parentX = parent?.positionAbsolute?.x ?? 0;
     const parentY = parent?.positionAbsolute?.y ?? 0;
     currentExtent = [
-      [dragItem.extent[0][0] + parentX, dragItem.extent[0][1] + parentY],
-      [dragItem.extent[1][0] + parentX, dragItem.extent[1][1] + parentY],
+      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
+      [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
     ];
   }
 
   let parentPosition = { x: 0, y: 0 };
 
-  if (dragItem.parentNode) {
-    const parentNode = nodeInternals.get(dragItem.parentNode);
+  if (node.parentNode) {
+    const parentNode = nodeInternals.get(node.parentNode);
     parentPosition = { x: parentNode?.positionAbsolute?.x ?? 0, y: parentNode?.positionAbsolute?.y ?? 0 };
   }
 
-  dragItem.positionAbsolute = currentExtent
+  const positionAbsolute = currentExtent
     ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
     : nextPosition;
 
-  dragItem.position = {
-    x: dragItem.positionAbsolute.x - parentPosition.x,
-    y: dragItem.positionAbsolute.y - parentPosition.y,
+  return {
+    position: {
+      x: positionAbsolute.x - parentPosition.x,
+      y: positionAbsolute.y - parentPosition.y,
+    },
+    positionAbsolute,
   };
-
-  return dragItem;
 }
 
 // returns two params:

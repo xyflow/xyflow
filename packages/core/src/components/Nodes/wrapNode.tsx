@@ -8,7 +8,7 @@ import useDrag from '../../hooks/useDrag';
 import { getMouseHandler, handleNodeClick } from './utils';
 import useUpdateNode from '../../hooks/useUpdateNode';
 
-const arrowKeyDiffs: Record<string, XYPosition> = {
+export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -10 },
   ArrowDown: { x: 0, y: 10 },
   ArrowLeft: { x: -10, y: 0 },
@@ -52,7 +52,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
-    const { updateSelected, updatePosition } = useUpdateNode();
+    const { updateSelected, updatePositions } = useUpdateNode();
 
     const onMouseEnterHandler = getMouseHandler(id, store.getState, onMouseEnter);
     const onMouseMoveHandler = getMouseHandler(id, store.getState, onMouseMove);
@@ -76,9 +76,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-        updateSelected(id, true);
-      } else if (arrowKeyDiffs[event.key]) {
-        updatePosition(id, arrowKeyDiffs[event.key]);
+        updateSelected([id], !selected);
+      } else if (arrowKeyDiffs.hasOwnProperty(event.key)) {
+        updatePositions(arrowKeyDiffs[event.key]);
       }
     };
 

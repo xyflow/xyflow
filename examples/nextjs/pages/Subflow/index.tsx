@@ -24,6 +24,8 @@ const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) =>
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
+const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
+
 const initialNodes: Node[] = [
   {
     id: '1',
@@ -206,8 +208,8 @@ const Subflow = () => {
       onConnect={onConnect}
       onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
-      className='react-flow-basic-example'
-      defaultZoom={1.5}
+      className="react-flow-basic-example"
+      defaultViewport={defaultViewport}
       minZoom={0.2}
       maxZoom={4}
       onlyRenderVisibleElements={false}

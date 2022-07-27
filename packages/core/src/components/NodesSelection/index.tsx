@@ -3,7 +3,7 @@
  * made a selection with on or several nodes
  */
 
-import React, { memo, useRef, MouseEvent } from 'react';
+import React, { memo, useRef, MouseEvent, KeyboardEvent, useEffect } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
@@ -11,6 +11,8 @@ import { useStore, useStoreApi } from '../../store';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
 import useDrag from '../../hooks/useDrag';
+import { arrowKeyDiffs } from '../Nodes/wrapNode';
+import useUpdateNode from '../../hooks/useUpdateNode';
 
 export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
@@ -32,8 +34,13 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
   const store = useStoreApi();
   const { transformString, userSelectionActive } = useStore(selector, shallow);
   const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
+  const { updatePositions } = useUpdateNode();
 
-  const nodeRef = useRef(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    nodeRef.current?.focus();
+  }, []);
 
   useDrag({
     nodeRef,
@@ -50,6 +57,12 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
       }
     : undefined;
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (arrowKeyDiffs.hasOwnProperty(event.key)) {
+      updatePositions(arrowKeyDiffs[event.key]);
+    }
+  };
+
   return (
     <div
       className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])}
@@ -61,6 +74,8 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
         ref={nodeRef}
         className="react-flow__nodesselection-rect"
         onContextMenu={onContextMenu}
+        tabIndex={0}
+        onKeyDown={onKeyDown}
         style={{
           width,
           height,

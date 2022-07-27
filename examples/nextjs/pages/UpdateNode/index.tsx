@@ -69,7 +69,6 @@ const UpdateNode = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      defaultZoom={1.5}
       minZoom={0.2}
       maxZoom={4}
       onNodesChange={onNodesChange}
@@ -85,10 +84,10 @@ const UpdateNode = () => {
         <label className={styles.bgLabel}>background:</label>
         <input value={nodeBg} onChange={(evt) => setNodeBg(evt.target.value)} />
 
-        <div className='updatenode__checkboxwrapper'>
+        <div className="updatenode__checkboxwrapper">
           <label>hidden:</label>
           <input
-            type='checkbox'
+            type="checkbox"
             checked={nodeHidden}
             onChange={(evt) => setNodeHidden(evt.target.checked)}
           />

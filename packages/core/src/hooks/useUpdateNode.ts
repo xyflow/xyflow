@@ -3,72 +3,74 @@ import { useCallback } from 'react';
 import { useStoreApi } from '../store';
 import { internalsSymbol } from '../utils';
 
-import { Node, XYPosition } from '../types';
+import { Node, NodeSelectionChange, XYPosition } from '../types';
+import { calcNextPosition } from './useDrag/utils';
 
-function useUpdateNode() {
+function useUpdateNodes() {
   const store = useStoreApi();
 
-  const updateNode = useCallback((nodeId: string, update: Partial<Node>) => {
+  const updateNode = useCallback((nodeIds: string[], update: Partial<Node>) => {
     const { nodeInternals, hasDefaultNodes } = store.getState();
-    const nodeToUpdate = nodeInternals.get(nodeId);
 
-    if (!nodeToUpdate || !hasDefaultNodes) {
+    if (!hasDefaultNodes) {
       return;
     }
 
-    const updatedNode = {
-      ...nodeToUpdate,
-      [internalsSymbol]: nodeToUpdate[internalsSymbol],
-      ...update,
-    };
+    nodeIds.forEach((nodeId) => {
+      const nodeToUpdate = nodeInternals.get(nodeId);
 
-    nodeInternals.set(nodeId, updatedNode);
+      if (nodeToUpdate) {
+        const updatedNode = {
+          ...nodeToUpdate,
+          [internalsSymbol]: nodeToUpdate[internalsSymbol],
+          ...update,
+        };
+
+        nodeInternals.set(nodeId, updatedNode);
+      }
+    });
+
     store.setState({ nodeInternals: new Map(nodeInternals) });
   }, []);
 
   const updateSelected = useCallback(
-    (nodeId: string, selected: boolean) => {
+    (nodeIds: string[], selected: boolean) => {
       const { onNodesChange } = store.getState();
 
-      updateNode(nodeId, { selected });
+      updateNode(nodeIds, { selected });
 
       if (onNodesChange) {
-        onNodesChange([{ id: nodeId, type: 'select', selected }]);
+        const changes = nodeIds.map((nodeId) => ({ id: nodeId, type: 'select', selected } as NodeSelectionChange));
+        onNodesChange(changes);
       }
     },
     [updateNode]
   );
 
-  const updatePosition = useCallback(
-    (nodeId: string, diff: XYPosition) => {
-      const { onNodesChange, nodeInternals } = store.getState();
-      const node = nodeInternals.get(nodeId);
+  const updatePositions = useCallback((positionDiff: XYPosition) => {
+    const { nodeInternals, nodeExtent, updateNodePositions } = store.getState();
+    const selectedNodes = Array.from(nodeInternals.values()).filter((n) => n.selected);
 
-      if (!node || !node.positionAbsolute) {
-        return;
+    const nodeUpdates = selectedNodes.map((n) => {
+      if (n.positionAbsolute) {
+        const updatedPos = calcNextPosition(
+          n,
+          { x: n.positionAbsolute.x + positionDiff.x, y: n.positionAbsolute.y + positionDiff.y },
+          nodeInternals,
+          nodeExtent
+        );
+
+        n.position = updatedPos.position;
+        n.positionAbsolute = updatedPos.positionAbsolute;
       }
 
-      const position = {
-        x: node.position.x + diff.x,
-        y: node.position.y + diff.y,
-      };
+      return n;
+    });
 
-      updateNode(nodeId, {
-        position,
-        positionAbsolute: {
-          x: node.positionAbsolute.x + diff.x,
-          y: node.positionAbsolute.y + diff.y,
-        },
-      });
+    updateNodePositions(nodeUpdates, true, true);
+  }, []);
 
-      if (onNodesChange) {
-        onNodesChange([{ id: nodeId, type: 'position', position }]);
-      }
-    },
-    [updateNode]
-  );
-
-  return { updateSelected, updatePosition };
+  return { updateNode, updateSelected, updatePositions };
 }
 
-export default useUpdateNode;
+export default useUpdateNodes;

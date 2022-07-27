@@ -54,8 +54,11 @@
   background: #fff;
   border-color: #1a192b;
 
-  &.selected {
+  &.selected,
+  &:focus,
+  &:focus-visible {
     box-shadow: 0 0 0 0.5px #1a192b;
+    outline: none;
   }
 
   .react-flow__handle {
@@ -88,6 +91,11 @@
 .react-flow__selection {
   background: rgba(0, 89, 220, 0.08);
   border: 1px dotted rgba(0, 89, 220, 0.8);
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 .react-flow__handle {

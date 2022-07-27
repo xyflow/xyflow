@@ -1,35 +1,40 @@
 import { useEffect } from 'react';
-import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../store';
+import { useStoreApi } from '../store';
 import useKeyPress from './useKeyPress';
 import { getConnectedEdges } from '../utils/graph';
-import { EdgeChange, KeyCode, NodeChange, Node, ReactFlowState } from '../types';
+import { KeyCode, NodeChange, Node } from '../types';
 
 interface HookParams {
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
 }
 
-const selector = (s: ReactFlowState) => ({
-  onNodesChange: s.onNodesChange,
-  onEdgesChange: s.onEdgesChange,
-});
-
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
-  const { onNodesChange, onEdgesChange } = useStore(selector, shallow);
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    const { nodeInternals, edges, hasDefaultNodes, hasDefaultEdges, onNodesDelete, onEdgesDelete } = store.getState();
+    if (!deleteKeyPressed) {
+      return;
+    }
+
+    const {
+      nodeInternals,
+      edges,
+      hasDefaultNodes,
+      hasDefaultEdges,
+      onNodesDelete,
+      onEdgesDelete,
+      onNodesChange,
+      onEdgesChange,
+    } = store.getState();
     const nodes = Array.from(nodeInternals.values());
     const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
-      if (!node.selected && node.parentNode && res.find((n) => n.id === node.parentNode)) {
-        res.push(node);
-      } else if (node.selected) {
+      const parentSelected = !node.selected && node.parentNode && res.find((n) => n.id === node.parentNode);
+      if (node.selected || parentSelected) {
         res.push(node);
       }
 
@@ -37,7 +42,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
     }, []);
     const selectedEdges = edges.filter((e) => e.selected);
 
-    if (deleteKeyPressed && (nodesToRemove || selectedEdges)) {
+    if (nodesToRemove || selectedEdges) {
       const connectedEdges = getConnectedEdges(nodesToRemove, edges);
       const edgesToRemove = [...selectedEdges, ...connectedEdges];
       const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
@@ -69,11 +74,12 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
         onEdgesDelete?.(edgesToRemove);
 
         if (onEdgesChange) {
-          const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
-            id,
-            type: 'remove',
-          }));
-          onEdgesChange(edgeChanges);
+          onEdgesChange(
+            edgeIdsToRemove.map((id) => ({
+              id,
+              type: 'remove',
+            }))
+          );
         }
       }
 
@@ -88,7 +94,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
 
       store.setState({ nodesSelectionActive: false });
     }
-  }, [deleteKeyPressed, onNodesChange, onEdgesChange]);
+  }, [deleteKeyPressed]);
 
   useEffect(() => {
     store.setState({ multiSelectionActive: multiSelectionKeyPressed });
