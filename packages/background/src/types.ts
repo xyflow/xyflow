@@ -1,13 +1,17 @@
-import { HTMLAttributes } from 'react';
+import { CSSProperties } from 'react';
 
 export enum BackgroundVariant {
   Lines = 'lines',
   Dots = 'dots',
+  Cross = 'cross',
 }
 
-export interface BackgroundProps extends HTMLAttributes<SVGElement> {
-  variant?: BackgroundVariant;
-  gap?: number;
+export interface BackgroundProps {
   color?: string;
+  className?: string;
+  gap?: number | [number, number];
   size?: number;
+  lineWidth?: number;
+  variant?: BackgroundVariant;
+  style?: CSSProperties;
 }
