@@ -11,9 +11,13 @@
   "private": true,
   "scripts": {
     "dev": "preconstruct watch",
+    "dev:example": "cd examples/nextjs && yarn dev",
     "postinstall": "preconstruct dev",
     "build": "preconstruct build",
-    "test": "cypress run --browser chrome"
+    "test:all": "yarn test:chrome && yarn test:firefox",
+    "test:chrome": "cypress run --browser chrome",
+    "test:firefox": "cypress run --browser firefox",
+    "test": "yarn build && start-server-and-test dev:example http://localhost:3000 test:chrome"
   },
   "dependencies": {
     "react": "^18.1.0",
@@ -29,6 +33,7 @@
     "cypress": "^10.3.1",
     "postcss": "^8.4.14",
     "postcss-nested": "^5.0.6",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.7.4"
   },
   "preconstruct": {
