@@ -12,7 +12,7 @@ import { FlowRendererProps } from '../FlowRenderer';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
-  'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName'
+  'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName' | 'disableKeyboardA11y'
 > & { selectionKeyPressed: boolean };
 
 const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>

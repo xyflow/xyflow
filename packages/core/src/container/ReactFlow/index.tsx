@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 import cc from 'classcat';
 
 import Attribution from '../../components/Attribution';
@@ -29,6 +29,7 @@ import GraphView from '../GraphView';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import { useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
+import A11yDescriptions from '../../components/A11yDescriptions';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -141,12 +142,14 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       proOptions,
       defaultEdgeOptions,
       elevateEdgesOnSelect = false,
+      disableKeyboardA11y = false,
       ...rest
     },
     ref
   ) => {
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
+    const rfId = useId();
 
     return (
       <div {...rest} ref={ref} className={cc(['react-flow', className])}>
@@ -205,7 +208,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
             elevateEdgesOnSelect={elevateEdgesOnSelect}
-            id={rest?.id}
+            rfId={rfId}
+            disableKeyboardA11y={disableKeyboardA11y}
           />
           <StoreUpdater
             nodes={nodes}
@@ -245,6 +249,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
           <Attribution proOptions={proOptions} position={attributionPosition} />
+          <A11yDescriptions rfId={rfId} disableKeyboardA11y={disableKeyboardA11y} />
         </Wrapper>
       </div>
     );

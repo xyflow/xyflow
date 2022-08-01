@@ -51,12 +51,14 @@ export function getMouseHandler(
 export function handleNodeClick({
   id,
   store,
+  unselect = false,
 }: {
   id: string;
   store: {
     getState: GetState<ReactFlowState>;
     setState: SetState<ReactFlowState>;
   };
+  unselect?: boolean;
 }) {
   const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeInternals } = store.getState();
   const node = nodeInternals.get(id)!;
@@ -65,7 +67,7 @@ export function handleNodeClick({
 
   if (!node.selected) {
     addSelectedNodes([id]);
-  } else if (node.selected && multiSelectionActive) {
+  } else if (unselect || (node.selected && multiSelectionActive)) {
     unselectNodesAndEdges({ nodes: [node] });
   }
 }

@@ -29,6 +29,7 @@ const initBgColor = '#1A192B';
 
 const connectionLineStyle = { stroke: '#fff' };
 const snapGrid: SnapGrid = [16, 16];
+const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 const nodeTypes = {
   selectorNode: ColorSelectorNode,
@@ -141,7 +142,7 @@ const CustomNodeFlow = () => {
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
-      defaultZoom={1.5}
+      defaultViewport={defaultViewport}
       fitView
     >
       <MiniMap

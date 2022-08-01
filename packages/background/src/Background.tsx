@@ -1,4 +1,4 @@
-import React, { memo, FC, useEffect, useState, useRef } from 'react';
+import React, { memo, FC, useRef, useId } from 'react';
 import cc from 'classcat';
 import { useStore, ReactFlowState } from '@react-flow/core';
 
@@ -19,7 +19,7 @@ const defaultSize = {
 
 const transformSelector = (s: ReactFlowState) => s.transform;
 
-const Background: FC<BackgroundProps> = ({
+function Background({
   variant = BackgroundVariant.Dots,
   gap = 25,
   // only used for dots and cross
@@ -29,17 +29,10 @@ const Background: FC<BackgroundProps> = ({
   color,
   style,
   className,
-}) => {
+}: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const [patternId, setPatternId] = useState<string | null>(null);
+  const patternId = useId();
   const [tX, tY, tScale] = useStore(transformSelector);
-
-  useEffect(() => {
-    // when there are multiple flows on a page we need to make sure that every background gets its own pattern.
-    const bgs = document.querySelectorAll('.react-flow__background');
-    const index = Array.from(bgs).findIndex((bg) => bg === ref.current);
-    setPatternId(`pattern-${index}`);
-  }, []);
 
   const patternColor = color ? color : defaultColors[variant];
   const patternSize = size ? size : defaultSize[variant];
@@ -74,39 +67,35 @@ const Background: FC<BackgroundProps> = ({
       }}
       ref={ref}
     >
-      {patternId && (
-        <>
-          <pattern
-            id={patternId}
-            x={tX % scaledGap[0]}
-            y={tY % scaledGap[1]}
-            width={scaledGap[0]}
-            height={scaledGap[1]}
-            patternUnits="userSpaceOnUse"
-            patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
-          >
-            {isDots ? (
-              <DotPattern color={patternColor} radius={scaledSize / 2} />
-            ) : (
-              <LinePattern
-                dimensions={patternDimensions}
-                color={patternColor}
-                lineWidth={lineWidth}
-              />
-            )}
-          </pattern>
-          <rect
-            x="0"
-            y="0"
-            width="100%"
-            height="100%"
-            fill={`url(#${patternId})`}
+      <pattern
+        id={patternId}
+        x={tX % scaledGap[0]}
+        y={tY % scaledGap[1]}
+        width={scaledGap[0]}
+        height={scaledGap[1]}
+        patternUnits="userSpaceOnUse"
+        patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
+      >
+        {isDots ? (
+          <DotPattern color={patternColor} radius={scaledSize / 2} />
+        ) : (
+          <LinePattern
+            dimensions={patternDimensions}
+            color={patternColor}
+            lineWidth={lineWidth}
           />
-        </>
-      )}
+        )}
+      </pattern>
+      <rect
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        fill={`url(#${patternId})`}
+      />
     </svg>
   );
-};
+}
 
 Background.displayName = 'Background';
 

@@ -3,7 +3,7 @@
  * made a selection with on or several nodes
  */
 
-import React, { memo, useRef, MouseEvent } from 'react';
+import React, { memo, useRef, MouseEvent, KeyboardEvent, useEffect } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
@@ -11,10 +11,13 @@ import { useStore, useStoreApi } from '../../store';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
 import useDrag from '../../hooks/useDrag';
+import { arrowKeyDiffs } from '../Nodes/wrapNode';
+import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 
 export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
   noPanClassName?: string;
+  disableKeyboardA11y: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -28,12 +31,19 @@ const bboxSelector = (s: ReactFlowState) => {
   return getRectOfNodes(selectedNodes);
 };
 
-function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelectionProps) {
+function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
   const { transformString, userSelectionActive } = useStore(selector, shallow);
   const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
+  const updatePositions = useUpdateNodePositions();
 
-  const nodeRef = useRef(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!disableKeyboardA11y) {
+      nodeRef.current?.focus();
+    }
+  }, [disableKeyboardA11y]);
 
   useDrag({
     nodeRef,
@@ -50,6 +60,12 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
       }
     : undefined;
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (arrowKeyDiffs.hasOwnProperty(event.key)) {
+      updatePositions(arrowKeyDiffs[event.key]);
+    }
+  };
+
   return (
     <div
       className={cc(['react-flow__nodesselection', 'react-flow__container', noPanClassName])}
@@ -61,6 +77,8 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
         ref={nodeRef}
         className="react-flow__nodesselection-rect"
         onContextMenu={onContextMenu}
+        tabIndex={disableKeyboardA11y ? undefined : -1}
+        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
         style={{
           width,
           height,

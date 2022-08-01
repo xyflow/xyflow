@@ -97,7 +97,7 @@ const createStore = () =>
         onNodesChange?.(changes);
       }
     },
-    updateNodePositions: (nodeDragItems: NodeDragItem[], positionChanged = true, dragging = false) => {
+    updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged = true, dragging = false) => {
       const { onNodesChange, nodeInternals, hasDefaultNodes } = get();
 
       if (hasDefaultNodes || onNodesChange) {

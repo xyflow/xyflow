@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useId } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 import {
@@ -54,7 +54,9 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
 
-const MiniMap = ({
+const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
+
+function MiniMap({
   style,
   className,
   nodeStrokeColor = '#555',
@@ -63,7 +65,8 @@ const MiniMap = ({
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
-}: MiniMapProps) => {
+}: MiniMapProps) {
+  const minimapId = useId();
   const {
     width: containerWidth,
     height: containerHeight,
@@ -97,6 +100,7 @@ const MiniMap = ({
     typeof window === 'undefined' || !!window.chrome
       ? 'crispEdges'
       : 'geometricPrecision';
+  const labelledBy = `${ARIA_LABEL_KEY}-${minimapId}`;
 
   return (
     <svg
@@ -105,7 +109,10 @@ const MiniMap = ({
       viewBox={`${x} ${y} ${width} ${height}`}
       style={style}
       className={cc(['react-flow__minimap', className])}
+      role="img"
+      aria-labelledby={labelledBy}
     >
+      <title id={labelledBy}>React Flow mini map</title>
       {nodes
         .filter((node) => !node.hidden && node.width && node.height)
         .map((node) => {
@@ -133,7 +140,7 @@ const MiniMap = ({
         height={viewBB.height}
       />
       <path
-        className='react-flow__minimap-mask'
+        className="react-flow__minimap-mask"
         d={`M${x - offset},${y - offset}h${width + offset * 2}v${
           height + offset * 2
         }h${-width - offset * 2}z
@@ -141,11 +148,11 @@ const MiniMap = ({
           viewBB.height
         }h${-viewBB.width}z`}
         fill={maskColor}
-        fillRule='evenodd'
+        fillRule="evenodd"
       />
     </svg>
   );
-};
+}
 
 MiniMap.displayName = 'MiniMap';
 

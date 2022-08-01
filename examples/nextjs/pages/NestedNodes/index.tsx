@@ -158,8 +158,7 @@ const NestedFlow = () => {
       onEdgeClick={onEdgeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      className='react-flow-basic-example'
-      defaultZoom={1.5}
+      className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}
       onlyRenderVisibleElements={false}

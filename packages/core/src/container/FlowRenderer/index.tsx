@@ -22,6 +22,7 @@ export type FlowRendererProps = Omit<
   | 'onlyRenderVisibleElements'
   | 'selectNodesOnDrag'
   | 'defaultMarkerColor'
+  | 'rfId'
 > & {
   children: ReactNode;
 };
@@ -56,6 +57,7 @@ const FlowRenderer = ({
   onSelectionContextMenu,
   noWheelClassName,
   noPanClassName,
+  disableKeyboardA11y,
 }: FlowRendererProps) => {
   const store = useStoreApi();
   const nodesSelectionActive = useStore(selector);
@@ -95,7 +97,11 @@ const FlowRenderer = ({
       {children}
       <UserSelection selectionKeyPressed={selectionKeyPressed} />
       {nodesSelectionActive && (
-        <NodesSelection onSelectionContextMenu={onSelectionContextMenu} noPanClassName={noPanClassName} />
+        <NodesSelection
+          onSelectionContextMenu={onSelectionContextMenu}
+          noPanClassName={noPanClassName}
+          disableKeyboardA11y={disableKeyboardA11y}
+        />
       )}
       <div
         className="react-flow__pane react-flow__container"

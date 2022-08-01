@@ -5,7 +5,7 @@ import { select } from 'd3-selection';
 import { useStoreApi } from '../../store';
 import { pointToRendererPoint } from '../../utils/graph';
 import { NodeDragItem, Node, SelectionDragHandler } from '../../types';
-import { getDragItems, getEventHandlerParams, hasSelector, updatePosition } from './utils';
+import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
@@ -102,9 +102,19 @@ function useDrag({
             // skip events without movement
             if ((lastPos.current.x !== pointerPos.x || lastPos.current.y !== pointerPos.y) && dragItems.current) {
               lastPos.current = pointerPos;
-              dragItems.current = dragItems.current.map((n) =>
-                updatePosition(n, pointerPos, nodeInternals, nodeExtent)
-              );
+              dragItems.current = dragItems.current.map((n) => {
+                const updatedPos = calcNextPosition(
+                  n,
+                  { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y },
+                  nodeInternals,
+                  nodeExtent
+                );
+
+                n.position = updatedPos.position;
+                n.positionAbsolute = updatedPos.positionAbsolute;
+
+                return n;
+              });
 
               const onDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 

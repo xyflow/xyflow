@@ -1,12 +1,14 @@
-import React, { memo, ComponentType, useState, useMemo } from 'react';
+import React, { memo, ComponentType, useState, useMemo, KeyboardEvent, useRef } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../store';
-import { EdgeProps, WrapEdgeProps, Connection } from '../../types';
-import { handleMouseDown } from '../../components/Handle/handler';
+import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
+import { handleMouseDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler } from './utils';
+import { EdgeProps, WrapEdgeProps, Connection } from '../../types';
+import { elementSelectionKeys } from '../../utils';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -48,9 +50,19 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerEnd,
     markerStart,
     rfId,
+    ariaLabel,
+    disableKeyboardA11y,
   }: WrapEdgeProps): JSX.Element | null => {
+    const edgeRef = useRef<SVGGElement>(null);
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
+
+    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
+    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
+
+    if (hidden) {
+      return null;
+    }
 
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       const { edges, addSelectedEdges } = store.getState();
@@ -107,12 +119,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeUpdaterMouseEnter = () => setUpdating(true);
     const onEdgeUpdaterMouseOut = () => setUpdating(false);
-    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
-    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
-
-    if (hidden) {
-      return null;
-    }
 
     const inactive = !elementsSelectable && !onClick;
     const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
@@ -123,6 +129,20 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       { selected, animated, inactive, updating },
     ]);
 
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
+        const { unselectNodesAndEdges, addSelectedEdges, edges } = store.getState();
+        const unselect = event.key === 'Escape';
+
+        if (unselect) {
+          edgeRef.current?.blur();
+          unselectNodesAndEdges({ edges: [edges.find((e) => e.id === id)!] });
+        } else {
+          addSelectedEdges([id]);
+        }
+      }
+    };
+
     return (
       <g
         className={edgeClasses}
@@ -132,6 +152,12 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
+        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
+        tabIndex={disableKeyboardA11y ? undefined : 0}
+        role={disableKeyboardA11y ? undefined : 'button'}
+        aria-label={ariaLabel === null ? undefined : ariaLabel ? ariaLabel : `Edge from ${source} to ${target}`}
+        aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_EDGE_DESC_KEY}-${rfId}`}
+        ref={edgeRef}
       >
         <EdgeComponent
           id={id}

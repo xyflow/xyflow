@@ -28,6 +28,7 @@ export interface Node<T = any> {
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
   positionAbsolute?: XYPosition;
+  ariaLabel?: string;
 
   // only used internally
   [internalsSymbol]?: {
@@ -86,6 +87,9 @@ export interface WrapNodeProps<T = any> {
   isParent: boolean;
   noPanClassName: string;
   noDragClassName: string;
+  rfId: string;
+  disableKeyboardA11y: boolean;
+  ariaLabel?: string;
 }
 
 export type NodeHandleBounds = {

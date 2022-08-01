@@ -1,11 +1,21 @@
-import React, { useEffect, useRef, memo, ComponentType, MouseEvent } from 'react';
+import React, { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
-import { NodeProps, WrapNodeProps } from '../../types';
+import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';
+import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { getMouseHandler, handleNodeClick } from './utils';
+import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
+import { elementSelectionKeys } from '../../utils';
+
+export const arrowKeyDiffs: Record<string, XYPosition> = {
+  ArrowUp: { x: 0, y: -10 },
+  ArrowDown: { x: 0, y: 10 },
+  ArrowLeft: { x: -10, y: 0 },
+  ArrowRight: { x: 10, y: 0 },
+};
 
 export default (NodeComponent: ComponentType<NodeProps>) => {
   const NodeWrapper = ({
@@ -37,6 +47,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
     initialized,
+    disableKeyboardA11y,
+    ariaLabel,
+    rfId,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -44,6 +57,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
     const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
+    const updatePositions = useUpdateNodePositions();
 
     const onMouseEnterHandler = getMouseHandler(id, store.getState, onMouseEnter);
     const onMouseMoveHandler = getMouseHandler(id, store.getState, onMouseMove);
@@ -62,6 +76,22 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       if (onClick) {
         const node = store.getState().nodeInternals.get(id)!;
         onClick(event, { ...node });
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (elementSelectionKeys.includes(event.key) && isSelectable) {
+        const unselect = event.key === 'Escape';
+        if (unselect) {
+          nodeRef.current?.blur();
+        }
+        handleNodeClick({
+          id,
+          store,
+          unselect,
+        });
+      } else if (selected && arrowKeyDiffs.hasOwnProperty(event.key)) {
+        updatePositions(arrowKeyDiffs[event.key]);
       }
     };
 
@@ -129,13 +159,18 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           visibility: initialized ? 'visible' : 'hidden',
           ...style,
         }}
+        data-id={id}
         onMouseEnter={onMouseEnterHandler}
         onMouseMove={onMouseMoveHandler}
         onMouseLeave={onMouseLeaveHandler}
         onContextMenu={onContextMenuHandler}
         onClick={onSelectNodeHandler}
         onDoubleClick={onDoubleClickHandler}
-        data-id={id}
+        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
+        tabIndex={disableKeyboardA11y ? undefined : 0}
+        role={disableKeyboardA11y ? undefined : 'button'}
+        aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
+        aria-label={ariaLabel}
       >
         <Provider value={id}>
           <NodeComponent

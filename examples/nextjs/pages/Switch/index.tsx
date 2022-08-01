@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Node,
@@ -19,12 +19,14 @@ const nodesA: Node[] = [
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
+    ariaLabel: 'Input Node 1',
   },
   {
     id: '2a',
     data: { label: 'Node 2' },
     position: { x: 100, y: 100 },
     className: 'light',
+    ariaLabel: 'Default Node 2',
   },
   {
     id: '3a',
@@ -41,7 +43,7 @@ const nodesA: Node[] = [
 ];
 
 const edgesA: Edge[] = [
-  { id: 'e1-2', source: '1a', target: '2a' },
+  { id: 'e1-2', source: '1a', target: '2a', ariaLabel: null },
   { id: 'e1-3', source: '1a', target: '3a' },
 ];
 
@@ -52,18 +54,21 @@ const nodesB: Node[] = [
     data: { label: 'Input' },
     position: { x: 300, y: 5 },
     className: 'light',
+    ariaLabel: 'Input Node',
   },
   {
     id: '1b',
     data: { label: 'Node 1' },
     position: { x: 0, y: 100 },
     className: 'light',
+    ariaLabel: 'Node with id 1',
   },
   {
     id: '2b',
     data: { label: 'Node 2' },
     position: { x: 200, y: 100 },
     className: 'light',
+    ariaLabel: 'Node with id 2',
   },
   {
     id: '3b',
@@ -80,7 +85,7 @@ const nodesB: Node[] = [
 ];
 
 const edgesB: Edge[] = [
-  { id: 'e1b', source: 'inputb', target: '1b' },
+  { id: 'e1b', source: 'inputb', target: '1b', ariaLabel: 'edge to connect' },
   { id: 'e2b', source: 'inputb', target: '2b' },
   { id: 'e3b', source: 'inputb', target: '3b' },
   { id: 'e4b', source: 'inputb', target: '4b' },
@@ -90,8 +95,10 @@ const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(nodesA);
   const [edges, setEdges, onEdgesChange] = useEdgesState(edgesA);
 
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
 
   return (
     <ReactFlow
@@ -102,6 +109,7 @@ const BasicFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
+      disableKeyboardA11y
     >
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
         <button
