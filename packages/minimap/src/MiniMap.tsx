@@ -100,6 +100,7 @@ function MiniMap({
     typeof window === 'undefined' || !!window.chrome
       ? 'crispEdges'
       : 'geometricPrecision';
+  const labelledBy = `${ARIA_LABEL_KEY}-${minimapId}`;
 
   return (
     <svg
@@ -109,9 +110,9 @@ function MiniMap({
       style={style}
       className={cc(['react-flow__minimap', className])}
       role="img"
-      aria-labelledby={`${ARIA_LABEL_KEY}-${minimapId}`}
+      aria-labelledby={labelledBy}
     >
-      <title id={`${ARIA_LABEL_KEY}-${minimapId}`}>React Flow mini map</title>
+      <title id={labelledBy}>React Flow mini map</title>
       {nodes
         .filter((node) => !node.hidden && node.width && node.height)
         .map((node) => {
