@@ -90,7 +90,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           store,
           unselect,
         });
-      } else if (arrowKeyDiffs.hasOwnProperty(event.key)) {
+      } else if (selected && arrowKeyDiffs.hasOwnProperty(event.key)) {
         updatePositions(arrowKeyDiffs[event.key]);
       }
     };
