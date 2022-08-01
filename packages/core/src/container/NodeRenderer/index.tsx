@@ -18,6 +18,8 @@ interface NodeRendererProps {
   onlyRenderVisibleElements: boolean;
   noPanClassName: string;
   noDragClassName: string;
+  rfId: string;
+  disableKeyboardA11y: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -110,6 +112,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
             initialized={!!node.width && !!node.height}
+            rfId={props.rfId}
+            disableKeyboardA11y={props.disableKeyboardA11y}
+            ariaLabel={node.ariaLabel}
           />
         );
       })}

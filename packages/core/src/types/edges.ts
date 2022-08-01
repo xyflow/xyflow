@@ -29,6 +29,7 @@ export interface Edge<T = any> {
   markerStart?: EdgeMarkerType;
   markerEnd?: EdgeMarkerType;
   zIndex?: number;
+  ariaLabel?: string;
 }
 
 export type DefaultEdgeOptions = Omit<
@@ -122,6 +123,8 @@ export interface WrapEdgeProps<T = any> {
   markerStart?: EdgeMarkerType;
   markerEnd?: EdgeMarkerType;
   rfId?: string;
+  ariaLabel?: string | null;
+  disableKeyboardA11y: boolean;
 }
 
 export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {

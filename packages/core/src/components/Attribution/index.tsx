@@ -22,7 +22,7 @@ function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps
       className={cc(['react-flow__attribution', ...positionClasses])}
       data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev/pricing"
     >
-      <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer">
+      <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer" aria-label="React Flow attribution">
         React Flow
       </a>
     </div>

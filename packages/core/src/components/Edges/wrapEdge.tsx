@@ -1,12 +1,14 @@
-import React, { memo, ComponentType, useState, useMemo, KeyboardEvent } from 'react';
+import React, { memo, ComponentType, useState, useMemo, KeyboardEvent, useRef } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../store';
-import { EdgeProps, WrapEdgeProps, Connection } from '../../types';
-import { handleMouseDown } from '../../components/Handle/handler';
+import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
+import { handleMouseDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler } from './utils';
+import { EdgeProps, WrapEdgeProps, Connection } from '../../types';
+import { elementSelectionKeys } from '../../utils';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -48,7 +50,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerEnd,
     markerStart,
     rfId,
+    ariaLabel,
+    disableKeyboardA11y,
   }: WrapEdgeProps): JSX.Element | null => {
+    const edgeRef = useRef<SVGGElement>(null);
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
 
@@ -125,11 +130,13 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     ]);
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && elementsSelectable) {
+      if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
         const { unselectNodesAndEdges, addSelectedEdges, edges } = store.getState();
-        if (selected) {
-          const edge = edges.find((e) => e.id === id)!;
-          unselectNodesAndEdges({ edges: [edge] });
+        const unselect = event.key === 'Escape';
+
+        if (unselect) {
+          edgeRef.current?.blur();
+          unselectNodesAndEdges({ edges: [edges.find((e) => e.id === id)!] });
         } else {
           addSelectedEdges([id]);
         }
@@ -145,8 +152,12 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
-        onKeyDown={onKeyDown}
-        tabIndex={2}
+        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
+        tabIndex={disableKeyboardA11y ? undefined : 0}
+        role={disableKeyboardA11y ? undefined : 'button'}
+        aria-label={ariaLabel === null ? undefined : ariaLabel ? ariaLabel : `Edge from ${source} to ${target}`}
+        aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_EDGE_DESC_KEY}-${rfId}`}
+        ref={edgeRef}
       >
         <EdgeComponent
           id={id}

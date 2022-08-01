@@ -192,7 +192,7 @@ const EdgesFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = useCallback(
     (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    []
+    [setEdges]
   );
 
   return (

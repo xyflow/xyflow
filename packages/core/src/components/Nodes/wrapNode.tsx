@@ -3,10 +3,12 @@ import cc from 'classcat';
 
 import { useStoreApi } from '../../store';
 import { Provider } from '../../contexts/NodeIdContext';
-import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
+import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';
-import { getMouseHandler, handleNodeClick } from './utils';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
+import { getMouseHandler, handleNodeClick } from './utils';
+import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
+import { elementSelectionKeys } from '../../utils';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -10 },
@@ -45,6 +47,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     noDragClassName,
     initialized,
+    disableKeyboardA11y,
+    ariaLabel,
+    rfId,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -75,10 +80,15 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && isSelectable) {
+      if (elementSelectionKeys.includes(event.key) && isSelectable) {
+        const unselect = event.key === 'Escape';
+        if (unselect) {
+          nodeRef.current?.blur();
+        }
         handleNodeClick({
           id,
           store,
+          unselect,
         });
       } else if (arrowKeyDiffs.hasOwnProperty(event.key)) {
         updatePositions(arrowKeyDiffs[event.key]);
@@ -149,15 +159,18 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           visibility: initialized ? 'visible' : 'hidden',
           ...style,
         }}
+        data-id={id}
         onMouseEnter={onMouseEnterHandler}
         onMouseMove={onMouseMoveHandler}
         onMouseLeave={onMouseLeaveHandler}
         onContextMenu={onContextMenuHandler}
         onClick={onSelectNodeHandler}
         onDoubleClick={onDoubleClickHandler}
-        onKeyDown={onKeyDown}
-        data-id={id}
-        tabIndex={1}
+        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
+        tabIndex={disableKeyboardA11y ? undefined : 0}
+        role={disableKeyboardA11y ? undefined : 'button'}
+        aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
+        aria-label={ariaLabel}
       >
         <Provider value={id}>
           <NodeComponent

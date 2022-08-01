@@ -17,6 +17,7 @@ import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
   noPanClassName?: string;
+  disableKeyboardA11y: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -30,7 +31,7 @@ const bboxSelector = (s: ReactFlowState) => {
   return getRectOfNodes(selectedNodes);
 };
 
-function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelectionProps) {
+function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
   const { transformString, userSelectionActive } = useStore(selector, shallow);
   const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
@@ -39,8 +40,10 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
   const nodeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    nodeRef.current?.focus();
-  }, []);
+    if (!disableKeyboardA11y) {
+      nodeRef.current?.focus();
+    }
+  }, [disableKeyboardA11y]);
 
   useDrag({
     nodeRef,
@@ -74,8 +77,8 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName }: NodesSelecti
         ref={nodeRef}
         className="react-flow__nodesselection-rect"
         onContextMenu={onContextMenu}
-        tabIndex={0}
-        onKeyDown={onKeyDown}
+        tabIndex={disableKeyboardA11y ? undefined : -1}
+        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
         style={{
           width,
           height,

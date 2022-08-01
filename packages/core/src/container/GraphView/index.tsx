@@ -22,6 +22,8 @@ export interface GraphViewProps
   noWheelClassName: string;
   noPanClassName: string;
   defaultViewport: Viewport;
+  rfId: string;
+  disableKeyboardA11y: boolean;
 }
 
 const GraphView = ({
@@ -79,7 +81,8 @@ const GraphView = ({
   noWheelClassName,
   noPanClassName,
   elevateEdgesOnSelect,
-  id,
+  disableKeyboardA11y,
+  rfId,
 }: GraphViewProps) => {
   useOnInitHandler(onInit);
 
@@ -112,6 +115,7 @@ const GraphView = ({
       noDragClassName={noDragClassName}
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
+      disableKeyboardA11y={disableKeyboardA11y}
     >
       <ViewportWrapper>
         <EdgeRenderer
@@ -134,7 +138,8 @@ const GraphView = ({
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
           elevateEdgesOnSelect={!!elevateEdgesOnSelect}
-          rfId={id}
+          disableKeyboardA11y={disableKeyboardA11y}
+          rfId={rfId}
         />
         <NodeRenderer
           nodeTypes={nodeTypes}
@@ -148,6 +153,8 @@ const GraphView = ({
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}
+          disableKeyboardA11y={disableKeyboardA11y}
+          rfId={rfId}
         />
       </ViewportWrapper>
     </FlowRenderer>

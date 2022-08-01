@@ -40,7 +40,8 @@ interface EdgeRendererProps {
   edgeUpdaterRadius?: number;
   noPanClassName?: string;
   elevateEdgesOnSelect: boolean;
-  rfId?: string;
+  rfId: string;
+  disableKeyboardA11y: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -182,6 +183,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   onEdgeUpdateStart={props.onEdgeUpdateStart}
                   onEdgeUpdateEnd={props.onEdgeUpdateEnd}
                   rfId={props.rfId}
+                  ariaLabel={edge.ariaLabel}
+                  disableKeyboardA11y={props.disableKeyboardA11y}
                 />
               );
             })}
