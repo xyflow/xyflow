@@ -230,6 +230,5 @@ export type AttributionPosition =
   | 'bottom-right';
 
 export type ProOptions = {
-  account: string;
   hideAttribution: boolean;
 };
