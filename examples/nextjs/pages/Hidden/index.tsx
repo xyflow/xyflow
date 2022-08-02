@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Connection,
   Edge,
@@ -9,8 +10,8 @@ import ReactFlow, {
   useEdgesState,
 } from '@react-flow/core';
 
-import Controls from '@react-flow/controls';
-import MiniMap from '@react-flow/minimap';
+import { Controls } from '@react-flow/controls';
+import { MiniMap } from '@react-flow/minimap';
 
 const initialNodes: Node[] = [
   {
@@ -85,14 +86,14 @@ const HiddenFlow = () => {
 
       <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}>
         <div>
-          <label htmlFor='ishidden'>
+          <label htmlFor="ishidden">
             isHidden
             <input
-              id='ishidden'
-              type='checkbox'
+              id="ishidden"
+              type="checkbox"
               checked={isHidden}
               onChange={(event) => setIsHidden(event.target.checked)}
-              className='react-flow__ishidden'
+              className="react-flow__ishidden"
             />
           </label>
         </div>

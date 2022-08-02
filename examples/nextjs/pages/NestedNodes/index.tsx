@@ -1,6 +1,9 @@
 import React, { useState, MouseEvent, useCallback } from 'react';
-
-import ReactFlow, {
+import {
+  Controls,
+  MiniMap,
+  Background,
+  ReactFlow,
   addEdge,
   useNodesState,
   useEdgesState,
@@ -8,11 +11,7 @@ import ReactFlow, {
   Edge,
   ReactFlowInstance,
   Connection,
-} from '@react-flow/core';
-
-import Controls from '@react-flow/controls';
-import MiniMap from '@react-flow/minimap';
-import Background from '@react-flow/background';
+} from '@react-flow/renderer';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) =>
   console.log('drag stop', node);
@@ -105,9 +104,12 @@ const NestedFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => addEdge(connection, eds));
-  }, []);
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) => addEdge(connection, eds));
+    },
+    [setEdges]
+  );
   const onInit = useCallback(
     (reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance),
     []

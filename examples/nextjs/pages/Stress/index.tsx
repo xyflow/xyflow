@@ -1,5 +1,6 @@
 import React, { useState, CSSProperties, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   ReactFlowInstance,
   Edge,
   Node,
@@ -10,10 +11,9 @@ import ReactFlow, {
   applyEdgeChanges,
   EdgeChange,
 } from '@react-flow/core';
-
-import Controls from '@react-flow/controls';
-import Background from '@react-flow/background';
-import MiniMap from '@react-flow/minimap';
+import { Controls } from '@react-flow/controls';
+import { Background } from '@react-flow/background';
+import { MiniMap } from '@react-flow/minimap';
 
 import { getNodesAndEdges } from './utils';
 

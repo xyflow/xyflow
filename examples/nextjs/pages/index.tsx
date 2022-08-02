@@ -1,15 +1,16 @@
 import React, { MouseEvent } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   ReactFlowProvider,
   Node,
   Edge,
   useReactFlow,
 } from '@react-flow/core';
 
-import Minimap from '@react-flow/minimap';
-import Background, { BackgroundVariant } from '@react-flow/background';
-import Controls from '@react-flow/controls';
+import { MiniMap } from '@react-flow/minimap';
+import { Background, BackgroundVariant } from '@react-flow/background';
+import { Controls } from '@react-flow/controls';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) =>
@@ -95,7 +96,7 @@ const BasicFlow = () => {
       selectNodesOnDrag={false}
     >
       <Background variant={BackgroundVariant.Lines} />
-      <Minimap />
+      <MiniMap />
       <Controls />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>

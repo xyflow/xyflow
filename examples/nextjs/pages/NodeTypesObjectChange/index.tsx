@@ -1,6 +1,7 @@
-import React, { useState, CSSProperties, FC } from 'react';
+import React, { useState, CSSProperties, FC, useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Position,
@@ -65,10 +66,12 @@ const nodeTypesObjects: NodeTypesObject = {
 
 const NodeTypeChangeFlow = () => {
   const [nodeTypesId, setNodeTypesId] = useState<string>('a');
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
   const changeType = () => setNodeTypesId((nt) => (nt === 'a' ? 'b' : 'a'));
 
   return (

@@ -4,7 +4,8 @@ import React, {
   useCallback,
 } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Viewport,
@@ -17,9 +18,9 @@ import ReactFlow, {
   OnSelectionChangeParams,
 } from '@react-flow/core';
 
-import Controls from '@react-flow/controls';
-import Background from '@react-flow/background';
-import MiniMap from '@react-flow/minimap';
+import { Controls } from '@react-flow/controls';
+import { Background } from '@react-flow/background';
+import { MiniMap } from '@react-flow/minimap';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) =>
   console.log('drag start', node, nodes);

@@ -1,4 +1,4 @@
-import React, { memo, FC, useRef, useId } from 'react';
+import React, { memo, useRef, useId } from 'react';
 import cc from 'classcat';
 import { useStore, ReactFlowState } from '@react-flow/core';
 
@@ -55,15 +55,14 @@ function Background({
 
   return (
     <svg
-      className={cc([
-        'react-flow__background',
-        'react-flow__container',
-        className,
-      ])}
+      className={cc(['react-flow__background', className])}
       style={{
         ...style,
+        position: 'absolute',
         width: '100%',
         height: '100%',
+        top: 0,
+        left: 0,
       }}
       ref={ref}
     >

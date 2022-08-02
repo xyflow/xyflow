@@ -19,7 +19,7 @@ function getStyleInject(cssString) {
   `;
 }
 
-module.exports = function (babel) {
+module.exports = function () {
   return {
     name: 'inject-css-babel-plugin',
     visitor: {

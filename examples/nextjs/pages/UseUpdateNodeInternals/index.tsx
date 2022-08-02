@@ -1,6 +1,6 @@
 import React, { useCallback, CSSProperties, MouseEvent } from 'react';
-
-import ReactFlow, {
+import {
+  ReactFlow,
   NodeTypes,
   addEdge,
   useReactFlow,
@@ -13,6 +13,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
+
 import CustomNode from './CustomNode';
 
 const initialHandleCount = 1;
@@ -47,8 +48,10 @@ const getId = (): string => `${id++}`;
 const UpdateNodeInternalsFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const onConnect = (params: Edge | Connection) =>
-    setEdges((els) => addEdge(params, els));
+  const onConnect = useCallback(
+    (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
+    [setEdges]
+  );
 
   const updateNodeInternals = useUpdateNodeInternals();
   const { project } = useReactFlow();

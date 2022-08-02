@@ -1,4 +1,4 @@
-import React, { forwardRef, useId } from 'react';
+import React, { CSSProperties, forwardRef, useId } from 'react';
 import cc from 'classcat';
 
 import Attribution from '../../components/Attribution';
@@ -9,8 +9,7 @@ import OutputNode from '../../components/Nodes/OutputNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
 
-import '../../style.css';
-import '../../theme-default.css';
+import '../../styles/base.css';
 
 import {
   ConnectionLineType,
@@ -47,6 +46,13 @@ const defaultEdgeTypes: EdgeTypes = {
 
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
+
+const baseStyle: CSSProperties = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  overflow: 'hidden',
+};
 
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
@@ -143,6 +149,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       defaultEdgeOptions,
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
+      style,
       ...rest
     },
     ref
@@ -152,7 +159,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     const rfId = useId();
 
     return (
-      <div {...rest} ref={ref} className={cc(['react-flow', className])}>
+      <div {...rest} style={{ ...style, ...baseStyle }} ref={ref} className={cc(['react-flow', className])}>
         <Wrapper>
           <GraphView
             onInit={onInit}

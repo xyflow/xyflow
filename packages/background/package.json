@@ -1,7 +1,7 @@
 {
   "name": "@react-flow/background",
   "version": "11.0.0",
-  "description": "A background component for React Flow",
+  "description": "Background component with different variants for React Flow",
   "main": "dist/react-flow-background.cjs.js",
   "module": "dist/react-flow-background.esm.js",
   "license": "MIT",

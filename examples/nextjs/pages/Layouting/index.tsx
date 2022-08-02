@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
-import ReactFlow, {
+import {
+  Controls,
+  ReactFlow,
   ReactFlowProvider,
   addEdge,
   Connection,
@@ -9,9 +11,8 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
   EdgeMarker,
-} from '@react-flow/core';
+} from '@react-flow/renderer';
 
-import Controls from '@react-flow/controls';
 import dagre from 'dagre';
 
 import initialItems from './initial-elements';

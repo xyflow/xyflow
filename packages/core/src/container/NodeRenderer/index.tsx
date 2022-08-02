@@ -3,6 +3,7 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../store';
+import { containerStyle } from '../../styles';
 import { NodeMouseHandler, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
 import { internalsSymbol } from '../../utils';
 
@@ -61,7 +62,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
   }, []);
 
   return (
-    <div className="react-flow__nodes react-flow__container">
+    <div className="react-flow__nodes" style={containerStyle}>
       {nodes.map((node) => {
         let nodeType = node.type || 'default';
 

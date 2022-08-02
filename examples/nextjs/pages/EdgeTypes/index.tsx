@@ -3,18 +3,18 @@
  */
 import React from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
   addEdge,
   ReactFlowInstance,
   Connection,
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-
-import Background from '@react-flow/background';
-import Controls from '@react-flow/controls';
-import MiniMap from '@react-flow/minimap';
+} from '@react-flow/renderer';
 
 import { getElements } from './utils';
 
@@ -44,10 +44,10 @@ const EdgeTypesFlow = () => {
       onConnect={onConnect}
       minZoom={0.2}
       zoomOnScroll={false}
-      selectionKeyCode='a+s'
+      selectionKeyCode="a+s"
       multiSelectionKeyCode={multiSelectionKeyCode}
       deleteKeyCode={deleteKeyCode}
-      zoomActivationKeyCode='z'
+      zoomActivationKeyCode="z"
     >
       <MiniMap />
       <Controls />

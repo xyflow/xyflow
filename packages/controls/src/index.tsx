@@ -1,3 +1,3 @@
-export { default as default } from './Controls';
+export { default as Controls } from './Controls';
+export { default as ControlButton } from './ControlButton';
 export * from './types';
-export * from './Controls';

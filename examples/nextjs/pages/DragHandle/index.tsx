@@ -1,5 +1,6 @@
 import React, { MouseEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Node,
   Edge,
   useNodesState,

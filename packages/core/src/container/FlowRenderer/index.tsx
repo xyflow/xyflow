@@ -9,6 +9,7 @@ import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
 
 import { ReactFlowState } from '../../types';
+import { containerStyle } from '../../styles';
 
 export type FlowRendererProps = Omit<
   GraphViewProps,
@@ -104,13 +105,14 @@ const FlowRenderer = ({
         />
       )}
       <div
-        className="react-flow__pane react-flow__container"
+        className="react-flow__pane"
         onClick={onClick}
         onMouseEnter={onPaneMouseEnter}
         onMouseMove={onPaneMouseMove}
         onMouseLeave={onPaneMouseLeave}
         onContextMenu={onContextMenu}
         onWheel={onWheel}
+        style={containerStyle}
       />
     </ZoomPane>
   );
