@@ -1,7 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import '../styles/globals.css';
+
+// Unfortunately this doesn't work because preconsruct clears the dist folder and there is
+// no way to hook into the watch process to copy the files back to the dist folder
 // import '@react-flow/core/dist/theme-default.css';
+
+// this is a workaround for testing the theme. See explanation above.
+import '../../../packages/core/src/styles/theme-default.css';
 
 const routes = [
   '/',

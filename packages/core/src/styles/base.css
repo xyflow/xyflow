@@ -31,10 +31,18 @@
 
 .react-flow .react-flow__connectionline {
   z-index: 1001;
+
+  path {
+    fill: none;
+  }
 }
 
 .react-flow__edge {
   pointer-events: visibleStroke;
+
+  path {
+    fill: none;
+  }
 
   &.animated path {
     stroke-dasharray: 5;
@@ -64,6 +72,10 @@
 .react-flow__edge-text {
   pointer-events: none;
   user-select: none;
+}
+
+.react-flow__edge-textbg {
+  fill: white;
 }
 
 .react-flow__connection {

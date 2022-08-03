@@ -29,10 +29,6 @@
   font-size: 10px;
 }
 
-.react-flow__edge-textbg {
-  fill: white;
-}
-
 .react-flow__connection-path {
   stroke: #b1b1b7;
   stroke-width: 1;
