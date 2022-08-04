@@ -3,7 +3,7 @@ import cc from 'classcat';
 import { useStore, ReactFlowState } from '@react-flow/core';
 
 import { BackgroundProps, BackgroundVariant } from './types';
-import { DotPattern, LinePattern } from './utils';
+import { DotPattern, LinePattern } from './Patterns';
 
 const defaultColor = {
   [BackgroundVariant.Dots]: '#91919a',
@@ -34,8 +34,8 @@ function Background({
   const patternId = useId();
   const [tX, tY, tScale] = useStore(transformSelector);
 
-  const patternColor = color ? color : defaultColor[variant];
-  const patternSize = size ? size : defaultSize[variant];
+  const patternColor = color || defaultColor[variant];
+  const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
