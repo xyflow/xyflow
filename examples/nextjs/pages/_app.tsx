@@ -7,7 +7,7 @@ import '../styles/globals.css';
 // import '@react-flow/core/dist/theme-default.css';
 
 // this is a workaround for testing the theme. See explanation above.
-import '../../../packages/core/src/styles/theme-default.css';
+// import '../styles/theme-default.css';
 
 const routes = [
   '/',

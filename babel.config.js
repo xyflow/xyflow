@@ -4,5 +4,4 @@ module.exports = {
     '@babel/preset-typescript',
     '@babel/preset-env',
   ],
-  plugins: ['./tooling/inject-css-babel-plugin'],
 };

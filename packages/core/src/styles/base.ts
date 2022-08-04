@@ -25,6 +25,17 @@ const style = `
   z-index: 5;
 }
 
+.react-flow__nodesselection-rect,
+.react-flow__selection {
+  background: rgba(150, 150, 180, 0.1);
+  border: 1px dotted rgba(155, 155, 155, 0.8);
+}
+
+.react-flow__nodesselection-rect:focus,
+.react-flow__nodesselection-rect:focus-visible {
+  outline: none;
+}
+
 .react-flow .react-flow__edges {
   pointer-events: none;
   overflow: visible;
@@ -39,17 +50,17 @@ const style = `
   animation: dashdraw 0.5s linear infinite;
 }
 
-.react-flow__connection-path {
-  stroke: #b1b1b7;
-  stroke-width: 1;
-}
-
 .react-flow .react-flow__connectionline {
   z-index: 1001;
 }
 
 .react-flow__connectionline path, .react-flow__edge path {
   fill: none;
+}
+
+.react-flow__edge-path, .react-flow__connection-path {
+  stroke: #b1b1b7;
+  stroke-width: 1;
 }
 
 .react-flow__edge {
@@ -65,15 +76,20 @@ const style = `
   pointer-events: none;
 }
 
+.react-flow__edge.selected, .react-flow__edge:focus, .react-flow__edge:focus-visible {
+  outline: none;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:focus .react-flow__edge-path,
+.react-flow__edge:focus-visible .react-flow__edge-path {
+  stroke: #555;
+}
+
 @keyframes dashdraw {
   from {
     stroke-dashoffset: 10;
   }
-}
-
-.react-flow__edge-path {
-  stroke: #b1b1b7;
-  stroke-width: 1;
 }
 
 .react-flow__edge-textwrapper {
@@ -101,6 +117,15 @@ const style = `
   transform-origin: 0 0;
   box-sizing: border-box;
   background-color: white;
+  cursor: grab;
+  border: 1px solid #bbb;
+}
+
+.react-flow__node.selected,
+.react-flow__node:focus,
+.react-flow__node:focus-visible  {
+  outline: none;
+  border: 1px solid #555;
 }
 
 .react-flow__nodesselection {

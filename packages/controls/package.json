@@ -5,9 +5,6 @@
   "main": "dist/react-flow-controls.cjs.js",
   "module": "dist/react-flow-controls.esm.js",
   "license": "MIT",
-  "scripts": {
-    "build": "postcss src/*.css --config ../../tooling/postcss.config.json --dir dist"
-  },
   "dependencies": {
     "@react-flow/core": "^11.0.0",
     "@react-flow/css-utils": "^11.0.0",
@@ -16,13 +13,5 @@
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.8",
-    "cssnano": "^5.1.12",
-    "postcss": "^8.4.14",
-    "postcss-cli": "^10.0.0",
-    "postcss-import": "^14.1.0",
-    "postcss-nested": "^5.0.6"
   }
 }
