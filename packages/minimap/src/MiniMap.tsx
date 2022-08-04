@@ -4,14 +4,14 @@ import shallow from 'zustand/shallow';
 import {
   useStore,
   getRectOfNodes,
-  Box,
   ReactFlowState,
   Rect,
+  Panel,
+  getBoundsOfRects,
 } from '@react-flow/core';
 import { injectStyle } from '@react-flow/css-utils';
 
 import MiniMapNode from './MiniMapNode';
-import MiniMapDrag from './MiniMapDrag';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
 import baseStyle from './style';
 
@@ -32,30 +32,6 @@ const selector = (s: ReactFlowState) => ({
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
   func instanceof Function ? func : () => func;
 
-export const getBoundsOfBoxes = (box1: Box, box2: Box): Box => ({
-  x: Math.min(box1.x, box2.x),
-  y: Math.min(box1.y, box2.y),
-  x2: Math.max(box1.x2, box2.x2),
-  y2: Math.max(box1.y2, box2.y2),
-});
-
-export const rectToBox = ({ x, y, width, height }: Rect): Box => ({
-  x,
-  y,
-  x2: x + width,
-  y2: y + height,
-});
-
-export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
-  x,
-  y,
-  width: x2 - x,
-  height: y2 - y,
-});
-
-export const getBoundsofRects = (rect1: Rect, rect2: Rect): Rect =>
-  boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
-
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 
 function MiniMap({
@@ -67,6 +43,7 @@ function MiniMap({
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
+  position = 'bottom-right',
 }: MiniMapProps) {
   const minimapId = useId();
   const {
@@ -87,7 +64,7 @@ function MiniMap({
     height: containerHeight / transform[2],
   };
   const boundingRect =
-    nodes.length > 0 ? getBoundsofRects(getRectOfNodes(nodes), viewBB) : viewBB;
+    nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB;
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
@@ -105,54 +82,52 @@ function MiniMap({
   const labelledBy = `${ARIA_LABEL_KEY}-${minimapId}`;
 
   return (
-    <svg
-      width={elementWidth}
-      height={elementHeight}
-      viewBox={`${x} ${y} ${width} ${height}`}
+    <Panel
+      position={position}
       style={style}
       className={cc(['react-flow__minimap', className])}
-      role="img"
-      aria-labelledby={labelledBy}
     >
-      <title id={labelledBy}>React Flow mini map</title>
-      {nodes
-        .filter((node) => !node.hidden && node.width && node.height)
-        .map((node) => {
-          return (
-            <MiniMapNode
-              key={node.id}
-              x={node.positionAbsolute?.x ?? 0}
-              y={node.positionAbsolute?.y ?? 0}
-              width={node.width!}
-              height={node.height!}
-              style={node.style}
-              className={nodeClassNameFunc(node)}
-              color={nodeColorFunc(node)}
-              borderRadius={nodeBorderRadius}
-              strokeColor={nodeStrokeColorFunc(node)}
-              strokeWidth={nodeStrokeWidth}
-              shapeRendering={shapeRendering}
-            />
-          );
-        })}
-      <MiniMapDrag
-        x={viewBB.x}
-        y={viewBB.y}
-        width={viewBB.width}
-        height={viewBB.height}
-      />
-      <path
-        className="react-flow__minimap-mask"
-        d={`M${x - offset},${y - offset}h${width + offset * 2}v${
-          height + offset * 2
-        }h${-width - offset * 2}z
+      <svg
+        width={elementWidth}
+        height={elementHeight}
+        viewBox={`${x} ${y} ${width} ${height}`}
+        role="img"
+        aria-labelledby={labelledBy}
+      >
+        <title id={labelledBy}>React Flow mini map</title>
+        {nodes
+          .filter((node) => !node.hidden && node.width && node.height)
+          .map((node) => {
+            return (
+              <MiniMapNode
+                key={node.id}
+                x={node.positionAbsolute?.x ?? 0}
+                y={node.positionAbsolute?.y ?? 0}
+                width={node.width!}
+                height={node.height!}
+                style={node.style}
+                className={nodeClassNameFunc(node)}
+                color={nodeColorFunc(node)}
+                borderRadius={nodeBorderRadius}
+                strokeColor={nodeStrokeColorFunc(node)}
+                strokeWidth={nodeStrokeWidth}
+                shapeRendering={shapeRendering}
+              />
+            );
+          })}
+        <path
+          className="react-flow__minimap-mask"
+          d={`M${x - offset},${y - offset}h${width + offset * 2}v${
+            height + offset * 2
+          }h${-width - offset * 2}z
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${
-          viewBB.height
-        }h${-viewBB.width}z`}
-        fill={maskColor}
-        fillRule="evenodd"
-      />
-    </svg>
+            viewBB.height
+          }h${-viewBB.width}z`}
+          fill={maskColor}
+          fillRule="evenodd"
+        />
+      </svg>
+    </Panel>
   );
 }
 

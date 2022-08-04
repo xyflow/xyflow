@@ -15,7 +15,7 @@ export {
 } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 
-export { internalsSymbol } from './utils';
+export { internalsSymbol, rectToBox, boxToRect, getBoundsOfRects } from './utils';
 export {
   isNode,
   isEdge,

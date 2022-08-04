@@ -1768,6 +1768,7 @@ __metadata:
   resolution: "@react-flow/controls@workspace:packages/controls"
   dependencies:
     "@react-flow/core": 11.0.0
+    "@react-flow/css-utils": "workspace:^"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
     cssnano: ^5.1.12
@@ -1781,11 +1782,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-flow/core@11.0.0, @react-flow/core@workspace:packages/core":
+"@react-flow/core@11.0.0, @react-flow/core@^11.0.0, @react-flow/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@react-flow/core@workspace:packages/core"
   dependencies:
     "@babel/runtime": ^7.18.0
+    "@react-flow/css-utils": ^11.0.0
     "@types/d3": ^7.4.0
     "@types/react": ^18.0.15
     autoprefixer: ^10.4.8
@@ -1804,11 +1806,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@react-flow/css-utils@^11.0.0, @react-flow/css-utils@workspace:^, @react-flow/css-utils@workspace:packages/css-utils":
+  version: 0.0.0-use.local
+  resolution: "@react-flow/css-utils@workspace:packages/css-utils"
+  languageName: unknown
+  linkType: soft
+
 "@react-flow/minimap@11.0.0, @react-flow/minimap@workspace:packages/minimap":
   version: 0.0.0-use.local
   resolution: "@react-flow/minimap@workspace:packages/minimap"
   dependencies:
-    "@react-flow/core": 11.0.0
+    "@react-flow/core": ^11.0.0
+    "@react-flow/css-utils": ^11.0.0
     "@types/d3-drag": ^3.0.1
     "@types/d3-selection": ^3.0.2
     autoprefixer: ^10.4.8
