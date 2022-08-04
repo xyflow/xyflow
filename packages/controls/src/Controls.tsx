@@ -5,7 +5,9 @@ import {
   useStoreApi,
   useReactFlow,
   ReactFlowState,
+  Panel,
 } from '@react-flow/core';
+import { injectStyle } from '@react-flow/css-utils';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';
@@ -13,10 +15,11 @@ import FitviewIcon from './Icons/FitView';
 import LockIcon from './Icons/Lock';
 import UnlockIcon from './Icons/Unlock';
 import ControlButton from './ControlButton';
+import baseStyle from './style';
 
 import { ControlProps } from './types';
 
-import './style.css';
+injectStyle(baseStyle);
 
 const isInteractiveSelector = (s: ReactFlowState) =>
   s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
@@ -33,6 +36,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   onInteractiveChange,
   className,
   children,
+  position = 'bottom-left',
 }) => {
   const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -73,7 +77,11 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   };
 
   return (
-    <div className={cc(['react-flow__controls', className])} style={style}>
+    <Panel
+      className={cc(['react-flow__controls', className])}
+      position={position}
+      style={style}
+    >
       {showZoom && (
         <>
           <ControlButton
@@ -115,7 +123,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
         </ControlButton>
       )}
       {children}
-    </div>
+    </Panel>
   );
 };
 

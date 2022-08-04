@@ -30,6 +30,7 @@ export {
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
+export { default as Panel } from './components/Panel';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';

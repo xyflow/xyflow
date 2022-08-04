@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.0",
+    "@react-flow/css-utils": "^11.0.0",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",

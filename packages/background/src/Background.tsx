@@ -5,7 +5,7 @@ import { useStore, ReactFlowState } from '@react-flow/core';
 import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './utils';
 
-const defaultColors = {
+const defaultColor = {
   [BackgroundVariant.Dots]: '#91919a',
   [BackgroundVariant.Lines]: '#eee',
   [BackgroundVariant.Cross]: '#e2e2e2',
@@ -34,7 +34,7 @@ function Background({
   const patternId = useId();
   const [tX, tY, tScale] = useStore(transformSelector);
 
-  const patternColor = color ? color : defaultColors[variant];
+  const patternColor = color ? color : defaultColor[variant];
   const patternSize = size ? size : defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;

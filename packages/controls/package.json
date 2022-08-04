@@ -9,7 +9,8 @@
     "build": "postcss src/*.css --config ../../tooling/postcss.config.json --dir dist"
   },
   "dependencies": {
-    "@react-flow/core": "11.0.0",
+    "@react-flow/core": "^11.0.0",
+    "@react-flow/css-utils": "^11.0.0",
     "classcat": "^5.0.3"
   },
   "peerDependencies": {

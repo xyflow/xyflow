@@ -1,3 +1,4 @@
+const style = `
 .react-flow__container {
   position: absolute;
   width: 100%;
@@ -29,29 +30,39 @@
   overflow: visible;
 }
 
+.react-flow__connection {
+  pointer-events: none;
+}
+
+.react-flow__connection.animated {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
+
+.react-flow__connection-path {
+  stroke: #b1b1b7;
+  stroke-width: 1;
+}
+
 .react-flow .react-flow__connectionline {
   z-index: 1001;
+}
 
-  path {
-    fill: none;
-  }
+.react-flow__connectionline path, .react-flow__edge path {
+  fill: none;
 }
 
 .react-flow__edge {
   pointer-events: visibleStroke;
+}
 
-  path {
-    fill: none;
-  }
+.react-flow__edge.animated path {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
 
-  &.animated path {
-    stroke-dasharray: 5;
-    animation: dashdraw 0.5s linear infinite;
-  }
-
-  &.inactive {
-    pointer-events: none;
-  }
+.react-flow__edge.inactive {
+  pointer-events: none;
 }
 
 @keyframes dashdraw {
@@ -78,20 +89,6 @@
   fill: white;
 }
 
-.react-flow__connection {
-  pointer-events: none;
-
-  .animated {
-    stroke-dasharray: 5;
-    animation: dashdraw 0.5s linear infinite;
-  }
-}
-
-.react-flow__connection-path {
-  stroke: #b1b1b7;
-  stroke-width: 1;
-}
-
 .react-flow__nodes {
   pointer-events: none;
   transform-origin: 0 0;
@@ -110,12 +107,12 @@
   z-index: 3;
   transform-origin: left top;
   pointer-events: none;
+}
 
-  &-rect {
-    position: absolute;
-    pointer-events: all;
-    cursor: grab;
-  }
+.react-flow__nodesselection-rect {
+  position: absolute;
+  pointer-events: all;
+  cursor: grab;
 }
 
 .react-flow__handle {
@@ -124,10 +121,10 @@
   min-width: 5px;
   min-height: 5px;
   background-color: #333;
+}
 
-  &.connectable {
-    pointer-events: all;
-  }
+.react-flow__handle.connectable {
+  pointer-events: all;
 }
 
 .react-flow__handle-bottom {
@@ -160,37 +157,45 @@
   pointer-events: all;
 }
 
-.react-flow__attribution {
-  font-size: 10px;
+.react-flow__panel {
   position: absolute;
   z-index: 1000;
+  margin: 15px;
+}
+
+.react-flow__panel.top {
+  top: 0;
+}
+
+.react-flow__panel.bottom {
+  bottom: 0;
+}
+
+.react-flow__panel.left {
+  left: 0;
+}
+
+.react-flow__panel.right {
+  right: 0;
+}
+
+.react-flow__panel.center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.react-flow__attribution {
+  font-size: 10px;
   background: rgba(255, 255, 255, 0.5);
   padding: 2px 3px;
   color: #999;
-
-  a {
-    color: #555;
-    text-decoration: none;
-  }
-
-  &.top {
-    top: 0;
-  }
-
-  &.bottom {
-    bottom: 0;
-  }
-
-  &.left {
-    left: 0;
-  }
-
-  &.right {
-    right: 0;
-  }
-
-  &.center {
-    left: 50%;
-    transform: translateX(-50%);
-  }
+  margin: 0;
 }
+
+.react-flow__attribution a {
+  color: #555;
+  text-decoration: none;
+}
+`;
+
+export default style;

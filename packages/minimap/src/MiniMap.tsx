@@ -8,12 +8,14 @@ import {
   ReactFlowState,
   Rect,
 } from '@react-flow/core';
+import { injectStyle } from '@react-flow/css-utils';
 
 import MiniMapNode from './MiniMapNode';
 import MiniMapDrag from './MiniMapDrag';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
+import baseStyle from './style';
 
-import './style.css';
+injectStyle(baseStyle);
 
 declare const window: any;
 

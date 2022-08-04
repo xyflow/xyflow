@@ -1,5 +1,6 @@
 import React, { CSSProperties, forwardRef, useId } from 'react';
 import cc from 'classcat';
+import { injectStyle } from '@react-flow/css-utils';
 
 import Attribution from '../../components/Attribution';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
@@ -8,8 +9,9 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
+import baseStyle from '../../styles/base';
 
-import '../../styles/base.css';
+injectStyle(baseStyle);
 
 import {
   ConnectionLineType,
@@ -47,7 +49,7 @@ const defaultEdgeTypes: EdgeTypes = {
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
-const baseStyle: CSSProperties = {
+const wrapperStyle: CSSProperties = {
   width: '100%',
   height: '100%',
   position: 'relative',
@@ -159,7 +161,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     const rfId = useId();
 
     return (
-      <div {...rest} style={{ ...style, ...baseStyle }} ref={ref} className={cc(['react-flow', className])}>
+      <div {...rest} style={{ ...style, ...wrapperStyle }} ref={ref} className={cc(['react-flow', className])}>
         <Wrapper>
           <GraphView
             onInit={onInit}
