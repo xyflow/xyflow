@@ -1,4 +1,4 @@
-import { CoordinateExtent, ReactFlowStore, ConnectionMode } from '../types';
+import { CoordinateExtent, ReactFlowStore, ConnectionMode, PanOnScrollMode } from '../types';
 
 export const infiniteExtent: CoordinateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
@@ -33,6 +33,10 @@ const initialState: ReactFlowStore = {
 
   snapGrid: [15, 15],
   snapToGrid: false,
+  
+  zoomOnScroll: true,
+  panOnScroll: false,
+  panOnScrollMode: PanOnScrollMode.Free,
 
   nodesDraggable: true,
   nodesConnectable: true,
