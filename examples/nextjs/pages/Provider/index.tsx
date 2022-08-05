@@ -1,5 +1,7 @@
-import React, { MouseEvent } from 'react';
-import ReactFlow, {
+import React, { MouseEvent, useCallback } from 'react';
+import {
+  ReactFlow,
+  Controls,
   ReactFlowProvider,
   addEdge,
   Node,
@@ -9,8 +11,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
-} from '@react-flow/core';
-import Controls from '@react-flow/controls';
+} from '@react-flow/renderer';
 
 import Sidebar from './Sidebar';
 
@@ -40,8 +41,10 @@ const initialEdges: Edge[] = [
 const ProviderFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Edge | Connection) =>
-    setEdges((els) => addEdge(params, els));
+  const onConnect = useCallback(
+    (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
+    [setEdges]
+  );
 
   return (
     <div className={styles.providerflow}>

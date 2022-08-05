@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "yarn run copystyles && next dev",
+    "copystyles": "cp ../../packages/core/src/styles/theme-default.css ./styles/theme-default.css",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -23,6 +24,9 @@
   "devDependencies": {
     "@types/dagre": "^0.7.47",
     "eslint": "8.19.0",
-    "eslint-config-next": "12.2.2"
+    "eslint-config-next": "12.2.2",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-nested": "^5.0.6",
+    "postcss-preset-env": "^7.7.2"
   }
 }

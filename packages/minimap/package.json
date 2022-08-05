@@ -6,18 +6,13 @@
   "module": "dist/react-flow-minimap.esm.js",
   "license": "MIT",
   "dependencies": {
-    "@react-flow/core": "11.0.0",
+    "@react-flow/core": "^11.0.0",
+    "@react-flow/css-utils": "^11.0.0",
     "classcat": "^5.0.3",
-    "d3-drag": "^3.0.0",
-    "d3-selection": "^3.0.0",
     "zustand": "^3.7.2"
   },
   "peerDependencies": {
     "react": "^18.1.0",
     "react-dom": ">=18"
-  },
-  "devDependencies": {
-    "@types/d3-drag": "^3.0.1",
-    "@types/d3-selection": "^3.0.2"
   }
 }

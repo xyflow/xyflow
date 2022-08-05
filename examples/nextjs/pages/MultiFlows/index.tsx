@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
+  Background,
   addEdge,
   Node,
   Edge,
@@ -9,9 +11,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   MarkerType,
-} from '@react-flow/core';
-
-import Background from '@react-flow/background';
+} from '@react-flow/renderer';
 
 import styles from './multiflows.module.css';
 
@@ -79,8 +79,8 @@ const Flow: FC<{ id: string }> = ({ id }) => {
 
 const MultiFlows: FC = () => (
   <div className={styles.multiflows}>
-    <Flow id='flow-a' />
-    <Flow id='flow-b' />
+    <Flow id="flow-a" />
+    <Flow id="flow-b" />
   </div>
 );
 

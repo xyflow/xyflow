@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Handle,
   Connection,
@@ -28,7 +29,7 @@ const CustomInput: FC<NodeProps> = () => (
   <>
     <div>Only connectable with B</div>
     <Handle
-      type='source'
+      type="source"
       position={Position.Right}
       isValidConnection={isValidConnection}
     />
@@ -38,13 +39,13 @@ const CustomInput: FC<NodeProps> = () => (
 const CustomNode: FC<NodeProps> = ({ id }) => (
   <>
     <Handle
-      type='target'
+      type="target"
       position={Position.Left}
       isValidConnection={isValidConnection}
     />
     <div>{id}</div>
     <Handle
-      type='source'
+      type="source"
       position={Position.Right}
       isValidConnection={isValidConnection}
     />

@@ -221,13 +221,7 @@ export type OnSelectionChangeParams = {
 
 export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 
-export type AttributionPosition =
-  | 'top-left'
-  | 'top-center'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-center'
-  | 'bottom-right';
+export type PanelPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 export type ProOptions = {
   hideAttribution: boolean;

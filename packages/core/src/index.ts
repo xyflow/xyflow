@@ -1,7 +1,4 @@
-import ReactFlow from './container/ReactFlow';
-
-export default ReactFlow;
-
+export { default as ReactFlow } from './container/ReactFlow';
 export { default as Handle } from './components/Handle';
 export { default as EdgeText } from './components/Edges/EdgeText';
 export { default as StraightEdge } from './components/Edges/StraightEdge';
@@ -18,7 +15,7 @@ export {
 } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 
-export { internalsSymbol } from './utils';
+export { internalsSymbol, rectToBox, boxToRect, getBoundsOfRects } from './utils';
 export {
   isNode,
   isEdge,
@@ -33,6 +30,7 @@ export {
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
+export { default as Panel } from './components/Panel';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';

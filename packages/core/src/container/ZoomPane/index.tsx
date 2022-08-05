@@ -9,6 +9,7 @@ import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../store';
 import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
 import { FlowRendererProps } from '../FlowRenderer';
+import { containerStyle } from '../../styles';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
@@ -253,7 +254,7 @@ const ZoomPane = ({
   ]);
 
   return (
-    <div className="react-flow__renderer react-flow__container" ref={zoomPane}>
+    <div className="react-flow__renderer" ref={zoomPane} style={containerStyle}>
       {children}
     </div>
   );

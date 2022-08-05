@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, HTMLAttributes } from 'react';
-import { FitViewOptions } from '@react-flow/core';
+import { FitViewOptions, PanelPosition } from '@react-flow/core';
 
 export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
@@ -10,6 +10,7 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   onZoomOut?: () => void;
   onFitView?: () => void;
   onInteractiveChange?: (interactiveStatus: boolean) => void;
+  position?: PanelPosition;
 }
 
 export interface ControlButtonProps

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, MouseEvent } from 'react';
-import { ChangeEvent } from 'react';
-
-import ReactFlow, {
+import React, { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
+import {
+  ReactFlow,
+  MiniMap,
+  Controls,
   addEdge,
   Node,
   ReactFlowInstance,
@@ -10,10 +11,7 @@ import ReactFlow, {
   Connection,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-
-import MiniMap from '@react-flow/minimap';
-import Controls from '@react-flow/controls';
+} from '@react-flow/renderer';
 
 import ColorSelectorNode from './ColorSelectorNode';
 

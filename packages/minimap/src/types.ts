@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-import { Node } from '@react-flow/core';
+import { Node, PanelPosition } from '@react-flow/core';
 
 export type GetMiniMapNodeAttribute<NodeData = any> = (
   node: Node<NodeData>
@@ -13,4 +13,5 @@ export interface MiniMapProps<NodeData = any>
   nodeBorderRadius?: number;
   nodeStrokeWidth?: number;
   maskColor?: string;
+  position?: PanelPosition;
 }

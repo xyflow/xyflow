@@ -1,6 +1,8 @@
 import React, { useCallback, MouseEvent, useEffect } from 'react';
-
-import ReactFlow, {
+import {
+  Background,
+  MiniMap,
+  ReactFlow,
   Node,
   addEdge,
   useReactFlow,
@@ -9,10 +11,7 @@ import ReactFlow, {
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-
-import Background from '@react-flow/background';
-import MiniMap from '@react-flow/minimap';
+} from '@react-flow/renderer';
 
 const initialNodes: Node[] = [
   {

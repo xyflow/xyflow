@@ -1,6 +1,10 @@
-import React, { MouseEvent, CSSProperties } from 'react';
+import React, { MouseEvent, CSSProperties, useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
+  Background,
+  BackgroundVariant,
+  Controls,
   addEdge,
   Node,
   Connection,
@@ -8,10 +12,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
-} from '@react-flow/core';
-
-import Controls from '@react-flow/controls';
-import Background, { BackgroundVariant } from '@react-flow/background';
+} from '@react-flow/renderer';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log('flow loaded:', reactFlowInstance);
@@ -30,8 +31,10 @@ const EmptyFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((els) => addEdge(params, els));
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((els) => addEdge(params, els)),
+    [setEdges]
+  );
   const addRandomNode = () => {
     const nodeId = (nodes.length + 1).toString();
     const newNode: Node = {
@@ -60,7 +63,7 @@ const EmptyFlow = () => {
       <Controls />
       <Background variant={BackgroundVariant.Lines} />
 
-      <button type='button' onClick={addRandomNode} style={buttonStyle}>
+      <button type="button" onClick={addRandomNode} style={buttonStyle}>
         add node
       </button>
     </ReactFlow>

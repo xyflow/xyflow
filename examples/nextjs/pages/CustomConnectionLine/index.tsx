@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Node,
   addEdge,
   Connection,
@@ -7,8 +8,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
-
-import Background, { BackgroundVariant } from '@react-flow/background';
+import { Background, BackgroundVariant } from '@react-flow/background';
 
 import ConnectionLine from './ConnectionLine';
 

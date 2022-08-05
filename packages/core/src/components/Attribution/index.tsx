@@ -1,11 +1,11 @@
 import React from 'react';
-import cc from 'classcat';
 
-import { AttributionPosition, ProOptions } from '../../types';
+import Panel from '../Panel';
+import { PanelPosition, ProOptions } from '../../types';
 
 type AttributionProps = {
   proOptions?: ProOptions;
-  position?: AttributionPosition;
+  position?: PanelPosition;
 };
 
 function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
@@ -13,17 +13,16 @@ function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps
     return null;
   }
 
-  const positionClasses = `${position}`.split('-');
-
   return (
-    <div
-      className={cc(['react-flow__attribution', ...positionClasses])}
+    <Panel
+      position={position}
+      className="react-flow__attribution"
       data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
     >
       <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer" aria-label="React Flow attribution">
         React Flow
       </a>
-    </div>
+    </Panel>
   );
 }
 

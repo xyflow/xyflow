@@ -1,19 +1,18 @@
 import React, { MouseEvent, useCallback } from 'react';
-import ReactFlow, {
+import {
+  Controls,
+  Background,
+  ReactFlow,
+  MiniMap,
   addEdge,
   Connection,
   Edge,
   EdgeTypes,
   MarkerType,
   Node,
-  ReactFlowInstance,
   useEdgesState,
   useNodesState,
-} from '@react-flow/core';
-
-import Controls from '@react-flow/controls';
-import Background from '@react-flow/background';
-import MiniMap from '@react-flow/minimap';
+} from '@react-flow/renderer';
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';

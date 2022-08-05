@@ -1,18 +1,4 @@
 .react-flow__edge {
-  &.selected,
-  &:focus,
-  &:focus-visible {
-    outline: none;
-    .react-flow__edge-path {
-      stroke: #555;
-    }
-  }
-
-  &.animated path {
-    stroke-dasharray: 5;
-    animation: dashdraw 0.5s linear infinite;
-  }
-
   &.updating {
     .react-flow__edge-path {
       stroke: #777;
@@ -20,26 +6,8 @@
   }
 }
 
-.react-flow__edge-path {
-  stroke: #b1b1b7;
-  stroke-width: 1;
-}
-
 .react-flow__edge-text {
   font-size: 10px;
-}
-
-.react-flow__edge-textbg {
-  fill: white;
-}
-
-.react-flow__connection-path {
-  stroke: #b1b1b7;
-  stroke-width: 1;
-}
-
-.react-flow__node {
-  cursor: grab;
 }
 
 .react-flow__node-default,
@@ -54,12 +22,12 @@
   text-align: center;
   border-width: 1px;
   border-style: solid;
-  background: #fff;
   border-color: #1a192b;
 
   &.selected,
   &:focus,
   &:focus-visible {
+    border: none;
     box-shadow: 0 0 0 0.5px #1a192b;
     outline: none;
   }
@@ -80,8 +48,9 @@
   &.selected,
   &:focus,
   &:focus-visible {
-    outline: none;
+    border: none;
     box-shadow: 0 0 0 0.5px #1a192b;
+    outline: none;
   }
 }
 

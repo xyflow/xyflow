@@ -1,5 +1,6 @@
-import React, { forwardRef, useId } from 'react';
+import React, { CSSProperties, forwardRef, useId } from 'react';
 import cc from 'classcat';
+import { injectStyle } from '@react-flow/css-utils';
 
 import Attribution from '../../components/Attribution';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
@@ -8,9 +9,9 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
+import baseStyle from '../../styles/base';
 
-import '../../style.css';
-import '../../theme-default.css';
+injectStyle(baseStyle);
 
 import {
   ConnectionLineType,
@@ -47,6 +48,13 @@ const defaultEdgeTypes: EdgeTypes = {
 
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
+
+const wrapperStyle: CSSProperties = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+  overflow: 'hidden',
+};
 
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
@@ -143,6 +151,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       defaultEdgeOptions,
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
+      style,
       ...rest
     },
     ref
@@ -152,7 +161,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     const rfId = useId();
 
     return (
-      <div {...rest} ref={ref} className={cc(['react-flow', className])}>
+      <div {...rest} style={{ ...style, ...wrapperStyle }} ref={ref} className={cc(['react-flow', className])}>
         <Wrapper>
           <GraphView
             onInit={onInit}

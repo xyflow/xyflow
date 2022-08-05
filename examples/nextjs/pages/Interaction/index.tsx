@@ -3,7 +3,8 @@ import React, {
   MouseEvent as ReactMouseEvent,
   WheelEvent,
 } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Connection,
@@ -14,8 +15,8 @@ import ReactFlow, {
   useEdgesState,
 } from '@react-flow/core';
 
-import Controls from '@react-flow/controls';
-import MiniMap from '@react-flow/minimap';
+import { Controls } from '@react-flow/controls';
+import { MiniMap } from '@react-flow/minimap';
 
 const initialNodes: Node[] = [
   {
@@ -102,151 +103,151 @@ const InteractionFlow = () => {
 
       <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}>
         <div>
-          <label htmlFor='draggable'>
+          <label htmlFor="draggable">
             nodesDraggable
             <input
-              id='draggable'
-              type='checkbox'
+              id="draggable"
+              type="checkbox"
               checked={isDraggable}
               onChange={(event) => setIsDraggable(event.target.checked)}
-              className='react-flow__draggable'
+              className="react-flow__draggable"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='connectable'>
+          <label htmlFor="connectable">
             nodesConnectable
             <input
-              id='connectable'
-              type='checkbox'
+              id="connectable"
+              type="checkbox"
               checked={isConnectable}
               onChange={(event) => setIsConnectable(event.target.checked)}
-              className='react-flow__connectable'
+              className="react-flow__connectable"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='selectable'>
+          <label htmlFor="selectable">
             elementsSelectable
             <input
-              id='selectable'
-              type='checkbox'
+              id="selectable"
+              type="checkbox"
               checked={isSelectable}
               onChange={(event) => setIsSelectable(event.target.checked)}
-              className='react-flow__selectable'
+              className="react-flow__selectable"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='zoomonscroll'>
+          <label htmlFor="zoomonscroll">
             zoomOnScroll
             <input
-              id='zoomonscroll'
-              type='checkbox'
+              id="zoomonscroll"
+              type="checkbox"
               checked={zoomOnScroll}
               onChange={(event) => setZoomOnScroll(event.target.checked)}
-              className='react-flow__zoomonscroll'
+              className="react-flow__zoomonscroll"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='zoomonpinch'>
+          <label htmlFor="zoomonpinch">
             zoomOnPinch
             <input
-              id='zoomonpinch'
-              type='checkbox'
+              id="zoomonpinch"
+              type="checkbox"
               checked={zoomOnPinch}
               onChange={(event) => setZoomOnPinch(event.target.checked)}
-              className='react-flow__zoomonpinch'
+              className="react-flow__zoomonpinch"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='panonscroll'>
+          <label htmlFor="panonscroll">
             panOnScroll
             <input
-              id='panonscroll'
-              type='checkbox'
+              id="panonscroll"
+              type="checkbox"
               checked={panOnScroll}
               onChange={(event) => setPanOnScroll(event.target.checked)}
-              className='react-flow__panonscroll'
+              className="react-flow__panonscroll"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='panonscrollmode'>
+          <label htmlFor="panonscrollmode">
             panOnScrollMode
             <select
-              id='panonscrollmode'
+              id="panonscrollmode"
               value={panOnScrollMode}
               onChange={(event) =>
                 setPanOnScrollMode(event.target.value as PanOnScrollMode)
               }
-              className='react-flow__panonscrollmode'
+              className="react-flow__panonscrollmode"
             >
-              <option value='free'>free</option>
-              <option value='horizontal'>horizontal</option>
-              <option value='vertical'>vertical</option>
+              <option value="free">free</option>
+              <option value="horizontal">horizontal</option>
+              <option value="vertical">vertical</option>
             </select>
           </label>
         </div>
         <div>
-          <label htmlFor='zoomondbl'>
+          <label htmlFor="zoomondbl">
             zoomOnDoubleClick
             <input
-              id='zoomondbl'
-              type='checkbox'
+              id="zoomondbl"
+              type="checkbox"
               checked={zoomOnDoubleClick}
               onChange={(event) => setZoomOnDoubleClick(event.target.checked)}
-              className='react-flow__zoomondbl'
+              className="react-flow__zoomondbl"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='panondrag'>
+          <label htmlFor="panondrag">
             panOnDrag
             <input
-              id='panondrag'
-              type='checkbox'
+              id="panondrag"
+              type="checkbox"
               checked={panOnDrag}
               onChange={(event) => setPanOnDrag(event.target.checked)}
-              className='react-flow__panondrag'
+              className="react-flow__panondrag"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='capturezoompaneclick'>
+          <label htmlFor="capturezoompaneclick">
             capture onPaneClick
             <input
-              id='capturezoompaneclick'
-              type='checkbox'
+              id="capturezoompaneclick"
+              type="checkbox"
               checked={captureZoomClick}
               onChange={(event) => setCaptureZoomClick(event.target.checked)}
-              className='react-flow__capturezoompaneclick'
+              className="react-flow__capturezoompaneclick"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='capturezoompanescroll'>
+          <label htmlFor="capturezoompanescroll">
             capture onPaneScroll
             <input
-              id='capturezoompanescroll'
-              type='checkbox'
+              id="capturezoompanescroll"
+              type="checkbox"
               checked={captureZoomScroll}
               onChange={(event) => setCaptureZoomScroll(event.target.checked)}
-              className='react-flow__capturezoompanescroll'
+              className="react-flow__capturezoompanescroll"
             />
           </label>
         </div>
         <div>
-          <label htmlFor='captureelementclick'>
+          <label htmlFor="captureelementclick">
             capture onElementClick
             <input
-              id='captureelementclick'
-              type='checkbox'
+              id="captureelementclick"
+              type="checkbox"
               checked={captureElementClick}
               onChange={(event) => setCaptureElementClick(event.target.checked)}
-              className='react-flow__captureelementclick'
+              className="react-flow__captureelementclick"
             />
           </label>
         </div>

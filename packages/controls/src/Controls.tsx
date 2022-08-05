@@ -5,31 +5,21 @@ import {
   useStoreApi,
   useReactFlow,
   ReactFlowState,
+  Panel,
 } from '@react-flow/core';
+import { injectStyle } from '@react-flow/css-utils';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';
 import FitviewIcon from './Icons/FitView';
 import LockIcon from './Icons/Lock';
 import UnlockIcon from './Icons/Unlock';
+import ControlButton from './ControlButton';
+import baseStyle from './style';
 
-import { ControlProps, ControlButtonProps } from './types';
+import { ControlProps } from './types';
 
-import './style.css';
-
-export const ControlButton: FC<PropsWithChildren<ControlButtonProps>> = ({
-  children,
-  className,
-  ...rest
-}) => (
-  <button
-    type='button'
-    className={cc(['react-flow__controls-button', className])}
-    {...rest}
-  >
-    {children}
-  </button>
-);
+injectStyle(baseStyle);
 
 const isInteractiveSelector = (s: ReactFlowState) =>
   s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
@@ -46,6 +36,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   onInteractiveChange,
   className,
   children,
+  position = 'bottom-left',
 }) => {
   const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -86,22 +77,26 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   };
 
   return (
-    <div className={cc(['react-flow__controls', className])} style={style}>
+    <Panel
+      className={cc(['react-flow__controls', className])}
+      position={position}
+      style={style}
+    >
       {showZoom && (
         <>
           <ControlButton
             onClick={onZoomInHandler}
-            className='react-flow__controls-zoomin'
-            title='zoom in'
-            aria-label='zoom in'
+            className="react-flow__controls-zoomin"
+            title="zoom in"
+            aria-label="zoom in"
           >
             <PlusIcon />
           </ControlButton>
           <ControlButton
             onClick={onZoomOutHandler}
-            className='react-flow__controls-zoomout'
-            title='zoom out'
-            aria-label='zoom out'
+            className="react-flow__controls-zoomout"
+            title="zoom out"
+            aria-label="zoom out"
           >
             <MinusIcon />
           </ControlButton>
@@ -109,26 +104,26 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
       )}
       {showFitView && (
         <ControlButton
-          className='react-flow__controls-fitview'
+          className="react-flow__controls-fitview"
           onClick={onFitViewHandler}
-          title='fit view'
-          aria-label='fit view'
+          title="fit view"
+          aria-label="fit view"
         >
           <FitviewIcon />
         </ControlButton>
       )}
       {showInteractive && (
         <ControlButton
-          className='react-flow__controls-interactive'
+          className="react-flow__controls-interactive"
           onClick={onToggleInteractivity}
-          title='toggle interactivity'
-          aria-label='toggle interactivity'
+          title="toggle interactivity"
+          aria-label="toggle interactivity"
         >
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </ControlButton>
       )}
       {children}
-    </div>
+    </Panel>
   );
 };
 

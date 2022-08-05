@@ -1,6 +1,6 @@
 import React, { useState, MouseEvent, useCallback } from 'react';
-
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Edge,
@@ -10,10 +10,9 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from '@react-flow/core';
-
-import Controls from '@react-flow/controls';
-import Background from '@react-flow/background';
-import MiniMap from '@react-flow/minimap';
+import { Controls } from '@react-flow/controls';
+import { Background } from '@react-flow/background';
+import { MiniMap } from '@react-flow/minimap';
 
 import DebugNode from './DebugNode';
 

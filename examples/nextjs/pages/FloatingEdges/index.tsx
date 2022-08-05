@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
+  Background,
   addEdge,
   ReactFlowInstance,
   EdgeTypes,
   Connection,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-
-import Background from '@react-flow/background';
+} from '@react-flow/renderer';
 
 import styles from './style.module.css';
 

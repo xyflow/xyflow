@@ -1,12 +1,14 @@
 import React, { FC } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   Node,
   ReactFlowProvider,
   useNodesState,
 } from '@react-flow/core';
 
-import Background, {
+import {
+  Background,
   BackgroundProps,
   BackgroundVariant,
 } from '@react-flow/background';

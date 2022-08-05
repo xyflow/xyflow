@@ -1,6 +1,7 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Position,
@@ -42,8 +43,10 @@ const buttonStyle: CSSProperties = {
 const NodeTypeChangeFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
   const changeType = () => {
     setNodes((nds) =>
       nds.map((node) => {

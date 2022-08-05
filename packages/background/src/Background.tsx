@@ -1,11 +1,11 @@
-import React, { memo, FC, useRef, useId } from 'react';
+import React, { memo, useRef, useId } from 'react';
 import cc from 'classcat';
 import { useStore, ReactFlowState } from '@react-flow/core';
 
 import { BackgroundProps, BackgroundVariant } from './types';
-import { DotPattern, LinePattern } from './utils';
+import { DotPattern, LinePattern } from './Patterns';
 
-const defaultColors = {
+const defaultColor = {
   [BackgroundVariant.Dots]: '#91919a',
   [BackgroundVariant.Lines]: '#eee',
   [BackgroundVariant.Cross]: '#e2e2e2',
@@ -34,8 +34,8 @@ function Background({
   const patternId = useId();
   const [tX, tY, tScale] = useStore(transformSelector);
 
-  const patternColor = color ? color : defaultColors[variant];
-  const patternSize = size ? size : defaultSize[variant];
+  const patternColor = color || defaultColor[variant];
+  const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
@@ -55,15 +55,14 @@ function Background({
 
   return (
     <svg
-      className={cc([
-        'react-flow__background',
-        'react-flow__container',
-        className,
-      ])}
+      className={cc(['react-flow__background', className])}
       style={{
         ...style,
+        position: 'absolute',
         width: '100%',
         height: '100%',
+        top: 0,
+        left: 0,
       }}
       ref={ref}
     >
