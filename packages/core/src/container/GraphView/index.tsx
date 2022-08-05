@@ -5,7 +5,15 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
-import { NodeTypesWrapped, EdgeTypesWrapped, ConnectionLineType, KeyCode, ReactFlowProps, Viewport } from '../../types';
+import {
+  NodeTypesWrapped,
+  EdgeTypesWrapped,
+  ConnectionLineType,
+  KeyCode,
+  ReactFlowProps,
+  Viewport,
+  CoordinateExtent,
+} from '../../types';
 
 export interface GraphViewProps
   extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> {
@@ -16,6 +24,9 @@ export interface GraphViewProps
   multiSelectionKeyCode: KeyCode | null;
   connectionLineType: ConnectionLineType;
   onlyRenderVisibleElements: boolean;
+  translateExtent: CoordinateExtent;
+  minZoom: number;
+  maxZoom: number;
   defaultMarkerColor: string;
   selectNodesOnDrag: boolean;
   noDragClassName: string;
@@ -54,6 +65,9 @@ const GraphView = ({
   elementsSelectable,
   selectNodesOnDrag,
   defaultViewport,
+  translateExtent,
+  minZoom,
+  maxZoom,
   preventScrolling,
   defaultMarkerColor,
   zoomOnScroll,
@@ -110,6 +124,9 @@ const GraphView = ({
       panOnScrollMode={panOnScrollMode}
       panOnDrag={panOnDrag}
       defaultViewport={defaultViewport}
+      translateExtent={translateExtent}
+      minZoom={minZoom}
+      maxZoom={maxZoom}
       onSelectionContextMenu={onSelectionContextMenu}
       preventScrolling={preventScrolling}
       noDragClassName={noDragClassName}

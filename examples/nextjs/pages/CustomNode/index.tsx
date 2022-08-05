@@ -17,10 +17,9 @@ import ColorSelectorNode from './ColorSelectorNode';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
-  reactFlowInstance.fitView();
 };
-const onNodeDragStop = (_: MouseEvent, node: Node) =>
-  console.log('drag stop', node);
+
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initBgColor = '#1A192B';

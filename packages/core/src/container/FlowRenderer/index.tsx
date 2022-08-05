@@ -54,6 +54,9 @@ const FlowRenderer = ({
   zoomOnDoubleClick,
   panOnDrag,
   defaultViewport,
+  translateExtent,
+  minZoom,
+  maxZoom,
   preventScrolling,
   onSelectionContextMenu,
   noWheelClassName,
@@ -90,6 +93,9 @@ const FlowRenderer = ({
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnDrag={panOnDrag}
       defaultViewport={defaultViewport}
+      translateExtent={translateExtent}
+      minZoom={minZoom}
+      maxZoom={maxZoom}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
       noWheelClassName={noWheelClassName}

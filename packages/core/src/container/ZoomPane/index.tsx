@@ -47,6 +47,9 @@ const ZoomPane = ({
   elementsSelectable,
   panOnDrag = true,
   defaultViewport,
+  translateExtent,
+  minZoom,
+  maxZoom,
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
@@ -64,7 +67,6 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (zoomPane.current) {
-      const { minZoom, maxZoom, translateExtent } = store.getState();
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 
