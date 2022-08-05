@@ -45,8 +45,11 @@ const ZoomPane = ({
   selectionKeyPressed,
   elementsSelectable,
   panOnDrag = true,
-  defaultPosition = [0, 0],
+  translateExtent,
+  minZoom,
+  maxZoom,
   defaultZoom = 1,
+  defaultPosition = [0, 0],
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
@@ -56,6 +59,7 @@ const ZoomPane = ({
   const store = useStoreApi();
   const isZoomingOrPanning = useRef(false);
   const zoomPane = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
   const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
@@ -63,8 +67,8 @@ const ZoomPane = ({
   useResizeHandler(zoomPane);
 
   useEffect(() => {
-    if (zoomPane.current) {
-      const { minZoom, maxZoom, translateExtent } = store.getState();
+    if (zoomPane.current && !initialized.current) {
+      initialized.current = true;
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 

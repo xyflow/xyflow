@@ -26,6 +26,7 @@ import GraphView from '../GraphView';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import { injectStyle, useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
+import { infiniteExtent } from '../../store/initialState';
 
 if (__INJECT_STYLES__) {
   injectStyle(css as unknown as string);
@@ -103,11 +104,11 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodesDraggable,
       nodesConnectable,
       elementsSelectable,
-      minZoom,
-      maxZoom,
+      minZoom = 0.5,
+      maxZoom = 2,
       defaultZoom = 1,
       defaultPosition = initDefaultPosition,
-      translateExtent,
+      translateExtent = infiniteExtent,
       preventScrolling = true,
       nodeExtent,
       defaultMarkerColor = '#b1b1b7',
@@ -177,6 +178,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             zoomActivationKeyCode={zoomActivationKeyCode}
             onlyRenderVisibleElements={onlyRenderVisibleElements}
             selectNodesOnDrag={selectNodesOnDrag}
+            translateExtent={translateExtent}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
             defaultZoom={defaultZoom}
             defaultPosition={defaultPosition}
             preventScrolling={preventScrolling}
