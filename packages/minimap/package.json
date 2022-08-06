@@ -9,7 +9,7 @@
     "@react-flow/core": "^11.0.0",
     "@react-flow/css-utils": "^11.0.0",
     "classcat": "^5.0.3",
-    "zustand": "^3.7.2"
+    "zustand": "^4.0.0"
   },
   "peerDependencies": {
     "react": "^18.1.0",

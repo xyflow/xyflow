@@ -1,10 +1,19 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useRef } from 'react';
+import { StoreApi } from 'zustand';
 
-import { Provider, createStore } from '../../store';
+import { Provider } from '../../contexts/RFStoreContext';
+import { createRFStore } from '../../store';
+import { ReactFlowState } from '../../types';
 
-const ReactFlowProvider: FC<PropsWithChildren<{}>> = ({ children }) => (
-  <Provider createStore={createStore}>{children}</Provider>
-);
+const ReactFlowProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
+  const storeRef = useRef<StoreApi<ReactFlowState> | null>(null);
+
+  if (!storeRef.current) {
+    storeRef.current = createRFStore();
+  }
+
+  return <Provider value={storeRef.current}>{children}</Provider>;
+};
 
 ReactFlowProvider.displayName = 'ReactFlowProvider';
 

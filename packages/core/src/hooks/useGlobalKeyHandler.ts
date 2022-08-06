@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useStoreApi } from '../store';
+import { useStoreApi } from '../hooks/useStore';
 import useKeyPress from './useKeyPress';
 import { getConnectedEdges } from '../utils/graph';
 import { KeyCode, NodeChange, Node } from '../types';

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { SetState } from 'zustand';
+import { StoreApi } from 'zustand';
 import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps } from '../../types';
 
 type StoreUpdaterProps = Pick<
@@ -61,7 +61,7 @@ function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => v
   }, [value]);
 }
 
-function useDirectStoreUpdater(key: keyof ReactFlowState, value: any, setState: SetState<ReactFlowState>) {
+function useDirectStoreUpdater(key: keyof ReactFlowState, value: any, setState: StoreApi<ReactFlowState>['setState']) {
   useEffect(() => {
     if (typeof value !== 'undefined') {
       // @ts-ignore

@@ -1,10 +1,10 @@
 import React, { CSSProperties, useCallback } from 'react';
 import shallow from 'zustand/shallow';
 
-import { useStore } from '../../store';
+import { useStore } from '../../hooks/useStore';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
-import { ConnectionLineType, ConnectionLineComponent, HandleType, Position } from '../../types';
+import { ConnectionLineType, ConnectionLineComponent, HandleType, Position, ReactFlowStore } from '../../types';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import { internalsSymbol } from '../../utils';
 
@@ -34,7 +34,7 @@ export default ({
 }: ConnectionLineProps) => {
   const { fromNode, handleId, toX, toY } = useStore(
     useCallback(
-      (s) => ({
+      (s: ReactFlowStore) => ({
         fromNode: s.nodeInternals.get(connectionNodeId),
         handleId: s.connectionHandleId,
         toX: (s.connectionPosition.x - s.transform[0]) / s.transform[2],

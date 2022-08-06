@@ -1,4 +1,4 @@
-import { useStore } from '../store';
+import { useStore } from '../hooks/useStore';
 import { Edge, ReactFlowState } from '../types';
 
 const edgesSelector = (state: ReactFlowState) => state.edges;

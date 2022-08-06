@@ -2,7 +2,7 @@ import { RefObject, useEffect, useRef, MouseEvent, useState, useCallback } from 
 import { D3DragEvent, drag, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
 
-import { useStoreApi } from '../../store';
+import { useStoreApi } from '../../hooks/useStore';
 import { pointToRendererPoint } from '../../utils/graph';
 import { NodeDragItem, Node, SelectionDragHandler } from '../../types';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';

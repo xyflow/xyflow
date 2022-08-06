@@ -1,5 +1,4 @@
-import create from 'zustand';
-import createContext from 'zustand/context';
+import { createStore } from 'zustand';
 
 import { clampPosition, getDimensions, internalsSymbol } from '../utils';
 import { applyNodeChanges } from '../utils/changes';
@@ -21,10 +20,8 @@ import { createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { createNodeInternals, fitView, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 
-const { Provider, useStore, useStoreApi } = createContext<ReactFlowState>();
-
-const createStore = () =>
-  create<ReactFlowState>((set, get) => ({
+const createRFStore = () =>
+  createStore<ReactFlowState>((set, get) => ({
     ...initialState,
     setNodes: (nodes: Node[]) => {
       set({ nodeInternals: createNodeInternals(nodes, get().nodeInternals) });
@@ -236,4 +233,4 @@ const createStore = () =>
     reset: () => set({ ...initialState }),
   }));
 
-export { Provider, useStore, createStore, useStoreApi };
+export { createRFStore };

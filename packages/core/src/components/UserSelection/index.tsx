@@ -5,7 +5,7 @@
 import React, { memo, useState, useRef } from 'react';
 import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';

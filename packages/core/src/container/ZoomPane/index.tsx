@@ -6,10 +6,10 @@ import shallow from 'zustand/shallow';
 import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { useStore, useStoreApi } from '../../store';
-import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import { FlowRendererProps } from '../FlowRenderer';
 import { containerStyle } from '../../styles';
+import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,

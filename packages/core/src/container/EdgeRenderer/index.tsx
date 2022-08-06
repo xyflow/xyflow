@@ -2,7 +2,7 @@ import React, { memo, CSSProperties } from 'react';
 import shallow from 'zustand/shallow';
 import cc from 'classcat';
 
-import { useStore } from '../../store';
+import { useStore } from '../../hooks/useStore';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';

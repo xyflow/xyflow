@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useStoreApi } from '../store';
+import { useStoreApi } from '../hooks/useStore';
 import { calcNextPosition } from './useDrag/utils';
 
 import { XYPosition } from '../types';

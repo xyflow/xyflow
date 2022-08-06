@@ -22,7 +22,7 @@
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "zustand": "^3.7.2"
+    "zustand": "^4.0.0"
   },
   "peerDependencies": {
     "react": ">=18",

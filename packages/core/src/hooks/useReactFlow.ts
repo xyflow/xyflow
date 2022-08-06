@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import useViewportHelper from './useViewportHelper';
-import { useStoreApi } from '../store';
+import { useStoreApi } from '../hooks/useStore';
 import {
   ReactFlowInstance,
   Instance,

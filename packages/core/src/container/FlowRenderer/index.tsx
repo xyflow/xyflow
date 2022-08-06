@@ -1,6 +1,6 @@
 import React, { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';

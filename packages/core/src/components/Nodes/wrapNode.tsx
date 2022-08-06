@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
-import { useStoreApi } from '../../store';
+import { useStoreApi } from '../../hooks/useStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';

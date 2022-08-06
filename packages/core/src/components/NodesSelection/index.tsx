@@ -7,7 +7,7 @@ import React, { memo, useRef, MouseEvent, KeyboardEvent, useEffect } from 'react
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
 import useDrag from '../../hooks/useDrag';
