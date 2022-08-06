@@ -29,7 +29,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
     };
 
     updateDimensions();
-    window.onresize = updateDimensions;
+    window.addEventListener('resize', updateDimensions);
 
     if (rendererNode.current) {
       resizeObserver = new ResizeObserver(() => updateDimensions());
@@ -37,7 +37,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
     }
 
     return () => {
-      window.onresize = null;
+      window.removeEventListener('resize', updateDimensions);
 
       if (resizeObserver && rendererNode.current) {
         resizeObserver.unobserve(rendererNode.current!);
