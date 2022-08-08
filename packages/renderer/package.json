@@ -6,7 +6,7 @@
   "module": "dist/react-flow-renderer.esm.js",
   "license": "MIT",
   "scripts": {
-    "build": "postcss src/*.css --config ../../tooling/postcss.config.json --dir dist"
+    "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
     "@react-flow/background": "11.0.0",
@@ -15,7 +15,7 @@
     "@react-flow/minimap": "11.0.0"
   },
   "peerDependencies": {
-    "react": "^18.1.0",
+    "react": ">=18",
     "react-dom": ">=18"
   },
   "devDependencies": {

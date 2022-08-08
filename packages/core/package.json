@@ -13,7 +13,7 @@
     "url": "https://github.com/wbkd/react-flow.git"
   },
   "scripts": {
-    "build": "postcss src/styles/*.css --config ../../tooling/postcss.config.json --dir dist"
+    "build": "postcss src/styles/*.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.0",
