@@ -1,5 +1,3 @@
-import React from 'react';
-
 type LinePatternProps = {
   dimensions: [number, number];
   lineWidth?: number;
@@ -27,6 +25,6 @@ type DotPatternProps = {
   color: string;
 };
 
-export const DotPattern = ({ color, radius }: DotPatternProps) => {
+export function DotPattern({ color, radius }: DotPatternProps) {
   return <circle cx={radius} cy={radius} r={radius} fill={color} />;
-};
+}
