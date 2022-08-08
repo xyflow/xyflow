@@ -1,4 +1,5 @@
-import React, { memo, useId } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { memo, useId } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 import {

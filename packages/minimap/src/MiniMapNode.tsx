@@ -1,4 +1,4 @@
-import React, { memo, CSSProperties } from 'react';
+import { memo, CSSProperties } from 'react';
 import cc from 'classcat';
 
 interface MiniMapNodeProps {

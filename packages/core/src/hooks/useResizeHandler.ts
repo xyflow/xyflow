@@ -16,7 +16,6 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
 
       const size = getDimensions(rendererNode.current);
 
-      // @ts-ignore
       if (process.env.NODE_ENV === 'development') {
         if (size.height === 0 || size.width === 0) {
           console.warn(

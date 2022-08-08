@@ -7,7 +7,7 @@ import { internalsSymbol, isNumeric } from '../utils';
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
 
-function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, elevateEdgesOnSelect: boolean = false) {
+function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, elevateEdgesOnSelect = false) {
   let maxLevel = -1;
 
   const levelLookup = edges.reduce<Record<string, Edge[]>>((tree, edge) => {

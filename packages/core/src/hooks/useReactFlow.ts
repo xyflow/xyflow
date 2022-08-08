@@ -13,6 +13,7 @@ import {
   EdgeRemoveChange,
 } from '../types';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
   const { initialized: viewportInitialized, ...viewportHelperFunctions } = useViewportHelper();
   const store = useStoreApi();

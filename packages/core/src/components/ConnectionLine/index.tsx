@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback } from 'react';
+import { CSSProperties, useCallback } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
@@ -24,7 +24,7 @@ const oppositePosition = {
   [Position.Bottom]: Position.Top,
 };
 
-export default ({
+const ConnectionLine = ({
   connectionNodeId,
   connectionHandleType,
   connectionLineStyle,
@@ -63,7 +63,7 @@ export default ({
     return null;
   }
 
-  let toPosition: Position = oppositePosition[fromPosition];
+  const toPosition: Position = oppositePosition[fromPosition];
 
   if (CustomConnectionLineComponent) {
     return (
@@ -84,7 +84,7 @@ export default ({
     );
   }
 
-  let dAttr: string = '';
+  let dAttr = '';
 
   const pathParams = {
     sourceX: fromX,
@@ -117,3 +117,7 @@ export default ({
     </g>
   );
 };
+
+ConnectionLine.displayName = 'ConnectionLine';
+
+export default ConnectionLine;

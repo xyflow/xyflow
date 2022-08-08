@@ -1,5 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
-import { GetState, SetState } from 'zustand';
+import { StoreApi } from 'zustand';
 
 import { internalsSymbol, isNumeric } from '../utils';
 import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
@@ -99,8 +99,9 @@ type InternalFitViewOptions = {
   initial?: boolean;
 } & FitViewOptions;
 
-export function fitView(get: GetState<ReactFlowState>, options: InternalFitViewOptions = {}) {
-  let { nodeInternals, width, height, minZoom, maxZoom, d3Zoom, d3Selection, fitViewOnInitDone, fitViewOnInit } = get();
+export function fitView(get: StoreApi<ReactFlowState>['getState'], options: InternalFitViewOptions = {}) {
+  const { nodeInternals, width, height, minZoom, maxZoom, d3Zoom, d3Selection, fitViewOnInitDone, fitViewOnInit } =
+    get();
 
   if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
     if (d3Zoom && d3Selection) {
@@ -165,8 +166,8 @@ export function handleControlledEdgeSelectionChange(edgeChanges: EdgeSelectionCh
 type UpdateNodesAndEdgesParams = {
   changedNodes: NodeSelectionChange[] | null;
   changedEdges: EdgeSelectionChange[] | null;
-  get: GetState<ReactFlowState>;
-  set: SetState<ReactFlowState>;
+  get: StoreApi<ReactFlowState>['getState'];
+  set: StoreApi<ReactFlowState>['setState'];
 };
 
 export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get, set }: UpdateNodesAndEdgesParams) {

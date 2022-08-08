@@ -4,21 +4,22 @@ import shallow from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
 import { pointToRendererPoint, getTransformForBounds, getD3Transition } from '../utils/graph';
-import { FitViewOptions, Viewport, ViewportHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
+import { ViewportHelperFunctions, ReactFlowState, XYPosition } from '../types';
 import { fitView as fitViewStore } from '../store/utils';
 
-const DEFAULT_PADDING = 0.1;
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
 
 const initialViewportHelper: ViewportHelperFunctions = {
-  zoomIn: () => {},
-  zoomOut: () => {},
-  zoomTo: (_: number) => {},
+  zoomIn: noop,
+  zoomOut: noop,
+  zoomTo: noop,
   getZoom: () => 1,
-  setViewport: (_: Viewport) => {},
+  setViewport: noop,
   getViewport: () => ({ x: 0, y: 0, zoom: 1 }),
-  fitView: (_: FitViewOptions = { padding: DEFAULT_PADDING, includeHiddenNodes: false }) => {},
-  setCenter: (_: number, __: number) => {},
-  fitBounds: (_: Rect) => {},
+  fitView: noop,
+  setCenter: noop,
+  fitBounds: noop,
   project: (position: XYPosition) => position,
   initialized: false,
 };

@@ -1,4 +1,4 @@
-import React, { FC, HTMLAttributes } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import cc from 'classcat';
 
 import { Position } from '../../types';

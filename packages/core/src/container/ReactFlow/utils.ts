@@ -7,11 +7,11 @@ import { CreateNodeTypes } from '../NodeRenderer/utils';
 
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: NodeTypes, createTypes: CreateNodeTypes): NodeTypesWrapped;
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: EdgeTypes, createTypes: CreateEdgeTypes): EdgeTypesWrapped;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: any, createTypes: any): any {
   const typesKeysRef = useRef<string[] | null>(null);
 
   const typesParsed = useMemo(() => {
-    // @ts-ignore
     if (process.env.NODE_ENV === 'development') {
       const typeKeys = Object.keys(nodeOrEdgeTypes);
       if (shallow(typesKeysRef.current, typeKeys)) {

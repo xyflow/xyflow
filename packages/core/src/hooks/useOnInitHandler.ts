@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import useReactFlow from './useReactFlow';
 import { OnInit } from '../types';
 
-function useOnInitHandler(onInit: OnInit<any> | undefined) {
+function useOnInitHandler(onInit: OnInit | undefined) {
   const ReactFlowInstance = useReactFlow();
   const isInitialized = useRef<boolean>(false);
 

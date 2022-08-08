@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 
 import { XYPosition, Position, CoordinateExtent } from './utils';

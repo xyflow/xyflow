@@ -3,7 +3,7 @@
  * made a selection with on or several nodes
  */
 
-import React, { memo, useRef, MouseEvent, KeyboardEvent, useEffect } from 'react';
+import { memo, useRef, MouseEvent, KeyboardEvent, useEffect } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
@@ -61,7 +61,7 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
     : undefined;
 
   const onKeyDown = (event: KeyboardEvent) => {
-    if (arrowKeyDiffs.hasOwnProperty(event.key)) {
+    if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       updatePositions(arrowKeyDiffs[event.key]);
     }
   };

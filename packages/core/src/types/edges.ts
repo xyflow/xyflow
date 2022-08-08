@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { CSSProperties, ComponentType, HTMLAttributes, ReactNode } from 'react';
 import { Connection } from './general';
 import { HandleElement, HandleType } from './handles';

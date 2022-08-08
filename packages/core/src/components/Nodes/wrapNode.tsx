@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
+import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -90,7 +90,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           store,
           unselect,
         });
-      } else if (selected && arrowKeyDiffs.hasOwnProperty(event.key)) {
+      } else if (selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
         updatePositions(arrowKeyDiffs[event.key]);
       }
     };

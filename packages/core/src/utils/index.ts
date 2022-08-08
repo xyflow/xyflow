@@ -5,7 +5,7 @@ export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   height: node.offsetHeight,
 });
 
-export const clamp = (val: number, min: number = 0, max: number = 1): number => Math.min(Math.max(val, min), max);
+export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
 export const clampPosition = (position: XYPosition, extent: CoordinateExtent) => ({
   x: clamp(position.x, extent[0][0], extent[1][0]),
@@ -39,6 +39,7 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 export const getBoundsOfRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 
 export const internalsSymbol = Symbol('internals');

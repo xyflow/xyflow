@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { XYPosition, Dimensions } from './utils';
 import { Node } from './nodes';
 import { Edge } from './edges';

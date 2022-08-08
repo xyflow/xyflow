@@ -25,6 +25,7 @@
     "@types/dagre": "^0.7.47",
     "eslint": "8.19.0",
     "eslint-config-next": "12.2.2",
+    "postcss": "^8.4.16",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-nested": "^5.0.6",
     "postcss-preset-env": "^7.7.2"

@@ -1,4 +1,4 @@
-import React, { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
+import { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';

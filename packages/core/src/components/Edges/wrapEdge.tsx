@@ -1,4 +1,4 @@
-import React, { memo, ComponentType, useState, useMemo, KeyboardEvent, useRef } from 'react';
+import { memo, ComponentType, useState, useMemo, KeyboardEvent, useRef } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -66,14 +66,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       const { edges, addSelectedEdges } = store.getState();
-      const edge = edges.find((e) => e.id === id)!;
 
       if (elementsSelectable) {
         store.setState({ nodesSelectionActive: false });
         addSelectedEdges([id]);
       }
 
-      onClick?.(event, edge);
+      if (onClick) {
+        const edge = edges.find((e) => e.id === id)!;
+        onClick(event, edge);
+      }
     };
 
     const onEdgeDoubleClickHandler = getMouseHandler(id, store.getState, onEdgeDoubleClick);

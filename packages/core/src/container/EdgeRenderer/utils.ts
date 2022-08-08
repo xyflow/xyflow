@@ -41,7 +41,7 @@ export function createEdgeTypes(edgeTypes: EdgeTypes): EdgeTypesWrapped {
   };
 }
 
-export function getHandlePosition(position: Position, nodeRect: Rect, handle: any | null = null): XYPosition {
+export function getHandlePosition(position: Position, nodeRect: Rect, handle: HandleElement | null = null): XYPosition {
   const x = (handle?.x || 0) + nodeRect.x;
   const y = (handle?.y || 0) + nodeRect.y;
   const width = handle?.width || nodeRect.width;
@@ -97,10 +97,10 @@ interface EdgePositions {
 
 export const getEdgePositions = (
   sourceNodeRect: Rect,
-  sourceHandle: HandleElement | unknown,
+  sourceHandle: HandleElement,
   sourcePosition: Position,
   targetNodeRect: Rect,
-  targetHandle: HandleElement | unknown,
+  targetHandle: HandleElement,
   targetPosition: Position
 ): EdgePositions => {
   const sourceHandlePos = getHandlePosition(sourcePosition, sourceNodeRect, sourceHandle);

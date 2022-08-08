@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
 import { Selection as D3Selection, ZoomBehavior } from 'd3';
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-namespace */
 import { ViewportHelperFunctions, Viewport } from './general';
 import { Node } from './nodes';
 import { Edge } from './edges';

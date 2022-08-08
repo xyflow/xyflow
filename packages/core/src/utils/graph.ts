@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Selection as D3Selection } from 'd3';
 
 import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
@@ -59,7 +60,6 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
 
 export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    // @ts-ignore
     if (process.env.NODE_ENV === 'development') {
       console.warn(
         "[React Flow]: Can't create edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600"
@@ -87,7 +87,6 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
 
 export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
   if (!newConnection.source || !newConnection.target) {
-    // @ts-ignore
     if (process.env.NODE_ENV === 'development') {
       console.warn(
         "[React Flow]: Can't create a new edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600"
@@ -99,7 +98,6 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
 
   if (!foundEdge) {
-    // @ts-ignore
     if (process.env.NODE_ENV === 'development') {
       console.warn(
         `[React Flow]: The old edge with id=${oldEdge.id} does not exist. Help: https://reactflow.dev/error#700`
@@ -168,9 +166,9 @@ export const getNodesInside = (
   nodeInternals: NodeInternals,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
-  partially: boolean = false,
+  partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
-  excludeNonSelectableNodes: boolean = false
+  excludeNonSelectableNodes = false
 ): Node[] => {
   const rBox = rectToBox({
     x: (rect.x - tx) / tScale,
@@ -219,7 +217,7 @@ export const getTransformForBounds = (
   height: number,
   minZoom: number,
   maxZoom: number,
-  padding: number = 0.1
+  padding = 0.1
 ): Transform => {
   const xZoom = width / (bounds.width * (1 + padding));
   const yZoom = height / (bounds.height * (1 + padding));
@@ -233,6 +231,6 @@ export const getTransformForBounds = (
   return [x, y, clampedZoom];
 };
 
-export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration: number = 0) => {
+export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {
   return selection.transition().duration(duration);
 };

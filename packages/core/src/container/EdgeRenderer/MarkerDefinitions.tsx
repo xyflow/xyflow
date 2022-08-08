@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import { EdgeMarker, ReactFlowState } from '../../types';
@@ -23,6 +23,10 @@ const Marker = ({
   orient = 'auto-start-reverse',
 }: MarkerProps) => {
   const Symbol = useMarkerSymbol(type);
+
+  if (!Symbol) {
+    return null;
+  }
 
   return (
     <marker

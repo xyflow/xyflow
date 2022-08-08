@@ -1,4 +1,4 @@
-import React, { memo, useContext, HTMLAttributes, forwardRef } from 'react';
+import { memo, useContext, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
@@ -57,7 +57,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onConnect?.(edgeParams);
     };
 
-    const onMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+    const onMouseDownHandler = (event: ReactMouseEvent<HTMLDivElement>) => {
       if (event.button === 0) {
         handleMouseDown({
           event,
@@ -73,7 +73,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onMouseDown?.(event);
     };
 
-    const onClick = (event: React.MouseEvent) => {
+    const onClick = (event: ReactMouseEvent) => {
       const { onClickConnectStart, onClickConnectEnd, connectionMode } = store.getState();
       if (!connectionStartHandle) {
         onClickConnectStart?.(event, { nodeId, handleId, handleType: type });

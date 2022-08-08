@@ -1,9 +1,9 @@
-import React, { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren } from 'react';
 
 import { useStoreApi } from '../../hooks/useStore';
 import ReactFlowProvider from '../../components/ReactFlowProvider';
 
-const Wrapper: FC<PropsWithChildren<{}>> = ({ children }) => {
+const Wrapper: FC<PropsWithChildren> = ({ children }) => {
   let isWrapped = true;
 
   try {

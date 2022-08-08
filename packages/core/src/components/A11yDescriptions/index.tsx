@@ -1,5 +1,3 @@
-import React from 'react';
-
 const style = { display: 'none' };
 
 export const ARIA_NODE_DESC_KEY = 'react-flow__node-desc';

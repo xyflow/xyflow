@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { EdgeProps, Position } from '../../types';
 import BaseEdge from './BaseEdge';
 
@@ -126,7 +126,7 @@ export function getBezierCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-export default memo(
+const BezierEdge = memo(
   ({
     sourceX,
     sourceY,
@@ -175,3 +175,7 @@ export default memo(
     );
   }
 );
+
+BezierEdge.displayName = 'BezierEdge';
+
+export default BezierEdge;

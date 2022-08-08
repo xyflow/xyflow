@@ -2,7 +2,7 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import React, { memo, useState, useRef } from 'react';
+import { memo, useState, useRef } from 'react';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -42,7 +42,7 @@ const initialRect: SelectionRect = {
   draw: false,
 };
 
-export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
+const UserSelection = memo(({ selectionKeyPressed }: UserSelectionProps) => {
   const store = useStoreApi();
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
@@ -157,3 +157,7 @@ export default memo(({ selectionKeyPressed }: UserSelectionProps) => {
     </div>
   );
 });
+
+UserSelection.displayName = 'UserSelection';
+
+export default UserSelection;

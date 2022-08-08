@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import BaseEdge from './BaseEdge';
 import { EdgeProps } from '../../types';
 
-export default memo(
+const StraightEdge = memo(
   ({
     sourceX,
     sourceY,
@@ -44,3 +44,7 @@ export default memo(
     );
   }
 );
+
+StraightEdge.displayName = 'StraightEdge';
+
+export default StraightEdge;

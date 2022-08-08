@@ -1,4 +1,4 @@
-import React, { CSSProperties, forwardRef, useId } from 'react';
+import { CSSProperties, forwardRef, useId } from 'react';
 import cc from 'classcat';
 import { injectStyle } from '@react-flow/css-utils';
 

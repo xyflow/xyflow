@@ -1,4 +1,4 @@
-import React, { memo, useMemo, ComponentType, useEffect, useRef } from 'react';
+import { memo, useMemo, ComponentType, useEffect, useRef } from 'react';
 import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
@@ -66,7 +66,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
         let nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          // @ts-ignore
           if (process.env.NODE_ENV === 'development') {
             console.warn(
               `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`

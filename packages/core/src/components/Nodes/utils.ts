@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react';
-import { GetState, SetState } from 'zustand';
+import { StoreApi } from 'zustand';
 
 import { HandleElement, Node, Position, ReactFlowState } from '../../types';
 import { getDimensions } from '../../utils';
@@ -33,7 +33,7 @@ export const getHandleBounds = (
 
 export function getMouseHandler(
   id: string,
-  getState: GetState<ReactFlowState>,
+  getState: StoreApi<ReactFlowState>['getState'],
   handler?: (event: MouseEvent, node: Node) => void
 ) {
   return handler === undefined
@@ -55,8 +55,8 @@ export function handleNodeClick({
 }: {
   id: string;
   store: {
-    getState: GetState<ReactFlowState>;
-    setState: SetState<ReactFlowState>;
+    getState: StoreApi<ReactFlowState>['getState'];
+    setState: StoreApi<ReactFlowState>['setState'];
   };
   unselect?: boolean;
 }) {

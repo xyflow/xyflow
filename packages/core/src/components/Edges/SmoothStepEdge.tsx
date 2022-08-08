@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 import { getCenter } from './utils';
 import { EdgeSmoothStepProps, Position } from '../../types';
@@ -115,7 +115,7 @@ export function getSmoothStepPath({
   return `M ${sourceX},${sourceY}${firstCornerPath}${secondCornerPath}L ${targetX},${targetY}`;
 }
 
-export default memo(
+const SmoothStepEdge = memo(
   ({
     sourceX,
     sourceY,
@@ -164,3 +164,7 @@ export default memo(
     );
   }
 );
+
+SmoothStepEdge.displayName = 'SmoothStepEdge';
+
+export default SmoothStepEdge;

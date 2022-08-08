@@ -1,5 +1,5 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
-import { GetState, SetState } from 'zustand';
+import { StoreApi } from 'zustand';
 
 import { getHostForElement } from '../../utils';
 import { OnConnect, ConnectionMode, Connection, HandleType, ReactFlowState } from '../../types';
@@ -91,8 +91,8 @@ export function handleMouseDown({
   nodeId: string;
   onConnect: OnConnect;
   isTarget: boolean;
-  getState: GetState<ReactFlowState>;
-  setState: SetState<ReactFlowState>;
+  getState: StoreApi<ReactFlowState>['getState'];
+  setState: StoreApi<ReactFlowState>['setState'];
   isValidConnection: ValidConnectionFunc;
   elementEdgeUpdaterType?: HandleType;
   onEdgeUpdateEnd?: (evt: MouseEvent) => void;

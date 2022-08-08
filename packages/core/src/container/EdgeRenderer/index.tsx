@@ -1,4 +1,4 @@
-import React, { memo, CSSProperties } from 'react';
+import { memo, CSSProperties } from 'react';
 import shallow from 'zustand/shallow';
 import cc from 'classcat';
 
@@ -114,7 +114,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetPosition = targetHandle?.position || Position.Top;
 
               if (!sourceHandle) {
-                // @ts-ignore
                 if (process.env.NODE_ENV === 'development') {
                   console.warn(
                     `[React Flow]: Couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
@@ -124,7 +123,6 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               }
 
               if (!targetHandle) {
-                // @ts-ignore
                 if (process.env.NODE_ENV === 'development') {
                   console.warn(
                     `[React Flow]: Couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`

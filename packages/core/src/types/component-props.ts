@@ -18,7 +18,7 @@ import {
   OnEdgeUpdateFunc,
   OnInit,
   ProOptions,
-  AttributionPosition,
+  PanelPosition,
   DefaultEdgeOptions,
   FitViewOptions,
   OnNodesDelete,
@@ -122,7 +122,7 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   fitView?: boolean;
   fitViewOptions?: FitViewOptions;
   connectOnClick?: boolean;
-  attributionPosition?: AttributionPosition;
+  attributionPosition?: PanelPosition;
   proOptions?: ProOptions;
   elevateEdgesOnSelect?: boolean;
   disableKeyboardA11y?: boolean;

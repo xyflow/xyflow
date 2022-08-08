@@ -1,9 +1,7 @@
-import React from 'react';
-
 import EdgeText from './EdgeText';
 import { BaseEdgeProps } from '../../types';
 
-export default ({
+const BaseEdge = ({
   path,
   centerX,
   centerY,
@@ -44,3 +42,7 @@ export default ({
     </>
   );
 };
+
+BaseEdge.displayName = 'BaseEdge';
+
+export default BaseEdge;

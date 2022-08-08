@@ -3,7 +3,7 @@ declare module '*.css' {
   export default content;
 }
 
-interface SvgrComponent extends React.FunctionComponent<React.SVGAttributes<SVGElement>> {}
+type SvgrComponent = React.FunctionComponent<React.SVGAttributes<SVGElement>>;
 
 declare module '*.svg' {
   const svgUrl: string;
@@ -12,6 +12,6 @@ declare module '*.svg' {
   export { svgComponent as ReactComponent };
 }
 
-declare var __REACT_FLOW_VERSION__: string;
-declare var __ENV__: string;
-declare var __INJECT_STYLES__: boolean;
+declare const __REACT_FLOW_VERSION__: string;
+declare const __ENV__: string;
+declare const __INJECT_STYLES__: boolean;

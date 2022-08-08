@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback, SetStateAction, Dispatch } from 'react';
 
 import { applyNodeChanges, applyEdgeChanges } from '../utils/changes';

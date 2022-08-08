@@ -1,5 +1,5 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
-import { GetState } from 'zustand';
+import { StoreApi } from 'zustand';
 
 import { Edge, MarkerType, Position, ReactFlowState } from '../../types';
 
@@ -58,13 +58,16 @@ export const getCenter = ({
 
 export function getMouseHandler(
   id: string,
-  getState: GetState<ReactFlowState>,
+  getState: StoreApi<ReactFlowState>['getState'],
   handler?: (event: ReactMouseEvent<SVGGElement, MouseEvent>, edge: Edge) => void
 ) {
   return handler === undefined
     ? handler
     : (event: ReactMouseEvent<SVGGElement, MouseEvent>) => {
-        const edge = getState().edges.find((e) => e.id === id)!;
-        handler(event, { ...edge });
+        const edge = getState().edges.find((e) => e.id === id);
+
+        if (edge) {
+          handler(event, { ...edge });
+        }
       };
 }

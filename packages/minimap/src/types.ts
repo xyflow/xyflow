@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HTMLAttributes } from 'react';
 import { Node, PanelPosition } from '@react-flow/core';
 

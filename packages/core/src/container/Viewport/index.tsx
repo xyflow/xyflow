@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import { ReactFlowState } from '../../types';
@@ -13,7 +13,7 @@ function Viewport({ children }: ViewportProps) {
   const transform = useStore(selector);
 
   return (
-    <div className="react-flow__viewport react-flow__container" style={{ transform: transform }}>
+    <div className="react-flow__viewport react-flow__container" style={{ transform }}>
       {children}
     </div>
   );

@@ -13,7 +13,9 @@ const selector = (s: ReactFlowState) => ({
   selectedEdges: s.edges.filter((e) => e.selected),
 });
 
-const areEqual = (objA: any, objB: any) => {
+type SelectorSlice = ReturnType<typeof selector>;
+
+function areEqual(objA: SelectorSlice, objB: SelectorSlice) {
   const selectedNodeIdsA = objA.selectedNodes.map((n: Node) => n.id);
   const selectedNodeIdsB = objB.selectedNodes.map((n: Node) => n.id);
 
@@ -21,7 +23,7 @@ const areEqual = (objA: any, objB: any) => {
   const selectedEdgeIdsB = objB.selectedEdges.map((e: Edge) => e.id);
 
   return shallow(selectedNodeIdsA, selectedNodeIdsB) && shallow(selectedEdgeIdsA, selectedEdgeIdsB);
-};
+}
 
 // This is just a helper component for calling the onSelectionChange listener.
 // @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?

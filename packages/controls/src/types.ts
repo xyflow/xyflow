@@ -13,5 +13,4 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   position?: PanelPosition;
 }
 
-export interface ControlButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export type ControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

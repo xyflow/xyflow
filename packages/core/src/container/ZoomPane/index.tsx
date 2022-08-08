@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useRef } from 'react';
 import { D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import shallow from 'zustand/shallow';
