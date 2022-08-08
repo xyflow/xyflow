@@ -7,7 +7,7 @@ import {
   EdgeTypesWrapped,
   HandleElement,
   NodeHandleBounds,
-  NodeInternals,
+  Node,
   Position,
   Rect,
   Transform,
@@ -166,8 +166,7 @@ export function isEdgeVisible({
   return overlappingArea > 0;
 }
 
-export function getNodeData(nodeInternals: NodeInternals, nodeId: string): [Rect, NodeHandleBounds | null, boolean] {
-  const node = nodeInternals.get(nodeId);
+export function getNodeData(node: Node): [Rect, NodeHandleBounds | null, boolean] {
   const handleBounds = node?.[internalsSymbol]?.handleBounds || null;
 
   const isInvalid =

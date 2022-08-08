@@ -1,47 +1,44 @@
-import { memo, CSSProperties } from 'react';
+import { memo } from 'react';
 import shallow from 'zustand/shallow';
 import cc from 'classcat';
 
 import { useStore } from '../../hooks/useStore';
+import useVisibleEdges from '../../hooks/useVisibleEdges';
 import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';
-import useVisibleEdges from '../../hooks/useVisibleEdges';
 
-import {
-  Position,
-  Edge,
-  ConnectionLineType,
-  ConnectionLineComponent,
-  ConnectionMode,
-  OnEdgeUpdateFunc,
-  HandleType,
-  ReactFlowState,
-  EdgeTypesWrapped,
-} from '../../types';
+import { Position, Edge, ConnectionMode, ReactFlowState } from '../../types';
+import { GraphViewProps } from '../GraphView';
 
-interface EdgeRendererProps {
-  edgeTypes: EdgeTypesWrapped;
-  connectionLineType: ConnectionLineType;
-  connectionLineStyle?: CSSProperties;
-  connectionLineComponent?: ConnectionLineComponent;
-  connectionLineContainerStyle?: CSSProperties;
-  onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
-  onEdgeDoubleClick?: (event: React.MouseEvent, edge: Edge) => void;
-  defaultMarkerColor: string;
-  onlyRenderVisibleElements: boolean;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeMouseEnter?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeMouseMove?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeMouseLeave?: (event: React.MouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
-  edgeUpdaterRadius?: number;
-  noPanClassName?: string;
+interface EdgeRendererProps
+  extends Pick<
+    GraphViewProps,
+    | 'edgeTypes'
+    | 'connectionLineType'
+    | 'connectionLineType'
+    | 'connectionLineStyle'
+    | 'connectionLineComponent'
+    | 'connectionLineContainerStyle'
+    | 'connectionLineContainerStyle'
+    | 'onEdgeClick'
+    | 'onEdgeDoubleClick'
+    | 'defaultMarkerColor'
+    | 'onlyRenderVisibleElements'
+    | 'onEdgeUpdate'
+    | 'onEdgeContextMenu'
+    | 'onEdgeMouseEnter'
+    | 'onEdgeMouseMove'
+    | 'onEdgeMouseLeave'
+    | 'onEdgeUpdateStart'
+    | 'onEdgeUpdateEnd'
+    | 'edgeUpdaterRadius'
+    | 'noPanClassName'
+    | 'elevateEdgesOnSelect'
+    | 'rfId'
+    | 'disableKeyboardA11y'
+  > {
   elevateEdgesOnSelect: boolean;
-  rfId: string;
-  disableKeyboardA11y: boolean;
 }
 
 const selector = (s: ReactFlowState) => ({
@@ -94,8 +91,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={props.rfId} />}
           <g>
             {edges.map((edge: Edge) => {
-              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals, edge.source);
-              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals, edge.target);
+              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals.get(edge.source)!);
+              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals.get(edge.target)!);
 
               if (!sourceIsValid || !targetIsValid) {
                 return null;
@@ -113,19 +110,12 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const sourcePosition = sourceHandle?.position || Position.Bottom;
               const targetPosition = targetHandle?.position || Position.Top;
 
-              if (!sourceHandle) {
+              if (!sourceHandle || !targetHandle) {
                 if (process.env.NODE_ENV === 'development') {
+                  const handleType = !sourceHandle ? 'source' : 'target';
+                  const handleId = !sourceHandle ? edge.sourceHandle : edge.targetHandle;
                   console.warn(
-                    `[React Flow]: Couldn't create edge for source handle id: ${edge.sourceHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
-                  );
-                }
-                return null;
-              }
-
-              if (!targetHandle) {
-                if (process.env.NODE_ENV === 'development') {
-                  console.warn(
-                    `[React Flow]: Couldn't create edge for target handle id: ${edge.targetHandle}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                    `[React Flow]: Couldn't create edge for ${handleType} handle id: ${handleId}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
                   );
                 }
                 return null;
