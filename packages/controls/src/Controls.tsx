@@ -52,17 +52,17 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   }
 
   const onZoomInHandler = () => {
-    zoomIn?.();
+    zoomIn();
     onZoomIn?.();
   };
 
   const onZoomOutHandler = () => {
-    zoomOut?.();
+    zoomOut();
     onZoomOut?.();
   };
 
   const onFitViewHandler = () => {
-    fitView?.(fitViewOptions);
+    fitView(fitViewOptions);
     onFitView?.();
   };
 
