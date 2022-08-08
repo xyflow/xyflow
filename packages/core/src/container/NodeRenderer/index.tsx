@@ -5,23 +5,25 @@ import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
 import { internalsSymbol } from '../../utils';
 import { containerStyle } from '../../styles';
-import { NodeMouseHandler, NodeTypesWrapped, Position, ReactFlowState, WrapNodeProps } from '../../types';
+import { GraphViewProps } from '../GraphView';
+import { Position, ReactFlowState, WrapNodeProps } from '../../types';
 
-interface NodeRendererProps {
-  nodeTypes: NodeTypesWrapped;
-  selectNodesOnDrag: boolean;
-  onNodeClick?: NodeMouseHandler;
-  onNodeDoubleClick?: NodeMouseHandler;
-  onNodeMouseEnter?: NodeMouseHandler;
-  onNodeMouseMove?: NodeMouseHandler;
-  onNodeMouseLeave?: NodeMouseHandler;
-  onNodeContextMenu?: NodeMouseHandler;
-  onlyRenderVisibleElements: boolean;
-  noPanClassName: string;
-  noDragClassName: string;
-  rfId: string;
-  disableKeyboardA11y: boolean;
-}
+type NodeRendererProps = Pick<
+  GraphViewProps,
+  | 'nodeTypes'
+  | 'selectNodesOnDrag'
+  | 'onNodeClick'
+  | 'onNodeDoubleClick'
+  | 'onNodeMouseEnter'
+  | 'onNodeMouseMove'
+  | 'onNodeMouseLeave'
+  | 'onNodeContextMenu'
+  | 'onlyRenderVisibleElements'
+  | 'noPanClassName'
+  | 'noDragClassName'
+  | 'rfId'
+  | 'disableKeyboardA11y'
+>;
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
