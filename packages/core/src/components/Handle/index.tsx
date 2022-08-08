@@ -2,7 +2,7 @@ import React, { memo, useContext, HTMLAttributes, forwardRef } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import NodeIdContext from '../../contexts/NodeIdContext';
 import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
 import { checkElementBelowIsValid, handleMouseDown } from './handler';

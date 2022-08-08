@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { SetState } from 'zustand';
+import { StoreApi } from 'zustand';
 import shallow from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../store';
-import { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps } from '../../types';
+import { useStore, useStoreApi } from '../../hooks/useStore';
+import { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
 
 type StoreUpdaterProps = Pick<
   ReactFlowProps,
@@ -61,10 +61,14 @@ function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => v
   }, [value]);
 }
 
-function useDirectStoreUpdater(key: keyof ReactFlowState, value: any, setState: SetState<ReactFlowState>) {
+// updates with values in store that don't have a dedicated setter function
+function useDirectStoreUpdater(
+  key: keyof ReactFlowStore,
+  value: unknown,
+  setState: StoreApi<ReactFlowState>['setState']
+) {
   useEffect(() => {
     if (typeof value !== 'undefined') {
-      // @ts-ignore
       setState({ [key]: value });
     }
   }, [value]);
@@ -153,8 +157,6 @@ const StoreUpdater = ({
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);
-  useStoreUpdater<Node[]>(defaultNodes, setNodes);
-  useStoreUpdater<Edge[]>(defaultEdges, setEdges);
   useStoreUpdater<number>(minZoom, setMinZoom);
   useStoreUpdater<number>(maxZoom, setMaxZoom);
   useStoreUpdater<CoordinateExtent>(translateExtent, setTranslateExtent);

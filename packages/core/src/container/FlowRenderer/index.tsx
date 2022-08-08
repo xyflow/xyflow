@@ -1,6 +1,6 @@
 import React, { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
 
-import { useStore, useStoreApi } from '../../store';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
@@ -54,6 +54,9 @@ const FlowRenderer = ({
   zoomOnDoubleClick,
   panOnDrag,
   defaultViewport,
+  translateExtent,
+  minZoom,
+  maxZoom,
   preventScrolling,
   onSelectionContextMenu,
   noWheelClassName,
@@ -90,6 +93,9 @@ const FlowRenderer = ({
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnDrag={panOnDrag}
       defaultViewport={defaultViewport}
+      translateExtent={translateExtent}
+      minZoom={minZoom}
+      maxZoom={maxZoom}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
       noWheelClassName={noWheelClassName}

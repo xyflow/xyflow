@@ -1,6 +1,7 @@
 import React, { FC, PropsWithChildren } from 'react';
 
-import { Provider, createStore, useStoreApi } from '../../store';
+import { useStoreApi } from '../../hooks/useStore';
+import ReactFlowProvider from '../../components/ReactFlowProvider';
 
 const Wrapper: FC<PropsWithChildren<{}>> = ({ children }) => {
   let isWrapped = true;
@@ -17,7 +18,7 @@ const Wrapper: FC<PropsWithChildren<{}>> = ({ children }) => {
     return <>{children}</>;
   }
 
-  return <Provider createStore={createStore}>{children}</Provider>;
+  return <ReactFlowProvider>{children}</ReactFlowProvider>;
 };
 
 Wrapper.displayName = 'ReactFlowWrapper';

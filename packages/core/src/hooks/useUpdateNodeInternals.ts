@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useStore, useStoreApi } from '../store';
+import { useStore, useStoreApi } from '../hooks/useStore';
 import { UpdateNodeInternals, ReactFlowState } from '../types';
 
 const selector = (state: ReactFlowState) => state.updateNodeDimensions;

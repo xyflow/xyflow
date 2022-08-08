@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
 import shallow from 'zustand/shallow';
 
-import { useStoreApi, useStore } from '../store';
+import { useStoreApi, useStore } from '../hooks/useStore';
 import { pointToRendererPoint, getTransformForBounds, getD3Transition } from '../utils/graph';
 import { FitViewOptions, Viewport, ViewportHelperFunctions, ReactFlowState, Rect, XYPosition } from '../types';
 import { fitView as fitViewStore } from '../store/utils';

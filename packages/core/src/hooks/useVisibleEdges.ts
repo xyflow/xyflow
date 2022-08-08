@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useStore } from '../store';
+import { useStore } from '../hooks/useStore';
 import { isEdgeVisible } from '../container/EdgeRenderer/utils';
 import { ReactFlowState, NodeInternals, Edge } from '../types';
 import { internalsSymbol, isNumeric } from '../utils';

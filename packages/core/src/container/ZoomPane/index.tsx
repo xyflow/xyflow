@@ -6,10 +6,10 @@ import shallow from 'zustand/shallow';
 import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
-import { useStore, useStoreApi } from '../../store';
-import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
+import { useStore, useStoreApi } from '../../hooks/useStore';
 import { FlowRendererProps } from '../FlowRenderer';
 import { containerStyle } from '../../styles';
+import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
@@ -47,6 +47,9 @@ const ZoomPane = ({
   elementsSelectable,
   panOnDrag = true,
   defaultViewport,
+  translateExtent,
+  minZoom,
+  maxZoom,
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
@@ -64,7 +67,6 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (zoomPane.current) {
-      const { minZoom, maxZoom, translateExtent } = store.getState();
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
 
@@ -81,7 +83,7 @@ const ZoomPane = ({
         d3ZoomHandler: selection.on('wheel.zoom'),
         // we need to pass transform because zoom handler is not registered when we set the initial transform
         transform: [clampedX, clampedY, clampedZoom],
-        domNode: selection.node()?.closest('.react-flow') as HTMLElement,
+        domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement,
       });
     }
   }, []);

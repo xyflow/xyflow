@@ -1,7 +1,7 @@
 import React, { memo, ComponentType, useState, useMemo, KeyboardEvent, useRef } from 'react';
 import cc from 'classcat';
 
-import { useStoreApi } from '../../store';
+import { useStoreApi } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { handleMouseDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';

@@ -31,6 +31,7 @@ import { createNodeTypes } from '../NodeRenderer/utils';
 import { useNodeOrEdgeTypes } from './utils';
 import Wrapper from './Wrapper';
 import A11yDescriptions from '../../components/A11yDescriptions';
+import { infiniteExtent } from '../../store/initialState';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -108,10 +109,10 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodesDraggable,
       nodesConnectable,
       elementsSelectable,
-      minZoom,
-      maxZoom,
       defaultViewport = initDefaultViewport,
-      translateExtent,
+      minZoom = 0.5,
+      maxZoom = 2,
+      translateExtent = infiniteExtent,
       preventScrolling = true,
       nodeExtent,
       defaultMarkerColor = '#b1b1b7',
@@ -188,6 +189,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onlyRenderVisibleElements={onlyRenderVisibleElements}
             selectNodesOnDrag={selectNodesOnDrag}
             defaultViewport={defaultViewport}
+            translateExtent={translateExtent}
+            minZoom={minZoom}
+            maxZoom={maxZoom}
             preventScrolling={preventScrolling}
             zoomOnScroll={zoomOnScroll}
             zoomOnPinch={zoomOnPinch}

@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 
-import { useStore } from '../../store';
+import { useStore } from '../../hooks/useStore';
 import { EdgeMarker, ReactFlowState } from '../../types';
 import { getMarkerId } from '../../utils/graph';
 import { useMarkerSymbol } from './MarkerSymbols';

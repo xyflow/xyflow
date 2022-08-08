@@ -135,7 +135,7 @@ export type ReactFlowStore = {
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;
   hasDefaultEdges: boolean;
-  domNode: HTMLElement | null;
+  domNode: HTMLDivElement | null;
 
   d3Zoom: ZoomBehavior<Element, unknown> | null;
   d3Selection: D3Selection<Element, unknown, null, undefined> | null;

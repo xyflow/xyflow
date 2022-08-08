@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useStore } from '../store';
+import { useStore } from '../hooks/useStore';
 import { getNodesInside } from '../utils/graph';
 
 import { ReactFlowState } from '../types';

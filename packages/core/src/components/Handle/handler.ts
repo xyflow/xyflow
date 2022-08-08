@@ -153,6 +153,7 @@ export function handleMouseDown({
     }
 
     if (connection.source !== connection.target && elementBelow) {
+      resetRecentHandle(recentHoveredHandle);
       recentHoveredHandle = elementBelow;
       elementBelow.classList.add('react-flow__handle-connecting');
       elementBelow.classList.toggle('react-flow__handle-valid', isValid);
