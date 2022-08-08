@@ -13,8 +13,8 @@ import {
 import { injectStyle } from '@react-flow/css-utils';
 
 import MiniMapNode from './MiniMapNode';
-import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
 import baseStyle from './style';
+import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
 
 injectStyle(baseStyle);
 
@@ -23,12 +23,24 @@ declare const window: any;
 const defaultWidth = 200;
 const defaultHeight = 150;
 
-const selector = (s: ReactFlowState) => ({
-  width: s.width,
-  height: s.height,
-  transform: s.transform,
-  nodes: Array.from(s.nodeInternals.values()),
-});
+const selector = (s: ReactFlowState) => {
+  const nodes = Array.from(s.nodeInternals.values());
+  const viewBB: Rect = {
+    x: -s.transform[0] / s.transform[2],
+    y: -s.transform[1] / s.transform[2],
+    width: s.width / s.transform[2],
+    height: s.height / s.transform[2],
+  };
+
+  return {
+    nodes: nodes.filter((node) => !node.hidden && node.width && node.height),
+    viewBB,
+    boundingRect:
+      nodes.length > 0
+        ? getBoundsOfRects(getRectOfNodes(nodes), viewBB)
+        : viewBB,
+  };
+};
 
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
   func instanceof Function ? func : () => func;
@@ -47,25 +59,12 @@ function MiniMap({
   position = 'bottom-right',
 }: MiniMapProps) {
   const minimapId = useId();
-  const {
-    width: containerWidth,
-    height: containerHeight,
-    transform,
-    nodes,
-  } = useStore(selector, shallow);
+  const { boundingRect, viewBB, nodes } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
-  const viewBB: Rect = {
-    x: -transform[0] / transform[2],
-    y: -transform[1] / transform[2],
-    width: containerWidth / transform[2],
-    height: containerHeight / transform[2],
-  };
-  const boundingRect =
-    nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB;
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
@@ -96,26 +95,24 @@ function MiniMap({
         aria-labelledby={labelledBy}
       >
         <title id={labelledBy}>React Flow mini map</title>
-        {nodes
-          .filter((node) => !node.hidden && node.width && node.height)
-          .map((node) => {
-            return (
-              <MiniMapNode
-                key={node.id}
-                x={node.positionAbsolute?.x ?? 0}
-                y={node.positionAbsolute?.y ?? 0}
-                width={node.width!}
-                height={node.height!}
-                style={node.style}
-                className={nodeClassNameFunc(node)}
-                color={nodeColorFunc(node)}
-                borderRadius={nodeBorderRadius}
-                strokeColor={nodeStrokeColorFunc(node)}
-                strokeWidth={nodeStrokeWidth}
-                shapeRendering={shapeRendering}
-              />
-            );
-          })}
+        {nodes.map((node) => {
+          return (
+            <MiniMapNode
+              key={node.id}
+              x={node.positionAbsolute?.x ?? 0}
+              y={node.positionAbsolute?.y ?? 0}
+              width={node.width!}
+              height={node.height!}
+              style={node.style}
+              className={nodeClassNameFunc(node)}
+              color={nodeColorFunc(node)}
+              borderRadius={nodeBorderRadius}
+              strokeColor={nodeStrokeColorFunc(node)}
+              strokeWidth={nodeStrokeWidth}
+              shapeRendering={shapeRendering}
+            />
+          );
+        })}
         <path
           className="react-flow__minimap-mask"
           d={`M${x - offset},${y - offset}h${width + offset * 2}v${
