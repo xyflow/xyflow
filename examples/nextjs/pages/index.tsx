@@ -1,20 +1,19 @@
 import React, { MouseEvent } from 'react';
 
 import {
+  MiniMap,
   ReactFlow,
+  Background,
+  BackgroundVariant,
+  Controls,
   ReactFlowProvider,
   Node,
   Edge,
   useReactFlow,
-} from '@react-flow/core';
-
-import { MiniMap } from '@react-flow/minimap';
-import { Background, BackgroundVariant } from '@react-flow/background';
-import { Controls } from '@react-flow/controls';
+} from '@react-flow/renderer';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) =>
-  console.log('drag stop', node);
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initialNodes: Node[] = [

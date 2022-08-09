@@ -2,21 +2,10 @@
 import { memo, useId } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
-import {
-  useStore,
-  getRectOfNodes,
-  ReactFlowState,
-  Rect,
-  Panel,
-  getBoundsOfRects,
-} from '@react-flow/core';
-import { injectStyle } from '@react-flow/css-utils';
+import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects } from '@react-flow/core';
 
 import MiniMapNode from './MiniMapNode';
-import baseStyle from './style';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
-
-injectStyle(baseStyle);
 
 declare const window: any;
 
@@ -35,15 +24,11 @@ const selector = (s: ReactFlowState) => {
   return {
     nodes: nodes.filter((node) => !node.hidden && node.width && node.height),
     viewBB,
-    boundingRect:
-      nodes.length > 0
-        ? getBoundsOfRects(getRectOfNodes(nodes), viewBB)
-        : viewBB,
+    boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB,
   };
 };
 
-const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
-  func instanceof Function ? func : () => func;
+const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 
@@ -75,18 +60,11 @@ function MiniMap({
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
-  const shapeRendering =
-    typeof window === 'undefined' || !!window.chrome
-      ? 'crispEdges'
-      : 'geometricPrecision';
+  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `${ARIA_LABEL_KEY}-${minimapId}`;
 
   return (
-    <Panel
-      position={position}
-      style={style}
-      className={cc(['react-flow__minimap', className])}
-    >
+    <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
       <svg
         width={elementWidth}
         height={elementHeight}
@@ -115,12 +93,8 @@ function MiniMap({
         })}
         <path
           className="react-flow__minimap-mask"
-          d={`M${x - offset},${y - offset}h${width + offset * 2}v${
-            height + offset * 2
-          }h${-width - offset * 2}z
-        M${viewBB.x},${viewBB.y}h${viewBB.width}v${
-            viewBB.height
-          }h${-viewBB.width}z`}
+          d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
+        M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
           fill={maskColor}
           fillRule="evenodd"
         />

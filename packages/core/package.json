@@ -13,11 +13,10 @@
     "url": "https://github.com/wbkd/react-flow.git"
   },
   "scripts": {
-    "build": "postcss src/styles/*.css --config ../../postcss.config.json --dir dist"
+    "build": "postcss src/styles/{base,style}.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.0",
-    "@react-flow/css-utils": "^11.0.0",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
@@ -38,6 +37,7 @@
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.14",
     "postcss-cli": "^10.0.0",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^14.1.0",
     "postcss-nested": "^5.0.6"
   }

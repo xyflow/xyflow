@@ -1,13 +1,6 @@
 import { memo, FC, useEffect, useState, PropsWithChildren } from 'react';
 import cc from 'classcat';
-import {
-  useStore,
-  useStoreApi,
-  useReactFlow,
-  ReactFlowState,
-  Panel,
-} from '@react-flow/core';
-import { injectStyle } from '@react-flow/css-utils';
+import { useStore, useStoreApi, useReactFlow, ReactFlowState, Panel } from '@react-flow/core';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';
@@ -15,14 +8,10 @@ import FitviewIcon from './Icons/FitView';
 import LockIcon from './Icons/Lock';
 import UnlockIcon from './Icons/Unlock';
 import ControlButton from './ControlButton';
-import baseStyle from './style';
 
 import { ControlProps } from './types';
 
-injectStyle(baseStyle);
-
-const isInteractiveSelector = (s: ReactFlowState) =>
-  s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
+const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
 
 const Controls: FC<PropsWithChildren<ControlProps>> = ({
   style,
@@ -77,11 +66,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   };
 
   return (
-    <Panel
-      className={cc(['react-flow__controls', className])}
-      position={position}
-      style={style}
-    >
+    <Panel className={cc(['react-flow__controls', className])} position={position} style={style}>
       {showZoom && (
         <>
           <ControlButton

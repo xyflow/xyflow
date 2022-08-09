@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn run copystyles && next dev",
-    "copystyles": "cp ../../packages/core/src/styles/theme-default.css ./styles/theme-default.css",
+    "dev": "next dev",
+    "copystyles": "cp ../../node_modules/@react-flow/renderer/dist/style.css ./styles/rf-style.css",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -27,6 +27,7 @@
     "eslint-config-next": "12.2.2",
     "postcss": "^8.4.16",
     "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^14.1.0",
     "postcss-nested": "^5.0.6",
     "postcss-preset-env": "^7.7.2"
   }

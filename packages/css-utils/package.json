@@ -1,8 +1,0 @@
-{
-  "name": "@react-flow/css-utils",
-  "version": "11.0.0",
-  "description": "Utils for handling styles.",
-  "main": "dist/react-flow-css-utils.cjs.js",
-  "module": "dist/react-flow-css-utils.esm.js",
-  "license": "MIT"
-}

@@ -1,6 +1,5 @@
 import { CSSProperties, forwardRef, useId } from 'react';
 import cc from 'classcat';
-import { injectStyle } from '@react-flow/css-utils';
 
 import Attribution from '../../components/Attribution';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
@@ -9,9 +8,6 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
-import baseStyle from '../../styles/base';
-
-injectStyle(baseStyle);
 
 import {
   ConnectionLineType,
