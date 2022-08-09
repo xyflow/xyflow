@@ -12,7 +12,7 @@ import {
   useNodesState,
   useEdgesState,
   OnConnectStartParams,
-} from '@react-flow/core';
+} from '@react-flow/bundle';
 
 import styles from './validation.module.css';
 
@@ -28,27 +28,15 @@ const isValidConnection = (connection: Connection) => connection.target === 'B';
 const CustomInput: FC<NodeProps> = () => (
   <>
     <div>Only connectable with B</div>
-    <Handle
-      type="source"
-      position={Position.Right}
-      isValidConnection={isValidConnection}
-    />
+    <Handle type="source" position={Position.Right} isValidConnection={isValidConnection} />
   </>
 );
 
 const CustomNode: FC<NodeProps> = ({ id }) => (
   <>
-    <Handle
-      type="target"
-      position={Position.Left}
-      isValidConnection={isValidConnection}
-    />
+    <Handle type="target" position={Position.Left} isValidConnection={isValidConnection} />
     <div>{id}</div>
-    <Handle
-      type="source"
-      position={Position.Right}
-      isValidConnection={isValidConnection}
-    />
+    <Handle type="source" position={Position.Right} isValidConnection={isValidConnection} />
   </>
 );
 

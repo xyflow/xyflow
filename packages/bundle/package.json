@@ -1,9 +1,9 @@
 {
-  "name": "@react-flow/renderer",
+  "name": "@react-flow/bundle",
   "version": "11.0.0",
-  "description": "The main React Flow package that comes with all the essentials.",
-  "main": "dist/react-flow-renderer.cjs.js",
-  "module": "dist/react-flow-renderer.esm.js",
+  "description": "The bundled React Flow package that comes with all the essentials.",
+  "main": "dist/react-flow-bundle.cjs.js",
+  "module": "dist/react-flow-bundle.esm.js",
   "license": "MIT",
   "scripts": {
     "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
@@ -22,6 +22,7 @@
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.14",
     "postcss-cli": "^10.0.0",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^14.1.0",
     "postcss-nested": "^5.0.6"
   }

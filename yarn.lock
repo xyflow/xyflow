@@ -2187,13 +2187,38 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@react-flow/bundle@11.0.0, @react-flow/bundle@workspace:packages/bundle":
+  version: 0.0.0-use.local
+  resolution: "@react-flow/bundle@workspace:packages/bundle"
+  dependencies:
+    "@react-flow/background": 11.0.0
+    "@react-flow/controls": 11.0.0
+    "@react-flow/core": 11.0.0
+    "@react-flow/minimap": 11.0.0
+    autoprefixer: ^10.4.8
+    postcss: ^8.4.14
+    postcss-cli: ^10.0.0
+    postcss-combine-duplicated-selectors: ^10.0.3
+    postcss-import: ^14.1.0
+    postcss-nested: ^5.0.6
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  languageName: unknown
+  linkType: soft
+
 "@react-flow/controls@11.0.0, @react-flow/controls@workspace:packages/controls":
   version: 0.0.0-use.local
   resolution: "@react-flow/controls@workspace:packages/controls"
   dependencies:
     "@react-flow/core": ^11.0.0
-    "@react-flow/css-utils": ^11.0.0
+    autoprefixer: ^10.4.8
     classcat: ^5.0.3
+    postcss: ^8.4.16
+    postcss-cli: ^10.0.0
+    postcss-combine-duplicated-selectors: ^10.0.3
+    postcss-import: ^14.1.0
+    postcss-nested: ^5.0.6
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
@@ -2205,7 +2230,6 @@ __metadata:
   resolution: "@react-flow/core@workspace:packages/core"
   dependencies:
     "@babel/runtime": ^7.18.0
-    "@react-flow/css-utils": ^11.0.0
     "@types/d3": ^7.4.0
     "@types/react": ^18.0.15
     autoprefixer: ^10.4.8
@@ -2215,6 +2239,7 @@ __metadata:
     d3-zoom: ^3.0.0
     postcss: ^8.4.14
     postcss-cli: ^10.0.0
+    postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
     zustand: ^4.0.0
@@ -2224,41 +2249,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-flow/css-utils@^11.0.0, @react-flow/css-utils@workspace:packages/css-utils":
-  version: 0.0.0-use.local
-  resolution: "@react-flow/css-utils@workspace:packages/css-utils"
-  languageName: unknown
-  linkType: soft
-
 "@react-flow/minimap@11.0.0, @react-flow/minimap@workspace:packages/minimap":
   version: 0.0.0-use.local
   resolution: "@react-flow/minimap@workspace:packages/minimap"
   dependencies:
     "@react-flow/core": ^11.0.0
-    "@react-flow/css-utils": ^11.0.0
-    classcat: ^5.0.3
-    zustand: ^4.0.0
-  peerDependencies:
-    react: ^18.1.0
-    react-dom: ">=18"
-  languageName: unknown
-  linkType: soft
-
-"@react-flow/renderer@workspace:packages/renderer":
-  version: 0.0.0-use.local
-  resolution: "@react-flow/renderer@workspace:packages/renderer"
-  dependencies:
-    "@react-flow/background": 11.0.0
-    "@react-flow/controls": 11.0.0
-    "@react-flow/core": 11.0.0
-    "@react-flow/minimap": 11.0.0
     autoprefixer: ^10.4.8
-    postcss: ^8.4.14
+    classcat: ^5.0.3
+    postcss: ^8.4.16
     postcss-cli: ^10.0.0
+    postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
+    zustand: ^4.0.0
   peerDependencies:
-    react: ^18.1.0
+    react: ">=18"
     react-dom: ">=18"
   languageName: unknown
   linkType: soft
@@ -7460,6 +7465,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postcss-combine-duplicated-selectors@npm:^10.0.3":
+  version: 10.0.3
+  resolution: "postcss-combine-duplicated-selectors@npm:10.0.3"
+  dependencies:
+    postcss-selector-parser: ^6.0.4
+  peerDependencies:
+    postcss: ^8.1.0
+  checksum: 45c3dff41d0cddb510752ed92fe8c7fc66e5cf88f4988314655419d3ecdf1dc66f484a25ee73f4f292da5da851a0fdba0ec4d59bdedeee935d05b26d31d997ed
+  languageName: node
+  linkType: hard
+
 "postcss-custom-media@npm:^8.0.2":
   version: 8.0.2
   resolution: "postcss-custom-media@npm:8.0.2"
@@ -8050,10 +8066,7 @@ __metadata:
   resolution: "react-flow-examples@workspace:examples/nextjs"
   dependencies:
     "@preconstruct/next": ^4.0.0
-    "@react-flow/background": 11.0.0
-    "@react-flow/controls": 11.0.0
-    "@react-flow/core": 11.0.0
-    "@react-flow/minimap": 11.0.0
+    "@react-flow/bundle": 11.0.0
     "@types/dagre": ^0.7.47
     dagre: ^0.8.5
     eslint: 8.19.0
@@ -8062,6 +8075,7 @@ __metadata:
     next: 12.2.2
     postcss: ^8.4.16
     postcss-flexbugs-fixes: ^5.0.2
+    postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
     postcss-preset-env: ^7.7.2
     react: 18.2.0
@@ -8088,6 +8102,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: latest
     postcss: ^8.4.16
+    postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
     prettier: ^2.7.1

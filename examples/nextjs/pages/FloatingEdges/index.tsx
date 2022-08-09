@@ -9,7 +9,7 @@ import {
   Connection,
   useNodesState,
   useEdgesState,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import styles from './style.module.css';
 
@@ -17,8 +17,7 @@ import FloatingConnectionLine from './FloatingConnectionLine';
 import FloatingEdge from './FloatingEdge';
 import { createElements } from './utils';
 
-const onInit = (reactFlowInstance: ReactFlowInstance) =>
-  reactFlowInstance.fitView();
+const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 
 const { nodes: initialNodes, edges: initialEdges } =
   typeof window !== 'undefined' ? createElements() : { nodes: [], edges: [] };

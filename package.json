@@ -40,6 +40,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "latest",
     "postcss": "^8.4.16",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^14.1.0",
     "postcss-nested": "^5.0.6",
     "prettier": "^2.7.1",

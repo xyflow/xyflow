@@ -12,13 +12,11 @@ import {
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
-const onInit = (reactFlowInstance: ReactFlowInstance) =>
-  console.log('flow loaded:', reactFlowInstance);
+const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) =>
-  console.log('drag stop', node);
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 
 const buttonStyle: CSSProperties = {
   position: 'absolute',
@@ -31,10 +29,7 @@ const EmptyFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((els) => addEdge(params, els)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((els) => addEdge(params, els)), [setEdges]);
   const addRandomNode = () => {
     const nodeId = (nodes.length + 1).toString();
     const newNode: Node = {

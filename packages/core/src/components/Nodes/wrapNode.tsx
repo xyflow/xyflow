@@ -149,6 +149,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             selected,
             selectable: isSelectable,
             parent: isParent,
+            dragging,
           },
         ])}
         ref={nodeRef}

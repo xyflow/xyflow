@@ -12,23 +12,18 @@ import {
   Node,
   useEdgesState,
   useNodesState,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) =>
-  console.log('drag stop', node);
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
-const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) =>
-  console.log('dblclick', edge);
-const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) =>
-  console.log('enter', edge);
-const onEdgeMouseMove = (_: MouseEvent, edge: Edge) =>
-  console.log('move', edge);
-const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) =>
-  console.log('leave', edge);
+const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('dblclick', edge);
+const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('enter', edge);
+const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('move', edge);
+const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('leave', edge);
 
 const initialNodes: Node[] = [
   {
@@ -189,10 +184,7 @@ const defaultViewport = {
 const EdgesFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow

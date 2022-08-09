@@ -1,8 +1,4 @@
-import React, {
-  MouseEvent as ReactMouseEvent,
-  CSSProperties,
-  useCallback,
-} from 'react';
+import React, { MouseEvent as ReactMouseEvent, CSSProperties, useCallback } from 'react';
 
 import {
   ReactFlow,
@@ -16,63 +12,42 @@ import {
   useNodesState,
   useEdgesState,
   OnSelectionChangeParams,
-} from '@react-flow/core';
+  Controls,
+  Background,
+  MiniMap,
+} from '@react-flow/bundle';
 
-import { Controls } from '@react-flow/controls';
-import { Background } from '@react-flow/background';
-import { MiniMap } from '@react-flow/minimap';
-
-const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) =>
-  console.log('drag start', node, nodes);
-const onNodeDrag = (_: ReactMouseEvent, node: Node, nodes: Node[]) =>
-  console.log('drag', node, nodes);
-const onNodeDragStop = (_: ReactMouseEvent, node: Node, nodes: Node[]) =>
-  console.log('drag stop', node, nodes);
-const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) =>
-  console.log('node double click', node);
-const onPaneClick = (event: ReactMouseEvent) =>
-  console.log('pane click', event);
-const onPaneScroll = (event?: ReactMouseEvent) =>
-  console.log('pane scroll', event);
-const onPaneContextMenu = (event: ReactMouseEvent) =>
-  console.log('pane context menu', event);
-const onSelectionDrag = (_: ReactMouseEvent, nodes: Node[]) =>
-  console.log('selection drag', nodes);
-const onSelectionDragStart = (_: ReactMouseEvent, nodes: Node[]) =>
-  console.log('selection drag start', nodes);
-const onSelectionDragStop = (_: ReactMouseEvent, nodes: Node[]) =>
-  console.log('selection drag stop', nodes);
+const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
+const onNodeDrag = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
+const onNodeDragStop = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
+const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) => console.log('node double click', node);
+const onPaneClick = (event: ReactMouseEvent) => console.log('pane click', event);
+const onPaneScroll = (event?: ReactMouseEvent) => console.log('pane scroll', event);
+const onPaneContextMenu = (event: ReactMouseEvent) => console.log('pane context menu', event);
+const onSelectionDrag = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag', nodes);
+const onSelectionDragStart = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag start', nodes);
+const onSelectionDragStop = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag stop', nodes);
 const onSelectionContextMenu = (event: ReactMouseEvent, nodes: Node[]) => {
   event.preventDefault();
   console.log('selection context menu', nodes);
 };
-const onNodeClick = (_: ReactMouseEvent, node: Node) =>
-  console.log('node click:', node);
+const onNodeClick = (_: ReactMouseEvent, node: Node) => console.log('node click:', node);
 
-const onSelectionChange = ({ nodes, edges }: OnSelectionChangeParams) =>
-  console.log('selection change', nodes, edges);
+const onSelectionChange = ({ nodes, edges }: OnSelectionChangeParams) => console.log('selection change', nodes, edges);
 const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log('pane ready:', reactFlowInstance);
 };
 
-const onMoveStart = (_: MouseEvent | TouchEvent, viewport: Viewport) =>
-  console.log('zoom/move start', viewport);
-const onMoveEnd = (_: MouseEvent | TouchEvent, viewport: Viewport) =>
-  console.log('zoom/move end', viewport);
-const onEdgeContextMenu = (_: ReactMouseEvent, edge: Edge) =>
-  console.log('edge context menu', edge);
-const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) =>
-  console.log('edge mouse enter', edge);
-const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) =>
-  console.log('edge mouse move', edge);
-const onEdgeMouseLeave = (_: ReactMouseEvent, edge: Edge) =>
-  console.log('edge mouse leave', edge);
-const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) =>
-  console.log('edge double click', edge);
+const onMoveStart = (_: MouseEvent | TouchEvent, viewport: Viewport) => console.log('zoom/move start', viewport);
+const onMoveEnd = (_: MouseEvent | TouchEvent, viewport: Viewport) => console.log('zoom/move end', viewport);
+const onEdgeContextMenu = (_: ReactMouseEvent, edge: Edge) => console.log('edge context menu', edge);
+const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
+const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse move', edge);
+const onEdgeMouseLeave = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
+const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) => console.log('edge double click', edge);
 const onNodesDelete = (nodes: Node[]) => console.log('nodes delete', nodes);
 const onEdgesDelete = (edges: Edge[]) => console.log('edges delete', edges);
-const onPaneMouseMove = (e: ReactMouseEvent) =>
-  console.log('pane move', e.clientX);
+const onPaneMouseMove = (e: ReactMouseEvent) => console.log('pane move', e.clientX);
 
 const initialNodes: Node[] = [
   {
@@ -122,11 +97,7 @@ const initialNodes: Node[] = [
       label: (
         <>
           You can find the docs on{' '}
-          <a
-            href="https://github.com/wbkd/react-flow"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://github.com/wbkd/react-flow" target="_blank" rel="noopener noreferrer">
             Github
           </a>
         </>
@@ -215,10 +186,7 @@ const nodeColor = (n: Node): string => {
 const OverviewFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow
@@ -259,11 +227,7 @@ const OverviewFlow = () => {
       onEdgesDelete={onEdgesDelete}
       onPaneMouseMove={onPaneMouseMove}
     >
-      <MiniMap
-        nodeStrokeColor={nodeStrokeColor}
-        nodeColor={nodeColor}
-        nodeBorderRadius={2}
-      />
+      <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
       <Background color="#aaa" gap={25} />
     </ReactFlow>

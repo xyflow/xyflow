@@ -11,7 +11,7 @@ import {
   useEdgesState,
   MarkerType,
   EdgeMarker,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import dagre from 'dagre';
 
@@ -78,10 +78,7 @@ const LayoutFlow = () => {
       eds.map((e) => ({
         ...e,
         markerEnd: {
-          type:
-            (e.markerEnd as EdgeMarker)?.type === MarkerType.Arrow
-              ? MarkerType.ArrowClosed
-              : MarkerType.Arrow,
+          type: (e.markerEnd as EdgeMarker)?.type === MarkerType.Arrow ? MarkerType.ArrowClosed : MarkerType.Arrow,
         },
       }))
     );

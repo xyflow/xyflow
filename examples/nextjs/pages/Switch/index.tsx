@@ -1,16 +1,7 @@
 import React, { MouseEvent, useCallback } from 'react';
-import {
-  ReactFlow,
-  addEdge,
-  Node,
-  Connection,
-  Edge,
-  useNodesState,
-  useEdgesState,
-} from '@react-flow/core';
+import { ReactFlow, addEdge, Node, Connection, Edge, useNodesState, useEdgesState } from '@react-flow/bundle';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) =>
-  console.log('drag stop', node);
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const nodesA: Node[] = [
@@ -96,10 +87,7 @@ const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(nodesA);
   const [edges, setEdges, onEdgesChange] = useEdgesState(edgesA);
 
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow

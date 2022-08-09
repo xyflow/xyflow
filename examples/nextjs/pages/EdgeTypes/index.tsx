@@ -14,7 +14,7 @@ import {
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import { getElements } from './utils';
 
@@ -31,8 +31,7 @@ const deleteKeyCode = ['AltLeft+KeyD', 'Backspace'];
 const EdgeTypesFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
 
   return (
     <ReactFlow

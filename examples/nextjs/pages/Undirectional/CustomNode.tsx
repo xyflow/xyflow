@@ -1,6 +1,6 @@
 import React, { memo, FC, CSSProperties } from 'react';
 
-import { Handle, Position, NodeProps } from '@react-flow/core';
+import { Handle, Position, NodeProps } from '@react-flow/bundle';
 
 const nodeStyles: CSSProperties = {
   padding: '10px 15px',
@@ -11,10 +11,10 @@ const CustomNode: FC<NodeProps> = ({ id }) => {
   return (
     <div style={nodeStyles}>
       <div>node {id}</div>
-      <Handle type='source' id='left' position={Position.Left} />
-      <Handle type='source' id='right' position={Position.Right} />
-      <Handle type='source' id='top' position={Position.Top} />
-      <Handle type='source' id='bottom' position={Position.Bottom} />
+      <Handle type="source" id="left" position={Position.Left} />
+      <Handle type="source" id="right" position={Position.Right} />
+      <Handle type="source" id="top" position={Position.Top} />
+      <Handle type="source" id="bottom" position={Position.Bottom} />
     </div>
   );
 };

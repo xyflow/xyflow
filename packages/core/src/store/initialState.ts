@@ -30,6 +30,7 @@ const initialState: ReactFlowStore = {
   connectionPosition: { x: 0, y: 0 },
   connectionMode: ConnectionMode.Strict,
   domNode: null,
+  paneDragging: false,
 
   snapGrid: [15, 15],
   snapToGrid: false,

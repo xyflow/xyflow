@@ -1,15 +1,8 @@
 import React, { memo, FC } from 'react';
 
-import {
-  Handle,
-  Position,
-  NodeProps,
-  Connection,
-  Edge,
-} from '@react-flow/core';
+import { Handle, Position, NodeProps, Connection, Edge } from '@react-flow/bundle';
 
-const onConnect = (params: Connection | Edge) =>
-  console.log('handle onConnect', params);
+const onConnect = (params: Connection | Edge) => console.log('handle onConnect', params);
 
 const labelStyle = {
   display: 'flex',
@@ -28,12 +21,11 @@ const dragHandleStyle = {
 const ColorSelectorNode: FC<NodeProps> = () => {
   return (
     <>
-      <Handle type='target' position={Position.Left} onConnect={onConnect} />
+      <Handle type="target" position={Position.Left} onConnect={onConnect} />
       <div style={labelStyle}>
-        Only draggable here →{' '}
-        <span className='custom-drag-handle' style={dragHandleStyle} />
+        Only draggable here → <span className="custom-drag-handle" style={dragHandleStyle} />
       </div>
-      <Handle type='source' position={Position.Right} />
+      <Handle type="source" position={Position.Right} />
     </>
   );
 };

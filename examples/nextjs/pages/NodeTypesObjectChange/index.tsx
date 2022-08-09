@@ -11,7 +11,7 @@ import {
   NodeTypes,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
+} from '@react-flow/bundle';
 
 const initialNodes: Node[] = [
   {
@@ -68,10 +68,7 @@ const NodeTypeChangeFlow = () => {
   const [nodeTypesId, setNodeTypesId] = useState<string>('a');
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
   const changeType = () => setNodeTypesId((nt) => (nt === 'a' ? 'b' : 'a'));
 
   return (

@@ -8,10 +8,9 @@ import {
   Node,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-
-import { Controls } from '@react-flow/controls';
-import { MiniMap } from '@react-flow/minimap';
+  MiniMap,
+  Controls,
+} from '@react-flow/bundle';
 
 const initialNodes: Node[] = [
   {

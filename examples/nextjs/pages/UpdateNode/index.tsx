@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ReactFlow,
-  Node,
-  Edge,
-  useNodesState,
-  useEdgesState,
-} from '@react-flow/core';
+import { ReactFlow, Node, Edge, useNodesState, useEdgesState } from '@react-flow/bundle';
 
 import styles from './updatenode.module.css';
 
@@ -77,21 +71,14 @@ const UpdateNode = () => {
     >
       <div className={styles.controls}>
         <label>label:</label>
-        <input
-          value={nodeName}
-          onChange={(evt) => setNodeName(evt.target.value)}
-        />
+        <input value={nodeName} onChange={(evt) => setNodeName(evt.target.value)} />
 
         <label className={styles.bgLabel}>background:</label>
         <input value={nodeBg} onChange={(evt) => setNodeBg(evt.target.value)} />
 
         <div className="updatenode__checkboxwrapper">
           <label>hidden:</label>
-          <input
-            type="checkbox"
-            checked={nodeHidden}
-            onChange={(evt) => setNodeHidden(evt.target.checked)}
-          />
+          <input type="checkbox" checked={nodeHidden} onChange={(evt) => setNodeHidden(evt.target.checked)} />
         </div>
       </div>
     </ReactFlow>

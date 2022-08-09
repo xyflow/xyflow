@@ -11,7 +11,7 @@ import {
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 const initialNodes: Node[] = [
   {
@@ -53,8 +53,7 @@ const getId = () => `${id++}`;
 const UseZoomPanHelperFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
   const {
     project,
     setCenter,
@@ -117,10 +116,7 @@ const UseZoomPanHelperFlow = () => {
     addEdges({ id: 'e3-4', source: '3', target: '4' });
   }, [addEdges]);
 
-  const onResetNodes = useCallback(
-    () => setNodesHook(initialNodes),
-    [setNodesHook]
-  );
+  const onResetNodes = useCallback(() => setNodesHook(initialNodes), [setNodesHook]);
 
   return (
     <ReactFlow
@@ -138,9 +134,7 @@ const UseZoomPanHelperFlow = () => {
       <div style={{ position: 'absolute', left: 0, top: 0, zIndex: 100 }}>
         <button onClick={() => zoomIn({ duration: 1200 })}>zoomIn</button>
         <button onClick={() => zoomOut({ duration: 0 })}>zoomOut</button>
-        <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>
-          fitView
-        </button>
+        <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>fitView</button>
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>
         <button onClick={logNodes}>useNodes</button>

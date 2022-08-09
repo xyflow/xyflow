@@ -7,8 +7,9 @@ import {
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-import { Background, BackgroundVariant } from '@react-flow/background';
+  Background,
+  BackgroundVariant,
+} from '@react-flow/bundle';
 
 import ConnectionLine from './ConnectionLine';
 
@@ -25,10 +26,7 @@ const initialEdges: Edge[] = [];
 const ConnectionLineFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow

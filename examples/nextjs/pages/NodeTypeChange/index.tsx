@@ -1,15 +1,6 @@
 import React, { CSSProperties, useCallback } from 'react';
 
-import {
-  ReactFlow,
-  addEdge,
-  Node,
-  Position,
-  Connection,
-  Edge,
-  useNodesState,
-  useEdgesState,
-} from '@react-flow/core';
+import { ReactFlow, addEdge, Node, Position, Connection, Edge, useNodesState, useEdgesState } from '@react-flow/bundle';
 
 const initialNodes: Node[] = [
   {
@@ -29,9 +20,7 @@ const initialNodes: Node[] = [
   },
 ];
 
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true },
-];
+const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true }];
 
 const buttonStyle: CSSProperties = {
   position: 'absolute',
@@ -43,10 +32,7 @@ const buttonStyle: CSSProperties = {
 const NodeTypeChangeFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
   const changeType = () => {
     setNodes((nds) =>
       nds.map((node) => {

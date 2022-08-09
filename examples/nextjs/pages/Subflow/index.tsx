@@ -9,17 +9,15 @@ import {
   MarkerType,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-import { Controls } from '@react-flow/controls';
-import { Background } from '@react-flow/background';
-import { MiniMap } from '@react-flow/minimap';
+  Controls,
+  MiniMap,
+  Background,
+} from '@react-flow/bundle';
 
 import DebugNode from './DebugNode';
 
-const onNodeDrag = (_: MouseEvent, node: Node, nodes: Node[]) =>
-  console.log('drag', node, nodes);
-const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) =>
-  console.log('drag stop', node, nodes);
+const onNodeDrag = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
+const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
@@ -150,14 +148,8 @@ const Subflow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
-  );
-  const onInit = useCallback(
-    (reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance),
-    []
-  );
+  const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
+  const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
     setNodes((nds) => {
