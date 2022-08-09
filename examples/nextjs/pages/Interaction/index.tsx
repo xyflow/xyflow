@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  MouseEvent as ReactMouseEvent,
-  WheelEvent,
-} from 'react';
+import React, { useState, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
 import {
   ReactFlow,
   addEdge,
@@ -13,10 +9,9 @@ import {
   Viewport,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-
-import { Controls } from '@react-flow/controls';
-import { MiniMap } from '@react-flow/minimap';
+  Controls,
+  MiniMap,
+} from '@react-flow/bundle';
 
 const initialNodes: Node[] = [
   {
@@ -35,27 +30,19 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const onNodeDragStart = (_: ReactMouseEvent, node: Node) =>
-  console.log('drag start', node);
-const onNodeDragStop = (_: ReactMouseEvent, node: Node) =>
-  console.log('drag stop', node);
-const onNodeClick = (_: ReactMouseEvent, node: Node) =>
-  console.log('click', node);
-const onEdgeClick = (_: ReactMouseEvent, edge: Edge) =>
-  console.log('click', edge);
-const onPaneClick = (event: ReactMouseEvent) =>
-  console.log('onPaneClick', event);
+const onNodeDragStart = (_: ReactMouseEvent, node: Node) => console.log('drag start', node);
+const onNodeDragStop = (_: ReactMouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeClick = (_: ReactMouseEvent, node: Node) => console.log('click', node);
+const onEdgeClick = (_: ReactMouseEvent, edge: Edge) => console.log('click', edge);
+const onPaneClick = (event: ReactMouseEvent) => console.log('onPaneClick', event);
 const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
-const onPaneContextMenu = (event: ReactMouseEvent) =>
-  console.log('onPaneContextMenu', event);
-const onMoveEnd = (_: TouchEvent | MouseEvent, viewport: Viewport) =>
-  console.log('onMoveEnd', viewport);
+const onPaneContextMenu = (event: ReactMouseEvent) => console.log('onPaneContextMenu', event);
+const onMoveEnd = (_: TouchEvent | MouseEvent, viewport: Viewport) => console.log('onMoveEnd', viewport);
 
 const InteractionFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) =>
-    setEdges((els) => addEdge(params, els));
+  const onConnect = (params: Connection | Edge) => setEdges((els) => addEdge(params, els));
 
   const [isSelectable, setIsSelectable] = useState<boolean>(false);
   const [isDraggable, setIsDraggable] = useState<boolean>(false);
@@ -63,15 +50,12 @@ const InteractionFlow = () => {
   const [zoomOnScroll, setZoomOnScroll] = useState<boolean>(false);
   const [zoomOnPinch, setZoomOnPinch] = useState<boolean>(false);
   const [panOnScroll, setPanOnScroll] = useState<boolean>(false);
-  const [panOnScrollMode, setPanOnScrollMode] = useState<PanOnScrollMode>(
-    PanOnScrollMode.Free
-  );
+  const [panOnScrollMode, setPanOnScrollMode] = useState<PanOnScrollMode>(PanOnScrollMode.Free);
   const [zoomOnDoubleClick, setZoomOnDoubleClick] = useState<boolean>(false);
   const [panOnDrag, setPanOnDrag] = useState<boolean>(true);
   const [captureZoomClick, setCaptureZoomClick] = useState<boolean>(false);
   const [captureZoomScroll, setCaptureZoomScroll] = useState<boolean>(false);
-  const [captureElementClick, setCaptureElementClick] =
-    useState<boolean>(false);
+  const [captureElementClick, setCaptureElementClick] = useState<boolean>(false);
 
   return (
     <ReactFlow
@@ -180,9 +164,7 @@ const InteractionFlow = () => {
             <select
               id="panonscrollmode"
               value={panOnScrollMode}
-              onChange={(event) =>
-                setPanOnScrollMode(event.target.value as PanOnScrollMode)
-              }
+              onChange={(event) => setPanOnScrollMode(event.target.value as PanOnScrollMode)}
               className="react-flow__panonscrollmode"
             >
               <option value="free">free</option>

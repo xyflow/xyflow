@@ -1,9 +1,5 @@
 import React, { FC } from 'react';
-import {
-  getBezierPath,
-  ConnectionLineComponentProps,
-  Node,
-} from '@react-flow/core';
+import { getBezierPath, ConnectionLineComponentProps, Node } from '@react-flow/bundle';
 
 import { getEdgeParams } from './utils';
 
@@ -37,21 +33,8 @@ const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
 
   return (
     <g>
-      <path
-        fill='none'
-        stroke='#222'
-        strokeWidth={1.5}
-        className='animated'
-        d={d}
-      />
-      <circle
-        cx={targetX}
-        cy={targetY}
-        fill='#fff'
-        r={3}
-        stroke='#222'
-        strokeWidth={1.5}
-      />
+      <path fill="none" stroke="#222" strokeWidth={1.5} className="animated" d={d} />
+      <circle cx={targetX} cy={targetY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
     </g>
   );
 };

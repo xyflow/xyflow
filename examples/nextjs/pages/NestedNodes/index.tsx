@@ -11,10 +11,9 @@ import {
   Edge,
   ReactFlowInstance,
   Connection,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) =>
-  console.log('drag stop', node);
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
@@ -110,10 +109,7 @@ const NestedFlow = () => {
     },
     [setEdges]
   );
-  const onInit = useCallback(
-    (reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance),
-    []
-  );
+  const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
 
   const updatePos = () => {
     setNodes((nds) => {

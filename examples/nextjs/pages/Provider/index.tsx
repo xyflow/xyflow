@@ -11,15 +11,14 @@ import {
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import Sidebar from './Sidebar';
 
 import styles from './provider.module.css';
 
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onInit = (reactFlowInstance: ReactFlowInstance) =>
-  console.log('pane ready:', reactFlowInstance);
+const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('pane ready:', reactFlowInstance);
 
 const initialNodes: Node[] = [
   {
@@ -41,10 +40,7 @@ const initialEdges: Edge[] = [
 const ProviderFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
 
   return (
     <div className={styles.providerflow}>

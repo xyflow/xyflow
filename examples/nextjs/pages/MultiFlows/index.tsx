@@ -11,7 +11,7 @@ import {
   useNodesState,
   useEdgesState,
   MarkerType,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import styles from './multiflows.module.css';
 
@@ -58,8 +58,7 @@ const Flow: FC<{ id: string }> = ({ id }) => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = (params: Edge | Connection) =>
-    setEdges((eds) => addEdge(params, eds));
+  const onConnect = (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds));
 
   return (
     <ReactFlowProvider>

@@ -5,8 +5,9 @@ import {
   Node,
   Edge,
   ReactFlowProvider,
-} from '@react-flow/core';
-import { Background, BackgroundVariant } from '@react-flow/background';
+  Background,
+  BackgroundVariant,
+} from '@react-flow/bundle';
 
 const defaultNodes: Node[] = [
   {
@@ -77,12 +78,7 @@ const DefaultNodes = () => {
   };
 
   return (
-    <ReactFlow
-      defaultNodes={defaultNodes}
-      defaultEdges={defaultEdges}
-      defaultEdgeOptions={defaultEdgeOptions}
-      fitView
-    >
+    <ReactFlow defaultNodes={defaultNodes} defaultEdges={defaultEdges} defaultEdgeOptions={defaultEdgeOptions} fitView>
       <Background variant={BackgroundVariant.Lines} />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>

@@ -10,10 +10,10 @@ import {
   addEdge,
   applyEdgeChanges,
   EdgeChange,
-} from '@react-flow/core';
-import { Controls } from '@react-flow/controls';
-import { Background } from '@react-flow/background';
-import { MiniMap } from '@react-flow/minimap';
+  Controls,
+  Background,
+  MiniMap,
+} from '@react-flow/bundle';
 
 import { getNodesAndEdges } from './utils';
 

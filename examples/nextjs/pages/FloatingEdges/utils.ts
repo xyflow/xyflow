@@ -1,11 +1,8 @@
-import React, { Position, XYPosition, Node, Edge } from '@react-flow/core';
+import { Position, XYPosition, Node, Edge } from '@react-flow/bundle';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
-function getNodeIntersection(
-  intersectionNode: Node,
-  targetNode: Node
-): XYPosition {
+function getNodeIntersection(intersectionNode: Node, targetNode: Node): XYPosition {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
 
   const {

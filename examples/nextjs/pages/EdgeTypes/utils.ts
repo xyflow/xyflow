@@ -1,4 +1,4 @@
-import { Edge, Node, Position } from '@react-flow/core';
+import { Edge, Node, Position } from '@react-flow/bundle';
 
 const nodeWidth = 80;
 const nodeGapWidth = nodeWidth * 2;
@@ -54,18 +54,10 @@ const getNodeId = (): string => (id++).toString();
 export function getElements(): { nodes: Node[]; edges: Edge[] } {
   const initialElements = { nodes: [] as Node[], edges: [] as Edge[] };
 
-  for (
-    let sourceTargetIndex = 0;
-    sourceTargetIndex < sourceTargetPositions.length;
-    sourceTargetIndex++
-  ) {
+  for (let sourceTargetIndex = 0; sourceTargetIndex < sourceTargetPositions.length; sourceTargetIndex++) {
     const currSourceTargetPos = sourceTargetPositions[sourceTargetIndex];
 
-    for (
-      let edgeTypeIndex = 0;
-      edgeTypeIndex < edgeTypes.length;
-      edgeTypeIndex++
-    ) {
+    for (let edgeTypeIndex = 0; edgeTypeIndex < edgeTypes.length; edgeTypeIndex++) {
       const currEdgeType = edgeTypes[edgeTypeIndex];
 
       for (let offsetIndex = 0; offsetIndex < offsets.length; offsetIndex++) {

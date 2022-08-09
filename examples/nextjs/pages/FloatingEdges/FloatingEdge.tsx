@@ -1,10 +1,5 @@
 import React, { FC, useMemo, CSSProperties } from 'react';
-import {
-  EdgeProps,
-  useStore,
-  getBezierPath,
-  ReactFlowState,
-} from '@react-flow/core';
+import { EdgeProps, useStore, getBezierPath, ReactFlowState } from '@react-flow/bundle';
 
 import { getEdgeParams } from './utils';
 
@@ -13,23 +8,14 @@ const nodeSelector = (s: ReactFlowState) => s.nodeInternals;
 const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
   const nodeInternals = useStore(nodeSelector);
 
-  const sourceNode = useMemo(
-    () => nodeInternals.get(source),
-    [source, nodeInternals]
-  );
-  const targetNode = useMemo(
-    () => nodeInternals.get(target),
-    [target, nodeInternals]
-  );
+  const sourceNode = useMemo(() => nodeInternals.get(source), [source, nodeInternals]);
+  const targetNode = useMemo(() => nodeInternals.get(target), [target, nodeInternals]);
 
   if (!sourceNode || !targetNode) {
     return null;
   }
 
-  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
-    sourceNode,
-    targetNode
-  );
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(sourceNode, targetNode);
 
   const d = getBezierPath({
     sourceX: sx,
@@ -41,13 +27,8 @@ const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
   });
 
   return (
-    <g className='react-flow__connection'>
-      <path
-        id={id}
-        className='react-flow__edge-path'
-        d={d}
-        style={style as CSSProperties}
-      />
+    <g className="react-flow__connection">
+      <path id={id} className="react-flow__edge-path" d={d} style={style as CSSProperties} />
     </g>
   );
 };

@@ -14,7 +14,7 @@ import {
   updateEdge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
+} from '@react-flow/bundle';
 import CustomNode from './CustomNode';
 
 const initialNodes: Node[] = [
@@ -184,8 +184,7 @@ const UpdateNodeInternalsFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = (params: Edge | Connection) =>
-    setEdges((els) => addEdge(params, els));
+  const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
   const { project } = useReactFlow();
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setEdges((els) => updateEdge(oldEdge, newConnection, els));

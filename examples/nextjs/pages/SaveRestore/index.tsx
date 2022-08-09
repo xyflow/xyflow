@@ -8,7 +8,7 @@ import {
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
+} from '@react-flow/bundle';
 import Controls from './Controls';
 
 const initialNodes: Node[] = [
@@ -21,10 +21,7 @@ const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
 const SaveRestore = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback(
-    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlowProvider>

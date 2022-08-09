@@ -1,14 +1,11 @@
-import { Node, Edge } from '@react-flow/core';
+import { Node, Edge } from '@react-flow/bundle';
 
 type ElementsCollection = {
   nodes: Node[];
   edges: Edge[];
 };
 
-export function getNodesAndEdges(
-  xElements: number = 10,
-  yElements: number = 10
-): ElementsCollection {
+export function getNodesAndEdges(xElements = 10, yElements = 10): ElementsCollection {
   const initialNodes = [];
   const initialEdges: Edge[] = [];
   let nodeId = 1;

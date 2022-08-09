@@ -12,7 +12,7 @@ import {
   Position,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
+} from '@react-flow/bundle';
 
 import CustomNode from './CustomNode';
 
@@ -48,10 +48,7 @@ const getId = (): string => `${id++}`;
 const UpdateNodeInternalsFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
-    [setEdges]
-  );
+  const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
 
   const updateNodeInternals = useUpdateNodeInternals();
   const { project } = useReactFlow();
@@ -98,10 +95,7 @@ const UpdateNodeInternalsFlow = () => {
     );
   }, [setNodes]);
 
-  const updateNode = useCallback(
-    () => updateNodeInternals('1'),
-    [updateNodeInternals]
-  );
+  const updateNode = useCallback(() => updateNodeInternals('1'), [updateNodeInternals]);
 
   return (
     <ReactFlow

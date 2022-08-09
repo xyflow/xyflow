@@ -5,13 +5,10 @@ import {
   Node,
   ReactFlowProvider,
   useNodesState,
-} from '@react-flow/core';
-
-import {
   Background,
   BackgroundProps,
   BackgroundVariant,
-} from '@react-flow/background';
+} from '@react-flow/bundle';
 
 import styles from './style.module.css';
 
@@ -23,10 +20,7 @@ const initialNodes: Node[] = [
   },
 ];
 
-const Flow: FC<{ id: string; bgProps: BackgroundProps }> = ({
-  id,
-  bgProps,
-}) => {
+const Flow: FC<{ id: string; bgProps: BackgroundProps }> = ({ id, bgProps }) => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
 
   return (
@@ -41,14 +35,8 @@ const Flow: FC<{ id: string; bgProps: BackgroundProps }> = ({
 const Backgrounds: FC = () => (
   <div className={styles.wrapper}>
     <Flow id="flow-a" bgProps={{ variant: BackgroundVariant.Dots }} />
-    <Flow
-      id="flow-b"
-      bgProps={{ variant: BackgroundVariant.Lines, gap: [50, 50] }}
-    />
-    <Flow
-      id="flow-c"
-      bgProps={{ variant: BackgroundVariant.Cross, gap: [100, 50] }}
-    />
+    <Flow id="flow-b" bgProps={{ variant: BackgroundVariant.Lines, gap: [50, 50] }} />
+    <Flow id="flow-c" bgProps={{ variant: BackgroundVariant.Cross, gap: [100, 50] }} />
   </div>
 );
 

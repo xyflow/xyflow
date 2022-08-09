@@ -11,7 +11,7 @@ import {
   Connection,
   useNodesState,
   useEdgesState,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 import ColorSelectorNode from './ColorSelectorNode';
 
@@ -120,9 +120,7 @@ const CustomNodeFlow = () => {
   }, []);
 
   const onConnect = (connection: Connection) =>
-    setEdges((eds) =>
-      addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds)
-    );
+    setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds));
 
   return (
     <ReactFlow

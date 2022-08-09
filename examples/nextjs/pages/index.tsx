@@ -10,7 +10,7 @@ import {
   Node,
   Edge,
   useReactFlow,
-} from '@react-flow/renderer';
+} from '@react-flow/bundle';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);

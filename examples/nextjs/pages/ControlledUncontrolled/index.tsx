@@ -7,8 +7,9 @@ import {
   ReactFlowProvider,
   useNodesState,
   useEdgesState,
-} from '@react-flow/core';
-import { Background, BackgroundVariant } from '@react-flow/background';
+  Background,
+  BackgroundVariant,
+} from '@react-flow/bunde';
 
 const defaultNodes: Node[] = [
   {

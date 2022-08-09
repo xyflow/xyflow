@@ -1,10 +1,5 @@
 import React, { memo, useCallback, Dispatch, FC } from 'react';
-import {
-  useReactFlow,
-  Edge,
-  Node,
-  ReactFlowJsonObject,
-} from '@react-flow/core';
+import { useReactFlow, Edge, Node, ReactFlowJsonObject } from '@react-flow/bundle';
 import localforage from 'localforage';
 
 import styles from './save.module.css';
@@ -33,9 +28,7 @@ const Controls: FC<ControlsProps> = ({ setNodes, setEdges }) => {
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
-      const flow: ReactFlowJsonObject | null = await localforage.getItem(
-        flowKey
-      );
+      const flow: ReactFlowJsonObject | null = await localforage.getItem(flowKey);
 
       if (flow) {
         const { x, y, zoom } = flow.viewport;
