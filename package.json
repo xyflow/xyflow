@@ -34,7 +34,6 @@
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "autoprefixer": "^10.4.8",
-    "cssnano": "^5.1.12",
     "cypress": "^10.3.1",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
