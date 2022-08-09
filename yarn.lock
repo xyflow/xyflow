@@ -2187,7 +2187,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-flow/bundle@workspace:packages/bundle":
+"@react-flow/bundle@11.0.0, @react-flow/bundle@workspace:packages/bundle":
   version: 0.0.0-use.local
   resolution: "@react-flow/bundle@workspace:packages/bundle"
   dependencies:
@@ -8066,10 +8066,7 @@ __metadata:
   resolution: "react-flow-examples@workspace:examples/nextjs"
   dependencies:
     "@preconstruct/next": ^4.0.0
-    "@react-flow/background": 11.0.0
-    "@react-flow/controls": 11.0.0
-    "@react-flow/core": 11.0.0
-    "@react-flow/minimap": 11.0.0
+    "@react-flow/bundle": 11.0.0
     "@types/dagre": ^0.7.47
     dagre: ^0.8.5
     eslint: 8.19.0
