@@ -1,18 +1,18 @@
-name: '🐛 Bug report'
+name: '🐛 Bug Report'
 description: Create a report to help us improve React Flow
 body:
   - type: markdown
     attributes:
       value: |
         Thank you for reporting an issue :pray:.
-        
+
         **Please only file issues for v10. Will will no longer fix issues for v9.** 
 
         This issue tracker is for reporting bugs found in react-flow (https://github.com/wbkd/react-flow)
         If you have a question about how to achieve something and are struggling, please post a question
         inside of react-flow's Discussion's tab: https://github.com/wbkd/react-flow/discussions
         If it's an issue about the docs please go to the react-flow-docs (https://github.com/wbkd/react-flow-docs)
-        
+
         Before submitting a new bug/issue, please check the links below to see if there is a solution or question posted there already:
          - react-flow's Open Issue's tab: https://github.com/wbkd/react-flow/issues?q=is%3Aissue+sort%3Aupdated-desc+position
          - react-flow's Closed Issues tab: https://github.com/wbkd/react-flow/issues?q=is%3Aissue+sort%3Aupdated-desc+position+is%3Aclosed
