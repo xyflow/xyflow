@@ -155,10 +155,15 @@ const ZoomPane = ({
         d3Zoom.on('zoom', null);
       } else if (!selectionKeyPressed) {
         d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          const { onViewportChange } = store.getState();
+
           store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
-          if (onMove) {
+
+          if (onMove || onViewportChange) {
             const flowTransform = eventToFlowTransform(event.transform);
-            onMove(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+
+            onViewportChange?.(flowTransform);
+            onMove?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
           }
         });
       }
@@ -168,15 +173,19 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        const { onViewportChangeStart } = store.getState();
         isZoomingOrPanning.current = true;
+
         if (event.sourceEvent?.type === 'mousedown') {
           store.setState({ paneDragging: true });
         }
-        if (onMoveStart) {
+
+        if (onMoveStart || onViewportChangeStart) {
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
-          onMoveStart(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          onViewportChangeStart?.(flowTransform);
+          onMoveStart?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
         }
       });
     }
@@ -185,14 +194,17 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        const { onViewportChangeEnd } = store.getState();
+
         isZoomingOrPanning.current = false;
         store.setState({ paneDragging: false });
 
-        if (onMoveEnd && viewChanged(prevTransform.current, event.transform)) {
+        if ((onMoveEnd || onViewportChangeEnd) && viewChanged(prevTransform.current, event.transform)) {
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
-          onMoveEnd(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          onViewportChangeEnd?.(flowTransform);
+          onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
         }
       });
     }

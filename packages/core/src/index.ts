@@ -40,5 +40,6 @@ export { default as useViewport } from './hooks/useViewport';
 export { default as useKeyPress } from './hooks/useKeyPress';
 export * from './hooks/useNodesEdgesState';
 export { useStore, useStoreApi } from './hooks/useStore';
+export { default as useOnViewportChange } from './hooks/useOnViewportChange';
 
 export * from './types';

@@ -112,6 +112,8 @@ export type UnselectNodesAndEdgesParams = {
   edges?: Edge[];
 };
 
+export type OnViewportChange = (viewport: Viewport) => void;
+
 export interface ViewportHelperFunctions {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
@@ -193,6 +195,13 @@ export type ReactFlowStore = {
 
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+
+  // event handlers
+  onViewportChangeStart?: OnViewportChange;
+  onViewportChange?: OnViewportChange;
+  onViewportChangeEnd?: OnViewportChange;
+
+  onSelectionChange?: OnSelectionChangeFunc;
 };
 
 export type ReactFlowActions = {
