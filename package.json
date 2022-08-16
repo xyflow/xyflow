@@ -54,7 +54,11 @@
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "zustand": "^3.7.2"
+    "zustand": "^3.7.2",
+    "@types/d3": "^7.4.0",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "@types/resize-observer-browser": "^0.1.7"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
@@ -66,10 +70,6 @@
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-replace": "^4.0.0",
-    "@types/d3": "^7.4.0",
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
-    "@types/resize-observer-browser": "^0.1.7",
     "autoprefixer": "^10.4.7",
     "babel-preset-react-app": "^10.0.1",
     "cross-env": "^7.0.3",
