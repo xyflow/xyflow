@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "copystyles": "cp ../../node_modules/@react-flow/renderer/dist/style.css ./styles/rf-style.css",
+    "copystyles": "cp ../../node_modules/@react-flow/bundle/dist/style.css ./styles/rf-style.css && cp ../../node_modules/@react-flow/bundle/dist/base.css ./styles/rf-base.css",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

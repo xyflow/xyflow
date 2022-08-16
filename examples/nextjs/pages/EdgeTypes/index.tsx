@@ -1,7 +1,7 @@
 /**
  * Example for checking the different edge types and source and target positions
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import {
   ReactFlow,
@@ -31,7 +31,7 @@ const deleteKeyCode = ['AltLeft+KeyD', 'Backspace'];
 const EdgeTypesFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
+  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
     <ReactFlow

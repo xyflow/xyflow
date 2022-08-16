@@ -1,3 +1,4 @@
+/* this gets exported as style.css and can be used for the default theming */
 @import './init.css';
 
 .react-flow__edge {
@@ -12,7 +13,10 @@
   }
 }
 
-.react-flow__node {
+.react-flow__node-default,
+.react-flow__node-input,
+.react-flow__node-output,
+.react-flow__node-group {
   padding: 10px;
   border-radius: 3px;
   width: 150px;
@@ -35,11 +39,11 @@
       outline: none;
     }
   }
+}
 
-  &-group {
-    background: rgba(240, 240, 240, 0.25);
-    border-color: #1a192b;
-  }
+.react-flow__node-group {
+  background: rgba(240, 240, 240, 0.25);
+  border-color: #1a192b;
 }
 
 .react-flow__nodesselection-rect,
@@ -59,8 +63,4 @@
   background: #1a192b;
   border: 1px solid white;
   border-radius: 100%;
-
-  &.connectable {
-    cursor: crosshair;
-  }
 }

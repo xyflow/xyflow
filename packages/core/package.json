@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.0",
+    "@types/d3": "^7.4.0",
+    "@types/react": "^18.0.15",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
@@ -32,8 +34,6 @@
     "nocss"
   ],
   "devDependencies": {
-    "@types/d3": "^7.4.0",
-    "@types/react": "^18.0.15",
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.14",
     "postcss-cli": "^10.0.0",
