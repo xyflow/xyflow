@@ -17,6 +17,7 @@ function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOp
   }, [onStart]);
 
   useEffect(() => {
+    console.log('change onchange');
     store.setState({ onViewportChange: onChange });
   }, [onChange]);
 

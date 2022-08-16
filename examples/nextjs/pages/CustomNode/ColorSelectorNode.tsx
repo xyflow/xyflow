@@ -1,5 +1,5 @@
-import React, { memo, FC, CSSProperties } from 'react';
-import { Handle, Position, NodeProps, Connection, Edge, useOnViewportChange } from '@react-flow/bundle';
+import React, { memo, FC, CSSProperties, useCallback } from 'react';
+import { Handle, Position, NodeProps, Connection, Edge, useOnViewportChange, Viewport } from '@react-flow/bundle';
 
 const targetHandleStyle: CSSProperties = { background: '#555' };
 const sourceHandleStyleA: CSSProperties = { ...targetHandleStyle, top: 10 };
@@ -12,10 +12,14 @@ const sourceHandleStyleB: CSSProperties = {
 const onConnect = (params: Connection | Edge) => console.log('handle onConnect', params);
 
 const ColorSelectorNode: FC<NodeProps> = ({ data, isConnectable }) => {
+  const onStart = useCallback((viewport: Viewport) => console.log('onStart', viewport), []);
+  const onChange = useCallback((viewport: Viewport) => console.log('onChange', viewport), []);
+  const onEnd = useCallback((viewport: Viewport) => console.log('onEnd', viewport), []);
+
   useOnViewportChange({
-    onStart: (viewport) => console.log('start', viewport),
-    onChange: (viewport) => console.log('change', viewport),
-    onEnd: (viewport) => console.log('end', viewport),
+    onStart,
+    onChange,
+    onEnd,
   });
 
   return (
