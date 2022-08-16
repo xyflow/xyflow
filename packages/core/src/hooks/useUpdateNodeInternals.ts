@@ -10,15 +10,10 @@ function useUpdateNodeInternals(): UpdateNodeInternals {
   const updateNodeDimensions = useStore(selector);
 
   return useCallback<UpdateNodeInternals>((id: string) => {
-    const { domNode } = store.getState();
-    if (!domNode) {
-      return;
-    }
-
-    const nodeElement = domNode.querySelector(`.react-flow__node[data-id="${id}"]`) as HTMLDivElement;
+    const nodeElement = store.getState().domNode?.querySelector(`.react-flow__node[data-id="${id}"]`) as HTMLDivElement;
 
     if (nodeElement) {
-      updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]);
+      requestAnimationFrame(() => updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]));
     }
   }, []);
 }

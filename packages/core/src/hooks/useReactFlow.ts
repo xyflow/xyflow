@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../hooks/useStore';
@@ -15,7 +15,7 @@ import {
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
-  const { initialized: viewportInitialized, ...viewportHelperFunctions } = useViewportHelper();
+  const viewportHelper = useViewportHelper();
   const store = useStoreApi();
 
   const getNodes = useCallback<Instance.GetNodes<NodeData>>(() => {
@@ -111,17 +111,18 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     };
   }, []);
 
-  return {
-    ...viewportHelperFunctions,
-    viewportInitialized,
-    getNodes,
-    getNode,
-    getEdges,
-    getEdge,
-    setNodes,
-    setEdges,
-    addNodes,
-    addEdges,
-    toObject,
-  };
+  return useMemo(() => {
+    return {
+      ...viewportHelper,
+      getNodes,
+      getNode,
+      getEdges,
+      getEdge,
+      setNodes,
+      setEdges,
+      addNodes,
+      addEdges,
+      toObject,
+    };
+  }, [viewportHelper, getNodes, getNode, getEdges, getEdge, setNodes, setEdges, addNodes, addEdges, toObject]);
 }
