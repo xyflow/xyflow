@@ -121,11 +121,12 @@ const initialNodes: Node[] = [
     data: {
       label: (
         <>
-          An <strong>output node</strong>
+          An <strong>output node (not deletable)</strong>
         </>
       ),
     },
     position: { x: 100, y: 480 },
+    deletable: false,
   },
   {
     id: '7',
@@ -151,7 +152,8 @@ const initialEdges: Edge[] = [
     source: '5',
     target: '6',
     type: 'smoothstep',
-    label: 'smooth step edge',
+    deletable: false,
+    label: 'smooth step edge (not deletable)',
   },
   {
     id: 'e5-7',

@@ -22,6 +22,7 @@ export interface Edge<T = any> {
   style?: CSSProperties;
   animated?: boolean;
   hidden?: boolean;
+  deletable?: boolean;
   data?: T;
   className?: string;
   sourceNode?: Node;

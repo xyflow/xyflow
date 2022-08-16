@@ -21,6 +21,7 @@ export interface Node<T = any> {
   draggable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
+  deletable?: boolean;
   dragHandle?: string;
   width?: number | null;
   height?: number | null;

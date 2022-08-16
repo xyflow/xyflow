@@ -34,16 +34,18 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
     const nodes = Array.from(nodeInternals.values());
     const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
       const parentSelected = !node.selected && node.parentNode && res.find((n) => n.id === node.parentNode);
-      if (node.selected || parentSelected) {
+      const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
+      if (deletable && (node.selected || parentSelected)) {
         res.push(node);
       }
 
       return res;
     }, []);
-    const selectedEdges = edges.filter((e) => e.selected);
+    const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
+    const selectedEdges = deletableEdges.filter((e) => e.selected);
 
     if (nodesToRemove || selectedEdges) {
-      const connectedEdges = getConnectedEdges(nodesToRemove, edges);
+      const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
       const edgesToRemove = [...selectedEdges, ...connectedEdges];
       const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
         if (!res.includes(edge.id)) {
