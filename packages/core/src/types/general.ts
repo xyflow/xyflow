@@ -202,6 +202,8 @@ export type ReactFlowStore = {
   onViewportChangeEnd?: OnViewportChange;
 
   onSelectionChange?: OnSelectionChangeFunc;
+
+  ariaLiveMessage: string;
 };
 
 export type ReactFlowActions = {

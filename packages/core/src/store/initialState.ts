@@ -48,6 +48,8 @@ const initialState: ReactFlowStore = {
 
   connectionStartHandle: null,
   connectOnClick: true,
+
+  ariaLiveMessage: '',
 };
 
 export default initialState;

@@ -4,15 +4,15 @@ import useReactFlow from './useReactFlow';
 import { OnInit } from '../types';
 
 function useOnInitHandler(onInit: OnInit | undefined) {
-  const ReactFlowInstance = useReactFlow();
+  const rfInstance = useReactFlow();
   const isInitialized = useRef<boolean>(false);
 
   useEffect(() => {
-    if (!isInitialized.current && ReactFlowInstance.viewportInitialized && onInit) {
-      setTimeout(() => onInit(ReactFlowInstance), 1);
+    if (!isInitialized.current && rfInstance.viewportInitialized && onInit) {
+      setTimeout(() => onInit(rfInstance), 1);
       isInitialized.current = true;
     }
-  }, [onInit, ReactFlowInstance.viewportInitialized]);
+  }, [onInit, rfInstance.viewportInitialized]);
 }
 
 export default useOnInitHandler;
