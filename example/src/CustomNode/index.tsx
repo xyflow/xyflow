@@ -117,7 +117,7 @@ const CustomNodeFlow = () => {
       connectionLineStyle={connectionLineStyle}
       snapToGrid={true}
       snapGrid={snapGrid}
-      defaultZoom={0.3}
+      fitView
       minZoom={0.3}
       maxZoom={2}
     >

@@ -20,7 +20,7 @@ const initialViewportHelper: ViewportHelperFunctions = {
   setCenter: (_: number, __: number) => {},
   fitBounds: (_: Rect) => {},
   project: (position: XYPosition) => position,
-  initialized: false,
+  viewportInitialized: false,
 };
 
 const selector = (s: ReactFlowState) => ({
@@ -71,7 +71,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           const { transform, snapToGrid, snapGrid } = store.getState();
           return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
         },
-        initialized: true,
+        viewportInitialized: true,
       };
     }
 

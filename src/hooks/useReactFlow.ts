@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../store';
@@ -14,7 +14,7 @@ import {
 } from '../types';
 
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
-  const { initialized: viewportInitialized, ...viewportHelperFunctions } = useViewportHelper();
+  const viewportHelper = useViewportHelper();
   const store = useStoreApi();
 
   const getNodes = useCallback<Instance.GetNodes<NodeData>>(() => {
@@ -110,17 +110,18 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     };
   }, []);
 
-  return {
-    ...viewportHelperFunctions,
-    viewportInitialized,
-    getNodes,
-    getNode,
-    getEdges,
-    getEdge,
-    setNodes,
-    setEdges,
-    addNodes,
-    addEdges,
-    toObject,
-  };
+  return useMemo(() => {
+    return {
+      ...viewportHelper,
+      getNodes,
+      getNode,
+      getEdges,
+      getEdge,
+      setNodes,
+      setEdges,
+      addNodes,
+      addEdges,
+      toObject,
+    };
+  }, [viewportHelper, getNodes, getNode, getEdges, getEdge, setNodes, setEdges, addNodes, addEdges, toObject]);
 }

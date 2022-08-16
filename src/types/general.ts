@@ -130,7 +130,7 @@ export interface ViewportHelperFunctions {
   setCenter: SetCenter;
   fitBounds: FitBounds;
   project: Project;
-  initialized: boolean;
+  viewportInitialized: boolean;
 }
 
 export type ReactFlowStore = {

@@ -86,7 +86,7 @@ const UseZoomPanHelperFlow = () => {
   const logNodes = useCallback(() => {
     console.log('nodes', getNodes());
     console.log('edges', getEdges());
-  }, [getNodes]);
+  }, [getNodes, getEdges]);
 
   useEffect(() => {
     addEdges({ id: 'e3-4', source: '3', target: '4' });
