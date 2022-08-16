@@ -56,8 +56,6 @@
     "d3-zoom": "^3.0.0",
     "zustand": "^3.7.2",
     "@types/d3": "^7.4.0",
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
     "@types/resize-observer-browser": "^0.1.7"
   },
   "devDependencies": {
@@ -90,7 +88,9 @@
     "rollup-plugin-typescript2": "^0.32.1",
     "rollup-plugin-visualizer": "^5.7.1",
     "start-server-and-test": "^1.14.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6"
   },
   "peerDependencies": {
     "react": "16 || 17 || 18",
