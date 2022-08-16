@@ -10,7 +10,7 @@
   ],
   "private": true,
   "scripts": {
-    "postinstall": "preconstruct dev && yarn run packages",
+    "postinstall": "preconstruct dev",
     "dev": "preconstruct watch",
     "dev:example": "cd examples/nextjs && yarn dev",
     "build": "preconstruct build && yarn run packages",
