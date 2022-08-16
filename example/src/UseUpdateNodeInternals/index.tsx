@@ -1,4 +1,4 @@
-import { useCallback, CSSProperties, MouseEvent } from 'react';
+import { useCallback, MouseEvent } from 'react';
 
 import ReactFlow, {
   NodeTypes,
@@ -8,25 +8,20 @@ import ReactFlow, {
   Node,
   Connection,
   Edge,
-  useUpdateNodeInternals,
   Position,
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
 import CustomNode from './CustomNode';
 
-const initialHandleCount = 1;
-
 const initialNodes: Node[] = [
   {
     id: '1',
     type: 'custom',
-    data: { label: 'Node 1', handleCount: initialHandleCount, handlePosition: 0 },
+    data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
   },
 ];
-
-const buttonWrapperStyles: CSSProperties = { position: 'absolute', right: 10, top: 10, zIndex: 10 };
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -40,7 +35,6 @@ const UpdateNodeInternalsFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
 
-  const updateNodeInternals = useUpdateNodeInternals();
   const { project } = useReactFlow();
 
   const onPaneClick = useCallback(
@@ -56,25 +50,6 @@ const UpdateNodeInternalsFlow = () => {
       ),
     [project, setNodes]
   );
-
-  const toggleHandleCount = useCallback(() => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        return { ...node, data: { ...node.data, handleCount: node.data?.handleCount === 1 ? 2 : 1 } };
-      })
-    );
-  }, [setNodes]);
-
-  const toggleHandlePosition = useCallback(() => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        return { ...node, data: { ...node.data, handlePosition: node.data?.handlePosition === 0 ? 1 : 0 } };
-      })
-    );
-  }, [setNodes]);
-
-  const updateNode = useCallback(() => updateNodeInternals('1'), [updateNodeInternals]);
-
   return (
     <ReactFlow
       nodes={nodes}
@@ -84,13 +59,7 @@ const UpdateNodeInternalsFlow = () => {
       nodeTypes={nodeTypes}
       onConnect={onConnect}
       onPaneClick={onPaneClick}
-    >
-      <div style={buttonWrapperStyles}>
-        <button onClick={toggleHandleCount}>toggle handle count</button>
-        <button onClick={toggleHandlePosition}>toggle handle position</button>
-        <button onClick={updateNode}>update node internals</button>
-      </div>
-    </ReactFlow>
+    />
   );
 };
 
