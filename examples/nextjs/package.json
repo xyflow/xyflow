@@ -1,7 +1,8 @@
 {
   "name": "react-flow-examples",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "copystyles": "cp ../../node_modules/@react-flow/bundle/dist/style.css ./styles/rf-style.css && cp ../../node_modules/@react-flow/bundle/dist/base.css ./styles/rf-base.css",
@@ -11,7 +12,7 @@
   },
   "dependencies": {
     "@preconstruct/next": "^4.0.0",
-    "@react-flow/bundle": "11.0.0",
+    "@react-flow/bundle": "workspace:*",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
     "next": "12.2.2",
