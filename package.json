@@ -1,6 +1,5 @@
 {
   "name": "react-flow",
-  "version": "11.0.0",
   "description": "A highly customizable React library for building node-based editors and interactive flow charts",
   "repository": "git@github.com:wbkd/react-flow.git",
   "license": "MIT",
@@ -21,21 +20,21 @@
     "test": "yarn build && start-server-and-test dev:example http://localhost:3000 test:chrome"
   },
   "dependencies": {
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/preset-env": "^7.18.2",
-    "@babel/preset-react": "^7.17.12",
-    "@babel/preset-typescript": "^7.17.12",
-    "@changesets/cli": "^2.24.2",
-    "@preconstruct/cli": "^2.1.8",
+    "@babel/core": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@changesets/cli": "^2.24.3",
+    "@preconstruct/cli": "^2.2.1",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "autoprefixer": "^10.4.8",
-    "cypress": "^10.3.1",
-    "eslint": "^8.21.0",
+    "cypress": "^10.6.0",
+    "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "latest",

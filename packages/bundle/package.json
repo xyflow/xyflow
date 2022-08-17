@@ -2,17 +2,34 @@
   "name": "@react-flow/bundle",
   "version": "11.0.0",
   "description": "The bundled React Flow package that comes with all the essentials.",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
   "main": "dist/react-flow-bundle.cjs.js",
   "module": "dist/react-flow-bundle.esm.js",
+  "sideEffects": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/bundle"
+  },
   "scripts": {
     "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
-    "@react-flow/background": "11.0.0",
-    "@react-flow/controls": "11.0.0",
-    "@react-flow/core": "11.0.0",
-    "@react-flow/minimap": "11.0.0"
+    "@react-flow/background": "workspace:*",
+    "@react-flow/controls": "workspace:*",
+    "@react-flow/core": "workspace:*",
+    "@react-flow/minimap": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18",

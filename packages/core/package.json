@@ -1,16 +1,26 @@
 {
   "name": "@react-flow/core",
   "version": "11.0.0",
-  "engines": {
-    "node": ">=14"
-  },
+  "description": "Core components and util functions of React Flow.",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
   "main": "dist/react-flow-core.cjs.js",
   "module": "dist/react-flow-core.esm.js",
   "sideEffects": false,
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wbkd/react-flow.git"
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/core"
   },
   "scripts": {
     "build": "postcss src/styles/{base,style}.css --config ../../postcss.config.json --dir dist"
@@ -18,7 +28,6 @@
   "dependencies": {
     "@babel/runtime": "^7.18.0",
     "@types/d3": "^7.4.0",
-    "@types/react": "^18.0.15",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
@@ -29,11 +38,8 @@
     "react": ">=18",
     "react-dom": ">=18"
   },
-  "files": [
-    "dist",
-    "nocss"
-  ],
   "devDependencies": {
+    "@types/react": "^18.0.17",
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.14",
     "postcss-cli": "^10.0.0",

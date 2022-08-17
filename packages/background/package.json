@@ -2,11 +2,28 @@
   "name": "@react-flow/background",
   "version": "11.0.0",
   "description": "Background component with different variants for React Flow",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
   "main": "dist/react-flow-background.cjs.js",
   "module": "dist/react-flow-background.esm.js",
+  "sideEffects": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/background"
+  },
   "dependencies": {
-    "@react-flow/core": "11.0.0",
+    "@react-flow/core": "workspace:*",
     "classcat": "^5.0.3"
   },
   "peerDependencies": {

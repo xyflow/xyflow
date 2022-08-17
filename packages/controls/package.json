@@ -1,15 +1,32 @@
 {
   "name": "@react-flow/controls",
   "version": "11.0.0",
-  "description": "A component to control the viewport of a React Flow instance",
+  "description": "Component to control the viewport of a React Flow instance",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
   "main": "dist/react-flow-controls.cjs.js",
   "module": "dist/react-flow-controls.esm.js",
+  "sideEffects": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/controls"
+  },
   "scripts": {
     "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
-    "@react-flow/core": "^11.0.0",
+    "@react-flow/core": "workspace:*",
     "classcat": "^5.0.3"
   },
   "peerDependencies": {

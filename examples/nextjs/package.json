@@ -15,12 +15,12 @@
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
     "next": "12.2.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/dagre": "^0.7.47",
-    "eslint": "8.19.0",
+    "eslint": "^8.22.0",
     "eslint-config-next": "12.2.2",
     "postcss": "^8.4.16",
     "postcss-flexbugs-fixes": "^5.0.2",
