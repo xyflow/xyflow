@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Selection as D3Selection } from 'd3';
 
-import { boxToRect, clamp, getBoundsOfBoxes, rectToBox } from '../utils';
+import { boxToRect, clamp, devWarn, getBoundsOfBoxes, rectToBox } from '../utils';
 import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -60,11 +60,8 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
 
 export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        "[React Flow]: Can't create edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600"
-      );
-    }
+    devWarn("Can't create edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600");
+
     return edges;
   }
 
@@ -87,22 +84,16 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
 
 export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
   if (!newConnection.source || !newConnection.target) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        "[React Flow]: Can't create a new edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600"
-      );
-    }
+    devWarn("Can't create a new edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600");
+
     return edges;
   }
 
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
 
   if (!foundEdge) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        `[React Flow]: The old edge with id=${oldEdge.id} does not exist. Help: https://reactflow.dev/error#700`
-      );
-    }
+    devWarn(`The old edge with id=${oldEdge.id} does not exist. Help: https://reactflow.dev/error#700`);
+
     return edges;
   }
 

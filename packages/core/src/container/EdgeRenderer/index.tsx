@@ -10,6 +10,7 @@ import { getEdgePositions, getHandle, getNodeData } from './utils';
 
 import { Position, Edge, ConnectionMode, ReactFlowState } from '../../types';
 import { GraphViewProps } from '../GraphView';
+import { devWarn } from '../../utils';
 
 interface EdgeRendererProps
   extends Pick<
@@ -111,13 +112,12 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetPosition = targetHandle?.position || Position.Top;
 
               if (!sourceHandle || !targetHandle) {
-                if (process.env.NODE_ENV === 'development') {
-                  const handleType = !sourceHandle ? 'source' : 'target';
-                  const handleId = !sourceHandle ? edge.sourceHandle : edge.targetHandle;
-                  console.warn(
-                    `[React Flow]: Couldn't create edge for ${handleType} handle id: ${handleId}; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
-                  );
-                }
+                devWarn(
+                  `Couldn't create edge for ${!sourceHandle ? 'source' : 'target'} handle id: ${
+                    !sourceHandle ? edge.sourceHandle : edge.targetHandle
+                  }; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                );
+
                 return null;
               }
 

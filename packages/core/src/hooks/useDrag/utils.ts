@@ -1,7 +1,7 @@
 import { RefObject } from 'react';
 
 import { CoordinateExtent, Node, NodeDragItem, NodeInternals, XYPosition } from '../../types';
-import { clampPosition } from '../../utils';
+import { clampPosition, devWarn } from '../../utils';
 
 export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
   if (!node.parentNode) {
@@ -78,9 +78,8 @@ export function calcNextPosition(
             ]
           : currentExtent;
     } else {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('[React Flow]: Only child nodes can use a parent extent. Help: https://reactflow.dev/error#500');
-      }
+      devWarn('Only child nodes can use a parent extent. Help: https://reactflow.dev/error#500');
+
       currentExtent = nodeExtent;
     }
   } else if (node.extent && node.parentNode) {

@@ -46,3 +46,9 @@ export const internalsSymbol = Symbol.for('internals');
 
 // used for a11y key board controls for nodes and edges
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
+
+export const devWarn = (message: string) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(`[React Flow]: ${message}`);
+  }
+};

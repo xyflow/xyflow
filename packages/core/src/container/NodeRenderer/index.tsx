@@ -3,7 +3,7 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
-import { internalsSymbol } from '../../utils';
+import { devWarn, internalsSymbol } from '../../utils';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { Position, ReactFlowState, WrapNodeProps } from '../../types';
@@ -70,11 +70,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
         let nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn(
-              `[React Flow]: Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
-            );
-          }
+          devWarn(
+            `Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
+          );
 
           nodeType = 'default';
         }

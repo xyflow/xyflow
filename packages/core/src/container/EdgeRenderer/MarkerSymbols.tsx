@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { MarkerType, EdgeMarker } from '../../types';
+import { devWarn } from '../../utils';
 
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
@@ -39,9 +40,7 @@ export function useMarkerSymbol(type: MarkerType) {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 
     if (!symbolExists) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(`[React Flow]: Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error#900`);
-      }
+      devWarn(`Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error#900`);
 
       return null;
     }
