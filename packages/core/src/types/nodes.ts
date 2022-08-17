@@ -68,6 +68,8 @@ export interface WrapNodeProps<T = any> {
   isConnectable: boolean;
   xPos: number;
   yPos: number;
+  xPosOrigin: number;
+  yPosOrigin: number;
   initialized: boolean;
   isSelectable: boolean;
   isDraggable: boolean;
@@ -124,3 +126,5 @@ export type NodeDragItem = {
   parentNode?: string;
   dragging?: boolean;
 };
+
+export type NodeOrigin = [number, number];

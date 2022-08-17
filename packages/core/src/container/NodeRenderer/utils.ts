@@ -5,7 +5,7 @@ import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import GroupNode from '../../components/Nodes/GroupNode';
 import wrapNode from '../../components/Nodes/wrapNode';
-import { NodeTypes, NodeProps, NodeTypesWrapped } from '../../types';
+import { NodeTypes, NodeProps, NodeTypesWrapped, NodeOrigin, XYPosition } from '../../types';
 
 export type CreateNodeTypes = (nodeTypes: NodeTypes) => NodeTypesWrapped;
 
@@ -31,3 +31,31 @@ export function createNodeTypes(nodeTypes: NodeTypes): NodeTypesWrapped {
     ...specialTypes,
   };
 }
+
+export const getPositionWithOrigin = ({
+  x,
+  y,
+  width,
+  height,
+  origin,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  origin: NodeOrigin;
+}): XYPosition => {
+  if (!width || !height) {
+    return { x, y };
+  }
+
+  if (origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
+    console.warn('[ReactFlow]: nodeOrigin must be between 0 and 1');
+    return { x, y };
+  }
+
+  return {
+    x: x - width * origin[0],
+    y: y - height * origin[1],
+  };
+};

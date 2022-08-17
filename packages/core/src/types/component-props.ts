@@ -32,6 +32,7 @@ import {
   NodeMouseHandler,
   SelectionDragHandler,
   Viewport,
+  NodeOrigin,
 } from '.';
 import { HandleType } from './handles';
 
@@ -91,6 +92,8 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
+  nodeOrigin?: NodeOrigin;
+  initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
   panOnDrag?: boolean;

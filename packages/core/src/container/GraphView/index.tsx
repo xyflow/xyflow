@@ -13,6 +13,7 @@ import {
   ReactFlowProps,
   Viewport,
   CoordinateExtent,
+  NodeOrigin,
 } from '../../types';
 
 export interface GraphViewProps
@@ -35,6 +36,7 @@ export interface GraphViewProps
   defaultViewport: Viewport;
   rfId: string;
   disableKeyboardA11y: boolean;
+  nodeOrigin: NodeOrigin;
 }
 
 const GraphView = ({
@@ -96,6 +98,7 @@ const GraphView = ({
   noPanClassName,
   elevateEdgesOnSelect,
   disableKeyboardA11y,
+  nodeOrigin,
   rfId,
 }: GraphViewProps) => {
   useOnInitHandler(onInit);
@@ -171,6 +174,7 @@ const GraphView = ({
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}
           disableKeyboardA11y={disableKeyboardA11y}
+          nodeOrigin={nodeOrigin}
           rfId={rfId}
         />
       </ViewportWrapper>

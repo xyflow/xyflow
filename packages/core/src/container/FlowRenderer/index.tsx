@@ -24,6 +24,7 @@ export type FlowRendererProps = Omit<
   | 'selectNodesOnDrag'
   | 'defaultMarkerColor'
   | 'rfId'
+  | 'nodeOrigin'
 > & {
   children: ReactNode;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEvent, ChangeEvent } from 'react';
+import React, { useState, useEffect, MouseEvent, ChangeEvent, useCallback } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -118,8 +118,11 @@ const CustomNodeFlow = () => {
     ]);
   }, []);
 
-  const onConnect = (connection: Connection) =>
-    setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds));
+  const onConnect = useCallback(
+    (connection: Connection) =>
+      setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds)),
+    [setEdges]
+  );
 
   return (
     <ReactFlow

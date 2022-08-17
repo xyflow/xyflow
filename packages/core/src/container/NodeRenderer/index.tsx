@@ -7,6 +7,7 @@ import { internalsSymbol } from '../../utils';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { Position, ReactFlowState, WrapNodeProps } from '../../types';
+import { getPositionWithOrigin } from './utils';
 
 type NodeRendererProps = Pick<
   GraphViewProps,
@@ -23,6 +24,7 @@ type NodeRendererProps = Pick<
   | 'noDragClassName'
   | 'rfId'
   | 'disableKeyboardA11y'
+  | 'nodeOrigin'
 >;
 
 const selector = (s: ReactFlowState) => ({
@@ -81,6 +83,15 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+        const posX = node.position?.x ?? 0;
+        const posY = node.position?.y ?? 0;
+        const posOrigin = getPositionWithOrigin({
+          x: posX,
+          y: posY,
+          width: node.width ?? 0,
+          height: node.height ?? 0,
+          origin: props.nodeOrigin,
+        });
 
         return (
           <NodeComponent
@@ -93,8 +104,10 @@ const NodeRenderer = (props: NodeRendererProps) => {
             sourcePosition={node.sourcePosition || Position.Bottom}
             targetPosition={node.targetPosition || Position.Top}
             hidden={node.hidden}
-            xPos={node.positionAbsolute?.x ?? 0}
-            yPos={node.positionAbsolute?.y ?? 0}
+            xPos={posX}
+            yPos={posY}
+            xPosOrigin={posOrigin.x}
+            yPosOrigin={posOrigin.y}
             selectNodesOnDrag={props.selectNodesOnDrag}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}

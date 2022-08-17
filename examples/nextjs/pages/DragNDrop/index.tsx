@@ -10,6 +10,7 @@ import {
   useNodesState,
   useEdgesState,
   Controls,
+  NodeOrigin,
 } from '@react-flow/bundle';
 
 import Sidebar from './Sidebar';
@@ -32,6 +33,8 @@ const onDragOver = (event: DragEvent) => {
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
+
+const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
@@ -74,6 +77,7 @@ const DnDFlow = () => {
             onInit={onInit}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            nodeOrigin={nodeOrigin}
           >
             <Controls />
           </ReactFlow>

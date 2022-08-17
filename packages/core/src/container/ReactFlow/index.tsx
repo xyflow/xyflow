@@ -6,6 +6,7 @@ import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } 
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
+import GroupNode from '../../components/Nodes/GroupNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
 
@@ -14,6 +15,7 @@ import {
   ConnectionMode,
   EdgeTypes,
   EdgeTypesWrapped,
+  NodeOrigin,
   NodeTypes,
   NodeTypesWrapped,
   PanOnScrollMode,
@@ -33,6 +35,7 @@ const defaultNodeTypes: NodeTypes = {
   input: InputNode,
   default: DefaultNode,
   output: OutputNode,
+  group: GroupNode,
 };
 
 const defaultEdgeTypes: EdgeTypes = {
@@ -43,6 +46,7 @@ const defaultEdgeTypes: EdgeTypes = {
   simplebezier: SimpleBezierEdge,
 };
 
+const initNodeOrigin: NodeOrigin = [0, 0];
 const initSnapGrid: [number, number] = [15, 15];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
@@ -104,6 +108,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       selectNodesOnDrag = true,
       nodesDraggable,
       nodesConnectable,
+      nodeOrigin = initNodeOrigin,
       elementsSelectable,
       defaultViewport = initDefaultViewport,
       minZoom = 0.5,
@@ -219,6 +224,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             elevateEdgesOnSelect={elevateEdgesOnSelect}
             rfId={rfId}
             disableKeyboardA11y={disableKeyboardA11y}
+            nodeOrigin={nodeOrigin}
           />
           <StoreUpdater
             nodes={nodes}
