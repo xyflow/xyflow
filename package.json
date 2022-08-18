@@ -17,7 +17,8 @@
     "test:all": "yarn test:chrome && yarn test:firefox",
     "test:chrome": "cypress run --browser chrome",
     "test:firefox": "cypress run --browser firefox",
-    "test": "yarn build && start-server-and-test dev:example http://localhost:3000 test:chrome"
+    "test": "yarn build && start-server-and-test dev:example http://localhost:3000 test:chrome",
+    "release": "changeset publish"
   },
   "dependencies": {
     "react": "^18.2.0",

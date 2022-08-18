@@ -1,6 +1,6 @@
 {
   "name": "@react-flow/bundle",
-  "version": "11.0.0",
+  "version": "11.0.0-next.0",
   "description": "The bundled React Flow package that comes with all the essentials.",
   "keywords": [
     "react",
