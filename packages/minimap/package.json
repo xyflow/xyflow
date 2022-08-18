@@ -26,6 +26,7 @@
     "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
+    "@babel/runtime": "^7.18.9",
     "@react-flow/core": "workspace:*",
     "classcat": "^5.0.3",
     "zustand": "^4.0.0"

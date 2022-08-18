@@ -26,7 +26,7 @@
     "build": "postcss src/styles/{base,style}.css --config ../../postcss.config.json --dir dist"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.0",
+    "@babel/runtime": "^7.18.9",
     "@types/d3": "^7.4.0",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",

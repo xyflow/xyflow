@@ -1139,6 +1139,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-runtime@npm:^7.18.10":
+  version: 7.18.10
+  resolution: "@babel/plugin-transform-runtime@npm:7.18.10"
+  dependencies:
+    "@babel/helper-module-imports": ^7.18.6
+    "@babel/helper-plugin-utils": ^7.18.9
+    babel-plugin-polyfill-corejs2: ^0.3.2
+    babel-plugin-polyfill-corejs3: ^0.5.3
+    babel-plugin-polyfill-regenerator: ^0.4.0
+    semver: ^6.3.0
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 98c18680b4258b8bd3f04926b73c72ae77037d5ea5b50761ca35de15896bf0d04bedabde39a81be56dbd4859c96ffaa7103fbefb5d5b58a36e0a80381e4a146c
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-shorthand-properties@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/plugin-transform-shorthand-properties@npm:7.18.6"
@@ -1370,7 +1386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.18.0, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.4":
   version: 7.18.9
   resolution: "@babel/runtime@npm:7.18.9"
   dependencies:
@@ -2287,7 +2303,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@react-flow/bundle@11.0.0, @react-flow/bundle@workspace:packages/bundle":
+"@react-flow/bundle@workspace:*, @react-flow/bundle@workspace:packages/bundle":
   version: 0.0.0-use.local
   resolution: "@react-flow/bundle@workspace:packages/bundle"
   dependencies:
@@ -2329,7 +2345,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/core@workspace:packages/core"
   dependencies:
-    "@babel/runtime": ^7.18.0
+    "@babel/runtime": ^7.18.9
     "@types/d3": ^7.4.0
     "@types/react": ^18.0.17
     autoprefixer: ^10.4.8
@@ -8149,7 +8165,7 @@ __metadata:
   resolution: "react-flow-examples@workspace:examples/nextjs"
   dependencies:
     "@preconstruct/next": ^4.0.0
-    "@react-flow/bundle": 11.0.0
+    "@react-flow/bundle": "workspace:*"
     "@types/dagre": ^0.7.47
     dagre: ^0.8.5
     eslint: ^8.22.0
@@ -8171,6 +8187,7 @@ __metadata:
   resolution: "react-flow@workspace:."
   dependencies:
     "@babel/core": ^7.18.10
+    "@babel/plugin-transform-runtime": ^7.18.10
     "@babel/preset-env": ^7.18.10
     "@babel/preset-react": ^7.18.6
     "@babel/preset-typescript": ^7.18.6
