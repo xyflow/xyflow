@@ -167,8 +167,6 @@ export type ReactFlowStore = {
 
   multiSelectionActive: boolean;
 
-  reactFlowVersion: string;
-
   connectionStartHandle: StartHandle | null;
 
   onNodeDragStart?: NodeDragHandler;

@@ -44,8 +44,6 @@ const initialState: ReactFlowStore = {
 
   multiSelectionActive: false,
 
-  reactFlowVersion: typeof __REACT_FLOW_VERSION__ !== 'undefined' ? __REACT_FLOW_VERSION__ : '-',
-
   connectionStartHandle: null,
   connectOnClick: true,
 
