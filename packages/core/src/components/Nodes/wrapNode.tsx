@@ -94,9 +94,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         });
       } else if (selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
         store.setState({
-          ariaLiveMessage: `Move selected node ten pixels to the ${event.key
+          ariaLiveMessage: `Moved selected node ten pixels ${event.key
             .replace('Arrow', '')
-            .toLowerCase()}. New position, x: ${xPos}, y: ${yPos}`,
+            .toLowerCase()}. New position, x: ${~~xPos}, y: ${~~yPos}`,
         });
 
         updatePositions(arrowKeyDiffs[event.key]);
