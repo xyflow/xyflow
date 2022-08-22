@@ -28,3 +28,5 @@ describe('DragHandle Flow Rendering', () => {
     });
   });
 });
+
+export {};

@@ -30,3 +30,5 @@ describe('Hidden Flow Rendering', () => {
     cy.get('.react-flow__minimap-node').should('not.exist');
   });
 });
+
+export {};

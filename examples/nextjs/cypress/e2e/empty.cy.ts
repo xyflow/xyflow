@@ -10,12 +10,15 @@ describe('Empty Flow Rendering', () => {
   });
 
   it('renders empty selection', () => {
+    cy.get('.react-flow__renderer').click();
     cy.get('body')
       .type('{shift}', { release: false })
+      .wait(50)
       .get('.react-flow__selectionpane')
-      .trigger('mousedown', 'topLeft', { which: 1, force: true })
-      .trigger('mousemove', 'bottomLeft', { which: 1 })
-      .trigger('mouseup', 'bottomLeft', { force: true });
+      .trigger('mousedown', 400, 50, { which: 1, force: true })
+      .trigger('mousemove', 200, 200, { which: 1 })
+      .wait(50)
+      .trigger('mouseup', 200, 200, { force: true });
 
     cy.get('body').type('{shift}', { release: true });
   });
@@ -26,10 +29,7 @@ describe('Empty Flow Rendering', () => {
   });
 
   it('connects nodes', () => {
-    cy.get('.react-flow__node')
-      .first()
-      .find('.react-flow__handle.source')
-      .trigger('mousedown', { button: 0 });
+    cy.get('.react-flow__node').first().find('.react-flow__handle.source').trigger('mousedown', { button: 0 });
 
     cy.get('.react-flow__node')
       .last()
@@ -40,3 +40,5 @@ describe('Empty Flow Rendering', () => {
     cy.get('.react-flow__edge').should('have.length', 1);
   });
 });
+
+export {};

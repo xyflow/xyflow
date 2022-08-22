@@ -2295,6 +2295,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/background@workspace:packages/background"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/core": "workspace:*"
     classcat: ^5.0.3
   peerDependencies:
@@ -2307,6 +2308,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/bundle@workspace:packages/bundle"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/background": "workspace:*"
     "@react-flow/controls": "workspace:*"
     "@react-flow/core": "workspace:*"
@@ -2327,6 +2329,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/controls@workspace:packages/controls"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/core": "workspace:*"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
@@ -2369,6 +2372,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/minimap@workspace:packages/minimap"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/core": "workspace:*"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
@@ -6923,6 +6927,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-global-css@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "next-global-css@npm:1.3.1"
+  checksum: fdb85e2ea614e17dc2d6f3f5064644346de9458774844f50a398c2b71d3d320717713d6f915fa8b91039956440900e6166a8b1bc19d3091c31aed582495f8a0f
+  languageName: node
+  linkType: hard
+
 "next@npm:12.2.2":
   version: 12.2.2
   resolution: "next@npm:12.2.2"
@@ -8167,11 +8178,13 @@ __metadata:
     "@preconstruct/next": ^4.0.0
     "@react-flow/bundle": "workspace:*"
     "@types/dagre": ^0.7.47
+    cypress: ^10.6.0
     dagre: ^0.8.5
     eslint: ^8.22.0
     eslint-config-next: 12.2.2
     localforage: ^1.10.0
     next: 12.2.2
+    next-global-css: ^1.3.1
     postcss: ^8.4.16
     postcss-flexbugs-fixes: ^5.0.2
     postcss-import: ^14.1.0

@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -25,14 +27,14 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('drag', (selector, { x, y }) => {
-  return cy
-    .window()
-    .then((window) =>
-      cy
-        .get(selector)
-        .trigger('mousedown', { which: 1, view: window })
-        .trigger('mousemove', { clientX: x, clientY: y, force: true })
-        .wait(50)
-        .trigger('mouseup', { view: window, force: true })
-    );
+  return cy.window().then((window) =>
+    cy
+      .get(selector as string)
+      .trigger('mousedown', { which: 1, view: window })
+      .trigger('mousemove', { clientX: x, clientY: y, force: true })
+      .wait(50)
+      .trigger('mouseup', { view: window, force: true })
+  );
 });
+
+export {};

@@ -1,12 +1,6 @@
-import {
-  isNode,
-  isEdge,
-  getOutgoers,
-  getIncomers,
-  addEdge,
-} from '../../packages/core/dist/react-flow-core.esm.js';
+import { Node, Edge, isNode, isEdge, getOutgoers, getIncomers, addEdge } from '@react-flow/bundle';
 
-const nodes = [
+const nodes: Node[] = [
   {
     id: '1',
     type: 'input',
@@ -18,7 +12,7 @@ const nodes = [
   { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
 ];
 
-const edges = [
+const edges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
   { id: 'e2-3', source: '2', target: '3' },
@@ -54,31 +48,32 @@ describe('Graph Utils Testing', () => {
 
   describe('tests addEdge function', () => {
     it('adds edge', () => {
-      const newEdge = { source: '1', target: '4' };
+      const newEdge: Edge = { source: '1', target: '4', id: 'new-edge-1-4' };
       const nextEdges = addEdge(newEdge, edges);
 
       expect(nextEdges.length).to.be.equal(edges.length + 1);
     });
 
     it('tries to add existing edge', () => {
-      const newEdge = { source: '2', target: '3' };
+      const newEdge: Edge = { source: '2', target: '3', id: 'new-edge-2-3' };
       const nextEdges = addEdge(newEdge, edges);
 
       expect(nextEdges.length).to.be.equal(edges.length);
     });
 
     it('tries to add invalid edge', () => {
-      const newEdge = { nosource: '1', notarget: '3' };
+      // @ts-ignore
+      const newEdge: Edge = { nosource: '1', notarget: '3' };
 
       try {
         addEdge(newEdge, edges);
-      } catch (e) {
+      } catch (e: any) {
         console.log(e.message);
 
-        expect(e.message).to.be.equal(
-          "Can't create edge. An edge needs a source and a target."
-        );
+        expect(e.message).to.be.equal("Can't create edge. An edge needs a source and a target.");
       }
     });
   });
 });
+
+export {};
