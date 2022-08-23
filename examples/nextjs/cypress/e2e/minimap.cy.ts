@@ -11,11 +11,9 @@ describe('Minimap Testing', () => {
   it('has same number of nodes as the pane', () => {
     const paneNodes = Cypress.$('.react-flow__node').length;
 
-    cy.wait(100);
+    cy.wait(200);
 
     const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
-
-    cy.wait(100);
 
     expect(paneNodes).equal(minimapNodes);
   });

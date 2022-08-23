@@ -20,6 +20,7 @@ import './commands';
 // require('./commands')
 
 import { mount } from 'cypress/react18';
+import { XYPosition } from '@react-flow/bundle';
 
 import '../../styles/globals.css';
 import '../../styles/rf-style.css';
@@ -28,7 +29,11 @@ declare global {
   namespace Cypress {
     interface Chainable {
       mount: typeof mount;
-      drag: (selector: string, { x, y }: { x: number; y: number }) => Cypress.Chainable<JQuery<HTMLElement>>;
+      drag: (selector: string, toPosition: XYPosition) => Cypress.Chainable<JQuery<HTMLElement>>;
+      dragPane: ({ from, to }: { from: XYPosition; to: XYPosition }) => Cypress.Chainable<JQuery<HTMLElement>>;
+      zoomPane: (wheelDelta: number) => Cypress.Chainable<JQuery<HTMLElement>>;
+      isWithinViewport: () => Cypress.Chainable<JQuery<HTMLElement>>;
+      isOutsideViewport: () => Cypress.Chainable<JQuery<HTMLElement>>;
     }
   }
 }

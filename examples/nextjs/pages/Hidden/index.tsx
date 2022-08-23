@@ -70,8 +70,6 @@ const HiddenFlow = () => {
     setEdges(setHidden(isHidden));
   }, [isHidden, setEdges, setNodes]);
 
-  console.log(nodes);
-
   return (
     <ReactFlow
       nodes={nodes}
