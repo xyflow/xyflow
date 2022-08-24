@@ -1,18 +1,6 @@
-import { useCallback, useState } from 'react';
-import {
-  ReactFlow,
-  Node,
-  Edge,
-  NodeChange,
-  EdgeChange,
-  applyNodeChanges,
-  applyEdgeChanges,
-  Connection,
-  addEdge,
-  ReactFlowProps,
-  EdgeProps,
-} from '@react-flow/bundle';
+import { ReactFlow, EdgeProps } from '@react-flow/bundle';
 
+import ControlledFlow from '../../support/ControlledFlow';
 import * as simpleflow from '../../fixtures/simpleflow';
 
 describe('<ReactFlow />: Basic Props', () => {
@@ -38,7 +26,13 @@ describe('<ReactFlow />: Basic Props', () => {
 
   describe('uses nodes and edges', () => {
     beforeEach(() => {
-      cy.mount(<Comp initialNodes={simpleflow.nodes} initialEdges={simpleflow.edges} />);
+      cy.mount(
+        <ControlledFlow
+          addOnNodeChangeHandler={false}
+          initialNodes={simpleflow.nodes}
+          initialEdges={simpleflow.edges}
+        />
+      );
     });
 
     it('mounts nodes and edges', () => {
@@ -58,7 +52,7 @@ describe('<ReactFlow />: Basic Props', () => {
 
   describe('uses onNodesChange handler', () => {
     beforeEach(() => {
-      cy.mount(<Comp addOnNodeChangeHandler initialNodes={simpleflow.nodes} />);
+      cy.mount(<ControlledFlow addOnConnectHandler={false} initialNodes={simpleflow.nodes} />);
     });
 
     it('mounts nodes', () => {
@@ -90,7 +84,7 @@ describe('<ReactFlow />: Basic Props', () => {
 
   describe('uses onEdgeChange handler', () => {
     beforeEach(() => {
-      cy.mount(<Comp addOnEdgeChangeHandler initialNodes={simpleflow.nodes} initialEdges={simpleflow.edges} />);
+      cy.mount(<ControlledFlow initialNodes={simpleflow.nodes} initialEdges={simpleflow.edges} />);
     });
 
     it('mounts nodes and edges', () => {
@@ -105,7 +99,7 @@ describe('<ReactFlow />: Basic Props', () => {
 
   describe('uses onConnect handlers', () => {
     beforeEach(() => {
-      cy.mount(<Comp addOnConnectHandler initialNodes={simpleflow.nodes} />);
+      cy.mount(<ControlledFlow initialNodes={simpleflow.nodes} />);
     });
 
     it('mounts nodes', () => {
@@ -137,7 +131,7 @@ describe('<ReactFlow />: Basic Props', () => {
         type: 'custom',
       }));
 
-      cy.mount(<Comp nodeTypes={nodeTypes} initialNodes={initialNodes} />);
+      cy.mount(<ControlledFlow nodeTypes={nodeTypes} initialNodes={initialNodes} />);
 
       cy.get('.react-flow__node-custom').should('have.length', simpleflow.nodes.length);
       cy.get('.react-flow').contains('custom node');
@@ -149,7 +143,7 @@ describe('<ReactFlow />: Basic Props', () => {
         type: 'invalid',
       }));
 
-      cy.mount(<Comp initialNodes={initialNodes} />);
+      cy.mount(<ControlledFlow initialNodes={initialNodes} />);
 
       cy.get('.react-flow__node-invalid').should('have.length', 0);
       cy.get('.react-flow__node-default').should('have.length', simpleflow.nodes.length);
@@ -169,7 +163,7 @@ describe('<ReactFlow />: Basic Props', () => {
         type: 'custom',
       }));
 
-      cy.mount(<Comp edgeTypes={edgeTypes} initialNodes={simpleflow.nodes} initialEdges={initialEdges} />);
+      cy.mount(<ControlledFlow edgeTypes={edgeTypes} initialNodes={simpleflow.nodes} initialEdges={initialEdges} />);
 
       cy.get('.react-flow__edge-custom').should('have.length', simpleflow.edges.length);
     });
@@ -180,7 +174,7 @@ describe('<ReactFlow />: Basic Props', () => {
         type: 'invalid',
       }));
 
-      cy.mount(<Comp initialNodes={simpleflow.nodes} initialEdges={initialEdges} />);
+      cy.mount(<ControlledFlow initialNodes={simpleflow.nodes} initialEdges={initialEdges} />);
 
       cy.get('.react-flow__edge-invalid').should('have.length', 0);
       cy.get('.react-flow__edge-default').should('have.length', simpleflow.edges.length);
@@ -192,64 +186,14 @@ describe('<ReactFlow />: Basic Props', () => {
       backgroundColor: 'red',
     };
 
-    cy.mount(<Comp style={styles} />);
+    cy.mount(<ControlledFlow style={styles} />);
     cy.get('.react-flow').should('have.css', 'background-color', 'rgb(255, 0, 0)');
   });
 
   it('uses classname', () => {
-    cy.mount(<Comp className="custom" />);
+    cy.mount(<ControlledFlow className="custom" />);
     cy.get('.react-flow').should('have.class', 'custom');
   });
 });
 
 // test specific helper component
-
-function Comp({
-  addOnNodeChangeHandler = false,
-  addOnEdgeChangeHandler = false,
-  addOnConnectHandler = false,
-  initialNodes = [],
-  initialEdges = [],
-  ...rest
-}: {
-  initialNodes?: Node[];
-  initialEdges?: Edge[];
-  addOnNodeChangeHandler?: boolean;
-  addOnEdgeChangeHandler?: boolean;
-  addOnConnectHandler?: boolean;
-} & Partial<ReactFlowProps>) {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
-  );
-
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
-  );
-
-  const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
-
-  const handlers: {
-    onNodesChange?: (changes: NodeChange[]) => void;
-    onEdgesChange?: (changes: EdgeChange[]) => void;
-    onConnect?: (params: Connection | Edge) => void;
-  } = {};
-
-  if (addOnNodeChangeHandler) {
-    handlers.onNodesChange = onNodesChange;
-  }
-
-  if (addOnEdgeChangeHandler) {
-    handlers.onEdgesChange = onEdgesChange;
-  }
-
-  if (addOnConnectHandler) {
-    handlers.onConnect = onConnect;
-  }
-
-  return <ReactFlow nodes={nodes} edges={edges} {...handlers} {...rest} />;
-}

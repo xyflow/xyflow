@@ -4,12 +4,12 @@ export const nodes: Node[] = [
   {
     id: '1',
     data: { label: 'Node 1' },
-    position: { x: 250, y: 5 },
+    position: { x: 0, y: 0 },
   },
   {
     id: '2',
     data: { label: 'Node 2' },
-    position: { x: 100, y: 100 },
+    position: { x: 200, y: 200 },
   },
 ];
 
