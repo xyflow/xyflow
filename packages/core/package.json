@@ -1,5 +1,5 @@
 {
-  "name": "@react-flow/core",
+  "name": "@rctflw/core",
   "version": "11.0.0-next.0",
   "description": "Core components and util functions of React Flow.",
   "keywords": [
@@ -13,9 +13,9 @@
   "files": [
     "dist"
   ],
-  "main": "dist/react-flow-core.cjs.js",
-  "module": "dist/react-flow-core.esm.js",
-  "types": "dist/react-flow-core.cjs.d.ts",
+  "main": "dist/rctflw-core.cjs.js",
+  "module": "dist/rctflw-core.esm.js",
+  "types": "dist/rctflw-core.cjs.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "repository": {

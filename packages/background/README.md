@@ -1,10 +1,10 @@
-# @react-flow/background
+# @rctflw/background
 
 Background component for React Flow.
 
 ## Installation 
 
 ```sh 
-npm install @react-flow/background
+npm install @rctflw/background
 ```
 

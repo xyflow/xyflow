@@ -1,4 +1,4 @@
-import { Node, Edge } from '@react-flow/bundle';
+import { Node, Edge } from 'reactflow';
 
 export const nodes: Node[] = [
   {

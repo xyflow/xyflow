@@ -20,7 +20,7 @@ import './commands';
 // require('./commands')
 
 import { mount } from 'cypress/react18';
-import { XYPosition } from '@react-flow/bundle';
+import { XYPosition } from 'reactflow';
 
 import '../../styles/globals.css';
 import '../../styles/rf-style.css';

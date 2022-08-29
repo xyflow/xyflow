@@ -2,7 +2,7 @@
 import { memo, useId } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
-import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects } from '@react-flow/core';
+import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects } from '@rctflw/core';
 
 import MiniMapNode from './MiniMapNode';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';

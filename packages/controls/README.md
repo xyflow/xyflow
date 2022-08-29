@@ -1,10 +1,10 @@
-# @react-flow/controls
+# @rctflw/controls
 
 Controls component for React Flow.
 
 ## Installation 
 
 ```sh 
-npm install @react-flow/controls
+npm install @rctflw/controls
 ```
 

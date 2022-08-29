@@ -1,4 +1,4 @@
-import { ReactFlow, ReactFlowProps, Viewport, useViewport, SnapGrid, CoordinateExtent, Node } from '@react-flow/bundle';
+import ReactFlow, { ReactFlowProps, Viewport, useViewport, SnapGrid, CoordinateExtent, Node } from 'reactflow';
 
 import ControlledFlow from '../../support/ControlledFlow';
 import * as simpleflow from '../../fixtures/simpleflow';

@@ -1,4 +1,4 @@
-import { ReactFlow, useViewport, Viewport } from '@react-flow/bundle';
+import ReactFlow, { useViewport, Viewport } from 'reactflow';
 
 describe('useViewport.cy.tsx', () => {
   it('handles drag', () => {

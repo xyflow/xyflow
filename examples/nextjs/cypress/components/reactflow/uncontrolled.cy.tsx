@@ -1,4 +1,4 @@
-import { ReactFlow } from '@react-flow/bundle';
+import ReactFlow from 'reactflow';
 
 import { nodes, edges } from '../../fixtures/simpleflow';
 

@@ -1,4 +1,4 @@
-import { Node, Edge, isNode, isEdge, getOutgoers, getIncomers, addEdge } from '@react-flow/bundle';
+import { Node, Edge, isNode, isEdge, getOutgoers, getIncomers, addEdge } from 'reactflow';
 
 const nodes: Node[] = [
   {

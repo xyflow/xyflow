@@ -1,8 +1,8 @@
-export * from '@react-flow/core';
-export * from '@react-flow/minimap';
-export * from '@react-flow/controls';
-export * from '@react-flow/background';
+export * from '@rctflw/core';
+export * from '@rctflw/minimap';
+export * from '@rctflw/controls';
+export * from '@rctflw/background';
 
-import { ReactFlow } from '@react-flow/core';
+import { ReactFlow } from '@rctflw/core';
 
 export default ReactFlow;

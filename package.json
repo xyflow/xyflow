@@ -14,7 +14,7 @@
     "dev": "preconstruct watch",
     "dev:example": "cd examples/nextjs && yarn dev",
     "build": "preconstruct build && yarn run packages",
-    "packages": "yarn workspaces foreach --include '@react-flow/**' --include 'reactflow' run build",
+    "packages": "yarn workspaces foreach --include '@rctflw/**' --include 'reactflow' run build",
     "test:all": "yarn test:chrome && yarn test:firefox",
     "test:e2e": "cd examples/nextjs && cypress run",
     "test:component": "cd examples/nextjs && cypress run --component",

@@ -1,10 +1,10 @@
-# @react-flow/minimap
+# @rctflw/minimap
 
 Mini map component for React Flow.
 
 ## Installation 
 
 ```sh 
-npm install @react-flow/minimap
+npm install @rctflw/minimap
 ```
 

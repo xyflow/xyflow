@@ -1,6 +1,6 @@
 import { memo, useRef, useId } from 'react';
 import cc from 'classcat';
-import { useStore, ReactFlowState } from '@react-flow/core';
+import { useStore, ReactFlowState } from '@rctflw/core';
 
 import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './Patterns';
@@ -39,15 +39,10 @@ function Background({
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
-  const scaledGap: [number, number] = [
-    gapXY[0] * tScale || 1,
-    gapXY[1] * tScale || 1,
-  ];
+  const scaledGap: [number, number] = [gapXY[0] * tScale || 1, gapXY[1] * tScale || 1];
   const scaledSize = patternSize * tScale;
 
-  const patternDimensions: [number, number] = isCross
-    ? [scaledSize, scaledSize]
-    : scaledGap;
+  const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
 
   const patternOffset = isDots
     ? [scaledSize / 2, scaledSize / 2]
@@ -78,20 +73,10 @@ function Background({
         {isDots ? (
           <DotPattern color={patternColor} radius={scaledSize / 2} />
         ) : (
-          <LinePattern
-            dimensions={patternDimensions}
-            color={patternColor}
-            lineWidth={lineWidth}
-          />
+          <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
         )}
       </pattern>
-      <rect
-        x="0"
-        y="0"
-        width="100%"
-        height="100%"
-        fill={`url(#${patternId})`}
-      />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
     </svg>
   );
 }

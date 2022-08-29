@@ -1,4 +1,4 @@
-import { ReactFlow, EdgeProps } from '@react-flow/bundle';
+import ReactFlow, { EdgeProps } from 'reactflow';
 
 import ControlledFlow from '../../support/ControlledFlow';
 import * as simpleflow from '../../fixtures/simpleflow';
