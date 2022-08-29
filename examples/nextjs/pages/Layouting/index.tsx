@@ -11,7 +11,7 @@ import {
   useEdgesState,
   MarkerType,
   EdgeMarker,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import dagre from 'dagre';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useKeyPress } from '@react-flow/bundle';
+import { useKeyPress } from 'reactflow';
 
 const UseKeyPressComponent = () => {
   const metaPressed = useKeyPress(['Meta']);

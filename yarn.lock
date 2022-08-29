@@ -2295,28 +2295,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/background@workspace:packages/background"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/core": "workspace:*"
     classcat: ^5.0.3
-  peerDependencies:
-    react: ">=18"
-    react-dom: ">=18"
-  languageName: unknown
-  linkType: soft
-
-"@react-flow/bundle@workspace:*, @react-flow/bundle@workspace:packages/bundle":
-  version: 0.0.0-use.local
-  resolution: "@react-flow/bundle@workspace:packages/bundle"
-  dependencies:
-    "@react-flow/background": "workspace:*"
-    "@react-flow/controls": "workspace:*"
-    "@react-flow/core": "workspace:*"
-    "@react-flow/minimap": "workspace:*"
-    autoprefixer: ^10.4.8
-    postcss: ^8.4.14
-    postcss-cli: ^10.0.0
-    postcss-combine-duplicated-selectors: ^10.0.3
-    postcss-import: ^14.1.0
-    postcss-nested: ^5.0.6
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
@@ -2327,6 +2308,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/controls@workspace:packages/controls"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/core": "workspace:*"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
@@ -2369,6 +2351,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@react-flow/minimap@workspace:packages/minimap"
   dependencies:
+    "@babel/runtime": ^7.18.9
     "@react-flow/core": "workspace:*"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
@@ -8165,7 +8148,6 @@ __metadata:
   resolution: "react-flow-examples@workspace:examples/nextjs"
   dependencies:
     "@preconstruct/next": ^4.0.0
-    "@react-flow/bundle": "workspace:*"
     "@types/dagre": ^0.7.47
     dagre: ^0.8.5
     eslint: ^8.22.0
@@ -8179,12 +8161,29 @@ __metadata:
     postcss-preset-env: ^7.7.2
     react: ^18.2.0
     react-dom: ^18.2.0
+    reactflow: "workspace:*"
   languageName: unknown
   linkType: soft
 
-"react-flow@workspace:.":
+"react-is@npm:^16.13.1":
+  version: 16.13.1
+  resolution: "react-is@npm:16.13.1"
+  checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
+  languageName: node
+  linkType: hard
+
+"react@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "react@npm:18.2.0"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
+  languageName: node
+  linkType: hard
+
+"reactflow-monorepo@workspace:.":
   version: 0.0.0-use.local
-  resolution: "react-flow@workspace:."
+  resolution: "reactflow-monorepo@workspace:."
   dependencies:
     "@babel/core": ^7.18.10
     "@babel/plugin-transform-runtime": ^7.18.10
@@ -8214,21 +8213,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-is@npm:^16.13.1":
-  version: 16.13.1
-  resolution: "react-is@npm:16.13.1"
-  checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
-  languageName: node
-  linkType: hard
-
-"react@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
+"reactflow@workspace:*, reactflow@workspace:packages/reactflow":
+  version: 0.0.0-use.local
+  resolution: "reactflow@workspace:packages/reactflow"
   dependencies:
-    loose-envify: ^1.1.0
-  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
-  languageName: node
-  linkType: hard
+    "@babel/runtime": ^7.18.9
+    "@react-flow/background": "workspace:*"
+    "@react-flow/controls": "workspace:*"
+    "@react-flow/core": "workspace:*"
+    "@react-flow/minimap": "workspace:*"
+    autoprefixer: ^10.4.8
+    postcss: ^8.4.14
+    postcss-cli: ^10.0.0
+    postcss-combine-duplicated-selectors: ^10.0.3
+    postcss-import: ^14.1.0
+    postcss-nested: ^5.0.6
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  languageName: unknown
+  linkType: soft
 
 "read-cache@npm:^1.0.0":
   version: 1.0.0

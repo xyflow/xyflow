@@ -15,7 +15,7 @@ import {
   Controls,
   Background,
   MiniMap,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
 const onNodeDrag = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);

@@ -1,5 +1,5 @@
 import React, { useState, memo, FC, useMemo, CSSProperties } from 'react';
-import { Handle, Position, NodeProps, useUpdateNodeInternals } from '@react-flow/bundle';
+import { Handle, Position, NodeProps, useUpdateNodeInternals } from 'reactflow';
 
 const nodeStyles: CSSProperties = { padding: 10, border: '1px solid #ddd' };
 

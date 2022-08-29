@@ -13,7 +13,7 @@ import {
   Controls,
   Background,
   MiniMap,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import { getNodesAndEdges } from './utils';
 

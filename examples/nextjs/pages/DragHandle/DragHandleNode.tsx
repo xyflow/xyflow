@@ -1,6 +1,6 @@
 import React, { memo, FC } from 'react';
 
-import { Handle, Position, NodeProps, Connection, Edge } from '@react-flow/bundle';
+import { Handle, Position, NodeProps, Connection, Edge } from 'reactflow';
 
 const onConnect = (params: Connection | Edge) => console.log('handle onConnect', params);
 

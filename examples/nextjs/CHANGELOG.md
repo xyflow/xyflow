@@ -5,4 +5,4 @@
 ### Patch Changes
 
 - Updated dependencies []:
-  - @react-flow/bundle@11.0.0-next.0
+  - reactflow@11.0.0-next.0

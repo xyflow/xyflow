@@ -9,7 +9,7 @@ import {
   useEdgesState,
   Background,
   BackgroundVariant,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import ConnectionLine from './ConnectionLine';
 

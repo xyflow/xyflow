@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { EdgeProps, getBezierPath, EdgeText, getBezierEdgeCenter } from '@react-flow/bundle';
+import { EdgeProps, getBezierPath, EdgeText, getBezierEdgeCenter } from 'reactflow';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,

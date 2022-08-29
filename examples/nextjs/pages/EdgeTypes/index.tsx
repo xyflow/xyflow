@@ -14,7 +14,7 @@ import {
   Edge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import { getElements } from './utils';
 

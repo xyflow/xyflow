@@ -11,7 +11,7 @@ import {
   NodeTypes,
   useNodesState,
   useEdgesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 const initialNodes: Node[] = [
   {

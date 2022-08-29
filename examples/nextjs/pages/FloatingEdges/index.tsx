@@ -9,7 +9,7 @@ import {
   Connection,
   useNodesState,
   useEdgesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import styles from './style.module.css';
 

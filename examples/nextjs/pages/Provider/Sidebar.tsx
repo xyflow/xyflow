@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStore, useStoreApi } from '@react-flow/bundle';
+import { useStore, useStoreApi } from 'reactflow';
 
 import styles from './provider.module.css';
 

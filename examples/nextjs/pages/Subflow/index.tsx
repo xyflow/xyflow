@@ -12,7 +12,7 @@ import {
   Controls,
   MiniMap,
   Background,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import DebugNode from './DebugNode';
 

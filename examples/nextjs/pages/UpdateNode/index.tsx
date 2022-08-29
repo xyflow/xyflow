@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ReactFlow, Node, Edge, useNodesState, useEdgesState } from '@react-flow/bundle';
+import { ReactFlow, Node, Edge, useNodesState, useEdgesState } from 'reactflow';
 
 import styles from './updatenode.module.css';
 

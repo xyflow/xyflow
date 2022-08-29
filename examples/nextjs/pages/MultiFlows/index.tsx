@@ -11,7 +11,7 @@ import {
   useNodesState,
   useEdgesState,
   MarkerType,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import styles from './multiflows.module.css';
 

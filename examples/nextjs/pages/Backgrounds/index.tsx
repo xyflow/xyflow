@@ -8,7 +8,7 @@ import {
   Background,
   BackgroundProps,
   BackgroundVariant,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import styles from './style.module.css';
 
