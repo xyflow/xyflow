@@ -1,6 +1,6 @@
 import { memo, useRef, useId } from 'react';
 import cc from 'classcat';
-import { useStore, ReactFlowState } from '@rctflw/core';
+import { useStore, ReactFlowState } from '@reactflow/core';
 
 import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './Patterns';

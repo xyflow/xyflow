@@ -1,6 +1,6 @@
 import { memo, FC, useEffect, useState, PropsWithChildren } from 'react';
 import cc from 'classcat';
-import { useStore, useStoreApi, useReactFlow, ReactFlowState, Panel } from '@rctflw/core';
+import { useStore, useStoreApi, useReactFlow, ReactFlowState, Panel } from '@reactflow/core';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';

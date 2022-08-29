@@ -2301,12 +2301,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rctflw/background@workspace:*, @rctflw/background@workspace:packages/background":
+"@reactflow/background@workspace:*, @reactflow/background@workspace:packages/background":
   version: 0.0.0-use.local
-  resolution: "@rctflw/background@workspace:packages/background"
+  resolution: "@reactflow/background@workspace:packages/background"
   dependencies:
     "@babel/runtime": ^7.18.9
-    "@rctflw/core": "workspace:*"
+    "@reactflow/core": "workspace:*"
     classcat: ^5.0.3
   peerDependencies:
     react: ">=18"
@@ -2314,12 +2314,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@rctflw/controls@workspace:*, @rctflw/controls@workspace:packages/controls":
+"@reactflow/controls@workspace:*, @reactflow/controls@workspace:packages/controls":
   version: 0.0.0-use.local
-  resolution: "@rctflw/controls@workspace:packages/controls"
+  resolution: "@reactflow/controls@workspace:packages/controls"
   dependencies:
     "@babel/runtime": ^7.18.9
-    "@rctflw/core": "workspace:*"
+    "@reactflow/core": "workspace:*"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
     postcss: ^8.4.16
@@ -2333,9 +2333,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@rctflw/core@workspace:*, @rctflw/core@workspace:packages/core":
+"@reactflow/core@workspace:*, @reactflow/core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@rctflw/core@workspace:packages/core"
+  resolution: "@reactflow/core@workspace:packages/core"
   dependencies:
     "@babel/runtime": ^7.18.9
     "@types/d3": ^7.4.0
@@ -2357,12 +2357,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@rctflw/minimap@workspace:*, @rctflw/minimap@workspace:packages/minimap":
+"@reactflow/minimap@workspace:*, @reactflow/minimap@workspace:packages/minimap":
   version: 0.0.0-use.local
-  resolution: "@rctflw/minimap@workspace:packages/minimap"
+  resolution: "@reactflow/minimap@workspace:packages/minimap"
   dependencies:
     "@babel/runtime": ^7.18.9
-    "@rctflw/core": "workspace:*"
+    "@reactflow/core": "workspace:*"
     autoprefixer: ^10.4.8
     classcat: ^5.0.3
     postcss: ^8.4.16
@@ -8520,10 +8520,10 @@ __metadata:
   resolution: "reactflow@workspace:packages/reactflow"
   dependencies:
     "@babel/runtime": ^7.18.9
-    "@rctflw/background": "workspace:*"
-    "@rctflw/controls": "workspace:*"
-    "@rctflw/core": "workspace:*"
-    "@rctflw/minimap": "workspace:*"
+    "@reactflow/background": "workspace:*"
+    "@reactflow/controls": "workspace:*"
+    "@reactflow/core": "workspace:*"
+    "@reactflow/minimap": "workspace:*"
     autoprefixer: ^10.4.8
     postcss: ^8.4.14
     postcss-cli: ^10.0.0

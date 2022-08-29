@@ -13,7 +13,7 @@ import ReactFlow, {
   HandleType,
 } from 'reactflow';
 
-import { Controls } from '@rctflw/controls';
+import { Controls } from '@reactflow/controls';
 
 const initialNodes: Node[] = [
   {

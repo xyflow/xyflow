@@ -1,5 +1,5 @@
 {
-  "name": "@rctflw/background",
+  "name": "@reactflow/background",
   "version": "11.0.0-next.0",
   "description": "Background component with different variants for React Flow",
   "keywords": [
@@ -13,10 +13,13 @@
   "files": [
     "dist"
   ],
-  "main": "dist/rctflw-background.cjs.js",
-  "module": "dist/rctflw-background.esm.js",
-  "types": "dist/rctflw-background.cjs.d.ts",
+  "main": "dist/reactflow-background.cjs.js",
+  "module": "dist/reactflow-background.esm.js",
+  "types": "dist/reactflow-background.cjs.d.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,7 +28,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@rctflw/core": "workspace:*",
+    "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3"
   },
   "peerDependencies": {

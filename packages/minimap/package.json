@@ -1,5 +1,5 @@
 {
-  "name": "@rctflw/minimap",
+  "name": "@reactflow/minimap",
   "version": "11.0.0-next.0",
   "description": "Minimap component for React Flow.",
   "keywords": [
@@ -13,10 +13,13 @@
   "files": [
     "dist"
   ],
-  "main": "dist/rctflw-minimap.cjs.js",
-  "module": "dist/rctflw-minimap.esm.js",
-  "types": "dist/rctflw-minimap.cjs.d.ts",
+  "main": "dist/reactflow-minimap.cjs.js",
+  "module": "dist/reactflow-minimap.esm.js",
+  "types": "dist/reactflow-minimap.cjs.d.ts",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -28,7 +31,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@rctflw/core": "workspace:*",
+    "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3",
     "zustand": "^4.0.0"
   },

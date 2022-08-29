@@ -4,7 +4,7 @@ import '../styles/globals.css';
 
 // Unfortunately this doesn't work because preconsruct clears the dist folder and there is
 // no way to hook into the watch process to copy the files back to the dist folder
-// import '@rctflw/core/dist/theme-default.css';
+// import '@reactflow/core/dist/theme-default.css';
 
 // this is a workaround for testing the theme. See explanation above.
 import '../styles/rf-style.css';

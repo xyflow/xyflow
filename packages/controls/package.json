@@ -1,5 +1,5 @@
 {
-  "name": "@rctflw/controls",
+  "name": "@reactflow/controls",
   "version": "11.0.0-next.0",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
@@ -13,9 +13,9 @@
   "files": [
     "dist"
   ],
-  "main": "dist/rctflw-controls.cjs.js",
-  "module": "dist/rctflw-controls.esm.js",
-  "types": "dist/rctflw-controls.cjs.d.ts",
+  "main": "dist/reactflow-controls.cjs.js",
+  "module": "dist/reactflow-controls.esm.js",
+  "types": "dist/reactflow-controls.cjs.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "repository": {
@@ -26,9 +26,12 @@
   "scripts": {
     "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@rctflw/core": "workspace:*",
+    "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3"
   },
   "peerDependencies": {
