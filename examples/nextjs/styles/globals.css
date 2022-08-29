@@ -5,7 +5,8 @@ body {
 
 html,
 body,
-#__next {
+#__next,
+#root {
   margin: 0;
   height: 100%;
 }

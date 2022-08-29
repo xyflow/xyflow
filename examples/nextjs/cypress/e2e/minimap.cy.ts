@@ -11,29 +11,23 @@ describe('Minimap Testing', () => {
   it('has same number of nodes as the pane', () => {
     const paneNodes = Cypress.$('.react-flow__node').length;
 
-    cy.wait(100);
+    cy.wait(200);
 
     const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
-
-    cy.wait(100);
 
     expect(paneNodes).equal(minimapNodes);
   });
 
   it('changes zoom level', () => {
-    const viewBoxBeforeZoom = Cypress.$('.react-flow__minimap').attr('viewBox');
+    const viewBoxBeforeZoom = Cypress.$('.react-flow__minimap svg').attr('viewBox');
     const maskPathBeforeZoom = Cypress.$('.react-flow__minimap-mask').attr('d');
 
     cy.get('.react-flow__pane')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .wait(50)
       .then(() => {
-        const viewBoxAfterZoom = Cypress.$('.react-flow__minimap').attr(
-          'viewBox'
-        );
-        const maskPathAfterZoom = Cypress.$('.react-flow__minimap-mask').attr(
-          'd'
-        );
+        const viewBoxAfterZoom = Cypress.$('.react-flow__minimap svg').attr('viewBox');
+        const maskPathAfterZoom = Cypress.$('.react-flow__minimap-mask').attr('d');
 
         expect(viewBoxBeforeZoom).to.not.equal(viewBoxAfterZoom);
         expect(maskPathBeforeZoom).to.not.equal(maskPathAfterZoom);
@@ -41,22 +35,14 @@ describe('Minimap Testing', () => {
   });
 
   it('changes node position', () => {
-    const xPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr(
-      'x'
-    );
-    const yPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr(
-      'y'
-    );
+    const xPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
+    const yPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
 
     cy.drag('.react-flow__node:first', { x: 500, y: 25 })
       .wait(100)
       .then(() => {
-        const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr(
-          'x'
-        );
-        const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr(
-          'y'
-        );
+        const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
+        const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
 
         expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
         expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
@@ -64,7 +50,7 @@ describe('Minimap Testing', () => {
   });
 
   it('changes node positions via pane drag', () => {
-    const viewBoxBeforeDrag = Cypress.$('.react-flow__minimap').attr('viewBox');
+    const viewBoxBeforeDrag = Cypress.$('.react-flow__minimap svg').attr('viewBox');
     const maskPathBeforeDrag = Cypress.$('.react-flow__minimap-mask').attr('d');
 
     // for d3 we have to pass the window to the event
@@ -76,12 +62,8 @@ describe('Minimap Testing', () => {
         .wait(50)
         .trigger('mouseup', { force: true, view: win })
         .then(() => {
-          const viewBoxAfterDrag = Cypress.$('.react-flow__minimap').attr(
-            'viewBox'
-          );
-          const maskPathAfterDrag = Cypress.$('.react-flow__minimap-mask').attr(
-            'd'
-          );
+          const viewBoxAfterDrag = Cypress.$('.react-flow__minimap svg').attr('viewBox');
+          const maskPathAfterDrag = Cypress.$('.react-flow__minimap-mask').attr('d');
 
           expect(viewBoxBeforeDrag).to.not.equal(viewBoxAfterDrag);
           expect(maskPathBeforeDrag).to.not.equal(maskPathAfterDrag);
@@ -89,3 +71,5 @@ describe('Minimap Testing', () => {
     });
   });
 });
+
+export {};

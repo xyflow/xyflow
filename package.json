@@ -16,9 +16,13 @@
     "build": "preconstruct build && yarn run packages",
     "packages": "yarn workspaces foreach --include '@react-flow/**' run build",
     "test:all": "yarn test:chrome && yarn test:firefox",
-    "test:chrome": "cypress run --browser chrome",
-    "test:firefox": "cypress run --browser firefox",
-    "test": "yarn build && start-server-and-test dev:example http://localhost:3000 test:chrome",
+    "test:e2e": "cd examples/nextjs && cypress run",
+    "test:component": "cd examples/nextjs && cypress run --component",
+    "test:chrome": "cd examples/nextjs && cypress run --browser chrome",
+    "test:firefox": "cd examples/nextjs && cypress run --browser firefox",
+    "test": "yarn build && start-server-and-test dev:example http://localhost:3000 test:component",
+    "cypress:open": "cd examples/nextjs && cypress open",
+    "cypress:dev": "yarn build && start-server-and-test dev:example http://localhost:3000 cypress:open",
     "release": "changeset publish"
   },
   "dependencies": {

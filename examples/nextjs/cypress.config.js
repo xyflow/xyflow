@@ -7,4 +7,11 @@ module.exports = defineConfig({
     viewportHeight: 720,
     video: false,
   },
+
+  component: {
+    devServer: {
+      framework: 'next',
+      bundler: 'webpack',
+    },
+  },
 });

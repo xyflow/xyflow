@@ -175,12 +175,6 @@ const edgeTypes: EdgeTypes = {
   custom2: CustomEdge2,
 };
 
-const defaultViewport = {
-  x: 200,
-  y: 200,
-  zoom: 0.8,
-};
-
 const EdgesFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -202,7 +196,6 @@ const EdgesFlow = () => {
       onEdgeMouseEnter={onEdgeMouseEnter}
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
-      defaultViewport={defaultViewport}
     >
       <MiniMap />
       <Controls />
