@@ -1,4 +1,4 @@
-# @react-flow/bundle
+# reactflow
 
 Bundles:
 
@@ -11,6 +11,6 @@ Bundles:
 ## Installation 
 
 ```sh 
-npm install @react-flow/bundle
+npm install reactflow
 ```
 

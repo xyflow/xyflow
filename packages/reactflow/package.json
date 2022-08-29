@@ -1,7 +1,7 @@
 {
-  "name": "@react-flow/bundle",
+  "name": "reactflow",
   "version": "11.0.0-next.0",
-  "description": "The bundled React Flow package that comes with all the essentials.",
+  "description": "A highly customizable React library for building node-based editors and interactive flow charts",
   "keywords": [
     "react",
     "node-based UI",
@@ -13,14 +13,14 @@
   "files": [
     "dist"
   ],
-  "main": "dist/react-flow-bundle.cjs.js",
-  "module": "dist/react-flow-bundle.esm.js",
+  "main": "dist/reactflow.cjs.js",
+  "module": "dist/reactflow.esm.js",
   "sideEffects": false,
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/wbkd/react-flow.git",
-    "directory": "packages/bundle"
+    "directory": "packages/reactflow"
   },
   "scripts": {
     "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"

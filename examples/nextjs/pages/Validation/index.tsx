@@ -12,7 +12,7 @@ import {
   useNodesState,
   useEdgesState,
   OnConnectStartParams,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import styles from './validation.module.css';
 

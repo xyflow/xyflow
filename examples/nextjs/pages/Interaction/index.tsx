@@ -11,7 +11,7 @@ import {
   useEdgesState,
   Controls,
   MiniMap,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 const initialNodes: Node[] = [
   {

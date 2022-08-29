@@ -11,7 +11,7 @@ import {
   Edge,
   ReactFlowInstance,
   Connection,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);

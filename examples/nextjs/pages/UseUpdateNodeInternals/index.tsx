@@ -11,7 +11,7 @@ import {
   Position,
   useNodesState,
   useEdgesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import CustomNode from './CustomNode';
 

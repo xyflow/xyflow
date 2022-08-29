@@ -11,7 +11,7 @@ import {
   useEdgesState,
   Controls,
   NodeOrigin,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import Sidebar from './Sidebar';
 

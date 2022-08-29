@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "copystyles": "cp ../../node_modules/@react-flow/bundle/dist/style.css ./styles/rf-style.css && cp ../../node_modules/@react-flow/bundle/dist/base.css ./styles/rf-base.css",
+    "copystyles": "cp ../../node_modules/reactflow/dist/style.css ./styles/rf-style.css && cp ../../node_modules/reactflow/dist/base.css ./styles/rf-base.css",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "@preconstruct/next": "^4.0.0",
-    "@react-flow/bundle": "workspace:*",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
     "next": "12.2.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "reactflow": "workspace:*"
   },
   "devDependencies": {
     "@types/dagre": "^0.7.47",

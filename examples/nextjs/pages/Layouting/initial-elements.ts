@@ -1,4 +1,4 @@
-import { Node, Edge, XYPosition, MarkerType } from '@react-flow/bundle';
+import { Node, Edge, XYPosition, MarkerType } from 'reactflow';
 
 const position: XYPosition = { x: 0, y: 0 };
 

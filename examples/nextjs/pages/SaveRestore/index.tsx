@@ -1,14 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  ReactFlow,
-  ReactFlowProvider,
-  Node,
-  addEdge,
-  Connection,
-  Edge,
-  useNodesState,
-  useEdgesState,
-} from '@react-flow/bundle';
+import { ReactFlow, ReactFlowProvider, Node, addEdge, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
 import Controls from './Controls';
 
 const initialNodes: Node[] = [

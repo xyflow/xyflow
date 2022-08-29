@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ConnectionLineComponentProps } from '@react-flow/bundle';
+import { ConnectionLineComponentProps } from 'reactflow';
 
 const ConnectionLine: FC<ConnectionLineComponentProps> = ({ fromX, fromY, toX, toY }) => {
   return (

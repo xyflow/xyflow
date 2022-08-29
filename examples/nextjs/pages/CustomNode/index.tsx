@@ -11,7 +11,7 @@ import {
   Connection,
   useNodesState,
   useEdgesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import ColorSelectorNode from './ColorSelectorNode';
 

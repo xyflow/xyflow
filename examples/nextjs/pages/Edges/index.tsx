@@ -12,7 +12,7 @@ import {
   Node,
   useEdgesState,
   useNodesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';

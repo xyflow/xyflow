@@ -12,7 +12,7 @@ import {
   NodeChange,
   EdgeChange,
   HandleType,
-} from '@react-flow/bundle';
+} from 'reactflow';
 
 import { Controls } from '@react-flow/controls';
 

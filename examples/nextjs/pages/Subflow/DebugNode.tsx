@@ -1,6 +1,6 @@
 import React, { memo, FC, CSSProperties } from 'react';
 
-import { Handle, NodeProps, Position } from '@react-flow/bundle';
+import { Handle, NodeProps, Position } from 'reactflow';
 
 const infoStyle: CSSProperties = { fontSize: 11 };
 const idStyle: CSSProperties = {

@@ -14,7 +14,7 @@ import {
   updateEdge,
   useNodesState,
   useEdgesState,
-} from '@react-flow/bundle';
+} from 'reactflow';
 import CustomNode from './CustomNode';
 
 const initialNodes: Node[] = [
