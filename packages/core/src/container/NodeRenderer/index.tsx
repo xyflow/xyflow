@@ -3,7 +3,7 @@ import shallow from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
-import { devWarn, internalsSymbol } from '../../utils';
+import { clampPosition, devWarn, internalsSymbol } from '../../utils';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { Position, ReactFlowState, WrapNodeProps } from '../../types';
@@ -25,6 +25,7 @@ type NodeRendererProps = Pick<
   | 'rfId'
   | 'disableKeyboardA11y'
   | 'nodeOrigin'
+  | 'nodeExtent'
 >;
 
 const selector = (s: ReactFlowState) => ({
@@ -81,8 +82,12 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
-        const posX = node.position?.x ?? 0;
-        const posY = node.position?.y ?? 0;
+        const clampedPosition = props.nodeExtent
+          ? clampPosition(node.positionAbsolute, props.nodeExtent)
+          : node.positionAbsolute;
+
+        const posX = clampedPosition?.x ?? 0;
+        const posY = clampedPosition?.y ?? 0;
         const posOrigin = getPositionWithOrigin({
           x: posX,
           y: posY,

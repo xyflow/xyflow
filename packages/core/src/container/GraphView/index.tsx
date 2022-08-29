@@ -99,6 +99,7 @@ const GraphView = ({
   elevateEdgesOnSelect,
   disableKeyboardA11y,
   nodeOrigin,
+  nodeExtent,
   rfId,
 }: GraphViewProps) => {
   useOnInitHandler(onInit);
@@ -175,6 +176,7 @@ const GraphView = ({
           noDragClassName={noDragClassName}
           disableKeyboardA11y={disableKeyboardA11y}
           nodeOrigin={nodeOrigin}
+          nodeExtent={nodeExtent}
           rfId={rfId}
         />
       </ViewportWrapper>

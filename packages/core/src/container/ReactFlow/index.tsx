@@ -225,6 +225,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             rfId={rfId}
             disableKeyboardA11y={disableKeyboardA11y}
             nodeOrigin={nodeOrigin}
+            nodeExtent={nodeExtent}
           />
           <StoreUpdater
             nodes={nodes}
