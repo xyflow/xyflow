@@ -1,7 +1,6 @@
 import React, { MouseEvent, CSSProperties, useCallback } from 'react';
 
-import {
-  ReactFlow,
+import ReactFlow, {
   Background,
   BackgroundVariant,
   Controls,

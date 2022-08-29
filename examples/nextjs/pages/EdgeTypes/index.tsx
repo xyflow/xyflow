@@ -3,8 +3,7 @@
  */
 import React, { useCallback } from 'react';
 
-import {
-  ReactFlow,
+import ReactFlow, {
   Background,
   Controls,
   MiniMap,

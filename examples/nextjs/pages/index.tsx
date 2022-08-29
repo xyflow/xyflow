@@ -1,8 +1,6 @@
 import React, { MouseEvent } from 'react';
-
-import {
+import ReactFlow, {
   MiniMap,
-  ReactFlow,
   Background,
   BackgroundVariant,
   Controls,

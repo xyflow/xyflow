@@ -1,6 +1,5 @@
 import React, { useState, DragEvent } from 'react';
-import {
-  ReactFlow,
+import ReactFlow, {
   ReactFlowProvider,
   addEdge,
   ReactFlowInstance,

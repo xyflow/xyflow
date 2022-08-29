@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 
-import {
-  ReactFlow,
+import ReactFlow, {
   Node,
   ReactFlowProvider,
   useNodesState,

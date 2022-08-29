@@ -4,7 +4,7 @@
 <div align="center">
 
 ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23ff0072)
-![npm downloads](https://img.shields.io/npm/dt/react-flow-renderer?color=%23FF0072&label=downloads)
+![npm downloads](https://img.shields.io/npm/dt/reactflow?color=%23FF0072&label=downloads)
 ![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
 
@@ -36,7 +36,7 @@ You can find more information in our [React Flow Pro FAQs](https://pro.reactflow
 The easiest way to get the latest version of React Flow is to install it via npm:
 
 ```bash
-npm install react-flow-renderer
+npm install reactflow
 ```
 
 ## Quick Start
@@ -44,7 +44,7 @@ npm install react-flow-renderer
 This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and [API reference](https://reactflow.dev/docs/api/react-flow-props).
 
 ```jsx
-import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer';
+import ReactFlow, { MiniMap, Controls } from 'reactflow';
 
 function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
   return (

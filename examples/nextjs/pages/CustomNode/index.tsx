@@ -1,6 +1,5 @@
 import React, { useState, useEffect, MouseEvent, ChangeEvent, useCallback } from 'react';
-import {
-  ReactFlow,
+import ReactFlow, {
   MiniMap,
   Controls,
   addEdge,

@@ -1,8 +1,7 @@
 import React, { MouseEvent, useCallback } from 'react';
-import {
+import ReactFlow, {
   Controls,
   Background,
-  ReactFlow,
   MiniMap,
   addEdge,
   Connection,

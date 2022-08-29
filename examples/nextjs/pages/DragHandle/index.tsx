@@ -1,11 +1,5 @@
 import React, { MouseEvent } from 'react';
-import {
-  ReactFlow,
-  Node,
-  Edge,
-  useNodesState,
-  useEdgesState,
-} from '@react-flow/core';
+import ReactFlow, { Node, Edge, useNodesState, useEdgesState } from 'reactflow';
 
 import DragHandleNode from './DragHandleNode';
 

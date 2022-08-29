@@ -1,6 +1,5 @@
 import React from 'react';
-import {
-  ReactFlow,
+import ReactFlow, {
   useReactFlow,
   Node,
   Edge,
@@ -9,7 +8,7 @@ import {
   useEdgesState,
   Background,
   BackgroundVariant,
-} from '@react-flow/bunde';
+} from 'reactflow';
 
 const defaultNodes: Node[] = [
   {

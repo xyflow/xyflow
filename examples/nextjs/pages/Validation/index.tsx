@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
-import {
-  ReactFlow,
+import ReactFlow, {
   addEdge,
   Handle,
   Connection,

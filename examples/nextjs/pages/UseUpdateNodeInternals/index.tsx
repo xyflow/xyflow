@@ -1,6 +1,5 @@
 import { useCallback, MouseEvent } from 'react';
-import {
-  ReactFlow,
+import ReactFlow, {
   NodeTypes,
   addEdge,
   useReactFlow,

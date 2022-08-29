@@ -1,6 +1,5 @@
 import React, { useState, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
-import {
-  ReactFlow,
+import ReactFlow, {
   addEdge,
   Node,
   Connection,

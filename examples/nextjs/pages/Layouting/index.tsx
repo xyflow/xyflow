@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
-import {
+import ReactFlow, {
   Controls,
-  ReactFlow,
   ReactFlowProvider,
   addEdge,
   Connection,

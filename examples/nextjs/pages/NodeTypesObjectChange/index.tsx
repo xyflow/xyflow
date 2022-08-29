@@ -1,7 +1,5 @@
 import React, { useState, CSSProperties, FC, useCallback } from 'react';
-
-import {
-  ReactFlow,
+import ReactFlow, {
   addEdge,
   Node,
   Position,
