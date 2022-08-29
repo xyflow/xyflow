@@ -213,6 +213,10 @@ const ZoomPane = ({
         const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
         const pinchZoom = zoomOnPinch && event.ctrlKey;
 
+        if (event.button === 1 && event.type === 'mousedown' && event.target.closest(`.react-flow__node`)) {
+          return true;
+        }
+
         // if all interactions are disabled, we prevent all zoom events
         if (!panOnDrag && !zoomScroll && !panOnScroll && !zoomOnDoubleClick && !zoomOnPinch) {
           return false;
@@ -253,7 +257,7 @@ const ZoomPane = ({
         }
 
         // default filter for d3-zoom
-        return (!event.ctrlKey || event.type === 'wheel') && !event.button;
+        return (!event.ctrlKey || event.type === 'wheel') && event.button <= 1;
       });
     }
   }, [

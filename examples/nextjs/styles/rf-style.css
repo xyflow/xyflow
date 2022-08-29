@@ -1,5 +1,5 @@
 /* this gets exported as style.css and can be used for the default theming */
-/* these are the necessary styles for React Flow */
+/* these are the necessary styles for React Flow, they get used by base.css and style.css */
 .react-flow__container {
   position: absolute;
   width: 100%;
@@ -130,6 +130,7 @@
 }
 .react-flow__handle.connectable {
     pointer-events: all;
+    cursor: crosshair;
   }
 .react-flow__handle-bottom {
     top: auto;

@@ -1,5 +1,5 @@
 /* this will be exported as base.css and can be used for a basic styling */
-/* these are the necessary styles for React Flow */
+/* these are the necessary styles for React Flow, they get used by base.css and style.css */
 .react-flow__container {
   position: absolute;
   width: 100%;
@@ -101,9 +101,6 @@
   background-color: white;
   cursor: -webkit-grab;
   cursor: grab;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #bbb;
 }
 .react-flow__node.dragging {
     cursor: -webkit-grabbing;
@@ -129,6 +126,7 @@
 }
 .react-flow__handle.connectable {
     pointer-events: all;
+    cursor: crosshair;
   }
 .react-flow__handle-bottom {
     top: auto;
@@ -196,9 +194,26 @@
     stroke-dashoffset: 10;
   }
 }
-.react-flow__node.selected,
-  .react-flow__node:focus,
-  .react-flow__node:focus-visible {
+.react-flow__node-default,
+.react-flow__node-input,
+.react-flow__node-output,
+.react-flow__node-group {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #bbb;
+}
+.react-flow__node-default.selected,
+  .react-flow__node-default:focus,
+  .react-flow__node-default:focus-visible,
+  .react-flow__node-input.selected,
+  .react-flow__node-input:focus,
+  .react-flow__node-input:focus-visible,
+  .react-flow__node-output.selected,
+  .react-flow__node-output:focus,
+  .react-flow__node-output:focus-visible,
+  .react-flow__node-group.selected,
+  .react-flow__node-group:focus,
+  .react-flow__node-group:focus-visible {
     outline: none;
     border: 1px solid #555;
   }
