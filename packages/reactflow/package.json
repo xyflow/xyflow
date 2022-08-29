@@ -15,6 +15,7 @@
   ],
   "main": "dist/reactflow.cjs.js",
   "module": "dist/reactflow.esm.js",
+  "types": "dist/reactflow.cjs.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "repository": {

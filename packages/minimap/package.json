@@ -15,6 +15,7 @@
   ],
   "main": "dist/react-flow-minimap.cjs.js",
   "module": "dist/react-flow-minimap.esm.js",
+  "types": "dist/react-flow-minimap.cjs.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "repository": {
