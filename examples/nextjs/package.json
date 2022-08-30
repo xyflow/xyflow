@@ -33,6 +33,7 @@
     "postcss-import": "^14.1.0",
     "postcss-nested": "^5.0.6",
     "postcss-preset-env": "^7.7.2",
+    "tsconfig": "*",
     "webpack": "^5.74.0"
   }
 }

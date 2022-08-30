@@ -1,0 +1,12 @@
+{
+  "extends": "tsconfig/react.json",
+  "display": "reactflow",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules", "dist/*"],
+  "references": [
+    { "path": "../background/tsconfig.json" },
+    { "path": "../controls/tsconfig.json" },
+    { "path": "../core/tsconfig.json" },
+    { "path": "../minimap/tsconfig.json" }
+  ]
+}

@@ -2315,6 +2315,7 @@ __metadata:
     "@babel/runtime": ^7.18.9
     "@reactflow/core": "workspace:*"
     classcat: ^5.0.3
+    tsconfig: "*"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
@@ -2334,6 +2335,7 @@ __metadata:
     postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
+    tsconfig: "*"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
@@ -2357,6 +2359,7 @@ __metadata:
     postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
+    tsconfig: "*"
     zustand: ^4.0.0
   peerDependencies:
     react: ">=18"
@@ -2377,6 +2380,7 @@ __metadata:
     postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
+    tsconfig: "*"
     zustand: ^4.0.0
   peerDependencies:
     react: ">=18"
@@ -8497,6 +8501,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     reactflow: "workspace:*"
+    tsconfig: "*"
     webpack: ^5.74.0
   languageName: unknown
   linkType: soft
@@ -8529,6 +8534,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     start-server-and-test: ^1.14.0
+    tsconfig: "*"
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
@@ -8548,6 +8554,7 @@ __metadata:
     postcss-combine-duplicated-selectors: ^10.0.3
     postcss-import: ^14.1.0
     postcss-nested: ^5.0.6
+    tsconfig: "*"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
@@ -9562,6 +9569,12 @@ __metadata:
   checksum: 8afa01c673ebb4782ba53d3a12df97fa837ce524f8ad38ee4e2b2fd57f5ac79abc21c574e9e9eb014d93efe7fe8214001b96233b5c6ea75bd1ea82afe17a4c6d
   languageName: node
   linkType: hard
+
+"tsconfig@*, tsconfig@workspace:tooling/tsconfig":
+  version: 0.0.0-use.local
+  resolution: "tsconfig@workspace:tooling/tsconfig"
+  languageName: unknown
+  linkType: soft
 
 "tslib@npm:^1.8.1":
   version: 1.14.1

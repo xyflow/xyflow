@@ -6,7 +6,8 @@
   "license": "MIT",
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "tooling/*"
   ],
   "private": true,
   "scripts": {
@@ -52,6 +53,7 @@
     "postcss-nested": "^5.0.6",
     "prettier": "^2.7.1",
     "start-server-and-test": "^1.14.0",
+    "tsconfig": "*",
     "typescript": "^4.7.4"
   },
   "preconstruct": {
