@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/minimap",
-  "version": "11.0.0-next.0",
+  "version": "11.0.0-next.2",
   "description": "Minimap component for React Flow.",
   "keywords": [
     "react",
