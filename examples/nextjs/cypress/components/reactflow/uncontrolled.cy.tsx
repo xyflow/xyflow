@@ -21,7 +21,7 @@ describe('<ReactFlow />: Uncontrolled Flow', () => {
   it('drags a node', () => {
     const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-    cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: any) => {
+    cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: JQuery<HTMLElement>) => {
       const styleAfterDrag = $el.css('transform');
       expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
     });

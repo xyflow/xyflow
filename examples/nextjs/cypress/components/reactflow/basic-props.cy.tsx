@@ -17,7 +17,7 @@ describe('<ReactFlow />: Basic Props', () => {
     it('drags a node', () => {
       const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-      cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: any) => {
+      cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: JQuery<HTMLElement>) => {
         const styleAfterDrag = $el.css('transform');
         expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
       });
@@ -43,7 +43,7 @@ describe('<ReactFlow />: Basic Props', () => {
     it('can not drag a node', () => {
       const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-      cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: any) => {
+      cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: JQuery<HTMLElement>) => {
         const styleAfterDrag = $el.css('transform');
         expect(styleBeforeDrag).to.equal(styleAfterDrag);
       });
@@ -63,7 +63,7 @@ describe('<ReactFlow />: Basic Props', () => {
     it('drags a node', () => {
       const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-      cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: any) => {
+      cy.drag('.react-flow__node:first', { x: 200, y: 25 }).then(($el: JQuery<HTMLElement>) => {
         const styleAfterDrag = $el.css('transform');
         expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
       });
@@ -195,5 +195,3 @@ describe('<ReactFlow />: Basic Props', () => {
     cy.get('.react-flow').should('have.class', 'custom');
   });
 });
-
-// test specific helper component

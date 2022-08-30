@@ -1908,6 +1908,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cypress/skip-test@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "@cypress/skip-test@npm:2.6.1"
+  checksum: 48ec912f162563ca8657b6f023b701f66ddc29083ed36ae96cd861087c828046c2abb36c6fa0b316bb74941a17b046ac3b143532218e4cdc6d78d7838a64a141
+  languageName: node
+  linkType: hard
+
 "@cypress/xvfb@npm:^1.2.4":
   version: 1.2.4
   resolution: "@cypress/xvfb@npm:1.2.4"
@@ -4327,6 +4334,15 @@ __metadata:
     csv-stringify: ^5.6.5
     stream-transform: ^2.1.3
   checksum: 0decc2d0d7a0abf127f4556d6f3cef5a54015b78d348608b5e8f42256c2bd0a021f34f1efc9723b2cd162680917de4c0b3967bfb65a07305eca0827654ca727e
+  languageName: node
+  linkType: hard
+
+"cypress-real-events@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "cypress-real-events@npm:1.7.1"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x
+  checksum: b31c2facfa03e01e298926cd0925260b12474770fc1a3ce8998da21818db7e6d9fc2f9eb60d1771aa4ce3c29aca63d04da21e1a63e3bb117b1506a72ab0c3eb1
   languageName: node
   linkType: hard
 
@@ -8462,9 +8478,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "reactflow-examples@workspace:examples/nextjs"
   dependencies:
+    "@cypress/skip-test": ^2.6.1
     "@preconstruct/next": ^4.0.0
     "@types/dagre": ^0.7.47
     cypress: ^10.6.0
+    cypress-real-events: ^1.7.1
     dagre: ^0.8.5
     eslint: ^8.22.0
     eslint-config-next: 12.2.2
