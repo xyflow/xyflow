@@ -54,6 +54,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     disableKeyboardA11y,
   }: WrapEdgeProps): JSX.Element | null => {
     const edgeRef = useRef<SVGGElement>(null);
+    const [updateHover, setUpdateHover] = useState<boolean>(false);
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
 
@@ -92,11 +93,13 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       const isTarget = isSourceHandle;
       const edge = store.getState().edges.find((e) => e.id === id)!;
 
+      setUpdating(true);
       onEdgeUpdateStart?.(event, edge, handleType);
 
-      const _onEdgeUpdateEnd = onEdgeUpdateEnd
-        ? (evt: MouseEvent): void => onEdgeUpdateEnd(evt, edge, handleType)
-        : undefined;
+      const _onEdgeUpdateEnd = (evt: MouseEvent) => {
+        setUpdating(false);
+        onEdgeUpdateEnd?.(evt, edge, handleType);
+      };
 
       const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
 
@@ -119,8 +122,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeUpdaterTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
       handleEdgeUpdater(event, false);
 
-    const onEdgeUpdaterMouseEnter = () => setUpdating(true);
-    const onEdgeUpdaterMouseOut = () => setUpdating(false);
+    const onEdgeUpdaterMouseEnter = () => setUpdateHover(true);
+    const onEdgeUpdaterMouseOut = () => setUpdateHover(false);
 
     const inactive = !elementsSelectable && !onClick;
     const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
@@ -128,7 +131,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       'react-flow__edge',
       `react-flow__edge-${type}`,
       className,
-      { selected, animated, inactive, updating },
+      { selected, animated, inactive, updating: updateHover },
     ]);
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -161,31 +164,34 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_EDGE_DESC_KEY}-${rfId}`}
         ref={edgeRef}
       >
-        <EdgeComponent
-          id={id}
-          source={source}
-          target={target}
-          selected={selected}
-          animated={animated}
-          label={label}
-          labelStyle={labelStyle}
-          labelShowBg={labelShowBg}
-          labelBgStyle={labelBgStyle}
-          labelBgPadding={labelBgPadding}
-          labelBgBorderRadius={labelBgBorderRadius}
-          data={data}
-          style={style}
-          sourceX={sourceX}
-          sourceY={sourceY}
-          targetX={targetX}
-          targetY={targetY}
-          sourcePosition={sourcePosition}
-          targetPosition={targetPosition}
-          sourceHandleId={sourceHandleId}
-          targetHandleId={targetHandleId}
-          markerStart={markerStartUrl}
-          markerEnd={markerEndUrl}
-        />
+        {!updating && (
+          <EdgeComponent
+            id={id}
+            source={source}
+            target={target}
+            selected={selected}
+            animated={animated}
+            label={label}
+            labelStyle={labelStyle}
+            labelShowBg={labelShowBg}
+            labelBgStyle={labelBgStyle}
+            labelBgPadding={labelBgPadding}
+            labelBgBorderRadius={labelBgBorderRadius}
+            data={data}
+            style={style}
+            sourceX={sourceX}
+            sourceY={sourceY}
+            targetX={targetX}
+            targetY={targetY}
+            sourcePosition={sourcePosition}
+            targetPosition={targetPosition}
+            sourceHandleId={sourceHandleId}
+            targetHandleId={targetHandleId}
+            markerStart={markerStartUrl}
+            markerEnd={markerEndUrl}
+          />
+        )}
+
         {handleEdgeUpdate && (
           <g
             onMouseDown={onEdgeUpdaterSourceMouseDown}
