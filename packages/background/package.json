@@ -31,6 +31,9 @@
     "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3"
   },
+  "devDependencies": {
+    "tsconfig": "*"
+  },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
