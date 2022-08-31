@@ -103,6 +103,7 @@ describe('<ReactFlow />: Event handlers', () => {
         });
     });
   });
+
   describe('Edge event handlers', () => {
     it('handles onEdgeClick', () => {
       const onEdgeClick = cy.spy().as('onEdgeClick');
@@ -163,6 +164,44 @@ describe('<ReactFlow />: Event handlers', () => {
               expect(onEdgeMouseLeave.callCount).to.be.gt(0);
             });
         });
+    });
+  });
+
+  describe('Pane event handlers', () => {
+    it('handles onMove handlers', () => {
+      const onMoveStart = cy.spy().as('onMoveStart');
+      const onMove = cy.spy().as('onMove');
+      const onMoveEnd = cy.spy().as('onMoveEnd');
+
+      cy.mount(<ControlledFlow onMoveStart={onMoveStart} onMove={onMove} onMoveEnd={onMoveEnd} />).then(() => {
+        expect(onMoveStart.callCount).to.be.eq(0);
+        expect(onMove.callCount).to.be.eq(0);
+        expect(onMoveEnd.callCount).to.be.eq(0);
+
+        cy.dragPane({ from: { x: 10, y: 200 }, to: { x: 100, y: 200 } }).then(() => {
+          expect(onMoveStart.callCount).to.be.eq(1);
+          expect(onMove.callCount).to.be.gt(0);
+          expect(onMoveEnd.callCount).to.be.eq(1);
+        });
+      });
+    });
+
+    it('handles click handlers', () => {
+      const onPaneClick = cy.spy().as('onPaneClick');
+      const onPaneContextMenu = cy.spy().as('onPaneContextMenu');
+
+      cy.mount(<ControlledFlow onPaneClick={onPaneClick} onPaneContextMenu={onPaneContextMenu} />).then(() => {
+        expect(onPaneClick.callCount).to.be.eq(0);
+        expect(onPaneContextMenu.callCount).to.be.eq(0);
+
+        cy.get('.react-flow__pane')
+          .rightclick()
+          .click()
+          .then(() => {
+            expect(onPaneClick.callCount).to.be.eq(1);
+            expect(onPaneContextMenu.callCount).to.be.eq(1);
+          });
+      });
     });
   });
 });

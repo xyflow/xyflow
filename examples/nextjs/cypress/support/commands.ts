@@ -23,7 +23,7 @@ Cypress.Commands.add('dragPane', ({ from, to }) =>
     .then((window) =>
       cy
         .get('.react-flow__pane')
-        .trigger('mousedown', from.x, from.y, { which: 1, view: window })
+        .trigger('mousedown', from.x, from.y, { view: window })
         .trigger('mousemove', to.x, to.y)
         .trigger('mouseup', { force: true, view: window })
     )

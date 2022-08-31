@@ -257,7 +257,7 @@ const ZoomPane = ({
         }
 
         // default filter for d3-zoom
-        return (!event.ctrlKey || event.type === 'wheel') && event.button <= 1;
+        return (!event.ctrlKey || event.type === 'wheel') && (!event.button || event.button <= 1);
       });
     }
   }, [
