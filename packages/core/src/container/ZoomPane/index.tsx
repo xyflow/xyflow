@@ -57,6 +57,7 @@ const ZoomPane = ({
   noWheelClassName,
   noPanClassName,
 }: ZoomPaneProps) => {
+  const timerId = useRef<ReturnType<typeof setTimeout>>();
   const store = useStoreApi();
   const isZoomingOrPanning = useRef(false);
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -200,12 +201,23 @@ const ZoomPane = ({
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
-          onViewportChangeEnd?.(flowTransform);
-          onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          const handleOnMoveEnd = () => {
+            onViewportChangeEnd?.(flowTransform);
+            onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          };
+          console.log(panOnScroll);
+          if (panOnScroll) {
+            clearTimeout(timerId.current);
+            timerId.current = setTimeout(() => {
+              handleOnMoveEnd();
+            }, 150);
+          } else {
+            handleOnMoveEnd();
+          }
         }
       });
     }
-  }, [d3Zoom, onMoveEnd]);
+  }, [d3Zoom, onMoveEnd, panOnScroll]);
 
   useEffect(() => {
     if (d3Zoom) {
