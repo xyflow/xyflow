@@ -201,19 +201,14 @@ const ZoomPane = ({
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
-          const handleOnMoveEnd = () => {
-            onViewportChangeEnd?.(flowTransform);
-            onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
-          };
-          console.log(panOnScroll);
-          if (panOnScroll) {
-            clearTimeout(timerId.current);
-            timerId.current = setTimeout(() => {
-              handleOnMoveEnd();
-            }, 150);
-          } else {
-            handleOnMoveEnd();
-          }
+          clearTimeout(timerId.current);
+          timerId.current = setTimeout(
+            () => {
+              onViewportChangeEnd?.(flowTransform);
+              onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+            },
+            panOnScroll ? 150 : 0
+          );
         }
       });
     }
