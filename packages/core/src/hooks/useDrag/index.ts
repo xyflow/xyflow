@@ -130,25 +130,24 @@ function useDrag({
                 onDrag(event.sourceEvent as MouseEvent, currentNode, nodes);
               }
             }
+          })
+          .on('end', (event) => {
+            setDragging(false);
+            if (dragItems.current) {
+              const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();
+              const onStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
 
-            event.on('end', (event) => {
-              setDragging(false);
-              if (dragItems.current) {
-                const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();
-                const onStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
+              updateNodePositions(dragItems.current, false, false);
 
-                updateNodePositions(dragItems.current, false, false);
-
-                if (onStop) {
-                  const [currentNode, nodes] = getEventHandlerParams({
-                    nodeId,
-                    dragItems: dragItems.current,
-                    nodeInternals,
-                  });
-                  onStop(event.sourceEvent as MouseEvent, currentNode, nodes);
-                }
+              if (onStop) {
+                const [currentNode, nodes] = getEventHandlerParams({
+                  nodeId,
+                  dragItems: dragItems.current,
+                  nodeInternals,
+                });
+                onStop(event.sourceEvent as MouseEvent, currentNode, nodes);
               }
-            });
+            }
           })
           .filter((event: MouseEvent) => {
             const target = event.target as HTMLDivElement;
