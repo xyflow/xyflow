@@ -262,6 +262,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDragStart={onSelectionDragStart}
             onSelectionDragStop={onSelectionDragStop}
             noPanClassName={noPanClassName}
+            nodeOrigin={nodeOrigin}
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}

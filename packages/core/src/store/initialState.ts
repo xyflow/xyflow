@@ -32,6 +32,7 @@ const initialState: ReactFlowStore = {
   domNode: null,
   paneDragging: false,
   noPanClassName: 'nopan',
+  nodeOrigin: [0, 0],
 
   snapGrid: [15, 15],
   snapToGrid: false,

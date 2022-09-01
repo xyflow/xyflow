@@ -41,6 +41,7 @@ type StoreUpdaterProps = Pick<
   | 'onSelectionDrag'
   | 'onSelectionDragStop'
   | 'noPanClassName'
+  | 'nodeOrigin'
 >;
 
 const selector = (s: ReactFlowState) => ({
@@ -110,6 +111,7 @@ const StoreUpdater = ({
   onSelectionDragStart,
   onSelectionDragStop,
   noPanClassName,
+  nodeOrigin,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -157,6 +159,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onSelectionDragStart', onSelectionDragStart, store.setState);
   useDirectStoreUpdater('onSelectionDragStop', onSelectionDragStop, store.setState);
   useDirectStoreUpdater('noPanClassName', noPanClassName, store.setState);
+  useDirectStoreUpdater('nodeOrigin', nodeOrigin, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

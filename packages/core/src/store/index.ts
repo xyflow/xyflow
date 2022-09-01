@@ -40,7 +40,15 @@ const createRFStore = () =>
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
-      const { onNodesChange, nodeInternals, fitViewOnInit, fitViewOnInitDone, fitViewOnInitOptions, domNode } = get();
+      const {
+        onNodesChange,
+        nodeInternals,
+        fitViewOnInit,
+        fitViewOnInitDone,
+        fitViewOnInitOptions,
+        domNode,
+        nodeOrigin,
+      } = get();
       const viewportNode = domNode?.querySelector('.react-flow__viewport');
 
       if (!viewportNode) {
@@ -67,8 +75,8 @@ const createRFStore = () =>
               [internalsSymbol]: {
                 ...node[internalsSymbol],
                 handleBounds: {
-                  source: getHandleBounds('.source', update.nodeElement, zoom),
-                  target: getHandleBounds('.target', update.nodeElement, zoom),
+                  source: getHandleBounds('.source', update.nodeElement, zoom, nodeOrigin),
+                  target: getHandleBounds('.target', update.nodeElement, zoom, nodeOrigin),
                 },
               },
               ...dimensions,

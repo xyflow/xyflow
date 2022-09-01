@@ -1,13 +1,14 @@
 import { MouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { HandleElement, Node, Position, ReactFlowState } from '../../types';
+import { HandleElement, Node, NodeOrigin, Position, ReactFlowState } from '../../types';
 import { getDimensions } from '../../utils';
 
 export const getHandleBounds = (
   selector: string,
   nodeElement: HTMLDivElement,
-  zoom: number
+  zoom: number,
+  nodeOrigin: NodeOrigin
 ): HandleElement[] | null => {
   const handles = nodeElement.querySelectorAll(selector);
 
@@ -17,6 +18,10 @@ export const getHandleBounds = (
 
   const handlesArray = Array.from(handles) as HTMLDivElement[];
   const nodeBounds = nodeElement.getBoundingClientRect();
+  const nodeOffset = {
+    x: nodeBounds.width * nodeOrigin[0],
+    y: nodeBounds.height * nodeOrigin[1],
+  };
 
   return handlesArray.map((handle): HandleElement => {
     const handleBounds = handle.getBoundingClientRect();
@@ -24,8 +29,8 @@ export const getHandleBounds = (
     return {
       id: handle.getAttribute('data-handleid'),
       position: handle.getAttribute('data-handlepos') as unknown as Position,
-      x: (handleBounds.left - nodeBounds.left) / zoom,
-      y: (handleBounds.top - nodeBounds.top) / zoom,
+      x: (handleBounds.left - nodeBounds.left - nodeOffset.x) / zoom,
+      y: (handleBounds.top - nodeBounds.top - nodeOffset.y) / zoom,
       ...getDimensions(handle),
     };
   });

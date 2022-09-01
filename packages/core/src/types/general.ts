@@ -13,6 +13,7 @@ import {
   NodeDragItem,
   NodeDragHandler,
   SelectionDragHandler,
+  NodeOrigin,
 } from './nodes';
 import { Edge, EdgeProps, WrapEdgeProps } from './edges';
 import { HandleType, StartHandle } from './handles';
@@ -149,6 +150,7 @@ export type ReactFlowStore = {
   maxZoom: number;
   translateExtent: CoordinateExtent;
   nodeExtent: CoordinateExtent;
+  nodeOrigin: NodeOrigin;
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
