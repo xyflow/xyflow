@@ -13,6 +13,7 @@ module.exports = defineConfig({
       framework: 'next',
       bundler: 'webpack',
     },
+    screenshotOnRunFailure: false,
     video: false,
   },
 });
