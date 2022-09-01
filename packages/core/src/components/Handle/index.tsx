@@ -16,6 +16,7 @@ export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElem
 const selector = (s: ReactFlowState) => ({
   connectionStartHandle: s.connectionStartHandle,
   connectOnClick: s.connectOnClick,
+  noPanClassName: s.noPanClassName,
 });
 
 const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
@@ -36,7 +37,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   ) => {
     const store = useStoreApi();
     const nodeId = useContext(NodeIdContext) as string;
-    const { connectionStartHandle, connectOnClick } = useStore(selector, shallow);
+    const { connectionStartHandle, connectOnClick, noPanClassName } = useStore(selector, shallow);
 
     const handleId = id || null;
     const isTarget = type === 'target';
@@ -110,6 +111,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           'react-flow__handle',
           `react-flow__handle-${position}`,
           'nodrag',
+          noPanClassName,
           className,
           {
             source: !isTarget,

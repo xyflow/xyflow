@@ -31,6 +31,7 @@ const initialState: ReactFlowStore = {
   connectionMode: ConnectionMode.Strict,
   domNode: null,
   paneDragging: false,
+  noPanClassName: 'nopan',
 
   snapGrid: [15, 15],
   snapToGrid: false,

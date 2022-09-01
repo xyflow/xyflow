@@ -151,7 +151,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         className={cc([
           'react-flow__node',
           `react-flow__node-${type}`,
-          noPanClassName,
           className,
           {
             selected,
