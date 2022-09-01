@@ -28,8 +28,8 @@ export type FitView = (fitViewOptions?: FitViewOptions) => void;
 
 export type Project = (position: XYPosition) => XYPosition;
 
-export type OnNodesChange = (nodes: NodeChange[]) => void;
-export type OnEdgesChange = (nodes: EdgeChange[]) => void;
+export type OnNodesChange = (changes: NodeChange[]) => void;
+export type OnEdgesChange = (changes: EdgeChange[]) => void;
 
 export type OnNodesDelete = (nodes: Node[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
