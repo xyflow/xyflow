@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
+import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent, useLayoutEffect } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';

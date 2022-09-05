@@ -31,6 +31,7 @@ const routes = [
   '/NodeTypesObjectChange',
   '/Overview',
   '/Provider',
+  '/SimpleEdge',
   '/SaveRestore',
   '/Stress',
   '/Subflow',

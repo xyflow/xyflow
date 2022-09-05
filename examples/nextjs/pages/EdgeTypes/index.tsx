@@ -41,7 +41,6 @@ const EdgeTypesFlow = () => {
       onInit={onInit}
       onConnect={onConnect}
       minZoom={0.2}
-      zoomOnScroll={false}
       selectionKeyCode="a+s"
       multiSelectionKeyCode={multiSelectionKeyCode}
       deleteKeyCode={deleteKeyCode}
