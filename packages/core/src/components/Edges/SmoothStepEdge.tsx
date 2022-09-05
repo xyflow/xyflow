@@ -33,6 +33,107 @@ export interface GetSmoothStepPathParams {
   centerY?: number;
 }
 
+const getPositionDirection = (pos: Position) => {
+  switch (pos) {
+    case Position.Left:
+      return [-1, 0];
+    case Position.Right:
+      return [1, 0];
+    case Position.Top:
+      return [0, -1];
+    case Position.Bottom:
+      return [0, 1];
+  }
+};
+
+const leftAndRight = [Position.Left, Position.Right];
+
+const getDirection = ({
+  sourceX,
+  sourceY,
+  sourcePosition = Position.Bottom,
+  targetX,
+  targetY,
+}: GetSmoothStepPathParams): XY => {
+  if (leftAndRight.includes(sourcePosition)) {
+    return sourceX < targetX ? [1, 0] : [-1, 0];
+  }
+
+  return sourceY < targetY ? [0, 1] : [0, -1];
+};
+const offset = 10;
+
+type XY = [number, number];
+
+function getPoints({
+  sourceX,
+  sourceY,
+  sourcePosition = Position.Bottom,
+  targetX,
+  targetY,
+  targetPosition = Position.Top,
+  centerX = 1,
+  centerY = 1,
+}: GetSmoothStepPathParams): XY[] {
+  const dir = getDirection({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+  });
+
+  const sourcePoint: XY = [sourceX, sourceY];
+  const targetPoint: XY = [targetX, targetY];
+  const sourceDir = getPositionDirection(sourcePosition);
+  const targetDir = getPositionDirection(targetPosition);
+  const dirIndex = dir[0] !== 0 ? 0 : 1;
+  const offsetSourcePoint: XY = [sourceX + sourceDir[0] * offset, sourceY + sourceDir[1] * offset];
+  const offsetTargetPoint: XY = [targetX + targetDir[0] * offset, targetY + targetDir[1] * offset];
+  const currDir = dir[dirIndex];
+
+  let points: XY[] = [];
+
+  // opposite handle positions, default cases
+  if (sourceDir[dirIndex] * targetDir[dirIndex] === -1) {
+    //    --->
+    //    |
+    // >---
+    const verticalSplit: XY[] = [
+      [centerX, offsetSourcePoint[1]],
+      [centerX, offsetTargetPoint[1]],
+    ];
+    //    |
+    //  ---
+    //  |
+    const horizontalSplit: XY[] = [
+      [offsetSourcePoint[0], centerY],
+      [offsetTargetPoint[0], centerY],
+    ];
+
+    if (currDir === 1) {
+      points = dirIndex === 0 ? verticalSplit : horizontalSplit;
+    } else {
+      points = dirIndex === 0 ? horizontalSplit : verticalSplit;
+    }
+
+    // same handle positions
+  } else if (sourceDir[dirIndex] === targetDir[dirIndex]) {
+    //  __|
+    const sourceTarget: XY[] = [[offsetSourcePoint[0], offsetTargetPoint[1]]];
+    // |__
+    const targetSource: XY[] = [[offsetTargetPoint[0], offsetSourcePoint[1]]];
+
+    if (dirIndex === 0) {
+      points = sourceDir[dirIndex] === currDir ? targetSource : sourceTarget;
+    } else {
+      points = sourceDir[dirIndex] === currDir ? sourceTarget : targetSource;
+    }
+  }
+
+  return [sourcePoint, offsetSourcePoint, ...points, offsetTargetPoint, targetPoint];
+}
+
 export function getSmoothStepPath({
   sourceX,
   sourceY,
@@ -48,73 +149,21 @@ export function getSmoothStepPath({
   const cornerWidth = Math.min(borderRadius, Math.abs(targetX - sourceX));
   const cornerHeight = Math.min(borderRadius, Math.abs(targetY - sourceY));
   const cornerSize = Math.min(cornerWidth, cornerHeight, offsetX, offsetY);
-  const leftAndRight = [Position.Left, Position.Right];
   const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
   const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
 
-  let firstCornerPath = null;
-  let secondCornerPath = null;
+  const points = getPoints({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+    centerX: cX,
+    centerY: cY,
+  });
 
-  if (sourceX <= targetX) {
-    firstCornerPath =
-      sourceY <= targetY ? bottomLeftCorner(sourceX, cY, cornerSize) : topLeftCorner(sourceX, cY, cornerSize);
-    secondCornerPath =
-      sourceY <= targetY ? rightTopCorner(targetX, cY, cornerSize) : rightBottomCorner(targetX, cY, cornerSize);
-  } else {
-    firstCornerPath =
-      sourceY < targetY ? bottomRightCorner(sourceX, cY, cornerSize) : topRightCorner(sourceX, cY, cornerSize);
-    secondCornerPath =
-      sourceY < targetY ? leftTopCorner(targetX, cY, cornerSize) : leftBottomCorner(targetX, cY, cornerSize);
-  }
-
-  if (leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    if (sourceX <= targetX) {
-      firstCornerPath =
-        sourceY <= targetY ? rightTopCorner(cX, sourceY, cornerSize) : rightBottomCorner(cX, sourceY, cornerSize);
-      secondCornerPath =
-        sourceY <= targetY ? bottomLeftCorner(cX, targetY, cornerSize) : topLeftCorner(cX, targetY, cornerSize);
-    } else if (
-      (sourcePosition === Position.Right && targetPosition === Position.Left) ||
-      (sourcePosition === Position.Left && targetPosition === Position.Right) ||
-      (sourcePosition === Position.Left && targetPosition === Position.Left)
-    ) {
-      console.log(cX, sourceX, targetX);
-
-      // and sourceX > targetX
-      firstCornerPath =
-        sourceY <= targetY ? leftTopCorner(cX, sourceY, cornerSize) : leftBottomCorner(cX, sourceY, cornerSize);
-      secondCornerPath =
-        sourceY <= targetY ? bottomRightCorner(cX, targetY, cornerSize) : topRightCorner(cX, targetY, cornerSize);
-    }
-  } else if (leftAndRight.includes(sourcePosition) && !leftAndRight.includes(targetPosition)) {
-    if (sourceX <= targetX) {
-      firstCornerPath =
-        sourceY <= targetY
-          ? rightTopCorner(targetX, sourceY, cornerSize)
-          : rightBottomCorner(targetX, sourceY, cornerSize);
-    } else {
-      firstCornerPath =
-        sourceY <= targetY
-          ? leftTopCorner(targetX, sourceY, cornerSize)
-          : leftBottomCorner(targetX, sourceY, cornerSize);
-    }
-    secondCornerPath = '';
-  } else if (!leftAndRight.includes(sourcePosition) && leftAndRight.includes(targetPosition)) {
-    if (sourceX <= targetX) {
-      firstCornerPath =
-        sourceY <= targetY
-          ? bottomLeftCorner(sourceX, targetY, cornerSize)
-          : topLeftCorner(sourceX, targetY, cornerSize);
-    } else {
-      firstCornerPath =
-        sourceY <= targetY
-          ? bottomRightCorner(sourceX, targetY, cornerSize)
-          : topRightCorner(sourceX, targetY, cornerSize);
-    }
-    secondCornerPath = '';
-  }
-
-  return `M ${sourceX},${sourceY}${firstCornerPath}${secondCornerPath}L ${targetX},${targetY}`;
+  return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]} ${p[1]}`).join(' ');
 }
 
 const SmoothStepEdge = memo(

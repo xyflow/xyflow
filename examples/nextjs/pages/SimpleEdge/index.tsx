@@ -1,9 +1,12 @@
 import React, { useCallback } from 'react';
 import ReactFlow, { addEdge, Connection, Node, Edge, useNodesState, useEdgesState, Position } from 'reactflow';
 
+const sourcePosition = Position.Bottom;
+const targetPosition = Position.Bottom;
+
 const initialNodes: Node[] = [
-  { id: '1', position: { x: 0, y: 0 }, data: {}, sourcePosition: Position.Right, targetPosition: Position.Left },
-  { id: '2', position: { x: 250, y: 0 }, data: {}, sourcePosition: Position.Right, targetPosition: Position.Left },
+  { id: '1', position: { x: 0, y: 0 }, data: {}, sourcePosition, targetPosition },
+  { id: '2', position: { x: 250, y: -100 }, data: {}, sourcePosition, targetPosition },
 ];
 
 const initialEdges: Edge[] = [
@@ -12,6 +15,7 @@ const initialEdges: Edge[] = [
     source: '1',
     target: '2',
     type: 'smoothstep',
+    animated: true,
   },
 ];
 
