@@ -91,6 +91,11 @@ function getPoints({
   const offsetSourcePoint: XY = [sourceX + sourceDir[0] * offset, sourceY + sourceDir[1] * offset];
   const offsetTargetPoint: XY = [targetX + targetDir[0] * offset, targetY + targetDir[1] * offset];
   const currDir = dir[dirIndex];
+  // sourceTarget means we take x from source and y from target, targetSource is the opposite
+  //  __|
+  const sourceTarget: XY[] = [[offsetSourcePoint[0], offsetTargetPoint[1]]];
+  // |__
+  const targetSource: XY[] = [[offsetTargetPoint[0], offsetSourcePoint[1]]];
 
   let points: XY[] = [];
 
@@ -118,16 +123,41 @@ function getPoints({
     }
 
     // same handle positions
-  } else if (sourceDir[dirIndex] === targetDir[dirIndex]) {
-    //  __|
-    const sourceTarget: XY[] = [[offsetSourcePoint[0], offsetTargetPoint[1]]];
-    // |__
-    const targetSource: XY[] = [[offsetTargetPoint[0], offsetSourcePoint[1]]];
+  } else if (sourcePosition === targetPosition) {
+    // in this case we only need to split the line in two and draw one corner
 
     if (dirIndex === 0) {
-      points = sourceDir[dirIndex] === currDir ? targetSource : sourceTarget;
+      points = sourceDir[0] === currDir ? targetSource : sourceTarget;
     } else {
-      points = sourceDir[dirIndex] === currDir ? sourceTarget : targetSource;
+      points = sourceDir[1] === currDir ? sourceTarget : targetSource;
+    }
+  } else {
+    // here the handles are mixed. Right -> Bottom for example
+
+    if (dirIndex === 0) {
+      points = sourceDir[0] === currDir ? targetSource : sourceTarget;
+    } else {
+      points = sourceDir[1] === currDir ? sourceTarget : targetSource;
+    }
+    const oppoDirIndex = dirIndex === 0 ? 1 : 0;
+    if (sourceDir[dirIndex] === 1) {
+      if (
+        (sourceDir[dirIndex] !== targetDir[oppoDirIndex] &&
+          offsetSourcePoint[oppoDirIndex] > offsetTargetPoint[oppoDirIndex]) ||
+        (sourceDir[dirIndex] === targetDir[oppoDirIndex] &&
+          offsetSourcePoint[oppoDirIndex] < offsetTargetPoint[oppoDirIndex])
+      ) {
+        points = dirIndex === 0 ? sourceTarget : targetSource;
+      }
+    } else {
+      if (
+        (sourceDir[dirIndex] !== targetDir[oppoDirIndex] &&
+          offsetSourcePoint[oppoDirIndex] < offsetTargetPoint[oppoDirIndex]) ||
+        (sourceDir[dirIndex] === targetDir[oppoDirIndex] &&
+          offsetSourcePoint[oppoDirIndex] > offsetTargetPoint[oppoDirIndex])
+      ) {
+        points = dirIndex === 0 ? sourceTarget : targetSource;
+      }
     }
   }
 

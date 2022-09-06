@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import ReactFlow, { addEdge, Connection, Node, Edge, useNodesState, useEdgesState, Position } from 'reactflow';
 
-const sourcePosition = Position.Bottom;
-const targetPosition = Position.Bottom;
+const sourcePosition = Position.Left;
+const targetPosition = Position.Top;
 
 const initialNodes: Node[] = [
   { id: '1', position: { x: 0, y: 0 }, data: {}, sourcePosition, targetPosition },
