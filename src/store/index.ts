@@ -77,11 +77,13 @@ const createStore = () =>
               ...dimensions,
             });
 
-            res.push({
-              id: node.id,
-              type: 'dimensions',
-              dimensions,
-            });
+            if (!update.forceUpdate) {
+              res.push({
+                id: node.id,
+                type: 'dimensions',
+                dimensions,
+              });
+            }
           }
         }
 
