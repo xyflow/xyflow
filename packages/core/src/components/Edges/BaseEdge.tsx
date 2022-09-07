@@ -14,7 +14,7 @@ const BaseEdge = ({
   style,
   markerEnd,
   markerStart,
-  interactionWidth = 15,
+  interactionWidth = 20,
 }: BaseEdgeProps) => {
   return (
     <>
@@ -26,7 +26,7 @@ const BaseEdge = ({
         markerEnd={markerEnd}
         markerStart={markerStart}
       />
-      {interactionWidth && <path d={path} fill="none" strokeWidth={interactionWidth} />}
+      {interactionWidth && <path d={path} fill="none" strokeOpacity={0} strokeWidth={interactionWidth} />}
       {label ? (
         <EdgeText
           x={centerX}
