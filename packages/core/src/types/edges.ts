@@ -131,6 +131,7 @@ export interface WrapEdgeProps<T = any> {
 
 export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
   borderRadius?: number;
+  offset?: number;
 }
 
 export interface EdgeTextProps extends HTMLAttributes<SVGElement> {

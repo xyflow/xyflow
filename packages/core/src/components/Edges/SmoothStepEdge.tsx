@@ -1,25 +1,8 @@
 import { memo } from 'react';
 
 import { getCenter } from './utils';
-import { EdgeSmoothStepProps, Position } from '../../types';
+import { EdgeSmoothStepProps, Position, XYPosition } from '../../types';
 import BaseEdge from './BaseEdge';
-
-// These are some helper methods for drawing the round corners
-// The name indicates the direction of the path. "bottomLeftCorner" goes
-// from bottom to the left and "leftBottomCorner" goes from left to the bottom.
-// We have to consider the direction of the paths because of the animated lines.
-const bottomLeftCorner = (x: number, y: number, size: number): string =>
-  `L ${x},${y - size}Q ${x},${y} ${x + size},${y}`;
-const leftBottomCorner = (x: number, y: number, size: number): string =>
-  `L ${x + size},${y}Q ${x},${y} ${x},${y - size}`;
-const bottomRightCorner = (x: number, y: number, size: number): string =>
-  `L ${x},${y - size}Q ${x},${y} ${x - size},${y}`;
-const rightBottomCorner = (x: number, y: number, size: number): string =>
-  `L ${x - size},${y}Q ${x},${y} ${x},${y - size}`;
-const leftTopCorner = (x: number, y: number, size: number): string => `L ${x + size},${y}Q ${x},${y} ${x},${y + size}`;
-const topLeftCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x + size},${y}`;
-const topRightCorner = (x: number, y: number, size: number): string => `L ${x},${y + size}Q ${x},${y} ${x - size},${y}`;
-const rightTopCorner = (x: number, y: number, size: number): string => `L ${x - size},${y}Q ${x},${y} ${x},${y + size}`;
 
 export interface GetSmoothStepPathParams {
   sourceX: number;
@@ -31,137 +14,146 @@ export interface GetSmoothStepPathParams {
   borderRadius?: number;
   centerX?: number;
   centerY?: number;
+  offset?: number;
 }
 
-const getPositionDirection = (pos: Position) => {
-  switch (pos) {
-    case Position.Left:
-      return [-1, 0];
-    case Position.Right:
-      return [1, 0];
-    case Position.Top:
-      return [0, -1];
-    case Position.Bottom:
-      return [0, 1];
-  }
+const handleDirections = {
+  [Position.Left]: { x: -1, y: 0 },
+  [Position.Right]: { x: 1, y: 0 },
+  [Position.Top]: { x: 0, y: -1 },
+  [Position.Bottom]: { x: 0, y: 1 },
 };
-
-const leftAndRight = [Position.Left, Position.Right];
 
 const getDirection = ({
-  sourceX,
-  sourceY,
+  source,
   sourcePosition = Position.Bottom,
-  targetX,
-  targetY,
-}: GetSmoothStepPathParams): XY => {
-  if (leftAndRight.includes(sourcePosition)) {
-    return sourceX < targetX ? [1, 0] : [-1, 0];
+  target,
+}: {
+  source: XYPosition;
+  sourcePosition: Position;
+  target: XYPosition;
+}): XYPosition => {
+  if (sourcePosition === Position.Left || sourcePosition === Position.Right) {
+    return source.x < target.x ? { x: 1, y: 0 } : { x: -1, y: 0 };
   }
 
-  return sourceY < targetY ? [0, 1] : [0, -1];
+  return source.y < target.y ? { x: 0, y: 1 } : { x: 0, y: -1 };
 };
-const offset = 10;
 
-type XY = [number, number];
+const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
+// ith this function we try to mimic a orthogonal edge routing behaviour
+// It's not as good as a real orthogonal edge routing but it's faster and good enough as a default for step and smooth step edges
 function getPoints({
-  sourceX,
-  sourceY,
+  source,
   sourcePosition = Position.Bottom,
-  targetX,
-  targetY,
+  target,
   targetPosition = Position.Top,
-  centerX = 1,
-  centerY = 1,
-}: GetSmoothStepPathParams): XY[] {
+  center,
+  offset,
+}: {
+  source: XYPosition;
+  sourcePosition: Position;
+  target: XYPosition;
+  targetPosition: Position;
+  center: XYPosition;
+  offset: number;
+}): XYPosition[] {
+  const sourceDir = handleDirections[sourcePosition];
+  const targetDir = handleDirections[targetPosition];
+  const sourceGapped: XYPosition = { x: source.x + sourceDir.x * offset, y: source.y + sourceDir.y * offset };
+  const targetGapped: XYPosition = { x: target.x + targetDir.x * offset, y: target.y + targetDir.y * offset };
   const dir = getDirection({
-    sourceX,
-    sourceY,
+    source: sourceGapped,
     sourcePosition,
-    targetX,
-    targetY,
+    target: targetGapped,
   });
-
-  const sourcePoint: XY = [sourceX, sourceY];
-  const targetPoint: XY = [targetX, targetY];
-  const sourceDir = getPositionDirection(sourcePosition);
-  const targetDir = getPositionDirection(targetPosition);
-  const dirIndex = dir[0] !== 0 ? 0 : 1;
-  const offsetSourcePoint: XY = [sourceX + sourceDir[0] * offset, sourceY + sourceDir[1] * offset];
-  const offsetTargetPoint: XY = [targetX + targetDir[0] * offset, targetY + targetDir[1] * offset];
-  const currDir = dir[dirIndex];
+  const dirAccessor = dir.x !== 0 ? 'x' : 'y';
+  const currDir = dir[dirAccessor];
   // sourceTarget means we take x from source and y from target, targetSource is the opposite
-  //  __|
-  const sourceTarget: XY[] = [[offsetSourcePoint[0], offsetTargetPoint[1]]];
-  // |__
-  const targetSource: XY[] = [[offsetTargetPoint[0], offsetSourcePoint[1]]];
+  const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
+  const targetSource: XYPosition[] = [{ x: targetGapped.x, y: sourceGapped.y }];
 
-  let points: XY[] = [];
+  let points: XYPosition[] = [];
 
-  // opposite handle positions, default cases
-  if (sourceDir[dirIndex] * targetDir[dirIndex] === -1) {
+  // opposite handle positions, default case
+  if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
     //    --->
     //    |
     // >---
-    const verticalSplit: XY[] = [
-      [centerX, offsetSourcePoint[1]],
-      [centerX, offsetTargetPoint[1]],
+    const verticalSplit: XYPosition[] = [
+      { x: center.x, y: sourceGapped.y },
+      { x: center.x, y: targetGapped.y },
     ];
     //    |
     //  ---
     //  |
-    const horizontalSplit: XY[] = [
-      [offsetSourcePoint[0], centerY],
-      [offsetTargetPoint[0], centerY],
+    const horizontalSplit: XYPosition[] = [
+      { x: sourceGapped.x, y: center.y },
+      { x: targetGapped.x, y: center.y },
     ];
 
     if (currDir === 1) {
-      points = dirIndex === 0 ? verticalSplit : horizontalSplit;
-    } else {
-      points = dirIndex === 0 ? horizontalSplit : verticalSplit;
-    }
-
-    // same handle positions
-  } else if (sourcePosition === targetPosition) {
-    // in this case we only need to split the line in two and draw one corner
-
-    if (dirIndex === 0) {
-      points = sourceDir[0] === currDir ? targetSource : sourceTarget;
-    } else {
-      points = sourceDir[1] === currDir ? sourceTarget : targetSource;
-    }
-  } else {
-    // here the handles are mixed. Right -> Bottom for example
-
-    if (dirIndex === 0) {
-      points = sourceDir[0] === currDir ? targetSource : sourceTarget;
-    } else {
-      points = sourceDir[1] === currDir ? sourceTarget : targetSource;
-    }
-    const oppoDirIndex = dirIndex === 0 ? 1 : 0;
-    if (sourceDir[dirIndex] === 1) {
-      if (
-        (sourceDir[dirIndex] !== targetDir[oppoDirIndex] &&
-          offsetSourcePoint[oppoDirIndex] > offsetTargetPoint[oppoDirIndex]) ||
-        (sourceDir[dirIndex] === targetDir[oppoDirIndex] &&
-          offsetSourcePoint[oppoDirIndex] < offsetTargetPoint[oppoDirIndex])
-      ) {
-        points = dirIndex === 0 ? sourceTarget : targetSource;
+      if (sourceDir[dirAccessor] === 1) {
+        points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
+      } else {
+        points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
       }
     } else {
-      if (
-        (sourceDir[dirIndex] !== targetDir[oppoDirIndex] &&
-          offsetSourcePoint[oppoDirIndex] < offsetTargetPoint[oppoDirIndex]) ||
-        (sourceDir[dirIndex] === targetDir[oppoDirIndex] &&
-          offsetSourcePoint[oppoDirIndex] > offsetTargetPoint[oppoDirIndex])
-      ) {
-        points = dirIndex === 0 ? sourceTarget : targetSource;
+      if (sourceDir[dirAccessor] === 1) {
+        points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
+      } else {
+        points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
+      }
+    }
+  } else {
+    // here we handle edges with same handle positions and mixed positions like Right -> Bottom for example
+    if (dirAccessor === 'x') {
+      points = sourceDir.x === currDir ? targetSource : sourceTarget;
+    } else {
+      points = sourceDir.y === currDir ? sourceTarget : targetSource;
+    }
+
+    if (sourcePosition !== targetPosition) {
+      const oppositeDirAccessor = dirAccessor === 'x' ? 'y' : 'x';
+      const oppositeDir = sourceDir[dirAccessor] !== targetDir[oppositeDirAccessor];
+      const sameDir = sourceDir[dirAccessor] === targetDir[oppositeDirAccessor];
+      const sourceGtTargetOppo = sourceGapped[oppositeDirAccessor] > targetGapped[oppositeDirAccessor];
+      const sourceLtTargetOppo = sourceGapped[oppositeDirAccessor] < targetGapped[oppositeDirAccessor];
+      if (sourceDir[dirAccessor] === 1) {
+        if ((oppositeDir && sourceGtTargetOppo) || (sameDir && sourceLtTargetOppo)) {
+          points = dirAccessor === 'x' ? sourceTarget : targetSource;
+        }
+      } else {
+        if ((oppositeDir && sourceLtTargetOppo) || (sameDir && sourceGtTargetOppo)) {
+          points = dirAccessor === 'x' ? sourceTarget : targetSource;
+        }
       }
     }
   }
 
-  return [sourcePoint, offsetSourcePoint, ...points, offsetTargetPoint, targetPoint];
+  return [source, sourceGapped, ...points, targetGapped, target];
+}
+
+function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
+  const seg1Horizontal = a.y === b.y;
+  const { x, y } = b;
+  const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
+
+  // no bend
+  if ((a.x === x && x === c.x) || (a.y === y && y === c.y)) {
+    return `L${x} ${y}`;
+  }
+
+  if (seg1Horizontal) {
+    const xDir = a.x < c.x ? -1 : 1;
+    const yDir = a.y < c.y ? 1 : -1;
+    return `L ${x + bendSize * xDir},${y}Q ${x},${y} ${x},${y + bendSize * yDir}`;
+  }
+
+  const xDir = a.x < c.x ? 1 : -1;
+  const yDir = a.y < c.y ? -1 : 1;
+  return `L ${x},${y + bendSize * yDir}Q ${x},${y} ${x + bendSize * xDir},${y}`;
 }
 
 export function getSmoothStepPath({
@@ -174,26 +166,34 @@ export function getSmoothStepPath({
   borderRadius = 5,
   centerX,
   centerY,
+  offset = 20,
 }: GetSmoothStepPathParams): string {
-  const [_centerX, _centerY, offsetX, offsetY] = getCenter({ sourceX, sourceY, targetX, targetY });
-  const cornerWidth = Math.min(borderRadius, Math.abs(targetX - sourceX));
-  const cornerHeight = Math.min(borderRadius, Math.abs(targetY - sourceY));
-  const cornerSize = Math.min(cornerWidth, cornerHeight, offsetX, offsetY);
+  const [_centerX, _centerY] = getCenter({ sourceX, sourceY, targetX, targetY });
   const cX = typeof centerX !== 'undefined' ? centerX : _centerX;
   const cY = typeof centerY !== 'undefined' ? centerY : _centerY;
 
   const points = getPoints({
-    sourceX,
-    sourceY,
+    source: { x: sourceX, y: sourceY },
     sourcePosition,
-    targetX,
-    targetY,
+    target: { x: targetX, y: targetY },
     targetPosition,
-    centerX: cX,
-    centerY: cY,
+    center: { x: cX, y: cY },
+    offset,
   });
 
-  return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]} ${p[1]}`).join(' ');
+  return points.reduce<string>((res, p, i) => {
+    let segment = '';
+
+    if (i > 0 && i < points.length - 1) {
+      segment = getBend(points[i - 1], p, points[i + 1], borderRadius);
+    } else {
+      segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
+    }
+
+    res += segment;
+
+    return res;
+  }, '');
 }
 
 const SmoothStepEdge = memo(
@@ -214,6 +214,7 @@ const SmoothStepEdge = memo(
     markerEnd,
     markerStart,
     borderRadius = 5,
+    offset = 20,
   }: EdgeSmoothStepProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
 
@@ -225,6 +226,7 @@ const SmoothStepEdge = memo(
       targetY,
       targetPosition,
       borderRadius,
+      offset,
     });
 
     return (
