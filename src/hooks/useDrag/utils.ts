@@ -59,11 +59,18 @@ export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition,
 export function updatePosition(
   dragItem: NodeDragItem,
   mousePos: XYPosition,
+  snapToGrid: boolean,
+  [snapX, snapY]: [number, number],
   nodeInternals: NodeInternals,
   nodeExtent?: CoordinateExtent
 ): NodeDragItem {
   let currentExtent = dragItem.extent || nodeExtent;
   const nextPosition = { x: mousePos.x - dragItem.distance.x, y: mousePos.y - dragItem.distance.y };
+  if (snapToGrid) {
+    nextPosition.x = snapX * Math.round(nextPosition.x / snapX)
+    nextPosition.y = snapY * Math.round(nextPosition.y / snapY)
+  }
+
 
   if (dragItem.extent === 'parent') {
     if (dragItem.parentNode && dragItem.width && dragItem.height) {
