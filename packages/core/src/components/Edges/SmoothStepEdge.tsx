@@ -36,7 +36,6 @@ const getDirection = ({
   if (sourcePosition === Position.Left || sourcePosition === Position.Right) {
     return source.x < target.x ? { x: 1, y: 0 } : { x: -1, y: 0 };
   }
-
   return source.y < target.y ? { x: 0, y: 1 } : { x: 0, y: -1 };
 };
 
@@ -70,9 +69,6 @@ function getPoints({
   });
   const dirAccessor = dir.x !== 0 ? 'x' : 'y';
   const currDir = dir[dirAccessor];
-  // sourceTarget means we take x from source and y from target, targetSource is the opposite
-  const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
-  const targetSource: XYPosition[] = [{ x: targetGapped.x, y: sourceGapped.y }];
 
   let points: XYPosition[] = [];
 
@@ -93,41 +89,34 @@ function getPoints({
       { x: targetGapped.x, y: center.y },
     ];
 
-    if (currDir === 1) {
-      if (sourceDir[dirAccessor] === 1) {
-        points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
-      } else {
-        points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
-      }
+    if (sourceDir[dirAccessor] === currDir) {
+      points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
     } else {
-      if (sourceDir[dirAccessor] === 1) {
-        points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
-      } else {
-        points = dirAccessor === 'x' ? verticalSplit : horizontalSplit;
-      }
+      points = dirAccessor === 'x' ? horizontalSplit : verticalSplit;
     }
   } else {
-    // here we handle edges with same handle positions and mixed positions like Right -> Bottom for example
+    // sourceTarget means we take x from source and y from target, targetSource is the opposite
+    const sourceTarget: XYPosition[] = [{ x: sourceGapped.x, y: targetGapped.y }];
+    const targetSource: XYPosition[] = [{ x: targetGapped.x, y: sourceGapped.y }];
+    // this handles edges with same handle positions
     if (dirAccessor === 'x') {
       points = sourceDir.x === currDir ? targetSource : sourceTarget;
     } else {
       points = sourceDir.y === currDir ? sourceTarget : targetSource;
     }
 
+    // these are conditions for handling mixed handle positions like Right -> Bottom for example
     if (sourcePosition !== targetPosition) {
-      const oppositeDirAccessor = dirAccessor === 'x' ? 'y' : 'x';
-      const oppositeDir = sourceDir[dirAccessor] !== targetDir[oppositeDirAccessor];
-      const sameDir = sourceDir[dirAccessor] === targetDir[oppositeDirAccessor];
-      const sourceGtTargetOppo = sourceGapped[oppositeDirAccessor] > targetGapped[oppositeDirAccessor];
-      const sourceLtTargetOppo = sourceGapped[oppositeDirAccessor] < targetGapped[oppositeDirAccessor];
-      if (sourceDir[dirAccessor] === 1) {
-        if ((oppositeDir && sourceGtTargetOppo) || (sameDir && sourceLtTargetOppo)) {
-          points = dirAccessor === 'x' ? sourceTarget : targetSource;
-        }
-      } else {
-        if ((oppositeDir && sourceLtTargetOppo) || (sameDir && sourceGtTargetOppo)) {
-          points = dirAccessor === 'x' ? sourceTarget : targetSource;
-        }
+      const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
+      const isSameDir = sourceDir[dirAccessor] === targetDir[dirAccessorOpposite];
+      const sourceGtTargetOppo = sourceGapped[dirAccessorOpposite] > targetGapped[dirAccessorOpposite];
+      const sourceLtTargetOppo = sourceGapped[dirAccessorOpposite] < targetGapped[dirAccessorOpposite];
+      const flipSourceTarget =
+        (sourceDir[dirAccessor] === 1 && ((!isSameDir && sourceGtTargetOppo) || (isSameDir && sourceLtTargetOppo))) ||
+        (sourceDir[dirAccessor] !== 1 && ((!isSameDir && sourceLtTargetOppo) || (isSameDir && sourceGtTargetOppo)));
+
+      if (flipSourceTarget) {
+        points = dirAccessor === 'x' ? sourceTarget : targetSource;
       }
     }
   }
@@ -136,16 +125,16 @@ function getPoints({
 }
 
 function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
-  const seg1Horizontal = a.y === b.y;
-  const { x, y } = b;
   const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
+  const { x, y } = b;
 
   // no bend
   if ((a.x === x && x === c.x) || (a.y === y && y === c.y)) {
     return `L${x} ${y}`;
   }
 
-  if (seg1Horizontal) {
+  // first segment is horizontal
+  if (a.y === y) {
     const xDir = a.x < c.x ? -1 : 1;
     const yDir = a.y < c.y ? 1 : -1;
     return `L ${x + bendSize * xDir},${y}Q ${x},${y} ${x},${y + bendSize * yDir}`;
