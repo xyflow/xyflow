@@ -46,7 +46,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     dragHandle,
     zIndex,
     isParent,
-    noPanClassName,
     noDragClassName,
     initialized,
     disableKeyboardA11y,

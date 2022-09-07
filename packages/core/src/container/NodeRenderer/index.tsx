@@ -127,7 +127,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             zIndex={node[internalsSymbol]?.z ?? 0}
             isParent={!!node[internalsSymbol]?.isParent}
             noDragClassName={props.noDragClassName}
-            noPanClassName={props.noPanClassName}
             initialized={!!node.width && !!node.height}
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}

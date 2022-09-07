@@ -89,7 +89,6 @@ export interface WrapNodeProps<T = any> {
   dragHandle?: string;
   zIndex: number;
   isParent: boolean;
-  noPanClassName: string;
   noDragClassName: string;
   rfId: string;
   disableKeyboardA11y: boolean;

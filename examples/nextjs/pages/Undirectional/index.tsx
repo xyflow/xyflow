@@ -80,7 +80,7 @@ const initialEdges: Edge[] = [
     target: '01',
     sourceHandle: 'left',
     targetHandle: 'bottom',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-1b',
@@ -88,7 +88,7 @@ const initialEdges: Edge[] = [
     target: '01',
     sourceHandle: 'top',
     targetHandle: 'right',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-2a',
@@ -96,7 +96,7 @@ const initialEdges: Edge[] = [
     target: '02',
     sourceHandle: 'top',
     targetHandle: 'left',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-2b',
@@ -104,7 +104,7 @@ const initialEdges: Edge[] = [
     target: '02',
     sourceHandle: 'right',
     targetHandle: 'bottom',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-3a',
@@ -112,7 +112,7 @@ const initialEdges: Edge[] = [
     target: '03',
     sourceHandle: 'right',
     targetHandle: 'top',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-3b',
@@ -120,7 +120,7 @@ const initialEdges: Edge[] = [
     target: '03',
     sourceHandle: 'bottom',
     targetHandle: 'left',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-4a',
@@ -128,7 +128,7 @@ const initialEdges: Edge[] = [
     target: '04',
     sourceHandle: 'bottom',
     targetHandle: 'right',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-4b',
@@ -136,7 +136,7 @@ const initialEdges: Edge[] = [
     target: '04',
     sourceHandle: 'left',
     targetHandle: 'top',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-10',
@@ -144,7 +144,7 @@ const initialEdges: Edge[] = [
     target: '10',
     sourceHandle: 'top',
     targetHandle: 'bottom',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-20',
@@ -152,7 +152,7 @@ const initialEdges: Edge[] = [
     target: '20',
     sourceHandle: 'right',
     targetHandle: 'left',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-30',
@@ -160,7 +160,7 @@ const initialEdges: Edge[] = [
     target: '30',
     sourceHandle: 'bottom',
     targetHandle: 'top',
-    type: 'default',
+    type: 'smoothstep',
   },
   {
     id: 'e0-40',
@@ -168,7 +168,7 @@ const initialEdges: Edge[] = [
     target: '40',
     sourceHandle: 'left',
     targetHandle: 'right',
-    type: 'default',
+    type: 'smoothstep',
   },
 ];
 

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import { useRouter } from 'next/router';
+import { AppProps } from 'next/app';
+
 import '../styles/globals.css';
 
 // Unfortunately this doesn't work because preconsruct clears the dist folder and there is
@@ -18,6 +20,7 @@ const routes = [
   '/DefaultNodes',
   '/DragHandle',
   '/DragNDrop',
+  '/EdgeRouting',
   '/EdgeTypes',
   '/Edges',
   '/Empty',
@@ -45,10 +48,10 @@ const routes = [
   '/Validation',
 ];
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
-  const onRouteChange = (evt) => {
+  const onRouteChange: ChangeEventHandler<HTMLSelectElement> = (evt) => {
     router.push(evt.target.value);
   };
 
@@ -71,4 +74,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+export default App;

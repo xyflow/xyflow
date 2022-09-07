@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { EdgeProps, Position } from '../../types';
+import { BezierEdgeProps, Position } from '../../types';
 import BaseEdge from './BaseEdge';
 
 export interface GetBezierPathParams {
@@ -143,8 +143,8 @@ const BezierEdge = memo(
     style,
     markerEnd,
     markerStart,
-    curvature,
-  }: EdgeProps) => {
+    options,
+  }: BezierEdgeProps) => {
     const params = {
       sourceX,
       sourceY,
@@ -152,7 +152,7 @@ const BezierEdge = memo(
       targetX,
       targetY,
       targetPosition,
-      curvature,
+      curvature: options?.curvature,
     };
     const path = getBezierPath(params);
     const [centerX, centerY] = getBezierCenter(params);

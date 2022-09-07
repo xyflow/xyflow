@@ -6,7 +6,7 @@ import { Node } from './nodes';
 import { Position } from './utils';
 
 // interface for the user edge items
-export interface Edge<T = any> {
+type DefaultEdge<T = any> = {
   id: string;
   type?: string;
   source: string;
@@ -32,7 +32,28 @@ export interface Edge<T = any> {
   markerEnd?: EdgeMarkerType;
   zIndex?: number;
   ariaLabel?: string;
-}
+};
+
+export type SmoothStepEdgeOptions = {
+  offset?: number;
+  borderRadius?: number;
+};
+
+type SmoothStepEdgeType<T> = DefaultEdge<T> & {
+  type: 'smoothstep';
+  options?: SmoothStepEdgeOptions;
+};
+
+export type BezierEdgeOptions = {
+  curvature?: number;
+};
+
+type BezierEdgeType<T> = DefaultEdge<T> & {
+  type: 'default';
+  options?: BezierEdgeOptions;
+};
+
+export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T>;
 
 export type DefaultEdgeOptions = Omit<
   Edge,
@@ -64,7 +85,7 @@ export interface EdgeProps<T = any> {
   targetHandleId?: string | null;
   markerStart?: string;
   markerEnd?: string;
-  curvature?: number;
+  options?: BezierEdgeOptions | SmoothStepEdgeOptions;
 }
 
 export type BaseEdgeProps = Pick<
@@ -127,12 +148,16 @@ export interface WrapEdgeProps<T = any> {
   rfId?: string;
   ariaLabel?: string | null;
   disableKeyboardA11y: boolean;
+  options?: SmoothStepEdgeOptions | BezierEdgeOptions;
 }
 
-export interface EdgeSmoothStepProps<T = any> extends EdgeProps<T> {
-  borderRadius?: number;
+export interface SmoothStepEdgeProps<T = any> extends EdgeProps<T> {
+  options?: SmoothStepEdgeOptions;
 }
 
+export interface BezierEdgeProps<T = any> extends EdgeProps<T> {
+  options?: BezierEdgeOptions;
+}
 export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   x: number;
   y: number;
