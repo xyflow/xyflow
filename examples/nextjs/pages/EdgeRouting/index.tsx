@@ -81,9 +81,10 @@ const edges: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
     },
-    options: {
+    pathOptions: {
       offset: 30,
     },
+    interactionWidth: 0,
   },
   {
     id: 'e3-4',
@@ -93,9 +94,10 @@ const edges: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
     },
-    options: {
+    pathOptions: {
       borderRadius: 2,
     },
+    interactionWidth: 0,
   },
 
   {
@@ -121,7 +123,7 @@ const edges: Edge[] = [
 
 const defaultEdgeOptions = {
   style: {
-    strokeWidth: 2,
+    strokeWidth: 1,
   },
 };
 

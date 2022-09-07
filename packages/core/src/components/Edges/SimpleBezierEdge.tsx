@@ -117,6 +117,7 @@ const SimpleBezierEdge = memo(
     style,
     markerEnd,
     markerStart,
+    interactionWidth,
   }: EdgeProps) => {
     const params = {
       sourceX,
@@ -143,6 +144,7 @@ const SimpleBezierEdge = memo(
         style={style}
         markerEnd={markerEnd}
         markerStart={markerStart}
+        interactionWidth={interactionWidth}
       />
     );
   }

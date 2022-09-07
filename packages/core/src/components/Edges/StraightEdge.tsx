@@ -18,17 +18,17 @@ const StraightEdge = memo(
     style,
     markerEnd,
     markerStart,
+    interactionWidth,
   }: EdgeProps) => {
     const yOffset = Math.abs(targetY - sourceY) / 2;
     const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
 
     const xOffset = Math.abs(targetX - sourceX) / 2;
     const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
-    const path = `M ${sourceX},${sourceY}L ${targetX},${targetY}`;
 
     return (
       <BaseEdge
-        path={path}
+        path={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
         centerX={centerX}
         centerY={centerY}
         label={label}
@@ -40,6 +40,7 @@ const StraightEdge = memo(
         style={style}
         markerEnd={markerEnd}
         markerStart={markerStart}
+        interactionWidth={interactionWidth}
       />
     );
   }

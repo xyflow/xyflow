@@ -32,25 +32,26 @@ type DefaultEdge<T = any> = {
   markerEnd?: EdgeMarkerType;
   zIndex?: number;
   ariaLabel?: string;
+  interactionWidth?: number;
 };
 
-export type SmoothStepEdgeOptions = {
+export type SmoothStepPathOptions = {
   offset?: number;
   borderRadius?: number;
 };
 
 type SmoothStepEdgeType<T> = DefaultEdge<T> & {
   type: 'smoothstep';
-  options?: SmoothStepEdgeOptions;
+  pathOptions?: SmoothStepPathOptions;
 };
 
-export type BezierEdgeOptions = {
+export type BezierPathOptions = {
   curvature?: number;
 };
 
 type BezierEdgeType<T> = DefaultEdge<T> & {
   type: 'default';
-  options?: BezierEdgeOptions;
+  pathOptions?: BezierPathOptions;
 };
 
 export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T>;
@@ -61,7 +62,7 @@ export type DefaultEdgeOptions = Omit<
 >;
 
 // props that get passed to a custom edge
-export interface EdgeProps<T = any> {
+export type EdgeProps<T = any> = {
   id: string;
   source: string;
   target: string;
@@ -85,8 +86,9 @@ export interface EdgeProps<T = any> {
   targetHandleId?: string | null;
   markerStart?: string;
   markerEnd?: string;
-  options?: BezierEdgeOptions | SmoothStepEdgeOptions;
-}
+  pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+  interactionWidth?: number;
+};
 
 export type BaseEdgeProps = Pick<
   EdgeProps,
@@ -99,6 +101,7 @@ export type BaseEdgeProps = Pick<
   | 'style'
   | 'markerStart'
   | 'markerEnd'
+  | 'interactionWidth'
 > & {
   centerX: number;
   centerY: number;
@@ -107,24 +110,9 @@ export type BaseEdgeProps = Pick<
 
 export type EdgeMouseHandler = (event: React.MouseEvent, edge: Edge) => void;
 
-export interface WrapEdgeProps<T = any> {
-  id: string;
-  className?: string;
-  type: string;
-  data?: T;
+export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
   onClick?: EdgeMouseHandler;
   onEdgeDoubleClick?: EdgeMouseHandler;
-  selected: boolean;
-  animated?: boolean;
-  label?: string | ReactNode;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
-  style?: CSSProperties;
-  source: string;
-  target: string;
   sourceHandleId?: string | null;
   targetHandleId?: string | null;
   sourceX: number;
@@ -134,7 +122,6 @@ export interface WrapEdgeProps<T = any> {
   sourcePosition: Position;
   targetPosition: Position;
   elementsSelectable?: boolean;
-  hidden?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;
@@ -143,20 +130,17 @@ export interface WrapEdgeProps<T = any> {
   edgeUpdaterRadius?: number;
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
-  markerStart?: EdgeMarkerType;
-  markerEnd?: EdgeMarkerType;
   rfId?: string;
-  ariaLabel?: string | null;
   disableKeyboardA11y: boolean;
-  options?: SmoothStepEdgeOptions | BezierEdgeOptions;
-}
+  pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+};
 
 export interface SmoothStepEdgeProps<T = any> extends EdgeProps<T> {
-  options?: SmoothStepEdgeOptions;
+  pathOptions?: SmoothStepPathOptions;
 }
 
 export interface BezierEdgeProps<T = any> extends EdgeProps<T> {
-  options?: BezierEdgeOptions;
+  pathOptions?: BezierPathOptions;
 }
 export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   x: number;

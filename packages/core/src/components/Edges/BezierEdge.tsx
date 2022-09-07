@@ -143,7 +143,8 @@ const BezierEdge = memo(
     style,
     markerEnd,
     markerStart,
-    options,
+    pathOptions,
+    interactionWidth,
   }: BezierEdgeProps) => {
     const params = {
       sourceX,
@@ -152,7 +153,7 @@ const BezierEdge = memo(
       targetX,
       targetY,
       targetPosition,
-      curvature: options?.curvature,
+      curvature: pathOptions?.curvature,
     };
     const path = getBezierPath(params);
     const [centerX, centerY] = getBezierCenter(params);
@@ -171,6 +172,7 @@ const BezierEdge = memo(
         style={style}
         markerEnd={markerEnd}
         markerStart={markerStart}
+        interactionWidth={interactionWidth}
       />
     );
   }

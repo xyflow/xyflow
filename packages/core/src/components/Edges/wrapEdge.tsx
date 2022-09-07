@@ -52,7 +52,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     rfId,
     ariaLabel,
     disableKeyboardA11y,
-    options,
+    pathOptions,
+    interactionWidth,
   }: WrapEdgeProps): JSX.Element | null => {
     const edgeRef = useRef<SVGGElement>(null);
     const [updateHover, setUpdateHover] = useState<boolean>(false);
@@ -190,7 +191,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             targetHandleId={targetHandleId}
             markerStart={markerStartUrl}
             markerEnd={markerEndUrl}
-            options={options}
+            pathOptions={pathOptions}
+            interactionWidth={interactionWidth}
           />
         )}
 

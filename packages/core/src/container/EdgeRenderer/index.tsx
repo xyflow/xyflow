@@ -182,7 +182,8 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   rfId={props.rfId}
                   ariaLabel={edge.ariaLabel}
                   disableKeyboardA11y={props.disableKeyboardA11y}
-                  options={'options' in edge ? edge.options : undefined}
+                  pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
+                  interactionWidth={edge.interactionWidth}
                 />
               );
             })}

@@ -202,7 +202,8 @@ const SmoothStepEdge = memo(
     targetPosition = Position.Top,
     markerEnd,
     markerStart,
-    options,
+    pathOptions,
+    interactionWidth,
   }: SmoothStepEdgeProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
 
@@ -213,8 +214,8 @@ const SmoothStepEdge = memo(
       targetX,
       targetY,
       targetPosition,
-      borderRadius: options?.borderRadius,
-      offset: options?.offset,
+      borderRadius: pathOptions?.borderRadius,
+      offset: pathOptions?.offset,
     });
 
     return (
@@ -231,6 +232,7 @@ const SmoothStepEdge = memo(
         style={style}
         markerEnd={markerEnd}
         markerStart={markerStart}
+        interactionWidth={interactionWidth}
       />
     );
   }
