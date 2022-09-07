@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { getCenter } from './utils';
-import { EdgeSmoothStepProps, Position, XYPosition } from '../../types';
+import { SmoothStepEdgeProps, Position, XYPosition } from '../../types';
 import BaseEdge from './BaseEdge';
 
 export interface GetSmoothStepPathParams {
@@ -202,9 +202,8 @@ const SmoothStepEdge = memo(
     targetPosition = Position.Top,
     markerEnd,
     markerStart,
-    borderRadius = 5,
-    offset = 20,
-  }: EdgeSmoothStepProps) => {
+    options,
+  }: SmoothStepEdgeProps) => {
     const [centerX, centerY] = getCenter({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
 
     const path = getSmoothStepPath({
@@ -214,8 +213,8 @@ const SmoothStepEdge = memo(
       targetX,
       targetY,
       targetPosition,
-      borderRadius,
-      offset,
+      borderRadius: options?.borderRadius,
+      offset: options?.offset,
     });
 
     return (

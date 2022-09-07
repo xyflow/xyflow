@@ -81,6 +81,9 @@ const edges: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
     },
+    options: {
+      offset: 30,
+    },
   },
   {
     id: 'e3-4',
@@ -89,6 +92,9 @@ const edges: Edge[] = [
     type: 'smoothstep',
     markerEnd: {
       type: MarkerType.ArrowClosed,
+    },
+    options: {
+      borderRadius: 2,
     },
   },
 
