@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent, useLayoutEffect } from 'react';
+import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -46,7 +46,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     dragHandle,
     zIndex,
     isParent,
-    noPanClassName,
     noDragClassName,
     initialized,
     disableKeyboardA11y,
