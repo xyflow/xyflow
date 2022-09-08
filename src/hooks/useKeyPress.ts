@@ -108,7 +108,7 @@ function useKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
 }
 
 function isInputDOMNode(event: KeyboardEvent): boolean {
-  const target = event.target as HTMLElement;
+  const target = event.composedPath()[0] as HTMLElement;
 
   return ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) || target?.hasAttribute('contenteditable');
 }
