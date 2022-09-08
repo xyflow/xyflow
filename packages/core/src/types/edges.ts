@@ -86,7 +86,8 @@ export type EdgeProps<T = any> = {
   targetHandleId?: string | null;
   markerStart?: string;
   markerEnd?: string;
-  pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+  // @TODO: how can we get better types for pathOptions?
+  pathOptions?: any;
   interactionWidth?: number;
 };
 
