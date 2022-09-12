@@ -56,7 +56,7 @@ export const umdConfig = defineConfig({
     file: pkg.main,
     format: 'umd',
     exports: 'named',
-    name: 'ReactFlow',
+    name: pkg.rollup?.name || 'ReactFlow',
     globals,
   },
   onwarn,
@@ -64,7 +64,7 @@ export const umdConfig = defineConfig({
     peerDepsExternal(),
     ...defaultPlugins,
     typescript({
-      clean: true
+      clean: true,
     }),
     replace({
       preventAssignment: true,
