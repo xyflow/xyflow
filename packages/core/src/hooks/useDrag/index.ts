@@ -131,7 +131,7 @@ function useDrag({
               }
             }
           })
-          .on('end', (event) => {
+          .on('end', (event: UseDragEvent) => {
             setDragging(false);
             if (dragItems.current) {
               const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();

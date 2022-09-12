@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/background",
-  "version": "11.0.0-next.3",
+  "version": "11.0.0-next.4",
   "description": "Background component with different variants for React Flow",
   "keywords": [
     "react",
@@ -13,10 +13,18 @@
   "files": [
     "dist"
   ],
-  "main": "dist/reactflow-background.cjs.js",
-  "module": "dist/reactflow-background.esm.js",
-  "types": "dist/reactflow-background.cjs.d.ts",
+  "source": "src/index.tsx",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "sideEffects": false,
+  "scripts": {
+    "dev": "rollup --config node:@reactflow/rollup-config --watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist .turbo"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -32,10 +40,17 @@
     "classcat": "^5.0.3"
   },
   "devDependencies": {
-    "tsconfig": "*"
+    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/node": "^18.7.16",
+    "@types/react": "^18.0.19"
   },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
+  },
+  "rollup": {
+    "name": "ReactFlowBackground"
   }
 }

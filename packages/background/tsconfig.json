@@ -1,10 +1,6 @@
 {
-  "extends": "tsconfig/react.json",
+  "extends": "@reactflow/tsconfig/react.json",
   "display": "@reactflow/background",
-  "compilerOptions": {
-    "composite": true
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["**/node_modules", "dist/*"],
-  "references": [{ "path": "../core/tsconfig.json" }]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

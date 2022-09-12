@@ -1,6 +1,6 @@
 {
   "name": "reactflow",
-  "version": "11.0.0-next.9",
+  "version": "11.0.0-next.10",
   "description": "A highly customizable React library for building node-based editors and interactive flow charts",
   "keywords": [
     "react",
@@ -13,9 +13,10 @@
   "files": [
     "dist"
   ],
-  "main": "dist/reactflow.cjs.js",
-  "module": "dist/reactflow.esm.js",
-  "types": "dist/reactflow.cjs.d.ts",
+  "source": "src/index.ts",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "repository": {
@@ -24,10 +25,14 @@
     "directory": "packages/reactflow"
   },
   "scripts": {
-    "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "css": "postcss src/*.css --config ../../postcss-config/index.js --dir dist",
+    "css-watch": "pnpm css --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.9",
     "@reactflow/background": "workspace:*",
     "@reactflow/controls": "workspace:*",
     "@reactflow/core": "workspace:*",
@@ -38,12 +43,19 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.8",
-    "postcss": "^8.4.14",
-    "postcss-cli": "^10.0.0",
-    "postcss-combine-duplicated-selectors": "^10.0.3",
-    "postcss-import": "^14.1.0",
-    "postcss-nested": "^5.0.6",
-    "tsconfig": "*"
+    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/node": "^18.7.16",
+    "@types/react": "^18.0.19"
+  },
+  "rollup": {
+    "globals": {
+      "@reactflow/background": "ReactFlowBackground",
+      "@reactflow/controls": "ReactFlowControls",
+      "@reactflow/core": "ReactFlowCore",
+      "@reactflow/minimap": "ReactFlowMinimap"
+    },
+    "name": "ReactFlow"
   }
 }

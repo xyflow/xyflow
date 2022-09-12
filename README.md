@@ -33,7 +33,7 @@ You can find more information in our [React Flow Pro FAQs](https://pro.reactflow
 
 ## Installation
 
-The easiest way to get the latest version of React Flow is to install it via npm:
+The easiest way to get the latest version of React Flow is to install it via npm, yarn or pnpm:
 
 ```bash
 npm install reactflow
@@ -64,16 +64,16 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
 
 ## Development
 
-Before you can start developing please make sure that you have yarn classic installed (`npm i -g yarn`). Then install the dependencies using yarn: `yarn`.
+Before you can start developing please make sure that you have [pnpm](https://pnpm.io/) installed (`npm i -g pnpm`). Then install the dependencies using pnpm: `pnpm install`.
 
-For local development, you can use `yarn dev`. This will run preconstruct and build all the packages.
+For local development, you can use `pnpm dev`.
 
 ## Testing
 
-Testing is done with cypress. You can find the tests in the [`integration/flow`](/cypress/integration/flow) folder. In order to run the tests do:
+Testing is done with cypress. You can find the tests in the [`examples/cypress`](/examples/cypress/) folder. In order to run the tests do:
 
 ```sh
-npm run test
+pnpm test
 ```
 
 ## Maintainers
@@ -93,7 +93,7 @@ You can also use our [contact form](https://pro.reactflow.dev/contact) or join t
 
 ## Credits
 
-React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in your browser. Under the hood, React Flow depends on these great libraries:
+React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in the browser. Under the hood, React Flow depends on these great libraries:
 
 - [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
 - [d3-drag](https://github.com/d3/d3-drag) - used for making the nodes draggable

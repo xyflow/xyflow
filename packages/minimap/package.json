@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/minimap",
-  "version": "11.0.0-next.3",
+  "version": "11.0.0-next.4",
   "description": "Minimap component for React Flow.",
   "keywords": [
     "react",
@@ -13,9 +13,10 @@
   "files": [
     "dist"
   ],
-  "main": "dist/reactflow-minimap.cjs.js",
-  "module": "dist/reactflow-minimap.esm.js",
-  "types": "dist/reactflow-minimap.cjs.d.ts",
+  "source": "src/index.tsx",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
@@ -27,7 +28,12 @@
     "directory": "packages/minimap"
   },
   "scripts": {
-    "build": "postcss src/*.css --config ../../postcss.config.json --dir dist"
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "css": "postcss src/*.css --config ../../postcss-config/index.js --dir dist",
+    "css-watch": "pnpm css --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -40,12 +46,19 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.8",
-    "postcss": "^8.4.16",
-    "postcss-cli": "^10.0.0",
-    "postcss-combine-duplicated-selectors": "^10.0.3",
-    "postcss-import": "^14.1.0",
-    "postcss-nested": "^5.0.6",
-    "tsconfig": "*"
+    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/node": "^18.7.16",
+    "@types/react": "^18.0.19",
+    "react": "^18.2.0"
+  },
+  "rollup": {
+    "globals": {
+      "zustand": "Zustand",
+      "zustand/shallow": "zustandShallow",
+      "classcat": "cc"
+    },
+    "name": "ReactFlowMinimap"
   }
 }

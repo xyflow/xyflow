@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/core",
-  "version": "11.0.0-next.3",
+  "version": "11.0.0-next.4",
   "description": "Core components and util functions of React Flow.",
   "keywords": [
     "react",
@@ -13,9 +13,10 @@
   "files": [
     "dist"
   ],
-  "main": "dist/reactflow-core.cjs.js",
-  "module": "dist/reactflow-core.esm.js",
-  "types": "dist/reactflow-core.cjs.d.ts",
+  "source": "src/index.ts",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "publishConfig": {
@@ -27,10 +28,14 @@
     "directory": "packages/core"
   },
   "scripts": {
-    "build": "postcss src/styles/{base,style}.css --config ../../postcss.config.json --dir dist"
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "css": "postcss src/styles/{base,style}.css --config ../../postcss-config/index.js --dir dist",
+    "css-watch": "pnpm css --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.9",
     "@types/d3": "^7.4.0",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",
@@ -43,13 +48,25 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/d3-drag": "^3.0.1",
+    "@types/d3-selection": "^3.0.3",
+    "@types/d3-zoom": "^3.0.1",
+    "@types/node": "^18.7.16",
     "@types/react": "^18.0.17",
-    "autoprefixer": "^10.4.8",
-    "postcss": "^8.4.14",
-    "postcss-cli": "^10.0.0",
-    "postcss-combine-duplicated-selectors": "^10.0.3",
-    "postcss-import": "^14.1.0",
-    "postcss-nested": "^5.0.6",
-    "tsconfig": "*"
+    "react": "^18.2.0",
+    "typescript": "^4.7.4"
+  },
+  "rollup": {
+    "globals": {
+      "classcat": "cc",
+      "d3-selection": "d3",
+      "d3-zoom": "d3",
+      "zustand": "zustand",
+      "zustand/shallow": "zustandShallow"
+    },
+    "name": "ReactFlowCore"
   }
 }

@@ -11,10 +11,5 @@ stats.html
 .idea
 .log
 
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
+.turbo
+.rollup.cache

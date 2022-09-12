@@ -5,6 +5,7 @@
     "jsx": "react-jsx",
     "lib": ["dom", "esnext"],
     "module": "esnext",
-    "target": "es6"
+    "target": "esnext",
+    "outDir": "dist"
   }
 }
