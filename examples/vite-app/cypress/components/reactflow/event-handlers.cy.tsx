@@ -47,9 +47,9 @@ describe('<ReactFlow />: Event handlers', () => {
         expect(onNodeDragStop.callCount).to.be.eq(0);
 
         cy.drag('.react-flow__node:first', { x: 200, y: 0 }).then(() => {
-          expect(onNodeDragStart.callCount).to.be.eq(1);
-          expect(onNodeDrag.callCount).to.be.eq(1);
-          expect(onNodeDragStop.callCount).to.be.eq(1);
+          expect(onNodeDragStart.callCount).to.be.gt(0);
+          expect(onNodeDrag.callCount).to.be.gt(0);
+          expect(onNodeDragStop.callCount).to.be.gt(0);
         });
       });
     });
@@ -178,11 +178,13 @@ describe('<ReactFlow />: Event handlers', () => {
         expect(onMove.callCount).to.be.eq(0);
         expect(onMoveEnd.callCount).to.be.eq(0);
 
-        cy.dragPane({ from: { x: 10, y: 200 }, to: { x: 100, y: 200 } }).then(() => {
-          expect(onMoveStart.callCount).to.be.eq(1);
-          expect(onMove.callCount).to.be.gt(0);
-          expect(onMoveEnd.callCount).to.be.eq(1);
-        });
+        cy.dragPane({ from: { x: 10, y: 200 }, to: { x: 100, y: 200 } })
+          .wait(100)
+          .then(() => {
+            expect(onMoveStart.callCount).to.be.eq(1);
+            expect(onMove.callCount).to.be.gt(0);
+            expect(onMoveEnd.callCount).to.be.eq(1);
+          });
       });
     });
 
@@ -197,6 +199,7 @@ describe('<ReactFlow />: Event handlers', () => {
         cy.get('.react-flow__pane')
           .rightclick()
           .click()
+          .wait(100)
           .then(() => {
             expect(onPaneClick.callCount).to.be.eq(1);
             expect(onPaneContextMenu.callCount).to.be.eq(1);

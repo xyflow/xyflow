@@ -104,6 +104,10 @@ const routes = [
     component: NodeTypesObjectChange,
   },
   {
+    path: '/overview',
+    component: Overview,
+  },
+  {
     path: '/provider',
     component: Provider,
   },
@@ -174,7 +178,7 @@ const Header = () => {
       <select defaultValue={location.pathname} onChange={onChange}>
         {routes.map((route) => (
           <option value={route.path} key={route.path}>
-            {route.path === '/' ? 'overview' : route.path.substring(1, route.path.length)}
+            {route.path === '/' ? 'basic' : route.path.substring(1, route.path.length)}
           </option>
         ))}
       </select>
