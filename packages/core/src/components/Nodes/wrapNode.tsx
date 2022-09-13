@@ -47,6 +47,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     zIndex,
     isParent,
     noDragClassName,
+    noPanClassName,
     initialized,
     disableKeyboardA11y,
     ariaLabel,
@@ -156,6 +157,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             selectable: isSelectable,
             parent: isParent,
             dragging,
+            [noPanClassName]: isDraggable,
           },
         ])}
         ref={nodeRef}
