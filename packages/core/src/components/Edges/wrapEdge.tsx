@@ -162,6 +162,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
         tabIndex={disableKeyboardA11y ? undefined : 0}
         role={disableKeyboardA11y ? undefined : 'button'}
+        data-testid={`rf__edge-${id}`}
         aria-label={ariaLabel === null ? undefined : ariaLabel ? ariaLabel : `Edge from ${source} to ${target}`}
         aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_EDGE_DESC_KEY}-${rfId}`}
         ref={edgeRef}

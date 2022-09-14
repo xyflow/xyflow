@@ -169,6 +169,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           ...style,
         }}
         data-id={id}
+        data-testid={`rf__node-${id}`}
         onMouseEnter={onMouseEnterHandler}
         onMouseMove={onMouseMoveHandler}
         onMouseLeave={onMouseLeaveHandler}
