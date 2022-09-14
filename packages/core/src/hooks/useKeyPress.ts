@@ -108,7 +108,8 @@ function useKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
 }
 
 function isInputDOMNode(event: KeyboardEvent): boolean {
-  const target = event.composedPath()[0] as HTMLElement;
+  // using composed path for handling shadow dom
+  const target = (event.composedPath?.()[0] || event.target) as HTMLElement;
 
   return (
     ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) ||
