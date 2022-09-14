@@ -3,7 +3,6 @@ import { D3DragEvent, drag, SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { useStoreApi } from '../../hooks/useStore';
-import { pointToRendererPoint } from '../../utils/graph';
 import { NodeDragItem, Node, SelectionDragHandler } from '../../types';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
@@ -44,9 +43,18 @@ function useDrag({
     const { transform, snapGrid, snapToGrid } = store.getState();
     const x = sourceEvent.touches ? sourceEvent.touches[0].clientX : sourceEvent.clientX;
     const y = sourceEvent.touches ? sourceEvent.touches[0].clientY : sourceEvent.clientY;
-    const pointerPos = pointToRendererPoint({ x, y }, transform, snapToGrid, snapGrid);
 
-    return pointerPos;
+    const pointerPos = {
+      x: (x - transform[0]) / transform[2],
+      y: (y - transform[1]) / transform[2],
+    };
+
+    // we need the snapped position in order to be able to skip unnecessary drag events
+    return {
+      xSnapped: snapToGrid ? snapGrid[0] * Math.round(pointerPos.x / snapGrid[0]) : pointerPos.x,
+      ySnapped: snapToGrid ? snapGrid[1] * Math.round(pointerPos.y / snapGrid[1]) : pointerPos.y,
+      ...pointerPos,
+    };
   }, []);
 
   useEffect(() => {
@@ -96,19 +104,34 @@ function useDrag({
             }
           })
           .on('drag', (event: UseDragEvent) => {
-            const { updateNodePositions, nodeInternals, nodeExtent, onNodeDrag, onSelectionDrag } = store.getState();
+            const {
+              updateNodePositions,
+              nodeInternals,
+              nodeExtent,
+              onNodeDrag,
+              onSelectionDrag,
+              snapGrid,
+              snapToGrid,
+            } = store.getState();
             const pointerPos = getPointerPosition(event);
-
             // skip events without movement
-            if ((lastPos.current.x !== pointerPos.x || lastPos.current.y !== pointerPos.y) && dragItems.current) {
-              lastPos.current = pointerPos;
+            if (
+              (lastPos.current.x !== pointerPos.xSnapped || lastPos.current.y !== pointerPos.ySnapped) &&
+              dragItems.current
+            ) {
+              lastPos.current = {
+                x: pointerPos.xSnapped,
+                y: pointerPos.ySnapped,
+              };
               dragItems.current = dragItems.current.map((n) => {
-                const updatedPos = calcNextPosition(
-                  n,
-                  { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y },
-                  nodeInternals,
-                  nodeExtent
-                );
+                let nextPosition = { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y };
+
+                if (snapToGrid) {
+                  nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
+                  nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
+                }
+
+                const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent);
 
                 n.position = updatedPos.position;
                 n.positionAbsolute = updatedPos.positionAbsolute;
