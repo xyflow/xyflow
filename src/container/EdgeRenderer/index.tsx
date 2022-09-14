@@ -100,7 +100,16 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 return null;
               }
 
-              const edgeType = edge.type || 'default';
+              let edgeType = edge.type || 'default';
+
+              if (!props.edgeTypes[edgeType]) {
+                console.warn(
+                  `[React Flow]: Edge type "${edgeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
+                );
+
+                edgeType = 'default';
+              }
+
               const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
               // when connection type is loose we can define all handles as sources
               const targetNodeHandles =
