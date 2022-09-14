@@ -96,14 +96,14 @@ function useDrag({
             }
           })
           .on('drag', (event: UseDragEvent) => {
-            const { updateNodePositions, nodeInternals, nodeExtent, onNodeDrag, onSelectionDrag } = store.getState();
+            const { updateNodePositions, snapToGrid, snapGrid, nodeInternals, nodeExtent, onNodeDrag, onSelectionDrag } = store.getState();
             const pointerPos = getPointerPosition(event);
 
             // skip events without movement
             if ((lastPos.current.x !== pointerPos.x || lastPos.current.y !== pointerPos.y) && dragItems.current) {
               lastPos.current = pointerPos;
               dragItems.current = dragItems.current.map((n) =>
-                updatePosition(n, pointerPos, nodeInternals, nodeExtent)
+                updatePosition(n, pointerPos, snapToGrid, snapGrid, nodeInternals, nodeExtent)
               );
 
               const onDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
