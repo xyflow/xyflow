@@ -135,6 +135,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onContextMenu={onContextMenuHandler}
         onClick={onSelectNodeHandler}
         onDoubleClick={onDoubleClickHandler}
+        data-testid={`rf__node-${id}`}
         data-id={id}
       >
         <Provider value={id}>

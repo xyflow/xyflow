@@ -157,6 +157,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           targetHandleId={targetHandleId}
           markerStart={markerStartUrl}
           markerEnd={markerEndUrl}
+          data-testid={`rf__edge-${id}`}
         />
         {handleEdgeUpdate && (
           <g
