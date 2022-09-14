@@ -124,7 +124,7 @@ function useDrag({
                 y: pointerPos.ySnapped,
               };
               dragItems.current = dragItems.current.map((n) => {
-                let nextPosition = { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y };
+                const nextPosition = { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y };
 
                 if (snapToGrid) {
                   nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);

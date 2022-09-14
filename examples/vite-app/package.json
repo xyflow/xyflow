@@ -1,13 +1,15 @@
 {
-  "name": "vite-app",
+  "name": "@reactflow/examples",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000",
-    "test": "pnpm test-component",
+    "dev": "vite --port 3000 --open",
+    "serve": "vite serve --port 3000",
+    "test": "pnpm test-component && pnpm test-e2e",
     "test-component": "cypress run --component",
-    "test-e2e": "vite serve & cypress run --e2e"
+    "test-e2e-cypress": "cypress run --e2e --headless",
+    "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
   },
   "dependencies": {
     "dagre": "^0.8.5",
@@ -24,6 +26,7 @@
     "@vitejs/plugin-react": "^2.1.0",
     "cypress": "^10.6.0",
     "cypress-real-events": "^1.7.1",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.6.4",
     "vite": "^3.1.0"
   }

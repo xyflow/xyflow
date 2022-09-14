@@ -70,6 +70,7 @@ importers:
       react-dom: ^18.2.0
       react-router-dom: ^6.3.0
       reactflow: workspace:*
+      start-server-and-test: ^1.14.0
       typescript: ^4.6.4
       vite: ^3.1.0
     dependencies:
@@ -86,6 +87,7 @@ importers:
       '@vitejs/plugin-react': registry.npmjs.org/@vitejs/plugin-react/2.1.0_vite@3.1.0
       cypress: registry.npmjs.org/cypress/10.7.0
       cypress-real-events: registry.npmjs.org/cypress-real-events/1.7.1_cypress@10.7.0
+      start-server-and-test: registry.npmjs.org/start-server-and-test/1.14.0
       typescript: registry.npmjs.org/typescript/4.8.3
       vite: registry.npmjs.org/vite/3.1.0
 
