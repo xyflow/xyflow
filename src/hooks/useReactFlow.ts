@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import useViewportHelper from './useViewportHelper';
-import { useStoreApi } from '../store';
+import { useStore, useStoreApi } from '../store';
 import {
   ReactFlowInstance,
   Instance,
@@ -11,11 +11,24 @@ import {
   EdgeResetChange,
   NodeRemoveChange,
   EdgeRemoveChange,
+  ReactFlowState,
+  EdgeChange,
+  NodeChange,
+  Node,
 } from '../types';
+import { getConnectedEdges } from '../utils/graph';
+import shallow from 'zustand/shallow';
+
+const selector = (s: ReactFlowState) => ({
+  onNodesChange: s.onNodesChange,
+  onEdgesChange: s.onEdgesChange,
+});
 
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
+
+  const { onNodesChange, onEdgesChange } = useStore(selector, shallow);
 
   const getNodes = useCallback<Instance.GetNodes<NodeData>>(() => {
     const { nodeInternals } = store.getState();
@@ -110,6 +123,73 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     };
   }, []);
 
+  const deleteSelectedElements = useCallback<Instance.DeleteSelectedElements>(() => {
+    const { nodeInternals, edges, hasDefaultNodes, hasDefaultEdges, onNodesDelete, onEdgesDelete } = store.getState();
+    const nodes = Array.from(nodeInternals.values());
+    const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
+      if (!node.selected && node.parentNode && res.find((n) => n.id === node.parentNode)) {
+        res.push(node);
+      } else if (node.selected) {
+        res.push(node);
+      }
+
+      return res;
+    }, []);
+    const selectedEdges = edges.filter((e) => e.selected);
+
+    if (nodesToRemove || selectedEdges) {
+      const connectedEdges = getConnectedEdges(nodesToRemove, edges);
+      const edgesToRemove = [...selectedEdges, ...connectedEdges];
+      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
+        if (!res.includes(edge.id)) {
+          res.push(edge.id);
+        }
+        return res;
+      }, []);
+
+      if (hasDefaultEdges || hasDefaultNodes) {
+        if (hasDefaultEdges) {
+          store.setState({
+            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
+          });
+        }
+
+        if (hasDefaultNodes) {
+          nodesToRemove.forEach((node) => {
+            nodeInternals.delete(node.id);
+          });
+
+          store.setState({
+            nodeInternals: new Map(nodeInternals),
+          });
+        }
+      }
+
+      if (edgeIdsToRemove.length > 0) {
+        onEdgesDelete?.(edgesToRemove);
+
+        if (onEdgesChange) {
+          const edgeChanges: EdgeChange[] = edgeIdsToRemove.map((id) => ({
+            id,
+            type: 'remove',
+          }));
+          onEdgesChange(edgeChanges);
+        }
+      }
+
+      if (nodesToRemove.length > 0) {
+        onNodesDelete?.(nodesToRemove);
+
+        if (onNodesChange) {
+          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
+          onNodesChange(nodeChanges);
+        }
+      }
+
+      store.setState({ nodesSelectionActive: false });
+    }
+  }, []);
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -122,6 +202,19 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       addNodes,
       addEdges,
       toObject,
+      deleteSelectedElements,
     };
-  }, [viewportHelper, getNodes, getNode, getEdges, getEdge, setNodes, setEdges, addNodes, addEdges, toObject]);
+  }, [
+    viewportHelper,
+    getNodes,
+    getNode,
+    getEdges,
+    getEdge,
+    setNodes,
+    setEdges,
+    addNodes,
+    addEdges,
+    toObject,
+    deleteSelectedElements,
+  ]);
 }
