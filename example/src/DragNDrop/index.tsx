@@ -37,8 +37,8 @@ const DnDFlow = () => {
     event.preventDefault();
 
     if (reactFlowInstance) {
-      const type = event.dataTransfer.getData('application/reactflow');
-      const position = reactFlowInstance.project({ x: event.clientX, y: event.clientY - 40 });
+      const { nodeType: type, delta } = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+      const position = reactFlowInstance.project({ x: event.clientX - delta.x, y: event.clientY - 40 - delta.y });
       const newNode: Node = {
         id: getId(),
         type,

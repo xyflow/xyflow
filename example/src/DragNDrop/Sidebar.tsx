@@ -1,7 +1,16 @@
 import React, { DragEvent } from 'react';
 
 const onDragStart = (event: DragEvent, nodeType: string) => {
-  event.dataTransfer.setData('application/reactflow', nodeType);
+  const eventX = event.clientX || event.pageX;
+  const eventY = event.clientY || event.pageY;
+  const boundingClientRect = (event.target as HTMLElement).getBoundingClientRect();
+  const offsetX = boundingClientRect.x || boundingClientRect.left;
+  const offsetY = boundingClientRect.y || boundingClientRect.top;
+
+  event.dataTransfer.setData('application/reactflow', JSON.stringify({
+    nodeType,
+    delta: { x: eventX - offsetX, y: eventY - offsetY }
+  }));
   event.dataTransfer.effectAllowed = 'move';
 };
 
