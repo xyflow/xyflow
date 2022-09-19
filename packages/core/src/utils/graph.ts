@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Selection as D3Selection } from 'd3';
+import { Selection as D3Selection } from 'd3-selection';
 
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, rectToBox } from '../utils';
 import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';

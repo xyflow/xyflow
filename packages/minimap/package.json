@@ -42,8 +42,8 @@
     "zustand": "^4.0.0"
   },
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
+    "react": ">=17",
+    "react-dom": ">=17"
   },
   "devDependencies": {
     "@reactflow/eslint-config": "workspace:^0.0.0",
@@ -51,7 +51,8 @@
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.19",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "typescript": "^4.7.4"
   },
   "rollup": {
     "globals": {

@@ -37,20 +37,28 @@
   "dependencies": {
     "@babel/runtime": "^7.18.9",
     "@reactflow/core": "workspace:*",
-    "classcat": "^5.0.3"
+    "classcat": "^5.0.3",
+    "zustand": "^4.0.0"
   },
   "devDependencies": {
     "@reactflow/eslint-config": "workspace:^0.0.0",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
-    "@types/react": "^18.0.19"
+    "@types/react": "^18.0.19",
+    "react": "^18.2.0",
+    "typescript": "^4.7.4"
   },
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
+    "react": ">=17",
+    "react-dom": ">=17"
   },
   "rollup": {
+    "globals": {
+      "zustand": "Zustand",
+      "zustand/shallow": "zustandShallow",
+      "classcat": "cc"
+    },
     "name": "ReactFlowBackground"
   }
 }

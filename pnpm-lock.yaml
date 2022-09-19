@@ -26,7 +26,6 @@ importers:
       react-dom: ^18.2.0
       rimraf: ^3.0.2
       rollup: ^2.79.0
-      start-server-and-test: ^1.14.0
       turbo: ^1.4.6
       typescript: ^4.7.4
     devDependencies:
@@ -52,7 +51,6 @@ importers:
       react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       rimraf: registry.npmjs.org/rimraf/3.0.2
       rollup: registry.npmjs.org/rollup/2.79.0
-      start-server-and-test: registry.npmjs.org/start-server-and-test/1.14.0
       turbo: registry.npmjs.org/turbo/1.4.6
       typescript: registry.npmjs.org/typescript/4.8.3
 
@@ -101,10 +99,12 @@ importers:
       '@types/node': ^18.7.16
       '@types/react': ^18.0.19
       classcat: ^5.0.3
+      zustand: ^4.0.0
     dependencies:
       '@babel/runtime': registry.npmjs.org/@babel/runtime/7.19.0
       '@reactflow/core': link:../core
       classcat: registry.npmjs.org/classcat/5.0.4
+      zustand: registry.npmjs.org/zustand/4.1.1
     devDependencies:
       '@reactflow/eslint-config': link:../../tooling/eslint-config
       '@reactflow/rollup-config': link:../../tooling/rollup-config
@@ -6984,6 +6984,14 @@ packages:
       punycode: registry.npmjs.org/punycode/2.1.1
     dev: true
 
+  registry.npmjs.org/use-sync-external-store/1.2.0:
+    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz}
+    name: use-sync-external-store
+    version: 1.2.0
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dev: false
+
   registry.npmjs.org/use-sync-external-store/1.2.0_react@18.2.0:
     resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz}
     id: registry.npmjs.org/use-sync-external-store/1.2.0
@@ -7283,6 +7291,23 @@ packages:
     version: 0.1.0
     engines: {node: '>=10'}
     dev: true
+
+  registry.npmjs.org/zustand/4.1.1:
+    resolution: {integrity: sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zustand/-/zustand-4.1.1.tgz}
+    name: zustand
+    version: 4.1.1
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      use-sync-external-store: registry.npmjs.org/use-sync-external-store/1.2.0
+    dev: false
 
   registry.npmjs.org/zustand/4.1.1_react@18.2.0:
     resolution: {integrity: sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zustand/-/zustand-4.1.1.tgz}

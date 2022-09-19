@@ -6,6 +6,7 @@ export const infiniteExtent: CoordinateExtent = [
 ];
 
 const initialState: ReactFlowStore = {
+  rfId: '1',
   width: 0,
   height: 0,
   transform: [0, 0, 1],

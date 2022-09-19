@@ -1,6 +1,7 @@
-import { memo, useRef, useId } from 'react';
+import { memo, useRef } from 'react';
 import cc from 'classcat';
 import { useStore, ReactFlowState } from '@reactflow/core';
+import shallow from 'zustand/shallow';
 
 import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './Patterns';
@@ -17,7 +18,7 @@ const defaultSize = {
   [BackgroundVariant.Cross]: 6,
 };
 
-const transformSelector = (s: ReactFlowState) => s.transform;
+const selector = (s: ReactFlowState) => ({ transform: s.transform, rfId: s.rfId });
 
 function Background({
   variant = BackgroundVariant.Dots,
@@ -31,16 +32,14 @@ function Background({
   className,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const patternId = useId();
-  const [tX, tY, tScale] = useStore(transformSelector);
-
+  const { transform, rfId } = useStore(selector, shallow);
   const patternColor = color || defaultColor[variant];
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
-  const scaledGap: [number, number] = [gapXY[0] * tScale || 1, gapXY[1] * tScale || 1];
-  const scaledSize = patternSize * tScale;
+  const scaledGap: [number, number] = [gapXY[0] * transform[2] || 1, gapXY[1] * transform[2] || 1];
+  const scaledSize = patternSize * transform[2];
 
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
 
@@ -62,9 +61,9 @@ function Background({
       ref={ref}
     >
       <pattern
-        id={patternId}
-        x={tX % scaledGap[0]}
-        y={tY % scaledGap[1]}
+        id={rfId}
+        x={transform[0] % scaledGap[0]}
+        y={transform[1] % scaledGap[1]}
         width={scaledGap[0]}
         height={scaledGap[1]}
         patternUnits="userSpaceOnUse"
@@ -76,7 +75,7 @@ function Background({
           <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
         )}
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${rfId})`} />
     </svg>
   );
 }

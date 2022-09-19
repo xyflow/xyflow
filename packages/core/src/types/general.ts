@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
-import { Selection as D3Selection, ZoomBehavior } from 'd3';
+import { Selection as D3Selection } from 'd3-selection';
+import { ZoomBehavior } from 'd3-zoom';
 
 import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
@@ -130,6 +131,7 @@ export interface ViewportHelperFunctions {
 }
 
 export type ReactFlowStore = {
+  rfId: string;
   width: number;
   height: number;
   transform: Transform;

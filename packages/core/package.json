@@ -36,7 +36,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/d3": "^7.4.0",
+    "@types/d3-drag": "^3.0.1",
+    "@types/d3-selection": "^3.0.3",
+    "@types/d3-zoom": "^3.0.1",
     "classcat": "^5.0.3",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
@@ -44,16 +46,13 @@
     "zustand": "^4.0.0"
   },
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
+    "react": ">=17",
+    "react-dom": ">=17"
   },
   "devDependencies": {
     "@reactflow/eslint-config": "workspace:^0.0.0",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
-    "@types/d3-drag": "^3.0.1",
-    "@types/d3-selection": "^3.0.3",
-    "@types/d3-zoom": "^3.0.1",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.17",
     "react": "^18.2.0",

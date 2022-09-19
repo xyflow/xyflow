@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useId } from 'react';
+import { memo } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects } from '@reactflow/core';
@@ -25,6 +25,7 @@ const selector = (s: ReactFlowState) => {
     nodes: nodes.filter((node) => !node.hidden && node.width && node.height),
     viewBB,
     boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB,
+    rfId: s.rfId,
   };
 };
 
@@ -43,8 +44,7 @@ function MiniMap({
   maskColor = 'rgb(240, 242, 243, 0.7)',
   position = 'bottom-right',
 }: MiniMapProps) {
-  const minimapId = useId();
-  const { boundingRect, viewBB, nodes } = useStore(selector, shallow);
+  const { boundingRect, viewBB, nodes, rfId } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -61,7 +61,7 @@ function MiniMap({
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
-  const labelledBy = `${ARIA_LABEL_KEY}-${minimapId}`;
+  const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
 
   return (
     <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>

@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, useId } from 'react';
+import { CSSProperties, forwardRef } from 'react';
 import cc from 'classcat';
 
 import Attribution from '../../components/Attribution';
@@ -154,13 +154,13 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
       style,
+      id = '1',
       ...rest
     },
     ref
   ) => {
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
-    const rfId = useId();
 
     return (
       <div
@@ -228,7 +228,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
             elevateEdgesOnSelect={elevateEdgesOnSelect}
-            rfId={rfId}
+            rfId={id}
             disableKeyboardA11y={disableKeyboardA11y}
             nodeOrigin={nodeOrigin}
             nodeExtent={nodeExtent}
@@ -269,11 +269,12 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDragStop={onSelectionDragStop}
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
+            id={id}
           />
           {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
           {children}
           <Attribution proOptions={proOptions} position={attributionPosition} />
-          {!disableKeyboardA11y && <A11yDescriptions rfId={rfId} />}
+          {!disableKeyboardA11y && <A11yDescriptions rfId={id} />}
         </Wrapper>
       </div>
     );
