@@ -26,6 +26,7 @@
   border-width: 1px;
   border-style: solid;
   border-color: #1a192b;
+  background-color: white;
 
   &.selectable {
     &:hover {
@@ -42,8 +43,7 @@
 }
 
 .react-flow__node-group {
-  background: rgba(240, 240, 240, 0.25);
-  border-color: #1a192b;
+  background-color: rgba(240, 240, 240, 0.25);
 }
 
 .react-flow__nodesselection-rect,

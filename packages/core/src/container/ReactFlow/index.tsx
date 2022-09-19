@@ -163,7 +163,13 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     const rfId = useId();
 
     return (
-      <div {...rest} style={{ ...style, ...wrapperStyle }} ref={ref} className={cc(['react-flow', className])}>
+      <div
+        {...rest}
+        style={{ ...style, ...wrapperStyle }}
+        ref={ref}
+        className={cc(['react-flow', className])}
+        data-testid="rf__wrapper"
+      >
         <Wrapper>
           <GraphView
             onInit={onInit}

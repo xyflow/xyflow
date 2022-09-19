@@ -90,6 +90,7 @@ export interface WrapNodeProps<T = any> {
   zIndex: number;
   isParent: boolean;
   noDragClassName: string;
+  noPanClassName: string;
   rfId: string;
   disableKeyboardA11y: boolean;
   ariaLabel?: string;

@@ -78,11 +78,11 @@ export function getHandle(bounds: HandleElement[], handleId: string | null): Han
 
   // there is no handleId when there are no multiple handles/ handles with ids
   // so we just pick the first one
-  let handle = null;
+  let handle: HandleElement | null = null;
   if (bounds.length === 1 || !handleId) {
     handle = bounds[0];
   } else if (handleId) {
-    handle = bounds.find((d) => d.id === handleId);
+    handle = bounds.find((d) => d.id === handleId)!;
   }
 
   return typeof handle === 'undefined' ? null : handle;

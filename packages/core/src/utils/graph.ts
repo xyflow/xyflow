@@ -171,13 +171,13 @@ export const getNodesInside = (
   const visibleNodes: Node[] = [];
 
   nodeInternals.forEach((node) => {
-    const { positionAbsolute, width, height, selectable = true } = node;
+    const { positionAbsolute = { x: 0, y: 0 }, width, height, selectable = true } = node;
 
     if (excludeNonSelectableNodes && !selectable) {
       return false;
     }
 
-    const nBox = rectToBox({ ...positionAbsolute!, width: width || 0, height: height || 0 });
+    const nBox = rectToBox({ ...positionAbsolute, width: width || 0, height: height || 0 });
     const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
     const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
     const overlappingArea = Math.ceil(xOverlap * yOverlap);
