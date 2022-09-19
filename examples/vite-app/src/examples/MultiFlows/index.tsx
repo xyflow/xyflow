@@ -10,6 +10,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   MarkerType,
+  MiniMap,
 } from 'reactflow';
 
 import styles from './multiflows.module.css';
@@ -70,6 +71,7 @@ const Flow: FC<{ id: string }> = ({ id }) => {
         id={id}
       >
         <Background />
+        <MiniMap />
       </ReactFlow>
     </ReactFlowProvider>
   );

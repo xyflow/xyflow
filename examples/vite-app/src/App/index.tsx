@@ -2,6 +2,7 @@ import { ChangeEvent } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Basic from '../examples/Basic';
+import Backgrounds from '../examples/Backgrounds';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
 import CustomNode from '../examples/CustomNode';
@@ -33,6 +34,7 @@ import UseUpdateNodeInternals from '../examples/UseUpdateNodeInternals';
 import UseReactFlow from '../examples/UseReactFlow';
 import Validation from '../examples/Validation';
 import UseKeyPress from '../examples/UseKeyPress';
+import EdgeRouting from '../examples/EdgeRouting';
 
 const routes = [
   {
@@ -40,8 +42,12 @@ const routes = [
     component: Basic,
   },
   {
-    path: '/default-nodes',
-    component: DefaultNodes,
+    path: '/backgrounds',
+    component: Backgrounds,
+  },
+  {
+    path: '/controlled-uncontrolled',
+    component: ControlledUncontrolled,
   },
   {
     path: '/custom-connectionline',
@@ -50,6 +56,10 @@ const routes = [
   {
     path: '/custom-node',
     component: CustomNode,
+  },
+  {
+    path: '/default-nodes',
+    component: DefaultNodes,
   },
   {
     path: '/draghandle',
@@ -66,6 +76,10 @@ const routes = [
   {
     path: '/edge-types',
     component: EdgeTypes,
+  },
+  {
+    path: '/edge-routing',
+    component: EdgeRouting,
   },
   {
     path: '/empty',
@@ -154,10 +168,6 @@ const routes = [
   {
     path: '/validation',
     component: Validation,
-  },
-  {
-    path: '/controlled-uncontrolled',
-    component: ControlledUncontrolled,
   },
   {
     path: '/use-key-press',
