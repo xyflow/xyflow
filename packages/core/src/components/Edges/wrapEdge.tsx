@@ -129,12 +129,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const inactive = !elementsSelectable && !onClick;
     const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
-    const edgeClasses = cc([
-      'react-flow__edge',
-      `react-flow__edge-${type}`,
-      className,
-      { selected, animated, inactive, updating: updateHover },
-    ]);
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
@@ -152,7 +146,12 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     return (
       <g
-        className={edgeClasses}
+        className={cc([
+          'react-flow__edge',
+          `react-flow__edge-${type}`,
+          className,
+          { selected, animated, inactive, updating: updateHover },
+        ])}
         onClick={onEdgeClick}
         onDoubleClick={onEdgeDoubleClickHandler}
         onContextMenu={onEdgeContextMenu}
@@ -196,24 +195,29 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             interactionWidth={interactionWidth}
           />
         )}
-
         {handleEdgeUpdate && (
-          <g
-            onMouseDown={onEdgeUpdaterSourceMouseDown}
-            onMouseEnter={onEdgeUpdaterMouseEnter}
-            onMouseOut={onEdgeUpdaterMouseOut}
-          >
-            <EdgeAnchor position={sourcePosition} centerX={sourceX} centerY={sourceY} radius={edgeUpdaterRadius} />
-          </g>
-        )}
-        {handleEdgeUpdate && (
-          <g
-            onMouseDown={onEdgeUpdaterTargetMouseDown}
-            onMouseEnter={onEdgeUpdaterMouseEnter}
-            onMouseOut={onEdgeUpdaterMouseOut}
-          >
-            <EdgeAnchor position={targetPosition} centerX={targetX} centerY={targetY} radius={edgeUpdaterRadius} />
-          </g>
+          <>
+            <EdgeAnchor
+              position={sourcePosition}
+              centerX={sourceX}
+              centerY={sourceY}
+              radius={edgeUpdaterRadius}
+              onMouseDown={onEdgeUpdaterSourceMouseDown}
+              onMouseEnter={onEdgeUpdaterMouseEnter}
+              onMouseOut={onEdgeUpdaterMouseOut}
+              type="source"
+            />
+            <EdgeAnchor
+              position={targetPosition}
+              centerX={targetX}
+              centerY={targetY}
+              radius={edgeUpdaterRadius}
+              onMouseDown={onEdgeUpdaterTargetMouseDown}
+              onMouseEnter={onEdgeUpdaterMouseEnter}
+              onMouseOut={onEdgeUpdaterMouseOut}
+              type="target"
+            />
+          </>
         )}
       </g>
     );
