@@ -1,6 +1,0 @@
-{
-  "internal": true,
-  "main": "../dist/nocss/umd/index.js",
-  "module": "../dist/nocss/esm/index.js",
-  "types": "../dist/nocss/esm/index.d.ts"
-}

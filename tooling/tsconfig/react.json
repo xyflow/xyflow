@@ -1,0 +1,11 @@
+{
+  "display": "ReactFlow Package",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["dom", "esnext"],
+    "module": "esnext",
+    "target": "esnext",
+    "outDir": "dist"
+  }
+}
