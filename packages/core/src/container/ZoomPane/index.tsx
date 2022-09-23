@@ -99,7 +99,7 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Selection && d3Zoom) {
-      if (panOnScroll && !zoomActivationKeyPressed) {
+      if (panOnScroll && !zoomActivationKeyPressed && !userSelectionActive) {
         d3Selection.on('wheel.zoom', (event: any) => {
           if (isWrappedWithClass(event, noWheelClassName)) {
             return false;
@@ -143,6 +143,7 @@ const ZoomPane = ({
       }
     }
   }, [
+    userSelectionActive,
     panOnScroll,
     panOnScrollMode,
     d3Selection,
