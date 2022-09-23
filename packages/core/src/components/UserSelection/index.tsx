@@ -130,8 +130,13 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
     setUserSelectionRect(nextUserSelectRect);
   };
 
-  const onMouseUp = () => {
+  const onMouseUp = (event: React.MouseEvent) => {
     store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
+
+    if (!store.getState().userSelectionActive) {
+      onClick?.(event);
+    }
+
     resetUserSelection();
   };
 
@@ -147,7 +152,6 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
-      onClick={onClick}
       onContextMenu={onContextMenu}
       onWheel={onWheel}
     >
