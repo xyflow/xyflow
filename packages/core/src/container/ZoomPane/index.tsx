@@ -16,8 +16,13 @@ import type { Viewport, ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
-  'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName' | 'disableKeyboardA11y'
-> & { selectionKeyPressed: boolean };
+  | 'deleteKeyCode'
+  | 'selectionKeyCode'
+  | 'multiSelectionKeyCode'
+  | 'noDragClassName'
+  | 'disableKeyboardA11y'
+  | 'selectBoxOnDrag'
+>;
 
 const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
   prevViewport.x !== eventViewport.x || prevViewport.y !== eventViewport.y || prevViewport.zoom !== eventViewport.k;
@@ -46,7 +51,6 @@ const ZoomPane = ({
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
-  selectionKeyPressed,
   elementsSelectable,
   panOnDrag = true,
   defaultViewport,
@@ -151,9 +155,9 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Zoom) {
-      if (selectionKeyPressed && !isZoomingOrPanning.current) {
+      if (store.getState().userSelectionActive && !isZoomingOrPanning.current) {
         d3Zoom.on('zoom', null);
-      } else if (!selectionKeyPressed) {
+      } else if (!store.getState().userSelectionActive) {
         d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           const { onViewportChange } = store.getState();
 
@@ -168,7 +172,7 @@ const ZoomPane = ({
         });
       }
     }
-  }, [selectionKeyPressed, d3Zoom, onMove]);
+  }, [store, d3Zoom, onMove]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -238,7 +242,7 @@ const ZoomPane = ({
         }
 
         // during a selection we prevent all other interactions
-        if (selectionKeyPressed) {
+        if (store.getState().userSelectionActive) {
           return false;
         }
 
@@ -276,13 +280,13 @@ const ZoomPane = ({
       });
     }
   }, [
+    store,
     d3Zoom,
     zoomOnScroll,
     zoomOnPinch,
     panOnScroll,
     zoomOnDoubleClick,
     panOnDrag,
-    selectionKeyPressed,
     elementsSelectable,
     zoomActivationKeyPressed,
   ]);

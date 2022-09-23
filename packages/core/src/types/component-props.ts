@@ -94,6 +94,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   connectionMode?: ConnectionMode;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
+  selectBoxOnDrag?: boolean;
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;
