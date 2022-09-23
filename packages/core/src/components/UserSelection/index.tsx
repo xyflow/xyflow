@@ -13,7 +13,6 @@ import type { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '.
 type SelectionRect = Rect & {
   startX: number;
   startY: number;
-  draw: boolean;
 };
 
 type UserSelectionProps = {
@@ -36,32 +35,16 @@ const selector = (s: ReactFlowState) => ({
   elementsSelectable: s.elementsSelectable,
 });
 
-const initialRect: SelectionRect = {
-  startX: 0,
-  startY: 0,
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  draw: false,
-};
-
 const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWheel, children }: UserSelectionProps) => {
   const store = useStoreApi();
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
   const containerBounds = useRef<DOMRect>();
-  const [userSelectionRect, setUserSelectionRect] = useState<SelectionRect>(initialRect);
+  const [userSelectionRect, setUserSelectionRect] = useState<SelectionRect | null>(null);
   const { userSelectionActive, elementsSelectable } = useStore(selector, shallow);
 
-  const renderUserSelectionPane = userSelectionActive || selectionKeyPressed;
-
-  if (!elementsSelectable || !renderUserSelectionPane) {
-    return null;
-  }
-
   const resetUserSelection = () => {
-    setUserSelectionRect(initialRect);
+    setUserSelectionRect(null);
 
     store.setState({ userSelectionActive: false });
 
@@ -70,6 +53,10 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
   };
 
   const onMouseDown = (event: React.MouseEvent): void => {
+    if (!elementsSelectable || !selectionKeyPressed || event.button !== 0) {
+      return;
+    }
+
     const reactFlowNode = (event.target as Element).closest('.react-flow')!;
     containerBounds.current = reactFlowNode.getBoundingClientRect();
 
@@ -82,12 +69,11 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
       startY: mousePos.y,
       x: mousePos.x,
       y: mousePos.y,
-      draw: true,
     });
   };
 
   const onMouseMove = (event: React.MouseEvent): void => {
-    if (!selectionKeyPressed || !userSelectionRect.draw || !containerBounds.current) {
+    if (!selectionKeyPressed || !containerBounds.current || !userSelectionRect) {
       return;
     }
 
@@ -103,6 +89,7 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
       y: mousePos.y < startY ? mousePos.y : startY,
       width: Math.abs(mousePos.x - startX),
       height: Math.abs(mousePos.y - startY),
+      draw: true,
     };
 
     const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin } = store.getState();
@@ -130,12 +117,8 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
     setUserSelectionRect(nextUserSelectRect);
   };
 
-  const onMouseUp = (event: React.MouseEvent) => {
+  const onMouseUp = () => {
     store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
-
-    if (!store.getState().userSelectionActive) {
-      onClick?.(event);
-    }
 
     resetUserSelection();
   };
@@ -145,18 +128,27 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
     resetUserSelection();
   };
 
+  const eventHandlers =
+    elementsSelectable && (selectionKeyPressed || userSelectionActive)
+      ? {
+          onClick,
+          onContextMenu,
+          onWheel,
+          onMouseDown,
+          onMouseMove,
+          onMouseUp,
+          onMouseLeave,
+        }
+      : {
+          onClick,
+          onContextMenu,
+          onWheel,
+        };
+
   return (
-    <div
-      className="react-flow__pane react-flow__container"
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseLeave}
-      onContextMenu={onContextMenu}
-      onWheel={onWheel}
-    >
+    <div className="react-flow__selectionpane react-flow__container" {...eventHandlers}>
       {children}
-      {userSelectionRect.draw && (
+      {userSelectionActive && userSelectionRect && (
         <div
           className="react-flow__selection react-flow__container"
           style={{

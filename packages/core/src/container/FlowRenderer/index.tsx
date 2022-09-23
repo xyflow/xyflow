@@ -69,6 +69,8 @@ const FlowRenderer = ({
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
+  const isSelectionMode = selectionKeyPressed || selectBoxOnDrag;
+
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
   const onClick = (event: MouseEvent) => {
@@ -92,7 +94,7 @@ const FlowRenderer = ({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
-      panOnDrag={panOnDrag}
+      panOnDrag={panOnDrag && !isSelectionMode}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
       minZoom={minZoom}
@@ -109,7 +111,7 @@ const FlowRenderer = ({
         onMouseLeave={onPaneMouseLeave}
         onContextMenu={onContextMenu}
         onWheel={onWheel}
-        selectionKeyPressed={selectionKeyPressed || (selectBoxOnDrag && !panOnDrag)}
+        selectionKeyPressed={isSelectionMode}
       >
         {children}
         {nodesSelectionActive && (
