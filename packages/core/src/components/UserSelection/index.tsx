@@ -18,6 +18,10 @@ type SelectionRect = Rect & {
 
 type UserSelectionProps = {
   selectionKeyPressed: boolean;
+  onClick?: (e: React.MouseEvent) => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
+  onWheel?: (e: React.WheelEvent) => void;
+  children: React.ReactNode;
 };
 
 function getMousePosition(event: React.MouseEvent, containerBounds: DOMRect): XYPosition {
@@ -42,7 +46,7 @@ const initialRect: SelectionRect = {
   draw: false,
 };
 
-const UserSelection = memo(({ selectionKeyPressed }: UserSelectionProps) => {
+const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWheel, children }: UserSelectionProps) => {
   const store = useStoreApi();
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
@@ -80,14 +84,14 @@ const UserSelection = memo(({ selectionKeyPressed }: UserSelectionProps) => {
       y: mousePos.y,
       draw: true,
     });
-
-    store.setState({ userSelectionActive: true, nodesSelectionActive: false });
   };
 
   const onMouseMove = (event: React.MouseEvent): void => {
     if (!selectionKeyPressed || !userSelectionRect.draw || !containerBounds.current) {
       return;
     }
+
+    store.setState({ userSelectionActive: true, nodesSelectionActive: false });
 
     const mousePos = getMousePosition(event, containerBounds.current!);
     const startX = userSelectionRect.startX ?? 0;
@@ -138,12 +142,16 @@ const UserSelection = memo(({ selectionKeyPressed }: UserSelectionProps) => {
 
   return (
     <div
-      className="react-flow__selectionpane react-flow__container"
+      className="react-flow__pane react-flow__container"
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+      onWheel={onWheel}
     >
+      {children}
       {userSelectionRect.draw && (
         <div
           className="react-flow__selection react-flow__container"

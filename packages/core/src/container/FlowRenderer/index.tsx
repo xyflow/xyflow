@@ -102,23 +102,24 @@ const FlowRenderer = ({
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
     >
-      {children}
-      <UserSelection selectionKeyPressed={selectionKeyPressed || (selectBoxOnDrag && !panOnDrag)} />
-      {nodesSelectionActive && (
-        <NodesSelection
-          onSelectionContextMenu={onSelectionContextMenu}
-          noPanClassName={noPanClassName}
-          disableKeyboardA11y={disableKeyboardA11y}
-        />
-      )}
-      <Pane
+      <UserSelection
         onClick={onClick}
         onMouseEnter={onPaneMouseEnter}
         onMouseMove={onPaneMouseMove}
         onMouseLeave={onPaneMouseLeave}
         onContextMenu={onContextMenu}
         onWheel={onWheel}
-      />
+        selectionKeyPressed={selectionKeyPressed || (selectBoxOnDrag && !panOnDrag)}
+      >
+        {children}
+        {nodesSelectionActive && (
+          <NodesSelection
+            onSelectionContextMenu={onSelectionContextMenu}
+            noPanClassName={noPanClassName}
+            disableKeyboardA11y={disableKeyboardA11y}
+          />
+        )}
+      </UserSelection>
     </ZoomPane>
   );
 };
