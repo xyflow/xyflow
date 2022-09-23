@@ -81,6 +81,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         const node = store.getState().nodeInternals.get(id)!;
         onClick(event, { ...node });
       }
+
+      event.stopPropagation();
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
