@@ -12,6 +12,7 @@ import DragNDrop from '../examples/DragNDrop';
 import Edges from '../examples/Edges';
 import EdgeTypes from '../examples/EdgeTypes';
 import Empty from '../examples/Empty';
+import Figma from '../examples/Figma';
 import FloatingEdges from '../examples/FloatingEdges';
 import Hidden from '../examples/Hidden';
 import Interaction from '../examples/Interaction';
@@ -109,6 +110,11 @@ const routes: IRoute[] = [
     name: 'Empty',
     path: '/empty',
     component: Empty,
+  },
+  {
+    name: 'Figma',
+    path: '/figma',
+    component: Figma,
   },
   {
     name: 'Floating Edges',
