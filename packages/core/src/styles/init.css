@@ -173,7 +173,7 @@
 
 .react-flow__panel {
   position: absolute;
-  z-index: 1000;
+  z-index: 5;
   margin: 15px;
 
   &.top {
