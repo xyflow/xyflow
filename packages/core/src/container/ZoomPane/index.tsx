@@ -271,8 +271,20 @@ const ZoomPane = ({
           return false;
         }
 
+        // if the pane is only movable using right clicks, prevent all other clicks
+        if (
+          panOnDrag === 'RightClick' &&
+          (event.type === 'mousedown' || event.type === 'touchstart') &&
+          event.button !== 2
+        ) {
+          return false;
+        }
+
+        // We only allow right clicks if pan on drag is set to right click
+        const buttonAllowed = panOnDrag === 'RightClick' ? 1 !== event.button : !event.button || event.button <= 1;
+
         // default filter for d3-zoom
-        return (!event.ctrlKey || event.type === 'wheel') && (!event.button || event.button <= 1);
+        return (!event.ctrlKey || event.type === 'wheel') && buttonAllowed;
       });
     }
   }, [

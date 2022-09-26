@@ -69,7 +69,7 @@ const FlowRenderer = ({
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  const isSelectionMode = selectionKeyPressed || (selectBoxOnDrag && !panOnDrag);
+  const isSelectionMode = selectionKeyPressed || (selectBoxOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
@@ -79,7 +79,13 @@ const FlowRenderer = ({
     store.setState({ nodesSelectionActive: false });
   };
 
-  const onContextMenu = onPaneContextMenu ? (event: MouseEvent) => onPaneContextMenu(event) : undefined;
+  const onContextMenu = (event: MouseEvent) => {
+    onPaneContextMenu?.(event);
+
+    if (panOnDrag === 'RightClick') {
+      event.preventDefault();
+    }
+  };
   const onWheel = onPaneScroll ? (event: WheelEvent) => onPaneScroll(event) : undefined;
 
   return (
