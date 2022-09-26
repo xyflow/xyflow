@@ -16,7 +16,7 @@ type SelectionRect = Rect & {
 };
 
 type UserSelectionProps = {
-  selectionKeyPressed: boolean;
+  isSelectionMode: boolean;
   onClick?: (e: React.MouseEvent) => void;
   onContextMenu?: (e: React.MouseEvent) => void;
   onWheel?: (e: React.WheelEvent) => void;
@@ -35,7 +35,7 @@ const selector = (s: ReactFlowState) => ({
   elementsSelectable: s.elementsSelectable,
 });
 
-const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWheel, children }: UserSelectionProps) => {
+const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, children }: UserSelectionProps) => {
   const store = useStoreApi();
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
@@ -53,7 +53,7 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
   };
 
   const onMouseDown = (event: React.MouseEvent): void => {
-    if (!elementsSelectable || !selectionKeyPressed || event.button !== 0) {
+    if (!elementsSelectable || !isSelectionMode || event.button !== 0) {
       return;
     }
 
@@ -73,7 +73,7 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
   };
 
   const onMouseMove = (event: React.MouseEvent): void => {
-    if (!selectionKeyPressed || !containerBounds.current || !userSelectionRect) {
+    if (!isSelectionMode || !containerBounds.current || !userSelectionRect) {
       return;
     }
 
@@ -129,7 +129,7 @@ const UserSelection = memo(({ selectionKeyPressed, onClick, onContextMenu, onWhe
   };
 
   const eventHandlers =
-    elementsSelectable && (selectionKeyPressed || userSelectionActive)
+    elementsSelectable && (isSelectionMode || userSelectionActive)
       ? {
           onClick,
           onContextMenu,
