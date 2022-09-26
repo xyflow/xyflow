@@ -108,7 +108,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
-  panOnDrag?: boolean;
+  panOnDrag?: boolean | 'RightClick';
   minZoom?: number;
   maxZoom?: number;
   defaultViewport?: Viewport;
