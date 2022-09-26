@@ -117,7 +117,13 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
     setUserSelectionRect(nextUserSelectRect);
   };
 
-  const onMouseUp = () => {
+  const onMouseUp = (event: React.MouseEvent) => {
+    // We only want to trigger click functions when in selection mode if
+    // the user did not move the mouse.
+    if (!userSelectionActive && userSelectionRect) {
+      onClick?.(event);
+    }
+
     store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
 
     resetUserSelection();
@@ -131,7 +137,6 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   const eventHandlers =
     elementsSelectable && (isSelectionMode || userSelectionActive)
       ? {
-          onClick,
           onContextMenu,
           onWheel,
           onMouseDown,
