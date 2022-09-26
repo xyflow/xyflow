@@ -59,7 +59,7 @@ const BasicFlow = () => {
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
       selectBoxOnDrag
-      panOnDrag={spaceBarPressed}
+      panOnDrag={spaceBarPressed ? true : 'RightClick'}
       panOnScroll
       zoomActivationKeyCode={'Meta'}
       multiSelectionKeyCode={MULTI_SELECT_KEY}
