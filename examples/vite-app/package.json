@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 3000 --open",
     "serve": "vite serve --port 3000",
+    "test:dev": "cypress open",
     "test": "pnpm test-component && pnpm test-e2e",
     "test-component": "cypress run --component",
     "test-e2e-cypress": "cypress run --e2e --headless",
@@ -27,7 +28,7 @@
     "cypress": "^10.6.0",
     "cypress-real-events": "^1.7.1",
     "start-server-and-test": "^1.14.0",
-    "typescript": "^4.6.4",
+    "typescript": "^4.8.3",
     "vite": "^3.1.0"
   }
 }

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
-import { Selection as D3Selection } from 'd3-selection';
-import { ZoomBehavior } from 'd3-zoom';
+import type { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import { NodeChange, EdgeChange } from './changes';
@@ -240,5 +239,6 @@ export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 export type PanelPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 export type ProOptions = {
+  account: string;
   hideAttribution: boolean;
 };

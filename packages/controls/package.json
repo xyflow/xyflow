@@ -50,7 +50,7 @@
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.19",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.3"
   },
   "rollup": {
     "globals": {
