@@ -15,6 +15,8 @@ type SelectionRect = Rect & {
   startY: number;
 };
 
+type EventHandlers = { [key: string]: React.MouseEventHandler | React.WheelEventHandler | undefined };
+
 type UserSelectionProps = {
   isSelectionMode: boolean;
   onClick?: (e: React.MouseEvent) => void;
@@ -30,12 +32,31 @@ function getMousePosition(event: React.MouseEvent, containerBounds: DOMRect): XY
   };
 }
 
+const wrapHandler = (
+  handler: React.MouseEventHandler | undefined,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
+): React.MouseEventHandler => {
+  return (event: React.MouseEvent) => {
+    if (event.target !== containerRef.current) {
+      return;
+    }
+    handler?.(event);
+  };
+};
+
+const wrapHandlers = (
+  handlers: EventHandlers,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
+): EventHandlers =>
+  Object.keys(handlers).reduce((hls, key) => ({ ...hls, [key]: wrapHandler(handlers[key], containerRef) }), {});
+
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
 });
 
 const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, children }: UserSelectionProps) => {
+  const container = useRef<HTMLDivElement | null>(null);
   const store = useStoreApi();
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
@@ -53,7 +74,7 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   };
 
   const onMouseDown = (event: React.MouseEvent): void => {
-    if (!elementsSelectable || !isSelectionMode || event.button !== 0) {
+    if (!elementsSelectable || !isSelectionMode || event.button !== 0 || event.target !== container.current) {
       return;
     }
 
@@ -75,7 +96,7 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   };
 
   const onMouseMove = (event: React.MouseEvent): void => {
-    if (!isSelectionMode || !containerBounds.current || !userSelectionRect) {
+    if (!isSelectionMode || !containerBounds.current || !userSelectionRect || event.target !== container.current) {
       return;
     }
 
@@ -122,7 +143,7 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   const onMouseUp = (event: React.MouseEvent) => {
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
-    if (!userSelectionActive && userSelectionRect) {
+    if (!userSelectionActive && userSelectionRect && event.target === container.current) {
       onClick?.(event);
     }
 
@@ -141,21 +162,23 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   const eventHandlers =
     elementsSelectable && (isSelectionMode || userSelectionActive)
       ? {
-          onContextMenu,
-          onWheel,
+          ...wrapHandlers({ onContextMenu, onWheel }, container),
           onMouseDown,
           onMouseMove,
           onMouseUp,
           onMouseLeave,
         }
-      : {
-          onClick,
-          onContextMenu,
-          onWheel,
-        };
+      : wrapHandlers(
+          {
+            onClick,
+            onContextMenu,
+            onWheel,
+          },
+          container
+        );
 
   return (
-    <div className="react-flow__selectionpane react-flow__container" {...eventHandlers}>
+    <div className="react-flow__selectionpane react-flow__container" {...eventHandlers} ref={container}>
       {children}
       {userSelectionActive && userSelectionRect && (
         <div
