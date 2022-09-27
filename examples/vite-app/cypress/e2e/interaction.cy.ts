@@ -35,7 +35,7 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('tries to do a selection', () => {
-    cy.get('body').type('{shift}', { release: false }).get('.react-flow__selectionpane').should('not.exist');
+    cy.get('body').type('{shift}', { release: false }).get('.react-flow__pane').should('not.exist');
     cy.get('body').type('{shift}', { release: true });
   });
 
