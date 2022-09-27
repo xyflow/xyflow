@@ -57,6 +57,8 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
       return;
     }
 
+    store.getState().resetSelectedElements();
+
     const reactFlowNode = (event.target as Element).closest('.react-flow')!;
     containerBounds.current = reactFlowNode.getBoundingClientRect();
 
