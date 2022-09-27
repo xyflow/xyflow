@@ -57,7 +57,7 @@ describe('Minimap Testing', () => {
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
       cy.get('.react-flow__pane')
-        .trigger('mousedown', 'topLeft', { which: 1, view: win })
+        .trigger('mousedown', 'topLeft', { button: 0, view: win })
         .trigger('mousemove', 'bottomLeft')
         .wait(50)
         .trigger('mouseup', { force: true, view: win })

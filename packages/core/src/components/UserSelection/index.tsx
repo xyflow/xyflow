@@ -178,7 +178,7 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
         );
 
   return (
-    <div className="react-flow__selectionpane react-flow__container" {...eventHandlers} ref={container}>
+    <div className="react-flow__pane react-flow__container" {...eventHandlers} ref={container}>
       {children}
       {userSelectionActive && userSelectionRect && (
         <div
