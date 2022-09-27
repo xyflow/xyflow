@@ -41,6 +41,7 @@ const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
     <g
       transform={`translate(${x - edgeTextBbox.width / 2} ${y - edgeTextBbox.height / 2})`}
       className={edgeTextClasses}
+      visibility={edgeTextBbox.width ? 'visible' : 'hidden'}
       {...rest}
     >
       {labelShowBg && (

@@ -107,7 +107,7 @@ const edges: Edge[] = [
 
 const defaultEdgeOptions = {
   label: 'Edge Label',
-  type: 'default',
+  type: 'smoothstep',
   markerEnd: {
     type: MarkerType.ArrowClosed,
   },
