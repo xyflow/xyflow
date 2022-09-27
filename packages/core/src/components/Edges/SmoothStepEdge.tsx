@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { SmoothStepEdgeProps, Position, XYPosition } from '../../types';
 import BaseEdge from './BaseEdge';
-import { getSimpleEdgeCenter } from './utils';
+import { getEdgeCenter } from './utils';
 
 export interface GetSmoothStepPathParams {
   sourceX: number;
@@ -72,7 +72,7 @@ function getPoints({
 
   let points: XYPosition[] = [];
   let centerX, centerY;
-  const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getSimpleEdgeCenter({
+  const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
     sourceX: source.x,
     sourceY: source.y,
     targetX: target.x,
@@ -170,7 +170,7 @@ export function getSmoothStepPath({
   centerX,
   centerY,
   offset = 20,
-}: GetSmoothStepPathParams): [string, number, number, number, number] {
+}: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
   const [points, labelX, labelY, offsetX, offsetY] = getPoints({
     source: { x: sourceX, y: sourceY },
     sourcePosition,

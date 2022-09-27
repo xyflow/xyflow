@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import BaseEdge from './BaseEdge';
 import { EdgeProps } from '../../types';
-import { getSimpleEdgeCenter } from './utils';
+import { getEdgeCenter } from './utils';
 
 export type GetStraightPathParams = {
   sourceX: number;
@@ -16,15 +16,15 @@ export function getStraightPath({
   sourceY,
   targetX,
   targetY,
-}: GetStraightPathParams): [string, number, number, number, number] {
-  const [centerX, centerY, offsetX, offsetY] = getSimpleEdgeCenter({
+}: GetStraightPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
+  const [labelX, labelY, offsetX, offsetY] = getEdgeCenter({
     sourceX,
     sourceY,
     targetX,
     targetY,
   });
 
-  return [`M ${sourceX},${sourceY}L ${targetX},${targetY}`, centerX, centerY, offsetX, offsetY];
+  return [`M ${sourceX},${sourceY}L ${targetX},${targetY}`, labelX, labelY, offsetX, offsetY];
 }
 
 const StraightEdge = memo(

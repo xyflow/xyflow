@@ -28,7 +28,7 @@ export function getMouseHandler(
 }
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
-export function getSimpleEdgeCenter({
+export function getEdgeCenter({
   sourceX,
   sourceY,
   targetX,

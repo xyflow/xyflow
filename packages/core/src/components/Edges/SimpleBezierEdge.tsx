@@ -21,24 +21,11 @@ interface GetControlParams {
 }
 
 function getControl({ pos, x1, y1, x2, y2 }: GetControlParams): [number, number] {
-  let ctX: number, ctY: number;
-  switch (pos) {
-    case Position.Left:
-    case Position.Right:
-      {
-        ctX = 0.5 * (x1 + x2);
-        ctY = y1;
-      }
-      break;
-    case Position.Top:
-    case Position.Bottom:
-      {
-        ctX = x1;
-        ctY = 0.5 * (y1 + y2);
-      }
-      break;
+  if (pos === Position.Left || pos === Position.Right) {
+    return [0.5 * (x1 + x2), y1];
   }
-  return [ctX, ctY];
+
+  return [x1, 0.5 * (y1 + y2)];
 }
 
 export function getSimpleBezierPath({
@@ -48,7 +35,7 @@ export function getSimpleBezierPath({
   targetX,
   targetY,
   targetPosition = Position.Top,
-}: GetSimpleBezierPathParams): [string, number, number, number, number] {
+}: GetSimpleBezierPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
   const [sourceControlX, sourceControlY] = getControl({
     pos: sourcePosition,
     x1: sourceX,
@@ -63,7 +50,7 @@ export function getSimpleBezierPath({
     x2: sourceX,
     y2: sourceY,
   });
-  const [centerX, centerY, offsetX, offsetY] = getBezierEdgeCenter({
+  const [labelX, labelY, offsetX, offsetY] = getBezierEdgeCenter({
     sourceX,
     sourceY,
     targetX,
@@ -76,8 +63,8 @@ export function getSimpleBezierPath({
 
   return [
     `M${sourceX},${sourceY} C${sourceControlX},${sourceControlY} ${targetControlX},${targetControlY} ${targetX},${targetY}`,
-    centerX,
-    centerY,
+    labelX,
+    labelY,
     offsetX,
     offsetY,
   ];
