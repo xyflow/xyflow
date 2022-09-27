@@ -24,6 +24,8 @@ const initialEdges: Edge[] = [
 
 const defaultEdgeOptions = { zIndex: 0 };
 
+const logEvent = (e: any) => console.log(e);
+
 const BasicFlow = () => {
   const instance = useReactFlow();
   const spaceBarPressed = useKeyPress('Space');
@@ -61,6 +63,7 @@ const BasicFlow = () => {
       selectBoxOnDrag
       panOnDrag={spaceBarPressed ? true : 'RightClick'}
       panOnScroll
+      onPaneContextMenu={logEvent}
       zoomActivationKeyCode={'Meta'}
       multiSelectionKeyCode={MULTI_SELECT_KEY}
       className="react-flow-basic-example"
