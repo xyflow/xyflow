@@ -46,6 +46,7 @@ const ZoomPane = ({
   onMove,
   onMoveStart,
   onMoveEnd,
+  onPaneContextMenu,
   zoomOnScroll = true,
   zoomOnPinch = true,
   panOnScroll = false,
@@ -67,6 +68,7 @@ const ZoomPane = ({
   const timerId = useRef<ReturnType<typeof setTimeout>>();
   const store = useStoreApi();
   const isZoomingOrPanning = useRef(false);
+  const hasMouseMoved = useRef(false);
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler, userSelectionActive } = useStore(selector, shallow);
@@ -171,10 +173,13 @@ const ZoomPane = ({
             onViewportChange?.(flowTransform);
             onMove?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
           }
+          if (panOnDrag === 'RightClick' && onPaneContextMenu) {
+            hasMouseMoved.current = true;
+          }
         });
       }
     }
-  }, [userSelectionActive, d3Zoom, onMove]);
+  }, [userSelectionActive, d3Zoom, onMove, panOnDrag, onPaneContextMenu]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -224,9 +229,19 @@ const ZoomPane = ({
             panOnScroll ? 150 : 0
           );
         }
+
+        if (
+          panOnDrag === 'RightClick' &&
+          onPaneContextMenu &&
+          !hasMouseMoved.current &&
+          event.sourceEvent?.button === 2
+        ) {
+          onPaneContextMenu(event.sourceEvent);
+        }
+        hasMouseMoved.current = false;
       });
     }
-  }, [d3Zoom, onMoveEnd, panOnScroll]);
+  }, [d3Zoom, onMoveEnd, panOnScroll, panOnDrag, onPaneContextMenu]);
 
   useEffect(() => {
     if (d3Zoom) {

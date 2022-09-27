@@ -80,10 +80,10 @@ const FlowRenderer = ({
   };
 
   const onContextMenu = (event: MouseEvent) => {
-    onPaneContextMenu?.(event);
-
     if (panOnDrag === 'RightClick') {
       event.preventDefault();
+    } else {
+      onPaneContextMenu?.(event);
     }
   };
   const onWheel = onPaneScroll ? (event: WheelEvent) => onPaneScroll(event) : undefined;
@@ -93,6 +93,7 @@ const FlowRenderer = ({
       onMove={onMove}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
+      onPaneContextMenu={onPaneContextMenu}
       elementsSelectable={elementsSelectable}
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
