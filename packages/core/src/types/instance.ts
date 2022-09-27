@@ -24,6 +24,7 @@ export namespace Instance {
   export type GetEdge<EdgeData> = (id: string) => Edge<EdgeData> | undefined;
   export type AddEdges<EdgeData> = (payload: Edge<EdgeData>[] | Edge<EdgeData>) => void;
   export type ToObject<NodeData = any, EdgeData = any> = () => ReactFlowJsonObject<NodeData, EdgeData>;
+  export type DeleteSelectedElements = () => void;
 }
 
 export type ReactFlowInstance<NodeData = any, EdgeData = any> = {
@@ -36,5 +37,6 @@ export type ReactFlowInstance<NodeData = any, EdgeData = any> = {
   addEdges: Instance.AddEdges<EdgeData>;
   getEdge: Instance.GetEdge<EdgeData>;
   toObject: Instance.ToObject<NodeData, EdgeData>;
+  deleteSelectedElements: Instance.DeleteSelectedElements;
   viewportInitialized: boolean;
 } & Omit<ViewportHelperFunctions, 'initialized'>;

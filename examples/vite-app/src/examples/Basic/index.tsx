@@ -78,6 +78,10 @@ const BasicFlow = () => {
     );
   };
 
+  const deleteElements = () => {
+    instance.deleteSelectedElements()
+  }
+
   return (
     <ReactFlow
       defaultNodes={initialNodes}
@@ -106,7 +110,8 @@ const BasicFlow = () => {
         <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
           toggle classnames
         </button>
-        <button onClick={logToObject}>toObject</button>
+        <button onClick={logToObject} style={{ marginRight: 5 }}>toObject</button>
+        <button onClick={deleteElements}>delete selected elements</button>
       </div>
     </ReactFlow>
   );
