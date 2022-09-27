@@ -238,6 +238,11 @@ const createRFStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
+    cancelConnection: () =>
+      set({
+        connectionNodeId: initialState.connectionNodeId,
+        connectionHandleId: initialState.connectionHandleId,
+      }),
     reset: () => set({ ...initialState }),
   }));
 
