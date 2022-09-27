@@ -104,8 +104,8 @@ export type BaseEdgeProps = Pick<
   | 'markerEnd'
   | 'interactionWidth'
 > & {
-  centerX: number;
-  centerY: number;
+  labelX: number;
+  labelY: number;
   path: string;
 };
 

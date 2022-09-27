@@ -1,18 +1,10 @@
 export { default as ReactFlow } from './container/ReactFlow';
 export { default as Handle } from './components/Handle';
 export { default as EdgeText } from './components/Edges/EdgeText';
-export { default as StraightEdge } from './components/Edges/StraightEdge';
+export { default as StraightEdge, getStraightPath } from './components/Edges/StraightEdge';
 export { default as StepEdge } from './components/Edges/StepEdge';
-export {
-  default as BezierEdge,
-  getBezierPath,
-  getBezierCenter as getBezierEdgeCenter,
-} from './components/Edges/BezierEdge';
-export {
-  default as SimpleBezierEdge,
-  getSimpleBezierPath,
-  getSimpleBezierCenter as getSimpleBezierEdgeCenter,
-} from './components/Edges/SimpleBezierEdge';
+export { default as BezierEdge, getBezierPath } from './components/Edges/BezierEdge';
+export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 export { default as BaseEdge } from './components/Edges/BaseEdge';
 
@@ -29,7 +21,7 @@ export {
   getRectOfNodes,
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
-export { getMarkerEnd, getCenter as getEdgeCenter } from './components/Edges/utils';
+export { getMarkerEnd } from './components/Edges/utils';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel } from './components/Panel';
 

@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { EdgeProps, Position } from '../../types';
 import BaseEdge from './BaseEdge';
+import { getBezierEdgeCenter } from './utils';
 
 export interface GetSimpleBezierPathParams {
   sourceX: number;
@@ -47,7 +48,7 @@ export function getSimpleBezierPath({
   targetX,
   targetY,
   targetPosition = Position.Top,
-}: GetSimpleBezierPathParams): string {
+}: GetSimpleBezierPathParams): [string, number, number, number, number] {
   const [sourceControlX, sourceControlY] = getControl({
     pos: sourcePosition,
     x1: sourceX,
@@ -62,42 +63,24 @@ export function getSimpleBezierPath({
     x2: sourceX,
     y2: sourceY,
   });
-  return `M${sourceX},${sourceY} C${sourceControlX},${sourceControlY} ${targetControlX},${targetControlY} ${targetX},${targetY}`;
-}
+  const [centerX, centerY, offsetX, offsetY] = getBezierEdgeCenter({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourceControlX,
+    sourceControlY,
+    targetControlX,
+    targetControlY,
+  });
 
-// @TODO: this function will recalculate the control points
-// one option is to let getXXXPath() return center points
-// but will introduce breaking changes
-// the getCenter() of other types of edges might need to change, too
-export function getSimpleBezierCenter({
-  sourceX,
-  sourceY,
-  sourcePosition = Position.Bottom,
-  targetX,
-  targetY,
-  targetPosition = Position.Top,
-}: GetSimpleBezierPathParams): [number, number, number, number] {
-  const [sourceControlX, sourceControlY] = getControl({
-    pos: sourcePosition,
-    x1: sourceX,
-    y1: sourceY,
-    x2: targetX,
-    y2: targetY,
-  });
-  const [targetControlX, targetControlY] = getControl({
-    pos: targetPosition,
-    x1: targetX,
-    y1: targetY,
-    x2: sourceX,
-    y2: sourceY,
-  });
-  // cubic bezier t=0.5 mid point, not the actual mid point, but easy to calculate
-  // https://stackoverflow.com/questions/67516101/how-to-find-distance-mid-point-of-bezier-curve
-  const centerX = sourceX * 0.125 + sourceControlX * 0.375 + targetControlX * 0.375 + targetX * 0.125;
-  const centerY = sourceY * 0.125 + sourceControlY * 0.375 + targetControlY * 0.375 + targetY * 0.125;
-  const xOffset = Math.abs(centerX - sourceX);
-  const yOffset = Math.abs(centerY - sourceY);
-  return [centerX, centerY, xOffset, yOffset];
+  return [
+    `M${sourceX},${sourceY} C${sourceControlX},${sourceControlY} ${targetControlX},${targetControlY} ${targetX},${targetY}`,
+    centerX,
+    centerY,
+    offsetX,
+    offsetY,
+  ];
 }
 
 const SimpleBezierEdge = memo(
@@ -119,22 +102,20 @@ const SimpleBezierEdge = memo(
     markerStart,
     interactionWidth,
   }: EdgeProps) => {
-    const params = {
+    const [path, labelX, labelY] = getSimpleBezierPath({
       sourceX,
       sourceY,
       sourcePosition,
       targetX,
       targetY,
       targetPosition,
-    };
-    const path = getSimpleBezierPath(params);
-    const [centerX, centerY] = getSimpleBezierCenter(params);
+    });
 
     return (
       <BaseEdge
         path={path}
-        centerX={centerX}
-        centerY={centerY}
+        labelX={labelX}
+        labelY={labelY}
         label={label}
         labelStyle={labelStyle}
         labelShowBg={labelShowBg}

@@ -77,10 +77,6 @@ const edges: Edge[] = [
     id: 'e1-2',
     source: '1',
     target: '2',
-    type: 'smoothstep',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-    },
     pathOptions: {
       offset: 30,
     },
@@ -90,10 +86,6 @@ const edges: Edge[] = [
     id: 'e3-4',
     source: '3',
     target: '4',
-    type: 'smoothstep',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-    },
     pathOptions: {
       borderRadius: 2,
     },
@@ -104,24 +96,21 @@ const edges: Edge[] = [
     id: 'e4-5',
     source: '5',
     target: '6',
-    type: 'smoothstep',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-    },
   },
 
   {
     id: 'e7-8',
     source: '7',
     target: '8',
-    type: 'smoothstep',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-    },
   },
 ];
 
 const defaultEdgeOptions = {
+  label: 'Edge Label',
+  type: 'default',
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+  },
   style: {
     strokeWidth: 1,
   },

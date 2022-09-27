@@ -3,8 +3,8 @@ import { BaseEdgeProps } from '../../types';
 
 const BaseEdge = ({
   path,
-  centerX,
-  centerY,
+  labelX,
+  labelY,
   label,
   labelStyle,
   labelShowBg,
@@ -29,8 +29,8 @@ const BaseEdge = ({
       {interactionWidth && <path d={path} fill="none" strokeOpacity={0} strokeWidth={interactionWidth} />}
       {label ? (
         <EdgeText
-          x={centerX}
-          y={centerY}
+          x={labelX}
+          y={labelY}
           label={label}
           labelStyle={labelStyle}
           labelShowBg={labelShowBg}
