@@ -2,6 +2,30 @@ import { memo } from 'react';
 
 import BaseEdge from './BaseEdge';
 import { EdgeProps } from '../../types';
+import { getSimpleEdgeCenter } from './utils';
+
+export type GetStraightPathParams = {
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+};
+
+export function getStraightPath({
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+}: GetStraightPathParams): [string, number, number, number, number] {
+  const [centerX, centerY, offsetX, offsetY] = getSimpleEdgeCenter({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+  });
+
+  return [`M ${sourceX},${sourceY}L ${targetX},${targetY}`, centerX, centerY, offsetX, offsetY];
+}
 
 const StraightEdge = memo(
   ({
@@ -20,17 +44,13 @@ const StraightEdge = memo(
     markerStart,
     interactionWidth,
   }: EdgeProps) => {
-    const yOffset = Math.abs(targetY - sourceY) / 2;
-    const centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-
-    const xOffset = Math.abs(targetX - sourceX) / 2;
-    const centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
+    const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
 
     return (
       <BaseEdge
-        path={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
-        centerX={centerX}
-        centerY={centerY}
+        path={path}
+        labelX={labelX}
+        labelY={labelY}
         label={label}
         labelStyle={labelStyle}
         labelShowBg={labelShowBg}

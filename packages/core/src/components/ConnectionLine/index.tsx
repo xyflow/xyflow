@@ -97,16 +97,16 @@ const ConnectionLine = ({
 
   if (connectionLineType === ConnectionLineType.Bezier) {
     // we assume the destination position is opposite to the source position
-    dAttr = getBezierPath(pathParams);
+    [dAttr] = getBezierPath(pathParams);
   } else if (connectionLineType === ConnectionLineType.Step) {
-    dAttr = getSmoothStepPath({
+    [dAttr] = getSmoothStepPath({
       ...pathParams,
       borderRadius: 0,
     });
   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
-    dAttr = getSmoothStepPath(pathParams);
+    [dAttr] = getSmoothStepPath(pathParams);
   } else if (connectionLineType === ConnectionLineType.SimpleBezier) {
-    dAttr = getSimpleBezierPath(pathParams);
+    [dAttr] = getSimpleBezierPath(pathParams);
   } else {
     dAttr = `M${fromX},${fromY} ${toX},${toY}`;
   }

@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { BezierEdgeProps, Position } from '../../types';
 import BaseEdge from './BaseEdge';
+import { getBezierEdgeCenter } from './utils';
 
 export interface GetBezierPathParams {
   sourceX: number;
@@ -68,7 +69,7 @@ export function getBezierPath({
   targetY,
   targetPosition = Position.Top,
   curvature = 0.25,
-}: GetBezierPathParams): string {
+}: GetBezierPathParams): [string, number, number, number, number] {
   const [sourceControlX, sourceControlY] = getControlWithCurvature({
     pos: sourcePosition,
     x1: sourceX,
@@ -85,45 +86,24 @@ export function getBezierPath({
     y2: sourceY,
     c: curvature,
   });
-  return `M${sourceX},${sourceY} C${sourceControlX},${sourceControlY} ${targetControlX},${targetControlY} ${targetX},${targetY}`;
-}
+  const [centerX, centerY, offsetX, offsetY] = getBezierEdgeCenter({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourceControlX,
+    sourceControlY,
+    targetControlX,
+    targetControlY,
+  });
 
-// @TODO: this function will recalculate the control points
-// one option is to let getXXXPath() return center points
-// but will introduce breaking changes
-// the getCenter() of other types of edges might need to change, too
-export function getBezierCenter({
-  sourceX,
-  sourceY,
-  sourcePosition = Position.Bottom,
-  targetX,
-  targetY,
-  targetPosition = Position.Top,
-  curvature = 0.25,
-}: GetBezierPathParams): [number, number, number, number] {
-  const [sourceControlX, sourceControlY] = getControlWithCurvature({
-    pos: sourcePosition,
-    x1: sourceX,
-    y1: sourceY,
-    x2: targetX,
-    y2: targetY,
-    c: curvature,
-  });
-  const [targetControlX, targetControlY] = getControlWithCurvature({
-    pos: targetPosition,
-    x1: targetX,
-    y1: targetY,
-    x2: sourceX,
-    y2: sourceY,
-    c: curvature,
-  });
-  // cubic bezier t=0.5 mid point, not the actual mid point, but easy to calculate
-  // https://stackoverflow.com/questions/67516101/how-to-find-distance-mid-point-of-bezier-curve
-  const centerX = sourceX * 0.125 + sourceControlX * 0.375 + targetControlX * 0.375 + targetX * 0.125;
-  const centerY = sourceY * 0.125 + sourceControlY * 0.375 + targetControlY * 0.375 + targetY * 0.125;
-  const xOffset = Math.abs(centerX - sourceX);
-  const yOffset = Math.abs(centerY - sourceY);
-  return [centerX, centerY, xOffset, yOffset];
+  return [
+    `M${sourceX},${sourceY} C${sourceControlX},${sourceControlY} ${targetControlX},${targetControlY} ${targetX},${targetY}`,
+    centerX,
+    centerY,
+    offsetX,
+    offsetY,
+  ];
 }
 
 const BezierEdge = memo(
@@ -146,7 +126,7 @@ const BezierEdge = memo(
     pathOptions,
     interactionWidth,
   }: BezierEdgeProps) => {
-    const params = {
+    const [path, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
       sourcePosition,
@@ -154,15 +134,13 @@ const BezierEdge = memo(
       targetY,
       targetPosition,
       curvature: pathOptions?.curvature,
-    };
-    const path = getBezierPath(params);
-    const [centerX, centerY] = getBezierCenter(params);
+    });
 
     return (
       <BaseEdge
         path={path}
-        centerX={centerX}
-        centerY={centerY}
+        labelX={labelX}
+        labelY={labelY}
         label={label}
         labelStyle={labelStyle}
         labelShowBg={labelShowBg}

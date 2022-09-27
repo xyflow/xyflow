@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { EdgeProps, getBezierPath, EdgeText, getBezierEdgeCenter } from 'reactflow';
+import { FC } from 'react';
+import { EdgeProps, getBezierPath, EdgeText } from 'reactflow';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,
@@ -11,7 +11,7 @@ const CustomEdge: FC<EdgeProps> = ({
   targetPosition,
   data,
 }) => {
-  const edgePath = getBezierPath({
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -19,19 +19,13 @@ const CustomEdge: FC<EdgeProps> = ({
     targetY,
     targetPosition,
   });
-  const [centerX, centerY] = getBezierEdgeCenter({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-  });
 
   return (
     <>
       <path id={id} className="react-flow__edge-path" d={edgePath} />
       <EdgeText
-        x={centerX}
-        y={centerY}
+        x={labelX}
+        y={labelY}
         label={data.text}
         labelStyle={{ fill: 'white' }}
         labelShowBg
