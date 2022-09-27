@@ -130,7 +130,6 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   };
 
   const onMouseLeave = () => {
-    store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
     resetUserSelection();
   };
 
