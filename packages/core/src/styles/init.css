@@ -11,6 +11,10 @@
   z-index: 1;
   cursor: grab;
 
+  &.selection {
+    cursor: pointer;
+  }
+
   &.dragging {
     cursor: grabbing;
   }
