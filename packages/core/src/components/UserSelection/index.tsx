@@ -117,7 +117,7 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
 
     const { nodeInternals, edges, transform, onNodesChange, onEdgesChange } = store.getState();
     const nodes = Array.from(nodeInternals.values());
-    const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, false, true);
+    const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, true, true);
     const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
