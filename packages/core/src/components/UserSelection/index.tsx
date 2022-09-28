@@ -25,6 +25,9 @@ type UserSelectionProps = {
   onClick?: (e: React.MouseEvent) => void;
   onContextMenu?: (e: React.MouseEvent) => void;
   onWheel?: (e: React.WheelEvent) => void;
+  onMouseEnter?: (e: React.MouseEvent) => void;
+  onMouseMove?: (e: React.MouseEvent) => void;
+  onMouseLeave?: (e: React.MouseEvent) => void;
   children: React.ReactNode;
 };
 
@@ -67,6 +70,9 @@ const UserSelection = memo(
     onClick,
     onContextMenu,
     onWheel,
+    onMouseEnter: onPaneMouseEnter,
+    onMouseMove: onPaneMouseMove,
+    onMouseLeave: onPaneMouseLeave,
     children,
   }: UserSelectionProps) => {
     const container = useRef<HTMLDivElement | null>(null);
@@ -197,6 +203,9 @@ const UserSelection = memo(
               onClick,
               onContextMenu,
               onWheel,
+              onMouseEnter: onPaneMouseEnter,
+              onMouseMove: onPaneMouseMove,
+              onMouseLeave: onPaneMouseLeave,
             },
             container
           );

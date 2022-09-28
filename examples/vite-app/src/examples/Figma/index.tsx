@@ -6,7 +6,7 @@ import ReactFlow, {
   Edge,
   useReactFlow,
   useKeyPress,
-} from 'react-flow-renderer';
+} from 'reactflow';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 
