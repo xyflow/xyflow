@@ -9,13 +9,12 @@ describe('Minimap Testing', () => {
   });
 
   it('has same number of nodes as the pane', () => {
-    const paneNodes = Cypress.$('.react-flow__node').length;
+    cy.get('.react-flow__minimap-node').then(() => {
+      const paneNodes = Cypress.$('.react-flow__node').length;
+      const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
 
-    cy.wait(200);
-
-    const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
-
-    expect(paneNodes).equal(minimapNodes);
+      expect(paneNodes).equal(minimapNodes);
+    });
   });
 
   it('changes zoom level', () => {
