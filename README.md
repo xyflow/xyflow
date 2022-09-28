@@ -80,12 +80,12 @@ pnpm test
 
 ## Maintainers
 
-React Flow is developed and maintained by [webkid](https://webkid.io), a web development agency with focus on data driven applications from Berlin. If you need help or want to talk to us about a collaboration, feel free to contact us:
+React Flow is the full-time project of Moritz and Christopher of [webkid](https://webkid.io/), based in Berlin. If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://pro.reactflow.dev/contact) or by joining the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
 
-- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
 
-You can also use our [contact form](https://pro.reactflow.dev/contact) or join the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
+Any support you provide goes directly towards the development and maintenance of React Flow, allowing us to continue to operate as an independent company, working on what we think is best for React Flow as an open-source library.
 
 ## Community Packages
 
