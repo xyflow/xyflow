@@ -97,6 +97,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
   selectBoxOnDrag?: boolean;
+  selectBoxMode?: 'Overlap' | 'Contained';
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;

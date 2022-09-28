@@ -8,7 +8,7 @@ import shallow from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
-import type { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
+import type { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect, ReactFlowProps } from '../../types';
 
 type SelectionRect = Rect & {
   startX: number;
@@ -19,6 +19,7 @@ type EventHandlers = { [key: string]: React.MouseEventHandler | React.WheelEvent
 
 type UserSelectionProps = {
   isSelectionMode: boolean;
+  selectBoxMode?: ReactFlowProps['selectBoxMode'];
   onSelectionStart?: (e: React.MouseEvent) => void;
   onSelectionEnd?: (e: React.MouseEvent) => void;
   onClick?: (e: React.MouseEvent) => void;
@@ -60,6 +61,7 @@ const selector = (s: ReactFlowState) => ({
 const UserSelection = memo(
   ({
     isSelectionMode,
+    selectBoxMode = 'Contained',
     onSelectionStart,
     onSelectionEnd,
     onClick,
@@ -130,7 +132,13 @@ const UserSelection = memo(
 
       const { nodeInternals, edges, transform, onNodesChange, onEdgesChange } = store.getState();
       const nodes = Array.from(nodeInternals.values());
-      const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, true, true);
+      const selectedNodes = getNodesInside(
+        nodeInternals,
+        nextUserSelectRect,
+        transform,
+        selectBoxMode === 'Overlap',
+        true
+      );
       const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
       const selectedNodeIds = selectedNodes.map((n) => n.id);
 

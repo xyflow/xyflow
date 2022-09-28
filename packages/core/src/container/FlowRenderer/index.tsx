@@ -45,6 +45,7 @@ const FlowRenderer = ({
   onMoveEnd,
   selectionKeyCode,
   selectBoxOnDrag,
+  selectBoxMode,
   onSelectionStart,
   onSelectionEnd,
   multiSelectionKeyCode,
@@ -123,6 +124,7 @@ const FlowRenderer = ({
         onContextMenu={onContextMenu}
         onWheel={onWheel}
         isSelectionMode={isSelectionMode}
+        selectBoxMode={selectBoxMode}
       >
         {children}
         {nodesSelectionActive && (
