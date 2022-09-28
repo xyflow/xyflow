@@ -4,7 +4,9 @@
 
 import { memo, useState, useRef } from 'react';
 import shallow from 'zustand/shallow';
+import cc from 'classcat';
 
+import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
@@ -59,6 +61,7 @@ const wrapHandlers = (
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
+  paneDragging: s.paneDragging,
 });
 
 const UserSelection = memo(
@@ -81,7 +84,7 @@ const UserSelection = memo(
     const prevSelectedEdgesCount = useRef<number>(0);
     const containerBounds = useRef<DOMRect>();
     const [userSelectionRect, setUserSelectionRect] = useState<SelectionRect | null>(null);
-    const { userSelectionActive, elementsSelectable } = useStore(selector, shallow);
+    const { userSelectionActive, elementsSelectable, paneDragging } = useStore(selector, shallow);
 
     const resetUserSelection = () => {
       setUserSelectionRect(null);
@@ -211,7 +214,12 @@ const UserSelection = memo(
           );
 
     return (
-      <div className="react-flow__pane react-flow__container" {...eventHandlers} ref={container}>
+      <div
+        className={cc(['react-flow__pane', 'react-flow__container', { dragging: paneDragging }])}
+        {...eventHandlers}
+        ref={container}
+        style={containerStyle}
+      >
         {children}
         {userSelectionActive && userSelectionRect && (
           <div
