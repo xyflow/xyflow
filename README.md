@@ -25,11 +25,13 @@ A highly customizable React component for building interactive graphs and node-b
 - **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
-## Commercial Usage / Attribution
+## Commercial Usage
 
-React Flow includes a small attribution that links to the React Flow website. **We expect companies who are using React Flow commercially to subscribe to [React Flow Pro](https://pro.reactflow.dev/pricing) if they want to remove the attribution.** By subscribing you get access to other exclusive services like advanced examples, individual support or prioritized bug reports. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+**Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/faq).
+**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on [our website]([https://pro.reactflow.dev/pricing](https://pro.reactflow.dev/pricing)) or through [Github Sponsors]([https://github.com/sponsors/wbkd](https://github.com/sponsors/wbkd)).
+
+You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
 
 ## Installation
 
