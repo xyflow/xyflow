@@ -25,7 +25,7 @@ The docs have its own [react-flow-docs repo](https://github.com/wbkd/react-flow-
 If you want to contribute improvements or new features we are happy to review your PR :)  
 Please use a meaningful commit message and add a little description of your changes.
 
-1. Install dependencies `npm install` and example dependencies `cd example && npm install`
-2. Run library start task `npm start` and example start task `cd example && npm start`
-3. Now you can test your changes with the existing examples. Feel free to add a new one if it's needed for your changes
-4. Run tests `npm test` and add new ones if you are introducing a new feature
+1. Install dependencies `pnpm install` 
+2. Start dev server `pnpm dev` 
+3. Test your changes with the existing examples or add a new one if it's needed for your changes
+4. Run tests `pnpm test` and add new new tests if you are introducing a new feature

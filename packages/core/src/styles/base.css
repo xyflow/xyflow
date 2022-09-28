@@ -1,0 +1,28 @@
+/* this will be exported as base.css and can be used for a basic styling */
+@import './init.css';
+
+.react-flow__handle {
+  background-color: #333;
+}
+
+.react-flow__node-default,
+.react-flow__node-input,
+.react-flow__node-output,
+.react-flow__node-group {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #bbb;
+
+  &.selected,
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border: 1px solid #555;
+  }
+}
+
+.react-flow__nodesselection-rect,
+.react-flow__selection {
+  background: rgba(150, 150, 180, 0.1);
+  border: 1px dotted rgba(155, 155, 155, 0.8);
+}

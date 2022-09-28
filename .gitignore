@@ -9,3 +9,6 @@ dist
 stats.html
 .eslintcache
 .idea
+.log
+.turbo
+.rollup.cache
