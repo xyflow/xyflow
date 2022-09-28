@@ -68,6 +68,8 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onSelectionDragStart?: SelectionDragHandler;
   onSelectionDrag?: SelectionDragHandler;
   onSelectionDragStop?: SelectionDragHandler;
+  onSelectionStart?: (event: ReactMouseEvent) => void;
+  onSelectionEnd?: (event: ReactMouseEvent) => void;
   onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;

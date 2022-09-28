@@ -45,6 +45,8 @@ const FlowRenderer = ({
   onMoveEnd,
   selectionKeyCode,
   selectBoxOnDrag,
+  onSelectionStart,
+  onSelectionEnd,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
   elementsSelectable,
@@ -112,6 +114,8 @@ const FlowRenderer = ({
       noPanClassName={noPanClassName}
     >
       <UserSelection
+        onSelectionStart={onSelectionStart}
+        onSelectionEnd={onSelectionEnd}
         onClick={onClick}
         onMouseEnter={onPaneMouseEnter}
         onMouseMove={onPaneMouseMove}

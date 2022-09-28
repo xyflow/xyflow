@@ -91,6 +91,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onSelectionDrag,
       onSelectionDragStop,
       onSelectionContextMenu,
+      onSelectionStart,
+      onSelectionEnd,
       connectionMode = ConnectionMode.Strict,
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
@@ -218,6 +220,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onPaneScroll={onPaneScroll}
             onPaneContextMenu={onPaneContextMenu}
             onSelectionContextMenu={onSelectionContextMenu}
+            onSelectionStart={onSelectionStart}
+            onSelectionEnd={onSelectionEnd}
             onEdgeUpdate={onEdgeUpdate}
             onEdgeContextMenu={onEdgeContextMenu}
             onEdgeDoubleClick={onEdgeDoubleClick}
