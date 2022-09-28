@@ -96,7 +96,7 @@ const UserSelection = memo(({ isSelectionMode, onClick, onContextMenu, onWheel, 
   };
 
   const onMouseMove = (event: React.MouseEvent): void => {
-    if (!isSelectionMode || !containerBounds.current || !userSelectionRect || event.target !== container.current) {
+    if (!isSelectionMode || !containerBounds.current || !userSelectionRect) {
       return;
     }
 
