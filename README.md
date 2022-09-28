@@ -29,7 +29,7 @@ A highly customizable React component for building interactive graphs and node-b
 
 **Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on [our website]([https://pro.reactflow.dev/pricing](https://pro.reactflow.dev/pricing)) or through [Github Sponsors]([https://github.com/sponsors/wbkd](https://github.com/sponsors/wbkd)).
+**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://pro.reactflow.dev) or through [Github Sponsors](https://github.com/sponsors/wbkd).
 
 You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
 
