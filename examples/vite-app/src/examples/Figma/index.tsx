@@ -61,6 +61,7 @@ const BasicFlow = () => {
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
       selectBoxOnDrag
+      selectBoxMode="Overlap"
       panOnDrag={spaceBarPressed ? true : 'RightClick'}
       panOnScroll
       onPaneContextMenu={logEvent}
