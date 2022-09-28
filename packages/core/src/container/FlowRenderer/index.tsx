@@ -8,7 +8,6 @@ import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
-import Pane from './Pane';
 import type { ReactFlowState } from '../../types';
 
 export type FlowRendererProps = Omit<
