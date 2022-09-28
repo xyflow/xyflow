@@ -41,14 +41,36 @@ The easiest way to get the latest version of React Flow is to install it via npm
 npm install reactflow
 ```
 
-## Quick Start
+## Quickstart
 
-This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and [API reference](https://reactflow.dev/docs/api/react-flow-props).
+This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and the full [API reference](https://reactflow.dev/docs/api/react-flow-props).
 
 ```jsx
-import ReactFlow, { MiniMap, Controls } from 'reactflow';
+import { useCallback } from 'react';
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from 'reactflow';
 
-function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
+import 'reactflow/dist/style.css';
+
+const initialNodes = [
+  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
+  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+];
+
+const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+
+function Flow() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -59,6 +81,7 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
     >
       <MiniMap />
       <Controls />
+      <Background />
     </ReactFlow>
   );
 }
