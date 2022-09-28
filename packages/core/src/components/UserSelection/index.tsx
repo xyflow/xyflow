@@ -136,7 +136,6 @@ const UserSelection = memo(
         y: mousePos.y < startY ? mousePos.y : startY,
         width: Math.abs(mousePos.x - startX),
         height: Math.abs(mousePos.y - startY),
-        draw: true,
       };
 
       const { nodeInternals, edges, transform, onNodesChange, onEdgesChange } = store.getState();
@@ -215,7 +214,11 @@ const UserSelection = memo(
 
     return (
       <div
-        className={cc(['react-flow__pane', 'react-flow__container', { dragging: paneDragging }])}
+        className={cc([
+          'react-flow__pane',
+          'react-flow__container',
+          { dragging: paneDragging, selection: isSelectionMode },
+        ])}
         {...eventHandlers}
         ref={container}
         style={containerStyle}
