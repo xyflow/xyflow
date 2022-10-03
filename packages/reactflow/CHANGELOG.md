@@ -1,9 +1,25 @@
 # reactflow
 
+## 11.1.0
+
+### Minor Changes
+
+- [`def11008`](https://github.com/wbkd/react-flow/commit/def11008d88749fec40e6fcba8bc41eea2511bab) Thanks [@moklick](https://github.com/moklick)! - New props: nodesFocusable and edgesFocusable
+
+### Patch Changes
+
+- [`d00faa6b`](https://github.com/wbkd/react-flow/commit/d00faa6b3e77388bfd655d4c02e9a5375bc515e4) Thanks [@moklick](https://github.com/moklick)! - Make nopan class name overwritable with class name option
+
+- Updated dependencies [[`def11008`](https://github.com/wbkd/react-flow/commit/def11008d88749fec40e6fcba8bc41eea2511bab), [`def11008`](https://github.com/wbkd/react-flow/commit/def11008d88749fec40e6fcba8bc41eea2511bab), [`d00faa6b`](https://github.com/wbkd/react-flow/commit/d00faa6b3e77388bfd655d4c02e9a5375bc515e4)]:
+  - @reactflow/background@11.0.1
+  - @reactflow/core@11.1.0
+  - @reactflow/controls@11.0.1
+  - @reactflow/minimap@11.0.1
+
 ## 11.0.0
 
 Finally it's here! A new version that comes with lots of improvements and the new package name `reactflow`.
-From now on you can install it via `npm install reactflow`. 
+From now on you can install it via `npm install reactflow`.
 
 ## Major Changes
 
