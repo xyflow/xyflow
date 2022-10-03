@@ -151,13 +151,16 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         className={cc([
           'react-flow__node',
           `react-flow__node-${type}`,
+          {
+            // this is overwritable by passing `nopan` as a class name
+            [noPanClassName]: isDraggable,
+          },
           className,
           {
             selected,
             selectable: isSelectable,
             parent: isParent,
             dragging,
-            [noPanClassName]: isDraggable,
           },
         ])}
         ref={nodeRef}
