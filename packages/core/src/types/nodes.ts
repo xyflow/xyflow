@@ -31,6 +31,7 @@ export interface Node<T = any> {
   expandParent?: boolean;
   positionAbsolute?: XYPosition;
   ariaLabel?: string;
+  focusable?: boolean;
 
   // only used internally
   [internalsSymbol]?: {
@@ -73,6 +74,7 @@ export interface WrapNodeProps<T = any> {
   initialized: boolean;
   isSelectable: boolean;
   isDraggable: boolean;
+  isFocusable: boolean;
   selectNodesOnDrag: boolean;
   onClick?: NodeMouseHandler;
   onDoubleClick?: NodeMouseHandler;

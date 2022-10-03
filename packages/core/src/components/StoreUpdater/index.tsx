@@ -18,6 +18,8 @@ type StoreUpdaterProps = Pick<
   | 'onClickConnectEnd'
   | 'nodesDraggable'
   | 'nodesConnectable'
+  | 'nodesFocusable'
+  | 'edgesFocusable'
   | 'minZoom'
   | 'maxZoom'
   | 'nodeExtent'
@@ -89,6 +91,8 @@ const StoreUpdater = ({
   onClickConnectEnd,
   nodesDraggable,
   nodesConnectable,
+  nodesFocusable,
+  edgesFocusable,
   minZoom,
   maxZoom,
   nodeExtent,
@@ -145,6 +149,8 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onClickConnectEnd', onClickConnectEnd, store.setState);
   useDirectStoreUpdater('nodesDraggable', nodesDraggable, store.setState);
   useDirectStoreUpdater('nodesConnectable', nodesConnectable, store.setState);
+  useDirectStoreUpdater('nodesFocusable', nodesFocusable, store.setState);
+  useDirectStoreUpdater('edgesFocusable', edgesFocusable, store.setState);
   useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);
   useDirectStoreUpdater('snapToGrid', snapToGrid, store.setState);
   useDirectStoreUpdater('snapGrid', snapGrid, store.setState);

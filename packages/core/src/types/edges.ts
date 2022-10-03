@@ -33,6 +33,7 @@ type DefaultEdge<T = any> = {
   zIndex?: number;
   ariaLabel?: string;
   interactionWidth?: number;
+  focusable?: boolean;
 };
 
 export type SmoothStepPathOptions = {
@@ -132,7 +133,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
-  disableKeyboardA11y: boolean;
+  isFocusable: boolean;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
 };
 

@@ -1,5 +1,15 @@
 # @reactflow/core
 
+## 11.1.0
+
+### Minor Changes
+
+- [`def11008`](https://github.com/wbkd/react-flow/commit/def11008d88749fec40e6fcba8bc41eea2511bab) Thanks [@moklick](https://github.com/moklick)! - New props: nodesFocusable and edgesFocusable
+
+### Patch Changes
+
+- [`d00faa6b`](https://github.com/wbkd/react-flow/commit/d00faa6b3e77388bfd655d4c02e9a5375bc515e4) Thanks [@moklick](https://github.com/moklick)! - Make nopan class name overwritable with class name option
+
 ## 11.0.0
 
 ### Major Changes

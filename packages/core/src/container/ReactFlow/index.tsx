@@ -108,7 +108,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       selectNodesOnDrag = true,
       nodesDraggable,
       nodesConnectable,
+      nodesFocusable,
       nodeOrigin = initNodeOrigin,
+      edgesFocusable,
       elementsSelectable,
       defaultViewport = initDefaultViewport,
       minZoom = 0.5,
@@ -245,6 +247,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onClickConnectEnd={onClickConnectEnd}
             nodesDraggable={nodesDraggable}
             nodesConnectable={nodesConnectable}
+            nodesFocusable={nodesFocusable}
+            edgesFocusable={edgesFocusable}
             elementsSelectable={elementsSelectable}
             minZoom={minZoom}
             maxZoom={maxZoom}
