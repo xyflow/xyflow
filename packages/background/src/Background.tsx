@@ -22,7 +22,7 @@ const selector = (s: ReactFlowState) => ({ transform: s.transform, rfId: s.rfId 
 
 function Background({
   variant = BackgroundVariant.Dots,
-  gap = 25,
+  gap = 20,
   // only used for dots and cross
   size,
   // only used for lines and cross
