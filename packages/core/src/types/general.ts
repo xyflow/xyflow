@@ -167,6 +167,8 @@ export type ReactFlowStore = {
 
   nodesDraggable: boolean;
   nodesConnectable: boolean;
+  nodesFocusable: boolean;
+  edgesFocusable: boolean;
   elementsSelectable: boolean;
 
   multiSelectionActive: boolean;

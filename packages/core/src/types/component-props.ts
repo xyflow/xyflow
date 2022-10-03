@@ -92,7 +92,9 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
+  nodesFocusable?: boolean;
   nodeOrigin?: NodeOrigin;
+  edgesFocusable?: boolean;
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;

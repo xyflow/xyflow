@@ -31,12 +31,16 @@ type NodeRendererProps = Pick<
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
   nodesConnectable: s.nodesConnectable,
+  nodesFocusable: s.nodesFocusable,
   elementsSelectable: s.elementsSelectable,
   updateNodeDimensions: s.updateNodeDimensions,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const { nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions } = useStore(selector, shallow);
+  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, updateNodeDimensions } = useStore(
+    selector,
+    shallow
+  );
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const resizeObserverRef = useRef<ResizeObserver>();
 
@@ -82,6 +86,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
         const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
         const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
+        const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
+
         const clampedPosition = props.nodeExtent
           ? clampPosition(node.positionAbsolute, props.nodeExtent)
           : node.positionAbsolute;
@@ -122,6 +128,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isDraggable={isDraggable}
             isSelectable={isSelectable}
             isConnectable={isConnectable}
+            isFocusable={isFocusable}
             resizeObserver={resizeObserver}
             dragHandle={node.dragHandle}
             zIndex={node[internalsSymbol]?.z ?? 0}

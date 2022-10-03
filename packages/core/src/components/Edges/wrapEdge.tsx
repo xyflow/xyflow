@@ -51,7 +51,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     markerStart,
     rfId,
     ariaLabel,
-    disableKeyboardA11y,
+    isFocusable,
     pathOptions,
     interactionWidth,
   }: WrapEdgeProps): JSX.Element | null => {
@@ -158,12 +158,12 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
-        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
-        tabIndex={disableKeyboardA11y ? undefined : 0}
-        role={disableKeyboardA11y ? undefined : 'button'}
+        onKeyDown={isFocusable ? onKeyDown : undefined}
+        tabIndex={isFocusable ? 0 : undefined}
+        role={isFocusable ? 'button' : undefined}
         data-testid={`rf__edge-${id}`}
         aria-label={ariaLabel === null ? undefined : ariaLabel ? ariaLabel : `Edge from ${source} to ${target}`}
-        aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_EDGE_DESC_KEY}-${rfId}`}
+        aria-describedby={isFocusable ? `${ARIA_EDGE_DESC_KEY}-${rfId}` : undefined}
         ref={edgeRef}
       >
         {!updating && (

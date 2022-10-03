@@ -92,7 +92,7 @@ const BasicFlow = () => {
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
     >
-      <Background variant={BackgroundVariant.Lines} />
+      <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
       <Controls />
 
