@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import Basic from '../examples/Basic';
@@ -37,140 +37,180 @@ import UseKeyPress from '../examples/UseKeyPress';
 import EdgeRouting from '../examples/EdgeRouting';
 import CancelConnection from '../examples/CancelConnection';
 
-const routes = [
+interface IRoute {
+  name: string;
+  path: string;
+  component: React.ComponentType;
+}
+
+const routes: IRoute[] = [
   {
+    name: 'Basic',
     path: '/',
     component: Basic,
   },
   {
+    name: 'Backgrounds',
     path: '/backgrounds',
     component: Backgrounds,
   },
   {
+    name: 'Controlled/Uncontrolled',
     path: '/controlled-uncontrolled',
     component: ControlledUncontrolled,
   },
   {
+    name: 'Custom Connection Line',
     path: '/custom-connectionline',
     component: CustomConnectionLine,
   },
   {
+    name: 'Custom Node',
     path: '/custom-node',
     component: CustomNode,
   },
   {
+    name: 'Default Nodes',
     path: '/default-nodes',
     component: DefaultNodes,
   },
   {
+    name: 'Drag Handle',
     path: '/draghandle',
     component: DragHandle,
   },
   {
+    name: 'Drag and Drop',
     path: '/dragndrop',
     component: DragNDrop,
   },
   {
+    name: 'Edges',
     path: '/edges',
     component: Edges,
   },
   {
+    name: 'Edge Types',
     path: '/edge-types',
     component: EdgeTypes,
   },
   {
+    name: 'Edge Routing',
     path: '/edge-routing',
     component: EdgeRouting,
   },
   {
+    name: 'Empty',
     path: '/empty',
     component: Empty,
   },
   {
+    name: 'Floating Edges',
     path: '/floating-edges',
     component: FloatingEdges,
   },
   {
+    name: 'Hidden',
     path: '/hidden',
     component: Hidden,
   },
   {
+    name: 'Interaction',
     path: '/interaction',
     component: Interaction,
   },
   {
+    name: 'Layouting',
     path: '/layouting',
     component: Layouting,
   },
   {
+    name: 'Multi Flows',
     path: '/multiflows',
     component: MultiFlows,
   },
   {
+    name: 'Nested Nodes',
     path: '/nested-nodes',
     component: NestedNodes,
   },
   {
+    name: 'Node Type Change',
     path: '/nodetype-change',
     component: NodeTypeChange,
   },
   {
+    name: 'nodeTypes Object Change',
     path: '/nodetypesobject-change',
     component: NodeTypesObjectChange,
   },
   {
+    name: 'Overview',
     path: '/overview',
     component: Overview,
   },
   {
+    name: 'Provider',
     path: '/provider',
     component: Provider,
   },
   {
+    name: 'Save/Restore',
     path: '/save-restore',
     component: SaveRestore,
   },
   {
+    name: 'Stress',
     path: '/stress',
     component: Stress,
   },
   {
+    name: 'Subflow',
     path: '/subflow',
     component: Subflow,
   },
   {
+    name: 'Switch Flow',
     path: '/switch',
     component: SwitchFlow,
   },
   {
+    name: 'Touch Device',
     path: '/touch-device',
     component: TouchDevice,
   },
   {
+    name: 'Undirectional',
     path: '/undirectional',
     component: Undirectional,
   },
   {
+    name: 'Updatable Edge',
     path: '/updatable-edge',
     component: UpdatableEdge,
   },
   {
+    name: 'Update Node',
     path: '/update-node',
     component: UpdateNode,
   },
   {
+    name: 'useReactFlow',
     path: '/usereactflow',
     component: UseReactFlow,
   },
   {
+    name: 'useUpdateNodeInternals',
     path: '/useupdatenodeinternals',
     component: UseUpdateNodeInternals,
   },
   {
+    name: 'Validation',
     path: '/validation',
     component: Validation,
   },
   {
+    name: 'useKeyPress',
     path: '/use-key-press',
     component: UseKeyPress,
   },
@@ -181,19 +221,28 @@ const routes = [
 ];
 
 const Header = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const onChange = (event: ChangeEvent<HTMLSelectElement>) => navigate(event.target.value);
+  const navigate = useNavigate();
+  const [currentPath, setCurrentPath] = useState(location.pathname);
+  
+  useEffect(() => {
+    const name = routes.find((route) => route.path === currentPath)?.name;
+    document.title = `React Flow Examples${name ? ' - ' + name : ''}`;
+    navigate(currentPath)
+  }, [currentPath]);
 
   return (
     <header>
       <a className="logo" href="https://github.com/wbkd/react-flow">
         React Flow Dev
       </a>
-      <select defaultValue={location.pathname} onChange={onChange}>
+      <select
+        value={currentPath}
+        onChange={(event) => setCurrentPath(event.target.value)}
+      >
         {routes.map((route) => (
           <option value={route.path} key={route.path}>
-            {route.path === '/' ? 'basic' : route.path.substring(1, route.path.length)}
+            {route.name}
           </option>
         ))}
       </select>
