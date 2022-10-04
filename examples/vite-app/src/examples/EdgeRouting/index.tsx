@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactFlow, { Node, Edge, Position, MarkerType } from 'reactflow';
 
 const nodes: Node[] = [

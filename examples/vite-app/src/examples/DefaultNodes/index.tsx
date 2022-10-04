@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactFlow, { useReactFlow, Node, Edge, ReactFlowProvider, Background, BackgroundVariant } from 'reactflow';
 
 const defaultNodes: Node[] = [
