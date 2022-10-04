@@ -60,6 +60,7 @@ importers:
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
       '@vitejs/plugin-react': ^2.1.0
+      classcat: ^5.0.3
       cypress: ^10.6.0
       cypress-real-events: ^1.7.1
       dagre: ^0.8.5
@@ -72,6 +73,7 @@ importers:
       typescript: ^4.8.3
       vite: ^3.1.0
     dependencies:
+      classcat: registry.npmjs.org/classcat/5.0.4
       dagre: registry.npmjs.org/dagre/0.8.5
       localforage: registry.npmjs.org/localforage/1.10.0
       react: registry.npmjs.org/react/18.2.0

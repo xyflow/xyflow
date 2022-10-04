@@ -224,6 +224,7 @@ export type ReactFlowActions = {
   setMaxZoom: (maxZoom: number) => void;
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
+  cancelConnection: () => void;
   reset: () => void;
 };
 

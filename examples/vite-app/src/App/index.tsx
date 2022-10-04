@@ -35,6 +35,7 @@ import UseReactFlow from '../examples/UseReactFlow';
 import Validation from '../examples/Validation';
 import UseKeyPress from '../examples/UseKeyPress';
 import EdgeRouting from '../examples/EdgeRouting';
+import CancelConnection from '../examples/CancelConnection';
 
 const routes = [
   {
@@ -173,6 +174,10 @@ const routes = [
     path: '/use-key-press',
     component: UseKeyPress,
   },
+  {
+    path: '/cancel-connection',
+    component: CancelConnection
+  }
 ];
 
 const Header = () => {
