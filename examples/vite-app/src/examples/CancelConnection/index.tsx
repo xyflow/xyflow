@@ -16,6 +16,8 @@ import useCountdown from './hooks/useCountdown';
 import { initialEdges, initialNodes } from './data';
 import Timer from './Timer';
 
+const CANCEL_AFTER = 5; // seconds
+
 const CancelConnection = () => {
   const [nodes, _, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -23,7 +25,7 @@ const CancelConnection = () => {
 
   // Cancels connection after 5 seconds
   const countdown = useCountdown(() => cancelConnection());
-  const onConnectStart: OnConnectStart = () => countdown.start(5);
+  const onConnectStart: OnConnectStart = () => countdown.start(CANCEL_AFTER);
   const onConnectEnd: OnConnectEnd = () => countdown.stop();
 
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
@@ -31,6 +33,7 @@ const CancelConnection = () => {
   return (
     <>
       <Timer
+        duration={CANCEL_AFTER}
         show={countdown.counting}
         remaining={countdown.remaining}
       />
