@@ -55,6 +55,11 @@ const routes: IRoute[] = [
     component: Backgrounds,
   },
   {
+    name: 'Cancel Connection',
+    path: '/cancel-connection',
+    component: CancelConnection,
+  },
+  {
     name: 'Controlled/Uncontrolled',
     path: '/controlled-uncontrolled',
     component: ControlledUncontrolled,
@@ -214,21 +219,17 @@ const routes: IRoute[] = [
     path: '/use-key-press',
     component: UseKeyPress,
   },
-  {
-    path: '/cancel-connection',
-    component: CancelConnection
-  }
 ];
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentPath, setCurrentPath] = useState(location.pathname);
-  
+
   useEffect(() => {
     const name = routes.find((route) => route.path === currentPath)?.name;
     document.title = `React Flow Examples${name ? ' - ' + name : ''}`;
-    navigate(currentPath)
+    navigate(currentPath);
   }, [currentPath]);
 
   return (
@@ -236,10 +237,7 @@ const Header = () => {
       <a className="logo" href="https://github.com/wbkd/react-flow">
         React Flow Dev
       </a>
-      <select
-        value={currentPath}
-        onChange={(event) => setCurrentPath(event.target.value)}
-      >
+      <select value={currentPath} onChange={(event) => setCurrentPath(event.target.value)}>
         {routes.map((route) => (
           <option value={route.path} key={route.path}>
             {route.name}
