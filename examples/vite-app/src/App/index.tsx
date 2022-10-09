@@ -36,6 +36,7 @@ import Validation from '../examples/Validation';
 import UseKeyPress from '../examples/UseKeyPress';
 import EdgeRouting from '../examples/EdgeRouting';
 import CancelConnection from '../examples/CancelConnection';
+import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 
 interface IRoute {
   name: string;
@@ -198,6 +199,11 @@ const routes: IRoute[] = [
     name: 'Update Node',
     path: '/update-node',
     component: UpdateNode,
+  },
+  {
+    name: 'useOnSelectionChange',
+    path: '/use-on-selection-change',
+    component: UseOnSelectionChange,
   },
   {
     name: 'useReactFlow',
