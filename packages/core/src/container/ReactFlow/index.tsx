@@ -275,7 +275,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             nodeOrigin={nodeOrigin}
             id={id}
           />
-          {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
+          <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
           <Attribution proOptions={proOptions} position={attributionPosition} />
           {!disableKeyboardA11y && <A11yDescriptions rfId={id} />}
