@@ -278,7 +278,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
           <Attribution proOptions={proOptions} position={attributionPosition} />
-          {!disableKeyboardA11y && <A11yDescriptions rfId={id} />}
+          <A11yDescriptions rfId={id} disableKeyboardA11y={disableKeyboardA11y} />
         </Wrapper>
       </div>
     );
