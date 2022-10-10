@@ -17,7 +17,7 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": ["*.css"],
   "license": "MIT",
   "repository": {
     "type": "git",
