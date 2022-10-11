@@ -24,11 +24,13 @@ A highly customizable React component for building interactive graphs and node-b
 - **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
-## Commercial Usage / Attribution
+## Commercial Usage
 
-React Flow includes a small attribution that links to the React Flow website. **We expect companies who are using React Flow commercially to subscribe to [React Flow Pro](https://pro.reactflow.dev/pricing) if they want to remove the attribution.** By subscribing you get access to other exclusive services like advanced examples, individual support or prioritized bug reports. In non-commercial applications you may hide the attribution without subscribing but are welcome to [sponsor us on Github](https://github.com/sponsors/wbkd).
+**Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/faq).
+**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://pro.reactflow.dev) or through [Github Sponsors](https://github.com/sponsors/wbkd).
+
+You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
 
 ## Installation
 
@@ -43,9 +45,31 @@ npm install reactflow
 This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and [API reference](https://reactflow.dev/docs/api/react-flow-props).
 
 ```jsx
-import ReactFlow, { MiniMap, Controls } from 'reactflow';
+import { useCallback } from 'react';
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+} from 'reactflow';
 
-function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
+import 'reactflow/dist/style.css';
+
+const initialNodes = [
+  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
+  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+];
+
+const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+
+function Flow() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -56,6 +80,7 @@ function Flow({ nodes, edges, onNodesChange, onEdgesChange, onConnect }) {
     >
       <MiniMap />
       <Controls />
+      <Background />
     </ReactFlow>
   );
 }
