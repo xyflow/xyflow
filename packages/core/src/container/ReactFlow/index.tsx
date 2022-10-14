@@ -53,8 +53,9 @@ const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
 const wrapperStyle: CSSProperties = {
   width: '100%',
   height: '100%',
-  position: 'relative',
   overflow: 'hidden',
+  position: 'relative',
+  zIndex: 0,
 };
 
 const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
