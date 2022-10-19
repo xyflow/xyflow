@@ -275,7 +275,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDragStop={onSelectionDragStop}
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
-            id={rfId}
+            rfId={rfId}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
