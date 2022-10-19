@@ -156,13 +156,14 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
       style,
-      id = '1',
+      id,
       ...rest
     },
     ref
   ) => {
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
+    const rfId = id || '1';
 
     return (
       <div
@@ -171,6 +172,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         ref={ref}
         className={cc(['react-flow', className])}
         data-testid="rf__wrapper"
+        id={id}
       >
         <Wrapper>
           <GraphView
@@ -230,7 +232,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
             elevateEdgesOnSelect={elevateEdgesOnSelect}
-            rfId={id}
+            rfId={rfId}
             disableKeyboardA11y={disableKeyboardA11y}
             nodeOrigin={nodeOrigin}
             nodeExtent={nodeExtent}
@@ -273,12 +275,12 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDragStop={onSelectionDragStop}
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
-            id={id}
+            id={rfId}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
           <Attribution proOptions={proOptions} position={attributionPosition} />
-          <A11yDescriptions rfId={id} disableKeyboardA11y={disableKeyboardA11y} />
+          <A11yDescriptions rfId={rfId} disableKeyboardA11y={disableKeyboardA11y} />
         </Wrapper>
       </div>
     );
