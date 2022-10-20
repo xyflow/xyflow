@@ -167,6 +167,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     return (
       <div
         {...rest}
+        id={id}
         style={{ ...style, ...wrapperStyle }}
         ref={ref}
         className={cc(['react-flow', className])}
