@@ -51,7 +51,7 @@
   pointer-events: visibleStroke;
   cursor: pointer;
 
-  &.animated path {
+  &.animated path.react-flow__edge-path {
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }
