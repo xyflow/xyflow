@@ -26,7 +26,15 @@ const BaseEdge = ({
         markerEnd={markerEnd}
         markerStart={markerStart}
       />
-      {interactionWidth && <path d={path} fill="none" strokeOpacity={0} strokeWidth={interactionWidth} />}
+      {interactionWidth && (
+        <path
+          d={path}
+          fill="none"
+          strokeOpacity={0}
+          strokeWidth={interactionWidth}
+          className="react-flow__edge-interaction"
+        />
+      )}
       {label ? (
         <EdgeText
           x={labelX}
