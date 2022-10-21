@@ -1,5 +1,14 @@
 # @reactflow/background
 
+## 11.0.3
+
+### Patch Changes
+
+- cleanup types
+- cleanup rf id handling
+- Updated dependencies:
+  - @reactflow/core@11.1.2
+
 ## 11.0.2
 
 ### Patch Changes

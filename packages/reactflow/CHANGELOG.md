@@ -1,5 +1,22 @@
 # reactflow
 
+## 11.1.2
+
+A little housekeeping release with some fixes and some cleanup for the types.
+
+### Patch Changes
+
+- make pro options acc type optional
+- cleanup types
+- fix rf id handling
+- always render nodes when dragging=true
+
+- Updated dependencies:
+  - @reactflow/core@11.1.2
+  - @reactflow/background@11.0.3
+  - @reactflow/controls@11.0.3
+  - @reactflow/minimap@11.0.3
+
 ## 11.1.1
 
 ### Patch Changes

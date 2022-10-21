@@ -1,5 +1,14 @@
 # @reactflow/core
 
+## 11.1.2
+
+### Patch Changes
+
+- make pro options acc type optional
+- cleanup types
+- fix rf id handling
+- always render nodes when dragging=true
+
 ## 11.1.1
 
 ### Patch Changes
