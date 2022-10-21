@@ -8,6 +8,7 @@
 - cleanup types
 - fix rf id handling
 - always render nodes when dragging=true
+- don't apply animations to helper edge
 
 ## 11.1.1
 

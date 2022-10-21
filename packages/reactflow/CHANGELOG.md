@@ -2,7 +2,7 @@
 
 ## 11.1.2
 
-A little housekeeping release with some fixes and some cleanup for the types.
+Housekeeping release with some fixes and some cleanups for the types.
 
 ### Patch Changes
 
@@ -10,7 +10,7 @@ A little housekeeping release with some fixes and some cleanup for the types.
 - cleanup types
 - fix rf id handling
 - always render nodes when dragging=true
-
+- don't apply animations to helper edge
 - Updated dependencies:
   - @reactflow/core@11.1.2
   - @reactflow/background@11.0.3
