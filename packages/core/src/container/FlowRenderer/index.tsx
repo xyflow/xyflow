@@ -1,4 +1,5 @@
-import { memo, ReactNode, WheelEvent, MouseEvent } from 'react';
+import { memo } from 'react';
+import type { ReactNode, WheelEvent, MouseEvent } from 'react';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
@@ -8,8 +9,7 @@ import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
 import Pane from './Pane';
-
-import { ReactFlowState } from '../../types';
+import type { ReactFlowState } from '../../types';
 
 export type FlowRendererProps = Omit<
   GraphViewProps,

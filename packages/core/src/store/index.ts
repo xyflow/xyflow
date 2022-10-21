@@ -1,8 +1,11 @@
 import { createStore } from 'zustand';
 
 import { clampPosition, getDimensions, internalsSymbol } from '../utils';
-import { applyNodeChanges } from '../utils/changes';
-import {
+import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
+import { getHandleBounds } from '../components/Nodes/utils';
+import { createNodeInternals, fitView, updateNodesAndEdgesSelections } from './utils';
+import initialState from './initialState';
+import type {
   ReactFlowState,
   Node,
   Edge,
@@ -15,10 +18,6 @@ import {
   NodeDragItem,
   UnselectNodesAndEdgesParams,
 } from '../types';
-import { getHandleBounds } from '../components/Nodes/utils';
-import { createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { createNodeInternals, fitView, updateNodesAndEdgesSelections } from './utils';
-import initialState from './initialState';
 
 const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({

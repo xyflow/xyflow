@@ -3,7 +3,7 @@ import { StoreApi } from 'zustand';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
+import type { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
 
 type StoreUpdaterProps = Pick<
   ReactFlowProps,

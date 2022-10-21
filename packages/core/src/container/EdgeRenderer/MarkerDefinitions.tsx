@@ -1,16 +1,18 @@
 import { memo, useCallback } from 'react';
 
 import { useStore } from '../../hooks/useStore';
-import { EdgeMarker, ReactFlowState } from '../../types';
 import { getMarkerId } from '../../utils/graph';
 import { useMarkerSymbol } from './MarkerSymbols';
-interface MarkerProps extends EdgeMarker {
+import type { EdgeMarker, ReactFlowState } from '../../types';
+
+type MarkerProps = EdgeMarker & {
   id: string;
-}
-interface MarkerDefinitionsProps {
+};
+
+type MarkerDefinitionsProps = {
   defaultColor: string;
   rfId?: string;
-}
+};
 
 const Marker = ({
   id,

@@ -1,4 +1,4 @@
-import { FC, MouseEvent as ReactMouseEvent, SVGAttributes } from 'react';
+import type { FC, MouseEvent as ReactMouseEvent, SVGAttributes } from 'react';
 import cc from 'classcat';
 
 import { Position } from '../../types';

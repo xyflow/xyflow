@@ -1,4 +1,5 @@
-import { memo, useRef, useState, useEffect, FC, PropsWithChildren } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import cc from 'classcat';
 
 import { EdgeTextProps, Rect } from '../../types';

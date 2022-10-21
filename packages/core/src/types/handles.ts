@@ -1,5 +1,4 @@
-import { XYPosition, Position, Dimensions } from './utils';
-import { OnConnect, Connection } from './general';
+import type { XYPosition, Position, Dimensions, OnConnect, Connection } from '.';
 
 export type HandleType = 'source' | 'target';
 

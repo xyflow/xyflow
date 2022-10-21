@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useCallback, SetStateAction, Dispatch } from 'react';
+import { useState, useCallback } from 'react';
+import type { SetStateAction, Dispatch } from 'react';
 
 import { applyNodeChanges, applyEdgeChanges } from '../utils/changes';
-import { Node, NodeChange, Edge, EdgeChange } from '../types';
+import type { Node, NodeChange, Edge, EdgeChange } from '../types';
 
 type ApplyChanges<ItemType, ChangesType> = (changes: ChangesType[], items: ItemType[]) => ItemType[];
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;

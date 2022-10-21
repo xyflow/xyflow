@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
+import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
 import type { Selection as D3Selection, ZoomBehavior } from 'd3';
 
-import { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
-import { NodeChange, EdgeChange } from './changes';
-import {
+import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
+import type { NodeChange, EdgeChange } from './changes';
+import type {
   Node,
   NodeInternals,
   NodeDimensionUpdate,
@@ -15,10 +15,10 @@ import {
   SelectionDragHandler,
   NodeOrigin,
 } from './nodes';
-import { Edge, EdgeProps, WrapEdgeProps } from './edges';
-import { HandleType, StartHandle } from './handles';
-import { DefaultEdgeOptions } from '.';
-import { ReactFlowInstance } from './instance';
+import type { Edge, EdgeProps, WrapEdgeProps } from './edges';
+import type { HandleType, StartHandle } from './handles';
+import type { DefaultEdgeOptions } from '.';
+import type { ReactFlowInstance } from './instance';
 
 export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
 export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };
@@ -115,7 +115,7 @@ export type UnselectNodesAndEdgesParams = {
 
 export type OnViewportChange = (viewport: Viewport) => void;
 
-export interface ViewportHelperFunctions {
+export type ViewportHelperFunctions = {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
   zoomTo: ZoomTo;
@@ -127,7 +127,7 @@ export interface ViewportHelperFunctions {
   fitBounds: FitBounds;
   project: Project;
   viewportInitialized: boolean;
-}
+};
 
 export type ReactFlowStore = {
   rfId: string;

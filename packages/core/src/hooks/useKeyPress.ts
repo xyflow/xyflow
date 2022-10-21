@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 
-import { KeyCode } from '../types';
+import type { KeyCode } from '../types';
 
 type Keys = Array<string>;
 type PressedKeys = Set<string>;

@@ -2,7 +2,7 @@
 import type { Selection as D3Selection } from 'd3';
 
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, rectToBox } from '../utils';
-import { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
+import type { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;

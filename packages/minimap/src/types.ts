@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HTMLAttributes } from 'react';
-import { Node, PanelPosition } from '@reactflow/core';
+import type { HTMLAttributes } from 'react';
+import type { Node, PanelPosition } from '@reactflow/core';
 
 export type GetMiniMapNodeAttribute<NodeData = any> = (node: Node<NodeData>) => string;
 
-export interface MiniMapProps<NodeData = any> extends HTMLAttributes<SVGSVGElement> {
+export type MiniMapProps<NodeData = any> = HTMLAttributes<SVGSVGElement> & {
   nodeColor?: string | GetMiniMapNodeAttribute<NodeData>;
   nodeStrokeColor?: string | GetMiniMapNodeAttribute<NodeData>;
   nodeClassName?: string | GetMiniMapNodeAttribute<NodeData>;
@@ -12,4 +12,4 @@ export interface MiniMapProps<NodeData = any> extends HTMLAttributes<SVGSVGEleme
   nodeStrokeWidth?: number;
   maskColor?: string;
   position?: PanelPosition;
-}
+};

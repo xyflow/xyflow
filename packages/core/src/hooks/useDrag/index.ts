@@ -1,12 +1,13 @@
-import { RefObject, useEffect, useRef, MouseEvent, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import type { RefObject, MouseEvent } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 import type { D3DragEvent, SubjectPosition } from 'd3';
 
 import { useStoreApi } from '../../hooks/useStore';
-import { NodeDragItem, Node, SelectionDragHandler } from '../../types';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
+import type { NodeDragItem, Node, SelectionDragHandler } from '../../types';
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 export type UseDragData = { dx: number; dy: number };

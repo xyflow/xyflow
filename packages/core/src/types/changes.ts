@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { XYPosition, Dimensions } from './utils';
-import { Node } from './nodes';
-import { Edge } from './edges';
+import type { XYPosition, Dimensions } from './utils';
+import type { Node } from './nodes';
+import type { Edge } from './edges';
 
 export type NodeDimensionChange = {
   id: string;

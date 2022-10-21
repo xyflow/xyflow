@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from 'react';
-import { D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
+import { zoom, zoomIdentity } from 'd3-zoom';
+import type { D3ZoomEvent } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import shallow from 'zustand/shallow';
 
@@ -8,9 +9,10 @@ import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { FlowRendererProps } from '../FlowRenderer';
 import { containerStyle } from '../../styles';
-import { Viewport, PanOnScrollMode, ReactFlowState } from '../../types';
+import type { FlowRendererProps } from '../FlowRenderer';
+import { PanOnScrollMode } from '../../types';
+import type { Viewport, ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
