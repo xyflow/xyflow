@@ -188,7 +188,7 @@ export const getNodesInside = (
     const area = (width || 0) * (height || 0);
     const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
 
-    if (isVisible) {
+    if (isVisible || node.dragging) {
       visibleNodes.push(node);
     }
   });
