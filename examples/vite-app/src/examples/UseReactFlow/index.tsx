@@ -43,6 +43,7 @@ const initialNodes: Node[] = [
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
+  // { id: 'e3-4', source: '3', target: '4' }
 ];
 
 let id = 5;
@@ -64,6 +65,8 @@ const UseZoomPanHelperFlow = () => {
     addEdges,
     getNodes,
     getEdges,
+    deleteSelectedElements,
+    deleteElements
   } = useReactFlow();
 
   const onPaneClick = useCallback(
@@ -111,7 +114,22 @@ const UseZoomPanHelperFlow = () => {
     console.log('edges', getEdges());
   }, [getNodes, getEdges]);
 
+  const deleteSelectedElements1 = useCallback(() => {
+    const selectedNodes = nodes.filter(node => node.selected).map(node => node.id);
+    const selectedEdges = edges.filter(edge => edge.selected).map(edge => edge.id);
+    deleteElements(selectedNodes, selectedEdges);
+  }, [deleteElements, nodes, edges])
+
+  const deleteSelectedElements2 = useCallback(() => {
+    deleteSelectedElements();
+  }, [deleteSelectedElements])
+
+  const deleteSomeElements = useCallback(() => {
+    deleteElements(['2'],['e1-3'])
+  }, [])
+
   useEffect(() => {
+    // called twice in strict mode of development mode
     addEdges({ id: 'e3-4', source: '3', target: '4' });
   }, [addEdges]);
 
@@ -137,6 +155,9 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>
         <button onClick={logNodes}>useNodes</button>
+        <button onClick={deleteSelectedElements1}>deleteSelectedElements1</button>
+        <button onClick={deleteSelectedElements2}>deleteSelectedElements2</button>
+        <button onClick={deleteSomeElements}>deleteSomeElements</button>
       </div>
       <Background />
       <MiniMap />

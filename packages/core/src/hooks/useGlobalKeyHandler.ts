@@ -12,14 +12,23 @@ interface HookParams {
 
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
-  const { deleteSelectedElements } = useReactFlow();
+  const { deleteElements } = useReactFlow();
+  // const { deleteSelectedElements } = useReactFlow();
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
     if (deleteKeyPressed) {
-      deleteSelectedElements();
+      const {
+        nodeInternals,
+        edges,
+      } = store.getState();
+      const nodes = Array.from(nodeInternals.values());
+      const nodeIds = nodes.filter(node => node.selected).map(node => node.id);
+      const edgeIds = edges.filter(edge => edge.selected).map(edge => edge.id);
+      deleteElements(nodeIds, edgeIds);
+      store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);
 
