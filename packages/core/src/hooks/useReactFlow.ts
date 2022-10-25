@@ -114,84 +114,6 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     };
   }, []);
 
-  const deleteSelectedElements = useCallback<Instance.DeleteSelectedElements>(() => {
-    const {
-      nodeInternals,
-      edges,
-      hasDefaultNodes,
-      hasDefaultEdges,
-      onNodesDelete,
-      onEdgesDelete,
-      onNodesChange,
-      onEdgesChange,
-    } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
-    const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
-      const parentSelected = !node.selected && node.parentNode && res.find((n) => n.id === node.parentNode);
-      const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
-      if (deletable && (node.selected || parentSelected)) {
-        res.push(node);
-      }
-
-      return res;
-    }, []);
-    const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
-    const selectedEdges = deletableEdges.filter((e) => e.selected);
-
-    if (nodesToRemove || selectedEdges) {
-      const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
-      const edgesToRemove = [...selectedEdges, ...connectedEdges];
-      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
-        if (!res.includes(edge.id)) {
-          res.push(edge.id);
-        }
-        return res;
-      }, []);
-
-      if (hasDefaultEdges || hasDefaultNodes) {
-        if (hasDefaultEdges) {
-          store.setState({
-            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
-          });
-        }
-
-        if (hasDefaultNodes) {
-          nodesToRemove.forEach((node) => {
-            nodeInternals.delete(node.id);
-          });
-
-          store.setState({
-            nodeInternals: new Map(nodeInternals),
-          });
-        }
-      }
-
-      if (edgeIdsToRemove.length > 0) {
-        onEdgesDelete?.(edgesToRemove);
-
-        if (onEdgesChange) {
-          onEdgesChange(
-            edgeIdsToRemove.map((id) => ({
-              id,
-              type: 'remove',
-            }))
-          );
-        }
-      }
-
-      if (nodesToRemove.length > 0) {
-        onNodesDelete?.(nodesToRemove);
-
-        if (onNodesChange) {
-          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
-          onNodesChange(nodeChanges);
-        }
-      }
-
-      store.setState({ nodesSelectionActive: false });
-    }
-  }, []);
-
   const deleteElements = useCallback<Instance.DeleteElements>((nodeIds, edgeIds) => {
     const {
       nodeInternals,
@@ -279,7 +201,6 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       addNodes,
       addEdges,
       toObject,
-      deleteSelectedElements,
       deleteElements,
     };
   }, [
@@ -293,7 +214,6 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     addNodes,
     addEdges,
     toObject,
-    deleteSelectedElements,
     deleteElements,
   ]);
 }

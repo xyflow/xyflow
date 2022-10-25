@@ -13,7 +13,6 @@ interface HookParams {
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
   const { deleteElements } = useReactFlow();
-  // const { deleteSelectedElements } = useReactFlow();
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);

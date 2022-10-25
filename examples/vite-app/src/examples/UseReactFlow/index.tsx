@@ -65,7 +65,6 @@ const UseZoomPanHelperFlow = () => {
     addEdges,
     getNodes,
     getEdges,
-    deleteSelectedElements,
     deleteElements
   } = useReactFlow();
 
@@ -119,10 +118,6 @@ const UseZoomPanHelperFlow = () => {
     const selectedEdges = edges.filter(edge => edge.selected).map(edge => edge.id);
     deleteElements(selectedNodes, selectedEdges);
   }, [deleteElements, nodes, edges])
-
-  const deleteSelectedElements2 = useCallback(() => {
-    deleteSelectedElements();
-  }, [deleteSelectedElements])
 
   const deleteSomeElements = useCallback(() => {
     deleteElements(['2'],['e1-3'])
