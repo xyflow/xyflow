@@ -1,7 +1,7 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { Edge, MarkerType, ReactFlowState } from '../../types';
+import type { Edge, MarkerType, ReactFlowState } from '../../types';
 
 export const getMarkerEnd = (markerType?: MarkerType, markerEndId?: string): string => {
   if (typeof markerEndId !== 'undefined' && markerEndId) {
@@ -28,7 +28,7 @@ export function getMouseHandler(
 }
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
-export function getSimpleEdgeCenter({
+export function getEdgeCenter({
   sourceX,
   sourceY,
   targetX,

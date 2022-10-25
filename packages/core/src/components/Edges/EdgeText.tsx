@@ -1,4 +1,5 @@
-import { memo, useRef, useState, useEffect, FC, PropsWithChildren } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import cc from 'classcat';
 
 import { EdgeTextProps, Rect } from '../../types';
@@ -41,6 +42,7 @@ const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
     <g
       transform={`translate(${x - edgeTextBbox.width / 2} ${y - edgeTextBbox.height / 2})`}
       className={edgeTextClasses}
+      visibility={edgeTextBbox.width ? 'visible' : 'hidden'}
       {...rest}
     >
       {labelShowBg && (

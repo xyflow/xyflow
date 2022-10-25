@@ -1,7 +1,7 @@
-import { ButtonHTMLAttributes, HTMLAttributes } from 'react';
-import { FitViewOptions, PanelPosition } from '@reactflow/core';
+import type { ButtonHTMLAttributes, HTMLAttributes } from 'react';
+import type { FitViewOptions, PanelPosition } from '@reactflow/core';
 
-export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
+export type ControlProps = HTMLAttributes<HTMLDivElement> & {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;
@@ -11,6 +11,6 @@ export interface ControlProps extends HTMLAttributes<HTMLDivElement> {
   onFitView?: () => void;
   onInteractiveChange?: (interactiveStatus: boolean) => void;
   position?: PanelPosition;
-}
+};
 
 export type ControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

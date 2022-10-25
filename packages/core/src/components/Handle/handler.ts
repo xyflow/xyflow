@@ -1,8 +1,9 @@
-import { MouseEvent as ReactMouseEvent } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
 import { getHostForElement } from '../../utils';
-import { OnConnect, ConnectionMode, Connection, HandleType, ReactFlowState } from '../../types';
+import { ConnectionMode } from '../../types';
+import type { OnConnect, Connection, HandleType, ReactFlowState } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 

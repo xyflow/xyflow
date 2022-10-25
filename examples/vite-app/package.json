@@ -1,7 +1,7 @@
 {
   "name": "@reactflow/examples",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000 --open",
@@ -13,6 +13,7 @@
     "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
   },
   "dependencies": {
+    "classcat": "^5.0.3",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
     "react": "^18.2.0",

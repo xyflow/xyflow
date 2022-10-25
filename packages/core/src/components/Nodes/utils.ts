@@ -1,8 +1,9 @@
 import { MouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { HandleElement, Node, NodeOrigin, Position, ReactFlowState } from '../../types';
 import { getDimensions } from '../../utils';
+import { Position } from '../../types';
+import type { HandleElement, Node, NodeOrigin, ReactFlowState } from '../../types';
 
 export const getHandleBounds = (
   selector: string,

@@ -1,5 +1,5 @@
 import { useStore } from '../hooks/useStore';
-import { Node, ReactFlowState } from '../types';
+import type { Node, ReactFlowState } from '../types';
 
 const nodesSelector = (state: ReactFlowState) => Array.from(state.nodeInternals.values());
 

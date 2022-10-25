@@ -1,4 +1,5 @@
-import { CSSProperties, forwardRef } from 'react';
+import { forwardRef } from 'react';
+import type { CSSProperties } from 'react';
 import cc from 'classcat';
 
 import Attribution from '../../components/Attribution';
@@ -9,27 +10,24 @@ import OutputNode from '../../components/Nodes/OutputNode';
 import GroupNode from '../../components/Nodes/GroupNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
-
-import {
-  ConnectionLineType,
-  ConnectionMode,
+import A11yDescriptions from '../../components/A11yDescriptions';
+import { createEdgeTypes } from '../EdgeRenderer/utils';
+import { createNodeTypes } from '../NodeRenderer/utils';
+import GraphView from '../GraphView';
+import Wrapper from './Wrapper';
+import { infiniteExtent } from '../../store/initialState';
+import { useNodeOrEdgeTypes } from './utils';
+import { ConnectionLineType, ConnectionMode, PanOnScrollMode } from '../../types';
+import type {
   EdgeTypes,
   EdgeTypesWrapped,
   NodeOrigin,
   NodeTypes,
   NodeTypesWrapped,
-  PanOnScrollMode,
   ReactFlowProps,
   ReactFlowRefType,
   Viewport,
 } from '../../types';
-import { createEdgeTypes } from '../EdgeRenderer/utils';
-import GraphView from '../GraphView';
-import { createNodeTypes } from '../NodeRenderer/utils';
-import { useNodeOrEdgeTypes } from './utils';
-import Wrapper from './Wrapper';
-import A11yDescriptions from '../../components/A11yDescriptions';
-import { infiniteExtent } from '../../store/initialState';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -108,7 +106,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       selectNodesOnDrag = true,
       nodesDraggable,
       nodesConnectable,
+      nodesFocusable,
       nodeOrigin = initNodeOrigin,
+      edgesFocusable,
       elementsSelectable,
       defaultViewport = initDefaultViewport,
       minZoom = 0.5,
@@ -154,13 +154,14 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
       style,
-      id = '1',
+      id,
       ...rest
     },
     ref
   ) => {
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
+    const rfId = id || '1';
 
     return (
       <div
@@ -169,6 +170,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         ref={ref}
         className={cc(['react-flow', className])}
         data-testid="rf__wrapper"
+        id={id}
       >
         <Wrapper>
           <GraphView
@@ -228,7 +230,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
             elevateEdgesOnSelect={elevateEdgesOnSelect}
-            rfId={id}
+            rfId={rfId}
             disableKeyboardA11y={disableKeyboardA11y}
             nodeOrigin={nodeOrigin}
             nodeExtent={nodeExtent}
@@ -245,6 +247,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onClickConnectEnd={onClickConnectEnd}
             nodesDraggable={nodesDraggable}
             nodesConnectable={nodesConnectable}
+            nodesFocusable={nodesFocusable}
+            edgesFocusable={edgesFocusable}
             elementsSelectable={elementsSelectable}
             minZoom={minZoom}
             maxZoom={maxZoom}
@@ -269,12 +273,12 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDragStop={onSelectionDragStop}
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
-            id={id}
+            rfId={rfId}
           />
-          {onSelectionChange && <SelectionListener onSelectionChange={onSelectionChange} />}
+          <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
           <Attribution proOptions={proOptions} position={attributionPosition} />
-          {!disableKeyboardA11y && <A11yDescriptions rfId={id} />}
+          <A11yDescriptions rfId={rfId} disableKeyboardA11y={disableKeyboardA11y} />
         </Wrapper>
       </div>
     );

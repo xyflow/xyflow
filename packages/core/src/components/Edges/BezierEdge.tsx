@@ -1,7 +1,9 @@
 import { memo } from 'react';
-import { BezierEdgeProps, Position } from '../../types';
+
 import BaseEdge from './BaseEdge';
 import { getBezierEdgeCenter } from './utils';
+import { Position } from '../../types';
+import type { BezierEdgeProps } from '../../types';
 
 export interface GetBezierPathParams {
   sourceX: number;
@@ -25,40 +27,22 @@ interface GetControlWithCurvatureParams {
 function calculateControlOffset(distance: number, curvature: number): number {
   if (distance >= 0) {
     return 0.5 * distance;
-  } else {
-    return curvature * 25 * Math.sqrt(-distance);
   }
+
+  return curvature * 25 * Math.sqrt(-distance);
 }
 
 function getControlWithCurvature({ pos, x1, y1, x2, y2, c }: GetControlWithCurvatureParams): [number, number] {
-  let ctX: number, ctY: number;
   switch (pos) {
     case Position.Left:
-      {
-        ctX = x1 - calculateControlOffset(x1 - x2, c);
-        ctY = y1;
-      }
-      break;
+      return [x1 - calculateControlOffset(x1 - x2, c), y1];
     case Position.Right:
-      {
-        ctX = x1 + calculateControlOffset(x2 - x1, c);
-        ctY = y1;
-      }
-      break;
+      return [x1 + calculateControlOffset(x2 - x1, c), y1];
     case Position.Top:
-      {
-        ctX = x1;
-        ctY = y1 - calculateControlOffset(y1 - y2, c);
-      }
-      break;
+      return [x1, y1 - calculateControlOffset(y1 - y2, c)];
     case Position.Bottom:
-      {
-        ctX = x1;
-        ctY = y1 + calculateControlOffset(y2 - y1, c);
-      }
-      break;
+      return [x1, y1 + calculateControlOffset(y2 - y1, c)];
   }
-  return [ctX, ctY];
 }
 
 export function getBezierPath({
@@ -69,7 +53,7 @@ export function getBezierPath({
   targetY,
   targetPosition = Position.Top,
   curvature = 0.25,
-}: GetBezierPathParams): [string, number, number, number, number] {
+}: GetBezierPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
   const [sourceControlX, sourceControlY] = getControlWithCurvature({
     pos: sourcePosition,
     x1: sourceX,
@@ -86,7 +70,7 @@ export function getBezierPath({
     y2: sourceY,
     c: curvature,
   });
-  const [centerX, centerY, offsetX, offsetY] = getBezierEdgeCenter({
+  const [labelX, labelY, offsetX, offsetY] = getBezierEdgeCenter({
     sourceX,
     sourceY,
     targetX,
@@ -99,8 +83,8 @@ export function getBezierPath({
 
   return [
     `M${sourceX},${sourceY} C${sourceControlX},${sourceControlY} ${targetControlX},${targetControlY} ${targetX},${targetY}`,
-    centerX,
-    centerY,
+    labelX,
+    labelY,
     offsetX,
     offsetY,
   ];

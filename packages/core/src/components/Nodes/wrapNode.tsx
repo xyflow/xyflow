@@ -1,4 +1,5 @@
-import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
+import { useEffect, useRef, memo } from 'react';
+import type { ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -7,14 +8,14 @@ import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { getMouseHandler, handleNodeClick } from './utils';
-import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 import { elementSelectionKeys } from '../../utils';
+import type { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
-  ArrowUp: { x: 0, y: -10 },
-  ArrowDown: { x: 0, y: 10 },
-  ArrowLeft: { x: -10, y: 0 },
-  ArrowRight: { x: 10, y: 0 },
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
 };
 
 export default (NodeComponent: ComponentType<NodeProps>) => {
@@ -38,6 +39,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     isDraggable,
     isSelectable,
     isConnectable,
+    isFocusable,
     selectNodesOnDrag,
     sourcePosition,
     targetPosition,
@@ -82,6 +84,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
+      const { snapGrid, snapToGrid } = store.getState();
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
         if (unselect) {
@@ -92,14 +95,28 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           store,
           unselect,
         });
-      } else if (selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      } else if (
+        !disableKeyboardA11y &&
+        isDraggable &&
+        selected &&
+        Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)
+      ) {
         store.setState({
-          ariaLiveMessage: `Moved selected node ten pixels ${event.key
+          ariaLiveMessage: `Moved selected node ${event.key
             .replace('Arrow', '')
             .toLowerCase()}. New position, x: ${~~xPos}, y: ${~~yPos}`,
         });
 
-        updatePositions(arrowKeyDiffs[event.key]);
+        // by default a node moves 5px on each key press, or 20px if shift is pressed
+        // if snap grid is enabled, we use that for the velocity.
+        const xVelo = snapToGrid ? snapGrid[0] : 5;
+        const yVelo = snapToGrid ? snapGrid[1] : 5;
+        const factor = event.shiftKey ? 4 : 1;
+
+        updatePositions({
+          x: arrowKeyDiffs[event.key].x * xVelo * factor,
+          y: arrowKeyDiffs[event.key].y * yVelo * factor,
+        });
       }
     };
 
@@ -151,13 +168,16 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         className={cc([
           'react-flow__node',
           `react-flow__node-${type}`,
+          {
+            // this is overwritable by passing `nopan` as a class name
+            [noPanClassName]: isDraggable,
+          },
           className,
           {
             selected,
             selectable: isSelectable,
             parent: isParent,
             dragging,
-            [noPanClassName]: isDraggable,
           },
         ])}
         ref={nodeRef}
@@ -176,9 +196,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onContextMenu={onContextMenuHandler}
         onClick={onSelectNodeHandler}
         onDoubleClick={onDoubleClickHandler}
-        onKeyDown={disableKeyboardA11y ? undefined : onKeyDown}
-        tabIndex={disableKeyboardA11y ? undefined : 0}
-        role={disableKeyboardA11y ? undefined : 'button'}
+        onKeyDown={isFocusable ? onKeyDown : undefined}
+        tabIndex={isFocusable ? 0 : undefined}
+        role={isFocusable ? 'button' : undefined}
         aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
         aria-label={ariaLabel}
       >

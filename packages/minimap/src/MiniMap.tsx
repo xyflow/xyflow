@@ -2,10 +2,11 @@
 import { memo } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
-import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects } from '@reactflow/core';
+import { useStore, getRectOfNodes, getBoundsOfRects, Panel } from '@reactflow/core';
+import type { ReactFlowState, Rect } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
-import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
+import type { MiniMapProps, GetMiniMapNodeAttribute } from './types';
 
 declare const window: any;
 

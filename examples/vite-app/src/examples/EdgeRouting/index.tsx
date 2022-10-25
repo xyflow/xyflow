@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactFlow, { Node, Edge, Position, MarkerType } from 'reactflow';
 
 const nodes: Node[] = [
@@ -107,7 +106,7 @@ const edges: Edge[] = [
 
 const defaultEdgeOptions = {
   label: 'Edge Label',
-  type: 'default',
+  type: 'smoothstep',
   markerEnd: {
     type: MarkerType.ArrowClosed,
   },

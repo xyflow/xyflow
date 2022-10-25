@@ -4,9 +4,10 @@ import shallow from 'zustand/shallow';
 import { useStore } from '../../hooks/useStore';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
-import { ConnectionLineType, ConnectionLineComponent, HandleType, Position, ReactFlowStore } from '../../types';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import { internalsSymbol } from '../../utils';
+import type { ConnectionLineComponent, HandleType, ReactFlowStore } from '../../types';
+import { Position, ConnectionLineType } from '../../types';
 
 type ConnectionLineProps = {
   connectionNodeId: string;

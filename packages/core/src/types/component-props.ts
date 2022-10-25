@@ -1,6 +1,6 @@
-import React, { CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
+import type { CSSProperties, HTMLAttributes, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
 
-import {
+import type {
   OnSelectionChangeFunc,
   NodeTypes,
   EdgeTypes,
@@ -33,19 +33,17 @@ import {
   SelectionDragHandler,
   Viewport,
   NodeOrigin,
+  EdgeMouseHandler,
+  HandleType,
 } from '.';
-import { HandleType } from './handles';
 
-export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
+export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   nodes?: Node[];
   edges?: Edge[];
   defaultNodes?: Node[];
   defaultEdges?: Edge[];
   defaultEdgeOptions?: DefaultEdgeOptions;
-  onNodesChange?: OnNodesChange;
-  onEdgesChange?: OnEdgesChange;
   onNodeClick?: NodeMouseHandler;
-  onEdgeClick?: (event: React.MouseEvent, node: Edge) => void;
   onNodeDoubleClick?: NodeMouseHandler;
   onNodeMouseEnter?: NodeMouseHandler;
   onNodeMouseMove?: NodeMouseHandler;
@@ -54,8 +52,23 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onNodeDragStart?: NodeDragHandler;
   onNodeDrag?: NodeDragHandler;
   onNodeDragStop?: NodeDragHandler;
+  onEdgeClick?: (event: ReactMouseEvent, node: Edge) => void;
+  onEdgeUpdate?: OnEdgeUpdateFunc;
+  onEdgeContextMenu?: EdgeMouseHandler;
+  onEdgeMouseEnter?: EdgeMouseHandler;
+  onEdgeMouseMove?: EdgeMouseHandler;
+  onEdgeMouseLeave?: EdgeMouseHandler;
+  onEdgeDoubleClick?: EdgeMouseHandler;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onNodesChange?: OnNodesChange;
+  onEdgesChange?: OnEdgesChange;
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onSelectionDragStart?: SelectionDragHandler;
+  onSelectionDrag?: SelectionDragHandler;
+  onSelectionDragStop?: SelectionDragHandler;
+  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
   onConnectEnd?: OnConnectEnd;
@@ -66,10 +79,6 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onMoveStart?: OnMoveStart;
   onMoveEnd?: OnMoveEnd;
   onSelectionChange?: OnSelectionChangeFunc;
-  onSelectionDragStart?: SelectionDragHandler;
-  onSelectionDrag?: SelectionDragHandler;
-  onSelectionDragStop?: SelectionDragHandler;
-  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: ReactMouseEvent) => void;
   onPaneContextMenu?: (event: ReactMouseEvent) => void;
@@ -78,11 +87,11 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
-  connectionMode?: ConnectionMode;
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CSSProperties;
   connectionLineComponent?: ConnectionLineComponent;
   connectionLineContainerStyle?: CSSProperties;
+  connectionMode?: ConnectionMode;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
   multiSelectionKeyCode?: KeyCode | null;
@@ -92,7 +101,9 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
+  nodesFocusable?: boolean;
   nodeOrigin?: NodeOrigin;
+  edgesFocusable?: boolean;
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
@@ -110,14 +121,6 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
-  onEdgeContextMenu?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeMouseEnter?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeMouseMove?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeMouseLeave?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeDoubleClick?: (event: ReactMouseEvent, edge: Edge) => void;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   edgeUpdaterRadius?: number;
   noDragClassName?: string;
   noWheelClassName?: string;
@@ -129,6 +132,6 @@ export interface ReactFlowProps extends HTMLAttributes<HTMLDivElement> {
   proOptions?: ProOptions;
   elevateEdgesOnSelect?: boolean;
   disableKeyboardA11y?: boolean;
-}
+};
 
 export type ReactFlowRefType = HTMLDivElement;

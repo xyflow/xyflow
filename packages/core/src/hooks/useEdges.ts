@@ -1,5 +1,5 @@
 import { useStore } from '../hooks/useStore';
-import { Edge, ReactFlowState } from '../types';
+import type { Edge, ReactFlowState } from '../types';
 
 const edgesSelector = (state: ReactFlowState) => state.edges;
 

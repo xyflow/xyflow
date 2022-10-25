@@ -1,5 +1,5 @@
 import EdgeText from './EdgeText';
-import { BaseEdgeProps } from '../../types';
+import type { BaseEdgeProps } from '../../types';
 
 const BaseEdge = ({
   path,
@@ -26,7 +26,15 @@ const BaseEdge = ({
         markerEnd={markerEnd}
         markerStart={markerStart}
       />
-      {interactionWidth && <path d={path} fill="none" strokeOpacity={0} strokeWidth={interactionWidth} />}
+      {interactionWidth && (
+        <path
+          d={path}
+          fill="none"
+          strokeOpacity={0}
+          strokeWidth={interactionWidth}
+          className="react-flow__edge-interaction"
+        />
+      )}
       {label ? (
         <EdgeText
           x={labelX}

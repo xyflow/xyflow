@@ -5,39 +5,35 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
-import {
-  NodeTypesWrapped,
-  EdgeTypesWrapped,
-  ConnectionLineType,
-  KeyCode,
-  ReactFlowProps,
-  Viewport,
-  CoordinateExtent,
-  NodeOrigin,
-} from '../../types';
+import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
 
-export interface GraphViewProps
-  extends Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> {
-  nodeTypes: NodeTypesWrapped;
-  edgeTypes: EdgeTypesWrapped;
-  selectionKeyCode: KeyCode | null;
-  deleteKeyCode: KeyCode | null;
-  multiSelectionKeyCode: KeyCode | null;
-  connectionLineType: ConnectionLineType;
-  onlyRenderVisibleElements: boolean;
-  translateExtent: CoordinateExtent;
-  minZoom: number;
-  maxZoom: number;
-  defaultMarkerColor: string;
-  selectNodesOnDrag: boolean;
-  noDragClassName: string;
-  noWheelClassName: string;
-  noPanClassName: string;
-  defaultViewport: Viewport;
-  rfId: string;
-  disableKeyboardA11y: boolean;
-  nodeOrigin: NodeOrigin;
-}
+export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
+  Required<
+    Pick<
+      ReactFlowProps,
+      | 'selectionKeyCode'
+      | 'deleteKeyCode'
+      | 'multiSelectionKeyCode'
+      | 'connectionLineType'
+      | 'onlyRenderVisibleElements'
+      | 'translateExtent'
+      | 'minZoom'
+      | 'maxZoom'
+      | 'defaultMarkerColor'
+      | 'selectNodesOnDrag'
+      | 'noDragClassName'
+      | 'noDragClassName'
+      | 'noWheelClassName'
+      | 'noPanClassName'
+      | 'defaultViewport'
+      | 'disableKeyboardA11y'
+      | 'nodeOrigin'
+    >
+  > & {
+    nodeTypes: NodeTypesWrapped;
+    edgeTypes: EdgeTypesWrapped;
+    rfId: string;
+  };
 
 const GraphView = ({
   nodeTypes,

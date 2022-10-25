@@ -3,16 +3,17 @@
  * made a selection with on or several nodes
  */
 
-import { memo, useRef, MouseEvent, KeyboardEvent, useEffect } from 'react';
+import { memo, useRef, useEffect } from 'react';
+import type { MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { Node, ReactFlowState } from '../../types';
 import { getRectOfNodes } from '../../utils/graph';
 import useDrag from '../../hooks/useDrag';
 import { arrowKeyDiffs } from '../Nodes/wrapNode';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
+import type { Node, ReactFlowState } from '../../types';
 
 export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;

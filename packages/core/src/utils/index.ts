@@ -1,4 +1,4 @@
-import { Dimensions, XYPosition, CoordinateExtent, Box, Rect } from '../types';
+import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,

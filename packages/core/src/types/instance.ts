@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ViewportHelperFunctions, Viewport } from './general';
-import { Node } from './nodes';
-import { Edge } from './edges';
+import { ViewportHelperFunctions, Viewport, Node, Edge } from '.';
 
 export type ReactFlowJsonObject<NodeData = any, EdgeData = any> = {
   nodes: Node<NodeData>[];

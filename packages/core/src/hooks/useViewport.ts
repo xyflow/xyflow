@@ -1,7 +1,7 @@
 import shallow from 'zustand/shallow';
 
 import { useStore } from '../hooks/useStore';
-import { Viewport, ReactFlowState } from '../types';
+import type { Viewport, ReactFlowState } from '../types';
 
 const viewportSelector = (state: ReactFlowState) => ({
   x: state.transform[0],

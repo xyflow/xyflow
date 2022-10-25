@@ -18,11 +18,11 @@ const defaultSize = {
   [BackgroundVariant.Cross]: 6,
 };
 
-const selector = (s: ReactFlowState) => ({ transform: s.transform, rfId: s.rfId });
+const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
 function Background({
   variant = BackgroundVariant.Dots,
-  gap = 25,
+  gap = 20,
   // only used for dots and cross
   size,
   // only used for lines and cross
@@ -32,7 +32,7 @@ function Background({
   className,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { transform, rfId } = useStore(selector, shallow);
+  const { transform, patternId } = useStore(selector, shallow);
   const patternColor = color || defaultColor[variant];
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
@@ -61,7 +61,7 @@ function Background({
       ref={ref}
     >
       <pattern
-        id={rfId}
+        id={patternId}
         x={transform[0] % scaledGap[0]}
         y={transform[1] % scaledGap[1]}
         width={scaledGap[0]}
@@ -75,7 +75,7 @@ function Background({
           <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
         )}
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${rfId})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
     </svg>
   );
 }

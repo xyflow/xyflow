@@ -1,8 +1,9 @@
 import { useContext, useMemo } from 'react';
-import { StoreApi, useStore as useZustandStore } from 'zustand';
+import { useStore as useZustandStore } from 'zustand';
+import type { StoreApi } from 'zustand';
 
 import StoreContext from '../contexts/RFStoreContext';
-import { ReactFlowState } from '../types';
+import type { ReactFlowState } from '../types';
 
 const errorMessage =
   '[React Flow]: Seems like you have not used zustand provider as an ancestor. Help: https://reactflow.dev/error#100';

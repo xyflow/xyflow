@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
 import { useStoreApi } from '../../hooks/useStore';
 import ReactFlowProvider from '../../components/ReactFlowProvider';

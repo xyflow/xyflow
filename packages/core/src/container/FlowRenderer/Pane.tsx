@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import cc from 'classcat';
 
 import { useStore } from '../../hooks/useStore';

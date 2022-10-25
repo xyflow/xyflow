@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../hooks/useStore';
-import {
+import type {
   ReactFlowInstance,
   Instance,
   NodeAddChange,

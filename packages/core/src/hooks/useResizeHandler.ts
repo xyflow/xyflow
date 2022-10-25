@@ -1,4 +1,5 @@
-import { useEffect, MutableRefObject } from 'react';
+import { useEffect } from 'react';
+import type { MutableRefObject } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
 import { devWarn, getDimensions } from '../utils';

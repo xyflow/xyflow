@@ -3,7 +3,7 @@ import { StoreApi } from 'zustand';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
+import type { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
 
 type StoreUpdaterProps = Pick<
   ReactFlowProps,
@@ -18,6 +18,8 @@ type StoreUpdaterProps = Pick<
   | 'onClickConnectEnd'
   | 'nodesDraggable'
   | 'nodesConnectable'
+  | 'nodesFocusable'
+  | 'edgesFocusable'
   | 'minZoom'
   | 'maxZoom'
   | 'nodeExtent'
@@ -42,8 +44,7 @@ type StoreUpdaterProps = Pick<
   | 'onSelectionDragStop'
   | 'noPanClassName'
   | 'nodeOrigin'
-  | 'id'
->;
+> & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
@@ -89,6 +90,8 @@ const StoreUpdater = ({
   onClickConnectEnd,
   nodesDraggable,
   nodesConnectable,
+  nodesFocusable,
+  edgesFocusable,
   minZoom,
   maxZoom,
   nodeExtent,
@@ -113,7 +116,7 @@ const StoreUpdater = ({
   onSelectionDragStop,
   noPanClassName,
   nodeOrigin,
-  id,
+  rfId,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -145,6 +148,8 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onClickConnectEnd', onClickConnectEnd, store.setState);
   useDirectStoreUpdater('nodesDraggable', nodesDraggable, store.setState);
   useDirectStoreUpdater('nodesConnectable', nodesConnectable, store.setState);
+  useDirectStoreUpdater('nodesFocusable', nodesFocusable, store.setState);
+  useDirectStoreUpdater('edgesFocusable', edgesFocusable, store.setState);
   useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);
   useDirectStoreUpdater('snapToGrid', snapToGrid, store.setState);
   useDirectStoreUpdater('snapGrid', snapGrid, store.setState);
@@ -163,7 +168,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onSelectionDragStop', onSelectionDragStop, store.setState);
   useDirectStoreUpdater('noPanClassName', noPanClassName, store.setState);
   useDirectStoreUpdater('nodeOrigin', nodeOrigin, store.setState);
-  useDirectStoreUpdater('rfId', id, store.setState);
+  useDirectStoreUpdater('rfId', rfId, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

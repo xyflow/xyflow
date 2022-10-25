@@ -8,44 +8,45 @@ import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';
 
-import { Position, Edge, ConnectionMode, ReactFlowState } from '../../types';
 import { GraphViewProps } from '../GraphView';
 import { devWarn } from '../../utils';
+import { ConnectionMode, Position } from '../../types';
+import type { Edge, ReactFlowState } from '../../types';
 
-interface EdgeRendererProps
-  extends Pick<
-    GraphViewProps,
-    | 'edgeTypes'
-    | 'connectionLineType'
-    | 'connectionLineType'
-    | 'connectionLineStyle'
-    | 'connectionLineComponent'
-    | 'connectionLineContainerStyle'
-    | 'connectionLineContainerStyle'
-    | 'onEdgeClick'
-    | 'onEdgeDoubleClick'
-    | 'defaultMarkerColor'
-    | 'onlyRenderVisibleElements'
-    | 'onEdgeUpdate'
-    | 'onEdgeContextMenu'
-    | 'onEdgeMouseEnter'
-    | 'onEdgeMouseMove'
-    | 'onEdgeMouseLeave'
-    | 'onEdgeUpdateStart'
-    | 'onEdgeUpdateEnd'
-    | 'edgeUpdaterRadius'
-    | 'noPanClassName'
-    | 'elevateEdgesOnSelect'
-    | 'rfId'
-    | 'disableKeyboardA11y'
-  > {
+type EdgeRendererProps = Pick<
+  GraphViewProps,
+  | 'edgeTypes'
+  | 'connectionLineType'
+  | 'connectionLineType'
+  | 'connectionLineStyle'
+  | 'connectionLineComponent'
+  | 'connectionLineContainerStyle'
+  | 'connectionLineContainerStyle'
+  | 'onEdgeClick'
+  | 'onEdgeDoubleClick'
+  | 'defaultMarkerColor'
+  | 'onlyRenderVisibleElements'
+  | 'onEdgeUpdate'
+  | 'onEdgeContextMenu'
+  | 'onEdgeMouseEnter'
+  | 'onEdgeMouseMove'
+  | 'onEdgeMouseLeave'
+  | 'onEdgeUpdateStart'
+  | 'onEdgeUpdateEnd'
+  | 'edgeUpdaterRadius'
+  | 'noPanClassName'
+  | 'elevateEdgesOnSelect'
+  | 'rfId'
+  | 'disableKeyboardA11y'
+> & {
   elevateEdgesOnSelect: boolean;
-}
+};
 
 const selector = (s: ReactFlowState) => ({
   connectionNodeId: s.connectionNodeId,
   connectionHandleType: s.connectionHandleType,
   nodesConnectable: s.nodesConnectable,
+  edgesFocusable: s.edgesFocusable,
   elementsSelectable: s.elementsSelectable,
   width: s.width,
   height: s.height,
@@ -58,6 +59,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
     connectionNodeId,
     connectionHandleType,
     nodesConnectable,
+    edgesFocusable,
     elementsSelectable,
     width,
     height,
@@ -119,6 +121,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle || null);
               const sourcePosition = sourceHandle?.position || Position.Bottom;
               const targetPosition = targetHandle?.position || Position.Top;
+              const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
                 devWarn(
@@ -181,7 +184,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   onEdgeUpdateEnd={props.onEdgeUpdateEnd}
                   rfId={props.rfId}
                   ariaLabel={edge.ariaLabel}
-                  disableKeyboardA11y={props.disableKeyboardA11y}
+                  isFocusable={isFocusable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
                 />

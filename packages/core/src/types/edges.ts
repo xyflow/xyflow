@@ -1,9 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { CSSProperties, ComponentType, HTMLAttributes, ReactNode } from 'react';
-import { Connection } from './general';
-import { HandleElement, HandleType } from './handles';
-import { Node } from './nodes';
-import { Position } from './utils';
+import type { CSSProperties, ComponentType, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent } from 'react';
+
+import { Position } from '.';
+import type { Connection, HandleElement, HandleType, Node } from '.';
+
+type EdgeLabelOptions = {
+  label?: string | ReactNode;
+  labelStyle?: CSSProperties;
+  labelShowBg?: boolean;
+  labelBgStyle?: CSSProperties;
+  labelBgPadding?: [number, number];
+  labelBgBorderRadius?: number;
+};
 
 // interface for the user edge items
 type DefaultEdge<T = any> = {
@@ -13,12 +21,6 @@ type DefaultEdge<T = any> = {
   target: string;
   sourceHandle?: string | null;
   targetHandle?: string | null;
-  label?: string | ReactNode;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
   style?: CSSProperties;
   animated?: boolean;
   hidden?: boolean;
@@ -33,7 +35,8 @@ type DefaultEdge<T = any> = {
   zIndex?: number;
   ariaLabel?: string;
   interactionWidth?: number;
-};
+  focusable?: boolean;
+} & EdgeLabelOptions;
 
 export type SmoothStepPathOptions = {
   offset?: number;
@@ -61,55 +64,7 @@ export type DefaultEdgeOptions = Omit<
   'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'sourceNode' | 'targetNode'
 >;
 
-// props that get passed to a custom edge
-export type EdgeProps<T = any> = {
-  id: string;
-  source: string;
-  target: string;
-  sourceX: number;
-  sourceY: number;
-  targetX: number;
-  targetY: number;
-  selected?: boolean;
-  animated?: boolean;
-  sourcePosition: Position;
-  targetPosition: Position;
-  label?: string | ReactNode;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
-  style?: CSSProperties;
-  data?: T;
-  sourceHandleId?: string | null;
-  targetHandleId?: string | null;
-  markerStart?: string;
-  markerEnd?: string;
-  // @TODO: how can we get better types for pathOptions?
-  pathOptions?: any;
-  interactionWidth?: number;
-};
-
-export type BaseEdgeProps = Pick<
-  EdgeProps,
-  | 'label'
-  | 'labelStyle'
-  | 'labelShowBg'
-  | 'labelBgStyle'
-  | 'labelBgPadding'
-  | 'labelBgBorderRadius'
-  | 'style'
-  | 'markerStart'
-  | 'markerEnd'
-  | 'interactionWidth'
-> & {
-  labelX: number;
-  labelY: number;
-  path: string;
-};
-
-export type EdgeMouseHandler = (event: React.MouseEvent, edge: Edge) => void;
+export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
 
 export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
   onClick?: EdgeMouseHandler;
@@ -129,30 +84,57 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onMouseMove?: EdgeMouseHandler;
   onMouseLeave?: EdgeMouseHandler;
   edgeUpdaterRadius?: number;
-  onEdgeUpdateStart?: (event: React.MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
-  disableKeyboardA11y: boolean;
+  isFocusable: boolean;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
 };
 
-export interface SmoothStepEdgeProps<T = any> extends EdgeProps<T> {
-  pathOptions?: SmoothStepPathOptions;
-}
+// props that get passed to a custom edge
+export type EdgeProps<T = any> = Pick<
+  Edge<T>,
+  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
+> &
+  Pick<
+    WrapEdgeProps,
+    | 'sourceX'
+    | 'sourceY'
+    | 'targetX'
+    | 'targetY'
+    | 'sourcePosition'
+    | 'targetPosition'
+    | 'sourceHandleId'
+    | 'targetHandleId'
+    | 'interactionWidth'
+  > &
+  EdgeLabelOptions & {
+    markerStart?: string;
+    markerEnd?: string;
+    // @TODO: how can we get better types for pathOptions?
+    pathOptions?: any;
+  };
 
-export interface BezierEdgeProps<T = any> extends EdgeProps<T> {
+export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd' | 'interactionWidth'> &
+  EdgeLabelOptions & {
+    labelX: number;
+    labelY: number;
+    path: string;
+  };
+
+export type SmoothStepEdgeProps<T = any> = EdgeProps<T> & {
+  pathOptions?: SmoothStepPathOptions;
+};
+
+export type BezierEdgeProps<T = any> = EdgeProps<T> & {
   pathOptions?: BezierPathOptions;
-}
-export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
-  x: number;
-  y: number;
-  label?: string | ReactNode;
-  labelStyle?: CSSProperties;
-  labelShowBg?: boolean;
-  labelBgStyle?: CSSProperties;
-  labelBgPadding?: [number, number];
-  labelBgBorderRadius?: number;
-}
+};
+
+export type EdgeTextProps = HTMLAttributes<SVGElement> &
+  EdgeLabelOptions & {
+    x: number;
+    y: number;
+  };
 
 export enum ConnectionLineType {
   Bezier = 'default',
@@ -179,7 +161,7 @@ export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
 
-export interface EdgeMarker {
+export type EdgeMarker = {
   type: MarkerType;
   color?: string;
   width?: number;
@@ -187,7 +169,7 @@ export interface EdgeMarker {
   markerUnits?: string;
   orient?: string;
   strokeWidth?: number;
-}
+};
 
 export type EdgeMarkerType = string | EdgeMarker;
 
