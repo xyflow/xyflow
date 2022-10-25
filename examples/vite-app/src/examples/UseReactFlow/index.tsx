@@ -113,18 +113,17 @@ const UseZoomPanHelperFlow = () => {
     console.log('edges', getEdges());
   }, [getNodes, getEdges]);
 
-  const deleteSelectedElements1 = useCallback(() => {
-    const selectedNodes = nodes.filter(node => node.selected).map(node => node.id);
-    const selectedEdges = edges.filter(edge => edge.selected).map(edge => edge.id);
-    deleteElements(selectedNodes, selectedEdges);
+  const deleteSelectedElements = useCallback(() => {
+    const selectedNodes = nodes.filter(node => node.selected);
+    const selectedEdges = edges.filter(edge => edge.selected);
+    deleteElements({ nodes: selectedNodes, edges: selectedEdges });
   }, [deleteElements, nodes, edges])
 
   const deleteSomeElements = useCallback(() => {
-    deleteElements(['2'],['e1-3'])
+    deleteElements({ nodes: [{ id: '2' }], edges: [{ id: 'e1-3' }] })
   }, [])
 
   useEffect(() => {
-    // called twice in strict mode of development mode
     addEdges({ id: 'e3-4', source: '3', target: '4' });
   }, [addEdges]);
 
@@ -150,8 +149,7 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>
         <button onClick={logNodes}>useNodes</button>
-        <button onClick={deleteSelectedElements1}>deleteSelectedElements1</button>
-        <button onClick={deleteSelectedElements2}>deleteSelectedElements2</button>
+        <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
         <button onClick={deleteSomeElements}>deleteSomeElements</button>
       </div>
       <Background />

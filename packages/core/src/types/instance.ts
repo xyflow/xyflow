@@ -8,6 +8,10 @@ export type ReactFlowJsonObject<NodeData = any, EdgeData = any> = {
   viewport: Viewport;
 };
 
+export type DeleteElementsOptions = {
+  nodes?: (Partial<Node> & { id: Node['id'] })[],
+  edges?: (Partial<Edge> & { id: Edge['id'] })[]
+};
 export namespace Instance {
   export type GetNodes<NodeData> = () => Node<NodeData>[];
   export type SetNodes<NodeData> = (
@@ -22,7 +26,7 @@ export namespace Instance {
   export type GetEdge<EdgeData> = (id: string) => Edge<EdgeData> | undefined;
   export type AddEdges<EdgeData> = (payload: Edge<EdgeData>[] | Edge<EdgeData>) => void;
   export type ToObject<NodeData = any, EdgeData = any> = () => ReactFlowJsonObject<NodeData, EdgeData>;
-  export type DeleteElements = (nodeIds: string[], edgeIds: string[]) => void
+  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => void;
 }
 
 export type ReactFlowInstance<NodeData = any, EdgeData = any> = {

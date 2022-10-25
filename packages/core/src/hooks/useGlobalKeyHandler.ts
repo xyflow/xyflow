@@ -20,9 +20,9 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
     if (deleteKeyPressed) {
       const { nodeInternals, edges } = store.getState();
       const nodes = Array.from(nodeInternals.values());
-      const nodeIds = nodes.filter((node) => node.selected).map((node) => node.id);
-      const edgeIds = edges.filter((edge) => edge.selected).map((edge) => edge.id);
-      deleteElements(nodeIds, edgeIds);
+      const selectedNodes = nodes.filter((node) => node.selected);
+      const selectedEdges = edges.filter((edge) => edge.selected);
+      deleteElements({nodes: selectedNodes, edges: selectedEdges});
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);

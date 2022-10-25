@@ -114,7 +114,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     };
   }, []);
 
-  const deleteElements = useCallback<Instance.DeleteElements>((nodeIds, edgeIds) => {
+  const deleteElements = useCallback<Instance.DeleteElements>(({ nodes: nodesDeleted, edges: edgesDeleted }) => {
     const {
       nodeInternals,
       edges,
@@ -126,6 +126,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       onEdgesChange,
     } = store.getState();
     const nodes = Array.from(nodeInternals.values());
+    const nodeIds = (nodesDeleted || []).map((node) => node.id);
+    const edgeIds = (edgesDeleted || []).map((edge) => edge.id);
     const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
       const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
       const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
