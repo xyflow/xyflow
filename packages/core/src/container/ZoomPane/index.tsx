@@ -173,9 +173,12 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        if (!event.sourceEvent) {
+          return null;
+        }
+
         const { onViewportChangeStart } = store.getState();
         isZoomingOrPanning.current = true;
-
         if (event.sourceEvent?.type === 'mousedown') {
           store.setState({ paneDragging: true });
         }
@@ -194,6 +197,9 @@ const ZoomPane = ({
   useEffect(() => {
     if (d3Zoom) {
       d3Zoom.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        if (!event.sourceEvent) {
+          return null;
+        }
         const { onViewportChangeEnd } = store.getState();
 
         isZoomingOrPanning.current = false;

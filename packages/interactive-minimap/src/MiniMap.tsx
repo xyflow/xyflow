@@ -2,9 +2,19 @@
 import { memo, useEffect, useRef } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
-import { zoom, D3ZoomEvent } from 'd3-zoom';
+import { zoom, D3ZoomEvent, zoomIdentity } from 'd3-zoom';
 import { select } from 'd3-selection';
-import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects } from '@reactflow/core';
+import {
+  useStore,
+  getRectOfNodes,
+  ReactFlowState,
+  Rect,
+  Panel,
+  getBoundsOfRects,
+  useStoreApi,
+  useReactFlow,
+  XYPosition,
+} from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
@@ -46,7 +56,9 @@ function MiniMap({
   maskColor = 'rgb(240, 242, 243, 0.7)',
   position = 'bottom-right',
 }: MiniMapProps) {
+  const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
+  const initialized = useRef(false);
   const { boundingRect, viewBB, nodes, rfId } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
@@ -65,15 +77,69 @@ function MiniMap({
   const height = viewHeight + offset * 2;
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
+  const { setCenter } = useReactFlow();
+  const startTransform = useRef<XYPosition>({ x: 0, y: 0 });
+  const viewScaleRef = useRef(0);
+  const viewScaleWRef = useRef(0);
+  const viewScaleHRef = useRef(0);
+
+  viewScaleRef.current = viewScale;
+  viewScaleWRef.current = scaledWidth;
+  viewScaleHRef.current = scaledHeight;
 
   useEffect(() => {
-    const d3ZoomInstance = zoom();
-    const selection = select(svg.current as Element).call(d3ZoomInstance);
+    if (!initialized.current && svg.current) {
+      const bounds = svg.current.getBoundingClientRect() || { left: 0, top: 0 };
 
-    d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-      console.log(event);
-    });
-  }, []);
+      const selection = select(svg.current as Element);
+
+      const zoomHandler = zoom()
+        .on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          const { transform } = store.getState();
+
+          const px = (event.sourceEvent.clientX - bounds.left) * viewScaleRef.current;
+          const py = (event.sourceEvent.clientY - bounds.top) * viewScaleRef.current;
+
+          startTransform.current = {
+            x: px - transform[0] / transform[2],
+            y: py - transform[1] / transform[2],
+          };
+        })
+        .on('zoom.wheel', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          const { transform, d3Selection, d3Zoom } = store.getState();
+
+          if (event.sourceEvent.type !== 'wheel' || !d3Selection || !d3Zoom) {
+            return;
+          }
+
+          const pinchDelta =
+            -event.sourceEvent.deltaY *
+            (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
+            10;
+          const zoom = transform[2] * Math.pow(2, pinchDelta);
+          d3Zoom.scaleTo(d3Selection, zoom, [startTransform.current.x, startTransform.current.y]);
+        })
+        .on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          if (event.sourceEvent.type !== 'mousemove') {
+            return;
+          }
+
+          const { transform, d3Selection, d3Zoom } = store.getState();
+          const px = (event.sourceEvent.clientX - bounds.left) * viewScaleRef.current;
+          const py = (event.sourceEvent.clientY - bounds.top) * viewScaleRef.current;
+
+          const position = {
+            x: (px - startTransform.current.x) * transform[2],
+            y: (py - startTransform.current.y) * transform[2],
+          };
+
+          const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
+          d3Zoom!.transform(d3Selection!, nextTransform);
+        });
+      selection.call(zoomHandler);
+      initialized.current = true;
+    }
+  }, [setCenter]);
 
   return (
     <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
