@@ -1,9 +1,9 @@
 import { zoomIdentity } from 'd3-zoom';
-import { StoreApi } from 'zustand';
+import type { StoreApi } from 'zustand';
 
 import { internalsSymbol, isNumeric } from '../utils';
 import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
-import {
+import type {
   Edge,
   EdgeSelectionChange,
   Node,

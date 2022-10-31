@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
 import BaseEdge from './BaseEdge';
-import { EdgeProps } from '../../types';
 import { getEdgeCenter } from './utils';
+import type { EdgeProps } from '../../types';
 
 export type GetStraightPathParams = {
   sourceX: number;

@@ -4,10 +4,11 @@ import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import NodeIdContext from '../../contexts/NodeIdContext';
-import { HandleProps, Connection, ReactFlowState, Position } from '../../types';
 import { checkElementBelowIsValid, handleMouseDown } from './handler';
 import { getHostForElement } from '../../utils';
 import { addEdge } from '../../utils/graph';
+import { Position } from '../../types';
+import type { HandleProps, Connection, ReactFlowState } from '../../types';
 
 const alwaysValid = () => true;
 

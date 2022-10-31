@@ -4,8 +4,8 @@ import shallow from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
 import { pointToRendererPoint, getTransformForBounds, getD3Transition } from '../utils/graph';
-import { ViewportHelperFunctions, ReactFlowState, XYPosition } from '../types';
 import { fitView as fitViewStore } from '../store/utils';
+import type { ViewportHelperFunctions, ReactFlowState, XYPosition } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};

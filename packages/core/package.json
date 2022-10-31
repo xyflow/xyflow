@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/core",
-  "version": "11.1.0",
+  "version": "11.1.2",
   "description": "Core components and util functions of React Flow.",
   "keywords": [
     "react",
@@ -17,7 +17,9 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"

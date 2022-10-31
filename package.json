@@ -16,8 +16,8 @@
     "clean": "pnpm -r --parallel exec rimraf dist .turbo"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.6",
-    "@changesets/cli": "^2.24.3",
+    "@changesets/changelog-github": "^0.4.7",
+    "@changesets/cli": "^2.25.0",
     "@preconstruct/cli": "^2.2.1",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",

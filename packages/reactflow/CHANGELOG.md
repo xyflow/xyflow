@@ -1,5 +1,37 @@
 # reactflow
 
+## 11.1.2
+
+Housekeeping release with some fixes and some cleanups for the types.
+
+### Patch Changes
+
+- make pro options acc type optional
+- cleanup types
+- fix rf id handling
+- always render nodes when dragging=true
+- don't apply animations to helper edge
+- Updated dependencies:
+  - @reactflow/core@11.1.2
+  - @reactflow/background@11.0.3
+  - @reactflow/controls@11.0.3
+  - @reactflow/minimap@11.0.3
+
+## 11.1.1
+
+### Patch Changes
+
+- [`c44413d`](https://github.com/wbkd/react-flow/commit/c44413d816604ae2d6ad81ed227c3dfde1a7bd8a) Thanks [@moklick](https://github.com/moklick)! - chore(panel): dont break user selection above panel
+- [`48c402c`](https://github.com/wbkd/react-flow/commit/48c402c4d3bd9e16dc91cd4c549324e57b6d5c57) Thanks [@moklick](https://github.com/moklick)! - refactor(aria-descriptions): render when disableKeyboardA11y is true
+- [`3a1a365`](https://github.com/wbkd/react-flow/commit/3a1a365a63fc4564d9a8d96309908986fcc86f95) Thanks [@moklick](https://github.com/moklick)! - fix(useOnSelectionChange): repair hook closes #2484
+- [`5d35094`](https://github.com/wbkd/react-flow/commit/5d350942d33ded626b3387206f0b0dee368efdfb) Thanks [@neo](https://github.com/neo)! - Add css files as sideEffects
+
+- Updated dependencies:
+  - @reactflow/background@11.0.2
+  - @reactflow/core@11.1.1
+  - @reactflow/controls@11.0.2
+  - @reactflow/minimap@11.0.2
+
 ## 11.1.0
 
 ### Minor Changes

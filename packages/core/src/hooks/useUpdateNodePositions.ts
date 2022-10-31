@@ -2,8 +2,7 @@ import { useCallback } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
 import { calcNextPosition } from './useDrag/utils';
-
-import { XYPosition } from '../types';
+import type { XYPosition } from '../types';
 
 function useUpdateNodePositions() {
   const store = useStoreApi();

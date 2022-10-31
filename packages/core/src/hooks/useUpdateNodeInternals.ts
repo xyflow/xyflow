@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
-import { UpdateNodeInternals } from '../types';
+import type { UpdateNodeInternals } from '../types';
 
 function useUpdateNodeInternals(): UpdateNodeInternals {
   const store = useStoreApi();

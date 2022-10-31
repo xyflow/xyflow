@@ -6,7 +6,7 @@ export enum BackgroundVariant {
   Cross = 'cross',
 }
 
-export interface BackgroundProps {
+export type BackgroundProps = {
   color?: string;
   className?: string;
   gap?: number | [number, number];
@@ -14,4 +14,4 @@ export interface BackgroundProps {
   lineWidth?: number;
   variant?: BackgroundVariant;
   style?: CSSProperties;
-}
+};

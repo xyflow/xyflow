@@ -1,8 +1,9 @@
 import { memo } from 'react';
 
-import { SmoothStepEdgeProps, Position, XYPosition } from '../../types';
 import BaseEdge from './BaseEdge';
 import { getEdgeCenter } from './utils';
+import { Position } from '../../types';
+import type { SmoothStepEdgeProps, XYPosition } from '../../types';
 
 export interface GetSmoothStepPathParams {
   sourceX: number;

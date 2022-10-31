@@ -91,7 +91,7 @@ function Flow() {
 
 Before you can start developing please make sure that you have [pnpm](https://pnpm.io/) installed (`npm i -g pnpm`). Then install the dependencies using pnpm: `pnpm install`.
 
-For local development, you can use `pnpm dev`.
+Run `pnpm build` once and then you can use `pnpm dev` for local development.
 
 ## Testing
 

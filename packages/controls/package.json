@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/controls",
-  "version": "11.0.1",
+  "version": "11.0.3",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
     "react",
@@ -17,7 +17,9 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

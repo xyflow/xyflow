@@ -1,6 +1,6 @@
 {
   "name": "reactflow",
-  "version": "11.1.0",
+  "version": "11.1.2",
   "description": "A highly customizable React library for building node-based editors and interactive flow charts",
   "keywords": [
     "react",
@@ -17,7 +17,9 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

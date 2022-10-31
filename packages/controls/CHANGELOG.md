@@ -1,5 +1,20 @@
 # @reactflow/controls
 
+## 11.0.3
+
+### Patch Changes
+
+- cleanup types
+- Updated dependencies:
+  - @reactflow/core@11.1.2
+
+## 11.0.2
+
+### Patch Changes
+
+- Updated dependencies:
+  - @reactflow/core@11.1.1
+
 ## 11.0.1
 
 ### Patch Changes

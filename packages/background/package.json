@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/background",
-  "version": "11.0.1",
+  "version": "11.0.3",
   "description": "Background component with different variants for React Flow",
   "keywords": [
     "react",
@@ -17,7 +17,9 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "dev": "rollup --config node:@reactflow/rollup-config --watch",
     "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production",

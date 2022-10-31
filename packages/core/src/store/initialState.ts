@@ -1,4 +1,5 @@
-import { CoordinateExtent, ReactFlowStore, ConnectionMode } from '../types';
+import { ConnectionMode } from '../types';
+import type { CoordinateExtent, ReactFlowStore } from '../types';
 
 export const infiniteExtent: CoordinateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],

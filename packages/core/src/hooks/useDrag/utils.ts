@@ -1,7 +1,7 @@
-import { RefObject } from 'react';
+import type { RefObject } from 'react';
 
-import { CoordinateExtent, Node, NodeDragItem, NodeInternals, XYPosition } from '../../types';
 import { clampPosition, devWarn } from '../../utils';
+import type { CoordinateExtent, Node, NodeDragItem, NodeInternals, XYPosition } from '../../types';
 
 export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
   if (!node.parentNode) {

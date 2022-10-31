@@ -7,8 +7,8 @@ import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
-import { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
+import type { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
 
 type SelectionRect = Rect & {
   startX: number;

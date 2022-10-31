@@ -1,4 +1,5 @@
-import { useEffect, useRef, memo, ComponentType, MouseEvent, KeyboardEvent } from 'react';
+import { useEffect, useRef, memo } from 'react';
+import type { ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -7,8 +8,8 @@ import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { getMouseHandler, handleNodeClick } from './utils';
-import { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 import { elementSelectionKeys } from '../../utils';
+import type { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -1 },

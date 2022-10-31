@@ -1,7 +1,7 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { Edge, MarkerType, ReactFlowState } from '../../types';
+import type { Edge, MarkerType, ReactFlowState } from '../../types';
 
 export const getMarkerEnd = (markerType?: MarkerType, markerEndId?: string): string => {
   if (typeof markerEndId !== 'undefined' && markerEndId) {

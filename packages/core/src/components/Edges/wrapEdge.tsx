@@ -1,4 +1,5 @@
-import { memo, ComponentType, useState, useMemo, KeyboardEvent, useRef } from 'react';
+import { memo, useState, useMemo, useRef } from 'react';
+import type { ComponentType, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -7,8 +8,8 @@ import { handleMouseDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler } from './utils';
-import { EdgeProps, WrapEdgeProps, Connection } from '../../types';
 import { elementSelectionKeys } from '../../utils';
+import type { EdgeProps, WrapEdgeProps, Connection } from '../../types';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({

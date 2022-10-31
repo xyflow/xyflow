@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useStoreApi } from '../hooks/useStore';
 import useKeyPress from './useKeyPress';
 import { getConnectedEdges } from '../utils/graph';
-import { KeyCode, NodeChange, Node } from '../types';
+import type { KeyCode, NodeChange, Node } from '../types';
 
 interface HookParams {
   deleteKeyCode: KeyCode | null;

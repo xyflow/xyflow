@@ -8,39 +8,39 @@ import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';
 
-import { Position, Edge, ConnectionMode, ReactFlowState } from '../../types';
 import { GraphViewProps } from '../GraphView';
 import { devWarn } from '../../utils';
+import { ConnectionMode, Position } from '../../types';
+import type { Edge, ReactFlowState } from '../../types';
 
-interface EdgeRendererProps
-  extends Pick<
-    GraphViewProps,
-    | 'edgeTypes'
-    | 'connectionLineType'
-    | 'connectionLineType'
-    | 'connectionLineStyle'
-    | 'connectionLineComponent'
-    | 'connectionLineContainerStyle'
-    | 'connectionLineContainerStyle'
-    | 'onEdgeClick'
-    | 'onEdgeDoubleClick'
-    | 'defaultMarkerColor'
-    | 'onlyRenderVisibleElements'
-    | 'onEdgeUpdate'
-    | 'onEdgeContextMenu'
-    | 'onEdgeMouseEnter'
-    | 'onEdgeMouseMove'
-    | 'onEdgeMouseLeave'
-    | 'onEdgeUpdateStart'
-    | 'onEdgeUpdateEnd'
-    | 'edgeUpdaterRadius'
-    | 'noPanClassName'
-    | 'elevateEdgesOnSelect'
-    | 'rfId'
-    | 'disableKeyboardA11y'
-  > {
+type EdgeRendererProps = Pick<
+  GraphViewProps,
+  | 'edgeTypes'
+  | 'connectionLineType'
+  | 'connectionLineType'
+  | 'connectionLineStyle'
+  | 'connectionLineComponent'
+  | 'connectionLineContainerStyle'
+  | 'connectionLineContainerStyle'
+  | 'onEdgeClick'
+  | 'onEdgeDoubleClick'
+  | 'defaultMarkerColor'
+  | 'onlyRenderVisibleElements'
+  | 'onEdgeUpdate'
+  | 'onEdgeContextMenu'
+  | 'onEdgeMouseEnter'
+  | 'onEdgeMouseMove'
+  | 'onEdgeMouseLeave'
+  | 'onEdgeUpdateStart'
+  | 'onEdgeUpdateEnd'
+  | 'edgeUpdaterRadius'
+  | 'noPanClassName'
+  | 'elevateEdgesOnSelect'
+  | 'rfId'
+  | 'disableKeyboardA11y'
+> & {
   elevateEdgesOnSelect: boolean;
-}
+};
 
 const selector = (s: ReactFlowState) => ({
   connectionNodeId: s.connectionNodeId,
