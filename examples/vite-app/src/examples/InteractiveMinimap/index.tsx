@@ -118,6 +118,10 @@ const BasicFlow = () => {
     console.log(pos);
   }, []);
 
+  const onMiniMapNodeClick = useCallback((event: MouseEvent, node: Node) => {
+    console.log(node);
+  }, []);
+
   return (
     <ReactFlow
       defaultNodes={initialNodes}
@@ -133,7 +137,7 @@ const BasicFlow = () => {
       fitView
     >
       <Background variant={BackgroundVariant.Dots} />
-      <MiniMap onClick={onMiniMapClick} />
+      <MiniMap onClick={onMiniMapClick} onNodeClick={onMiniMapNodeClick} />
       <Controls />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>

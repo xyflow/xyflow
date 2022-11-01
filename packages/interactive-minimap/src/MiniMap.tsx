@@ -47,6 +47,7 @@ function MiniMap({
   maskColor = 'rgb(200, 200, 200, 0.9)',
   position = 'bottom-right',
   onClick,
+  onNodeClick,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -114,8 +115,19 @@ function MiniMap({
           d3Zoom.transform(d3Selection, nextTransform);
         });
       selection.call(zoomHandler);
+
+      return () => {
+        selection.on('.zoom', null);
+      };
     }
   }, []);
+
+  const onSvgNodeClick = onNodeClick
+    ? (event: MouseEvent, nodeId: string) => {
+        const node = store.getState().nodeInternals.get(nodeId)!;
+        onNodeClick(event, node);
+      }
+    : undefined;
 
   return (
     <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
@@ -144,6 +156,8 @@ function MiniMap({
               strokeColor={nodeStrokeColorFunc(node)}
               strokeWidth={nodeStrokeWidth}
               shapeRendering={shapeRendering}
+              onClick={onSvgNodeClick}
+              id={node.id}
             />
           );
         })}
