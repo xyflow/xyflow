@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -7,6 +7,7 @@ import ReactFlow, {
   Node,
   Edge,
   useReactFlow,
+  XYPosition,
 } from 'reactflow';
 import { MiniMap } from '@reactflow/interactive-minimap';
 
@@ -113,6 +114,10 @@ const BasicFlow = () => {
     );
   };
 
+  const onMiniMapClick = useCallback((event: MouseEvent, pos: XYPosition) => {
+    console.log(pos);
+  }, []);
+
   return (
     <ReactFlow
       defaultNodes={initialNodes}
@@ -128,7 +133,7 @@ const BasicFlow = () => {
       fitView
     >
       <Background variant={BackgroundVariant.Dots} />
-      <MiniMap />
+      <MiniMap onClick={onMiniMapClick} />
       <Controls />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
