@@ -187,6 +187,8 @@ importers:
       '@reactflow/eslint-config': workspace:^0.0.0
       '@reactflow/rollup-config': workspace:*
       '@reactflow/tsconfig': workspace:*
+      '@types/d3-selection': ^3.0.3
+      '@types/d3-zoom': ^3.0.1
       '@types/node': ^18.7.16
       '@types/react': ^18.0.19
       classcat: ^5.0.3
@@ -198,6 +200,8 @@ importers:
     dependencies:
       '@babel/runtime': registry.npmjs.org/@babel/runtime/7.19.0
       '@reactflow/core': link:../core
+      '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.3
+      '@types/d3-zoom': registry.npmjs.org/@types/d3-zoom/3.0.1
       classcat: registry.npmjs.org/classcat/5.0.4
       d3-selection: registry.npmjs.org/d3-selection/3.0.0
       d3-zoom: registry.npmjs.org/d3-zoom/3.0.0
