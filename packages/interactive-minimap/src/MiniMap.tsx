@@ -5,7 +5,7 @@ import shallow from 'zustand/shallow';
 import { zoom, D3ZoomEvent, zoomIdentity } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 
-import { useStore, getRectOfNodes, ReactFlowState, Rect, Panel, getBoundsOfRects, useStoreApi } from '@reactflow/core';
+import { useStore, getRectOfNodes, Panel, getBoundsOfRects, useStoreApi, ReactFlowState, Rect } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
 import { MiniMapProps, GetMiniMapNodeAttribute } from './types';
@@ -29,8 +29,6 @@ const selector = (s: ReactFlowState) => {
     viewBB,
     boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB,
     rfId: s.rfId,
-    width: s.width,
-    height: s.height,
   };
 };
 
@@ -52,7 +50,7 @@ function MiniMap({
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, nodes, rfId, width: w, height: h } = useStore(selector, shallow);
+  const { boundingRect, viewBB, nodes, rfId } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -72,7 +70,7 @@ function MiniMap({
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
   const viewScaleRef = useRef(0);
 
-  viewScaleRef.current = Math.max(w / elementWidth, h / elementHeight);
+  viewScaleRef.current = viewScale;
 
   const onSvgClick = (event: MouseEvent) => {
     const rfCoord = pointer(event);
@@ -106,14 +104,12 @@ function MiniMap({
             return;
           }
 
-          let nextTransform = null;
-
           const position = {
             x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * transform[2],
             y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * transform[2],
           };
 
-          nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
+          const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
 
           d3Zoom.transform(d3Selection, nextTransform);
         });
