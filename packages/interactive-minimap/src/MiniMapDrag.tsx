@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, MouseEvent, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 import { zoom, D3ZoomEvent, zoomIdentity } from 'd3-zoom';
-import { select, pointer } from 'd3-selection';
+import { select } from 'd3-selection';
 import {
   useStore,
   getRectOfNodes,
@@ -13,6 +13,7 @@ import {
   getBoundsOfRects,
   useStoreApi,
   useReactFlow,
+  XYPosition,
 } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
@@ -37,8 +38,6 @@ const selector = (s: ReactFlowState) => {
     viewBB,
     boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB,
     rfId: s.rfId,
-    width: s.width,
-    height: s.height,
   };
 };
 
@@ -50,16 +49,17 @@ function MiniMap({
   style,
   className,
   nodeStrokeColor = '#555',
-  nodeColor = '#999',
+  nodeColor = '#fff',
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
-  maskColor = 'rgb(200, 200, 200, 0.9)',
+  maskColor = 'rgb(240, 242, 243, 0.7)',
   position = 'bottom-right',
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, nodes, rfId, width: w, height: h } = useStore(selector, shallow);
+  const initialized = useRef(false);
+  const { boundingRect, viewBB, nodes, rfId } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -77,27 +77,33 @@ function MiniMap({
   const height = viewHeight + offset * 2;
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
-  const { setCenter, setViewport, project } = useReactFlow();
-  const startTransform = useRef<[number, number]>([0, 0]);
+  const { setCenter } = useReactFlow();
+  const startTransform = useRef<XYPosition>({ x: 0, y: 0 });
   const viewScaleRef = useRef(0);
+  const viewScaleWRef = useRef(0);
+  const viewScaleHRef = useRef(0);
 
-  viewScaleRef.current = Math.max(w / elementWidth, h / elementHeight);
-
-  const onClick = (event: MouseEvent) => {
-    const rfCoord = pointer(event);
-
-    console.log(rfCoord);
-  };
+  viewScaleRef.current = viewScale;
+  viewScaleWRef.current = scaledWidth;
+  viewScaleHRef.current = scaledHeight;
 
   useEffect(() => {
-    if (svg.current) {
+    if (!initialized.current && svg.current) {
+      const bounds = svg.current.getBoundingClientRect() || { left: 0, top: 0 };
+
       const selection = select(svg.current as Element);
 
       const zoomHandler = zoom()
         .on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-          const rfCoord = pointer(event);
+          const { transform } = store.getState();
 
-          startTransform.current = rfCoord;
+          const px = (event.sourceEvent.clientX - bounds.left) * viewScaleRef.current;
+          const py = (event.sourceEvent.clientY - bounds.top) * viewScaleRef.current;
+
+          startTransform.current = {
+            x: px - transform[0] / transform[2],
+            y: py - transform[1] / transform[2],
+          };
         })
         .on('zoom.wheel', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           const { transform, d3Selection, d3Zoom } = store.getState();
@@ -111,26 +117,29 @@ function MiniMap({
             (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
             10;
           const zoom = transform[2] * Math.pow(2, pinchDelta);
-
-          d3Zoom.scaleTo(d3Selection, zoom, startTransform.current);
+          d3Zoom.scaleTo(d3Selection, zoom, [startTransform.current.x, startTransform.current.y]);
         })
         .on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-          const { transform, d3Selection, d3Zoom } = store.getState();
-          if (event.sourceEvent.type !== 'mousemove' || !d3Selection || !d3Zoom) {
+          if (event.sourceEvent.type !== 'mousemove') {
             return;
           }
 
+          const { transform, d3Selection, d3Zoom } = store.getState();
+          const px = (event.sourceEvent.clientX - bounds.left) * viewScaleRef.current;
+          const py = (event.sourceEvent.clientY - bounds.top) * viewScaleRef.current;
+
           const position = {
-            x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * transform[2],
-            y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * transform[2],
+            x: (px - startTransform.current.x) * transform[2],
+            y: (py - startTransform.current.y) * transform[2],
           };
 
           const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
-          d3Zoom.transform(d3Selection, nextTransform);
+          d3Zoom!.transform(d3Selection!, nextTransform);
         });
       selection.call(zoomHandler);
+      initialized.current = true;
     }
-  }, [setCenter, setViewport, project]);
+  }, [setCenter]);
 
   return (
     <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
@@ -141,7 +150,6 @@ function MiniMap({
         role="img"
         aria-labelledby={labelledBy}
         ref={svg}
-        onClick={onClick}
       >
         <title id={labelledBy}>React Flow mini map</title>
         {nodes.map((node) => {

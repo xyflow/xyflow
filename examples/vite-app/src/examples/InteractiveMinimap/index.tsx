@@ -17,35 +17,70 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const initialNodes: Node[] = [
   {
     id: '1',
-    type: 'input',
     data: { label: 'Node 1' },
     position: { x: 0, y: 0 },
-    className: 'light',
   },
   {
     id: '2',
     data: { label: 'Node 2' },
     position: { x: 0, y: 200 },
-    className: 'light',
   },
   {
     id: '3',
     data: { label: 'Node 3' },
-    position: { x: 200, y: 200 },
-    className: 'light',
+    position: { x: 200, y: 0 },
   },
+
   {
     id: '4',
     data: { label: 'Node 4' },
-    position: { x: 200, y: 400 },
-    className: 'light',
+    position: { x: 1000, y: 0 },
+  },
+  {
+    id: '5',
+    data: { label: 'Node 5' },
+    position: { x: 1000, y: 200 },
+  },
+  {
+    id: '6',
+    data: { label: 'Node 6' },
+    position: { x: 800, y: 0 },
+  },
+
+  {
+    id: '7',
+    data: { label: 'Node 4' },
+    position: { x: 0, y: 1000 },
+  },
+  {
+    id: '8',
+    data: { label: 'Node 5' },
+    position: { x: 0, y: 800 },
+  },
+  {
+    id: '9',
+    data: { label: 'Node 6' },
+    position: { x: 200, y: 1000 },
+  },
+
+  {
+    id: '10',
+    data: { label: 'Node 4' },
+    position: { x: 1000, y: 1000 },
+  },
+  {
+    id: '11',
+    data: { label: 'Node 5' },
+    position: { x: 800, y: 1000 },
+  },
+  {
+    id: '12',
+    data: { label: 'Node 6' },
+    position: { x: 1000, y: 800 },
   },
 ];
 
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3' },
-];
+const initialEdges: Edge[] = [];
 
 const defaultEdgeOptions = { zIndex: 0 };
 
