@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
+import type { MouseEvent } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
-import { useStore, getRectOfNodes, getBoundsOfRects, Panel } from '@reactflow/core';
+import { zoom, zoomIdentity } from 'd3-zoom';
+import type { D3ZoomEvent } from 'd3-zoom';
+import { select, pointer } from 'd3-selection';
+import { useStore, getRectOfNodes, Panel, getBoundsOfRects, useStoreApi } from '@reactflow/core';
 import type { ReactFlowState, Rect } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
@@ -44,7 +48,13 @@ function MiniMap({
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 242, 243, 0.7)',
   position = 'bottom-right',
+  onClick,
+  onNodeClick,
+  pannable = false,
+  zoomable = false,
 }: MiniMapProps) {
+  const store = useStoreApi();
+  const svg = useRef<SVGSVGElement>(null);
   const { boundingRect, viewBB, nodes, rfId } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
@@ -63,6 +73,68 @@ function MiniMap({
   const height = viewHeight + offset * 2;
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
+  const viewScaleRef = useRef(0);
+
+  viewScaleRef.current = viewScale;
+
+  useEffect(() => {
+    if (svg.current) {
+      const selection = select(svg.current as Element);
+
+      const zoomHandler = zoom()
+        .on('zoom.wheel', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          const { transform, d3Selection, d3Zoom } = store.getState();
+
+          if (event.sourceEvent.type !== 'wheel' || !zoomable || !d3Selection || !d3Zoom) {
+            return;
+          }
+
+          const pinchDelta =
+            -event.sourceEvent.deltaY *
+            (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
+            10;
+          const zoom = transform[2] * Math.pow(2, pinchDelta);
+
+          d3Zoom.scaleTo(d3Selection, zoom);
+        })
+        .on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          const { transform, d3Selection, d3Zoom } = store.getState();
+
+          if (event.sourceEvent.type !== 'mousemove' || !pannable || !d3Selection || !d3Zoom) {
+            return;
+          }
+
+          // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
+          const position = {
+            x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
+            y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
+          };
+
+          const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
+
+          d3Zoom.transform(d3Selection, nextTransform);
+        });
+      selection.call(zoomHandler);
+
+      return () => {
+        selection.on('.zoom', null);
+      };
+    }
+  }, [pannable, zoomable]);
+
+  const onSvgClick = onClick
+    ? (event: MouseEvent) => {
+        const rfCoord = pointer(event);
+        onClick(event, { x: rfCoord[0], y: rfCoord[1] });
+      }
+    : undefined;
+
+  const onSvgNodeClick = onNodeClick
+    ? (event: MouseEvent, nodeId: string) => {
+        const node = store.getState().nodeInternals.get(nodeId)!;
+        onNodeClick(event, node);
+      }
+    : undefined;
 
   return (
     <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
@@ -72,6 +144,8 @@ function MiniMap({
         viewBox={`${x} ${y} ${width} ${height}`}
         role="img"
         aria-labelledby={labelledBy}
+        ref={svg}
+        onClick={onSvgClick}
       >
         <title id={labelledBy}>React Flow mini map</title>
         {nodes.map((node) => {
@@ -89,6 +163,8 @@ function MiniMap({
               strokeColor={nodeStrokeColorFunc(node)}
               strokeWidth={nodeStrokeWidth}
               shapeRendering={shapeRendering}
+              onClick={onSvgNodeClick}
+              id={node.id}
             />
           );
         })}

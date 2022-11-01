@@ -1,5 +1,6 @@
 import { MouseEvent, useCallback } from 'react';
 import ReactFlow, {
+  MiniMap,
   Background,
   BackgroundVariant,
   Controls,
@@ -9,7 +10,6 @@ import ReactFlow, {
   useReactFlow,
   XYPosition,
 } from 'reactflow';
-import { MiniMap } from '@reactflow/interactive-minimap';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
@@ -137,7 +137,7 @@ const BasicFlow = () => {
       fitView
     >
       <Background variant={BackgroundVariant.Dots} />
-      <MiniMap onClick={onMiniMapClick} onNodeClick={onMiniMapNodeClick} />
+      <MiniMap onClick={onMiniMapClick} onNodeClick={onMiniMapNodeClick} pannable zoomable />
       <Controls />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
