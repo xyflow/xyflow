@@ -19,8 +19,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "reactflow": "workspace:*",
-    "@reactflow/interactive-minimap": "workspace:*"
+    "reactflow": "workspace:*"
   },
   "devDependencies": {
     "@cypress/skip-test": "^2.6.1",
