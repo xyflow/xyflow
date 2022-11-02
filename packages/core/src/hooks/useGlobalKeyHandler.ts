@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
 import useKeyPress from './useKeyPress';
-import { getConnectedEdges } from '../utils/graph';
-import type { KeyCode, NodeChange, Node } from '../types';
-
+import type { KeyCode } from '../types';
+import useReactFlow from './useReactFlow';
 interface HookParams {
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
@@ -12,87 +11,18 @@ interface HookParams {
 
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
+  const { deleteElements } = useReactFlow();
+
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {
-    if (!deleteKeyPressed) {
-      return;
-    }
-
-    const {
-      nodeInternals,
-      edges,
-      hasDefaultNodes,
-      hasDefaultEdges,
-      onNodesDelete,
-      onEdgesDelete,
-      onNodesChange,
-      onEdgesChange,
-    } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
-    const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
-      const parentSelected = !node.selected && node.parentNode && res.find((n) => n.id === node.parentNode);
-      const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
-      if (deletable && (node.selected || parentSelected)) {
-        res.push(node);
-      }
-
-      return res;
-    }, []);
-    const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
-    const selectedEdges = deletableEdges.filter((e) => e.selected);
-
-    if (nodesToRemove || selectedEdges) {
-      const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
-      const edgesToRemove = [...selectedEdges, ...connectedEdges];
-      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
-        if (!res.includes(edge.id)) {
-          res.push(edge.id);
-        }
-        return res;
-      }, []);
-
-      if (hasDefaultEdges || hasDefaultNodes) {
-        if (hasDefaultEdges) {
-          store.setState({
-            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
-          });
-        }
-
-        if (hasDefaultNodes) {
-          nodesToRemove.forEach((node) => {
-            nodeInternals.delete(node.id);
-          });
-
-          store.setState({
-            nodeInternals: new Map(nodeInternals),
-          });
-        }
-      }
-
-      if (edgeIdsToRemove.length > 0) {
-        onEdgesDelete?.(edgesToRemove);
-
-        if (onEdgesChange) {
-          onEdgesChange(
-            edgeIdsToRemove.map((id) => ({
-              id,
-              type: 'remove',
-            }))
-          );
-        }
-      }
-
-      if (nodesToRemove.length > 0) {
-        onNodesDelete?.(nodesToRemove);
-
-        if (onNodesChange) {
-          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
-          onNodesChange(nodeChanges);
-        }
-      }
-
+    if (deleteKeyPressed) {
+      const { nodeInternals, edges } = store.getState();
+      const nodes = Array.from(nodeInternals.values());
+      const selectedNodes = nodes.filter((node) => node.selected);
+      const selectedEdges = edges.filter((edge) => edge.selected);
+      deleteElements({nodes: selectedNodes, edges: selectedEdges});
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);
