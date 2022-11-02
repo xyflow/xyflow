@@ -13,8 +13,10 @@ import type {
   EdgeRemoveChange,
   NodeChange,
   Node,
+  Rect,
 } from '../types';
 import { getConnectedEdges } from '../utils/graph';
+import { getOverlappingArea, isRectObject, nodeToRect } from '../utils';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
@@ -191,6 +193,63 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     }
   }, []);
 
+  const getNodeRect = useCallback(
+    (
+      nodeOrRect: (Partial<Node<NodeData>> & { id: Node['id'] }) | Rect
+    ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
+      const isRect = isRectObject(nodeOrRect);
+      const node = isRect ? null : store.getState().nodeInternals.get(nodeOrRect.id);
+
+      if (!isRect && !node) {
+        [null, null, isRect];
+      }
+
+      const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
+
+      return [nodeRect, node, isRect];
+    },
+    []
+  );
+
+  const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeData>>(
+    (nodeOrRect, partially = true, nodes) => {
+      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return [];
+      }
+
+      return (nodes || Array.from(store.getState().nodeInternals.values())).filter((n) => {
+        if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
+          return false;
+        }
+
+        const currNodeRect = nodeToRect(n);
+        const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+        const partiallyVisible = partially && overlappingArea > 0;
+
+        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      });
+    },
+    []
+  );
+
+  const isNodeIntersecting = useCallback<Instance.IsNodeIntersecting<NodeData>>(
+    (nodeOrRect, area, partially = true) => {
+      const [nodeRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return false;
+      }
+
+      const overlappingArea = getOverlappingArea(nodeRect, area);
+      const partiallyVisible = partially && overlappingArea > 0;
+
+      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+    },
+    []
+  );
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -204,6 +263,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       addEdges,
       toObject,
       deleteElements,
+      getIntersectingNodes,
+      isNodeIntersecting,
     };
   }, [
     viewportHelper,
@@ -217,5 +278,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     addEdges,
     toObject,
     deleteElements,
+    getIntersectingNodes,
+    isNodeIntersecting,
   ]);
 }

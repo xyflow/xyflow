@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Selection as D3Selection } from 'd3';
 
-import { boxToRect, clamp, devWarn, getBoundsOfBoxes, rectToBox } from '../utils';
+import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from '../utils';
 import type { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -161,12 +161,12 @@ export const getNodesInside = (
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false
 ): Node[] => {
-  const rBox = rectToBox({
+  const paneRect = {
     x: (rect.x - tx) / tScale,
     y: (rect.y - ty) / tScale,
     width: rect.width / tScale,
     height: rect.height / tScale,
-  });
+  };
 
   const visibleNodes: Node[] = [];
 
@@ -177,10 +177,8 @@ export const getNodesInside = (
       return false;
     }
 
-    const nBox = rectToBox({ ...positionAbsolute, width: width || 0, height: height || 0 });
-    const xOverlap = Math.max(0, Math.min(rBox.x2, nBox.x2) - Math.max(rBox.x, nBox.x));
-    const yOverlap = Math.max(0, Math.min(rBox.y2, nBox.y2) - Math.max(rBox.y, nBox.y));
-    const overlappingArea = Math.ceil(xOverlap * yOverlap);
+    const nodeRect = { ...positionAbsolute, width: width || 0, height: height || 0 };
+    const overlappingArea = getOverlappingArea(paneRect, nodeRect);
     const notInitialized =
       typeof width === 'undefined' || typeof height === 'undefined' || width === null || height === null;
 
