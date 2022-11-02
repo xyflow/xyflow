@@ -10,11 +10,13 @@ import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
 import DragNDrop from '../examples/DragNDrop';
 import Edges from '../examples/Edges';
+import EdgeRenderer from '../examples/EdgeRenderer';
 import EdgeTypes from '../examples/EdgeTypes';
 import Empty from '../examples/Empty';
 import FloatingEdges from '../examples/FloatingEdges';
 import Hidden from '../examples/Hidden';
 import Interaction from '../examples/Interaction';
+import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
 import NestedNodes from '../examples/NestedNodes';
@@ -36,6 +38,7 @@ import Validation from '../examples/Validation';
 import UseKeyPress from '../examples/UseKeyPress';
 import EdgeRouting from '../examples/EdgeRouting';
 import CancelConnection from '../examples/CancelConnection';
+import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 
 interface IRoute {
@@ -96,6 +99,11 @@ const routes: IRoute[] = [
     component: Edges,
   },
   {
+    name: 'Edge Renderer',
+    path: '/edge-renderer',
+    component: EdgeRenderer,
+  },
+  {
     name: 'Edge Types',
     path: '/edge-types',
     component: EdgeTypes,
@@ -124,6 +132,16 @@ const routes: IRoute[] = [
     name: 'Interaction',
     path: '/interaction',
     component: Interaction,
+  },
+  {
+    name: 'Intersection',
+    path: '/intersection',
+    component: Intersection,
+  },
+  {
+    name: 'Interactive Minimap',
+    path: '/interactive-minimap',
+    component: InteractiveMinimap,
   },
   {
     name: 'Layouting',

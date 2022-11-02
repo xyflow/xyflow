@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/minimap",
-  "version": "11.0.3",
+  "version": "11.1.0",
   "description": "Minimap component for React Flow.",
   "keywords": [
     "react",
@@ -40,7 +40,11 @@
   "dependencies": {
     "@babel/runtime": "^7.18.9",
     "@reactflow/core": "workspace:*",
+    "@types/d3-selection": "^3.0.3",
+    "@types/d3-zoom": "^3.0.1",
     "classcat": "^5.0.3",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0",
     "zustand": "^4.1.1"
   },
   "peerDependencies": {

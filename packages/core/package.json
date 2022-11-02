@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/core",
-  "version": "11.1.2",
+  "version": "11.2.0",
   "description": "Core components and util functions of React Flow.",
   "keywords": [
     "react",
@@ -58,6 +58,7 @@
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
     "react": "^18.2.0",
     "typescript": "^4.8.3"
   },

@@ -160,7 +160,7 @@ const NestedFlow = () => {
       maxZoom={4}
       onlyRenderVisibleElements={false}
     >
-      <MiniMap />
+      <MiniMap pannable />
       <Controls />
       <Background />
 

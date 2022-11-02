@@ -11,7 +11,12 @@ import type {
   EdgeResetChange,
   NodeRemoveChange,
   EdgeRemoveChange,
+  NodeChange,
+  Node,
+  Rect,
 } from '../types';
+import { getConnectedEdges } from '../utils/graph';
+import { getOverlappingArea, isRectObject, nodeToRect } from '../utils';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
@@ -111,6 +116,140 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     };
   }, []);
 
+  const deleteElements = useCallback<Instance.DeleteElements>(({ nodes: nodesDeleted, edges: edgesDeleted }) => {
+    const {
+      nodeInternals,
+      edges,
+      hasDefaultNodes,
+      hasDefaultEdges,
+      onNodesDelete,
+      onEdgesDelete,
+      onNodesChange,
+      onEdgesChange,
+    } = store.getState();
+    const nodes = Array.from(nodeInternals.values());
+    const nodeIds = (nodesDeleted || []).map((node) => node.id);
+    const edgeIds = (edgesDeleted || []).map((edge) => edge.id);
+    const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
+      const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
+      const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
+      if (deletable && (nodeIds.includes(node.id) || parentHit)) {
+        res.push(node);
+      }
+
+      return res;
+    }, []);
+    const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
+    const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
+    if (nodesToRemove || initialHitEdges) {
+      const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
+      const edgesToRemove = [...initialHitEdges, ...connectedEdges];
+      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
+        if (!res.includes(edge.id)) {
+          res.push(edge.id);
+        }
+        return res;
+      }, []);
+
+      if (hasDefaultEdges || hasDefaultNodes) {
+        if (hasDefaultEdges) {
+          store.setState({
+            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
+          });
+        }
+
+        if (hasDefaultNodes) {
+          nodesToRemove.forEach((node) => {
+            nodeInternals.delete(node.id);
+          });
+
+          store.setState({
+            nodeInternals: new Map(nodeInternals),
+          });
+        }
+      }
+
+      if (edgeIdsToRemove.length > 0) {
+        onEdgesDelete?.(edgesToRemove);
+
+        if (onEdgesChange) {
+          onEdgesChange(
+            edgeIdsToRemove.map((id) => ({
+              id,
+              type: 'remove',
+            }))
+          );
+        }
+      }
+
+      if (nodesToRemove.length > 0) {
+        onNodesDelete?.(nodesToRemove);
+
+        if (onNodesChange) {
+          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
+          onNodesChange(nodeChanges);
+        }
+      }
+    }
+  }, []);
+
+  const getNodeRect = useCallback(
+    (
+      nodeOrRect: (Partial<Node<NodeData>> & { id: Node['id'] }) | Rect
+    ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
+      const isRect = isRectObject(nodeOrRect);
+      const node = isRect ? null : store.getState().nodeInternals.get(nodeOrRect.id);
+
+      if (!isRect && !node) {
+        [null, null, isRect];
+      }
+
+      const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
+
+      return [nodeRect, node, isRect];
+    },
+    []
+  );
+
+  const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeData>>(
+    (nodeOrRect, partially = true, nodes) => {
+      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return [];
+      }
+
+      return (nodes || Array.from(store.getState().nodeInternals.values())).filter((n) => {
+        if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
+          return false;
+        }
+
+        const currNodeRect = nodeToRect(n);
+        const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+        const partiallyVisible = partially && overlappingArea > 0;
+
+        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      });
+    },
+    []
+  );
+
+  const isNodeIntersecting = useCallback<Instance.IsNodeIntersecting<NodeData>>(
+    (nodeOrRect, area, partially = true) => {
+      const [nodeRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return false;
+      }
+
+      const overlappingArea = getOverlappingArea(nodeRect, area);
+      const partiallyVisible = partially && overlappingArea > 0;
+
+      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+    },
+    []
+  );
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -123,6 +262,23 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       addNodes,
       addEdges,
       toObject,
+      deleteElements,
+      getIntersectingNodes,
+      isNodeIntersecting,
     };
-  }, [viewportHelper, getNodes, getNode, getEdges, getEdge, setNodes, setEdges, addNodes, addEdges, toObject]);
+  }, [
+    viewportHelper,
+    getNodes,
+    getNode,
+    getEdges,
+    getEdge,
+    setNodes,
+    setEdges,
+    addNodes,
+    addEdges,
+    toObject,
+    deleteElements,
+    getIntersectingNodes,
+    isNodeIntersecting,
+  ]);
 }
