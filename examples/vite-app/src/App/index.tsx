@@ -36,6 +36,7 @@ import Validation from '../examples/Validation';
 import UseKeyPress from '../examples/UseKeyPress';
 import EdgeRouting from '../examples/EdgeRouting';
 import CancelConnection from '../examples/CancelConnection';
+import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 
 interface IRoute {
@@ -124,6 +125,11 @@ const routes: IRoute[] = [
     name: 'Interaction',
     path: '/interaction',
     component: Interaction,
+  },
+  {
+    name: 'Interactive Minimap',
+    path: '/interactive-minimap',
+    component: InteractiveMinimap,
   },
   {
     name: 'Layouting',
