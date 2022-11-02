@@ -1,4 +1,4 @@
-import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect } from '../types';
+import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
@@ -36,8 +36,24 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   height: y2 - y,
 });
 
+export const nodeToRect = (node: Node): Rect => ({
+  ...(node.positionAbsolute || { x: 0, y: 0 }),
+  width: node.width || 0,
+  height: node.height || 0,
+});
+
 export const getBoundsOfRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
+
+export const getOverlappingArea = (rectA: Rect, rectB: Rect): number => {
+  const xOverlap = Math.max(0, Math.min(rectA.x + rectA.width, rectB.x + rectB.width) - Math.max(rectA.x, rectB.x));
+  const yOverlap = Math.max(0, Math.min(rectA.y + rectA.height, rectB.y + rectB.height) - Math.max(rectA.y, rectB.y));
+
+  return Math.ceil(xOverlap * yOverlap);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isRectObject = (obj: any): obj is Rect => !!obj.width && !!obj.height && !!obj.x && !!obj.y;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);

@@ -16,6 +16,7 @@ import Empty from '../examples/Empty';
 import FloatingEdges from '../examples/FloatingEdges';
 import Hidden from '../examples/Hidden';
 import Interaction from '../examples/Interaction';
+import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
 import NestedNodes from '../examples/NestedNodes';
@@ -131,6 +132,11 @@ const routes: IRoute[] = [
     name: 'Interaction',
     path: '/interaction',
     component: Interaction,
+  },
+  {
+    name: 'Intersection',
+    path: '/intersection',
+    component: Intersection,
   },
   {
     name: 'Interactive Minimap',
