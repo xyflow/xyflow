@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useEffect, useRef } from 'react';
 import type { MouseEvent } from 'react';
@@ -41,12 +42,12 @@ const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 function MiniMap({
   style,
   className,
-  nodeStrokeColor = '#555',
-  nodeColor = '#fff',
+  nodeStrokeColor = 'transparent',
+  nodeColor = '#e2e2e2',
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
-  maskColor = 'rgb(240, 242, 243, 0.7)',
+  maskColor = 'rgb(240, 240, 240, 0.6)',
   position = 'bottom-right',
   onClick,
   onNodeClick,
@@ -81,43 +82,50 @@ function MiniMap({
     if (svg.current) {
       const selection = select(svg.current as Element);
 
-      const zoomHandler = zoom()
-        .on('zoom.wheel', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-          const { transform, d3Selection, d3Zoom } = store.getState();
+      const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
+        const { transform, d3Selection, d3Zoom } = store.getState();
 
-          if (event.sourceEvent.type !== 'wheel' || !zoomable || !d3Selection || !d3Zoom) {
-            return;
-          }
+        if (event.sourceEvent.type !== 'wheel' || !d3Selection || !d3Zoom) {
+          return;
+        }
 
-          const pinchDelta =
-            -event.sourceEvent.deltaY *
-            (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-            10;
-          const zoom = transform[2] * Math.pow(2, pinchDelta);
+        const pinchDelta =
+          -event.sourceEvent.deltaY *
+          (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
+          10;
+        const zoom = transform[2] * Math.pow(2, pinchDelta);
 
-          d3Zoom.scaleTo(d3Selection, zoom);
-        })
-        .on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-          const { transform, d3Selection, d3Zoom } = store.getState();
+        d3Zoom.scaleTo(d3Selection, zoom);
+      };
 
-          if (event.sourceEvent.type !== 'mousemove' || !pannable || !d3Selection || !d3Zoom) {
-            return;
-          }
+      const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
+        const { transform, d3Selection, d3Zoom } = store.getState();
 
-          // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
-          const position = {
-            x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
-            y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
-          };
+        if (event.sourceEvent.type !== 'mousemove' || !d3Selection || !d3Zoom) {
+          return;
+        }
 
-          const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
+        // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
+        const position = {
+          x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
+          y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
+        };
 
-          d3Zoom.transform(d3Selection, nextTransform);
-        });
-      selection.call(zoomHandler);
+        const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
+
+        d3Zoom.transform(d3Selection, nextTransform);
+      };
+
+      const zoomAndPanHandler = zoom()
+        // @ts-ignore
+        .on('zoom', pannable ? panHandler : null)
+        // @ts-ignore
+        .on('zoom.wheel', zoomable ? zoomHandler : null);
+
+      selection.call(zoomAndPanHandler);
 
       return () => {
-        selection.on('.zoom', null);
+        selection.on('zoom', null);
       };
     }
   }, [pannable, zoomable]);
