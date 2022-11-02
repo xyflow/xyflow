@@ -10,6 +10,7 @@ import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
 import DragNDrop from '../examples/DragNDrop';
 import Edges from '../examples/Edges';
+import EdgeRenderer from '../examples/EdgeRenderer';
 import EdgeTypes from '../examples/EdgeTypes';
 import Empty from '../examples/Empty';
 import FloatingEdges from '../examples/FloatingEdges';
@@ -94,6 +95,11 @@ const routes: IRoute[] = [
     name: 'Edges',
     path: '/edges',
     component: Edges,
+  },
+  {
+    name: 'Edge Renderer',
+    path: '/edge-renderer',
+    component: EdgeRenderer,
   },
   {
     name: 'Edge Types',
