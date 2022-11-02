@@ -152,6 +152,7 @@ importers:
       '@types/d3-zoom': ^3.0.1
       '@types/node': ^18.7.16
       '@types/react': ^18.0.17
+      '@types/react-dom': ^18.0.6
       classcat: ^5.0.3
       d3-drag: ^3.0.0
       d3-selection: ^3.0.0
@@ -175,6 +176,7 @@ importers:
       '@reactflow/tsconfig': link:../../tooling/tsconfig
       '@types/node': registry.npmjs.org/@types/node/18.7.16
       '@types/react': registry.npmjs.org/@types/react/18.0.19
+      '@types/react-dom': registry.npmjs.org/@types/react-dom/18.0.6
       react: registry.npmjs.org/react/18.2.0
       typescript: registry.npmjs.org/typescript/4.8.3
 
