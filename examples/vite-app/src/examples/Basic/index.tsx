@@ -106,7 +106,7 @@ const BasicFlow = () => {
         <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
           toggle classnames
         </button>
-        <button onClick={logToObject}>toObject</button>
+        <button onClick={logToObject} style={{ marginRight: 5 }}>toObject</button>
       </div>
     </ReactFlow>
   );
