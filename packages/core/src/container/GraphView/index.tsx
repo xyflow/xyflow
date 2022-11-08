@@ -6,6 +6,7 @@ import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
 import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
+import { getEdgeLabelRendererId } from '../../utils/graph';
 
 export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
   Required<
@@ -158,7 +159,7 @@ const GraphView = ({
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
         />
-        <div className="react-flow__edgelabel-renderer" id="edgelabel-portal" />
+        <div className="react-flow__edgelabel-renderer" id={getEdgeLabelRendererId(rfId)} />
 
         <NodeRenderer
           nodeTypes={nodeTypes}
