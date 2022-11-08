@@ -85,6 +85,7 @@ function Flow() {
     </ReactFlow>
   );
 }
+export default Flow;
 ```
 
 ## Development
