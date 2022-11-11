@@ -31,7 +31,6 @@ describe('<ReactFlow />: Multiple Instances', () => {
               defaultNodes={simpleflow1.nodes}
               edgeTypes={{ default: CustomEdge }}
               defaultEdges={simpleflow1.edges}
-              id="reactflow-a"
             />
           </ReactFlowProvider>
           <ReactFlowProvider>
@@ -39,23 +38,26 @@ describe('<ReactFlow />: Multiple Instances', () => {
               defaultNodes={simpleflow2.nodes}
               edgeTypes={{ default: CustomEdge }}
               defaultEdges={simpleflow2.edges}
-              id="reactflow-b"
             />
           </ReactFlowProvider>
         </>
       );
     });
 
-    it('Each ReactFlow instance has its EdgeLabelRenderer DOM element without conflict', () => {
-      cy.get('#edgelabel-portal-reactflow-a').should('have.length', 1);
-      cy.get('#edgelabel-portal-reactflow-b').should('have.length', 1);
-    });
-
     it('Each ReactFlow instance has one edge label in EdgeLabelRenderer', () => {
-      cy.get('#edgelabel-portal-reactflow-a .label').should('have.length', 1);
-      cy.get('#edgelabel-portal-reactflow-a .label').should('contain.text', 'edge1');
-      cy.get('#edgelabel-portal-reactflow-b .label').should('have.length', 1);
-      cy.get('#edgelabel-portal-reactflow-b .label').should('contain.text', 'edge2');
+      cy.get('.react-flow__edgelabel-renderer').should('have.length', 2);
+
+      cy.get('.react-flow__edgelabel-renderer')
+        .eq(0)
+        .within(() => {
+          cy.get('.label').should('have.length', 1).should('contain.text', 'edge1');
+        });
+
+      cy.get('.react-flow__edgelabel-renderer')
+        .eq(1)
+        .within(() => {
+          cy.get('.label').should('have.length', 1).should('contain.text', 'edge2');
+        });
     });
   });
 });
