@@ -224,6 +224,3 @@ export const getD3Transition = (selection: D3Selection<Element, unknown, null, u
   return selection.transition().duration(duration);
 };
 
-export function getEdgeLabelRendererId(id: string) {
-  return `edgelabel-portal-${id}`
-}

@@ -1,19 +1,26 @@
-import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useStoreApi } from '../../hooks/useStore';
-import { getEdgeLabelRendererId } from '../../utils/graph';
+import { EDGE_LABEL_RENDERER_MAIN_CLASS } from '../../constants/component';
 
 function EdgeLabelRenderer({ children }: { children: ReactNode }) {
-  const store = useStoreApi()
-  const state = store.getState()
-  const wrapperRef = useRef(document.getElementById(getEdgeLabelRendererId(state.rfId)));
+  const store = useStoreApi();
+  const {
+    rootElementRef: { current: rootElement },
+  } = store.getState();
 
-  if (!wrapperRef.current) {
+  if (!rootElement) {
     return null;
   }
 
-  return createPortal(children, wrapperRef.current);
+  const collection = rootElement.getElementsByClassName(EDGE_LABEL_RENDERER_MAIN_CLASS);
+
+  const edgeLabelRendererElement = collection.item(0);
+  if (!edgeLabelRendererElement) {
+    return null;
+  }
+
+  return createPortal(children, edgeLabelRendererElement);
 }
 
 export default EdgeLabelRenderer;

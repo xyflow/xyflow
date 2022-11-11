@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
+import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent, MutableRefObject } from 'react';
 import type { Selection as D3Selection, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
@@ -129,6 +129,8 @@ export type ViewportHelperFunctions = {
   viewportInitialized: boolean;
 };
 
+export type RootElementRef = MutableRefObject<HTMLDivElement | null>
+
 export type ReactFlowStore = {
   rfId: string;
   width: number;
@@ -208,6 +210,7 @@ export type ReactFlowStore = {
   onSelectionChange?: OnSelectionChangeFunc;
 
   ariaLiveMessage: string;
+  rootElementRef: RootElementRef
 };
 
 export type ReactFlowActions = {

@@ -54,6 +54,7 @@ const initialState: ReactFlowStore = {
   connectOnClick: true,
 
   ariaLiveMessage: '',
+  rootElementRef: { current: null }
 };
 
 export default initialState;
