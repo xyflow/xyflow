@@ -16,5 +16,5 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   onNodeClick?: (event: MouseEvent, node: Node<NodeData>) => void;
   pannable?: boolean;
   zoomable?: boolean;
-  ariaLabel?: string;
+  ariaLabel?: string | null;
 };

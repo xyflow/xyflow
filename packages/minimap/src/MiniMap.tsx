@@ -155,7 +155,7 @@ function MiniMap({
         ref={svg}
         onClick={onSvgClick}
       >
-        <title id={labelledBy}>{ariaLabel}</title>
+        {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
         {nodes.map((node) => {
           return (
             <MiniMapNode
