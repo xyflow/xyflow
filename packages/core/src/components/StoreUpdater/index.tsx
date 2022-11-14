@@ -3,15 +3,7 @@ import { StoreApi } from 'zustand';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import type {
-  Node,
-  Edge,
-  ReactFlowState,
-  CoordinateExtent,
-  ReactFlowProps,
-  ReactFlowStore,
-  RootElementRef,
-} from '../../types';
+import type { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
 
 type StoreUpdaterProps = Pick<
   ReactFlowProps,
@@ -52,7 +44,7 @@ type StoreUpdaterProps = Pick<
   | 'onSelectionDragStop'
   | 'noPanClassName'
   | 'nodeOrigin'
-> & { rfId: string; rootElementRef: RootElementRef };
+> & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
@@ -125,7 +117,6 @@ const StoreUpdater = ({
   noPanClassName,
   nodeOrigin,
   rfId,
-  rootElementRef,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -178,7 +169,6 @@ const StoreUpdater = ({
   useDirectStoreUpdater('noPanClassName', noPanClassName, store.setState);
   useDirectStoreUpdater('nodeOrigin', nodeOrigin, store.setState);
   useDirectStoreUpdater('rfId', rfId, store.setState);
-  useDirectStoreUpdater('rootElementRef', rootElementRef, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

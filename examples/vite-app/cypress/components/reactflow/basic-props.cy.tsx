@@ -2,7 +2,6 @@ import ReactFlow, { EdgeProps } from 'reactflow';
 
 import ControlledFlow from '../../support/ControlledFlow';
 import * as simpleflow from '../../fixtures/simpleflow';
-import { RefReactFlow } from '../../support/RefReactFlow';
 
 describe('<ReactFlow />: Basic Props', () => {
   describe('uses defaultNodes and defaultEdges', () => {
@@ -194,33 +193,5 @@ describe('<ReactFlow />: Basic Props', () => {
   it('uses classname', () => {
     cy.mount(<ControlledFlow className="custom" />);
     cy.get('.react-flow').should('have.class', 'custom');
-  });
-
-  it('uses function ref', () => {
-    let pResolve: ((element: HTMLDivElement | PromiseLike<HTMLDivElement> | null) => void) | null = null;
-    const promise: Promise<HTMLDivElement | null> = new Promise((resolve) => {
-      pResolve = resolve;
-    });
-
-    function ref(root: HTMLDivElement | null) {
-      pResolve && pResolve(root);
-    }
-
-    cy.mount(<ReactFlow ref={ref} />);
-    cy.wrap(promise).should('be.instanceOf', HTMLDivElement);
-  });
-
-  it('use mutable ref', () => {
-    let pResolve: ((element: HTMLDivElement | PromiseLike<HTMLDivElement> | null) => void) | null = null;
-    const promise: Promise<HTMLDivElement | null> = new Promise((resolve) => {
-      pResolve = resolve;
-    });
-
-    function onGetRef(root: HTMLDivElement | null) {
-      pResolve && pResolve(root);
-    }
-
-    cy.mount(<RefReactFlow onGetRef={onGetRef} />);
-    cy.wrap(promise).should('be.instanceOf', HTMLDivElement);
   });
 });

@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from 'react';
+import { forwardRef } from 'react';
 import type { CSSProperties } from 'react';
 import cc from 'classcat';
 
@@ -164,26 +164,11 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
     const rfId = id || '1';
 
-    const rootElementRef = useRef<HTMLDivElement | null>(null);
-
-    function setRootRef(element: HTMLDivElement | null) {
-      rootElementRef.current = element;
-
-      if (typeof ref === 'function') {
-        ref(element);
-        return;
-      }
-
-      if (ref) {
-        ref.current = element;
-      }
-    }
-
     return (
       <div
         {...rest}
         style={{ ...style, ...wrapperStyle }}
-        ref={setRootRef}
+        ref={ref}
         className={cc(['react-flow', className])}
         data-testid="rf__wrapper"
         id={id}
@@ -290,7 +275,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
             rfId={rfId}
-            rootElementRef={rootElementRef}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
