@@ -4,19 +4,17 @@ import { useStore } from '../../hooks/useStore';
 import { ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
-  d3Selection: s.d3Selection,
+  edgeLabelRenderer: s.domNode?.querySelector('.react-flow__edgelabel-renderer'),
 });
 
 function EdgeLabelRenderer({ children }: { children: ReactNode }) {
-  const { d3Selection } = useStore(selector);
+  const { edgeLabelRenderer } = useStore(selector);
 
-  const edgeLabelRendererElement = d3Selection?.select('.react-flow__edgelabel-renderer').node();
-
-  if (!edgeLabelRendererElement || !(edgeLabelRendererElement instanceof HTMLDivElement)) {
+  if (!edgeLabelRenderer) {
     return null;
   }
 
-  return createPortal(children, edgeLabelRendererElement);
+  return createPortal(children, edgeLabelRenderer);
 }
 
 export default EdgeLabelRenderer;
