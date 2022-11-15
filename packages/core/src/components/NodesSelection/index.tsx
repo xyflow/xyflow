@@ -24,12 +24,11 @@ export interface NodesSelectionProps {
 const selector = (s: ReactFlowState) => ({
   transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`,
   userSelectionActive: s.userSelectionActive,
-  ...getRectOfNodes(Array.from(s.nodeInternals.values()).filter((n) => n.selected)),
 });
 
 const bboxSelector = (s: ReactFlowState) => {
   const selectedNodes = Array.from(s.nodeInternals.values()).filter((n) => n.selected);
-  return getRectOfNodes(selectedNodes);
+  return getRectOfNodes(selectedNodes, s.nodeOrigin);
 };
 
 function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {

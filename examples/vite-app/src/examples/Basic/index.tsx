@@ -8,6 +8,7 @@ import ReactFlow, {
   Node,
   Edge,
   useReactFlow,
+  NodeOrigin,
 } from 'reactflow';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
@@ -46,6 +47,8 @@ const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
 ];
+
+const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 const defaultEdgeOptions = { zIndex: 0 };
 
@@ -91,6 +94,7 @@ const BasicFlow = () => {
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
+      nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
@@ -106,7 +110,9 @@ const BasicFlow = () => {
         <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
           toggle classnames
         </button>
-        <button onClick={logToObject} style={{ marginRight: 5 }}>toObject</button>
+        <button onClick={logToObject} style={{ marginRight: 5 }}>
+          toObject
+        </button>
       </div>
     </ReactFlow>
   );
