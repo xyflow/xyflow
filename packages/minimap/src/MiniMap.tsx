@@ -48,6 +48,8 @@ function MiniMap({
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 240, 240, 0.6)',
+  maskStrokeColor = 'none',
+  maskStrokeWidth = 1,
   position = 'bottom-right',
   onClick,
   onNodeClick,
@@ -181,6 +183,8 @@ function MiniMap({
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
           fill={maskColor}
           fillRule="evenodd"
+          stroke={maskStrokeColor}
+          strokeWidth={maskStrokeWidth}
         />
       </svg>
     </Panel>
