@@ -223,3 +223,4 @@ export const getTransformForBounds = (
 export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {
   return selection.transition().duration(duration);
 };
+
