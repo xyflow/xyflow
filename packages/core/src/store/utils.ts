@@ -39,7 +39,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
-    const z = isNumeric(node.zIndex) ? node.zIndex : node.selected ? 1000 : 0;
+    const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? 1000 : 0);
     const currInternals = nodeInternals.get(node.id);
 
     const internals: Node = {

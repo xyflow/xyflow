@@ -39,7 +39,6 @@ const selector = (s: ReactFlowState) => {
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
-
 function MiniMap({
   style,
   className,
@@ -54,6 +53,7 @@ function MiniMap({
   onNodeClick,
   pannable = false,
   zoomable = false,
+  ariaLabel = 'React Flow mini map',
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -156,7 +156,7 @@ function MiniMap({
         ref={svg}
         onClick={onSvgClick}
       >
-        <title id={labelledBy}>React Flow mini map</title>
+        {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
         {nodes.map((node) => (
           <MiniMapNode
             key={node.id}
