@@ -158,7 +158,7 @@ const GraphView = ({
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
         />
-        <div className="react-flow__edgelabel-renderer" id="edgelabel-portal" />
+        <div className="react-flow__edgelabel-renderer" />
 
         <NodeRenderer
           nodeTypes={nodeTypes}
