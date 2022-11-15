@@ -1,0 +1,4 @@
+.react-flow__node-toolbar {
+  position: absolute;
+  z-index: 1000;
+}
