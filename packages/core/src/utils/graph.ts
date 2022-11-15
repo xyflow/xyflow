@@ -2,7 +2,17 @@
 import type { Selection as D3Selection } from 'd3';
 
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from '../utils';
-import type { Node, Edge, Connection, EdgeMarkerType, Transform, XYPosition, Rect, NodeInternals } from '../types';
+import type {
+  Node,
+  Edge,
+  Connection,
+  EdgeMarkerType,
+  Transform,
+  XYPosition,
+  Rect,
+  NodeInternals,
+  NodeOrigin,
+} from '../types';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -131,22 +141,26 @@ export const pointToRendererPoint = (
   return position;
 };
 
-export const getRectOfNodes = (nodes: Node[]): Rect => {
+export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
   const box = nodes.reduce(
-    (currBox, { positionAbsolute, position, width, height }) =>
-      getBoundsOfBoxes(
+    (currBox, { positionAbsolute, position, width, height }) => {
+      const nodeX = positionAbsolute ? positionAbsolute.x : position.x;
+      const nodeY = positionAbsolute ? positionAbsolute.y : position.y;
+
+      return getBoundsOfBoxes(
         currBox,
         rectToBox({
-          x: positionAbsolute ? positionAbsolute.x : position.x,
-          y: positionAbsolute ? positionAbsolute.y : position.y,
+          x: nodeX - nodeOrigin[0] * (width || 0),
+          y: nodeY - nodeOrigin[1] * (height || 0),
           width: width || 0,
           height: height || 0,
         })
-      ),
+      );
+    },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
@@ -159,7 +173,8 @@ export const getNodesInside = (
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
-  excludeNonSelectableNodes = false
+  excludeNonSelectableNodes = false,
+  nodeOrigin: NodeOrigin = [0, 0]
 ): Node[] => {
   const paneRect = {
     x: (rect.x - tx) / tScale,
@@ -171,13 +186,18 @@ export const getNodesInside = (
   const visibleNodes: Node[] = [];
 
   nodeInternals.forEach((node) => {
-    const { positionAbsolute = { x: 0, y: 0 }, width, height, selectable = true } = node;
+    const { width, height, selectable = true, positionAbsolute = { x: 0, y: 0 } } = node;
 
     if (excludeNonSelectableNodes && !selectable) {
       return false;
     }
 
-    const nodeRect = { ...positionAbsolute, width: width || 0, height: height || 0 };
+    const nodeRect = {
+      x: positionAbsolute.x - nodeOrigin[0] * (width || 0),
+      y: positionAbsolute.y - nodeOrigin[1] * (height || 0),
+      width: width || 0,
+      height: height || 0,
+    };
     const overlappingArea = getOverlappingArea(paneRect, nodeRect);
     const notInitialized =
       typeof width === 'undefined' || typeof height === 'undefined' || width === null || height === null;
