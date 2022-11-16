@@ -7,6 +7,7 @@ import ReactFlow, {
   Edge,
   NodeTypes,
   Position,
+  NodeOrigin,
 } from 'reactflow';
 
 import CustomNode from './CustomNode';
@@ -53,6 +54,7 @@ const initialEdges: Edge[] = [
 ];
 
 const defaultEdgeOptions = { zIndex: 0 };
+const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 export default function NodeToolbarExample() {
   return (
@@ -65,6 +67,7 @@ export default function NodeToolbarExample() {
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       nodeTypes={nodeTypes}
+      nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />

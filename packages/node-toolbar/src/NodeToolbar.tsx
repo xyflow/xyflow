@@ -25,7 +25,7 @@ const nodeEqualityFn = (a: SelectedNode, b: SelectedNode) =>
   a?.selected === b?.selected &&
   a?.[internalsSymbol]?.z === b?.[internalsSymbol]?.z;
 
-const transformSelector = (state: ReactFlowState) => state.transform;
+const transformSelector = (state: ReactFlowState) => ({ transform: state.transform, nodeOrigin: state.nodeOrigin });
 
 function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number): string {
   // position === Position.Top
@@ -68,13 +68,13 @@ function NodeToolbar({
 }: NodeToolbarProps) {
   const nodeSelector = useCallback((state: ReactFlowState): SelectedNode => state.nodeInternals.get(nodeId), [nodeId]);
   const node = useStore(nodeSelector, nodeEqualityFn);
-  const transform = useStore(transformSelector, shallow);
+  const { transform, nodeOrigin } = useStore(transformSelector, shallow);
 
   if (!isActive || !node) {
     return null;
   }
 
-  const nodeRect: Rect = getRectOfNodes([node]);
+  const nodeRect: Rect = getRectOfNodes([node], nodeOrigin);
 
   const wrapperStyle: CSSProperties = {
     transform: getTransform(nodeRect, transform, position, offset),
