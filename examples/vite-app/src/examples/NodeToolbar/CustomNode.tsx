@@ -1,10 +1,10 @@
 import { memo, FC } from 'react';
 import { Handle, Position, NodeProps, NodeToolbar } from 'reactflow';
 
-const CustomNode: FC<NodeProps> = ({ id, data, selected }) => {
+const CustomNode: FC<NodeProps> = ({ id, data }) => {
   return (
     <>
-      <NodeToolbar isActive={selected} nodeId={id} position={data.toolbarPosition}>
+      <NodeToolbar nodeId={id} isVisible={data.toolbarVisible} position={data.toolbarPosition}>
         <button>delete</button>
         <button>copy</button>
         <button>expand</button>

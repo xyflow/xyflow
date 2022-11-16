@@ -20,7 +20,7 @@ const initialNodes: Node[] = [
     id: '1',
     type: 'custom',
     data: { label: 'toolbar top', toolbarPosition: Position.Top },
-    position: { x: 0, y: 100 },
+    position: { x: 0, y: 0 },
     className: 'react-flow__node-default',
   },
   {
@@ -42,6 +42,13 @@ const initialNodes: Node[] = [
     type: 'custom',
     data: { label: 'toolbar left', toolbarPosition: Position.Left },
     position: { x: 400, y: 200 },
+    className: 'react-flow__node-default',
+  },
+  {
+    id: '5',
+    type: 'custom',
+    data: { label: 'toolbar always open', toolbarPosition: Position.Top, toolbarVisible: true },
+    position: { x: 0, y: 150 },
     className: 'react-flow__node-default',
   },
 ];

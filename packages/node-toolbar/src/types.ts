@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'react';
 
 export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   nodeId: string;
-  isActive?: boolean;
+  isVisible?: boolean;
   position?: Position;
   offset?: number;
 };

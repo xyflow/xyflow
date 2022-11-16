@@ -25,7 +25,9 @@ const nodeEqualityFn = (a: SelectedNode, b: SelectedNode) =>
   a?.selected === b?.selected &&
   a?.[internalsSymbol]?.z === b?.[internalsSymbol]?.z;
 
-const transformSelector = (state: ReactFlowState) => state.transform;
+const transformSelector = (state: ReactFlowState): Transform => state.transform;
+const selectedNodesCountSelector = (state: ReactFlowState): number =>
+  Array.from(state.nodeInternals.values()).filter((node) => node.selected).length;
 
 function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number): string {
   // position === Position.Top
@@ -61,7 +63,7 @@ function NodeToolbar({
   children,
   className,
   style,
-  isActive,
+  isVisible,
   position = Position.Top,
   offset = 10,
   ...rest
@@ -69,6 +71,8 @@ function NodeToolbar({
   const nodeSelector = useCallback((state: ReactFlowState): SelectedNode => state.nodeInternals.get(nodeId), [nodeId]);
   const node = useStore(nodeSelector, nodeEqualityFn);
   const transform = useStore(transformSelector, shallow);
+  const selectedNodesCount = useStore(selectedNodesCountSelector);
+  const isActive = typeof isVisible === 'boolean' ? isVisible : node?.selected && selectedNodesCount === 1;
 
   if (!isActive || !node) {
     return null;
