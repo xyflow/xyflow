@@ -1,5 +1,14 @@
 import { useCallback, CSSProperties } from 'react';
-import { Node, ReactFlowState, useStore, getRectOfNodes, Transform, Rect, Position } from '@reactflow/core';
+import {
+  Node,
+  ReactFlowState,
+  useStore,
+  getRectOfNodes,
+  Transform,
+  Rect,
+  Position,
+  internalsSymbol,
+} from '@reactflow/core';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
@@ -13,7 +22,8 @@ const nodeEqualityFn = (a: SelectedNode, b: SelectedNode) =>
   a?.positionAbsolute?.y === b?.positionAbsolute?.y &&
   a?.width === b?.width &&
   a?.height === b?.height &&
-  a?.selected === b?.selected;
+  a?.selected === b?.selected &&
+  a?.[internalsSymbol]?.z === b?.[internalsSymbol]?.z;
 
 const transformSelector = (state: ReactFlowState) => state.transform;
 
@@ -68,6 +78,7 @@ function NodeToolbar({
 
   const wrapperStyle: CSSProperties = {
     transform: getTransform(nodeRect, transform, position, offset),
+    zIndex: node[internalsSymbol]?.z,
     ...style,
   };
 
