@@ -7,6 +7,7 @@ import ReactFlow, {
   Edge,
   NodeTypes,
   Position,
+  NodeOrigin,
 } from 'reactflow';
 
 import CustomNode from './CustomNode';
@@ -20,14 +21,14 @@ const initialNodes: Node[] = [
     id: '1',
     type: 'custom',
     data: { label: 'toolbar top', toolbarPosition: Position.Top },
-    position: { x: 0, y: 0 },
+    position: { x: 0, y: 50 },
     className: 'react-flow__node-default',
   },
   {
     id: '2',
     type: 'custom',
     data: { label: 'toolbar right', toolbarPosition: Position.Right },
-    position: { x: 400, y: 0 },
+    position: { x: 300, y: 0 },
     className: 'react-flow__node-default',
   },
   {
@@ -48,7 +49,7 @@ const initialNodes: Node[] = [
     id: '5',
     type: 'custom',
     data: { label: 'toolbar always open', toolbarPosition: Position.Top, toolbarVisible: true },
-    position: { x: 0, y: 150 },
+    position: { x: 0, y: 200 },
     className: 'react-flow__node-default',
   },
 ];
@@ -60,6 +61,7 @@ const initialEdges: Edge[] = [
 ];
 
 const defaultEdgeOptions = { zIndex: 0 };
+const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 export default function NodeToolbarExample() {
   return (
@@ -72,6 +74,7 @@ export default function NodeToolbarExample() {
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       nodeTypes={nodeTypes}
+      nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
