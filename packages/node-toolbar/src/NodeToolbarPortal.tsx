@@ -2,8 +2,10 @@ import { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { ReactFlowState, useStore } from '@reactflow/core';
 
+const selector = (state: ReactFlowState) => state.domNode?.querySelector('.react-flow__renderer');
+
 function NodeToolbarPortal({ children }: { children: ReactNode }) {
-  const wrapperRef = useStore((state: ReactFlowState) => state.domNode?.querySelector('.react-flow__renderer'));
+  const wrapperRef = useStore(selector);
 
   if (!wrapperRef) {
     return null;
