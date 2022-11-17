@@ -82,8 +82,9 @@ function NodeToolbar({
   const nodeRect: Rect = getRectOfNodes([node], nodeOrigin);
 
   const wrapperStyle: CSSProperties = {
+    position: 'absolute',
     transform: getTransform(nodeRect, transform, position, offset),
-    zIndex: node[internalsSymbol]?.z,
+    zIndex: (node[internalsSymbol]?.z || 1) + 1,
     ...style,
   };
 

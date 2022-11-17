@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/node-toolbar",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A toolbar component for React Flow that can be attached to a node.",
   "keywords": [
     "react",
@@ -31,9 +31,7 @@
   },
   "scripts": {
     "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
-    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
-    "css": "postcss src/*.css --config ../../tooling/postcss-config/postcss.config.js --dir dist",
-    "css-watch": "pnpm css --watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "typecheck": "tsc --noEmit"
   },
