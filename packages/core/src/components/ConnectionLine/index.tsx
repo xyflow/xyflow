@@ -6,8 +6,8 @@ import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import { internalsSymbol } from '../../utils';
-import { ConnectionLineComponent, ConnectionMode, HandleType, ReactFlowStore } from '../../types';
-import { Position, ConnectionLineType } from '../../types';
+import type { ConnectionLineComponent, HandleType, ReactFlowStore } from '../../types';
+import { Position, ConnectionLineType, ConnectionMode } from '../../types';
 
 type ConnectionLineProps = {
   connectionNodeId: string;
