@@ -40,6 +40,7 @@ import EdgeRouting from '../examples/EdgeRouting';
 import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
+import NodeToolbar from '../examples/NodeToolbar';
 
 interface IRoute {
   name: string;
@@ -167,6 +168,11 @@ const routes: IRoute[] = [
     name: 'nodeTypes Object Change',
     path: '/nodetypesobject-change',
     component: NodeTypesObjectChange,
+  },
+  {
+    name: 'NodeToolbar',
+    path: '/node-toolbar',
+    component: NodeToolbar,
   },
   {
     name: 'Overview',
