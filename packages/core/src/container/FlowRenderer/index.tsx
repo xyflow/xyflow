@@ -122,7 +122,7 @@ const FlowRenderer = ({
         onMouseLeave={onPaneMouseLeave}
         onContextMenu={onContextMenu}
         onWheel={onWheel}
-        isSelectionMode={isSelectionMode}
+        isSelectionMode={!!isSelectionMode}
         selectBoxMode={selectBoxMode}
       >
         {children}
