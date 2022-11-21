@@ -39,7 +39,7 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
   const parentNodes: ParentNodes = {};
 
   nodes.forEach((node) => {
-    const z = isNumeric(node.zIndex) ? node.zIndex : node.selected ? 1000 : 0;
+    const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? 1000 : 0);
     const currInternals = nodeInternals.get(node.id);
 
     const internals: Node = {
@@ -100,8 +100,18 @@ type InternalFitViewOptions = {
 } & FitViewOptions;
 
 export function fitView(get: StoreApi<ReactFlowState>['getState'], options: InternalFitViewOptions = {}) {
-  const { nodeInternals, width, height, minZoom, maxZoom, d3Zoom, d3Selection, fitViewOnInitDone, fitViewOnInit } =
-    get();
+  const {
+    nodeInternals,
+    width,
+    height,
+    minZoom,
+    maxZoom,
+    d3Zoom,
+    d3Selection,
+    fitViewOnInitDone,
+    fitViewOnInit,
+    nodeOrigin,
+  } = get();
 
   if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
     if (d3Zoom && d3Selection) {
@@ -112,7 +122,7 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
       const nodesInitialized = nodes.every((n) => n.width && n.height);
 
       if (nodes.length > 0 && nodesInitialized) {
-        const bounds = getRectOfNodes(nodes);
+        const bounds = getRectOfNodes(nodes, nodeOrigin);
         const [x, y, zoom] = getTransformForBounds(
           bounds,
           width,

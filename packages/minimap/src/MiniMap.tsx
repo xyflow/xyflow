@@ -30,15 +30,15 @@ const selector = (s: ReactFlowState) => {
   return {
     nodes: nodes.filter((node) => !node.hidden && node.width && node.height),
     viewBB,
-    boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes), viewBB) : viewBB,
+    boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes, s.nodeOrigin), viewBB) : viewBB,
     rfId: s.rfId,
+    nodeOrigin: s.nodeOrigin,
   };
 };
 
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
-
 function MiniMap({
   style,
   className,
@@ -48,15 +48,18 @@ function MiniMap({
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
   maskColor = 'rgb(240, 240, 240, 0.6)',
+  maskStrokeColor = 'none',
+  maskStrokeWidth = 1,
   position = 'bottom-right',
   onClick,
   onNodeClick,
   pannable = false,
   zoomable = false,
+  ariaLabel = 'React Flow mini map',
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, nodes, rfId } = useStore(selector, shallow);
+  const { boundingRect, viewBB, nodes, rfId, nodeOrigin } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -155,33 +158,33 @@ function MiniMap({
         ref={svg}
         onClick={onSvgClick}
       >
-        <title id={labelledBy}>React Flow mini map</title>
-        {nodes.map((node) => {
-          return (
-            <MiniMapNode
-              key={node.id}
-              x={node.positionAbsolute?.x ?? 0}
-              y={node.positionAbsolute?.y ?? 0}
-              width={node.width!}
-              height={node.height!}
-              style={node.style}
-              className={nodeClassNameFunc(node)}
-              color={nodeColorFunc(node)}
-              borderRadius={nodeBorderRadius}
-              strokeColor={nodeStrokeColorFunc(node)}
-              strokeWidth={nodeStrokeWidth}
-              shapeRendering={shapeRendering}
-              onClick={onSvgNodeClick}
-              id={node.id}
-            />
-          );
-        })}
+        {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
+        {nodes.map((node) => (
+          <MiniMapNode
+            key={node.id}
+            x={(node.positionAbsolute?.x ?? 0) - nodeOrigin[0] * (node.width ?? 0)}
+            y={(node.positionAbsolute?.y ?? 0) - nodeOrigin[1] * (node.height ?? 0)}
+            width={node.width!}
+            height={node.height!}
+            style={node.style}
+            className={nodeClassNameFunc(node)}
+            color={nodeColorFunc(node)}
+            borderRadius={nodeBorderRadius}
+            strokeColor={nodeStrokeColorFunc(node)}
+            strokeWidth={nodeStrokeWidth}
+            shapeRendering={shapeRendering}
+            onClick={onSvgNodeClick}
+            id={node.id}
+          />
+        ))}
         <path
           className="react-flow__minimap-mask"
           d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
           fill={maskColor}
           fillRule="evenodd"
+          stroke={maskStrokeColor}
+          strokeWidth={maskStrokeWidth}
         />
       </svg>
     </Panel>
