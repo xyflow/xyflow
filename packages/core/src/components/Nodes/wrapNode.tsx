@@ -2,6 +2,8 @@ import { useEffect, useRef, memo } from 'react';
 import type { ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
+import NodeResizer from './NodeResizer';
+
 import { useStoreApi } from '../../hooks/useStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
@@ -218,6 +220,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             zIndex={zIndex}
           />
         </Provider>
+        <NodeResizer nodeId={id} />
       </div>
     );
   };
