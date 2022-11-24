@@ -22,7 +22,6 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
-const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 const initialNodes: Node[] = [
   {
@@ -207,7 +206,6 @@ const Subflow = () => {
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
       fitView
-      nodeOrigin={nodeOrigin}
     >
       <MiniMap />
       <Controls />

@@ -2,7 +2,7 @@ import { zoomIdentity } from 'd3-zoom';
 import type { StoreApi } from 'zustand';
 
 import { internalsSymbol, isNumeric } from '../utils';
-import { getD3Transition, getRectOfNodes, getTransformForBounds, getNodePosition } from '../utils/graph';
+import { getD3Transition, getRectOfNodes, getTransformForBounds, getNodePositionWithOrigin } from '../utils/graph';
 import type {
   Edge,
   EdgeSelectionChange,
@@ -28,7 +28,7 @@ function calculateXYZPosition(
     return result;
   }
   const parentNode = nodeInternals.get(node.parentNode)!;
-  const parentNodePosition = getNodePosition(parentNode, nodeOrigin);
+  const parentNodePosition = getNodePositionWithOrigin(parentNode, nodeOrigin);
 
   return calculateXYZPosition(
     parentNode,

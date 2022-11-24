@@ -141,7 +141,7 @@ export const pointToRendererPoint = (
   return position;
 };
 
-export const getNodePosition = (
+export const getNodePositionWithOrigin = (
   node: Node | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
 ): XYPosition & { positionAbsolute: XYPosition } => {
@@ -179,7 +179,7 @@ export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): 
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { positionAbsolute, ...position } = getNodePosition(node, nodeOrigin);
+      const { positionAbsolute, ...position } = getNodePositionWithOrigin(node, nodeOrigin);
       const nodeX = positionAbsolute ? positionAbsolute.x : position.x;
       const nodeY = positionAbsolute ? positionAbsolute.y : position.y;
 
@@ -224,7 +224,7 @@ export const getNodesInside = (
       return false;
     }
 
-    const { positionAbsolute } = getNodePosition(node, nodeOrigin);
+    const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
 
     const nodeRect = {
       x: positionAbsolute.x,
