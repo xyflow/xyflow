@@ -2,7 +2,7 @@ import { zoomIdentity } from 'd3-zoom';
 import type { StoreApi } from 'zustand';
 
 import { internalsSymbol, isNumeric } from '../utils';
-import { getD3Transition, getRectOfNodes, getTransformForBounds } from '../utils/graph';
+import { getD3Transition, getRectOfNodes, getTransformForBounds, getNodePosition } from '../utils/graph';
 import type {
   Edge,
   EdgeSelectionChange,
@@ -12,6 +12,7 @@ import type {
   ReactFlowState,
   XYZPosition,
   FitViewOptions,
+  NodeOrigin,
 } from '../types';
 
 type ParentNodes = Record<string, boolean>;
@@ -20,21 +21,33 @@ function calculateXYZPosition(
   node: Node,
   nodeInternals: NodeInternals,
   parentNodes: ParentNodes,
-  result: XYZPosition
+  result: XYZPosition,
+  nodeOrigin: NodeOrigin
 ): XYZPosition {
   if (!node.parentNode) {
     return result;
   }
   const parentNode = nodeInternals.get(node.parentNode)!;
+  const parentNodePosition = getNodePosition(parentNode, nodeOrigin);
 
-  return calculateXYZPosition(parentNode, nodeInternals, parentNodes, {
-    x: (result.x ?? 0) + (parentNode.position?.x ?? 0),
-    y: (result.y ?? 0) + (parentNode.position?.y ?? 0),
-    z: (parentNode[internalsSymbol]?.z ?? 0) > (result.z ?? 0) ? parentNode[internalsSymbol]?.z ?? 0 : result.z ?? 0,
-  });
+  return calculateXYZPosition(
+    parentNode,
+    nodeInternals,
+    parentNodes,
+    {
+      x: (result.x ?? 0) + parentNodePosition.x,
+      y: (result.y ?? 0) + parentNodePosition.y,
+      z: (parentNode[internalsSymbol]?.z ?? 0) > (result.z ?? 0) ? parentNode[internalsSymbol]?.z ?? 0 : result.z ?? 0,
+    },
+    nodeOrigin
+  );
 }
 
-export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals): NodeInternals {
+export function createNodeInternals(
+  nodes: Node[],
+  nodeInternals: NodeInternals,
+  nodeOrigin: NodeOrigin
+): NodeInternals {
   const nextNodeInternals = new Map<string, Node>();
   const parentNodes: ParentNodes = {};
 
@@ -74,10 +87,16 @@ export function createNodeInternals(nodes: Node[], nodeInternals: NodeInternals)
     }
 
     if (node.parentNode || parentNodes[node.id]) {
-      const { x, y, z } = calculateXYZPosition(node, nextNodeInternals, parentNodes, {
-        ...node.position,
-        z: node[internalsSymbol]?.z ?? 0,
-      });
+      const { x, y, z } = calculateXYZPosition(
+        node,
+        nextNodeInternals,
+        parentNodes,
+        {
+          ...node.position,
+          z: node[internalsSymbol]?.z ?? 0,
+        },
+        nodeOrigin
+      );
 
       node.positionAbsolute = {
         x,

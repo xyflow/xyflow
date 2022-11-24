@@ -162,6 +162,7 @@ function MiniMap({
         {nodes.map((node) => (
           <MiniMapNode
             key={node.id}
+            // @todo replace with general utility function
             x={(node.positionAbsolute?.x ?? 0) - nodeOrigin[0] * (node.width ?? 0)}
             y={(node.positionAbsolute?.y ?? 0) - nodeOrigin[1] * (node.height ?? 0)}
             width={node.width!}
