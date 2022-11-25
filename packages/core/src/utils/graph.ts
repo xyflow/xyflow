@@ -156,19 +156,18 @@ export const getNodePositionWithOrigin = (
     };
   }
 
-  const position: XYPosition = {
-    x: node.position.x - (node.width ?? 0) * nodeOrigin[0],
-    y: node.position.y - (node.height ?? 0) * nodeOrigin[1],
-  };
-
-  const positionAbsolute: XYPosition = {
-    x: (node.positionAbsolute?.x ?? 0) - (node.width ?? 0) * nodeOrigin[0],
-    y: (node.positionAbsolute?.y ?? 0) - (node.height ?? 0) * nodeOrigin[1],
+  const offset: XYPosition = {
+    x: (node.width ?? 0) * nodeOrigin[0],
+    y: (node.height ?? 0) * nodeOrigin[1],
   };
 
   return {
-    ...position,
-    positionAbsolute,
+    x: node.position.x - offset.x,
+    y: node.position.y - offset.y,
+    positionAbsolute: {
+      x: (node.positionAbsolute?.x ?? 0) - offset.x,
+      y: (node.positionAbsolute?.y ?? 0) - offset.y,
+    },
   };
 };
 
