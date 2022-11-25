@@ -53,7 +53,7 @@ export const getOverlappingArea = (rectA: Rect, rectB: Rect): number => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isRectObject = (obj: any): obj is Rect => obj.width !== undefined && obj.height !== undefined && obj.x !== undefined && obj.y !== undefined;
+export const isRectObject = (obj: any): obj is Rect => obj.width != null && obj.height != null && obj.x != null && obj.y != null;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
