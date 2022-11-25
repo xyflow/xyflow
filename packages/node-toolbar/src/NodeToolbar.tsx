@@ -72,17 +72,19 @@ function NodeToolbar({
   offset = 10,
   ...rest
 }: NodeToolbarProps) {
-  const nodeIds: string[] = typeof nodeId === 'string' ? [nodeId] : nodeId;
   const nodesSelector = useCallback(
-    (state: ReactFlowState): Node[] =>
-      nodeIds.reduce<Node[]>((acc, id) => {
+    (state: ReactFlowState): Node[] => {
+      const nodeIds: string[] = typeof nodeId === 'string' ? [nodeId] : nodeId;
+
+      return nodeIds.reduce<Node[]>((acc, id) => {
         const node = state.nodeInternals.get(id);
         if (node) {
           acc.push(node);
         }
         return acc;
-      }, [] as Node[]),
-    [nodeIds]
+      }, [] as Node[]);
+    },
+    [nodeId]
   );
   const nodes = useStore(nodesSelector, nodesEqualityFn);
   const { transform, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);

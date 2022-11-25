@@ -1,13 +1,17 @@
-import { NodeToolbar, useNodes } from 'reactflow';
+import { NodeToolbar, ReactFlowState, useStore } from 'reactflow';
+
+const selectedNodesSelector = (state: ReactFlowState) =>
+  Array.from(state.nodeInternals.values())
+    .filter((node) => node.selected)
+    .map((node) => node.id);
 
 export default function SelectedNodesToolbar() {
-  const nodes = useNodes();
-  const selectedNodeIds = nodes.filter((node) => node.selected).map((node) => node.id);
+  const selectedNodeIds = useStore(selectedNodesSelector);
   const isVisible = selectedNodeIds.length > 1;
 
   return (
     <NodeToolbar nodeId={selectedNodeIds} isVisible={isVisible}>
-      <button>Group selected nodes</button>
+      <button>Selection action</button>
     </NodeToolbar>
   );
 }
