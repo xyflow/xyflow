@@ -1,16 +1,11 @@
+import { useContext } from 'react';
 import type { FC, PropsWithChildren } from 'react';
 
-import { useStoreApi } from '../../hooks/useStore';
+import StoreContext from '../../contexts/RFStoreContext';
 import ReactFlowProvider from '../../components/ReactFlowProvider';
 
 const Wrapper: FC<PropsWithChildren> = ({ children }) => {
-  let isWrapped = true;
-
-  try {
-    useStoreApi();
-  } catch (e) {
-    isWrapped = false;
-  }
+  const isWrapped = useContext(StoreContext);
 
   if (isWrapped) {
     // we need to wrap it with a fragment because it's not allowed for children to be a ReactNode
