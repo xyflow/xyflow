@@ -23,7 +23,8 @@ const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({
     ...initialState,
     setNodes: (nodes: Node[]) => {
-      set({ nodeInternals: createNodeInternals(nodes, get().nodeInternals) });
+      const { nodeInternals, nodeOrigin } = get();
+      set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin) });
     },
     setEdges: (edges: Edge[]) => {
       const { defaultEdgeOptions = {} } = get();
@@ -33,7 +34,7 @@ const createRFStore = () =>
       const hasDefaultNodes = typeof nodes !== 'undefined';
       const hasDefaultEdges = typeof edges !== 'undefined';
 
-      const nodeInternals = hasDefaultNodes ? createNodeInternals(nodes, new Map()) : new Map();
+      const nodeInternals = hasDefaultNodes ? createNodeInternals(nodes, new Map(), get().nodeOrigin) : new Map();
       const nextEdges = hasDefaultEdges ? edges : [];
 
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
@@ -102,7 +103,7 @@ const createRFStore = () =>
       }
     },
     updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged = true, dragging = false) => {
-      const { onNodesChange, nodeInternals, hasDefaultNodes } = get();
+      const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin } = get();
 
       if (hasDefaultNodes || onNodesChange) {
         const changes = nodeDragItems.map((node) => {
@@ -123,7 +124,7 @@ const createRFStore = () =>
         if (changes?.length) {
           if (hasDefaultNodes) {
             const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
-            const nextNodeInternals = createNodeInternals(nodes, nodeInternals);
+            const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin);
             set({ nodeInternals: nextNodeInternals });
           }
 
