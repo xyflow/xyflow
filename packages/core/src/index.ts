@@ -19,6 +19,7 @@ export {
   updateEdge,
   getTransformForBounds,
   getRectOfNodes,
+  getNodePositionWithOrigin,
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { getMarkerEnd } from './components/Edges/utils';

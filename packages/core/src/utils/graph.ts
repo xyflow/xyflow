@@ -141,23 +141,54 @@ export const pointToRendererPoint = (
   return position;
 };
 
+export const getNodePositionWithOrigin = (
+  node: Node | undefined,
+  nodeOrigin: NodeOrigin = [0, 0]
+): XYPosition & { positionAbsolute: XYPosition } => {
+  if (!node) {
+    return {
+      x: 0,
+      y: 0,
+      positionAbsolute: {
+        x: 0,
+        y: 0,
+      },
+    };
+  }
+
+  const offset: XYPosition = {
+    x: (node.width ?? 0) * nodeOrigin[0],
+    y: (node.height ?? 0) * nodeOrigin[1],
+  };
+
+  return {
+    x: node.position.x - offset.x,
+    y: node.position.y - offset.y,
+    positionAbsolute: {
+      x: (node.positionAbsolute?.x ?? 0) - offset.x,
+      y: (node.positionAbsolute?.y ?? 0) - offset.y,
+    },
+  };
+};
+
 export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
   const box = nodes.reduce(
-    (currBox, { positionAbsolute, position, width, height }) => {
+    (currBox, node) => {
+      const { positionAbsolute, ...position } = getNodePositionWithOrigin(node, nodeOrigin);
       const nodeX = positionAbsolute ? positionAbsolute.x : position.x;
       const nodeY = positionAbsolute ? positionAbsolute.y : position.y;
 
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
-          x: nodeX - nodeOrigin[0] * (width || 0),
-          y: nodeY - nodeOrigin[1] * (height || 0),
-          width: width || 0,
-          height: height || 0,
+          x: nodeX,
+          y: nodeY,
+          width: node.width || 0,
+          height: node.height || 0,
         })
       );
     },
@@ -186,15 +217,17 @@ export const getNodesInside = (
   const visibleNodes: Node[] = [];
 
   nodeInternals.forEach((node) => {
-    const { width, height, selectable = true, positionAbsolute = { x: 0, y: 0 } } = node;
+    const { width, height, selectable = true } = node;
 
     if (excludeNonSelectableNodes && !selectable) {
       return false;
     }
 
+    const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
+
     const nodeRect = {
-      x: positionAbsolute.x - nodeOrigin[0] * (width || 0),
-      y: positionAbsolute.y - nodeOrigin[1] * (height || 0),
+      x: positionAbsolute.x,
+      y: positionAbsolute.y,
       width: width || 0,
       height: height || 0,
     };
@@ -243,4 +276,3 @@ export const getTransformForBounds = (
 export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {
   return selection.transition().duration(duration);
 };
-

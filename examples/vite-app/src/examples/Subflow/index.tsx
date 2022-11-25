@@ -11,6 +11,7 @@ import ReactFlow, {
   Controls,
   MiniMap,
   Background,
+  NodeOrigin,
 } from 'reactflow';
 
 import DebugNode from './DebugNode';
@@ -90,7 +91,7 @@ const initialNodes: Node[] = [
   {
     id: '5a',
     data: { label: 'Node 5a' },
-    position: { x: 25, y: 50 },
+    position: { x: 0, y: 0 },
     className: 'light',
     parentNode: '5',
     extent: 'parent',
