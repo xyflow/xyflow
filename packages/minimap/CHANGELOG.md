@@ -1,5 +1,11 @@
 # @reactflow/minimap
 
+## 11.2.1
+
+### Patch Changes
+
+- [#2614](https://github.com/wbkd/react-flow/pull/2614) [`d137f9f1`](https://github.com/wbkd/react-flow/commit/d137f9f187e1757264f57d971634bb9940935c19) Thanks [@lounsbrough](https://github.com/lounsbrough)! - Fix minimap position
+
 ## 11.2.0
 
 ### Minor Changes
