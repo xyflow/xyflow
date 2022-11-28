@@ -60,7 +60,7 @@ export function checkElementBelowIsValid(
     const isValid =
       connectionMode === ConnectionMode.Strict
         ? (isTarget && elementBelowIsSource) || (!isTarget && elementBelowIsTarget)
-        : true;
+        : elementBelowNodeId !== nodeId || elementBelowHandleId !== handleId;
 
     if (isValid) {
       result.isValid = isValidConnection(connection);
