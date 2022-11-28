@@ -35,17 +35,20 @@ describe('Minimap Testing', () => {
   });
 
   it('changes node position', () => {
-    const xPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
-    const yPosBeforeDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
+    const minimapNode = Cypress.$('.react-flow__minimap-node:first');
+
+    const xPosBeforeDrag = Number(minimapNode.attr('x'));
+    const yPosBeforeDrag = Number(minimapNode.attr('y'));
 
     cy.drag('.react-flow__node:first', { x: 500, y: 25 })
       .wait(100)
       .then(() => {
-        const xPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('x');
-        const yPosAfterDrag = Cypress.$('.react-flow__minimap-node:first').attr('y');
+        const xPosAfterDrag = Number(minimapNode.attr('x'));
+        const yPosAfterDrag = Number(minimapNode.attr('y'));
 
-        expect(xPosBeforeDrag).to.not.equal(xPosAfterDrag);
-        expect(yPosBeforeDrag).to.not.equal(yPosAfterDrag);
+        expect(xPosAfterDrag).not.to.equal(xPosBeforeDrag);
+        expect(yPosAfterDrag).not.to.equal(yPosBeforeDrag);
+        expect(xPosAfterDrag - xPosBeforeDrag).to.be.greaterThan(yPosAfterDrag - yPosBeforeDrag);
       });
   });
 

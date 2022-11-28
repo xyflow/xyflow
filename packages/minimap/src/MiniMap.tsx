@@ -173,7 +173,7 @@ function MiniMap({
             <MiniMapNode
               key={node.id}
               x={positionAbsolute.x}
-              y={positionAbsolute.x}
+              y={positionAbsolute.y}
               width={node.width!}
               height={node.height!}
               style={node.style}
