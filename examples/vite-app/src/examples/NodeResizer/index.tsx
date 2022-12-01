@@ -1,13 +1,5 @@
 import { useCallback } from 'react';
-import ReactFlow, {
-  Controls,
-  addEdge,
-  Position,
-  Connection,
-  useNodesState,
-  useEdgesState,
-  NodeChange,
-} from 'reactflow';
+import ReactFlow, { Controls, addEdge, Position, Connection, useNodesState, useEdgesState } from 'reactflow';
 
 import CustomNode from './CustomNode';
 
@@ -41,19 +33,12 @@ const initialNodes = [
 ];
 
 const CustomNodeFlow = () => {
-  const [nodes, setNodes, _onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge({ ...connection }, eds)),
     [setEdges]
-  );
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => {
-      _onNodesChange(changes);
-    },
-    [_onNodesChange]
   );
 
   return (
@@ -67,6 +52,7 @@ const CustomNodeFlow = () => {
       fitView
       minZoom={0.3}
       maxZoom={2}
+      snapToGrid
     >
       <Controls />
     </ReactFlow>

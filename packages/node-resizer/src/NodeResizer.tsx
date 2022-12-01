@@ -1,7 +1,14 @@
 import { useRef, useEffect } from 'react';
+import cc from 'classcat';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
-import { useStoreApi, useGetPointerPosition } from '@reactflow/core';
+import {
+  useStoreApi,
+  useGetPointerPosition,
+  NodeChange,
+  NodePositionChange,
+  NodeDimensionChange,
+} from '@reactflow/core';
 import type { Dimensions, Node, XYPosition } from '@reactflow/core';
 import type { D3DragEvent, SubjectPosition } from 'd3';
 
@@ -17,6 +24,7 @@ type ResizeHandleProps = {
   enableY?: boolean;
   top?: number | string;
   left?: number | string;
+  className?: string;
 };
 
 type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
@@ -29,6 +37,7 @@ function ResizeHandle({
   enableX = false,
   enableY = false,
   nodeId,
+  className,
 }: ResizeHandleProps) {
   const store = useStoreApi();
   const resizeHandleRef = useRef<HTMLDivElement>(null);
@@ -65,12 +74,13 @@ function ResizeHandle({
         nodeElementRef.current = document.querySelector(`.react-flow__node[data-id="${nodeId}"]`) as HTMLDivElement;
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { updateNodePositions, nodeInternals } = store.getState();
+        const { updateNodePositions, nodeInternals, onNodesChange } = store.getState();
         const pointerPos = getPointerPosition(event);
         const nodeEl = nodeElementRef.current;
         const node = nodeInternals.get(nodeId);
 
         if (nodeEl && node) {
+          const changes: NodeChange[] = [];
           const distX = enableX ? pointerPos.xSnapped - initialDimensionsRef.current.x : 0;
           const distY = enableY ? pointerPos.ySnapped - initialDimensionsRef.current.y : 0;
           const width = initialDimensionsRef.current.width + (invertX ? -distX : distX);
@@ -81,7 +91,7 @@ function ResizeHandle({
             const y = invertY ? initialDimensionsRef.current.nodeY + distY : initialDimensionsRef.current.nodeY;
 
             if (x !== node.position.x || y !== node.position.y) {
-              updateNodePositions(
+              const positionChanges: NodePositionChange[] | null = updateNodePositions(
                 [
                   {
                     id: nodeId,
@@ -89,16 +99,31 @@ function ResizeHandle({
                   } as Node,
                 ],
                 true,
+                false,
                 false
               );
+
+              if (positionChanges?.length) {
+                changes.push(positionChanges[0]);
+              }
             }
           }
 
-          if (width !== node.width) {
-            nodeEl.style.width = `${width}px`;
+          if (width !== node.width || height !== node.height) {
+            const dimensionChange: NodeDimensionChange = {
+              id: nodeId,
+              type: 'dimensions',
+              updateStyle: true,
+              dimensions: {
+                width: width !== node.width ? width : node.width,
+                height: height !== node.height ? height : node.height,
+              },
+            };
+            changes.push(dimensionChange);
           }
-          if (height !== node.height) {
-            nodeEl.style.height = `${height}px`;
+
+          if (changes.length) {
+            onNodesChange?.(changes);
           }
         }
       });
@@ -112,7 +137,7 @@ function ResizeHandle({
 
   return (
     <div
-      className="nodrag"
+      className={cc([className, 'nodrag'])}
       ref={resizeHandleRef}
       style={{
         position: 'absolute',
@@ -132,14 +157,23 @@ function ResizeHandle({
 export default function NodeResizer({ nodeId }: NodeResizerProps) {
   return (
     <>
-      <ResizeHandle nodeId={nodeId} top={0} left={0} enableX enableY invertX invertY />
-      <ResizeHandle nodeId={nodeId} top="50%" left={0} enableX invertX />
-      <ResizeHandle nodeId={nodeId} top="100%" left={0} enableX enableY />
-      <ResizeHandle nodeId={nodeId} top={0} left="50%" enableY invertY />
-      <ResizeHandle nodeId={nodeId} top={0} left="100%" enableX enableY invertY />
-      <ResizeHandle nodeId={nodeId} top="50%" left="100%" enableX />
-      <ResizeHandle nodeId={nodeId} top="100%" left="100%" enableX enableY />
-      <ResizeHandle nodeId={nodeId} top="100%" left="50%" enableY />
+      <ResizeHandle
+        className="react-flow__node-resizer"
+        nodeId={nodeId}
+        top={0}
+        left={0}
+        enableX
+        enableY
+        invertX
+        invertY
+      />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top="50%" left={0} enableX invertX />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top="100%" left={0} enableX enableY />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top={0} left="50%" enableY invertY />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top={0} left="100%" enableX enableY invertY />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top="50%" left="100%" enableX />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top="100%" left="100%" enableX enableY />
+      <ResizeHandle className="react-flow__node-resizer" nodeId={nodeId} top="100%" left="50%" enableY />
     </>
   );
 }
