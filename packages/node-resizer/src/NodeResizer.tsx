@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
-import type { D3DragEvent, SubjectPosition } from 'd3';
 import { useStoreApi, useGetPointerPosition } from '@reactflow/core';
 import type { Dimensions, Node, XYPosition } from '@reactflow/core';
+import type { D3DragEvent, SubjectPosition } from 'd3';
 
 type NodeResizerProps = {
   nodeId: string;
@@ -77,8 +77,8 @@ function ResizeHandle({
           const height = initialDimensionsRef.current.height + (invertY ? -distY : distY);
 
           if (invertX || invertY) {
-            const x = invertX ? initialDimensionsRef.current.nodeX + distX : node.position.x;
-            const y = invertY ? initialDimensionsRef.current.nodeY + distY : node.position.y;
+            const x = invertX ? initialDimensionsRef.current.nodeX + distX : initialDimensionsRef.current.nodeX;
+            const y = invertY ? initialDimensionsRef.current.nodeY + distY : initialDimensionsRef.current.nodeY;
 
             if (x !== node.position.x || y !== node.position.y) {
               updateNodePositions(
