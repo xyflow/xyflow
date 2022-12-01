@@ -11,6 +11,7 @@ import ReactFlow, {
 } from 'reactflow';
 
 import CustomNode from './CustomNode';
+import SelectedNodesToolbar from './SelectedNodesToolbar';
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -79,6 +80,7 @@ export default function NodeToolbarExample() {
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
       <Controls />
+      <SelectedNodesToolbar />
     </ReactFlow>
   );
 }

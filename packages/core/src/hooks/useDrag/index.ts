@@ -96,6 +96,7 @@ function useDrag({
               onSelectionDrag,
               snapGrid,
               snapToGrid,
+              nodeOrigin,
             } = store.getState();
             const pointerPos = getPointerPosition(event);
             // skip events without movement
@@ -115,7 +116,7 @@ function useDrag({
                   nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
                 }
 
-                const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent);
+                const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent, nodeOrigin);
 
                 n.position = updatedPos.position;
                 n.positionAbsolute = updatedPos.positionAbsolute;

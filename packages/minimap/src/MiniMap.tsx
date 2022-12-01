@@ -7,7 +7,14 @@ import shallow from 'zustand/shallow';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import type { D3ZoomEvent } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
-import { useStore, getRectOfNodes, Panel, getBoundsOfRects, useStoreApi } from '@reactflow/core';
+import {
+  useStore,
+  getRectOfNodes,
+  Panel,
+  getBoundsOfRects,
+  useStoreApi,
+  getNodePositionWithOrigin,
+} from '@reactflow/core';
 import type { ReactFlowState, Rect } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
@@ -159,24 +166,28 @@ function MiniMap({
         onClick={onSvgClick}
       >
         {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
-        {nodes.map((node) => (
-          <MiniMapNode
-            key={node.id}
-            x={(node.positionAbsolute?.x ?? 0) - nodeOrigin[0] * (node.width ?? 0)}
-            y={(node.positionAbsolute?.y ?? 0) - nodeOrigin[1] * (node.height ?? 0)}
-            width={node.width!}
-            height={node.height!}
-            style={node.style}
-            className={nodeClassNameFunc(node)}
-            color={nodeColorFunc(node)}
-            borderRadius={nodeBorderRadius}
-            strokeColor={nodeStrokeColorFunc(node)}
-            strokeWidth={nodeStrokeWidth}
-            shapeRendering={shapeRendering}
-            onClick={onSvgNodeClick}
-            id={node.id}
-          />
-        ))}
+        {nodes.map((node) => {
+          const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
+
+          return (
+            <MiniMapNode
+              key={node.id}
+              x={positionAbsolute.x}
+              y={positionAbsolute.y}
+              width={node.width!}
+              height={node.height!}
+              style={node.style}
+              className={nodeClassNameFunc(node)}
+              color={nodeColorFunc(node)}
+              borderRadius={nodeBorderRadius}
+              strokeColor={nodeStrokeColorFunc(node)}
+              strokeWidth={nodeStrokeWidth}
+              shapeRendering={shapeRendering}
+              onClick={onSvgNodeClick}
+              id={node.id}
+            />
+          );
+        })}
         <path
           className="react-flow__minimap-mask"
           d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z

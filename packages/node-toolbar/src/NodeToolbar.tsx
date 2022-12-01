@@ -15,15 +15,17 @@ import shallow from 'zustand/shallow';
 import NodeToolbarPortal from './NodeToolbarPortal';
 import { NodeToolbarProps } from './types';
 
-type SelectedNode = Node | undefined;
-
-const nodeEqualityFn = (a: SelectedNode, b: SelectedNode) =>
+const nodeEqualityFn = (a: Node | undefined, b: Node | undefined) =>
   a?.positionAbsolute?.x === b?.positionAbsolute?.x &&
   a?.positionAbsolute?.y === b?.positionAbsolute?.y &&
   a?.width === b?.width &&
   a?.height === b?.height &&
   a?.selected === b?.selected &&
   a?.[internalsSymbol]?.z === b?.[internalsSymbol]?.z;
+
+const nodesEqualityFn = (a: Node[], b: Node[]) => {
+  return a.length === b.length && a.every((node, i) => nodeEqualityFn(node, b[i]));
+};
 
 const storeSelector = (state: ReactFlowState) => ({
   transform: state.transform,
@@ -70,21 +72,36 @@ function NodeToolbar({
   offset = 10,
   ...rest
 }: NodeToolbarProps) {
-  const nodeSelector = useCallback((state: ReactFlowState): SelectedNode => state.nodeInternals.get(nodeId), [nodeId]);
-  const node = useStore(nodeSelector, nodeEqualityFn);
-  const { transform, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);
-  const isActive = typeof isVisible === 'boolean' ? isVisible : node?.selected && selectedNodesCount === 1;
+  const nodesSelector = useCallback(
+    (state: ReactFlowState): Node[] => {
+      const nodeIds: string[] = typeof nodeId === 'string' ? [nodeId] : nodeId;
 
-  if (!isActive || !node) {
+      return nodeIds.reduce<Node[]>((acc, id) => {
+        const node = state.nodeInternals.get(id);
+        if (node) {
+          acc.push(node);
+        }
+        return acc;
+      }, [] as Node[]);
+    },
+    [nodeId]
+  );
+  const nodes = useStore(nodesSelector, nodesEqualityFn);
+  const { transform, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);
+  const isActive =
+    typeof isVisible === 'boolean' ? isVisible : nodes.length === 1 && nodes[0].selected && selectedNodesCount === 1;
+
+  if (!isActive || !nodes.length) {
     return null;
   }
 
-  const nodeRect: Rect = getRectOfNodes([node], nodeOrigin);
+  const nodeRect: Rect = getRectOfNodes(nodes, nodeOrigin);
+  const zIndex: number = Math.max(...nodes.map((node) => (node[internalsSymbol]?.z || 1) + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
     transform: getTransform(nodeRect, transform, position, offset),
-    zIndex: (node[internalsSymbol]?.z || 1) + 1,
+    zIndex,
     ...style,
   };
 
