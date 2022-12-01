@@ -8,6 +8,7 @@ export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
   dimensions: Dimensions;
+  updateStyle?: boolean;
 };
 
 export type NodePositionChange = {

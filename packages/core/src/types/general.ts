@@ -3,7 +3,7 @@ import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent 
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
-import type { NodeChange, EdgeChange } from './changes';
+import type { NodeChange, EdgeChange, NodePositionChange } from './changes';
 import type {
   Node,
   NodeInternals,
@@ -215,7 +215,12 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged: boolean, dragging: boolean) => void;
+  updateNodePositions: (
+    nodeDragItems: NodeDragItem[] | Node[],
+    positionChanged: boolean,
+    dragging: boolean,
+    applyChanges?: boolean
+  ) => NodePositionChange[] | null;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
   addSelectedNodes: (nodeIds: string[]) => void;

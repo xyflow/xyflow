@@ -102,7 +102,12 @@ const createRFStore = () =>
         onNodesChange?.(changes);
       }
     },
-    updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged = true, dragging = false) => {
+    updateNodePositions: (
+      nodeDragItems: NodeDragItem[] | Node[],
+      positionChanged = true,
+      dragging = false,
+      applyChanges = true
+    ) => {
       const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin } = get();
 
       if (hasDefaultNodes || onNodesChange) {
@@ -128,9 +133,15 @@ const createRFStore = () =>
             set({ nodeInternals: nextNodeInternals });
           }
 
-          onNodesChange?.(changes);
+          if (applyChanges) {
+            onNodesChange?.(changes);
+          }
         }
+
+        return changes;
       }
+
+      return null;
     },
     addSelectedNodes: (selectedNodeIds: string[]) => {
       const { multiSelectionActive, nodeInternals, edges } = get();
