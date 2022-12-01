@@ -37,5 +37,6 @@ export { useStore, useStoreApi } from './hooks/useStore';
 export { default as useOnViewportChange } from './hooks/useOnViewportChange';
 export { default as useOnSelectionChange } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized } from './hooks/useNodesInitialized';
+export { default as useGetPointerPosition } from './hooks/useGetPointerPosition';
 
 export * from './types';

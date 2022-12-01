@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { RefObject, MouseEvent } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
-import type { D3DragEvent, SubjectPosition } from 'd3';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
-import type { NodeDragItem, Node, SelectionDragHandler } from '../../types';
+import useGetPointerPosition from '../useGetPointerPosition';
+import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent } from '../../types';
 
-export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 export type UseDragData = { dx: number; dy: number };
 
 type UseDragParams = {
@@ -40,24 +39,7 @@ function useDrag({
   const dragItems = useRef<NodeDragItem[]>();
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
 
-  // returns the pointer position projected to the RF coordinate system
-  const getPointerPosition = useCallback(({ sourceEvent }: UseDragEvent) => {
-    const { transform, snapGrid, snapToGrid } = store.getState();
-    const x = sourceEvent.touches ? sourceEvent.touches[0].clientX : sourceEvent.clientX;
-    const y = sourceEvent.touches ? sourceEvent.touches[0].clientY : sourceEvent.clientY;
-
-    const pointerPos = {
-      x: (x - transform[0]) / transform[2],
-      y: (y - transform[1]) / transform[2],
-    };
-
-    // we need the snapped position in order to be able to skip unnecessary drag events
-    return {
-      xSnapped: snapToGrid ? snapGrid[0] * Math.round(pointerPos.x / snapGrid[0]) : pointerPos.x,
-      ySnapped: snapToGrid ? snapGrid[1] * Math.round(pointerPos.y / snapGrid[1]) : pointerPos.y,
-      ...pointerPos,
-    };
-  }, []);
+  const getPointerPosition = useGetPointerPosition();
 
   useEffect(() => {
     if (nodeRef?.current) {

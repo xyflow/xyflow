@@ -2,8 +2,8 @@ import { useRef, useEffect } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 import type { D3DragEvent, SubjectPosition } from 'd3';
-import { useStoreApi } from '../../hooks/useStore';
-import { Dimensions, Node, XYPosition } from '../../types';
+import { useStoreApi, useGetPointerPosition } from '@reactflow/core';
+import type { Dimensions, Node, XYPosition } from '@reactflow/core';
 
 type NodeResizerProps = {
   nodeId: string;
@@ -32,8 +32,16 @@ function ResizeHandle({
 }: ResizeHandleProps) {
   const store = useStoreApi();
   const resizeHandleRef = useRef<HTMLDivElement>(null);
-  const initialDimensionsRef = useRef<Dimensions & XYPosition>({ width: 0, height: 0, x: 0, y: 0 });
+  const initialDimensionsRef = useRef<Dimensions & XYPosition & { nodeX: number; nodeY: number }>({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    nodeX: 0,
+    nodeY: 0,
+  });
   const nodeElementRef = useRef<HTMLDivElement | null>(null);
+  const getPointerPosition = useGetPointerPosition();
 
   useEffect(() => {
     if (!resizeHandleRef.current) {
@@ -42,56 +50,55 @@ function ResizeHandle({
 
     const selection = select(resizeHandleRef.current);
     const dragHandler = drag<HTMLDivElement, unknown>()
-      .on('start', () => {
-        const { transform, nodeInternals } = store.getState();
-        const node = nodeInternals.get(nodeId);
-        const nodeElement = document.querySelector(`.react-flow__node[data-id="${nodeId}"]`) as HTMLDivElement;
-        const bbox = nodeElement.getBoundingClientRect();
-        initialDimensionsRef.current = {
-          width: bbox.width / transform[2],
-          height: bbox.height / transform[2],
-          x: node?.position.x || 0,
-          y: node?.position.y || 0,
-        };
-        nodeElementRef.current = nodeElement;
-      })
-      .on('drag', (evt: ResizeDragEvent) => {
-        const { transform, updateNodePositions, nodeInternals } = store.getState();
+      .on('start', (event: ResizeDragEvent) => {
+        const node = store.getState().nodeInternals.get(nodeId);
+        const pointerPos = getPointerPosition(event);
 
+        initialDimensionsRef.current = {
+          width: node?.width ?? 0,
+          height: node?.height ?? 0,
+          nodeX: node?.position.x ?? 0,
+          nodeY: node?.position.y ?? 0,
+          x: pointerPos.xSnapped,
+          y: pointerPos.ySnapped,
+        };
+        nodeElementRef.current = document.querySelector(`.react-flow__node[data-id="${nodeId}"]`) as HTMLDivElement;
+      })
+      .on('drag', (event: ResizeDragEvent) => {
+        const { updateNodePositions, nodeInternals } = store.getState();
+        const pointerPos = getPointerPosition(event);
         const nodeEl = nodeElementRef.current;
         const node = nodeInternals.get(nodeId);
 
         if (nodeEl && node) {
-          const moveX = invertX ? -evt.x : evt.x;
-          const moveY = invertY ? -evt.y : evt.y;
-          const distX = enableX ? moveX - evt.subject.x : 0;
-          const distY = enableY ? moveY - evt.subject.y : 0;
-          const dragX = distX / transform[2];
-          const dragY = distY / transform[2];
-
-          const xPos = invertX ? initialDimensionsRef.current.x - dragX : initialDimensionsRef.current.x;
-          const yPos = invertY ? initialDimensionsRef.current.y - dragY : initialDimensionsRef.current.y;
-
-          console.log(dragX);
-
-          nodeEl.style.width = `${initialDimensionsRef.current.width + dragX}px`;
-          nodeEl.style.height = `${initialDimensionsRef.current.height + dragY}px`;
-          nodeEl.style.transform = `translate(${xPos}px, ${yPos}px)`;
+          const distX = enableX ? pointerPos.xSnapped - initialDimensionsRef.current.x : 0;
+          const distY = enableY ? pointerPos.ySnapped - initialDimensionsRef.current.y : 0;
+          const width = initialDimensionsRef.current.width + (invertX ? -distX : distX);
+          const height = initialDimensionsRef.current.height + (invertY ? -distY : distY);
 
           if (invertX || invertY) {
-            const positionUpdate = { x: xPos, y: yPos };
+            const x = invertX ? initialDimensionsRef.current.nodeX + distX : node.position.x;
+            const y = invertY ? initialDimensionsRef.current.nodeY + distY : node.position.y;
 
-            updateNodePositions(
-              [
-                {
-                  id: nodeId,
-                  position: positionUpdate,
-                  // positionAbsolute: node.positionAbsolute,
-                } as Node,
-              ],
-              true,
-              false
-            );
+            if (x !== node.position.x || y !== node.position.y) {
+              updateNodePositions(
+                [
+                  {
+                    id: nodeId,
+                    position: { x, y },
+                  } as Node,
+                ],
+                true,
+                false
+              );
+            }
+          }
+
+          if (width !== node.width) {
+            nodeEl.style.width = `${width}px`;
+          }
+          if (height !== node.height) {
+            nodeEl.style.height = `${height}px`;
           }
         }
       });
@@ -114,6 +121,7 @@ function ResizeHandle({
         width: 10,
         height: 10,
         background: 'red',
+        opacity: 0.7,
         borderRadius: '50%',
         transform: 'translate(-50%, -50%)',
       }}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
-import type { Selection as D3Selection, ZoomBehavior } from 'd3';
+import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
 import type { NodeChange, EdgeChange } from './changes';
@@ -245,3 +245,5 @@ export type ProOptions = {
   account?: string;
   hideAttribution: boolean;
 };
+
+export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
