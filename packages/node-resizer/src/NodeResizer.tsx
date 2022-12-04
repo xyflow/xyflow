@@ -1,5 +1,8 @@
 import ResizeControl from './ResizeControl';
-import type { NodeResizerProps } from './types';
+import { ControlPosition, NodeResizerProps, ResizeControlVariant, ControlLinePosition } from './types';
+
+const handleControls: ControlPosition[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+const lineControls: ControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
 
 export default function NodeResizer({
   nodeId,
@@ -10,16 +13,19 @@ export default function NodeResizer({
 }: NodeResizerProps) {
   return (
     <>
-      <ResizeControl className={handleClassName} style={handleStyle} nodeId={nodeId} position="top-left" />
-      <ResizeControl className={lineClassName} variant="line" style={lineStyle} nodeId={nodeId} position="top" />
-      <ResizeControl className={handleClassName} style={handleStyle} nodeId={nodeId} position="top-right" />
-
-      <ResizeControl className={lineClassName} variant="line" style={lineStyle} nodeId={nodeId} position="left" />
-
-      <ResizeControl className={handleClassName} style={handleStyle} nodeId={nodeId} position="bottom-left" />
-      <ResizeControl className={lineClassName} variant="line" style={lineStyle} nodeId={nodeId} position="right" />
-      <ResizeControl className={handleClassName} style={handleStyle} nodeId={nodeId} position="bottom-right" />
-      <ResizeControl className={lineClassName} variant="line" position="bottom" style={lineStyle} nodeId={nodeId} />
+      {lineControls.map((c) => (
+        <ResizeControl
+          key={c}
+          className={lineClassName}
+          style={lineStyle}
+          nodeId={nodeId}
+          position={c}
+          variant={ResizeControlVariant.Line}
+        />
+      ))}
+      {handleControls.map((c) => (
+        <ResizeControl key={c} className={handleClassName} style={handleStyle} nodeId={nodeId} position={c} />
+      ))}
     </>
   );
 }

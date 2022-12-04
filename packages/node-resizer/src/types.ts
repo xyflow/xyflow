@@ -13,10 +13,15 @@ export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
 
 export type ControlPosition = ControlLinePosition | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
+export enum ResizeControlVariant {
+  Line = 'line',
+  Handle = 'handle',
+}
+
 export type ResizeControlProps = {
   nodeId: string;
   position: ControlPosition;
-  variant?: 'line' | 'handle';
+  variant?: ResizeControlVariant;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;

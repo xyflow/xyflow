@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
@@ -6,26 +6,25 @@ import {
   useStoreApi,
   useGetPointerPosition,
   NodeChange,
-  NodePositionChange,
   NodeDimensionChange,
   applyNodeChanges,
   createNodeInternals,
 } from '@reactflow/core';
 import type { Dimensions, Node, XYPosition } from '@reactflow/core';
 
-import type { ResizeDragEvent, ResizeControlProps, ResizeControlLineProps } from './types';
+import { ResizeDragEvent, ResizeControlProps, ResizeControlLineProps, ResizeControlVariant } from './types';
 
 function ResizeControl({
   nodeId,
   position = 'bottom-right',
-  variant = 'handle',
+  variant = ResizeControlVariant.Handle,
   className,
   style = {},
   children,
 }: ResizeControlProps) {
   const store = useStoreApi();
-  const resizeHandleRef = useRef<HTMLDivElement>(null);
-  const initialDimensionsRef = useRef<Dimensions & XYPosition & { nodeX: number; nodeY: number }>({
+  const resizeControlRef = useRef<HTMLDivElement>(null);
+  const startValues = useRef<Dimensions & XYPosition & { nodeX: number; nodeY: number }>({
     width: 0,
     height: 0,
     x: 0,
@@ -33,53 +32,58 @@ function ResizeControl({
     nodeX: 0,
     nodeY: 0,
   });
-  const nodeElementRef = useRef<HTMLDivElement | null>(null);
   const getPointerPosition = useGetPointerPosition();
 
   useEffect(() => {
-    if (!resizeHandleRef.current) {
+    if (!resizeControlRef.current) {
       return;
     }
 
-    const selection = select(resizeHandleRef.current);
+    const selection = select(resizeControlRef.current);
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
         const node = store.getState().nodeInternals.get(nodeId);
-        const pointerPos = getPointerPosition(event);
+        const { xSnapped, ySnapped } = getPointerPosition(event);
 
-        initialDimensionsRef.current = {
+        startValues.current = {
           width: node?.width ?? 0,
           height: node?.height ?? 0,
           nodeX: node?.position.x ?? 0,
           nodeY: node?.position.y ?? 0,
-          x: pointerPos.xSnapped,
-          y: pointerPos.ySnapped,
+          x: xSnapped,
+          y: ySnapped,
         };
-        nodeElementRef.current = document.querySelector(`.react-flow__node[data-id="${nodeId}"]`) as HTMLDivElement;
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { updateNodePositions, nodeInternals, onNodesChange, hasDefaultNodes, nodeOrigin } = store.getState();
-        const pointerPos = getPointerPosition(event);
-        const nodeEl = nodeElementRef.current;
+        const { xSnapped, ySnapped } = getPointerPosition(event);
         const node = nodeInternals.get(nodeId);
         const enableX = position.includes('right') || position.includes('left');
         const enableY = position.includes('bottom') || position.includes('top');
         const invertX = position.includes('left');
         const invertY = position.includes('top');
 
-        if (nodeEl && node) {
+        if (node) {
           const changes: NodeChange[] = [];
-          const distX = enableX ? pointerPos.xSnapped - initialDimensionsRef.current.x : 0;
-          const distY = enableY ? pointerPos.ySnapped - initialDimensionsRef.current.y : 0;
-          const width = initialDimensionsRef.current.width + (invertX ? -distX : distX);
-          const height = initialDimensionsRef.current.height + (invertY ? -distY : distY);
+          const {
+            x: startX,
+            y: startY,
+            width: startWidth,
+            height: startHeight,
+            nodeX: startNodeX,
+            nodeY: startNodeY,
+          } = startValues.current;
+          const distX = enableX ? xSnapped - startX : 0;
+          const distY = enableY ? ySnapped - startY : 0;
+          const width = startWidth + (invertX ? -distX : distX);
+          const height = startHeight + (invertY ? -distY : distY);
 
           if (invertX || invertY) {
-            const x = invertX ? initialDimensionsRef.current.nodeX + distX : initialDimensionsRef.current.nodeX;
-            const y = invertY ? initialDimensionsRef.current.nodeY + distY : initialDimensionsRef.current.nodeY;
+            const x = invertX ? startNodeX + distX : startNodeX;
+            const y = invertY ? startNodeY + distY : startNodeY;
 
             if (x !== node.position.x || y !== node.position.y) {
-              const positionChanges: NodePositionChange[] | null = updateNodePositions(
+              const positionChanges = updateNodePositions(
                 [
                   {
                     id: nodeId,
@@ -129,12 +133,12 @@ function ResizeControl({
     };
   }, [nodeId, position, getPointerPosition]);
 
-  const positionClassNames = position.split('-');
+  const positionClassNames = position?.split('-');
 
   return (
     <div
-      className={cc([className, ...positionClassNames, variant, 'react-flow__resize-control', 'nodrag'])}
-      ref={resizeHandleRef}
+      className={cc(['react-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
+      ref={resizeControlRef}
       style={style}
     >
       {children}
@@ -143,7 +147,7 @@ function ResizeControl({
 }
 
 export function ResizeControlLine(props: ResizeControlLineProps) {
-  return <ResizeControl {...props} variant="line" />;
+  return <ResizeControl {...props} variant={ResizeControlVariant.Line} />;
 }
 
-export default ResizeControl;
+export default memo(ResizeControl);
