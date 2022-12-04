@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
 import ReactFlow, { Controls, addEdge, Position, Connection, useNodesState, useEdgesState } from 'reactflow';
 
-import CustomNode from './CustomNode';
+import NodeResizerNode from './NodeResizerNode';
+import CustomResizer from './CustomResizer';
+import CustomResizer2 from './CustomResizer2';
 
 const nodeTypes = {
-  custom: CustomNode,
+  resizer: NodeResizerNode,
+  customResizer: CustomResizer,
+  customResizer2: CustomResizer2,
 };
 
 const initialEdges = [
@@ -25,10 +29,24 @@ const initialNodes = [
   },
   {
     id: '2',
-    type: 'custom',
-    data: { label: 'resize me!' },
+    type: 'resizer',
+    data: { label: 'default resizer' },
     position: { x: 250, y: 0 },
-    style: { padding: 10, border: '1px solid #222' },
+    style: { padding: 10, border: '1px solid #222', fontSize: 10 },
+  },
+  {
+    id: '3',
+    type: 'customResizer',
+    data: { label: 'resize control with child component' },
+    position: { x: 250, y: 150 },
+    style: { padding: 10, border: '1px solid #222', fontSize: 10, width: 100 },
+  },
+  {
+    id: '4',
+    type: 'customResizer2',
+    data: { label: 'resize controls' },
+    position: { x: 100, y: 150 },
+    style: { padding: 10, border: '1px solid #222', fontSize: 10 },
   },
 ];
 
