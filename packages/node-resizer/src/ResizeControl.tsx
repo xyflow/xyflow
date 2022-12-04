@@ -8,6 +8,8 @@ import {
   NodeChange,
   NodePositionChange,
   NodeDimensionChange,
+  applyNodeChanges,
+  createNodeInternals,
 } from '@reactflow/core';
 import type { Dimensions, Node, XYPosition } from '@reactflow/core';
 
@@ -56,7 +58,7 @@ function ResizeControl({
         nodeElementRef.current = document.querySelector(`.react-flow__node[data-id="${nodeId}"]`) as HTMLDivElement;
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { updateNodePositions, nodeInternals, onNodesChange } = store.getState();
+        const { updateNodePositions, nodeInternals, onNodesChange, hasDefaultNodes, nodeOrigin } = store.getState();
         const pointerPos = getPointerPosition(event);
         const nodeEl = nodeElementRef.current;
         const node = nodeInternals.get(nodeId);
@@ -109,6 +111,12 @@ function ResizeControl({
           }
 
           if (changes.length) {
+            if (hasDefaultNodes) {
+              const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
+              const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin);
+              store.setState({ nodeInternals: nextNodeInternals });
+            }
+
             onNodesChange?.(changes);
           }
         }
