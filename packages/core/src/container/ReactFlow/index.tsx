@@ -28,6 +28,7 @@ import type {
   ReactFlowRefType,
   Viewport,
 } from '../../types';
+import { getPrefixId } from '../../utils';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -162,7 +163,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   ) => {
     const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
     const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
-    const rfId = id || '1';
+    const rfId = id || getPrefixId();
 
     return (
       <div

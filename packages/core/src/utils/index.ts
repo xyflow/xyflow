@@ -69,3 +69,7 @@ export const devWarn = (message: string) => {
     console.warn(`[React Flow]: ${message}`);
   }
 };
+
+export const getPrefixId = () => {
+  return (Math.random() * 1e15).toString(36).replace(".", '_')
+}

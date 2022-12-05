@@ -1,4 +1,11 @@
-import ReactFlow, { BaseEdge, EdgeLabelRenderer, EdgeProps, getSmoothStepPath, ReactFlowProvider } from 'reactflow';
+import ReactFlow, {
+  Background,
+  BaseEdge,
+  EdgeLabelRenderer,
+  EdgeProps,
+  getSmoothStepPath,
+  ReactFlowProvider,
+} from 'reactflow';
 import * as simpleflow from '../../fixtures/simpleflow';
 
 function CustomEdge(props: EdgeProps) {
@@ -57,6 +64,33 @@ describe('<ReactFlow />: Multiple Instances', () => {
         .eq(1)
         .within(() => {
           cy.get('.label').should('have.length', 1).should('contain.text', 'edge2');
+        });
+    });
+  });
+
+  describe('<Background>', () => {
+    beforeEach(() => {
+      cy.mount(
+        <>
+          <ReactFlowProvider>
+            <ReactFlow defaultNodes={simpleflow1.nodes} defaultEdges={simpleflow1.edges}>
+              <Background />
+            </ReactFlow>
+          </ReactFlowProvider>
+          <ReactFlowProvider>
+            <ReactFlow defaultNodes={simpleflow2.nodes} defaultEdges={simpleflow2.edges}>
+              <Background />
+            </ReactFlow>
+          </ReactFlowProvider>
+        </>
+      );
+    });
+
+    it("The background pattern's IDs should not be the same", () => {
+      cy.get('.react-flow__background pattern')
+        .should('have.length', 2)
+        .spread((pattern1, pattern2) => {
+          cy.wrap(pattern1.getAttribute('id')).should('not.eq', pattern2.getAttribute('id'));
         });
     });
   });
