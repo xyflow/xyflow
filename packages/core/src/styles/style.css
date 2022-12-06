@@ -13,6 +13,13 @@
   }
 }
 
+.react-flow__node.selectable {
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
 .react-flow__node-default,
 .react-flow__node-input,
 .react-flow__node-output,
@@ -37,7 +44,6 @@
     &:focus,
     &:focus-visible {
       box-shadow: 0 0 0 0.5px #1a192b;
-      outline: none;
     }
   }
 }
