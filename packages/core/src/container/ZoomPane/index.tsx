@@ -231,7 +231,7 @@ const ZoomPane = ({
         if (
           event.button === 1 &&
           event.type === 'mousedown' &&
-          (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge'))
+          (isWrappedWithClass(event, 'react-flow__node') || isWrappedWithClass(event, 'react-flow__edge'))
         ) {
           return true;
         }
