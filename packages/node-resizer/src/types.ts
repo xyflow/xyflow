@@ -9,6 +9,8 @@ export type NodeResizerProps = {
   lineClassName?: string;
   lineStyle?: CSSProperties;
   isVisible?: boolean;
+  minWidth?: number;
+  minHeight?: number;
 };
 
 export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';

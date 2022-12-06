@@ -12,6 +12,8 @@ export default function NodeResizer({
   lineClassName,
   lineStyle,
   color,
+  minWidth = 10,
+  minHeight = 10,
 }: NodeResizerProps) {
   if (!isVisible) {
     return null;
@@ -28,6 +30,8 @@ export default function NodeResizer({
           position={c}
           variant={ResizeControlVariant.Line}
           color={color}
+          minWidth={minWidth}
+          minHeight={minHeight}
         />
       ))}
       {handleControls.map((c) => (
@@ -38,6 +42,8 @@ export default function NodeResizer({
           nodeId={nodeId}
           position={c}
           color={color}
+          minWidth={minWidth}
+          minHeight={minHeight}
         />
       ))}
     </>

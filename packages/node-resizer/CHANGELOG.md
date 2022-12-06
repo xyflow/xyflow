@@ -1,5 +1,11 @@
 # @reactflow/node-resizer
 
+## 1.0.1
+
+### Patch Changes
+
+- pass `minWidth` and `minHeight` from `NodeResizer` component to `NodeResizeControl`
+
 ## 1.0.0
 
 This is a new package that exports components to build a UI for resizing a node 🎉 It exports a [`<NodeResizer />`](https://reactflow.dev/docs/api/nodes/node-resizer/) component and a [`<NodeResizeControl />`](https://reactflow.dev/docs/api/nodes/node-resizer/#noderesizecontrol--component) component.
