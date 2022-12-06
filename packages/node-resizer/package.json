@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/node-resizer",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A helper component for resizing nodes.",
   "keywords": [
     "react",

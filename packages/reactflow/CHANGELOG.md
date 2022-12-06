@@ -1,5 +1,18 @@
 # reactflow
 
+## 11.3.3
+
+In this update we did some changes so that we could implement the new [`<NodeResizer />`](https://reactflow.dev/docs/api/nodes/node-resizer/) component (not part of the `reactflow` package!) more smoothly.
+
+### Patch Changes
+
+- Updated dependencies [[`e6b5d90f`](https://github.com/wbkd/react-flow/commit/e6b5d90f61c8ee60e817bba232a162cae2ab3e2a), [`6ee44e07`](https://github.com/wbkd/react-flow/commit/6ee44e076eaa6908d07578a757a5187642b732ae), [`d29c401d`](https://github.com/wbkd/react-flow/commit/d29c401d598dbf2dcd5609b7adb8d029906a6f18), [`aa69c207`](https://github.com/wbkd/react-flow/commit/aa69c20765e6978f4f9c8cc63ed7110dbf6d9d9d), [`d29c401d`](https://github.com/wbkd/react-flow/commit/d29c401d598dbf2dcd5609b7adb8d029906a6f18), [`0df02f35`](https://github.com/wbkd/react-flow/commit/0df02f35f8d6c54dae36af18278feadc77acb2d6)]:
+  - @reactflow/core@11.3.2
+  - @reactflow/minimap@11.2.3
+  - @reactflow/node-toolbar@1.0.2
+  - @reactflow/background@11.0.7
+  - @reactflow/controls@11.0.7
+
 ## 11.3.2
 
 ### Patch Changes
