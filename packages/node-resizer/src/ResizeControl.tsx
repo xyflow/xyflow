@@ -154,7 +154,7 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [id, controlPosition, getPointerPosition]);
+  }, [id, controlPosition, minWidth, minHeight, getPointerPosition]);
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
