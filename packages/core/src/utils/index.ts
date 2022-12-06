@@ -1,3 +1,4 @@
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
@@ -69,3 +70,18 @@ export const devWarn = (message: string) => {
     console.warn(`[React Flow]: ${message}`);
   }
 };
+
+const isReactKeyboardEvent = (event: KeyboardEvent | ReactKeyboardEvent): event is ReactKeyboardEvent =>
+  'nativeEvent' in event;
+
+export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boolean {
+  const kbEvent = isReactKeyboardEvent(event) ? event.nativeEvent : event;
+  // using composed path for handling shadow dom
+  const target = (kbEvent.composedPath?.()?.[0] || event.target) as HTMLElement;
+
+  return (
+    ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) ||
+    target?.hasAttribute('contenteditable') ||
+    !!target?.closest('.nokey')
+  );
+}

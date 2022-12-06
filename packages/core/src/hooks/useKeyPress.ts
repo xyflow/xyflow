@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 
+import { isInputDOMNode } from '../utils';
 import type { KeyCode } from '../types';
 
 type Keys = Array<string>;
@@ -105,15 +106,4 @@ function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: bo
 
 function useKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
   return keysToWatch.includes(eventCode) ? 'code' : 'key';
-}
-
-function isInputDOMNode(event: KeyboardEvent): boolean {
-  // using composed path for handling shadow dom
-  const target = (event.composedPath?.()[0] || event.target) as HTMLElement;
-
-  return (
-    ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) ||
-    target?.hasAttribute('contenteditable') ||
-    !!target?.closest('.nokey')
-  );
 }
