@@ -8,6 +8,7 @@ import {
   Rect,
   Position,
   internalsSymbol,
+  useNodeId,
 } from '@reactflow/core';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
@@ -72,9 +73,11 @@ function NodeToolbar({
   offset = 10,
   ...rest
 }: NodeToolbarProps) {
+  const contextNodeId = useNodeId();
+
   const nodesSelector = useCallback(
     (state: ReactFlowState): Node[] => {
-      const nodeIds: string[] = typeof nodeId === 'string' ? [nodeId] : nodeId;
+      const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
 
       return nodeIds.reduce<Node[]>((acc, id) => {
         const node = state.nodeInternals.get(id);
@@ -84,7 +87,7 @@ function NodeToolbar({
         return acc;
       }, [] as Node[]);
     },
-    [nodeId]
+    [nodeId, contextNodeId]
   );
   const nodes = useStore(nodesSelector, nodesEqualityFn);
   const { transform, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);

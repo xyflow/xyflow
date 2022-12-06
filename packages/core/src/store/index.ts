@@ -17,6 +17,7 @@ import type {
   NodePositionChange,
   NodeDragItem,
   UnselectNodesAndEdgesParams,
+  NodeChange,
 } from '../types';
 
 const createRFStore = () =>
@@ -103,35 +104,40 @@ const createRFStore = () =>
       }
     },
     updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged = true, dragging = false) => {
+      const { triggerNodeChanges } = get();
+
+      const changes = nodeDragItems.map((node) => {
+        const change: NodePositionChange = {
+          id: node.id,
+          type: 'position',
+          dragging,
+        };
+
+        if (positionChanged) {
+          change.positionAbsolute = node.positionAbsolute;
+          change.position = node.position;
+        }
+
+        return change;
+      });
+
+      triggerNodeChanges(changes);
+    },
+
+    triggerNodeChanges: (changes: NodeChange[]) => {
       const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin } = get();
 
-      if (hasDefaultNodes || onNodesChange) {
-        const changes = nodeDragItems.map((node) => {
-          const change: NodePositionChange = {
-            id: node.id,
-            type: 'position',
-            dragging,
-          };
-
-          if (positionChanged) {
-            change.positionAbsolute = node.positionAbsolute;
-            change.position = node.position;
-          }
-
-          return change;
-        });
-
-        if (changes?.length) {
-          if (hasDefaultNodes) {
-            const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
-            const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin);
-            set({ nodeInternals: nextNodeInternals });
-          }
-
-          onNodesChange?.(changes);
+      if (changes?.length) {
+        if (hasDefaultNodes) {
+          const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
+          const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin);
+          set({ nodeInternals: nextNodeInternals });
         }
+
+        onNodesChange?.(changes);
       }
     },
+
     addSelectedNodes: (selectedNodeIds: string[]) => {
       const { multiSelectionActive, nodeInternals, edges } = get();
       let changedNodes: NodeSelectionChange[];

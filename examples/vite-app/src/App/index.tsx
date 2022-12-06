@@ -20,6 +20,7 @@ import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
 import NestedNodes from '../examples/NestedNodes';
+import NodeResizer from '../examples/NodeResizer';
 import NodeTypeChange from '../examples/NodeTypeChange';
 import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
 import Overview from '../examples/Overview';
@@ -173,6 +174,11 @@ const routes: IRoute[] = [
     name: 'NodeToolbar',
     path: '/node-toolbar',
     component: NodeToolbar,
+  },
+  {
+    name: 'NodeResizer',
+    path: '/node-resizer',
+    component: NodeResizer,
   },
   {
     name: 'Overview',

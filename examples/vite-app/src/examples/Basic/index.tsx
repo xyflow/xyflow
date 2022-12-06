@@ -94,7 +94,7 @@ const BasicFlow = () => {
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
-      nodeOrigin={nodeOrigin}
+      // nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
