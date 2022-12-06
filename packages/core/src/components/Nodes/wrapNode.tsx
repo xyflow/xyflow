@@ -8,7 +8,7 @@ import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { getMouseHandler, handleNodeClick } from './utils';
-import { elementSelectionKeys } from '../../utils';
+import { elementSelectionKeys, isInputDOMNode } from '../../utils';
 import type { NodeProps, WrapNodeProps, XYPosition } from '../../types';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
@@ -84,7 +84,12 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (isInputDOMNode(event)) {
+        return;
+      }
+
       const { snapGrid, snapToGrid } = store.getState();
+
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
         if (unselect) {
