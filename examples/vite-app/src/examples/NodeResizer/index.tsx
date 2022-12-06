@@ -43,9 +43,8 @@ const initialNodes = [
     id: '3',
     type: 'customResizer',
     data: { label: 'resize control with child component' },
-    position: { x: 250, y: 150 },
+    position: { x: 250, y: 200 },
     style: { border: '1px solid #222', fontSize: 10, width: 100 },
-    parentNode: '2',
   },
   {
     id: '4',
@@ -53,13 +52,12 @@ const initialNodes = [
     data: { label: 'resize controls' },
     position: { x: 100, y: 150 },
     style: { border: '1px solid #222', fontSize: 10 },
-    parentNode: '2',
   },
   {
     id: '5',
     type: 'customResizer2',
     data: { label: 'min width and height' },
-    position: { x: 100, y: 150 },
+    position: { x: 250, y: 250 },
     style: { border: '1px solid #222', fontSize: 10 },
   },
 ];
@@ -82,9 +80,10 @@ const CustomNodeFlow = () => {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
-      minZoom={-5}
+      minZoom={0.2}
       maxZoom={5}
       snapToGrid={snapToGrid}
+      fitView
     >
       <Controls />
       <Panel position="bottom-right">
