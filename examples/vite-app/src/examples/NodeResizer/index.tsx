@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import ReactFlow, { Controls, addEdge, Position, Connection, useNodesState, useEdgesState } from 'reactflow';
+import { CSSProperties, useCallback, useState } from 'react';
+import ReactFlow, { Controls, addEdge, Position, Connection, useNodesState, useEdgesState, Panel } from 'reactflow';
 
 import NodeResizerNode from './NodeResizerNode';
 import CustomResizer from './CustomResizer';
@@ -32,25 +32,40 @@ const initialNodes = [
     type: 'resizer',
     data: { label: 'default resizer' },
     position: { x: 250, y: 0 },
-    style: { padding: 10, border: '1px solid #222', fontSize: 10 },
+    style: {
+      width: 200,
+      height: 150,
+      border: '1px solid #222',
+      fontSize: 10,
+    },
   },
   {
     id: '3',
     type: 'customResizer',
     data: { label: 'resize control with child component' },
     position: { x: 250, y: 150 },
-    style: { padding: 10, border: '1px solid #222', fontSize: 10, width: 100 },
+    style: { border: '1px solid #222', fontSize: 10, width: 100 },
+    parentNode: '2',
   },
   {
     id: '4',
     type: 'customResizer2',
     data: { label: 'resize controls' },
     position: { x: 100, y: 150 },
-    style: { padding: 10, border: '1px solid #222', fontSize: 10 },
+    style: { border: '1px solid #222', fontSize: 10 },
+    parentNode: '2',
+  },
+  {
+    id: '5',
+    type: 'customResizer2',
+    data: { label: 'min width and height' },
+    position: { x: 100, y: 150 },
+    style: { border: '1px solid #222', fontSize: 10 },
   },
 ];
 
 const CustomNodeFlow = () => {
+  const [snapToGrid, setSnapToGrid] = useState(false);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -67,12 +82,14 @@ const CustomNodeFlow = () => {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
-      fitView
-      minZoom={0.3}
-      maxZoom={2}
-      snapToGrid
+      minZoom={-5}
+      maxZoom={5}
+      snapToGrid={snapToGrid}
     >
       <Controls />
+      <Panel position="bottom-right">
+        <button onClick={() => setSnapToGrid(!snapToGrid)}>snapToGrid: {snapToGrid ? 'on' : 'off'}</button>
+      </Panel>
     </ReactFlow>
   );
 };

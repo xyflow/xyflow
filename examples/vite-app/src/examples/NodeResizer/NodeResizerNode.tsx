@@ -4,10 +4,10 @@ import { Handle, Position, NodeProps } from 'reactflow';
 import { NodeResizer } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 
-const CustomNode: FC<NodeProps> = ({ id, data }) => {
+const CustomNode: FC<NodeProps> = ({ id, data, selected }) => {
   return (
     <>
-      <NodeResizer nodeId={id} />
+      <NodeResizer isVisible={selected} />
       <Handle type="target" position={Position.Left} />
       <div>{data.label}</div>
       <Handle type="source" position={Position.Right} />

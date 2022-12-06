@@ -22,7 +22,6 @@ export {
   getNodePositionWithOrigin,
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
-export { createNodeInternals } from './store/utils';
 export { getMarkerEnd } from './components/Edges/utils';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel } from './components/Panel';
@@ -40,5 +39,6 @@ export { default as useOnViewportChange } from './hooks/useOnViewportChange';
 export { default as useOnSelectionChange } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized } from './hooks/useNodesInitialized';
 export { default as useGetPointerPosition } from './hooks/useGetPointerPosition';
+export { useNodeId } from './contexts/NodeIdContext';
 
 export * from './types';

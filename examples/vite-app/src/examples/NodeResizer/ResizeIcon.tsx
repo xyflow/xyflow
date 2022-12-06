@@ -5,11 +5,11 @@ function ResizeIcon() {
       width="8"
       height="8"
       viewBox="0 0 24 24"
-      stroke-width="2"
+      strokeWidth="2"
       stroke="currentColor"
       fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       style={{ position: 'absolute', right: 2, bottom: 2 }}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />

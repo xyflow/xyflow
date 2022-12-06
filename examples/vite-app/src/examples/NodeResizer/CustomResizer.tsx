@@ -13,7 +13,7 @@ const controlStyle = {
 const CustomNode: FC<NodeProps> = ({ id, data }) => {
   return (
     <>
-      <NodeResizeControl nodeId={id} style={controlStyle}>
+      <NodeResizeControl style={controlStyle}>
         <ResizeIcon />
       </NodeResizeControl>
 

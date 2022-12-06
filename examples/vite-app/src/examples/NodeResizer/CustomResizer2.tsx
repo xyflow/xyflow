@@ -7,10 +7,10 @@ import '@reactflow/node-resizer/dist/style.css';
 const CustomNode: FC<NodeProps> = ({ id, data }) => {
   return (
     <>
-      <NodeResizeControl nodeId={id} position="top" />
-      <NodeResizeControl nodeId={id} position="bottom" />
+      <NodeResizeControl color="red" position="top" />
+      <NodeResizeControl color="red" position="bottom" />
       <Handle type="target" position={Position.Left} />
-      <div>{data.label}</div>
+      <div style={{ padding: 10 }}>{data.label}</div>
       <Handle type="source" position={Position.Right} />
     </>
   );

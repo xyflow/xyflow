@@ -31,6 +31,7 @@ export type Node<T = any> = {
   positionAbsolute?: XYPosition;
   ariaLabel?: string;
   focusable?: boolean;
+  resizing?: boolean;
 
   // only used internally
   [internalsSymbol]?: {

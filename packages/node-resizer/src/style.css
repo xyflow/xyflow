@@ -1,9 +1,5 @@
 .react-flow__resize-control {
   position: absolute;
-  background-color: rgba(195, 195, 195, 1);
-  border: 1px solid white;
-  width: 4px;
-  height: 4px;
 }
 
 .react-flow__resize-control.left,
@@ -28,6 +24,11 @@
 
 /* handle styles */
 .react-flow__resize-control.handle {
+  width: 4px;
+  height: 4px;
+  border: 1px solid #fff;
+  border-radius: 1px;
+  background-color: #3367d9;
   transform: translate(-50%, -50%);
 }
 
@@ -62,9 +63,11 @@
 
 /* line styles */
 .react-flow__resize-control.line {
-  border: none;
-  background: none;
+  border-color: #3367d9;
+  border-width: 0;
+  border-style: solid;
 }
+
 .react-flow__resize-control.line.left,
 .react-flow__resize-control.line.right {
   width: 1px;
@@ -75,11 +78,11 @@
 
 .react-flow__resize-control.line.left {
   left: 0;
-  border-left: 1px solid rgba(195, 195, 195, 1);
+  border-left-width: 1px;
 }
 .react-flow__resize-control.line.right {
   left: 100%;
-  border-right: 1px solid rgba(195, 195, 195, 1);
+  border-right-width: 1px;
 }
 
 .react-flow__resize-control.line.top,
@@ -92,9 +95,9 @@
 
 .react-flow__resize-control.line.top {
   top: 0;
-  border-top: 1px solid rgba(195, 195, 195, 1);
+  border-top-width: 1px;
 }
 .react-flow__resize-control.line.bottom {
-  border-bottom: 1px solid rgba(195, 195, 195, 1);
+  border-bottom-width: 1px;
   top: 100%;
 }

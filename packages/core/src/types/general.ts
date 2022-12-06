@@ -215,12 +215,7 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePositions: (
-    nodeDragItems: NodeDragItem[] | Node[],
-    positionChanged: boolean,
-    dragging: boolean,
-    applyChanges?: boolean
-  ) => NodePositionChange[] | null;
+  updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged: boolean, dragging: boolean) => void;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
@@ -231,6 +226,7 @@ export type ReactFlowActions = {
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
   reset: () => void;
+  triggerNodeChanges: (changes: NodeChange[]) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

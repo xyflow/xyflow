@@ -6,11 +6,17 @@ const lineControls: ControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
 
 export default function NodeResizer({
   nodeId,
+  isVisible = true,
   handleClassName,
   handleStyle,
   lineClassName,
   lineStyle,
+  color,
 }: NodeResizerProps) {
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <>
       {lineControls.map((c) => (
@@ -21,10 +27,18 @@ export default function NodeResizer({
           nodeId={nodeId}
           position={c}
           variant={ResizeControlVariant.Line}
+          color={color}
         />
       ))}
       {handleControls.map((c) => (
-        <ResizeControl key={c} className={handleClassName} style={handleStyle} nodeId={nodeId} position={c} />
+        <ResizeControl
+          key={c}
+          className={handleClassName}
+          style={handleStyle}
+          nodeId={nodeId}
+          position={c}
+          color={color}
+        />
       ))}
     </>
   );

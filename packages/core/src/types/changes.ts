@@ -7,8 +7,9 @@ import type { Edge } from './edges';
 export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
-  dimensions: Dimensions;
+  dimensions?: Dimensions;
   updateStyle?: boolean;
+  resizing?: boolean;
 };
 
 export type NodePositionChange = {

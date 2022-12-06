@@ -7,21 +7,26 @@ import {
   useGetPointerPosition,
   NodeChange,
   NodeDimensionChange,
-  applyNodeChanges,
-  createNodeInternals,
+  useNodeId,
+  NodePositionChange,
 } from '@reactflow/core';
-import type { Dimensions, Node, XYPosition } from '@reactflow/core';
+import type { Dimensions, XYPosition } from '@reactflow/core';
 
 import { ResizeDragEvent, ResizeControlProps, ResizeControlLineProps, ResizeControlVariant } from './types';
 
 function ResizeControl({
   nodeId,
-  position = 'bottom-right',
+  position,
   variant = ResizeControlVariant.Handle,
   className,
   style = {},
   children,
+  color,
+  minWidth = 1,
+  minHeight = 1,
 }: ResizeControlProps) {
+  const contextNodeId = useNodeId();
+  const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const startValues = useRef<Dimensions & XYPosition & { nodeX: number; nodeY: number }>({
@@ -32,17 +37,20 @@ function ResizeControl({
     nodeX: 0,
     nodeY: 0,
   });
+  const prevValues = useRef<Dimensions & XYPosition>({ width: 0, height: 0, x: 0, y: 0 });
   const getPointerPosition = useGetPointerPosition();
+  const defaultPosition = variant === ResizeControlVariant.Line ? 'right' : 'bottom-right';
+  const controlPosition = position ?? defaultPosition;
 
   useEffect(() => {
-    if (!resizeControlRef.current) {
+    if (!resizeControlRef.current || !id) {
       return;
     }
 
     const selection = select(resizeControlRef.current);
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
-        const node = store.getState().nodeInternals.get(nodeId);
+        const node = store.getState().nodeInternals.get(id);
         const { xSnapped, ySnapped } = getPointerPosition(event);
 
         startValues.current = {
@@ -53,15 +61,22 @@ function ResizeControl({
           x: xSnapped,
           y: ySnapped,
         };
+
+        prevValues.current = {
+          width: node?.width ?? 0,
+          height: node?.height ?? 0,
+          x: node?.position.x ?? 0,
+          y: node?.position.y ?? 0,
+        };
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { updateNodePositions, nodeInternals, onNodesChange, hasDefaultNodes, nodeOrigin } = store.getState();
+        const { nodeInternals, triggerNodeChanges } = store.getState();
         const { xSnapped, ySnapped } = getPointerPosition(event);
-        const node = nodeInternals.get(nodeId);
-        const enableX = position.includes('right') || position.includes('left');
-        const enableY = position.includes('bottom') || position.includes('top');
-        const invertX = position.includes('left');
-        const invertY = position.includes('top');
+        const node = nodeInternals.get(id);
+        const enableX = controlPosition.includes('right') || controlPosition.includes('left');
+        const enableY = controlPosition.includes('bottom') || controlPosition.includes('top');
+        const invertX = controlPosition.includes('left');
+        const invertY = controlPosition.includes('top');
 
         if (node) {
           const changes: NodeChange[] = [];
@@ -73,57 +88,70 @@ function ResizeControl({
             nodeX: startNodeX,
             nodeY: startNodeY,
           } = startValues.current;
-          const distX = enableX ? xSnapped - startX : 0;
-          const distY = enableY ? ySnapped - startY : 0;
-          const width = startWidth + (invertX ? -distX : distX);
-          const height = startHeight + (invertY ? -distY : distY);
+
+          const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues.current;
+
+          const distX = Math.floor(enableX ? xSnapped - startX : 0);
+          const distY = Math.floor(enableY ? ySnapped - startY : 0);
+          const width = Math.max(startWidth + (invertX ? -distX : distX), minWidth);
+          const height = Math.max(startHeight + (invertY ? -distY : distY), minHeight);
+
+          const isWidthChange = width !== prevWidth;
+          const isHeightChange = height !== prevHeight;
 
           if (invertX || invertY) {
-            const x = invertX ? startNodeX + distX : startNodeX;
-            const y = invertY ? startNodeY + distY : startNodeY;
+            const x = invertX ? startNodeX - (width - startWidth) : startNodeX;
+            const y = invertY ? startNodeY - (height - startHeight) : startNodeY;
 
-            if (x !== node.position.x || y !== node.position.y) {
-              const positionChanges = updateNodePositions(
-                [
-                  {
-                    id: nodeId,
-                    position: { x, y },
-                  } as Node,
-                ],
-                true,
-                false,
-                false
-              );
+            // only transform the node if the width or height changes
+            const isXPosChange = x !== prevX && isWidthChange;
+            const isYPosChange = y !== prevY && isHeightChange;
 
-              if (positionChanges?.length) {
-                changes.push(positionChanges[0]);
-              }
+            if (isXPosChange || isYPosChange) {
+              const positionChange: NodePositionChange = {
+                id: node.id,
+                type: 'position',
+                position: {
+                  x: isXPosChange ? x : prevX,
+                  y: isYPosChange ? y : prevY,
+                },
+              };
+
+              changes.push(positionChange);
+              prevValues.current.x = positionChange.position!.x;
+              prevValues.current.y = positionChange.position!.y;
             }
           }
 
-          if (width !== node.width || height !== node.height) {
+          if (isWidthChange || isHeightChange) {
             const dimensionChange: NodeDimensionChange = {
-              id: nodeId,
+              id: id,
               type: 'dimensions',
               updateStyle: true,
+              resizing: true,
               dimensions: {
-                width: width !== node.width ? width : node.width,
-                height: height !== node.height ? height : node.height,
+                width: width,
+                height: height,
               },
             };
             changes.push(dimensionChange);
+            prevValues.current.width = width;
+            prevValues.current.height = height;
           }
 
-          if (changes.length) {
-            if (hasDefaultNodes) {
-              const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
-              const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin);
-              store.setState({ nodeInternals: nextNodeInternals });
-            }
-
-            onNodesChange?.(changes);
-          }
+          triggerNodeChanges(changes);
         }
+      })
+      .on('end', () => {
+        const { triggerNodeChanges } = store.getState();
+
+        const dimensionChange: NodeDimensionChange = {
+          id: id,
+          type: 'dimensions',
+          resizing: true,
+        };
+
+        triggerNodeChanges([dimensionChange]);
       });
 
     selection.call(dragHandler);
@@ -131,15 +159,17 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [nodeId, position, getPointerPosition]);
+  }, [id, controlPosition, getPointerPosition]);
 
-  const positionClassNames = position?.split('-');
+  const positionClassNames = controlPosition.split('-');
+  const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
+  const controlStyle = color ? { ...style, [colorStyleProp]: color } : style;
 
   return (
     <div
       className={cc(['react-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
       ref={resizeControlRef}
-      style={style}
+      style={controlStyle}
     >
       {children}
     </div>

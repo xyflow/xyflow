@@ -1,9 +1,9 @@
-import { memo, useContext, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent } from 'react';
+import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent } from 'react';
 import cc from 'classcat';
 import shallow from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import NodeIdContext from '../../contexts/NodeIdContext';
+import { useNodeId } from '../../contexts/NodeIdContext';
 import { checkElementBelowIsValid, handleMouseDown } from './handler';
 import { getHostForElement } from '../../utils';
 import { addEdge } from '../../utils/graph';
@@ -37,7 +37,9 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     ref
   ) => {
     const store = useStoreApi();
-    const nodeId = useContext(NodeIdContext) as string;
+
+    // @fixme: remove type assertion and handle nodeId === null
+    const nodeId = useNodeId() as string;
     const { connectionStartHandle, connectOnClick, noPanClassName } = useStore(selector, shallow);
 
     const handleId = id || null;
