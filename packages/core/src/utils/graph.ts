@@ -2,7 +2,7 @@
 import type { Selection as D3Selection } from 'd3';
 
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from '../utils';
-import type {
+import {
   Node,
   Edge,
   Connection,
@@ -156,18 +156,22 @@ export const getNodePositionWithOrigin = (
     };
   }
 
-  const offset: XYPosition = {
-    x: (node.width ?? 0) * nodeOrigin[0],
-    y: (node.height ?? 0) * nodeOrigin[1],
+  const offsetX = (node.width ?? 0) * nodeOrigin[0];
+  const offsetY = (node.height ?? 0) * nodeOrigin[1];
+
+  const position: XYPosition = {
+    x: node.position.x - offsetX,
+    y: node.position.y - offsetY,
   };
 
   return {
-    x: node.position.x - offset.x,
-    y: node.position.y - offset.y,
-    positionAbsolute: {
-      x: (node.positionAbsolute?.x ?? 0) - offset.x,
-      y: (node.positionAbsolute?.y ?? 0) - offset.y,
-    },
+    ...position,
+    positionAbsolute: node.positionAbsolute
+      ? {
+          x: node.positionAbsolute.x - offsetX,
+          y: node.positionAbsolute.y - offsetY,
+        }
+      : position,
   };
 };
 
@@ -178,15 +182,12 @@ export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): 
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { positionAbsolute, ...position } = getNodePositionWithOrigin(node, nodeOrigin);
-      const nodeX = positionAbsolute ? positionAbsolute.x : position.x;
-      const nodeY = positionAbsolute ? positionAbsolute.y : position.y;
-
+      const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
-          x: nodeX,
-          y: nodeY,
+          x,
+          y,
           width: node.width || 0,
           height: node.height || 0,
         })

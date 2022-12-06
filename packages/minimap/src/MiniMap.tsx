@@ -167,13 +167,13 @@ function MiniMap({
       >
         {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
         {nodes.map((node) => {
-          const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
+          const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
           return (
             <MiniMapNode
               key={node.id}
-              x={positionAbsolute.x}
-              y={positionAbsolute.y}
+              x={x}
+              y={y}
               width={node.width!}
               height={node.height!}
               style={node.style}

@@ -57,6 +57,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         nodeElement: entry.target as HTMLDivElement,
         forceUpdate: true,
       }));
+
       updateNodeDimensions(updates);
     });
 

@@ -50,58 +50,67 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
 
   return elements.reduce((res: any[], item: any) => {
-    const currentChange = changes.find((c) => c.id === item.id);
+    const currentChanges = changes.filter((c) => c.id === item.id);
 
-    if (currentChange) {
-      switch (currentChange.type) {
-        case 'select': {
-          res.push({ ...item, selected: currentChange.selected });
-          return res;
-        }
-        case 'position': {
-          const updateItem = { ...item };
+    if (currentChanges.length === 0) {
+      res.push(item);
+      return res;
+    }
 
-          if (typeof currentChange.position !== 'undefined') {
-            updateItem.position = currentChange.position;
+    const updateItem = { ...item };
+
+    for (const currentChange of currentChanges) {
+      if (currentChange) {
+        switch (currentChange.type) {
+          case 'select': {
+            updateItem.selected = currentChange.selected;
+            break;
           }
+          case 'position': {
+            if (typeof currentChange.position !== 'undefined') {
+              updateItem.position = currentChange.position;
+            }
 
-          if (typeof currentChange.positionAbsolute !== 'undefined') {
-            updateItem.positionAbsolute = currentChange.positionAbsolute;
+            if (typeof currentChange.positionAbsolute !== 'undefined') {
+              updateItem.positionAbsolute = currentChange.positionAbsolute;
+            }
+
+            if (typeof currentChange.dragging !== 'undefined') {
+              updateItem.dragging = currentChange.dragging;
+            }
+
+            if (updateItem.expandParent) {
+              handleParentExpand(res, updateItem);
+            }
+            break;
           }
+          case 'dimensions': {
+            if (typeof currentChange.dimensions !== 'undefined') {
+              updateItem.width = currentChange.dimensions.width;
+              updateItem.height = currentChange.dimensions.height;
+            }
 
-          if (typeof currentChange.dragging !== 'undefined') {
-            updateItem.dragging = currentChange.dragging;
+            if (typeof currentChange.updateStyle !== 'undefined') {
+              updateItem.style = { ...(updateItem.style || {}), ...currentChange.dimensions };
+            }
+
+            if (typeof currentChange.resizing === 'boolean') {
+              updateItem.resizing = currentChange.resizing;
+            }
+
+            if (updateItem.expandParent) {
+              handleParentExpand(res, updateItem);
+            }
+            break;
           }
-
-          if (updateItem.expandParent) {
-            handleParentExpand(res, updateItem);
+          case 'remove': {
+            return res;
           }
-
-          res.push(updateItem);
-          return res;
-        }
-        case 'dimensions': {
-          const updateItem = { ...item };
-
-          if (typeof currentChange.dimensions !== 'undefined') {
-            updateItem.width = currentChange.dimensions.width;
-            updateItem.height = currentChange.dimensions.height;
-          }
-
-          if (updateItem.expandParent) {
-            handleParentExpand(res, updateItem);
-          }
-
-          res.push(updateItem);
-          return res;
-        }
-        case 'remove': {
-          return res;
         }
       }
     }
 
-    res.push(item);
+    res.push(updateItem);
     return res;
   }, initElements);
 }
