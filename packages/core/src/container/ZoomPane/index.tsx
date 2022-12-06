@@ -228,7 +228,11 @@ const ZoomPane = ({
         const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
         const pinchZoom = zoomOnPinch && event.ctrlKey;
 
-        if (event.button === 1 && event.type === 'mousedown' && event.target.closest(`.react-flow__node`)) {
+        if (
+          event.button === 1 &&
+          event.type === 'mousedown' &&
+          (event.target.closest('.react-flow__node') || event.target.closest('.react-flow__edge'))
+        ) {
           return true;
         }
 
