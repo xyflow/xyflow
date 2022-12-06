@@ -7,4 +7,3 @@ A resizer component for React Flow that can be attached to a node.
 ```sh 
 npm install @reactflow/node-resizer
 ```
-

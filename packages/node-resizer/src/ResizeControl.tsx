@@ -87,12 +87,10 @@ function ResizeControl({
           } = startValues.current;
 
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues.current;
-
           const distX = Math.floor(enableX ? xSnapped - startX : 0);
           const distY = Math.floor(enableY ? ySnapped - startY : 0);
           const width = Math.max(startWidth + (invertX ? -distX : distX), minWidth);
           const height = Math.max(startHeight + (invertY ? -distY : distY), minHeight);
-
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
@@ -131,6 +129,7 @@ function ResizeControl({
                 height: height,
               },
             };
+
             changes.push(dimensionChange);
             prevValues.current.width = width;
             prevValues.current.height = height;

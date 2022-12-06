@@ -1,11 +1,16 @@
 # @reactflow/node-resizer
 
+## 1.0.3
+
+### Patch Changes
+
+- cleanup
+
 ## 1.0.2
 
 ### Patch Changes
 
 - fix `minWidth` and `minHeight` so that it can be used dynamically
-
 
 ## 1.0.1
 
