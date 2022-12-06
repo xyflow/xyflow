@@ -168,8 +168,8 @@ export const getNodePositionWithOrigin = (
     ...position,
     positionAbsolute: node.positionAbsolute
       ? {
-          x: (node.positionAbsolute.x ?? 0) - offsetX,
-          y: (node.positionAbsolute.y ?? 0) - offsetY,
+          x: node.positionAbsolute.x - offsetX,
+          y: node.positionAbsolute.y - offsetY,
         }
       : position,
   };
