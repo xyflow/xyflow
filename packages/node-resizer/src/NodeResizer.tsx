@@ -14,6 +14,9 @@ export default function NodeResizer({
   color,
   minWidth = 10,
   minHeight = 10,
+  onResizeStart,
+  onResize,
+  onResizeEnd,
 }: NodeResizerProps) {
   if (!isVisible) {
     return null;
@@ -32,6 +35,9 @@ export default function NodeResizer({
           color={color}
           minWidth={minWidth}
           minHeight={minHeight}
+          onResizeStart={onResizeStart}
+          onResize={onResize}
+          onResizeEnd={onResizeEnd}
         />
       ))}
       {handleControls.map((c) => (
@@ -44,6 +50,9 @@ export default function NodeResizer({
           color={color}
           minWidth={minWidth}
           minHeight={minHeight}
+          onResizeStart={onResizeStart}
+          onResize={onResize}
+          onResizeEnd={onResizeEnd}
         />
       ))}
     </>
