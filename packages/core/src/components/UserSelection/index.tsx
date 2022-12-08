@@ -15,7 +15,7 @@ import { SelectionMode } from '../../types';
 import type { XYPosition, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type UserSelectionProps = {
-  isSelectionMode: boolean;
+  isSelecting: boolean;
   selectionMode?: SelectionMode;
   panOnDrag?: boolean | 'RightClick';
   onSelectionStart?: (e: ReactMouseEvent) => void;
@@ -56,7 +56,7 @@ const selector = (s: ReactFlowState) => ({
 
 const UserSelection = memo(
   ({
-    isSelectionMode,
+    isSelecting,
     selectionMode = SelectionMode.Contained,
     panOnDrag,
     onSelectionStart,
@@ -102,13 +102,7 @@ const UserSelection = memo(
 
     const onMouseDown = (event: ReactMouseEvent): void => {
       const { resetSelectedElements, domNode } = store.getState();
-      if (
-        !elementsSelectable ||
-        !isSelectionMode ||
-        event.button !== 0 ||
-        event.target !== container.current ||
-        !domNode
-      ) {
+      if (!elementsSelectable || !isSelecting || event.button !== 0 || event.target !== container.current || !domNode) {
         return;
       }
 
@@ -134,7 +128,7 @@ const UserSelection = memo(
     const onMouseMove = (event: ReactMouseEvent): void => {
       const { userSelectionRect, nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } =
         store.getState();
-      if (!isSelectionMode || !containerBounds.current || !userSelectionRect) {
+      if (!isSelecting || !containerBounds.current || !userSelectionRect) {
         return;
       }
 
@@ -208,14 +202,14 @@ const UserSelection = memo(
       resetUserSelection();
     };
 
-    const hasActiveSelection = elementsSelectable && (isSelectionMode || userSelectionActive);
+    const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
     return (
       <div
         className={cc([
           'react-flow__pane',
           'react-flow__container',
-          { dragging: paneDragging, selection: isSelectionMode },
+          { dragging: paneDragging, selection: isSelecting },
         ])}
         onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
         onContextMenu={wrapHandler(onContextMenu, container)}

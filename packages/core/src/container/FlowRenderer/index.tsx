@@ -69,8 +69,7 @@ const FlowRenderer = ({
 }: FlowRendererProps) => {
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
-
-  const isSelectionMode = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
+  const isSelecting = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
@@ -107,7 +106,7 @@ const FlowRenderer = ({
         onPaneContextMenu={onPaneContextMenu}
         onPaneScroll={onPaneScroll}
         panOnDrag={panOnDrag}
-        isSelectionMode={!!isSelectionMode}
+        isSelecting={!!isSelecting}
         selectionMode={selectionMode}
       >
         {children}
