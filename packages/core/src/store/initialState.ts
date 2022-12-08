@@ -26,6 +26,7 @@ const initialState: ReactFlowStore = {
   nodeExtent: infiniteExtent,
   nodesSelectionActive: false,
   userSelectionActive: false,
+  userSelectionRect: null,
   connectionNodeId: null,
   connectionHandleId: null,
   connectionHandleType: 'source',

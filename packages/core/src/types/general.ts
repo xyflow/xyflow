@@ -155,6 +155,7 @@ export type ReactFlowStore = {
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
+  userSelectionRect: SelectionRect | null;
 
   connectionNodeId: string | null;
   connectionHandleId: string | null;
@@ -254,3 +255,8 @@ export enum SelectionMode {
   Overlap = 'overlap',
   Contained = 'contained',
 }
+
+export type SelectionRect = Rect & {
+  startX: number;
+  startY: number;
+};

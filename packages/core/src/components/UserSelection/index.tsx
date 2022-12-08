@@ -2,23 +2,17 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { memo, useState, useRef, MouseEvent as ReactMouseEvent } from 'react';
+import { memo, useRef, MouseEvent as ReactMouseEvent } from 'react';
 import shallow from 'zustand/shallow';
 import cc from 'classcat';
 
+import SelectionBox from './SelectionBox';
 import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
 import { SelectionMode } from '../../types';
-import type { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
-
-type SelectionRect = Rect & {
-  startX: number;
-  startY: number;
-};
-
-type EventHandlers = { [key: string]: React.MouseEventHandler | React.WheelEventHandler | undefined };
+import type { XYPosition, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type UserSelectionProps = {
   isSelectionMode: boolean;
@@ -54,12 +48,6 @@ const wrapHandler = (
   };
 };
 
-const wrapHandlers = (
-  handlers: EventHandlers,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
-): EventHandlers =>
-  Object.keys(handlers).reduce((hls, key) => ({ ...hls, [key]: wrapHandler(handlers[key], containerRef) }), {});
-
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
@@ -86,13 +74,10 @@ const UserSelection = memo(
     const prevSelectedNodesCount = useRef<number>(0);
     const prevSelectedEdgesCount = useRef<number>(0);
     const containerBounds = useRef<DOMRect>();
-    const [userSelectionRect, setUserSelectionRect] = useState<SelectionRect | null>(null);
     const { userSelectionActive, elementsSelectable, paneDragging } = useStore(selector, shallow);
 
     const resetUserSelection = () => {
-      setUserSelectionRect(null);
-
-      store.setState({ userSelectionActive: false });
+      store.setState({ userSelectionActive: false, userSelectionRect: null });
 
       prevSelectedNodesCount.current = 0;
       prevSelectedEdgesCount.current = 0;
@@ -116,30 +101,39 @@ const UserSelection = memo(
     const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
     const onMouseDown = (event: ReactMouseEvent): void => {
-      if (!elementsSelectable || !isSelectionMode || event.button !== 0 || event.target !== container.current) {
+      const { resetSelectedElements, domNode } = store.getState();
+      if (
+        !elementsSelectable ||
+        !isSelectionMode ||
+        event.button !== 0 ||
+        event.target !== container.current ||
+        !domNode
+      ) {
         return;
       }
 
-      store.getState().resetSelectedElements();
+      containerBounds.current = domNode.getBoundingClientRect();
+      const { x, y } = getMousePosition(event, containerBounds.current!);
 
-      const reactFlowNode = (event.target as Element).closest('.react-flow')!;
-      containerBounds.current = reactFlowNode.getBoundingClientRect();
+      resetSelectedElements();
 
-      const mousePos = getMousePosition(event, containerBounds.current!);
-
-      setUserSelectionRect({
-        width: 0,
-        height: 0,
-        startX: mousePos.x,
-        startY: mousePos.y,
-        x: mousePos.x,
-        y: mousePos.y,
+      store.setState({
+        userSelectionRect: {
+          width: 0,
+          height: 0,
+          startX: x,
+          startY: y,
+          x,
+          y,
+        },
       });
 
       onSelectionStart?.(event);
     };
 
     const onMouseMove = (event: ReactMouseEvent): void => {
+      const { userSelectionRect, nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } =
+        store.getState();
       if (!isSelectionMode || !containerBounds.current || !userSelectionRect) {
         return;
       }
@@ -158,7 +152,6 @@ const UserSelection = memo(
         height: Math.abs(mousePos.y - startY),
       };
 
-      const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } = store.getState();
       const nodes = getNodes();
       const selectedNodes = getNodesInside(
         nodeInternals,
@@ -187,10 +180,13 @@ const UserSelection = memo(
         }
       }
 
-      setUserSelectionRect(nextUserSelectRect);
+      store.setState({
+        userSelectionRect: nextUserSelectRect,
+      });
     };
 
     const onMouseUp = (event: ReactMouseEvent) => {
+      const { userSelectionRect } = store.getState();
       // We only want to trigger click functions when in selection mode if
       // the user did not move the mouse.
       if (!userSelectionActive && userSelectionRect && event.target === container.current) {
@@ -200,7 +196,6 @@ const UserSelection = memo(
       store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
 
       resetUserSelection();
-
       onSelectionEnd?.(event);
     };
 
@@ -209,29 +204,11 @@ const UserSelection = memo(
         store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
         onSelectionEnd?.(event);
       }
+
       resetUserSelection();
     };
 
-    const eventHandlers =
-      elementsSelectable && (isSelectionMode || userSelectionActive)
-        ? {
-            ...wrapHandlers({ onContextMenu, onWheel }, container),
-            onMouseDown,
-            onMouseMove,
-            onMouseUp,
-            onMouseLeave,
-          }
-        : wrapHandlers(
-            {
-              onClick,
-              onContextMenu,
-              onWheel,
-              onMouseEnter: onPaneMouseEnter,
-              onMouseMove: onPaneMouseMove,
-              onMouseLeave: onPaneMouseLeave,
-            },
-            container
-          );
+    const hasActiveSelection = elementsSelectable && (isSelectionMode || userSelectionActive);
 
     return (
       <div
@@ -240,21 +217,19 @@ const UserSelection = memo(
           'react-flow__container',
           { dragging: paneDragging, selection: isSelectionMode },
         ])}
-        {...eventHandlers}
+        onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
+        onContextMenu={wrapHandler(onContextMenu, container)}
+        onWheel={wrapHandler(onWheel, container)}
+        onMouseEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
+        onMouseDown={hasActiveSelection ? onMouseDown : undefined}
+        onMouseMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
+        onMouseUp={hasActiveSelection ? onMouseUp : undefined}
+        onMouseLeave={hasActiveSelection ? onMouseLeave : onPaneMouseLeave}
         ref={container}
         style={containerStyle}
       >
         {children}
-        {userSelectionActive && userSelectionRect && (
-          <div
-            className="react-flow__selection react-flow__container"
-            style={{
-              width: userSelectionRect.width,
-              height: userSelectionRect.height,
-              transform: `translate(${userSelectionRect.x}px, ${userSelectionRect.y}px)`,
-            }}
-          />
-        )}
+        <SelectionBox />
       </div>
     );
   }
