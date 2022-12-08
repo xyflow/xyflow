@@ -158,8 +158,8 @@ const UserSelection = memo(
         height: Math.abs(mousePos.y - startY),
       };
 
-      const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin } = store.getState();
-      const nodes = Array.from(nodeInternals.values());
+      const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } = store.getState();
+      const nodes = getNodes();
       const selectedNodes = getNodesInside(
         nodeInternals,
         nextUserSelectRect,

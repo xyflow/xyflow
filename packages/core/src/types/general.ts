@@ -212,6 +212,7 @@ export type ReactFlowStore = {
 
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
+  getNodes: () => Node[];
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;

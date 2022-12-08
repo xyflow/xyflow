@@ -8,8 +8,8 @@ function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((positionDiff: XYPosition) => {
-    const { nodeInternals, nodeExtent, updateNodePositions, snapToGrid, snapGrid } = store.getState();
-    const selectedNodes = Array.from(nodeInternals.values()).filter((n) => n.selected);
+    const { nodeInternals, nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid } = store.getState();
+    const selectedNodes = getNodes().filter((n) => n.selected);
 
     const nodeUpdates = selectedNodes.map((n) => {
       if (n.positionAbsolute) {

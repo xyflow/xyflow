@@ -7,7 +7,7 @@ const selector = (s: ReactFlowState) => {
     return false;
   }
 
-  return Array.from(s.nodeInternals.values()).every((n) => n[internalsSymbol]?.handleBounds !== undefined);
+  return s.getNodes().every((n) => n[internalsSymbol]?.handleBounds !== undefined);
 };
 
 function useNodesInitialized(): boolean {

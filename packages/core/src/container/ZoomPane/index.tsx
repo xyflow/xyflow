@@ -5,13 +5,12 @@ import type { D3ZoomEvent } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import shallow from 'zustand/shallow';
 
-import { clamp } from '../../utils';
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { containerStyle } from '../../styles';
 import type { FlowRendererProps } from '../FlowRenderer';
-import { PanOnScrollMode } from '../../types';
+import { CoordinateExtent, PanOnScrollMode } from '../../types';
 import type { Viewport, ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
@@ -78,22 +77,24 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (zoomPane.current) {
+      const bbox = zoomPane.current.getBoundingClientRect();
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
+      const updatedTransform = zoomIdentity.translate(defaultViewport.x, defaultViewport.y).scale(defaultViewport.zoom);
+      const extent: CoordinateExtent = [
+        [0, 0],
+        [bbox.width, bbox.height],
+      ];
 
-      const clampedX = clamp(defaultViewport.x, translateExtent[0][0], translateExtent[1][0]);
-      const clampedY = clamp(defaultViewport.y, translateExtent[0][1], translateExtent[1][1]);
-      const clampedZoom = clamp(defaultViewport.zoom, minZoom, maxZoom);
-      const updatedTransform = zoomIdentity.translate(clampedX, clampedY).scale(clampedZoom);
-
-      d3ZoomInstance.transform(selection, updatedTransform);
+      const constrainedTransform = d3ZoomInstance.constrain()(updatedTransform, extent, translateExtent);
+      d3ZoomInstance.transform(selection, constrainedTransform);
 
       store.setState({
         d3Zoom: d3ZoomInstance,
         d3Selection: selection,
         d3ZoomHandler: selection.on('wheel.zoom'),
         // we need to pass transform because zoom handler is not registered when we set the initial transform
-        transform: [clampedX, clampedY, clampedZoom],
+        transform: [constrainedTransform.x, constrainedTransform.y, constrainedTransform.k],
         domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement,
       });
     }
@@ -164,7 +165,6 @@ const ZoomPane = ({
       } else if (!userSelectionActive) {
         d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
           const { onViewportChange } = store.getState();
-
           store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
 
           if (onMove || onViewportChange) {

@@ -1,7 +1,8 @@
 import { NodeToolbar, ReactFlowState, useStore } from 'reactflow';
 
 const selectedNodesSelector = (state: ReactFlowState) =>
-  Array.from(state.nodeInternals.values())
+  state
+    .getNodes()
     .filter((node) => node.selected)
     .map((node) => node.id);
 

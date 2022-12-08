@@ -31,7 +31,7 @@ const nodesEqualityFn = (a: Node[], b: Node[]) => {
 const storeSelector = (state: ReactFlowState) => ({
   transform: state.transform,
   nodeOrigin: state.nodeOrigin,
-  selectedNodesCount: Array.from(state.nodeInternals.values()).filter((node) => node.selected).length,
+  selectedNodesCount: state.getNodes().filter((node) => node.selected).length,
 });
 
 function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number): string {
