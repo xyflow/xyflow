@@ -14,6 +14,7 @@ import {
   getBoundsOfRects,
   useStoreApi,
   getNodePositionWithOrigin,
+  CoordinateExtent,
 } from '@reactflow/core';
 import type { ReactFlowState, Rect } from '@reactflow/core';
 
@@ -109,7 +110,7 @@ function MiniMap({
       };
 
       const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
-        const { transform, d3Selection, d3Zoom } = store.getState();
+        const { transform, d3Selection, d3Zoom, translateExtent, width, height } = store.getState();
 
         if (event.sourceEvent.type !== 'mousemove' || !d3Selection || !d3Zoom) {
           return;
@@ -120,10 +121,15 @@ function MiniMap({
           x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
           y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
         };
+        const extent: CoordinateExtent = [
+          [0, 0],
+          [width, height],
+        ];
 
         const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
+        const constrainedTransform = d3Zoom.constrain()(nextTransform, extent, translateExtent);
 
-        d3Zoom.transform(d3Selection, nextTransform);
+        d3Zoom.transform(d3Selection, constrainedTransform);
       };
 
       const zoomAndPanHandler = zoom()

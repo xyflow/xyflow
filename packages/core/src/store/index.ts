@@ -212,8 +212,7 @@ const createRFStore = () =>
       set({ maxZoom });
     },
     setTranslateExtent: (translateExtent: CoordinateExtent) => {
-      const { d3Zoom } = get();
-      d3Zoom?.translateExtent(translateExtent);
+      get().d3Zoom?.translateExtent(translateExtent);
 
       set({ translateExtent });
     },
