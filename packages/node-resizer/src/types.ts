@@ -44,7 +44,7 @@ export type ResizeControlProps = Pick<
 };
 
 export type ResizeControlLineProps = ResizeControlProps & {
-  position: ControlLinePosition;
+  position?: ControlLinePosition;
 };
 
 export type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
