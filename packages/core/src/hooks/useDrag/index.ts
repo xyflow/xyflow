@@ -108,6 +108,9 @@ function useDrag({
                 x: pointerPos.xSnapped,
                 y: pointerPos.ySnapped,
               };
+
+              let hasChange = false;
+
               dragItems.current = dragItems.current.map((n) => {
                 const nextPosition = { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y };
 
@@ -118,11 +121,19 @@ function useDrag({
 
                 const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent, nodeOrigin);
 
+                // we want to make sure that we only fire a change event when there is a changes
+                hasChange =
+                  hasChange || n.position.x !== updatedPos.position.x || n.position.y !== updatedPos.position.y;
+
                 n.position = updatedPos.position;
                 n.positionAbsolute = updatedPos.positionAbsolute;
 
                 return n;
               });
+
+              if (!hasChange) {
+                return;
+              }
 
               const onDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 
