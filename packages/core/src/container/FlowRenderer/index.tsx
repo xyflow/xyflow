@@ -43,8 +43,8 @@ const FlowRenderer = ({
   onMoveStart,
   onMoveEnd,
   selectionKeyCode,
-  selectBoxOnDrag,
-  selectBoxMode,
+  selectionOnDrag,
+  selectionMode,
   onSelectionStart,
   onSelectionEnd,
   multiSelectionKeyCode,
@@ -67,28 +67,12 @@ const FlowRenderer = ({
   noPanClassName,
   disableKeyboardA11y,
 }: FlowRendererProps) => {
-  const store = useStoreApi();
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-  const isSelectionMode = selectionKeyPressed || (selectBoxOnDrag && panOnDrag !== true);
+  const isSelectionMode = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
-
-  const onClick = (event: MouseEvent) => {
-    onPaneClick?.(event);
-    store.getState().resetSelectedElements();
-    store.setState({ nodesSelectionActive: false });
-  };
-
-  const onContextMenu = (event: MouseEvent) => {
-    if (panOnDrag === 'RightClick') {
-      event.preventDefault();
-    } else {
-      onPaneContextMenu?.(event);
-    }
-  };
-  const onWheel = onPaneScroll ? (event: WheelEvent) => onPaneScroll(event) : undefined;
 
   return (
     <ZoomPane
@@ -116,14 +100,15 @@ const FlowRenderer = ({
       <UserSelection
         onSelectionStart={onSelectionStart}
         onSelectionEnd={onSelectionEnd}
-        onClick={onClick}
-        onMouseEnter={onPaneMouseEnter}
-        onMouseMove={onPaneMouseMove}
-        onMouseLeave={onPaneMouseLeave}
-        onContextMenu={onContextMenu}
-        onWheel={onWheel}
+        onPaneClick={onPaneClick}
+        onPaneMouseEnter={onPaneMouseEnter}
+        onPaneMouseMove={onPaneMouseMove}
+        onPaneMouseLeave={onPaneMouseLeave}
+        onPaneContextMenu={onPaneContextMenu}
+        onPaneScroll={onPaneScroll}
+        panOnDrag={panOnDrag}
         isSelectionMode={!!isSelectionMode}
-        selectBoxMode={selectBoxMode}
+        selectionMode={selectionMode}
       >
         {children}
         {nodesSelectionActive && (

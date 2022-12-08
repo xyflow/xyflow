@@ -21,7 +21,7 @@ type ZoomPaneProps = Omit<
   | 'multiSelectionKeyCode'
   | 'noDragClassName'
   | 'disableKeyboardA11y'
-  | 'selectBoxOnDrag'
+  | 'selectionOnDrag'
 >;
 
 const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>

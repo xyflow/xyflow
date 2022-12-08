@@ -6,6 +6,7 @@ import ReactFlow, {
   Edge,
   useReactFlow,
   useKeyPress,
+  SelectionMode,
 } from 'reactflow';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
@@ -25,6 +26,8 @@ const initialEdges: Edge[] = [
 const defaultEdgeOptions = { zIndex: 0 };
 
 const logEvent = (e: any) => console.log(e);
+
+const onPaneClick = (e: any) => console.log('click pane', e);
 
 const BasicFlow = () => {
   const instance = useReactFlow();
@@ -60,8 +63,8 @@ const BasicFlow = () => {
     <ReactFlow
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
-      selectBoxOnDrag
-      selectBoxMode="Overlap"
+      selectionOnDrag
+      selectionMode={SelectionMode.Overlap}
       panOnDrag={spaceBarPressed ? true : 'RightClick'}
       panOnScroll
       onPaneContextMenu={logEvent}
@@ -70,6 +73,7 @@ const BasicFlow = () => {
       className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}
+      onPaneClick={onPaneClick}
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}

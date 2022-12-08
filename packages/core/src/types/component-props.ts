@@ -35,6 +35,7 @@ import type {
   NodeOrigin,
   EdgeMouseHandler,
   HandleType,
+  SelectionMode,
 } from '.';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
@@ -96,8 +97,8 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   connectionMode?: ConnectionMode;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
-  selectBoxOnDrag?: boolean;
-  selectBoxMode?: 'Overlap' | 'Contained';
+  selectionOnDrag?: boolean;
+  selectionMode?: SelectionMode;
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;

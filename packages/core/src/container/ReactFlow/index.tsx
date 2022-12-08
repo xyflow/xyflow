@@ -17,7 +17,7 @@ import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
 import { infiniteExtent } from '../../store/initialState';
 import { useNodeOrEdgeTypes } from './utils';
-import { ConnectionLineType, ConnectionMode, PanOnScrollMode } from '../../types';
+import { ConnectionLineType, ConnectionMode, PanOnScrollMode, SelectionMode } from '../../types';
 import type {
   EdgeTypes,
   EdgeTypesWrapped,
@@ -101,8 +101,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       connectionLineContainerStyle,
       deleteKeyCode = 'Backspace',
       selectionKeyCode = 'Shift',
-      selectBoxOnDrag = false,
-      selectBoxMode = 'Contained',
+      selectionOnDrag = false,
+      selectionMode = SelectionMode.Contained,
       multiSelectionKeyCode = 'Meta',
       zoomActivationKeyCode = 'Meta',
       snapToGrid = false,
@@ -197,8 +197,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionLineComponent={connectionLineComponent}
             connectionLineContainerStyle={connectionLineContainerStyle}
             selectionKeyCode={selectionKeyCode}
-            selectBoxOnDrag={selectBoxOnDrag}
-            selectBoxMode={selectBoxMode}
+            selectionOnDrag={selectionOnDrag}
+            selectionMode={selectionMode}
             deleteKeyCode={deleteKeyCode}
             multiSelectionKeyCode={multiSelectionKeyCode}
             zoomActivationKeyCode={zoomActivationKeyCode}

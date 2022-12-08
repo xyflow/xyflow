@@ -3,7 +3,7 @@ import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent 
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
-import type { NodeChange, EdgeChange, NodePositionChange } from './changes';
+import type { NodeChange, EdgeChange } from './changes';
 import type {
   Node,
   NodeInternals,
@@ -248,3 +248,8 @@ export type ProOptions = {
 };
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
+
+export enum SelectionMode {
+  Overlap = 'overlap',
+  Contained = 'contained',
+}
