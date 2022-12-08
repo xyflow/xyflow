@@ -1,5 +1,13 @@
 # @reactflow/node-resizer
 
+## 1.1.0
+
+### Minor Changes
+
+- Add `onResizeStart`, `onResize`, `onResizeEnd` handlers
+- Fix resizing flag
+- Cleanup types
+
 ## 1.0.3
 
 ### Patch Changes
