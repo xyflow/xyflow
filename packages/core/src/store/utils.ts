@@ -120,7 +120,7 @@ type InternalFitViewOptions = {
 
 export function fitView(get: StoreApi<ReactFlowState>['getState'], options: InternalFitViewOptions = {}) {
   const {
-    nodeInternals,
+    getNodes,
     width,
     height,
     minZoom,
@@ -134,9 +134,7 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
 
   if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
     if (d3Zoom && d3Selection) {
-      const nodes = Array.from(nodeInternals.values()).filter((n) =>
-        options.includeHiddenNodes ? n.width && n.height : !n.hidden
-      );
+      const nodes = getNodes().filter((n) => (options.includeHiddenNodes ? n.width && n.height : !n.hidden));
 
       const nodesInitialized = nodes.every((n) => n.width && n.height);
 

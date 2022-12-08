@@ -101,13 +101,13 @@ const UserSelection = memo(({ selectionKeyPressed }: UserSelectionProps) => {
       height: Math.abs(mousePos.y - startY),
     };
 
-    const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
+    const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } = store.getState();
     const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, false, true, nodeOrigin);
     const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
     if (prevSelectedNodesCount.current !== selectedNodeIds.length) {
+      const nodes = getNodes();
       prevSelectedNodesCount.current = selectedNodeIds.length;
       const changes = getSelectionChanges(nodes, selectedNodeIds) as NodeChange[];
       if (changes.length) {

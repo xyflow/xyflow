@@ -27,7 +27,7 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const bboxSelector = (s: ReactFlowState) => {
-  const selectedNodes = Array.from(s.nodeInternals.values()).filter((n) => n.selected);
+  const selectedNodes = s.getNodes().filter((n) => n.selected);
   return getRectOfNodes(selectedNodes, s.nodeOrigin);
 };
 
@@ -55,7 +55,10 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
 
   const onContextMenu = onSelectionContextMenu
     ? (event: MouseEvent) => {
-        const selectedNodes = Array.from(store.getState().nodeInternals.values()).filter((n) => n.selected);
+        const selectedNodes = store
+          .getState()
+          .getNodes()
+          .filter((n) => n.selected);
         onSelectionContextMenu(event, selectedNodes);
       }
     : undefined;

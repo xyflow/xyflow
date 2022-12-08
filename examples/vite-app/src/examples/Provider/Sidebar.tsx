@@ -1,15 +1,16 @@
-import { useStore, useStoreApi } from 'reactflow';
+import { useReactFlow, useStore } from 'reactflow';
 
 import styles from './provider.module.css';
 
 const Sidebar = () => {
-  const store = useStoreApi();
-  const nodeInternals = useStore((store) => store.nodeInternals);
+  const { setNodes } = useReactFlow();
+  const nodeInfos = useStore((store) =>
+    store.getNodes().map((n) => `Node ${n.id} - x: ${n.position.x.toFixed(2)}, y: ${n.position.y.toFixed(2)}`)
+  );
   const transform = useStore((store) => store.transform);
 
   const selectAll = () => {
-    nodeInternals.forEach((node) => (node.selected = true));
-    store.setState({ nodeInternals: new Map(nodeInternals) });
+    setNodes((nodes) => nodes.map((n) => ({ ...n, selected: true })));
   };
 
   return (
@@ -22,10 +23,8 @@ const Sidebar = () => {
         [{transform[0].toFixed(2)}, {transform[1].toFixed(2)}, {transform[2].toFixed(2)}]
       </div>
       <div className={styles.title}>Nodes</div>
-      {Array.from(nodeInternals).map(([, node]) => (
-        <div key={node.id}>
-          Node {node.id} - x: {node.position.x.toFixed(2)}, y: {node.position.y.toFixed(2)}
-        </div>
+      {nodeInfos.map((info, index) => (
+        <div key={index}>{info}</div>
       ))}
 
       <div className={styles.selectall}>

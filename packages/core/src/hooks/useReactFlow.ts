@@ -24,14 +24,14 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   const store = useStoreApi();
 
   const getNodes = useCallback<Instance.GetNodes<NodeData>>(() => {
-    const { nodeInternals } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
-    return nodes.map((n) => ({ ...n }));
+    return store
+      .getState()
+      .getNodes()
+      .map((n) => ({ ...n }));
   }, []);
 
   const getNode = useCallback<Instance.GetNode<NodeData>>((id) => {
-    const { nodeInternals } = store.getState();
-    return nodeInternals.get(id);
+    return store.getState().nodeInternals.get(id);
   }, []);
 
   const getEdges = useCallback<Instance.GetEdges<EdgeData>>(() => {
@@ -45,8 +45,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const setNodes = useCallback<Instance.SetNodes<NodeData>>((payload) => {
-    const { nodeInternals, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
+    const { getNodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
+    const nodes = getNodes();
     const nextNodes = typeof payload === 'function' ? payload(nodes) : payload;
 
     if (hasDefaultNodes) {
@@ -77,10 +77,10 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
 
   const addNodes = useCallback<Instance.AddNodes<NodeData>>((payload) => {
     const nodes = Array.isArray(payload) ? payload : [payload];
-    const { nodeInternals, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
+    const { getNodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
 
     if (hasDefaultNodes) {
-      const currentNodes = Array.from(nodeInternals.values());
+      const currentNodes = getNodes();
       const nextNodes = [...currentNodes, ...nodes];
       setNodes(nextNodes);
     } else if (onNodesChange) {
@@ -102,11 +102,10 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const toObject = useCallback<Instance.ToObject<NodeData, EdgeData>>(() => {
-    const { nodeInternals, edges = [], transform } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
+    const { getNodes, edges = [], transform } = store.getState();
     const [x, y, zoom] = transform;
     return {
-      nodes: nodes.map((n) => ({ ...n })),
+      nodes: getNodes().map((n) => ({ ...n })),
       edges: edges.map((e) => ({ ...e })),
       viewport: {
         x,
@@ -119,6 +118,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   const deleteElements = useCallback<Instance.DeleteElements>(({ nodes: nodesDeleted, edges: edgesDeleted }) => {
     const {
       nodeInternals,
+      getNodes,
       edges,
       hasDefaultNodes,
       hasDefaultEdges,
@@ -127,10 +127,9 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       onNodesChange,
       onEdgesChange,
     } = store.getState();
-    const nodes = Array.from(nodeInternals.values());
     const nodeIds = (nodesDeleted || []).map((node) => node.id);
     const edgeIds = (edgesDeleted || []).map((edge) => edge.id);
-    const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
+    const nodesToRemove = getNodes().reduce<Node[]>((res, node) => {
       const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
       const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
       if (deletable && (nodeIds.includes(node.id) || parentHit)) {
@@ -219,7 +218,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         return [];
       }
 
-      return (nodes || Array.from(store.getState().nodeInternals.values())).filter((n) => {
+      return (nodes || store.getState().getNodes()).filter((n) => {
         if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
           return false;
         }

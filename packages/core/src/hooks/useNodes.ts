@@ -1,7 +1,7 @@
 import { useStore } from '../hooks/useStore';
 import type { Node, ReactFlowState } from '../types';
 
-const nodesSelector = (state: ReactFlowState) => Array.from(state.nodeInternals.values());
+const nodesSelector = (state: ReactFlowState) => state.getNodes();
 
 function useNodes<NodeData>(): Node<NodeData>[] {
   const nodes = useStore(nodesSelector);
