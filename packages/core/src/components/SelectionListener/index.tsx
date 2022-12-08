@@ -9,7 +9,7 @@ type SelectionListenerProps = {
 };
 
 const selector = (s: ReactFlowState) => ({
-  selectedNodes: Array.from(s.nodeInternals.values()).filter((n) => n.selected),
+  selectedNodes: s.getNodes().filter((n) => n.selected),
   selectedEdges: s.edges.filter((e) => e.selected),
 });
 

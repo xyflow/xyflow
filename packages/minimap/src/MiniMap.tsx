@@ -26,7 +26,7 @@ const defaultWidth = 200;
 const defaultHeight = 150;
 
 const selector = (s: ReactFlowState) => {
-  const nodes = Array.from(s.nodeInternals.values());
+  const nodes = s.getNodes();
   const viewBB: Rect = {
     x: -s.transform[0] / s.transform[2],
     y: -s.transform[1] / s.transform[2],

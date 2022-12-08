@@ -1,5 +1,5 @@
 import { FC, MouseEvent } from 'react';
-import { EdgeProps, getBezierPath, EdgeLabelRenderer, useStore, ReactFlowStore } from 'reactflow';
+import { EdgeProps, getBezierPath, EdgeLabelRenderer, useStore } from 'reactflow';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,
@@ -14,7 +14,7 @@ const CustomEdge: FC<EdgeProps> = ({
   data,
 }) => {
   const isConnectedNodeDragging = useStore((s) =>
-    Array.from(s.nodeInternals.values()).find((n) => n.dragging && (target === n.id || source === n.id))
+    s.getNodes().find((n) => n.dragging && (target === n.id || source === n.id))
   );
 
   const [edgePath, labelX, labelY] = getBezierPath({

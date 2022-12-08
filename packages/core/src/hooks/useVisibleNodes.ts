@@ -10,7 +10,7 @@ function useVisibleNodes(onlyRenderVisible: boolean) {
       (s: ReactFlowState) =>
         onlyRenderVisible
           ? getNodesInside(s.nodeInternals, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
-          : Array.from(s.nodeInternals.values()),
+          : s.getNodes(),
       [onlyRenderVisible]
     )
   );
