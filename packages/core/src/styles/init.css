@@ -11,6 +11,10 @@
   z-index: 1;
   cursor: grab;
 
+  &.selection {
+    cursor: pointer;
+  }
+
   &.dragging {
     cursor: grabbing;
   }
@@ -26,8 +30,12 @@
   z-index: 4;
 }
 
-.react-flow__selectionpane {
+.react-flow__pane {
   z-index: 5;
+}
+
+.react-flow__selection {
+  z-index: 6;
 }
 
 .react-flow__nodesselection-rect:focus,

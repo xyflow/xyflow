@@ -8,7 +8,6 @@ import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import UserSelection from '../../components/UserSelection';
 import NodesSelection from '../../components/NodesSelection';
-import Pane from './Pane';
 import type { ReactFlowState } from '../../types';
 
 export type FlowRendererProps = Omit<
@@ -44,6 +43,10 @@ const FlowRenderer = ({
   onMoveStart,
   onMoveEnd,
   selectionKeyCode,
+  selectBoxOnDrag,
+  selectBoxMode,
+  onSelectionStart,
+  onSelectionEnd,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
   elementsSelectable,
@@ -68,6 +71,8 @@ const FlowRenderer = ({
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
+  const isSelectionMode = selectionKeyPressed || (selectBoxOnDrag && panOnDrag !== true);
+
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
   const onClick = (event: MouseEvent) => {
@@ -76,7 +81,13 @@ const FlowRenderer = ({
     store.setState({ nodesSelectionActive: false });
   };
 
-  const onContextMenu = onPaneContextMenu ? (event: MouseEvent) => onPaneContextMenu(event) : undefined;
+  const onContextMenu = (event: MouseEvent) => {
+    if (panOnDrag === 'RightClick') {
+      event.preventDefault();
+    } else {
+      onPaneContextMenu?.(event);
+    }
+  };
   const onWheel = onPaneScroll ? (event: WheelEvent) => onPaneScroll(event) : undefined;
 
   return (
@@ -84,7 +95,7 @@ const FlowRenderer = ({
       onMove={onMove}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
-      selectionKeyPressed={selectionKeyPressed}
+      onPaneContextMenu={onPaneContextMenu}
       elementsSelectable={elementsSelectable}
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
@@ -92,7 +103,7 @@ const FlowRenderer = ({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
-      panOnDrag={panOnDrag}
+      panOnDrag={!selectionKeyPressed && panOnDrag}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
       minZoom={minZoom}
@@ -102,23 +113,27 @@ const FlowRenderer = ({
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
     >
-      {children}
-      <UserSelection selectionKeyPressed={selectionKeyPressed} />
-      {nodesSelectionActive && (
-        <NodesSelection
-          onSelectionContextMenu={onSelectionContextMenu}
-          noPanClassName={noPanClassName}
-          disableKeyboardA11y={disableKeyboardA11y}
-        />
-      )}
-      <Pane
+      <UserSelection
+        onSelectionStart={onSelectionStart}
+        onSelectionEnd={onSelectionEnd}
         onClick={onClick}
         onMouseEnter={onPaneMouseEnter}
         onMouseMove={onPaneMouseMove}
         onMouseLeave={onPaneMouseLeave}
         onContextMenu={onContextMenu}
         onWheel={onWheel}
-      />
+        isSelectionMode={!!isSelectionMode}
+        selectBoxMode={selectBoxMode}
+      >
+        {children}
+        {nodesSelectionActive && (
+          <NodesSelection
+            onSelectionContextMenu={onSelectionContextMenu}
+            noPanClassName={noPanClassName}
+            disableKeyboardA11y={disableKeyboardA11y}
+          />
+        )}
+      </UserSelection>
     </ZoomPane>
   );
 };

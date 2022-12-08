@@ -68,6 +68,8 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onSelectionDragStart?: SelectionDragHandler;
   onSelectionDrag?: SelectionDragHandler;
   onSelectionDragStop?: SelectionDragHandler;
+  onSelectionStart?: (event: ReactMouseEvent) => void;
+  onSelectionEnd?: (event: ReactMouseEvent) => void;
   onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
@@ -94,6 +96,8 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   connectionMode?: ConnectionMode;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
+  selectBoxOnDrag?: boolean;
+  selectBoxMode?: 'Overlap' | 'Contained';
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;
@@ -107,7 +111,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
-  panOnDrag?: boolean;
+  panOnDrag?: boolean | 'RightClick';
   minZoom?: number;
   maxZoom?: number;
   defaultViewport?: Viewport;

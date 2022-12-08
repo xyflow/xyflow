@@ -35,7 +35,18 @@ describe('Interaction Flow Rendering', () => {
   });
 
   it('tries to do a selection', () => {
-    cy.get('body').type('{shift}', { release: false }).get('.react-flow__selectionpane').should('not.exist');
+    cy.get('body')
+      .type('{shift}', { release: false })
+      .wait(50)
+      .get('.react-flow__pane')
+      .trigger('mousedown', 1000, 50, { button: 0, force: true })
+      .trigger('mousemove', 1, 400, { button: 0 })
+      .wait(50)
+      .get('.react-flow__selection')
+      .should('not.exist');
+
+    cy.get('.react-flow__pane').trigger('mouseup', 1, 200, { force: true });
+
     cy.get('body').type('{shift}', { release: true });
   });
 

@@ -14,9 +14,9 @@ describe('Empty Flow Rendering', () => {
     cy.get('body')
       .type('{shift}', { release: false })
       .wait(50)
-      .get('.react-flow__selectionpane')
-      .trigger('mousedown', 400, 50, { which: 1, force: true })
-      .trigger('mousemove', 200, 200, { which: 1 })
+      .get('.react-flow__pane')
+      .trigger('mousedown', 400, 50, { button: 0, force: true })
+      .trigger('mousemove', 200, 200, { button: 0 })
       .wait(50)
       .trigger('mouseup', 200, 200, { force: true });
 

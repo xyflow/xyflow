@@ -51,11 +51,15 @@ const GraphView = ({
   onNodeMouseLeave,
   onNodeContextMenu,
   onSelectionContextMenu,
+  onSelectionStart,
+  onSelectionEnd,
   connectionLineType,
   connectionLineStyle,
   connectionLineComponent,
   connectionLineContainerStyle,
   selectionKeyCode,
+  selectBoxOnDrag,
+  selectBoxMode,
   multiSelectionKeyCode,
   zoomActivationKeyCode,
   deleteKeyCode,
@@ -110,6 +114,10 @@ const GraphView = ({
       onPaneScroll={onPaneScroll}
       deleteKeyCode={deleteKeyCode}
       selectionKeyCode={selectionKeyCode}
+      selectBoxOnDrag={selectBoxOnDrag}
+      selectBoxMode={selectBoxMode}
+      onSelectionStart={onSelectionStart}
+      onSelectionEnd={onSelectionEnd}
       multiSelectionKeyCode={multiSelectionKeyCode}
       zoomActivationKeyCode={zoomActivationKeyCode}
       elementsSelectable={elementsSelectable}

@@ -9,13 +9,12 @@ describe('Minimap Testing', () => {
   });
 
   it('has same number of nodes as the pane', () => {
-    const paneNodes = Cypress.$('.react-flow__node').length;
+    cy.get('.react-flow__minimap-node').then(() => {
+      const paneNodes = Cypress.$('.react-flow__node').length;
+      const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
 
-    cy.wait(200);
-
-    const minimapNodes = Cypress.$('.react-flow__minimap-node').length;
-
-    expect(paneNodes).equal(minimapNodes);
+      expect(paneNodes).equal(minimapNodes);
+    });
   });
 
   it('changes zoom level', () => {
@@ -60,7 +59,7 @@ describe('Minimap Testing', () => {
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
       cy.get('.react-flow__pane')
-        .trigger('mousedown', 'topLeft', { which: 1, view: win })
+        .trigger('mousedown', 'topLeft', { button: 0, view: win })
         .trigger('mousemove', 'bottomLeft')
         .wait(50)
         .trigger('mouseup', { force: true, view: win })

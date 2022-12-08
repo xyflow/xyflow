@@ -50,9 +50,9 @@ describe('Basic Flow Rendering', () => {
     cy.get('body')
       .type('{shift}', { release: false })
       .wait(50)
-      .get('.react-flow__selectionpane')
-      .trigger('mousedown', 1000, 50, { which: 1, force: true })
-      .trigger('mousemove', 1, 400, { which: 1 })
+      .get('.react-flow__pane')
+      .trigger('mousedown', 1000, 50, { button: 0, force: true })
+      .trigger('mousemove', 1, 400, { button: 0 })
       .wait(50)
       .trigger('mouseup', 1, 200, { force: true });
 
@@ -70,9 +70,9 @@ describe('Basic Flow Rendering', () => {
   it('selects all nodes', () => {
     cy.get('body')
       .type('{shift}', { release: false })
-      .get('.react-flow__selectionpane')
-      .trigger('mousedown', 'topRight', { which: 1, force: true })
-      .trigger('mousemove', 'bottomLeft', { which: 1 })
+      .get('.react-flow__pane')
+      .trigger('mousedown', 'topRight', { button: 0, force: true })
+      .trigger('mousemove', 'bottomLeft', { button: 0 })
       .wait(50)
       .trigger('mouseup', 'bottomLeft', { force: true })
       .wait(50)
@@ -140,7 +140,7 @@ describe('Basic Flow Rendering', () => {
     // https://github.com/cypress-io/cypress/issues/3441
     cy.window().then((win) => {
       cy.get('.react-flow__pane')
-        .trigger('mousedown', 'topLeft', { which: 1, view: win })
+        .trigger('mousedown', 'topLeft', { button: 0, view: win })
         .trigger('mousemove', 'bottomLeft')
         .wait(50)
         .trigger('mouseup', { force: true, view: win })
