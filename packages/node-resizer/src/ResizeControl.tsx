@@ -31,6 +31,9 @@ function ResizeControl({
   color,
   minWidth = 10,
   minHeight = 10,
+  onResizeStart,
+  onResize,
+  onResizeEnd,
 }: ResizeControlProps) {
   const contextNodeId = useNodeId();
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
@@ -65,6 +68,8 @@ function ResizeControl({
           pointerX: xSnapped,
           pointerY: ySnapped,
         };
+
+        onResizeStart?.(event, { ...prevValues.current });
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { nodeInternals, triggerNodeChanges } = store.getState();
@@ -135,16 +140,18 @@ function ResizeControl({
             prevValues.current.height = height;
           }
 
+          onResize?.(event, { ...prevValues.current });
           triggerNodeChanges(changes);
         }
       })
-      .on('end', () => {
+      .on('end', (event: ResizeDragEvent) => {
         const dimensionChange: NodeDimensionChange = {
           id: id,
           type: 'dimensions',
-          resizing: true,
+          resizing: false,
         };
 
+        onResizeEnd?.(event, { ...prevValues.current });
         store.getState().triggerNodeChanges([dimensionChange]);
       });
 
