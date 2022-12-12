@@ -30,10 +30,6 @@
   z-index: 4;
 }
 
-.react-flow__pane {
-  z-index: 5;
-}
-
 .react-flow__selection {
   z-index: 6;
 }

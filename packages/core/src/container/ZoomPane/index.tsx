@@ -9,8 +9,9 @@ import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { containerStyle } from '../../styles';
-import type { FlowRendererProps } from '../FlowRenderer';
+import { clamp } from '../../utils';
 import { CoordinateExtent, PanOnScrollMode } from '../../types';
+import type { FlowRendererProps } from '../FlowRenderer';
 import type { Viewport, ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
@@ -80,7 +81,9 @@ const ZoomPane = ({
       const bbox = zoomPane.current.getBoundingClientRect();
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
-      const updatedTransform = zoomIdentity.translate(defaultViewport.x, defaultViewport.y).scale(defaultViewport.zoom);
+      const updatedTransform = zoomIdentity
+        .translate(defaultViewport.x, defaultViewport.y)
+        .scale(clamp(defaultViewport.zoom, minZoom, maxZoom));
       const extent: CoordinateExtent = [
         [0, 0],
         [bbox.width, bbox.height],

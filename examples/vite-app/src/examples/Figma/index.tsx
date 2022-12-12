@@ -1,4 +1,4 @@
-import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode } from 'reactflow';
+import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode, Viewport } from 'reactflow';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 
