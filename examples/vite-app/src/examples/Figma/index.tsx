@@ -1,12 +1,4 @@
-import ReactFlow, {
-  ReactFlowProvider,
-  Background,
-  BackgroundVariant,
-  Node,
-  Edge,
-  useKeyPress,
-  SelectionMode,
-} from 'reactflow';
+import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode } from 'reactflow';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 
@@ -23,15 +15,13 @@ const initialEdges: Edge[] = [
 ];
 
 const BasicFlow = () => {
-  const spaceBarPressed = useKeyPress('Space');
-
   return (
     <ReactFlow
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
       selectionOnDrag
       selectionMode={SelectionMode.Partial}
-      panOnDrag={spaceBarPressed ? true : 'RightClick'}
+      panOnDrag="RightClick"
       panOnScroll
       zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
@@ -43,10 +33,4 @@ const BasicFlow = () => {
   );
 };
 
-export default function App() {
-  return (
-    <ReactFlowProvider>
-      <BasicFlow />
-    </ReactFlowProvider>
-  );
-}
+export default BasicFlow;

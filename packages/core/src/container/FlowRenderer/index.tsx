@@ -57,7 +57,7 @@ const FlowRenderer = ({
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
-  panOnDrag,
+  panOnDrag: _panOnDrag,
   defaultViewport,
   translateExtent,
   minZoom,
@@ -70,6 +70,9 @@ const FlowRenderer = ({
 }: FlowRendererProps) => {
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
+  const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
+
+  const panOnDrag = panActivationKeyPressed || _panOnDrag;
   const isSelecting = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
@@ -92,7 +95,6 @@ const FlowRenderer = ({
       translateExtent={translateExtent}
       minZoom={minZoom}
       maxZoom={maxZoom}
-      panActivationKeyCode={panActivationKeyCode}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
       noWheelClassName={noWheelClassName}
