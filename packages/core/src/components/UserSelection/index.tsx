@@ -57,7 +57,7 @@ const selector = (s: ReactFlowState) => ({
 const UserSelection = memo(
   ({
     isSelecting,
-    selectionMode = SelectionMode.Contained,
+    selectionMode = SelectionMode.Full,
     panOnDrag,
     onSelectionStart,
     onSelectionEnd,
@@ -151,7 +151,7 @@ const UserSelection = memo(
         nodeInternals,
         nextUserSelectRect,
         transform,
-        selectionMode === SelectionMode.Overlap,
+        selectionMode === SelectionMode.Partial,
         true,
         nodeOrigin
       );

@@ -64,7 +64,7 @@ const BasicFlow = () => {
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
       selectionOnDrag
-      selectionMode={SelectionMode.Overlap}
+      selectionMode={SelectionMode.Partial}
       panOnDrag={spaceBarPressed ? true : 'RightClick'}
       panOnScroll
       onPaneContextMenu={logEvent}

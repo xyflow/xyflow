@@ -252,8 +252,8 @@ export type ProOptions = {
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 
 export enum SelectionMode {
-  Overlap = 'overlap',
-  Contained = 'contained',
+  Partial = 'partial',
+  Full = 'full',
 }
 
 export type SelectionRect = Rect & {
