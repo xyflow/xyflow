@@ -48,6 +48,7 @@ const FlowRenderer = ({
   onSelectionStart,
   onSelectionEnd,
   multiSelectionKeyCode,
+  panActivationKeyCode,
   zoomActivationKeyCode,
   elementsSelectable,
   zoomOnScroll,
@@ -91,6 +92,7 @@ const FlowRenderer = ({
       translateExtent={translateExtent}
       minZoom={minZoom}
       maxZoom={maxZoom}
+      panActivationKeyCode={panActivationKeyCode}
       zoomActivationKeyCode={zoomActivationKeyCode}
       preventScrolling={preventScrolling}
       noWheelClassName={noWheelClassName}

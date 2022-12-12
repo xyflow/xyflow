@@ -4,7 +4,6 @@ import ReactFlow, {
   BackgroundVariant,
   Node,
   Edge,
-  useReactFlow,
   useKeyPress,
   SelectionMode,
 } from 'reactflow';
@@ -23,41 +22,8 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const defaultEdgeOptions = { zIndex: 0 };
-
-const logEvent = (e: any) => console.log(e);
-
-const onPaneClick = (e: any) => console.log('click pane', e);
-
 const BasicFlow = () => {
-  const instance = useReactFlow();
   const spaceBarPressed = useKeyPress('Space');
-
-  const updatePos = () => {
-    instance.setNodes((nodes) =>
-      nodes.map((node) => {
-        node.position = {
-          x: Math.random() * 400,
-          y: Math.random() * 400,
-        };
-
-        return node;
-      })
-    );
-  };
-
-  const logToObject = () => console.log(instance.toObject());
-  const resetTransform = () => instance.setViewport({ x: 0, y: 0, zoom: 1 });
-
-  const toggleClassnames = () => {
-    instance.setNodes((nodes) =>
-      nodes.map((node) => {
-        node.className = node.className === 'light' ? 'dark' : 'light';
-
-        return node;
-      })
-    );
-  };
 
   return (
     <ReactFlow
@@ -67,31 +33,12 @@ const BasicFlow = () => {
       selectionMode={SelectionMode.Partial}
       panOnDrag={spaceBarPressed ? true : 'RightClick'}
       panOnScroll
-      onPaneContextMenu={logEvent}
-      zoomActivationKeyCode={'Meta'}
+      zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
-      className="react-flow-basic-example"
-      minZoom={0.2}
-      maxZoom={4}
-      onPaneClick={onPaneClick}
       fitView
-      defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
     >
-      <Background variant={BackgroundVariant.Lines} />
-
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-        <button onClick={resetTransform} style={{ marginRight: 5 }}>
-          reset transform
-        </button>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
-        <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
-          toggle classnames
-        </button>
-        <button onClick={logToObject}>toObject</button>
-      </div>
+      <Background variant={BackgroundVariant.Cross} />
     </ReactFlow>
   );
 };

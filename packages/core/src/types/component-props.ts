@@ -99,6 +99,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   selectionKeyCode?: KeyCode | null;
   selectionOnDrag?: boolean;
   selectionMode?: SelectionMode;
+  panActivationKeyCode?: KeyCode | null;
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;

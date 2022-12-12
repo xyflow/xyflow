@@ -53,11 +53,12 @@ const ZoomPane = ({
   panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
   elementsSelectable,
-  panOnDrag = true,
+  panOnDrag: _panOnDrag = true,
   defaultViewport,
   translateExtent,
   minZoom,
   maxZoom,
+  panActivationKeyCode,
   zoomActivationKeyCode,
   preventScrolling = true,
   children,
@@ -72,6 +73,8 @@ const ZoomPane = ({
   const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler, userSelectionActive } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
+  const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
+  const panOnDrag = _panOnDrag || panActivationKeyPressed;
 
   useResizeHandler(zoomPane);
 
