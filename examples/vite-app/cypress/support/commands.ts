@@ -36,23 +36,25 @@ Cypress.Commands.add('zoomPane', (wheelDelta: number) =>
 Cypress.Commands.add('isWithinViewport', { prevSubject: true }, (subject) => {
   const rect = subject[0].getBoundingClientRect();
 
-  expect(rect.top).to.be.within(0, window.innerHeight);
-  expect(rect.right).to.be.within(0, window.innerWidth);
-  expect(rect.bottom).to.be.within(0, window.innerHeight);
-  expect(rect.left).to.be.within(0, window.innerWidth);
+  return cy.window().then((window) => {
+    expect(rect.top).to.be.within(0, window.innerHeight);
+    expect(rect.right).to.be.within(0, window.innerWidth);
+    expect(rect.bottom).to.be.within(0, window.innerHeight);
+    expect(rect.left).to.be.within(0, window.innerWidth);
 
-  return subject;
+    return subject;
+  });
 });
 
 Cypress.Commands.add('isOutsideViewport', { prevSubject: true }, (subject) => {
   const rect = subject[0].getBoundingClientRect();
 
-  expect(rect.top).not.to.be.within(0, window.innerHeight);
-  expect(rect.right).not.to.be.within(0, window.innerWidth);
-  expect(rect.bottom).not.to.be.within(0, window.innerHeight);
-  expect(rect.left).not.to.be.within(0, window.innerWidth);
+  return cy.window().then((window) => {
+    expect(window.innerHeight < rect.top || rect.bottom < 0 || window.innerWidth < rect.left || rect.right < 0).to.be
+      .true;
 
-  return subject;
+    return subject;
+  });
 });
 
 export {};

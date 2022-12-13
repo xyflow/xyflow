@@ -3,7 +3,7 @@ import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent 
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
-import type { NodeChange, EdgeChange, NodePositionChange } from './changes';
+import type { NodeChange, EdgeChange } from './changes';
 import type {
   Node,
   NodeInternals,
@@ -155,6 +155,7 @@ export type ReactFlowStore = {
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
+  userSelectionRect: SelectionRect | null;
 
   connectionNodeId: string | null;
   connectionHandleId: string | null;
@@ -249,3 +250,13 @@ export type ProOptions = {
 };
 
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
+
+export enum SelectionMode {
+  Partial = 'partial',
+  Full = 'full',
+}
+
+export type SelectionRect = Rect & {
+  startX: number;
+  startY: number;
+};

@@ -2,161 +2,232 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { memo, useState, useRef } from 'react';
+import { memo, useRef, MouseEvent as ReactMouseEvent } from 'react';
 import shallow from 'zustand/shallow';
+import cc from 'classcat';
 
+import SelectionBox from './SelectionBox';
+import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
-import type { XYPosition, ReactFlowState, NodeChange, EdgeChange, Rect } from '../../types';
-
-type SelectionRect = Rect & {
-  startX: number;
-  startY: number;
-  draw: boolean;
-};
+import { SelectionMode } from '../../types';
+import type { XYPosition, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type UserSelectionProps = {
-  selectionKeyPressed: boolean;
+  isSelecting: boolean;
+  selectionMode?: SelectionMode;
+  panOnDrag?: boolean | 'RightClick';
+  onSelectionStart?: (e: ReactMouseEvent) => void;
+  onSelectionEnd?: (e: ReactMouseEvent) => void;
+  onPaneClick?: (e: ReactMouseEvent) => void;
+  onPaneContextMenu?: (e: ReactMouseEvent) => void;
+  onPaneScroll?: (e: React.WheelEvent) => void;
+  onPaneMouseEnter?: (e: ReactMouseEvent) => void;
+  onPaneMouseMove?: (e: ReactMouseEvent) => void;
+  onPaneMouseLeave?: (e: ReactMouseEvent) => void;
+  children: React.ReactNode;
 };
 
-function getMousePosition(event: React.MouseEvent, containerBounds: DOMRect): XYPosition {
+function getMousePosition(event: ReactMouseEvent, containerBounds: DOMRect): XYPosition {
   return {
     x: event.clientX - containerBounds.left,
     y: event.clientY - containerBounds.top,
   };
 }
 
+const wrapHandler = (
+  handler: React.MouseEventHandler | undefined,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
+): React.MouseEventHandler => {
+  return (event: ReactMouseEvent) => {
+    if (event.target !== containerRef.current) {
+      return;
+    }
+    handler?.(event);
+  };
+};
+
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
+  paneDragging: s.paneDragging,
 });
 
-const initialRect: SelectionRect = {
-  startX: 0,
-  startY: 0,
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  draw: false,
-};
+const UserSelection = memo(
+  ({
+    isSelecting,
+    selectionMode = SelectionMode.Full,
+    panOnDrag,
+    onSelectionStart,
+    onSelectionEnd,
+    onPaneClick,
+    onPaneContextMenu,
+    onPaneScroll,
+    onPaneMouseEnter,
+    onPaneMouseMove,
+    onPaneMouseLeave,
+    children,
+  }: UserSelectionProps) => {
+    const container = useRef<HTMLDivElement | null>(null);
+    const store = useStoreApi();
+    const prevSelectedNodesCount = useRef<number>(0);
+    const prevSelectedEdgesCount = useRef<number>(0);
+    const containerBounds = useRef<DOMRect>();
+    const { userSelectionActive, elementsSelectable, paneDragging } = useStore(selector, shallow);
 
-const UserSelection = memo(({ selectionKeyPressed }: UserSelectionProps) => {
-  const store = useStoreApi();
-  const prevSelectedNodesCount = useRef<number>(0);
-  const prevSelectedEdgesCount = useRef<number>(0);
-  const containerBounds = useRef<DOMRect>();
-  const [userSelectionRect, setUserSelectionRect] = useState<SelectionRect>(initialRect);
-  const { userSelectionActive, elementsSelectable } = useStore(selector, shallow);
+    const resetUserSelection = () => {
+      store.setState({ userSelectionActive: false, userSelectionRect: null });
 
-  const renderUserSelectionPane = userSelectionActive || selectionKeyPressed;
-
-  if (!elementsSelectable || !renderUserSelectionPane) {
-    return null;
-  }
-
-  const resetUserSelection = () => {
-    setUserSelectionRect(initialRect);
-
-    store.setState({ userSelectionActive: false });
-
-    prevSelectedNodesCount.current = 0;
-    prevSelectedEdgesCount.current = 0;
-  };
-
-  const onMouseDown = (event: React.MouseEvent): void => {
-    const reactFlowNode = (event.target as Element).closest('.react-flow')!;
-    containerBounds.current = reactFlowNode.getBoundingClientRect();
-
-    const mousePos = getMousePosition(event, containerBounds.current!);
-
-    setUserSelectionRect({
-      width: 0,
-      height: 0,
-      startX: mousePos.x,
-      startY: mousePos.y,
-      x: mousePos.x,
-      y: mousePos.y,
-      draw: true,
-    });
-
-    store.setState({ userSelectionActive: true, nodesSelectionActive: false });
-  };
-
-  const onMouseMove = (event: React.MouseEvent): void => {
-    if (!selectionKeyPressed || !userSelectionRect.draw || !containerBounds.current) {
-      return;
-    }
-
-    const mousePos = getMousePosition(event, containerBounds.current!);
-    const startX = userSelectionRect.startX ?? 0;
-    const startY = userSelectionRect.startY ?? 0;
-
-    const nextUserSelectRect = {
-      ...userSelectionRect,
-      x: mousePos.x < startX ? mousePos.x : startX,
-      y: mousePos.y < startY ? mousePos.y : startY,
-      width: Math.abs(mousePos.x - startX),
-      height: Math.abs(mousePos.y - startY),
+      prevSelectedNodesCount.current = 0;
+      prevSelectedEdgesCount.current = 0;
     };
 
-    const { nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } = store.getState();
-    const selectedNodes = getNodesInside(nodeInternals, nextUserSelectRect, transform, false, true, nodeOrigin);
-    const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
-    const selectedNodeIds = selectedNodes.map((n) => n.id);
+    const onClick = (event: ReactMouseEvent) => {
+      onPaneClick?.(event);
+      store.getState().resetSelectedElements();
+      store.setState({ nodesSelectionActive: false });
+    };
 
-    if (prevSelectedNodesCount.current !== selectedNodeIds.length) {
+    const onContextMenu = (event: ReactMouseEvent) => {
+      if (panOnDrag === 'RightClick') {
+        event.preventDefault();
+        return;
+      }
+
+      onPaneContextMenu?.(event);
+    };
+
+    const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
+
+    const onMouseDown = (event: ReactMouseEvent): void => {
+      const { resetSelectedElements, domNode } = store.getState();
+      if (!elementsSelectable || !isSelecting || event.button !== 0 || event.target !== container.current || !domNode) {
+        return;
+      }
+
+      containerBounds.current = domNode.getBoundingClientRect();
+      const { x, y } = getMousePosition(event, containerBounds.current!);
+
+      resetSelectedElements();
+
+      store.setState({
+        userSelectionRect: {
+          width: 0,
+          height: 0,
+          startX: x,
+          startY: y,
+          x,
+          y,
+        },
+      });
+
+      onSelectionStart?.(event);
+    };
+
+    const onMouseMove = (event: ReactMouseEvent): void => {
+      const { userSelectionRect, nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } =
+        store.getState();
+      if (!isSelecting || !containerBounds.current || !userSelectionRect) {
+        return;
+      }
+
+      store.setState({ userSelectionActive: true, nodesSelectionActive: false });
+
+      const mousePos = getMousePosition(event, containerBounds.current!);
+      const startX = userSelectionRect.startX ?? 0;
+      const startY = userSelectionRect.startY ?? 0;
+
+      const nextUserSelectRect = {
+        ...userSelectionRect,
+        x: mousePos.x < startX ? mousePos.x : startX,
+        y: mousePos.y < startY ? mousePos.y : startY,
+        width: Math.abs(mousePos.x - startX),
+        height: Math.abs(mousePos.y - startY),
+      };
+
       const nodes = getNodes();
-      prevSelectedNodesCount.current = selectedNodeIds.length;
-      const changes = getSelectionChanges(nodes, selectedNodeIds) as NodeChange[];
-      if (changes.length) {
-        onNodesChange?.(changes);
+      const selectedNodes = getNodesInside(
+        nodeInternals,
+        nextUserSelectRect,
+        transform,
+        selectionMode === SelectionMode.Partial,
+        true,
+        nodeOrigin
+      );
+      const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
+      const selectedNodeIds = selectedNodes.map((n) => n.id);
+
+      if (prevSelectedNodesCount.current !== selectedNodeIds.length) {
+        prevSelectedNodesCount.current = selectedNodeIds.length;
+        const changes = getSelectionChanges(nodes, selectedNodeIds) as NodeChange[];
+        if (changes.length) {
+          onNodesChange?.(changes);
+        }
       }
-    }
 
-    if (prevSelectedEdgesCount.current !== selectedEdgeIds.length) {
-      prevSelectedEdgesCount.current = selectedEdgeIds.length;
-      const changes = getSelectionChanges(edges, selectedEdgeIds) as EdgeChange[];
-      if (changes.length) {
-        onEdgesChange?.(changes);
+      if (prevSelectedEdgesCount.current !== selectedEdgeIds.length) {
+        prevSelectedEdgesCount.current = selectedEdgeIds.length;
+        const changes = getSelectionChanges(edges, selectedEdgeIds) as EdgeChange[];
+        if (changes.length) {
+          onEdgesChange?.(changes);
+        }
       }
-    }
 
-    setUserSelectionRect(nextUserSelectRect);
-  };
+      store.setState({
+        userSelectionRect: nextUserSelectRect,
+      });
+    };
 
-  const onMouseUp = () => {
-    store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
-    resetUserSelection();
-  };
+    const onMouseUp = (event: ReactMouseEvent) => {
+      const { userSelectionRect } = store.getState();
+      // We only want to trigger click functions when in selection mode if
+      // the user did not move the mouse.
+      if (!userSelectionActive && userSelectionRect && event.target === container.current) {
+        onClick?.(event);
+      }
 
-  const onMouseLeave = () => {
-    store.setState({ nodesSelectionActive: false });
-    resetUserSelection();
-  };
+      store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
 
-  return (
-    <div
-      className="react-flow__selectionpane react-flow__container"
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseLeave}
-    >
-      {userSelectionRect.draw && (
-        <div
-          className="react-flow__selection react-flow__container"
-          style={{
-            width: userSelectionRect.width,
-            height: userSelectionRect.height,
-            transform: `translate(${userSelectionRect.x}px, ${userSelectionRect.y}px)`,
-          }}
-        />
-      )}
-    </div>
-  );
-});
+      resetUserSelection();
+      onSelectionEnd?.(event);
+    };
+
+    const onMouseLeave = (event: ReactMouseEvent) => {
+      if (userSelectionActive) {
+        store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
+        onSelectionEnd?.(event);
+      }
+
+      resetUserSelection();
+    };
+
+    const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
+
+    return (
+      <div
+        className={cc([
+          'react-flow__pane',
+          'react-flow__container',
+          { dragging: paneDragging, selection: isSelecting },
+        ])}
+        onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
+        onContextMenu={wrapHandler(onContextMenu, container)}
+        onWheel={wrapHandler(onWheel, container)}
+        onMouseEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
+        onMouseDown={hasActiveSelection ? onMouseDown : undefined}
+        onMouseMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
+        onMouseUp={hasActiveSelection ? onMouseUp : undefined}
+        onMouseLeave={hasActiveSelection ? onMouseLeave : onPaneMouseLeave}
+        ref={container}
+        style={containerStyle}
+      >
+        {children}
+        <SelectionBox />
+      </div>
+    );
+  }
+);
 
 UserSelection.displayName = 'UserSelection';
 
