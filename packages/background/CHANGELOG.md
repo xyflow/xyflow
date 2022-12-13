@@ -1,5 +1,12 @@
 # @reactflow/background
 
+## 11.0.8-next.0
+
+### Patch Changes
+
+- Updated dependencies [[`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0), [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493), [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9), [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c)]:
+  - @reactflow/core@11.4.0-next.0
+
 ## 11.0.7
 
 ### Patch Changes
