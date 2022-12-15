@@ -202,6 +202,7 @@ function MiniMap({
           fillRule="evenodd"
           stroke={maskStrokeColor}
           strokeWidth={maskStrokeWidth}
+          pointerEvents="none"
         />
       </svg>
     </Panel>
