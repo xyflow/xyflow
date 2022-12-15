@@ -1,5 +1,19 @@
 # @reactflow/node-toolbar
 
+## 1.1.0-next.1
+
+### Minor Changes
+
+- panOnDrag: Use numbers for prop ([1,2] = drag via middle or right mouse button)
+  selection: do not include hidden nodes
+  minimap: fix onNodeClick for nodes outside the viewport
+  keys: allow multi select when input is focused
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reactflow/core@11.4.0-next.1
+
 ## 1.1.0-next.0
 
 ### Minor Changes
