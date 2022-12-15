@@ -102,12 +102,19 @@ const UserSelection = memo(
 
     const onMouseDown = (event: ReactMouseEvent): void => {
       const { resetSelectedElements, domNode } = store.getState();
-      if (!elementsSelectable || !isSelecting || event.button !== 0 || event.target !== container.current || !domNode) {
+      containerBounds.current = domNode?.getBoundingClientRect();
+
+      if (
+        !elementsSelectable ||
+        !isSelecting ||
+        event.button !== 0 ||
+        event.target !== container.current ||
+        !containerBounds.current
+      ) {
         return;
       }
 
-      containerBounds.current = domNode.getBoundingClientRect();
-      const { x, y } = getMousePosition(event, containerBounds.current!);
+      const { x, y } = getMousePosition(event, containerBounds.current);
 
       resetSelectedElements();
 
@@ -134,7 +141,7 @@ const UserSelection = memo(
 
       store.setState({ userSelectionActive: true, nodesSelectionActive: false });
 
-      const mousePos = getMousePosition(event, containerBounds.current!);
+      const mousePos = getMousePosition(event, containerBounds.current);
       const startX = userSelectionRect.startX ?? 0;
       const startY = userSelectionRect.startY ?? 0;
 
