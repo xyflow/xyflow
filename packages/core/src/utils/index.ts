@@ -79,6 +79,12 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
   // using composed path for handling shadow dom
   const target = (kbEvent.composedPath?.()?.[0] || event.target) as HTMLElement;
 
+  // we want to be able to do a multi selection event if we are in an input field
+  if (event.ctrlKey || event.metaKey || event.shiftKey) {
+    return false;
+  }
+
+  // when an input field is focused we don't want to trigger deletion or movement of nodes
   return (
     ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) ||
     target?.hasAttribute('contenteditable') ||
