@@ -11,23 +11,27 @@ import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
-import { SelectionMode } from '../../types';
+import { ReactFlowProps, SelectionMode } from '../../types';
 import type { XYPosition, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type UserSelectionProps = {
   isSelecting: boolean;
-  selectionMode?: SelectionMode;
-  panOnDrag?: boolean | 'RightClick';
-  onSelectionStart?: (e: ReactMouseEvent) => void;
-  onSelectionEnd?: (e: ReactMouseEvent) => void;
-  onPaneClick?: (e: ReactMouseEvent) => void;
-  onPaneContextMenu?: (e: ReactMouseEvent) => void;
-  onPaneScroll?: (e: React.WheelEvent) => void;
-  onPaneMouseEnter?: (e: ReactMouseEvent) => void;
-  onPaneMouseMove?: (e: ReactMouseEvent) => void;
-  onPaneMouseLeave?: (e: ReactMouseEvent) => void;
   children: React.ReactNode;
-};
+} & Partial<
+  Pick<
+    ReactFlowProps,
+    | 'selectionMode'
+    | 'panOnDrag'
+    | 'onSelectionStart'
+    | 'onSelectionEnd'
+    | 'onPaneClick'
+    | 'onPaneContextMenu'
+    | 'onPaneScroll'
+    | 'onPaneMouseEnter'
+    | 'onPaneMouseMove'
+    | 'onPaneMouseLeave'
+  >
+>;
 
 function getMousePosition(event: ReactMouseEvent, containerBounds: DOMRect): XYPosition {
   return {
@@ -90,7 +94,7 @@ const UserSelection = memo(
     };
 
     const onContextMenu = (event: ReactMouseEvent) => {
-      if (panOnDrag === 'RightClick') {
+      if (Array.isArray(panOnDrag) && panOnDrag?.includes(2)) {
         event.preventDefault();
         return;
       }

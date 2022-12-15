@@ -1,4 +1,4 @@
-import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode, Viewport } from 'reactflow';
+import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode } from 'reactflow';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 
@@ -14,6 +14,13 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
+const onPaneContextMenu = (e: any) => {
+  e.preventDefault();
+  console.log('context menu');
+};
+
+const panOnDrag = [1, 2];
+
 const BasicFlow = () => {
   return (
     <ReactFlow
@@ -21,10 +28,11 @@ const BasicFlow = () => {
       defaultEdges={initialEdges}
       selectionOnDrag
       selectionMode={SelectionMode.Partial}
-      panOnDrag="RightClick"
+      panOnDrag={panOnDrag}
       panOnScroll
       zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
+      onPaneContextMenu={onPaneContextMenu}
       fitView
       selectNodesOnDrag={false}
     >

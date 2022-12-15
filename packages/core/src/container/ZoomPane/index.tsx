@@ -35,6 +35,9 @@ const eventToFlowTransform = (eventViewport: any): Viewport => ({
 
 const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
 
+const isRightClickPan = (panOnDrag: FlowRendererProps['panOnDrag'], usedButton: number) =>
+  usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
+
 const selector = (s: ReactFlowState) => ({
   d3Zoom: s.d3Zoom,
   d3Selection: s.d3Selection,
@@ -68,7 +71,7 @@ const ZoomPane = ({
   const timerId = useRef<ReturnType<typeof setTimeout>>();
   const store = useStoreApi();
   const isZoomingOrPanning = useRef(false);
-  const hasMouseMoved = useRef(false);
+  const zoomedWithRightMouseButton = useRef(false);
   const zoomPane = useRef<HTMLDivElement>(null);
   const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler, userSelectionActive } = useStore(selector, shallow);
@@ -170,14 +173,15 @@ const ZoomPane = ({
           const { onViewportChange } = store.getState();
           store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
 
+          zoomedWithRightMouseButton.current = !!(
+            onPaneContextMenu && isRightClickPan(panOnDrag, event.sourceEvent?.button)
+          );
+
           if (onMove || onViewportChange) {
             const flowTransform = eventToFlowTransform(event.transform);
 
             onViewportChange?.(flowTransform);
             onMove?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
-          }
-          if (panOnDrag === 'RightClick' && onPaneContextMenu) {
-            hasMouseMoved.current = true;
           }
         });
       }
@@ -193,6 +197,7 @@ const ZoomPane = ({
 
         const { onViewportChangeStart } = store.getState();
         isZoomingOrPanning.current = true;
+
         if (event.sourceEvent?.type === 'mousedown') {
           store.setState({ paneDragging: true });
         }
@@ -219,6 +224,15 @@ const ZoomPane = ({
         isZoomingOrPanning.current = false;
         store.setState({ paneDragging: false });
 
+        if (
+          onPaneContextMenu &&
+          isRightClickPan(panOnDrag, event.sourceEvent?.button) &&
+          !zoomedWithRightMouseButton.current
+        ) {
+          onPaneContextMenu(event.sourceEvent);
+        }
+        zoomedWithRightMouseButton.current = false;
+
         if ((onMoveEnd || onViewportChangeEnd) && viewChanged(prevTransform.current, event.transform)) {
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
@@ -232,19 +246,9 @@ const ZoomPane = ({
             panOnScroll ? 150 : 0
           );
         }
-
-        if (
-          panOnDrag === 'RightClick' &&
-          onPaneContextMenu &&
-          !hasMouseMoved.current &&
-          event.sourceEvent?.button === 2
-        ) {
-          onPaneContextMenu(event.sourceEvent);
-        }
-        hasMouseMoved.current = false;
       });
     }
-  }, [d3Zoom, onMoveEnd, panOnScroll, panOnDrag, onPaneContextMenu]);
+  }, [d3Zoom, panOnScroll, panOnDrag, onMoveEnd, onPaneContextMenu]);
 
   useEffect(() => {
     if (d3Zoom) {
@@ -299,17 +303,18 @@ const ZoomPane = ({
           return false;
         }
 
-        // if the pane is only movable using right clicks, prevent all other clicks
+        // if the pane is only movable using allowed clicks
         if (
-          panOnDrag === 'RightClick' &&
-          (event.type === 'mousedown' || event.type === 'touchstart') &&
-          event.button !== 2
+          Array.isArray(panOnDrag) &&
+          !panOnDrag.includes(event.button) &&
+          (event.type === 'mousedown' || event.type === 'touchstart')
         ) {
           return false;
         }
 
         // We only allow right clicks if pan on drag is set to right click
-        const buttonAllowed = panOnDrag === 'RightClick' ? 1 !== event.button : !event.button || event.button <= 1;
+        const buttonAllowed =
+          (Array.isArray(panOnDrag) && panOnDrag.includes(event.button)) || !event.button || event.button <= 1;
 
         // default filter for d3-zoom
         return (!event.ctrlKey || event.type === 'wheel') && buttonAllowed;
