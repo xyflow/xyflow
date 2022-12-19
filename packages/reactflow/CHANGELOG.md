@@ -1,5 +1,94 @@
 # reactflow
 
+## 11.4.0
+
+## 11.4.0
+
+## New Features 
+
+New props for the ReactFlow component to customize the controls of the viewport and the selection box better:
+
+1. `selectionOnDrag` prop: Selection box without extra button press (need to set `panOnDrag={false}` or `panOnDrag={[1, 2]}`)
+2. `panOnDrag={[0, 1, 2]}` option to configure specific mouse buttons for panning
+3. `panActivationKeyCode="Space"` key code for activating dragging (useful when using `selectionOnDrag`)
+4. `selectionMode={SelectionMode.Full}`: you can chose if the selection box needs to contain a node fully (`SelectionMode.Full`) or partially (`SelectionMode.Partial`) to select it
+5. `onSelectionStart` and `onSelectionEnd` events
+6. `elevateNodesOnSelect`: Defines if z-index should be increased when node is selected
+7. New store function `getNodes`. You can now do `store.getState().getNodes()` instead of `Array.from(store.getNodes().nodeInternals.values())`.
+
+Thanks to @jackfishwick who helped a lot with the new panning and selection options.
+
+### Minor Changes
+
+- [#2678](https://github.com/wbkd/react-flow/pull/2678) [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493)
+  - Add new props to configure viewport controls (`selectionOnDrag`, `panActivationKeyCode`, ..)
+- [#2661](https://github.com/wbkd/react-flow/pull/2661) [`7ef29108`](https://github.com/wbkd/react-flow/commit/7ef2910808aaaee029894363d52efc0c378a7654)
+  - panOnDrag: Use numbers for prop ([1,2] = drag via middle or right mouse button)
+  - selection: do not include hidden nodes
+  - minimap: fix onNodeClick for nodes outside the viewport
+  - keys: allow multi select when input is focused
+
+### Patch Changes
+
+- [#2695](https://github.com/wbkd/react-flow/pull/2695) [`ab2ff374`](https://github.com/wbkd/react-flow/commit/ab2ff3740618da48bd4350597e816c397f3d78ff) - Add elevateNodesOnSelect prop
+- [#2660](https://github.com/wbkd/react-flow/pull/2660) [`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0) - Add `getNodes` function to the store so that you don't need to do `Array.from(store.getState().nodeInternals.values())` anymore.
+- [#2659](https://github.com/wbkd/react-flow/pull/2659) [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9) - Use translateExtent correctly
+- [#2657](https://github.com/wbkd/react-flow/pull/2657) [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c) - Only trigger drag event when change happened
+
+- Updated dependencies [[`ab2ff374`](https://github.com/wbkd/react-flow/commit/ab2ff3740618da48bd4350597e816c397f3d78ff), [`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0), [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493), [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9), [`7ef29108`](https://github.com/wbkd/react-flow/commit/7ef2910808aaaee029894363d52efc0c378a7654), [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c)]:
+  - @reactflow/core@11.4.0
+  - @reactflow/minimap@11.3.0
+  - @reactflow/node-toolbar@1.1.0
+  - @reactflow/background@11.1.0
+  - @reactflow/controls@11.1.0
+
+## 11.4.0-next.1
+
+### Minor Changes
+
+- panOnDrag: Use numbers for prop ([1,2] = drag via middle or right mouse button)
+  selection: do not include hidden nodes
+  minimap: fix onNodeClick for nodes outside the viewport
+  keys: allow multi select when input is focused
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reactflow/background@11.1.0-next.1
+  - @reactflow/controls@11.1.0-next.1
+  - @reactflow/core@11.4.0-next.1
+  - @reactflow/minimap@11.3.0-next.1
+  - @reactflow/node-toolbar@1.1.0-next.1
+
+## 11.4.0-next.0
+
+### Minor Changes
+
+- [#2678](https://github.com/wbkd/react-flow/pull/2678) [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493) Thanks [@moklick](https://github.com/moklick)! - ## New Features
+
+  New props for the ReactFlow component to customize the controls of the viewport and the selection box better:
+
+  1. `selectionOnDrag` prop: Selection box without extra button press (need to set `panOnDrag={false} or `panOnDrag="RightClick"`)
+  2. `panOnDrag="RightClick"` option
+  3. `panActivationKeyCode="Space"` key code for activating dragging (useful when using `selectionOnDrag`)
+  4. `selectionMode={SelectionMode.Full}`: you can chose if the selection box needs to contain a node fully (`SelectionMode.Full`) or partially (`SelectionMode.Partial`) to select it
+  5. `onSelectionStart` and `onSelectionEnd` events
+
+### Patch Changes
+
+- [#2660](https://github.com/wbkd/react-flow/pull/2660) [`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0) Thanks [@moklick](https://github.com/moklick)! - Add `getNodes` function to the store so that you don't need to do `Array.from(store.getState().nodeInternals.values())` anymore.
+
+- [#2659](https://github.com/wbkd/react-flow/pull/2659) [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9) Thanks [@moklick](https://github.com/moklick)! - Use translateExtent correctly
+
+- [#2657](https://github.com/wbkd/react-flow/pull/2657) [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c) Thanks [@moklick](https://github.com/moklick)! - Only trigger drag event when change happened
+
+- Updated dependencies [[`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0), [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493), [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9), [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c)]:
+  - @reactflow/core@11.4.0-next.0
+  - @reactflow/minimap@11.3.0-next.0
+  - @reactflow/node-toolbar@1.1.0-next.0
+  - @reactflow/background@11.0.8-next.0
+  - @reactflow/controls@11.0.8-next.0
+
 ## 11.3.3
 
 In this update we did some changes so that we could implement the new [`<NodeResizer />`](https://reactflow.dev/docs/api/nodes/node-resizer/) component (not part of the `reactflow` package!) more smoothly.

@@ -1,14 +1,13 @@
 import { memo } from 'react';
-import type { ReactNode, WheelEvent, MouseEvent } from 'react';
+import type { ReactNode } from 'react';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useStore } from '../../hooks/useStore';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
-import UserSelection from '../../components/UserSelection';
+import Pane from '../Pane';
 import NodesSelection from '../../components/NodesSelection';
-import Pane from './Pane';
 import type { ReactFlowState } from '../../types';
 
 export type FlowRendererProps = Omit<
@@ -44,7 +43,12 @@ const FlowRenderer = ({
   onMoveStart,
   onMoveEnd,
   selectionKeyCode,
+  selectionOnDrag,
+  selectionMode,
+  onSelectionStart,
+  onSelectionEnd,
   multiSelectionKeyCode,
+  panActivationKeyCode,
   zoomActivationKeyCode,
   elementsSelectable,
   zoomOnScroll,
@@ -53,7 +57,7 @@ const FlowRenderer = ({
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
-  panOnDrag,
+  panOnDrag: _panOnDrag,
   defaultViewport,
   translateExtent,
   minZoom,
@@ -64,27 +68,21 @@ const FlowRenderer = ({
   noPanClassName,
   disableKeyboardA11y,
 }: FlowRendererProps) => {
-  const store = useStoreApi();
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
+  const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
+
+  const panOnDrag = panActivationKeyPressed || _panOnDrag;
+  const isSelecting = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
-
-  const onClick = (event: MouseEvent) => {
-    onPaneClick?.(event);
-    store.getState().resetSelectedElements();
-    store.setState({ nodesSelectionActive: false });
-  };
-
-  const onContextMenu = onPaneContextMenu ? (event: MouseEvent) => onPaneContextMenu(event) : undefined;
-  const onWheel = onPaneScroll ? (event: WheelEvent) => onPaneScroll(event) : undefined;
 
   return (
     <ZoomPane
       onMove={onMove}
       onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
-      selectionKeyPressed={selectionKeyPressed}
+      onPaneContextMenu={onPaneContextMenu}
       elementsSelectable={elementsSelectable}
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
@@ -92,7 +90,7 @@ const FlowRenderer = ({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
-      panOnDrag={panOnDrag}
+      panOnDrag={!selectionKeyPressed && panOnDrag}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
       minZoom={minZoom}
@@ -102,23 +100,28 @@ const FlowRenderer = ({
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
     >
-      {children}
-      <UserSelection selectionKeyPressed={selectionKeyPressed} />
-      {nodesSelectionActive && (
-        <NodesSelection
-          onSelectionContextMenu={onSelectionContextMenu}
-          noPanClassName={noPanClassName}
-          disableKeyboardA11y={disableKeyboardA11y}
-        />
-      )}
       <Pane
-        onClick={onClick}
-        onMouseEnter={onPaneMouseEnter}
-        onMouseMove={onPaneMouseMove}
-        onMouseLeave={onPaneMouseLeave}
-        onContextMenu={onContextMenu}
-        onWheel={onWheel}
-      />
+        onSelectionStart={onSelectionStart}
+        onSelectionEnd={onSelectionEnd}
+        onPaneClick={onPaneClick}
+        onPaneMouseEnter={onPaneMouseEnter}
+        onPaneMouseMove={onPaneMouseMove}
+        onPaneMouseLeave={onPaneMouseLeave}
+        onPaneContextMenu={onPaneContextMenu}
+        onPaneScroll={onPaneScroll}
+        panOnDrag={panOnDrag}
+        isSelecting={!!isSelecting}
+        selectionMode={selectionMode}
+      >
+        {children}
+        {nodesSelectionActive && (
+          <NodesSelection
+            onSelectionContextMenu={onSelectionContextMenu}
+            noPanClassName={noPanClassName}
+            disableKeyboardA11y={disableKeyboardA11y}
+          />
+        )}
+      </Pane>
     </ZoomPane>
   );
 };

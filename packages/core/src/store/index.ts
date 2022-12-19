@@ -24,8 +24,11 @@ const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({
     ...initialState,
     setNodes: (nodes: Node[]) => {
-      const { nodeInternals, nodeOrigin } = get();
-      set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin) });
+      const { nodeInternals, nodeOrigin, elevateNodesOnSelect } = get();
+      set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect) });
+    },
+    getNodes: () => {
+      return Array.from(get().nodeInternals.values());
     },
     setEdges: (edges: Edge[]) => {
       const { defaultEdgeOptions = {} } = get();
@@ -35,7 +38,9 @@ const createRFStore = () =>
       const hasDefaultNodes = typeof nodes !== 'undefined';
       const hasDefaultEdges = typeof edges !== 'undefined';
 
-      const nodeInternals = hasDefaultNodes ? createNodeInternals(nodes, new Map(), get().nodeOrigin) : new Map();
+      const nodeInternals = hasDefaultNodes
+        ? createNodeInternals(nodes, new Map(), get().nodeOrigin, get().elevateNodesOnSelect)
+        : new Map();
       const nextEdges = hasDefaultEdges ? edges : [];
 
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
@@ -125,12 +130,12 @@ const createRFStore = () =>
     },
 
     triggerNodeChanges: (changes: NodeChange[]) => {
-      const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin } = get();
+      const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin, getNodes, elevateNodesOnSelect } = get();
 
       if (changes?.length) {
         if (hasDefaultNodes) {
-          const nodes = applyNodeChanges(changes, Array.from(nodeInternals.values()));
-          const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin);
+          const nodes = applyNodeChanges(changes, getNodes());
+          const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect);
           set({ nodeInternals: nextNodeInternals });
         }
 
@@ -139,14 +144,14 @@ const createRFStore = () =>
     },
 
     addSelectedNodes: (selectedNodeIds: string[]) => {
-      const { multiSelectionActive, nodeInternals, edges } = get();
+      const { multiSelectionActive, edges, getNodes } = get();
       let changedNodes: NodeSelectionChange[];
       let changedEdges: EdgeSelectionChange[] | null = null;
 
       if (multiSelectionActive) {
         changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
       } else {
-        changedNodes = getSelectionChanges(Array.from(nodeInternals.values()), selectedNodeIds);
+        changedNodes = getSelectionChanges(getNodes(), selectedNodeIds);
         changedEdges = getSelectionChanges(edges, []);
       }
 
@@ -158,7 +163,7 @@ const createRFStore = () =>
       });
     },
     addSelectedEdges: (selectedEdgeIds: string[]) => {
-      const { multiSelectionActive, edges, nodeInternals } = get();
+      const { multiSelectionActive, edges, getNodes } = get();
       let changedEdges: EdgeSelectionChange[];
       let changedNodes: NodeSelectionChange[] | null = null;
 
@@ -166,7 +171,7 @@ const createRFStore = () =>
         changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
       } else {
         changedEdges = getSelectionChanges(edges, selectedEdgeIds);
-        changedNodes = getSelectionChanges(Array.from(nodeInternals.values()), []);
+        changedNodes = getSelectionChanges(getNodes(), []);
       }
 
       updateNodesAndEdgesSelections({
@@ -177,8 +182,8 @@ const createRFStore = () =>
       });
     },
     unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-      const { nodeInternals, edges: storeEdges } = get();
-      const nodesToUnselect = nodes ? nodes : Array.from(nodeInternals.values());
+      const { edges: storeEdges, getNodes } = get();
+      const nodesToUnselect = nodes ? nodes : getNodes();
       const edgesToUnselect = edges ? edges : storeEdges;
 
       const changedNodes = nodesToUnselect.map((n) => {
@@ -209,14 +214,13 @@ const createRFStore = () =>
       set({ maxZoom });
     },
     setTranslateExtent: (translateExtent: CoordinateExtent) => {
-      const { d3Zoom } = get();
-      d3Zoom?.translateExtent(translateExtent);
+      get().d3Zoom?.translateExtent(translateExtent);
 
       set({ translateExtent });
     },
     resetSelectedElements: () => {
-      const { nodeInternals, edges } = get();
-      const nodes = Array.from(nodeInternals.values());
+      const { edges, getNodes } = get();
+      const nodes = getNodes();
 
       const nodesToUnselect = nodes
         .filter((e) => e.selected)

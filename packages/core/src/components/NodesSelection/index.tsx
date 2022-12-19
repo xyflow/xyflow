@@ -27,7 +27,7 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const bboxSelector = (s: ReactFlowState) => {
-  const selectedNodes = Array.from(s.nodeInternals.values()).filter((n) => n.selected);
+  const selectedNodes = s.getNodes().filter((n) => n.selected);
   return getRectOfNodes(selectedNodes, s.nodeOrigin);
 };
 
@@ -41,7 +41,9 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
 
   useEffect(() => {
     if (!disableKeyboardA11y) {
-      nodeRef.current?.focus();
+      nodeRef.current?.focus({
+        preventScroll: true,
+      });
     }
   }, [disableKeyboardA11y]);
 
@@ -55,14 +57,21 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
 
   const onContextMenu = onSelectionContextMenu
     ? (event: MouseEvent) => {
-        const selectedNodes = Array.from(store.getState().nodeInternals.values()).filter((n) => n.selected);
+        const selectedNodes = store
+          .getState()
+          .getNodes()
+          .filter((n) => n.selected);
         onSelectionContextMenu(event, selectedNodes);
       }
     : undefined;
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
-      updatePositions(arrowKeyDiffs[event.key]);
+      updatePositions({
+        x: arrowKeyDiffs[event.key].x,
+        y: arrowKeyDiffs[event.key].y,
+        isShiftPressed: event.shiftKey,
+      });
     }
   };
 

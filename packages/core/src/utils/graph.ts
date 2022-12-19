@@ -218,9 +218,9 @@ export const getNodesInside = (
   const visibleNodes: Node[] = [];
 
   nodeInternals.forEach((node) => {
-    const { width, height, selectable = true } = node;
+    const { width, height, selectable = true, hidden = false } = node;
 
-    if (excludeNonSelectableNodes && !selectable) {
+    if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return false;
     }
 

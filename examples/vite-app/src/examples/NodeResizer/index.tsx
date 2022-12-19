@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import ReactFlow, { Controls, addEdge, Position, Connection, useNodesState, useEdgesState, Panel } from 'reactflow';
 
 import NodeResizerNode from './NodeResizerNode';

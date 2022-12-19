@@ -1,5 +1,6 @@
 import EdgeText from './EdgeText';
 import type { BaseEdgeProps } from '../../types';
+import { isNumeric } from '../../utils';
 
 const BaseEdge = ({
   path,
@@ -35,7 +36,7 @@ const BaseEdge = ({
           className="react-flow__edge-interaction"
         />
       )}
-      {label ? (
+      {label && isNumeric(labelX) && isNumeric(labelY) ? (
         <EdgeText
           x={labelX}
           y={labelY}

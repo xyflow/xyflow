@@ -17,7 +17,7 @@ import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
 import { infiniteExtent } from '../../store/initialState';
 import { useNodeOrEdgeTypes } from './utils';
-import { ConnectionLineType, ConnectionMode, PanOnScrollMode } from '../../types';
+import { ConnectionLineType, ConnectionMode, PanOnScrollMode, SelectionMode } from '../../types';
 import type {
   EdgeTypes,
   EdgeTypesWrapped,
@@ -92,6 +92,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onSelectionDrag,
       onSelectionDragStop,
       onSelectionContextMenu,
+      onSelectionStart,
+      onSelectionEnd,
       connectionMode = ConnectionMode.Strict,
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
@@ -99,6 +101,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       connectionLineContainerStyle,
       deleteKeyCode = 'Backspace',
       selectionKeyCode = 'Shift',
+      selectionOnDrag = false,
+      selectionMode = SelectionMode.Full,
+      panActivationKeyCode = 'Space',
       multiSelectionKeyCode = 'Meta',
       zoomActivationKeyCode = 'Meta',
       snapToGrid = false,
@@ -152,6 +157,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       attributionPosition,
       proOptions,
       defaultEdgeOptions,
+      elevateNodesOnSelect = true,
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
       style,
@@ -193,8 +199,11 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionLineComponent={connectionLineComponent}
             connectionLineContainerStyle={connectionLineContainerStyle}
             selectionKeyCode={selectionKeyCode}
+            selectionOnDrag={selectionOnDrag}
+            selectionMode={selectionMode}
             deleteKeyCode={deleteKeyCode}
             multiSelectionKeyCode={multiSelectionKeyCode}
+            panActivationKeyCode={panActivationKeyCode}
             zoomActivationKeyCode={zoomActivationKeyCode}
             onlyRenderVisibleElements={onlyRenderVisibleElements}
             selectNodesOnDrag={selectNodesOnDrag}
@@ -217,6 +226,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onPaneScroll={onPaneScroll}
             onPaneContextMenu={onPaneContextMenu}
             onSelectionContextMenu={onSelectionContextMenu}
+            onSelectionStart={onSelectionStart}
+            onSelectionEnd={onSelectionEnd}
             onEdgeUpdate={onEdgeUpdate}
             onEdgeContextMenu={onEdgeContextMenu}
             onEdgeDoubleClick={onEdgeDoubleClick}
@@ -251,6 +262,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             nodesFocusable={nodesFocusable}
             edgesFocusable={edgesFocusable}
             elementsSelectable={elementsSelectable}
+            elevateNodesOnSelect={elevateNodesOnSelect}
             minZoom={minZoom}
             maxZoom={maxZoom}
             nodeExtent={nodeExtent}

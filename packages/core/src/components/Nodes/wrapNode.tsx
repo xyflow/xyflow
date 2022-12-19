@@ -88,8 +88,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         return;
       }
 
-      const { snapGrid, snapToGrid } = store.getState();
-
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
         if (unselect) {
@@ -112,15 +110,10 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             .toLowerCase()}. New position, x: ${~~xPos}, y: ${~~yPos}`,
         });
 
-        // by default a node moves 5px on each key press, or 20px if shift is pressed
-        // if snap grid is enabled, we use that for the velocity.
-        const xVelo = snapToGrid ? snapGrid[0] : 5;
-        const yVelo = snapToGrid ? snapGrid[1] : 5;
-        const factor = event.shiftKey ? 4 : 1;
-
         updatePositions({
-          x: arrowKeyDiffs[event.key].x * xVelo * factor,
-          y: arrowKeyDiffs[event.key].y * yVelo * factor,
+          x: arrowKeyDiffs[event.key].x,
+          y: arrowKeyDiffs[event.key].y,
+          isShiftPressed: event.shiftKey,
         });
       }
     };

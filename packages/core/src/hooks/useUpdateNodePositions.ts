@@ -2,18 +2,25 @@ import { useCallback } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
 import { calcNextPosition } from './useDrag/utils';
-import type { XYPosition } from '../types';
 
 function useUpdateNodePositions() {
   const store = useStoreApi();
 
-  const updatePositions = useCallback((positionDiff: XYPosition) => {
-    const { nodeInternals, nodeExtent, updateNodePositions, snapToGrid, snapGrid } = store.getState();
-    const selectedNodes = Array.from(nodeInternals.values()).filter((n) => n.selected);
+  const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
+    const { nodeInternals, nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid } = store.getState();
+    const selectedNodes = getNodes().filter((n) => n.selected);
+    // by default a node moves 5px on each key press, or 20px if shift is pressed
+    // if snap grid is enabled, we use that for the velocity.
+    const xVelo = snapToGrid ? snapGrid[0] : 5;
+    const yVelo = snapToGrid ? snapGrid[1] : 5;
+    const factor = params.isShiftPressed ? 4 : 1;
+
+    const positionDiffX = params.x * xVelo * factor;
+    const positionDiffY = params.y * yVelo * factor;
 
     const nodeUpdates = selectedNodes.map((n) => {
       if (n.positionAbsolute) {
-        const nextPosition = { x: n.positionAbsolute.x + positionDiff.x, y: n.positionAbsolute.y + positionDiff.y };
+        const nextPosition = { x: n.positionAbsolute.x + positionDiffX, y: n.positionAbsolute.y + positionDiffY };
 
         if (snapToGrid) {
           nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
@@ -29,7 +36,7 @@ function useUpdateNodePositions() {
       return n;
     });
 
-    updateNodePositions(nodeUpdates, true, true);
+    updateNodePositions(nodeUpdates, true, false);
   }, []);
 
   return updatePositions;

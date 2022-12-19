@@ -46,13 +46,15 @@ function calculateXYZPosition(
 export function createNodeInternals(
   nodes: Node[],
   nodeInternals: NodeInternals,
-  nodeOrigin: NodeOrigin
+  nodeOrigin: NodeOrigin,
+  elevateNodesOnSelect: boolean
 ): NodeInternals {
   const nextNodeInternals = new Map<string, Node>();
   const parentNodes: ParentNodes = {};
+  const selectedNodeZ: number = elevateNodesOnSelect ? 1000 : 0;
 
   nodes.forEach((node) => {
-    const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? 1000 : 0);
+    const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
     const currInternals = nodeInternals.get(node.id);
 
     const internals: Node = {
@@ -120,7 +122,7 @@ type InternalFitViewOptions = {
 
 export function fitView(get: StoreApi<ReactFlowState>['getState'], options: InternalFitViewOptions = {}) {
   const {
-    nodeInternals,
+    getNodes,
     width,
     height,
     minZoom,
@@ -134,9 +136,7 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
 
   if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
     if (d3Zoom && d3Selection) {
-      const nodes = Array.from(nodeInternals.values()).filter((n) =>
-        options.includeHiddenNodes ? n.width && n.height : !n.hidden
-      );
+      const nodes = getNodes().filter((n) => (options.includeHiddenNodes ? n.width && n.height : !n.hidden));
 
       const nodesInitialized = nodes.every((n) => n.width && n.height);
 

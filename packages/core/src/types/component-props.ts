@@ -35,6 +35,7 @@ import type {
   NodeOrigin,
   EdgeMouseHandler,
   HandleType,
+  SelectionMode,
 } from '.';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
@@ -68,6 +69,8 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onSelectionDragStart?: SelectionDragHandler;
   onSelectionDrag?: SelectionDragHandler;
   onSelectionDragStop?: SelectionDragHandler;
+  onSelectionStart?: (event: ReactMouseEvent) => void;
+  onSelectionEnd?: (event: ReactMouseEvent) => void;
   onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
@@ -94,6 +97,9 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   connectionMode?: ConnectionMode;
   deleteKeyCode?: KeyCode | null;
   selectionKeyCode?: KeyCode | null;
+  selectionOnDrag?: boolean;
+  selectionMode?: SelectionMode;
+  panActivationKeyCode?: KeyCode | null;
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;
@@ -107,7 +113,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
-  panOnDrag?: boolean;
+  panOnDrag?: boolean | number[];
   minZoom?: number;
   maxZoom?: number;
   defaultViewport?: Viewport;
@@ -130,6 +136,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   connectOnClick?: boolean;
   attributionPosition?: PanelPosition;
   proOptions?: ProOptions;
+  elevateNodesOnSelect?: boolean;
   elevateEdgesOnSelect?: boolean;
   disableKeyboardA11y?: boolean;
 };
