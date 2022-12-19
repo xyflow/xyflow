@@ -50,7 +50,7 @@ const initialEdges: Edge[] = [
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-const defaultEdgeOptions = { zIndex: 0 };
+const defaultEdgeOptions = {};
 
 const BasicFlow = () => {
   const instance = useReactFlow();
@@ -94,6 +94,8 @@ const BasicFlow = () => {
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
+      elevateEdgesOnSelect
+      elevateNodesOnSelect={false}
       // nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />

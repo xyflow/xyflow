@@ -44,6 +44,7 @@ type StoreUpdaterProps = Pick<
   | 'onSelectionDragStop'
   | 'noPanClassName'
   | 'nodeOrigin'
+  | 'elevateNodesOnSelect'
 > & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({
@@ -92,6 +93,7 @@ const StoreUpdater = ({
   nodesConnectable,
   nodesFocusable,
   edgesFocusable,
+  elevateNodesOnSelect,
   minZoom,
   maxZoom,
   nodeExtent,
@@ -151,6 +153,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('nodesFocusable', nodesFocusable, store.setState);
   useDirectStoreUpdater('edgesFocusable', edgesFocusable, store.setState);
   useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);
+  useDirectStoreUpdater('elevateNodesOnSelect', elevateNodesOnSelect, store.setState);
   useDirectStoreUpdater('snapToGrid', snapToGrid, store.setState);
   useDirectStoreUpdater('snapGrid', snapGrid, store.setState);
   useDirectStoreUpdater('onNodesChange', onNodesChange, store.setState);

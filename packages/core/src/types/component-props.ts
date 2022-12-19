@@ -136,6 +136,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   connectOnClick?: boolean;
   attributionPosition?: PanelPosition;
   proOptions?: ProOptions;
+  elevateNodesOnSelect?: boolean;
   elevateEdgesOnSelect?: boolean;
   disableKeyboardA11y?: boolean;
 };

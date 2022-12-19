@@ -157,6 +157,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       attributionPosition,
       proOptions,
       defaultEdgeOptions,
+      elevateNodesOnSelect = true,
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
       style,
@@ -261,6 +262,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             nodesFocusable={nodesFocusable}
             edgesFocusable={edgesFocusable}
             elementsSelectable={elementsSelectable}
+            elevateNodesOnSelect={elevateNodesOnSelect}
             minZoom={minZoom}
             maxZoom={maxZoom}
             nodeExtent={nodeExtent}
