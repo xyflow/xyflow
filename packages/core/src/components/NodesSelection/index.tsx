@@ -41,7 +41,9 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
 
   useEffect(() => {
     if (!disableKeyboardA11y) {
-      nodeRef.current?.focus();
+      nodeRef.current?.focus({
+        preventScroll: true,
+      });
     }
   }, [disableKeyboardA11y]);
 
@@ -65,7 +67,11 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
-      updatePositions(arrowKeyDiffs[event.key]);
+      updatePositions({
+        x: arrowKeyDiffs[event.key].x,
+        y: arrowKeyDiffs[event.key].y,
+        isShiftPressed: event.shiftKey,
+      });
     }
   };
 

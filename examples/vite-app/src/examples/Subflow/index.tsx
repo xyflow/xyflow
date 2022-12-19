@@ -11,7 +11,7 @@ import ReactFlow, {
   Controls,
   MiniMap,
   Background,
-  NodeOrigin,
+  Panel,
 } from 'reactflow';
 
 import DebugNode from './DebugNode';
@@ -211,7 +211,7 @@ const Subflow = () => {
       <Controls />
       <Background />
 
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+      <Panel position="top-right">
         <button onClick={resetTransform} style={{ marginRight: 5 }}>
           reset transform
         </button>
@@ -225,7 +225,7 @@ const Subflow = () => {
           toggleChildNodes
         </button>
         <button onClick={logToObject}>toObject</button>
-      </div>
+      </Panel>
     </ReactFlow>
   );
 };

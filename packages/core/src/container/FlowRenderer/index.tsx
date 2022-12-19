@@ -6,7 +6,7 @@ import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
 import useKeyPress from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
-import UserSelection from '../../components/UserSelection';
+import Pane from '../Pane';
 import NodesSelection from '../../components/NodesSelection';
 import type { ReactFlowState } from '../../types';
 
@@ -100,7 +100,7 @@ const FlowRenderer = ({
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
     >
-      <UserSelection
+      <Pane
         onSelectionStart={onSelectionStart}
         onSelectionEnd={onSelectionEnd}
         onPaneClick={onPaneClick}
@@ -121,7 +121,7 @@ const FlowRenderer = ({
             disableKeyboardA11y={disableKeyboardA11y}
           />
         )}
-      </UserSelection>
+      </Pane>
     </ZoomPane>
   );
 };
