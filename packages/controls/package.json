@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/controls",
-  "version": "11.1.0-next.1",
+  "version": "11.1.0",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
     "react",
