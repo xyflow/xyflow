@@ -116,7 +116,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
               const targetNodeHandles =
                 connectionMode === ConnectionMode.Strict
                   ? targetHandleBounds!.target
-                  : targetHandleBounds!.target || targetHandleBounds!.source;
+                  : (targetHandleBounds!.target ?? []).concat(targetHandleBounds!.source ?? []);
               const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle || null);
               const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle || null);
               const sourcePosition = sourceHandle?.position || Position.Bottom;
