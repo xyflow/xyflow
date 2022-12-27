@@ -1,0 +1,72 @@
+/* this gets exported as style.css and can be used for the default theming */
+@import './init.css';
+
+.react-flow__edge {
+  &.updating {
+    .react-flow__edge-path {
+      stroke: #777;
+    }
+  }
+
+  &-text {
+    font-size: 10px;
+  }
+}
+
+.react-flow__node.selectable {
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.react-flow__node-default,
+.react-flow__node-input,
+.react-flow__node-output,
+.react-flow__node-group {
+  padding: 10px;
+  border-radius: 3px;
+  width: 150px;
+  font-size: 12px;
+  color: #222;
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #1a192b;
+  background-color: white;
+
+  &.selectable {
+    &:hover {
+      box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
+    }
+
+    &.selected,
+    &:focus,
+    &:focus-visible {
+      box-shadow: 0 0 0 0.5px #1a192b;
+    }
+  }
+}
+
+.react-flow__node-group {
+  background-color: rgba(240, 240, 240, 0.25);
+}
+
+.react-flow__nodesselection-rect,
+.react-flow__selection {
+  background: rgba(0, 89, 220, 0.08);
+  border: 1px dotted rgba(0, 89, 220, 0.8);
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.react-flow__handle {
+  width: 6px;
+  height: 6px;
+  background: #1a192b;
+  border: 1px solid white;
+  border-radius: 100%;
+}

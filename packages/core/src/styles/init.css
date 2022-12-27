@@ -1,0 +1,233 @@
+/* these are the necessary styles for React Flow, they get used by base.css and style.css */
+.react-flow__container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.react-flow__pane {
+  z-index: 1;
+  cursor: grab;
+
+  &.selection {
+    cursor: pointer;
+  }
+
+  &.dragging {
+    cursor: grabbing;
+  }
+}
+
+.react-flow__viewport {
+  transform-origin: 0 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.react-flow__renderer {
+  z-index: 4;
+}
+
+.react-flow__selection {
+  z-index: 6;
+}
+
+.react-flow__nodesselection-rect:focus,
+.react-flow__nodesselection-rect:focus-visible {
+  outline: none;
+}
+
+.react-flow .react-flow__edges {
+  pointer-events: none;
+  overflow: visible;
+}
+
+.react-flow__edge-path,
+.react-flow__connection-path {
+  stroke: #b1b1b7;
+  stroke-width: 1;
+  fill: none;
+}
+
+.react-flow__edge {
+  pointer-events: visibleStroke;
+  cursor: pointer;
+
+  &.animated path {
+    stroke-dasharray: 5;
+    animation: dashdraw 0.5s linear infinite;
+  }
+
+  &.animated path.react-flow__edge-interaction {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  &.inactive {
+    pointer-events: none;
+  }
+
+  &.selected,
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  &.selected .react-flow__edge-path,
+  &:focus .react-flow__edge-path,
+  &:focus-visible .react-flow__edge-path {
+    stroke: #555;
+  }
+
+  &-textwrapper {
+    pointer-events: all;
+  }
+
+  &-textbg {
+    fill: white;
+  }
+
+  .react-flow__edge-text {
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+.react-flow__connection {
+  pointer-events: none;
+
+  &.animated {
+    stroke-dasharray: 5;
+    animation: dashdraw 0.5s linear infinite;
+  }
+}
+
+.react-flow__connectionline {
+  z-index: 1001;
+}
+
+.react-flow__nodes {
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+
+.react-flow__node {
+  position: absolute;
+  user-select: none;
+  pointer-events: all;
+  transform-origin: 0 0;
+  box-sizing: border-box;
+  cursor: grab;
+
+  &.dragging {
+    cursor: grabbing;
+  }
+}
+
+.react-flow__nodesselection {
+  z-index: 3;
+  transform-origin: left top;
+  pointer-events: none;
+
+  &-rect {
+    position: absolute;
+    pointer-events: all;
+    cursor: grab;
+  }
+}
+
+.react-flow__handle {
+  position: absolute;
+  pointer-events: none;
+  min-width: 5px;
+  min-height: 5px;
+
+  &.connectable {
+    pointer-events: all;
+    cursor: crosshair;
+  }
+
+  &-bottom {
+    top: auto;
+    left: 50%;
+    bottom: -4px;
+    transform: translate(-50%, 0);
+  }
+
+  &-top {
+    left: 50%;
+    top: -4px;
+    transform: translate(-50%, 0);
+  }
+
+  &-left {
+    top: 50%;
+    left: -4px;
+    transform: translate(0, -50%);
+  }
+
+  &-right {
+    right: -4px;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+}
+
+.react-flow__edgeupdater {
+  cursor: move;
+  pointer-events: all;
+}
+
+.react-flow__panel {
+  position: absolute;
+  z-index: 5;
+  margin: 15px;
+
+  &.top {
+    top: 0;
+  }
+
+  &.bottom {
+    bottom: 0;
+  }
+
+  &.left {
+    left: 0;
+  }
+
+  &.right {
+    right: 0;
+  }
+
+  &.center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.react-flow__attribution {
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 2px 3px;
+  margin: 0;
+
+  a {
+    text-decoration: none;
+    color: #999;
+  }
+}
+
+@keyframes dashdraw {
+  from {
+    stroke-dashoffset: 10;
+  }
+}
+
+.react-flow__edgelabel-renderer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}

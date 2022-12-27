@@ -1,0 +1,63 @@
+{
+  "name": "@reactflow/controls",
+  "version": "11.1.0",
+  "description": "Component to control the viewport of a React Flow instance",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
+  "source": "src/index.tsx",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/controls"
+  },
+  "scripts": {
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "css": "postcss src/*.css --config ../../tooling/postcss-config/postcss.config.js --dir dist",
+    "css-watch": "pnpm css --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.18.9",
+    "@reactflow/core": "workspace:*",
+    "classcat": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "devDependencies": {
+    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/node": "^18.7.16",
+    "@types/react": "^18.0.19",
+    "typescript": "^4.8.3"
+  },
+  "rollup": {
+    "globals": {
+      "classcat": "cc"
+    },
+    "name": "ReactFlowControls"
+  }
+}

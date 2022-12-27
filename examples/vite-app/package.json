@@ -1,0 +1,36 @@
+{
+  "name": "@reactflow/examples",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000 --open",
+    "serve": "vite serve --port 3000",
+    "test:dev": "cypress open",
+    "test": "pnpm test-component && pnpm test-e2e",
+    "test-component": "cypress run --component",
+    "test-e2e-cypress": "cypress run --e2e --headless",
+    "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
+  },
+  "dependencies": {
+    "@reactflow/node-resizer": "workspace:*",
+    "classcat": "^5.0.3",
+    "dagre": "^0.8.5",
+    "localforage": "^1.10.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "reactflow": "workspace:*"
+  },
+  "devDependencies": {
+    "@cypress/skip-test": "^2.6.1",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.1.0",
+    "cypress": "^10.6.0",
+    "cypress-real-events": "^1.7.1",
+    "start-server-and-test": "^1.14.0",
+    "typescript": "^4.8.3",
+    "vite": "^3.1.0"
+  }
+}

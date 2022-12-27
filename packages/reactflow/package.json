@@ -1,0 +1,67 @@
+{
+  "name": "reactflow",
+  "version": "11.4.0",
+  "description": "A highly customizable React library for building node-based editors and interactive flow charts",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/reactflow"
+  },
+  "scripts": {
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "css": "postcss src/*.css --config ../../tooling/postcss-config/postcss.config.js --dir dist",
+    "css-watch": "pnpm css --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reactflow/background": "workspace:*",
+    "@reactflow/controls": "workspace:*",
+    "@reactflow/core": "workspace:*",
+    "@reactflow/minimap": "workspace:*",
+    "@reactflow/node-toolbar": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "devDependencies": {
+    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/node": "^18.7.16",
+    "@types/react": "^18.0.19",
+    "react": "^18.2.0",
+    "typescript": "^4.8.3"
+  },
+  "rollup": {
+    "globals": {
+      "@reactflow/background": "ReactFlowBackground",
+      "@reactflow/controls": "ReactFlowControls",
+      "@reactflow/core": "ReactFlowCore",
+      "@reactflow/minimap": "ReactFlowMinimap",
+      "@reactflow/node-toolbar": "ReactFlowNodeToolbar"
+    },
+    "name": "ReactFlow"
+  }
+}

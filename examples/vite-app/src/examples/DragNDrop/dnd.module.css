@@ -1,0 +1,37 @@
+.dndflow {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+}
+
+.aside {
+  border-right: 1px solid #eee;
+  padding: 15px 10px;
+  font-size: 12px;
+  background: #fcfcfc;
+}
+
+.aside > * {
+  margin-bottom: 10px;
+  cursor: grab;
+}
+
+.description {
+  margin-bottom: 10px;
+}
+
+.wrapper {
+  flex-grow: 1;
+  height: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .aside {
+    width: 20%;
+    max-width: 180px;
+  }
+
+  .dndflow {
+    flex-direction: row;
+  }
+}

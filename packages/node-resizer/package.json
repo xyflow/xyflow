@@ -1,0 +1,71 @@
+{
+  "name": "@reactflow/node-resizer",
+  "version": "1.2.0",
+  "description": "A helper component for resizing nodes.",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
+  "source": "src/index.tsx",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/node-resizer"
+  },
+  "scripts": {
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "css": "postcss src/*.css --config ../../tooling/postcss-config/postcss.config.js --dir dist",
+    "css-watch": "pnpm css --watch",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reactflow/core": "workspace:*",
+    "classcat": "^5.0.4",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "zustand": "^4.1.1"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "devDependencies": {
+    "@reactflow/eslint-config": "workspace:*",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/d3-drag": "^3.0.1",
+    "@types/d3-selection": "^3.0.3",
+    "@types/node": "^18.7.16",
+    "@types/react": "^18.0.19",
+    "@types/react-dom": "^18.0.6",
+    "react": "^18.2.0",
+    "typescript": "^4.8.3"
+  },
+  "rollup": {
+    "globals": {
+      "zustand": "Zustand",
+      "zustand/shallow": "zustandShallow",
+      "classcat": "cc"
+    },
+    "name": "ReactFlowNodeResizer"
+  }
+}
