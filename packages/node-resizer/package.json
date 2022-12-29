@@ -38,7 +38,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@reactflow/core": "workspace:*",
+    "@reactflow/core": "11.4.0",
     "classcat": "^5.0.4",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
@@ -49,9 +49,9 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
-    "@reactflow/eslint-config": "workspace:*",
-    "@reactflow/rollup-config": "workspace:*",
-    "@reactflow/tsconfig": "workspace:*",
+    "@reactflow/eslint-config": "^0.0.0",
+    "@reactflow/rollup-config": "0.0.0",
+    "@reactflow/tsconfig": "0.0.0",
     "@types/d3-drag": "^3.0.1",
     "@types/d3-selection": "^3.0.3",
     "@types/node": "^18.7.16",
