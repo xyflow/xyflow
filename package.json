@@ -38,7 +38,7 @@
     "react-dom": "^18.2.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.79.0",
-    "turbo": "^1.5.3",
+    "turbo": "^1.6.3",
     "typescript": "^4.8.3"
   }
 }
