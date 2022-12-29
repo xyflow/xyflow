@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../src/components/SelectionListener/index.tsx"],"names":[],"mappings":";AAIA,OAAO,KAAK,EAAkB,qBAAqB,EAAc,MAAM,aAAa,CAAC;AAErF,aAAK,sBAAsB,GAAG;IAC5B,iBAAiB,CAAC,EAAE,qBAAqB,CAAC;CAC3C,CAAC;AAqCF,iBAAS,OAAO,CAAC,EAAE,iBAAiB,EAAE,EAAE,sBAAsB,sBAQ7D;AAED,eAAe,OAAO,CAAC"}

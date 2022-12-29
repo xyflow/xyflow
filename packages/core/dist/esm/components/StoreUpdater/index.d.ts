@@ -1,0 +1,7 @@
+import type { ReactFlowProps } from '../../types';
+declare type StoreUpdaterProps = Pick<ReactFlowProps, 'nodes' | 'edges' | 'defaultNodes' | 'defaultEdges' | 'onConnect' | 'onConnectStart' | 'onConnectEnd' | 'onClickConnectStart' | 'onClickConnectEnd' | 'nodesDraggable' | 'nodesConnectable' | 'nodesFocusable' | 'edgesFocusable' | 'minZoom' | 'maxZoom' | 'nodeExtent' | 'onNodesChange' | 'onEdgesChange' | 'elementsSelectable' | 'connectionMode' | 'snapToGrid' | 'snapGrid' | 'translateExtent' | 'connectOnClick' | 'defaultEdgeOptions' | 'fitView' | 'fitViewOptions' | 'onNodesDelete' | 'onEdgesDelete' | 'onNodeDragStart' | 'onNodeDrag' | 'onNodeDragStop' | 'onSelectionDragStart' | 'onSelectionDrag' | 'onSelectionDragStop' | 'noPanClassName' | 'nodeOrigin' | 'elevateNodesOnSelect'> & {
+    rfId: string;
+};
+declare const StoreUpdater: ({ nodes, edges, defaultNodes, defaultEdges, onConnect, onConnectStart, onConnectEnd, onClickConnectStart, onClickConnectEnd, nodesDraggable, nodesConnectable, nodesFocusable, edgesFocusable, elevateNodesOnSelect, minZoom, maxZoom, nodeExtent, onNodesChange, onEdgesChange, elementsSelectable, connectionMode, snapGrid, snapToGrid, translateExtent, connectOnClick, defaultEdgeOptions, fitView, fitViewOptions, onNodesDelete, onEdgesDelete, onNodeDrag, onNodeDragStart, onNodeDragStop, onSelectionDrag, onSelectionDragStart, onSelectionDragStop, noPanClassName, nodeOrigin, rfId, }: StoreUpdaterProps) => null;
+export default StoreUpdater;
+//# sourceMappingURL=index.d.ts.map
