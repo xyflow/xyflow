@@ -172,6 +172,10 @@ export function handleMouseDown({
       doc
     );
 
+    if (!isValid) {
+      return;
+    }
+
     if (isValid) {
       onConnect?.(connection);
     }
@@ -182,6 +186,16 @@ export function handleMouseDown({
       onEdgeUpdateEnd(event);
     }
 
+    resetConnectionLine()
+  }
+
+  function onEscapePress (event: KeyboardEvent) {
+    if (event && event.key === 'Escape') {
+      resetConnectionLine()
+    }
+  }
+
+  function resetConnectionLine() {
     resetRecentHandle(recentHoveredHandle);
     setState({
       connectionNodeId: null,
@@ -191,8 +205,10 @@ export function handleMouseDown({
 
     doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
     doc.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
+    doc.removeEventListener('keydown', onEscapePress as EventListenerOrEventListenerObject);
   }
 
   doc.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
   doc.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
+  doc.addEventListener('keydown', onEscapePress as EventListenerOrEventListenerObject);
 }
