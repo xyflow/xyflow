@@ -204,6 +204,19 @@ function MiniMap({
           strokeWidth={maskStrokeWidth}
           pointerEvents="none"
         />
+        {/*Added a new rect to apply CSS on ViewBox*/}
+        <rect
+          x={viewBB.x}
+          y={viewBB.y}
+          width={viewBB.width}
+          height={viewBB.height}
+          stroke={'#7297DF'}
+          rx={15}
+          ry={15}
+          strokeWidth={20}
+          shapeRendering={shapeRendering}
+          fill={'transparent'}
+        />
       </svg>
     </Panel>
   );
