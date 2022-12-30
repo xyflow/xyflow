@@ -12,6 +12,7 @@ type Result = {
   isValid: boolean;
   connection: Connection;
   isHoveringHandle: boolean;
+  isControlElement?: boolean;
 };
 
 // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
@@ -27,13 +28,23 @@ export function checkElementBelowIsValid(
   const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
   const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
   const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
+  const reactFlowControls = doc.querySelectorAll('.react-flow__controls');
 
   const result: Result = {
     elementBelow,
     isValid: false,
     connection: { source: null, target: null, sourceHandle: null, targetHandle: null },
     isHoveringHandle: false,
+    isControlElement: false
   };
+
+  if (reactFlowControls && elementBelow) {
+    reactFlowControls?.forEach(rfControlElement => {
+      if (rfControlElement && rfControlElement.contains(elementBelow)) {
+        result.isControlElement = true;
+      }
+    });
+  }
 
   if (elementBelow && (elementBelowIsTarget || elementBelowIsSource)) {
     result.isHoveringHandle = true;
@@ -162,7 +173,7 @@ export function handleMouseDown({
   }
 
   function onMouseUp(event: MouseEvent) {
-    const { connection, isValid } = checkElementBelowIsValid(
+    const { connection, isValid, isControlElement } = checkElementBelowIsValid(
       event,
       connectionMode,
       isTarget,
@@ -171,6 +182,11 @@ export function handleMouseDown({
       isValidConnection,
       doc
     );
+
+    if (isControlElement) {
+      resetConnectionLine();
+      return;
+    }
 
     if (!isValid) {
       return;
