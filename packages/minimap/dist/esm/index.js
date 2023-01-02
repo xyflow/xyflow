@@ -116,7 +116,7 @@ function MiniMap({ style, className, nodeStrokeColor = 'transparent', nodeColor 
                     const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
                     return (jsx(MiniMapNode$1, { x: x, y: y, width: node.width, height: node.height, style: node.style, className: nodeClassNameFunc(node), color: nodeColorFunc(node), borderRadius: nodeBorderRadius, strokeColor: nodeStrokeColorFunc(node), strokeWidth: nodeStrokeWidth, shapeRendering: shapeRendering, onClick: onSvgNodeClick, id: node.id }, node.id));
                 }), jsx("path", { className: "react-flow__minimap-mask", d: `M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
-        M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`, fill: maskColor, fillRule: "evenodd", stroke: maskStrokeColor, strokeWidth: maskStrokeWidth, pointerEvents: "none" })] }) }));
+        M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`, fill: maskColor, fillRule: "evenodd", stroke: maskStrokeColor, strokeWidth: maskStrokeWidth, pointerEvents: "none" }), jsx("rect", { x: viewBB.x, y: viewBB.y, width: viewBB.width, height: viewBB.height, stroke: '#7297DF', rx: 15, ry: 15, strokeWidth: 20, shapeRendering: shapeRendering, fill: 'transparent' })] }) }));
 }
 MiniMap.displayName = 'MiniMap';
 var MiniMap$1 = memo(MiniMap);

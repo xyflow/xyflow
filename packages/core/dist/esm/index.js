@@ -505,12 +505,21 @@ function checkElementBelowIsValid(event, connectionMode, isTarget, nodeId, handl
     const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
     const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
     const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
+    const reactFlowControls = doc.querySelectorAll('.react-flow__controls');
     const result = {
         elementBelow,
         isValid: false,
         connection: { source: null, target: null, sourceHandle: null, targetHandle: null },
         isHoveringHandle: false,
+        isControlElement: false
     };
+    if (reactFlowControls && elementBelow) {
+        reactFlowControls?.forEach(rfControlElement => {
+            if (rfControlElement && rfControlElement.contains(elementBelow)) {
+                result.isControlElement = true;
+            }
+        });
+    }
     if (elementBelow && (elementBelowIsTarget || elementBelowIsSource)) {
         result.isHoveringHandle = true;
         const elementBelowNodeId = elementBelow.getAttribute('data-nodeid');
@@ -589,7 +598,14 @@ function handleMouseDown({ event, handleId, nodeId, onConnect, isTarget, getStat
         }
     }
     function onMouseUp(event) {
-        const { connection, isValid } = checkElementBelowIsValid(event, connectionMode, isTarget, nodeId, handleId, isValidConnection, doc);
+        const { connection, isValid, isControlElement } = checkElementBelowIsValid(event, connectionMode, isTarget, nodeId, handleId, isValidConnection, doc);
+        if (isControlElement) {
+            resetConnectionLine();
+            return;
+        }
+        if (!isValid) {
+            return;
+        }
         if (isValid) {
             onConnect?.(connection);
         }
@@ -597,6 +613,14 @@ function handleMouseDown({ event, handleId, nodeId, onConnect, isTarget, getStat
         if (elementEdgeUpdaterType && onEdgeUpdateEnd) {
             onEdgeUpdateEnd(event);
         }
+        resetConnectionLine();
+    }
+    function onEscapePress(event) {
+        if (event && event.key === 'Escape') {
+            resetConnectionLine();
+        }
+    }
+    function resetConnectionLine() {
         resetRecentHandle(recentHoveredHandle);
         setState({
             connectionNodeId: null,
@@ -605,9 +629,11 @@ function handleMouseDown({ event, handleId, nodeId, onConnect, isTarget, getStat
         });
         doc.removeEventListener('mousemove', onMouseMove);
         doc.removeEventListener('mouseup', onMouseUp);
+        doc.removeEventListener('keydown', onEscapePress);
     }
     doc.addEventListener('mousemove', onMouseMove);
     doc.addEventListener('mouseup', onMouseUp);
+    doc.addEventListener('keydown', onEscapePress);
 }
 
 const isEdge = (element) => 'id' in element && 'source' in element && 'target' in element;
