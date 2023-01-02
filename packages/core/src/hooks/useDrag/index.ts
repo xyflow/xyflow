@@ -48,6 +48,7 @@ function useDrag({
       if (disabled) {
         selection.on('.drag', null);
       } else {
+        let isMoved = false
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
             const {
@@ -88,6 +89,7 @@ function useDrag({
             }
           })
           .on('drag', (event: UseDragEvent) => {
+            isMoved = true
             const {
               updateNodePositions,
               nodeInternals,
@@ -154,7 +156,8 @@ function useDrag({
             setDragging(false);
             if (dragItems.current) {
               const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();
-              const onStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
+
+              const onStop = (nodeId && isMoved) ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
 
               updateNodePositions(dragItems.current, false, false);
 
