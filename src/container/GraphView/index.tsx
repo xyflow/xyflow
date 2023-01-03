@@ -149,6 +149,8 @@ const GraphView = ({
           elevateEdgesOnSelect={!!elevateEdgesOnSelect}
           rfId={id}
         />
+        <div className="react-flow__edgelabel-renderer" />
+
         <NodeRenderer
           nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}
