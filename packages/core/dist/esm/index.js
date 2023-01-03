@@ -569,16 +569,18 @@ function handleMouseDown({ event, handleId, nodeId, onConnect, isTarget, getStat
     const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementBelowIsTarget ? 'target' : 'source';
     const containerBounds = reactFlowNode.getBoundingClientRect();
     let recentHoveredHandle;
-    setState({
-        connectionPosition: {
-            x: event.clientX - containerBounds.left,
-            y: event.clientY - containerBounds.top,
-        },
-        connectionNodeId: nodeId,
-        connectionHandleId: handleId,
-        connectionHandleType: handleType,
-    });
-    onConnectStart?.(event, { nodeId, handleId, handleType });
+    if (elementBelowIsSource) {
+        setState({
+            connectionPosition: {
+                x: event.clientX - containerBounds.left,
+                y: event.clientY - containerBounds.top,
+            },
+            connectionNodeId: nodeId,
+            connectionHandleId: handleId,
+            connectionHandleType: handleType,
+        });
+        onConnectStart?.(event, { nodeId, handleId, handleType });
+    }
     function onMouseMove(event) {
         setState({
             connectionPosition: {

@@ -130,17 +130,19 @@ export function handleMouseDown({
   const containerBounds = reactFlowNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
 
-  setState({
-    connectionPosition: {
-      x: event.clientX - containerBounds.left,
-      y: event.clientY - containerBounds.top,
-    },
-    connectionNodeId: nodeId,
-    connectionHandleId: handleId,
-    connectionHandleType: handleType,
-  });
+  if (elementBelowIsSource) {
+    setState({
+      connectionPosition: {
+        x: event.clientX - containerBounds.left,
+        y: event.clientY - containerBounds.top,
+      },
+      connectionNodeId: nodeId,
+      connectionHandleId: handleId,
+      connectionHandleType: handleType,
+    });
 
-  onConnectStart?.(event, { nodeId, handleId, handleType });
+    onConnectStart?.(event, { nodeId, handleId, handleType });
+  }
 
   function onMouseMove(event: MouseEvent) {
     setState({
