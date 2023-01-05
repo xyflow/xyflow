@@ -851,6 +851,8 @@ const Handle = forwardRef(({ type = 'source', position = Position.Top, isValidCo
         onConnect?.(edgeParams);
     };
     const onMouseDownHandler = (event) => {
+        // eslint-disable-next-line no-debugger
+        debugger;
         if (event.button === 0) {
             handleMouseDown({
                 event,
@@ -866,6 +868,8 @@ const Handle = forwardRef(({ type = 'source', position = Position.Top, isValidCo
         onMouseDown?.(event);
     };
     const onClick = (event) => {
+        // eslint-disable-next-line no-debugger
+        debugger;
         const { onClickConnectStart, onClickConnectEnd, connectionMode } = store.getState();
         if (!connectionStartHandle) {
             onClickConnectStart?.(event, { nodeId, handleId, handleType: type });

@@ -63,6 +63,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     };
 
     const onMouseDownHandler = (event: ReactMouseEvent<HTMLDivElement>) => {
+        // eslint-disable-next-line no-debugger
+        debugger;
       if (event.button === 0) {
         handleMouseDown({
           event,
@@ -79,6 +81,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     };
 
     const onClick = (event: ReactMouseEvent) => {
+        // eslint-disable-next-line no-debugger
+        debugger;
       const { onClickConnectStart, onClickConnectEnd, connectionMode } = store.getState();
       if (!connectionStartHandle) {
         onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
