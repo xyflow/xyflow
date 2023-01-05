@@ -58,6 +58,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       }
 
       onConnectAction?.(edgeParams);
+      console.log('onConnectExtended: ', edgeParams);
       onConnect?.(edgeParams);
     };
 

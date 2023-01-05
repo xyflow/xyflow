@@ -195,6 +195,7 @@ export function handleMouseDown({
     }
 
     if (isValid) {
+      console.log('onMouseUp: ', connection)
       onConnect?.(connection);
     }
 

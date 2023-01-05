@@ -609,6 +609,7 @@ function handleMouseDown({ event, handleId, nodeId, onConnect, isTarget, getStat
             return;
         }
         if (isValid) {
+            console.log('onMouseUp: ', connection);
             onConnect?.(connection);
         }
         getState().onConnectEnd?.(event);
@@ -846,6 +847,7 @@ const Handle = forwardRef(({ type = 'source', position = Position.Top, isValidCo
             store.setState({ edges: addEdge(edgeParams, edges) });
         }
         onConnectAction?.(edgeParams);
+        console.log('onConnectExtended: ', edgeParams);
         onConnect?.(edgeParams);
     };
     const onMouseDownHandler = (event) => {
