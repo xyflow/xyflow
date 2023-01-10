@@ -20,7 +20,6 @@ type ParentNodes = Record<string, boolean>;
 function calculateXYZPosition(
   node: Node,
   nodeInternals: NodeInternals,
-  parentNodes: ParentNodes,
   result: XYZPosition,
   nodeOrigin: NodeOrigin
 ): XYZPosition {
@@ -33,7 +32,6 @@ function calculateXYZPosition(
   return calculateXYZPosition(
     parentNode,
     nodeInternals,
-    parentNodes,
     {
       x: (result.x ?? 0) + parentNodePosition.x,
       y: (result.y ?? 0) + parentNodePosition.y,
@@ -41,6 +39,41 @@ function calculateXYZPosition(
     },
     nodeOrigin
   );
+}
+
+export function updateAbsoluteNodePositions(
+  nodeInternals: NodeInternals,
+  nodeOrigin: NodeOrigin,
+  parentNodes?: ParentNodes
+) {
+  nodeInternals.forEach((node) => {
+    if (node.parentNode && !nodeInternals.has(node.parentNode)) {
+      throw new Error(`Parent node ${node.parentNode} not found`);
+    }
+
+    if (node.parentNode || parentNodes?.[node.id]) {
+      const { x, y, z } = calculateXYZPosition(
+        node,
+        nodeInternals,
+        {
+          ...node.position,
+          z: node[internalsSymbol]?.z ?? 0,
+        },
+        nodeOrigin
+      );
+
+      node.positionAbsolute = {
+        x,
+        y,
+      };
+
+      node[internalsSymbol]!.z = z;
+
+      if (parentNodes?.[node.id]) {
+        node[internalsSymbol]!.isParent = true;
+      }
+    }
+  });
 }
 
 export function createNodeInternals(
@@ -83,35 +116,7 @@ export function createNodeInternals(
     nextNodeInternals.set(node.id, internals);
   });
 
-  nextNodeInternals.forEach((node) => {
-    if (node.parentNode && !nextNodeInternals.has(node.parentNode)) {
-      throw new Error(`Parent node ${node.parentNode} not found`);
-    }
-
-    if (node.parentNode || parentNodes[node.id]) {
-      const { x, y, z } = calculateXYZPosition(
-        node,
-        nextNodeInternals,
-        parentNodes,
-        {
-          ...node.position,
-          z: node[internalsSymbol]?.z ?? 0,
-        },
-        nodeOrigin
-      );
-
-      node.positionAbsolute = {
-        x,
-        y,
-      };
-
-      node[internalsSymbol]!.z = z;
-
-      if (parentNodes[node.id]) {
-        node[internalsSymbol]!.isParent = true;
-      }
-    }
-  });
+  updateAbsoluteNodePositions(nextNodeInternals, nodeOrigin, parentNodes);
 
   return nextNodeInternals;
 }
@@ -142,6 +147,7 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
 
       if (nodes.length > 0 && nodesInitialized) {
         const bounds = getRectOfNodes(nodes, nodeOrigin);
+
         const [x, y, zoom] = getTransformForBounds(
           bounds,
           width,
