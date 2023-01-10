@@ -1,8 +1,15 @@
 # @reactflow/core
 
+## 11.4.1
+
+### Patch Changes
+
+- [#2738](https://github.com/wbkd/react-flow/pull/2738) [`82988485`](https://github.com/wbkd/react-flow/commit/82988485b730a9e32acbdae1ddcc81b33ddccaba) - fix: fitView for subflows, context menu on right mouse pan
+- [#2740](https://github.com/wbkd/react-flow/pull/2740) [`d91e619a`](https://github.com/wbkd/react-flow/commit/d91e619a70a95db99a621ede59bc05b5a7766086) Thanks [@michaelspiss](https://github.com/michaelspiss)! - EdgeRenderer: check all handles for connection mode loose
+
 ## 11.4.0
 
-## New Features 
+## New Features
 
 New props for the ReactFlow component to customize the controls of the viewport and the selection box better:
 

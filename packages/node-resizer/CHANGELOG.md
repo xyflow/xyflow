@@ -1,5 +1,12 @@
 # @reactflow/node-resizer
 
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`82988485`](https://github.com/wbkd/react-flow/commit/82988485b730a9e32acbdae1ddcc81b33ddccaba), [`d91e619a`](https://github.com/wbkd/react-flow/commit/d91e619a70a95db99a621ede59bc05b5a7766086)]:
+  - @reactflow/core@11.4.1
+
 ## 1.2.0
 
 ### Patch Changes
