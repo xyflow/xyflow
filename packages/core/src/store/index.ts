@@ -3,7 +3,7 @@ import { createStore } from 'zustand';
 import { clampPosition, getDimensions, internalsSymbol } from '../utils';
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { getHandleBounds } from '../components/Nodes/utils';
-import { createNodeInternals, fitView, updateNodesAndEdgesSelections } from './utils';
+import { createNodeInternals, fitView, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 import type {
   ReactFlowState,
@@ -98,6 +98,8 @@ const createRFStore = () =>
 
         return res;
       }, []);
+
+      updateAbsoluteNodePositions(nodeInternals, nodeOrigin);
 
       const nextFitViewOnInitDone =
         fitViewOnInitDone ||
