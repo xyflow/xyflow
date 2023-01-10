@@ -76,6 +76,7 @@ const ZoomPane = ({
   const prevTransform = useRef<Viewport>({ x: 0, y: 0, zoom: 0 });
   const { d3Zoom, d3Selection, d3ZoomHandler, userSelectionActive } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
+  const mouseButton = useRef<number>(0);
 
   useResizeHandler(zoomPane);
 
@@ -166,34 +167,13 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Zoom) {
-      if (userSelectionActive && !isZoomingOrPanning.current) {
-        d3Zoom.on('zoom', null);
-      } else if (!userSelectionActive) {
-        d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-          const { onViewportChange } = store.getState();
-          store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
-
-          zoomedWithRightMouseButton.current = !!(
-            onPaneContextMenu && isRightClickPan(panOnDrag, event.sourceEvent?.button)
-          );
-
-          if (onMove || onViewportChange) {
-            const flowTransform = eventToFlowTransform(event.transform);
-
-            onViewportChange?.(flowTransform);
-            onMove?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
-          }
-        });
-      }
-    }
-  }, [userSelectionActive, d3Zoom, onMove, panOnDrag, onPaneContextMenu]);
-
-  useEffect(() => {
-    if (d3Zoom) {
       d3Zoom.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
         if (!event.sourceEvent) {
           return null;
         }
+
+        // we need to remember it here, because it's always 0 in the "zoom" event
+        mouseButton.current = event.sourceEvent.button;
 
         const { onViewportChangeStart } = store.getState();
         isZoomingOrPanning.current = true;
@@ -215,6 +195,30 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (d3Zoom) {
+      if (userSelectionActive && !isZoomingOrPanning.current) {
+        d3Zoom.on('zoom', null);
+      } else if (!userSelectionActive) {
+        d3Zoom.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+          const { onViewportChange } = store.getState();
+          store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
+
+          zoomedWithRightMouseButton.current = !!(
+            onPaneContextMenu && isRightClickPan(panOnDrag, mouseButton.current ?? 0)
+          );
+
+          if (onMove || onViewportChange) {
+            const flowTransform = eventToFlowTransform(event.transform);
+
+            onViewportChange?.(flowTransform);
+            onMove?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          }
+        });
+      }
+    }
+  }, [userSelectionActive, d3Zoom, onMove, panOnDrag, onPaneContextMenu]);
+
+  useEffect(() => {
+    if (d3Zoom) {
       d3Zoom.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
         if (!event.sourceEvent) {
           return null;
@@ -226,7 +230,7 @@ const ZoomPane = ({
 
         if (
           onPaneContextMenu &&
-          isRightClickPan(panOnDrag, event.sourceEvent?.button) &&
+          isRightClickPan(panOnDrag, mouseButton.current ?? 0) &&
           !zoomedWithRightMouseButton.current
         ) {
           onPaneContextMenu(event.sourceEvent);
