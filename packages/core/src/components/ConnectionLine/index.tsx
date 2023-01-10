@@ -1,5 +1,5 @@
 import { CSSProperties, useCallback } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
 import { getBezierPath } from '../Edges/BezierEdge';

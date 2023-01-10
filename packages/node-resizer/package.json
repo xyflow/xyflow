@@ -42,7 +42,7 @@
     "classcat": "^5.0.4",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
-    "zustand": "^4.1.1"
+    "zustand": "^4.3.1"
   },
   "peerDependencies": {
     "react": ">=17",

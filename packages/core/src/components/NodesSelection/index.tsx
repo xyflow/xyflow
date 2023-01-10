@@ -6,7 +6,7 @@
 import { memo, useRef, useEffect } from 'react';
 import type { MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getRectOfNodes } from '../../utils/graph';

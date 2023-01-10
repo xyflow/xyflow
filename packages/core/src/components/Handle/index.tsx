@@ -1,6 +1,6 @@
 import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent } from 'react';
 import cc from 'classcat';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';

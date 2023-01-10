@@ -3,7 +3,7 @@
  */
 
 import { memo, useRef, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 
 import UserSelection from '../../components/UserSelection';

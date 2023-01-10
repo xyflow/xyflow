@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { devWarn } from '../../utils';
 import { CreateEdgeTypes } from '../EdgeRenderer/utils';

@@ -40,10 +40,10 @@
     "@babel/runtime": "^7.18.9",
     "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3",
-    "zustand": "^4.1.1"
+    "zustand": "^4.3.1"
   },
   "devDependencies": {
-    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/eslint-config": "workspace:*",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",

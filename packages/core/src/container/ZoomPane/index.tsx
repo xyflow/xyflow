@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import type { D3ZoomEvent } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
