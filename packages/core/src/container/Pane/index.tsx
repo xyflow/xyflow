@@ -191,6 +191,9 @@ const Pane = memo(
     };
 
     const onMouseUp = (event: ReactMouseEvent) => {
+      if (event.button !== 0) {
+        return;
+      }
       const { userSelectionRect } = store.getState();
       // We only want to trigger click functions when in selection mode if
       // the user did not move the mouse.
