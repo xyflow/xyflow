@@ -1,5 +1,18 @@
 # reactflow
 
+## 11.4.2
+
+### Patch Changes
+
+- [#2741](https://github.com/wbkd/react-flow/pull/2741) [`e2aff6c1`](https://github.com/wbkd/react-flow/commit/e2aff6c1e4ce54b57b724b2624367ee5fefd1c39) - chore(dependencies): update and cleanup
+
+- Updated dependencies [[`e34a3072`](https://github.com/wbkd/react-flow/commit/e34a30726dc55184f59adc4f16ca5215a7c42805), [`e2aff6c1`](https://github.com/wbkd/react-flow/commit/e2aff6c1e4ce54b57b724b2624367ee5fefd1c39)]:
+  - @reactflow/background@11.1.2
+  - @reactflow/core@11.4.2
+  - @reactflow/minimap@11.3.2
+  - @reactflow/node-toolbar@1.1.2
+  - @reactflow/controls@11.1.2
+
 ## 11.4.1
 
 ### Patch Changes
