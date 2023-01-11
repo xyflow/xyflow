@@ -30,8 +30,7 @@
     "directory": "packages/core"
   },
   "scripts": {
-    "devx": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
-    "dev": "rollup --config node:@reactflow/rollup-config --watch",
+    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
     "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/postcss.config.js --dir dist",
     "css-watch": "pnpm css --watch",
