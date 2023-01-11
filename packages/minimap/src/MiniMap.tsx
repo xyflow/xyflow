@@ -3,7 +3,7 @@
 import { memo, useEffect, useRef } from 'react';
 import type { MouseEvent } from 'react';
 import cc from 'classcat';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import type { D3ZoomEvent } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';

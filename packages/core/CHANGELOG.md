@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.4.2
+
+### Patch Changes
+
+- [#2741](https://github.com/wbkd/react-flow/pull/2741) [`e2aff6c1`](https://github.com/wbkd/react-flow/commit/e2aff6c1e4ce54b57b724b2624367ee5fefd1c39) - chore(dependencies): update and cleanup
+
 ## 11.4.1
 
 ### Patch Changes

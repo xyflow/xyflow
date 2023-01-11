@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/controls",
-  "version": "11.1.1",
+  "version": "11.1.2",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
     "react",
@@ -38,7 +38,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@babel/runtime": "^7.18.9",
     "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3"
   },
@@ -47,12 +46,12 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
-    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/eslint-config": "workspace:*",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.19",
-    "typescript": "^4.8.3"
+    "typescript": "^4.9.4"
   },
   "rollup": {
     "globals": {

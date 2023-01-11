@@ -35,6 +35,7 @@ const BasicFlow = () => {
       onPaneContextMenu={onPaneContextMenu}
       fitView
       selectNodesOnDrag={false}
+      onSelectionContextMenu={onPaneContextMenu}
     >
       <Background variant={BackgroundVariant.Cross} />
     </ReactFlow>

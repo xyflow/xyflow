@@ -1,7 +1,7 @@
 import { memo, useRef } from 'react';
 import cc from 'classcat';
 import { useStore, ReactFlowState } from '@reactflow/core';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './Patterns';

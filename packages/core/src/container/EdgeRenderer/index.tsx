@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 
 import { useStore } from '../../hooks/useStore';

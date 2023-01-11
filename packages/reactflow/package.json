@@ -1,6 +1,6 @@
 {
   "name": "reactflow",
-  "version": "11.4.1",
+  "version": "11.4.2",
   "description": "A highly customizable React library for building node-based editors and interactive flow charts",
   "keywords": [
     "react",
@@ -46,13 +46,13 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
-    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/eslint-config": "workspace:*",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.19",
     "react": "^18.2.0",
-    "typescript": "^4.8.3"
+    "typescript": "^4.9.4"
   },
   "rollup": {
     "globals": {

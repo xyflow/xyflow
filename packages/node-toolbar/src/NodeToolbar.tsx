@@ -11,7 +11,7 @@ import {
   useNodeId,
 } from '@reactflow/core';
 import cc from 'classcat';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import NodeToolbarPortal from './NodeToolbarPortal';
 import { NodeToolbarProps } from './types';

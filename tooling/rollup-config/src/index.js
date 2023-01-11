@@ -5,9 +5,9 @@ import { defineConfig } from 'rollup';
 import resolvePlugin from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 
 const pkg = JSON.parse(readFileSync(resolve(cwd(), './package.json')));
 const isProd = process.env.NODE_ENV === 'production';
@@ -37,9 +37,7 @@ export const esmConfig = defineConfig({
       includeDependencies: true,
     }),
     ...defaultPlugins,
-    typescript({
-      clean: true,
-    }),
+    typescript(),
   ],
 });
 
@@ -63,9 +61,7 @@ export const umdConfig = defineConfig({
   plugins: [
     peerDepsExternal(),
     ...defaultPlugins,
-    typescript({
-      clean: true,
-    }),
+    typescript(),
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

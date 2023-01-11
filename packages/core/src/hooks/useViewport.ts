@@ -1,4 +1,4 @@
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../hooks/useStore';
 import type { Viewport, ReactFlowState } from '../types';

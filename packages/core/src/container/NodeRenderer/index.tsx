@@ -1,6 +1,6 @@
 import { memo, useMemo, useEffect, useRef } from 'react';
 import type { ComponentType } from 'react';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';

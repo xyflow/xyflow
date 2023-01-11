@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { StoreApi } from 'zustand';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '../../types';
