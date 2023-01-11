@@ -30,7 +30,8 @@
     "directory": "packages/core"
   },
   "scripts": {
-    "dev": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "devx": "concurrently \"rollup --config node:@reactflow/rollup-config --watch\" pnpm:css-watch",
+    "dev": "rollup --config node:@reactflow/rollup-config --watch",
     "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production && npm run css",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/postcss.config.js --dir dist",
     "css-watch": "pnpm css --watch",
@@ -53,14 +54,14 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
-    "@reactflow/eslint-config": "workspace:^0.0.0",
+    "@reactflow/eslint-config": "workspace:*",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "react": "^18.2.0",
-    "typescript": "^4.8.3"
+    "typescript": "^4.9.4"
   },
   "rollup": {
     "globals": {
