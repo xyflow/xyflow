@@ -4,11 +4,13 @@ import ReactFlow, { Controls, addEdge, Position, Connection, useNodesState, useE
 import NodeResizerNode from './NodeResizerNode';
 import CustomResizer from './CustomResizer';
 import CustomResizer2 from './CustomResizer2';
+import CustomResizer3 from './CustomResizer3';
 
 const nodeTypes = {
   resizer: NodeResizerNode,
   customResizer: CustomResizer,
   customResizer2: CustomResizer2,
+  customResizer3: CustomResizer3,
 };
 
 const initialEdges = [
@@ -60,6 +62,13 @@ const initialNodes = [
     position: { x: 250, y: 250 },
     style: { border: '1px solid #222', fontSize: 10 },
   },
+  {
+    id: '6',
+    type: 'customResizer3',
+    data: { label: 'resize controls' },
+    position: { x: 400, y: 200 },
+    style: { border: '1px solid #222', fontSize: 10 },
+  },
 ];
 
 const CustomNodeFlow = () => {
@@ -87,7 +96,7 @@ const CustomNodeFlow = () => {
     >
       <Controls />
       <Panel position="bottom-right">
-        <button onClick={() => setSnapToGrid(!snapToGrid)}>snapToGrid: {snapToGrid ? 'on' : 'off'}</button>
+        <button onClick={() => setSnapToGrid((s) => !s)}>snapToGrid: {snapToGrid ? 'on' : 'off'}</button>
       </Panel>
     </ReactFlow>
   );

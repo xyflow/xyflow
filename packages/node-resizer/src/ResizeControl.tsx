@@ -32,6 +32,7 @@ function ResizeControl({
   minWidth = 10,
   minHeight = 10,
   onResizeStart,
+  onBeforeResize,
   onResize,
   onResizeEnd,
 }: ResizeControlProps) {
@@ -98,6 +99,7 @@ function ResizeControl({
           const height = Math.max(startHeight + (invertY ? -distY : distY), minHeight);
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
+          const onBeforeResizeResult = onBeforeResize?.(event, { ...prevValues.current });
 
           if (invertX || invertY) {
             const x = invertX ? startNodeX - (width - startWidth) : startNodeX;
@@ -138,6 +140,9 @@ function ResizeControl({
             changes.push(dimensionChange);
             prevValues.current.width = width;
             prevValues.current.height = height;
+          }
+          if (onBeforeResizeResult === false) {
+            return;
           }
 
           onResize?.(event, { ...prevValues.current });

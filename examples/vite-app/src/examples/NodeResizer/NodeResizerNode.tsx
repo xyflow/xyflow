@@ -8,6 +8,10 @@ const onResizeStart = (_: ResizeDragEvent, params: ResizeEventParams) => {
   console.log('resize start', params);
 };
 
+const onBeforeResize = (_: ResizeDragEvent, params: ResizeEventParams) => {
+  console.log('before resize', params);
+};
+
 const onResize = (_: ResizeDragEvent, params: ResizeEventParams) => {
   console.log('resize', params);
 };
@@ -24,6 +28,7 @@ const CustomNode: FC<NodeProps> = ({ data, selected }) => {
         minHeight={100}
         isVisible={selected}
         onResizeStart={onResizeStart}
+        onBeforeResize={onBeforeResize}
         onResize={onResize}
         onResizeEnd={onResizeEnd}
       />

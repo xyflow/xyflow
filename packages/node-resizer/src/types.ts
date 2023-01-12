@@ -19,6 +19,7 @@ export type NodeResizerProps = {
   minWidth?: number;
   minHeight?: number;
   onResizeStart?: (event: ResizeDragEvent, params: ResizeEventParams) => void;
+  onBeforeResize?: (event: ResizeDragEvent, params: ResizeEventParams) => unknown;
   onResize?: (event: ResizeDragEvent, params: ResizeEventParams) => void;
   onResizeEnd?: (event: ResizeDragEvent, params: ResizeEventParams) => void;
 };
@@ -34,7 +35,7 @@ export enum ResizeControlVariant {
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
-  'nodeId' | 'color' | 'minWidth' | 'minHeight' | 'onResizeStart' | 'onResize' | 'onResizeEnd'
+  'nodeId' | 'color' | 'minWidth' | 'minHeight' | 'onResizeStart' | 'onBeforeResize' | 'onResize' | 'onResizeEnd'
 > & {
   position?: ControlPosition;
   variant?: ResizeControlVariant;
