@@ -90,6 +90,7 @@ declare const ReactFlow: import("react").ForwardRefExoticComponent<import("react
     panOnScrollSpeed?: number | undefined;
     panOnScrollMode?: PanOnScrollMode | undefined;
     zoomOnDoubleClick?: boolean | undefined;
+    panOnTouchPadScroll?: boolean | undefined;
     edgeUpdaterRadius?: number | undefined;
     noDragClassName?: string | undefined;
     noWheelClassName?: string | undefined;

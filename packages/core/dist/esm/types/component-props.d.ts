@@ -89,6 +89,7 @@ export declare type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
     panOnScrollSpeed?: number;
     panOnScrollMode?: PanOnScrollMode;
     zoomOnDoubleClick?: boolean;
+    panOnTouchPadScroll?: boolean;
     edgeUpdaterRadius?: number;
     noDragClassName?: string;
     noWheelClassName?: string;

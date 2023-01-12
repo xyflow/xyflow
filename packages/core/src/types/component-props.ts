@@ -127,6 +127,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
+  panOnTouchPadScroll?: boolean; // Custom Props: It will pan the canvas on touchpad scroll by keeping zoomOnScroll ON with scroll wheel
   edgeUpdaterRadius?: number;
   noDragClassName?: string;
   noWheelClassName?: string;

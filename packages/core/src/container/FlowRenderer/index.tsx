@@ -54,6 +54,7 @@ const FlowRenderer = ({
   zoomOnScroll,
   zoomOnPinch,
   panOnScroll,
+  panOnTouchPadScroll, // Custom Props: It will pan the canvas on touchpad scroll by keeping zoomOnScroll ON with scroll wheel
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
@@ -90,6 +91,7 @@ const FlowRenderer = ({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
+      panOnTouchPadScroll={panOnTouchPadScroll}
       panOnDrag={!selectionKeyPressed && panOnDrag}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
