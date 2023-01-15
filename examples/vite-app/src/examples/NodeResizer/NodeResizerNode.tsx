@@ -1,22 +1,22 @@
 import { memo, FC } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 
-import { NodeResizer, ResizeDragEvent, ResizeEventParams } from '@reactflow/node-resizer';
+import { NodeResizer, OnBeforeResize, OnResize, OnResizeEnd, OnResizeStart } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 
-const onResizeStart = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onResizeStart: OnResizeStart = (_, params) => {
   console.log('resize start', params);
 };
 
-const onBeforeResize = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onBeforeResize: OnBeforeResize = (_, params) => {
   console.log('before resize', params);
 };
 
-const onResize = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onResize: OnResize = (_, params) => {
   console.log('resize', params);
 };
 
-const onResizeEnd = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onResizeEnd: OnResizeEnd = (_, params) => {
   console.log('resize end', params);
 };
 

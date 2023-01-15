@@ -1,10 +1,10 @@
 import { memo, FC } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 
-import { NodeResizeControl, ResizeDragEvent, ResizeEventParams } from '@reactflow/node-resizer';
+import { NodeResizeControl, OnResize, OnBeforeResize } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 
-const onBeforeResize = (event: ResizeDragEvent, params: ResizeEventParams) => {
+const onBeforeResize: OnBeforeResize = (event, params) => {
   console.log('before resize', params);
 
   if (params.width > 100) {
@@ -12,8 +12,8 @@ const onBeforeResize = (event: ResizeDragEvent, params: ResizeEventParams) => {
   }
 };
 
-const onResize = (event: ResizeDragEvent, params: ResizeEventParams) => {
-  console.log('resize', params);
+const onResize: OnResize = (event, params) => {
+  console.log('resize', params.direction);
 };
 
 const CustomNode: FC<NodeProps> = ({ id, data }) => {

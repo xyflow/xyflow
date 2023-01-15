@@ -1,12 +1,23 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { D3DragEvent, SubjectPosition } from 'd3-drag';
 
-export type ResizeEventParams = {
+export type ResizeParams = {
   x: number;
   y: number;
   width: number;
   height: number;
 };
+
+export type ResizeParamsWithDirection = ResizeParams & {
+  direction: number[];
+};
+
+type OnResizeHandler<Params = ResizeParams, Result = void> = (event: ResizeDragEvent, params: Params) => Result;
+
+export type OnResizeStart = OnResizeHandler;
+export type OnBeforeResize = OnResizeHandler<ResizeParams, unknown>;
+export type OnResize = OnResizeHandler<ResizeParamsWithDirection>;
+export type OnResizeEnd = OnResizeHandler;
 
 export type NodeResizerProps = {
   nodeId?: string;
@@ -18,10 +29,10 @@ export type NodeResizerProps = {
   isVisible?: boolean;
   minWidth?: number;
   minHeight?: number;
-  onResizeStart?: (event: ResizeDragEvent, params: ResizeEventParams) => void;
-  onBeforeResize?: (event: ResizeDragEvent, params: ResizeEventParams) => unknown;
-  onResize?: (event: ResizeDragEvent, params: ResizeEventParams) => void;
-  onResizeEnd?: (event: ResizeDragEvent, params: ResizeEventParams) => void;
+  onResizeStart?: OnResizeStart;
+  onBeforeResize?: OnBeforeResize;
+  onResize?: OnResize;
+  onResizeEnd?: OnResizeEnd;
 };
 
 export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
