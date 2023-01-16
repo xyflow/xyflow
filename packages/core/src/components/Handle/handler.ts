@@ -1,9 +1,9 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { getHostForElement } from '../../utils';
+import { clamp, getHostForElement } from '../../utils';
 import { ConnectionMode } from '../../types';
-import type { OnConnect, Connection, HandleType, ReactFlowState } from '../../types';
+import type { OnConnect, Connection, HandleType, ReactFlowState, XYPosition } from '../../types';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 
@@ -75,6 +75,18 @@ function resetRecentHandle(hoveredHandle: Element): void {
   hoveredHandle?.classList.remove('react-flow__handle-connecting');
 }
 
+// returns a number between 0 and 1 that represents the velocity of the movement
+// when the mouse is close to the edge of the canvas
+function getVelocity(value: number, min: number, max: number): number {
+  if (value < min) {
+    return clamp(Math.abs(value - min), 1, 100) / 100;
+  } else if (value > max) {
+    return -clamp(Math.abs(value - max), 1, 100) / 100;
+  }
+
+  return 0;
+}
+
 export function handleMouseDown({
   event,
   handleId,
@@ -98,11 +110,26 @@ export function handleMouseDown({
   elementEdgeUpdaterType?: HandleType;
   onEdgeUpdateEnd?: (evt: MouseEvent) => void;
 }): void {
-  const reactFlowNode = (event.target as Element).closest('.react-flow');
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
+  const { onConnectStart, connectionMode, domNode } = getState();
+  let connectionPosition: XYPosition | null = null;
+  let requestAnimationFrameId = 0;
 
-  if (!doc) {
+  // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
+  const updateViewport = (): void => {
+    if (!connectionPosition || !containerBounds) {
+      return;
+    }
+
+    const xMovement = getVelocity(connectionPosition.x, 35, containerBounds.width - 35) * 20;
+    const yMovement = getVelocity(connectionPosition.y, 35, containerBounds.height - 35) * 20;
+
+    getState().movePane({ x: xMovement, y: yMovement });
+    requestAnimationFrameId = requestAnimationFrame(updateViewport);
+  };
+
+  if (!doc || !domNode) {
     return;
   }
 
@@ -110,33 +137,36 @@ export function handleMouseDown({
   const elementBelowIsTarget = elementBelow?.classList.contains('target');
   const elementBelowIsSource = elementBelow?.classList.contains('source');
 
-  if (!reactFlowNode || (!elementBelowIsTarget && !elementBelowIsSource && !elementEdgeUpdaterType)) {
+  if (!elementBelowIsTarget && !elementBelowIsSource && !elementEdgeUpdaterType) {
     return;
   }
 
-  const { onConnectStart, connectionMode } = getState();
   const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementBelowIsTarget ? 'target' : 'source';
-  const containerBounds = reactFlowNode.getBoundingClientRect();
+  const containerBounds = domNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
+  connectionPosition = {
+    x: event.clientX - containerBounds.left,
+    y: event.clientY - containerBounds.top,
+  };
+
+  updateViewport();
 
   setState({
-    connectionPosition: {
-      x: event.clientX - containerBounds.left,
-      y: event.clientY - containerBounds.top,
-    },
+    connectionPosition,
     connectionNodeId: nodeId,
     connectionHandleId: handleId,
     connectionHandleType: handleType,
   });
-
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
   function onMouseMove(event: MouseEvent) {
+    connectionPosition = {
+      x: event.clientX - containerBounds.left,
+      y: event.clientY - containerBounds.top,
+    };
+
     setState({
-      connectionPosition: {
-        x: event.clientX - containerBounds.left,
-        y: event.clientY - containerBounds.top,
-      },
+      connectionPosition,
     });
 
     const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(
@@ -162,6 +192,8 @@ export function handleMouseDown({
   }
 
   function onMouseUp(event: MouseEvent) {
+    cancelAnimationFrame(requestAnimationFrameId);
+
     const { connection, isValid } = checkElementBelowIsValid(
       event,
       connectionMode,

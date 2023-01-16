@@ -1,4 +1,5 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+
 import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
