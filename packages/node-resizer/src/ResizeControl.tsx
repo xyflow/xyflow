@@ -32,8 +32,8 @@ function ResizeControl({
   color,
   minWidth = 10,
   minHeight = 10,
+  shouldResize,
   onResizeStart,
-  onBeforeResize,
   onResize,
   onResizeEnd,
 }: ResizeControlProps) {
@@ -146,12 +146,6 @@ function ResizeControl({
             return;
           }
 
-          const onBeforeResizeResult = onBeforeResize?.(event, { ...prevValues.current });
-
-          if (onBeforeResizeResult === false) {
-            return;
-          }
-
           const direction = getDirection({
             width: prevValues.current.width,
             prevWidth,
@@ -161,7 +155,15 @@ function ResizeControl({
             invertY,
           });
 
-          onResize?.(event, { ...prevValues.current, direction });
+          const nextValues = { ...prevValues.current, direction };
+
+          const callResize = shouldResize?.(event, nextValues);
+
+          if (callResize === false) {
+            return;
+          }
+
+          onResize?.(event, nextValues);
           triggerNodeChanges(changes);
         }
       })

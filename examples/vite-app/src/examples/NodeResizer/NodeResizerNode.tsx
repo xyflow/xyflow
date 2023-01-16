@@ -1,15 +1,11 @@
 import { memo, FC } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 
-import { NodeResizer, OnBeforeResize, OnResize, OnResizeEnd, OnResizeStart } from '@reactflow/node-resizer';
+import { NodeResizer, ShouldResize, OnResize, OnResizeEnd, OnResizeStart } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 
 const onResizeStart: OnResizeStart = (_, params) => {
   console.log('resize start', params);
-};
-
-const onBeforeResize: OnBeforeResize = (_, params) => {
-  console.log('before resize', params);
 };
 
 const onResize: OnResize = (_, params) => {
@@ -20,6 +16,12 @@ const onResizeEnd: OnResizeEnd = (_, params) => {
   console.log('resize end', params);
 };
 
+const shouldResize: ShouldResize = (_, params) => {
+  console.log('should resize', params);
+
+  return true;
+};
+
 const CustomNode: FC<NodeProps> = ({ data, selected }) => {
   return (
     <>
@@ -27,8 +29,8 @@ const CustomNode: FC<NodeProps> = ({ data, selected }) => {
         minWidth={100}
         minHeight={100}
         isVisible={selected}
+        shouldResize={shouldResize}
         onResizeStart={onResizeStart}
-        onBeforeResize={onBeforeResize}
         onResize={onResize}
         onResizeEnd={onResizeEnd}
       />

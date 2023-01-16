@@ -14,8 +14,8 @@ export type ResizeParamsWithDirection = ResizeParams & {
 
 type OnResizeHandler<Params = ResizeParams, Result = void> = (event: ResizeDragEvent, params: Params) => Result;
 
+export type ShouldResize = OnResizeHandler<ResizeParamsWithDirection, boolean>;
 export type OnResizeStart = OnResizeHandler;
-export type OnBeforeResize = OnResizeHandler<ResizeParams, unknown>;
 export type OnResize = OnResizeHandler<ResizeParamsWithDirection>;
 export type OnResizeEnd = OnResizeHandler;
 
@@ -29,8 +29,8 @@ export type NodeResizerProps = {
   isVisible?: boolean;
   minWidth?: number;
   minHeight?: number;
+  shouldResize?: ShouldResize;
   onResizeStart?: OnResizeStart;
-  onBeforeResize?: OnBeforeResize;
   onResize?: OnResize;
   onResizeEnd?: OnResizeEnd;
 };
@@ -46,7 +46,7 @@ export enum ResizeControlVariant {
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
-  'nodeId' | 'color' | 'minWidth' | 'minHeight' | 'onResizeStart' | 'onBeforeResize' | 'onResize' | 'onResizeEnd'
+  'nodeId' | 'color' | 'minWidth' | 'minHeight' | 'shouldResize' | 'onResizeStart' | 'onResize' | 'onResizeEnd'
 > & {
   position?: ControlPosition;
   variant?: ResizeControlVariant;

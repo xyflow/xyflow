@@ -14,8 +14,8 @@ export default function NodeResizer({
   color,
   minWidth = 10,
   minHeight = 10,
+  shouldResize,
   onResizeStart,
-  onBeforeResize,
   onResize,
   onResizeEnd,
 }: NodeResizerProps) {
@@ -37,7 +37,7 @@ export default function NodeResizer({
           minWidth={minWidth}
           minHeight={minHeight}
           onResizeStart={onResizeStart}
-          onBeforeResize={onBeforeResize}
+          shouldResize={shouldResize}
           onResize={onResize}
           onResizeEnd={onResizeEnd}
         />
@@ -53,7 +53,7 @@ export default function NodeResizer({
           minWidth={minWidth}
           minHeight={minHeight}
           onResizeStart={onResizeStart}
-          onBeforeResize={onBeforeResize}
+          shouldResize={shouldResize}
           onResize={onResize}
           onResizeEnd={onResizeEnd}
         />
