@@ -1,7 +1,7 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { clamp, getHostForElement } from '../../utils';
+import { clamp, getHostForElement, getVelocity } from '../../utils';
 import { ConnectionMode } from '../../types';
 import type { OnConnect, Connection, HandleType, ReactFlowState, XYPosition } from '../../types';
 
@@ -73,18 +73,6 @@ export function checkElementBelowIsValid(
 function resetRecentHandle(hoveredHandle: Element): void {
   hoveredHandle?.classList.remove('react-flow__handle-valid');
   hoveredHandle?.classList.remove('react-flow__handle-connecting');
-}
-
-// returns a number between 0 and 1 that represents the velocity of the movement
-// when the mouse is close to the edge of the canvas
-function getVelocity(value: number, min: number, max: number): number {
-  if (value < min) {
-    return clamp(Math.abs(value - min), 1, 100) / 100;
-  } else if (value > max) {
-    return -clamp(Math.abs(value - max), 1, 100) / 100;
-  }
-
-  return 0;
 }
 
 export function handleMouseDown({

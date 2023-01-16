@@ -7,7 +7,8 @@ import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 import useGetPointerPosition from '../useGetPointerPosition';
-import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent } from '../../types';
+import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '../../types';
+import { getVelocity } from '../../utils';
 
 export type UseDragData = { dx: number; dy: number };
 
@@ -38,12 +39,90 @@ function useDrag({
   const store = useStoreApi();
   const dragItems = useRef<NodeDragItem[]>();
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
+  const requestAnimationFrameId = useRef(0);
+  const containerBounds = useRef<DOMRect | null>(null);
+  const centerPosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const dragEvent = useRef<MouseEvent | null>(null);
+  const animationFrameStarted = useRef(false);
 
   const getPointerPosition = useGetPointerPosition();
 
   useEffect(() => {
     if (nodeRef?.current) {
       const selection = select(nodeRef.current);
+
+      const updateNodes = ({ x, y }: XYPosition) => {
+        const {
+          nodeInternals,
+          onNodeDrag,
+          onSelectionDrag,
+          updateNodePositions,
+          nodeExtent,
+          snapGrid,
+          snapToGrid,
+          nodeOrigin,
+        } = store.getState();
+
+        lastPos.current = { x, y };
+
+        let hasChange = false;
+
+        dragItems.current = dragItems.current!.map((n) => {
+          const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
+
+          if (snapToGrid) {
+            nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
+            nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
+          }
+
+          const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent, nodeOrigin);
+
+          // we want to make sure that we only fire a change event when there is a changes
+          hasChange = hasChange || n.position.x !== updatedPos.position.x || n.position.y !== updatedPos.position.y;
+
+          n.position = updatedPos.position;
+          n.positionAbsolute = updatedPos.positionAbsolute;
+
+          return n;
+        });
+
+        if (!hasChange) {
+          return;
+        }
+
+        updateNodePositions(dragItems.current, true, true);
+        setDragging(true);
+
+        const onDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
+
+        if (onDrag && dragEvent.current) {
+          const [currentNode, nodes] = getEventHandlerParams({
+            nodeId,
+            dragItems: dragItems.current,
+            nodeInternals,
+          });
+          onDrag(dragEvent.current as MouseEvent, currentNode, nodes);
+        }
+      };
+
+      const updateViewport = (): void => {
+        if (!containerBounds.current) {
+          return;
+        }
+
+        const xMovement = getVelocity(centerPosition.current.x, 35, containerBounds.current.width - 35) * 20;
+        const yMovement = getVelocity(centerPosition.current.y, 35, containerBounds.current.height - 35) * 20;
+
+        if (xMovement !== 0 || yMovement !== 0) {
+          lastPos.current.x = (lastPos.current.x ?? 0) + xMovement * -1;
+          lastPos.current.y = (lastPos.current.y ?? 0) + yMovement * -1;
+
+          updateNodes(lastPos.current as XYPosition);
+
+          store.getState().movePane({ x: xMovement, y: yMovement });
+        }
+        requestAnimationFrameId.current = requestAnimationFrame(updateViewport);
+      };
 
       if (disabled) {
         selection.on('.drag', null);
@@ -56,6 +135,7 @@ function useDrag({
               unselectNodesAndEdges,
               onNodeDragStart,
               onSelectionDragStart,
+              domNode,
             } = store.getState();
 
             const onStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
@@ -86,72 +166,39 @@ function useDrag({
               });
               onStart(event.sourceEvent as MouseEvent, currentNode, nodes);
             }
+
+            containerBounds.current = domNode?.getBoundingClientRect() || null;
+            centerPosition.current = {
+              x: event.sourceEvent.clientX - (containerBounds.current?.left ?? 0),
+              y: event.sourceEvent.clientY - (containerBounds.current?.top ?? 0),
+            };
           })
           .on('drag', (event: UseDragEvent) => {
-            const {
-              updateNodePositions,
-              nodeInternals,
-              nodeExtent,
-              onNodeDrag,
-              onSelectionDrag,
-              snapGrid,
-              snapToGrid,
-              nodeOrigin,
-            } = store.getState();
             const pointerPos = getPointerPosition(event);
+
+            if (!animationFrameStarted.current) {
+              animationFrameStarted.current = true;
+              updateViewport();
+            }
+
             // skip events without movement
             if (
               (lastPos.current.x !== pointerPos.xSnapped || lastPos.current.y !== pointerPos.ySnapped) &&
               dragItems.current
             ) {
-              lastPos.current = {
-                x: pointerPos.xSnapped,
-                y: pointerPos.ySnapped,
+              dragEvent.current = event.sourceEvent as MouseEvent;
+              centerPosition.current = {
+                x: event.sourceEvent.clientX - (containerBounds.current?.left ?? 0),
+                y: event.sourceEvent.clientY - (containerBounds.current?.top ?? 0),
               };
 
-              let hasChange = false;
-
-              dragItems.current = dragItems.current.map((n) => {
-                const nextPosition = { x: pointerPos.x - n.distance.x, y: pointerPos.y - n.distance.y };
-
-                if (snapToGrid) {
-                  nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
-                  nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
-                }
-
-                const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent, nodeOrigin);
-
-                // we want to make sure that we only fire a change event when there is a changes
-                hasChange =
-                  hasChange || n.position.x !== updatedPos.position.x || n.position.y !== updatedPos.position.y;
-
-                n.position = updatedPos.position;
-                n.positionAbsolute = updatedPos.positionAbsolute;
-
-                return n;
-              });
-
-              if (!hasChange) {
-                return;
-              }
-
-              const onDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
-
-              updateNodePositions(dragItems.current, true, true);
-              setDragging(true);
-
-              if (onDrag) {
-                const [currentNode, nodes] = getEventHandlerParams({
-                  nodeId,
-                  dragItems: dragItems.current,
-                  nodeInternals,
-                });
-                onDrag(event.sourceEvent as MouseEvent, currentNode, nodes);
-              }
+              updateNodes(pointerPos);
             }
           })
           .on('end', (event: UseDragEvent) => {
             setDragging(false);
+            animationFrameStarted.current = false;
+            cancelAnimationFrame(requestAnimationFrameId.current);
             if (dragItems.current) {
               const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();
               const onStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
