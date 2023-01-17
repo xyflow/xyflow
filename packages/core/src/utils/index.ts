@@ -16,7 +16,7 @@ export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: Coo
 
 // returns a number between 0 and 1 that represents the velocity of the movement
 // when the mouse is close to the edge of the canvas
-export const getVelocity = (value: number, min: number, max: number): number => {
+export const calcAutoPanVelocity = (value: number, min: number, max: number): number => {
   if (value < min) {
     return clamp(Math.abs(value - min), 1, 100) / 100;
   } else if (value > max) {

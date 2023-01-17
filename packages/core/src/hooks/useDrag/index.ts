@@ -7,8 +7,8 @@ import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 import useGetPointerPosition from '../useGetPointerPosition';
+import { calcAutoPanVelocity } from '../../utils';
 import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '../../types';
-import { getVelocity } from '../../utils';
 
 export type UseDragData = { dx: number; dy: number };
 
@@ -35,15 +35,15 @@ function useDrag({
   isSelectable,
   selectNodesOnDrag,
 }: UseDragParams) {
-  const [dragging, setDragging] = useState<boolean>(false);
   const store = useStoreApi();
-  const dragItems = useRef<NodeDragItem[]>();
+  const [dragging, setDragging] = useState<boolean>(false);
+  const dragItems = useRef<NodeDragItem[]>([]);
   const lastPos = useRef<{ x: number | null; y: number | null }>({ x: null, y: null });
-  const requestAnimationFrameId = useRef(0);
+  const autoPanId = useRef(0);
   const containerBounds = useRef<DOMRect | null>(null);
-  const centerPosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const dragEvent = useRef<MouseEvent | null>(null);
-  const animationFrameStarted = useRef(false);
+  const autoPanStarted = useRef(false);
 
   const getPointerPosition = useGetPointerPosition();
 
@@ -67,7 +67,7 @@ function useDrag({
 
         let hasChange = false;
 
-        dragItems.current = dragItems.current!.map((n) => {
+        dragItems.current = dragItems.current.map((n) => {
           const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
 
           if (snapToGrid) {
@@ -105,25 +105,24 @@ function useDrag({
         }
       };
 
-      const updateViewport = (): void => {
+      const autoPan = (): void => {
         if (!containerBounds.current) {
           return;
         }
 
-        const xMovement = getVelocity(centerPosition.current.x, 35, containerBounds.current.width - 35) * 20;
-        const yMovement = getVelocity(centerPosition.current.y, 35, containerBounds.current.height - 35) * 20;
+        const xMovement = calcAutoPanVelocity(mousePosition.current.x, 35, containerBounds.current.width - 35) * 20;
+        const yMovement = calcAutoPanVelocity(mousePosition.current.y, 35, containerBounds.current.height - 35) * 20;
 
         if (xMovement !== 0 || yMovement !== 0) {
-          const scale = store.getState().transform[2];
+          const { transform, movePane } = store.getState();
 
-          lastPos.current.x = (lastPos.current.x ?? 0) - xMovement / scale;
-          lastPos.current.y = (lastPos.current.y ?? 0) - yMovement / scale;
+          lastPos.current.x = (lastPos.current.x ?? 0) - xMovement / transform[2];
+          lastPos.current.y = (lastPos.current.y ?? 0) - yMovement / transform[2];
 
           updateNodes(lastPos.current as XYPosition);
-
-          store.getState().movePane({ x: xMovement, y: yMovement });
+          movePane({ x: xMovement, y: yMovement });
         }
-        requestAnimationFrameId.current = requestAnimationFrame(updateViewport);
+        autoPanId.current = requestAnimationFrame(autoPan);
       };
 
       if (disabled) {
@@ -170,7 +169,7 @@ function useDrag({
             }
 
             containerBounds.current = domNode?.getBoundingClientRect() || null;
-            centerPosition.current = {
+            mousePosition.current = {
               x: event.sourceEvent.clientX - (containerBounds.current?.left ?? 0),
               y: event.sourceEvent.clientY - (containerBounds.current?.top ?? 0),
             };
@@ -179,9 +178,9 @@ function useDrag({
             const pointerPos = getPointerPosition(event);
             const { autoPanOnNodeDrag } = store.getState();
 
-            if (!animationFrameStarted.current && autoPanOnNodeDrag) {
-              animationFrameStarted.current = true;
-              updateViewport();
+            if (!autoPanStarted.current && autoPanOnNodeDrag) {
+              autoPanStarted.current = true;
+              autoPan();
             }
 
             // skip events without movement
@@ -190,7 +189,7 @@ function useDrag({
               dragItems.current
             ) {
               dragEvent.current = event.sourceEvent as MouseEvent;
-              centerPosition.current = {
+              mousePosition.current = {
                 x: event.sourceEvent.clientX - (containerBounds.current?.left ?? 0),
                 y: event.sourceEvent.clientY - (containerBounds.current?.top ?? 0),
               };
@@ -200,8 +199,8 @@ function useDrag({
           })
           .on('end', (event: UseDragEvent) => {
             setDragging(false);
-            animationFrameStarted.current = false;
-            cancelAnimationFrame(requestAnimationFrameId.current);
+            autoPanStarted.current = false;
+            cancelAnimationFrame(autoPanId.current);
 
             if (dragItems.current) {
               const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();

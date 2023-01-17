@@ -1,7 +1,7 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { getHostForElement, getVelocity } from '../../utils';
+import { getHostForElement, calcAutoPanVelocity } from '../../utils';
 import { ConnectionMode } from '../../types';
 import type { OnConnect, Connection, HandleType, ReactFlowState, XYPosition } from '../../types';
 
@@ -100,21 +100,21 @@ export function handleMouseDown({
 }): void {
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
-  const { onConnectStart, connectionMode, domNode, autoPanOnConnect } = getState();
-  let connectionPosition: XYPosition | null = null;
-  let requestAnimationFrameId = 0;
+  const { onConnectStart, movePane, connectionMode, domNode, autoPanOnConnect } = getState();
+  let connectionPosition: XYPosition = { x: 0, y: 0 };
+  let autoPanId = 0;
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
-  const updateViewport = (): void => {
-    if (!connectionPosition || !containerBounds || !autoPanOnConnect) {
+  const autoPan = (): void => {
+    if (!containerBounds || !autoPanOnConnect) {
       return;
     }
 
-    const xMovement = getVelocity(connectionPosition.x, 35, containerBounds.width - 35) * 20;
-    const yMovement = getVelocity(connectionPosition.y, 35, containerBounds.height - 35) * 20;
+    const xMovement = calcAutoPanVelocity(connectionPosition.x, 35, containerBounds.width - 35) * 20;
+    const yMovement = calcAutoPanVelocity(connectionPosition.y, 35, containerBounds.height - 35) * 20;
 
-    getState().movePane({ x: xMovement, y: yMovement });
-    requestAnimationFrameId = requestAnimationFrame(updateViewport);
+    movePane({ x: xMovement, y: yMovement });
+    autoPanId = requestAnimationFrame(autoPan);
   };
 
   if (!doc || !domNode) {
@@ -138,7 +138,7 @@ export function handleMouseDown({
     y: event.clientY - containerBounds.top,
   };
 
-  updateViewport();
+  autoPan();
 
   setState({
     connectionPosition,
@@ -181,7 +181,7 @@ export function handleMouseDown({
   }
 
   function onMouseUp(event: MouseEvent) {
-    cancelAnimationFrame(requestAnimationFrameId);
+    cancelAnimationFrame(autoPanId);
 
     const { connection, isValid } = checkElementBelowIsValid(
       event,
