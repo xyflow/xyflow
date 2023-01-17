@@ -114,8 +114,10 @@ function useDrag({
         const yMovement = getVelocity(centerPosition.current.y, 35, containerBounds.current.height - 35) * 20;
 
         if (xMovement !== 0 || yMovement !== 0) {
-          lastPos.current.x = (lastPos.current.x ?? 0) + xMovement * -1;
-          lastPos.current.y = (lastPos.current.y ?? 0) + yMovement * -1;
+          const scale = store.getState().transform[2];
+
+          lastPos.current.x = (lastPos.current.x ?? 0) - xMovement / scale;
+          lastPos.current.y = (lastPos.current.y ?? 0) - yMovement / scale;
 
           updateNodes(lastPos.current as XYPosition);
 
@@ -175,8 +177,9 @@ function useDrag({
           })
           .on('drag', (event: UseDragEvent) => {
             const pointerPos = getPointerPosition(event);
+            const { autoPanOnNodeDrag } = store.getState();
 
-            if (!animationFrameStarted.current) {
+            if (!animationFrameStarted.current && autoPanOnNodeDrag) {
               animationFrameStarted.current = true;
               updateViewport();
             }
@@ -199,6 +202,7 @@ function useDrag({
             setDragging(false);
             animationFrameStarted.current = false;
             cancelAnimationFrame(requestAnimationFrameId.current);
+
             if (dragItems.current) {
               const { updateNodePositions, nodeInternals, onNodeDragStop, onSelectionDragStop } = store.getState();
               const onStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);

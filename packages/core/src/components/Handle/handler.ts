@@ -1,7 +1,7 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { clamp, getHostForElement, getVelocity } from '../../utils';
+import { getHostForElement, getVelocity } from '../../utils';
 import { ConnectionMode } from '../../types';
 import type { OnConnect, Connection, HandleType, ReactFlowState, XYPosition } from '../../types';
 
@@ -100,13 +100,13 @@ export function handleMouseDown({
 }): void {
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
-  const { onConnectStart, connectionMode, domNode } = getState();
+  const { onConnectStart, connectionMode, domNode, autoPanOnConnect } = getState();
   let connectionPosition: XYPosition | null = null;
   let requestAnimationFrameId = 0;
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   const updateViewport = (): void => {
-    if (!connectionPosition || !containerBounds) {
+    if (!connectionPosition || !containerBounds || !autoPanOnConnect) {
       return;
     }
 
@@ -132,6 +132,7 @@ export function handleMouseDown({
   const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementBelowIsTarget ? 'target' : 'source';
   const containerBounds = domNode.getBoundingClientRect();
   let recentHoveredHandle: Element;
+
   connectionPosition = {
     x: event.clientX - containerBounds.left,
     y: event.clientY - containerBounds.top,

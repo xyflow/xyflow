@@ -210,6 +210,8 @@ export type ReactFlowStore = {
   onSelectionChange?: OnSelectionChangeFunc;
 
   ariaLiveMessage: string;
+  autoPanOnConnect: boolean;
+  autoPanOnNodeDrag: boolean;
 };
 
 export type ReactFlowActions = {
