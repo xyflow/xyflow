@@ -162,6 +162,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       disableKeyboardA11y = false,
       autoPanOnConnect = true,
       autoPanOnNodeDrag = true,
+      connectionRadius = 20,
       style,
       id,
       ...rest

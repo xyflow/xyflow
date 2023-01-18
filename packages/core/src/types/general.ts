@@ -212,6 +212,7 @@ export type ReactFlowStore = {
   ariaLiveMessage: string;
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
+  connectionRadius: number;
 };
 
 export type ReactFlowActions = {

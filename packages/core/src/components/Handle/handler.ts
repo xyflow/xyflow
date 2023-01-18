@@ -1,9 +1,10 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { getHostForElement, calcAutoPanVelocity } from '../../utils';
-import { ConnectionMode } from '../../types';
+import { getHostForElement, calcAutoPanVelocity, internalsSymbol } from '../../utils';
+import { ConnectionMode, Node, NodeHandleBounds } from '../../types';
 import type { OnConnect, Connection, HandleType, ReactFlowState, XYPosition } from '../../types';
+import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
 
 type ValidConnectionFunc = (connection: Connection) => boolean;
 
@@ -15,55 +16,60 @@ type Result = {
 };
 
 // checks if element below mouse is a handle and returns connection in form of an object { source: 123, target: 312 }
-export function checkElementBelowIsValid(
-  event: MouseEvent,
+export function isHandleValid(
+  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | undefined,
   connectionMode: ConnectionMode,
-  isTarget: boolean,
-  nodeId: string,
-  handleId: string | null,
+  fromNodeId: string,
+  fromHandleId: string | null,
+  fromType: string,
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
-  const elementBelow = doc.elementFromPoint(event.clientX, event.clientY);
-  const elementBelowIsTarget = elementBelow?.classList.contains('target') || false;
-  const elementBelowIsSource = elementBelow?.classList.contains('source') || false;
-
   const result: Result = {
-    elementBelow,
+    elementBelow: null,
     isValid: false,
     connection: { source: null, target: null, sourceHandle: null, targetHandle: null },
     isHoveringHandle: false,
   };
+  const isTarget = fromType === 'target';
 
-  if (elementBelow && (elementBelowIsTarget || elementBelowIsSource)) {
-    result.isHoveringHandle = true;
+  if (handle) {
+    const elementBelow = doc.querySelector(
+      `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
+    );
 
-    const elementBelowNodeId = elementBelow.getAttribute('data-nodeid');
-    const elementBelowHandleId = elementBelow.getAttribute('data-handleid');
-    const connection: Connection = isTarget
-      ? {
-          source: elementBelowNodeId,
-          sourceHandle: elementBelowHandleId,
-          target: nodeId,
-          targetHandle: handleId,
-        }
-      : {
-          source: nodeId,
-          sourceHandle: handleId,
-          target: elementBelowNodeId,
-          targetHandle: elementBelowHandleId,
-        };
+    if (elementBelow) {
+      const elementBelowIsTarget = handle.type === 'target';
+      const elementBelowIsSource = handle.type === 'source';
+      result.isHoveringHandle = true;
 
-    result.connection = connection;
+      const elementBelowNodeId = elementBelow.getAttribute('data-nodeid');
+      const elementBelowHandleId = elementBelow.getAttribute('data-handleid');
+      const connection: Connection = isTarget
+        ? {
+            source: handle.nodeId,
+            sourceHandle: handle.id,
+            target: fromNodeId,
+            targetHandle: fromHandleId,
+          }
+        : {
+            source: fromNodeId,
+            sourceHandle: fromHandleId,
+            target: handle.nodeId,
+            targetHandle: handle.id,
+          };
 
-    // in strict mode we don't allow target to target or source to source connections
-    const isValid =
-      connectionMode === ConnectionMode.Strict
-        ? (isTarget && elementBelowIsSource) || (!isTarget && elementBelowIsTarget)
-        : elementBelowNodeId !== nodeId || elementBelowHandleId !== handleId;
+      result.connection = connection;
 
-    if (isValid) {
-      result.isValid = isValidConnection(connection);
+      // in strict mode we don't allow target to target or source to source connections
+      const isValid =
+        connectionMode === ConnectionMode.Strict
+          ? (isTarget && elementBelowIsSource) || (!isTarget && elementBelowIsTarget)
+          : elementBelowNodeId !== handle.nodeId || elementBelowHandleId !== handle.id;
+
+      if (isValid) {
+        result.isValid = isValidConnection(connection);
+      }
     }
   }
 
@@ -73,6 +79,53 @@ export function checkElementBelowIsValid(
 function resetRecentHandle(hoveredHandle: Element): void {
   hoveredHandle?.classList.remove('react-flow__handle-valid');
   hoveredHandle?.classList.remove('react-flow__handle-connecting');
+}
+
+type ConnectionHandle = {
+  id: string | null;
+  type: HandleType;
+  nodeId: string;
+  absX: number;
+  absY: number;
+  width: number;
+  height: number;
+};
+
+function getHandles(
+  node: Node,
+  handleBounds: NodeHandleBounds,
+  type: HandleType,
+  currentHandle: string
+): ConnectionHandle[] {
+  return (handleBounds[type] || []).reduce<ConnectionHandle[]>((res, h) => {
+    if (`${node.id}-${h.id}-${type}` !== currentHandle) {
+      res.push({
+        id: h.id || null,
+        type,
+        nodeId: node.id,
+        absX: (node.positionAbsolute?.x ?? 0) + h.x,
+        absY: (node.positionAbsolute?.y ?? 0) + h.y,
+        width: h.width,
+        height: h.height,
+      });
+    }
+    return res;
+  }, []);
+}
+
+function getClosestHandle(pos: XYPosition, connectionRadius: number, handles: ConnectionHandle[]) {
+  let closestHandle: ConnectionHandle | undefined;
+  let minDistance = Infinity;
+
+  handles.forEach((handle) => {
+    const distance = Math.sqrt(Math.pow(handle.absX - pos.x, 2) + Math.pow(handle.absY - pos.y, 2));
+    if (distance <= connectionRadius && distance < minDistance) {
+      minDistance = distance;
+      closestHandle = handle;
+    }
+  });
+
+  return closestHandle;
 }
 
 export function handleMouseDown({
@@ -100,9 +153,10 @@ export function handleMouseDown({
 }): void {
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
-  const { onConnectStart, movePane, connectionMode, domNode, autoPanOnConnect } = getState();
+  const { onConnectStart, movePane, connectionMode, domNode, autoPanOnConnect, connectionRadius } = getState();
   let connectionPosition: XYPosition = { x: 0, y: 0 };
   let autoPanId = 0;
+  let prevClosestHandle: ConnectionHandle | undefined;
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   const autoPan = (): void => {
@@ -148,22 +202,55 @@ export function handleMouseDown({
   });
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
+  const handles = getState()
+    .getNodes()
+    .reduce<ConnectionHandle[]>((res, node) => {
+      if (node[internalsSymbol]) {
+        const { handleBounds } = node[internalsSymbol];
+        let sourceHandles: ConnectionHandle[] = [];
+        let targetHandles: ConnectionHandle[] = [];
+
+        if (handleBounds) {
+          sourceHandles = getHandles(node, handleBounds, 'source', `${nodeId}-${handleId}-${handleType}`);
+          targetHandles = getHandles(node, handleBounds, 'target', `${nodeId}-${handleId}-${handleType}`);
+        }
+
+        res.push(...sourceHandles, ...targetHandles);
+      }
+      return res;
+    }, []);
+
   function onMouseMove(event: MouseEvent) {
+    const { transform } = getState();
     connectionPosition = {
       x: event.clientX - containerBounds.left,
       y: event.clientY - containerBounds.top,
     };
 
+    prevClosestHandle = getClosestHandle(
+      pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
+      connectionRadius,
+      handles
+    );
+
     setState({
-      connectionPosition,
+      connectionPosition: prevClosestHandle
+        ? rendererPointToPoint(
+            {
+              x: prevClosestHandle.absX + prevClosestHandle.width / 2,
+              y: prevClosestHandle.absY + prevClosestHandle.height / 2,
+            },
+            transform
+          )
+        : connectionPosition,
     });
 
-    const { connection, elementBelow, isValid, isHoveringHandle } = checkElementBelowIsValid(
-      event,
+    const { connection, elementBelow, isValid, isHoveringHandle } = isHandleValid(
+      prevClosestHandle,
       connectionMode,
-      isTarget,
       nodeId,
       handleId,
+      isTarget ? 'target' : 'source',
       isValidConnection,
       doc
     );
@@ -183,12 +270,12 @@ export function handleMouseDown({
   function onMouseUp(event: MouseEvent) {
     cancelAnimationFrame(autoPanId);
 
-    const { connection, isValid } = checkElementBelowIsValid(
-      event,
+    const { connection, isValid } = isHandleValid(
+      prevClosestHandle,
       connectionMode,
-      isTarget,
       nodeId,
       handleId,
+      isTarget ? 'target' : 'source',
       isValidConnection,
       doc
     );
