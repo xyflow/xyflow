@@ -252,7 +252,7 @@ const createRFStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    movePane: (delta: XYPosition) => {
+    panBy: (delta: XYPosition) => {
       const { transform, width, height, d3Zoom, d3Selection, translateExtent } = get();
 
       if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {

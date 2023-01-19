@@ -114,13 +114,13 @@ function useDrag({
         const yMovement = calcAutoPanVelocity(mousePosition.current.y, 35, containerBounds.current.height - 35) * 20;
 
         if (xMovement !== 0 || yMovement !== 0) {
-          const { transform, movePane } = store.getState();
+          const { transform, panBy } = store.getState();
 
           lastPos.current.x = (lastPos.current.x ?? 0) - xMovement / transform[2];
           lastPos.current.y = (lastPos.current.y ?? 0) - yMovement / transform[2];
 
           updateNodes(lastPos.current as XYPosition);
-          movePane({ x: xMovement, y: yMovement });
+          panBy({ x: xMovement, y: yMovement });
         }
         autoPanId.current = requestAnimationFrame(autoPan);
       };
