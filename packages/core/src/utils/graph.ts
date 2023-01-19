@@ -141,6 +141,13 @@ export const pointToRendererPoint = (
   return position;
 };
 
+export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Transform): XYPosition => {
+  return {
+    x: x * tScale + tx,
+    y: y * tScale + ty,
+  };
+};
+
 export const getNodePositionWithOrigin = (
   node: Node | undefined,
   nodeOrigin: NodeOrigin = [0, 0]

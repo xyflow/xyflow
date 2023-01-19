@@ -4,11 +4,12 @@ import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import { checkElementBelowIsValid, handleMouseDown } from './handler';
-import { getHostForElement } from '../../utils';
+import { handleMouseDown } from './handler';
+import { devWarn, getHostForElement } from '../../utils';
 import { addEdge } from '../../utils/graph';
 import { Position } from '../../types';
 import type { HandleProps, Connection, ReactFlowState } from '../../types';
+import { isValidHandle } from './utils';
 
 const alwaysValid = () => true;
 
@@ -37,9 +38,13 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     ref
   ) => {
     const store = useStoreApi();
+    const nodeId = useNodeId();
 
-    // @fixme: remove type assertion and handle nodeId === null
-    const nodeId = useNodeId() as string;
+    if (!nodeId) {
+      devWarn('Handle: No node id found. Make sure to only use a Handle inside a custom Node.');
+      return null;
+    }
+
     const { connectionStartHandle, connectOnClick, noPanClassName } = useStore(selector, shallow);
 
     const handleId = id || null;
@@ -86,12 +91,16 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       }
 
       const doc = getHostForElement(event.target as HTMLElement);
-      const { connection, isValid } = checkElementBelowIsValid(
-        event as unknown as MouseEvent,
+      const { connection, isValid } = isValidHandle(
+        {
+          nodeId,
+          id: handleId,
+          type,
+        },
         connectionMode,
-        connectionStartHandle.type === 'target',
         connectionStartHandle.nodeId,
         connectionStartHandle.handleId || null,
+        connectionStartHandle.type,
         isValidConnection,
         doc
       );
@@ -110,6 +119,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         data-handleid={handleId}
         data-nodeid={nodeId}
         data-handlepos={position}
+        data-id={`${nodeId}-${handleId}-${type}`}
         className={cc([
           'react-flow__handle',
           `react-flow__handle-${position}`,

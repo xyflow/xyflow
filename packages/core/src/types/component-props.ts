@@ -141,6 +141,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   disableKeyboardA11y?: boolean;
   autoPanOnNodeDrag?: boolean;
   autoPanOnConnect?: boolean;
+  connectionRadius?: number;
 };
 
 export type ReactFlowRefType = HTMLDivElement;
