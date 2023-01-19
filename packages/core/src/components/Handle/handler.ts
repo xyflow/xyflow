@@ -4,11 +4,18 @@ import { StoreApi } from 'zustand';
 import { getHostForElement, calcAutoPanVelocity } from '../../utils';
 import type { OnConnect, HandleType, ReactFlowState } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
-import { ConnectionHandle, getClosestHandle, getHandleLookup, isValidHandle, ValidConnectionFunc } from './utils';
+import {
+  ConnectionHandle,
+  getClosestHandle,
+  getConnectionPosition,
+  getHandleLookup,
+  isValidHandle,
+  ValidConnectionFunc,
+} from './utils';
 
-function resetRecentHandle(hoveredHandle: Element): void {
-  hoveredHandle?.classList.remove('react-flow__handle-valid');
-  hoveredHandle?.classList.remove('react-flow__handle-connecting');
+function resetRecentHandle(handleDomNode: Element): void {
+  handleDomNode?.classList.remove('react-flow__handle-valid');
+  handleDomNode?.classList.remove('react-flow__handle-connecting');
 }
 
 export function handleMouseDown({
@@ -39,7 +46,7 @@ export function handleMouseDown({
   const { connectionMode, domNode, autoPanOnConnect, connectionRadius, onConnectStart, onConnectEnd, panBy, getNodes } =
     getState();
   let autoPanId = 0;
-  let prevClosestHandle: ConnectionHandle | undefined;
+  let prevClosestHandle: ConnectionHandle | null;
 
   const clickedElement = doc?.elementFromPoint(event.clientX, event.clientY);
   const elementIsTarget = clickedElement?.classList.contains('target');
@@ -51,11 +58,8 @@ export function handleMouseDown({
 
   const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementIsTarget ? 'target' : 'source';
   const containerBounds = domNode.getBoundingClientRect();
-  let recentHoveredHandle: Element;
-  let connectionPosition = {
-    x: event.clientX - containerBounds.left,
-    y: event.clientY - containerBounds.top,
-  };
+  let prevActiveHandle: Element;
+  let connectionPosition = getConnectionPosition(event, containerBounds);
 
   const handleLookup = getHandleLookup({
     nodes: getNodes(),
@@ -90,10 +94,7 @@ export function handleMouseDown({
   function onMouseMove(event: MouseEvent) {
     const { transform } = getState();
 
-    connectionPosition = {
-      x: event.clientX - containerBounds.left,
-      y: event.clientY - containerBounds.top,
-    };
+    connectionPosition = getConnectionPosition(event, containerBounds);
 
     prevClosestHandle = getClosestHandle(
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
@@ -105,35 +106,33 @@ export function handleMouseDown({
       connectionPosition: prevClosestHandle
         ? rendererPointToPoint(
             {
-              x: prevClosestHandle.absX + prevClosestHandle.width / 2,
-              y: prevClosestHandle.absY + prevClosestHandle.height / 2,
+              x: prevClosestHandle.x,
+              y: prevClosestHandle.y,
             },
             transform
           )
         : connectionPosition,
     });
 
-    if (prevClosestHandle) {
-      const { connection, elementBelow, isValid, isHoveringHandle } = isValidHandle(
-        prevClosestHandle,
-        connectionMode,
-        nodeId,
-        handleId,
-        isTarget ? 'target' : 'source',
-        isValidConnection,
-        doc
-      );
+    if (!prevClosestHandle) {
+      return resetRecentHandle(prevActiveHandle);
+    }
 
-      if (!isHoveringHandle) {
-        return resetRecentHandle(recentHoveredHandle);
-      }
+    const { connection, handleDomNode, isValid } = isValidHandle(
+      prevClosestHandle,
+      connectionMode,
+      nodeId,
+      handleId,
+      isTarget ? 'target' : 'source',
+      isValidConnection,
+      doc
+    );
 
-      if (connection.source !== connection.target && elementBelow) {
-        resetRecentHandle(recentHoveredHandle);
-        recentHoveredHandle = elementBelow;
-        elementBelow.classList.add('react-flow__handle-connecting');
-        elementBelow.classList.toggle('react-flow__handle-valid', isValid);
-      }
+    if (connection.source !== connection.target && handleDomNode) {
+      resetRecentHandle(prevActiveHandle);
+      prevActiveHandle = handleDomNode;
+      handleDomNode.classList.add('react-flow__handle-connecting');
+      handleDomNode.classList.toggle('react-flow__handle-valid', isValid);
     }
   }
 
@@ -162,7 +161,8 @@ export function handleMouseDown({
       onEdgeUpdateEnd?.(event);
     }
 
-    resetRecentHandle(recentHoveredHandle);
+    resetRecentHandle(prevActiveHandle);
+
     setState({
       connectionNodeId: null,
       connectionHandleId: null,

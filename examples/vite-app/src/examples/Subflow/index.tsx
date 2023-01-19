@@ -12,6 +12,7 @@ import ReactFlow, {
   MiniMap,
   Background,
   Panel,
+  NodeOrigin,
 } from 'reactflow';
 
 import DebugNode from './DebugNode';
