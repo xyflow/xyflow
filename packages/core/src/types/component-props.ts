@@ -61,7 +61,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onEdgeMouseLeave?: EdgeMouseHandler;
   onEdgeDoubleClick?: EdgeMouseHandler;
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   onNodesChange?: OnNodesChange;
   onEdgesChange?: OnEdgesChange;
   onNodesDelete?: OnNodesDelete;

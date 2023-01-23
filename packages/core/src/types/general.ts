@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
+import type {
+  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
+  ComponentType,
+  MemoExoticComponent,
+} from 'react';
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
@@ -77,8 +82,8 @@ export type OnConnectStartParams = {
   handleType: HandleType | null;
 };
 
-export type OnConnectStart = (event: ReactMouseEvent, params: OnConnectStartParams) => void;
-export type OnConnectEnd = (event: MouseEvent) => void;
+export type OnConnectStart = (event: ReactMouseEvent | ReactTouchEvent, params: OnConnectStartParams) => void;
+export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 
 export type Viewport = {
   x: number;

@@ -1,5 +1,3 @@
-import { MouseEvent as ReactMouseEvent } from 'react';
-
 import { ConnectionMode } from '../../types';
 import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 import { internalsSymbol } from '../../utils';
@@ -133,11 +131,4 @@ export function getHandleLookup({ nodes, nodeId, handleId, handleType }: GetHand
     }
     return res;
   }, []);
-}
-
-export function getConnectionPosition(event: MouseEvent | ReactMouseEvent, bounds: DOMRect): XYPosition {
-  return {
-    x: event.clientX - bounds.left,
-    y: event.clientY - bounds.top,
-  };
 }

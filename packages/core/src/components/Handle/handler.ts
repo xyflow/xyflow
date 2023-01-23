@@ -1,24 +1,17 @@
-import type { MouseEvent as ReactMouseEvent } from 'react';
+import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { getHostForElement, calcAutoPan } from '../../utils';
+import { getHostForElement, calcAutoPan, getEventPosition, isMouseEvent } from '../../utils';
 import type { OnConnect, HandleType, ReactFlowState } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
-import {
-  ConnectionHandle,
-  getClosestHandle,
-  getConnectionPosition,
-  getHandleLookup,
-  isValidHandle,
-  ValidConnectionFunc,
-} from './utils';
+import { ConnectionHandle, getClosestHandle, getHandleLookup, isValidHandle, ValidConnectionFunc } from './utils';
 
 function resetRecentHandle(handleDomNode: Element): void {
   handleDomNode?.classList.remove('react-flow__handle-valid');
   handleDomNode?.classList.remove('react-flow__handle-connecting');
 }
 
-export function handleMouseDown({
+export function handlePointerDown({
   event,
   handleId,
   nodeId,
@@ -30,7 +23,7 @@ export function handleMouseDown({
   elementEdgeUpdaterType,
   onEdgeUpdateEnd,
 }: {
-  event: ReactMouseEvent;
+  event: ReactMouseEvent | ReactTouchEvent;
   handleId: string | null;
   nodeId: string;
   onConnect: OnConnect;
@@ -39,7 +32,7 @@ export function handleMouseDown({
   setState: StoreApi<ReactFlowState>['setState'];
   isValidConnection: ValidConnectionFunc;
   elementEdgeUpdaterType?: HandleType;
-  onEdgeUpdateEnd?: (evt: MouseEvent) => void;
+  onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
 }): void {
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
@@ -48,7 +41,8 @@ export function handleMouseDown({
   let autoPanId = 0;
   let prevClosestHandle: ConnectionHandle | null;
 
-  const clickedElement = doc?.elementFromPoint(event.clientX, event.clientY);
+  const { clientX, clientY } = isMouseEvent(event) ? event : event.touches[0]!;
+  const clickedElement = doc?.elementFromPoint(clientX, clientY);
   const elementIsTarget = clickedElement?.classList.contains('target');
   const elementIsSource = clickedElement?.classList.contains('source');
 
@@ -59,7 +53,7 @@ export function handleMouseDown({
   const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementIsTarget ? 'target' : 'source';
   const containerBounds = domNode.getBoundingClientRect();
   let prevActiveHandle: Element;
-  let connectionPosition = getConnectionPosition(event, containerBounds);
+  let connectionPosition = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
 
   const handleLookup = getHandleLookup({
@@ -89,10 +83,10 @@ export function handleMouseDown({
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
-  function onMouseMove(event: MouseEvent) {
+  function onPointerMove(event: MouseEvent | TouchEvent) {
     const { transform } = getState();
+    connectionPosition = getEventPosition(event, containerBounds);
 
-    connectionPosition = getConnectionPosition(event, containerBounds);
     prevClosestHandle = getClosestHandle(
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
@@ -138,7 +132,7 @@ export function handleMouseDown({
     }
   }
 
-  function onMouseUp(event: MouseEvent) {
+  function onPointerUp(event: MouseEvent | TouchEvent) {
     cancelAnimationFrame(autoPanId);
     autoPanStarted = false;
 
@@ -172,10 +166,16 @@ export function handleMouseDown({
       connectionHandleType: null,
     });
 
-    doc.removeEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
-    doc.removeEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
+    doc.removeEventListener('mousemove', onPointerMove as EventListener);
+    doc.removeEventListener('mouseup', onPointerUp as EventListener);
+
+    doc.removeEventListener('touchmove', onPointerMove as EventListener);
+    doc.removeEventListener('touchend', onPointerUp as EventListener);
   }
 
-  doc.addEventListener('mousemove', onMouseMove as EventListenerOrEventListenerObject);
-  doc.addEventListener('mouseup', onMouseUp as EventListenerOrEventListenerObject);
+  doc.addEventListener('mousemove', onPointerMove as EventListener);
+  doc.addEventListener('mouseup', onPointerUp as EventListener);
+
+  doc.addEventListener('touchmove', onPointerMove as EventListener);
+  doc.addEventListener('touchend', onPointerUp as EventListener);
 }
