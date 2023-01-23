@@ -12,6 +12,7 @@ import {
 } from '@reactflow/core';
 
 import { ResizeDragEvent, ResizeControlProps, ResizeControlLineProps, ResizeControlVariant } from './types';
+import { getDirection } from './utils';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
 
@@ -31,6 +32,7 @@ function ResizeControl({
   color,
   minWidth = 10,
   minHeight = 10,
+  shouldResize,
   onResizeStart,
   onResize,
   onResizeEnd,
@@ -140,7 +142,28 @@ function ResizeControl({
             prevValues.current.height = height;
           }
 
-          onResize?.(event, { ...prevValues.current });
+          if (changes.length === 0) {
+            return;
+          }
+
+          const direction = getDirection({
+            width: prevValues.current.width,
+            prevWidth,
+            height: prevValues.current.height,
+            prevHeight,
+            invertX,
+            invertY,
+          });
+
+          const nextValues = { ...prevValues.current, direction };
+
+          const callResize = shouldResize?.(event, nextValues);
+
+          if (callResize === false) {
+            return;
+          }
+
+          onResize?.(event, nextValues);
           triggerNodeChanges(changes);
         }
       })

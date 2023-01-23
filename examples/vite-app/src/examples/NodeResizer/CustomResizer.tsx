@@ -1,7 +1,7 @@
-import { memo, FC, CSSProperties } from 'react';
+import { memo, FC } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 
-import { NodeResizer, NodeResizeControl } from '@reactflow/node-resizer';
+import { NodeResizeControl } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 import ResizeIcon from './ResizeIcon';
 
