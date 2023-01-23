@@ -7,7 +7,7 @@ import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 import useGetPointerPosition from '../useGetPointerPosition';
-import { calcAutoPanVelocity } from '../../utils';
+import { calcAutoPan } from '../../utils';
 import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '../../types';
 
 export type UseDragData = { dx: number; dy: number };
@@ -110,8 +110,7 @@ function useDrag({
           return;
         }
 
-        const xMovement = calcAutoPanVelocity(mousePosition.current.x, 35, containerBounds.current.width - 35) * 20;
-        const yMovement = calcAutoPanVelocity(mousePosition.current.y, 35, containerBounds.current.height - 35) * 20;
+        const [xMovement, yMovement] = calcAutoPan(mousePosition.current, containerBounds.current);
 
         if (xMovement !== 0 || yMovement !== 0) {
           const { transform, panBy } = store.getState();

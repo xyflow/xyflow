@@ -1,7 +1,7 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { getHostForElement, calcAutoPanVelocity } from '../../utils';
+import { getHostForElement, calcAutoPan } from '../../utils';
 import type { OnConnect, HandleType, ReactFlowState } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
 import {
@@ -60,6 +60,7 @@ export function handleMouseDown({
   const containerBounds = domNode.getBoundingClientRect();
   let prevActiveHandle: Element;
   let connectionPosition = getConnectionPosition(event, containerBounds);
+  let autoPanStarted = false;
 
   const handleLookup = getHandleLookup({
     nodes: getNodes(),
@@ -73,14 +74,11 @@ export function handleMouseDown({
     if (!autoPanOnConnect) {
       return;
     }
-    const xMovement = calcAutoPanVelocity(connectionPosition.x, 35, containerBounds.width - 35) * 20;
-    const yMovement = calcAutoPanVelocity(connectionPosition.y, 35, containerBounds.height - 35) * 20;
+    const [xMovement, yMovement] = calcAutoPan(connectionPosition, containerBounds);
 
     panBy({ x: xMovement, y: yMovement });
     autoPanId = requestAnimationFrame(autoPan);
   };
-
-  autoPan();
 
   setState({
     connectionPosition,
@@ -95,12 +93,16 @@ export function handleMouseDown({
     const { transform } = getState();
 
     connectionPosition = getConnectionPosition(event, containerBounds);
-
     prevClosestHandle = getClosestHandle(
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
       handleLookup
     );
+
+    if (!autoPanStarted) {
+      autoPan();
+      autoPanStarted = true;
+    }
 
     setState({
       connectionPosition: prevClosestHandle
@@ -138,6 +140,7 @@ export function handleMouseDown({
 
   function onMouseUp(event: MouseEvent) {
     cancelAnimationFrame(autoPanId);
+    autoPanStarted = false;
 
     if (prevClosestHandle) {
       const { connection, isValid } = isValidHandle(
