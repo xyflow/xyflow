@@ -1,4 +1,5 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+
 import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
@@ -12,6 +13,25 @@ export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: Coo
   x: clamp(position.x, extent[0][0], extent[1][0]),
   y: clamp(position.y, extent[0][1], extent[1][1]),
 });
+
+// returns a number between 0 and 1 that represents the velocity of the movement
+// when the mouse is close to the edge of the canvas
+const calcAutoPanVelocity = (value: number, min: number, max: number): number => {
+  if (value < min) {
+    return clamp(Math.abs(value - min), 1, 50) / 50;
+  } else if (value > max) {
+    return -clamp(Math.abs(value - max), 1, 50) / 50;
+  }
+
+  return 0;
+};
+
+export const calcAutoPan = (pos: XYPosition, bounds: Dimensions): number[] => {
+  const xMovement = calcAutoPanVelocity(pos.x, 35, bounds.width - 35) * 20;
+  const yMovement = calcAutoPanVelocity(pos.y, 35, bounds.height - 35) * 20;
+
+  return [xMovement, yMovement];
+};
 
 export const getHostForElement = (element: HTMLElement): Document | ShadowRoot =>
   (element.getRootNode?.() as Document | ShadowRoot) || window?.document;

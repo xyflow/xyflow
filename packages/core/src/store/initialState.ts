@@ -56,6 +56,9 @@ const initialState: ReactFlowStore = {
   connectOnClick: true,
 
   ariaLiveMessage: '',
+  autoPanOnConnect: true,
+  autoPanOnNodeDrag: true,
+  connectionRadius: 20,
 };
 
 export default initialState;

@@ -210,6 +210,9 @@ export type ReactFlowStore = {
   onSelectionChange?: OnSelectionChangeFunc;
 
   ariaLiveMessage: string;
+  autoPanOnConnect: boolean;
+  autoPanOnNodeDrag: boolean;
+  connectionRadius: number;
 };
 
 export type ReactFlowActions = {
@@ -230,6 +233,7 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
+  panBy: (delta: XYPosition) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

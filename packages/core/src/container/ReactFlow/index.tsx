@@ -160,6 +160,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       elevateNodesOnSelect = true,
       elevateEdgesOnSelect = false,
       disableKeyboardA11y = false,
+      autoPanOnConnect = true,
+      autoPanOnNodeDrag = true,
+      connectionRadius = 20,
       style,
       id,
       ...rest
@@ -287,6 +290,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
             rfId={rfId}
+            autoPanOnConnect={autoPanOnConnect}
+            autoPanOnNodeDrag={autoPanOnNodeDrag}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}

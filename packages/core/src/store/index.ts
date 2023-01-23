@@ -1,4 +1,5 @@
 import { createStore } from 'zustand';
+import { zoomIdentity } from 'd3-zoom';
 
 import { clampPosition, getDimensions, internalsSymbol } from '../utils';
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -19,6 +20,7 @@ import type {
   UnselectNodesAndEdgesParams,
   NodeChange,
 } from '../types';
+import { XYPosition } from 'react-flow-renderer';
 
 const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({
@@ -249,6 +251,23 @@ const createRFStore = () =>
         nodeExtent,
         nodeInternals: new Map(nodeInternals),
       });
+    },
+    panBy: (delta: XYPosition) => {
+      const { transform, width, height, d3Zoom, d3Selection, translateExtent } = get();
+
+      if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
+        return;
+      }
+
+      const nextTransform = zoomIdentity.translate(transform[0] + delta.x, transform[1] + delta.y).scale(transform[2]);
+
+      const extent: CoordinateExtent = [
+        [0, 0],
+        [width, height],
+      ];
+
+      const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, translateExtent);
+      d3Zoom.transform(d3Selection, constrainedTransform);
     },
     cancelConnection: () =>
       set({
