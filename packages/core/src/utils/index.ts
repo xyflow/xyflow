@@ -1,4 +1,8 @@
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import type {
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
+} from 'react';
 
 import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
@@ -111,3 +115,21 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
     !!target?.closest('.nokey')
   );
 }
+
+export const isMouseEvent = (
+  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent
+): event is MouseEvent | ReactMouseEvent => 'button' in event;
+
+export const getEventPosition = (
+  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+  bounds?: DOMRect
+) => {
+  const isMouseTriggered = isMouseEvent(event);
+  const evtX = isMouseTriggered ? event.clientX : event.touches?.[0].clientX;
+  const evtY = isMouseTriggered ? event.clientY : event.touches?.[0].clientY;
+
+  return {
+    x: evtX - (bounds?.left ?? 0),
+    y: evtY - (bounds?.top ?? 0),
+  };
+};

@@ -1,11 +1,11 @@
-import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent } from 'react';
+import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import { handleMouseDown } from './handler';
-import { devWarn, getHostForElement } from '../../utils';
+import { handlePointerDown } from './handler';
+import { devWarn, getHostForElement, isMouseEvent } from '../../utils';
 import { addEdge } from '../../utils/graph';
 import { Position } from '../../types';
 import type { HandleProps, Connection, ReactFlowState } from '../../types';
@@ -33,6 +33,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       children,
       className,
       onMouseDown,
+      onTouchStart,
       ...rest
     },
     ref
@@ -66,9 +67,11 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onConnect?.(edgeParams);
     };
 
-    const onMouseDownHandler = (event: ReactMouseEvent<HTMLDivElement>) => {
-      if (event.button === 0) {
-        handleMouseDown({
+    const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
+      const isMouseTriggered = isMouseEvent(event);
+
+      if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+        handlePointerDown({
           event,
           handleId,
           nodeId,
@@ -79,7 +82,12 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           isValidConnection,
         });
       }
-      onMouseDown?.(event);
+
+      if (isMouseTriggered) {
+        onMouseDown?.(event);
+      } else {
+        onTouchStart?.(event);
+      }
     };
 
     const onClick = (event: ReactMouseEvent) => {
@@ -136,7 +144,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
               connectionStartHandle?.type === type,
           },
         ])}
-        onMouseDown={onMouseDownHandler}
+        onMouseDown={onPointerDown}
+        onTouchStart={onPointerDown}
         onClick={connectOnClick ? onClick : undefined}
         ref={ref}
         {...rest}

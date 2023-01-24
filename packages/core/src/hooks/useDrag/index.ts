@@ -7,7 +7,7 @@ import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 import useGetPointerPosition from '../useGetPointerPosition';
-import { calcAutoPan } from '../../utils';
+import { calcAutoPan, getEventPosition } from '../../utils';
 import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '../../types';
 
 export type UseDragData = { dx: number; dy: number };
@@ -168,10 +168,7 @@ function useDrag({
             }
 
             containerBounds.current = domNode?.getBoundingClientRect() || null;
-            mousePosition.current = {
-              x: event.sourceEvent.clientX - (containerBounds.current?.left ?? 0),
-              y: event.sourceEvent.clientY - (containerBounds.current?.top ?? 0),
-            };
+            mousePosition.current = getEventPosition(event.sourceEvent, containerBounds.current!);
           })
           .on('drag', (event: UseDragEvent) => {
             const pointerPos = getPointerPosition(event);
@@ -188,10 +185,7 @@ function useDrag({
               dragItems.current
             ) {
               dragEvent.current = event.sourceEvent as MouseEvent;
-              mousePosition.current = {
-                x: event.sourceEvent.clientX - (containerBounds.current?.left ?? 0),
-                y: event.sourceEvent.clientY - (containerBounds.current?.top ?? 0),
-              };
+              mousePosition.current = getEventPosition(event.sourceEvent, containerBounds.current!);
 
               updateNodes(pointerPos);
             }

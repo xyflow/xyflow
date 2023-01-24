@@ -1,5 +1,3 @@
-import { MouseEvent as ReactMouseEvent } from 'react';
-
 import { ConnectionMode } from '../../types';
 import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 import { internalsSymbol } from '../../utils';
@@ -135,9 +133,22 @@ export function getHandleLookup({ nodes, nodeId, handleId, handleType }: GetHand
   }, []);
 }
 
-export function getConnectionPosition(event: MouseEvent | ReactMouseEvent, bounds: DOMRect): XYPosition {
-  return {
-    x: event.clientX - bounds.left,
-    y: event.clientY - bounds.top,
-  };
+export function getHandleType(
+  edgeUpdaterType: HandleType | undefined,
+  handleDomNode: Element | null
+): HandleType | null {
+  if (edgeUpdaterType) {
+    return edgeUpdaterType;
+  } else if (handleDomNode?.classList.contains('target')) {
+    return 'target';
+  } else if (handleDomNode?.classList.contains('source')) {
+    return 'source';
+  }
+
+  return null;
+}
+
+export function resetRecentHandle(handleDomNode: Element): void {
+  handleDomNode?.classList.remove('react-flow__handle-valid');
+  handleDomNode?.classList.remove('react-flow__handle-connecting');
 }
