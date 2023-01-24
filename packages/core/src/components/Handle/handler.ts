@@ -1,15 +1,18 @@
 import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import { StoreApi } from 'zustand';
 
-import { getHostForElement, calcAutoPan, getEventPosition, isMouseEvent } from '../../utils';
+import { getHostForElement, calcAutoPan, getEventPosition } from '../../utils';
 import type { OnConnect, HandleType, ReactFlowState } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
-import { ConnectionHandle, getClosestHandle, getHandleLookup, isValidHandle, ValidConnectionFunc } from './utils';
-
-function resetRecentHandle(handleDomNode: Element): void {
-  handleDomNode?.classList.remove('react-flow__handle-valid');
-  handleDomNode?.classList.remove('react-flow__handle-connecting');
-}
+import {
+  ConnectionHandle,
+  getClosestHandle,
+  getHandleLookup,
+  getHandleType,
+  isValidHandle,
+  resetRecentHandle,
+  ValidConnectionFunc,
+} from './utils';
 
 export function handlePointerDown({
   event,
@@ -20,7 +23,7 @@ export function handlePointerDown({
   getState,
   setState,
   isValidConnection,
-  elementEdgeUpdaterType,
+  edgeUpdaterType,
   onEdgeUpdateEnd,
 }: {
   event: ReactMouseEvent | ReactTouchEvent;
@@ -31,27 +34,34 @@ export function handlePointerDown({
   getState: StoreApi<ReactFlowState>['getState'];
   setState: StoreApi<ReactFlowState>['setState'];
   isValidConnection: ValidConnectionFunc;
-  elementEdgeUpdaterType?: HandleType;
+  edgeUpdaterType?: HandleType;
   onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
 }): void {
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
-  const { connectionMode, domNode, autoPanOnConnect, connectionRadius, onConnectStart, onConnectEnd, panBy, getNodes } =
-    getState();
+  const {
+    connectionMode,
+    domNode,
+    autoPanOnConnect,
+    connectionRadius,
+    onConnectStart,
+    onConnectEnd,
+    panBy,
+    getNodes,
+    cancelConnection,
+  } = getState();
   let autoPanId = 0;
   let prevClosestHandle: ConnectionHandle | null;
 
-  const { clientX, clientY } = isMouseEvent(event) ? event : event.touches[0]!;
-  const clickedElement = doc?.elementFromPoint(clientX, clientY);
-  const elementIsTarget = clickedElement?.classList.contains('target');
-  const elementIsSource = clickedElement?.classList.contains('source');
+  const { x, y } = getEventPosition(event);
+  const clickedHandle = doc?.elementFromPoint(x, y);
+  const handleType = getHandleType(edgeUpdaterType, clickedHandle);
+  const containerBounds = domNode?.getBoundingClientRect();
 
-  if (!domNode || (!elementIsTarget && !elementIsSource && !elementEdgeUpdaterType)) {
+  if (!containerBounds || !handleType) {
     return;
   }
 
-  const handleType = elementEdgeUpdaterType ? elementEdgeUpdaterType : elementIsTarget ? 'target' : 'source';
-  const containerBounds = domNode.getBoundingClientRect();
   let prevActiveHandle: Element;
   let connectionPosition = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
@@ -154,17 +164,13 @@ export function handlePointerDown({
 
     onConnectEnd?.(event);
 
-    if (elementEdgeUpdaterType) {
+    if (edgeUpdaterType) {
       onEdgeUpdateEnd?.(event);
     }
 
     resetRecentHandle(prevActiveHandle);
 
-    setState({
-      connectionNodeId: null,
-      connectionHandleId: null,
-      connectionHandleType: null,
-    });
+    cancelConnection();
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);

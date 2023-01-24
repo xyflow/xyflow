@@ -132,3 +132,23 @@ export function getHandleLookup({ nodes, nodeId, handleId, handleType }: GetHand
     return res;
   }, []);
 }
+
+export function getHandleType(
+  edgeUpdaterType: HandleType | undefined,
+  handleDomNode: Element | null
+): HandleType | null {
+  if (edgeUpdaterType) {
+    return edgeUpdaterType;
+  } else if (handleDomNode?.classList.contains('target')) {
+    return 'target';
+  } else if (handleDomNode?.classList.contains('source')) {
+    return 'source';
+  }
+
+  return null;
+}
+
+export function resetRecentHandle(handleDomNode: Element): void {
+  handleDomNode?.classList.remove('react-flow__handle-valid');
+  handleDomNode?.classList.remove('react-flow__handle-connecting');
+}

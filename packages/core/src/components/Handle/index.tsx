@@ -68,9 +68,9 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     };
 
     const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
-      const isMouse = isMouseEvent(event);
+      const isMouseTriggered = isMouseEvent(event);
 
-      if ((isMouse && event.button === 0) || 'touches' in event) {
+      if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
         handlePointerDown({
           event,
           handleId,
@@ -83,7 +83,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         });
       }
 
-      if (isMouse) {
+      if (isMouseTriggered) {
         onMouseDown?.(event);
       } else {
         onTouchStart?.(event);

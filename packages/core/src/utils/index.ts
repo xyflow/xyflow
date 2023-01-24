@@ -122,14 +122,14 @@ export const isMouseEvent = (
 
 export const getEventPosition = (
   event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
-  bounds: DOMRect
+  bounds?: DOMRect
 ) => {
-  const isMouse = isMouseEvent(event);
-  const evtX = isMouse ? event.clientX : event.touches?.[0].clientX;
-  const evtY = isMouse ? event.clientY : event.touches?.[0].clientY;
+  const isMouseTriggered = isMouseEvent(event);
+  const evtX = isMouseTriggered ? event.clientX : event.touches?.[0].clientX;
+  const evtY = isMouseTriggered ? event.clientY : event.touches?.[0].clientY;
 
   return {
-    x: evtX - bounds.left,
-    y: evtY - bounds.top,
+    x: evtX - (bounds?.left ?? 0),
+    y: evtY - (bounds?.top ?? 0),
   };
 };
