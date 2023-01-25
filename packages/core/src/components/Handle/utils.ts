@@ -98,7 +98,7 @@ export function isValidHandle(
     const isValid =
       connectionMode === ConnectionMode.Strict
         ? (isTarget && handleIsSource) || (!isTarget && handleIsTarget)
-        : handleNodeId !== handle.nodeId || handleId !== handle.id;
+        : handleNodeId !== fromNodeId || handleId !== fromHandleId;
 
     if (isValid) {
       result.isValid = isValidConnection(connection);

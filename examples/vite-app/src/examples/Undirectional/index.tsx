@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   useReactFlow,
   NodeTypes,
@@ -184,6 +184,7 @@ const UpdateNodeInternalsFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
+
   const { project } = useReactFlow();
   const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
     setEdges((els) => updateEdge(oldEdge, newConnection, els));

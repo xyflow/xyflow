@@ -51,16 +51,16 @@ describe('Basic Flow Rendering', () => {
       .type('{shift}', { release: false })
       .wait(50)
       .get('.react-flow__pane')
-      .trigger('mousedown', 1000, 50, { button: 0, force: true })
-      .trigger('mousemove', 1, 400, { button: 0 })
+      .trigger('mousedown', 1, 10, { button: 0, force: true })
+      .trigger('mousemove', 1000, 450, { button: 0 })
       .wait(50)
-      .trigger('mouseup', 1, 200, { force: true });
+      .trigger('mouseup', 1000, 450, { button: 0, force: true });
 
-    cy.wait(100);
+    cy.wait(200);
 
     cy.get('.react-flow__node').eq(1).should('have.class', 'selected');
 
-    cy.get('.react-flow__node').eq(0).should('have.not.class', 'selected');
+    cy.get('.react-flow__node').eq(3).should('have.not.class', 'selected');
 
     cy.get('.react-flow__nodesselection-rect');
 
@@ -74,11 +74,13 @@ describe('Basic Flow Rendering', () => {
       .trigger('mousedown', 'topRight', { button: 0, force: true })
       .trigger('mousemove', 'bottomLeft', { button: 0 })
       .wait(50)
-      .trigger('mouseup', 'bottomLeft', { force: true })
-      .wait(50)
+      .trigger('mouseup', 'bottomLeft', { button: 0, force: true })
+      .wait(400)
       .get('.react-flow__node')
-      .should('have.class', 'selected')
-      .get('.react-flow__nodesselection-rect');
+      .should('have.class', 'selected');
+
+    cy.wait(200);
+    cy.get('.react-flow__nodesselection-rect');
 
     cy.get('body').type('{shift}', { release: true });
   });
@@ -113,14 +115,14 @@ describe('Basic Flow Rendering', () => {
     cy.get('.react-flow__node')
       .contains('Node 3')
       .find('.react-flow__handle.source')
-      .trigger('mousedown', { button: 0 });
+      .trigger('mousedown', { force: true, button: 0 });
 
     cy.get('.react-flow__node')
       .contains('Node 4')
       .find('.react-flow__handle.target')
-      .trigger('mousemove', { force: true })
-      .wait(50)
-      .trigger('mouseup', { force: true });
+      .trigger('mousemove', { force: true, button: 0 })
+      .wait(200)
+      .trigger('mouseup', { force: true, button: 0 });
 
     cy.get('.react-flow__edge').should('have.length', 3);
   });

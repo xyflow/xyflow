@@ -36,6 +36,7 @@ import type {
   EdgeMouseHandler,
   HandleType,
   SelectionMode,
+  OnError,
 } from '.';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
@@ -142,6 +143,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   autoPanOnNodeDrag?: boolean;
   autoPanOnConnect?: boolean;
   connectionRadius?: number;
+  onError?: OnError;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

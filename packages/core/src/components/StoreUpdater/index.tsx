@@ -47,6 +47,7 @@ type StoreUpdaterProps = Pick<
   | 'elevateNodesOnSelect'
   | 'autoPanOnConnect'
   | 'autoPanOnNodeDrag'
+  | 'onError'
 > & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({
@@ -123,6 +124,7 @@ const StoreUpdater = ({
   rfId,
   autoPanOnConnect,
   autoPanOnNodeDrag,
+  onError,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -178,6 +180,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('rfId', rfId, store.setState);
   useDirectStoreUpdater('autoPanOnConnect', autoPanOnConnect, store.setState);
   useDirectStoreUpdater('autoPanOnNodeDrag', autoPanOnNodeDrag, store.setState);
+  useDirectStoreUpdater('onError', onError, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

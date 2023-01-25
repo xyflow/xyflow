@@ -1,5 +1,5 @@
 import { MouseEvent, useCallback } from 'react';
-import ReactFlow, { addEdge, Node, Connection, Edge, useNodesState, useEdgesState, NodeOrigin } from 'reactflow';
+import ReactFlow, { addEdge, Node, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
@@ -100,7 +100,6 @@ const BasicFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      disableKeyboardA11y
       onNodeDrag={onNodeDrag}
     >
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>

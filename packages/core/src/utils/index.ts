@@ -89,9 +89,9 @@ export const internalsSymbol = Symbol.for('internals');
 // used for a11y key board controls for nodes and edges
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
 
-export const devWarn = (message: string) => {
+export const devWarn = (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {
-    console.warn(`[React Flow]: ${message}`);
+    console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
   }
 };
 
@@ -118,7 +118,7 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
 
 export const isMouseEvent = (
   event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent
-): event is MouseEvent | ReactMouseEvent => 'button' in event;
+): event is MouseEvent | ReactMouseEvent => 'clientX' in event;
 
 export const getEventPosition = (
   event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,

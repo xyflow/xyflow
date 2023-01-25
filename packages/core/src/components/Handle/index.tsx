@@ -5,11 +5,12 @@ import { shallow } from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { handlePointerDown } from './handler';
-import { devWarn, getHostForElement, isMouseEvent } from '../../utils';
+import { getHostForElement, isMouseEvent } from '../../utils';
 import { addEdge } from '../../utils/graph';
 import { Position } from '../../types';
 import type { HandleProps, Connection, ReactFlowState } from '../../types';
 import { isValidHandle } from './utils';
+import { errorMessages } from '../../contants';
 
 const alwaysValid = () => true;
 
@@ -42,7 +43,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const nodeId = useNodeId();
 
     if (!nodeId) {
-      devWarn('Handle: No node id found. Make sure to only use a Handle inside a custom Node.');
+      store.getState().onError?.('010', errorMessages['010']());
+
       return null;
     }
 

@@ -72,21 +72,18 @@ export function getHandlePosition(position: Position, nodeRect: Rect, handle: Ha
   }
 }
 
-export function getHandle(bounds: HandleElement[], handleId: string | null): HandleElement | null {
+export function getHandle(bounds: HandleElement[], handleId?: string | null): HandleElement | null {
   if (!bounds) {
     return null;
   }
 
-  // there is no handleId when there are no multiple handles/ handles with ids
-  // so we just pick the first one
-  let handle: HandleElement | null = null;
-  if (bounds.length === 1 || !handleId) {
-    handle = bounds[0];
-  } else if (handleId) {
-    handle = bounds.find((d) => d.id === handleId)!;
+  if (handleId) {
+    return bounds.find((d) => d.id === handleId)!;
+  } else if (bounds.length === 1) {
+    return bounds[0];
   }
 
-  return typeof handle === 'undefined' ? null : handle;
+  return null;
 }
 
 interface EdgePositions {
@@ -167,16 +164,15 @@ export function isEdgeVisible({
   return overlappingArea > 0;
 }
 
-export function getNodeData(node: Node): [Rect, NodeHandleBounds | null, boolean] {
+export function getNodeData(node?: Node): [Rect, NodeHandleBounds | null, boolean] {
   const handleBounds = node?.[internalsSymbol]?.handleBounds || null;
 
-  const isInvalid =
-    !node ||
-    !handleBounds ||
-    !node.width ||
-    !node.height ||
-    typeof node.positionAbsolute?.x === 'undefined' ||
-    typeof node.positionAbsolute?.y === 'undefined';
+  const isValid =
+    handleBounds &&
+    node?.width &&
+    node?.height &&
+    typeof node?.positionAbsolute?.x !== 'undefined' &&
+    typeof node?.positionAbsolute?.y !== 'undefined';
 
   return [
     {
@@ -186,6 +182,6 @@ export function getNodeData(node: Node): [Rect, NodeHandleBounds | null, boolean
       height: node?.height || 0,
     },
     handleBounds,
-    !isInvalid,
+    !!isValid,
   ];
 }
