@@ -118,7 +118,7 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
 
 export const isMouseEvent = (
   event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent
-): event is MouseEvent | ReactMouseEvent => 'button' in event;
+): event is MouseEvent | ReactMouseEvent => 'clientX' in event;
 
 export const getEventPosition = (
   event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
