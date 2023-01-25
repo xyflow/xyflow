@@ -10,6 +10,7 @@ import { GraphViewProps } from '../GraphView';
 import { getPositionWithOrigin } from './utils';
 import { Position } from '../../types';
 import type { ReactFlowState, WrapNodeProps } from '../../types';
+import { errorMessages } from '../../contants';
 
 type NodeRendererProps = Pick<
   GraphViewProps,
@@ -77,7 +78,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         let nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          onError?.('003', `Node type "${nodeType}" not found. Using fallback type "default".`);
+          onError?.('003', errorMessages['003'](nodeType));
 
           nodeType = 'default';
         }

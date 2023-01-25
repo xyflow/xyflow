@@ -13,6 +13,7 @@ import {
   NodeInternals,
   NodeOrigin,
 } from '../types';
+import { errorMessages } from '../contants';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
@@ -70,7 +71,7 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
 
 export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', "Can't create edge. An edge needs a source and a target.");
+    devWarn('006', errorMessages['006']());
 
     return edges;
   }
@@ -94,7 +95,7 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
 
 export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', "Can't create a new edge. An edge needs a source and a target.");
+    devWarn('006', errorMessages['006']());
 
     return edges;
   }
@@ -102,7 +103,7 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
 
   if (!foundEdge) {
-    devWarn('007', `The old edge with id=${oldEdge.id} does not exist.`);
+    devWarn('007', errorMessages['007'](oldEdge.id));
 
     return edges;
   }

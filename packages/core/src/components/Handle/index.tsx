@@ -10,6 +10,7 @@ import { addEdge } from '../../utils/graph';
 import { Position } from '../../types';
 import type { HandleProps, Connection, ReactFlowState } from '../../types';
 import { isValidHandle } from './utils';
+import { errorMessages } from '../../contants';
 
 const alwaysValid = () => true;
 
@@ -42,9 +43,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const nodeId = useNodeId();
 
     if (!nodeId) {
-      store
-        .getState()
-        .onError?.('010', 'Handle: No node id found. Make sure to only use a Handle inside a custom Node.');
+      store.getState().onError?.('010', errorMessages['010']());
 
       return null;
     }

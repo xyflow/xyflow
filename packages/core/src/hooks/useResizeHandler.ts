@@ -3,6 +3,7 @@ import type { MutableRefObject } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
 import { getDimensions } from '../utils';
+import { errorMessages } from '../contants';
 
 function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>): void {
   const store = useStoreApi();
@@ -18,9 +19,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
       const size = getDimensions(rendererNode.current);
 
       if (size.height === 0 || size.width === 0) {
-        store
-          .getState()
-          .onError?.('004', 'The React Flow parent container needs a width and a height to render the graph.');
+        store.getState().onError?.('004', errorMessages['004']());
       }
 
       store.setState({ width: size.width || 500, height: size.height || 500 });

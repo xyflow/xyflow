@@ -10,6 +10,7 @@ import { getEdgePositions, getHandle, getNodeData } from './utils';
 import { GraphViewProps } from '../GraphView';
 import { ConnectionMode, Position } from '../../types';
 import type { Edge, ReactFlowState } from '../../types';
+import { errorMessages } from '../../contants';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
@@ -98,7 +99,7 @@ const EdgeRenderer = ({
               let edgeType = edge.type || 'default';
 
               if (!edgeTypes[edgeType]) {
-                onError?.('003', `Edge type "${edgeType}" not found. Using fallback type "default".`);
+                onError?.('011', errorMessages['011'](edgeType));
                 edgeType = 'default';
               }
 
@@ -115,12 +116,7 @@ const EdgeRenderer = ({
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
-                onError?.(
-                  '008',
-                  `Couldn't create edge for ${!sourceHandle ? 'source' : 'target'} handle id: "${
-                    !sourceHandle ? edge.sourceHandle : edge.targetHandle
-                  }", edge id: ${edge.id}.`
-                );
+                onError?.('008', errorMessages['008'](sourceHandle, edge));
 
                 return null;
               }

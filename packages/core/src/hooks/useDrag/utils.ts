@@ -3,6 +3,7 @@ import type { RefObject } from 'react';
 import { clampPosition, isNumeric } from '../../utils';
 import type { CoordinateExtent, Node, NodeDragItem, NodeInternals, NodeOrigin, OnError, XYPosition } from '../../types';
 import { getNodePositionWithOrigin } from '../../utils/graph';
+import { errorMessages } from '../../contants';
 
 export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
   if (!node.parentNode) {
@@ -82,7 +83,7 @@ export function calcNextPosition(
             ]
           : currentExtent;
     } else {
-      onError?.('005', 'Only child nodes can use a parent extent.');
+      onError?.('005', errorMessages['005']());
 
       currentExtent = nodeExtent;
     }

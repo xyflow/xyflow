@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { MarkerType } from '../../types';
 import type { EdgeMarker } from '../../types';
 import { useStoreApi } from '../../hooks/useStore';
+import { errorMessages } from '../../contants';
 
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
@@ -43,7 +44,7 @@ export function useMarkerSymbol(type: MarkerType) {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 
     if (!symbolExists) {
-      store.getState().onError?.('009', `Marker type "${type}" doesn't exist.`);
+      store.getState().onError?.('009', errorMessages['009'](type));
 
       return null;
     }

@@ -3,10 +3,10 @@ import { useStore as useZustandStore } from 'zustand';
 import type { StoreApi } from 'zustand';
 
 import StoreContext from '../contexts/RFStoreContext';
+import { errorMessages } from '../contants';
 import type { ReactFlowState } from '../types';
 
-const errorMessage =
-  '[React Flow]: Seems like you have not used zustand provider as an ancestor. Help: https://reactflow.dev/error#100';
+const zustandErrorMessage = errorMessages['001']();
 
 type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T } ? T : never;
 
@@ -17,7 +17,7 @@ function useStore<StateSlice = ExtractState>(
   const store = useContext(StoreContext);
 
   if (store === null) {
-    throw new Error(errorMessage);
+    throw new Error(zustandErrorMessage);
   }
 
   return useZustandStore(store, selector, equalityFn);
@@ -27,7 +27,7 @@ const useStoreApi = () => {
   const store = useContext(StoreContext);
 
   if (store === null) {
-    throw new Error(errorMessage);
+    throw new Error(zustandErrorMessage);
   }
 
   return useMemo(
