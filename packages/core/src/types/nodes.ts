@@ -9,7 +9,7 @@ export type Node<T = any, U extends string | undefined = string | undefined> = {
   id: string;
   position: XYPosition;
   data: T;
-  type: U;
+  type?: U;
   style?: CSSProperties;
   className?: string;
   sourcePosition?: Position;
