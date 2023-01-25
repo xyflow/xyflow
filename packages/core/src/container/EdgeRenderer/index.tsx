@@ -1,27 +1,19 @@
-import { memo } from 'react';
+import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 
 import { useStore } from '../../hooks/useStore';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
-import ConnectionLine from '../../components/ConnectionLine/index';
 import MarkerDefinitions from './MarkerDefinitions';
 import { getEdgePositions, getHandle, getNodeData } from './utils';
 
 import { GraphViewProps } from '../GraphView';
-import { devWarn } from '../../utils';
 import { ConnectionMode, Position } from '../../types';
 import type { Edge, ReactFlowState } from '../../types';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
   | 'edgeTypes'
-  | 'connectionLineType'
-  | 'connectionLineType'
-  | 'connectionLineStyle'
-  | 'connectionLineComponent'
-  | 'connectionLineContainerStyle'
-  | 'connectionLineContainerStyle'
   | 'onEdgeClick'
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
@@ -40,11 +32,10 @@ type EdgeRendererProps = Pick<
   | 'disableKeyboardA11y'
 > & {
   elevateEdgesOnSelect: boolean;
+  children: ReactNode;
 };
 
 const selector = (s: ReactFlowState) => ({
-  connectionNodeId: s.connectionNodeId,
-  connectionHandleType: s.connectionHandleType,
   nodesConnectable: s.nodesConnectable,
   edgesFocusable: s.edgesFocusable,
   elementsSelectable: s.elementsSelectable,
@@ -52,34 +43,37 @@ const selector = (s: ReactFlowState) => ({
   height: s.height,
   connectionMode: s.connectionMode,
   nodeInternals: s.nodeInternals,
+  onError: s.onError,
 });
 
-const EdgeRenderer = (props: EdgeRendererProps) => {
-  const {
-    connectionNodeId,
-    connectionHandleType,
-    nodesConnectable,
-    edgesFocusable,
-    elementsSelectable,
-    width,
-    height,
-    connectionMode,
-    nodeInternals,
-  } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(props.onlyRenderVisibleElements, nodeInternals, props.elevateEdgesOnSelect);
+const EdgeRenderer = ({
+  defaultMarkerColor,
+  onlyRenderVisibleElements,
+  elevateEdgesOnSelect,
+  rfId,
+  edgeTypes,
+  noPanClassName,
+  onEdgeUpdate,
+  onEdgeContextMenu,
+  onEdgeMouseEnter,
+  onEdgeMouseMove,
+  onEdgeMouseLeave,
+  onEdgeClick,
+  edgeUpdaterRadius,
+  onEdgeDoubleClick,
+  onEdgeUpdateStart,
+  onEdgeUpdateEnd,
+  children,
+}: EdgeRendererProps) => {
+  const { edgesFocusable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } = useStore(
+    selector,
+    shallow
+  );
+  const edgeTree = useVisibleEdges(onlyRenderVisibleElements, nodeInternals, elevateEdgesOnSelect);
 
   if (!width) {
     return null;
   }
-
-  const {
-    connectionLineType,
-    defaultMarkerColor,
-    connectionLineStyle,
-    connectionLineComponent,
-    connectionLineContainerStyle,
-  } = props;
-  const renderConnectionLine = connectionNodeId && connectionHandleType;
 
   return (
     <>
@@ -91,11 +85,11 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           height={height}
           className="react-flow__edges react-flow__container"
         >
-          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={props.rfId} />}
+          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />}
           <g>
             {edges.map((edge: Edge) => {
-              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals.get(edge.source)!);
-              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals.get(edge.target)!);
+              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals.get(edge.source));
+              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals.get(edge.target));
 
               if (!sourceIsValid || !targetIsValid) {
                 return null;
@@ -103,31 +97,29 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
 
               let edgeType = edge.type || 'default';
 
-              if (!props.edgeTypes[edgeType]) {
-                devWarn(
-                  `Edge type "${edgeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
-                );
-
+              if (!edgeTypes[edgeType]) {
+                onError?.('003', `Edge type "${edgeType}" not found. Using fallback type "default".`);
                 edgeType = 'default';
               }
 
-              const EdgeComponent = props.edgeTypes[edgeType] || props.edgeTypes.default;
-              // when connection type is loose we can define all handles as sources
+              const EdgeComponent = edgeTypes[edgeType] || edgeTypes.default;
+              // when connection type is loose we can define all handles as sources and connect source -> source
               const targetNodeHandles =
                 connectionMode === ConnectionMode.Strict
                   ? targetHandleBounds!.target
                   : (targetHandleBounds!.target ?? []).concat(targetHandleBounds!.source ?? []);
-              const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle || null);
-              const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle || null);
+              const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle);
+              const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle);
               const sourcePosition = sourceHandle?.position || Position.Bottom;
               const targetPosition = targetHandle?.position || Position.Top;
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
-                devWarn(
-                  `Couldn't create edge for ${!sourceHandle ? 'source' : 'target'} handle id: ${
+                onError?.(
+                  '008',
+                  `Couldn't create edge for ${!sourceHandle ? 'source' : 'target'} handle id: "${
                     !sourceHandle ? edge.sourceHandle : edge.targetHandle
-                  }; edge id: ${edge.id}. Help: https://reactflow.dev/error#800`
+                  }", edge id: ${edge.id}.`
                 );
 
                 return null;
@@ -146,7 +138,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                 <EdgeComponent
                   key={edge.id}
                   id={edge.id}
-                  className={cc([edge.className, props.noPanClassName])}
+                  className={cc([edge.className, noPanClassName])}
                   type={edgeType}
                   data={edge.data}
                   selected={!!edge.selected}
@@ -172,17 +164,17 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
                   sourcePosition={sourcePosition}
                   targetPosition={targetPosition}
                   elementsSelectable={elementsSelectable}
-                  onEdgeUpdate={props.onEdgeUpdate}
-                  onContextMenu={props.onEdgeContextMenu}
-                  onMouseEnter={props.onEdgeMouseEnter}
-                  onMouseMove={props.onEdgeMouseMove}
-                  onMouseLeave={props.onEdgeMouseLeave}
-                  onClick={props.onEdgeClick}
-                  edgeUpdaterRadius={props.edgeUpdaterRadius}
-                  onEdgeDoubleClick={props.onEdgeDoubleClick}
-                  onEdgeUpdateStart={props.onEdgeUpdateStart}
-                  onEdgeUpdateEnd={props.onEdgeUpdateEnd}
-                  rfId={props.rfId}
+                  onEdgeUpdate={onEdgeUpdate}
+                  onContextMenu={onEdgeContextMenu}
+                  onMouseEnter={onEdgeMouseEnter}
+                  onMouseMove={onEdgeMouseMove}
+                  onMouseLeave={onEdgeMouseLeave}
+                  onClick={onEdgeClick}
+                  edgeUpdaterRadius={edgeUpdaterRadius}
+                  onEdgeDoubleClick={onEdgeDoubleClick}
+                  onEdgeUpdateStart={onEdgeUpdateStart}
+                  onEdgeUpdateEnd={onEdgeUpdateEnd}
+                  rfId={rfId}
                   ariaLabel={edge.ariaLabel}
                   isFocusable={isFocusable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
@@ -193,23 +185,7 @@ const EdgeRenderer = (props: EdgeRendererProps) => {
           </g>
         </svg>
       ))}
-      {renderConnectionLine && (
-        <svg
-          style={connectionLineContainerStyle}
-          width={width}
-          height={height}
-          className="react-flow__edges react-flow__connectionline react-flow__container"
-        >
-          <ConnectionLine
-            connectionNodeId={connectionNodeId!}
-            connectionHandleType={connectionHandleType!}
-            connectionLineStyle={connectionLineStyle}
-            connectionLineType={connectionLineType}
-            isConnectable={nodesConnectable}
-            CustomConnectionLineComponent={connectionLineComponent}
-          />
-        </svg>
-      )}
+      {children}
     </>
   );
 };

@@ -48,8 +48,6 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const nodeOrigin: NodeOrigin = [0.5, 0.5];
-
 const defaultEdgeOptions = {};
 
 const BasicFlow = () => {
@@ -96,7 +94,6 @@ const BasicFlow = () => {
       selectNodesOnDrag={false}
       elevateEdgesOnSelect
       elevateNodesOnSelect={false}
-      // nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
