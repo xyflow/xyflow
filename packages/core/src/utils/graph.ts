@@ -70,7 +70,7 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
 
 export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn("Can't create edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600");
+    devWarn('006', "Can't create edge. An edge needs a source and a target.");
 
     return edges;
   }
@@ -94,7 +94,7 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
 
 export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
   if (!newConnection.source || !newConnection.target) {
-    devWarn("Can't create a new edge. An edge needs a source and a target. Help: https://reactflow.dev/error#600");
+    devWarn('006', "Can't create a new edge. An edge needs a source and a target.");
 
     return edges;
   }
@@ -102,7 +102,7 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
 
   if (!foundEdge) {
-    devWarn(`The old edge with id=${oldEdge.id} does not exist. Help: https://reactflow.dev/error#700`);
+    devWarn('007', `The old edge with id=${oldEdge.id} does not exist.`);
 
     return edges;
   }

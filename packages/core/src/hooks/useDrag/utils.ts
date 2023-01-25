@@ -1,7 +1,7 @@
 import type { RefObject } from 'react';
 
-import { clampPosition, devWarn, isNumeric } from '../../utils';
-import type { CoordinateExtent, Node, NodeDragItem, NodeInternals, NodeOrigin, XYPosition } from '../../types';
+import { clampPosition, isNumeric } from '../../utils';
+import type { CoordinateExtent, Node, NodeDragItem, NodeInternals, NodeOrigin, OnError, XYPosition } from '../../types';
 import { getNodePositionWithOrigin } from '../../utils/graph';
 
 export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
@@ -62,7 +62,8 @@ export function calcNextPosition(
   nextPosition: XYPosition,
   nodeInternals: NodeInternals,
   nodeExtent?: CoordinateExtent,
-  nodeOrigin: NodeOrigin = [0, 0]
+  nodeOrigin: NodeOrigin = [0, 0],
+  onError?: OnError
 ): { position: XYPosition; positionAbsolute: XYPosition } {
   let currentExtent = node.extent || nodeExtent;
 
@@ -81,7 +82,7 @@ export function calcNextPosition(
             ]
           : currentExtent;
     } else {
-      devWarn('Only child nodes can use a parent extent. Help: https://reactflow.dev/error#500');
+      onError?.('005', 'Only child nodes can use a parent extent.');
 
       currentExtent = nodeExtent;
     }

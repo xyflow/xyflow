@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { devWarn } from '../../utils';
 import { MarkerType } from '../../types';
 import type { EdgeMarker } from '../../types';
+import { useStoreApi } from '../../hooks/useStore';
 
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
@@ -38,11 +38,12 @@ export const MarkerSymbols = {
 };
 
 export function useMarkerSymbol(type: MarkerType) {
+  const store = useStoreApi();
   const symbol = useMemo(() => {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 
     if (!symbolExists) {
-      devWarn(`Marker type "${type}" doesn't exist. Help: https://reactflow.dev/error#900`);
+      store.getState().onError?.('009', `Marker type "${type}" doesn't exist.`);
 
       return null;
     }

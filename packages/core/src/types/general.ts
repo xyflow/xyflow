@@ -206,6 +206,7 @@ export type ReactFlowStore = {
 
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onError?: OnError;
 
   // event handlers
   onViewportChangeStart?: OnViewportChange;
@@ -270,3 +271,5 @@ export type SelectionRect = Rect & {
   startX: number;
   startY: number;
 };
+
+export type OnError = (id: string, message: string) => void;

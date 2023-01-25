@@ -9,7 +9,7 @@ import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler } from './utils';
 import { elementSelectionKeys } from '../../utils';
-import type { EdgeProps, WrapEdgeProps, Connection } from '../../types';
+import type { EdgeProps, WrapEdgeProps, Connection, HandleType } from '../../types';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -115,7 +115,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         getState: store.getState,
         setState: store.setState,
         isValidConnection,
-        elementEdgeUpdaterType: handleType,
+        edgeUpdaterType: handleType,
         onEdgeUpdateEnd: _onEdgeUpdateEnd,
       });
     };

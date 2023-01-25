@@ -7,7 +7,8 @@ function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
-    const { nodeInternals, nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid } = store.getState();
+    const { nodeInternals, nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid, onError } =
+      store.getState();
     const selectedNodes = getNodes().filter((n) => n.selected);
     // by default a node moves 5px on each key press, or 20px if shift is pressed
     // if snap grid is enabled, we use that for the velocity.
@@ -27,10 +28,17 @@ function useUpdateNodePositions() {
           nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
         }
 
-        const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent);
+        const { positionAbsolute, position } = calcNextPosition(
+          n,
+          nextPosition,
+          nodeInternals,
+          nodeExtent,
+          undefined,
+          onError
+        );
 
-        n.position = updatedPos.position;
-        n.positionAbsolute = updatedPos.positionAbsolute;
+        n.position = position;
+        n.positionAbsolute = positionAbsolute;
       }
 
       return n;
