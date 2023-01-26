@@ -1,5 +1,11 @@
 # reactflow
 
+## 11.5.1
+
+### Minor Changes
+
+- use latest node-toolbar package to prevent dependency issues
+
 ## 11.5.0
 
 Lot's of improvements are coming with this release! 
