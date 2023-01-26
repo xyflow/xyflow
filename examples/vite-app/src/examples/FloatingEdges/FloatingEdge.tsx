@@ -1,4 +1,4 @@
-import React, { FC, useMemo, CSSProperties } from 'react';
+import { FC, useMemo, CSSProperties } from 'react';
 import { EdgeProps, useStore, getBezierPath, ReactFlowState } from 'reactflow';
 
 import { getEdgeParams } from './utils';
@@ -17,7 +17,7 @@ const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
 
   const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(sourceNode, targetNode);
 
-  const d = getBezierPath({
+  const [path] = getBezierPath({
     sourceX: sx,
     sourceY: sy,
     sourcePosition: sourcePos,
@@ -28,7 +28,7 @@ const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
 
   return (
     <g className="react-flow__connection">
-      <path id={id} className="react-flow__edge-path" d={d} style={style as CSSProperties} />
+      <path id={id} className="react-flow__edge-path" d={path} style={style as CSSProperties} />
     </g>
   );
 };

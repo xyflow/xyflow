@@ -294,6 +294,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             autoPanOnConnect={autoPanOnConnect}
             autoPanOnNodeDrag={autoPanOnNodeDrag}
             onError={onError}
+            connectionRadius={connectionRadius}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}
