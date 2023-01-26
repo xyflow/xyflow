@@ -19,8 +19,8 @@ import type {
   NodeDragItem,
   UnselectNodesAndEdgesParams,
   NodeChange,
+  XYPosition,
 } from '../types';
-import { XYPosition } from 'react-flow-renderer';
 
 const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({
