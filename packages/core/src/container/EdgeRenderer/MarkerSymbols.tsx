@@ -40,6 +40,7 @@ export const MarkerSymbols = {
 
 export function useMarkerSymbol(type: MarkerType) {
   const store = useStoreApi();
+
   const symbol = useMemo(() => {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 
@@ -51,6 +52,7 @@ export function useMarkerSymbol(type: MarkerType) {
 
     return MarkerSymbols[type];
   }, [type]);
+
   return symbol;
 }
 

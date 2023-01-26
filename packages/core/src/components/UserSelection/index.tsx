@@ -10,9 +10,9 @@ const selector = (s: ReactFlowState) => ({
 
 function UserSelection() {
   const { userSelectionActive, userSelectionRect } = useStore(selector, shallow);
-  const showSelectionBox = userSelectionActive && userSelectionRect;
+  const isActive = userSelectionActive && userSelectionRect;
 
-  if (!showSelectionBox) {
+  if (!isActive) {
     return null;
   }
 

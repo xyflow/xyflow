@@ -1,6 +1,6 @@
 import { ConnectionMode } from '../../types';
-import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 import { internalsSymbol } from '../../utils';
+import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 
 export type ConnectionHandle = {
   id: string | null;

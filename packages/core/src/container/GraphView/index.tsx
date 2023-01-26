@@ -5,8 +5,8 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
-import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
 import ConnectionLine from '../../components/ConnectionLine';
+import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
 
 export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
   Required<
