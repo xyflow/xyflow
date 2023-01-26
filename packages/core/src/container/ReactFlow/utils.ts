@@ -5,6 +5,7 @@ import { devWarn } from '../../utils';
 import { CreateEdgeTypes } from '../EdgeRenderer/utils';
 import { CreateNodeTypes } from '../NodeRenderer/utils';
 import type { EdgeTypes, EdgeTypesWrapped, NodeTypes, NodeTypesWrapped } from '../../types';
+import { errorMessages } from '../../contants';
 
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: NodeTypes, createTypes: CreateNodeTypes): NodeTypesWrapped;
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: EdgeTypes, createTypes: CreateEdgeTypes): EdgeTypesWrapped;
@@ -16,9 +17,7 @@ export function useNodeOrEdgeTypes(nodeOrEdgeTypes: any, createTypes: any): any 
     if (process.env.NODE_ENV === 'development') {
       const typeKeys = Object.keys(nodeOrEdgeTypes);
       if (shallow(typesKeysRef.current, typeKeys)) {
-        devWarn(
-          "It looks like you have created a new nodeTypes or edgeTypes object. If this wasn't on purpose please define the nodeTypes/edgeTypes outside of the component or memoize them. Help: https://reactflow.dev/error#200"
-        );
+        devWarn('002', errorMessages['002']());
       }
 
       typesKeysRef.current = typeKeys;

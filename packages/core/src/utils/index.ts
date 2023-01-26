@@ -1,4 +1,9 @@
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import type {
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
+} from 'react';
+
 import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
@@ -12,6 +17,25 @@ export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: Coo
   x: clamp(position.x, extent[0][0], extent[1][0]),
   y: clamp(position.y, extent[0][1], extent[1][1]),
 });
+
+// returns a number between 0 and 1 that represents the velocity of the movement
+// when the mouse is close to the edge of the canvas
+const calcAutoPanVelocity = (value: number, min: number, max: number): number => {
+  if (value < min) {
+    return clamp(Math.abs(value - min), 1, 50) / 50;
+  } else if (value > max) {
+    return -clamp(Math.abs(value - max), 1, 50) / 50;
+  }
+
+  return 0;
+};
+
+export const calcAutoPan = (pos: XYPosition, bounds: Dimensions): number[] => {
+  const xMovement = calcAutoPanVelocity(pos.x, 35, bounds.width - 35) * 20;
+  const yMovement = calcAutoPanVelocity(pos.y, 35, bounds.height - 35) * 20;
+
+  return [xMovement, yMovement];
+};
 
 export const getHostForElement = (element: HTMLElement): Document | ShadowRoot =>
   (element.getRootNode?.() as Document | ShadowRoot) || window?.document;
@@ -65,9 +89,9 @@ export const internalsSymbol = Symbol.for('internals');
 // used for a11y key board controls for nodes and edges
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
 
-export const devWarn = (message: string) => {
+export const devWarn = (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {
-    console.warn(`[React Flow]: ${message}`);
+    console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
   }
 };
 
@@ -91,3 +115,21 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
     !!target?.closest('.nokey')
   );
 }
+
+export const isMouseEvent = (
+  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent
+): event is MouseEvent | ReactMouseEvent => 'clientX' in event;
+
+export const getEventPosition = (
+  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
+  bounds?: DOMRect
+) => {
+  const isMouseTriggered = isMouseEvent(event);
+  const evtX = isMouseTriggered ? event.clientX : event.touches?.[0].clientX;
+  const evtY = isMouseTriggered ? event.clientY : event.touches?.[0].clientY;
+
+  return {
+    x: evtX - (bounds?.left ?? 0),
+    y: evtY - (bounds?.top ?? 0),
+  };
+};

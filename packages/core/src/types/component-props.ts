@@ -36,6 +36,7 @@ import type {
   EdgeMouseHandler,
   HandleType,
   SelectionMode,
+  OnError,
 } from '.';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
@@ -61,7 +62,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onEdgeMouseLeave?: EdgeMouseHandler;
   onEdgeDoubleClick?: EdgeMouseHandler;
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   onNodesChange?: OnNodesChange;
   onEdgesChange?: OnEdgesChange;
   onNodesDelete?: OnNodesDelete;
@@ -139,6 +140,10 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   elevateNodesOnSelect?: boolean;
   elevateEdgesOnSelect?: boolean;
   disableKeyboardA11y?: boolean;
+  autoPanOnNodeDrag?: boolean;
+  autoPanOnConnect?: boolean;
+  connectionRadius?: number;
+  onError?: OnError;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

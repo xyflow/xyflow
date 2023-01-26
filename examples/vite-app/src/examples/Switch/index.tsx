@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import ReactFlow, { addEdge, Node, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
@@ -35,7 +35,7 @@ const nodesA: Node[] = [
 ];
 
 const edgesA: Edge[] = [
-  { id: 'e1-2', source: '1a', target: '2a', ariaLabel: null },
+  { id: 'e1-2', source: '1a', target: '2a', ariaLabel: undefined },
   { id: 'e1-3', source: '1a', target: '3a' },
 ];
 
@@ -83,6 +83,8 @@ const edgesB: Edge[] = [
   { id: 'e4b', source: 'inputb', target: '4b' },
 ];
 
+const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node.position);
+
 const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(nodesA);
   const [edges, setEdges, onEdgesChange] = useEdgesState(edgesA);
@@ -98,7 +100,7 @@ const BasicFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      disableKeyboardA11y
+      onNodeDrag={onNodeDrag}
     >
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
         <button

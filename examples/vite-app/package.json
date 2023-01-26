@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000 --open",
+    "dev": "vite --port 3000 --open --host",
     "serve": "vite serve --port 3000",
     "build": "vite build",
     "test:dev": "cypress open",

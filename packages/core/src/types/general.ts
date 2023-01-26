@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { MouseEvent as ReactMouseEvent, ComponentType, MemoExoticComponent } from 'react';
+import type {
+  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
+  ComponentType,
+  MemoExoticComponent,
+} from 'react';
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
@@ -77,8 +82,8 @@ export type OnConnectStartParams = {
   handleType: HandleType | null;
 };
 
-export type OnConnectStart = (event: ReactMouseEvent, params: OnConnectStartParams) => void;
-export type OnConnectEnd = (event: MouseEvent) => void;
+export type OnConnectStart = (event: ReactMouseEvent | ReactTouchEvent, params: OnConnectStartParams) => void;
+export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 
 export type Viewport = {
   x: number;
@@ -201,6 +206,7 @@ export type ReactFlowStore = {
 
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onError?: OnError;
 
   // event handlers
   onViewportChangeStart?: OnViewportChange;
@@ -210,6 +216,9 @@ export type ReactFlowStore = {
   onSelectionChange?: OnSelectionChangeFunc;
 
   ariaLiveMessage: string;
+  autoPanOnConnect: boolean;
+  autoPanOnNodeDrag: boolean;
+  connectionRadius: number;
 };
 
 export type ReactFlowActions = {
@@ -230,6 +239,7 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
+  panBy: (delta: XYPosition) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;
@@ -261,3 +271,5 @@ export type SelectionRect = Rect & {
   startX: number;
   startY: number;
 };
+
+export type OnError = (id: string, message: string) => void;

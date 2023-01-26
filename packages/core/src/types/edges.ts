@@ -85,7 +85,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onMouseLeave?: EdgeMouseHandler;
   edgeUpdaterRadius?: number;
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent, edge: Edge, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
   isFocusable: boolean;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;

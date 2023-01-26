@@ -5,11 +5,11 @@ import { internalsSymbol } from '../utils';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 
 // interface for the user node items
-export type Node<T = any> = {
+export type Node<T = any, U extends string | undefined = string | undefined> = {
   id: string;
   position: XYPosition;
   data: T;
-  type?: string;
+  type?: U;
   style?: CSSProperties;
   className?: string;
   sourcePosition?: Position;

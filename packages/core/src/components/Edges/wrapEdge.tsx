@@ -4,7 +4,7 @@ import cc from 'classcat';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
-import { handleMouseDown } from '../Handle/handler';
+import { handlePointerDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler } from './utils';
@@ -99,14 +99,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       setUpdating(true);
       onEdgeUpdateStart?.(event, edge, handleType);
 
-      const _onEdgeUpdateEnd = (evt: MouseEvent) => {
+      const _onEdgeUpdateEnd = (evt: MouseEvent | TouchEvent) => {
         setUpdating(false);
         onEdgeUpdateEnd?.(evt, edge, handleType);
       };
 
       const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
 
-      handleMouseDown({
+      handlePointerDown({
         event,
         handleId,
         nodeId,
@@ -115,7 +115,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         getState: store.getState,
         setState: store.setState,
         isValidConnection,
-        elementEdgeUpdaterType: handleType,
+        edgeUpdaterType: handleType,
         onEdgeUpdateEnd: _onEdgeUpdateEnd,
       });
     };

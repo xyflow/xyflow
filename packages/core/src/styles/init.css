@@ -98,7 +98,7 @@
 .react-flow__connection {
   pointer-events: none;
 
-  &.animated {
+  .animated {
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }

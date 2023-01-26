@@ -4,12 +4,13 @@ import { shallow } from 'zustand/shallow';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
-import { clampPosition, devWarn, internalsSymbol } from '../../utils';
+import { clampPosition, internalsSymbol } from '../../utils';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { getPositionWithOrigin } from './utils';
 import { Position } from '../../types';
 import type { ReactFlowState, WrapNodeProps } from '../../types';
+import { errorMessages } from '../../contants';
 
 type NodeRendererProps = Pick<
   GraphViewProps,
@@ -36,13 +37,12 @@ const selector = (s: ReactFlowState) => ({
   nodesFocusable: s.nodesFocusable,
   elementsSelectable: s.elementsSelectable,
   updateNodeDimensions: s.updateNodeDimensions,
+  onError: s.onError,
 });
 
 const NodeRenderer = (props: NodeRendererProps) => {
-  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, updateNodeDimensions } = useStore(
-    selector,
-    shallow
-  );
+  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, updateNodeDimensions, onError } =
+    useStore(selector, shallow);
   const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
   const resizeObserverRef = useRef<ResizeObserver>();
 
@@ -78,9 +78,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         let nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          devWarn(
-            `Node type "${nodeType}" not found. Using fallback type "default". Help: https://reactflow.dev/error#300`
-          );
+          onError?.('003', errorMessages['003'](nodeType));
 
           nodeType = 'default';
         }

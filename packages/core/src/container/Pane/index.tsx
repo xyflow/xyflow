@@ -11,8 +11,9 @@ import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
 import { getConnectedEdges, getNodesInside } from '../../utils/graph';
+import { getEventPosition } from '../../utils';
 import { SelectionMode } from '../../types';
-import type { ReactFlowProps, XYPosition, ReactFlowState, NodeChange, EdgeChange } from '../../types';
+import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -32,13 +33,6 @@ type PaneProps = {
     | 'onPaneMouseLeave'
   >
 >;
-
-function getMousePosition(event: ReactMouseEvent, containerBounds: DOMRect): XYPosition {
-  return {
-    x: event.clientX - containerBounds.left,
-    y: event.clientY - containerBounds.top,
-  };
-}
 
 const wrapHandler = (
   handler: React.MouseEventHandler | undefined,
@@ -118,7 +112,7 @@ const Pane = memo(
         return;
       }
 
-      const { x, y } = getMousePosition(event, containerBounds.current);
+      const { x, y } = getEventPosition(event, containerBounds.current);
 
       resetSelectedElements();
 
@@ -145,7 +139,7 @@ const Pane = memo(
 
       store.setState({ userSelectionActive: true, nodesSelectionActive: false });
 
-      const mousePos = getMousePosition(event, containerBounds.current);
+      const mousePos = getEventPosition(event, containerBounds.current);
       const startX = userSelectionRect.startX ?? 0;
       const startY = userSelectionRect.startY ?? 0;
 

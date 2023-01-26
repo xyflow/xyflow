@@ -1,3 +1,4 @@
+import { devWarn } from '../utils';
 import { ConnectionMode } from '../types';
 import type { CoordinateExtent, ReactFlowStore } from '../types';
 
@@ -56,6 +57,10 @@ const initialState: ReactFlowStore = {
   connectOnClick: true,
 
   ariaLiveMessage: '',
+  autoPanOnConnect: true,
+  autoPanOnNodeDrag: true,
+  connectionRadius: 20,
+  onError: devWarn,
 };
 
 export default initialState;

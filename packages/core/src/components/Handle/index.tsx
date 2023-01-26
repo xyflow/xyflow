@@ -1,14 +1,16 @@
-import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent } from 'react';
+import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import { checkElementBelowIsValid, handleMouseDown } from './handler';
-import { getHostForElement } from '../../utils';
+import { handlePointerDown } from './handler';
+import { getHostForElement, isMouseEvent } from '../../utils';
 import { addEdge } from '../../utils/graph';
 import { Position } from '../../types';
 import type { HandleProps, Connection, ReactFlowState } from '../../types';
+import { isValidHandle } from './utils';
+import { errorMessages } from '../../contants';
 
 const alwaysValid = () => true;
 
@@ -32,14 +34,20 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       children,
       className,
       onMouseDown,
+      onTouchStart,
       ...rest
     },
     ref
   ) => {
     const store = useStoreApi();
+    const nodeId = useNodeId();
 
-    // @fixme: remove type assertion and handle nodeId === null
-    const nodeId = useNodeId() as string;
+    if (!nodeId) {
+      store.getState().onError?.('010', errorMessages['010']());
+
+      return null;
+    }
+
     const { connectionStartHandle, connectOnClick, noPanClassName } = useStore(selector, shallow);
 
     const handleId = id || null;
@@ -61,9 +69,11 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       onConnect?.(edgeParams);
     };
 
-    const onMouseDownHandler = (event: ReactMouseEvent<HTMLDivElement>) => {
-      if (event.button === 0) {
-        handleMouseDown({
+    const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
+      const isMouseTriggered = isMouseEvent(event);
+
+      if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+        handlePointerDown({
           event,
           handleId,
           nodeId,
@@ -74,7 +84,12 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           isValidConnection,
         });
       }
-      onMouseDown?.(event);
+
+      if (isMouseTriggered) {
+        onMouseDown?.(event);
+      } else {
+        onTouchStart?.(event);
+      }
     };
 
     const onClick = (event: ReactMouseEvent) => {
@@ -86,12 +101,16 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       }
 
       const doc = getHostForElement(event.target as HTMLElement);
-      const { connection, isValid } = checkElementBelowIsValid(
-        event as unknown as MouseEvent,
+      const { connection, isValid } = isValidHandle(
+        {
+          nodeId,
+          id: handleId,
+          type,
+        },
         connectionMode,
-        connectionStartHandle.type === 'target',
         connectionStartHandle.nodeId,
         connectionStartHandle.handleId || null,
+        connectionStartHandle.type,
         isValidConnection,
         doc
       );
@@ -110,6 +129,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         data-handleid={handleId}
         data-nodeid={nodeId}
         data-handlepos={position}
+        data-id={`${nodeId}-${handleId}-${type}`}
         className={cc([
           'react-flow__handle',
           `react-flow__handle-${position}`,
@@ -126,7 +146,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
               connectionStartHandle?.type === type,
           },
         ])}
-        onMouseDown={onMouseDownHandler}
+        onMouseDown={onPointerDown}
+        onTouchStart={onPointerDown}
         onClick={connectOnClick ? onClick : undefined}
         ref={ref}
         {...rest}

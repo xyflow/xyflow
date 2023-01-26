@@ -21,20 +21,18 @@ export interface NodesSelectionProps {
   disableKeyboardA11y: boolean;
 }
 
-const selector = (s: ReactFlowState) => ({
-  transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`,
-  userSelectionActive: s.userSelectionActive,
-});
-
-const bboxSelector = (s: ReactFlowState) => {
+const selector = (s: ReactFlowState) => {
   const selectedNodes = s.getNodes().filter((n) => n.selected);
-  return getRectOfNodes(selectedNodes, s.nodeOrigin);
+  return {
+    ...getRectOfNodes(selectedNodes, s.nodeOrigin),
+    transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`,
+    userSelectionActive: s.userSelectionActive,
+  };
 };
 
 function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
-  const { transformString, userSelectionActive } = useStore(selector, shallow);
-  const { width, height, x: left, y: top } = useStore(bboxSelector, shallow);
+  const { width, height, x: left, y: top, transformString, userSelectionActive } = useStore(selector, shallow);
   const updatePositions = useUpdateNodePositions();
 
   const nodeRef = useRef<HTMLDivElement>(null);

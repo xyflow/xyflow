@@ -1,19 +1,25 @@
 import { memo, FC } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 
-import { NodeResizer, ResizeDragEvent, ResizeEventParams } from '@reactflow/node-resizer';
+import { NodeResizer, ShouldResize, OnResize, OnResizeEnd, OnResizeStart } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 
-const onResizeStart = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onResizeStart: OnResizeStart = (_, params) => {
   console.log('resize start', params);
 };
 
-const onResize = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onResize: OnResize = (_, params) => {
   console.log('resize', params);
 };
 
-const onResizeEnd = (_: ResizeDragEvent, params: ResizeEventParams) => {
+const onResizeEnd: OnResizeEnd = (_, params) => {
   console.log('resize end', params);
+};
+
+const shouldResize: ShouldResize = (_, params) => {
+  console.log('should resize', params);
+
+  return true;
 };
 
 const CustomNode: FC<NodeProps> = ({ data, selected }) => {
@@ -23,6 +29,7 @@ const CustomNode: FC<NodeProps> = ({ data, selected }) => {
         minWidth={100}
         minHeight={100}
         isVisible={selected}
+        shouldResize={shouldResize}
         onResizeStart={onResizeStart}
         onResize={onResize}
         onResizeEnd={onResizeEnd}

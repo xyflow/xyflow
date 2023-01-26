@@ -5,6 +5,7 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
+import ConnectionLine from '../../components/ConnectionLine';
 import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
 
 export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
@@ -149,10 +150,6 @@ const GraphView = ({
           edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
           onEdgeDoubleClick={onEdgeDoubleClick}
-          connectionLineType={connectionLineType}
-          connectionLineStyle={connectionLineStyle}
-          connectionLineComponent={connectionLineComponent}
-          connectionLineContainerStyle={connectionLineContainerStyle}
           onEdgeUpdate={onEdgeUpdate}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           onEdgeContextMenu={onEdgeContextMenu}
@@ -167,7 +164,14 @@ const GraphView = ({
           elevateEdgesOnSelect={!!elevateEdgesOnSelect}
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
-        />
+        >
+          <ConnectionLine
+            style={connectionLineStyle}
+            type={connectionLineType}
+            component={connectionLineComponent}
+            containerStyle={connectionLineContainerStyle}
+          />
+        </EdgeRenderer>
         <div className="react-flow__edgelabel-renderer" />
 
         <NodeRenderer

@@ -36,7 +36,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@reactflow/core": "workspace:*",
+    "@reactflow/core": "workspace:^11.3.3",
     "classcat": "^5.0.3",
     "zustand": "^4.3.1"
   },
