@@ -2,6 +2,13 @@
 
 ## 2.0.0
 
+After this update it should be easier to update the node resizer (no need to update the reactflow package anymore).
+
+New props:
+
+- `shouldResize`: user can pass a function that determines if resize should be executed
+- `direction`: gets passed as an attribute on resize
+
 ### Major Changes
 
 - [#2749](https://github.com/wbkd/react-flow/pull/2749) [`e347dd82`](https://github.com/wbkd/react-flow/commit/e347dd82d342bf9c4884ca667afaa5cf639283e5) - Add `shouldResize`, rename and cleanup types - `ResizeEventParams` is now `ResizeParams`
