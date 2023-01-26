@@ -1,5 +1,16 @@
 # @reactflow/node-resizer
 
+## 2.0.0
+
+### Major Changes
+
+- [#2749](https://github.com/wbkd/react-flow/pull/2749) [`e347dd82`](https://github.com/wbkd/react-flow/commit/e347dd82d342bf9c4884ca667afaa5cf639283e5) - Add `shouldResize`, rename and cleanup types - `ResizeEventParams` is now `ResizeParams`
+
+### Patch Changes
+
+- Updated dependencies [[`e96309b6`](https://github.com/wbkd/react-flow/commit/e96309b6a57b1071faeebf7b0547fef7fd418694), [`85003b01`](https://github.com/wbkd/react-flow/commit/85003b01add71ea852bd5b0d2f1e7496050a6b52), [`4c516882`](https://github.com/wbkd/react-flow/commit/4c516882d2bbf426c1832a53ad40763cc1abef92)]:
+  - @reactflow/core@11.5.0
+
 ## 1.2.2
 
 ### Patch Changes
