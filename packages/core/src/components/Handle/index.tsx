@@ -102,6 +102,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
 
       const doc = getHostForElement(event.target as HTMLElement);
       const { connection, isValid } = isValidHandle(
+        event,
         {
           nodeId,
           id: handleId,
