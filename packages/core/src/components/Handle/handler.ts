@@ -125,6 +125,7 @@ export function handlePointerDown({
     }
 
     const { connection, handleDomNode, isValid } = isValidHandle(
+      event,
       prevClosestHandle,
       connectionMode,
       nodeId,
@@ -148,6 +149,7 @@ export function handlePointerDown({
 
     if (prevClosestHandle) {
       const { connection, isValid } = isValidHandle(
+        event,
         prevClosestHandle,
         connectionMode,
         nodeId,
