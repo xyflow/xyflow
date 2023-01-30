@@ -1,5 +1,12 @@
 # @reactflow/background
 
+## 11.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`71153534`](https://github.com/wbkd/react-flow/commit/7115353418ebc7f7c81ab0e861200972bbf7dbd5)]:
+  - @reactflow/core@11.5.1
+
 ## 11.1.3
 
 ### Patch Changes
