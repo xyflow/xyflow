@@ -1,6 +1,6 @@
 {
   "name": "reactflow",
-  "version": "11.5.2",
+  "version": "11.5.3",
   "description": "A highly customizable React library for building node-based editors and interactive flow charts",
   "keywords": [
     "react",
@@ -50,7 +50,7 @@
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
-    "@types/react": "^18.0.19",
+    "@types/react": ">=17",
     "react": "^18.2.0",
     "typescript": "^4.9.4"
   },
