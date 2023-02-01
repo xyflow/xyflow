@@ -48,6 +48,13 @@
   //    data: { label: 'Input Node 2' },
   //    position: { x: 150, y: 250 },
   //  }]
+
+  //  const edges = [{
+  //   id: '1-2',
+  //   type: 'default',
+  //   source: '1',
+  //   target: '2'
+  //  }]
 </script>
 
 <SvelteFlow {nodes} {edges} />

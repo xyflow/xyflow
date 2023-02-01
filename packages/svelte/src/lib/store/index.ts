@@ -1,9 +1,22 @@
 import { getContext } from 'svelte';
-import { get, writable, type Writable } from 'svelte/store';
-import type { Node, Transform, NodeDragItem, NodeDimensionUpdate, Edge } from '@reactflow/core';
+import { derived, writable, type Readable, type Writable } from 'svelte/store';
+import {
+	type Node,
+	type Transform,
+	type NodeDragItem,
+	type NodeDimensionUpdate,
+	type Edge,
+	Position
+} from '@reactflow/core';
 import { internalsSymbol } from '@reactflow/core';
 
-import { getDimensions, getHandleBounds, updateAbsoluteNodePositions } from '../../utils';
+import { getDimensions, getHandleBounds } from '../../utils';
+import {
+	getEdgePositions,
+	getHandle,
+	getNodeData,
+	type EdgePosition
+} from '$lib/container/EdgeRenderer/utils';
 
 export const key = Symbol();
 
@@ -13,12 +26,18 @@ type CreateStoreProps = {
 	transform?: Transform;
 };
 
+export type EdgeWithData = EdgePosition & {
+	id: string;
+	type: string;
+};
+
 type SvelteFlowStore = {
 	nodesStore: Writable<CreateStoreProps['nodes']>;
 	edgesStore: Writable<CreateStoreProps['edges']>;
 	heightStore: Writable<number>;
 	widthStore: Writable<number>;
 	transformStore: Writable<Transform>;
+	edgesWithDataStore: Readable<EdgeWithData[]>;
 	updateNodePositions: (
 		nodeDragItems: NodeDragItem[],
 		positionChanged?: boolean,
@@ -36,6 +55,51 @@ export function createStore({
 	const edgesStore = writable(edges);
 	const heightStore = writable(500);
 	const widthStore = writable(500);
+
+	const edgesWithDataStore = derived([edgesStore, nodesStore], ([$edges, $nodes]) => {
+		return $edges
+			.map((edge) => {
+				const sourceNode = $nodes.find((node) => node.id === edge.source);
+				const targetNode = $nodes.find((node) => node.id === edge.target);
+				const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(sourceNode);
+				const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(targetNode);
+
+				if (!sourceIsValid || !targetIsValid) {
+					return null;
+				}
+
+				const edgeType = edge.type || 'default';
+
+				const targetNodeHandles = targetHandleBounds!.target;
+				const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle);
+				const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle);
+				const sourcePosition = sourceHandle?.position || Position.Bottom;
+				const targetPosition = targetHandle?.position || Position.Top;
+
+				if (!sourceHandle || !targetHandle) {
+					return null;
+				}
+
+				const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
+					sourceNodeRect,
+					sourceHandle,
+					sourcePosition,
+					targetNodeRect,
+					targetHandle,
+					targetPosition
+				);
+
+				return {
+					id: edge.id,
+					type: edgeType,
+					sourceX,
+					sourceY,
+					targetX,
+					targetY
+				};
+			})
+			.filter((e) => e !== null) as EdgeWithData[];
+	});
 
 	const transformStore = writable(transform);
 
@@ -67,36 +131,40 @@ export function createStore({
 
 		const style = window.getComputedStyle(viewportNode);
 		const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-		const nds = get(nodesStore);
 
-		updates.forEach((update) => {
-			const node = nds.find((n) => n.id === update.id);
+		nodesStore.update((nds) => {
+			const nextNodes = nds.map((node) => {
+				const update = updates.find((u) => u.id === node.id);
 
-			if (node) {
-				const dimensions = getDimensions(update.nodeElement);
-				const doUpdate = !!(
-					dimensions.width &&
-					dimensions.height &&
-					(node.width !== dimensions.width ||
-						node.height !== dimensions.height ||
-						update.forceUpdate)
-				);
+				if (update) {
+					const dimensions = getDimensions(update.nodeElement);
 
-				if (doUpdate) {
-					node[internalsSymbol] = {
-						...node[internalsSymbol],
-						handleBounds: {
-							source: getHandleBounds('.source', update.nodeElement, zoom),
-							target: getHandleBounds('.target', update.nodeElement, zoom)
-						}
-					};
-					node.width = dimensions.width;
-					node.height = dimensions.height;
+					const doUpdate = !!(
+						dimensions.width &&
+						dimensions.height &&
+						(node.width !== dimensions.width ||
+							node.height !== dimensions.height ||
+							update.forceUpdate)
+					);
+
+					if (doUpdate) {
+						node[internalsSymbol] = {
+							...node[internalsSymbol],
+							handleBounds: {
+								source: getHandleBounds('.source', update.nodeElement, zoom),
+								target: getHandleBounds('.target', update.nodeElement, zoom)
+							}
+						};
+						node.width = dimensions.width;
+						node.height = dimensions.height;
+					}
 				}
-			}
-		});
 
-		updateAbsoluteNodePositions(nds);
+				return node;
+			});
+
+			return nextNodes;
+		});
 	}
 
 	return {
@@ -105,6 +173,7 @@ export function createStore({
 		transformStore,
 		heightStore,
 		widthStore,
+		edgesWithDataStore,
 		updateNodePositions,
 		updateNodeDimensions
 	};

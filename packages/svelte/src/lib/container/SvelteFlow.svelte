@@ -6,7 +6,7 @@
 	import { key, createStore } from '$lib/store';
   import Viewport from '$lib/container/Viewport.svelte';
   import NodeRenderer from '$lib/container/NodeRenderer.svelte';
-  import EdgeRenderer from '$lib/container/EdgeRenderer.svelte';
+  import EdgeRenderer from '$lib/container/EdgeRenderer/index.svelte';
 
   export let nodes: Node[];
   export let edges: Edge[];
@@ -56,7 +56,4 @@
     z-index: 0;
   }
 
-  :root {
-    --node-width: 150px;
-  }
 </style>

@@ -82,10 +82,6 @@ export const getHandleBounds = (
 
 	const handlesArray = Array.from(handles) as HTMLDivElement[];
 	const nodeBounds = nodeElement.getBoundingClientRect();
-	const nodeOffset = {
-		x: nodeBounds.width,
-		y: nodeBounds.height
-	};
 
 	return handlesArray.map((handle): HandleElement => {
 		const handleBounds = handle.getBoundingClientRect();
@@ -93,8 +89,8 @@ export const getHandleBounds = (
 		return {
 			id: handle.getAttribute('data-handleid'),
 			position: handle.getAttribute('data-handlepos') as unknown as Position,
-			x: (handleBounds.left - nodeBounds.left - nodeOffset.x) / zoom,
-			y: (handleBounds.top - nodeBounds.top - nodeOffset.y) / zoom,
+			x: (handleBounds.left - nodeBounds.left) / zoom,
+			y: (handleBounds.top - nodeBounds.top) / zoom,
 			...getDimensions(handle)
 		};
 	});

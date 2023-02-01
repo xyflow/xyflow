@@ -44,7 +44,7 @@
   .react-flow__node {
     padding: 10px;
     border-radius: 3px;
-    width: var(--node-width);
+    width: 50px;
     font-size: 12px;
     color: #222;
     text-align: center;

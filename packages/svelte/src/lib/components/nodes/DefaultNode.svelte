@@ -10,6 +10,6 @@
 </script>
 
 <Handle type="target" position={targetPosition} />
-  {data?.label}
+{data?.label}
 <Handle type="source" position={sourcePosition} />
 

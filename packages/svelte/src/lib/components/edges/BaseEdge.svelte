@@ -5,9 +5,6 @@
   export let sourceY: number = 0;
   export let targetX: number = 0;
   export let targetY: number = 0;
-
-  const path = `M ${sourceX},${sourceY}L ${targetX},${targetY}`;
-
 </script>
 
 <g
@@ -15,7 +12,7 @@
   data-id={id}
 >
   <path
-    d={path}
+    d={`M ${sourceX},${sourceY}L ${targetX},${targetY}`}
     fill="none"
     class="react-flow__edge-path"
   />
