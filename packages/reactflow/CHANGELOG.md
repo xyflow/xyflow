@@ -1,5 +1,18 @@
 # reactflow
 
+## 11.5.3
+
+### Patch Changes
+
+- [#2792](https://github.com/wbkd/react-flow/pull/2792) [`d8c679b4`](https://github.com/wbkd/react-flow/commit/d8c679b4c90c5b57d4b51e4aaa988243d6eaff5a) - Accept React 17 types as dev dependency
+
+- Updated dependencies [[`d8c679b4`](https://github.com/wbkd/react-flow/commit/d8c679b4c90c5b57d4b51e4aaa988243d6eaff5a)]:
+  - @reactflow/background@11.1.5
+  - @reactflow/controls@11.1.5
+  - @reactflow/core@11.5.2
+  - @reactflow/minimap@11.3.5
+  - @reactflow/node-toolbar@1.1.5
+
 ## 11.5.2
 
 ### Patch Changes

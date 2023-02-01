@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.5.2
+
+### Patch Changes
+
+- [#2792](https://github.com/wbkd/react-flow/pull/2792) [`d8c679b4`](https://github.com/wbkd/react-flow/commit/d8c679b4c90c5b57d4b51e4aaa988243d6eaff5a) - Accept React 17 types as dev dependency
+
 ## 11.5.1
 
 ### Patch Changes
