@@ -36,9 +36,19 @@ export function hasSelector(target: Element, selector: string, nodeRef: RefObjec
 }
 
 // looks for all selected nodes and created a NodeDragItem for each of them
-export function getDragItems(nodeInternals: NodeInternals, mousePos: XYPosition, nodeId?: string): NodeDragItem[] {
+export function getDragItems(
+  nodeInternals: NodeInternals,
+  nodesDraggable: boolean,
+  mousePos: XYPosition,
+  nodeId?: string
+): NodeDragItem[] {
   return Array.from(nodeInternals.values())
-    .filter((n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodeInternals)))
+    .filter(
+      (n) =>
+        (n.selected || n.id === nodeId) &&
+        (!n.parentNode || !isParentSelected(n, nodeInternals)) &&
+        (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
+    )
     .map((n) => ({
       id: n.id,
       position: n.position || { x: 0, y: 0 },
