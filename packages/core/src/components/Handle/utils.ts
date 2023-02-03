@@ -61,10 +61,12 @@ type Result = {
   connection: Connection;
 };
 
+const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
+
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
 export function isValidHandle(
   event: MouseEvent | TouchEvent | ReactMouseEvent | ReactTouchEvent,
-  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'>,
+  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null,
   connectionMode: ConnectionMode,
   fromNodeId: string,
   fromHandleId: string | null,
@@ -72,6 +74,14 @@ export function isValidHandle(
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
+  if (!handle) {
+    return {
+      handleDomNode: null,
+      isValid: false,
+      connection: nullConnection,
+    };
+  }
+
   const isTarget = fromType === 'target';
   const handleDomNode = doc.querySelector(
     `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
@@ -83,7 +93,7 @@ export function isValidHandle(
   const result: Result = {
     handleDomNode: handleToCheck,
     isValid: false,
-    connection: { source: null, target: null, sourceHandle: null, targetHandle: null },
+    connection: nullConnection,
   };
 
   if (handleToCheck) {
@@ -155,6 +165,5 @@ export function getHandleType(
 }
 
 export function resetRecentHandle(handleDomNode: Element): void {
-  handleDomNode?.classList.remove('react-flow__handle-valid');
-  handleDomNode?.classList.remove('react-flow__handle-connecting');
+  handleDomNode?.classList.remove('valid', 'connecting', 'react-flow__handle-valid', 'react-flow__handle-connecting');
 }
