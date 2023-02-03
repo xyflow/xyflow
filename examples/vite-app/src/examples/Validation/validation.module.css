@@ -24,10 +24,10 @@
   background: #fff;
 }
 
-.validationflow :global .react-flow__handle-connecting {
+.validationflow :global .connecting {
   background: #ff6060;
 }
 
-.validationflow :global .react-flow__handle-valid {
+.validationflow :global .valid {
   background: #55dd99;
 }
