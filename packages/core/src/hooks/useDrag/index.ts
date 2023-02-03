@@ -133,10 +133,11 @@ function useDrag({
             const {
               nodeInternals,
               multiSelectionActive,
+              domNode,
+              nodesDraggable,
               unselectNodesAndEdges,
               onNodeDragStart,
               onSelectionDragStart,
-              domNode,
             } = store.getState();
 
             const onStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
@@ -157,7 +158,7 @@ function useDrag({
 
             const pointerPos = getPointerPosition(event);
             lastPos.current = pointerPos;
-            dragItems.current = getDragItems(nodeInternals, pointerPos, nodeId);
+            dragItems.current = getDragItems(nodeInternals, nodesDraggable, pointerPos, nodeId);
 
             if (onStart && dragItems.current) {
               const [currentNode, nodes] = getEventHandlerParams({
