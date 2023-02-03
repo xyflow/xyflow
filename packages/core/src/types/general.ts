@@ -61,6 +61,8 @@ export interface Connection {
   targetHandle: string | null;
 }
 
+export type ConnectionStatus = 'valid' | 'invalid';
+
 export enum ConnectionMode {
   Strict = 'strict',
   Loose = 'loose',
@@ -166,6 +168,7 @@ export type ReactFlowStore = {
   connectionHandleId: string | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
+  connectionStatus: ConnectionStatus | null;
   connectionMode: ConnectionMode;
 
   snapToGrid: boolean;

@@ -274,6 +274,7 @@ const createRFStore = () =>
         connectionNodeId: initialState.connectionNodeId,
         connectionHandleId: initialState.connectionHandleId,
         connectionHandleType: initialState.connectionHandleType,
+        connectionStatus: initialState.connectionStatus,
       }),
     reset: () => set({ ...initialState }),
   }));
