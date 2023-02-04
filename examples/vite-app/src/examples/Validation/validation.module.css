@@ -31,3 +31,11 @@
 .validationflow :global .valid {
   background: #55dd99;
 }
+
+.validationflow :global .valid .react-flow__connection-path {
+  stroke: #55dd99;
+}
+
+.validationflow :global .invalid .react-flow__connection-path {
+  stroke: #ff6060;
+}

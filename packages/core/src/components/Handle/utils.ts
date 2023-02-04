@@ -1,6 +1,6 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 
-import { ConnectionMode } from '../../types';
+import { ConnectionMode, ConnectionStatus } from '../../types';
 import { getEventPosition, internalsSymbol } from '../../utils';
 import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 
@@ -166,4 +166,16 @@ export function getHandleType(
 
 export function resetRecentHandle(handleDomNode: Element): void {
   handleDomNode?.classList.remove('valid', 'connecting', 'react-flow__handle-valid', 'react-flow__handle-connecting');
+}
+
+export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
+  let connectionStatus = null;
+
+  if (isHandleValid) {
+    connectionStatus = 'valid';
+  } else if (isInsideConnectionRadius && !isHandleValid) {
+    connectionStatus = 'invalid';
+  }
+
+  return connectionStatus as ConnectionStatus;
 }

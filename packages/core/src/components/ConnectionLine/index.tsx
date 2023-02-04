@@ -1,12 +1,19 @@
 import { CSSProperties, useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
+import cc from 'classcat';
 
 import { useStore } from '../../hooks/useStore';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import { internalsSymbol } from '../../utils';
-import type { ConnectionLineComponent, HandleType, ReactFlowState, ReactFlowStore } from '../../types';
+import type {
+  ConnectionLineComponent,
+  ConnectionStatus,
+  HandleType,
+  ReactFlowState,
+  ReactFlowStore,
+} from '../../types';
 import { Position, ConnectionLineType, ConnectionMode } from '../../types';
 
 type ConnectionLineProps = {
@@ -15,6 +22,7 @@ type ConnectionLineProps = {
   type: ConnectionLineType;
   style?: CSSProperties;
   CustomComponent?: ConnectionLineComponent;
+  connectionStatus: ConnectionStatus | null;
 };
 
 const oppositePosition = {
@@ -30,6 +38,7 @@ const ConnectionLine = ({
   style,
   type = ConnectionLineType.Bezier,
   CustomComponent,
+  connectionStatus,
 }: ConnectionLineProps) => {
   const { fromNode, handleId, toX, toY, connectionMode } = useStore(
     useCallback(
@@ -80,6 +89,7 @@ const ConnectionLine = ({
         toY={toY}
         fromPosition={fromPosition}
         toPosition={toPosition}
+        connectionStatus={connectionStatus}
       />
     );
   }
@@ -127,12 +137,13 @@ const selector = (s: ReactFlowState) => ({
   nodeId: s.connectionNodeId,
   handleType: s.connectionHandleType,
   nodesConnectable: s.nodesConnectable,
+  connectionStatus: s.connectionStatus,
   width: s.width,
   height: s.height,
 });
 
 function ConnectionLineWrapper({ containerStyle, style, type, component }: ConnectionLineWrapperProps) {
-  const { nodeId, handleType, nodesConnectable, width, height } = useStore(selector, shallow);
+  const { nodeId, handleType, nodesConnectable, width, height, connectionStatus } = useStore(selector, shallow);
   const isValid = !!(nodeId && handleType && width && nodesConnectable);
 
   if (!isValid) {
@@ -146,8 +157,15 @@ function ConnectionLineWrapper({ containerStyle, style, type, component }: Conne
       height={height}
       className="react-flow__edges react-flow__connectionline react-flow__container"
     >
-      <g className="react-flow__connection">
-        <ConnectionLine nodeId={nodeId} handleType={handleType} style={style} type={type} CustomComponent={component} />
+      <g className={cc(['react-flow__connection', connectionStatus])}>
+        <ConnectionLine
+          nodeId={nodeId}
+          handleType={handleType}
+          style={style}
+          type={type}
+          CustomComponent={component}
+          connectionStatus={connectionStatus}
+        />
       </g>
     </svg>
   );

@@ -2,11 +2,12 @@ import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } fro
 import { StoreApi } from 'zustand';
 
 import { getHostForElement, calcAutoPan, getEventPosition } from '../../utils';
-import type { OnConnect, HandleType, ReactFlowState, Connection } from '../../types';
+import type { OnConnect, HandleType, ReactFlowState, Connection, ConnectionStatus } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
 import {
   ConnectionHandle,
   getClosestHandle,
+  getConnectionStatus,
   getHandleLookup,
   getHandleType,
   isValidHandle,
@@ -91,6 +92,7 @@ export function handlePointerDown({
     connectionNodeId: nodeId,
     connectionHandleId: handleId,
     connectionHandleType: handleType,
+    connectionStatus: null,
   });
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
@@ -123,7 +125,7 @@ export function handlePointerDown({
 
     setState({
       connectionPosition:
-        prevClosestHandle && isValid
+        prevClosestHandle && result.isValid
           ? rendererPointToPoint(
               {
                 x: prevClosestHandle.x,
@@ -132,6 +134,7 @@ export function handlePointerDown({
               transform
             )
           : connectionPosition,
+      connectionStatus: getConnectionStatus(!!prevClosestHandle, result.isValid),
     });
 
     if (!prevClosestHandle) {
