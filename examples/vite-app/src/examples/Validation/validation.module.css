@@ -24,10 +24,18 @@
   background: #fff;
 }
 
-.validationflow :global .react-flow__handle-connecting {
+.validationflow :global .connecting {
   background: #ff6060;
 }
 
-.validationflow :global .react-flow__handle-valid {
+.validationflow :global .valid {
   background: #55dd99;
+}
+
+.validationflow :global .valid .react-flow__connection-path {
+  stroke: #55dd99;
+}
+
+.validationflow :global .invalid .react-flow__connection-path {
+  stroke: #ff6060;
 }

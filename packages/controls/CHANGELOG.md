@@ -1,5 +1,12 @@
 # @reactflow/controls
 
+## 11.1.6
+
+### Patch Changes
+
+- Updated dependencies [[`be8097ac`](https://github.com/wbkd/react-flow/commit/be8097acadca3054c3b236ce4296fc516010ef8c), [`1527795d`](https://github.com/wbkd/react-flow/commit/1527795d18c3af38c8ec7059436ea0fbf6c27bbd), [`3b6348a8`](https://github.com/wbkd/react-flow/commit/3b6348a8d1573afb39576327318bc172e33393c2)]:
+  - @reactflow/core@11.5.3
+
 ## 11.1.5
 
 ### Patch Changes

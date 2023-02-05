@@ -2,11 +2,12 @@ import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } fro
 import { StoreApi } from 'zustand';
 
 import { getHostForElement, calcAutoPan, getEventPosition } from '../../utils';
-import type { OnConnect, HandleType, ReactFlowState } from '../../types';
+import type { OnConnect, HandleType, ReactFlowState, Connection } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
 import {
   ConnectionHandle,
   getClosestHandle,
+  getConnectionStatus,
   getHandleLookup,
   getHandleType,
   isValidHandle,
@@ -45,7 +46,6 @@ export function handlePointerDown({
     autoPanOnConnect,
     connectionRadius,
     onConnectStart,
-    onConnectEnd,
     panBy,
     getNodes,
     cancelConnection,
@@ -65,6 +65,8 @@ export function handlePointerDown({
   let prevActiveHandle: Element;
   let connectionPosition = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
+  let connection: Connection | null = null;
+  let isValid = false;
 
   const handleLookup = getHandleLookup({
     nodes: getNodes(),
@@ -89,6 +91,7 @@ export function handlePointerDown({
     connectionNodeId: nodeId,
     connectionHandleId: handleId,
     connectionHandleType: handleType,
+    connectionStatus: null,
   });
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
@@ -108,23 +111,7 @@ export function handlePointerDown({
       autoPanStarted = true;
     }
 
-    setState({
-      connectionPosition: prevClosestHandle
-        ? rendererPointToPoint(
-            {
-              x: prevClosestHandle.x,
-              y: prevClosestHandle.y,
-            },
-            transform
-          )
-        : connectionPosition,
-    });
-
-    if (!prevClosestHandle) {
-      return resetRecentHandle(prevActiveHandle);
-    }
-
-    const { connection, handleDomNode, isValid } = isValidHandle(
+    const { handleDomNode, ...result } = isValidHandle(
       event,
       prevClosestHandle,
       connectionMode,
@@ -135,44 +122,56 @@ export function handlePointerDown({
       doc
     );
 
+    setState({
+      connectionPosition:
+        prevClosestHandle && result.isValid
+          ? rendererPointToPoint(
+              {
+                x: prevClosestHandle.x,
+                y: prevClosestHandle.y,
+              },
+              transform
+            )
+          : connectionPosition,
+      connectionStatus: getConnectionStatus(!!prevClosestHandle, result.isValid),
+    });
+
+    if (!prevClosestHandle && !result.isValid) {
+      return resetRecentHandle(prevActiveHandle);
+    }
+
+    connection = result.connection;
+    isValid = result.isValid;
+
     if (connection.source !== connection.target && handleDomNode) {
       resetRecentHandle(prevActiveHandle);
       prevActiveHandle = handleDomNode;
-      handleDomNode.classList.add('react-flow__handle-connecting');
+      // @todo: remove the old class names "react-flow__handle-" in the next major version
+      handleDomNode.classList.add('connecting', 'react-flow__handle-connecting');
+      handleDomNode.classList.toggle('valid', isValid);
       handleDomNode.classList.toggle('react-flow__handle-valid', isValid);
     }
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    cancelAnimationFrame(autoPanId);
-    autoPanStarted = false;
-
-    if (prevClosestHandle) {
-      const { connection, isValid } = isValidHandle(
-        event,
-        prevClosestHandle,
-        connectionMode,
-        nodeId,
-        handleId,
-        isTarget ? 'target' : 'source',
-        isValidConnection,
-        doc
-      );
-
-      if (isValid) {
-        onConnect?.(connection);
-      }
+    if (connection && isValid) {
+      onConnect?.(connection);
     }
 
-    onConnectEnd?.(event);
+    // it's important to get a fresh reference from the store here
+    // in order to get the latest state of onConnectEnd
+    getState().onConnectEnd?.(event);
 
     if (edgeUpdaterType) {
       onEdgeUpdateEnd?.(event);
     }
 
     resetRecentHandle(prevActiveHandle);
-
     cancelConnection();
+    cancelAnimationFrame(autoPanId);
+    autoPanStarted = false;
+    isValid = false;
+    connection = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
