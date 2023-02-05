@@ -136,7 +136,7 @@ export function handlePointerDown({
       connectionStatus: getConnectionStatus(!!prevClosestHandle, result.isValid),
     });
 
-    if (!prevClosestHandle) {
+    if (!prevClosestHandle && !result.isValid) {
       return resetRecentHandle(prevActiveHandle);
     }
 

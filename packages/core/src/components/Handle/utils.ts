@@ -74,14 +74,6 @@ export function isValidHandle(
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
-  if (!handle) {
-    return {
-      handleDomNode: null,
-      isValid: false,
-      connection: nullConnection,
-    };
-  }
-
   const isTarget = fromType === 'target';
   const handleDomNode = doc.querySelector(
     `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
@@ -102,9 +94,9 @@ export function isValidHandle(
     const handleId = handleToCheck.getAttribute('data-handleid');
 
     const connection: Connection = {
-      source: isTarget ? handle.nodeId : fromNodeId,
+      source: isTarget ? handleNodeId : fromNodeId,
       sourceHandle: isTarget ? handleId : fromHandleId,
-      target: isTarget ? fromNodeId : handle.nodeId,
+      target: isTarget ? fromNodeId : handleNodeId,
       targetHandle: isTarget ? fromHandleId : handleId,
     };
 
