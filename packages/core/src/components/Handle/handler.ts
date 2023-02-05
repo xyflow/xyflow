@@ -2,7 +2,7 @@ import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } fro
 import { StoreApi } from 'zustand';
 
 import { getHostForElement, calcAutoPan, getEventPosition } from '../../utils';
-import type { OnConnect, HandleType, ReactFlowState, Connection, ConnectionStatus } from '../../types';
+import type { OnConnect, HandleType, ReactFlowState, Connection } from '../../types';
 import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
 import {
   ConnectionHandle,
@@ -46,7 +46,6 @@ export function handlePointerDown({
     autoPanOnConnect,
     connectionRadius,
     onConnectStart,
-    onConnectEnd,
     panBy,
     getNodes,
     cancelConnection,
@@ -159,7 +158,9 @@ export function handlePointerDown({
       onConnect?.(connection);
     }
 
-    onConnectEnd?.(event);
+    // it's important to get a fresh reference from the store here
+    // in order to get the latest state of onConnectEnd
+    getState().onConnectEnd?.(event);
 
     if (edgeUpdaterType) {
       onEdgeUpdateEnd?.(event);
