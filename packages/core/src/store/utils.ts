@@ -141,7 +141,11 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
 
   if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
     if (d3Zoom && d3Selection) {
-      const nodes = getNodes().filter((n) => (options.includeHiddenNodes ? n.width && n.height : !n.hidden));
+      let nodes: Node[] = getNodes().filter((n) => (options.includeHiddenNodes ? n.width && n.height : !n.hidden));
+
+      if (options.nodes?.length) {
+        nodes = nodes.filter((n) => options.nodes?.includes(n.id))
+      }
 
       const nodesInitialized = nodes.every((n) => n.width && n.height);
 

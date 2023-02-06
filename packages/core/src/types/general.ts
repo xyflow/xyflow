@@ -76,6 +76,7 @@ export type FitViewOptions = {
   minZoom?: number;
   maxZoom?: number;
   duration?: number;
+  nodes?: string[];
 };
 
 export type OnConnectStartParams = {
