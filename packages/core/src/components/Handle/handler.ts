@@ -154,10 +154,8 @@ export function handlePointerDown({
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if (prevClosestHandle) {
-      if (connection && isValid) {
-        onConnect?.(connection);
-      }
+    if (prevClosestHandle && connection && isValid) {
+      onConnect?.(connection);
     }
 
     // it's important to get a fresh reference from the store here
