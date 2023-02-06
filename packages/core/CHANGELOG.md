@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.5.4
+
+### Patch Changes
+
+- [`383a074a`](https://github.com/wbkd/react-flow/commit/383a074aeae6dbec8437fa08c7c8d8240838a84e) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Check if prevClosestHandle exists in onPointerUp. Fixes connections getting stuck on last handle and connecting, even when out of connectionRadius
+
 ## 11.5.3
 
 This release fixes some issues with the newly introduced connection radius feature. We are now not only checking the radius but the handle itself too (like in the old version). That means that you can connect to a handle that is bigger than the connection radius. We are also not snapping connections anymore when they are not valid and pass a status class to the connection line that says if the current connection is valid or not. More over we fixed a connection issue with iOS.
@@ -8,7 +14,7 @@ This release fixes some issues with the newly introduced connection radius featu
 
 - [#2800](https://github.com/wbkd/react-flow/pull/2800) [`be8097ac`](https://github.com/wbkd/react-flow/commit/be8097acadca3054c3b236ce4296fc516010ef8c) - When node is not draggable, you can't move it with a selection either
 - [#2803](https://github.com/wbkd/react-flow/pull/2803) [`1527795d`](https://github.com/wbkd/react-flow/commit/1527795d18c3af38c8ec7059436ea0fbf6c27bbd) - connection: add status class (valid or invalid) while in connection radius
-- [#2801](https://github.com/wbkd/react-flow/pull/2801) [`3b6348a8`](https://github.com/wbkd/react-flow/commit/3b6348a8d1573afb39576327318bc172e33393c2) - fix(ios): connection error + dont snap invalid connection lines, check handle and connection radius 
+- [#2801](https://github.com/wbkd/react-flow/pull/2801) [`3b6348a8`](https://github.com/wbkd/react-flow/commit/3b6348a8d1573afb39576327318bc172e33393c2) - fix(ios): connection error + dont snap invalid connection lines, check handle and connection radius
 
 ## 11.5.2
 
