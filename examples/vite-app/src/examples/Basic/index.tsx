@@ -8,6 +8,7 @@ import ReactFlow, {
   Node,
   Edge,
   useReactFlow,
+  Panel,
 } from 'reactflow';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
@@ -98,20 +99,12 @@ const BasicFlow = () => {
       <MiniMap />
       <Controls />
 
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-        <button onClick={resetTransform} style={{ marginRight: 5 }}>
-          reset transform
-        </button>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
-        <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
-          toggle classnames
-        </button>
-        <button onClick={logToObject} style={{ marginRight: 5 }}>
-          toObject
-        </button>
-      </div>
+      <Panel position="top-right">
+        <button onClick={resetTransform}>reset transform</button>
+        <button onClick={updatePos}>change pos</button>
+        <button onClick={toggleClassnames}>toggle classnames</button>
+        <button onClick={logToObject}>toObject</button>
+      </Panel>
     </ReactFlow>
   );
 };
