@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactFlow, { Node, Edge, useNodesState, useEdgesState } from 'reactflow';
 
 import styles from './updatenode.module.css';

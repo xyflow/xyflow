@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/node-toolbar",
-  "version": "1.1.3",
+  "version": "1.1.8",
   "description": "A toolbar component for React Flow that can be attached to a node.",
   "keywords": [
     "react",
@@ -36,7 +36,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@reactflow/core": "workspace:^11.3.3",
+    "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3",
     "zustand": "^4.3.1"
   },
@@ -49,8 +49,8 @@
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
-    "@types/react": "^18.0.19",
-    "@types/react-dom": "^18.0.6",
+    "@types/react": ">=17",
+    "@types/react-dom": ">=17",
     "react": "^18.2.0",
     "typescript": "^4.9.4"
   },

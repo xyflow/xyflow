@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, MouseEvent as ReactMouseEvent } from 'react';
 import ReactFlow, {
   Controls,
   updateEdge,
@@ -60,9 +60,9 @@ const initialNodes: Node[] = [
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' }];
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
-const onEdgeUpdateStart = (_: React.MouseEvent, edge: Edge, handleType: HandleType) =>
+const onEdgeUpdateStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
   console.log(`start update ${handleType} handle`, edge);
-const onEdgeUpdateEnd = (_: MouseEvent, edge: Edge, handleType: HandleType) =>
+const onEdgeUpdateEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
   console.log(`end update ${handleType} handle`, edge);
 
 const UpdatableEdge = () => {
@@ -91,8 +91,8 @@ const UpdatableEdge = () => {
       snapToGrid={true}
       onEdgeUpdate={onEdgeUpdate}
       onConnect={onConnect}
-      // onEdgeUpdateStart={onEdgeUpdateStart}
-      // onEdgeUpdateEnd={onEdgeUpdateEnd}
+      onEdgeUpdateStart={onEdgeUpdateStart}
+      onEdgeUpdateEnd={onEdgeUpdateEnd}
     >
       <Controls />
     </ReactFlow>

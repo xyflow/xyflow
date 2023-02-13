@@ -30,7 +30,7 @@ export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentTyp
 export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
 export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };
 
-export type FitView = (fitViewOptions?: FitViewOptions) => void;
+export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -61,6 +61,8 @@ export interface Connection {
   targetHandle: string | null;
 }
 
+export type ConnectionStatus = 'valid' | 'invalid';
+
 export enum ConnectionMode {
   Strict = 'strict',
   Loose = 'loose',
@@ -74,6 +76,7 @@ export type FitViewOptions = {
   minZoom?: number;
   maxZoom?: number;
   duration?: number;
+  nodes?: (Partial<Node> & { id: Node['id'] })[];
 };
 
 export type OnConnectStartParams = {
@@ -166,6 +169,7 @@ export type ReactFlowStore = {
   connectionHandleId: string | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
+  connectionStatus: ConnectionStatus | null;
   connectionMode: ConnectionMode;
 
   snapToGrid: boolean;

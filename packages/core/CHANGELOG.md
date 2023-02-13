@@ -1,5 +1,44 @@
 # @reactflow/core
 
+## 11.5.5
+
+### Patch Changes
+
+- [#2834](https://github.com/wbkd/react-flow/pull/2834) [`23424ea6`](https://github.com/wbkd/react-flow/commit/23424ea6750f092210f83df17a00c89adb910d96) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add `nodes` to fit view options to allow fitting view only around specified set of nodes
+- [#2836](https://github.com/wbkd/react-flow/pull/2836) [`959b1114`](https://github.com/wbkd/react-flow/commit/959b111448bba4686040473e46988be9e7befbe6) - Fix: connections for handles with bigger handles than connection radius
+- [#2819](https://github.com/wbkd/react-flow/pull/2819) [`0d259b02`](https://github.com/wbkd/react-flow/commit/0d259b028558aab650546f3371a85f3bce45252f) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Avoid triggering edge update if not using left mouse button
+- [#2832](https://github.com/wbkd/react-flow/pull/2832) [`f3de9335`](https://github.com/wbkd/react-flow/commit/f3de9335af6cd96cd77dc77f24a944eef85384e5) - fitView: return type boolean
+- [#2838](https://github.com/wbkd/react-flow/pull/2838) [`021f5a92`](https://github.com/wbkd/react-flow/commit/021f5a9210f47a968e50446cd2f9dae1f97880a4) - refactor: use key press handle modifier keys + input
+- [#2839](https://github.com/wbkd/react-flow/pull/2839) [`72216ff6`](https://github.com/wbkd/react-flow/commit/72216ff62014acd2d73999053c72bd7aeed351f6) - fix PropsWithChildren: pass default generic for v17 types
+
+## 11.5.4
+
+### Patch Changes
+
+- [`383a074a`](https://github.com/wbkd/react-flow/commit/383a074aeae6dbec8437fa08c7c8d8240838a84e) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Check if prevClosestHandle exists in onPointerUp. Fixes connections getting stuck on last handle and connecting, even when out of connectionRadius
+
+## 11.5.3
+
+This release fixes some issues with the newly introduced connection radius feature. We are now not only checking the radius but the handle itself too (like in the old version). That means that you can connect to a handle that is bigger than the connection radius. We are also not snapping connections anymore when they are not valid and pass a status class to the connection line that says if the current connection is valid or not. More over we fixed a connection issue with iOS.
+
+### Patch Changes
+
+- [#2800](https://github.com/wbkd/react-flow/pull/2800) [`be8097ac`](https://github.com/wbkd/react-flow/commit/be8097acadca3054c3b236ce4296fc516010ef8c) - When node is not draggable, you can't move it with a selection either
+- [#2803](https://github.com/wbkd/react-flow/pull/2803) [`1527795d`](https://github.com/wbkd/react-flow/commit/1527795d18c3af38c8ec7059436ea0fbf6c27bbd) - connection: add status class (valid or invalid) while in connection radius
+- [#2801](https://github.com/wbkd/react-flow/pull/2801) [`3b6348a8`](https://github.com/wbkd/react-flow/commit/3b6348a8d1573afb39576327318bc172e33393c2) - fix(ios): connection error + dont snap invalid connection lines, check handle and connection radius
+
+## 11.5.2
+
+### Patch Changes
+
+- [#2792](https://github.com/wbkd/react-flow/pull/2792) [`d8c679b4`](https://github.com/wbkd/react-flow/commit/d8c679b4c90c5b57d4b51e4aaa988243d6eaff5a) - Accept React 17 types as dev dependency
+
+## 11.5.1
+
+### Patch Changes
+
+- [#2783](https://github.com/wbkd/react-flow/pull/2783) [`71153534`](https://github.com/wbkd/react-flow/commit/7115353418ebc7f7c81ab0e861200972bbf7dbd5) - connections: check handle below mouse before using connection radius
+
 ## 11.5.0
 
 Lot's of improvements are coming with this release!
@@ -8,22 +47,23 @@ Lot's of improvements are coming with this release!
 - **Auto pan**: When you drag a node, a selection or the connection line to the border of the pane, it will pan into that direction. That makes it easier to connect far away nodes for example. If you don't like it you can set `autoPnaOnNodeDrag` and `autoPanOnConnect` to false.
 - **Touch devices**: It's finally possibleto connect nodes with the connection line on touch devices. In combination with the new auto pan and connection radius the overall UX is way better.
 - **Errors**: We added an `onError` prop to get notified when an error like "couldn't find source handle" happens. This is useful if you want to log errors for example.
-- **Node type**: We added a second param to the generic `Node` type. You can not only pass `NodeData` but also the type as a second param: 
+- **Node type**: We added a second param to the generic `Node` type. You can not only pass `NodeData` but also the type as a second param:
+
 ```ts
-type MyCustomNode = Node<MyCustomNodeData, 'custom-node-type'>
+type MyCustomNode = Node<MyCustomNodeData, 'custom-node-type'>;
 ```
+
 This makes it easier to work with different custom nodes and data types.
 
 ### Minor Changes
 
-- [#2754](https://github.com/wbkd/react-flow/pull/2754) [`e96309b6`](https://github.com/wbkd/react-flow/commit/e96309b6a57b1071faeebf7b0547fef7fd418694)  - Add auto pan for connecting and node dragging and `connectionRadius`
+- [#2754](https://github.com/wbkd/react-flow/pull/2754) [`e96309b6`](https://github.com/wbkd/react-flow/commit/e96309b6a57b1071faeebf7b0547fef7fd418694) - Add auto pan for connecting and node dragging and `connectionRadius`
 - [#2773](https://github.com/wbkd/react-flow/pull/2773) - Add `onError` prop to get notified when an error happens
 
 ### Patch Changes
 
-- [#2763](https://github.com/wbkd/react-flow/pull/2763) [`85003b01`](https://github.com/wbkd/react-flow/commit/85003b01add71ea852bd5b0d2f1e7496050a6b52)  - Connecting nodes: Enable connections on touch devices
+- [#2763](https://github.com/wbkd/react-flow/pull/2763) [`85003b01`](https://github.com/wbkd/react-flow/commit/85003b01add71ea852bd5b0d2f1e7496050a6b52) - Connecting nodes: Enable connections on touch devices
 - [#2620](https://github.com/wbkd/react-flow/pull/2620) - Thanks [RichSchulz](https://github.com/RichSchulz)! - Types: improve typing for node type
-
 
 ## 11.4.2
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CSSProperties, ComponentType, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent } from 'react';
 
-import { Position } from '.';
+import { ConnectionStatus, Position } from '.';
 import type { Connection, HandleElement, HandleType, Node } from '.';
 
 type EdgeLabelOptions = {
@@ -155,6 +155,7 @@ export type ConnectionLineComponentProps = {
   toY: number;
   fromPosition: Position;
   toPosition: Position;
+  connectionStatus: ConnectionStatus | null;
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;

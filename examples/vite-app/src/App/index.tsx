@@ -9,6 +9,7 @@ import CustomNode from '../examples/CustomNode';
 import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
 import DragNDrop from '../examples/DragNDrop';
+import EasyConnect from '../examples/EasyConnect';
 import Edges from '../examples/Edges';
 import EdgeRenderer from '../examples/EdgeRenderer';
 import EdgeTypes from '../examples/EdgeTypes';
@@ -95,6 +96,11 @@ const routes: IRoute[] = [
     name: 'Drag and Drop',
     path: '/dragndrop',
     component: DragNDrop,
+  },
+  {
+    name: 'EasyConnect',
+    path: '/easy-connect',
+    component: EasyConnect,
   },
   {
     name: 'Edges',

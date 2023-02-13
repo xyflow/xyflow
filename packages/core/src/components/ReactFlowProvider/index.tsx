@@ -6,7 +6,7 @@ import { Provider } from '../../contexts/RFStoreContext';
 import { createRFStore } from '../../store';
 import type { ReactFlowState } from '../../types';
 
-const ReactFlowProvider: FC<PropsWithChildren> = ({ children }) => {
+const ReactFlowProvider: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const storeRef = useRef<StoreApi<ReactFlowState> | null>(null);
 
   if (!storeRef.current) {

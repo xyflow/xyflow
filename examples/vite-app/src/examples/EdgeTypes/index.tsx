@@ -1,7 +1,4 @@
-/**
- * Example for checking the different edge types and source and target positions
- */
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 import ReactFlow, {
   Background,

@@ -1,4 +1,4 @@
-import React, { useState, CSSProperties, FC, useCallback } from 'react';
+import { useState, CSSProperties, FC, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Node,

@@ -1,16 +1,17 @@
-import React, { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import ReactFlow, {
   addEdge,
   Handle,
   Connection,
   Position,
   Node,
-  Edge,
   NodeProps,
   NodeTypes,
   useNodesState,
   useEdgesState,
-  OnConnectStartParams,
+  OnConnectStart,
+  OnConnectEnd,
+  OnConnect,
 } from 'reactflow';
 
 import styles from './validation.module.css';
@@ -49,24 +50,24 @@ const ValidationFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const onConnectStart = useCallback(
-    (event: React.MouseEvent, params: OnConnectStartParams) => {
+  const onConnectStart: OnConnectStart = useCallback(
+    (event, params) => {
       console.log('on connect start', params, event, value);
       setValue(1);
     },
     [value]
   );
 
-  const onConnect = useCallback(
-    (params: Connection | Edge) => {
+  const onConnect: OnConnect = useCallback(
+    (params) => {
       console.log('on connect', params);
       setEdges((eds) => addEdge(params, eds));
     },
     [setEdges]
   );
 
-  const onConnectEnd = useCallback(
-    (event: MouseEvent) => {
+  const onConnectEnd: OnConnectEnd = useCallback(
+    (event) => {
       console.log('on connect end', event, value);
       setValue(0);
     },

@@ -1,5 +1,7 @@
-import { ConnectionMode } from '../../types';
-import { internalsSymbol } from '../../utils';
+import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
+
+import { ConnectionMode, ConnectionStatus } from '../../types';
+import { getEventPosition, internalsSymbol } from '../../utils';
 import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 
 export type ConnectionHandle = {
@@ -59,9 +61,12 @@ type Result = {
   connection: Connection;
 };
 
+const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
+
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
 export function isValidHandle(
-  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'>,
+  event: MouseEvent | TouchEvent | ReactMouseEvent | ReactTouchEvent,
+  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null,
   connectionMode: ConnectionMode,
   fromNodeId: string,
   fromHandleId: string | null,
@@ -73,23 +78,26 @@ export function isValidHandle(
   const handleDomNode = doc.querySelector(
     `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
   );
+  const { x, y } = getEventPosition(event);
+  const handleBelow = doc.elementFromPoint(x, y);
+  const handleToCheck = handleBelow?.classList.contains('react-flow__handle') ? handleBelow : handleDomNode;
+
   const result: Result = {
-    handleDomNode,
+    handleDomNode: handleToCheck,
     isValid: false,
-    connection: { source: null, target: null, sourceHandle: null, targetHandle: null },
+    connection: nullConnection,
   };
 
-  if (handleDomNode) {
-    const handleIsTarget = handle.type === 'target';
-    const handleIsSource = handle.type === 'source';
-    const handleNodeId = handleDomNode.getAttribute('data-nodeid');
-    const handleId = handleDomNode.getAttribute('data-handleid');
+  if (handleToCheck) {
+    const handleType = getHandleType(undefined, handleToCheck);
+    const handleNodeId = handleToCheck.getAttribute('data-nodeid');
+    const handleId = handleToCheck.getAttribute('data-handleid');
 
     const connection: Connection = {
-      source: isTarget ? handle.nodeId : fromNodeId,
-      sourceHandle: isTarget ? handle.id : fromHandleId,
-      target: isTarget ? fromNodeId : handle.nodeId,
-      targetHandle: isTarget ? fromHandleId : handle.id,
+      source: isTarget ? handleNodeId : fromNodeId,
+      sourceHandle: isTarget ? handleId : fromHandleId,
+      target: isTarget ? fromNodeId : handleNodeId,
+      targetHandle: isTarget ? fromHandleId : handleId,
     };
 
     result.connection = connection;
@@ -97,7 +105,7 @@ export function isValidHandle(
     // in strict mode we don't allow target to target or source to source connections
     const isValid =
       connectionMode === ConnectionMode.Strict
-        ? (isTarget && handleIsSource) || (!isTarget && handleIsTarget)
+        ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
         : handleNodeId !== fromNodeId || handleId !== fromHandleId;
 
     if (isValid) {
@@ -149,6 +157,17 @@ export function getHandleType(
 }
 
 export function resetRecentHandle(handleDomNode: Element): void {
-  handleDomNode?.classList.remove('react-flow__handle-valid');
-  handleDomNode?.classList.remove('react-flow__handle-connecting');
+  handleDomNode?.classList.remove('valid', 'connecting', 'react-flow__handle-valid', 'react-flow__handle-connecting');
+}
+
+export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
+  let connectionStatus = null;
+
+  if (isHandleValid) {
+    connectionStatus = 'valid';
+  } else if (isInsideConnectionRadius && !isHandleValid) {
+    connectionStatus = 'invalid';
+  }
+
+  return connectionStatus as ConnectionStatus;
 }
