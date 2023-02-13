@@ -67,6 +67,7 @@ export function handlePointerDown({
   let autoPanStarted = false;
   let connection: Connection | null = null;
   let isValid = false;
+  let handleDomNode: Element | null = null;
 
   const handleLookup = getHandleLookup({
     nodes: getNodes(),
@@ -111,7 +112,7 @@ export function handlePointerDown({
       autoPanStarted = true;
     }
 
-    const { handleDomNode, ...result } = isValidHandle(
+    const result = isValidHandle(
       event,
       prevClosestHandle,
       connectionMode,
@@ -122,9 +123,13 @@ export function handlePointerDown({
       doc
     );
 
+    handleDomNode = result.handleDomNode;
+    connection = result.connection;
+    isValid = result.isValid;
+
     setState({
       connectionPosition:
-        prevClosestHandle && result.isValid
+        prevClosestHandle && isValid
           ? rendererPointToPoint(
               {
                 x: prevClosestHandle.x,
@@ -133,15 +138,12 @@ export function handlePointerDown({
               transform
             )
           : connectionPosition,
-      connectionStatus: getConnectionStatus(!!prevClosestHandle, result.isValid),
+      connectionStatus: getConnectionStatus(!!prevClosestHandle, isValid),
     });
 
-    if (!prevClosestHandle && !result.isValid) {
+    if (!prevClosestHandle && !isValid && !handleDomNode) {
       return resetRecentHandle(prevActiveHandle);
     }
-
-    connection = result.connection;
-    isValid = result.isValid;
 
     if (connection.source !== connection.target && handleDomNode) {
       resetRecentHandle(prevActiveHandle);
@@ -154,7 +156,7 @@ export function handlePointerDown({
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if (prevClosestHandle && connection && isValid) {
+    if ((prevClosestHandle || handleDomNode) && connection && isValid) {
       onConnect?.(connection);
     }
 
@@ -172,6 +174,7 @@ export function handlePointerDown({
     autoPanStarted = false;
     isValid = false;
     connection = null;
+    handleDomNode = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
