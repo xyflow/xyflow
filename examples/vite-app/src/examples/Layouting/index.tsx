@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import dagre from 'dagre';
 import ReactFlow, {
   Controls,
   ReactFlowProvider,
@@ -13,8 +14,6 @@ import ReactFlow, {
   Panel,
   useReactFlow,
 } from 'reactflow';
-
-import dagre from 'dagre';
 
 import initialItems from './initial-elements';
 

@@ -1,4 +1,4 @@
-import React, { useCallback, MouseEvent, useEffect } from 'react';
+import { useCallback, MouseEvent, useEffect } from 'react';
 import ReactFlow, {
   Background,
   MiniMap,
@@ -10,6 +10,7 @@ import ReactFlow, {
   Edge,
   useNodesState,
   useEdgesState,
+  Panel,
 } from 'reactflow';
 
 const initialNodes: Node[] = [
@@ -65,7 +66,7 @@ const UseZoomPanHelperFlow = () => {
     addEdges,
     getNodes,
     getEdges,
-    deleteElements
+    deleteElements,
   } = useReactFlow();
 
   const onPaneClick = useCallback(
@@ -114,14 +115,14 @@ const UseZoomPanHelperFlow = () => {
   }, [getNodes, getEdges]);
 
   const deleteSelectedElements = useCallback(() => {
-    const selectedNodes = nodes.filter(node => node.selected);
-    const selectedEdges = edges.filter(edge => edge.selected);
+    const selectedNodes = nodes.filter((node) => node.selected);
+    const selectedEdges = edges.filter((edge) => edge.selected);
     deleteElements({ nodes: selectedNodes, edges: selectedEdges });
-  }, [deleteElements, nodes, edges])
+  }, [deleteElements, nodes, edges]);
 
   const deleteSomeElements = useCallback(() => {
-    deleteElements({ nodes: [{ id: '2' }], edges: [{ id: 'e1-3' }] })
-  }, [])
+    deleteElements({ nodes: [{ id: '2' }], edges: [{ id: 'e1-3' }] });
+  }, []);
 
   useEffect(() => {
     addEdges({ id: 'e3-4', source: '3', target: '4' });
@@ -142,7 +143,7 @@ const UseZoomPanHelperFlow = () => {
       fitViewOptions={{ duration: 1200, padding: 0.2 }}
       maxZoom={Infinity}
     >
-      <div style={{ position: 'absolute', left: 0, top: 0, zIndex: 100 }}>
+      <Panel position="top-right">
         <button onClick={() => zoomIn({ duration: 1200 })}>zoomIn</button>
         <button onClick={() => zoomOut({ duration: 0 })}>zoomOut</button>
         <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>fitView</button>
@@ -151,7 +152,7 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={logNodes}>useNodes</button>
         <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
         <button onClick={deleteSomeElements}>deleteSomeElements</button>
-      </div>
+      </Panel>
       <Background />
       <MiniMap />
     </ReactFlow>

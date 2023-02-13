@@ -58,6 +58,7 @@ importers:
     specifiers:
       '@cypress/skip-test': ^2.6.1
       '@reactflow/node-resizer': workspace:*
+      '@types/dagre': ^0.7.48
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
       '@vitejs/plugin-react': ^3.0.1
@@ -84,6 +85,7 @@ importers:
       reactflow: link:../../packages/reactflow
     devDependencies:
       '@cypress/skip-test': registry.npmjs.org/@cypress/skip-test/2.6.1
+      '@types/dagre': registry.npmjs.org/@types/dagre/0.7.48
       '@types/react': registry.npmjs.org/@types/react/18.0.19
       '@types/react-dom': registry.npmjs.org/@types/react-dom/18.0.6
       '@vitejs/plugin-react': registry.npmjs.org/@vitejs/plugin-react/3.0.1_vite@4.0.4
@@ -2045,6 +2047,12 @@ packages:
       '@types/d3-transition': registry.npmjs.org/@types/d3-transition/3.0.2
       '@types/d3-zoom': registry.npmjs.org/@types/d3-zoom/3.0.1
     dev: false
+
+  registry.npmjs.org/@types/dagre/0.7.48:
+    resolution: {integrity: sha512-rF3yXSwHIrDxEkN6edCE4TXknb5YSEpiXfLaspw1I08grC49ZFuAVGOQCmZGIuLUGoFgcqGlUFBL/XrpgYpQgw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/dagre/-/dagre-0.7.48.tgz}
+    name: '@types/dagre'
+    version: 0.7.48
+    dev: true
 
   registry.npmjs.org/@types/estree/0.0.39:
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz}

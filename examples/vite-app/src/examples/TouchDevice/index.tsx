@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import ReactFlow, { Node, Edge, useNodesState, useEdgesState, Position, Connection, addEdge } from 'reactflow';
 
 import styles from './touch-device.module.css';

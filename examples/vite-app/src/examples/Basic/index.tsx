@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import { MouseEvent } from 'react';
 import ReactFlow, {
   MiniMap,
   Background,
@@ -8,7 +8,6 @@ import ReactFlow, {
   Node,
   Edge,
   useReactFlow,
-  NodeOrigin,
 } from 'reactflow';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
@@ -22,7 +21,6 @@ const initialNodes: Node[] = [
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
-    draggable: false,
   },
   {
     id: '2',
