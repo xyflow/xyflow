@@ -182,12 +182,13 @@ const getId = () => `${id++}`;
 const UpdateNodeInternalsFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  const onConnect = (params: Edge | Connection) => setEdges((els) => addEdge(params, els));
-
   const { project } = useReactFlow();
-  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
-    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+
+  const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
+  const onEdgeUpdate = useCallback(
+    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+    []
+  );
 
   const onPaneClick = useCallback(
     (evt: MouseEvent) =>

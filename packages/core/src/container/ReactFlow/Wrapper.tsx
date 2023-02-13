@@ -4,7 +4,7 @@ import type { FC, PropsWithChildren } from 'react';
 import StoreContext from '../../contexts/RFStoreContext';
 import ReactFlowProvider from '../../components/ReactFlowProvider';
 
-const Wrapper: FC<PropsWithChildren> = ({ children }) => {
+const Wrapper: FC<PropsWithChildren<unknown>> = ({ children }) => {
   const isWrapped = useContext(StoreContext);
 
   if (isWrapped) {

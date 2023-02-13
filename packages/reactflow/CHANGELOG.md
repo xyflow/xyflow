@@ -1,5 +1,23 @@
 # reactflow
 
+## 11.5.6
+
+### Patch Changes
+
+- [#2834](https://github.com/wbkd/react-flow/pull/2834) [`23424ea6`](https://github.com/wbkd/react-flow/commit/23424ea6750f092210f83df17a00c89adb910d96) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add `nodes` to fit view options to allow fitting view only around specified set of nodes
+- [#2836](https://github.com/wbkd/react-flow/pull/2836) [`959b1114`](https://github.com/wbkd/react-flow/commit/959b111448bba4686040473e46988be9e7befbe6) - Fix: connections for handles with bigger handles than connection radius
+- [#2819](https://github.com/wbkd/react-flow/pull/2819) [`0d259b02`](https://github.com/wbkd/react-flow/commit/0d259b028558aab650546f3371a85f3bce45252f) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Avoid triggering edge update if not using left mouse button
+- [#2832](https://github.com/wbkd/react-flow/pull/2832) [`f3de9335`](https://github.com/wbkd/react-flow/commit/f3de9335af6cd96cd77dc77f24a944eef85384e5) - fitView: return type boolean
+- [#2838](https://github.com/wbkd/react-flow/pull/2838) [`021f5a92`](https://github.com/wbkd/react-flow/commit/021f5a9210f47a968e50446cd2f9dae1f97880a4) - refactor: use key press handle modifier keys + input
+- [#2839](https://github.com/wbkd/react-flow/pull/2839) [`72216ff6`](https://github.com/wbkd/react-flow/commit/72216ff62014acd2d73999053c72bd7aeed351f6) - fix PropsWithChildren: pass default generic for v17 types
+
+- Updated dependencies [[`72216ff6`](https://github.com/wbkd/react-flow/commit/72216ff62014acd2d73999053c72bd7aeed351f6), [`959b1114`](https://github.com/wbkd/react-flow/commit/959b111448bba4686040473e46988be9e7befbe6), [`0d259b02`](https://github.com/wbkd/react-flow/commit/0d259b028558aab650546f3371a85f3bce45252f), [`f3de9335`](https://github.com/wbkd/react-flow/commit/f3de9335af6cd96cd77dc77f24a944eef85384e5), [`23424ea6`](https://github.com/wbkd/react-flow/commit/23424ea6750f092210f83df17a00c89adb910d96), [`021f5a92`](https://github.com/wbkd/react-flow/commit/021f5a9210f47a968e50446cd2f9dae1f97880a4)]:
+  - @reactflow/core@11.5.5
+  - @reactflow/background@11.1.8
+  - @reactflow/controls@11.1.8
+  - @reactflow/minimap@11.3.8
+  - @reactflow/node-toolbar@1.1.8
+
 ## 11.5.5
 
 ### Patch Changes

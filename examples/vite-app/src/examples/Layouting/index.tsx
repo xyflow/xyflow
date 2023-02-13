@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
+import dagre from 'dagre';
 import ReactFlow, {
   Controls,
   ReactFlowProvider,
@@ -10,9 +11,9 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
   EdgeMarker,
+  Panel,
+  useReactFlow,
 } from 'reactflow';
-
-import dagre from 'dagre';
 
 import initialItems from './initial-elements';
 
@@ -29,6 +30,7 @@ const nodeExtent: CoordinateExtent = [
 const LayoutFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialItems.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialItems.edges);
+  const { fitView } = useReactFlow();
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -85,31 +87,31 @@ const LayoutFlow = () => {
 
   return (
     <div className={styles.layoutflow}>
-      <ReactFlowProvider>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onConnect={onConnect}
-          nodeExtent={nodeExtent}
-          onInit={() => onLayout('TB')}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-        >
-          <Controls />
-        </ReactFlow>
-        <div className={styles.controls}>
-          <button onClick={() => onLayout('TB')} style={{ marginRight: 10 }}>
-            vertical layout
-          </button>
-          <button onClick={() => onLayout('LR')} style={{ marginRight: 10 }}>
-            horizontal layout
-          </button>
-          <button onClick={() => unselect()}>unselect nodes</button>
-          <button onClick={() => changeMarker()}>change marker</button>
-        </div>
-      </ReactFlowProvider>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onConnect={onConnect}
+        nodeExtent={nodeExtent}
+        onInit={() => onLayout('TB')}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+      >
+        <Controls />
+      </ReactFlow>
+      <Panel position="top-right">
+        <button onClick={() => onLayout('TB')}>vertical layout</button>
+        <button onClick={() => onLayout('LR')}>horizontal layout</button>
+        <button onClick={() => unselect()}>unselect nodes</button>
+        <button onClick={() => changeMarker()}>change marker</button>
+        <button onClick={() => fitView()}>fitView</button>
+        <button onClick={() => fitView({ nodes: nodes.slice(0, 2) })}>fitView partially</button>
+      </Panel>
     </div>
   );
 };
 
-export default LayoutFlow;
+export default () => (
+  <ReactFlowProvider>
+    <LayoutFlow />
+  </ReactFlowProvider>
+);

@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent, useCallback } from 'react';
+import { useState, MouseEvent, useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   Node,
@@ -12,7 +12,6 @@ import ReactFlow, {
   MiniMap,
   Background,
   Panel,
-  NodeOrigin,
 } from 'reactflow';
 
 import DebugNode from './DebugNode';

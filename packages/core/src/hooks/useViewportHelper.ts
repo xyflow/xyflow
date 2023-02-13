@@ -4,7 +4,7 @@ import { shallow } from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
 import { pointToRendererPoint, getTransformForBounds, getD3Transition } from '../utils/graph';
-import { fitView as fitViewStore } from '../store/utils';
+import { fitView } from '../store/utils';
 import type { ViewportHelperFunctions, ReactFlowState, XYPosition } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -17,7 +17,7 @@ const initialViewportHelper: ViewportHelperFunctions = {
   getZoom: () => 1,
   setViewport: noop,
   getViewport: () => ({ x: 0, y: 0, zoom: 1 }),
-  fitView: noop,
+  fitView: () => false,
   setCenter: noop,
   fitBounds: noop,
   project: (position: XYPosition) => position,
@@ -51,7 +51,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           const [x, y, zoom] = store.getState().transform;
           return { x, y, zoom };
         },
-        fitView: (options) => fitViewStore(store.getState, options),
+        fitView: (options) => fitView(store.getState, options),
         setCenter: (x, y, options) => {
           const { width, height, maxZoom } = store.getState();
           const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;

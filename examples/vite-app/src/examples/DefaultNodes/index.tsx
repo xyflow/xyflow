@@ -1,4 +1,12 @@
-import ReactFlow, { useReactFlow, Node, Edge, ReactFlowProvider, Background, BackgroundVariant } from 'reactflow';
+import ReactFlow, {
+  useReactFlow,
+  Node,
+  Edge,
+  ReactFlowProvider,
+  Background,
+  BackgroundVariant,
+  Panel,
+} from 'reactflow';
 
 const defaultNodes: Node[] = [
   {
@@ -72,18 +80,12 @@ const DefaultNodes = () => {
     <ReactFlow defaultNodes={defaultNodes} defaultEdges={defaultEdges} defaultEdgeOptions={defaultEdgeOptions} fitView>
       <Background variant={BackgroundVariant.Lines} />
 
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-        <button onClick={resetTransform} style={{ marginRight: 5 }}>
-          reset transform
-        </button>
-        <button onClick={updateNodePositions} style={{ marginRight: 5 }}>
-          change pos
-        </button>
-        <button onClick={updateEdgeColors} style={{ marginRight: 5 }}>
-          red edges
-        </button>
+      <Panel position="top-right">
+        <button onClick={resetTransform}>reset transform</button>
+        <button onClick={updateNodePositions}>change pos</button>
+        <button onClick={updateEdgeColors}>red edges</button>
         <button onClick={logToObject}>toObject</button>
-      </div>
+      </Panel>
     </ReactFlow>
   );
 };

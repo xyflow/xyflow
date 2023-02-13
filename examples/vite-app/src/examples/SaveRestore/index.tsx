@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import ReactFlow, { ReactFlowProvider, Node, addEdge, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
+
 import Controls from './Controls';
 
 const initialNodes: Node[] = [

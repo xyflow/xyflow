@@ -2,7 +2,7 @@ import { Handle, NodeProps, Position, ReactFlowState, useStore } from 'reactflow
 
 const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionNodeId;
 
-export default function CustomNode({ id }: NodeProps) {
+export default function CustomNode({ id, isConnectable }: NodeProps) {
   const connectionNodeId = useStore(connectionNodeIdSelector);
   const isTarget = connectionNodeId && connectionNodeId !== id;
 
@@ -18,8 +18,20 @@ export default function CustomNode({ id }: NodeProps) {
           backgroundColor: isTarget ? '#ffcce3' : '#ccd9f6',
         }}
       >
-        <Handle className="targetHandle" style={{ zIndex: 2 }} position={Position.Right} type="source" />
-        <Handle className="targetHandle" style={targetHandleStyle} position={Position.Left} type="target" />
+        <Handle
+          className="targetHandle"
+          style={{ zIndex: 2 }}
+          position={Position.Right}
+          type="source"
+          isConnectable={isConnectable}
+        />
+        <Handle
+          className="targetHandle"
+          style={targetHandleStyle}
+          position={Position.Left}
+          type="target"
+          isConnectable={isConnectable}
+        />
         {label}
       </div>
     </div>

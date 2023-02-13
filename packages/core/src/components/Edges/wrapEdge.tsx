@@ -89,6 +89,11 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeMouseLeave = getMouseHandler(id, store.getState, onMouseLeave);
 
     const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
+      // avoid triggering edge updater if mouse btn is not left
+      if (event.button !== 0) {
+        return;
+      }
+
       const nodeId = isSourceHandle ? target : source;
       const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
       const handleType = isSourceHandle ? 'target' : 'source';
