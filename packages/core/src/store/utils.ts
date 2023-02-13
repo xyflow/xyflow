@@ -138,35 +138,35 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
     fitViewOnInit,
     nodeOrigin,
   } = get();
+  const isInitialFitView = options.initial && !fitViewOnInitDone && fitViewOnInit;
+  const d3initialized = d3Zoom && d3Selection;
 
-  if ((options.initial && !fitViewOnInitDone && fitViewOnInit) || !options.initial) {
-    if (d3Zoom && d3Selection) {
-      const nodes = getNodes().filter((n) => (options.includeHiddenNodes ? n.width && n.height : !n.hidden));
+  if (d3initialized && (isInitialFitView || !options.initial)) {
+    const nodes = getNodes().filter((n) => (options.includeHiddenNodes ? n.width && n.height : !n.hidden));
 
-      const nodesInitialized = nodes.every((n) => n.width && n.height);
+    const nodesInitialized = nodes.every((n) => n.width && n.height);
 
-      if (nodes.length > 0 && nodesInitialized) {
-        const bounds = getRectOfNodes(nodes, nodeOrigin);
+    if (nodes.length > 0 && nodesInitialized) {
+      const bounds = getRectOfNodes(nodes, nodeOrigin);
 
-        const [x, y, zoom] = getTransformForBounds(
-          bounds,
-          width,
-          height,
-          options.minZoom ?? minZoom,
-          options.maxZoom ?? maxZoom,
-          options.padding ?? 0.1
-        );
+      const [x, y, zoom] = getTransformForBounds(
+        bounds,
+        width,
+        height,
+        options.minZoom ?? minZoom,
+        options.maxZoom ?? maxZoom,
+        options.padding ?? 0.1
+      );
 
-        const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
+      const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
 
-        if (typeof options.duration === 'number' && options.duration > 0) {
-          d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
-        } else {
-          d3Zoom.transform(d3Selection, nextTransform);
-        }
-
-        return true;
+      if (typeof options.duration === 'number' && options.duration > 0) {
+        d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
+      } else {
+        d3Zoom.transform(d3Selection, nextTransform);
       }
+
+      return true;
     }
   }
 

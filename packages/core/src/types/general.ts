@@ -30,7 +30,7 @@ export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentTyp
 export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
 export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };
 
-export type FitView = (fitViewOptions?: FitViewOptions) => void;
+export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
 
 export type Project = (position: XYPosition) => XYPosition;
 
