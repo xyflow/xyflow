@@ -10,10 +10,24 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write ."
 	},
+	"type": "module",
+	"module": "index.ts",
+	"exports": {
+		".": "./index.js"
+	},
+	"dependencies": {
+		"@reactflow/core": "workspace:*",
+		"cc": "^3.0.1",
+		"d3-drag": "^3.0.0",
+		"d3-selection": "^3.0.0",
+		"d3-zoom": "^3.0.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^1.0.0",
-		"@sveltejs/kit": "^1.0.0",
-		"@sveltejs/package": "^1.0.0",
+		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/kit": "^1.5.6",
+		"@sveltejs/package": "^1.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.28.0",
@@ -21,24 +35,10 @@
 		"eslint-plugin-svelte3": "^4.0.0",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
-		"svelte": "^3.54.0",
+		"svelte": "^3.55.1",
 		"svelte-check": "^3.0.1",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
-		"vite": "^4.0.0"
-	},
-	"type": "module",
-	"module": "index.ts",
-	"exports": {
-		".": "./index.js"
-	},
-	"dependencies": {
-		"@reactflow/core": "^11.5.1",
-		"cc": "^3.0.1",
-		"d3-drag": "^3.0.0",
-		"d3-selection": "^3.0.0",
-		"d3-zoom": "^3.0.0",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"vite": "^4.1.1"
 	}
 }

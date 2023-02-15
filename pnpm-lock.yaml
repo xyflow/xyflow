@@ -159,7 +159,7 @@ importers:
       d3-zoom: ^3.0.0
       react: ^18.2.0
       typescript: ^4.9.4
-      zustand: ^4.3.1
+      zustand: ^4.3.3
     dependencies:
       '@types/d3': registry.npmjs.org/@types/d3/7.4.0
       '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.1
@@ -169,7 +169,7 @@ importers:
       d3-drag: registry.npmjs.org/d3-drag/3.0.0
       d3-selection: registry.npmjs.org/d3-selection/3.0.0
       d3-zoom: registry.npmjs.org/d3-zoom/3.0.0
-      zustand: registry.npmjs.org/zustand/4.3.1_react@18.2.0
+      zustand: registry.npmjs.org/zustand/4.3.3_react@18.2.0
     devDependencies:
       '@reactflow/eslint-config': link:../../tooling/eslint-config
       '@reactflow/rollup-config': link:../../tooling/rollup-config
@@ -306,10 +306,10 @@ importers:
 
   packages/svelte:
     specifiers:
-      '@reactflow/core': ^11.5.1
-      '@sveltejs/adapter-auto': ^1.0.0
-      '@sveltejs/kit': ^1.0.0
-      '@sveltejs/package': ^1.0.0
+      '@reactflow/core': workspace:*
+      '@sveltejs/adapter-auto': ^2.0.0
+      '@sveltejs/kit': ^1.5.6
+      '@sveltejs/package': ^1.0.2
       '@typescript-eslint/eslint-plugin': ^5.45.0
       '@typescript-eslint/parser': ^5.45.0
       cc: ^3.0.1
@@ -323,11 +323,11 @@ importers:
       prettier-plugin-svelte: ^2.8.1
       react: ^18.2.0
       react-dom: ^18.2.0
-      svelte: ^3.54.0
+      svelte: ^3.55.1
       svelte-check: ^3.0.1
       tslib: ^2.4.1
       typescript: ^4.9.3
-      vite: ^4.0.0
+      vite: ^4.1.1
     dependencies:
       '@reactflow/core': link:../core
       cc: registry.npmjs.org/cc/3.0.1
@@ -337,8 +337,8 @@ importers:
       react: registry.npmjs.org/react/18.2.0
       react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
     devDependencies:
-      '@sveltejs/adapter-auto': registry.npmjs.org/@sveltejs/adapter-auto/1.0.2_@sveltejs+kit@1.3.6
-      '@sveltejs/kit': registry.npmjs.org/@sveltejs/kit/1.3.6_svelte@3.55.1+vite@4.0.4
+      '@sveltejs/adapter-auto': registry.npmjs.org/@sveltejs/adapter-auto/2.0.0_@sveltejs+kit@1.5.6
+      '@sveltejs/kit': registry.npmjs.org/@sveltejs/kit/1.5.6_svelte@3.55.1+vite@4.1.1
       '@sveltejs/package': registry.npmjs.org/@sveltejs/package/1.0.2_atrrhq7vg4ekua4nnyrpuardle
       '@typescript-eslint/eslint-plugin': registry.npmjs.org/@typescript-eslint/eslint-plugin/5.49.0_rsaczafy73x3xqauzesvzbsgzy
       '@typescript-eslint/parser': registry.npmjs.org/@typescript-eslint/parser/5.49.0_zkdaqh7it7uc4cvz2haft7rc6u
@@ -351,7 +351,7 @@ importers:
       svelte-check: registry.npmjs.org/svelte-check/3.0.3_svelte@3.55.1
       tslib: registry.npmjs.org/tslib/2.4.1
       typescript: registry.npmjs.org/typescript/4.9.4
-      vite: registry.npmjs.org/vite/4.0.4
+      vite: registry.npmjs.org/vite/4.1.1
 
   tooling/eslint-config:
     specifiers:
@@ -1896,23 +1896,23 @@ packages:
     version: 2.0.0
     dev: true
 
-  registry.npmjs.org/@sveltejs/adapter-auto/1.0.2_@sveltejs+kit@1.3.6:
-    resolution: {integrity: sha512-UXpEO/gutERZnD+Z5Vi4J/ifD3WSRuCI7xwtLJTcKNQvJ6t5Xsj1X3Mw2F8Vv/XTUuxf7xPLYUgThU331r0Y9w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sveltejs/adapter-auto/-/adapter-auto-1.0.2.tgz}
-    id: registry.npmjs.org/@sveltejs/adapter-auto/1.0.2
+  registry.npmjs.org/@sveltejs/adapter-auto/2.0.0_@sveltejs+kit@1.5.6:
+    resolution: {integrity: sha512-b+gkHFZgD771kgV3aO4avHFd7y1zhmMYy9i6xOK7m/rwmwaRO8gnF5zBc0Rgca80B2PMU1bKNxyBTHA14OzUAQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sveltejs/adapter-auto/-/adapter-auto-2.0.0.tgz}
+    id: registry.npmjs.org/@sveltejs/adapter-auto/2.0.0
     name: '@sveltejs/adapter-auto'
-    version: 1.0.2
+    version: 2.0.0
     peerDependencies:
       '@sveltejs/kit': ^1.0.0
     dependencies:
-      '@sveltejs/kit': registry.npmjs.org/@sveltejs/kit/1.3.6_svelte@3.55.1+vite@4.0.4
+      '@sveltejs/kit': registry.npmjs.org/@sveltejs/kit/1.5.6_svelte@3.55.1+vite@4.1.1
       import-meta-resolve: registry.npmjs.org/import-meta-resolve/2.2.1
     dev: true
 
-  registry.npmjs.org/@sveltejs/kit/1.3.6_svelte@3.55.1+vite@4.0.4:
-    resolution: {integrity: sha512-SOGTKYiZ0ajIhQ9pUKr9F+h5Srm8Gdn3aza3dZxXWdHjpqv1iyhvt4oS0l5n1a+sXQzKlLpe/CikDBqSVSUS2Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sveltejs/kit/-/kit-1.3.6.tgz}
-    id: registry.npmjs.org/@sveltejs/kit/1.3.6
+  registry.npmjs.org/@sveltejs/kit/1.5.6_svelte@3.55.1+vite@4.1.1:
+    resolution: {integrity: sha512-CHVeQpbcwSIUekF6WwevmExKXyfHnzM5nlCEUv13lGgfJ0zKA0ny5YwIe40vccrm5w5Caec7jMTt9Ih3McJr5g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sveltejs/kit/-/kit-1.5.6.tgz}
+    id: registry.npmjs.org/@sveltejs/kit/1.5.6
     name: '@sveltejs/kit'
-    version: 1.3.6
+    version: 1.5.6
     engines: {node: ^16.14 || >=18}
     hasBin: true
     requiresBuild: true
@@ -1920,7 +1920,7 @@ packages:
       svelte: ^3.54.0
       vite: ^4.0.0
     dependencies:
-      '@sveltejs/vite-plugin-svelte': registry.npmjs.org/@sveltejs/vite-plugin-svelte/2.0.2_svelte@3.55.1+vite@4.0.4
+      '@sveltejs/vite-plugin-svelte': registry.npmjs.org/@sveltejs/vite-plugin-svelte/2.0.2_svelte@3.55.1+vite@4.1.1
       '@types/cookie': registry.npmjs.org/@types/cookie/0.5.1
       cookie: registry.npmjs.org/cookie/0.5.0
       devalue: registry.npmjs.org/devalue/4.2.3
@@ -1933,8 +1933,8 @@ packages:
       sirv: registry.npmjs.org/sirv/2.0.2
       svelte: registry.npmjs.org/svelte/3.55.1
       tiny-glob: registry.npmjs.org/tiny-glob/0.2.9
-      undici: registry.npmjs.org/undici/5.16.0
-      vite: registry.npmjs.org/vite/4.0.4
+      undici: registry.npmjs.org/undici/5.18.0
+      vite: registry.npmjs.org/vite/4.1.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1958,7 +1958,7 @@ packages:
       - typescript
     dev: true
 
-  registry.npmjs.org/@sveltejs/vite-plugin-svelte/2.0.2_svelte@3.55.1+vite@4.0.4:
+  registry.npmjs.org/@sveltejs/vite-plugin-svelte/2.0.2_svelte@3.55.1+vite@4.1.1:
     resolution: {integrity: sha512-xCEan0/NNpQuL0l5aS42FjwQ6wwskdxC3pW1OeFtEKNZwRg7Evro9lac9HesGP6TdFsTv2xMes5ASQVKbCacxg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sveltejs/vite-plugin-svelte/-/vite-plugin-svelte-2.0.2.tgz}
     id: registry.npmjs.org/@sveltejs/vite-plugin-svelte/2.0.2
     name: '@sveltejs/vite-plugin-svelte'
@@ -1974,8 +1974,8 @@ packages:
       magic-string: registry.npmjs.org/magic-string/0.27.0
       svelte: registry.npmjs.org/svelte/3.55.1
       svelte-hmr: registry.npmjs.org/svelte-hmr/0.15.1_svelte@3.55.1
-      vite: registry.npmjs.org/vite/4.0.4
-      vitefu: registry.npmjs.org/vitefu/0.2.4_vite@4.0.4
+      vite: registry.npmjs.org/vite/4.1.1
+      vitefu: registry.npmjs.org/vitefu/0.2.4_vite@4.1.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7239,6 +7239,16 @@ packages:
       fsevents: registry.npmjs.org/fsevents/2.3.2
     dev: true
 
+  registry.npmjs.org/rollup/3.15.0:
+    resolution: {integrity: sha512-F9hrCAhnp5/zx/7HYmftvsNBkMfLfk/dXUh73hPSM2E3CRgap65orDNJbLetoiUFwSAk6iHPLvBrZ5iHYvzqsg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/rollup/-/rollup-3.15.0.tgz}
+    name: rollup
+    version: 3.15.0
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: registry.npmjs.org/fsevents/2.3.2
+    dev: true
+
   registry.npmjs.org/rollup/3.9.1:
     resolution: {integrity: sha512-GswCYHXftN8ZKGVgQhTFUJB/NBXxrRGgO2NCy6E8s1rwEJ4Q9/VttNqcYfEvx4dTo4j58YqdC3OVztPzlKSX8w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/rollup/-/rollup-3.9.1.tgz}
     name: rollup
@@ -8250,10 +8260,10 @@ packages:
       which-boxed-primitive: registry.npmjs.org/which-boxed-primitive/1.0.2
     dev: true
 
-  registry.npmjs.org/undici/5.16.0:
-    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/undici/-/undici-5.16.0.tgz}
+  registry.npmjs.org/undici/5.18.0:
+    resolution: {integrity: sha512-1iVwbhonhFytNdg0P4PqyIAXbdlVZVebtPDvuM36m66mRw4OGrCm2MYynJv/UENFLdP13J1nPVQzVE2zTs1OeA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/undici/-/undici-5.18.0.tgz}
     name: undici
-    version: 5.16.0
+    version: 5.18.0
     engines: {node: '>=12.18'}
     dependencies:
       busboy: registry.npmjs.org/busboy/1.6.0
@@ -8407,7 +8417,42 @@ packages:
       fsevents: registry.npmjs.org/fsevents/2.3.2
     dev: true
 
-  registry.npmjs.org/vitefu/0.2.4_vite@4.0.4:
+  registry.npmjs.org/vite/4.1.1:
+    resolution: {integrity: sha512-LM9WWea8vsxhr782r9ntg+bhSFS06FJgCvvB0+8hf8UWtvaiDagKYWXndjfX6kGl74keHJUcpzrQliDXZlF5yg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/vite/-/vite-4.1.1.tgz}
+    name: vite
+    version: 4.1.1
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: registry.npmjs.org/esbuild/0.16.16
+      postcss: registry.npmjs.org/postcss/8.4.21
+      resolve: registry.npmjs.org/resolve/1.22.1
+      rollup: registry.npmjs.org/rollup/3.15.0
+    optionalDependencies:
+      fsevents: registry.npmjs.org/fsevents/2.3.2
+    dev: true
+
+  registry.npmjs.org/vitefu/0.2.4_vite@4.1.1:
     resolution: {integrity: sha512-fanAXjSaf9xXtOOeno8wZXIhgia+CZury481LsDaV++lSvcU2R9Ch2bPh3PYFyoHW+w9LqAeYRISVQjUIew14g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/vitefu/-/vitefu-0.2.4.tgz}
     id: registry.npmjs.org/vitefu/0.2.4
     name: vitefu
@@ -8418,7 +8463,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: registry.npmjs.org/vite/4.0.4
+      vite: registry.npmjs.org/vite/4.1.1
     dev: true
 
   registry.npmjs.org/wait-on/6.0.0_debug@4.3.2:
@@ -8688,6 +8733,25 @@ packages:
     id: registry.npmjs.org/zustand/4.3.1
     name: zustand
     version: 4.3.1
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: registry.npmjs.org/react/18.2.0
+      use-sync-external-store: registry.npmjs.org/use-sync-external-store/1.2.0_react@18.2.0
+    dev: false
+
+  registry.npmjs.org/zustand/4.3.3_react@18.2.0:
+    resolution: {integrity: sha512-x2jXq8S0kfLGNwGh87nhRfEc2eZy37tSatpSoSIN+O6HIaBhgQHSONV/F9VNrNcBcKQu/E80K1DeHDYQC/zCrQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zustand/-/zustand-4.3.3.tgz}
+    id: registry.npmjs.org/zustand/4.3.3
+    name: zustand
+    version: 4.3.3
     engines: {node: '>=12.7.0'}
     peerDependencies:
       immer: '>=9.0'
