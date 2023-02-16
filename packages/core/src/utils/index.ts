@@ -84,8 +84,6 @@ export const isRectObject = (obj: any): obj is Rect =>
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 
-export const internalsSymbol = Symbol.for('internals');
-
 // used for a11y key board controls for nodes and edges
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
 

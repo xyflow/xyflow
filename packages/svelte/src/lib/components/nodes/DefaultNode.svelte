@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Position } from '@reactflow/core';
+  import { Position } from '@reactflow/system';
   
   import Handle from '$lib/components/Handle.svelte';
 

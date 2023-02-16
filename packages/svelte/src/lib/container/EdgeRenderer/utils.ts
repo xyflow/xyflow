@@ -6,7 +6,7 @@ import {
 	type XYPosition,
 	Position,
 	internalsSymbol
-} from '@reactflow/core';
+} from '@reactflow/system';
 
 export function getNodeData(node?: Node): [Rect, NodeHandleBounds | null, boolean] {
 	const handleBounds = node?.[internalsSymbol]?.handleBounds || null;

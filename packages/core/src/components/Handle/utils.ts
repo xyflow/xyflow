@@ -1,7 +1,8 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
+import { internalsSymbol } from '@reactflow/system';
 
 import { ConnectionMode, ConnectionStatus } from '../../types';
-import { getEventPosition, internalsSymbol } from '../../utils';
+import { getEventPosition } from '../../utils';
 import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 
 export type ConnectionHandle = {

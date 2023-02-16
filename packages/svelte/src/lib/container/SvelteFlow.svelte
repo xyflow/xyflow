@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext, onMount } from 'svelte'
   import cc from 'classcat';
-  import type { Node, Edge } from '@reactflow/core';
+  import type { Node, Edge } from '@reactflow/system';
 
 	import { key, createStore } from '$lib/store';
   import Viewport from '$lib/container/Viewport.svelte';

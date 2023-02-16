@@ -1,8 +1,9 @@
 import type { ComponentType } from 'react';
+import { internalsSymbol } from '@reactflow/system';
 
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
-import { internalsSymbol, rectToBox } from '../../utils';
+import { rectToBox } from '../../utils';
 import { Position } from '../../types';
 import type {
   EdgeProps,

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
-  import type { XYPosition } from '@reactflow/core';
+  import type { XYPosition } from '@reactflow/system';
 
   import drag  from '$lib/hooks/drag'
 	import { useStore } from '$lib/store';

@@ -1,7 +1,8 @@
 import { createStore } from 'zustand';
 import { zoomIdentity } from 'd3-zoom';
+import { internalsSymbol } from '@reactflow/system';
 
-import { clampPosition, getDimensions, internalsSymbol } from '../utils';
+import { clampPosition, getDimensions } from '../utils';
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createNodeInternals, fitView, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import { internalsSymbol } from '@reactflow/system';
 
+import { internalsSymbol } from '../';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 
 // interface for the user node items

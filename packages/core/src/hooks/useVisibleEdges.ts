@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
+import { internalsSymbol } from '@reactflow/system';
 
 import { useStore } from '../hooks/useStore';
 import { isEdgeVisible } from '../container/EdgeRenderer/utils';
-import { internalsSymbol, isNumeric } from '../utils';
+import { isNumeric } from '../utils';
 import type { ReactFlowState, NodeInternals, Edge } from '../types';
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];

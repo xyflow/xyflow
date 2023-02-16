@@ -1,12 +1,12 @@
 import { CSSProperties, useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
+import { internalsSymbol } from '@reactflow/system';
 
 import { useStore } from '../../hooks/useStore';
 import { getBezierPath } from '../Edges/BezierEdge';
 import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
-import { internalsSymbol } from '../../utils';
 import type {
   ConnectionLineComponent,
   ConnectionStatus,

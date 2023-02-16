@@ -1,10 +1,11 @@
 import { memo, useMemo, useEffect, useRef } from 'react';
 import type { ComponentType } from 'react';
 import { shallow } from 'zustand/shallow';
+import { internalsSymbol } from '@reactflow/system';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
-import { clampPosition, internalsSymbol } from '../../utils';
+import { clampPosition } from '../../utils';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { getPositionWithOrigin } from './utils';

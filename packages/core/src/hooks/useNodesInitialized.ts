@@ -1,4 +1,5 @@
-import { internalsSymbol } from '../utils';
+import { internalsSymbol } from '@reactflow/system';
+
 import { useStore } from './useStore';
 import type { ReactFlowState } from '../types';
 

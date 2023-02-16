@@ -7,7 +7,7 @@ import {
 	type HandleElement,
 	internalsSymbol,
 	Position
-} from '@reactflow/core';
+} from '@reactflow/system';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 

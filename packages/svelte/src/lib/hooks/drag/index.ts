@@ -1,7 +1,7 @@
 import { get, type Writable } from 'svelte/store';
 import { drag as d3Drag, type D3DragEvent, type SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
-import type { XYPosition, CoordinateExtent, Node, Transform } from '@reactflow/core';
+import type { XYPosition, CoordinateExtent, Node, Transform } from '@reactflow/system';
 
 import { getDragItems, hasSelector, calcNextPosition } from './utils';
 

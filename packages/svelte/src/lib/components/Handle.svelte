@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
   import cc from 'classcat';
-	import { type HandleType, Position } from '@reactflow/core';
+	import { type HandleType, Position } from '@reactflow/system';
 
   export let type: HandleType = 'source';
   export let position: Position = Position.Top;

@@ -3,7 +3,7 @@ import type { Writable } from 'svelte/store';
 import { select } from 'd3-selection';
 import { zoom as d3Zoom, zoomIdentity } from 'd3-zoom';
 import type { D3ZoomEvent } from 'd3-zoom';
-import type { Transform } from '@reactflow/core';
+import type { Transform } from '@reactflow/system';
 
 const isWrappedWithClass = (event: any, className: string | undefined) =>
 	event.target.closest(`.${className}`);

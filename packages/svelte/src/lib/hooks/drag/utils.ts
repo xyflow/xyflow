@@ -5,7 +5,7 @@ import type {
 	NodeInternals,
 	NodeOrigin,
 	XYPosition
-} from '@reactflow/core';
+} from '@reactflow/system';
 
 import { clampPosition, isNumeric } from '../../../utils';
 

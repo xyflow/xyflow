@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Node, Edge } from '@reactflow/core';
+  import type { Node, Edge } from '@reactflow/system';
   
   import SvelteFlow from '../lib/index';
 

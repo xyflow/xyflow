@@ -6,9 +6,9 @@ import {
 	type NodeDragItem,
 	type NodeDimensionUpdate,
 	type Edge,
-	Position
-} from '@reactflow/core';
-import { internalsSymbol } from '@reactflow/core';
+	Position,
+	internalsSymbol
+} from '@reactflow/system';
 
 import { getDimensions, getHandleBounds } from '../../utils';
 import {

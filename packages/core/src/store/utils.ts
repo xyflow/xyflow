@@ -1,7 +1,8 @@
 import { zoomIdentity } from 'd3-zoom';
 import type { StoreApi } from 'zustand';
+import { internalsSymbol } from '@reactflow/system';
 
-import { internalsSymbol, isNumeric } from '../utils';
+import { isNumeric } from '../utils';
 import { getD3Transition, getRectOfNodes, getTransformForBounds, getNodePositionWithOrigin } from '../utils/graph';
 import type {
   Edge,
