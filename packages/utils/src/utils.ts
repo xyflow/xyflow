@@ -3,8 +3,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   TouchEvent as ReactTouchEvent,
 } from 'react';
-
-import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '../types';
+import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '@reactflow/system';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,

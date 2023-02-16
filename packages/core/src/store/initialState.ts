@@ -1,6 +1,5 @@
-import { devWarn } from '../utils';
-import { ConnectionMode } from '../types';
-import type { CoordinateExtent, ReactFlowStore } from '../types';
+import { devWarn } from '@reactflow/utils';
+import { ConnectionMode, type CoordinateExtent, type ReactFlowStore } from '@reactflow/system';
 
 export const infiniteExtent: CoordinateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],

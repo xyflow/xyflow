@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
+import type { ReactFlowState } from '@reactflow/system';
 
 import { useStore } from '../../hooks/useStore';
 import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
@@ -8,7 +8,6 @@ import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import Pane from '../Pane';
 import NodesSelection from '../../components/NodesSelection';
-import type { ReactFlowState } from '../../types';
 
 export type FlowRendererProps = Omit<
   GraphViewProps,

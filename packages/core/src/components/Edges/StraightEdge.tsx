@@ -1,8 +1,8 @@
 import { memo } from 'react';
+import type { EdgeProps } from '@reactflow/system';
 
 import BaseEdge from './BaseEdge';
 import { getEdgeCenter } from './utils';
-import type { EdgeProps } from '../../types';
 
 export type GetStraightPathParams = {
   sourceX: number;

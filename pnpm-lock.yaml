@@ -145,8 +145,9 @@ importers:
     specifiers:
       '@reactflow/eslint-config': workspace:*
       '@reactflow/rollup-config': workspace:*
-      '@reactflow/system': workspace:11.5.5
+      '@reactflow/system': workspace:*
       '@reactflow/tsconfig': workspace:*
+      '@reactflow/utils': workspace:*
       '@types/d3': ^7.4.0
       '@types/d3-drag': ^3.0.1
       '@types/d3-selection': ^3.0.3
@@ -163,6 +164,7 @@ importers:
       zustand: ^4.3.3
     dependencies:
       '@reactflow/system': link:../system
+      '@reactflow/utils': link:../utils
       '@types/d3': registry.npmjs.org/@types/d3/7.4.0
       '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.1
       '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.3
@@ -370,6 +372,37 @@ importers:
       react: ^18.2.0
       typescript: ^4.9.4
     dependencies:
+      '@types/d3': registry.npmjs.org/@types/d3/7.4.0
+      '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.1
+      '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.3
+      '@types/d3-zoom': registry.npmjs.org/@types/d3-zoom/3.0.1
+    devDependencies:
+      '@reactflow/eslint-config': link:../../tooling/eslint-config
+      '@reactflow/rollup-config': link:../../tooling/rollup-config
+      '@reactflow/tsconfig': link:../../tooling/tsconfig
+      '@types/node': registry.npmjs.org/@types/node/18.7.16
+      '@types/react': registry.npmjs.org/@types/react/18.0.19
+      '@types/react-dom': registry.npmjs.org/@types/react-dom/18.0.6
+      react: registry.npmjs.org/react/18.2.0
+      typescript: registry.npmjs.org/typescript/4.9.4
+
+  packages/utils:
+    specifiers:
+      '@reactflow/eslint-config': workspace:*
+      '@reactflow/rollup-config': workspace:*
+      '@reactflow/system': workspace:*
+      '@reactflow/tsconfig': workspace:*
+      '@types/d3': ^7.4.0
+      '@types/d3-drag': ^3.0.1
+      '@types/d3-selection': ^3.0.3
+      '@types/d3-zoom': ^3.0.1
+      '@types/node': ^18.7.16
+      '@types/react': '>=17'
+      '@types/react-dom': '>=17'
+      react: ^18.2.0
+      typescript: ^4.9.4
+    dependencies:
+      '@reactflow/system': link:../system
       '@types/d3': registry.npmjs.org/@types/d3/7.4.0
       '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.1
       '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.3

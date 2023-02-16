@@ -1,8 +1,7 @@
 import { memo } from 'react';
+import { Position, type NodeProps } from '@reactflow/system';
 
 import Handle from '../../components/Handle';
-import { Position } from '../../types';
-import type { NodeProps } from '../../types';
 
 const InputNode = ({ data, isConnectable, sourcePosition = Position.Bottom }: NodeProps) => (
   <>

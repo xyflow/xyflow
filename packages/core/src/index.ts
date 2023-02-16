@@ -8,7 +8,6 @@ export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/E
 export { default as SmoothStepEdge, getSmoothStepPath } from './components/Edges/SmoothStepEdge';
 export { default as BaseEdge } from './components/Edges/BaseEdge';
 
-export { rectToBox, boxToRect, getBoundsOfRects } from './utils';
 export {
   isNode,
   isEdge,
@@ -20,7 +19,10 @@ export {
   getTransformForBounds,
   getRectOfNodes,
   getNodePositionWithOrigin,
-} from './utils/graph';
+  rectToBox,
+  boxToRect,
+  getBoundsOfRects,
+} from '@reactflow/utils';
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { getMarkerEnd } from './components/Edges/utils';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';

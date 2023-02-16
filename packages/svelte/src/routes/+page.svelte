@@ -57,7 +57,7 @@
   //  }]
 </script>
 
-<SvelteFlow {nodes} {edges} />
+<SvelteFlow {nodes} {edges} fitView />
 
 <style>
   :root {

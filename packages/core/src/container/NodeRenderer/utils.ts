@@ -1,11 +1,11 @@
 import type { ComponentType } from 'react';
+import type { NodeTypes, NodeProps, NodeTypesWrapped, NodeOrigin, XYPosition } from '@reactflow/system';
 
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
 import GroupNode from '../../components/Nodes/GroupNode';
 import wrapNode from '../../components/Nodes/wrapNode';
-import type { NodeTypes, NodeProps, NodeTypesWrapped, NodeOrigin, XYPosition } from '../../types';
 
 export type CreateNodeTypes = (nodeTypes: NodeTypes) => NodeTypesWrapped;
 

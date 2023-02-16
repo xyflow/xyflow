@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from 'react';
-
-import useViewportHelper from './useViewportHelper';
-import { useStoreApi } from '../hooks/useStore';
+import { getConnectedEdges, getOverlappingArea, isRectObject, nodeToRect } from '@reactflow/utils';
 import type {
   ReactFlowInstance,
   Instance,
@@ -14,9 +12,10 @@ import type {
   NodeChange,
   Node,
   Rect,
-} from '../types';
-import { getConnectedEdges } from '../utils/graph';
-import { getOverlappingArea, isRectObject, nodeToRect } from '../utils';
+} from '@reactflow/system';
+
+import useViewportHelper from './useViewportHelper';
+import { useStoreApi } from '../hooks/useStore';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
+import type { OnSelectionChangeFunc } from '@reactflow/system';
 
 import { useStoreApi } from './useStore';
-import type { OnSelectionChangeFunc } from '../types';
 
 export type UseOnSelectionChangeOptions = {
   onChange?: OnSelectionChangeFunc;

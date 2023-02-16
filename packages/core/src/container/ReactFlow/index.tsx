@@ -1,6 +1,20 @@
 import { forwardRef } from 'react';
 import type { CSSProperties } from 'react';
 import cc from 'classcat';
+import {
+  ConnectionLineType,
+  ConnectionMode,
+  PanOnScrollMode,
+  SelectionMode,
+  type EdgeTypes,
+  type EdgeTypesWrapped,
+  type NodeOrigin,
+  type NodeTypes,
+  type NodeTypesWrapped,
+  type ReactFlowProps,
+  type ReactFlowRefType,
+  type Viewport,
+} from '@reactflow/system';
 
 import Attribution from '../../components/Attribution';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
@@ -17,17 +31,6 @@ import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
 import { infiniteExtent } from '../../store/initialState';
 import { useNodeOrEdgeTypes } from './utils';
-import { ConnectionLineType, ConnectionMode, PanOnScrollMode, SelectionMode } from '../../types';
-import type {
-  EdgeTypes,
-  EdgeTypesWrapped,
-  NodeOrigin,
-  NodeTypes,
-  NodeTypesWrapped,
-  ReactFlowProps,
-  ReactFlowRefType,
-  Viewport,
-} from '../../types';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,

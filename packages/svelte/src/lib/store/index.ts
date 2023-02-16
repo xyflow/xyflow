@@ -1,5 +1,5 @@
 import { getContext } from 'svelte';
-import { derived, writable, type Readable, type Writable } from 'svelte/store';
+import { derived, get, writable, type Readable, type Writable } from 'svelte/store';
 import {
 	type Node,
 	type Transform,
@@ -23,6 +23,7 @@ export const key = Symbol();
 type CreateStoreProps = {
 	nodes: Node[];
 	edges: Edge[];
+	fitView: boolean;
 	transform?: Transform;
 };
 
@@ -49,12 +50,15 @@ type SvelteFlowStore = {
 export function createStore({
 	nodes = [],
 	edges = [],
-	transform = [0, 0, 1]
+	transform = [0, 0, 1],
+	fitView: fitViewOnInit = false
 }: CreateStoreProps): SvelteFlowStore {
 	const nodesStore = writable(nodes.map((n) => ({ ...n, positionAbsolute: n.position })));
 	const edgesStore = writable(edges);
 	const heightStore = writable(500);
 	const widthStore = writable(500);
+
+	let fitViewOnInitDone = false;
 
 	const edgesWithDataStore = derived([edgesStore, nodesStore], ([$edges, $nodes]) => {
 		return $edges
@@ -132,39 +136,42 @@ export function createStore({
 		const style = window.getComputedStyle(viewportNode);
 		const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
 
-		nodesStore.update((nds) => {
-			const nextNodes = nds.map((node) => {
-				const update = updates.find((u) => u.id === node.id);
+		const nextNodes = get(nodesStore).map((node) => {
+			const update = updates.find((u) => u.id === node.id);
 
-				if (update) {
-					const dimensions = getDimensions(update.nodeElement);
+			if (update) {
+				const dimensions = getDimensions(update.nodeElement);
 
-					const doUpdate = !!(
-						dimensions.width &&
-						dimensions.height &&
-						(node.width !== dimensions.width ||
-							node.height !== dimensions.height ||
-							update.forceUpdate)
-					);
+				const doUpdate = !!(
+					dimensions.width &&
+					dimensions.height &&
+					(node.width !== dimensions.width ||
+						node.height !== dimensions.height ||
+						update.forceUpdate)
+				);
 
-					if (doUpdate) {
-						node[internalsSymbol] = {
-							...node[internalsSymbol],
-							handleBounds: {
-								source: getHandleBounds('.source', update.nodeElement, zoom),
-								target: getHandleBounds('.target', update.nodeElement, zoom)
-							}
-						};
-						node.width = dimensions.width;
-						node.height = dimensions.height;
-					}
+				if (doUpdate) {
+					node[internalsSymbol] = {
+						...node[internalsSymbol],
+						handleBounds: {
+							source: getHandleBounds('.source', update.nodeElement, zoom),
+							target: getHandleBounds('.target', update.nodeElement, zoom)
+						}
+					};
+					node.width = dimensions.width;
+					node.height = dimensions.height;
 				}
+			}
 
-				return node;
-			});
-
-			return nextNodes;
+			return node;
 		});
+
+		// const nextFitViewOnInitDone =
+		// 	fitViewOnInitDone || (fitViewOnInit && !fitViewOnInitDone && fitView(get, { initial: true }));
+
+		// fitViewOnInitDone = nextFitViewOnInitDone;
+
+		nodesStore.set(nextNodes);
 	}
 
 	return {

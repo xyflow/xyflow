@@ -5,15 +5,19 @@
 import { memo, useRef, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
+import { getConnectedEdges, getNodesInside, getEventPosition } from '@reactflow/utils';
+import {
+  SelectionMode,
+  type ReactFlowProps,
+  type ReactFlowState,
+  type NodeChange,
+  type EdgeChange,
+} from '@reactflow/system';
 
 import UserSelection from '../../components/UserSelection';
 import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils/changes';
-import { getConnectedEdges, getNodesInside } from '../../utils/graph';
-import { getEventPosition } from '../../utils';
-import { SelectionMode } from '../../types';
-import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;

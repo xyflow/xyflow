@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-
-import { isInputDOMNode } from '../utils';
-import type { KeyCode } from '../types';
+import { isInputDOMNode } from '@reactflow/utils';
+import type { KeyCode } from '@reactflow/system';
 
 type Keys = Array<string>;
 type PressedKeys = Set<string>;

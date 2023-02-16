@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
+import type { KeyCode } from '@reactflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
 import useKeyPress from './useKeyPress';
-import type { KeyCode } from '../types';
 import useReactFlow from './useReactFlow';
 interface HookParams {
   deleteKeyCode: KeyCode | null;

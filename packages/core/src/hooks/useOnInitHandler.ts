@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
+import type { OnInit } from '@reactflow/system';
 
 import useReactFlow from './useReactFlow';
-import type { OnInit } from '../types';
 
 function useOnInitHandler(onInit: OnInit | undefined) {
   const rfInstance = useReactFlow();

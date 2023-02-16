@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
+import type { SmoothStepEdgeProps } from '@reactflow/system';
 
 import SmoothStepEdge from './SmoothStepEdge';
-import type { SmoothStepEdgeProps } from '../../types';
 
 const StepEdge = memo((props: SmoothStepEdgeProps) => (
   <SmoothStepEdge

@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import type { FC, PropsWithChildren } from 'react';
+import { useContext, type FC, type PropsWithChildren } from 'react';
 
 import StoreContext from '../../contexts/RFStoreContext';
 import ReactFlowProvider from '../../components/ReactFlowProvider';

@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Selection as D3Selection } from 'd3';
 
-import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from '../utils';
+import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
 import {
-  Node,
-  Edge,
-  Connection,
-  EdgeMarkerType,
-  Transform,
-  XYPosition,
-  Rect,
-  NodeInternals,
-  NodeOrigin,
-} from '../types';
-import { errorMessages } from '../contants';
+  errorMessages,
+  type Node,
+  type Edge,
+  type Connection,
+  type EdgeMarkerType,
+  type Transform,
+  type XYPosition,
+  type Rect,
+  type NodeInternals,
+  type NodeOrigin,
+} from '@reactflow/system';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;

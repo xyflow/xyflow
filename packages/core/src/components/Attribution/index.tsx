@@ -1,5 +1,6 @@
+import type { PanelPosition, ProOptions } from '@reactflow/system';
+
 import Panel from '../Panel';
-import type { PanelPosition, ProOptions } from '../../types';
 
 type AttributionProps = {
   proOptions?: ProOptions;

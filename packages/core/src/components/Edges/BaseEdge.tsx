@@ -1,6 +1,7 @@
+import { isNumeric } from '@reactflow/utils';
+import type { BaseEdgeProps } from '@reactflow/system';
+
 import EdgeText from './EdgeText';
-import { isNumeric } from '../../utils';
-import type { BaseEdgeProps } from '../../types';
 
 const BaseEdge = ({
   path,

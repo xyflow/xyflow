@@ -1,9 +1,14 @@
 import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import { StoreApi } from 'zustand';
+import {
+  getHostForElement,
+  calcAutoPan,
+  getEventPosition,
+  pointToRendererPoint,
+  rendererPointToPoint,
+} from '@reactflow/utils';
+import type { OnConnect, HandleType, ReactFlowState, Connection } from '@reactflow/system';
 
-import { getHostForElement, calcAutoPan, getEventPosition } from '../../utils';
-import type { OnConnect, HandleType, ReactFlowState, Connection } from '../../types';
-import { pointToRendererPoint, rendererPointToPoint } from '../../utils/graph';
 import {
   ConnectionHandle,
   getClosestHandle,

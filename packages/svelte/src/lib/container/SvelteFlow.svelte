@@ -10,6 +10,7 @@
 
   export let nodes: Node[];
   export let edges: Edge[];
+  export let fitView: boolean;
 
   export let className: string | null = null;
   export let id: string = '1';
@@ -20,6 +21,7 @@
   const store = createStore({
     nodes,
     edges,
+    fitView
   });
 
   setContext(key, {

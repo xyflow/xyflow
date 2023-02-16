@@ -1,20 +1,24 @@
 import { zoomIdentity } from 'd3-zoom';
 import type { StoreApi } from 'zustand';
-import { internalsSymbol } from '@reactflow/system';
-
-import { isNumeric } from '../utils';
-import { getD3Transition, getRectOfNodes, getTransformForBounds, getNodePositionWithOrigin } from '../utils/graph';
-import type {
-  Edge,
-  EdgeSelectionChange,
-  Node,
-  NodeInternals,
-  NodeSelectionChange,
-  ReactFlowState,
-  XYZPosition,
-  FitViewOptions,
-  NodeOrigin,
-} from '../types';
+import {
+  internalsSymbol,
+  type Edge,
+  type EdgeSelectionChange,
+  type Node,
+  type NodeInternals,
+  type NodeSelectionChange,
+  type ReactFlowState,
+  type XYZPosition,
+  type FitViewOptions,
+  type NodeOrigin,
+} from '@reactflow/system';
+import {
+  isNumeric,
+  getD3Transition,
+  getRectOfNodes,
+  getTransformForBounds,
+  getNodePositionWithOrigin,
+} from '@reactflow/utils';
 
 type ParentNodes = Record<string, boolean>;
 

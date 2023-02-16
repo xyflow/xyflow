@@ -1,8 +1,7 @@
 import { memo, useRef, useState, useEffect } from 'react';
 import type { FC, PropsWithChildren } from 'react';
 import cc from 'classcat';
-
-import { EdgeTextProps, Rect } from '../../types';
+import { EdgeTextProps, Rect } from '@reactflow/system';
 
 const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
   x,

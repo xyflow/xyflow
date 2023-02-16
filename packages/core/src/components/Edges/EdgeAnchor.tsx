@@ -1,7 +1,6 @@
 import type { FC, MouseEvent as ReactMouseEvent, SVGAttributes } from 'react';
 import cc from 'classcat';
-
-import { Position } from '../../types';
+import { Position } from '@reactflow/system';
 
 const shiftX = (x: number, shift: number, position: Position): number => {
   if (position === Position.Left) return x - shift;

@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import type { RefObject, MouseEvent } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
+import { calcAutoPan, getEventPosition } from '@reactflow/utils';
+import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '@reactflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 import useGetPointerPosition from '../useGetPointerPosition';
-import { calcAutoPan, getEventPosition } from '../../utils';
-import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '../../types';
 
 export type UseDragData = { dx: number; dy: number };
 
