@@ -32,6 +32,8 @@ function ResizeControl({
   color,
   minWidth = 10,
   minHeight = 10,
+  maxWidth = Number.MAX_VALUE,
+  maxHeight = Number.MAX_VALUE,
   shouldResize,
   onResizeStart,
   onResize,
@@ -96,8 +98,8 @@ function ResizeControl({
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues.current;
           const distX = Math.floor(enableX ? xSnapped - startX : 0);
           const distY = Math.floor(enableY ? ySnapped - startY : 0);
-          const width = Math.max(startWidth + (invertX ? -distX : distX), minWidth);
-          const height = Math.max(startHeight + (invertY ? -distY : distY), minHeight);
+          const width = Math.min(Math.max(startWidth + (invertX ? -distX : distX), minWidth), maxWidth);
+          const height = Math.min(Math.max(startHeight + (invertY ? -distY : distY), minHeight), maxHeight);
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
@@ -183,7 +185,7 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [id, controlPosition, minWidth, minHeight, getPointerPosition]);
+  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, getPointerPosition]);
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
