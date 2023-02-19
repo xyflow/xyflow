@@ -31,6 +31,7 @@ type CreateStoreProps = {
 	fitView: boolean;
 	nodeOrigin?: NodeOrigin;
 	transform?: Transform;
+	id?: string;
 };
 
 export type EdgeWithData = EdgePosition & {
@@ -49,9 +50,10 @@ type SvelteFlowStore = {
 	}>;
 	transformStore: Writable<Transform>;
 	edgesWithDataStore: Readable<EdgeWithData[]>;
+	idStore: Writable<string>;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
-	fitView: (options?: ViewportHelperFunctionOptions) => void;
+	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
 	updateNodePositions: (
 		nodeDragItems: NodeDragItem[],
 		positionChanged?: boolean,
@@ -65,7 +67,8 @@ export function createStore({
 	edges = [],
 	transform = [0, 0, 1],
 	nodeOrigin = [0, 0],
-	fitView: fitViewOnInit = false
+	fitView: fitViewOnInit = false,
+	id = '1'
 }: CreateStoreProps): SvelteFlowStore {
 	const nodesStore = writable(nodes.map((n) => ({ ...n, positionAbsolute: n.position })));
 	const edgesStore = writable(edges);
@@ -76,6 +79,7 @@ export function createStore({
 		zoom: null,
 		selection: null
 	});
+	const idStore = writable(id);
 
 	let fitViewOnInitDone = false;
 
@@ -187,27 +191,8 @@ export function createStore({
 
 		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
 
-		const nextFitViewOnInitDone =
-			fitViewOnInitDone ||
-			(fitViewOnInit &&
-				!fitViewOnInitDone &&
-				!!d3Zoom &&
-				!!d3Selection &&
-				fitView(
-					{
-						nodes: get(nodesStore),
-						width: get(widthStore),
-						height: get(heightStore),
-						minZoom: 0.2,
-						maxZoom: 2,
-						d3Selection,
-						d3Zoom,
-						nodeOrigin: get(nodeOriginStore)
-					},
-					{}
-				));
-
-		fitViewOnInitDone = nextFitViewOnInitDone;
+		fitViewOnInitDone =
+			fitViewOnInitDone || (fitViewOnInit && !!d3Zoom && !!d3Selection && _fitView());
 
 		nodesStore.set(nextNodes);
 	}
@@ -229,21 +214,24 @@ export function createStore({
 
 	function _fitView() {
 		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
-		if (d3Zoom && d3Selection) {
-			fitView(
-				{
-					nodes: get(nodesStore),
-					width: get(widthStore),
-					height: get(heightStore),
-					minZoom: 0.2,
-					maxZoom: 2,
-					d3Selection,
-					d3Zoom,
-					nodeOrigin: get(nodeOriginStore)
-				},
-				{}
-			);
+
+		if (!d3Zoom || !d3Selection) {
+			return false;
 		}
+
+		return fitView(
+			{
+				nodes: get(nodesStore),
+				width: get(widthStore),
+				height: get(heightStore),
+				minZoom: 0.2,
+				maxZoom: 2,
+				d3Selection,
+				d3Zoom,
+				nodeOrigin: get(nodeOriginStore)
+			},
+			{}
+		);
 	}
 
 	return {
@@ -254,6 +242,7 @@ export function createStore({
 		heightStore,
 		widthStore,
 		edgesWithDataStore,
+		idStore,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,

@@ -1,4 +1,5 @@
 import SvelteFlow from '$lib/container/SvelteFlow.svelte';
-export { default as Controls } from '$lib/plugins/Controls/index.svelte';
+export { Controls, ControlButton } from '$lib/plugins/Controls';
+export { Background, BackgroundVariant } from '$lib/plugins/Background';
 
 export default SvelteFlow;

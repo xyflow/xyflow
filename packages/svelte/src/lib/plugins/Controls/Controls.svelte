@@ -1,7 +1,8 @@
 <script lang="ts">
-  import Panel from '$lib/container/Panel.svelte';
 	import type { PanelPosition } from '@reactflow/system';
 
+  import Panel from '$lib/container/Panel.svelte';
+  import { useStore } from '$lib/store';
   import ControlButton from './ControlButton.svelte';
   import PlusIcon from './Icons/Plus.svelte';
   import MinusIcon from './Icons/Minus.svelte';
@@ -13,8 +14,6 @@
   export let showZoom = true;
   export let showFitView = true;
   export let showInteractive = true;
-
-	import { useStore } from '$lib/store';
 
   const { zoomIn, zoomOut, fitView } = useStore();
 
