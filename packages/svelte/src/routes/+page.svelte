@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Node, Edge } from '@reactflow/system';
   
-  import SvelteFlow from '../lib/index';
+  import SvelteFlow, { Controls } from '../lib/index';
 
   const yNodes = 10;
   const xNodes = 10;
@@ -57,7 +57,9 @@
   //  }]
 </script>
 
-<SvelteFlow {nodes} {edges} fitView />
+<SvelteFlow {nodes} {edges} fitView >
+  <Controls />
+</SvelteFlow>
 
 <style>
   :root {

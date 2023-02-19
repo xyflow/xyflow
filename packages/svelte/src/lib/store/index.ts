@@ -10,9 +10,10 @@ import {
 	internalsSymbol,
 	type NodeOrigin,
 	type D3ZoomInstance,
-	type D3SelectionInstance
+	type D3SelectionInstance,
+	type ViewportHelperFunctionOptions
 } from '@reactflow/system';
-import { fitView } from '@reactflow/utils';
+import { fitView, getD3Transition } from '@reactflow/utils';
 
 import { getDimensions, getHandleBounds } from '../../utils';
 import {
@@ -48,6 +49,9 @@ type SvelteFlowStore = {
 	}>;
 	transformStore: Writable<Transform>;
 	edgesWithDataStore: Readable<EdgeWithData[]>;
+	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
+	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
+	fitView: (options?: ViewportHelperFunctionOptions) => void;
 	updateNodePositions: (
 		nodeDragItems: NodeDragItem[],
 		positionChanged?: boolean,
@@ -68,7 +72,10 @@ export function createStore({
 	const heightStore = writable(500);
 	const widthStore = writable(500);
 	const nodeOriginStore = writable(nodeOrigin);
-	const d3Store = writable({ zoom: null, selection: null });
+	const d3Store = writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>({
+		zoom: null,
+		selection: null
+	});
 
 	let fitViewOnInitDone = false;
 
@@ -205,6 +212,40 @@ export function createStore({
 		nodesStore.set(nextNodes);
 	}
 
+	function zoomIn(options?: ViewportHelperFunctionOptions) {
+		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
+
+		if (d3Zoom && d3Selection) {
+			d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1.2);
+		}
+	}
+
+	function zoomOut(options?: ViewportHelperFunctionOptions) {
+		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
+		if (d3Zoom && d3Selection) {
+			d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1 / 1.2);
+		}
+	}
+
+	function _fitView() {
+		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
+		if (d3Zoom && d3Selection) {
+			fitView(
+				{
+					nodes: get(nodesStore),
+					width: get(widthStore),
+					height: get(heightStore),
+					minZoom: 0.2,
+					maxZoom: 2,
+					d3Selection,
+					d3Zoom,
+					nodeOrigin: get(nodeOriginStore)
+				},
+				{}
+			);
+		}
+	}
+
 	return {
 		nodesStore,
 		edgesStore,
@@ -214,7 +255,10 @@ export function createStore({
 		widthStore,
 		edgesWithDataStore,
 		updateNodePositions,
-		updateNodeDimensions
+		updateNodeDimensions,
+		zoomIn,
+		zoomOut,
+		fitView: _fitView
 	};
 }
 

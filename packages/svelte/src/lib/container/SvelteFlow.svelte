@@ -47,6 +47,8 @@
     <NodeRenderer />
     <EdgeRenderer />
   </Viewport>
+
+  <slot />
 </div>
 
 <style>
