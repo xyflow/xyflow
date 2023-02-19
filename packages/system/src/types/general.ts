@@ -70,6 +70,15 @@ export enum ConnectionMode {
 
 export type OnConnect = (connection: Connection) => void;
 
+export type FitViewParams = {
+  nodes: Node[];
+  width: number;
+  height: number;
+  nodeOrigin: NodeOrigin;
+  d3Zoom: D3ZoomInstance;
+  d3Selection: D3SelectionInstance;
+};
+
 export type FitViewOptions = {
   padding?: number;
   includeHiddenNodes?: boolean;
@@ -137,6 +146,9 @@ export type ViewportHelperFunctions = {
   viewportInitialized: boolean;
 };
 
+export type D3ZoomInstance = ZoomBehavior<Element, unknown>;
+export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>;
+
 export type ReactFlowStore = {
   rfId: string;
   width: number;
@@ -152,8 +164,8 @@ export type ReactFlowStore = {
   paneDragging: boolean;
   noPanClassName: string;
 
-  d3Zoom: ZoomBehavior<Element, unknown> | null;
-  d3Selection: D3Selection<Element, unknown, null, undefined> | null;
+  d3Zoom: D3ZoomInstance | null;
+  d3Selection: D3SelectionInstance | null;
   d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
   minZoom: number;
   maxZoom: number;

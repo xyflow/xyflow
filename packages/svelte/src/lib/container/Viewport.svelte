@@ -2,10 +2,10 @@
   import zoom  from '$lib/hooks/zoom'
 	import { useStore } from '$lib/store';
 
-  const { transformStore } = useStore();
+  const { transformStore, d3Store } = useStore();
 </script>
 
-<div class="react-flow__pane" use:zoom={{ transformStore }}>
+<div class="react-flow__pane" use:zoom={{ transformStore, d3Store }}>
   <div
     class="react-flow__viewport" 
     style="transform: translate({$transformStore[0]}px, {$transformStore[1]}px) scale({$transformStore[2]})"

@@ -3,14 +3,20 @@ import type { Writable } from 'svelte/store';
 import { select } from 'd3-selection';
 import { zoom as d3Zoom, zoomIdentity } from 'd3-zoom';
 import type { D3ZoomEvent } from 'd3-zoom';
-import type { Transform } from '@reactflow/system';
+import type { D3SelectionInstance, D3ZoomInstance, Transform } from '@reactflow/system';
 
 const isWrappedWithClass = (event: any, className: string | undefined) =>
 	event.target.closest(`.${className}`);
 
 export default function zoom(
 	domNode: Element,
-	{ transformStore }: { transformStore: Writable<Transform> }
+	{
+		transformStore,
+		d3Store
+	}: {
+		transformStore: Writable<Transform>;
+		d3Store: Writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>;
+	}
 ) {
 	const d3ZoomInstance = d3Zoom();
 	const selection = select(domNode).call(d3ZoomInstance);
@@ -24,6 +30,11 @@ export default function zoom(
 
 		event.preventDefault();
 		d3ZoomHandler!.call(this, event, d);
+	});
+
+	d3Store.set({
+		zoom: d3ZoomInstance,
+		selection
 	});
 
 	d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {

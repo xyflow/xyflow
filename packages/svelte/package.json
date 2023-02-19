@@ -16,7 +16,8 @@
 		".": "./index.js"
 	},
 	"dependencies": {
-		"@reactflow/system": "workspace:*",
+		"@reactflow/system": "workspace:11.5.5",
+		"@reactflow/utils": "workspace:^11.5.5",
 		"cc": "^3.0.1",
 		"d3-drag": "^3.0.0",
 		"d3-selection": "^3.0.0",

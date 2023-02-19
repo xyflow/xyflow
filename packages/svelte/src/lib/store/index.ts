@@ -7,8 +7,12 @@ import {
 	type NodeDimensionUpdate,
 	type Edge,
 	Position,
-	internalsSymbol
+	internalsSymbol,
+	type NodeOrigin,
+	type D3ZoomInstance,
+	type D3SelectionInstance
 } from '@reactflow/system';
+import { fitView } from '@reactflow/utils';
 
 import { getDimensions, getHandleBounds } from '../../utils';
 import {
@@ -24,6 +28,7 @@ type CreateStoreProps = {
 	nodes: Node[];
 	edges: Edge[];
 	fitView: boolean;
+	nodeOrigin?: NodeOrigin;
 	transform?: Transform;
 };
 
@@ -37,6 +42,10 @@ type SvelteFlowStore = {
 	edgesStore: Writable<CreateStoreProps['edges']>;
 	heightStore: Writable<number>;
 	widthStore: Writable<number>;
+	d3Store: Writable<{
+		zoom: D3ZoomInstance | null;
+		selection: D3SelectionInstance | null;
+	}>;
 	transformStore: Writable<Transform>;
 	edgesWithDataStore: Readable<EdgeWithData[]>;
 	updateNodePositions: (
@@ -51,12 +60,15 @@ export function createStore({
 	nodes = [],
 	edges = [],
 	transform = [0, 0, 1],
+	nodeOrigin = [0, 0],
 	fitView: fitViewOnInit = false
 }: CreateStoreProps): SvelteFlowStore {
 	const nodesStore = writable(nodes.map((n) => ({ ...n, positionAbsolute: n.position })));
 	const edgesStore = writable(edges);
 	const heightStore = writable(500);
 	const widthStore = writable(500);
+	const nodeOriginStore = writable(nodeOrigin);
+	const d3Store = writable({ zoom: null, selection: null });
 
 	let fitViewOnInitDone = false;
 
@@ -166,10 +178,29 @@ export function createStore({
 			return node;
 		});
 
-		// const nextFitViewOnInitDone =
-		// 	fitViewOnInitDone || (fitViewOnInit && !fitViewOnInitDone && fitView(get, { initial: true }));
+		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
 
-		// fitViewOnInitDone = nextFitViewOnInitDone;
+		const nextFitViewOnInitDone =
+			fitViewOnInitDone ||
+			(fitViewOnInit &&
+				!fitViewOnInitDone &&
+				!!d3Zoom &&
+				!!d3Selection &&
+				fitView(
+					{
+						nodes: get(nodesStore),
+						width: get(widthStore),
+						height: get(heightStore),
+						minZoom: 0.2,
+						maxZoom: 2,
+						d3Selection,
+						d3Zoom,
+						nodeOrigin: get(nodeOriginStore)
+					},
+					{}
+				));
+
+		fitViewOnInitDone = nextFitViewOnInitDone;
 
 		nodesStore.set(nextNodes);
 	}
@@ -178,6 +209,7 @@ export function createStore({
 		nodesStore,
 		edgesStore,
 		transformStore,
+		d3Store,
 		heightStore,
 		widthStore,
 		edgesWithDataStore,
