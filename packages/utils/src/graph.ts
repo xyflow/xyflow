@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Selection as D3Selection } from 'd3';
+import { zoomIdentity } from 'd3-zoom';
 
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
 import {
@@ -13,6 +14,8 @@ import {
   type Rect,
   type NodeInternals,
   type NodeOrigin,
+  FitViewParams,
+  FitViewOptions,
 } from '@reactflow/system';
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
@@ -285,3 +288,45 @@ export const getTransformForBounds = (
 export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {
   return selection.transition().duration(duration);
 };
+
+export function fitView(
+  { nodes, width, height, d3Zoom, d3Selection, nodeOrigin, minZoom, maxZoom }: FitViewParams,
+  options: FitViewOptions = {}
+) {
+  const filteredNodes = nodes.filter((n) => {
+    const isVisible = options.includeHiddenNodes ? n.width && n.height : !n.hidden;
+
+    if (options.nodes?.length) {
+      return isVisible && options.nodes.some((optionNode) => optionNode.id === n.id);
+    }
+
+    return isVisible;
+  });
+
+  const nodesInitialized = filteredNodes.every((n) => n.width && n.height);
+
+  if (nodes.length > 0 && nodesInitialized) {
+    const bounds = getRectOfNodes(nodes, nodeOrigin);
+
+    const [x, y, zoom] = getTransformForBounds(
+      bounds,
+      width,
+      height,
+      options.minZoom ?? minZoom,
+      options.maxZoom ?? maxZoom,
+      options.padding ?? 0.1
+    );
+
+    const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
+
+    if (typeof options.duration === 'number' && options.duration > 0) {
+      d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
+    } else {
+      d3Zoom.transform(d3Selection, nextTransform);
+    }
+
+    return true;
+  }
+
+  return false;
+}
