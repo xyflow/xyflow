@@ -1,4 +1,3 @@
-import { zoomIdentity } from 'd3-zoom';
 import type { StoreApi } from 'zustand';
 import {
   internalsSymbol,
@@ -9,16 +8,9 @@ import {
   type NodeSelectionChange,
   type ReactFlowState,
   type XYZPosition,
-  type FitViewOptions,
   type NodeOrigin,
 } from '@reactflow/system';
-import {
-  isNumeric,
-  getD3Transition,
-  getRectOfNodes,
-  getTransformForBounds,
-  getNodePositionWithOrigin,
-} from '@reactflow/utils';
+import { isNumeric, getNodePositionWithOrigin } from '@reactflow/utils';
 
 type ParentNodes = Record<string, boolean>;
 
@@ -124,66 +116,6 @@ export function createNodeInternals(
   updateAbsoluteNodePositions(nextNodeInternals, nodeOrigin, parentNodes);
 
   return nextNodeInternals;
-}
-
-type InternalFitViewOptions = {
-  initial?: boolean;
-} & FitViewOptions;
-
-export function fitView(get: StoreApi<ReactFlowState>['getState'], options: InternalFitViewOptions = {}) {
-  const {
-    getNodes,
-    width,
-    height,
-    minZoom,
-    maxZoom,
-    d3Zoom,
-    d3Selection,
-    fitViewOnInitDone,
-    fitViewOnInit,
-    nodeOrigin,
-  } = get();
-  const isInitialFitView = options.initial && !fitViewOnInitDone && fitViewOnInit;
-  const d3initialized = d3Zoom && d3Selection;
-
-  if (d3initialized && (isInitialFitView || !options.initial)) {
-    const nodes = getNodes().filter((n) => {
-      const isVisible = options.includeHiddenNodes ? n.width && n.height : !n.hidden;
-
-      if (options.nodes?.length) {
-        return isVisible && options.nodes.some((optionNode) => optionNode.id === n.id);
-      }
-
-      return isVisible;
-    });
-
-    const nodesInitialized = nodes.every((n) => n.width && n.height);
-
-    if (nodes.length > 0 && nodesInitialized) {
-      const bounds = getRectOfNodes(nodes, nodeOrigin);
-
-      const [x, y, zoom] = getTransformForBounds(
-        bounds,
-        width,
-        height,
-        options.minZoom ?? minZoom,
-        options.maxZoom ?? maxZoom,
-        options.padding ?? 0.1
-      );
-
-      const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
-
-      if (typeof options.duration === 'number' && options.duration > 0) {
-        d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
-      } else {
-        d3Zoom.transform(d3Selection, nextTransform);
-      }
-
-      return true;
-    }
-  }
-
-  return false;
 }
 
 export function handleControlledNodeSelectionChange(nodeChanges: NodeSelectionChange[], nodeInternals: NodeInternals) {

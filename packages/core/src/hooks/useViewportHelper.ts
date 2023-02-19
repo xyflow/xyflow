@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
 import { shallow } from 'zustand/shallow';
-import { pointToRendererPoint, getTransformForBounds, getD3Transition } from '@reactflow/utils';
+import { pointToRendererPoint, getTransformForBounds, getD3Transition, fitView } from '@reactflow/utils';
 import type { ViewportHelperFunctions, ReactFlowState, XYPosition } from '@reactflow/system';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
-import { fitView } from '../store/utils';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
@@ -51,7 +50,28 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           const [x, y, zoom] = store.getState().transform;
           return { x, y, zoom };
         },
-        fitView: (options) => fitView(store.getState, options),
+        fitView: (options) => {
+          const { getNodes, width, height, nodeOrigin, minZoom, maxZoom, d3Selection, d3Zoom } = store.getState();
+          const d3Initialized = d3Selection && d3Zoom;
+
+          if (!d3Initialized) {
+            return false;
+          }
+
+          return fitView(
+            {
+              nodes: getNodes(),
+              width,
+              height,
+              nodeOrigin,
+              minZoom,
+              maxZoom,
+              d3Selection,
+              d3Zoom,
+            },
+            options
+          );
+        },
         setCenter: (x, y, options) => {
           const { width, height, maxZoom } = store.getState();
           const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;

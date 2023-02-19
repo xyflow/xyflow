@@ -1,6 +1,6 @@
 import { createStore } from 'zustand';
 import { zoomIdentity } from 'd3-zoom';
-import { clampPosition, getDimensions } from '@reactflow/utils';
+import { clampPosition, getDimensions, fitView } from '@reactflow/utils';
 import {
   internalsSymbol,
   type ReactFlowState,
@@ -20,7 +20,7 @@ import {
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { getHandleBounds } from '../components/Nodes/utils';
-import { createNodeInternals, fitView, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
+import { createNodeInternals, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 
 const createRFStore = () =>
@@ -57,6 +57,12 @@ const createRFStore = () =>
         fitViewOnInitOptions,
         domNode,
         nodeOrigin,
+        width,
+        height,
+        minZoom,
+        maxZoom,
+        d3Selection,
+        d3Zoom,
       } = get();
       const viewportNode = domNode?.querySelector('.react-flow__viewport');
 
@@ -106,7 +112,23 @@ const createRFStore = () =>
 
       const nextFitViewOnInitDone =
         fitViewOnInitDone ||
-        (fitViewOnInit && !fitViewOnInitDone && fitView(get, { initial: true, ...fitViewOnInitOptions }));
+        (fitViewOnInit &&
+          !fitViewOnInitDone &&
+          !!d3Zoom &&
+          !!d3Selection &&
+          fitView(
+            {
+              nodes: Array.from(nodeInternals.values()),
+              width,
+              height,
+              d3Zoom,
+              d3Selection,
+              minZoom,
+              maxZoom,
+              nodeOrigin,
+            },
+            fitViewOnInitOptions
+          ));
       set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone: nextFitViewOnInitDone });
 
       if (changes?.length > 0) {
