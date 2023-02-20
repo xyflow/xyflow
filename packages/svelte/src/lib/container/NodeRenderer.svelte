@@ -31,5 +31,7 @@
   .react-flow__nodes {
     width: 100%;
     height: 100%;
+    pointer-events: none;
+    transform-origin: 0 0;
   }
 </style>

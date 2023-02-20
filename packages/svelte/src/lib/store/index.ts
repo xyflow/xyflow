@@ -11,7 +11,8 @@ import {
 	type NodeOrigin,
 	type D3ZoomInstance,
 	type D3SelectionInstance,
-	type ViewportHelperFunctionOptions
+	type ViewportHelperFunctionOptions,
+	type SelectionRect
 } from '@reactflow/system';
 import { fitView, getD3Transition, getDimensions } from '@reactflow/utils';
 
@@ -22,6 +23,7 @@ import {
 	getNodeData,
 	type EdgePosition
 } from '$lib/container/EdgeRenderer/utils';
+import { SelectionMode } from 'reactflow';
 
 export const key = Symbol();
 
@@ -52,6 +54,11 @@ type SvelteFlowStore = {
 	edgesWithDataStore: Readable<EdgeWithData[]>;
 	idStore: Writable<string>;
 	nodeOriginStore: Writable<NodeOrigin>;
+	draggingStore: Writable<boolean>;
+	selectionRectStore: Writable<SelectionRect | null>;
+	selectionRectModeStore: Writable<string | null>;
+	selectionMode: Writable<SelectionMode>;
+	selectionKeyPressedStore: Writable<boolean>;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
@@ -61,6 +68,7 @@ type SvelteFlowStore = {
 		dragging?: boolean
 	) => void;
 	updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
+	resetSelectedElements: () => void;
 };
 
 export function createStore({
@@ -81,6 +89,11 @@ export function createStore({
 		selection: null
 	});
 	const idStore = writable(id);
+	const draggingStore = writable(false);
+	const selectionRectStore = writable(null);
+	const selectionKeyPressedStore = writable(false);
+	const selectionRectModeStore = writable(null);
+	const selectionMode = writable(SelectionMode.Partial);
 
 	let fitViewOnInitDone = false;
 
@@ -235,6 +248,22 @@ export function createStore({
 		);
 	}
 
+	function resetSelectedItem<T extends Node | Edge>(item: T) {
+		if (item.selected) {
+			return {
+				...item,
+				selected: false
+			};
+		}
+
+		return item;
+	}
+
+	function resetSelectedElements() {
+		nodesStore.update((ns) => ns.map(resetSelectedItem));
+		edgesStore.update((es) => es.map(resetSelectedItem));
+	}
+
 	return {
 		nodesStore,
 		edgesStore,
@@ -245,11 +274,17 @@ export function createStore({
 		edgesWithDataStore,
 		idStore,
 		nodeOriginStore,
+		draggingStore,
+		selectionRectStore,
+		selectionKeyPressedStore,
+		selectionRectModeStore,
+		selectionMode,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,
 		zoomOut,
-		fitView: _fitView
+		fitView: _fitView,
+		resetSelectedElements
 	};
 }
 

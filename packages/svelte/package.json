@@ -16,8 +16,9 @@
 		".": "./index.js"
 	},
 	"dependencies": {
-		"@reactflow/system": "workspace:11.5.5",
-		"@reactflow/utils": "workspace:^11.5.5",
+		"@reactflow/system": "workspace:*",
+		"@reactflow/utils": "workspace:*",
+		"@svelte-put/shortcut": "^2.0.0",
 		"classcat": "^5.0.4",
 		"d3-drag": "^3.0.0",
 		"d3-selection": "^3.0.0",

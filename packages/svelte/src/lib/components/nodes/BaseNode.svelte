@@ -2,7 +2,7 @@
 	import { onMount, setContext } from 'svelte';
   import type { XYPosition } from '@reactflow/system';
 
-  import drag  from '$lib/hooks/drag'
+  import drag  from '$lib/actions/drag'
 	import { useStore } from '$lib/store';
 	import DefaultNode from './DefaultNode.svelte';
 
@@ -29,7 +29,6 @@
       resizeObserver?.unobserve(nodeRef);
     }
   });
-
 </script>
 
 <div
@@ -58,6 +57,8 @@
     background-color: white;
     position: absolute;
     cursor: grab; 
+    pointer-events: all;
+    user-select: none;
   }
 
   .dragging {

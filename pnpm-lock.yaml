@@ -312,6 +312,7 @@ importers:
     specifiers:
       '@reactflow/system': workspace:11.5.5
       '@reactflow/utils': workspace:^11.5.5
+      '@svelte-put/shortcut': ^2.0.0
       '@sveltejs/adapter-auto': ^2.0.0
       '@sveltejs/kit': ^1.5.6
       '@sveltejs/package': ^1.0.2
@@ -336,6 +337,7 @@ importers:
     dependencies:
       '@reactflow/system': link:../system
       '@reactflow/utils': link:../utils
+      '@svelte-put/shortcut': registry.npmjs.org/@svelte-put/shortcut/2.0.0
       classcat: registry.npmjs.org/classcat/5.0.4
       d3-drag: registry.npmjs.org/d3-drag/3.0.0
       d3-selection: registry.npmjs.org/d3-selection/3.0.0
@@ -1963,6 +1965,12 @@ packages:
     name: '@sideway/pinpoint'
     version: 2.0.0
     dev: true
+
+  registry.npmjs.org/@svelte-put/shortcut/2.0.0:
+    resolution: {integrity: sha512-dDyxIFlRz+W6wxwQtl2jUen0rX8ofV2VBWaJdz0QehLb0IMDzP3aWM9W4k8cAZQIGmTT0adr1+Gt7HPPUugcpQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@svelte-put/shortcut/-/shortcut-2.0.0.tgz}
+    name: '@svelte-put/shortcut'
+    version: 2.0.0
+    dev: false
 
   registry.npmjs.org/@sveltejs/adapter-auto/2.0.0_@sveltejs+kit@1.5.6:
     resolution: {integrity: sha512-b+gkHFZgD771kgV3aO4avHFd7y1zhmMYy9i6xOK7m/rwmwaRO8gnF5zBc0Rgca80B2PMU1bKNxyBTHA14OzUAQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@sveltejs/adapter-auto/-/adapter-auto-2.0.0.tgz}

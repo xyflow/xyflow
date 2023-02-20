@@ -1,0 +1,180 @@
+<script lang="ts">
+  import { useStore } from '$lib/store';
+	import { SelectionMode, type Node, type Edge } from '@reactflow/system';
+	import { getConnectedEdges, getEventPosition, getNodesInside } from '@reactflow/utils';
+
+  const { nodesStore, edgesStore, transformStore, nodeOriginStore, draggingStore, selectionRectStore, selectionRectModeStore, selectionKeyPressedStore, resetSelectedElements } = useStore();
+
+  const wrapHandler = (
+    handler: (evt: MouseEvent) => void,
+    container: HTMLDivElement
+  ):  (evt: MouseEvent) => void => {
+    return (event: MouseEvent) => {
+      if (event.target !== container) {
+        return;
+      }
+
+      handler?.(event);
+    };
+  };
+
+  // @todo take from props
+  const elementsSelectable = true;
+  const selectionMode = SelectionMode.Partial
+
+	let container: HTMLDivElement;
+  let containerBounds: DOMRect | null = null
+  let selectedNodes: Node[] = [];
+  
+  $: isSelecting = $selectionKeyPressedStore;
+  $: hasActiveSelection = elementsSelectable && (isSelecting || $selectionRectModeStore === 'user');
+
+
+  function onClick (event: MouseEvent) {
+    // onPaneClick?.(event);
+    
+    resetSelectedElements();
+    selectionRectModeStore.set(null)
+  }
+
+  function onMouseDown(event: MouseEvent) {
+    containerBounds = container.getBoundingClientRect();
+
+    if (
+      !elementsSelectable ||
+      !isSelecting ||
+      event.button !== 0 ||
+      event.target !== container ||
+      !containerBounds
+    ) {
+      return;
+    }
+
+    const { x, y } = getEventPosition(event, containerBounds);
+
+    resetSelectedElements();
+
+    selectionRectStore.set({
+      width: 0,
+      height: 0,
+      startX: x,
+      startY: y,
+      x,
+      y
+    });
+
+   
+    // onSelectionStart?.(event);
+  };
+
+  function toggleSelected<Item extends Node | Edge>(ids: string[]) {
+    return (item: Item) => {
+      const isSelected = ids.includes(item.id);
+
+      if (item.selected !== isSelected) {
+        return {
+          ...item,
+          selected: isSelected,
+        };
+      }
+
+      return item;
+    }
+  }
+
+  function onMouseMove(event: MouseEvent) {
+    if (!isSelecting || !containerBounds || !$selectionRectStore) {
+      return;
+    }
+    const mousePos = getEventPosition(event, containerBounds);
+    const startX = $selectionRectStore.startX ?? 0;
+    const startY = $selectionRectStore.startY ?? 0;
+    const nextUserSelectRect = {
+      ...$selectionRectStore,
+      x: mousePos.x < startX ? mousePos.x : startX,
+      y: mousePos.y < startY ? mousePos.y : startY,
+      width: Math.abs(mousePos.x - startX),
+      height: Math.abs(mousePos.y - startY),
+    };
+
+    selectedNodes = getNodesInside(
+      new Map($nodesStore.map(node => [node.id, node])),
+      nextUserSelectRect,
+      $transformStore,
+      selectionMode === SelectionMode.Partial,
+      true,
+      $nodeOriginStore
+    );
+    const selectedEdgeIds = getConnectedEdges(selectedNodes, $edgesStore).map((e) => e.id);
+    const selectedNodeIds = selectedNodes.map((n) => n.id);
+
+    nodesStore.update(nodes => nodes.map(toggleSelected(selectedNodeIds)));
+    edgesStore.update(edges => edges.map(toggleSelected(selectedEdgeIds)));
+
+    selectionRectModeStore.set('user');
+    selectionRectStore.set(nextUserSelectRect);
+  }
+
+  function onMouseUp(event: MouseEvent) {
+    if (event.button !== 0) {
+      return;
+    }
+
+    // We only want to trigger click functions when in selection mode if
+    // the user did not move the mouse.
+    // if (!userSelectionActive && userSelectionRect && event.target === container.current) {
+    //   onClick?.(event);
+    // }
+    selectionRectStore.set(null);
+
+    if (selectedNodes.length > 0) {
+      selectionRectModeStore.set('nodes');
+    }
+
+    
+    // onSelectionEnd?.(event);
+  }
+
+  const onMouseLeave = (event: MouseEvent) => {
+    if ($selectionRectModeStore === 'user') {
+      selectionRectModeStore.set(selectedNodes.length > 0 ? 'nodes' : null);
+      //  onSelectionEnd?.(event);
+    }
+
+    selectionRectStore.set(null);
+  };
+</script>
+
+<div
+  bind:this={container}
+  class="react-flow__pane"
+  class:dragging={$draggingStore}
+  class:selection={isSelecting}
+  on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
+  on:mousedown={hasActiveSelection ? onMouseDown : undefined}
+  on:mousemove={hasActiveSelection? onMouseMove : undefined}
+  on:mouseup={hasActiveSelection ? onMouseUp : undefined}
+  on:mouseleave={hasActiveSelection ? onMouseLeave : undefined}
+>
+  <slot />
+</div>
+
+<style>
+  .react-flow__pane {
+    cursor: grab;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .selection {
+    cursor: pointer;
+  }
+
+  .dragging {
+    cursor: grabbing;
+  }
+</style>
