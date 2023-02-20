@@ -18,6 +18,7 @@
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
+
 </script>
 
 <div class="react-flow__nodes">

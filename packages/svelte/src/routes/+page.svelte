@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Node, Edge } from '@reactflow/system';
   
-  import SvelteFlow, { Controls, Background, BackgroundVariant } from '../lib/index';
+  import SvelteFlow, { Controls, Background, BackgroundVariant, Minimap } from '../lib/index';
 
   const yNodes = 10;
   const xNodes = 10;
@@ -60,6 +60,7 @@
 <SvelteFlow {nodes} {edges} fitView >
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
+  <Minimap />
 </SvelteFlow>
 
 <style>

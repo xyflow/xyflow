@@ -13,9 +13,9 @@ import {
 	type D3SelectionInstance,
 	type ViewportHelperFunctionOptions
 } from '@reactflow/system';
-import { fitView, getD3Transition } from '@reactflow/utils';
+import { fitView, getD3Transition, getDimensions } from '@reactflow/utils';
 
-import { getDimensions, getHandleBounds } from '../../utils';
+import { getHandleBounds } from '../../utils';
 import {
 	getEdgePositions,
 	getHandle,
@@ -51,6 +51,7 @@ type SvelteFlowStore = {
 	transformStore: Writable<Transform>;
 	edgesWithDataStore: Readable<EdgeWithData[]>;
 	idStore: Writable<string>;
+	nodeOriginStore: Writable<NodeOrigin>;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
@@ -243,6 +244,7 @@ export function createStore({
 		widthStore,
 		edgesWithDataStore,
 		idStore,
+		nodeOriginStore,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,

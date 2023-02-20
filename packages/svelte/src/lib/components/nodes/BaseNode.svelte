@@ -8,10 +8,13 @@
 
   export let id: string;
   export let positionAbsolute: XYPosition = { x: 0, y: 0 };
+  export let position: XYPosition = { x: 0, y: 0 };
   export let dragging: boolean = false;
   export let data: any = {};
   export let resizeObserver: ResizeObserver | null = null;
   export let style: any = {};
+  export let width: number = 0;
+  export let height: number = 0;
 
   let nodeRef: HTMLDivElement;
 
@@ -32,6 +35,7 @@
 <div
   use:drag={{ nodeId: id, nodesStore, transformStore, updateNodePositions }}
   class="react-flow__node"
+  class:initializing={!width && !height}
   class:dragging={dragging}
   bind:this={nodeRef}
   style="transform: translate({positionAbsolute.x}px, {positionAbsolute.y}px);"
@@ -58,5 +62,9 @@
 
   .dragging {
     cursor: grabbing;
+  }
+
+  .initializing {
+    visibility: hidden;
   }
 </style>
