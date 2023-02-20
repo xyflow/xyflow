@@ -18,7 +18,7 @@
 	"dependencies": {
 		"@reactflow/system": "workspace:11.5.5",
 		"@reactflow/utils": "workspace:^11.5.5",
-		"cc": "^3.0.1",
+		"classcat": "^5.0.4",
 		"d3-drag": "^3.0.0",
 		"d3-selection": "^3.0.0",
 		"d3-zoom": "^3.0.0",
