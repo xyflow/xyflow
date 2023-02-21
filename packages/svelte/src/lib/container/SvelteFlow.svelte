@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext, onMount } from 'svelte'
+  import { setContext, onMount, SvelteComponent } from 'svelte'
   import cc from 'classcat';
   import type { Node, Edge } from '@reactflow/system';
 
@@ -17,6 +17,7 @@
   export let nodes: Node[] = [];
   export let edges: Edge[] = [];
   export let fitView: boolean = false;
+  export let nodeTypes: Record<string, SvelteComponent>
 
   let className: string = '';
   export { className as class };
@@ -26,7 +27,8 @@
   const store = createStore({
     nodes,
     edges,
-    fitView
+    fitView,
+    nodeTypes
   });
 
   setContext(key, {

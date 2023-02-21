@@ -2,12 +2,18 @@
   import type { Node, Edge } from '@reactflow/system';
   
   import SvelteFlow, { Controls, Background, BackgroundVariant, Minimap } from '../lib/index';
+  import CustomNode from '../customnodes/Custom.svelte';
 
   const yNodes = 10;
   const xNodes = 10;
 
   const nodes: Node[] = [];
   const edges: Edge[] = [];
+
+  const nodeTypes = {
+    custom: CustomNode,
+  };
+
   let source = null;
 
   for (let y = 0; y < yNodes; y++) {
@@ -19,6 +25,7 @@
         id,
         data,
         position,
+        type: x === 0 ? 'custom' : 'default',
       };
       nodes.push(node);
 
@@ -57,7 +64,7 @@
   //  }]
 </script>
 
-<SvelteFlow {nodes} {edges} fitView >
+<SvelteFlow {nodes} {edges} {nodeTypes} fitView>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <Minimap />

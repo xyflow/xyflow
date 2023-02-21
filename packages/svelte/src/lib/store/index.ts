@@ -24,6 +24,10 @@ import {
 	type EdgePosition
 } from '$lib/container/EdgeRenderer/utils';
 import { SelectionMode } from 'reactflow';
+import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
+import InputNode from '$lib/components/nodes/InputNode.svelte';
+import OutputNode from '$lib/components/nodes/OutputNode.svelte';
+import type { NodeTypes } from '$lib/types';
 
 export const key = Symbol();
 
@@ -33,6 +37,7 @@ type CreateStoreProps = {
 	fitView: boolean;
 	nodeOrigin?: NodeOrigin;
 	transform?: Transform;
+	nodeTypes?: NodeTypes;
 	id?: string;
 };
 
@@ -59,6 +64,7 @@ type SvelteFlowStore = {
 	selectionRectModeStore: Writable<string | null>;
 	selectionMode: Writable<SelectionMode>;
 	selectionKeyPressedStore: Writable<boolean>;
+	nodeTypesStore: Writable<NodeTypes>;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
@@ -77,6 +83,7 @@ export function createStore({
 	transform = [0, 0, 1],
 	nodeOrigin = [0, 0],
 	fitView: fitViewOnInit = false,
+	nodeTypes = {},
 	id = '1'
 }: CreateStoreProps): SvelteFlowStore {
 	const nodesStore = writable(nodes.map((n) => ({ ...n, positionAbsolute: n.position })));
@@ -94,6 +101,12 @@ export function createStore({
 	const selectionKeyPressedStore = writable(false);
 	const selectionRectModeStore = writable(null);
 	const selectionMode = writable(SelectionMode.Partial);
+	const nodeTypesStore = writable({
+		...nodeTypes,
+		input: nodeTypes.input || InputNode,
+		output: nodeTypes.output || OutputNode,
+		default: nodeTypes.default || DefaultNode
+	});
 
 	let fitViewOnInitDone = false;
 
@@ -279,6 +292,7 @@ export function createStore({
 		selectionKeyPressedStore,
 		selectionRectModeStore,
 		selectionMode,
+		nodeTypesStore,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,

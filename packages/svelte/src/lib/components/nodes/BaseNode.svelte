@@ -1,24 +1,30 @@
 <script lang="ts">
-	import { onMount, setContext } from 'svelte';
-  import type { XYPosition } from '@reactflow/system';
+	import { onMount, setContext, SvelteComponentTyped, type ComponentType } from 'svelte';
+  import { type XYPosition, Position } from '@reactflow/system';
 
   import drag  from '$lib/actions/drag'
 	import { useStore } from '$lib/store';
 	import DefaultNode from './DefaultNode.svelte';
+	import type { NodeProps } from '$lib/types';
 
-  export let id: string;
+  export let id: NodeProps['id'];
+  export let data: NodeProps['data'] = {};
+  export let selected: NodeProps['selected'] = false;
   export let positionAbsolute: XYPosition = { x: 0, y: 0 };
   export let position: XYPosition = { x: 0, y: 0 };
   export let dragging: boolean = false;
-  export let data: any = {};
   export let resizeObserver: ResizeObserver | null = null;
   export let style: any = {};
   export let width: number = 0;
   export let height: number = 0;
+  export let type: string = 'default';
+  export let sourcePosition: Position = Position.Bottom;
+  export let targetPosition: Position = Position.Top;
 
   let nodeRef: HTMLDivElement;
-
-  const { nodesStore, transformStore, updateNodePositions } = useStore();
+  
+  const { nodesStore, transformStore, updateNodePositions, nodeTypesStore } = useStore();
+  const nodeComponent: typeof SvelteComponentTyped<NodeProps> = $nodeTypesStore[type] || DefaultNode;
 
   setContext('rf_nodeid', id);
 
@@ -37,17 +43,26 @@
   class:initializing={!width && !height}
   class:dragging={dragging}
   bind:this={nodeRef}
-  style="transform: translate({positionAbsolute.x}px, {positionAbsolute.y}px);"
+  style:transform={`translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`}
+  {style}
   data-id={id}
 >
-  <svelte:component this={DefaultNode} data={data} />
+  <svelte:component
+    this={nodeComponent}
+    {data}
+    {id}
+    {selected}
+    {sourcePosition}
+    {targetPosition}
+    isConnectable={true}
+    xPos={positionAbsolute.x}
+    yPos={positionAbsolute.y}
+  />
 </div>
 
 <style>
   .react-flow__node {
-    padding: 10px;
     border-radius: 3px;
-    width: 50px;
     font-size: 12px;
     color: #222;
     text-align: center;

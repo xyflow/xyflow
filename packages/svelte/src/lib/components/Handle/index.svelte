@@ -6,12 +6,13 @@
   export let type: HandleType = 'source';
   export let position: Position = Position.Top;
   export let id: string | null = null;
-  export let className: string | null = null;;
+  
+  let className: string | null = null;
+  export { className as class };
 
   const isTarget = type === 'target';
   const nodeId = getContext('rf_nodeid');
 </script>
-
 
 <div
   data-handleid={id}
@@ -28,7 +29,7 @@
   class:source={!isTarget}
   class:target={isTarget}
   >
-  <slot></slot>
+  <slot />
 </div>
 
 
@@ -46,27 +47,26 @@
   }
 
   .bottom {
-    top: auto;
+    top: 100%;
     left: 50%;
-    bottom: -4px;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, -50%);
   }
 
   .top {
     left: 50%;
-    top: -4px;
-    transform: translate(-50%, 0);
+    top: 0;
+    transform: translate(-50%, -50%);
   }
 
   .left {
     top: 50%;
-    left: -4px;
-    transform: translate(0, -50%);
+    left: 0;
+    transform: translate(-50%, -50%);
   }
 
   .right {
-    right: -4px;
     top: 50%;
-    transform: translate(0, -50%);
+    left: 100%;
+    transform: translate(-50%, -50%);
   }
 </style>
