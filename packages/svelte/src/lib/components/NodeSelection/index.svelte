@@ -3,16 +3,20 @@
 
   import { useStore } from '$lib/store';
   import Selection from '$lib/components/Selection/index.svelte';
+  import drag  from '$lib/actions/drag'
 
-  const { selectionRectModeStore, nodesStore, nodeOriginStore } = useStore();
+  const { selectionRectModeStore, nodesStore, nodeOriginStore, transformStore, updateNodePositions } = useStore();
 
   $: selectedNodes = $nodesStore.filter(n => n.selected);
   $: rect = getRectOfNodes(selectedNodes, $nodeOriginStore);
-
-  // @todo: use zoom action for selection
 </script> 
 
 {#if selectedNodes}
+  <div
+    class="selection-wrapper nopan"
+    style={`width: ${rect.width}px; height: ${rect.height}px; transform: translate(${rect.x}px, ${rect.y}px)`}
+    use:drag={{ nodesStore, transformStore, updateNodePositions }}
+  />
   <Selection
     isVisible={$selectionRectModeStore === 'nodes'}
     width={rect.width}
@@ -21,3 +25,13 @@
     y={rect.y}
   />
 {/if}
+
+<style>
+  .selection-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 7;
+    pointer-events: all;
+  }
+</style>

@@ -40,9 +40,9 @@ function filter(event: any, params: ZoomParams): boolean {
 	// }
 
 	// // if the target element is inside an element with the nopan class, we prevent panning
-	// if (isWrappedWithClass(event, noPanClassName) && event.type !== 'wheel') {
-	// 	return false;
-	// }
+	if (isWrappedWithClass(event, 'nopan') && event.type !== 'wheel') {
+		return false;
+	}
 
 	// if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
 	// 	return false;

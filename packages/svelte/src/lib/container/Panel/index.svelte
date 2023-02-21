@@ -3,6 +3,7 @@
   import cc from 'classcat';
 
   export let position: PanelPosition = 'top-right';
+  export let style: string = '';
   export { className as class }
 
   let className: string;
@@ -12,6 +13,7 @@
 
 <div
   class={cc(['react-flow__panel', className, ...positionClasses])}
+  style={style}
 >
   <slot />
 </div>

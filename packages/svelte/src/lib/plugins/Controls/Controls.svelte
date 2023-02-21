@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PanelPosition } from '@reactflow/system';
 
-  import Panel from '$lib/container/Panel.svelte';
+  import Panel from '$lib/container/Panel/index.svelte';
   import { useStore } from '$lib/store';
   import ControlButton from './ControlButton.svelte';
   import PlusIcon from './Icons/Plus.svelte';

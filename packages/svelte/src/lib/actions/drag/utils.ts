@@ -41,7 +41,6 @@ export function hasSelector(target: Element, selector: string, domNode: Element)
 
 // looks for all selected nodes and created a NodeDragItem for each of them
 export function getDragItems(nodes: Node[], mousePos: XYPosition, nodeId?: string): NodeDragItem[] {
-	console.log(mousePos, nodes);
 	return nodes
 		.filter(
 			(n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodes))

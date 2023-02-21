@@ -94,7 +94,7 @@ export default function drag(
 	const dragHandler = d3Drag()
 		.on('start', (event: UseDragEvent) => {
 			const pointerPos = getPointerPosition(event);
-
+			console.log(pointerPos);
 			lastPos = pointerPos;
 			dragItems = getDragItems(get(nodesStore), pointerPos, nodeId);
 		})

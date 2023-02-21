@@ -4,7 +4,7 @@
 	import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@reactflow/utils';
 
   import { useStore } from '$lib/store';
-	import Panel from '$lib/container/Panel.svelte';
+	import Panel from '$lib/container/Panel/index.svelte';
   import MinimapNode from './MinimapNode.svelte';
 
   let position: PanelPosition = 'bottom-right';
@@ -16,6 +16,7 @@
   let nodeClassName: string = '';
   let nodeBorderRadius: number = 5;
   let nodeStrokeWidth: number = 2;
+  let bgColor: string = '#fff';
   let maskColor: string = 'rgb(240, 240, 240, 0.6)';
   let maskStrokeColor: string = 'none';
   let maskStrokeWidth: number = 1;
@@ -54,7 +55,7 @@
   $: height = viewHeight + offset * 2;
 </script>
 
-<Panel position={position} class={cc(['react-flow__minimap', className])}>
+<Panel position={position} class={cc(['react-flow__minimap', className])} style={`background-color: ${bgColor};`}>
   <svg
     width={elementWidth}
     height={elementHeight}
@@ -94,9 +95,3 @@
     />
   </svg>
 </Panel>
-
-<style>
-  .react-flow__minimap {
-    background-color: #fff;
-  }
-</style>
