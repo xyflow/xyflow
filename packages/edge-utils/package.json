@@ -1,0 +1,59 @@
+{
+  "name": "@reactflow/edge-utils",
+  "version": "11.5.5",
+  "description": "Core edge utils of React Flow for creating edge paths.",
+  "keywords": [
+    "react",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "react-flow"
+  ],
+  "files": [
+    "dist"
+  ],
+  "source": "src/index.ts",
+  "main": "dist/umd/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbkd/react-flow.git",
+    "directory": "packages/edge-utils"
+  },
+  "scripts": {
+    "dev": "rollup --config node:@reactflow/rollup-config --watch",
+    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reactflow/system": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "devDependencies": {
+    "@reactflow/eslint-config": "workspace:*",
+    "@reactflow/rollup-config": "workspace:*",
+    "@reactflow/tsconfig": "workspace:*",
+    "@types/node": "^18.7.16",
+    "@types/react": ">=17",
+    "@types/react-dom": ">=17",
+    "react": "^18.2.0",
+    "typescript": "^4.9.4"
+  },
+  "rollup": {
+    "globals": {},
+    "name": "ReactFlowEdgeUtils"
+  }
+}
