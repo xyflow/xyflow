@@ -143,6 +143,7 @@ importers:
 
   packages/core:
     specifiers:
+      '@reactflow/edge-utils': workspace:^11.5.5
       '@reactflow/eslint-config': workspace:*
       '@reactflow/rollup-config': workspace:*
       '@reactflow/system': workspace:*
@@ -163,6 +164,7 @@ importers:
       typescript: ^4.9.4
       zustand: ^4.3.3
     dependencies:
+      '@reactflow/edge-utils': link:../edge-utils
       '@reactflow/system': link:../system
       '@reactflow/utils': link:../utils
       '@types/d3': registry.npmjs.org/@types/d3/7.4.0
@@ -310,6 +312,7 @@ importers:
 
   packages/svelte:
     specifiers:
+      '@reactflow/edge-utils': workspace:^11.5.5
       '@reactflow/system': workspace:*
       '@reactflow/utils': workspace:*
       '@svelte-put/shortcut': ^2.0.0
@@ -335,6 +338,7 @@ importers:
       typescript: ^4.9.3
       vite: ^4.1.1
     dependencies:
+      '@reactflow/edge-utils': link:../edge-utils
       '@reactflow/system': link:../system
       '@reactflow/utils': link:../utils
       '@svelte-put/shortcut': registry.npmjs.org/@svelte-put/shortcut/2.0.0

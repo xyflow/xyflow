@@ -16,6 +16,7 @@
 		".": "./index.js"
 	},
 	"dependencies": {
+		"@reactflow/edge-utils": "workspace:*",
 		"@reactflow/system": "workspace:*",
 		"@reactflow/utils": "workspace:*",
 		"@svelte-put/shortcut": "^2.0.0",

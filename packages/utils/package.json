@@ -59,6 +59,6 @@
   },
   "rollup": {
     "globals": {},
-    "name": "ReactFlowCore"
+    "name": "ReactFlowUtils"
   }
 }

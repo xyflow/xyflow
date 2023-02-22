@@ -13,3 +13,15 @@ export type NodeProps<NodeData extends Record<string, unknown> = Record<string, 
 };
 
 export type NodeTypes = Record<string, typeof SvelteComponentTyped<NodeProps>>;
+
+export type EdgeProps = {
+	id: string;
+	sourceX: number;
+	sourceY: number;
+	targetX: number;
+	targetY: number;
+	sourcePosition?: Position;
+	targetPosition?: Position;
+};
+
+export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;

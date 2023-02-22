@@ -1,14 +1,8 @@
-<script lang="ts">
-  import { useStore } from '$lib/store';
-	import { SelectionMode, type Node, type Edge } from '@reactflow/system';
-	import { getConnectedEdges, getEventPosition, getNodesInside } from '@reactflow/utils';
-
-  const { nodesStore, edgesStore, transformStore, nodeOriginStore, draggingStore, selectionRectStore, selectionRectModeStore, selectionKeyPressedStore, resetSelectedElements } = useStore();
-
-  const wrapHandler = (
+<script lang="ts" context="module">
+  export function wrapHandler(
     handler: (evt: MouseEvent) => void,
     container: HTMLDivElement
-  ):  (evt: MouseEvent) => void => {
+  ): (evt: MouseEvent) => void {
     return (event: MouseEvent) => {
       if (event.target !== container) {
         return;
@@ -17,6 +11,29 @@
       handler?.(event);
     };
   };
+
+  export function toggleSelected<Item extends Node | Edge>(ids: string[]) {
+    return (item: Item) => {
+      const isSelected = ids.includes(item.id);
+
+      if (item.selected !== isSelected) {
+        return {
+          ...item,
+          selected: isSelected,
+        };
+      }
+
+      return item;
+    }
+  }
+</script>
+
+<script lang="ts">
+  import { useStore } from '$lib/store';
+	import { SelectionMode, type Node, type Edge } from '@reactflow/system';
+	import { getConnectedEdges, getEventPosition, getNodesInside } from '@reactflow/utils';
+
+  const { nodesStore, edgesStore, transformStore, nodeOriginStore, draggingStore, selectionRectStore, selectionRectModeStore, selectionKeyPressedStore, resetSelectedElements } = useStore();
 
   // @todo take from props
   const elementsSelectable = true;
@@ -67,20 +84,7 @@
     // onSelectionStart?.(event);
   };
 
-  function toggleSelected<Item extends Node | Edge>(ids: string[]) {
-    return (item: Item) => {
-      const isSelected = ids.includes(item.id);
 
-      if (item.selected !== isSelected) {
-        return {
-          ...item,
-          selected: isSelected,
-        };
-      }
-
-      return item;
-    }
-  }
 
   function onMouseMove(event: MouseEvent) {
     if (!isSelecting || !containerBounds || !$selectionRectStore) {

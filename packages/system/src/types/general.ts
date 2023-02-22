@@ -77,6 +77,8 @@ export type FitViewParams = {
   nodeOrigin: NodeOrigin;
   d3Zoom: D3ZoomInstance;
   d3Selection: D3SelectionInstance;
+  minZoom: number;
+  maxZoom: number;
 };
 
 export type FitViewOptions = {

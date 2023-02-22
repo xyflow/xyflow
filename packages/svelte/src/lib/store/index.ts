@@ -27,7 +27,10 @@ import { SelectionMode } from 'reactflow';
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import type { NodeTypes } from '$lib/types';
+import type { EdgeTypes, NodeTypes } from '$lib/types';
+import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
+import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
+import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 
 export const key = Symbol();
 
@@ -38,6 +41,7 @@ type CreateStoreProps = {
 	nodeOrigin?: NodeOrigin;
 	transform?: Transform;
 	nodeTypes?: NodeTypes;
+	edgeTypes?: EdgeTypes;
 	id?: string;
 };
 
@@ -65,6 +69,7 @@ type SvelteFlowStore = {
 	selectionMode: Writable<SelectionMode>;
 	selectionKeyPressedStore: Writable<boolean>;
 	nodeTypesStore: Writable<NodeTypes>;
+	edgeTypesStore: Writable<EdgeTypes>;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
@@ -84,6 +89,7 @@ export function createStore({
 	nodeOrigin = [0, 0],
 	fitView: fitViewOnInit = false,
 	nodeTypes = {},
+	edgeTypes = {},
 	id = '1'
 }: CreateStoreProps): SvelteFlowStore {
 	const nodesStore = writable(nodes.map((n) => ({ ...n, positionAbsolute: n.position })));
@@ -106,6 +112,13 @@ export function createStore({
 		input: nodeTypes.input || InputNode,
 		output: nodeTypes.output || OutputNode,
 		default: nodeTypes.default || DefaultNode
+	});
+
+	const edgeTypesStore = writable({
+		...edgeTypes,
+		straight: edgeTypes.straight || StraightEdge,
+		smoothstep: edgeTypes.smoothstep || SmoothStepEdge,
+		default: edgeTypes.default || BezierEdge
 	});
 
 	let fitViewOnInitDone = false;
@@ -293,6 +306,7 @@ export function createStore({
 		selectionRectModeStore,
 		selectionMode,
 		nodeTypesStore,
+		edgeTypesStore,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,
@@ -304,5 +318,6 @@ export function createStore({
 
 export function useStore(): SvelteFlowStore {
 	const { getStore } = getContext<{ getStore: () => SvelteFlowStore }>(key);
+
 	return getStore();
 }

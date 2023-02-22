@@ -4,9 +4,9 @@
 
   export let position: PanelPosition = 'top-right';
   export let style: string = '';
-  export { className as class }
 
   let className: string;
+  export { className as class }
 
   $: positionClasses = `${position}`.split('-');
 </script>
