@@ -12,10 +12,9 @@ import {
   type ReactFlowState,
   type ReactFlowStore,
 } from '@reactflow/system';
+import { getBezierPath, getSmoothStepPath } from '@reactflow/edge-utils';
 
 import { useStore } from '../../hooks/useStore';
-import { getBezierPath } from '../Edges/BezierEdge';
-import { getSmoothStepPath } from '../Edges/SmoothStepEdge';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 
 type ConnectionLineProps = {

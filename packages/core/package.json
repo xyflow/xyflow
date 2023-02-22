@@ -38,6 +38,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@reactflow/edge-utils": "workspace:*",
     "@reactflow/system": "workspace:*",
     "@reactflow/utils": "workspace:*",
     "@types/d3": "^7.4.0",
