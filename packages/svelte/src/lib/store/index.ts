@@ -1,18 +1,17 @@
 import { getContext } from 'svelte';
 import { derived, get, writable, type Readable, type Writable } from 'svelte/store';
 import {
-	type Node,
 	type Transform,
 	type NodeDragItem,
 	type NodeDimensionUpdate,
-	type Edge,
 	Position,
 	internalsSymbol,
 	type NodeOrigin,
 	type D3ZoomInstance,
 	type D3SelectionInstance,
 	type ViewportHelperFunctionOptions,
-	type SelectionRect
+	type SelectionRect,
+	type Node as RFNode
 } from '@reactflow/system';
 import { fitView, getD3Transition, getDimensions } from '@reactflow/utils';
 
@@ -27,7 +26,7 @@ import { SelectionMode } from 'reactflow';
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import type { EdgeTypes, NodeTypes } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge } from '$lib/types';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
@@ -128,8 +127,12 @@ export function createStore({
 			.map((edge) => {
 				const sourceNode = $nodes.find((node) => node.id === edge.source);
 				const targetNode = $nodes.find((node) => node.id === edge.target);
-				const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(sourceNode);
-				const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(targetNode);
+				const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(
+					sourceNode as RFNode
+				);
+				const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(
+					targetNode as RFNode
+				);
 
 				if (!sourceIsValid || !targetIsValid) {
 					return null;
@@ -261,7 +264,7 @@ export function createStore({
 
 		return fitView(
 			{
-				nodes: get(nodesStore),
+				nodes: get(nodesStore) as RFNode[],
 				width: get(widthStore),
 				height: get(heightStore),
 				minZoom: 0.2,

@@ -1,10 +1,10 @@
-# @reactflow/core
+# @reactflow/utils
 
-Core components and util functions of React Flow.
+Util functions of React Flow.
 
 ## Installation 
 
 ```sh 
-npm install @reactflow/core
+npm install @reactflow/utils
 ```
 

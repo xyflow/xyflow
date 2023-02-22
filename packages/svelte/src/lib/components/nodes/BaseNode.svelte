@@ -1,25 +1,31 @@
 <script lang="ts">
 	import { onMount, setContext, SvelteComponentTyped } from 'svelte';
+  import cc from 'classcat';
   import { type XYPosition, Position } from '@reactflow/system';
   
   import drag  from '$lib/actions/drag'
 	import { useStore } from '$lib/store';
 	import DefaultNode from './DefaultNode.svelte';
-	import type { NodeProps } from '$lib/types';
+	import type { WrapNodeProps, NodeProps } from '$lib/types';
 
-  export let id: NodeProps['id'];
-  export let data: NodeProps['data'] = {};
-  export let selected: NodeProps['selected'] = false;
+  interface $$Props extends WrapNodeProps {}
+
+  export let id: WrapNodeProps['id'];
+  export let data: WrapNodeProps['data'] = {};
+  export let selected: WrapNodeProps['selected'] = false;
   export let positionAbsolute: XYPosition = { x: 0, y: 0 };
   export let position: XYPosition = { x: 0, y: 0 };
   export let dragging: boolean = false;
-  export let resizeObserver: ResizeObserver | null = null;
-  export let style: any = {};
-  export let width: number = 0;
-  export let height: number = 0;
-  export let type: string = 'default';
-  export let sourcePosition: Position = Position.Bottom;
-  export let targetPosition: Position = Position.Top;
+  export let resizeObserver: WrapNodeProps['resizeObserver'] = undefined;
+  export let style: WrapNodeProps['style'] = undefined;
+  export let width: WrapNodeProps['width'] = undefined;
+  export let height: WrapNodeProps['height'] = undefined;
+  export let type: WrapNodeProps['type'] = 'default';
+  export let sourcePosition: WrapNodeProps['sourcePosition'] = Position.Bottom;
+  export let targetPosition: WrapNodeProps['targetPosition'] = Position.Top;
+
+  let className: string = '';
+  export { className as class };
 
   let nodeRef: HTMLDivElement;
   
@@ -39,7 +45,7 @@
 
 <div
   use:drag={{ nodeId: id, nodesStore, transformStore, updateNodePositions }}
-  class="react-flow__node"
+  class={cc(['react-flow__node', `react-flow__node-${type}`, className])}
   class:initializing={!width && !height}
   class:dragging={dragging}
   bind:this={nodeRef}

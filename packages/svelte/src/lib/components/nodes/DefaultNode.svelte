@@ -13,7 +13,7 @@
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
   export let xPos: $$Props['xPos'];
   export let yPos: $$Props['yPos'];
-  export let selected: $$Props['selected'];
+  export let selected: $$Props['selected'] = false;
 </script>
 
 <Handle type="target" position={targetPosition} />

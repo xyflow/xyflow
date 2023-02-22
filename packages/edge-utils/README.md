@@ -1,10 +1,10 @@
-# @reactflow/core
+# @reactflow/edge-utils
 
-Core components and util functions of React Flow.
+Edge util functions of React Flow.
 
 ## Installation 
 
 ```sh 
-npm install @reactflow/core
+npm install @reactflow/edge-utils
 ```
 

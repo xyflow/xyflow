@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { Node, Edge } from '@reactflow/system';
-  
+  import type { Node, Edge } from '../lib/types';
   import SvelteFlow, { Controls, Background, BackgroundVariant, Minimap } from '../lib/index';
   import CustomNode from '../customnodes/Custom.svelte';
 
@@ -44,7 +43,7 @@
   //   }
   // }
 
-  const nodes: Node[] = [{
+  const nodes: Node<{ label: string }>[] = [{
     id: '1',
     type: 'input',
     data: { label: 'Input Node' },
@@ -55,11 +54,25 @@
     data: { label: 'Node' },
     position: { x: 0, y: 150 },
   }, {
+    id: 'A',
+    type: 'default',
+    data: { label: 'Styled with class' },
+    class: 'custom-style',
+    position: { x: 150, y: 150 },
+  }, {
     id: '3',
     type: 'output',
     data: { label: 'Output Node' },
     position: { x: 300, y: 150 },
-  }, {
+  }, 
+  {
+    id: 'B',
+    type: 'default',
+    data: { label: 'Styled with style' },
+    style: 'border: 2px solid #ff5050;',
+    position: { x: 450, y: 150 },
+  },
+  {
     id: '4',
     type: 'custom',
     data: { label: 'Custom Node' },
@@ -93,5 +106,10 @@
 <style>
   :root {
     --node-width: 50;
+  }
+
+  :global(.react-flow .custom-style) {
+    background: #ff5050;
+    color: white;
   }
 </style>
