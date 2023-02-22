@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount, setContext, SvelteComponentTyped, type ComponentType } from 'svelte';
+	import { onMount, setContext, SvelteComponentTyped } from 'svelte';
   import { type XYPosition, Position } from '@reactflow/system';
-
+  
   import drag  from '$lib/actions/drag'
 	import { useStore } from '$lib/store';
 	import DefaultNode from './DefaultNode.svelte';

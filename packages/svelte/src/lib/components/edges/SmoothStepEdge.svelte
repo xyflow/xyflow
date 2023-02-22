@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getSmoothStepPath } from '@reactflow/edge-utils';
-	import type { EdgeProps } from '$lib/types';
-
+  import type { EdgeProps } from '$lib/types';
+  
   interface $$Props extends EdgeProps {}
 
   export let id: $$Props['id'];

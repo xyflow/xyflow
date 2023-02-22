@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { SvelteComponentTyped } from 'svelte';
-	import { Position } from '@reactflow/system';
+  import { Position } from '@reactflow/system';
 
 	import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/StraightEdge.svelte';
