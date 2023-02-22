@@ -34,9 +34,7 @@ import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 export const key = Symbol();
 
 type CreateStoreProps = {
-	nodes: Node[];
-	edges: Edge[];
-	fitView: boolean;
+	fitView?: boolean;
 	nodeOrigin?: NodeOrigin;
 	transform?: Transform;
 	nodeTypes?: NodeTypes;
@@ -50,8 +48,8 @@ export type EdgeWithData = EdgePosition & {
 };
 
 type SvelteFlowStore = {
-	nodesStore: Writable<CreateStoreProps['nodes']>;
-	edgesStore: Writable<CreateStoreProps['edges']>;
+	nodesStore: Writable<Node[]>;
+	edgesStore: Writable<Edge[]>;
 	heightStore: Writable<number>;
 	widthStore: Writable<number>;
 	d3Store: Writable<{
@@ -69,6 +67,8 @@ type SvelteFlowStore = {
 	selectionKeyPressedStore: Writable<boolean>;
 	nodeTypesStore: Writable<NodeTypes>;
 	edgeTypesStore: Writable<EdgeTypes>;
+	setNodes: (nodes: Node[]) => void;
+	setEdges: (edges: Edge[]) => void;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
@@ -82,8 +82,6 @@ type SvelteFlowStore = {
 };
 
 export function createStore({
-	nodes = [],
-	edges = [],
 	transform = [0, 0, 1],
 	nodeOrigin = [0, 0],
 	fitView: fitViewOnInit = false,
@@ -91,8 +89,8 @@ export function createStore({
 	edgeTypes = {},
 	id = '1'
 }: CreateStoreProps): SvelteFlowStore {
-	const nodesStore = writable(nodes.map((n) => ({ ...n, positionAbsolute: n.position })));
-	const edgesStore = writable(edges);
+	const nodesStore = writable([] as Node[]);
+	const edgesStore = writable([] as Edge[]);
 	const heightStore = writable(500);
 	const widthStore = writable(500);
 	const nodeOriginStore = writable(nodeOrigin);
@@ -119,6 +117,7 @@ export function createStore({
 		smoothstep: edgeTypes.smoothstep || SmoothStepEdge,
 		default: edgeTypes.default || BezierEdge
 	});
+	const transformStore = writable(transform);
 
 	let fitViewOnInitDone = false;
 
@@ -171,7 +170,25 @@ export function createStore({
 			.filter((e) => e !== null) as EdgeWithData[];
 	});
 
-	const transformStore = writable(transform);
+	function setEdges(edges: Edge[]) {
+		edgesStore.set(edges);
+	}
+
+	function setNodes(nodes: Node[]) {
+		nodesStore.update((currentNodes) => {
+			const nextNodes = nodes.map((n) => {
+				const currentNode = currentNodes.find((cn) => cn.id === n.id) || {};
+
+				return {
+					...currentNode,
+					...n,
+					positionAbsolute: n.position
+				};
+			});
+
+			return nextNodes;
+		});
+	}
 
 	function updateNodePositions(nodeDragItems: NodeDragItem[], dragging = false) {
 		nodesStore.update((nds) => {
@@ -310,6 +327,8 @@ export function createStore({
 		selectionMode,
 		nodeTypesStore,
 		edgeTypesStore,
+		setNodes,
+		setEdges,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,

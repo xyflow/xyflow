@@ -8,4 +8,5 @@ export type SvelteFlowProps = {
 	fitView?: boolean;
 	class?: string;
 	style?: string;
+	id?: string;
 };

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { PanelPosition } from '@reactflow/system';
   import cc from 'classcat';
+  import type { PanelProps } from './Panel';
 
-  export let position: PanelPosition = 'top-right';
-  export let style: string = '';
+  interface $$Props extends PanelProps {}
 
-  let className: string;
+  export let position: $$Props['position'] = 'top-right';
+  export let style: $$Props['style'] = '';
+  let className: $$Props['class'] = undefined;
   export { className as class }
 
   $: positionClasses = `${position}`.split('-');

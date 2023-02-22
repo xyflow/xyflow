@@ -11,21 +11,21 @@
   import UserSelection from '$lib/components/UserSelection/index.svelte';
   import NodeSelection from '$lib/components/NodeSelection/index.svelte';
   import KeyHandler from '$lib/components/KeyHandler/index.svelte';
-	import type { NodeTypes, Node, Edge } from '$lib/types';
+	import type { SvelteFlowProps } from '$lib/types';
 
-  export let id: string = '1';
-  export let nodes: Node[] = [];
-  export let edges: Edge[] = [];
-  export let fitView: boolean = false;
-  export let nodeTypes: NodeTypes;
-  let className: string = '';
+  interface $$Props extends SvelteFlowProps {}
+
+  export let id: $$Props['id'] = '1';
+  export let nodes: $$Props['nodes'] = [];
+  export let edges: $$Props['edges'] = [];
+  export let fitView: $$Props['fitView'] = undefined;
+  export let nodeTypes: $$Props['nodeTypes'] = undefined;
+  let className: $$Props['class'] = undefined;
   export { className as class };
 
   let domNode: Element;
 
   const store = createStore({
-    nodes,
-    edges,
     fitView,
     nodeTypes
   });
@@ -38,7 +38,20 @@
     const { width, height } = domNode.getBoundingClientRect();
     store.widthStore.set(width);
     store.heightStore.set(height);
-  })
+
+    // @todo: is this a svelte way for two way binding?
+    store.nodesStore.subscribe((ns) => {
+      nodes = ns;
+    });
+  });
+
+  $: {
+    store.setNodes(nodes);
+  }
+
+  $: {
+    store.setEdges(edges);
+  }
 </script>
 
 <div

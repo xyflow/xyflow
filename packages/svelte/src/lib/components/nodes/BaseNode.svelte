@@ -16,7 +16,7 @@
   export let positionAbsolute: XYPosition = { x: 0, y: 0 };
   export let position: XYPosition = { x: 0, y: 0 };
   export let dragging: boolean = false;
-  export let resizeObserver: WrapNodeProps['resizeObserver'] = undefined;
+  export let resizeObserver: WrapNodeProps['resizeObserver'] = null;
   export let style: WrapNodeProps['style'] = undefined;
   export let width: WrapNodeProps['width'] = undefined;
   export let height: WrapNodeProps['height'] = undefined;
@@ -30,7 +30,7 @@
   let nodeRef: HTMLDivElement;
   
   const { nodesStore, transformStore, updateNodePositions, nodeTypesStore } = useStore();
-  const nodeComponent: typeof SvelteComponentTyped<NodeProps> = $nodeTypesStore[type] || DefaultNode;
+  const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> = $nodeTypesStore[type] || DefaultNode;
 
   setContext('rf_nodeid', id);
 

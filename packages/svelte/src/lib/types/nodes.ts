@@ -9,6 +9,7 @@ export type Node<NodeData = any> = {
 	position: XYPosition;
 	sourcePosition?: Position;
 	targetPosition?: Position;
+	positionAbsolute?: XYPosition;
 
 	width?: number;
 	height?: number;
@@ -35,7 +36,7 @@ export type NodeProps<NodeData = any> = Pick<
 };
 
 export type WrapNodeProps = Node & {
-	resizeObserver?: ResizeObserver;
+	resizeObserver?: ResizeObserver | null;
 };
 
-export type NodeTypes = Record<string, typeof SvelteComponentTyped<NodeProps>>;
+export type NodeTypes = Record<string, typeof SvelteComponentTyped<Partial<NodeProps>>>;

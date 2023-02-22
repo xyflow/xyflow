@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Node, Edge } from '../lib/types';
-  import SvelteFlow, { Controls, Background, BackgroundVariant, Minimap } from '../lib/index';
+  import type { Node, Edge, NodeTypes } from '../lib/types';
+  import SvelteFlow, { Controls, Background, BackgroundVariant, Minimap, Panel } from '../lib/index';
   import CustomNode from '../customnodes/Custom.svelte';
 
-  const nodeTypes = {
+  const nodeTypes: NodeTypes = {
     custom: CustomNode,
   };
 
@@ -43,7 +43,7 @@
   //   }
   // }
 
-  const nodes: Node<{ label: string }>[] = [{
+  let nodes: Node<{ label: string }>[] = [{
     id: '1',
     type: 'input',
     data: { label: 'Input Node' },
@@ -79,7 +79,7 @@
     position: { x: 150, y: 300 },
   }];
 
-  const edges: Edge[] = [{
+  let edges: Edge[] = [{
     id: '1-2',
     type: 'default',
     source: '1',
@@ -95,12 +95,23 @@
     source: '2',
     target: '4'
   }];
+  
+  function updateNode() {
+    nodes[0].position = { x: nodes[0].position.x + 20, y: nodes[0].position.y };
+  }
+
+  // $: {
+  //   console.log('nodes changed', nodes)
+  // }
 </script>
 
-<SvelteFlow {nodes} {edges} {nodeTypes} fitView>
+<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <Minimap />
+  <Panel position="top-right">
+    <button on:click={updateNode}>update node pos</button>
+  </Panel>
 </SvelteFlow>
 
 <style>

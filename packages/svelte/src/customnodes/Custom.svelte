@@ -1,7 +1,7 @@
 <script lang="ts">
   import Handle from '$lib/components/Handle/index.svelte';
 	import { Position } from '@reactflow/system';
-
+  
   export let data: { label: string } = { label: 'Node' };
   export let xPos: number = 0;
   export let yPos: number = 0;
