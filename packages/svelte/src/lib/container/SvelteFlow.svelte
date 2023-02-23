@@ -68,9 +68,10 @@
   <Zoom>
     <Pane>
       <Viewport>
-        <NodeSelection />
-        <NodeRenderer />
         <EdgeRenderer />
+        <div class="react-flow__edgelabel-renderer" />
+        <NodeRenderer />
+        <NodeSelection />
       </Viewport>
       <UserSelection />
     </Pane>
@@ -91,5 +92,13 @@
   .react-flow :global(.react-flow__node-input),
   .react-flow :global(.react-flow__node-output) {
     padding: 10px;
+  }
+
+  .react-flow__edgelabel-renderer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
   }
 </style>

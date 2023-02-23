@@ -1,5 +1,5 @@
 <script lang="ts"> 
-  import Edge from '$lib/components/edges/BaseEdge.svelte';
+  import EdgeWrapper from '$lib/components/edges/EdgeWrapper.svelte';
   import { useStore } from '$lib/store';
 
   const { edgesWithDataStore, widthStore, heightStore } = useStore();
@@ -8,10 +8,10 @@
 <svg
   width={$widthStore}
   height={$heightStore}
-  class="react-flow__edges react-flow__container"
+  class="react-flow__edges"
 >
   {#each $edgesWithDataStore as edge (edge.id)}
-    <Edge {...edge} />
+    <EdgeWrapper {...edge} />
   {/each}
 </svg>
 

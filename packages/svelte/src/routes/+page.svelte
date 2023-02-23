@@ -83,7 +83,8 @@
     id: '1-2',
     type: 'default',
     source: '1',
-    target: '2'
+    target: '2',
+    label: 'Edge Text'
   }, {
     id: '1-3',
     type: 'smoothstep',
@@ -93,7 +94,8 @@
     id: '2-4',
     type: 'default',
     source: '2',
-    target: '4'
+    target: '4',
+    animated: true
   }];
   
   function updateNode() {

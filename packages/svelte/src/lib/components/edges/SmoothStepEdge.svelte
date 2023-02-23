@@ -1,21 +1,24 @@
 <script lang="ts">
   import { getSmoothStepPath } from '@reactflow/edge-utils';
+
   import type { EdgeProps } from '$lib/types';
-  
-  interface $$Props extends EdgeProps {}
+  import BaseEdge from './BaseEdge.svelte';
 
-  export let id: $$Props['id'];
-  export let sourceX: $$Props['sourceX'] = 0;
-  export let sourceY: $$Props['sourceY'] = 0;
-  export let targetX: $$Props['targetX'] = 0;
-  export let targetY: $$Props['targetY'] = 0;
-  export let sourcePosition: $$Props['sourcePosition'] = undefined;
-  export let targetPosition: $$Props['targetPosition'] = undefined;
+  type $$Props = EdgeProps;
 
-  $: [path] = getSmoothStepPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition });
+  $: [path, labelX, labelY] = getSmoothStepPath({ 
+    sourceX: $$props.sourceX,
+    sourceY: $$props.sourceY,
+    targetX: $$props.targetX,
+    targetY: $$props.targetY,
+    sourcePosition: $$props.sourcePosition,
+    targetPosition: $$props.targetPosition,
+  });
 </script>
 
-<path
-  d={path}
-  class="react-flow__edge-path"
+<BaseEdge
+  {path}
+  {labelX}
+  {labelY}
+  {...$$props}
 />

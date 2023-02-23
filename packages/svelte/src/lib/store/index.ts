@@ -6,6 +6,7 @@ import {
 	type NodeDimensionUpdate,
 	Position,
 	internalsSymbol,
+	SelectionMode,
 	type NodeOrigin,
 	type D3ZoomInstance,
 	type D3SelectionInstance,
@@ -16,17 +17,11 @@ import {
 import { fitView, getConnectedEdges, getD3Transition, getDimensions } from '@reactflow/utils';
 
 import { getHandleBounds } from '../../utils';
-import {
-	getEdgePositions,
-	getHandle,
-	getNodeData,
-	type EdgePosition
-} from '$lib/container/EdgeRenderer/utils';
-import { SelectionMode } from 'reactflow';
+import { getEdgePositions, getHandle, getNodeData } from '$lib/container/EdgeRenderer/utils';
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import type { EdgeTypes, NodeTypes, Node, Edge } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, WrapEdgeProps } from '$lib/types';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
@@ -42,11 +37,6 @@ type CreateStoreProps = {
 	id?: string;
 };
 
-export type EdgeWithData = EdgePosition & {
-	id: string;
-	type: string;
-};
-
 type SvelteFlowStore = {
 	nodesStore: Writable<Node[]>;
 	edgesStore: Writable<Edge[]>;
@@ -57,7 +47,7 @@ type SvelteFlowStore = {
 		selection: D3SelectionInstance | null;
 	}>;
 	transformStore: Writable<Transform>;
-	edgesWithDataStore: Readable<EdgeWithData[]>;
+	edgesWithDataStore: Readable<WrapEdgeProps[]>;
 	idStore: Writable<string>;
 	nodeOriginStore: Writable<NodeOrigin>;
 	draggingStore: Writable<boolean>;
@@ -162,16 +152,24 @@ export function createStore({
 					targetPosition
 				);
 
+				// we nee to do this to match the types
+				const sourceHandleId = edge.sourceHandle;
+				const targetHandleId = edge.targetHandle;
+
 				return {
-					id: edge.id,
+					...edge,
 					type: edgeType,
 					sourceX,
 					sourceY,
 					targetX,
-					targetY
+					targetY,
+					sourcePosition,
+					targetPosition,
+					sourceHandleId,
+					targetHandleId
 				};
 			})
-			.filter((e) => e !== null) as EdgeWithData[];
+			.filter((e) => e !== null) as WrapEdgeProps[];
 	});
 
 	function setEdges(edges: Edge[]) {
@@ -359,6 +357,7 @@ export function createStore({
 
 	function addSelectedNodes(ids: string[]) {
 		selectionRectStore.set(null);
+		selectionRectModeStore.set(null);
 
 		if (get(multiselectionKeyPressedStore)) {
 			// @todo handle multiselection key

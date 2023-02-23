@@ -1,44 +1,46 @@
 <script lang="ts">
-	import type { SvelteComponentTyped } from 'svelte';
-  import { Position } from '@reactflow/system';
+  import type { BaseEdgeProps } from '$lib/types';
+  import EdgeLabelRenderer from '$lib/components/EdgeLabelRenderer/index.svelte';
 
-	import { useStore } from '$lib/store';
-  import BezierEdge from '$lib/components/edges/StraightEdge.svelte';
-	import type { EdgeProps } from '$lib/types';
+  type $$Props = BaseEdgeProps;
 
-  export let id: string;
-  export let type: string = 'default';
-  export let sourceX: number = 0;
-  export let sourceY: number = 0;
-  export let targetX: number = 0;
-  export let targetY: number = 0;
-  export let sourcePosition: Position = Position.Bottom;
-  export let targetPosition: Position = Position.Top;
-
-  const { edgeTypesStore } = useStore();
-  const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypesStore[type] || BezierEdge;
+  export let path: $$Props['path'];
+  export let label: $$Props['label'];
+  export let labelX: $$Props['labelX'];
+  export let labelY: $$Props['labelY'];
+  export let interactionWidth: $$Props['interactionWidth'] = 20;
 </script>
 
-<g
-  class="react-flow__edge"
-  data-id={id}
->
-  <svelte:component
-    this={edgeComponent}
-    {id}
-    {sourceX}
-    {sourceY}
-    {targetX}
-    {targetY}
-    {sourcePosition}
-    {targetPosition}
+<path
+  d={path}
+  fill="none"
+  class="react-flow__edge-path"
+/>
+
+{#if interactionWidth}
+  <path
+    d={path}
+    fill="none"
+    stroke-opacity={0}
+    stroke-width={interactionWidth}
+    class="react-flow__edge-interaction"
   />
-</g>
+{/if}
+
+{#if label}
+  <EdgeLabelRenderer>
+    <div
+      class="react-flow__edge-label"
+      style:transform={`translate(-50%, -50%) translate(${labelX}px,${labelY}px)`}
+    >
+        {label}
+    </div>
+  </EdgeLabelRenderer>
+{/if}
 
 <style>
-  .react-flow__edge :global(path) {
-    stroke: #ccc;
-    stroke-width: 1;
-    fill: none;
+  .react-flow__edge-label {
+    position: absolute;
+    background: white;
   }
 </style>

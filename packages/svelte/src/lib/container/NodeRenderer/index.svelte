@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
 
-  import BaseNode from '$lib/components/nodes/BaseNode.svelte';
+  import NodeWrapper from '$lib/components/nodes/NodeWrapper.svelte';
   import { useStore } from '$lib/store';
 
   const { nodesStore, updateNodeDimensions } = useStore();
@@ -22,7 +22,7 @@
 
 <div class="react-flow__nodes">
   {#each $nodesStore as node (node.id)}
-    <BaseNode {...node} {resizeObserver} />
+    <NodeWrapper {...node} {resizeObserver} />
   {/each}
 </div>
 

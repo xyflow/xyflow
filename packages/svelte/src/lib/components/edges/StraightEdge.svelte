@@ -1,19 +1,22 @@
 <script lang="ts">
   import { getStraightPath } from '@reactflow/edge-utils';
+
 	import type { EdgeProps } from '$lib/types';
+	import BaseEdge from './BaseEdge.svelte';
 
-  interface $$Props extends EdgeProps {}
+  type $$Props = EdgeProps;
 
-  export let id: $$Props['id'];
-  export let sourceX: $$Props['sourceX'] = 0;
-  export let sourceY: $$Props['sourceY'] = 0;
-  export let targetX: $$Props['targetX'] = 0;
-  export let targetY: $$Props['targetY'] = 0;
-
-  $: [path] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+  $: [path, labelX, labelY] = getStraightPath({
+    sourceX: $$props.sourceX,
+    sourceY: $$props.sourceY,
+    targetX: $$props.targetX,
+    targetY: $$props.targetY,
+  });
 </script>
 
-<path
-  d={path}
-  class="react-flow__edge-path"
+<BaseEdge
+  {path}
+  {labelX}
+  {labelY}
+  {...$$props}
 />

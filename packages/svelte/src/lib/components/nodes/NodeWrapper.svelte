@@ -85,7 +85,6 @@
 <style>
   .react-flow__node {
     border-radius: 3px;
-    font-size: 12px;
     color: #222;
     text-align: center;
     border-width: 1px;
