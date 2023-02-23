@@ -10,7 +10,7 @@
   height={$heightStore}
   class="react-flow__edges react-flow__container"
 >
-  {#each $edgesWithDataStore as edge}
+  {#each $edgesWithDataStore as edge (edge.id)}
     <Edge {...edge} />
   {/each}
 </svg>

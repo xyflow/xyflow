@@ -23,14 +23,16 @@
   export let type: WrapNodeProps['type'] = 'default';
   export let sourcePosition: WrapNodeProps['sourcePosition'] = Position.Bottom;
   export let targetPosition: WrapNodeProps['targetPosition'] = Position.Top;
-
   let className: string = '';
   export { className as class };
 
   let nodeRef: HTMLDivElement;
-  
-  const { nodesStore, transformStore, updateNodePositions, nodeTypesStore } = useStore();
+
+  const { nodesStore, transformStore, nodeTypesStore, updateNodePositions, addSelectedNodes } = useStore();
   const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> = $nodeTypesStore[type] || DefaultNode;
+  const isSelectable = true;
+  const selectNodesOnDrag = false;
+  const isDraggable = true;
 
   setContext('rf_nodeid', id);
 
@@ -41,6 +43,18 @@
       resizeObserver?.unobserve(nodeRef);
     }
   });
+
+  function onSelectNodeHandler(event: MouseEvent) {
+    if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
+      // this handler gets called within the drag start event when selectNodesOnDrag=true
+      addSelectedNodes([id]);
+    }
+
+    // if (onClick) {
+    //   const node = store.getState().nodeInternals.get(id)!;
+    //   onClick(event, { ...node });
+    // }
+  };
 </script>
 
 <div
@@ -48,7 +62,9 @@
   class={cc(['react-flow__node', `react-flow__node-${type}`, className])}
   class:initializing={!width && !height}
   class:dragging={dragging}
+  class:selected={selected}
   bind:this={nodeRef}
+  on:click={onSelectNodeHandler}
   style:transform={`translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`}
   {style}
   data-id={id}
@@ -80,6 +96,11 @@
     cursor: grab; 
     pointer-events: all;
     user-select: none;
+  }
+
+  .selected {
+    outline: none;
+    box-shadow: 0 0 0 0.5px #1a192b;
   }
 
   .dragging {

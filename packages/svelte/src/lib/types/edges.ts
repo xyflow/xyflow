@@ -9,6 +9,7 @@ export type Edge = {
 	sourceHandle?: string;
 	targetHandle?: string;
 	selected?: boolean;
+	deletable?: boolean;
 };
 
 export type EdgeProps = {

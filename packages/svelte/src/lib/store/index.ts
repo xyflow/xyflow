@@ -13,7 +13,7 @@ import {
 	type SelectionRect,
 	type Node as RFNode
 } from '@reactflow/system';
-import { fitView, getD3Transition, getDimensions } from '@reactflow/utils';
+import { fitView, getConnectedEdges, getD3Transition, getDimensions } from '@reactflow/utils';
 
 import { getHandleBounds } from '../../utils';
 import {
@@ -65,6 +65,7 @@ type SvelteFlowStore = {
 	selectionRectModeStore: Writable<string | null>;
 	selectionMode: Writable<SelectionMode>;
 	selectionKeyPressedStore: Writable<boolean>;
+	deleteKeyPressedStore: Writable<boolean>;
 	nodeTypesStore: Writable<NodeTypes>;
 	edgeTypesStore: Writable<EdgeTypes>;
 	setNodes: (nodes: Node[]) => void;
@@ -79,6 +80,7 @@ type SvelteFlowStore = {
 	) => void;
 	updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
 	resetSelectedElements: () => void;
+	addSelectedNodes: (ids: string[]) => void;
 };
 
 export function createStore({
@@ -102,6 +104,8 @@ export function createStore({
 	const draggingStore = writable(false);
 	const selectionRectStore = writable(null);
 	const selectionKeyPressedStore = writable(false);
+	const multiselectionKeyPressedStore = writable(false);
+	const deleteKeyPressedStore = writable(false);
 	const selectionRectModeStore = writable(null);
 	const selectionMode = writable(SelectionMode.Partial);
 	const nodeTypesStore = writable({
@@ -310,6 +314,66 @@ export function createStore({
 		edgesStore.update((es) => es.map(resetSelectedItem));
 	}
 
+	deleteKeyPressedStore.subscribe((deleteKeyPressed) => {
+		if (deleteKeyPressed) {
+			const nodes = get(nodesStore);
+			const edges = get(edgesStore);
+			const selectedNodes = nodes.filter((node) => node.selected);
+			const selectedEdges = edges.filter((edge) => edge.selected);
+
+			// @todo can we put this stuff into @reactflow/utils?
+			const nodeIds = selectedNodes.map((node) => node.id);
+			const edgeIds = selectedEdges.map((edge) => edge.id);
+			const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
+				const parentHit =
+					!nodeIds.includes(node.id) &&
+					node.parentNode &&
+					res.find((n) => n.id === node.parentNode);
+				const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
+				if (deletable && (nodeIds.includes(node.id) || parentHit)) {
+					res.push(node);
+				}
+
+				return res;
+			}, []);
+			const deletableEdges = edges.filter((e) =>
+				typeof e.deletable === 'boolean' ? e.deletable : true
+			);
+			const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
+
+			if (nodesToRemove || initialHitEdges) {
+				const connectedEdges = getConnectedEdges(nodesToRemove as RFNode[], deletableEdges);
+				const edgesToRemove = [...initialHitEdges, ...connectedEdges];
+				const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
+					if (!res.includes(edge.id)) {
+						res.push(edge.id);
+					}
+					return res;
+				}, []);
+
+				nodesStore.update((nds) => nds.filter((node) => !nodeIds.includes(node.id)));
+				edgesStore.update((eds) => eds.filter((edge) => !edgeIdsToRemove.includes(edge.id)));
+			}
+		}
+	});
+
+	function addSelectedNodes(ids: string[]) {
+		selectionRectStore.set(null);
+
+		if (get(multiselectionKeyPressedStore)) {
+			// @todo handle multiselection key
+		}
+
+		nodesStore.update((ns) =>
+			ns.map((node) => {
+				return {
+					...node,
+					selected: ids.includes(node.id)
+				};
+			})
+		);
+	}
+
 	return {
 		nodesStore,
 		edgesStore,
@@ -323,6 +387,7 @@ export function createStore({
 		draggingStore,
 		selectionRectStore,
 		selectionKeyPressedStore,
+		deleteKeyPressedStore,
 		selectionRectModeStore,
 		selectionMode,
 		nodeTypesStore,
@@ -334,7 +399,8 @@ export function createStore({
 		zoomIn,
 		zoomOut,
 		fitView: _fitView,
-		resetSelectedElements
+		resetSelectedElements,
+		addSelectedNodes
 	};
 }
 

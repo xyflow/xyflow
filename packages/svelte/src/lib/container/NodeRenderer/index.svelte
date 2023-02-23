@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
 
-  import Node from '$lib/components/nodes/BaseNode.svelte';
+  import BaseNode from '$lib/components/nodes/BaseNode.svelte';
   import { useStore } from '$lib/store';
 
   const { nodesStore, updateNodeDimensions } = useStore();
@@ -18,12 +18,11 @@
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
-
 </script>
 
 <div class="react-flow__nodes">
-  {#each $nodesStore as node}
-    <Node {...node} {resizeObserver} />
+  {#each $nodesStore as node (node.id)}
+    <BaseNode {...node} {resizeObserver} />
   {/each}
 </div>
 

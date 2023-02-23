@@ -10,16 +10,19 @@
   import EdgeRenderer from '$lib/container/EdgeRenderer/index.svelte';
   import UserSelection from '$lib/components/UserSelection/index.svelte';
   import NodeSelection from '$lib/components/NodeSelection/index.svelte';
-  import KeyHandler from '$lib/components/KeyHandler/index.svelte';
+  import { KeyHandler } from '$lib/components/KeyHandler';
 	import type { SvelteFlowProps } from '$lib/types';
 
-  interface $$Props extends SvelteFlowProps {}
+  type $$Props = SvelteFlowProps;
 
   export let id: $$Props['id'] = '1';
   export let nodes: $$Props['nodes'] = [];
   export let edges: $$Props['edges'] = [];
   export let fitView: $$Props['fitView'] = undefined;
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
+  export let selectionKey: $$Props['selectionKey'] = undefined;
+  export let deleteKey: $$Props['deleteKey'] = undefined;
+  
   let className: $$Props['class'] = undefined;
   export { className as class };
 
@@ -61,7 +64,7 @@
   id={id}
   bind:this={domNode}
 >
-  <KeyHandler />
+  <KeyHandler {selectionKey} {deleteKey} />
   <Zoom>
     <Pane>
       <Viewport>
