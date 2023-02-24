@@ -109,7 +109,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             id={node.id}
             className={node.className}
             style={node.style}
-            type={nodeType}
+            type={node.type}
             data={node.data}
             sourcePosition={node.sourcePosition || Position.Bottom}
             targetPosition={node.targetPosition || Position.Top}
