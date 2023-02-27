@@ -22,7 +22,6 @@ export type NodeDragItem = {
 };
 
 type UseDragParams = {
-	noDragClassName?: string;
 	handleSelector?: string;
 	nodeId?: string;
 	updateNodePositions: (dragItems: NodeDragItem[], d: boolean, p: boolean) => void;
@@ -32,14 +31,7 @@ type UseDragParams = {
 
 export default function drag(
 	nodeRef: Element,
-	{
-		noDragClassName,
-		handleSelector,
-		nodeId,
-		updateNodePositions,
-		nodesStore,
-		transformStore
-	}: UseDragParams
+	{ handleSelector, nodeId, updateNodePositions, nodesStore, transformStore }: UseDragParams
 ) {
 	let dragging = false;
 	let dragItems: NodeDragItem[] = [];
@@ -119,7 +111,7 @@ export default function drag(
 			const target = event.target as HTMLDivElement;
 			const isDraggable =
 				!event.button &&
-				(!noDragClassName || !hasSelector(target, `.${noDragClassName}`, nodeRef)) &&
+				!hasSelector(target, '.nodrag', nodeRef) &&
 				(!handleSelector || hasSelector(target, handleSelector, nodeRef));
 
 			return isDraggable;

@@ -11,6 +11,7 @@
   import UserSelection from '$lib/components/UserSelection/index.svelte';
   import NodeSelection from '$lib/components/NodeSelection/index.svelte';
   import { KeyHandler } from '$lib/components/KeyHandler';
+  import { ConnectionLine } from '$lib/components/ConnectionLine';
 	import type { SvelteFlowProps } from '$lib/types';
 
   type $$Props = SvelteFlowProps;
@@ -26,7 +27,7 @@
   let className: $$Props['class'] = undefined;
   export { className as class };
 
-  let domNode: Element;
+  let domNode: HTMLDivElement;
 
   const store = createStore({
     fitView,
@@ -41,6 +42,7 @@
     const { width, height } = domNode.getBoundingClientRect();
     store.widthStore.set(width);
     store.heightStore.set(height);
+    store.domNodeStore.set(domNode);
 
     // @todo: is this a svelte way for two way binding?
     store.nodesStore.subscribe((ns) => {
@@ -69,6 +71,7 @@
     <Pane>
       <Viewport>
         <EdgeRenderer />
+        <ConnectionLine />
         <div class="react-flow__edgelabel-renderer" />
         <NodeRenderer />
         <NodeSelection />

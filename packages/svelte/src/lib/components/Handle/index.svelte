@@ -1,21 +1,77 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
   import cc from 'classcat';
-	import { type HandleType, Position } from '@reactflow/system';
+	import {  Position, type Connection, type HandleProps } from '@reactflow/system';
+	import { isMouseEvent } from '@reactflow/utils';
 
-  export let type: HandleType = 'source';
-  export let position: Position = Position.Top;
-  export let id: string | null = null;
-  
+	import { handlePointerDown } from './handler';
+	import { useStore } from '$lib/store';
+
+  type $$Props = HandleProps;
+
+  export let type: $$Props['type'] = 'source';
+  export let position: $$Props['position'] = Position.Top;
+  export let id: $$Props['id'] = undefined;
+  export let isConnectable: $$Props['isConnectable'] = true;
+  export let isValidConnection: $$Props['isValidConnection'] = (_: Connection) => true;
   let className: string | null = null;
   export { className as class };
 
   const isTarget = type === 'target';
-  const nodeId = getContext('rf_nodeid');
+  const nodeId = getContext<string>('rf_nodeid');
+  const handleId = id || null;
+
+  const {
+    connectionModeStore,
+    domNodeStore,
+    nodesStore,
+    connectionRadiusStore,
+    transformStore,
+    addEdge,
+    panBy,
+    cancelConnection,
+    updateConnection
+  } = useStore();
+
+  function onConnectExtended(params: Connection) {
+      addEdge(params);
+      // @todo add props
+      // onConnectAction?.(edgeParams);
+      // onConnect?.(edgeParams);
+    };
+
+  function onPointerDown(event: MouseEvent | TouchEvent)  {
+      const isMouseTriggered = isMouseEvent(event);
+
+      if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+        handlePointerDown({
+          event,
+          handleId,
+          nodeId,
+          isTarget,
+          connectionRadius: $connectionRadiusStore,
+          domNode: $domNodeStore,
+          nodes: $nodesStore,
+          connectionMode: $connectionModeStore,
+          transformStore,
+          isValidConnection: isValidConnection!,
+          onConnect: onConnectExtended,
+          updateConnection,
+          cancelConnection,
+          panBy,
+        });
+      }
+
+      // if (isMouseTriggered) {
+      //   onMouseDown?.(event);
+      // } else {
+      //   onTouchStart?.(event);
+      // }
+    };
 </script>
 
 <div
-  data-handleid={id}
+  data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
   data-id={`${nodeId}-${id}-${type}`}
@@ -23,12 +79,16 @@
     'react-flow__handle',
     `react-flow__handle-${position}`,
     'nodrag',
+    'nopan',
     className,
     position
   ])}
   class:source={!isTarget}
   class:target={isTarget}
-  >
+  class:connectable={isConnectable}
+  on:mousedown={onPointerDown}
+  on:touchstart={onPointerDown}
+>
   <slot />
 </div>
 
@@ -44,6 +104,11 @@
     background: #1a192b;
     border: 1px solid white;
     border-radius: 100%;
+  }
+
+  .connectable {
+    pointer-events: all;
+    cursor: crosshair;
   }
 
   .bottom {

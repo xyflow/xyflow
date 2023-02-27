@@ -12,19 +12,32 @@ import {
 	type D3SelectionInstance,
 	type ViewportHelperFunctionOptions,
 	type SelectionRect,
-	type Node as RFNode
+	type Node as RFNode,
+	type Connection,
+	ConnectionMode,
+	type XYPosition,
+	type CoordinateExtent,
+	ConnectionLineType
 } from '@reactflow/system';
-import { fitView, getConnectedEdges, getD3Transition, getDimensions } from '@reactflow/utils';
+import {
+	fitView as fitViewUtil,
+	getConnectedEdges,
+	getD3Transition,
+	getDimensions,
+	addEdge as addEdgeUtil
+} from '@reactflow/utils';
+import { zoomIdentity } from 'd3-zoom';
 
 import { getHandleBounds } from '../../utils';
 import { getEdgePositions, getHandle, getNodeData } from '$lib/container/EdgeRenderer/utils';
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import type { EdgeTypes, NodeTypes, Node, Edge, WrapEdgeProps } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, WrapEdgeProps, ConnectionData } from '$lib/types';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
+import { getBezierPath, getSmoothStepPath, getStraightPath } from '@reactflow/edge-utils';
 
 export const key = Symbol();
 
@@ -58,8 +71,14 @@ type SvelteFlowStore = {
 	deleteKeyPressedStore: Writable<boolean>;
 	nodeTypesStore: Writable<NodeTypes>;
 	edgeTypesStore: Writable<EdgeTypes>;
+	domNodeStore: Writable<HTMLDivElement | null>;
+	connectionRadiusStore: Writable<number>;
+	connectionModeStore: Writable<ConnectionMode>;
+	connectionStore: Writable<ConnectionData>;
+	connectionPathStore: Readable<string | null>;
 	setNodes: (nodes: Node[]) => void;
 	setEdges: (edges: Edge[]) => void;
+	addEdge: (edge: Edge | Connection) => void;
 	zoomIn: (options?: ViewportHelperFunctionOptions) => void;
 	zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 	fitView: (options?: ViewportHelperFunctionOptions) => boolean;
@@ -71,6 +90,17 @@ type SvelteFlowStore = {
 	updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
 	resetSelectedElements: () => void;
 	addSelectedNodes: (ids: string[]) => void;
+	panBy: (delta: XYPosition) => void;
+	updateConnection: (connection: Partial<ConnectionData>) => void;
+	cancelConnection: () => void;
+};
+
+const initConnectionData = {
+	nodeId: null,
+	handleId: null,
+	handleType: null,
+	position: null,
+	status: null
 };
 
 export function createStore({
@@ -112,6 +142,11 @@ export function createStore({
 		default: edgeTypes.default || BezierEdge
 	});
 	const transformStore = writable(transform);
+	const connectionModeStore = writable(ConnectionMode.Strict);
+	const domNodeStore = writable(null);
+	const connectionStore = writable<ConnectionData>(initConnectionData);
+	const connectionRadiusStore = writable(25);
+	const connectionLineTypeStore = writable(ConnectionLineType.Bezier);
 
 	let fitViewOnInitDone = false;
 
@@ -172,8 +207,82 @@ export function createStore({
 			.filter((e) => e !== null) as WrapEdgeProps[];
 	});
 
+	const oppositePosition = {
+		[Position.Left]: Position.Right,
+		[Position.Right]: Position.Left,
+		[Position.Top]: Position.Bottom,
+		[Position.Bottom]: Position.Top
+	};
+
+	const connectionPathStore = derived(
+		[connectionStore, connectionLineTypeStore, connectionModeStore, nodesStore, transformStore],
+		([
+			$connectionStore,
+			$connectionLineTypeStore,
+			$connectionModeStore,
+			$nodesStore,
+			$transformStore
+		]) => {
+			if (!$connectionStore.nodeId) {
+				return null;
+			}
+
+			const fromNode = $nodesStore.find((n) => n.id === $connectionStore.nodeId);
+			const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
+			const handleBoundsStrict = fromHandleBounds?.[$connectionStore.handleType || 'source'] || [];
+			const handleBoundsLoose = handleBoundsStrict
+				? handleBoundsStrict
+				: fromHandleBounds?.[$connectionStore.handleType === 'source' ? 'target' : 'source']!;
+			const handleBounds =
+				$connectionModeStore === ConnectionMode.Strict ? handleBoundsStrict : handleBoundsLoose;
+			const fromHandle = $connectionStore.handleId
+				? handleBounds.find((d) => d.id === $connectionStore.handleId)
+				: handleBounds[0];
+			const fromHandleX = fromHandle
+				? fromHandle.x + fromHandle.width / 2
+				: (fromNode?.width ?? 0) / 2;
+			const fromHandleY = fromHandle ? fromHandle.y + fromHandle.height / 2 : fromNode?.height ?? 0;
+			const fromX = (fromNode?.positionAbsolute?.x ?? 0) + fromHandleX;
+			const fromY = (fromNode?.positionAbsolute?.y ?? 0) + fromHandleY;
+			const fromPosition = fromHandle?.position;
+			const toPosition = fromPosition ? oppositePosition[fromPosition] : undefined;
+
+			const pathParams = {
+				sourceX: fromX,
+				sourceY: fromY,
+				sourcePosition: fromPosition,
+				targetX: (($connectionStore.position?.x ?? 0) - $transformStore[0]) / $transformStore[2],
+				targetY: (($connectionStore.position?.y ?? 0) - $transformStore[1]) / $transformStore[2],
+				targetPosition: toPosition
+			};
+
+			let path = '';
+
+			if ($connectionLineTypeStore === ConnectionLineType.Bezier) {
+				// we assume the destination position is opposite to the source position
+				[path] = getBezierPath(pathParams);
+			} else if ($connectionLineTypeStore === ConnectionLineType.Step) {
+				[path] = getSmoothStepPath({
+					...pathParams,
+					borderRadius: 0
+				});
+			} else if ($connectionLineTypeStore === ConnectionLineType.SmoothStep) {
+				[path] = getSmoothStepPath(pathParams);
+			} else {
+				[path] = getStraightPath(pathParams);
+			}
+
+			return path;
+		}
+	);
+
 	function setEdges(edges: Edge[]) {
 		edgesStore.set(edges);
+	}
+
+	function addEdge(edgeParams: Edge | Connection) {
+		const edges = get(edgesStore);
+		edgesStore.set(addEdgeUtil(edgeParams, edges));
 	}
 
 	function setNodes(nodes: Node[]) {
@@ -254,7 +363,7 @@ export function createStore({
 		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
 
 		fitViewOnInitDone =
-			fitViewOnInitDone || (fitViewOnInit && !!d3Zoom && !!d3Selection && _fitView());
+			fitViewOnInitDone || (fitViewOnInit && !!d3Zoom && !!d3Selection && fitView());
 
 		nodesStore.set(nextNodes);
 	}
@@ -274,14 +383,14 @@ export function createStore({
 		}
 	}
 
-	function _fitView() {
+	function fitView() {
 		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
 
 		if (!d3Zoom || !d3Selection) {
 			return false;
 		}
 
-		return fitView(
+		return fitViewUtil(
 			{
 				nodes: get(nodesStore) as RFNode[],
 				width: get(widthStore),
@@ -373,6 +482,52 @@ export function createStore({
 		);
 	}
 
+	function panBy(delta: XYPosition) {
+		const { zoom: d3Zoom, selection: d3Selection } = get(d3Store);
+		const transform = get(transformStore);
+		const width = get(widthStore);
+		const height = get(heightStore);
+
+		if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
+			return;
+		}
+
+		const nextTransform = zoomIdentity
+			.translate(transform[0] + delta.x, transform[1] + delta.y)
+			.scale(transform[2]);
+
+		const extent: CoordinateExtent = [
+			[0, 0],
+			[width, height]
+		];
+
+		const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, [
+			[Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+			[Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
+		]);
+		d3Zoom.transform(d3Selection, constrainedTransform);
+	}
+
+	function updateConnection(connectionUpdate: Partial<ConnectionData> | null) {
+		const currentConnectionData = get(connectionStore);
+		const nextConnectionData = currentConnectionData
+			? {
+					...initConnectionData,
+					...currentConnectionData,
+					...connectionUpdate
+			  }
+			: {
+					...initConnectionData,
+					...connectionUpdate
+			  };
+
+		connectionStore.set(nextConnectionData);
+	}
+
+	function cancelConnection() {
+		updateConnection(initConnectionData);
+	}
+
 	return {
 		nodesStore,
 		edgesStore,
@@ -391,15 +546,24 @@ export function createStore({
 		selectionMode,
 		nodeTypesStore,
 		edgeTypesStore,
+		connectionModeStore,
+		domNodeStore,
+		connectionStore,
+		connectionRadiusStore,
+		connectionPathStore,
 		setNodes,
 		setEdges,
+		addEdge,
 		updateNodePositions,
 		updateNodeDimensions,
 		zoomIn,
 		zoomOut,
-		fitView: _fitView,
+		fitView,
 		resetSelectedElements,
-		addSelectedNodes
+		addSelectedNodes,
+		panBy,
+		updateConnection,
+		cancelConnection
 	};
 }
 
