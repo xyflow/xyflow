@@ -38,6 +38,9 @@ const BasicFlow = () => {
       onSelectionContextMenu={onPaneContextMenu}
     >
       <Background variant={BackgroundVariant.Cross} />
+      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+        <input type={'text'} placeholder={'name'} />
+      </div>
     </ReactFlow>
   );
 };
