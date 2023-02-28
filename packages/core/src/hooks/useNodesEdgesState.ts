@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback, type SetStateAction, type Dispatch } from 'react';
-import type { Node, NodeChange, Edge, EdgeChange } from '@reactflow/system';
 
 import { applyNodeChanges, applyEdgeChanges } from '../utils/changes';
+import type { Node, NodeChange, Edge, EdgeChange } from '../types';
 
 type ApplyChanges<ItemType, ChangesType> = (changes: ChangesType[], items: ItemType[]) => ItemType[];
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;

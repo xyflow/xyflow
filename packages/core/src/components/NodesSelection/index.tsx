@@ -8,12 +8,12 @@ import type { MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getRectOfNodes } from '@reactflow/utils';
-import type { Node, ReactFlowState } from '@reactflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import useDrag from '../../hooks/useDrag';
 import { arrowKeyDiffs } from '../Nodes/wrapNode';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
+import type { Node, ReactFlowState } from '../../types';
 
 export interface NodesSelectionProps {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;

@@ -30,8 +30,11 @@
 
 <script lang="ts">
   import { useStore } from '$lib/store';
-  import { SelectionMode, type Node, type Edge } from '@reactflow/system';
-  import { getConnectedEdges, getEventPosition, getNodesInside } from '@reactflow/utils';
+  import { SelectionMode } from '@reactflow/system';
+  import {  getEventPosition, getNodesInside } from '@reactflow/utils';
+
+  import { getConnectedEdges} from '$lib/utils';
+  import type { Node, Edge } from '$lib/types';
 
   const {
     nodes,
@@ -107,8 +110,8 @@
       height: Math.abs(mousePos.y - startY)
     };
 
-    selectedNodes = getNodesInside(
-      new Map($nodes.map((node) => [node.id, node])),
+    selectedNodes = getNodesInside<Node>(
+      $nodes,
       nextUserSelectRect,
       $transform,
       selectionMode === SelectionMode.Partial,

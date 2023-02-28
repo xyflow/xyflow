@@ -1,5 +1,6 @@
 <script lang="ts">
   import { setContext, onMount } from 'svelte';
+  import { ConnectionLineType } from '@reactflow/system';
   import cc from 'classcat';
 
   import { key, createStore } from '$lib/store';
@@ -23,7 +24,7 @@
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
-  export let connectionLineType: $$Props['connectionLineType'] = undefined;
+  export let connectionLineType: $$Props['connectionLineType'] = ConnectionLineType.Bezier;
 
   let className: $$Props['class'] = undefined;
   export { className as class };
@@ -50,27 +51,6 @@
       nodes = ns;
     });
   });
-
-  // $: {
-  //   const updatableProps = {
-  //     defaultEdgeOptions,
-  //     connectionMode,
-  //     snapToGrid,
-  //     snapGrid,
-  //     nodesDraggable,
-  //     connectOnClick,
-  //     fitViewOnInit: fitView,
-  //     fitViewOnInitOptions: fitViewOptions,
-  //   };
-
-  //   Object.keys(updatableProps).forEach((key) => {
-  //       store.update((state) => ({
-  //         ...state,
-  //         [key]: valuesToUpdate[key],
-  //       }));
-
-  //   });
-  // }
 
   $: {
     store.setNodes(nodes);

@@ -1,7 +1,6 @@
-import { memo, useMemo, useEffect, useRef } from 'react';
-import type { ComponentType } from 'react';
+import { memo, useMemo, useEffect, useRef, type ComponentType } from 'react';
 import { shallow } from 'zustand/shallow';
-import { internalsSymbol, errorMessages, Position, type ReactFlowState, type WrapNodeProps } from '@reactflow/system';
+import { internalsSymbol, errorMessages, Position } from '@reactflow/system';
 import { clampPosition } from '@reactflow/utils';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
@@ -9,6 +8,7 @@ import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { getPositionWithOrigin } from './utils';
+import type { ReactFlowState, WrapNodeProps } from '../../types';
 
 type NodeRendererProps = Pick<
   GraphViewProps,

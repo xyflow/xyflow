@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Node, Edge, EdgeChange, NodeChange } from '@reactflow/system';
+import type { Node, Edge, EdgeChange, NodeChange } from '../types';
 
 function handleParentExpand(res: any[], updateItem: any) {
   const parent = res.find((e) => e.id === updateItem.parentNode);

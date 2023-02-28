@@ -6,7 +6,7 @@ import type {
   NodeDragItem
 } from '@reactflow/system';
 
-import { initialStoreState } from './initial-store';
+import type { initialStoreState } from './initial-store';
 import type { Node, Edge, ConnectionData } from '$lib/types';
 
 export type SvelteFlowStoreActions = {

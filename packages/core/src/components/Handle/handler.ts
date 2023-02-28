@@ -7,7 +7,7 @@ import {
   pointToRendererPoint,
   rendererPointToPoint,
 } from '@reactflow/utils';
-import type { OnConnect, HandleType, ReactFlowState, Connection } from '@reactflow/system';
+import type { OnConnect, HandleType, Connection } from '@reactflow/system';
 
 import {
   ConnectionHandle,
@@ -19,6 +19,7 @@ import {
   resetRecentHandle,
   ValidConnectionFunc,
 } from './utils';
+import type { ReactFlowState } from '../../types';
 
 export function handlePointerDown({
   event,

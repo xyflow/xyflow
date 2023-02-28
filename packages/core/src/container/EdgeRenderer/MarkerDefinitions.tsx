@@ -1,9 +1,10 @@
 import { memo, useCallback } from 'react';
-import type { EdgeMarker, ReactFlowState } from '@reactflow/system';
+import type { EdgeMarker } from '@reactflow/system';
 import { getMarkerId } from '@reactflow/utils';
 
 import { useStore } from '../../hooks/useStore';
 import { useMarkerSymbol } from './MarkerSymbols';
+import type { ReactFlowState } from '../../types';
 
 type MarkerProps = EdgeMarker & {
   id: string;

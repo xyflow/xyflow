@@ -1,8 +1,9 @@
 import { memo } from 'react';
-import { Position, type EdgeProps } from '@reactflow/system';
+import { Position } from '@reactflow/system';
 import { getBezierEdgeCenter } from '@reactflow/edge-utils';
 
 import BaseEdge from './BaseEdge';
+import type { EdgeProps } from '../../types';
 
 export interface GetSimpleBezierPathParams {
   sourceX: number;

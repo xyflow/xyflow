@@ -1,7 +1,7 @@
 import { get, type Writable } from 'svelte/store';
 import { drag as d3Drag, type D3DragEvent, type SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
-import type { XYPosition, CoordinateExtent, Transform, Node as RFNode } from '@reactflow/system';
+import type { XYPosition, CoordinateExtent, Transform } from '@reactflow/system';
 
 import { getDragItems, hasSelector, calcNextPosition } from './utils';
 import type { Node } from '$lib/types';
@@ -62,7 +62,7 @@ export default function drag(
 
     dragItems = dragItems.map((n) => {
       const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
-      const updatedPos = calcNextPosition(n, nextPosition, get(nodes) as RFNode[]);
+      const updatedPos = calcNextPosition(n, nextPosition, get(nodes));
 
       // we want to make sure that we only fire a change event when there is a changes
       hasChange =
@@ -89,7 +89,7 @@ export default function drag(
       const pointerPos = getPointerPosition(event);
       console.log(pointerPos);
       lastPos = pointerPos;
-      dragItems = getDragItems(get(nodes) as RFNode[], pointerPos, nodeId);
+      dragItems = getDragItems(get(nodes), pointerPos, nodeId);
     })
     .on('drag', (event: UseDragEvent) => {
       const pointerPos = getPointerPosition(event);

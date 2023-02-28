@@ -1,6 +1,7 @@
-import type { Node, NodeTypes } from './nodes';
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
-import type { ConnectionLineType, Edge, HandleType, XYPosition } from '@reactflow/system';
+import type { ConnectionLineType, HandleType, XYPosition } from '@reactflow/system';
+
+import type { Node, NodeTypes, Edge } from '.';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };

@@ -2,7 +2,7 @@ import { derived } from 'svelte/store';
 import { Position } from '@reactflow/system';
 
 import { getEdgePositions, getHandle, getNodeData } from '$lib/container/EdgeRenderer/utils';
-import type { WrapEdgeProps } from '$lib/types';
+import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
 
 export function getEdgesLayouted(store: SvelteFlowStoreState) {
@@ -56,6 +56,6 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
           targetHandleId
         };
       })
-      .filter((e) => e !== null) as WrapEdgeProps[];
+      .filter((e) => e !== null) as EdgeLayouted[];
   });
 }

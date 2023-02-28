@@ -4,11 +4,13 @@
   "description": "Core system of React Flow.",
   "keywords": [
     "react",
+    "svelte",
     "node-based UI",
     "graph",
     "diagram",
     "workflow",
-    "react-flow"
+    "react-flow",
+    "svelte-flow"
   ],
   "files": [
     "dist"
@@ -41,18 +43,11 @@
     "@types/d3-selection": "^3.0.3",
     "@types/d3-zoom": "^3.0.1"
   },
-  "peerDependencies": {
-    "react": ">=17",
-    "react-dom": ">=17"
-  },
   "devDependencies": {
     "@reactflow/eslint-config": "workspace:*",
     "@reactflow/rollup-config": "workspace:*",
     "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
-    "@types/react": ">=17",
-    "@types/react-dom": ">=17",
-    "react": "^18.2.0",
     "typescript": "^4.9.4"
   },
   "rollup": {

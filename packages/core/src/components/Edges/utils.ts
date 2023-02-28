@@ -1,6 +1,7 @@
 import { MouseEvent as ReactMouseEvent } from 'react';
 import { StoreApi } from 'zustand';
-import type { Edge, ReactFlowState } from '@reactflow/system';
+
+import type { Edge, ReactFlowState } from '../../types';
 
 export function getMouseHandler(
   id: string,

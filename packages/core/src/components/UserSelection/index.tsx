@@ -1,7 +1,7 @@
 import { shallow } from 'zustand/shallow';
-import type { ReactFlowState } from '@reactflow/system';
 
 import { useStore } from '../../hooks/useStore';
+import type { ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,

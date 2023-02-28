@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { BaseEdgeProps } from '$lib/types';
   import EdgeLabelRenderer from '$lib/components/EdgeLabelRenderer/index.svelte';
+  import type { BaseEdgeProps } from '$lib/types';
 
   type $$Props = BaseEdgeProps;
 
-  export let path: $$Props['path'];
-  export let label: $$Props['label'];
-  export let labelX: $$Props['labelX'];
-  export let labelY: $$Props['labelY'];
+  export let path: $$Props['path'] = '';
+  export let label: $$Props['label'] = undefined;
+  export let labelX: $$Props['labelX'] = undefined;
+  export let labelY: $$Props['labelY'] = undefined;
   export let interactionWidth: $$Props['interactionWidth'] = 20;
 </script>
 

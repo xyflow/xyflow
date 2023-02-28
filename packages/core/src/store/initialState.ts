@@ -1,10 +1,7 @@
-import { devWarn } from '@reactflow/utils';
-import { ConnectionMode, type CoordinateExtent, type ReactFlowStore } from '@reactflow/system';
+import { devWarn, infiniteExtent } from '@reactflow/utils';
+import { ConnectionMode } from '@reactflow/system';
 
-export const infiniteExtent: CoordinateExtent = [
-  [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-  [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-];
+import type { ReactFlowStore } from '../types';
 
 const initialState: ReactFlowStore = {
   rfId: '1',

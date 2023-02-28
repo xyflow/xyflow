@@ -9,9 +9,9 @@
 
   type $$Props = HandleProps;
 
+  export let id: $$Props['id'] = undefined;
   export let type: $$Props['type'] = 'source';
   export let position: $$Props['position'] = Position.Top;
-  export let id: $$Props['id'] = undefined;
   export let isConnectable: $$Props['isConnectable'] = true;
   export let isValidConnection: $$Props['isValidConnection'] = (_: Connection) => true;
   let className: string | null = null;

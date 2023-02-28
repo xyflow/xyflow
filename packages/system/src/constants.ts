@@ -1,4 +1,4 @@
-import { Edge, HandleElement } from './types';
+import { BaseEdge, HandleElement } from './types';
 
 export const errorMessages = {
   '001': () =>
@@ -11,7 +11,7 @@ export const errorMessages = {
   '006': () => "Can't create edge. An edge needs a source and a target.",
   '007': (id: string) => `The old edge with id=${id} does not exist.`,
   '009': (type: string) => `Marker type "${type}" doesn't exist.`,
-  '008': (sourceHandle: HandleElement | null, edge: Edge) =>
+  '008': (sourceHandle: HandleElement | null, edge: BaseEdge) =>
     `Couldn't create edge for ${!sourceHandle ? 'source' : 'target'} handle id: "${
       !sourceHandle ? edge.sourceHandle : edge.targetHandle
     }", edge id: ${edge.id}.`,

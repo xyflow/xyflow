@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { StoreApi } from 'zustand';
 import { shallow } from 'zustand/shallow';
-import type { Node, Edge, ReactFlowState, CoordinateExtent, ReactFlowProps, ReactFlowStore } from '@reactflow/system';
+import type { CoordinateExtent } from '@reactflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
+import type { Node, Edge, ReactFlowState, ReactFlowProps, ReactFlowStore } from '../../types';
 
 type StoreUpdaterProps = Pick<
   ReactFlowProps,

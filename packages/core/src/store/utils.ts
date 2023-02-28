@@ -1,16 +1,8 @@
 import type { StoreApi } from 'zustand';
-import {
-  internalsSymbol,
-  type Edge,
-  type EdgeSelectionChange,
-  type Node,
-  type NodeInternals,
-  type NodeSelectionChange,
-  type ReactFlowState,
-  type XYZPosition,
-  type NodeOrigin,
-} from '@reactflow/system';
+import { internalsSymbol, type XYZPosition, type NodeOrigin } from '@reactflow/system';
 import { isNumeric, getNodePositionWithOrigin } from '@reactflow/utils';
+
+import type { Edge, EdgeSelectionChange, Node, NodeInternals, NodeSelectionChange, ReactFlowState } from '../types';
 
 type ParentNodes = Record<string, boolean>;
 

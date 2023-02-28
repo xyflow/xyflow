@@ -1,5 +1,6 @@
 import { getContext } from 'svelte';
 import { get } from 'svelte/store';
+import { zoomIdentity } from 'd3-zoom';
 import {
   type Transform,
   type NodeDragItem,
@@ -7,23 +8,14 @@ import {
   internalsSymbol,
   type NodeOrigin,
   type ViewportHelperFunctionOptions,
-  type Node as RFNode,
   type Connection,
   type XYPosition,
   type CoordinateExtent
 } from '@reactflow/system';
-import {
-  fitView as fitViewUtil,
-  getConnectedEdges,
-  getD3Transition,
-  getDimensions,
-  addEdge as addEdgeUtil
-} from '@reactflow/utils';
-import { zoomIdentity } from 'd3-zoom';
+import { fitView as fitViewUtil, getD3Transition, getDimensions } from '@reactflow/utils';
 
-import { getHandleBounds } from '../../utils';
+import { getHandleBounds, getConnectedEdges, addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
-
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
 import { initConnectionData, initialStoreState } from './initial-store';
@@ -170,7 +162,7 @@ export function createStore({
 
     return fitViewUtil(
       {
-        nodes: get(store.nodes) as RFNode[],
+        nodes: get(store.nodes),
         width: get(store.width),
         height: get(store.height),
         minZoom: 0.2,
@@ -227,7 +219,7 @@ export function createStore({
       const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
 
       if (nodesToRemove || initialHitEdges) {
-        const connectedEdges = getConnectedEdges(nodesToRemove as RFNode[], deletableEdges);
+        const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
         const edgesToRemove = [...initialHitEdges, ...connectedEdges];
         const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
           if (!res.includes(edge.id)) {

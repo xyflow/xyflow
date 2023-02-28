@@ -1,8 +1,9 @@
 import { useContext, useMemo } from 'react';
 import { useStore as useZustandStore, type StoreApi } from 'zustand';
-import { errorMessages, type ReactFlowState } from '@reactflow/system';
+import { errorMessages } from '@reactflow/system';
 
 import StoreContext from '../contexts/RFStoreContext';
+import type { ReactFlowState } from '../types';
 
 const zustandErrorMessage = errorMessages['001']();
 

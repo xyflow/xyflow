@@ -1,6 +1,7 @@
-import { internalsSymbol, type ReactFlowState } from '@reactflow/system';
+import { internalsSymbol } from '@reactflow/system';
 
 import { useStore } from './useStore';
+import type { ReactFlowState } from '../types';
 
 const selector = (s: ReactFlowState) => {
   if (s.nodeInternals.size === 0) {

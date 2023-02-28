@@ -3,7 +3,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   TouchEvent as ReactTouchEvent,
 } from 'react';
-import type { Dimensions, Node, XYPosition, CoordinateExtent, Box, Rect } from '@reactflow/system';
+import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect, BaseNode } from '@reactflow/system';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
@@ -60,7 +60,7 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   height: y2 - y,
 });
 
-export const nodeToRect = (node: Node): Rect => ({
+export const nodeToRect = (node: BaseNode): Rect => ({
   ...(node.positionAbsolute || { x: 0, y: 0 }),
   width: node.width || 0,
   height: node.height || 0,
@@ -125,3 +125,8 @@ export const getEventPosition = (
     y: evtY - (bounds?.top ?? 0),
   };
 };
+
+export const infiniteExtent: CoordinateExtent = [
+  [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+  [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+];

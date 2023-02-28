@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import { zoomIdentity } from 'd3-zoom';
 import { shallow } from 'zustand/shallow';
 import { pointToRendererPoint, getTransformForBounds, getD3Transition, fitView } from '@reactflow/utils';
-import type { ViewportHelperFunctions, ReactFlowState, XYPosition } from '@reactflow/system';
+import type { XYPosition } from '@reactflow/system';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
+import type { ViewportHelperFunctions, ReactFlowState } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};

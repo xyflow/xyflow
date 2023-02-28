@@ -1,6 +1,8 @@
 import { internalsSymbol, ConnectionMode, type ConnectionStatus } from '@reactflow/system';
-import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '@reactflow/system';
+import type { Connection, HandleType, XYPosition, NodeHandleBounds } from '@reactflow/system';
 import { getEventPosition } from '@reactflow/utils';
+
+import type { Node } from '$lib/types';
 
 export type ConnectionHandle = {
   id: string | null;

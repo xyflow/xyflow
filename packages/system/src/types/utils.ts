@@ -5,24 +5,24 @@ export enum Position {
   Bottom = 'bottom',
 }
 
-export interface XYPosition {
+export type XYPosition = {
   x: number;
   y: number;
-}
+};
 
 export type XYZPosition = XYPosition & { z: number };
 
-export interface Dimensions {
+export type Dimensions = {
   width: number;
   height: number;
-}
+};
 
-export interface Rect extends Dimensions, XYPosition {}
+export type Rect = Dimensions & XYPosition;
 
-export interface Box extends XYPosition {
+export type Box = XYPosition & {
   x2: number;
   y2: number;
-}
+};
 
 export type Transform = [number, number, number];
 

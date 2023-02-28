@@ -1,8 +1,9 @@
 import { memo } from 'react';
-import { Position, type BezierEdgeProps } from '@reactflow/system';
+import { Position } from '@reactflow/system';
 import { getBezierPath } from '@reactflow/edge-utils';
 
 import BaseEdge from './BaseEdge';
+import type { BezierEdgeProps } from '../../types';
 
 const BezierEdge = memo(
   ({

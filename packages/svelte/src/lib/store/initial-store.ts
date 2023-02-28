@@ -5,15 +5,15 @@ import {
   type D3SelectionInstance,
   ConnectionMode,
   ConnectionLineType,
+  type SelectionRect,
   type Transform,
-  type NodeOrigin,
-  type Rect
+  type NodeOrigin
 } from '@reactflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes } from '$lib/types';
+import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
@@ -29,7 +29,7 @@ export const initConnectionData = {
 export const initialStoreState = {
   nodes: writable<Node[]>([]),
   edges: writable<Edge[]>([]),
-  edgesLayouted: readable<Edge[]>([]),
+  edgesLayouted: readable<EdgeLayouted[]>([]),
   height: writable<number>(500),
   width: writable<number>(500),
   nodeOrigin: writable<NodeOrigin>([0.5, 0.5]),
@@ -39,7 +39,7 @@ export const initialStoreState = {
   }),
   id: writable<string | null>(null),
   dragging: writable<boolean>(false),
-  selectionRect: writable<(Rect & { startX: number; startY: number }) | null>(null),
+  selectionRect: writable<SelectionRect | null>(null),
   selectionKeyPressed: writable<boolean>(false),
   multiselectionKeyPressed: writable<boolean>(false),
   deleteKeyPressed: writable<boolean>(false),

@@ -3,18 +3,9 @@ import { zoomIdentity } from 'd3-zoom';
 import { clampPosition, getDimensions, fitView } from '@reactflow/utils';
 import {
   internalsSymbol,
-  type ReactFlowState,
-  type Node,
-  type Edge,
   type NodeDimensionUpdate,
   type CoordinateExtent,
-  type NodeDimensionChange,
-  type EdgeSelectionChange,
-  type NodeSelectionChange,
-  type NodePositionChange,
   type NodeDragItem,
-  type UnselectNodesAndEdgesParams,
-  type NodeChange,
   type XYPosition,
 } from '@reactflow/system';
 
@@ -22,6 +13,17 @@ import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '..
 import { getHandleBounds } from '../components/Nodes/utils';
 import { createNodeInternals, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
+import type {
+  ReactFlowState,
+  Node,
+  Edge,
+  NodeDimensionChange,
+  EdgeSelectionChange,
+  NodeSelectionChange,
+  NodePositionChange,
+  UnselectNodesAndEdgesParams,
+  NodeChange,
+} from '../types';
 
 const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({

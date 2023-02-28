@@ -1,13 +1,7 @@
-import type {
-  CoordinateExtent,
-  Node,
-  NodeDragItem,
-  NodeInternals,
-  NodeOrigin,
-  XYPosition
-} from '@reactflow/system';
+import type { CoordinateExtent, NodeDragItem, NodeOrigin, XYPosition } from '@reactflow/system';
+import { clampPosition, isNumeric } from '@reactflow/utils';
 
-import { clampPosition, isNumeric } from '../../../utils';
+import type { Node } from '$lib/types';
 
 export function isParentSelected(node: Node, nodes: Node[]): boolean {
   if (!node.parentNode) {
@@ -121,32 +115,4 @@ export function calcNextPosition(
     },
     positionAbsolute
   };
-}
-
-// returns two params:
-// 1. the dragged node (or the first of the list, if we are dragging a node selection)
-// 2. array of selected nodes (for multi selections)
-export function getEventHandlerParams({
-  nodeId,
-  dragItems,
-  nodeInternals
-}: {
-  nodeId?: string;
-  dragItems: NodeDragItem[];
-  nodeInternals: NodeInternals;
-}): [Node, Node[]] {
-  const extentedDragItems: Node[] = dragItems.map((n) => {
-    const node = nodeInternals.get(n.id)!;
-
-    return {
-      ...node,
-      position: n.position,
-      positionAbsolute: n.positionAbsolute
-    };
-  });
-
-  return [
-    nodeId ? extentedDragItems.find((n) => n.id === nodeId)! : extentedDragItems[0],
-    extentedDragItems
-  ];
 }

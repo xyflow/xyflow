@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import type { ReactFlowState } from '@reactflow/system';
 
 import { useStore } from '../../hooks/useStore';
+import type { ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`;
 

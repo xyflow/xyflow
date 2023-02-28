@@ -1,3 +1,4 @@
+import { get, type Writable } from 'svelte/store';
 import {
   getHostForElement,
   calcAutoPan,
@@ -10,7 +11,6 @@ import type {
   HandleType,
   Connection,
   ConnectionMode,
-  Node,
   XYPosition,
   Transform
 } from '@reactflow/system';
@@ -25,8 +25,7 @@ import {
   type ConnectionHandle,
   type ValidConnectionFunc
 } from './utils';
-import { get, type Writable } from 'svelte/store';
-import type { ConnectionData } from '$lib/types';
+import type { ConnectionData, Node } from '$lib/types';
 
 export function handlePointerDown({
   event,

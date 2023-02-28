@@ -6,16 +6,14 @@ import {
   Position,
   ConnectionLineType,
   ConnectionMode,
-  type ConnectionLineComponent,
   type ConnectionStatus,
   type HandleType,
-  type ReactFlowState,
-  type ReactFlowStore,
 } from '@reactflow/system';
 import { getBezierPath, getSmoothStepPath } from '@reactflow/edge-utils';
 
 import { useStore } from '../../hooks/useStore';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
+import type { ConnectionLineComponent, ReactFlowState, ReactFlowStore } from '../../types';
 
 type ConnectionLineProps = {
   nodeId: string;

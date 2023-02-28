@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Writable } from 'svelte/store';
 import { select } from 'd3-selection';
-import { zoom as d3Zoom, zoomIdentity } from 'd3-zoom';
-import type { D3ZoomEvent } from 'd3-zoom';
+import { zoom as d3Zoom, zoomIdentity, type D3ZoomEvent } from 'd3-zoom';
 import type { D3SelectionInstance, D3ZoomInstance, Transform } from '@reactflow/system';
 
 const isWrappedWithClass = (event: any, className: string | undefined) =>

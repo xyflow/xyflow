@@ -1,17 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-
 import { internalsSymbol } from '../';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 
-// interface for the user node items
-export type Node<T = any, U extends string | undefined = string | undefined> = {
+// this is stuff that all nodes share independent of the framework
+export type BaseNode<T = any, U extends string | undefined = string | undefined> = {
   id: string;
   position: XYPosition;
   data: T;
   type?: U;
-  style?: CSSProperties;
-  className?: string;
   sourcePosition?: Position;
   targetPosition?: Position;
   hidden?: boolean;
@@ -31,7 +27,6 @@ export type Node<T = any, U extends string | undefined = string | undefined> = {
   positionAbsolute?: XYPosition;
   ariaLabel?: string;
   focusable?: boolean;
-  resizing?: boolean;
 
   // only used internally
   [internalsSymbol]?: {
@@ -41,44 +36,17 @@ export type Node<T = any, U extends string | undefined = string | undefined> = {
   };
 };
 
-export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
-export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
-export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
-
-export type WrapNodeProps<T = any> = Pick<
-  Node<T>,
-  'id' | 'data' | 'style' | 'className' | 'dragHandle' | 'sourcePosition' | 'targetPosition' | 'hidden' | 'ariaLabel'
-> &
-  Required<Pick<Node<T>, 'selected' | 'type' | 'zIndex'>> & {
-    isConnectable: boolean;
-    xPos: number;
-    yPos: number;
-    xPosOrigin: number;
-    yPosOrigin: number;
-    initialized: boolean;
-    isSelectable: boolean;
-    isDraggable: boolean;
-    isFocusable: boolean;
-    selectNodesOnDrag: boolean;
-    onClick?: NodeMouseHandler;
-    onDoubleClick?: NodeMouseHandler;
-    onMouseEnter?: NodeMouseHandler;
-    onMouseMove?: NodeMouseHandler;
-    onMouseLeave?: NodeMouseHandler;
-    onContextMenu?: NodeMouseHandler;
-    resizeObserver: ResizeObserver | null;
-    isParent: boolean;
-    noDragClassName: string;
-    noPanClassName: string;
-    rfId: string;
-    disableKeyboardA11y: boolean;
-  };
-
 // props that get passed to a custom node
-export type NodeProps<T = any> = Pick<
-  WrapNodeProps<T>,
-  'id' | 'data' | 'dragHandle' | 'type' | 'selected' | 'isConnectable' | 'xPos' | 'yPos' | 'zIndex'
-> & {
+export type NodeProps<T = any> = {
+  id: BaseNode['id'];
+  data: T;
+  dragHandle: BaseNode['dragHandle'];
+  type: BaseNode['type'];
+  selected: BaseNode['selected'];
+  isConnectable: BaseNode['connectable'];
+  zIndex: BaseNode['zIndex'];
+  xPos: number;
+  yPos: number;
   dragging: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
@@ -94,8 +62,6 @@ export type NodeDimensionUpdate = {
   nodeElement: HTMLDivElement;
   forceUpdate?: boolean;
 };
-
-export type NodeInternals = Map<string, Node>;
 
 export type NodeBounds = XYPosition & {
   width: number | null;

@@ -5,27 +5,32 @@ import { zoomIdentity } from 'd3-zoom';
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
 import {
   errorMessages,
-  type Node,
-  type Edge,
   type Connection,
   type EdgeMarkerType,
   type Transform,
   type XYPosition,
   type Rect,
-  type NodeInternals,
   type NodeOrigin,
-  FitViewParams,
-  FitViewOptions,
+  BaseNode,
+  BaseEdge,
+  FitViewParamsBase,
+  FitViewOptionsBase,
 } from '@reactflow/system';
 
-export const isEdge = (element: Node | Connection | Edge): element is Edge =>
-  'id' in element && 'source' in element && 'target' in element;
+export const isEdgeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+  element: NodeType | Connection | EdgeType
+): element is EdgeType => 'id' in element && 'source' in element && 'target' in element;
 
-export const isNode = (element: Node | Connection | Edge): element is Node =>
-  'id' in element && !('source' in element) && !('target' in element);
+export const isNodeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+  element: NodeType | Connection | EdgeType
+): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
 
-export const getOutgoers = <T = any, U extends T = T>(node: Node<U>, nodes: Node<T>[], edges: Edge[]): Node<T>[] => {
-  if (!isNode(node)) {
+export const getOutgoersBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+  node: NodeType,
+  nodes: NodeType[],
+  edges: EdgeType[]
+): NodeType[] => {
+  if (!isNodeBase(node)) {
     return [];
   }
 
@@ -33,8 +38,12 @@ export const getOutgoers = <T = any, U extends T = T>(node: Node<U>, nodes: Node
   return nodes.filter((n) => outgoerIds.includes(n.id));
 };
 
-export const getIncomers = <T = any, U extends T = T>(node: Node<U>, nodes: Node<T>[], edges: Edge[]): Node<T>[] => {
-  if (!isNode(node)) {
+export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+  node: NodeType,
+  nodes: NodeType[],
+  edges: EdgeType[]
+): NodeType[] => {
+  if (!isNodeBase(node)) {
     return [];
   }
 
@@ -42,7 +51,7 @@ export const getIncomers = <T = any, U extends T = T>(node: Node<U>, nodes: Node
   return nodes.filter((n) => incomersIds.includes(n.id));
 };
 
-const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection): string =>
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
   `reactflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
 export const getMarkerId = (marker: EdgeMarkerType | undefined, rfId?: string): string => {
@@ -62,7 +71,7 @@ export const getMarkerId = (marker: EdgeMarkerType | undefined, rfId?: string): 
     .join('&')}`;
 };
 
-const connectionExists = (edge: Edge, edges: Edge[]) => {
+const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
   return edges.some(
     (el) =>
       el.source === edge.source &&
@@ -72,21 +81,24 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
   );
 };
 
-export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
+export const addEdgeBase = <EdgeType extends BaseEdge>(
+  edgeParams: EdgeType | Connection,
+  edges: EdgeType[]
+): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
     devWarn('006', errorMessages['006']());
 
     return edges;
   }
 
-  let edge: Edge;
-  if (isEdge(edgeParams)) {
+  let edge: EdgeType;
+  if (isEdgeBase(edgeParams)) {
     edge = { ...edgeParams };
   } else {
     edge = {
       ...edgeParams,
       id: getEdgeId(edgeParams),
-    } as Edge;
+    } as EdgeType;
   }
 
   if (connectionExists(edge, edges)) {
@@ -96,14 +108,18 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
   return edges.concat(edge);
 };
 
-export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[]): Edge[] => {
+export const updateEdgeBase = <EdgeType extends BaseEdge>(
+  oldEdge: EdgeType,
+  newConnection: Connection,
+  edges: EdgeType[]
+): EdgeType[] => {
   if (!newConnection.source || !newConnection.target) {
     devWarn('006', errorMessages['006']());
 
     return edges;
   }
 
-  const foundEdge = edges.find((e) => e.id === oldEdge.id) as Edge;
+  const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
     devWarn('007', errorMessages['007'](oldEdge.id));
@@ -119,7 +135,7 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,
     targetHandle: newConnection.targetHandle,
-  } as Edge;
+  } as EdgeType;
 
   return edges.filter((e) => e.id !== oldEdge.id).concat(edge);
 };
@@ -153,7 +169,7 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
 };
 
 export const getNodePositionWithOrigin = (
-  node: Node | undefined,
+  node: BaseNode | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
 ): XYPosition & { positionAbsolute: XYPosition } => {
   if (!node) {
@@ -186,7 +202,7 @@ export const getNodePositionWithOrigin = (
   };
 };
 
-export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const getRectOfNodes = (nodes: BaseNode[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -210,15 +226,15 @@ export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): 
   return boxToRect(box);
 };
 
-export const getNodesInside = (
-  nodeInternals: NodeInternals,
+export const getNodesInside = <NodeType extends BaseNode>(
+  nodes: NodeType[],
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false,
   nodeOrigin: NodeOrigin = [0, 0]
-): Node[] => {
+): NodeType[] => {
   const paneRect = {
     x: (rect.x - tx) / tScale,
     y: (rect.y - ty) / tScale,
@@ -226,13 +242,11 @@ export const getNodesInside = (
     height: rect.height / tScale,
   };
 
-  const visibleNodes: Node[] = [];
-
-  nodeInternals.forEach((node) => {
+  const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
     const { width, height, selectable = true, hidden = false } = node;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
-      return false;
+      return res;
     }
 
     const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
@@ -252,14 +266,19 @@ export const getNodesInside = (
     const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
 
     if (isVisible || node.dragging) {
-      visibleNodes.push(node);
+      res.push(node);
     }
-  });
+
+    return res;
+  }, []);
 
   return visibleNodes;
 };
 
-export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
+export const getConnectedEdgesBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+  nodes: NodeType[],
+  edges: EdgeType[]
+): EdgeType[] => {
   const nodeIds = nodes.map((node) => node.id);
 
   return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
@@ -289,15 +308,15 @@ export const getD3Transition = (selection: D3Selection<Element, unknown, null, u
   return selection.transition().duration(duration);
 };
 
-export function fitView(
-  { nodes, width, height, d3Zoom, d3Selection, nodeOrigin, minZoom, maxZoom }: FitViewParams,
-  options: FitViewOptions = {}
+export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
+  { nodes, width, height, d3Zoom, d3Selection, nodeOrigin, minZoom, maxZoom }: Params,
+  options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
-    const isVisible = options.includeHiddenNodes ? n.width && n.height : !n.hidden;
+    const isVisible = options?.includeHiddenNodes ? n.width && n.height : !n.hidden;
 
-    if (options.nodes?.length) {
-      return isVisible && options.nodes.some((optionNode) => optionNode.id === n.id);
+    if (options?.nodes?.length) {
+      return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
     }
 
     return isVisible;
@@ -312,14 +331,14 @@ export function fitView(
       bounds,
       width,
       height,
-      options.minZoom ?? minZoom,
-      options.maxZoom ?? maxZoom,
-      options.padding ?? 0.1
+      options?.minZoom ?? minZoom,
+      options?.maxZoom ?? maxZoom,
+      options?.padding ?? 0.1
     );
 
     const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
 
-    if (typeof options.duration === 'number' && options.duration > 0) {
+    if (typeof options?.duration === 'number' && options.duration > 0) {
       d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
     } else {
       d3Zoom.transform(d3Selection, nextTransform);

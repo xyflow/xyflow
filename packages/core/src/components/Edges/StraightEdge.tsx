@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import type { EdgeProps } from '@reactflow/system';
 import { getStraightPath } from '@reactflow/edge-utils';
 
 import BaseEdge from './BaseEdge';
+import type { EdgeProps } from '../../types';
 
 const StraightEdge = memo(
   ({

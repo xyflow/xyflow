@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { XYPosition, Dimensions } from './utils';
-import type { Node } from './nodes';
-import type { Edge } from './edges';
+import type { XYPosition, Dimensions } from '@reactflow/system';
+
+import type { Node, Edge } from '.';
 
 export type NodeDimensionChange = {
   id: string;

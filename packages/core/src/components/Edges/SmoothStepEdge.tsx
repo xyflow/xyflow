@@ -1,8 +1,9 @@
 import { memo } from 'react';
-import { Position, type SmoothStepEdgeProps } from '@reactflow/system';
+import { Position } from '@reactflow/system';
 import { getSmoothStepPath } from '@reactflow/edge-utils';
 
 import BaseEdge from './BaseEdge';
+import type { SmoothStepEdgeProps } from '../../types';
 
 const SmoothStepEdge = memo(
   ({

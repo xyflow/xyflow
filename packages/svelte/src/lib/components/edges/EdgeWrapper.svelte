@@ -4,9 +4,9 @@
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/StraightEdge.svelte';
-  import type { EdgeProps, WrapEdgeProps } from '$lib/types';
+  import type { EdgeProps, EdgeLayouted } from '$lib/types';
 
-  type $$Props = WrapEdgeProps;
+  type $$Props = EdgeLayouted;
 
   export let id: $$Props['id'];
   export let type: $$Props['type'] = 'default';
@@ -16,6 +16,8 @@
   export let sourceY: $$Props['sourceY'] = 0;
   export let targetX: $$Props['targetX'] = 0;
   export let targetY: $$Props['targetY'] = 0;
+  export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
+  export let targetHandleId: $$Props['targetHandleId'] = undefined;
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
   export let targetPosition: $$Props['targetPosition'] = Position.Top;
   export let animated: $$Props['animated'] = false;

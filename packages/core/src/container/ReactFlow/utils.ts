@@ -1,16 +1,11 @@
 import { useMemo, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
-import {
-  errorMessages,
-  type EdgeTypes,
-  type EdgeTypesWrapped,
-  type NodeTypes,
-  type NodeTypesWrapped,
-} from '@reactflow/system';
+import { errorMessages } from '@reactflow/system';
 import { devWarn } from '@reactflow/utils';
 
 import { CreateEdgeTypes } from '../EdgeRenderer/utils';
 import { CreateNodeTypes } from '../NodeRenderer/utils';
+import type { EdgeTypes, EdgeTypesWrapped, NodeTypes, NodeTypesWrapped } from '../../types';
 
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: NodeTypes, createTypes: CreateNodeTypes): NodeTypesWrapped;
 export function useNodeOrEdgeTypes(nodeOrEdgeTypes: EdgeTypes, createTypes: CreateEdgeTypes): EdgeTypesWrapped;

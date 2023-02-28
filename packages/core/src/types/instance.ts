@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ViewportHelperFunctions, Viewport, Node, Edge, Rect } from '.';
+import type { Rect, Viewport } from '@reactflow/system';
+import type { Node, Edge, ViewportHelperFunctions } from '.';
 
 export type ReactFlowJsonObject<NodeData = any, EdgeData = any> = {
   nodes: Node<NodeData>[];
@@ -12,6 +13,7 @@ export type DeleteElementsOptions = {
   nodes?: (Partial<Node> & { id: Node['id'] })[];
   edges?: (Partial<Edge> & { id: Edge['id'] })[];
 };
+
 export namespace Instance {
   export type GetNodes<NodeData> = () => Node<NodeData>[];
   export type SetNodes<NodeData> = (

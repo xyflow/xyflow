@@ -2,14 +2,14 @@ import type { RefObject } from 'react';
 import {
   errorMessages,
   type CoordinateExtent,
-  type Node,
   type NodeDragItem,
-  type NodeInternals,
   type NodeOrigin,
   type OnError,
   type XYPosition,
 } from '@reactflow/system';
 import { clampPosition, isNumeric, getNodePositionWithOrigin } from '@reactflow/utils';
+
+import type { Node, NodeInternals } from '../../types';
 
 export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
   if (!node.parentNode) {

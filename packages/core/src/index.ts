@@ -8,22 +8,6 @@ export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/E
 export { default as SmoothStepEdge } from './components/Edges/SmoothStepEdge';
 export { default as BaseEdge } from './components/Edges/BaseEdge';
 
-export {
-  isNode,
-  isEdge,
-  addEdge,
-  getOutgoers,
-  getIncomers,
-  getConnectedEdges,
-  updateEdge,
-  getTransformForBounds,
-  getRectOfNodes,
-  getNodePositionWithOrigin,
-  rectToBox,
-  boxToRect,
-  getBoundsOfRects,
-} from '@reactflow/utils';
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel } from './components/Panel';
 export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
@@ -41,7 +25,18 @@ export { default as useOnSelectionChange } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized } from './hooks/useNodesInitialized';
 export { default as useGetPointerPosition } from './hooks/useGetPointerPosition';
 export { useNodeId } from './contexts/NodeIdContext';
-export * from '@reactflow/system';
 export * from '@reactflow/edge-utils';
+export * from '@reactflow/system';
+export {
+  getTransformForBounds,
+  getRectOfNodes,
+  getNodePositionWithOrigin,
+  rectToBox,
+  boxToRect,
+  getBoundsOfRects,
+} from '@reactflow/utils';
 
-// export * from './types';
+export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
+export { isNode, isEdge, getIncomers, getOutgoers, addEdge, updateEdge, getConnectedEdges } from './utils/general';
+
+export * from './types';

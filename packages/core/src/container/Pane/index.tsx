@@ -2,22 +2,17 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { memo, useRef, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
+import { memo, useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { getConnectedEdges, getNodesInside, getEventPosition } from '@reactflow/utils';
-import {
-  SelectionMode,
-  type ReactFlowProps,
-  type ReactFlowState,
-  type NodeChange,
-  type EdgeChange,
-} from '@reactflow/system';
+import { getNodesInside, getEventPosition } from '@reactflow/utils';
+import { SelectionMode } from '@reactflow/system';
 
 import UserSelection from '../../components/UserSelection';
 import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { getSelectionChanges } from '../../utils/changes';
+import { getSelectionChanges, getConnectedEdges } from '../../utils';
+import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange, Node } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -135,7 +130,7 @@ const Pane = memo(
     };
 
     const onMouseMove = (event: ReactMouseEvent): void => {
-      const { userSelectionRect, nodeInternals, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } =
+      const { userSelectionRect, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } =
         store.getState();
       if (!isSelecting || !containerBounds.current || !userSelectionRect) {
         return;
@@ -156,8 +151,8 @@ const Pane = memo(
       };
 
       const nodes = getNodes();
-      const selectedNodes = getNodesInside(
-        nodeInternals,
+      const selectedNodes = getNodesInside<Node>(
+        nodes,
         nextUserSelectRect,
         transform,
         selectionMode === SelectionMode.Partial,

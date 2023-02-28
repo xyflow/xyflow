@@ -1,5 +1,6 @@
 import { useStore } from '../hooks/useStore';
-import type { Node, ReactFlowState } from '@reactflow/system';
+
+import type { Node, ReactFlowState } from '../types';
 
 const nodesSelector = (state: ReactFlowState) => state.getNodes();
 

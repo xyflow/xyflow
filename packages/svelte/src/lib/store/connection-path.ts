@@ -1,8 +1,8 @@
+import { derived } from 'svelte/store';
 import { getBezierPath, getSmoothStepPath, getStraightPath } from '@reactflow/edge-utils';
-import { ConnectionLineType, ConnectionMode, Position } from '@reactflow/system';
+import { ConnectionLineType, ConnectionMode, Position, internalsSymbol } from '@reactflow/system';
 
 import type { SvelteFlowStoreState } from './types';
-import { derived } from 'svelte/store';
 
 const oppositePosition = {
   [Position.Left]: Position.Right,
@@ -20,21 +20,21 @@ export function getConnectionPath(store: SvelteFlowStoreState) {
       store.nodes,
       store.transform
     ],
-    ([$connection, $connectionLineType, $connectionMode, $nodes, $transform]) => {
-      if (!$connection.nodeId) {
+    ([connection, connectionLineType, connectionMode, nodes, transform]) => {
+      if (!connection.nodeId) {
         return null;
       }
 
-      const fromNode = $nodes.find((n) => n.id === $connection.nodeId);
+      const fromNode = nodes.find((n) => n.id === connection.nodeId);
       const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
-      const handleBoundsStrict = fromHandleBounds?.[$connection.handleType || 'source'] || [];
+      const handleBoundsStrict = fromHandleBounds?.[connection.handleType || 'source'] || [];
       const handleBoundsLoose = handleBoundsStrict
         ? handleBoundsStrict
-        : fromHandleBounds?.[$connection.handleType === 'source' ? 'target' : 'source']!;
+        : fromHandleBounds?.[connection.handleType === 'source' ? 'target' : 'source']!;
       const handleBounds =
-        $connectionMode === ConnectionMode.Strict ? handleBoundsStrict : handleBoundsLoose;
-      const fromHandle = $connection.handleId
-        ? handleBounds.find((d) => d.id === $connection.handleId)
+        connectionMode === ConnectionMode.Strict ? handleBoundsStrict : handleBoundsLoose;
+      const fromHandle = connection.handleId
+        ? handleBounds.find((d) => d.id === connection.handleId)
         : handleBounds[0];
       const fromHandleX = fromHandle
         ? fromHandle.x + fromHandle.width / 2
@@ -49,22 +49,22 @@ export function getConnectionPath(store: SvelteFlowStoreState) {
         sourceX: fromX,
         sourceY: fromY,
         sourcePosition: fromPosition,
-        targetX: (($connection.position?.x ?? 0) - $transform[0]) / $transform[2],
-        targetY: (($connection.position?.y ?? 0) - $transform[1]) / $transform[2],
+        targetX: ((connection.position?.x ?? 0) - transform[0]) / transform[2],
+        targetY: ((connection.position?.y ?? 0) - transform[1]) / transform[2],
         targetPosition: toPosition
       };
 
       let path = '';
 
-      if ($connectionLineType === ConnectionLineType.Bezier) {
+      if (connectionLineType === ConnectionLineType.Bezier) {
         // we assume the destination position is opposite to the source position
         [path] = getBezierPath(pathParams);
-      } else if ($connectionLineType === ConnectionLineType.Step) {
+      } else if (connectionLineType === ConnectionLineType.Step) {
         [path] = getSmoothStepPath({
           ...pathParams,
           borderRadius: 0
         });
-      } else if ($connectionLineType === ConnectionLineType.SmoothStep) {
+      } else if (connectionLineType === ConnectionLineType.SmoothStep) {
         [path] = getSmoothStepPath(pathParams);
       } else {
         [path] = getStraightPath(pathParams);
