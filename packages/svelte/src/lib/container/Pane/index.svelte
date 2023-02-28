@@ -31,9 +31,9 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
   import { SelectionMode } from '@reactflow/system';
-  import {  getEventPosition, getNodesInside } from '@reactflow/utils';
+  import { getEventPosition, getNodesInside } from '@reactflow/utils';
 
-  import { getConnectedEdges} from '$lib/utils';
+  import { getConnectedEdges } from '$lib/utils';
   import type { Node, Edge } from '$lib/types';
 
   const {
