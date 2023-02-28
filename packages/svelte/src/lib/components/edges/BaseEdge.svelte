@@ -11,11 +11,7 @@
   export let interactionWidth: $$Props['interactionWidth'] = 20;
 </script>
 
-<path
-  d={path}
-  fill="none"
-  class="react-flow__edge-path"
-/>
+<path d={path} fill="none" class="react-flow__edge-path" />
 
 {#if interactionWidth}
   <path
@@ -33,7 +29,7 @@
       class="react-flow__edge-label"
       style:transform={`translate(-50%, -50%) translate(${labelX}px,${labelY}px)`}
     >
-        {label}
+      {label}
     </div>
   </EdgeLabelRenderer>
 {/if}

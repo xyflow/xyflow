@@ -5,15 +5,18 @@
   import { useStore } from '$lib/store';
 
   const { nodes, updateNodeDimensions } = useStore();
-  const resizeObserver: ResizeObserver | null = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries: ResizeObserverEntry[]) => {
-    const updates = entries.map((entry: ResizeObserverEntry) => ({
-      id: entry.target.getAttribute('data-id') as string,
-      nodeElement: entry.target as HTMLDivElement,
-      forceUpdate: true,
-    }))
+  const resizeObserver: ResizeObserver | null =
+    typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver((entries: ResizeObserverEntry[]) => {
+          const updates = entries.map((entry: ResizeObserverEntry) => ({
+            id: entry.target.getAttribute('data-id') as string,
+            nodeElement: entry.target as HTMLDivElement,
+            forceUpdate: true
+          }));
 
-    updateNodeDimensions(updates);
-  });
+          updateNodeDimensions(updates);
+        });
 
   onDestroy(() => {
     resizeObserver?.disconnect();

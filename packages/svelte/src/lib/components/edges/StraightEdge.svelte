@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getStraightPath } from '@reactflow/edge-utils';
 
-	import type { EdgeProps } from '$lib/types';
-	import BaseEdge from './BaseEdge.svelte';
+  import type { EdgeProps } from '$lib/types';
+  import BaseEdge from './BaseEdge.svelte';
 
   type $$Props = EdgeProps;
 
@@ -10,13 +10,8 @@
     sourceX: $$props.sourceX,
     sourceY: $$props.sourceY,
     targetX: $$props.targetX,
-    targetY: $$props.targetY,
+    targetY: $$props.targetY
   });
 </script>
 
-<BaseEdge
-  {path}
-  {labelX}
-  {labelY}
-  {...$$props}
-/>
+<BaseEdge {path} {labelX} {labelY} {...$$props} />

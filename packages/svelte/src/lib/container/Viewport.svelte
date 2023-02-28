@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { useStore } from '$lib/store';
+  import { useStore } from '$lib/store';
 
   const { transform } = useStore();
 </script>
 
 <div
-  class="react-flow__viewport" 
+  class="react-flow__viewport"
   style="transform: translate({$transform[0]}px, {$transform[1]}px) scale({$transform[2]})"
 >
   <slot />

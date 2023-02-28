@@ -1,10 +1,10 @@
 <script lang="ts">
   import cc from 'classcat';
-	import type { PanelPosition, Rect, Node } from '@reactflow/system';
-	import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@reactflow/utils';
+  import type { PanelPosition, Rect, Node } from '@reactflow/system';
+  import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@reactflow/utils';
 
   import { useStore } from '$lib/store';
-	import Panel from '$lib/container/Panel/index.svelte';
+  import Panel from '$lib/container/Panel/index.svelte';
   import MinimapNode from './MinimapNode.svelte';
 
   let position: PanelPosition = 'bottom-right';
@@ -27,22 +27,25 @@
   const { nodes, transform, width, height, nodeOrigin, id } = useStore();
 
   type GetMiniMapNodeAttribute = (node: Node) => string;
-  const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
+  const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
+    func instanceof Function ? func : () => func;
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
-  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
+  const shapeRendering =
+    typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `react-flow__minimap-desc-${$id}`;
-  
+
   $: viewBB = {
     x: -$transform[0] / $transform[2],
     y: -$transform[1] / $transform[2],
     width: $width / $transform[2],
-    height: $height / $transform[2],
+    height: $height / $transform[2]
   } as Rect;
-  $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes, $nodeOrigin), viewBB) : viewBB
+  $: boundingRect =
+    $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes, $nodeOrigin), viewBB) : viewBB;
   $: elementWidth = (style?.width as number) ?? defaultWidth;
-  $: elementHeight = (style?.height as number) ?? defaultHeight;  
+  $: elementHeight = (style?.height as number) ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;
   $: scaledHeight = boundingRect.height / elementHeight;
   $: viewScale = Math.max(scaledWidth, scaledHeight);
@@ -55,7 +58,11 @@
   $: viewboxHeight = viewHeight + offset * 2;
 </script>
 
-<Panel position={position} class={cc(['react-flow__minimap', className])} style={`background-color: ${bgColor};`}>
+<Panel
+  {position}
+  class={cc(['react-flow__minimap', className])}
+  style={`background-color: ${bgColor};`}
+>
   <svg
     width={elementWidth}
     height={elementHeight}
@@ -65,7 +72,7 @@
   >
     {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
-    {#each $nodes as node(node.id)}
+    {#each $nodes as node (node.id)}
       {#if node.width && node.height}
         {@const pos = getNodePositionWithOrigin(node, $nodeOrigin).positionAbsolute}
         <MinimapNode
@@ -77,7 +84,7 @@
           borderRadius={nodeBorderRadius}
           strokeColor={nodeStrokeColorFunc(node)}
           strokeWidth={nodeStrokeWidth}
-          shapeRendering={shapeRendering}
+          {shapeRendering}
           class={nodeClassNameFunc(node)}
           style={{}}
         />
@@ -85,7 +92,9 @@
     {/each}
     <path
       class="react-flow__minimap-mask"
-      d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${-viewboxWidth - offset * 2}z
+      d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${
+        -viewboxWidth - offset * 2
+      }z
     M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
       fill={maskColor}
       fill-rule="evenodd"

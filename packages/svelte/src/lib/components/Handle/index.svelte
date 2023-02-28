@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
+  import { getContext } from 'svelte';
   import cc from 'classcat';
-	import {  Position, type Connection, type HandleProps } from '@reactflow/system';
-	import { isMouseEvent } from '@reactflow/utils';
+  import { Position, type Connection, type HandleProps } from '@reactflow/system';
+  import { isMouseEvent } from '@reactflow/utils';
 
-	import { handlePointerDown } from './handler';
-	import { useStore } from '$lib/store';
+  import { handlePointerDown } from './handler';
+  import { useStore } from '$lib/store';
 
   type $$Props = HandleProps;
 
@@ -34,40 +34,40 @@
   } = useStore();
 
   function onConnectExtended(params: Connection) {
-      addEdge(params);
-      // @todo add props
-      // onConnectAction?.(edgeParams);
-      // onConnect?.(edgeParams);
-    };
+    addEdge(params);
+    // @todo add props
+    // onConnectAction?.(edgeParams);
+    // onConnect?.(edgeParams);
+  }
 
-  function onPointerDown(event: MouseEvent | TouchEvent)  {
-      const isMouseTriggered = isMouseEvent(event);
+  function onPointerDown(event: MouseEvent | TouchEvent) {
+    const isMouseTriggered = isMouseEvent(event);
 
-      if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
-        handlePointerDown({
-          event,
-          handleId,
-          nodeId,
-          isTarget,
-          connectionRadius: $connectionRadius,
-          domNode: $domNode,
-          nodes: $nodes,
-          connectionMode: $connectionMode,
-          transform,
-          isValidConnection: isValidConnection!,
-          onConnect: onConnectExtended,
-          updateConnection,
-          cancelConnection,
-          panBy,
-        });
-      }
+    if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+      handlePointerDown({
+        event,
+        handleId,
+        nodeId,
+        isTarget,
+        connectionRadius: $connectionRadius,
+        domNode: $domNode,
+        nodes: $nodes,
+        connectionMode: $connectionMode,
+        transform,
+        isValidConnection: isValidConnection!,
+        onConnect: onConnectExtended,
+        updateConnection,
+        cancelConnection,
+        panBy
+      });
+    }
 
-      // if (isMouseTriggered) {
-      //   onMouseDown?.(event);
-      // } else {
-      //   onTouchStart?.(event);
-      // }
-    };
+    // if (isMouseTriggered) {
+    //   onMouseDown?.(event);
+    // } else {
+    //   onTouchStart?.(event);
+    // }
+  }
 </script>
 
 <div
@@ -91,7 +91,6 @@
 >
   <slot />
 </div>
-
 
 <style>
   .react-flow__handle {

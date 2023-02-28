@@ -2,7 +2,7 @@
   import { getBezierPath } from '@reactflow/edge-utils';
 
   import type { EdgeProps } from '$lib/types';
-	import BaseEdge from './BaseEdge.svelte';
+  import BaseEdge from './BaseEdge.svelte';
 
   type $$Props = EdgeProps;
 
@@ -12,13 +12,8 @@
     targetX: $$props.targetX,
     targetY: $$props.targetY,
     sourcePosition: $$props.sourcePosition,
-    targetPosition: $$props.targetPosition,
+    targetPosition: $$props.targetPosition
   });
 </script>
 
-<BaseEdge
-  {path}
-  {labelX}
-  {labelY}
-  {...$$props}
-/>
+<BaseEdge {path} {labelX} {labelY} {...$$props} />

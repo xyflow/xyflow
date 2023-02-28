@@ -4,7 +4,7 @@
   export let width: number | null = 0;
   export let height: number | null = 0;
   export let isVisible: boolean = true;
-</script> 
+</script>
 
 {#if isVisible}
   <div

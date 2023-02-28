@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PanelPosition } from '@reactflow/system';
+  import type { PanelPosition } from '@reactflow/system';
 
   import Panel from '$lib/container/Panel/index.svelte';
   import { useStore } from '$lib/store';
@@ -37,13 +37,11 @@
     //   nodesConnectable: !isInteractive,
     //   elementsSelectable: !isInteractive,
     // });
-
     // onInteractiveChange?.(!isInteractive);
   };
-
 </script>
 
-<Panel class="react-flow__controls" position={position}>
+<Panel class="react-flow__controls" {position}>
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}

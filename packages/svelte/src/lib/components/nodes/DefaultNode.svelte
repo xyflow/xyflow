@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Position } from '@reactflow/system';
-  
-  import Handle from '$lib/components/Handle/index.svelte';
-	import type { NodeProps } from '$lib/types';
 
-  interface $$Props extends NodeProps<{ label: string }>{}
+  import Handle from '$lib/components/Handle/index.svelte';
+  import type { NodeProps } from '$lib/types';
+
+  interface $$Props extends NodeProps<{ label: string }> {}
 
   export let id: $$Props['id'];
   export let data: $$Props['data'] = { label: 'Node' };

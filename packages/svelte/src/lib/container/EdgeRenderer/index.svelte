@@ -1,15 +1,11 @@
-<script lang="ts"> 
+<script lang="ts">
   import EdgeWrapper from '$lib/components/edges/EdgeWrapper.svelte';
   import { useStore } from '$lib/store';
 
   const { edgesLayouted, width, height } = useStore();
- </script>
+</script>
 
-<svg
-  width={$width}
-  height={$height}
-  class="react-flow__edges"
->
+<svg width={$width} height={$height} class="react-flow__edges">
   {#each $edgesLayouted as edge (edge.id)}
     <EdgeWrapper {...edge} />
   {/each}

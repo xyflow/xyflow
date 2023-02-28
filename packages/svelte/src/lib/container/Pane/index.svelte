@@ -10,7 +10,7 @@
 
       handler?.(event);
     };
-  };
+  }
 
   export function toggleSelected<Item extends Node | Edge>(ids: string[]) {
     return (item: Item) => {
@@ -19,39 +19,48 @@
       if (item.selected !== isSelected) {
         return {
           ...item,
-          selected: isSelected,
+          selected: isSelected
         };
       }
 
       return item;
-    }
+    };
   }
 </script>
 
 <script lang="ts">
   import { useStore } from '$lib/store';
-	import { SelectionMode, type Node, type Edge } from '@reactflow/system';
-	import { getConnectedEdges, getEventPosition, getNodesInside } from '@reactflow/utils';
+  import { SelectionMode, type Node, type Edge } from '@reactflow/system';
+  import { getConnectedEdges, getEventPosition, getNodesInside } from '@reactflow/utils';
 
-  const { nodes, edges, transform, nodeOrigin, dragging, selectionRect, selectionRectMode, selectionKeyPressed, resetSelectedElements } = useStore();
+  const {
+    nodes,
+    edges,
+    transform,
+    nodeOrigin,
+    dragging,
+    selectionRect,
+    selectionRectMode,
+    selectionKeyPressed,
+    resetSelectedElements
+  } = useStore();
 
   // @todo take from props
   const elementsSelectable = true;
-  const selectionMode = SelectionMode.Partial
+  const selectionMode = SelectionMode.Partial;
 
-	let container: HTMLDivElement;
-  let containerBounds: DOMRect | null = null
+  let container: HTMLDivElement;
+  let containerBounds: DOMRect | null = null;
   let selectedNodes: Node[] = [];
-  
+
   $: isSelecting = $selectionKeyPressed;
   $: hasActiveSelection = elementsSelectable && (isSelecting || $selectionRectMode === 'user');
 
-
-  function onClick (event: MouseEvent) {
+  function onClick(event: MouseEvent) {
     // onPaneClick?.(event);
-    
+
     resetSelectedElements();
-    selectionRectMode.set(null)
+    selectionRectMode.set(null);
   }
 
   function onMouseDown(event: MouseEvent) {
@@ -80,11 +89,8 @@
       y
     });
 
-   
     // onSelectionStart?.(event);
-  };
-
-
+  }
 
   function onMouseMove(event: MouseEvent) {
     if (!isSelecting || !containerBounds || !$selectionRect) {
@@ -98,11 +104,11 @@
       x: mousePos.x < startX ? mousePos.x : startX,
       y: mousePos.y < startY ? mousePos.y : startY,
       width: Math.abs(mousePos.x - startX),
-      height: Math.abs(mousePos.y - startY),
+      height: Math.abs(mousePos.y - startY)
     };
 
     selectedNodes = getNodesInside(
-      new Map($nodes.map(node => [node.id, node])),
+      new Map($nodes.map((node) => [node.id, node])),
       nextUserSelectRect,
       $transform,
       selectionMode === SelectionMode.Partial,
@@ -112,8 +118,8 @@
     const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
-    nodes.update(nodes => nodes.map(toggleSelected(selectedNodeIds)));
-    edges.update(edges => edges.map(toggleSelected(selectedEdgeIds)));
+    nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
+    edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
 
     selectionRectMode.set('user');
     selectionRect.set(nextUserSelectRect);
@@ -135,7 +141,6 @@
       selectionRectMode.set('nodes');
     }
 
-    
     // onSelectionEnd?.(event);
   }
 
@@ -156,7 +161,7 @@
   class:selection={isSelecting}
   on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
   on:mousedown={hasActiveSelection ? onMouseDown : undefined}
-  on:mousemove={hasActiveSelection? onMouseMove : undefined}
+  on:mousemove={hasActiveSelection ? onMouseMove : undefined}
   on:mouseup={hasActiveSelection ? onMouseUp : undefined}
   on:mouseleave={hasActiveSelection ? onMouseLeave : undefined}
 >

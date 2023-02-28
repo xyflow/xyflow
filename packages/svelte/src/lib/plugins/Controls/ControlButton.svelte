@@ -3,10 +3,15 @@
 
   let className: string;
 
-  export { className as class }
+  export { className as class };
 </script>
 
-<button type="button" on:click class={cc(['react-flow__controls-button', className])} {...$$restProps} >
+<button
+  type="button"
+  on:click
+  class={cc(['react-flow__controls-button', className])}
+  {...$$restProps}
+>
   <slot class="button-svg" />
 </button>
 

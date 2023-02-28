@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { setContext, onMount } from 'svelte'
+  import { setContext, onMount } from 'svelte';
   import cc from 'classcat';
 
-	import { key, createStore } from '$lib/store';
+  import { key, createStore } from '$lib/store';
   import Zoom from '$lib/container/Zoom/index.svelte';
   import Pane from '$lib/container/Pane/index.svelte';
   import Viewport from '$lib/container/Viewport.svelte';
@@ -12,7 +12,7 @@
   import NodeSelection from '$lib/components/NodeSelection/index.svelte';
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
-	import type { SvelteFlowProps } from '$lib/types';
+  import type { SvelteFlowProps } from '$lib/types';
 
   type $$Props = SvelteFlowProps;
 
@@ -51,7 +51,6 @@
     });
   });
 
-
   // $: {
   //   const updatableProps = {
   //     defaultEdgeOptions,
@@ -69,7 +68,7 @@
   //         ...state,
   //         [key]: valuesToUpdate[key],
   //       }));
-     
+
   //   });
   // }
 
@@ -86,7 +85,7 @@
   {...$$restProps}
   class={cc(['react-flow', className])}
   data-testid="rf__wrapper"
-  id={id}
+  {id}
   bind:this={domNode}
 >
   <KeyHandler {selectionKey} {deleteKey} />

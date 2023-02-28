@@ -6,19 +6,14 @@
 
   type $$Props = EdgeProps;
 
-  $: [path, labelX, labelY] = getSmoothStepPath({ 
+  $: [path, labelX, labelY] = getSmoothStepPath({
     sourceX: $$props.sourceX,
     sourceY: $$props.sourceY,
     targetX: $$props.targetX,
     targetY: $$props.targetY,
     sourcePosition: $$props.sourcePosition,
-    targetPosition: $$props.targetPosition,
+    targetPosition: $$props.targetPosition
   });
 </script>
 
-<BaseEdge
-  {path}
-  {labelX}
-  {labelY}
-  {...$$props}
-/>
+<BaseEdge {path} {labelX} {labelY} {...$$props} />

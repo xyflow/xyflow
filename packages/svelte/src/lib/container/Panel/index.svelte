@@ -7,15 +7,12 @@
   export let position: $$Props['position'] = 'top-right';
   export let style: $$Props['style'] = '';
   let className: $$Props['class'] = undefined;
-  export { className as class }
+  export { className as class };
 
   $: positionClasses = `${position}`.split('-');
 </script>
 
-<div
-  class={cc(['react-flow__panel', className, ...positionClasses])}
-  style={style}
->
+<div class={cc(['react-flow__panel', className, ...positionClasses])} {style}>
   <slot />
 </div>
 

@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { getRectOfNodes } from '@reactflow/utils';
+  import { getRectOfNodes } from '@reactflow/utils';
 
   import { useStore } from '$lib/store';
   import Selection from '$lib/components/Selection/index.svelte';
-  import drag  from '$lib/actions/drag'
+  import drag from '$lib/actions/drag';
 
   const { selectionRectMode, nodes, nodeOrigin, transform, updateNodePositions } = useStore();
 
-  $: selectedNodes = $nodes.filter(n => n.selected);
+  $: selectedNodes = $nodes.filter((n) => n.selected);
   $: rect = getRectOfNodes(selectedNodes, $nodeOrigin);
-</script> 
+</script>
 
 {#if selectedNodes}
   <div

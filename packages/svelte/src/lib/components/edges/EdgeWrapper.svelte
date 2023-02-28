@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { SvelteComponentTyped } from 'svelte';
+  import type { SvelteComponentTyped } from 'svelte';
   import { Position } from '@reactflow/system';
 
-	import { useStore } from '$lib/store';
+  import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/StraightEdge.svelte';
-	import type { EdgeProps, WrapEdgeProps } from '$lib/types';
+  import type { EdgeProps, WrapEdgeProps } from '$lib/types';
 
   type $$Props = WrapEdgeProps;
 
@@ -17,7 +17,7 @@
   export let targetX: $$Props['targetX'] = 0;
   export let targetY: $$Props['targetY'] = 0;
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
-  export let targetPosition:  $$Props['targetPosition'] = Position.Top;
+  export let targetPosition: $$Props['targetPosition'] = Position.Top;
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let label: $$Props['label'] = undefined;
@@ -26,11 +26,7 @@
   const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypes[type!] || BezierEdge;
 </script>
 
-<g
-  class="react-flow__edge"
-  class:animated
-  data-id={id}
->
+<g class="react-flow__edge" class:animated data-id={id}>
   <svelte:component
     this={edgeComponent}
     {id}

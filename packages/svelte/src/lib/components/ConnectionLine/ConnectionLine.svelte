@@ -1,8 +1,8 @@
 <script lang="ts">
   import cc from 'classcat';
 
-	import { useStore } from '$lib/store';
-	import type { ConnectionLineProps } from '$lib/types';
+  import { useStore } from '$lib/store';
+  import type { ConnectionLineProps } from '$lib/types';
 
   type $$Props = ConnectionLineProps;
 
@@ -10,11 +10,7 @@
 </script>
 
 {#if $connectionPath}
-  <svg
-    width={$width}
-    height={$height}
-    class="react-flow__connectionline"
-  >
+  <svg width={$width} height={$height} class="react-flow__connectionline">
     <g class={cc(['react-flow__connection', $connection.status])}>
       <path d={$connectionPath} fill="none" class="react-flow__connection-path" />
     </g>

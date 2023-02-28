@@ -1,5 +1,5 @@
 export enum BackgroundVariant {
-	Lines = 'lines',
-	Dots = 'dots',
-	Cross = 'cross'
+  Lines = 'lines',
+  Dots = 'dots',
+  Cross = 'cross'
 }

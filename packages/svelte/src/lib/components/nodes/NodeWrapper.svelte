@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { onMount, setContext, SvelteComponentTyped } from 'svelte';
+  import { onMount, setContext, SvelteComponentTyped } from 'svelte';
   import cc from 'classcat';
   import { type XYPosition, Position } from '@reactflow/system';
-  
-  import drag  from '$lib/actions/drag'
-	import { useStore } from '$lib/store';
-	import DefaultNode from './DefaultNode.svelte';
-	import type { WrapNodeProps, NodeProps } from '$lib/types';
+
+  import drag from '$lib/actions/drag';
+  import { useStore } from '$lib/store';
+  import DefaultNode from './DefaultNode.svelte';
+  import type { WrapNodeProps, NodeProps } from '$lib/types';
 
   interface $$Props extends WrapNodeProps {}
 
@@ -29,7 +29,8 @@
   let nodeRef: HTMLDivElement;
 
   const { nodes, transform, nodeTypes, updateNodePositions, addSelectedNodes } = useStore();
-  const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> = $nodeTypes[type] || DefaultNode;
+  const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> =
+    $nodeTypes[type] || DefaultNode;
   const isSelectable = true;
   const selectNodesOnDrag = false;
   const isDraggable = true;
@@ -41,7 +42,7 @@
 
     return () => {
       resizeObserver?.unobserve(nodeRef);
-    }
+    };
   });
 
   function onSelectNodeHandler(event: MouseEvent) {
@@ -54,15 +55,15 @@
     //   const node = store.getState().nodeInternals.get(id)!;
     //   onClick(event, { ...node });
     // }
-  };
+  }
 </script>
 
 <div
   use:drag={{ nodeId: id, nodes, transform, updateNodePositions }}
   class={cc(['react-flow__node', `react-flow__node-${type}`, className])}
   class:initializing={!width && !height}
-  class:dragging={dragging}
-  class:selected={selected}
+  class:dragging
+  class:selected
   bind:this={nodeRef}
   on:click={onSelectNodeHandler}
   style:transform={`translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`}
@@ -92,7 +93,7 @@
     border-color: #1a192b;
     background-color: white;
     position: absolute;
-    cursor: grab; 
+    cursor: grab;
     pointer-events: all;
     user-select: none;
   }

@@ -3,7 +3,7 @@
   import Selection from '$lib/components/Selection/index.svelte';
 
   const { selectionRect, selectionRectMode } = useStore();
-</script> 
+</script>
 
 <Selection
   isVisible={!!($selectionRect && $selectionRectMode === 'user')}

@@ -4,7 +4,7 @@
   import DotPattern from './DotPattern.svelte';
   import LinePattern from './LinePattern.svelte';
   import { useStore } from '$lib/store';
-	import { BackgroundVariant } from './types';
+  import { BackgroundVariant } from './types';
 
   export let variant: BackgroundVariant = BackgroundVariant.Dots;
   export let gap = 20;
@@ -18,13 +18,13 @@
   const defaultColor = {
     [BackgroundVariant.Dots]: '#91919a',
     [BackgroundVariant.Lines]: '#eee',
-    [BackgroundVariant.Cross]: '#e2e2e2',
+    [BackgroundVariant.Cross]: '#e2e2e2'
   };
 
   const defaultSize = {
     [BackgroundVariant.Dots]: 1,
     [BackgroundVariant.Lines]: 1,
-    [BackgroundVariant.Cross]: 6,
+    [BackgroundVariant.Cross]: 6
   };
 
   const { transform, id } = useStore();
@@ -43,7 +43,7 @@
     : [patternDimensions[0] / 2, patternDimensions[1] / 2];
 </script>
 
-<svg class={cc(['react-flow__background', className])} >
+<svg class={cc(['react-flow__background', className])}>
   <pattern
     id={patternId}
     x={$transform[0] % scaledGap[0]}
@@ -56,7 +56,7 @@
     {#if isDots}
       <DotPattern color={patternColor} radius={scaledSize / 2} />
     {:else}
-      <LinePattern dimensions={patternDimensions } color={patternColor} lineWidth={lineWidth} />
+      <LinePattern dimensions={patternDimensions} color={patternColor} {lineWidth} />
     {/if}
   </pattern>
   <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />

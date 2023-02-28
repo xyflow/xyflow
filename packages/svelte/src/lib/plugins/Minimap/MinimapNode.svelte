@@ -20,13 +20,13 @@
 
 <rect
   class={cc(['react-flow__minimap-node', className])}
-  x={x}
-  y={y}
+  {x}
+  {y}
   rx={borderRadius}
   ry={borderRadius}
-  width={width}
-  height={height}
-  fill={fill}
+  {width}
+  {height}
+  {fill}
   stroke={strokeColor}
   stroke-width={strokeWidth}
   shape-rendering={shapeRendering}
