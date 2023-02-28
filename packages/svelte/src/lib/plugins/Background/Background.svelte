@@ -27,16 +27,16 @@
     [BackgroundVariant.Cross]: 6,
   };
 
-  const { transformStore, idStore } = useStore();
+  const { transform, id } = useStore();
   const patternColor = color || defaultColor[variant];
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: number[] = Array.isArray(gap) ? gap : [gap, gap];
 
-  $: patternId = `background-pattern-${$idStore}`;
-  $: scaledGap = [gapXY[0] * $transformStore[2] || 1, gapXY[1] * $transformStore[2] || 1];
-  $: scaledSize = patternSize * $transformStore[2];
+  $: patternId = `background-pattern-${$id}`;
+  $: scaledGap = [gapXY[0] * $transform[2] || 1, gapXY[1] * $transform[2] || 1];
+  $: scaledSize = patternSize * $transform[2];
   $: patternDimensions = (isCross ? [scaledSize, scaledSize] : scaledGap) as [number, number];
   $: patternOffset = isDots
     ? [scaledSize / 2, scaledSize / 2]
@@ -46,8 +46,8 @@
 <svg class={cc(['react-flow__background', className])} >
   <pattern
     id={patternId}
-    x={$transformStore[0] % scaledGap[0]}
-    y={$transformStore[1] % scaledGap[1]}
+    x={$transform[0] % scaledGap[0]}
+    y={$transform[1] % scaledGap[1]}
     width={scaledGap[0]}
     height={scaledGap[1]}
     patternUnits="userSpaceOnUse"

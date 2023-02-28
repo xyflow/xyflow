@@ -38,7 +38,7 @@ export function handlePointerDown({
 	connectionMode,
 	connectionRadius,
 	isTarget,
-	transformStore,
+	transform: transformStore,
 	panBy,
 	updateConnection,
 	cancelConnection,
@@ -56,7 +56,7 @@ export function handlePointerDown({
 	nodes: Node[];
 	connectionRadius: number;
 	isValidConnection: ValidConnectionFunc;
-	transformStore: Writable<Transform>;
+	transform: Writable<Transform>;
 	updateConnection: (connection: Partial<ConnectionData>) => void;
 	cancelConnection: () => void;
 	panBy: (delta: XYPosition) => void;

@@ -10,9 +10,8 @@
   export let shapeRendering: string;
   export let strokeColor: string;
   export let strokeWidth: number;
-  export let className: string = '';
   export let style: Record<string, string>;
-
+  let className: string = '';
   export { className as class };
 
   const { background, backgroundColor } = style || {};

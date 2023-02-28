@@ -4,7 +4,7 @@
   import NodeWrapper from '$lib/components/nodes/NodeWrapper.svelte';
   import { useStore } from '$lib/store';
 
-  const { nodesStore, updateNodeDimensions } = useStore();
+  const { nodes, updateNodeDimensions } = useStore();
   const resizeObserver: ResizeObserver | null = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries: ResizeObserverEntry[]) => {
     const updates = entries.map((entry: ResizeObserverEntry) => ({
       id: entry.target.getAttribute('data-id') as string,
@@ -21,7 +21,7 @@
 </script>
 
 <div class="react-flow__nodes">
-  {#each $nodesStore as node (node.id)}
+  {#each $nodes as node (node.id)}
     <NodeWrapper {...node} {resizeObserver} />
   {/each}
 </div>

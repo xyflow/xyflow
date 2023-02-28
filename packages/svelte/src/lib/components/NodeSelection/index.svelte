@@ -5,20 +5,20 @@
   import Selection from '$lib/components/Selection/index.svelte';
   import drag  from '$lib/actions/drag'
 
-  const { selectionRectModeStore, nodesStore, nodeOriginStore, transformStore, updateNodePositions } = useStore();
+  const { selectionRectMode, nodes, nodeOrigin, transform, updateNodePositions } = useStore();
 
-  $: selectedNodes = $nodesStore.filter(n => n.selected);
-  $: rect = getRectOfNodes(selectedNodes, $nodeOriginStore);
+  $: selectedNodes = $nodes.filter(n => n.selected);
+  $: rect = getRectOfNodes(selectedNodes, $nodeOrigin);
 </script> 
 
 {#if selectedNodes}
   <div
     class="selection-wrapper nopan"
     style={`width: ${rect.width}px; height: ${rect.height}px; transform: translate(${rect.x}px, ${rect.y}px)`}
-    use:drag={{ nodesStore, transformStore, updateNodePositions }}
+    use:drag={{ nodes, transform, updateNodePositions }}
   />
   <Selection
-    isVisible={$selectionRectModeStore === 'nodes'}
+    isVisible={$selectionRectMode === 'nodes'}
     width={rect.width}
     height={rect.height}
     x={rect.x}

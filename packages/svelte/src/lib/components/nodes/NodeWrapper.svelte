@@ -28,8 +28,8 @@
 
   let nodeRef: HTMLDivElement;
 
-  const { nodesStore, transformStore, nodeTypesStore, updateNodePositions, addSelectedNodes } = useStore();
-  const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> = $nodeTypesStore[type] || DefaultNode;
+  const { nodes, transform, nodeTypes, updateNodePositions, addSelectedNodes } = useStore();
+  const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> = $nodeTypes[type] || DefaultNode;
   const isSelectable = true;
   const selectNodesOnDrag = false;
   const isDraggable = true;
@@ -58,7 +58,7 @@
 </script>
 
 <div
-  use:drag={{ nodeId: id, nodesStore, transformStore, updateNodePositions }}
+  use:drag={{ nodeId: id, nodes, transform, updateNodePositions }}
   class={cc(['react-flow__node', `react-flow__node-${type}`, className])}
   class:initializing={!width && !height}
   class:dragging={dragging}

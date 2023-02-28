@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { useStore } from '$lib/store';
 
-  const { transformStore} = useStore();
+  const { transform } = useStore();
 </script>
 
 <div
   class="react-flow__viewport" 
-  style="transform: translate({$transformStore[0]}px, {$transformStore[1]}px) scale({$transformStore[2]})"
+  style="transform: translate({$transform[0]}px, {$transform[1]}px) scale({$transform[2]})"
 >
   <slot />
 </div>

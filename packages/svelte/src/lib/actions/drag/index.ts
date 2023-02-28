@@ -25,13 +25,13 @@ type UseDragParams = {
 	handleSelector?: string;
 	nodeId?: string;
 	updateNodePositions: (dragItems: NodeDragItem[], d: boolean, p: boolean) => void;
-	nodesStore: Writable<Node[]>;
-	transformStore: Writable<Transform>;
+	nodes: Writable<Node[]>;
+	transform: Writable<Transform>;
 };
 
 export default function drag(
 	nodeRef: Element,
-	{ handleSelector, nodeId, updateNodePositions, nodesStore, transformStore }: UseDragParams
+	{ handleSelector, nodeId, updateNodePositions, nodes, transform: transformStore }: UseDragParams
 ) {
 	let dragging = false;
 	let dragItems: NodeDragItem[] = [];
@@ -62,7 +62,7 @@ export default function drag(
 
 		dragItems = dragItems.map((n) => {
 			const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
-			const updatedPos = calcNextPosition(n, nextPosition, get(nodesStore) as RFNode[]);
+			const updatedPos = calcNextPosition(n, nextPosition, get(nodes) as RFNode[]);
 
 			// we want to make sure that we only fire a change event when there is a changes
 			hasChange =
@@ -89,7 +89,7 @@ export default function drag(
 			const pointerPos = getPointerPosition(event);
 			console.log(pointerPos);
 			lastPos = pointerPos;
-			dragItems = getDragItems(get(nodesStore) as RFNode[], pointerPos, nodeId);
+			dragItems = getDragItems(get(nodes) as RFNode[], pointerPos, nodeId);
 		})
 		.on('drag', (event: UseDragEvent) => {
 			const pointerPos = getPointerPosition(event);

@@ -1,6 +1,6 @@
 import type { Node, NodeTypes } from './nodes';
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
-import type { Edge, HandleType, XYPosition } from '@reactflow/system';
+import type { ConnectionLineType, Edge, HandleType, XYPosition } from '@reactflow/system';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -20,6 +20,7 @@ export type SvelteFlowProps = {
 	nodes: Node[];
 	edges: Edge[];
 
+	connectionLineType?: ConnectionLineType;
 	selectionKey?: KeyDefinition;
 	deleteKey?: KeyDefinition;
 	nodeTypes?: NodeTypes;

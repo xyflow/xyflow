@@ -2,15 +2,15 @@
   import EdgeWrapper from '$lib/components/edges/EdgeWrapper.svelte';
   import { useStore } from '$lib/store';
 
-  const { edgesWithDataStore, widthStore, heightStore } = useStore();
+  const { edgesLayouted, width, height } = useStore();
  </script>
 
 <svg
-  width={$widthStore}
-  height={$heightStore}
+  width={$width}
+  height={$height}
   class="react-flow__edges"
 >
-  {#each $edgesWithDataStore as edge (edge.id)}
+  {#each $edgesLayouted as edge (edge.id)}
     <EdgeWrapper {...edge} />
   {/each}
 </svg>

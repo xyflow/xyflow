@@ -2,12 +2,12 @@
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
 
-  const { transformStore, d3Store, selectionKeyPressedStore, selectionRectModeStore } = useStore();
+  const { transform, d3, selectionKeyPressed, selectionRectMode } = useStore();
 
-  $: selecting = $selectionKeyPressedStore || $selectionRectModeStore === 'user';
+  $: selecting = $selectionKeyPressed || $selectionRectMode === 'user';
 </script>
 
-<div class="react-flow__zoom" use:zoom={{ transformStore, d3Store, selecting }}>
+<div class="react-flow__zoom" use:zoom={{ transform, d3, selecting }}>
   <slot />
 </div>
 

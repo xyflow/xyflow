@@ -23,7 +23,8 @@
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
-  
+  export let connectionLineType: $$Props['connectionLineType'] = undefined;
+
   let className: $$Props['class'] = undefined;
   export { className as class };
 
@@ -40,15 +41,37 @@
 
   onMount(() => {
     const { width, height } = domNode.getBoundingClientRect();
-    store.widthStore.set(width);
-    store.heightStore.set(height);
-    store.domNodeStore.set(domNode);
+    store.width.set(width);
+    store.height.set(height);
+    store.domNode.set(domNode);
 
     // @todo: is this a svelte way for two way binding?
-    store.nodesStore.subscribe((ns) => {
+    store.nodes.subscribe((ns) => {
       nodes = ns;
     });
   });
+
+
+  // $: {
+  //   const updatableProps = {
+  //     defaultEdgeOptions,
+  //     connectionMode,
+  //     snapToGrid,
+  //     snapGrid,
+  //     nodesDraggable,
+  //     connectOnClick,
+  //     fitViewOnInit: fitView,
+  //     fitViewOnInitOptions: fitViewOptions,
+  //   };
+
+  //   Object.keys(updatableProps).forEach((key) => {
+  //       store.update((state) => ({
+  //         ...state,
+  //         [key]: valuesToUpdate[key],
+  //       }));
+     
+  //   });
+  // }
 
   $: {
     store.setNodes(nodes);

@@ -5,7 +5,7 @@
   import type { KeyHandlerProps } from './KeyHandler'
 	import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 
-  const { selectionKeyPressedStore, deleteKeyPressedStore } = useStore();
+  const { selectionKeyPressed, deleteKeyPressed } = useStore();
 
   type $$Props = KeyHandlerProps;
 
@@ -25,19 +25,19 @@
 
 <svelte:window
   use:shortcut={{ 
-    trigger: [{ key: selectionKeyString, modifier: selectionKeyModifier, callback: () => selectionKeyPressedStore.set(true) }],
+    trigger: [{ key: selectionKeyString, modifier: selectionKeyModifier, callback: () => selectionKeyPressed.set(true) }],
     type: 'keydown'
   }}
   use:shortcut={{ 
-    trigger: [{ key: selectionKeyString, modifier: selectionKeyModifier, callback: () => selectionKeyPressedStore.set(false) }],
+    trigger: [{ key: selectionKeyString, modifier: selectionKeyModifier, callback: () => selectionKeyPressed.set(false) }],
     type: 'keyup'
   }}
   use:shortcut={{ 
-    trigger: [{ key: deleteKeyString, modifier: deleteKeyModifier, callback: () => deleteKeyPressedStore.set(true) }],
+    trigger: [{ key: deleteKeyString, modifier: deleteKeyModifier, callback: () => deleteKeyPressed.set(true) }],
     type: 'keydown'
   }}
   use:shortcut={{ 
-    trigger: [{ key: deleteKeyString, modifier: deleteKeyModifier, callback: () => deleteKeyPressedStore.set(false) }],
+    trigger: [{ key: deleteKeyString, modifier: deleteKeyModifier, callback: () => deleteKeyPressed.set(false) }],
     type: 'keyup'
   }}
 />

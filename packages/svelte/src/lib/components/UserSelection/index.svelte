@@ -2,13 +2,13 @@
   import { useStore } from '$lib/store';
   import Selection from '$lib/components/Selection/index.svelte';
 
-  const { selectionRectStore, selectionRectModeStore } = useStore();
+  const { selectionRect, selectionRectMode } = useStore();
 </script> 
 
 <Selection
-  isVisible={!!($selectionRectStore && $selectionRectModeStore === 'user')}
-  width={$selectionRectStore?.width}
-  height={$selectionRectStore?.height}
-  x={$selectionRectStore?.x}
-  y={$selectionRectStore?.y}
+  isVisible={!!($selectionRect && $selectionRectMode === 'user')}
+  width={$selectionRect?.width}
+  height={$selectionRect?.height}
+  x={$selectionRect?.x}
+  y={$selectionRect?.y}
 />

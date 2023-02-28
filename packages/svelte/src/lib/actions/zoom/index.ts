@@ -78,13 +78,13 @@ function filter(event: any, params: ZoomParams): boolean {
 }
 
 type ZoomParams = {
-	transformStore: Writable<Transform>;
+	transform: Writable<Transform>;
 	selecting: boolean;
-	d3Store: Writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>;
+	d3: Writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
-	const { transformStore, d3Store } = params;
+	const { transform, d3 } = params;
 	const d3ZoomInstance = d3Zoom();
 	const selection = select(domNode).call(d3ZoomInstance);
 	const d3ZoomHandler = selection.on('wheel.zoom');
@@ -100,13 +100,13 @@ export default function zoom(domNode: Element, params: ZoomParams) {
 		d3ZoomHandler!.call(this, event, d);
 	});
 
-	d3Store.set({
+	d3.set({
 		zoom: d3ZoomInstance,
 		selection
 	});
 
 	d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-		transformStore.set([event.transform.x, event.transform.y, event.transform.k]);
+		transform.set([event.transform.x, event.transform.y, event.transform.k]);
 	});
 
 	d3ZoomInstance.filter((event: any) => filter(event, params));

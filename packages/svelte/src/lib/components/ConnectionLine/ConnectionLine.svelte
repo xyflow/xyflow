@@ -6,17 +6,17 @@
 
   type $$Props = ConnectionLineProps;
 
-  const { connectionPathStore, widthStore, heightStore, connectionStore } = useStore();
+  const { connectionPath, width, height, connection } = useStore();
 </script>
 
-{#if $connectionPathStore}
+{#if $connectionPath}
   <svg
-    width={$widthStore}
-    height={$heightStore}
+    width={$width}
+    height={$height}
     class="react-flow__connectionline"
   >
-    <g class={cc(['react-flow__connection', $connectionStore.status])}>
-      <path d={$connectionPathStore} fill="none" class="react-flow__connection-path" />
+    <g class={cc(['react-flow__connection', $connection.status])}>
+      <path d={$connectionPath} fill="none" class="react-flow__connection-path" />
     </g>
   </svg>
 {/if}

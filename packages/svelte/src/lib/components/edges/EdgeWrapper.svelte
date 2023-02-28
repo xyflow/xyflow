@@ -22,8 +22,8 @@
   export let selected: $$Props['selected'] = false;
   export let label: $$Props['label'] = undefined;
 
-  const { edgeTypesStore } = useStore();
-  const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypesStore[type!] || BezierEdge;
+  const { edgeTypes } = useStore();
+  const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypes[type!] || BezierEdge;
 </script>
 
 <g
