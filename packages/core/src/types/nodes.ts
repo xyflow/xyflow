@@ -25,6 +25,7 @@ export type Node<T = any, U extends string | undefined = string | undefined> = {
   width?: number | null;
   height?: number | null;
   parentNode?: string;
+  nodeOrigin?: [number, number];
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;

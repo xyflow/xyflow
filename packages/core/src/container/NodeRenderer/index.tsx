@@ -100,7 +100,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           y: posY,
           width: node.width ?? 0,
           height: node.height ?? 0,
-          origin: props.nodeOrigin,
+          origin: node.nodeOrigin || props.nodeOrigin,
         });
 
         return (
