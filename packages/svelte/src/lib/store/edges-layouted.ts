@@ -6,11 +6,11 @@ import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
 
 export function getEdgesLayouted(store: SvelteFlowStoreState) {
-  return derived([store.edges, store.nodes], ([$edges, $nodes]) => {
-    return $edges
+  return derived([store.edges, store.nodes], ([edges, nodes]) => {
+    return edges
       .map((edge) => {
-        const sourceNode = $nodes.find((node) => node.id === edge.source);
-        const targetNode = $nodes.find((node) => node.id === edge.target);
+        const sourceNode = nodes.find((node) => node.id === edge.source);
+        const targetNode = nodes.find((node) => node.id === edge.target);
         const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(sourceNode);
         const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(targetNode);
 

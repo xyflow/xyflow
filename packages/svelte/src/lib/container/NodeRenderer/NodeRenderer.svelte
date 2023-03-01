@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
 
-  import NodeWrapper from '$lib/components/nodes/NodeWrapper.svelte';
+  import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
 
   const { nodes, updateNodeDimensions } = useStore();

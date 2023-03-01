@@ -24,8 +24,4 @@ export type NodeProps<NodeData = any> = Pick<
   isConnectable?: boolean;
 };
 
-export type WrapNodeProps = Node & {
-  resizeObserver?: ResizeObserver | null;
-};
-
 export type NodeTypes = Record<string, typeof SvelteComponentTyped<Partial<NodeProps>>>;

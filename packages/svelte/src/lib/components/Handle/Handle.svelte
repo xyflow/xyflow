@@ -14,8 +14,6 @@
   export let position: $$Props['position'] = Position.Top;
   export let isConnectable: $$Props['isConnectable'] = true;
   export let isValidConnection: $$Props['isValidConnection'] = (_: Connection) => true;
-  let className: string | null = null;
-  export { className as class };
 
   const isTarget = type === 'target';
   const nodeId = getContext<string>('rf_nodeid');
@@ -80,7 +78,6 @@
     `react-flow__handle-${position}`,
     'nodrag',
     'nopan',
-    className,
     position
   ])}
   class:source={!isTarget}

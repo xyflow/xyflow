@@ -1,20 +1,4 @@
-<script lang="ts">
-  import cc from 'classcat';
-
-  import DotPattern from './DotPattern.svelte';
-  import LinePattern from './LinePattern.svelte';
-  import { useStore } from '$lib/store';
-  import { BackgroundVariant } from './types';
-
-  export let variant: BackgroundVariant = BackgroundVariant.Dots;
-  export let gap = 20;
-  export let size: number = 1;
-  export let lineWidth = 1;
-  export let color: string = '#ccc';
-
-  let className: string = '';
-  export { className as class };
-
+<script labg="ts" context="module">
   const defaultColor = {
     [BackgroundVariant.Dots]: '#91919a',
     [BackgroundVariant.Lines]: '#eee',
@@ -26,13 +10,33 @@
     [BackgroundVariant.Lines]: 1,
     [BackgroundVariant.Cross]: 6
   };
+</script>
+
+<script lang="ts">
+  import cc from 'classcat';
+
+  import DotPattern from './DotPattern.svelte';
+  import LinePattern from './LinePattern.svelte';
+  import { useStore } from '$lib/store';
+  import { BackgroundVariant, type BackgroundProps } from './types';
+
+  type $$Props = BackgroundProps; 
+
+  export let variant: $$Props['variant'] = BackgroundVariant.Dots;
+  export let gap: $$Props['gap'] = 20;
+  export let size: $$Props['size'] = 1;
+  export let lineWidth: $$Props['lineWidth'] = 1;
+  export let color: $$Props['color'] = '#ccc';
+  export let style: $$Props['style'] = '';
+  let className: $$Props['class'] = '';
+  export { className as class };
 
   const { transform, id } = useStore();
-  const patternColor = color || defaultColor[variant];
-  const patternSize = size || defaultSize[variant];
+  const patternColor = color || defaultColor[variant!];
+  const patternSize = size || defaultSize[variant!];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
-  const gapXY: number[] = Array.isArray(gap) ? gap : [gap, gap];
+  const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
 
   $: patternId = `background-pattern-${$id}`;
   $: scaledGap = [gapXY[0] * $transform[2] || 1, gapXY[1] * $transform[2] || 1];
@@ -43,7 +47,7 @@
     : [patternDimensions[0] / 2, patternDimensions[1] / 2];
 </script>
 
-<svg class={cc(['react-flow__background', className])}>
+<svg class={cc(['react-flow__background', className])} style={style}>
   <pattern
     id={patternId}
     x={$transform[0] % scaledGap[0]}

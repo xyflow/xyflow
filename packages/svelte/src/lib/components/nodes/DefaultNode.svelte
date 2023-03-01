@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Position } from '@reactflow/system';
 
-  import Handle from '$lib/components/Handle/index.svelte';
+  import { Handle } from '$lib/components/Handle';
   import type { NodeProps } from '$lib/types';
 
   interface $$Props extends NodeProps<{ label: string }> {}

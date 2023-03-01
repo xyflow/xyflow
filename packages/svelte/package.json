@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
-    "@sveltejs/kit": "^1.5.6",
+    "@sveltejs/kit": "^1.9.1",
     "@sveltejs/package": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
@@ -37,11 +37,11 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^2.8.0",
-    "prettier-plugin-svelte": "^2.8.1",
+    "prettier-plugin-svelte": "^2.9.0",
     "svelte": "^3.55.1",
-    "svelte-check": "^3.0.1",
+    "svelte-check": "^3.0.4",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
-    "vite": "^4.1.1"
+    "vite": "^4.1.4"
   }
 }

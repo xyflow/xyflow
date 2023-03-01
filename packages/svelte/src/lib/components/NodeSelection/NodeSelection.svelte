@@ -2,7 +2,7 @@
   import { getRectOfNodes } from '@reactflow/utils';
 
   import { useStore } from '$lib/store';
-  import Selection from '$lib/components/Selection/index.svelte';
+  import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
 
   const { selectionRectMode, nodes, nodeOrigin, transform, updateNodePositions } = useStore();

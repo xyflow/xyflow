@@ -1,7 +1,5 @@
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
-import type { ConnectionLineType, HandleType, XYPosition } from '@reactflow/system';
-
-import type { Node, NodeTypes, Edge } from '.';
+import type { HandleType, XYPosition } from '@reactflow/system';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -13,20 +11,4 @@ export type ConnectionData = {
   handleId: string | null;
   handleType: HandleType | null;
   status: string | null;
-};
-
-export type ConnectionLineProps = {};
-
-export type SvelteFlowProps = {
-  nodes: Node[];
-  edges: Edge[];
-
-  connectionLineType?: ConnectionLineType;
-  selectionKey?: KeyDefinition;
-  deleteKey?: KeyDefinition;
-  nodeTypes?: NodeTypes;
-  fitView?: boolean;
-  class?: string;
-  style?: string;
-  id?: string;
 };

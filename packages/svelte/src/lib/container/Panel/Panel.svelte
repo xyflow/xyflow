@@ -1,6 +1,6 @@
 <script lang="ts">
   import cc from 'classcat';
-  import type { PanelProps } from './Panel';
+  import type { PanelProps } from './types';
 
   interface $$Props extends PanelProps {}
 

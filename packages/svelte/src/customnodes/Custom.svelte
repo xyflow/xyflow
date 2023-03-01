@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Handle from '$lib/components/Handle/index.svelte';
+  import { Handle } from '$lib/components/Handle';
   import { Position } from '@reactflow/system';
 
   export let data: { label: string } = { label: 'Node' };

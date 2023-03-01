@@ -4,16 +4,16 @@
   import cc from 'classcat';
 
   import { key, createStore } from '$lib/store';
-  import Zoom from '$lib/container/Zoom/index.svelte';
-  import Pane from '$lib/container/Pane/index.svelte';
-  import Viewport from '$lib/container/Viewport.svelte';
-  import NodeRenderer from '$lib/container/NodeRenderer/index.svelte';
-  import EdgeRenderer from '$lib/container/EdgeRenderer/index.svelte';
-  import UserSelection from '$lib/components/UserSelection/index.svelte';
-  import NodeSelection from '$lib/components/NodeSelection/index.svelte';
+  import { Zoom } from '$lib/container/Zoom';
+  import { Pane } from '$lib/container/Pane';
+  import { Viewport } from '$lib/container/Viewport';
+  import { NodeRenderer } from '$lib/container/NodeRenderer';
+  import { EdgeRenderer } from '$lib/container/EdgeRenderer';
+  import { UserSelection } from '$lib/components/UserSelection';
+  import { NodeSelection } from '$lib/components/NodeSelection';
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
-  import type { SvelteFlowProps } from '$lib/types';
+  import type { SvelteFlowProps } from './types';
 
   type $$Props = SvelteFlowProps;
 
@@ -35,6 +35,7 @@
     fitView,
     nodeTypes
   });
+
 
   setContext(key, {
     getStore: () => store

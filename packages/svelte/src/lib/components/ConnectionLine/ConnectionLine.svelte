@@ -2,9 +2,6 @@
   import cc from 'classcat';
 
   import { useStore } from '$lib/store';
-  import type { ConnectionLineProps } from '$lib/types';
-
-  type $$Props = ConnectionLineProps;
 
   const { connectionPath, width, height, connection } = useStore();
 </script>

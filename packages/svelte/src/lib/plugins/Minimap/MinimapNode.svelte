@@ -5,11 +5,11 @@
   export let y: number;
   export let width: number = 0;
   export let height: number = 0;
-  export let borderRadius: number;
+  export let borderRadius: number = 5;
   export let color: string;
   export let shapeRendering: string;
   export let strokeColor: string;
-  export let strokeWidth: number;
+  export let strokeWidth: number = 2;
   export let style: Record<string, string>;
   let className: string = '';
   export { className as class };

@@ -1,36 +1,46 @@
 <script lang="ts">
   import { onMount, setContext, SvelteComponentTyped } from 'svelte';
   import cc from 'classcat';
-  import { type XYPosition, Position } from '@reactflow/system';
+  import { type XYPosition, Position, errorMessages } from '@reactflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
-  import DefaultNode from './DefaultNode.svelte';
-  import type { WrapNodeProps, NodeProps } from '$lib/types';
+  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
+  import type { NodeProps } from '$lib/types';
+  import type { NodeWrapperProps } from './types';
 
-  interface $$Props extends WrapNodeProps {}
+  interface $$Props extends NodeWrapperProps {}
 
-  export let id: WrapNodeProps['id'];
-  export let data: WrapNodeProps['data'] = {};
-  export let selected: WrapNodeProps['selected'] = false;
+  export let id: NodeWrapperProps['id'];
+  export let data: NodeWrapperProps['data'] = {};
+  export let selected: NodeWrapperProps['selected'] = false;
   export let positionAbsolute: XYPosition = { x: 0, y: 0 };
   export let position: XYPosition = { x: 0, y: 0 };
   export let dragging: boolean = false;
-  export let resizeObserver: WrapNodeProps['resizeObserver'] = null;
-  export let style: WrapNodeProps['style'] = undefined;
-  export let width: WrapNodeProps['width'] = undefined;
-  export let height: WrapNodeProps['height'] = undefined;
-  export let type: WrapNodeProps['type'] = 'default';
-  export let sourcePosition: WrapNodeProps['sourcePosition'] = Position.Bottom;
-  export let targetPosition: WrapNodeProps['targetPosition'] = Position.Top;
+  export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
+  export let style: NodeWrapperProps['style'] = undefined;
+  export let width: NodeWrapperProps['width'] = undefined;
+  export let height: NodeWrapperProps['height'] = undefined;
+  export let type: NodeWrapperProps['type'] = 'default';
+  export let sourcePosition: NodeWrapperProps['sourcePosition'] = Position.Bottom
+  export let targetPosition: NodeWrapperProps['targetPosition'] = Position.Top;
+
   let className: string = '';
   export { className as class };
 
   let nodeRef: HTMLDivElement;
 
   const { nodes, transform, nodeTypes, updateNodePositions, addSelectedNodes } = useStore();
+
+  const nodeTypeValid = !!$nodeTypes[type!];
+
+  if (!nodeTypeValid) {
+    console.warn('003', errorMessages['003'](type!));
+    type = 'default';
+  }
+
   const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> =
-    $nodeTypes[type] || DefaultNode;
+    $nodeTypes[type!] || DefaultNode;
   const isSelectable = true;
   const selectNodesOnDrag = false;
   const isDraggable = true;

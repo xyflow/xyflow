@@ -57,10 +57,4 @@ export type EdgeProps = Pick<
   | 'interactionWidth'
 >;
 
-export type BaseEdgeProps = Pick<EdgeProps, 'interactionWidth' | 'label'> & {
-  path: string;
-  labelX?: number;
-  labelY?: number;
-};
-
 export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;

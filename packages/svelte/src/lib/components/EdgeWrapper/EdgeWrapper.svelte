@@ -3,7 +3,7 @@
   import { Position } from '@reactflow/system';
 
   import { useStore } from '$lib/store';
-  import BezierEdge from '$lib/components/edges/StraightEdge.svelte';
+  import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
   import type { EdgeProps, EdgeLayouted } from '$lib/types';
 
   type $$Props = EdgeLayouted;

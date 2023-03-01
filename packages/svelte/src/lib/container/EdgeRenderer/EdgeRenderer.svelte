@@ -1,5 +1,5 @@
 <script lang="ts">
-  import EdgeWrapper from '$lib/components/edges/EdgeWrapper.svelte';
+  import { EdgeWrapper } from '$lib/components/EdgeWrapper';
   import { useStore } from '$lib/store';
 
   const { edgesLayouted, width, height } = useStore();

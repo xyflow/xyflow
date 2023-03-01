@@ -2,7 +2,7 @@
   import { getStraightPath } from '@reactflow/edge-utils';
 
   import type { EdgeProps } from '$lib/types';
-  import BaseEdge from './BaseEdge.svelte';
+  import { BaseEdge } from '$lib/components/BaseEdge';
 
   type $$Props = EdgeProps;
 

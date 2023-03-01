@@ -1,34 +1,43 @@
+<script lang="ts" context="module">
+  declare const window: any;
+
+  const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
+    func instanceof Function ? func : () => func;
+</script>
+
 <script lang="ts">
   import cc from 'classcat';
-  import type { PanelPosition, Rect, Node } from '@reactflow/system';
   import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@reactflow/utils';
 
   import { useStore } from '$lib/store';
-  import Panel from '$lib/container/Panel/index.svelte';
+  import { Panel } from '$lib/container/Panel';
   import MinimapNode from './MinimapNode.svelte';
+  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
 
-  let position: PanelPosition = 'bottom-right';
-  let ariaLabel: string = 'Mini map';
-  let className: string = '';
-  let style: Record<string, unknown> = {};
-  let nodeStrokeColor: string = 'transparent';
-  let nodeColor: string = '#e2e2e2';
-  let nodeClassName: string = '';
-  let nodeBorderRadius: number = 5;
-  let nodeStrokeWidth: number = 2;
-  let bgColor: string = '#fff';
-  let maskColor: string = 'rgb(240, 240, 240, 0.6)';
-  let maskStrokeColor: string = 'none';
-  let maskStrokeWidth: number = 1;
+  type $$Props = MiniMapProps;
+
+  let position: $$Props['position']  = 'bottom-right';
+  let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
+  let style: $$Props['style'] = '';
+  let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
+  let nodeColor: $$Props['nodeColor'] = '#e2e2e2';
+  let nodeClassName: $$Props['nodeClassName'] = '';
+  let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
+  let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
+  let bgColor: $$Props['bgColor'] = '#fff';
+  let maskColor: $$Props['maskColor'] = 'rgb(240, 240, 240, 0.6)';
+  let maskStrokeColor: $$Props['maskStrokeColor'] = 'none';
+  let maskStrokeWidth: $$Props['maskStrokeWidth'] = 1;
+  let width: $$Props['width'] = undefined;
+  let height: $$Props['height'] = undefined;
+  let className: $$Props['class'] = '';
   export { className as class };
 
   const defaultWidth = 200;
   const defaultHeight = 150;
-  const { nodes, transform, width, height, nodeOrigin, id } = useStore();
+  const { nodes, transform, width: containerWidth, height: containerHeight, nodeOrigin, id } = useStore();
 
-  type GetMiniMapNodeAttribute = (node: Node) => string;
-  const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
-    func instanceof Function ? func : () => func;
+  
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
@@ -39,13 +48,13 @@
   $: viewBB = {
     x: -$transform[0] / $transform[2],
     y: -$transform[1] / $transform[2],
-    width: $width / $transform[2],
-    height: $height / $transform[2]
-  } as Rect;
+    width: $containerWidth / $transform[2],
+    height: $containerHeight / $transform[2]
+  };
   $: boundingRect =
     $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes, $nodeOrigin), viewBB) : viewBB;
-  $: elementWidth = (style?.width as number) ?? defaultWidth;
-  $: elementHeight = (style?.height as number) ?? defaultHeight;
+  $: elementWidth = width ?? defaultWidth;
+  $: elementHeight = height ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;
   $: scaledHeight = boundingRect.height / elementHeight;
   $: viewScale = Math.max(scaledWidth, scaledHeight);
@@ -61,7 +70,7 @@
 <Panel
   {position}
   class={cc(['react-flow__minimap', className])}
-  style={`background-color: ${bgColor};`}
+  style={`background-color: ${bgColor}; ${style}`}
 >
   <svg
     width={elementWidth}

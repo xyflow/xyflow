@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
-  import Selection from '$lib/components/Selection/index.svelte';
+  import { Selection } from '$lib/components/Selection';
 
   const { selectionRect, selectionRectMode } = useStore();
 </script>

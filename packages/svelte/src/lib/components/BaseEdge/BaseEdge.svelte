@@ -1,6 +1,6 @@
 <script lang="ts">
-  import EdgeLabelRenderer from '$lib/components/EdgeLabelRenderer/index.svelte';
-  import type { BaseEdgeProps } from '$lib/types';
+  import EdgeLabelRenderer from '$lib/components/EdgeLabelRenderer/EdgeLabelRenderer.svelte';
+  import type { BaseEdgeProps } from './types';
 
   type $$Props = BaseEdgeProps;
 

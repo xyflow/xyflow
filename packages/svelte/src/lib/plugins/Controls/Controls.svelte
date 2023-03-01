@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type { PanelPosition } from '@reactflow/system';
-
-  import Panel from '$lib/container/Panel/index.svelte';
+  import Panel from '$lib/container/Panel/Panel.svelte';
   import { useStore } from '$lib/store';
   import ControlButton from './ControlButton.svelte';
   import PlusIcon from './Icons/Plus.svelte';
@@ -10,10 +8,14 @@
   import LockIcon from './Icons/Lock.svelte';
   import UnlockIcon from './Icons/Unlock.svelte';
 
-  export let position: PanelPosition = 'bottom-left';
-  export let showZoom = true;
-  export let showFitView = true;
-  export let showInteractive = true;
+  import type { ControlsProps } from './types';
+
+  type $$Props = ControlsProps;
+
+  export let position: $$Props['position'] = 'bottom-left';
+  export let showZoom: $$Props['showZoom'] = true;
+  export let showFitView: $$Props['showFitView'] = true;
+  export let showInteractive: $$Props['showInteractive'] = true;
 
   const { zoomIn, zoomOut, fitView } = useStore();
 

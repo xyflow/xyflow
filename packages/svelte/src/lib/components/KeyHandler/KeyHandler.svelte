@@ -2,7 +2,7 @@
   import { shortcut } from '@svelte-put/shortcut';
 
   import { useStore } from '$lib/store';
-  import type { KeyHandlerProps } from './KeyHandler';
+  import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 
   const { selectionKeyPressed, deleteKeyPressed } = useStore();
