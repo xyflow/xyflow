@@ -43,7 +43,7 @@
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
   const shapeRendering =
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
-  const labelledBy = `react-flow__minimap-desc-${$id}`;
+  const labelledBy = `svelte-flow__minimap-desc-${$id}`;
 
   $: viewBB = {
     x: -$transform[0] / $transform[2],
@@ -69,7 +69,7 @@
 
 <Panel
   {position}
-  class={cc(['react-flow__minimap', className])}
+  class={cc(['svelte-flow__minimap', className])}
   style={`background-color: ${bgColor}; ${style}`}
 >
   <svg
@@ -100,7 +100,7 @@
       {/if}
     {/each}
     <path
-      class="react-flow__minimap-mask"
+      class="svelte-flow__minimap-mask"
       d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${
         -viewboxWidth - offset * 2
       }z

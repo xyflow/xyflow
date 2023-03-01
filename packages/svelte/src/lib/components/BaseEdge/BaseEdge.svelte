@@ -11,7 +11,7 @@
   export let interactionWidth: $$Props['interactionWidth'] = 20;
 </script>
 
-<path d={path} fill="none" class="react-flow__edge-path" />
+<path d={path} fill="none" class="svelte-flow__edge-path" />
 
 {#if interactionWidth}
   <path
@@ -19,14 +19,14 @@
     fill="none"
     stroke-opacity={0}
     stroke-width={interactionWidth}
-    class="react-flow__edge-interaction"
+    class="svelte-flow__edge-interaction"
   />
 {/if}
 
 {#if label}
   <EdgeLabelRenderer>
     <div
-      class="react-flow__edge-label"
+      class="svelte-flow__edge-label"
       style:transform={`translate(-50%, -50%) translate(${labelX}px,${labelY}px)`}
     >
       {label}
@@ -35,7 +35,7 @@
 {/if}
 
 <style>
-  .react-flow__edge-label {
+  .svelte-flow__edge-label {
     position: absolute;
     background: white;
   }

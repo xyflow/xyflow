@@ -29,13 +29,15 @@
 </script>
 
 <script lang="ts">
-  import { useStore } from '$lib/store';
+  import { createEventDispatcher } from 'svelte';
   import { SelectionMode } from '@reactflow/system';
   import { getEventPosition, getNodesInside } from '@reactflow/utils';
-
+  
+  import { useStore } from '$lib/store';
   import { getConnectedEdges } from '$lib/utils';
   import type { Node, Edge } from '$lib/types';
 
+  const dispatch = createEventDispatcher();
   const {
     nodes,
     edges,
@@ -60,7 +62,7 @@
   $: hasActiveSelection = elementsSelectable && (isSelecting || $selectionRectMode === 'user');
 
   function onClick(event: MouseEvent) {
-    // onPaneClick?.(event);
+    dispatch('pane:click');
 
     resetSelectedElements();
     selectionRectMode.set(null);
@@ -155,11 +157,21 @@
 
     selectionRect.set(null);
   };
+
+  const onContextMenu = (event: MouseEvent) => {
+    // if (Array.isArray(panOnDrag) && panOnDrag?.includes(2)) {
+    //   event.preventDefault();
+    //   return;
+    // }
+
+    dispatch('pane:contextmenu');
+  };
+
 </script>
 
 <div
   bind:this={container}
-  class="react-flow__pane"
+  class="svelte-flow__pane"
   class:dragging={$dragging}
   class:selection={isSelecting}
   on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
@@ -167,12 +179,13 @@
   on:mousemove={hasActiveSelection ? onMouseMove : undefined}
   on:mouseup={hasActiveSelection ? onMouseUp : undefined}
   on:mouseleave={hasActiveSelection ? onMouseLeave : undefined}
+  on:contextmenu={wrapHandler(onContextMenu, container)}
 >
   <slot />
 </div>
 
 <style>
-  .react-flow__pane {
+  .svelte-flow__pane {
     cursor: grab;
     position: absolute;
     top: 0;

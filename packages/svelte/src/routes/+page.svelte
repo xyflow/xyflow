@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { Node, Edge, NodeTypes } from '../lib/types';
   import SvelteFlow, {
     Controls,
     Background,
     BackgroundVariant,
     Minimap,
-    Panel
+    Panel,
+    type Node, type Edge, type NodeTypes
   } from '../lib/index';
   import CustomNode from '../customnodes/Custom.svelte';
 
@@ -120,7 +120,24 @@
   // }
 </script>
 
-<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
+<SvelteFlow
+  bind:nodes
+  bind:edges
+  {nodeTypes}
+  fitView
+  minZoom={0.1}
+  maxZoom={2.5}
+  initialViewport={{ x: 100, y: 100, zoom: 2 }}
+  on:node:click={(event) => console.log('on node click', event)}
+  on:node:mouseenter={(event) => console.log('on node enter', event)} 
+  on:node:mouseleave={(event) => console.log('on node leave', event)}
+  on:edge:click={(event) => console.log('edge click', event)}
+  on:connect:start={(event) => console.log('on connect start', event)}
+  on:connect={(event) => console.log('on connect', event)}
+  on:connect:end={(event) => console.log('on connect end', event)}
+  on:pane:click={(event) => console.log('on pane click', event)}
+  on:pane:contextmenu={(event) => { console.log('on pane contextmenu', event); }}
+>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <Minimap />
@@ -134,7 +151,7 @@
     --node-width: 50;
   }
 
-  :global(.react-flow .custom-style) {
+  :global(.svelte-flow .custom-style) {
     background: #ff5050;
     color: white;
   }

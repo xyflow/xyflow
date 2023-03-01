@@ -21,16 +21,27 @@
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
+
 </script>
 
-<div class="react-flow__nodes">
+<div class="svelte-flow__nodes">
   {#each $nodes as node (node.id)}
-    <NodeWrapper {...node} {resizeObserver} />
+    <NodeWrapper
+      {...node}
+      {resizeObserver}
+      on:node:click
+      on:node:mouseenter
+      on:node:mousemove
+      on:node:mouseleave
+      on:connect:start
+      on:connect
+      on:connect:end
+    />
   {/each}
 </div>
 
 <style>
-  .react-flow__nodes {
+  .svelte-flow__nodes {
     width: 100%;
     height: 100%;
     pointer-events: none;

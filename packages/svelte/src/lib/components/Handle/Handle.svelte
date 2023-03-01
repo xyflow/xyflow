@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import cc from 'classcat';
   import { Position, type Connection, type HandleProps } from '@reactflow/system';
   import { isMouseEvent } from '@reactflow/utils';
@@ -18,6 +19,8 @@
   const isTarget = type === 'target';
   const nodeId = getContext<string>('rf_nodeid');
   const handleId = id || null;
+  const dispatch = createEventDispatcher();
+
 
   const {
     connectionMode,
@@ -31,11 +34,16 @@
     updateConnection
   } = useStore();
 
+  function dispatchEvent(eventName: string) {
+    dispatch(eventName, { nodeId, handleId, type });
+  }
+
   function onConnectExtended(params: Connection) {
     addEdge(params);
     // @todo add props
     // onConnectAction?.(edgeParams);
     // onConnect?.(edgeParams);
+    dispatchEvent('connect')
   }
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -56,7 +64,9 @@
         onConnect: onConnectExtended,
         updateConnection,
         cancelConnection,
-        panBy
+        panBy,
+        onConnectStart: () => dispatchEvent('connect:start'),
+        onConnectEnd: () => dispatchEvent('connect:end')
       });
     }
 
@@ -74,8 +84,8 @@
   data-handlepos={position}
   data-id={`${nodeId}-${id}-${type}`}
   class={cc([
-    'react-flow__handle',
-    `react-flow__handle-${position}`,
+    'svelte-flow__handle',
+    `svelte-flow__handle-${position}`,
     'nodrag',
     'nopan',
     position
@@ -90,7 +100,7 @@
 </div>
 
 <style>
-  .react-flow__handle {
+  .svelte-flow__handle {
     position: absolute;
     pointer-events: none;
     min-width: 5px;

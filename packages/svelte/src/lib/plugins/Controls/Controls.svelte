@@ -43,11 +43,11 @@
   };
 </script>
 
-<Panel class="react-flow__controls" {position}>
+<Panel class="svelte-flow__controls" {position}>
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}
-      class="react-flow__controls-zoomin"
+      class="svelte-flow__controls-zoomin"
       title="zoom in"
       aria-label="zoom in"
     >
@@ -56,7 +56,7 @@
     <svelte:component
       this={ControlButton}
       on:click={onZoomOutHandler}
-      class="react-flow__controls-zoomout"
+      class="svelte-flow__controls-zoomout"
       title="zoom out"
       aria-label="zoom out"
     >
@@ -66,7 +66,7 @@
   {#if showFitView}
     <svelte:component
       this={ControlButton}
-      class="react-flow__controls-fitview"
+      class="svelte-flow__controls-fitview"
       on:click={onFitViewHandler}
       title="fit view"
       aria-label="fit view"
@@ -77,7 +77,7 @@
   {#if showInteractive}
     <svelte:component
       this={ControlButton}
-      class="react-flow__controls-interactive"
+      class="svelte-flow__controls-interactive"
       on:click={onToggleInteractivity}
       title="toggle interactivity"
       aria-label="toggle interactivity"

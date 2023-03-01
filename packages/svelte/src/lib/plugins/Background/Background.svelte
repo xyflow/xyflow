@@ -47,7 +47,7 @@
     : [patternDimensions[0] / 2, patternDimensions[1] / 2];
 </script>
 
-<svg class={cc(['react-flow__background', className])} style={style}>
+<svg class={cc(['svelte-flow__background', className])} style={style}>
   <pattern
     id={patternId}
     x={$transform[0] % scaledGap[0]}
@@ -67,7 +67,7 @@
 </svg>
 
 <style>
-  .react-flow__background {
+  .svelte-flow__background {
     position: absolute;
     width: 100%;
     height: 100%;

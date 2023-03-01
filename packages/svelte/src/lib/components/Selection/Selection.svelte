@@ -8,13 +8,13 @@
 
 {#if isVisible}
   <div
-    class="react-flow__selection"
+    class="svelte-flow__selection"
     style={`width: ${width}px; height: ${height}px; transform: translate(${x}px, ${y}px)`}
   />
 {/if}
 
 <style>
-  .react-flow__selection {
+  .svelte-flow__selection {
     position: absolute;
     top: 0;
     left: 0;
@@ -23,8 +23,8 @@
     z-index: 6;
   }
 
-  .react-flow__selection:focus,
-  .react-flow__selection:focus-visible {
+  .svelte-flow__selection:focus,
+  .svelte-flow__selection:focus-visible {
     outline: none;
   }
 </style>

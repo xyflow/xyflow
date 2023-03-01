@@ -7,15 +7,15 @@
 </script>
 
 {#if $connectionPath}
-  <svg width={$width} height={$height} class="react-flow__connectionline">
-    <g class={cc(['react-flow__connection', $connection.status])}>
-      <path d={$connectionPath} fill="none" class="react-flow__connection-path" />
+  <svg width={$width} height={$height} class="svelte-flow__connectionline">
+    <g class={cc(['svelte-flow__connection', $connection.status])}>
+      <path d={$connectionPath} fill="none" class="svelte-flow__connection-path" />
     </g>
   </svg>
 {/if}
 
 <style>
-  .react-flow__connectionline {
+  .svelte-flow__connectionline {
     position: absolute;
     top: 0;
     left: 0;
@@ -26,12 +26,12 @@
     z-index: 1001;
   }
 
-  .react-flow__connection {
+  .svelte-flow__connection {
     pointer-events: none;
   }
 
-  .react-flow__edge-path,
-  .react-flow__connection-path {
+  .svelte-flow__edge-path,
+  .svelte-flow__connection-path {
     stroke: #b1b1b7;
     stroke-width: 1;
     fill: none;

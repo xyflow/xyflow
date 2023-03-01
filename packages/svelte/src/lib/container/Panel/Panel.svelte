@@ -12,34 +12,34 @@
   $: positionClasses = `${position}`.split('-');
 </script>
 
-<div class={cc(['react-flow__panel', className, ...positionClasses])} {style}>
+<div class={cc(['svelte-flow__panel', className, ...positionClasses])} {style}>
   <slot />
 </div>
 
 <style>
-  .react-flow__panel {
+  .svelte-flow__panel {
     position: absolute;
     z-index: 5;
     margin: 15px;
   }
 
-  .react-flow__panel.top {
+  .svelte-flow__panel.top {
     top: 0;
   }
 
-  .react-flow__panel.bottom {
+  .svelte-flow__panel.bottom {
     bottom: 0;
   }
 
-  .react-flow__panel.left {
+  .svelte-flow__panel.left {
     left: 0;
   }
 
-  .react-flow__panel.right {
+  .svelte-flow__panel.right {
     right: 0;
   }
 
-  .react-flow__panel.center {
+  .svelte-flow__panel.center {
     left: 50%;
     transform: translateX(-50%);
   }

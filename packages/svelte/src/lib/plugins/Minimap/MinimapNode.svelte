@@ -19,7 +19,7 @@
 </script>
 
 <rect
-  class={cc(['react-flow__minimap-node', className])}
+  class={cc(['svelte-flow__minimap-node', className])}
   {x}
   {y}
   rx={borderRadius}

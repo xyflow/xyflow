@@ -5,14 +5,14 @@
 </script>
 
 <div
-  class="react-flow__viewport"
+  class="svelte-flow__viewport"
   style="transform: translate({$transform[0]}px, {$transform[1]}px) scale({$transform[2]})"
 >
   <slot />
 </div>
 
 <style>
-  .react-flow__viewport {
+  .svelte-flow__viewport {
     width: 100%;
     height: 100%;
     position: absolute;

@@ -3,6 +3,7 @@ import type { SvelteComponentTyped } from 'svelte';
 import type {
   BaseEdge,
   BezierPathOptions,
+  DefaultEdgeOptionsBase,
   Position,
   SmoothStepPathOptions
 } from '@reactflow/system';
@@ -58,3 +59,5 @@ export type EdgeProps = Pick<
 >;
 
 export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;
+
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;

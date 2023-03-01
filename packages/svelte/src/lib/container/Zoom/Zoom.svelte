@@ -1,18 +1,23 @@
 <script lang="ts">
+  import { get } from 'svelte/store';
+  import type { Viewport } from '@reactflow/system';
+  
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
 
-  const { transform, d3, selectionKeyPressed, selectionRectMode } = useStore();
+  export let initialViewport: Viewport = { x: 0, y: 0, zoom: 1 };
+
+  const { transform, d3, selectionKeyPressed, selectionRectMode, minZoom, maxZoom } = useStore();
 
   $: selecting = $selectionKeyPressed || $selectionRectMode === 'user';
 </script>
 
-<div class="react-flow__zoom" use:zoom={{ transform, d3, selecting }}>
+<div class="svelte-flow__zoom" use:zoom={{ transform, d3, selecting, minZoom: get(minZoom), maxZoom: get(maxZoom), initialViewport }}>
   <slot />
 </div>
 
 <style>
-  .react-flow__zoom {
+  .svelte-flow__zoom {
     width: 100%;
     height: 100%;
     position: absolute;

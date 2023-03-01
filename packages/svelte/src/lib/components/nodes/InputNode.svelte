@@ -1,12 +1,20 @@
 <script lang="ts">
   import { Position } from '@reactflow/system';
 
+  import type { NodeProps } from '$lib/types';
   import { Handle } from '$lib/components/Handle';
 
-  export let data: { label: string } = { label: 'Node' };
-  export let isConnectable: boolean = true;
-  export let sourcePosition: Position = Position.Bottom;
+  interface $$Props extends NodeProps<{ label: string }> {}
+
+  export let id: $$Props['id'];
+  export let data: $$Props['data'] = { label: 'Node' };
+  export let isConnectable: $$Props['isConnectable'] = true;
+  export let targetPosition: $$Props['targetPosition'] = Position.Top;
+  export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
+  export let xPos: $$Props['xPos'];
+  export let yPos: $$Props['yPos'];
+  export let selected: $$Props['selected'] = false;
 </script>
 
 {data?.label}
-<Handle type="source" position={sourcePosition} />
+<Handle type="source" position={sourcePosition} on:connect:start on:connect on:connect:end />

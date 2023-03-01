@@ -9,14 +9,14 @@
 <button
   type="button"
   on:click
-  class={cc(['react-flow__controls-button', className])}
+  class={cc(['svelte-flow__controls-button', className])}
   {...$$restProps}
 >
   <slot class="button-svg" />
 </button>
 
 <style>
-  .react-flow__controls-button {
+  .svelte-flow__controls-button {
     border: none;
     background: #fefefe;
     border-bottom: 1px solid #eee;
@@ -31,7 +31,7 @@
     padding: 5px;
   }
 
-  .react-flow__controls-button :global(svg) {
+  .svelte-flow__controls-button :global(svg) {
     width: 100%;
     max-width: 12px;
     max-height: 12px;

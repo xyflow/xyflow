@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SvelteComponentTyped } from 'svelte';
+  import { createEventDispatcher, type SvelteComponentTyped } from 'svelte';
   import { Position } from '@reactflow/system';
 
   import { useStore } from '$lib/store';
@@ -24,11 +24,23 @@
   export let selected: $$Props['selected'] = false;
   export let label: $$Props['label'] = undefined;
 
-  const { edgeTypes } = useStore();
+  const { edgeTypes, edges } = useStore();
+  const dispatch = createEventDispatcher();
+
   const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypes[type!] || BezierEdge;
+
+  function onClick() {
+    const edge = $edges.find(e => e.id === id);
+    dispatch('edge:click', edge);
+  }
 </script>
 
-<g class="react-flow__edge" class:animated data-id={id}>
+<g
+  class="svelte-flow__edge"
+  class:animated
+  data-id={id}
+  on:click={onClick}
+>
   <svelte:component
     this={edgeComponent}
     {id}
@@ -47,12 +59,12 @@
 </g>
 
 <style>
-  .react-flow__edge {
+  .svelte-flow__edge {
     pointer-events: visibleStroke;
     cursor: pointer;
   }
 
-  .react-flow__edge :global(path) {
+  .svelte-flow__edge :global(path) {
     stroke: #ccc;
     stroke-width: 1;
     fill: none;

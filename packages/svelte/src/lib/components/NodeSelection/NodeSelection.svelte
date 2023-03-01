@@ -11,7 +11,7 @@
   $: rect = getRectOfNodes(selectedNodes, $nodeOrigin);
 </script>
 
-{#if selectedNodes}
+{#if selectedNodes && $selectionRectMode === 'nodes'}
   <div
     class="selection-wrapper nopan"
     style={`width: ${rect.width}px; height: ${rect.height}px; transform: translate(${rect.x}px, ${rect.y}px)`}

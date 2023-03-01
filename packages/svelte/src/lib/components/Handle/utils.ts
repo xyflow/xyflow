@@ -81,11 +81,11 @@ export function isValidHandle(
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = doc.querySelector(
-    `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
+    `.svelte-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
   );
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
-  const handleToCheck = handleBelow?.classList.contains('react-flow__handle')
+  const handleToCheck = handleBelow?.classList.contains('svelte-flow__handle')
     ? handleBelow
     : handleDomNode;
 

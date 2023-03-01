@@ -18,7 +18,12 @@ import { getHandleBounds, getConnectedEdges, addEdge as addEdgeUtil } from '$lib
 import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
-import { initConnectionData, initialStoreState } from './initial-store';
+import {
+  initConnectionData,
+  initialEdgeTypes,
+  initialNodeTypes,
+  initialStoreState
+} from './initial-store';
 import type { SvelteFlowStore } from './types';
 
 export const key = Symbol();
@@ -32,19 +37,26 @@ type CreateStoreProps = {
   id?: string;
 };
 
-export function createStore({
-  transform = [0, 0, 1],
-  nodeOrigin = [0, 0],
-  fitView: fitViewOnInit = false,
-  nodeTypes = {},
-  edgeTypes = {},
-  id = '1'
-}: CreateStoreProps): SvelteFlowStore {
+export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps): SvelteFlowStore {
   const store = {
     ...initialStoreState
   };
 
   let fitViewOnInitDone = false;
+
+  function setNodeTypes(nodeTypes: NodeTypes) {
+    store.nodeTypes.set({
+      ...initialNodeTypes,
+      ...nodeTypes
+    });
+  }
+
+  function setEdgeTypes(edgeTypes: EdgeTypes) {
+    store.edgeTypes.set({
+      ...initialEdgeTypes,
+      ...edgeTypes
+    });
+  }
 
   function setEdges(edges: Edge[]) {
     store.edges.set(edges);
@@ -91,7 +103,7 @@ export function createStore({
   }
 
   function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
-    const viewportNode = document?.querySelector('.react-flow__viewport');
+    const viewportNode = document?.querySelector('.svelte-flow__viewport');
 
     if (!viewportNode) {
       return;
@@ -150,6 +162,25 @@ export function createStore({
     const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
     if (d3Zoom && d3Selection) {
       d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1 / 1.2);
+    }
+  }
+
+  function setMinZoom(minZoom: number) {
+    const d3Zoom = get(store.d3).zoom;
+
+    if (d3Zoom) {
+      d3Zoom?.scaleExtent([minZoom, get(store.maxZoom)]);
+
+      store.minZoom.set(minZoom);
+    }
+  }
+
+  function setMaxZoom(maxZoom: number) {
+    const d3Zoom = get(store.d3).zoom;
+    if (d3Zoom) {
+      d3Zoom?.scaleExtent([get(store.minZoom), maxZoom]);
+
+      store.maxZoom.set(maxZoom);
     }
   }
 
@@ -309,12 +340,16 @@ export function createStore({
     // actions
     setNodes,
     setEdges,
+    setNodeTypes,
+    setEdgeTypes,
     addEdge,
     updateNodePositions,
     updateNodeDimensions,
     zoomIn,
     zoomOut,
     fitView,
+    setMinZoom,
+    setMaxZoom,
     resetSelectedElements,
     addSelectedNodes,
     panBy,

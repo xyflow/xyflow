@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext, SvelteComponentTyped } from 'svelte';
+  import { createEventDispatcher, onMount, setContext, SvelteComponentTyped } from 'svelte';
   import cc from 'classcat';
   import { type XYPosition, Position, errorMessages } from '@reactflow/system';
 
@@ -28,10 +28,9 @@
   let className: string = '';
   export { className as class };
 
-  let nodeRef: HTMLDivElement;
-
   const { nodes, transform, nodeTypes, updateNodePositions, addSelectedNodes } = useStore();
 
+  let nodeRef: HTMLDivElement;
   const nodeTypeValid = !!$nodeTypes[type!];
 
   if (!nodeTypeValid) {
@@ -44,6 +43,7 @@
   const isSelectable = true;
   const selectNodesOnDrag = false;
   const isDraggable = true;
+  const dispatch = createEventDispatcher();
 
   setContext('rf_nodeid', id);
 
@@ -55,30 +55,35 @@
     };
   });
 
+  function dispatchEvent(eventName: string) {
+    const node = $nodes.find(n => n.id === id);
+    dispatch(eventName, node);
+  }
+
   function onSelectNodeHandler(event: MouseEvent) {
     if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
       addSelectedNodes([id]);
     }
 
-    // if (onClick) {
-    //   const node = store.getState().nodeInternals.get(id)!;
-    //   onClick(event, { ...node });
-    // }
+    dispatchEvent('node:click')
   }
 </script>
 
 <div
   use:drag={{ nodeId: id, nodes, transform, updateNodePositions }}
-  class={cc(['react-flow__node', `react-flow__node-${type}`, className])}
+  data-id={id}
+  class={cc(['svelte-flow__node', `svelte-flow__node-${type}`, className])}
   class:initializing={!width && !height}
   class:dragging
   class:selected
   bind:this={nodeRef}
-  on:click={onSelectNodeHandler}
   style:transform={`translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`}
   {style}
-  data-id={id}
+  on:click={onSelectNodeHandler}
+  on:mouseenter={() => dispatchEvent('node:mouseenter')}
+  on:mouseleave={() => dispatchEvent('node:mouseleave')}
+  on:mousemove={() => dispatchEvent('node:mousemove')}
 >
   <svelte:component
     this={nodeComponent}
@@ -90,11 +95,14 @@
     isConnectable={true}
     xPos={positionAbsolute.x}
     yPos={positionAbsolute.y}
+    on:connect:start
+    on:connect
+    on:connect:end
   />
 </div>
 
 <style>
-  .react-flow__node {
+  .svelte-flow__node {
     border-radius: 3px;
     color: #222;
     text-align: center;

@@ -43,7 +43,9 @@ export function handlePointerDown({
   cancelConnection,
   isValidConnection,
   edgeUpdaterType,
-  onEdgeUpdateEnd
+  onEdgeUpdateEnd,
+  onConnectStart,
+  onConnectEnd
 }: {
   event: MouseEvent | TouchEvent;
   handleId: string | null;
@@ -61,8 +63,10 @@ export function handlePointerDown({
   panBy: (delta: XYPosition) => void;
   edgeUpdaterType?: HandleType;
   onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
+  onConnectStart: () => void;
+  onConnectEnd: () => void;
 }): void {
-  // when react-flow is used inside a shadow root we can't use document
+  // when svelte-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
   let autoPanId = 0;
   let prevClosestHandle: ConnectionHandle | null;
@@ -113,7 +117,9 @@ export function handlePointerDown({
   });
 
   // @todo add prop
+
   // onConnectStart?.(event, { nodeId, handleId, handleType });
+  onConnectStart();
 
   function onPointerMove(event: MouseEvent | TouchEvent) {
     const transform = get(transformStore);
@@ -166,7 +172,7 @@ export function handlePointerDown({
     if (connection.source !== connection.target && handleDomNode) {
       resetRecentHandle(prevActiveHandle);
       prevActiveHandle = handleDomNode;
-      // @todo: remove the old class names "react-flow__handle-" in the next major version
+      // @todo: remove the old class names "svelte-flow__handle-" in the next major version
       handleDomNode.classList.add('connecting');
       handleDomNode.classList.toggle('valid', isValid);
     }
@@ -179,8 +185,8 @@ export function handlePointerDown({
 
     // it's important to get a fresh reference from the store here
     // in order to get the latest state of onConnectEnd
-    // @todo add onConnectEnd prop
-    // getState().onConnectEnd?.(event);
+
+    onConnectEnd();
 
     if (edgeUpdaterType) {
       onEdgeUpdateEnd?.(event);

@@ -13,10 +13,10 @@ import {
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
+import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
 
 export const initConnectionData = {
   nodeId: null,
@@ -26,18 +26,32 @@ export const initConnectionData = {
   status: null
 };
 
+export const initialNodeTypes = {
+  input: InputNode,
+  output: OutputNode,
+  default: DefaultNode
+};
+
+export const initialEdgeTypes = {
+  straight: StraightEdge,
+  smoothstep: SmoothStepEdge,
+  default: BezierEdge
+};
+
 export const initialStoreState = {
+  id: writable<string | null>(null),
   nodes: writable<Node[]>([]),
   edges: writable<Edge[]>([]),
   edgesLayouted: readable<EdgeLayouted[]>([]),
   height: writable<number>(500),
   width: writable<number>(500),
-  nodeOrigin: writable<NodeOrigin>([0.5, 0.5]),
+  minZoom: writable<number>(0.5),
+  maxZoom: writable<number>(2),
+  nodeOrigin: writable<NodeOrigin>([0, 0]),
   d3: writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>({
     zoom: null,
     selection: null
   }),
-  id: writable<string | null>(null),
   dragging: writable<boolean>(false),
   selectionRect: writable<SelectionRect | null>(null),
   selectionKeyPressed: writable<boolean>(false),
@@ -45,16 +59,8 @@ export const initialStoreState = {
   deleteKeyPressed: writable<boolean>(false),
   selectionRectMode: writable<string | null>(null),
   selectionMode: writable<SelectionMode>(SelectionMode.Partial),
-  nodeTypes: writable<NodeTypes>({
-    input: InputNode,
-    output: OutputNode,
-    default: DefaultNode
-  }),
-  edgeTypes: writable<EdgeTypes>({
-    straight: StraightEdge,
-    smoothstep: SmoothStepEdge,
-    default: BezierEdge
-  }),
+  nodeTypes: writable<NodeTypes>(initialNodeTypes),
+  edgeTypes: writable<EdgeTypes>(initialEdgeTypes),
   transform: writable<Transform>([0, 0, 1]),
   connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
   domNode: writable<HTMLDivElement | null>(null),

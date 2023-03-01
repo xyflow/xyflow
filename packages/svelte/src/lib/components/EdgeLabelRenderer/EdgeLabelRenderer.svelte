@@ -4,6 +4,6 @@
   type $$Props = {};
 </script>
 
-<div use:portal={'.react-flow__edgelabel-renderer'}>
+<div use:portal={'.svelte-flow__edgelabel-renderer'}>
   <slot />
 </div>

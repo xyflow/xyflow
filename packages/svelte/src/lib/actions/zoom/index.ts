@@ -2,7 +2,8 @@
 import type { Writable } from 'svelte/store';
 import { select } from 'd3-selection';
 import { zoom as d3Zoom, zoomIdentity, type D3ZoomEvent } from 'd3-zoom';
-import type { D3SelectionInstance, D3ZoomInstance, Transform } from '@reactflow/system';
+import type { D3SelectionInstance, D3ZoomInstance, Transform, Viewport } from '@reactflow/system';
+import { clamp } from '@reactflow/utils';
 
 const isWrappedWithClass = (event: any, className: string | undefined) =>
   event.target.closest(`.${className}`);
@@ -14,7 +15,8 @@ function filter(event: any, params: ZoomParams): boolean {
   if (
     event.button === 1 &&
     event.type === 'mousedown' &&
-    (isWrappedWithClass(event, 'react-flow__node') || isWrappedWithClass(event, 'react-flow__edge'))
+    (isWrappedWithClass(event, 'svelte-flow__node') ||
+      isWrappedWithClass(event, 'svelte-flow__edge'))
   ) {
     return true;
   }
@@ -80,15 +82,27 @@ type ZoomParams = {
   transform: Writable<Transform>;
   selecting: boolean;
   d3: Writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>;
+  minZoom: number;
+  maxZoom: number;
+  initialViewport: Viewport;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
-  const { transform, d3 } = params;
-  const d3ZoomInstance = d3Zoom();
+  const { transform, d3, minZoom, maxZoom, initialViewport } = params;
+  const d3ZoomInstance = d3Zoom().scaleExtent([minZoom, maxZoom]);
   const selection = select(domNode).call(d3ZoomInstance);
+
+  const updatedTransform = zoomIdentity
+    .translate(initialViewport.x, initialViewport.y)
+    .scale(clamp(initialViewport.zoom, minZoom, maxZoom));
+
   const d3ZoomHandler = selection.on('wheel.zoom');
 
-  d3ZoomInstance.transform(selection, zoomIdentity);
+  d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+    transform.set([event.transform.x, event.transform.y, event.transform.k]);
+  });
+
+  d3ZoomInstance.transform(selection, updatedTransform);
 
   selection.on('wheel.zoom', function (event: any, d: any) {
     if (isWrappedWithClass(event, 'nowheel')) {
@@ -102,10 +116,6 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   d3.set({
     zoom: d3ZoomInstance,
     selection
-  });
-
-  d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-    transform.set([event.transform.x, event.transform.y, event.transform.k]);
   });
 
   d3ZoomInstance.filter((event: any) => filter(event, params));

@@ -16,6 +16,7 @@
   export let selected: $$Props['selected'] = false;
 </script>
 
-<Handle type="target" position={targetPosition} />
+<Handle type="target" position={targetPosition} on:connect:start on:connect on:connect:end />
 {data?.label}
-<Handle type="source" position={sourcePosition} />
+<Handle type="source" position={sourcePosition} on:connect:start on:connect on:connect:end />
+
