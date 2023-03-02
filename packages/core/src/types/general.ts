@@ -277,3 +277,7 @@ export type SelectionRect = Rect & {
 };
 
 export type OnError = (id: string, message: string) => void;
+
+export interface UpdateEdgeOptions {
+  shouldReplaceId?: boolean;
+}
