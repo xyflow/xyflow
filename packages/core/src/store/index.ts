@@ -33,8 +33,9 @@ const createRFStore = () =>
       return Array.from(get().nodeInternals.values());
     },
     setEdges: (edges: Edge[]) => {
-      const { defaultEdgeOptions = {} } = get();
-      set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+      const { defaultEdgeOptions = null, isValidConnection } = get();
+      const validEdges = isValidConnection ? edges.filter(isValidConnection) : edges;
+      set({ edges: defaultEdgeOptions ? validEdges.map((e) => ({ ...defaultEdgeOptions, ...e })) : edges });
     },
     setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
       const hasDefaultNodes = typeof nodes !== 'undefined';

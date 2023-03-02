@@ -61,6 +61,8 @@ export interface Connection {
   targetHandle: string | null;
 }
 
+export type IsValidConnection = (edge: Edge | Connection) => boolean;
+
 export type ConnectionStatus = 'valid' | 'invalid';
 
 export enum ConnectionMode {
@@ -223,6 +225,8 @@ export type ReactFlowStore = {
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   connectionRadius: number;
+
+  isValidConnection?: IsValidConnection;
 };
 
 export type ReactFlowActions = {
