@@ -12,6 +12,7 @@ import {
   Rect,
   NodeInternals,
   NodeOrigin,
+  UpdateEdgeOptions,
 } from '../types';
 import { errorMessages } from '../contants';
 
@@ -93,7 +94,7 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
   return edges.concat(edge);
 };
 
-export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[], shouldReplaceId = true): Edge[] => {
+export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[], options: UpdateEdgeOptions = { shouldReplaceId: true }): Edge[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
 
   if (!newConnection.source || !newConnection.target) {
@@ -113,7 +114,7 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge
   // Remove old edge and create the new edge with parameters of old edge.
   const edge = {
     ...rest,
-    id: shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
+    id: options.shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
     source: newConnection.source,
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,
