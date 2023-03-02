@@ -21,7 +21,6 @@
   const handleId = id || null;
   const dispatch = createEventDispatcher();
 
-
   const {
     connectionMode,
     domNode,
@@ -34,13 +33,13 @@
     updateConnection
   } = useStore();
 
-  function dispatchEvent(eventName: string) {
-    dispatch(eventName, { nodeId, handleId, type });
+  function dispatchEvent(eventName: string, params?: Connection) {
+    dispatch(eventName, params || { nodeId, handleId, type });
   }
 
   function onConnectExtended(params: Connection) {
     addEdge(params);
-    dispatchEvent('connect')
+    dispatchEvent('connect', params)
   }
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -66,12 +65,6 @@
         onConnectEnd: () => dispatchEvent('connect:end')
       });
     }
-
-    // if (isMouseTriggered) {
-    //   onMouseDown?.(event);
-    // } else {
-    //   onTouchStart?.(event);
-    // }
   }
 </script>
 

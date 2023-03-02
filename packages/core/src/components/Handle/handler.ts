@@ -59,7 +59,7 @@ export function handlePointerDown({
   let autoPanId = 0;
   let prevClosestHandle: ConnectionHandle | null;
 
-  const { x, y } = getEventPosition(event);
+  const { x, y } = getEventPosition(event.nativeEvent);
   const clickedHandle = doc?.elementFromPoint(x, y);
   const handleType = getHandleType(edgeUpdaterType, clickedHandle);
   const containerBounds = domNode?.getBoundingClientRect();
@@ -69,7 +69,7 @@ export function handlePointerDown({
   }
 
   let prevActiveHandle: Element;
-  let connectionPosition = getEventPosition(event, containerBounds);
+  let connectionPosition = getEventPosition(event.nativeEvent, containerBounds);
   let autoPanStarted = false;
   let connection: Connection | null = null;
   let isValid = false;

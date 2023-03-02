@@ -3,14 +3,12 @@
   "version": "11.5.5",
   "description": "Core system of React Flow.",
   "keywords": [
-    "react",
-    "svelte",
     "node-based UI",
     "graph",
     "diagram",
     "workflow",
-    "react-flow",
-    "svelte-flow"
+    "reactflow",
+    "svelteflow"
   ],
   "files": [
     "dist"

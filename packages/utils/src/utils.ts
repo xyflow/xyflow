@@ -1,8 +1,3 @@
-import type {
-  KeyboardEvent as ReactKeyboardEvent,
-  MouseEvent as ReactMouseEvent,
-  TouchEvent as ReactTouchEvent,
-} from 'react';
 import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect, BaseNode, BaseEdge } from '@reactflow/system';
 import { getConnectedEdgesBase } from './graph';
 
@@ -93,13 +88,9 @@ export const devWarn = (id: string, message: string) => {
   }
 };
 
-const isReactKeyboardEvent = (event: KeyboardEvent | ReactKeyboardEvent): event is ReactKeyboardEvent =>
-  'nativeEvent' in event;
-
-export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  const kbEvent = isReactKeyboardEvent(event) ? event.nativeEvent : event;
+export function isInputDOMNode(event: KeyboardEvent): boolean {
   // using composed path for handling shadow dom
-  const target = (kbEvent.composedPath?.()?.[0] || event.target) as HTMLElement;
+  const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
 
   const isInput = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) || target?.hasAttribute('contenteditable');
   // we want to be able to do a multi selection event if we are in an input field
@@ -109,14 +100,9 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
   return (isInput && !isModifierKey) || !!target?.closest('.nokey');
 }
 
-export const isMouseEvent = (
-  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent
-): event is MouseEvent | ReactMouseEvent => 'clientX' in event;
+export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
 
-export const getEventPosition = (
-  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
-  bounds?: DOMRect
-) => {
+export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRect) => {
   const isMouseTriggered = isMouseEvent(event);
   const evtX = isMouseTriggered ? event.clientX : event.touches?.[0].clientX;
   const evtY = isMouseTriggered ? event.clientY : event.touches?.[0].clientY;

@@ -73,7 +73,7 @@ const nullConnection: Connection = { source: null, target: null, sourceHandle: n
 
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
 export function isValidHandle(
-  event: MouseEvent | TouchEvent | ReactMouseEvent | ReactTouchEvent,
+  event: MouseEvent | TouchEvent,
   handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null,
   connectionMode: ConnectionMode,
   fromNodeId: string,
