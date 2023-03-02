@@ -62,7 +62,7 @@
   $: hasActiveSelection = elementsSelectable && (isSelecting || $selectionRectMode === 'user');
 
   function onClick(event: MouseEvent) {
-    dispatch('pane:click');
+    dispatch('pane:click', event);
 
     resetSelectedElements();
     selectionRectMode.set(null);
@@ -164,7 +164,7 @@
     //   return;
     // }
 
-    dispatch('pane:contextmenu');
+    dispatch('pane:contextmenu', event);
   };
 
 </script>

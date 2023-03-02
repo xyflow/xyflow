@@ -28,11 +28,12 @@
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
+  export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
+  export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined
+  export let style: $$Props['style'] = undefined;
   let className: $$Props['class'] = undefined;
   export { className as class };
-  const dispatch = createEventDispatcher<{ 'on:nodeclick': number }>();
-
 
   let domNode: HTMLDivElement;
 
@@ -40,7 +41,6 @@
     fitView,
     nodeTypes
   });
-
 
   setContext(key, {
     getStore: () => store
@@ -66,19 +66,15 @@
     const updatableProps = {
       id,
       connectionLineType,
+      connectionRadius,
+      defaultEdgeOptions
     };
 
     Object.keys(updatableProps).forEach(prop => {
       // @ts-ignore
       if (updatableProps[prop] !== undefined) {
         // @ts-ignore
-        if (!store[prop]) {
-          // @ts-ignore
-          console.warn(store[prop], prop, 'ups')
-        } else {
-        // @ts-ignore
         store[prop].set(updatableProps[prop]);
-        }
       }
     })
   }
@@ -111,9 +107,10 @@
 </script>
 
 <div
+  bind:this={domNode}
+  style={style}
   class={cc(['svelte-flow', className])}
   data-testid="rf__wrapper"
-  bind:this={domNode}
 >
   <KeyHandler {selectionKey} {deleteKey} />
   <Zoom {initialViewport}>

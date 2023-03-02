@@ -3,7 +3,8 @@ import type {
   MouseEvent as ReactMouseEvent,
   TouchEvent as ReactTouchEvent,
 } from 'react';
-import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect, BaseNode } from '@reactflow/system';
+import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect, BaseNode, BaseEdge } from '@reactflow/system';
+import { getConnectedEdgesBase } from './graph';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
@@ -130,3 +131,43 @@ export const infiniteExtent: CoordinateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
   [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
 ];
+
+// helper function to get arrays of nodes and edges that can be deleted
+// you can pass in a list of nodes and edges that should be deleted
+// and the function only returns elements that are deletable and also handles connected nodes and child nodes
+export function getElementsToRemove<NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>({
+  nodesToRemove,
+  edgesToRemove,
+  nodes,
+  edges,
+}: {
+  nodesToRemove: Partial<NodeType>[];
+  edgesToRemove: Partial<EdgeType>[];
+  nodes: NodeType[];
+  edges: EdgeType[];
+}): {
+  matchingNodes: NodeType[];
+  matchingEdges: EdgeType[];
+} {
+  const nodeIds = nodesToRemove.map((node) => node.id);
+  const edgeIds = edgesToRemove.map((edge) => edge.id);
+
+  const matchingNodes = nodes.reduce<NodeType[]>((res, node) => {
+    const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
+    const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
+    if (deletable && (nodeIds.includes(node.id) || parentHit)) {
+      res.push(node);
+    }
+
+    return res;
+  }, []);
+  const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
+  const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
+  const connectedEdges = getConnectedEdgesBase<NodeType, EdgeType>(matchingNodes, deletableEdges);
+  const matchingEdges = [...initialHitEdges, ...connectedEdges];
+
+  return {
+    matchingEdges,
+    matchingNodes,
+  };
+}

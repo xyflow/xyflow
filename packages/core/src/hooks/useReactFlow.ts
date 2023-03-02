@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { getOverlappingArea, isRectObject, nodeToRect } from '@reactflow/utils';
+import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect } from '@reactflow/utils';
 import type { Rect } from '@reactflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../hooks/useStore';
-import { getConnectedEdges } from '../utils';
 import type {
   ReactFlowInstance,
   Instance,
@@ -16,6 +15,7 @@ import type {
   EdgeRemoveChange,
   NodeChange,
   Node,
+  Edge,
 } from '../types';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -127,38 +127,23 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       onNodesChange,
       onEdgesChange,
     } = store.getState();
-    const nodeIds = (nodesDeleted || []).map((node) => node.id);
-    const edgeIds = (edgesDeleted || []).map((edge) => edge.id);
-    const nodesToRemove = getNodes().reduce<Node[]>((res, node) => {
-      const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
-      const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
-      if (deletable && (nodeIds.includes(node.id) || parentHit)) {
-        res.push(node);
-      }
+    const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+      nodesToRemove: nodesDeleted || [],
+      edgesToRemove: edgesDeleted || [],
+      nodes: getNodes(),
+      edges,
+    });
 
-      return res;
-    }, []);
-    const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
-    const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
-    if (nodesToRemove || initialHitEdges) {
-      const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
-      const edgesToRemove = [...initialHitEdges, ...connectedEdges];
-      const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
-        if (!res.includes(edge.id)) {
-          res.push(edge.id);
-        }
-        return res;
-      }, []);
-
+    if (matchingNodes.length || matchingEdges.length) {
       if (hasDefaultEdges || hasDefaultNodes) {
         if (hasDefaultEdges) {
           store.setState({
-            edges: edges.filter((e) => !edgeIdsToRemove.includes(e.id)),
+            edges: edges.filter((e) => !matchingEdges.some((mE) => mE.id === e.id)),
           });
         }
 
         if (hasDefaultNodes) {
-          nodesToRemove.forEach((node) => {
+          matchingNodes.forEach((node) => {
             nodeInternals.delete(node.id);
           });
 
@@ -168,24 +153,24 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         }
       }
 
-      if (edgeIdsToRemove.length > 0) {
-        onEdgesDelete?.(edgesToRemove);
+      if (matchingEdges.length > 0) {
+        onEdgesDelete?.(matchingEdges);
 
         if (onEdgesChange) {
           onEdgesChange(
-            edgeIdsToRemove.map((id) => ({
-              id,
+            matchingEdges.map((edge) => ({
+              id: edge.id,
               type: 'remove',
             }))
           );
         }
       }
 
-      if (nodesToRemove.length > 0) {
-        onNodesDelete?.(nodesToRemove);
+      if (matchingNodes.length > 0) {
+        onNodesDelete?.(matchingNodes as Node[]);
 
         if (onNodesChange) {
-          const nodeChanges: NodeChange[] = nodesToRemove.map((n) => ({ id: n.id, type: 'remove' }));
+          const nodeChanges: NodeChange[] = matchingNodes.map((node) => ({ id: node.id, type: 'remove' }));
           onNodesChange(nodeChanges);
         }
       }

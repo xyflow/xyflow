@@ -1,4 +1,10 @@
-import type { ConnectionLineType, NodeOrigin, Viewport } from '@reactflow/system';
+import type {
+  Connection,
+  ConnectionLineType,
+  NodeOrigin,
+  OnConnectStartParams,
+  Viewport
+} from '@reactflow/system';
 
 import type {
   Edge,
@@ -24,6 +30,7 @@ export type SvelteFlowProps = {
   maxZoom?: number;
   initialViewport?: Viewport;
   defaultEdgeOptions?: DefaultEdgeOptions;
+  connectionRadius?: number;
 
   class?: string;
   style?: string;
@@ -37,9 +44,9 @@ export type SvelteFlowEvents = {
   'node:mousemove': CustomEvent<Node>;
   'node:mouseleave': CustomEvent<Node>;
   'edge:click': CustomEvent<Edge>;
-  'connect:start': CustomEvent<number>;
-  connect: CustomEvent<number>;
-  'connect:end': CustomEvent<number>;
+  'connect:start': CustomEvent<OnConnectStartParams>;
+  connect: CustomEvent<Connection>;
+  'connect:end': CustomEvent<OnConnectStartParams>;
   'pane:click': CustomEvent;
   'pane:contextmenu': CustomEvent;
 };

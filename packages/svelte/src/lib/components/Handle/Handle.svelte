@@ -40,9 +40,6 @@
 
   function onConnectExtended(params: Connection) {
     addEdge(params);
-    // @todo add props
-    // onConnectAction?.(edgeParams);
-    // onConnect?.(edgeParams);
     dispatchEvent('connect')
   }
 

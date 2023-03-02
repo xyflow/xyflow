@@ -12,7 +12,12 @@ import {
   type XYPosition,
   type CoordinateExtent
 } from '@reactflow/system';
-import { fitView as fitViewUtil, getD3Transition, getDimensions } from '@reactflow/utils';
+import {
+  fitView as fitViewUtil,
+  getD3Transition,
+  getDimensions,
+  getElementsToRemove
+} from '@reactflow/utils';
 
 import { getHandleBounds, getConnectedEdges, addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
@@ -59,12 +64,16 @@ export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps
   }
 
   function setEdges(edges: Edge[]) {
-    store.edges.set(edges);
+    const defaultEdgeOptions = get(store.defaultEdgeOptions);
+    const nextEdges = defaultEdgeOptions
+      ? edges.map((e) => ({ ...defaultEdgeOptions, ...e }))
+      : edges;
+    store.edges.set(nextEdges);
   }
 
   function addEdge(edgeParams: Edge | Connection) {
     const edges = get(store.edges);
-    store.edges.set(addEdgeUtil(edgeParams, edges));
+    setEdges(addEdgeUtil(edgeParams, edges));
   }
 
   function setNodes(nodes: Node[]) {
@@ -229,38 +238,20 @@ export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps
       const selectedNodes = nodes.filter((node) => node.selected);
       const selectedEdges = edges.filter((edge) => edge.selected);
 
-      // @todo can we put this stuff into @reactflow/utils?
-      const nodeIds = selectedNodes.map((node) => node.id);
-      const edgeIds = selectedEdges.map((edge) => edge.id);
-      const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
-        const parentHit =
-          !nodeIds.includes(node.id) &&
-          node.parentNode &&
-          res.find((n) => n.id === node.parentNode);
-        const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
-        if (deletable && (nodeIds.includes(node.id) || parentHit)) {
-          res.push(node);
-        }
+      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+        nodesToRemove: selectedNodes,
+        edgesToRemove: selectedEdges,
+        nodes,
+        edges
+      });
 
-        return res;
-      }, []);
-      const deletableEdges = edges.filter((e) =>
-        typeof e.deletable === 'boolean' ? e.deletable : true
-      );
-      const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
-
-      if (nodesToRemove || initialHitEdges) {
-        const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
-        const edgesToRemove = [...initialHitEdges, ...connectedEdges];
-        const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
-          if (!res.includes(edge.id)) {
-            res.push(edge.id);
-          }
-          return res;
-        }, []);
-
-        store.nodes.update((nds) => nds.filter((node) => !nodeIds.includes(node.id)));
-        store.edges.update((eds) => eds.filter((edge) => !edgeIdsToRemove.includes(edge.id)));
+      if (matchingNodes.length || matchingEdges.length) {
+        store.nodes.update((nds) =>
+          nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
+        );
+        store.edges.update((eds) =>
+          eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
+        );
       }
     }
   });
