@@ -65,7 +65,14 @@
       type: 'default',
       data: { label: 'Styled with class' },
       class: 'custom-style',
-      position: { x: 150, y: 150 }
+      position: { x: 150, y: 150 },
+    },
+    {
+      id: 'D',
+      type: 'default',
+      data: { label: 'Not draggable' },
+      position: { x: 150, y: 200 },
+      draggable: false
     },
     {
       id: '3',

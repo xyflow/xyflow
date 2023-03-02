@@ -19,7 +19,7 @@ import {
   getElementsToRemove
 } from '@reactflow/utils';
 
-import { getHandleBounds, getConnectedEdges, addEdge as addEdgeUtil } from '$lib/utils';
+import { getHandleBounds, addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
@@ -77,11 +77,14 @@ export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps
   }
 
   function setNodes(nodes: Node[]) {
+    const defaultNodeOptions = get(store.defaultNodeOptions) || {};
+
     store.nodes.update((currentNodes) => {
       const nextNodes = nodes.map((n) => {
         const currentNode = currentNodes.find((cn) => cn.id === n.id) || {};
 
         return {
+          ...defaultNodeOptions,
           ...currentNode,
           ...n,
           positionAbsolute: n.position

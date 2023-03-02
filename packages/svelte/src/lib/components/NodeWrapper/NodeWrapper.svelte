@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount, setContext, SvelteComponentTyped } from 'svelte';
   import cc from 'classcat';
-  import { type XYPosition, Position, errorMessages } from '@reactflow/system';
+  import { errorMessages } from '@reactflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
@@ -14,16 +14,17 @@
   export let id: NodeWrapperProps['id'];
   export let data: NodeWrapperProps['data'] = {};
   export let selected: NodeWrapperProps['selected'] = false;
-  export let positionAbsolute: XYPosition = { x: 0, y: 0 };
-  export let position: XYPosition = { x: 0, y: 0 };
+  export let draggable: NodeWrapperProps['draggable'] = undefined;
   export let dragging: boolean = false;
   export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
   export let style: NodeWrapperProps['style'] = undefined;
   export let width: NodeWrapperProps['width'] = undefined;
   export let height: NodeWrapperProps['height'] = undefined;
   export let type: NodeWrapperProps['type'] = 'default';
-  export let sourcePosition: NodeWrapperProps['sourcePosition'] = Position.Bottom
-  export let targetPosition: NodeWrapperProps['targetPosition'] = Position.Top;
+  export let positionAbsolute: NodeWrapperProps['positionAbsolute'] = undefined;
+  export let positionOrigin: NodeWrapperProps['positionOrigin'] = undefined;
+  export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
+  export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
 
   let className: string = '';
   export { className as class };
@@ -42,7 +43,6 @@
     $nodeTypes[type!] || DefaultNode;
   const isSelectable = true;
   const selectNodesOnDrag = false;
-  const isDraggable = true;
   const dispatch = createEventDispatcher();
 
   setContext('rf_nodeid', id);
@@ -61,7 +61,7 @@
   }
 
   function onSelectNodeHandler(event: MouseEvent) {
-    if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
+    if (isSelectable && (!selectNodesOnDrag || !draggable)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
       addSelectedNodes([id]);
     }
@@ -72,13 +72,14 @@
 
 <div
   use:drag={{ nodeId: id, nodes, transform, updateNodePositions }}
+  bind:this={nodeRef}
   data-id={id}
   class={cc(['svelte-flow__node', `svelte-flow__node-${type}`, className])}
   class:initializing={!width && !height}
   class:dragging
   class:selected
-  bind:this={nodeRef}
-  style:transform={`translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`}
+  class:draggable
+  style:transform={`translate(${positionOrigin?.x ?? 0}px, ${positionOrigin?.y ?? 0}px)`}
   {style}
   on:click={onSelectNodeHandler}
   on:mouseenter={() => dispatchEvent('node:mouseenter')}
@@ -93,8 +94,8 @@
     {sourcePosition}
     {targetPosition}
     isConnectable={true}
-    xPos={positionAbsolute.x}
-    yPos={positionAbsolute.y}
+    xPos={positionAbsolute?.x ?? 0}
+    yPos={positionAbsolute?.y ?? 0}
     on:connect:start
     on:connect
     on:connect:end
@@ -111,9 +112,13 @@
     border-color: #1a192b;
     background-color: white;
     position: absolute;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .draggable {
     cursor: grab;
     pointer-events: all;
-    user-select: none;
   }
 
   .selected {

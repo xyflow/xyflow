@@ -23,7 +23,8 @@ import type {
   NodeTypes,
   EdgeTypes,
   EdgeLayouted,
-  DefaultEdgeOptions
+  DefaultEdgeOptions,
+  DefaultNodeOptions
 } from '$lib/types';
 
 export const initConnectionData = {
@@ -60,6 +61,7 @@ export const initialStoreState = {
     zoom: null,
     selection: null
   }),
+  defaultNodeOptions: writable<DefaultNodeOptions | null>(null),
   defaultEdgeOptions: writable<DefaultEdgeOptions | null>(null),
   dragging: writable<boolean>(false),
   selectionRect: writable<SelectionRect | null>(null),

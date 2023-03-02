@@ -84,7 +84,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (isInputDOMNode(event)) {
+      if (isInputDOMNode(event.nativeEvent)) {
         return;
       }
 

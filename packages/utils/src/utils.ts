@@ -1,4 +1,13 @@
-import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect, BaseNode, BaseEdge } from '@reactflow/system';
+import type {
+  Dimensions,
+  XYPosition,
+  CoordinateExtent,
+  Box,
+  Rect,
+  BaseNode,
+  BaseEdge,
+  NodeOrigin,
+} from '@reactflow/system';
 import { getConnectedEdgesBase } from './graph';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
@@ -157,3 +166,30 @@ export function getElementsToRemove<NodeType extends BaseNode = BaseNode, EdgeTy
     matchingNodes,
   };
 }
+
+export const getPositionWithOrigin = ({
+  x,
+  y,
+  width,
+  height,
+  origin,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  origin: NodeOrigin;
+}): XYPosition => {
+  if (!width || !height) {
+    return { x, y };
+  }
+
+  if (origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
+    return { x, y };
+  }
+
+  return {
+    x: x - width * origin[0],
+    y: y - height * origin[1],
+  };
+};

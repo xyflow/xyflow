@@ -1,5 +1,5 @@
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
-import type { HandleType, XYPosition } from '@reactflow/system';
+import type { HandleProps, HandleType, XYPosition } from '@reactflow/system';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -11,4 +11,9 @@ export type ConnectionData = {
   handleId: string | null;
   handleType: HandleType | null;
   status: string | null;
+};
+
+export type HandleComponentProps = HandleProps & {
+  class?: string;
+  style?: string;
 };

@@ -3,8 +3,10 @@
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
+    import { getPositionWithOrigin } from '@reactflow/utils';
+    import { Position } from '@reactflow/system';
 
-  const { nodes, updateNodeDimensions } = useStore();
+  const { nodes, nodeOrigin, updateNodeDimensions } = useStore();
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
       ? null
@@ -21,13 +23,32 @@
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
-
 </script>
 
 <div class="svelte-flow__nodes">
   {#each $nodes as node (node.id)}
+    {@const posOrigin = getPositionWithOrigin({
+      x: node.positionAbsolute?.x ?? 0,
+      y: node.positionAbsolute?.y ?? 0,
+      width: node.width ?? 0,
+      height: node.height ?? 0,
+      origin: $nodeOrigin
+    })}
     <NodeWrapper
-      {...node}
+      id={node.id}
+      data={node.data}
+      selected={node.selected}
+      draggable={node.draggable || node.draggable === undefined}
+      positionAbsolute={node.positionAbsolute}
+      positionOrigin={posOrigin}
+      width={node.width}
+      height={node.height}
+      style={node.style}
+      class={node.class}
+      type={node.type}
+      sourcePosition={node.sourcePosition}
+      targetPosition={node.targetPosition}
+      dragging={node.dragging}
       {resizeObserver}
       on:node:click
       on:node:mouseenter

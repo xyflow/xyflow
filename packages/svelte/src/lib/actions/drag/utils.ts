@@ -37,7 +37,10 @@ export function hasSelector(target: Element, selector: string, domNode: Element)
 export function getDragItems(nodes: Node[], mousePos: XYPosition, nodeId?: string): NodeDragItem[] {
   return nodes
     .filter(
-      (n) => (n.selected || n.id === nodeId) && (!n.parentNode || !isParentSelected(n, nodes))
+      (n) =>
+        (n.selected || n.id === nodeId) &&
+        (n.draggable || n.draggable === undefined) &&
+        (!n.parentNode || !isParentSelected(n, nodes))
     )
     .map((n) => ({
       id: n.id,
