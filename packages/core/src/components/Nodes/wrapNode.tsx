@@ -71,9 +71,13 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const onSelectNodeHandler = (event: MouseEvent) => {
       if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
         // this handler gets called within the drag start event when selectNodesOnDrag=true
+        const { nodeInternals } = store.getState();
+        const node = nodeInternals.get(id)!;
+        const unselect = event.ctrlKey ? node.selected : false;
         handleNodeClick({
           id,
           store,
+          unselect,
         });
       }
 
