@@ -15,6 +15,7 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
+  const resetSelectionKeyPressed = useKeyPress('Escape');
 
   useEffect(() => {
     if (deleteKeyPressed) {
@@ -29,4 +30,13 @@ export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   useEffect(() => {
     store.setState({ multiSelectionActive: multiSelectionKeyPressed });
   }, [multiSelectionKeyPressed]);
+
+  useEffect(() => {
+    const { getNodes } = store.getState();
+    console.log('esc before reset', getNodes());
+    store.getState().resetSelectedElements();
+    const selectedNodes = getNodes().filter((node) => node.selected);
+    console.log('esc after reset', selectedNodes);
+    store.setState({ nodesSelectionActive: false });
+  }, [resetSelectionKeyPressed]);
 };

@@ -87,7 +87,7 @@ export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 export const internalsSymbol = Symbol.for('internals');
 
 // used for a11y key board controls for nodes and edges
-export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
+export const elementSelectionKeys = ['Enter', ' '];
 
 export const devWarn = (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {

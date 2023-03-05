@@ -89,14 +89,10 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       }
 
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
-        const unselect = event.key === 'Escape';
-        if (unselect) {
-          nodeRef.current?.blur();
-        }
         handleNodeClick({
           id,
           store,
-          unselect,
+          unselect: true,
         });
       } else if (
         !disableKeyboardA11y &&

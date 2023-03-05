@@ -138,15 +138,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
-        const { unselectNodesAndEdges, addSelectedEdges, edges } = store.getState();
-        const unselect = event.key === 'Escape';
-
-        if (unselect) {
-          edgeRef.current?.blur();
-          unselectNodesAndEdges({ edges: [edges.find((e) => e.id === id)!] });
-        } else {
-          addSelectedEdges([id]);
-        }
+        const { addSelectedEdges } = store.getState();
+        addSelectedEdges([id]);
       }
     };
 
