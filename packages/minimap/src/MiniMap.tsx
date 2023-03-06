@@ -161,7 +161,12 @@ function MiniMap({
     : undefined;
 
   return (
-    <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
+    <Panel
+      position={position}
+      style={style}
+      className={cc(['react-flow__minimap', className])}
+      data-testid="rf__minimap"
+    >
       <svg
         width={elementWidth}
         height={elementHeight}

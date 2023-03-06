@@ -68,7 +68,12 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   };
 
   return (
-    <Panel className={cc(['react-flow__controls', className])} position={position} style={style}>
+    <Panel
+      className={cc(['react-flow__controls', className])}
+      position={position}
+      style={style}
+      data-testid="rf__controls"
+    >
       {showZoom && (
         <>
           <ControlButton
