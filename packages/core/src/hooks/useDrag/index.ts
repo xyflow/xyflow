@@ -153,6 +153,7 @@ function useDrag({
               handleNodeClick({
                 id: nodeId,
                 store,
+                nodeRef: nodeRef as RefObject<HTMLDivElement>,
               });
             }
 
