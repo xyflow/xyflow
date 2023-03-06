@@ -1,5 +1,5 @@
 ---
-'@reactflow/core': major
+'@reactflow/core': patch
 ---
 
 track modifier keys on useKeypress
