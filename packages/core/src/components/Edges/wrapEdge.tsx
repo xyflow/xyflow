@@ -11,6 +11,8 @@ import { getMouseHandler } from './utils';
 import { elementSelectionKeys } from '../../utils';
 import type { EdgeProps, WrapEdgeProps, Connection } from '../../types';
 
+const alwaysValidConnection = () => true;
+
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
     id,
@@ -94,12 +96,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         return;
       }
 
+      const { edges, isValidConnection: isValidConnectionStore } = store.getState();
       const nodeId = isSourceHandle ? target : source;
       const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
       const handleType = isSourceHandle ? 'target' : 'source';
-      const isValidConnection = () => true;
+      const isValidConnection = isValidConnectionStore || alwaysValidConnection;
+
       const isTarget = isSourceHandle;
-      const edge = store.getState().edges.find((e) => e.id === id)!;
+      const edge = edges.find((e) => e.id === id)!;
 
       setUpdating(true);
       onEdgeUpdateStart?.(event, edge, handleType);
