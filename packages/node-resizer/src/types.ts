@@ -31,6 +31,7 @@ export type NodeResizerProps = {
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
+  keepAspectRatio?: boolean;
   shouldResize?: ShouldResize;
   onResizeStart?: OnResizeStart;
   onResize?: OnResize;
@@ -48,7 +49,17 @@ export enum ResizeControlVariant {
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
-  'nodeId' | 'color' | 'minWidth' | 'minHeight' | 'maxWidth' | 'maxHeight' | 'shouldResize' | 'onResizeStart' | 'onResize' | 'onResizeEnd'
+  | 'nodeId'
+  | 'color'
+  | 'minWidth'
+  | 'minHeight'
+  | 'maxWidth'
+  | 'maxHeight'
+  | 'keepAspectRatio'
+  | 'shouldResize'
+  | 'onResizeStart'
+  | 'onResize'
+  | 'onResizeEnd'
 > & {
   position?: ControlPosition;
   variant?: ResizeControlVariant;
