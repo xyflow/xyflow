@@ -9,6 +9,7 @@ import {
   NodeDimensionChange,
   useNodeId,
   NodePositionChange,
+  clamp,
 } from '@reactflow/core';
 
 import { ResizeDragEvent, ResizeControlProps, ResizeControlLineProps, ResizeControlVariant } from './types';
@@ -20,6 +21,7 @@ const initStartValues = {
   ...initPrevValues,
   pointerX: 0,
   pointerY: 0,
+  aspectRatio: 1,
 };
 
 function ResizeControl({
@@ -32,6 +34,9 @@ function ResizeControl({
   color,
   minWidth = 10,
   minHeight = 10,
+  maxWidth = Number.MAX_VALUE,
+  maxHeight = Number.MAX_VALUE,
+  keepAspectRatio = false,
   shouldResize,
   onResizeStart,
   onResize,
@@ -53,6 +58,12 @@ function ResizeControl({
     }
 
     const selection = select(resizeControlRef.current);
+
+    const enableX = controlPosition.includes('right') || controlPosition.includes('left');
+    const enableY = controlPosition.includes('bottom') || controlPosition.includes('top');
+    const invertX = controlPosition.includes('left');
+    const invertY = controlPosition.includes('top');
+
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
         const node = store.getState().nodeInternals.get(id);
@@ -69,6 +80,7 @@ function ResizeControl({
           ...prevValues.current,
           pointerX: xSnapped,
           pointerY: ySnapped,
+          aspectRatio: prevValues.current.width / prevValues.current.height,
         };
 
         onResizeStart?.(event, { ...prevValues.current });
@@ -77,10 +89,6 @@ function ResizeControl({
         const { nodeInternals, triggerNodeChanges } = store.getState();
         const { xSnapped, ySnapped } = getPointerPosition(event);
         const node = nodeInternals.get(id);
-        const enableX = controlPosition.includes('right') || controlPosition.includes('left');
-        const enableY = controlPosition.includes('bottom') || controlPosition.includes('top');
-        const invertX = controlPosition.includes('left');
-        const invertY = controlPosition.includes('top');
 
         if (node) {
           const changes: NodeChange[] = [];
@@ -91,13 +99,43 @@ function ResizeControl({
             height: startHeight,
             x: startNodeX,
             y: startNodeY,
+            aspectRatio,
           } = startValues.current;
 
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues.current;
+
           const distX = Math.floor(enableX ? xSnapped - startX : 0);
           const distY = Math.floor(enableY ? ySnapped - startY : 0);
-          const width = Math.max(startWidth + (invertX ? -distX : distX), minWidth);
-          const height = Math.max(startHeight + (invertY ? -distY : distY), minHeight);
+
+          let width = clamp(startWidth + (invertX ? -distX : distX), minWidth, maxWidth);
+          let height = clamp(startHeight + (invertY ? -distY : distY), minHeight, maxHeight);
+
+          if (keepAspectRatio) {
+            const nextAspectRatio = width / height;
+            const isDiagonal = enableX && enableY;
+            const isHorizontal = enableX && !enableY;
+            const isVertical = enableY && !enableX;
+
+            width = (nextAspectRatio <= aspectRatio && isDiagonal) || isVertical ? height * aspectRatio : width;
+            height = (nextAspectRatio > aspectRatio && isDiagonal) || isHorizontal ? width / aspectRatio : height;
+
+            if (width >= maxWidth) {
+              width = maxWidth;
+              height = maxWidth / aspectRatio;
+            } else if (width <= minWidth) {
+              width = minWidth;
+              height = minWidth / aspectRatio;
+            }
+
+            if (height >= maxHeight) {
+              height = maxHeight;
+              width = maxHeight * aspectRatio;
+            } else if (height <= minHeight) {
+              height = minHeight;
+              width = minHeight * aspectRatio;
+            }
+          }
+
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
@@ -183,7 +221,7 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [id, controlPosition, minWidth, minHeight, getPointerPosition]);
+  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, keepAspectRatio, getPointerPosition]);
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
