@@ -45,7 +45,14 @@ const initialNodes: Node[] = [
   {
     id: '1b',
     type: 'defaultResizer',
-    data: { label: 'default resizer with initial size and aspect ratio', keepAspectRatio: true },
+    data: {
+      label: 'default resizer with initial size and aspect ratio',
+      keepAspectRatio: true,
+      minWidth: 100,
+      minHeight: 60,
+      maxWidth: 400,
+      maxHeight: 400,
+    },
     position: { x: 250, y: 0 },
     style: {
       width: 174,
@@ -82,7 +89,13 @@ const initialNodes: Node[] = [
   {
     id: '4',
     type: 'horizontalResizer',
-    data: { label: 'horizontal resizer with aspect ratio', keepAspectRatio: true },
+    data: {
+      label: 'horizontal resizer with aspect ratio',
+      keepAspectRatio: true,
+      minHeight: 20,
+      maxHeight: 80,
+      maxWidth: 300,
+    },
     position: { x: 250, y: 300 },
     style: { ...nodeStyle },
   },

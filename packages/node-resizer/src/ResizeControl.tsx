@@ -118,6 +118,22 @@ function ResizeControl({
 
             width = (nextAspectRatio <= aspectRatio && isDiagonal) || isVertical ? height * aspectRatio : width;
             height = (nextAspectRatio > aspectRatio && isDiagonal) || isHorizontal ? width / aspectRatio : height;
+
+            if (width >= maxWidth) {
+              width = maxWidth;
+              height = maxWidth / aspectRatio;
+            } else if (width <= minWidth) {
+              width = minWidth;
+              height = minWidth / aspectRatio;
+            }
+
+            if (height >= maxHeight) {
+              height = maxHeight;
+              width = maxHeight * aspectRatio;
+            } else if (height <= minHeight) {
+              height = minHeight;
+              width = minHeight * aspectRatio;
+            }
           }
 
           const isWidthChange = width !== prevWidth;
