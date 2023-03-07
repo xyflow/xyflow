@@ -16,16 +16,7 @@ import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
-import type {
-  Node,
-  Edge,
-  ConnectionData,
-  NodeTypes,
-  EdgeTypes,
-  EdgeLayouted,
-  DefaultEdgeOptions,
-  DefaultNodeOptions
-} from '$lib/types';
+import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
 
 export const initConnectionData = {
   nodeId: null,
@@ -49,8 +40,6 @@ export const initialEdgeTypes = {
 
 export const initialStoreState = {
   id: writable<string | null>(null),
-  nodes: writable<Node[]>([]),
-  edges: writable<Edge[]>([]),
   edgesLayouted: readable<EdgeLayouted[]>([]),
   height: writable<number>(500),
   width: writable<number>(500),
@@ -61,8 +50,6 @@ export const initialStoreState = {
     zoom: null,
     selection: null
   }),
-  defaultNodeOptions: writable<DefaultNodeOptions | null>(null),
-  defaultEdgeOptions: writable<DefaultEdgeOptions | null>(null),
   dragging: writable<boolean>(false),
   selectionRect: writable<SelectionRect | null>(null),
   selectionKeyPressed: writable<boolean>(false),

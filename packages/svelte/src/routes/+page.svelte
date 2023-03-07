@@ -5,7 +5,9 @@
     BackgroundVariant,
     Minimap,
     Panel,
-    type Node, type Edge, type NodeTypes
+    createNodes,
+    createEdges,
+    type NodeTypes
   } from '../lib/index';
   import CustomNode from '../customnodes/Custom.svelte';
 
@@ -47,7 +49,7 @@
   //   }
   // }
 
-  let nodes: Node<{ label: string }>[] = [
+  let nodes = createNodes([
     {
       id: '1',
       type: 'input',
@@ -93,9 +95,9 @@
       data: { label: 'Custom Node' },
       position: { x: 150, y: 300 }
     }
-  ];
+  ]);
 
-  let edges: Edge[] = [
+  let edges = createEdges([
     {
       id: '1-2',
       type: 'default',
@@ -114,28 +116,35 @@
       type: 'default',
       source: '2',
       target: '4',
-      animated: true
     }
-  ];
+  ], { animated: true });
 
   function updateNode() {
-    nodes[0].position = { x: nodes[0].position.x + 20, y: nodes[0].position.y };
+    nodes.update(nds => nds.map(n => {
+      if (n.id === '1') {
+        return {
+          ...n,
+          position: { x: n.position.x + 20, y: n.position.y }
+        }
+      }
+
+      return n;
+    }));
   }
 
-  // $: {
-  //   console.log('nodes changed', nodes)
-  // }
+  $: {
+    console.log('nodes changed', $nodes)
+  }
 </script>
 
 <SvelteFlow
-  bind:nodes
-  bind:edges
+  {nodes}
+  {edges}
   {nodeTypes}
   fitView
   minZoom={0.1}
   maxZoom={2.5}
   initialViewport={{ x: 100, y: 100, zoom: 2 }}
-  defaultEdgeOptions={{ animated: true }}
   on:node:click={(event) => console.log('on node click', event)}
   on:node:mouseenter={(event) => console.log('on node enter', event)} 
   on:node:mouseleave={(event) => console.log('on node leave', event)}

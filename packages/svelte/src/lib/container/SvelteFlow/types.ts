@@ -14,10 +14,12 @@ import type {
   EdgeTypes,
   DefaultEdgeOptions
 } from '$lib/types';
+import type { Writable } from 'svelte/store';
+import type { createNodes } from '$lib/utils';
 
 export type SvelteFlowProps = {
-  nodes: Node[];
-  edges: Edge[];
+  nodes: ReturnType<typeof createNodes>;
+  edges: Writable<Edge[]>;
 
   id?: string;
   nodeTypes?: NodeTypes;

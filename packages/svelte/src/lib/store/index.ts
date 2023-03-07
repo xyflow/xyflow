@@ -30,10 +30,13 @@ import {
   initialStoreState
 } from './initial-store';
 import type { SvelteFlowStore } from './types';
+import type { SvelteFlowProps } from '$lib/container/SvelteFlow/types';
 
 export const key = Symbol();
 
 type CreateStoreProps = {
+  nodes: SvelteFlowProps['nodes'];
+  edges: SvelteFlowProps['edges'];
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
   transform?: Transform;
@@ -42,9 +45,15 @@ type CreateStoreProps = {
   id?: string;
 };
 
-export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps): SvelteFlowStore {
+export function createStore({
+  fitView: fitViewOnInit = false,
+  nodes,
+  edges
+}: CreateStoreProps): SvelteFlowStore {
   const store = {
-    ...initialStoreState
+    ...initialStoreState,
+    nodes,
+    edges
   };
 
   let fitViewOnInitDone = false;
@@ -63,36 +72,9 @@ export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps
     });
   }
 
-  function setEdges(edges: Edge[]) {
-    const defaultEdgeOptions = get(store.defaultEdgeOptions);
-    const nextEdges = defaultEdgeOptions
-      ? edges.map((e) => ({ ...defaultEdgeOptions, ...e }))
-      : edges;
-    store.edges.set(nextEdges);
-  }
-
   function addEdge(edgeParams: Edge | Connection) {
     const edges = get(store.edges);
-    setEdges(addEdgeUtil(edgeParams, edges));
-  }
-
-  function setNodes(nodes: Node[]) {
-    const defaultNodeOptions = get(store.defaultNodeOptions) || {};
-
-    store.nodes.update((currentNodes) => {
-      const nextNodes = nodes.map((n) => {
-        const currentNode = currentNodes.find((cn) => cn.id === n.id) || {};
-
-        return {
-          ...defaultNodeOptions,
-          ...currentNode,
-          ...n,
-          positionAbsolute: n.position
-        };
-      });
-
-      return nextNodes;
-    });
+    store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
   function updateNodePositions(nodeDragItems: NodeDragItem[], dragging = false) {
@@ -332,8 +314,6 @@ export function createStore({ fitView: fitViewOnInit = false }: CreateStoreProps
     connectionPath: getConnectionPath(store),
 
     // actions
-    setNodes,
-    setEdges,
     setNodeTypes,
     setEdgeTypes,
     addEdge,

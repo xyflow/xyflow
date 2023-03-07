@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext, onMount, createEventDispatcher } from 'svelte';
+  import { setContext, onMount } from 'svelte';
   import cc from 'classcat';
 
   import { key, createStore } from '$lib/store';
@@ -18,8 +18,8 @@
   type $$Events = SvelteFlowEvents;
 
   export let id: $$Props['id'] = '1';
-  export let nodes: $$Props['nodes'] = [];
-  export let edges: $$Props['edges'] = [];
+  export let nodes: $$Props['nodes'];
+  export let edges: $$Props['edges'];
   export let fitView: $$Props['fitView'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
@@ -28,7 +28,6 @@
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
-  export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined
   export let style: $$Props['style'] = undefined;
@@ -38,6 +37,8 @@
   let domNode: HTMLDivElement;
 
   const store = createStore({
+    nodes,
+    edges,
     fitView,
     nodeTypes
   });
@@ -51,15 +52,6 @@
     store.width.set(width);
     store.height.set(height);
     store.domNode.set(domNode);
-
-    // @todo: is this a svelte way for two way binding?
-    store.nodes.subscribe((ns) => {
-      nodes = ns;
-    });
-
-    store.edges.subscribe((es) => {
-      edges = es;
-    });
   });
 
   $: {
@@ -67,7 +59,6 @@
       id,
       connectionLineType,
       connectionRadius,
-      defaultEdgeOptions
     };
 
     Object.keys(updatableProps).forEach(prop => {
@@ -77,14 +68,6 @@
         store[prop].set(updatableProps[prop]);
       }
     })
-  }
-
-  $: {
-    store.setNodes(nodes);
-  }
-
-  $: {
-    store.setEdges(edges);
   }
 
   $: {
