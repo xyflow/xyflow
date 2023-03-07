@@ -103,14 +103,12 @@ function ResizeControl({
           } = startValues.current;
 
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues.current;
+
           const distX = Math.floor(enableX ? xSnapped - startX : 0);
           const distY = Math.floor(enableY ? ySnapped - startY : 0);
 
-          let width = startWidth + (invertX ? -distX : distX);
-          let height = startHeight + (invertY ? -distY : distY);
-
-          width = clamp(width, minWidth, maxWidth);
-          height = clamp(height, minHeight, maxHeight);
+          let width = clamp(startWidth + (invertX ? -distX : distX), minWidth, maxWidth);
+          let height = clamp(startHeight + (invertY ? -distY : distY), minHeight, maxHeight);
 
           if (keepAspectRatio) {
             const nextAspectRatio = width / height;
@@ -207,7 +205,7 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, getPointerPosition]);
+  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, keepAspectRatio, getPointerPosition]);
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
