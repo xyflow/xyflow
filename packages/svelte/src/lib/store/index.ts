@@ -2,11 +2,9 @@ import { getContext } from 'svelte';
 import { get } from 'svelte/store';
 import { zoomIdentity } from 'd3-zoom';
 import {
-  type Transform,
   type NodeDragItem,
   type NodeDimensionUpdate,
   internalsSymbol,
-  type NodeOrigin,
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
@@ -30,30 +28,15 @@ import {
   initialStoreState
 } from './initial-store';
 import type { SvelteFlowStore } from './types';
-import type { SvelteFlowProps } from '$lib/container/SvelteFlow/types';
 
 export const key = Symbol();
 
-type CreateStoreProps = {
-  nodes: SvelteFlowProps['nodes'];
-  edges: SvelteFlowProps['edges'];
-  fitView?: boolean;
-  nodeOrigin?: NodeOrigin;
-  transform?: Transform;
-  nodeTypes?: NodeTypes;
-  edgeTypes?: EdgeTypes;
-  id?: string;
-};
+type CreateStoreParams = Pick<SvelteFlowStore, 'nodes' | 'edges'> & { fitView?: boolean };
 
-export function createStore({
-  fitView: fitViewOnInit = false,
-  nodes,
-  edges
-}: CreateStoreProps): SvelteFlowStore {
+export function createStore(params?: CreateStoreParams): SvelteFlowStore {
   const store = {
     ...initialStoreState,
-    nodes,
-    edges
+    ...(params !== undefined ? params : {})
   };
 
   let fitViewOnInitDone = false;
@@ -105,7 +88,6 @@ export function createStore({
 
     const style = window.getComputedStyle(viewportNode);
     const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-
     const nextNodes = get(store.nodes).map((node) => {
       const update = updates.find((u) => u.id === node.id);
 
@@ -139,7 +121,7 @@ export function createStore({
     const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
 
     fitViewOnInitDone =
-      fitViewOnInitDone || (fitViewOnInit && !!d3Zoom && !!d3Selection && fitView());
+      fitViewOnInitDone || (!!params?.fitView && !!d3Zoom && !!d3Selection && fitView());
 
     store.nodes.set(nextNodes);
   }
@@ -333,7 +315,13 @@ export function createStore({
 }
 
 export function useStore(): SvelteFlowStore {
-  const { getStore } = getContext<{ getStore: () => SvelteFlowStore }>(key);
+  const store = getContext<{ getStore: () => SvelteFlowStore }>(key);
 
-  return getStore();
+  if (!store) {
+    throw new Error(
+      'In order to use useStore you need to wrap your component in a <SvelteFlowProvider />'
+    );
+  }
+
+  return store.getStore();
 }

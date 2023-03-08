@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { setContext, onMount } from 'svelte';
+  import { onMount, setContext } from 'svelte';
   import cc from 'classcat';
 
-  import { key, createStore } from '$lib/store';
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
   import { Viewport } from '$lib/container/Viewport';
@@ -12,6 +11,7 @@
   import { NodeSelection } from '$lib/components/NodeSelection';
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
+  import { createStore, key, useStore } from '$lib/store';
   import type { SvelteFlowProps, SvelteFlowEvents } from './types';
 
   type $$Props = SvelteFlowProps;
@@ -40,9 +40,9 @@
     nodes,
     edges,
     fitView,
-    nodeTypes
   });
 
+  // we overwrite the context to be able to use the nodes and edges stores passed by the user 
   setContext(key, {
     getStore: () => store
   });
@@ -72,7 +72,7 @@
 
   $: {
     if (nodeTypes !== undefined) {
-      store.setNodeTypes(nodeTypes);
+     store.setNodeTypes(nodeTypes);
     }
 
     if (edgeTypes !== undefined) {

@@ -16,7 +16,7 @@ import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
-import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
+import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Edge, Node } from '$lib/types';
 
 export const initConnectionData = {
   nodeId: null,
@@ -40,11 +40,14 @@ export const initialEdgeTypes = {
 
 export const initialStoreState = {
   id: writable<string | null>(null),
+  nodes: writable<Node[]>([]),
+  edges: writable<Edge[]>([]),
   edgesLayouted: readable<EdgeLayouted[]>([]),
   height: writable<number>(500),
   width: writable<number>(500),
   minZoom: writable<number>(0.5),
   maxZoom: writable<number>(2),
+  fitViewOnInit: false,
   nodeOrigin: writable<NodeOrigin>([0, 0]),
   d3: writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>({
     zoom: null,

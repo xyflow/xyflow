@@ -1,5 +1,7 @@
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
-import type { HandleProps, HandleType, XYPosition } from '@reactflow/system';
+import type { FitViewOptionsBase, HandleProps, HandleType, XYPosition } from '@reactflow/system';
+
+import type { Node } from './nodes';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -17,3 +19,5 @@ export type HandleComponentProps = HandleProps & {
   class?: string;
   style?: string;
 };
+
+export type FitViewOptions = FitViewOptionsBase<Node>;

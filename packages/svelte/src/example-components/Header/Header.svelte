@@ -3,7 +3,8 @@
 
   const routes = [
     'overview',
-    'stress'
+    'stress',
+    'usesvelteflow'
   ];
 
   const onChange = (event: Event) => {

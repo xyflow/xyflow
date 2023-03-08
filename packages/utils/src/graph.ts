@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Selection as D3Selection } from 'd3';
 import { zoomIdentity } from 'd3-zoom';
 
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
@@ -11,10 +10,11 @@ import {
   type XYPosition,
   type Rect,
   type NodeOrigin,
-  BaseNode,
-  BaseEdge,
-  FitViewParamsBase,
-  FitViewOptionsBase,
+  type BaseNode,
+  type BaseEdge,
+  type FitViewParamsBase,
+  type FitViewOptionsBase,
+  type D3SelectionInstance,
 } from '@reactflow/system';
 
 export const isEdgeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
@@ -304,7 +304,7 @@ export const getTransformForBounds = (
   return [x, y, clampedZoom];
 };
 
-export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {
+export const getD3Transition = (selection: D3SelectionInstance, duration = 0) => {
   return selection.transition().duration(duration);
 };
 

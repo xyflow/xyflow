@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { getPositionWithOrigin } from '@reactflow/utils';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
-    import { getPositionWithOrigin } from '@reactflow/utils';
-    import { Position } from '@reactflow/system';
 
   const { nodes, nodeOrigin, updateNodeDimensions } = useStore();
+
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
       ? null
@@ -16,7 +16,6 @@
             nodeElement: entry.target as HTMLDivElement,
             forceUpdate: true
           }));
-
           updateNodeDimensions(updates);
         });
 
