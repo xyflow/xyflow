@@ -1,22 +1,6 @@
 import { memo } from 'react';
-import type { CSSProperties, MouseEvent } from 'react';
+import type { MiniMapNodeProps } from './types';
 import cc from 'classcat';
-
-interface MiniMapNodeProps {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  borderRadius: number;
-  className: string;
-  color: string;
-  shapeRendering: string;
-  strokeColor: string;
-  strokeWidth: number;
-  style?: CSSProperties;
-  onClick?: (event: MouseEvent, id: string) => void;
-}
 
 const MiniMapNode = ({
   id,

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { HTMLAttributes, MouseEvent } from 'react';
+import type { CSSProperties, HTMLAttributes, MouseEvent } from 'react';
 import type { Node, PanelPosition, XYPosition } from '@reactflow/core';
 
 export type GetMiniMapNodeAttribute<NodeData = any> = (node: Node<NodeData>) => string;
@@ -20,3 +20,19 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   zoomable?: boolean;
   ariaLabel?: string | null;
 };
+
+export interface MiniMapNodeProps {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  borderRadius: number;
+  className: string;
+  color: string;
+  shapeRendering: string;
+  strokeColor: string;
+  strokeWidth: number;
+  style?: CSSProperties;
+  onClick?: (event: MouseEvent, id: string) => void;
+}
