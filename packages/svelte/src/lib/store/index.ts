@@ -31,15 +31,13 @@ import type { SvelteFlowStore } from './types';
 
 export const key = Symbol();
 
-type CreateStoreParams = Pick<SvelteFlowStore, 'nodes' | 'edges'> & { fitView?: boolean };
+type CreateStoreParams = Pick<SvelteFlowStore, 'nodes' | 'edges'>;
 
-export function createStore(params?: CreateStoreParams): SvelteFlowStore {
+export function createStore(params: CreateStoreParams): SvelteFlowStore {
   const store = {
     ...initialStoreState,
-    ...(params !== undefined ? params : {})
+    ...params
   };
-
-  let fitViewOnInitDone = false;
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -120,9 +118,11 @@ export function createStore(params?: CreateStoreParams): SvelteFlowStore {
 
     const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
 
-    fitViewOnInitDone =
-      fitViewOnInitDone || (!!params?.fitView && !!d3Zoom && !!d3Selection && fitView());
+    const fitViewOnInitDone =
+      get(store.fitViewOnInitDone) ||
+      (get(store.fitViewOnInit) && !!d3Zoom && !!d3Selection && fitView());
 
+    store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
   }
 

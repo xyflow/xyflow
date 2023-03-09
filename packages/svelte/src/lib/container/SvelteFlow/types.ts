@@ -11,9 +11,6 @@ import type { Writable } from 'svelte/store';
 import type { createNodes } from '$lib/utils';
 
 export type SvelteFlowProps = {
-  nodes: ReturnType<typeof createNodes>;
-  edges: Writable<Edge[]>;
-
   id?: string;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;

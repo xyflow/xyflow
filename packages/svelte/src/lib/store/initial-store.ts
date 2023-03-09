@@ -47,7 +47,8 @@ export const initialStoreState = {
   width: writable<number>(500),
   minZoom: writable<number>(0.5),
   maxZoom: writable<number>(2),
-  fitViewOnInit: false,
+  fitViewOnInit: writable<boolean>(false),
+  fitViewOnInitDone: writable<boolean>(false),
   nodeOrigin: writable<NodeOrigin>([0, 0]),
   d3: writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>({
     zoom: null,

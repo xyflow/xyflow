@@ -1,6 +1,9 @@
-import type { SvelteFlowProps } from '$lib/container/SvelteFlow/types';
+import type { Writable } from 'svelte/store';
 
-export type SvelteFlowProviderProps = Pick<
-  SvelteFlowProps,
-  'nodes' | 'edges' | 'fitView' | 'nodeTypes'
->;
+import type { Edge } from '$lib/types';
+import type { createNodes } from '$lib/utils';
+
+export type SvelteFlowProviderProps = {
+  nodes: ReturnType<typeof createNodes>;
+  edges: Writable<Edge[]>;
+};

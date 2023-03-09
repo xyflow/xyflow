@@ -1,5 +1,6 @@
 <script lang="ts">
   import SvelteFlow, {
+    SvelteFlowProvider,
     Controls,
     Background,
     BackgroundVariant,
@@ -48,13 +49,15 @@
   const edges = createEdges(edgeItems, { animated: true });
 </script>
 
-<SvelteFlow
+<SvelteFlowProvider
   {nodes}
   {edges}
-  fitView
 >
-  <Controls />
-  <Background variant={BackgroundVariant.Dots} />
-  <Minimap />
-</SvelteFlow>
-
+  <SvelteFlow
+    fitView
+  >
+    <Controls />
+    <Background variant={BackgroundVariant.Dots} />
+    <Minimap />
+  </SvelteFlow>
+</SvelteFlowProvider>

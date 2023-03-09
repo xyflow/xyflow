@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, setContext } from 'svelte';
+  import { onMount } from 'svelte';
   import cc from 'classcat';
 
   import { Zoom } from '$lib/container/Zoom';
@@ -11,15 +11,13 @@
   import { NodeSelection } from '$lib/components/NodeSelection';
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
-  import { createStore, key, useStore } from '$lib/store';
+  import { useStore } from '$lib/store';
   import type { SvelteFlowProps, SvelteFlowEvents } from './types';
 
   type $$Props = SvelteFlowProps;
   type $$Events = SvelteFlowEvents;
 
   export let id: $$Props['id'] = '1';
-  export let nodes: $$Props['nodes'];
-  export let edges: $$Props['edges'];
   export let fitView: $$Props['fitView'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
@@ -36,16 +34,7 @@
 
   let domNode: HTMLDivElement;
 
-  const store = createStore({
-    nodes,
-    edges,
-    fitView,
-  });
-
-  // we overwrite the context to be able to use the nodes and edges stores passed by the user 
-  setContext(key, {
-    getStore: () => store
-  });
+  const store = useStore();
 
   onMount(() => {
     const { width, height } = domNode.getBoundingClientRect();
@@ -85,6 +74,10 @@
 
     if (maxZoom !== undefined) {
       store.setMaxZoom(maxZoom);
+    }
+
+    if (fitView !== undefined) {
+      store.fitViewOnInit.set(fitView);
     }
   }
 </script>

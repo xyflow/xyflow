@@ -1,2 +1,2 @@
-export { default as SvelteFlow } from './Wrapper.svelte';
+export { default as SvelteFlow } from './SvelteFlow.svelte';
 export * from './types';
