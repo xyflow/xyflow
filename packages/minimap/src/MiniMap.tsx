@@ -64,6 +64,9 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
+  // Rename the field to avoid clashes with the default `MiniMapNode` component.
+  // Fallback to that component if none is provided.
+  MiniMapNode: CustomMiniMapNode = MiniMapNode,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -176,7 +179,7 @@ function MiniMap({
           const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
           return (
-            <MiniMapNode
+            <CustomMiniMapNode
               key={node.id}
               x={x}
               y={y}
