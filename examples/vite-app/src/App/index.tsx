@@ -5,6 +5,7 @@ import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
+import CustomMiniMapNode from '../examples/CustomMiniMapNode';
 import CustomNode from '../examples/CustomNode';
 import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
@@ -76,6 +77,11 @@ const routes: IRoute[] = [
     name: 'Custom Connection Line',
     path: '/custom-connectionline',
     component: CustomConnectionLine,
+  },
+  {
+    name: 'Custom Minimap Node',
+    path: '/custom-minimap-node',
+    component: CustomMiniMapNode,
   },
   {
     name: 'Custom Node',
