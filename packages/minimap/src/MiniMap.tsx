@@ -55,6 +55,9 @@ function MiniMap({
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
+  // We need to rename the prop to be `CapitalCase` so that JSX will render it as
+  // a component properly. 
+  nodeComponent: NodeComponent = MiniMapNode,
   maskColor = 'rgb(240, 240, 240, 0.6)',
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
@@ -64,9 +67,6 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
-  // Rename the field to avoid clashes with the default `MiniMapNode` component.
-  // Fallback to that component if none is provided.
-  MiniMapNode: CustomMiniMapNode = MiniMapNode,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -179,7 +179,7 @@ function MiniMap({
           const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
           return (
-            <CustomMiniMapNode
+            <NodeComponent
               key={node.id}
               x={x}
               y={y}

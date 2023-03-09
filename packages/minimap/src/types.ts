@@ -10,6 +10,7 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   nodeClassName?: string | GetMiniMapNodeAttribute<NodeData>;
   nodeBorderRadius?: number;
   nodeStrokeWidth?: number;
+  nodeComponent?: ComponentType<MiniMapNodeProps>;
   maskColor?: string;
   maskStrokeColor?: string;
   maskStrokeWidth?: number;
@@ -19,7 +20,6 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   pannable?: boolean;
   zoomable?: boolean;
   ariaLabel?: string | null;
-  MiniMapNode?: ComponentType<MiniMapNodeProps>;
 };
 
 export interface MiniMapNodeProps {
