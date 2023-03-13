@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/background",
-  "version": "11.1.8",
+  "version": "11.1.9",
   "description": "Background component with different variants for React Flow",
   "keywords": [
     "react",
