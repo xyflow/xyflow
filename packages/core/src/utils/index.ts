@@ -104,11 +104,10 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
   const target = (kbEvent.composedPath?.()?.[0] || event.target) as HTMLElement;
 
   const isInput = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) || target?.hasAttribute('contenteditable');
-  // we want to be able to do a multi selection event if we are in an input field
-  const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey;
+
 
   // when an input field is focused we don't want to trigger deletion or movement of nodes
-  return (isInput && !isModifierKey) || !!target?.closest('.nokey');
+  return isInput || !!target?.closest('.nokey');
 }
 
 export const isMouseEvent = (

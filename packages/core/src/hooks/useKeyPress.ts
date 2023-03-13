@@ -19,6 +19,9 @@ const doc = typeof document !== 'undefined' ? document : null;
 export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { target: doc }): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
+  // we need to remember if a modifier key is pressed in order to track it
+  const modifierPressed = useRef(false);
+
   // we need to remember the pressed keys in order to support combinations
   const pressedKeys = useRef<PressedKeys>(new Set([]));
 
@@ -43,7 +46,10 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
   useEffect(() => {
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
-        if (isInputDOMNode(event)) {
+
+        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey;
+
+        if (!modifierPressed.current && isInputDOMNode(event)) {
           return false;
         }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
@@ -56,7 +62,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        if (isInputDOMNode(event)) {
+        if (!modifierPressed.current && isInputDOMNode(event)) {
           return false;
         }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
@@ -67,6 +73,7 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         } else {
           pressedKeys.current.delete(event[keyOrCode]);
         }
+        modifierPressed.current = false;
       };
 
       const resetHandler = () => {

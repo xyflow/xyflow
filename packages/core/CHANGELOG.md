@@ -1,5 +1,19 @@
 # @reactflow/core
 
+## 11.6.0
+
+### Minor Changes
+
+- [#2877](https://github.com/wbkd/react-flow/pull/2877) [`b8886514`](https://github.com/wbkd/react-flow/commit/b88865140c72fa7e92a883498768000cb2cc96a7) - add `isValidConnection` prop for ReactFlow component
+- [#2847](https://github.com/wbkd/react-flow/pull/2847) [`16bf89f2`](https://github.com/wbkd/react-flow/commit/16bf89f2b7bbf8449c00d0e2c07c19c3ff6d2533) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add option to enable/disable replacing edge id when using `updateEdge`
+
+### Patch Changes
+
+- [#2895](https://github.com/wbkd/react-flow/pull/2895) [`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425) - add data-testid for controls, minimap and background
+- [#2894](https://github.com/wbkd/react-flow/pull/2894) [`83fc4675`](https://github.com/wbkd/react-flow/commit/83fc467545527729633e817dbccfe59d0040da4b) - fix(nodes): blur when node gets unselected
+- [#2892](https://github.com/wbkd/react-flow/pull/2892) [`5fabd272`](https://github.com/wbkd/react-flow/commit/5fabd2720f6367f75f79a45822d8f675a3b8e1cf) Thanks [@danielgek](https://github.com/danielgek) - track modifier keys on useKeypress
+- [#2893](https://github.com/wbkd/react-flow/pull/2893) [`8f080bd5`](https://github.com/wbkd/react-flow/commit/8f080bd5e0e7e6c71f51eee9c9f2bc4b25182861) - fix: check if handle is connectable
+
 ## 11.5.5
 
 ### Patch Changes

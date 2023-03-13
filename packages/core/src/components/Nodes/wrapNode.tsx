@@ -74,6 +74,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         handleNodeClick({
           id,
           store,
+          nodeRef,
         });
       }
 
@@ -90,13 +91,12 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
-        if (unselect) {
-          nodeRef.current?.blur();
-        }
+
         handleNodeClick({
           id,
           store,
           unselect,
+          nodeRef,
         });
       } else if (
         !disableKeyboardA11y &&
