@@ -55,6 +55,9 @@ function MiniMap({
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
+  // We need to rename the prop to be `CapitalCase` so that JSX will render it as
+  // a component properly. 
+  nodeComponent: NodeComponent = MiniMapNode,
   maskColor = 'rgb(240, 240, 240, 0.6)',
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
@@ -181,7 +184,7 @@ function MiniMap({
           const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
           return (
-            <MiniMapNode
+            <NodeComponent
               key={node.id}
               x={x}
               y={y}
