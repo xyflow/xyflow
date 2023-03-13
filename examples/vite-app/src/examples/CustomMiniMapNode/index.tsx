@@ -8,6 +8,7 @@ import ReactFlow, {
   Controls,
   Edge,
   MiniMap,
+  MiniMapNodeProps,
   Node,
   ReactFlowInstance,
   useEdgesState,
@@ -24,6 +25,10 @@ const buttonStyle: CSSProperties = {
   top: 10,
   zIndex: 4,
 };
+
+const CustomMiniMapNode = ({ x, y, width, height, color }: MiniMapNodeProps) => (
+  <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill={color} />
+);
 
 const CustomMiniMapNodeFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -65,9 +70,5 @@ const CustomMiniMapNodeFlow = () => {
     </ReactFlow>
   );
 };
-
-const CustomMiniMapNode = ({ x, y, width, height }) => (
-  <circle cx={x} cy={y} r={Math.max(width, height)} />
-)
 
 export default CustomMiniMapNodeFlow;
