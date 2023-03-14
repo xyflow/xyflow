@@ -294,6 +294,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     store.selectionRect.set(null);
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
+    store.isValidConnection.set(() => true);
 
     resetSelectedElements();
     cancelConnection();
