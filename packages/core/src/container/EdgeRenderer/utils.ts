@@ -13,6 +13,7 @@ import { rectToBox } from '@reactflow/utils';
 import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
 import wrapEdge from '../../components/Edges/wrapEdge';
 import type { EdgeProps, EdgeTypes, EdgeTypesWrapped, Node } from '../../types';
+import { getHandlePosition } from '@reactflow/edge-utils';
 
 export type CreateEdgeTypes = (edgeTypes: EdgeTypes) => EdgeTypesWrapped;
 
@@ -38,50 +39,6 @@ export function createEdgeTypes(edgeTypes: EdgeTypes): EdgeTypesWrapped {
     ...standardTypes,
     ...specialTypes,
   };
-}
-
-export function getHandlePosition(position: Position, nodeRect: Rect, handle: HandleElement | null = null): XYPosition {
-  const x = (handle?.x || 0) + nodeRect.x;
-  const y = (handle?.y || 0) + nodeRect.y;
-  const width = handle?.width || nodeRect.width;
-  const height = handle?.height || nodeRect.height;
-
-  switch (position) {
-    case Position.Top:
-      return {
-        x: x + width / 2,
-        y,
-      };
-    case Position.Right:
-      return {
-        x: x + width,
-        y: y + height / 2,
-      };
-    case Position.Bottom:
-      return {
-        x: x + width / 2,
-        y: y + height,
-      };
-    case Position.Left:
-      return {
-        x,
-        y: y + height / 2,
-      };
-  }
-}
-
-export function getHandle(bounds: HandleElement[], handleId?: string | null): HandleElement | null {
-  if (!bounds) {
-    return null;
-  }
-
-  if (bounds.length === 1 || !handleId) {
-    return bounds[0];
-  } else if (handleId) {
-    return bounds.find((d) => d.id === handleId) || null;
-  }
-
-  return null;
 }
 
 interface EdgePositions {

@@ -1,4 +1,4 @@
-import { MarkerType } from '@reactflow/system';
+import { HandleElement, MarkerType, Position, Rect, XYPosition } from '@reactflow/system';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -28,3 +28,47 @@ export const getMarkerEnd = (markerType?: MarkerType, markerEndId?: string): str
 
   return typeof markerType !== 'undefined' ? `url(#react-flow__${markerType})` : 'none';
 };
+
+export function getHandlePosition(position: Position, nodeRect: Rect, handle: HandleElement | null = null): XYPosition {
+  const x = (handle?.x || 0) + nodeRect.x;
+  const y = (handle?.y || 0) + nodeRect.y;
+  const width = handle?.width || nodeRect.width;
+  const height = handle?.height || nodeRect.height;
+
+  switch (position) {
+    case Position.Top:
+      return {
+        x: x + width / 2,
+        y,
+      };
+    case Position.Right:
+      return {
+        x: x + width,
+        y: y + height / 2,
+      };
+    case Position.Bottom:
+      return {
+        x: x + width / 2,
+        y: y + height,
+      };
+    case Position.Left:
+      return {
+        x,
+        y: y + height / 2,
+      };
+  }
+}
+
+export function getHandle(bounds: HandleElement[], handleId?: string | null): HandleElement | null {
+  if (!bounds) {
+    return null;
+  }
+
+  if (bounds.length === 1 || !handleId) {
+    return bounds[0];
+  } else if (handleId) {
+    return bounds.find((d) => d.id === handleId) || null;
+  }
+
+  return null;
+}
