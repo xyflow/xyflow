@@ -92,8 +92,8 @@ const createRFStore = () =>
               [internalsSymbol]: {
                 ...node[internalsSymbol],
                 handleBounds: {
-                  source: getHandleBounds('.source', update.nodeElement, zoom, nodeOrigin),
-                  target: getHandleBounds('.target', update.nodeElement, zoom, nodeOrigin),
+                  source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
+                  target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
                 },
               },
               ...dimensions,

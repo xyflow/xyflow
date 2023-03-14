@@ -29,12 +29,14 @@ const initialNodes: Node[] = [
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
+    origin: [0.5, 0.5],
   },
   {
     id: '4',
     data: { label: 'Node 4' },
     position: { x: 100, y: 200 },
     className: 'light',
+    origin: [0.5, 0.5],
     style: {
       backgroundColor: 'rgba(255,50, 50, 0.5)',
       width: 500,
@@ -47,6 +49,8 @@ const initialNodes: Node[] = [
     position: { x: 15, y: 15 },
     className: 'light',
     parentNode: '4',
+    origin: [0.5, 0.5],
+
     extent: [
       [0, 0],
       [100, 100],

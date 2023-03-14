@@ -172,13 +172,13 @@ export const getPositionWithOrigin = ({
   y,
   width,
   height,
-  origin,
+  origin = [0, 0],
 }: {
   x: number;
   y: number;
   width: number;
   height: number;
-  origin: NodeOrigin;
+  origin?: NodeOrigin;
 }): XYPosition => {
   if (!width || !height) {
     return { x, y };

@@ -71,6 +71,7 @@ export function getDragItems(
       parentNode: n.parentNode,
       width: n.width,
       height: n.height,
+      origin: n.origin,
     }));
 }
 
@@ -87,14 +88,15 @@ export function calcNextPosition(
   if (node.extent === 'parent') {
     if (node.parentNode && node.width && node.height) {
       const parent = nodeInternals.get(node.parentNode);
-      const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, nodeOrigin).positionAbsolute;
+      const parentOrigin = parent?.origin || nodeOrigin;
+      const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parentOrigin).positionAbsolute;
       currentExtent =
         parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
           ? [
-              [parentX + node.width * nodeOrigin[0], parentY + node.height * nodeOrigin[1]],
+              [parentX + node.width * parentOrigin[0], parentY + node.height * parentOrigin[1]],
               [
-                parentX + parent.width - node.width + node.width * nodeOrigin[0],
-                parentY + parent.height - node.height + node.height * nodeOrigin[1],
+                parentX + parent.width - node.width + node.width * parentOrigin[0],
+                parentY + parent.height - node.height + node.height * parentOrigin[1],
               ],
             ]
           : currentExtent;
@@ -105,7 +107,7 @@ export function calcNextPosition(
     }
   } else if (node.extent && node.parentNode) {
     const parent = nodeInternals.get(node.parentNode);
-    const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, nodeOrigin).positionAbsolute;
+    const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parent?.origin || nodeOrigin).positionAbsolute;
     currentExtent = [
       [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
       [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
@@ -116,7 +118,7 @@ export function calcNextPosition(
 
   if (node.parentNode) {
     const parentNode = nodeInternals.get(node.parentNode);
-    parentPosition = getNodePositionWithOrigin(parentNode, nodeOrigin).positionAbsolute;
+    parentPosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin).positionAbsolute;
   }
 
   const positionAbsolute = currentExtent

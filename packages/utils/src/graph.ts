@@ -216,7 +216,7 @@ export const getRectOfNodes = (nodes: BaseNode[], nodeOrigin: NodeOrigin = [0, 0
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+      const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin).positionAbsolute;
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
@@ -256,7 +256,7 @@ export const getNodesInside = <NodeType extends BaseNode>(
       return res;
     }
 
-    const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
+    const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
     const nodeRect = {
       x: positionAbsolute.x,
@@ -316,7 +316,7 @@ export const getD3Transition = (selection: D3SelectionInstance, duration = 0) =>
 };
 
 export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
-  { nodes, width, height, d3Zoom, d3Selection, nodeOrigin, minZoom, maxZoom }: Params,
+  { nodes, width, height, d3Zoom, d3Selection, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
