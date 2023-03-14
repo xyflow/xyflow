@@ -2,8 +2,8 @@ import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
 import type {
   Connection,
   FitViewOptionsBase,
-  HandleProps,
   HandleType,
+  Position,
   XYPosition
 } from '@reactflow/system';
 
@@ -21,7 +21,10 @@ export type ConnectionData = {
   status: string | null;
 };
 
-export type HandleComponentProps = Omit<HandleProps, 'isConnectable'> & {
+export type HandleComponentProps = {
+  type: HandleType;
+  position: Position;
+  id?: string;
   class?: string;
   style?: string;
 };
