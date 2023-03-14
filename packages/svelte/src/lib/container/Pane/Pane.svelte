@@ -46,12 +46,12 @@
     selectionRect,
     selectionRectMode,
     selectionKeyPressed,
-    resetSelectedElements
+    resetSelectedElements,
+    selectionMode
   } = useStore();
 
   // @todo take from props
   const elementsSelectable = true;
-  const selectionMode = SelectionMode.Partial;
 
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
@@ -115,7 +115,7 @@
       $nodes,
       nextUserSelectRect,
       $transform,
-      selectionMode === SelectionMode.Partial,
+      $selectionMode === SelectionMode.Partial,
       true
     );
     const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);

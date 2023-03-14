@@ -25,6 +25,7 @@
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
+  export let selectionMode: $$Props['selectionMode'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
@@ -54,6 +55,7 @@
       id,
       connectionLineType,
       connectionRadius,
+      selectionMode,
       isValidConnection
     };
 

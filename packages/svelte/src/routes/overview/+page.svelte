@@ -8,7 +8,8 @@
     Panel,
     createNodes,
     createEdges,
-    type NodeTypes
+    type NodeTypes,
+    SelectionMode
   } from '../../lib/index';
   import { CustomNode } from '../../example-components/CustomNode';
 
@@ -113,6 +114,7 @@
     fitView
     minZoom={0.1}
     maxZoom={2.5}
+    selectionMode={SelectionMode.Full}
     initialViewport={{ x: 100, y: 100, zoom: 2 }}
     on:node:click={(event) => console.log('on node click', event)}
     on:node:mouseenter={(event) => console.log('on node enter', event)} 

@@ -3,7 +3,8 @@ import type {
   ConnectionLineType,
   NodeOrigin,
   OnConnectStartParams,
-  Viewport
+  Viewport,
+  SelectionMode
 } from '@reactflow/system';
 
 import type {
@@ -27,6 +28,7 @@ export type SvelteFlowProps = {
   maxZoom?: number;
   initialViewport?: Viewport;
   connectionRadius?: number;
+  selectionMode?: SelectionMode;
 
   class?: string;
   style?: string;

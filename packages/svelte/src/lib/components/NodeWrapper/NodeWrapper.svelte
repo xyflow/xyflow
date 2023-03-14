@@ -1,12 +1,12 @@
 <script lang="ts">
+  
   import { createEventDispatcher, onMount, setContext, SvelteComponentTyped } from 'svelte';
   import cc from 'classcat';
-  import { errorMessages } from '@reactflow/system';
+  import { errorMessages, type NodeProps } from '@reactflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
-  import type { NodeProps } from '$lib/types';
   import type { NodeWrapperProps } from './types';
 
   interface $$Props extends NodeWrapperProps {}
@@ -72,6 +72,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   use:drag={{ nodeId: id, nodes, transform, updateNodePositions }}
   bind:this={nodeRef}
