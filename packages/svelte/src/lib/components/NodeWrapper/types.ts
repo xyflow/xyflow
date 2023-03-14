@@ -5,6 +5,7 @@ export type NodeWrapperProps = Pick<
   Node,
   | 'id'
   | 'class'
+  | 'connectable'
   | 'data'
   | 'draggable'
   | 'dragging'

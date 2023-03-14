@@ -15,7 +15,15 @@ import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
-import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Edge, Node } from '$lib/types';
+import type {
+  ConnectionData,
+  NodeTypes,
+  EdgeTypes,
+  EdgeLayouted,
+  Edge,
+  Node,
+  IsValidConnection
+} from '$lib/types';
 
 export const initConnectionData = {
   nodeId: null,
@@ -67,5 +75,6 @@ export const initialStoreState = {
   connectionPath: readable<string | null>(null),
   connection: writable<ConnectionData>(initConnectionData),
   connectionRadius: writable<number>(25),
-  connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier)
+  connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
+  isValidConnection: writable<IsValidConnection>(() => true)
 };

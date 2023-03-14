@@ -13,14 +13,14 @@
   export let id: $$Props['id'] = undefined;
   export let type: $$Props['type'] = 'source';
   export let position: $$Props['position'] = Position.Top;
-  export let isConnectable: $$Props['isConnectable'] = true;
   export let style: $$Props['style'] = undefined;
-  export let isValidConnection: $$Props['isValidConnection'] = (_: Connection) => true;
   let className: $$Props['class'] = undefined;
   export { className as class };
 
   const isTarget = type === 'target';
-  const nodeId = getContext<string>('rf_nodeid');
+  const nodeId = getContext<string>('svelteflow__node_id');
+  const connectable = getContext<string>('svelteflow__node_connectable');
+
   const handleId = id || null;
   const dispatch = createEventDispatcher();
 
@@ -30,10 +30,11 @@
     nodes,
     connectionRadius,
     transform,
+    isValidConnection,
     addEdge,
     panBy,
     cancelConnection,
-    updateConnection
+    updateConnection,
   } = useStore();
 
   function dispatchEvent(eventName: string, params?: Connection) {
@@ -56,10 +57,10 @@
         isTarget,
         connectionRadius: $connectionRadius,
         domNode: $domNode,
-        nodes: $nodes,
+        nodes,
         connectionMode: $connectionMode,
         transform,
-        isValidConnection: isValidConnection!,
+        isValidConnection: $isValidConnection,
         onConnect: onConnectExtended,
         updateConnection,
         cancelConnection,
@@ -86,7 +87,7 @@
   ])}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectable={isConnectable}
+  class:connectable
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
   {style}

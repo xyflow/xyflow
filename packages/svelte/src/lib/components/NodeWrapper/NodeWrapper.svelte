@@ -15,6 +15,7 @@
   export let data: NodeWrapperProps['data'] = {};
   export let selected: NodeWrapperProps['selected'] = false;
   export let draggable: NodeWrapperProps['draggable'] = undefined;
+  export let connectable: NodeWrapperProps['connectable'] = true;
   export let dragging: boolean = false;
   export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
   export let style: NodeWrapperProps['style'] = undefined;
@@ -45,7 +46,8 @@
   const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher();
 
-  setContext('rf_nodeid', id);
+  setContext('svelteflow__node_id', id);
+  setContext('svelteflow__node_connectable', connectable);
 
   onMount(() => {
     resizeObserver?.observe(nodeRef);
@@ -79,6 +81,7 @@
   class:dragging
   class:selected
   class:draggable
+  class:connectable
   style:transform={`translate(${positionOrigin?.x ?? 0}px, ${positionOrigin?.y ?? 0}px)`}
   {style}
   on:click={onSelectNodeHandler}
@@ -93,7 +96,6 @@
     {selected}
     {sourcePosition}
     {targetPosition}
-    isConnectable={true}
     xPos={positionAbsolute?.x ?? 0}
     yPos={positionAbsolute?.y ?? 0}
     on:connect:start

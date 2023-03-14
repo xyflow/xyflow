@@ -27,7 +27,9 @@
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
-  export let connectionLineType: $$Props['connectionLineType'] = undefined
+  export let connectionLineType: $$Props['connectionLineType'] = undefined;
+  export let isValidConnection: $$Props['isValidConnection'] = undefined;
+
   export let style: $$Props['style'] = undefined;
   let className: $$Props['class'] = undefined;
   export { className as class };
@@ -52,6 +54,7 @@
       id,
       connectionLineType,
       connectionRadius,
+      isValidConnection
     };
 
     Object.keys(updatableProps).forEach(prop => {

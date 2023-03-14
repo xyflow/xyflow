@@ -6,9 +6,14 @@ import type {
   Viewport
 } from '@reactflow/system';
 
-import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
-import type { Writable } from 'svelte/store';
-import type { createNodes } from '$lib/utils';
+import type {
+  Edge,
+  Node,
+  NodeTypes,
+  KeyDefinition,
+  EdgeTypes,
+  IsValidConnection
+} from '$lib/types';
 
 export type SvelteFlowProps = {
   id?: string;
@@ -27,6 +32,7 @@ export type SvelteFlowProps = {
   style?: string;
 
   connectionLineType?: ConnectionLineType;
+  isValidConnection?: IsValidConnection;
 };
 
 export type SvelteFlowEvents = {

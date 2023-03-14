@@ -22,10 +22,9 @@ import {
   getHandleType,
   isValidHandle,
   resetRecentHandle,
-  type ConnectionHandle,
-  type ValidConnectionFunc
+  type ConnectionHandle
 } from './utils';
-import type { ConnectionData, Node } from '$lib/types';
+import type { ConnectionData, IsValidConnection, Node } from '$lib/types';
 
 export function handlePointerDown({
   event,
@@ -54,9 +53,9 @@ export function handlePointerDown({
   isTarget: boolean;
   connectionMode: ConnectionMode;
   domNode: HTMLDivElement | null;
-  nodes: Node[];
+  nodes: Writable<Node[]>;
   connectionRadius: number;
-  isValidConnection: ValidConnectionFunc;
+  isValidConnection: IsValidConnection;
   transform: Writable<Transform>;
   updateConnection: (connection: Partial<ConnectionData>) => void;
   cancelConnection: () => void;
@@ -90,7 +89,7 @@ export function handlePointerDown({
   const autoPanOnConnect = true;
 
   const handleLookup = getHandleLookup({
-    nodes,
+    nodes: get(nodes),
     nodeId,
     handleId,
     handleType
@@ -115,8 +114,6 @@ export function handlePointerDown({
     handleType,
     status: null
   });
-
-  // @todo add prop
 
   // onConnectStart?.(event, { nodeId, handleId, handleType });
   onConnectStart();
@@ -144,7 +141,8 @@ export function handlePointerDown({
       handleId,
       isTarget ? 'target' : 'source',
       isValidConnection,
-      doc
+      doc,
+      get(nodes)
     );
 
     handleDomNode = result.handleDomNode;

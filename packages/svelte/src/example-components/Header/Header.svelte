@@ -4,7 +4,8 @@
   const routes = [
     'overview',
     'stress',
-    'usesvelteflow'
+    'usesvelteflow',
+    'validation'
   ];
 
   const onChange = (event: Event) => {

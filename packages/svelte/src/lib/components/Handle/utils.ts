@@ -2,7 +2,7 @@ import { internalsSymbol, ConnectionMode, type ConnectionStatus } from '@reactfl
 import type { Connection, HandleType, XYPosition, NodeHandleBounds } from '@reactflow/system';
 import { getEventPosition } from '@reactflow/utils';
 
-import type { Node } from '$lib/types';
+import type { IsValidConnection, Node } from '$lib/types';
 
 export type ConnectionHandle = {
   id: string | null;
@@ -76,8 +76,9 @@ export function isValidHandle(
   fromNodeId: string,
   fromHandleId: string | null,
   fromType: string,
-  isValidConnection: ValidConnectionFunc,
-  doc: Document | ShadowRoot
+  isValidConnection: IsValidConnection,
+  doc: Document | ShadowRoot,
+  nodes: Node[]
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = doc.querySelector(
@@ -116,7 +117,10 @@ export function isValidHandle(
         : handleNodeId !== fromNodeId || handleId !== fromHandleId;
 
     if (isValid) {
-      result.isValid = isValidConnection(connection);
+      const fromNode: Node | undefined = nodes.find((n) => n.id === connection.source);
+      const toNode: Node | undefined = nodes.find((n) => n.id === connection.target);
+
+      if (fromNode && toNode) result.isValid = isValidConnection(connection, { fromNode, toNode });
     }
   }
 
