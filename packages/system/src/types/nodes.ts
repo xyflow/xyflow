@@ -27,6 +27,7 @@ export type BaseNode<T = any, U extends string | undefined = string | undefined>
   positionAbsolute?: XYPosition;
   ariaLabel?: string;
   focusable?: boolean;
+  origin?: NodeOrigin;
 
   // only used internally
   [internalsSymbol]?: {

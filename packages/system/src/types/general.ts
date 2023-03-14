@@ -39,11 +39,11 @@ export type FitViewParamsBase<NodeType extends BaseNode> = {
   nodes: NodeType[];
   width: number;
   height: number;
-  nodeOrigin: NodeOrigin;
   d3Zoom: D3ZoomInstance;
   d3Selection: D3SelectionInstance;
   minZoom: number;
   maxZoom: number;
+  nodeOrigin?: NodeOrigin;
 };
 
 export type FitViewOptionsBase<NodeType extends BaseNode> = {
