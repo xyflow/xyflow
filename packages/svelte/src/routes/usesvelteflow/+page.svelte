@@ -1,32 +1,31 @@
 <script lang="ts">
-  import {
-    createEdges,
-    createNodes,
-    SvelteFlowProvider,
-  } from '../../lib/index';
+  import { createNodes, createEdges, SvelteFlowProvider } from '../../lib/index';
 
   import Flow from './Flow.svelte';
-
-  const nodes = createNodes([
-    {
-      id: '1',
-      type: 'input',
-      data: { label: 'Input Node' },
-      position: { x: 150, y: 5 }
-    },
-    {
-      id: '2',
-      type: 'default',
-      data: { label: 'Node' },
-      position: { x: 0, y: 150 }
-    },
-    {
-      id: '3',
-      type: 'output',
-      data: { label: 'Output Node' },
-      position: { x: 300, y: 150 }
-    }
-  ], { origin: [0.5, 0.5] });
+  
+  const nodes = createNodes(
+    [
+      {
+        id: '1',
+        type: 'input',
+        data: { label: 'Input Node' },
+        position: { x: 150, y: 5 }
+      },
+      {
+        id: '2',
+        type: 'default',
+        data: { label: 'Node' },
+        position: { x: 0, y: 150 }
+      },
+      {
+        id: '3',
+        type: 'output',
+        data: { label: 'Output Node' },
+        position: { x: 300, y: 150 }
+      }
+    ],
+    { origin: [0.5, 0.5] }
+  );
 
   const edges = createEdges([
     {

@@ -42,7 +42,6 @@
     nodes,
     edges,
     transform,
-    nodeOrigin,
     dragging,
     selectionRect,
     selectionRectMode,
@@ -117,8 +116,7 @@
       nextUserSelectRect,
       $transform,
       selectionMode === SelectionMode.Partial,
-      true,
-      $nodeOrigin
+      true
     );
     const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);

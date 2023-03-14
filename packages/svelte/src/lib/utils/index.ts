@@ -1,4 +1,3 @@
-import type { HandleElement, Position } from '@reactflow/system';
 import {
   isNodeBase,
   isEdgeBase,
@@ -6,8 +5,7 @@ import {
   getOutgoersBase,
   getIncomersBase,
   updateEdgeBase,
-  getConnectedEdgesBase,
-  getDimensions
+  getConnectedEdgesBase
 } from '@reactflow/utils';
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
 import { writable, type Writable } from 'svelte/store';

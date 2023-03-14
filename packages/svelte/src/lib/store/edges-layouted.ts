@@ -27,8 +27,6 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
         const sourcePosition = sourceHandle?.position || Position.Bottom;
         const targetPosition = targetHandle?.position || Position.Top;
 
-        console.log(sourceNodeRect);
-
         if (!sourceHandle || !targetHandle) {
           return null;
         }
