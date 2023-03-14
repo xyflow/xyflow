@@ -11,6 +11,7 @@
   import { NodeSelection } from '$lib/components/NodeSelection';
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
+  import { Attribution } from '$lib/components/Attribution';
   import { useStore } from '$lib/store';
   import type { SvelteFlowProps } from './types';
 
@@ -122,6 +123,7 @@
       <UserSelection />
     </Pane>
   </Zoom>
+  <Attribution />
   <slot />
 </div>
 

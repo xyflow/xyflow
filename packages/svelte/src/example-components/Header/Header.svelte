@@ -16,7 +16,7 @@
 </script>
 
 <header>
-  <div class="logo">SvelteFlow</div>
+  <div class="logo">Svelte Flow</div>
   <select on:change={onChange}>
     {#each routes as route}
       <option value={route}>{route}</option>

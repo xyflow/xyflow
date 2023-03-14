@@ -11,7 +11,7 @@
   import { Position } from '@reactflow/system';
 
   const nodes = createNodes([
-    { id: '0', type: 'default', position: { x: 0, y: 150 }, data: { label: 'only connecatbale with B' } },
+    { id: '0', type: 'default', position: { x: 0, y: 150 }, data: { label: 'only connectable with B' } },
     { id: 'A', type: 'default', position: { x: 250, y: 0 }, data: { label: 'A' } },
     { id: 'B', type: 'default', position: { x: 250, y: 150 }, data: { label: 'B' } },
     { id: 'C', type: 'default', position: { x: 250, y: 300 }, data: { label: 'C' } }
