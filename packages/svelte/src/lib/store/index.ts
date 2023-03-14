@@ -127,19 +127,20 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     store.nodes.set(nextNodes);
   }
 
-  function zoomIn(options?: ViewportHelperFunctionOptions) {
+  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
     const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
 
     if (d3Zoom && d3Selection) {
-      d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1.2);
+      d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), factor);
     }
   }
 
+  function zoomIn(options?: ViewportHelperFunctionOptions) {
+    zoomBy(1.2, options);
+  }
+
   function zoomOut(options?: ViewportHelperFunctionOptions) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
-    if (d3Zoom && d3Selection) {
-      d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1 / 1.2);
-    }
+    zoomBy(1 / 1.2, options);
   }
 
   function setMinZoom(minZoom: number) {

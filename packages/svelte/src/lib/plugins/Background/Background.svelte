@@ -47,7 +47,7 @@
     : [patternDimensions[0] / 2, patternDimensions[1] / 2];
 </script>
 
-<svg class={cc(['svelte-flow__background', className])} style={style}>
+<svg class={cc(['svelte-flow__background', className])} {style} data-testid="svelte-flow__background">
   <pattern
     id={patternId}
     x={$transform[0] % scaledGap[0]}

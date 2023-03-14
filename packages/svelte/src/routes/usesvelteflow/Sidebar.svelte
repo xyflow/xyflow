@@ -3,14 +3,18 @@
     useSvelteFlow
   } from '../../lib/index';
 
-  const { zoomIn, zoomOut, fitView, viewport, nodes } = useSvelteFlow();
+  const { zoomIn, zoomOut, setZoom, fitView, setCenter, setViewport, getViewport, viewport, nodes } = useSvelteFlow();
 </script>
 
 <aside>
   <div class="label">Functions:</div>
   <button on:click={() => zoomIn()}>zoom in</button>
   <button on:click={() => zoomOut({ duration: 1000 })}>zoom out transition</button>
+  <button on:click={() => setZoom(2)}>set zoom</button>
   <button on:click={() => fitView()}>fitView</button>
+  <button on:click={() => setCenter(0, 0)}>setCenter 0, 0</button>
+  <button on:click={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
+  <button on:click={() => console.log(getViewport())}>getViewport</button>
 
   <div class="label">Nodes:</div>
   {#each $nodes as node (node.id)}

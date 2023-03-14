@@ -96,7 +96,7 @@
   bind:this={domNode}
   style={style}
   class={cc(['svelte-flow', className])}
-  data-testid="rf__wrapper"
+  data-testid="svelte-flow__wrapper"
   on:dragover
   on:drop
   {...$$restProps}

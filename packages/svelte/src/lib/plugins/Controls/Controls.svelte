@@ -42,8 +42,8 @@
     // onInteractiveChange?.(!isInteractive);
   };
 </script>
-
-<Panel class="svelte-flow__controls" {position}>
+ 
+<Panel class="svelte-flow__controls" {position} data-testid="svelte-flow__controls">
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}

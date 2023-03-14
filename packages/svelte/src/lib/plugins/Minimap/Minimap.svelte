@@ -35,7 +35,7 @@
 
   const defaultWidth = 200;
   const defaultHeight = 150;
-  const { nodes, transform, width: containerWidth, height: containerHeight, nodeOrigin, id } = useStore();
+  const { nodes, transform, width: containerWidth, height: containerHeight, id } = useStore();
 
   
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -52,7 +52,7 @@
     height: $containerHeight / $transform[2]
   };
   $: boundingRect =
-    $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes, $nodeOrigin), viewBB) : viewBB;
+    $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes), viewBB) : viewBB;
   $: elementWidth = width ?? defaultWidth;
   $: elementHeight = height ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;
@@ -71,6 +71,7 @@
   {position}
   class={cc(['svelte-flow__minimap', className])}
   style={`background-color: ${bgColor}; ${style}`}
+  data-testid="svelte-flow__minimap"
 >
   <svg
     width={elementWidth}
@@ -83,7 +84,7 @@
 
     {#each $nodes as node (node.id)}
       {#if node.width && node.height}
-        {@const pos = getNodePositionWithOrigin(node, $nodeOrigin).positionAbsolute}
+        {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
         <MinimapNode
           x={pos.x}
           y={pos.y}
