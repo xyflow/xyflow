@@ -7,6 +7,8 @@ import type {
   BaseNode,
   BaseEdge,
   NodeOrigin,
+  HandleElement,
+  Position,
 } from '@reactflow/system';
 import { getConnectedEdgesBase } from './graph';
 
@@ -192,4 +194,36 @@ export const getPositionWithOrigin = ({
     x: x - width * origin[0],
     y: y - height * origin[1],
   };
+};
+
+export const getHandleBounds = (
+  selector: string,
+  nodeElement: HTMLDivElement,
+  zoom: number,
+  nodeOrigin: NodeOrigin = [0, 0]
+): HandleElement[] | null => {
+  const handles = nodeElement.querySelectorAll(selector);
+
+  if (!handles || !handles.length) {
+    return null;
+  }
+
+  const handlesArray = Array.from(handles) as HTMLDivElement[];
+  const nodeBounds = nodeElement.getBoundingClientRect();
+  const nodeOffset = {
+    x: nodeBounds.width * nodeOrigin[0],
+    y: nodeBounds.height * nodeOrigin[1],
+  };
+
+  return handlesArray.map((handle): HandleElement => {
+    const handleBounds = handle.getBoundingClientRect();
+
+    return {
+      id: handle.getAttribute('data-handleid'),
+      position: handle.getAttribute('data-handlepos') as unknown as Position,
+      x: (handleBounds.left - nodeBounds.left - nodeOffset.x) / zoom,
+      y: (handleBounds.top - nodeBounds.top - nodeOffset.y) / zoom,
+      ...getDimensions(handle),
+    };
+  });
 };
