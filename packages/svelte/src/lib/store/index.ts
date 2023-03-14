@@ -292,6 +292,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     store.fitViewOnInitDone.set(false);
     store.selectionRect.set(null);
     store.selectionRectMode.set(null);
+    store.snapGrid.set(null);
 
     resetSelectedElements();
     cancelConnection();

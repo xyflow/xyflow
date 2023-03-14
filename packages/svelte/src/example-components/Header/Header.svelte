@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
 
   const routes = [
+    'drag-n-drop',
     'overview',
     'stress',
     'usesvelteflow',

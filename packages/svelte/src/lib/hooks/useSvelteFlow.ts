@@ -1,9 +1,10 @@
-import type { Viewport, ZoomInOut } from '@reactflow/system';
+import type { Project, Viewport, XYPosition, ZoomInOut } from '@reactflow/system';
 
 import { useStore } from '$lib/store';
 import type { FitViewOptions } from '$lib/types';
 import { get, writable, type Writable } from 'svelte/store';
 import type { SvelteFlowStore } from '$lib/store/types';
+import { pointToRendererPoint } from '@reactflow/utils';
 
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
@@ -12,9 +13,10 @@ export function useSvelteFlow(): {
   viewport: Writable<Viewport>;
   nodes: SvelteFlowStore['nodes'];
   edges: SvelteFlowStore['edges'];
+  project: Project;
 } {
   // how to get the new context here? fit view doesn't work, because the store is not updated (uses old nodes store)
-  const { zoomIn, zoomOut, fitView, transform, nodes, edges } = useStore();
+  const { zoomIn, zoomOut, fitView, snapGrid: snapGridStore, transform, nodes, edges } = useStore();
 
   const transformValues = get(transform);
   const viewportWritable = writable({
@@ -35,6 +37,10 @@ export function useSvelteFlow(): {
     zoomIn,
     zoomOut,
     fitView,
+    project: (position: XYPosition) => {
+      const snapGrid = get(snapGridStore);
+      return pointToRendererPoint(position, get(transform), snapGrid !== null, snapGrid || [1, 1]);
+    },
     nodes,
     edges,
     viewport: viewportWritable

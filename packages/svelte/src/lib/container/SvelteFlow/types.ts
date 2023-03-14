@@ -1,3 +1,4 @@
+import type { DOMAttributes } from 'svelte/elements';
 import type {
   Connection,
   ConnectionLineType,
@@ -17,7 +18,7 @@ import type {
   IsValidConnection
 } from '$lib/types';
 
-export type SvelteFlowProps = {
+export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   id?: string;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
@@ -37,19 +38,17 @@ export type SvelteFlowProps = {
 
   connectionLineType?: ConnectionLineType;
   isValidConnection?: IsValidConnection;
-};
 
-export type SvelteFlowEvents = {
-  'node:click': CustomEvent<Node>;
-  'node:mouseenter': CustomEvent<Node>;
-  'node:mousemove': CustomEvent<Node>;
-  'node:mouseleave': CustomEvent<Node>;
-  'edge:click': CustomEvent<Edge>;
-  'connect:start': CustomEvent<OnConnectStartParams>;
-  connect: CustomEvent<Connection>;
-  'connect:end': CustomEvent<OnConnectStartParams>;
-  'pane:click': CustomEvent;
-  'pane:contextmenu': CustomEvent;
+  'on:node:click'?: CustomEvent<Node>;
+  'on:node:mouseenter'?: CustomEvent<Node>;
+  'on:node:mousemove'?: CustomEvent<Node>;
+  'on:node:mouseleave'?: CustomEvent<Node>;
+  'on:edge:click'?: CustomEvent<Edge>;
+  'on:connect:start'?: CustomEvent<OnConnectStartParams>;
+  'on:connect'?: CustomEvent<Connection>;
+  'on:connect:end'?: CustomEvent<OnConnectStartParams>;
+  'on:pane:click'?: CustomEvent;
+  'on:pane:contextmenu'?: CustomEvent;
 };
 
 export type SvelteFlowSlots = {

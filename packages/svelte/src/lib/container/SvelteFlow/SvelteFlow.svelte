@@ -12,10 +12,9 @@
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { useStore } from '$lib/store';
-  import type { SvelteFlowProps, SvelteFlowEvents } from './types';
+  import type { SvelteFlowProps } from './types';
 
   type $$Props = SvelteFlowProps;
-  type $$Events = SvelteFlowEvents;
 
   export let id: $$Props['id'] = '1';
   export let fitView: $$Props['fitView'] = undefined;
@@ -98,6 +97,9 @@
   style={style}
   class={cc(['svelte-flow', className])}
   data-testid="rf__wrapper"
+  on:dragover
+  on:drop
+  {...$$restProps}
 >
   <KeyHandler {selectionKey} {deleteKey} />
   <Zoom {initialViewport}>
