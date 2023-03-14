@@ -5,7 +5,7 @@
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
 
-  const { nodes, nodeOrigin, updateNodeDimensions } = useStore();
+  const { nodes, updateNodeDimensions } = useStore();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -31,7 +31,7 @@
       y: node.positionAbsolute?.y ?? 0,
       width: node.width ?? 0,
       height: node.height ?? 0,
-      origin: $nodeOrigin
+      origin: node.origin
     })}
     <NodeWrapper
       id={node.id}

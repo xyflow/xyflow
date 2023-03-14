@@ -5,10 +5,10 @@
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
 
-  const { selectionRectMode, nodes, nodeOrigin, transform, updateNodePositions } = useStore();
+  const { selectionRectMode, nodes, transform, updateNodePositions } = useStore();
 
   $: selectedNodes = $nodes.filter((n) => n.selected);
-  $: rect = getRectOfNodes(selectedNodes, $nodeOrigin);
+  $: rect = getRectOfNodes(selectedNodes);
 </script>
 
 {#if selectedNodes && $selectionRectMode === 'nodes'}

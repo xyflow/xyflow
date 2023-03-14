@@ -1,7 +1,8 @@
 import { derived } from 'svelte/store';
 import { Position } from '@reactflow/system';
+import { getHandle } from '@reactflow/edge-utils';
 
-import { getEdgePositions, getHandle, getNodeData } from '$lib/container/EdgeRenderer/utils';
+import { getEdgePositions, getNodeData } from '$lib/container/EdgeRenderer/utils';
 import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
 
@@ -25,6 +26,8 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
         const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle);
         const sourcePosition = sourceHandle?.position || Position.Bottom;
         const targetPosition = targetHandle?.position || Position.Top;
+
+        console.log(sourceNodeRect);
 
         if (!sourceHandle || !targetHandle) {
           return null;

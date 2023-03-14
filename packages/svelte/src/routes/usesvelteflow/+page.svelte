@@ -26,7 +26,7 @@
       data: { label: 'Output Node' },
       position: { x: 300, y: 150 }
     }
-  ]);
+  ], { origin: [0.5, 0.5] });
 
   const edges = createEdges([
     {

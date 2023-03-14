@@ -73,6 +73,7 @@ export function calcNextPosition(
   if (node.extent === 'parent') {
     if (node.parentNode && node.width && node.height) {
       const parent = nodes.find((n) => n.id === node.parentNode)!;
+      const parentOrigin = parent.origin || nodeOrigin;
       const { x: parentX, y: parentY } = parent.positionAbsolute!;
       currentExtent =
         parent &&
@@ -81,10 +82,10 @@ export function calcNextPosition(
         isNumeric(parent.width) &&
         isNumeric(parent.height)
           ? [
-              [parentX + node.width * nodeOrigin[0], parentY + node.height * nodeOrigin[1]],
+              [parentX + node.width * parentOrigin[0], parentY + node.height * parentOrigin[1]],
               [
-                parentX + parent.width! - node.width + node.width * nodeOrigin[0],
-                parentY + parent.height! - node.height + node.height * nodeOrigin[1]
+                parentX + parent.width! - node.width + node.width * parentOrigin[0],
+                parentY + parent.height! - node.height + node.height * parentOrigin[1]
               ]
             ]
           : currentExtent;

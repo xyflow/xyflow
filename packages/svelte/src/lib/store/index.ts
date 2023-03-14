@@ -14,10 +14,11 @@ import {
   fitView as fitViewUtil,
   getD3Transition,
   getDimensions,
-  getElementsToRemove
+  getElementsToRemove,
+  getHandleBounds
 } from '@reactflow/utils';
 
-import { getHandleBounds, addEdge as addEdgeUtil } from '$lib/utils';
+import { addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
@@ -104,8 +105,8 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
           node[internalsSymbol] = {
             ...node[internalsSymbol],
             handleBounds: {
-              source: getHandleBounds('.source', update.nodeElement, zoom),
-              target: getHandleBounds('.target', update.nodeElement, zoom)
+              source: getHandleBounds('.source', update.nodeElement, zoom, node.origin),
+              target: getHandleBounds('.target', update.nodeElement, zoom, node.origin)
             }
           };
           node.width = dimensions.width;
@@ -176,7 +177,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
         maxZoom: 2,
         d3Selection,
         d3Zoom,
-        nodeOrigin: get(store.nodeOrigin)
+        nodeOrigin: [0, 0]
       },
       {}
     );

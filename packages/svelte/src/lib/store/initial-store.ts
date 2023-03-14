@@ -6,8 +6,7 @@ import {
   ConnectionMode,
   ConnectionLineType,
   type SelectionRect,
-  type Transform,
-  type NodeOrigin
+  type Transform
 } from '@reactflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -49,7 +48,6 @@ export const initialStoreState = {
   maxZoom: writable<number>(2),
   fitViewOnInit: writable<boolean>(false),
   fitViewOnInitDone: writable<boolean>(false),
-  nodeOrigin: writable<NodeOrigin>([0, 0]),
   d3: writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>({
     zoom: null,
     selection: null
