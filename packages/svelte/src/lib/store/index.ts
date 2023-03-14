@@ -287,6 +287,15 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     updateConnection(initConnectionData);
   }
 
+  function reset() {
+    store.fitViewOnInitDone.set(false);
+    store.selectionRect.set(null);
+    store.selectionRectMode.set(null);
+
+    resetSelectedElements();
+    cancelConnection();
+  }
+
   return {
     // state
     ...store,
@@ -310,7 +319,8 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     addSelectedNodes,
     panBy,
     updateConnection,
-    cancelConnection
+    cancelConnection,
+    reset
   };
 }
 

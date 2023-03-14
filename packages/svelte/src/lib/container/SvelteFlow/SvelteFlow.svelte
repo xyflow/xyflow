@@ -41,6 +41,10 @@
     store.width.set(width);
     store.height.set(height);
     store.domNode.set(domNode);
+
+    return () => {
+      store.reset();
+    }
   });
 
   $: {

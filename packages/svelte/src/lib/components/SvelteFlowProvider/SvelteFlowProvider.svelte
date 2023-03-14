@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext } from 'svelte';
+  import { onDestroy, setContext } from 'svelte';
   
   import { createStore, key } from '$lib/store';
   import type { SvelteFlowProviderProps } from './types';
@@ -16,6 +16,10 @@
 
   setContext(key, {
     getStore: () => store
+  });
+
+  onDestroy(() => {
+    store.reset();
   });
 </script>
 

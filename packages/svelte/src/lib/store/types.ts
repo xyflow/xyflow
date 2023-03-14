@@ -30,6 +30,7 @@ export type SvelteFlowStoreActions = {
   panBy: (delta: XYPosition) => void;
   updateConnection: (connection: Partial<ConnectionData>) => void;
   cancelConnection: () => void;
+  reset(): void;
 };
 
 export type SvelteFlowStoreState = typeof initialStoreState & {
