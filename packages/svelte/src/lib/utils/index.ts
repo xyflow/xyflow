@@ -20,33 +20,6 @@ export const addEdge = addEdgeBase<Edge>;
 export const updateEdge = updateEdgeBase<Edge>;
 export const getConnectedEdges = getConnectedEdgesBase<Node, Edge>;
 
-export const getHandleBounds = (
-  selector: string,
-  nodeElement: HTMLDivElement,
-  zoom: number
-): HandleElement[] | null => {
-  const handles = nodeElement.querySelectorAll(selector);
-
-  if (!handles || !handles.length) {
-    return null;
-  }
-
-  const handlesArray = Array.from(handles) as HTMLDivElement[];
-  const nodeBounds = nodeElement.getBoundingClientRect();
-
-  return handlesArray.map((handle): HandleElement => {
-    const handleBounds = handle.getBoundingClientRect();
-
-    return {
-      id: handle.getAttribute('data-handleid'),
-      position: handle.getAttribute('data-handlepos') as unknown as Position,
-      x: (handleBounds.left - nodeBounds.left) / zoom,
-      y: (handleBounds.top - nodeBounds.top) / zoom,
-      ...getDimensions(handle)
-    };
-  });
-};
-
 export const createNodes = (
   nodes: Node[],
   defaultOptions?: DefaultNodeOptions
