@@ -58,6 +58,7 @@ const initialState: ReactFlowStore = {
   autoPanOnNodeDrag: true,
   connectionRadius: 20,
   onError: devWarn,
+  isValidConnection: undefined,
 };
 
 export default initialState;

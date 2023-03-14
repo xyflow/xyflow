@@ -75,10 +75,10 @@ export function getHandle(bounds: HandleElement[], handleId?: string | null): Ha
     return null;
   }
 
-  if (handleId) {
-    return bounds.find((d) => d.id === handleId)!;
-  } else if (bounds.length === 1) {
+  if (bounds.length === 1 || !handleId) {
     return bounds[0];
+  } else if (handleId) {
+    return bounds.find((d) => d.id === handleId) || null;
   }
 
   return null;

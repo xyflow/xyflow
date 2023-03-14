@@ -112,9 +112,10 @@ export function isValidHandle(
 
     // in strict mode we don't allow target to target or source to source connections
     const isValid =
-      connectionMode === ConnectionMode.Strict
+      handleToCheck.classList.contains('connectable') &&
+      (connectionMode === ConnectionMode.Strict
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
-        : handleNodeId !== fromNodeId || handleId !== fromHandleId;
+        : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
     if (isValid) {
       result.isValid = isValidConnection(connection);

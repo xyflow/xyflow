@@ -111,7 +111,7 @@ const Pane = memo(
         return;
       }
 
-      const { x, y } = getEventPosition(event, containerBounds.current);
+      const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
 
       resetSelectedElements();
 
@@ -138,7 +138,7 @@ const Pane = memo(
 
       store.setState({ userSelectionActive: true, nodesSelectionActive: false });
 
-      const mousePos = getEventPosition(event, containerBounds.current);
+      const mousePos = getEventPosition(event.nativeEvent, containerBounds.current);
       const startX = userSelectionRect.startX ?? 0;
       const startY = userSelectionRect.startY ?? 0;
 

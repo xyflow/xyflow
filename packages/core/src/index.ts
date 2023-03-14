@@ -7,7 +7,6 @@ export { default as BezierEdge } from './components/Edges/BezierEdge';
 export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge } from './components/Edges/SmoothStepEdge';
 export { default as BaseEdge } from './components/Edges/BaseEdge';
-
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel } from './components/Panel';
 export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
@@ -34,6 +33,7 @@ export {
   rectToBox,
   boxToRect,
   getBoundsOfRects,
+  clamp,
 } from '@reactflow/utils';
 
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';

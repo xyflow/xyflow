@@ -1,5 +1,14 @@
 # @reactflow/controls
 
+## 11.1.9
+
+### Patch Changes
+
+- [#2895](https://github.com/wbkd/react-flow/pull/2895) [`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425) Thanks [@moklick](https://github.com/moklick)! - add data-testid for controls, minimap and background
+
+- Updated dependencies [[`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425), [`83fc4675`](https://github.com/wbkd/react-flow/commit/83fc467545527729633e817dbccfe59d0040da4b), [`b1190837`](https://github.com/wbkd/react-flow/commit/b11908370bc438ca8d4179497cd4eb1f8c656798), [`5fabd272`](https://github.com/wbkd/react-flow/commit/5fabd2720f6367f75f79a45822d8f675a3b8e1cf), [`8f080bd5`](https://github.com/wbkd/react-flow/commit/8f080bd5e0e7e6c71f51eee9c9f2bc4b25182861), [`b8886514`](https://github.com/wbkd/react-flow/commit/b88865140c72fa7e92a883498768000cb2cc96a7), [`16bf89f2`](https://github.com/wbkd/react-flow/commit/16bf89f2b7bbf8449c00d0e2c07c19c3ff6d2533)]:
+  - @reactflow/core@11.6.0
+
 ## 11.1.8
 
 ### Patch Changes

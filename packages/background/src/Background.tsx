@@ -59,6 +59,7 @@ function Background({
         left: 0,
       }}
       ref={ref}
+      data-testid="rf__background"
     >
       <pattern
         id={patternId}

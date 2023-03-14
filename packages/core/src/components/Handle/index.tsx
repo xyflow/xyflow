@@ -26,7 +26,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     {
       type = 'source',
       position = Position.Top,
-      isValidConnection = alwaysValid,
+      isValidConnection,
       isConnectable = true,
       id,
       onConnect,
@@ -60,8 +60,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         ...params,
       };
       if (hasDefaultEdges) {
-        const { edges } = store.getState();
-        store.setState({ edges: addEdge(edgeParams, edges) });
+        const { edges, setEdges } = store.getState();
+        setEdges(addEdge(edgeParams, edges));
       }
 
       onConnectAction?.(edgeParams);
@@ -80,7 +80,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           isTarget,
           getState: store.getState,
           setState: store.setState,
-          isValidConnection,
+          isValidConnection: isValidConnection || store.getState().isValidConnection || alwaysValid,
         });
       }
 
@@ -92,7 +92,12 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     };
 
     const onClick = (event: ReactMouseEvent) => {
-      const { onClickConnectStart, onClickConnectEnd, connectionMode } = store.getState();
+      const {
+        onClickConnectStart,
+        onClickConnectEnd,
+        connectionMode,
+        isValidConnection: isValidConnectionStore,
+      } = store.getState();
       if (!connectionStartHandle) {
         onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
         store.setState({ connectionStartHandle: { nodeId, type, handleId } });
@@ -100,6 +105,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       }
 
       const doc = getHostForElement(event.target as HTMLElement);
+      const isValidConnectionHandler = isValidConnection || isValidConnectionStore || alwaysValid;
       const { connection, isValid } = isValidHandle(
         event.nativeEvent,
         {
@@ -111,7 +117,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         connectionStartHandle.nodeId,
         connectionStartHandle.handleId || null,
         connectionStartHandle.type,
-        isValidConnection,
+        isValidConnectionHandler,
         doc
       );
 

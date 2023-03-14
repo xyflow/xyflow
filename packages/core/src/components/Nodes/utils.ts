@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, RefObject } from 'react';
 import { StoreApi } from 'zustand';
 import { getDimensions } from '@reactflow/utils';
 import { Position, type HandleElement, type NodeOrigin } from '@reactflow/system';
@@ -58,6 +58,7 @@ export function handleNodeClick({
   id,
   store,
   unselect = false,
+  nodeRef,
 }: {
   id: string;
   store: {
@@ -65,6 +66,7 @@ export function handleNodeClick({
     setState: StoreApi<ReactFlowState>['setState'];
   };
   unselect?: boolean;
+  nodeRef?: RefObject<HTMLDivElement>;
 }) {
   const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeInternals } = store.getState();
   const node = nodeInternals.get(id)!;
@@ -75,5 +77,7 @@ export function handleNodeClick({
     addSelectedNodes([id]);
   } else if (unselect || (node.selected && multiSelectionActive)) {
     unselectNodesAndEdges({ nodes: [node] });
+
+    requestAnimationFrame(() => nodeRef?.current?.blur());
   }
 }

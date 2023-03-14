@@ -12,6 +12,8 @@ import ReactFlow, {
   OnConnectStart,
   OnConnectEnd,
   OnConnect,
+  updateEdge,
+  Edge,
 } from 'reactflow';
 
 import styles from './validation.module.css';
@@ -28,15 +30,15 @@ const isValidConnection = (connection: Connection) => connection.target === 'B';
 const CustomInput: FC<NodeProps> = () => (
   <>
     <div>Only connectable with B</div>
-    <Handle type="source" position={Position.Right} isValidConnection={isValidConnection} />
+    <Handle type="source" position={Position.Right} />
   </>
 );
 
 const CustomNode: FC<NodeProps> = ({ id }) => (
   <>
-    <Handle type="target" position={Position.Left} isValidConnection={isValidConnection} />
+    <Handle type="target" position={Position.Left} />
     <div>{id}</div>
-    <Handle type="source" position={Position.Right} isValidConnection={isValidConnection} />
+    <Handle type="source" position={Position.Right} />
   </>
 );
 
@@ -74,6 +76,11 @@ const ValidationFlow = () => {
     [value]
   );
 
+  const onEdgeUpdate = useCallback(
+    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+    [setEdges]
+  );
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -86,6 +93,8 @@ const ValidationFlow = () => {
       nodeTypes={nodeTypes}
       onConnectStart={onConnectStart}
       onConnectEnd={onConnectEnd}
+      onEdgeUpdate={onEdgeUpdate}
+      isValidConnection={isValidConnection}
       fitView
     />
   );

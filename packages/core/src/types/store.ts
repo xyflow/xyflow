@@ -35,6 +35,7 @@ import type {
   OnEdgesDelete,
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
+  IsValidConnection,
 } from '.';
 
 export type ReactFlowStore = {
@@ -123,6 +124,8 @@ export type ReactFlowStore = {
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   connectionRadius: number;
+
+  isValidConnection?: IsValidConnection;
 };
 
 export type ReactFlowActions = {

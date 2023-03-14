@@ -40,6 +40,7 @@ import type {
   SelectionDragHandler,
   EdgeMouseHandler,
 } from '.';
+import { ValidConnectionFunc } from '../components/Handle/utils';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   nodes?: Node[];
@@ -146,6 +147,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   autoPanOnConnect?: boolean;
   connectionRadius?: number;
   onError?: OnError;
+  isValidConnection?: ValidConnectionFunc;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

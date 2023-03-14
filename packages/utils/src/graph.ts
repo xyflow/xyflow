@@ -108,11 +108,18 @@ export const addEdgeBase = <EdgeType extends BaseEdge>(
   return edges.concat(edge);
 };
 
+export type UpdateEdgeOptions = {
+  shouldReplaceId?: boolean;
+};
+
 export const updateEdgeBase = <EdgeType extends BaseEdge>(
   oldEdge: EdgeType,
   newConnection: Connection,
-  edges: EdgeType[]
+  edges: EdgeType[],
+  options: UpdateEdgeOptions = { shouldReplaceId: true }
 ): EdgeType[] => {
+  const { id: oldEdgeId, ...rest } = oldEdge;
+
   if (!newConnection.source || !newConnection.target) {
     devWarn('006', errorMessages['006']());
 
@@ -122,22 +129,22 @@ export const updateEdgeBase = <EdgeType extends BaseEdge>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['007'](oldEdge.id));
+    devWarn('007', errorMessages['007'](oldEdgeId));
 
     return edges;
   }
 
   // Remove old edge and create the new edge with parameters of old edge.
   const edge = {
-    ...oldEdge,
-    id: getEdgeId(newConnection),
+    ...rest,
+    id: options.shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
     source: newConnection.source,
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,
     targetHandle: newConnection.targetHandle,
   } as EdgeType;
 
-  return edges.filter((e) => e.id !== oldEdge.id).concat(edge);
+  return edges.filter((e) => e.id !== oldEdgeId).concat(edge);
 };
 
 export const pointToRendererPoint = (
