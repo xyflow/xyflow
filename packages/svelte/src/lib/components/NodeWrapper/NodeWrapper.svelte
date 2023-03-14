@@ -30,7 +30,7 @@
   let className: string = '';
   export { className as class };
 
-  const { nodes, transform, nodeTypes, updateNodePositions, addSelectedNodes } = useStore();
+  const { nodes, transform, nodeTypes, snapGrid, updateNodePositions, addSelectedNodes } = useStore();
 
   let nodeRef: HTMLDivElement;
   const nodeTypeValid = !!$nodeTypes[type!];
@@ -74,7 +74,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-  use:drag={{ nodeId: id, nodes, transform, updateNodePositions }}
+  use:drag={{ nodeId: id, nodes, snapGrid, transform, updateNodePositions }}
   bind:this={nodeRef}
   data-id={id}
   class={cc(['svelte-flow__node', `svelte-flow__node-${type}`, className])}

@@ -5,6 +5,7 @@ import type { XYPosition, CoordinateExtent, Transform } from '@reactflow/system'
 
 import { getDragItems, hasSelector, calcNextPosition } from './utils';
 import type { Node } from '$lib/types';
+import type { SvelteFlowStore } from '$lib/store/types';
 
 export type UseDragData = { dx: number; dy: number };
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
@@ -25,13 +26,21 @@ type UseDragParams = {
   handleSelector?: string;
   nodeId?: string;
   updateNodePositions: (dragItems: NodeDragItem[], d: boolean, p: boolean) => void;
-  nodes: Writable<Node[]>;
-  transform: Writable<Transform>;
+  nodes: SvelteFlowStore['nodes'];
+  transform: SvelteFlowStore['transform'];
+  snapGrid: SvelteFlowStore['snapGrid'];
 };
 
 export default function drag(
   nodeRef: Element,
-  { handleSelector, nodeId, updateNodePositions, nodes, transform: transformStore }: UseDragParams
+  {
+    handleSelector,
+    nodeId,
+    updateNodePositions,
+    nodes,
+    transform: transformStore,
+    snapGrid: snapGridStore
+  }: UseDragParams
 ) {
   let dragging = false;
   let dragItems: NodeDragItem[] = [];
@@ -43,6 +52,7 @@ export default function drag(
     const x = sourceEvent.touches ? sourceEvent.touches[0].clientX : sourceEvent.clientX;
     const y = sourceEvent.touches ? sourceEvent.touches[0].clientY : sourceEvent.clientY;
     const transform = get(transformStore);
+    const snapGrid = get(snapGridStore);
 
     const pointerPos = {
       x: (x - transform[0]) / transform[2],
@@ -51,17 +61,24 @@ export default function drag(
 
     // we need the snapped position in order to be able to skip unnecessary drag events
     return {
-      xSnapped: pointerPos.x,
-      ySnapped: pointerPos.y,
+      xSnapped: snapGrid ? snapGrid[0] * Math.round(pointerPos.x / snapGrid[0]) : pointerPos.x,
+      ySnapped: snapGrid ? snapGrid[1] * Math.round(pointerPos.y / snapGrid[1]) : pointerPos.y,
       ...pointerPos
     };
   };
 
   const updateNodes = ({ x, y }: XYPosition) => {
     let hasChange = false;
+    const snapGrid = get(snapGridStore);
 
     dragItems = dragItems.map((n) => {
       const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
+
+      if (snapGrid) {
+        nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
+        nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
+      }
+
       const updatedPos = calcNextPosition(n, nextPosition, get(nodes));
 
       // we want to make sure that we only fire a change event when there is a changes

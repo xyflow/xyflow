@@ -6,7 +6,8 @@ import {
   ConnectionMode,
   ConnectionLineType,
   type SelectionRect,
-  type Transform
+  type Transform,
+  type SnapGrid
 } from '@reactflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -60,6 +61,7 @@ export const initialStoreState = {
     zoom: null,
     selection: null
   }),
+  snapGrid: writable<SnapGrid | null>(null),
   dragging: writable<boolean>(false),
   selectionRect: writable<SelectionRect | null>(null),
   selectionKeyPressed: writable<boolean>(false),

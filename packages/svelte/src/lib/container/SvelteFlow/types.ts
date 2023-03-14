@@ -4,7 +4,8 @@ import type {
   NodeOrigin,
   OnConnectStartParams,
   Viewport,
-  SelectionMode
+  SelectionMode,
+  SnapGrid
 } from '@reactflow/system';
 
 import type {
@@ -29,6 +30,7 @@ export type SvelteFlowProps = {
   initialViewport?: Viewport;
   connectionRadius?: number;
   selectionMode?: SelectionMode;
+  snapGrid?: SnapGrid;
 
   class?: string;
   style?: string;

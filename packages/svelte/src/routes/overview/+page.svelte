@@ -63,7 +63,7 @@
       data: { label: 'Custom Node' },
       position: { x: 150, y: 300 }
     }
-  ]);
+  ], { style: 'width: 125px;' });
 
   const edges = createEdges([
     {
@@ -116,6 +116,7 @@
     maxZoom={2.5}
     selectionMode={SelectionMode.Full}
     initialViewport={{ x: 100, y: 100, zoom: 2 }}
+    snapGrid={[25, 25]}
     on:node:click={(event) => console.log('on node click', event)}
     on:node:mouseenter={(event) => console.log('on node enter', event)} 
     on:node:mouseleave={(event) => console.log('on node leave', event)}
@@ -136,10 +137,6 @@
 </SvelteFlowProvider>
 
 <style>
-  :root {
-    --node-width: 50;
-  }
-
   :global(.svelte-flow .custom-style) {
     background: #ff5050;
     color: white;

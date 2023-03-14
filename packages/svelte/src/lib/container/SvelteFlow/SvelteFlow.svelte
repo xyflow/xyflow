@@ -26,6 +26,7 @@
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let selectionMode: $$Props['selectionMode'] = undefined;
+  export let snapGrid: $$Props['snapGrid'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
@@ -56,6 +57,7 @@
       connectionLineType,
       connectionRadius,
       selectionMode,
+      snapGrid,
       isValidConnection
     };
 
