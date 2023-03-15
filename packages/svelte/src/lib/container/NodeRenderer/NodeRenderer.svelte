@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { internalsSymbol } from '@reactflow/system';
   import { getPositionWithOrigin } from '@reactflow/utils';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
@@ -41,6 +42,7 @@
       connectable={node.connectable || node.connectable === undefined}
       positionAbsolute={node.positionAbsolute}
       positionOrigin={posOrigin}
+      isParent={!!node[internalsSymbol]?.isParent}
       width={node.width}
       height={node.height}
       style={node.style}

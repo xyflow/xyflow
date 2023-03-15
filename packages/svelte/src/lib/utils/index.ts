@@ -1,3 +1,4 @@
+import { writable, type Writable } from 'svelte/store';
 import {
   isNodeBase,
   isEdgeBase,
@@ -5,10 +6,12 @@ import {
   getOutgoersBase,
   getIncomersBase,
   updateEdgeBase,
-  getConnectedEdgesBase
+  getConnectedEdgesBase,
+  isNumeric,
+  getNodePositionWithOrigin
 } from '@reactflow/utils';
+import { internalsSymbol, type XYZPosition } from '@reactflow/system';
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
-import { writable, type Writable } from 'svelte/store';
 
 export const isNode = isNodeBase<Node, Edge>;
 export const isEdge = isEdgeBase<Node, Edge>;
@@ -27,11 +30,53 @@ export const createNodes = (
   let defaults = defaultOptions || {};
 
   const _set: typeof set = (nds: Node[]) => {
-    const nextNodes = defaults ? nds.map((node) => ({ ...defaults, ...node })) : nds;
-    // @todo calculate absolute position based on parent / child relation
-    const nextNodesLayouted = nextNodes.map((n) => ({ ...n, positionAbsolute: n.position }));
+    const parentNodes: Record<string, boolean> = {};
 
-    value = nextNodesLayouted;
+    const nextNodes = nds.map((n) => {
+      const node: Node = { ...defaults, ...n, positionAbsolute: n.position };
+      const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? 1 : 0);
+
+      if (node.parentNode) {
+        parentNodes[node.parentNode] = true;
+      }
+
+      Object.defineProperty(node, internalsSymbol, {
+        value: {
+          handleBounds: node?.[internalsSymbol]?.handleBounds,
+          z
+        }
+      });
+
+      return node;
+    });
+
+    const nodesWithPositions = nextNodes.map((node) => {
+      if (node.parentNode && !parentNodes[node.parentNode]) {
+        throw new Error(`Parent node ${node.parentNode} not found`);
+      }
+
+      if (node.parentNode || parentNodes?.[node.id]) {
+        const { x, y, z } = calculateXYZPosition(node, nextNodes, {
+          ...node.position,
+          z: node[internalsSymbol]?.z ?? 0
+        });
+
+        node.positionAbsolute = {
+          x,
+          y
+        };
+
+        node[internalsSymbol]!.z = z;
+
+        if (parentNodes?.[node.id]) {
+          node[internalsSymbol]!.isParent = true;
+        }
+      }
+
+      return node;
+    });
+
+    value = nodesWithPositions;
 
     set(value);
   };
@@ -81,3 +126,20 @@ export const createEdges = (
     setDefaultOptions
   };
 };
+
+function calculateXYZPosition(node: Node, nodes: Node[], result: XYZPosition): XYZPosition {
+  if (!node.parentNode) {
+    return result;
+  }
+  const parentNode = nodes.find((n) => n.id === node.parentNode)!;
+  const parentNodePosition = getNodePositionWithOrigin(parentNode, parentNode?.origin);
+
+  return calculateXYZPosition(parentNode, nodes, {
+    x: (result.x ?? 0) + parentNodePosition.x,
+    y: (result.y ?? 0) + parentNodePosition.y,
+    z:
+      (parentNode[internalsSymbol]?.z ?? 0) > (result.z ?? 0)
+        ? parentNode[internalsSymbol]?.z ?? 0
+        : result.z ?? 0
+  });
+}

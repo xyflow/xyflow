@@ -21,4 +21,5 @@ export type NodeWrapperProps = Pick<
   positionOrigin?: XYPosition;
   'on:nodeclick'?: (event: MouseEvent) => void;
   resizeObserver?: ResizeObserver | null;
+  isParent?: boolean;
 };

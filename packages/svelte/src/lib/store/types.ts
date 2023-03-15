@@ -7,7 +7,7 @@ import type {
 } from '@reactflow/system';
 
 import type { initialStoreState } from './initial-store';
-import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes } from '$lib/types';
+import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
 import type { Writable } from 'svelte/store';
 
 export type SvelteFlowStoreActions = {
@@ -18,7 +18,7 @@ export type SvelteFlowStoreActions = {
   zoomOut: (options?: ViewportHelperFunctionOptions) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
-  fitView: (options?: ViewportHelperFunctionOptions) => boolean;
+  fitView: (options?: FitViewOptions) => boolean;
   updateNodePositions: (
     nodeDragItems: NodeDragItem[],
     positionChanged?: boolean,

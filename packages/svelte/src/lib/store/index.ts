@@ -19,7 +19,7 @@ import {
 } from '@reactflow/utils';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
-import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData, FitViewOptions } from '$lib/types';
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
 import {
@@ -102,15 +102,20 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
         );
 
         if (doUpdate) {
-          node[internalsSymbol] = {
-            ...node[internalsSymbol],
-            handleBounds: {
-              source: getHandleBounds('.source', update.nodeElement, zoom, node.origin),
-              target: getHandleBounds('.target', update.nodeElement, zoom, node.origin)
+          const newNode = {
+            ...node,
+            width: dimensions.width,
+            height: dimensions.height,
+            [internalsSymbol]: {
+              ...node[internalsSymbol],
+              handleBounds: {
+                source: getHandleBounds('.source', update.nodeElement, zoom, node.origin),
+                target: getHandleBounds('.target', update.nodeElement, zoom, node.origin)
+              }
             }
           };
-          node.width = dimensions.width;
-          node.height = dimensions.height;
+
+          return newNode;
         }
       }
 
@@ -121,7 +126,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
 
     const fitViewOnInitDone =
       get(store.fitViewOnInitDone) ||
-      (get(store.fitViewOnInit) && !!d3Zoom && !!d3Selection && fitView());
+      (get(store.fitViewOnInit) && !!d3Zoom && !!d3Selection && fitView({ nodes: nextNodes }));
 
     store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
@@ -162,16 +167,18 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     }
   }
 
-  function fitView() {
+  function fitView(options?: FitViewOptions) {
     const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
 
     if (!d3Zoom || !d3Selection) {
       return false;
     }
 
+    const fitViewNodes = options?.nodes || get(store.nodes);
+
     return fitViewUtil(
       {
-        nodes: get(store.nodes),
+        nodes: fitViewNodes as Node[],
         width: get(store.width),
         height: get(store.height),
         minZoom: 0.2,

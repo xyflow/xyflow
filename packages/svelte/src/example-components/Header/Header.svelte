@@ -5,6 +5,7 @@
     'drag-n-drop',
     'overview',
     'stress',
+    'subflows',
     'usesvelteflow',
     'validation'
   ];

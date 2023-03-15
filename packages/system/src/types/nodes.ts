@@ -80,6 +80,7 @@ export type NodeDragItem = {
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
   dragging?: boolean;
+  origin?: NodeOrigin;
 };
 
 export type NodeOrigin = [number, number];

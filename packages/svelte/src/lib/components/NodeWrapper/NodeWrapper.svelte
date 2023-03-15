@@ -22,11 +22,11 @@
   export let width: NodeWrapperProps['width'] = undefined;
   export let height: NodeWrapperProps['height'] = undefined;
   export let type: NodeWrapperProps['type'] = 'default';
+  export let isParent: NodeWrapperProps['isParent'] = false;
   export let positionAbsolute: NodeWrapperProps['positionAbsolute'] = undefined;
   export let positionOrigin: NodeWrapperProps['positionOrigin'] = undefined;
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
-
   let className: string = '';
   export { className as class };
 
@@ -77,12 +77,13 @@
   use:drag={{ nodeId: id, nodes, snapGrid, transform, updateNodePositions }}
   bind:this={nodeRef}
   data-id={id}
-  class={cc(['svelte-flow__node', `svelte-flow__node-${type}`, className])}
+  class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}
   class:initializing={!width && !height}
   class:dragging
   class:selected
   class:draggable
   class:connectable
+  class:parent={isParent}
   style:transform={`translate(${positionOrigin?.x ?? 0}px, ${positionOrigin?.y ?? 0}px)`}
   {style}
   on:click={onSelectNodeHandler}

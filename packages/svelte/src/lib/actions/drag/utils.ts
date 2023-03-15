@@ -1,5 +1,11 @@
-import type { CoordinateExtent, NodeDragItem, NodeOrigin, XYPosition } from '@reactflow/system';
-import { clampPosition, isNumeric } from '@reactflow/utils';
+import {
+  errorMessages,
+  type CoordinateExtent,
+  type NodeDragItem,
+  type NodeOrigin,
+  type XYPosition
+} from '@reactflow/system';
+import { clampPosition, devWarn, getNodePositionWithOrigin, isNumeric } from '@reactflow/utils';
 
 import type { Node } from '$lib/types';
 
@@ -65,16 +71,28 @@ export function calcNextPosition(
   node: NodeDragItem | Node,
   nextPosition: XYPosition,
   nodes: Node[],
-  nodeExtent?: CoordinateExtent,
-  nodeOrigin: NodeOrigin = [0, 0]
+  nodeExtent?: CoordinateExtent
 ): { position: XYPosition; positionAbsolute: XYPosition } {
   let currentExtent = node.extent || nodeExtent;
 
   if (node.extent === 'parent') {
     if (node.parentNode && node.width && node.height) {
-      const parent = nodes.find((n) => n.id === node.parentNode)!;
-      const parentOrigin = parent.origin || nodeOrigin;
-      const { x: parentX, y: parentY } = parent.positionAbsolute!;
+      const parent = nodes.find((n) => n.id === node.parentNode);
+      const parentOrigin = parent?.origin || [0, 0];
+      const nodeOrigin = node.origin || [0, 0];
+      const { x: parentX, y: parentY } = getNodePositionWithOrigin(
+        parent,
+        parentOrigin
+      ).positionAbsolute;
+      console.log({
+        parentX,
+        parentY,
+        parentW: parent?.width,
+        parentH: parent?.height,
+        nodeW: node.width,
+        nodeH: node.height,
+        parentOrigin: parentOrigin[0]
+      });
       currentExtent =
         parent &&
         isNumeric(parentX) &&
@@ -82,19 +100,23 @@ export function calcNextPosition(
         isNumeric(parent.width) &&
         isNumeric(parent.height)
           ? [
-              [parentX + node.width * parentOrigin[0], parentY + node.height * parentOrigin[1]],
+              [parentX + node.width * nodeOrigin[0], parentY + node.height * nodeOrigin[1]],
               [
-                parentX + parent.width! - node.width + node.width * parentOrigin[0],
-                parentY + parent.height! - node.height + node.height * parentOrigin[1]
+                parentX + parent.width - node.width + node.width * nodeOrigin[0],
+                parentY + parent.height - node.height + node.height * nodeOrigin[1]
               ]
             ]
           : currentExtent;
     } else {
+      devWarn('005', errorMessages['005']());
       currentExtent = nodeExtent;
     }
   } else if (node.extent && node.parentNode) {
-    const parent = nodes.find((n) => n.id === node.parentNode)!;
-    const { x: parentX, y: parentY } = parent.positionAbsolute!;
+    const parent = nodes.find((n) => n.id === node.parentNode);
+    const { x: parentX, y: parentY } = getNodePositionWithOrigin(
+      parent,
+      parent?.origin || [0, 0]
+    ).positionAbsolute;
     currentExtent = [
       [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
       [node.extent[1][0] + parentX, node.extent[1][1] + parentY]
@@ -104,8 +126,8 @@ export function calcNextPosition(
   let parentPosition = { x: 0, y: 0 };
 
   if (node.parentNode) {
-    const parent = nodes.find((n) => n.id === node.parentNode)!;
-    parentPosition = parent.positionAbsolute!;
+    const parent = nodes.find((n) => n.id === node.parentNode);
+    parentPosition = getNodePositionWithOrigin(parent, parent?.origin || [0, 0]).positionAbsolute;
   }
 
   const positionAbsolute = currentExtent

@@ -89,14 +89,16 @@ export function calcNextPosition(
     if (node.parentNode && node.width && node.height) {
       const parent = nodeInternals.get(node.parentNode);
       const parentOrigin = parent?.origin || nodeOrigin;
+      const currNodeOrigin = node.origin || nodeOrigin;
+
       const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parentOrigin).positionAbsolute;
       currentExtent =
         parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
           ? [
-              [parentX + node.width * parentOrigin[0], parentY + node.height * parentOrigin[1]],
+              [parentX + node.width * currNodeOrigin[0], parentY + node.height * currNodeOrigin[1]],
               [
-                parentX + parent.width - node.width + node.width * parentOrigin[0],
-                parentY + parent.height - node.height + node.height * parentOrigin[1],
+                parentX + parent.width - node.width + node.width * currNodeOrigin[0],
+                parentY + parent.height - node.height + node.height * currNodeOrigin[1],
               ],
             ]
           : currentExtent;

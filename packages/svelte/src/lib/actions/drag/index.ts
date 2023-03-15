@@ -1,10 +1,9 @@
-import { get, type Writable } from 'svelte/store';
+import { get } from 'svelte/store';
 import { drag as d3Drag, type D3DragEvent, type SubjectPosition } from 'd3-drag';
 import { select } from 'd3-selection';
-import type { XYPosition, CoordinateExtent, Transform } from '@reactflow/system';
+import type { XYPosition, CoordinateExtent } from '@reactflow/system';
 
 import { getDragItems, hasSelector, calcNextPosition } from './utils';
-import type { Node } from '$lib/types';
 import type { SvelteFlowStore } from '$lib/store/types';
 
 export type UseDragData = { dx: number; dy: number };
