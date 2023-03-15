@@ -9,12 +9,18 @@
     createNodes,
     createEdges,
     type NodeTypes,
-    SelectionMode
+    SelectionMode,
+    type EdgeTypes
   } from '../../lib/index';
-  import { CustomNode } from '../../example-components/CustomNode';
+  import { CustomNode } from './CustomNode';
+  import { CustomEdge } from './CustomEdge';
 
   const nodeTypes: NodeTypes = {
     custom: CustomNode
+  };
+
+  const edgeTypes: EdgeTypes = {
+    custom: CustomEdge
   };
 
   const nodes = createNodes([
@@ -81,7 +87,7 @@
     },
     {
       id: '2-4',
-      type: 'default',
+      type: 'custom',
       source: '2',
       target: '4',
     }
@@ -111,6 +117,7 @@
 >
   <SvelteFlow
     {nodeTypes}
+    {edgeTypes}
     fitView
     minZoom={0.1}
     maxZoom={2.5}

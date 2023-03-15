@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Handle } from '$lib/components/Handle';
   import { Position } from '@reactflow/system';
+  import { Handle } from '../../../lib/index';
 
   export let data: { label: string } = { label: 'Node' };
   export let xPos: number = 0;

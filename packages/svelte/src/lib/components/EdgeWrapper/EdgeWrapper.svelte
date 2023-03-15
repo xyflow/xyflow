@@ -16,8 +16,9 @@
   export let sourceY: $$Props['sourceY'] = 0;
   export let targetX: $$Props['targetX'] = 0;
   export let targetY: $$Props['targetY'] = 0;
-  export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
-  export let targetHandleId: $$Props['targetHandleId'] = undefined;
+  // @ todo: support edge updates
+  // export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
+  // export let targetHandleId: $$Props['targetHandleId'] = undefined;
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
   export let targetPosition: $$Props['targetPosition'] = Position.Top;
   export let animated: $$Props['animated'] = false;
@@ -35,6 +36,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <g
   class="svelte-flow__edge"
   class:animated
