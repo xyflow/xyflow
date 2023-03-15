@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.6.1
+
+### Patch Changes
+
+- Always create new edge object (fixes an issue with Redux toolkit and other immutable helper libs)
+
 ## 11.6.0
 
 ### Minor Changes

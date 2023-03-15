@@ -1,5 +1,11 @@
 # reactflow
 
+## 11.6.1
+
+### Patch Changes
+
+- Always create new edge object (fixes an issue with Redux toolkit and other immutable helper libs)
+
 ## 11.6.0
 
 This release introduces a new `isValidConnection` prop for the ReactFlow component. You no longer need to pass it to all your Handle components but can pass it once. We also added a new option for the `updateEdge` function that allows you to specify if you want to replace an id when updating it. More over the `MiniMap` got a new `nodeComponent` prop to pass a custom component for the mini map nodes.
