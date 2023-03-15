@@ -1,9 +1,9 @@
 {
-  "name": "svelte",
+  "name": "svelteflow",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite dev",
-    "build": "svelte-kit sync && svelte-package",
+    "build": "svelte-kit sync && svelte-package -o package",
     "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -13,7 +13,8 @@
   "type": "module",
   "module": "index.ts",
   "exports": {
-    ".": "./index.js"
+    "./package.json": "./package.json",
+    ".": "./package/index.js"
   },
   "dependencies": {
     "@reactflow/edge-utils": "workspace:*",
@@ -29,8 +30,8 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
-    "@sveltejs/kit": "^1.9.1",
-    "@sveltejs/package": "^1.0.2",
+    "@sveltejs/kit": "^1.11.0",
+    "@sveltejs/package": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "eslint": "^8.28.0",
@@ -38,10 +39,285 @@
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^2.8.0",
     "prettier-plugin-svelte": "^2.9.0",
-    "svelte": "^3.55.1",
-    "svelte-check": "^3.0.4",
+    "svelte": "^3.56.0",
+    "svelte-check": "^3.1.4",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
     "vite": "^4.1.4"
+  },
+  "peerDependencies": {
+    "svelte": "^3.56.0"
+  },
+  "files": [
+    "package"
+  ],
+  "svelte": "./package/index.js",
+  "typesVersions": {
+    ">4.0": {
+      "actions/drag": [
+        "./package/actions/drag/index.d.ts"
+      ],
+      "actions/drag/utils": [
+        "./package/actions/drag/utils.d.ts"
+      ],
+      "actions/portal": [
+        "./package/actions/portal/index.d.ts"
+      ],
+      "actions/zoom": [
+        "./package/actions/zoom/index.d.ts"
+      ],
+      "components/Attribution/Attribution.svelte": [
+        "./package/components/Attribution/Attribution.svelte.d.ts"
+      ],
+      "components/Attribution": [
+        "./package/components/Attribution/index.d.ts"
+      ],
+      "components/Attribution/types": [
+        "./package/components/Attribution/types.d.ts"
+      ],
+      "components/BaseEdge/BaseEdge.svelte": [
+        "./package/components/BaseEdge/BaseEdge.svelte.d.ts"
+      ],
+      "components/BaseEdge": [
+        "./package/components/BaseEdge/index.d.ts"
+      ],
+      "components/BaseEdge/types": [
+        "./package/components/BaseEdge/types.d.ts"
+      ],
+      "components/ConnectionLine/ConnectionLine.svelte": [
+        "./package/components/ConnectionLine/ConnectionLine.svelte.d.ts"
+      ],
+      "components/ConnectionLine": [
+        "./package/components/ConnectionLine/index.d.ts"
+      ],
+      "components/EdgeLabelRenderer/EdgeLabelRenderer.svelte": [
+        "./package/components/EdgeLabelRenderer/EdgeLabelRenderer.svelte.d.ts"
+      ],
+      "components/EdgeLabelRenderer": [
+        "./package/components/EdgeLabelRenderer/index.d.ts"
+      ],
+      "components/EdgeWrapper/EdgeWrapper.svelte": [
+        "./package/components/EdgeWrapper/EdgeWrapper.svelte.d.ts"
+      ],
+      "components/EdgeWrapper": [
+        "./package/components/EdgeWrapper/index.d.ts"
+      ],
+      "components/Handle/Handle.svelte": [
+        "./package/components/Handle/Handle.svelte.d.ts"
+      ],
+      "components/Handle/handler": [
+        "./package/components/Handle/handler.d.ts"
+      ],
+      "components/Handle": [
+        "./package/components/Handle/index.d.ts"
+      ],
+      "components/Handle/utils": [
+        "./package/components/Handle/utils.d.ts"
+      ],
+      "components/KeyHandler/KeyHandler.svelte": [
+        "./package/components/KeyHandler/KeyHandler.svelte.d.ts"
+      ],
+      "components/KeyHandler": [
+        "./package/components/KeyHandler/index.d.ts"
+      ],
+      "components/KeyHandler/types": [
+        "./package/components/KeyHandler/types.d.ts"
+      ],
+      "components/NodeSelection/NodeSelection.svelte": [
+        "./package/components/NodeSelection/NodeSelection.svelte.d.ts"
+      ],
+      "components/NodeSelection": [
+        "./package/components/NodeSelection/index.d.ts"
+      ],
+      "components/NodeWrapper/NodeWrapper.svelte": [
+        "./package/components/NodeWrapper/NodeWrapper.svelte.d.ts"
+      ],
+      "components/NodeWrapper": [
+        "./package/components/NodeWrapper/index.d.ts"
+      ],
+      "components/NodeWrapper/types": [
+        "./package/components/NodeWrapper/types.d.ts"
+      ],
+      "components/Selection/Selection.svelte": [
+        "./package/components/Selection/Selection.svelte.d.ts"
+      ],
+      "components/Selection": [
+        "./package/components/Selection/index.d.ts"
+      ],
+      "components/SvelteFlowProvider/SvelteFlowProvider.svelte": [
+        "./package/components/SvelteFlowProvider/SvelteFlowProvider.svelte.d.ts"
+      ],
+      "components/SvelteFlowProvider": [
+        "./package/components/SvelteFlowProvider/index.d.ts"
+      ],
+      "components/SvelteFlowProvider/types": [
+        "./package/components/SvelteFlowProvider/types.d.ts"
+      ],
+      "components/UserSelection/UserSelection.svelte": [
+        "./package/components/UserSelection/UserSelection.svelte.d.ts"
+      ],
+      "components/UserSelection": [
+        "./package/components/UserSelection/index.d.ts"
+      ],
+      "components/edges/BezierEdge.svelte": [
+        "./package/components/edges/BezierEdge.svelte.d.ts"
+      ],
+      "components/edges/SmoothStepEdge.svelte": [
+        "./package/components/edges/SmoothStepEdge.svelte.d.ts"
+      ],
+      "components/edges/StraightEdge.svelte": [
+        "./package/components/edges/StraightEdge.svelte.d.ts"
+      ],
+      "components/nodes/DefaultNode.svelte": [
+        "./package/components/nodes/DefaultNode.svelte.d.ts"
+      ],
+      "components/nodes/InputNode.svelte": [
+        "./package/components/nodes/InputNode.svelte.d.ts"
+      ],
+      "components/nodes/OutputNode.svelte": [
+        "./package/components/nodes/OutputNode.svelte.d.ts"
+      ],
+      "container/EdgeRenderer/EdgeRenderer.svelte": [
+        "./package/container/EdgeRenderer/EdgeRenderer.svelte.d.ts"
+      ],
+      "container/EdgeRenderer": [
+        "./package/container/EdgeRenderer/index.d.ts"
+      ],
+      "container/EdgeRenderer/utils": [
+        "./package/container/EdgeRenderer/utils.d.ts"
+      ],
+      "container/NodeRenderer/NodeRenderer.svelte": [
+        "./package/container/NodeRenderer/NodeRenderer.svelte.d.ts"
+      ],
+      "container/NodeRenderer": [
+        "./package/container/NodeRenderer/index.d.ts"
+      ],
+      "container/Pane/Pane.svelte": [
+        "./package/container/Pane/Pane.svelte.d.ts"
+      ],
+      "container/Pane": [
+        "./package/container/Pane/index.d.ts"
+      ],
+      "container/Panel/Panel.svelte": [
+        "./package/container/Panel/Panel.svelte.d.ts"
+      ],
+      "container/Panel": [
+        "./package/container/Panel/index.d.ts"
+      ],
+      "container/Panel/types": [
+        "./package/container/Panel/types.d.ts"
+      ],
+      "container/SvelteFlow/SvelteFlow.svelte": [
+        "./package/container/SvelteFlow/SvelteFlow.svelte.d.ts"
+      ],
+      "container/SvelteFlow": [
+        "./package/container/SvelteFlow/index.d.ts"
+      ],
+      "container/SvelteFlow/types": [
+        "./package/container/SvelteFlow/types.d.ts"
+      ],
+      "container/Viewport/Viewport.svelte": [
+        "./package/container/Viewport/Viewport.svelte.d.ts"
+      ],
+      "container/Viewport": [
+        "./package/container/Viewport/index.d.ts"
+      ],
+      "container/Zoom/Zoom.svelte": [
+        "./package/container/Zoom/Zoom.svelte.d.ts"
+      ],
+      "container/Zoom": [
+        "./package/container/Zoom/index.d.ts"
+      ],
+      "hooks/useSvelteFlow": [
+        "./package/hooks/useSvelteFlow.d.ts"
+      ],
+      "index": [
+        "./package/index.d.ts"
+      ],
+      "plugins/Background/Background.svelte": [
+        "./package/plugins/Background/Background.svelte.d.ts"
+      ],
+      "plugins/Background/DotPattern.svelte": [
+        "./package/plugins/Background/DotPattern.svelte.d.ts"
+      ],
+      "plugins/Background/LinePattern.svelte": [
+        "./package/plugins/Background/LinePattern.svelte.d.ts"
+      ],
+      "plugins/Background": [
+        "./package/plugins/Background/index.d.ts"
+      ],
+      "plugins/Background/types": [
+        "./package/plugins/Background/types.d.ts"
+      ],
+      "plugins/Controls/ControlButton.svelte": [
+        "./package/plugins/Controls/ControlButton.svelte.d.ts"
+      ],
+      "plugins/Controls/Controls.svelte": [
+        "./package/plugins/Controls/Controls.svelte.d.ts"
+      ],
+      "plugins/Controls/Icons/Fit.svelte": [
+        "./package/plugins/Controls/Icons/Fit.svelte.d.ts"
+      ],
+      "plugins/Controls/Icons/Lock.svelte": [
+        "./package/plugins/Controls/Icons/Lock.svelte.d.ts"
+      ],
+      "plugins/Controls/Icons/Minus.svelte": [
+        "./package/plugins/Controls/Icons/Minus.svelte.d.ts"
+      ],
+      "plugins/Controls/Icons/Plus.svelte": [
+        "./package/plugins/Controls/Icons/Plus.svelte.d.ts"
+      ],
+      "plugins/Controls/Icons/Unlock.svelte": [
+        "./package/plugins/Controls/Icons/Unlock.svelte.d.ts"
+      ],
+      "plugins/Controls": [
+        "./package/plugins/Controls/index.d.ts"
+      ],
+      "plugins/Controls/types": [
+        "./package/plugins/Controls/types.d.ts"
+      ],
+      "plugins/Minimap/Minimap.svelte": [
+        "./package/plugins/Minimap/Minimap.svelte.d.ts"
+      ],
+      "plugins/Minimap/MinimapNode.svelte": [
+        "./package/plugins/Minimap/MinimapNode.svelte.d.ts"
+      ],
+      "plugins/Minimap": [
+        "./package/plugins/Minimap/index.d.ts"
+      ],
+      "plugins/Minimap/types": [
+        "./package/plugins/Minimap/types.d.ts"
+      ],
+      "store/connection-path": [
+        "./package/store/connection-path.d.ts"
+      ],
+      "store/edges-layouted": [
+        "./package/store/edges-layouted.d.ts"
+      ],
+      "store": [
+        "./package/store/index.d.ts"
+      ],
+      "store/initial-store": [
+        "./package/store/initial-store.d.ts"
+      ],
+      "store/types": [
+        "./package/store/types.d.ts"
+      ],
+      "types/edges": [
+        "./package/types/edges.d.ts"
+      ],
+      "types/general": [
+        "./package/types/general.d.ts"
+      ],
+      "types": [
+        "./package/types/index.d.ts"
+      ],
+      "types/nodes": [
+        "./package/types/nodes.d.ts"
+      ],
+      "utils": [
+        "./package/utils/index.d.ts"
+      ]
+    }
   }
 }

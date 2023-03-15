@@ -23,7 +23,7 @@ export type ConnectionData = {
 
 export type HandleComponentProps = {
   type: HandleType;
-  position: Position;
+  position?: Position;
   id?: string;
   class?: string;
   style?: string;
