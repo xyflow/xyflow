@@ -140,7 +140,7 @@ const ZoomPane = ({
             -(deltaX / currentZoom) * panOnScrollSpeed,
             -(deltaY / currentZoom) * panOnScrollSpeed
           );
-        });
+        }, { passive: false });
       } else if (typeof d3ZoomHandler !== 'undefined') {
         d3Selection.on('wheel.zoom', function (event: any, d: any) {
           if (!preventScrolling || isWrappedWithClass(event, noWheelClassName)) {
@@ -149,7 +149,7 @@ const ZoomPane = ({
 
           event.preventDefault();
           d3ZoomHandler.call(this, event, d);
-        });
+        }, { passive: false });
       }
     }
   }, [
