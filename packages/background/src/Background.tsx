@@ -9,18 +9,33 @@ import { DotPattern, LinePattern } from './Patterns';
 const defaultColor = {
   [BackgroundVariant.Dots]: '#91919a',
   [BackgroundVariant.Lines]: '#eee',
+  [BackgroundVariant.TwinLines]: '#ccc',
   [BackgroundVariant.Cross]: '#e2e2e2',
 };
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
   [BackgroundVariant.Lines]: 1,
+  [BackgroundVariant.TwinLines]: 1,
   [BackgroundVariant.Cross]: 6,
 };
 
 const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
-function Background({
+function Background(props: BackgroundProps) {
+  if (props.variant !== BackgroundVariant.TwinLines) return <BackgroundImpl {...props}/>;
+  return (
+    <>
+      <BackgroundImpl {...props} key={"twin-1"} variant={BackgroundVariant.Lines}/>
+      <BackgroundImpl {...props} key={"twin-2"} gap={props.twinGap ?? 100}
+                      lineWidth={props.twinLineWidth ?? 1}
+                      color={props.twinColor ?? defaultColor[BackgroundVariant.TwinLines]}
+      />
+    </>
+  );
+}
+
+function BackgroundImpl({
   variant = BackgroundVariant.Dots,
   gap = 20,
   // only used for dots and cross
@@ -62,7 +77,7 @@ function Background({
       data-testid="rf__background"
     >
       <pattern
-        id={patternId}
+        id={patternId+variant}
         x={transform[0] % scaledGap[0]}
         y={transform[1] % scaledGap[1]}
         width={scaledGap[0]}
@@ -76,7 +91,7 @@ function Background({
           <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
         )}
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId+variant})`} />
     </svg>
   );
 }
