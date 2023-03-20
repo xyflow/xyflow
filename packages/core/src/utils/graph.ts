@@ -72,7 +72,7 @@ const connectionExists = (edge: Edge, edges: Edge[]) => {
 
 export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['006']());
+    devWarn('006', errorMessages['error006']());
 
     return edges;
   }
@@ -94,11 +94,16 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
   return edges.concat(edge);
 };
 
-export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge[], options: UpdateEdgeOptions = { shouldReplaceId: true }): Edge[] => {
+export const updateEdge = (
+  oldEdge: Edge,
+  newConnection: Connection,
+  edges: Edge[],
+  options: UpdateEdgeOptions = { shouldReplaceId: true }
+): Edge[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
 
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['006']());
+    devWarn('006', errorMessages['error006']());
 
     return edges;
   }
@@ -106,7 +111,7 @@ export const updateEdge = (oldEdge: Edge, newConnection: Connection, edges: Edge
   const foundEdge = edges.find((e) => e.id === oldEdgeId) as Edge;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['007'](oldEdgeId));
+    devWarn('007', errorMessages['error007'](oldEdgeId));
 
     return edges;
   }

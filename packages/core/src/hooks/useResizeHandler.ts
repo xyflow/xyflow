@@ -19,7 +19,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
       const size = getDimensions(rendererNode.current);
 
       if (size.height === 0 || size.width === 0) {
-        store.getState().onError?.('004', errorMessages['004']());
+        store.getState().onError?.('004', errorMessages['error004']());
       }
 
       store.setState({ width: size.width || 500, height: size.height || 500 });
