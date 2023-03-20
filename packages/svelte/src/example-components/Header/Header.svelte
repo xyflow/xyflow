@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
 
   const routes = [
+    'customnode',
     'drag-n-drop',
     'overview',
     'stress',

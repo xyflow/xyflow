@@ -95,7 +95,7 @@
 
 <div
   bind:this={domNode}
-  style={style}
+  {style}
   class={cc(['svelte-flow', className])}
   data-testid="svelte-flow__wrapper"
   on:dragover
