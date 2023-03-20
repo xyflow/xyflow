@@ -94,7 +94,7 @@ export function handlePointerDown({
     connectionHandleType: handleType,
     connectionStatus: null,
     connectionTargetNodeId: null,
-    connectionTargetHandeId: null,
+    connectionTargetHandleId: null,
   });
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
