@@ -169,6 +169,8 @@ export type ReactFlowStore = {
 
   connectionNodeId: string | null;
   connectionHandleId: string | null;
+  connectionTargetNodeId: string | null;
+  connectionTargetHandleId: string | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
   connectionStatus: ConnectionStatus | null;

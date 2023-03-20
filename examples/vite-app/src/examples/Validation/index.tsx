@@ -16,6 +16,8 @@ import ReactFlow, {
   Edge,
 } from 'reactflow';
 
+import ConnectionStatus from './ConnectionStatus';
+
 import styles from './validation.module.css';
 
 const initialNodes: Node[] = [
@@ -96,7 +98,9 @@ const ValidationFlow = () => {
       onEdgeUpdate={onEdgeUpdate}
       isValidConnection={isValidConnection}
       fitView
-    />
+    >
+      <ConnectionStatus />
+    </ReactFlow>
   );
 };
 

@@ -93,6 +93,8 @@ export function handlePointerDown({
     connectionHandleId: handleId,
     connectionHandleType: handleType,
     connectionStatus: null,
+    connectionTargetNodeId: null,
+    connectionTargetHandleId: null,
   });
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
@@ -139,6 +141,8 @@ export function handlePointerDown({
             )
           : connectionPosition,
       connectionStatus: getConnectionStatus(!!prevClosestHandle, isValid),
+      connectionTargetNodeId: connection.target,
+      connectionTargetHandleId: connection.targetHandle,
     });
 
     if (!prevClosestHandle && !isValid && !handleDomNode) {
