@@ -36,6 +36,7 @@ const Backgrounds: FC = () => (
     <Flow id="flow-a" bgProps={{ variant: BackgroundVariant.Dots }} />
     <Flow id="flow-b" bgProps={{ variant: BackgroundVariant.Lines, gap: [50, 50] }} />
     <Flow id="flow-c" bgProps={{ variant: BackgroundVariant.Cross, gap: [100, 50] }} />
+    <Flow id="flow-d" bgProps={{ variant: BackgroundVariant.TwinLines }} />
   </div>
 );
 
