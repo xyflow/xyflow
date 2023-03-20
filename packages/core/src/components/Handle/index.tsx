@@ -43,7 +43,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const nodeId = useNodeId();
 
     if (!nodeId) {
-      store.getState().onError?.('010', errorMessages['010']());
+      store.getState().onError?.('010', errorMessages['error010']());
 
       return null;
     }

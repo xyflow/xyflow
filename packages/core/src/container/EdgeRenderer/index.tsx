@@ -99,7 +99,7 @@ const EdgeRenderer = ({
               let edgeType = edge.type || 'default';
 
               if (!edgeTypes[edgeType]) {
-                onError?.('011', errorMessages['011'](edgeType));
+                onError?.('011', errorMessages['error011'](edgeType));
                 edgeType = 'default';
               }
 
@@ -116,7 +116,7 @@ const EdgeRenderer = ({
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
-                onError?.('008', errorMessages['008'](sourceHandle, edge));
+                onError?.('008', errorMessages['error008'](sourceHandle, edge));
 
                 return null;
               }

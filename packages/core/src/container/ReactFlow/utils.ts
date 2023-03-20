@@ -17,7 +17,7 @@ export function useNodeOrEdgeTypes(nodeOrEdgeTypes: any, createTypes: any): any 
     if (process.env.NODE_ENV === 'development') {
       const typeKeys = Object.keys(nodeOrEdgeTypes);
       if (shallow(typesKeysRef.current, typeKeys)) {
-        devWarn('002', errorMessages['002']());
+        devWarn('002', errorMessages['error002']());
       }
 
       typesKeysRef.current = typeKeys;
