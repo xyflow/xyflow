@@ -74,6 +74,7 @@ importers:
       start-server-and-test: ^1.14.0
       typescript: ^4.9.4
       vite: ^4.0.4
+      zustand: ^4.3.1
     dependencies:
       '@reactflow/node-resizer': link:../../packages/node-resizer
       classcat: registry.npmjs.org/classcat/5.0.4
@@ -83,6 +84,7 @@ importers:
       react-dom: registry.npmjs.org/react-dom/18.2.0_react@18.2.0
       react-router-dom: registry.npmjs.org/react-router-dom/6.3.0_biqbaboplfbrettd7655fr4n2y
       reactflow: link:../../packages/reactflow
+      zustand: registry.npmjs.org/zustand/4.3.1_react@18.2.0
     devDependencies:
       '@cypress/skip-test': registry.npmjs.org/@cypress/skip-test/2.6.1
       '@types/dagre': registry.npmjs.org/@types/dagre/0.7.48
