@@ -152,8 +152,12 @@ const BasicFlow = () => {
         <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
           toggle classnames
         </button>
-        <button onClick={logToObject}>toObject</button>
-        <button onClick={_ => setInverse(!inverse)}>{inverse ? 'un-inverse pan' : 'inverse pan'}</button>
+        <button onClick={logToObject} style={{ marginRight: 5 }}>
+          toObject
+        </button>
+        <button onClick={_ => setInverse(!inverse)} style={{ marginRight: 5 }}>
+          {inverse ? 'un-inverse pan' : 'inverse pan'}
+        </button>
       </div>
     </ReactFlow>
   );
