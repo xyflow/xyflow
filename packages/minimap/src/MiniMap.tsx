@@ -150,7 +150,7 @@ function MiniMap({
         selection.on('zoom', null);
       };
     }
-  }, [pannable, zoomable]);
+  }, [pannable, zoomable, inversePan, zoomStep]);
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {

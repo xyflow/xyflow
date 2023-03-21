@@ -104,6 +104,7 @@ const BasicFlow = () => {
 
   const logToObject = () => console.log(instance.toObject());
   const resetTransform = () => instance.setViewport({ x: 0, y: 0, zoom: 1 });
+  const toggleInverse = () => setInverse(!inverse);
 
   const toggleClassnames = () => {
     instance.setNodes((nodes) =>
@@ -155,7 +156,7 @@ const BasicFlow = () => {
         <button onClick={logToObject} style={{ marginRight: 5 }}>
           toObject
         </button>
-        <button onClick={_ => setInverse(!inverse)} style={{ marginRight: 5 }}>
+        <button onClick={toggleInverse} style={{ marginRight: 5 }}>
           {inverse ? 'un-inverse pan' : 'inverse pan'}
         </button>
       </div>
