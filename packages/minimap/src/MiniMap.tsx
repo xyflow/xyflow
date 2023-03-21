@@ -67,6 +67,7 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
+  inversePan = false
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -120,9 +121,10 @@ function MiniMap({
         }
 
         // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
+        const moveScale = viewScaleRef.current * Math.max(1, transform[2]) * (inversePan ? -1 : 1);
         const position = {
-          x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
-          y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
+          x: transform[0] - event.sourceEvent.movementX * moveScale,
+          y: transform[1] - event.sourceEvent.movementY * moveScale,
         };
         const extent: CoordinateExtent = [
           [0, 0],

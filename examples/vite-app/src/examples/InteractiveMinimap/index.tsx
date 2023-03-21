@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback } from 'react';
+import { MouseEvent, useCallback, useState } from "react";
 import ReactFlow, {
   MiniMap,
   Background,
@@ -87,6 +87,7 @@ const defaultEdgeOptions = { zIndex: 0 };
 
 const BasicFlow = () => {
   const instance = useReactFlow();
+  const [inverse, setInverse] = useState(false);
 
   const updatePos = () => {
     instance.setNodes((nodes) =>
@@ -137,7 +138,8 @@ const BasicFlow = () => {
       fitView
     >
       <Background variant={BackgroundVariant.Dots} />
-      <MiniMap onClick={onMiniMapClick} onNodeClick={onMiniMapNodeClick} pannable zoomable />
+      <MiniMap onClick={onMiniMapClick} onNodeClick={onMiniMapNodeClick} pannable zoomable
+               inversePan={inverse}/>
       <Controls />
 
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
@@ -151,6 +153,7 @@ const BasicFlow = () => {
           toggle classnames
         </button>
         <button onClick={logToObject}>toObject</button>
+        <button onClick={_ => setInverse(!inverse)}>{inverse ? 'un-inverse pan' : 'inverse pan'}</button>
       </div>
     </ReactFlow>
   );
