@@ -67,7 +67,8 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
-  inversePan = false
+  inversePan = false,
+  zoomStep = 10
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -107,7 +108,7 @@ function MiniMap({
         const pinchDelta =
           -event.sourceEvent.deltaY *
           (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-          10;
+          zoomStep;
         const zoom = transform[2] * Math.pow(2, pinchDelta);
 
         d3Zoom.scaleTo(d3Selection, zoom);

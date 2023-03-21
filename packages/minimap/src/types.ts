@@ -21,6 +21,7 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   zoomable?: boolean;
   ariaLabel?: string | null;
   inversePan?: boolean;
+  zoomStep?: number;
 };
 
 export interface MiniMapNodeProps {
