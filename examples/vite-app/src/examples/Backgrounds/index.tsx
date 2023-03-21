@@ -25,7 +25,9 @@ const Flow: FC<{ id: string; bgProps: BackgroundProps[] }> = ({ id, bgProps }) =
   return (
     <ReactFlowProvider>
       <ReactFlow nodes={nodes} onNodesChange={onNodesChange} id={id}>
-        {bgProps.map((props, idx) => <Background key={idx} id={idx.toString()} {...props} />)}
+        {bgProps.map((props, idx) => (
+          <Background key={idx} id={idx.toString()} {...props} />
+        ))}
       </ReactFlow>
     </ReactFlowProvider>
   );
@@ -36,8 +38,13 @@ const Backgrounds: FC = () => (
     <Flow id="flow-a" bgProps={[{ variant: BackgroundVariant.Dots }]} />
     <Flow id="flow-b" bgProps={[{ variant: BackgroundVariant.Lines, gap: [50, 50] }]} />
     <Flow id="flow-c" bgProps={[{ variant: BackgroundVariant.Cross, gap: [100, 50] }]} />
-    <Flow id="flow-d" bgProps={[{ variant: BackgroundVariant.Lines, gap: 10 },
-                                { variant: BackgroundVariant.Lines, gap: 100, offset: 1, color: "#ccc" }]} />
+    <Flow
+      id="flow-d"
+      bgProps={[
+        { variant: BackgroundVariant.Lines, gap: 10 },
+        { variant: BackgroundVariant.Lines, gap: 100, offset: 2, color: '#ccc' },
+      ]}
+    />
   </div>
 );
 
