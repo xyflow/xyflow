@@ -207,7 +207,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         )}
         {isUpdatable && (
           <>
-            {isUpdatable === 'source' && <EdgeAnchor
+            {(isUpdatable === 'source' || isUpdatable === true) && (
+              <EdgeAnchor
                 position={sourcePosition}
                 centerX={sourceX}
                 centerY={sourceY}
@@ -216,8 +217,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
                 onMouseEnter={onEdgeUpdaterMouseEnter}
                 onMouseOut={onEdgeUpdaterMouseOut}
                 type="source"
-            />}
-            {isUpdatable === 'target' && <EdgeAnchor
+              />
+            )}
+            {(isUpdatable === 'target' || isUpdatable === true) && (
+              <EdgeAnchor
                 position={targetPosition}
                 centerX={targetX}
                 centerY={targetY}
@@ -226,7 +229,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
                 onMouseEnter={onEdgeUpdaterMouseEnter}
                 onMouseOut={onEdgeUpdaterMouseOut}
                 type="target"
-            />}
+              />
+            )}
           </>
         )}
       </g>
