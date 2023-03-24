@@ -48,6 +48,7 @@ const initialState: ReactFlowStore = {
   nodesConnectable: true,
   nodesFocusable: true,
   edgesFocusable: true,
+  edgesUpdatable: false,
   elementsSelectable: true,
   elevateNodesOnSelect: true,
   fitViewOnInit: false,
