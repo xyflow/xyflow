@@ -29,6 +29,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       position = Position.Top,
       isValidConnection,
       isConnectable = true,
+      isConnectableStart = true,
+      isConnectableEnd = true,
       id,
       onConnect,
       children,
@@ -72,7 +74,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
       const isMouseTriggered = isMouseEvent(event);
 
-      if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+      if (isConnectableStart && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
         handlePointerDown({
           event,
           handleId,
@@ -99,6 +101,11 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         connectionMode,
         isValidConnection: isValidConnectionStore,
       } = store.getState();
+
+      if (!connectionStartHandle && !isConnectableStart) {
+        return;
+      }
+
       if (!connectionStartHandle) {
         onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
         store.setState({ connectionStartHandle: { nodeId, type, handleId } });
@@ -131,6 +138,11 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       store.setState({ connectionStartHandle: null });
     };
 
+    const connecting =
+      connectionStartHandle?.nodeId === nodeId &&
+      connectionStartHandle?.handleId === handleId &&
+      connectionStartHandle?.type === type;
+
     return (
       <div
         data-handleid={handleId}
@@ -147,10 +159,11 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
             source: !isTarget,
             target: isTarget,
             connectable: isConnectable,
-            connecting:
-              connectionStartHandle?.nodeId === nodeId &&
-              connectionStartHandle?.handleId === handleId &&
-              connectionStartHandle?.type === type,
+            connectablestart: isConnectableStart,
+            connectableend: isConnectableEnd,
+            connecting,
+            connectionindicator:
+              (isConnectable && isConnectableStart && !connecting) || (isConnectableEnd && connecting),
           },
         ])}
         onMouseDown={onPointerDown}
