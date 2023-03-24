@@ -36,7 +36,10 @@ type DefaultEdge<T = any> = {
   ariaLabel?: string;
   interactionWidth?: number;
   focusable?: boolean;
+  updatable?: EdgeUpdatable;
 } & EdgeLabelOptions;
+
+export type EdgeUpdatable = boolean | 'target' | 'source';
 
 export type SmoothStepPathOptions = {
   offset?: number;
