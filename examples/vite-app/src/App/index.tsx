@@ -45,6 +45,7 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import useNodesInitialized from '../examples/UseNodesInit';
 
 interface IRoute {
   name: string;
@@ -247,6 +248,11 @@ const routes: IRoute[] = [
     name: 'Update Node',
     path: '/update-node',
     component: UpdateNode,
+  },
+  {
+    name: 'useNodesInitialized',
+    path: '/use-nodes-initialized',
+    component: useNodesInitialized,
   },
   {
     name: 'useOnSelectionChange',
