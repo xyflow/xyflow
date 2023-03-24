@@ -91,6 +91,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
   isFocusable: boolean;
+  isUpdatable: EdgeUpdatable;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
 };
 
