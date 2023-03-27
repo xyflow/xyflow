@@ -67,10 +67,8 @@ const EdgeRenderer = ({
   onEdgeUpdateEnd,
   children,
 }: EdgeRendererProps) => {
-  const { edgesFocusable, edgesUpdatable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } = useStore(
-    selector,
-    shallow
-  );
+  const { edgesFocusable, edgesUpdatable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } =
+    useStore(selector, shallow);
   const edgeTree = useVisibleEdges(onlyRenderVisibleElements, nodeInternals, elevateEdgesOnSelect);
 
   if (!width) {
@@ -115,7 +113,9 @@ const EdgeRenderer = ({
               const sourcePosition = sourceHandle?.position || Position.Bottom;
               const targetPosition = targetHandle?.position || Position.Top;
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
-              const isUpdatable = edge.updatable || typeof onEdgeUpdate !== 'undefined' || (edgesUpdatable && typeof edge.updatable === 'undefined');
+              const isUpdatable =
+                typeof onEdgeUpdate !== 'undefined' &&
+                (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
                 onError?.('008', errorMessages['error008'](sourceHandle, edge));

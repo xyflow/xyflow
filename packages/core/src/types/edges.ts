@@ -39,7 +39,7 @@ type DefaultEdge<T = any> = {
   updatable?: EdgeUpdatable;
 } & EdgeLabelOptions;
 
-export type EdgeUpdatable = boolean | 'target' | 'source';
+export type EdgeUpdatable = boolean | HandleType;
 
 export type SmoothStepPathOptions = {
   offset?: number;
