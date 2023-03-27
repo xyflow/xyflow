@@ -115,6 +115,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodesFocusable,
       nodeOrigin = initNodeOrigin,
       edgesFocusable,
+      edgesUpdatable,
       elementsSelectable,
       defaultViewport = initDefaultViewport,
       minZoom = 0.5,
@@ -266,6 +267,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             edgesFocusable={edgesFocusable}
+            edgesUpdatable={edgesUpdatable}
             elementsSelectable={elementsSelectable}
             elevateNodesOnSelect={elevateNodesOnSelect}
             minZoom={minZoom}

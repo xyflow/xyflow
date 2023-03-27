@@ -36,7 +36,10 @@ type DefaultEdge<T = any> = {
   ariaLabel?: string;
   interactionWidth?: number;
   focusable?: boolean;
+  updatable?: EdgeUpdatable;
 } & EdgeLabelOptions;
+
+export type EdgeUpdatable = boolean | HandleType;
 
 export type SmoothStepPathOptions = {
   offset?: number;
@@ -88,6 +91,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
   isFocusable: boolean;
+  isUpdatable: EdgeUpdatable;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
 };
 

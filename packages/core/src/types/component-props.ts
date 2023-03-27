@@ -112,6 +112,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   nodesFocusable?: boolean;
   nodeOrigin?: NodeOrigin;
   edgesFocusable?: boolean;
+  edgesUpdatable?: boolean;
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
