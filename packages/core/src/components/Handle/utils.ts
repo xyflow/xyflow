@@ -1,6 +1,6 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 
-import { ConnectionMode, ConnectionStatus } from '../../types';
+import { ConnectingHandle, ConnectionMode, ConnectionStatus } from '../../types';
 import { getEventPosition, internalsSymbol } from '../../utils';
 import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from '../../types';
 
@@ -59,6 +59,7 @@ type Result = {
   handleDomNode: Element | null;
   isValid: boolean;
   connection: Connection;
+  endHandle: ConnectingHandle | null;
 };
 
 const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
@@ -70,7 +71,7 @@ export function isValidHandle(
   connectionMode: ConnectionMode,
   fromNodeId: string,
   fromHandleId: string | null,
-  fromType: string,
+  fromType: HandleType,
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
@@ -86,6 +87,7 @@ export function isValidHandle(
     handleDomNode: handleToCheck,
     isValid: false,
     connection: nullConnection,
+    endHandle: null,
   };
 
   if (handleToCheck) {
@@ -113,6 +115,12 @@ export function isValidHandle(
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
     if (isValid) {
+      result.endHandle = {
+        nodeId: handleNodeId as string,
+        handleId,
+        type: handleType as HandleType,
+      };
+
       result.isValid = isValidConnection(connection);
     }
   }

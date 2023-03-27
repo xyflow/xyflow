@@ -21,7 +21,7 @@ import type {
   NodeOrigin,
 } from './nodes';
 import type { Edge, EdgeProps, WrapEdgeProps } from './edges';
-import type { HandleType, StartHandle } from './handles';
+import type { HandleType, ConnectingHandle } from './handles';
 import type { DefaultEdgeOptions } from '.';
 import type { ReactFlowInstance } from './instance';
 
@@ -167,10 +167,9 @@ export type ReactFlowStore = {
   userSelectionActive: boolean;
   userSelectionRect: SelectionRect | null;
 
+  // @todo remove this in next major version in favor of connectionStartHandle
   connectionNodeId: string | null;
   connectionHandleId: string | null;
-  connectionTargetNodeId: string | null;
-  connectionTargetHandleId: string | null;
   connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
   connectionStatus: ConnectionStatus | null;
@@ -188,7 +187,10 @@ export type ReactFlowStore = {
 
   multiSelectionActive: boolean;
 
-  connectionStartHandle: StartHandle | null;
+  connectionStartHandle: ConnectingHandle | null;
+  connectionEndHandle: ConnectingHandle | null;
+  // @todo this is only used for the click connection - we might remove this in the next major version
+  connectionClickStartHandle: ConnectingHandle | null;
 
   onNodeDragStart?: NodeDragHandler;
   onNodeDrag?: NodeDragHandler;

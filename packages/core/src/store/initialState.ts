@@ -31,8 +31,6 @@ const initialState: ReactFlowStore = {
   connectionNodeId: null,
   connectionHandleId: null,
   connectionHandleType: 'source',
-  connectionTargetNodeId: null,
-  connectionTargetHandleId: null,
   connectionPosition: { x: 0, y: 0 },
   connectionStatus: null,
   connectionMode: ConnectionMode.Strict,
@@ -57,6 +55,8 @@ const initialState: ReactFlowStore = {
   multiSelectionActive: false,
 
   connectionStartHandle: null,
+  connectionEndHandle: null,
+  connectionClickStartHandle: null,
   connectOnClick: true,
 
   ariaLiveMessage: '',
