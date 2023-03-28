@@ -1,5 +1,18 @@
 # @reactflow/node-toolbar
 
+## 1.1.11
+
+### Patch Changes
+
+- Updated dependencies [[`098eee3d`](https://github.com/wbkd/react-flow/commit/098eee3d41dabc870777b081796401ff13b5a776), [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb), [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402), [`923a54c4`](https://github.com/wbkd/react-flow/commit/923a54c481b90954806202817ba844cfa7203a38), [`4d97a0ed`](https://github.com/wbkd/react-flow/commit/4d97a0ed168ce643fc0c99fa6b47cf1296d66065), [`c22e1c28`](https://github.com/wbkd/react-flow/commit/c22e1c28c5555a638c2a8e82c3bfc986b3965d36)]:
+  - @reactflow/core@11.7.0
+
+## 1.1.10
+
+### Patch Changes
+
+- Updated dependencies
+
 ## 1.1.9
 
 ### Patch Changes

@@ -13,7 +13,7 @@ import {
   OnViewportChange,
   SelectionRect,
   SnapGrid,
-  StartHandle,
+  ConnectingHandle,
   Transform,
   XYPosition,
 } from '@reactflow/system';
@@ -80,12 +80,15 @@ export type ReactFlowStore = {
   nodesConnectable: boolean;
   nodesFocusable: boolean;
   edgesFocusable: boolean;
+  edgesUpdatable: boolean;
   elementsSelectable: boolean;
   elevateNodesOnSelect: boolean;
 
   multiSelectionActive: boolean;
 
-  connectionStartHandle: StartHandle | null;
+  connectionStartHandle: ConnectingHandle | null;
+  connectionEndHandle: ConnectingHandle | null;
+  connectionClickStartHandle: ConnectingHandle | null;
 
   onNodeDragStart?: NodeDragHandler;
   onNodeDrag?: NodeDragHandler;

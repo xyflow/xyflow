@@ -144,7 +144,7 @@
   min-width: 5px;
   min-height: 5px;
 
-  &.connectable {
+  &.connectionindicator {
     pointer-events: all;
     cursor: crosshair;
   }

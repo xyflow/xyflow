@@ -1,8 +1,5 @@
 import { memo, FC } from 'react';
-import { Handle, Position, NodeProps } from 'reactflow';
-
-import { NodeResizeControl } from '@reactflow/node-resizer';
-import '@reactflow/node-resizer/dist/style.css';
+import { Handle, Position, NodeProps, NodeResizeControl } from 'reactflow';
 
 const CustomNode: FC<NodeProps> = ({ id, data }) => {
   return (

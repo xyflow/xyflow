@@ -75,7 +75,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         let nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          onError?.('003', errorMessages['003'](nodeType));
+          onError?.('003', errorMessages['error003'](nodeType));
 
           nodeType = 'default';
         }

@@ -54,6 +54,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     rfId,
     ariaLabel,
     isFocusable,
+    isUpdatable,
     pathOptions,
     interactionWidth,
   }: WrapEdgeProps): JSX.Element | null => {
@@ -137,7 +138,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeUpdaterMouseOut = () => setUpdateHover(false);
 
     const inactive = !elementsSelectable && !onClick;
-    const handleEdgeUpdate = typeof onEdgeUpdate !== 'undefined';
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
@@ -204,28 +204,32 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             interactionWidth={interactionWidth}
           />
         )}
-        {handleEdgeUpdate && (
+        {isUpdatable && (
           <>
-            <EdgeAnchor
-              position={sourcePosition}
-              centerX={sourceX}
-              centerY={sourceY}
-              radius={edgeUpdaterRadius}
-              onMouseDown={onEdgeUpdaterSourceMouseDown}
-              onMouseEnter={onEdgeUpdaterMouseEnter}
-              onMouseOut={onEdgeUpdaterMouseOut}
-              type="source"
-            />
-            <EdgeAnchor
-              position={targetPosition}
-              centerX={targetX}
-              centerY={targetY}
-              radius={edgeUpdaterRadius}
-              onMouseDown={onEdgeUpdaterTargetMouseDown}
-              onMouseEnter={onEdgeUpdaterMouseEnter}
-              onMouseOut={onEdgeUpdaterMouseOut}
-              type="target"
-            />
+            {(isUpdatable === 'source' || isUpdatable === true) && (
+              <EdgeAnchor
+                position={sourcePosition}
+                centerX={sourceX}
+                centerY={sourceY}
+                radius={edgeUpdaterRadius}
+                onMouseDown={onEdgeUpdaterSourceMouseDown}
+                onMouseEnter={onEdgeUpdaterMouseEnter}
+                onMouseOut={onEdgeUpdaterMouseOut}
+                type="source"
+              />
+            )}
+            {(isUpdatable === 'target' || isUpdatable === true) && (
+              <EdgeAnchor
+                position={targetPosition}
+                centerX={targetX}
+                centerY={targetY}
+                radius={edgeUpdaterRadius}
+                onMouseDown={onEdgeUpdaterTargetMouseDown}
+                onMouseEnter={onEdgeUpdaterMouseEnter}
+                onMouseOut={onEdgeUpdaterMouseOut}
+                type="target"
+              />
+            )}
           </>
         )}
       </g>

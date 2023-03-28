@@ -1,12 +1,12 @@
-import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import {
   internalsSymbol,
   ConnectionMode,
   ConnectionStatus,
+  type ConnectingHandle,
   type Connection,
   type HandleType,
-  type XYPosition,
   type NodeHandleBounds,
+  type XYPosition,
 } from '@reactflow/system';
 import { getEventPosition } from '@reactflow/utils';
 
@@ -67,6 +67,7 @@ type Result = {
   handleDomNode: Element | null;
   isValid: boolean;
   connection: Connection;
+  endHandle: ConnectingHandle | null;
 };
 
 const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
@@ -78,7 +79,7 @@ export function isValidHandle(
   connectionMode: ConnectionMode,
   fromNodeId: string,
   fromHandleId: string | null,
-  fromType: string,
+  fromType: HandleType,
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
@@ -94,12 +95,15 @@ export function isValidHandle(
     handleDomNode: handleToCheck,
     isValid: false,
     connection: nullConnection,
+    endHandle: null,
   };
 
   if (handleToCheck) {
     const handleType = getHandleType(undefined, handleToCheck);
     const handleNodeId = handleToCheck.getAttribute('data-nodeid');
     const handleId = handleToCheck.getAttribute('data-handleid');
+    const connectable = handleToCheck.classList.contains('connectable');
+    const connectableEnd = handleToCheck.classList.contains('connectableend');
 
     const connection: Connection = {
       source: isTarget ? handleNodeId : fromNodeId,
@@ -110,14 +114,21 @@ export function isValidHandle(
 
     result.connection = connection;
 
+    const isConnectable = connectable && connectableEnd;
     // in strict mode we don't allow target to target or source to source connections
     const isValid =
-      handleToCheck.classList.contains('connectable') &&
+      isConnectable &&
       (connectionMode === ConnectionMode.Strict
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
     if (isValid) {
+      result.endHandle = {
+        nodeId: handleNodeId as string,
+        handleId,
+        type: handleType as HandleType,
+      };
+
       result.isValid = isValidConnection(connection);
     }
   }

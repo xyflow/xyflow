@@ -25,11 +25,14 @@ export type EdgeLabelOptions = {
   labelBgBorderRadius?: number;
 };
 
+export type EdgeUpdatable = boolean | HandleType;
+
 export type DefaultEdge<EdgeData = any> = BaseEdge<EdgeData> & {
   style?: CSSProperties;
   className?: string;
   sourceNode?: Node;
   targetNode?: Node;
+  updatable?: EdgeUpdatable;
 } & EdgeLabelOptions;
 
 type SmoothStepEdgeType<T> = DefaultEdge<T> & {
@@ -68,6 +71,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
   isFocusable: boolean;
+  isUpdatable: EdgeUpdatable;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
 };
 

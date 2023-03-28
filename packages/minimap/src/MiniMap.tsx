@@ -67,6 +67,8 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
+  inversePan = false,
+  zoomStep = 10
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -106,7 +108,7 @@ function MiniMap({
         const pinchDelta =
           -event.sourceEvent.deltaY *
           (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-          10;
+          zoomStep;
         const zoom = transform[2] * Math.pow(2, pinchDelta);
 
         d3Zoom.scaleTo(d3Selection, zoom);
@@ -120,9 +122,10 @@ function MiniMap({
         }
 
         // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
+        const moveScale = viewScaleRef.current * Math.max(1, transform[2]) * (inversePan ? -1 : 1);
         const position = {
-          x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
-          y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
+          x: transform[0] - event.sourceEvent.movementX * moveScale,
+          y: transform[1] - event.sourceEvent.movementY * moveScale,
         };
         const extent: CoordinateExtent = [
           [0, 0],
@@ -147,7 +150,7 @@ function MiniMap({
         selection.on('zoom', null);
       };
     }
-  }, [pannable, zoomable]);
+  }, [pannable, zoomable, inversePan, zoomStep]);
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {

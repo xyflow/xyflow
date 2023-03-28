@@ -86,7 +86,7 @@ export const addEdgeBase = <EdgeType extends BaseEdge>(
   edges: EdgeType[]
 ): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['006']());
+    devWarn('006', errorMessages['error006']());
 
     return edges;
   }
@@ -121,7 +121,7 @@ export const updateEdgeBase = <EdgeType extends BaseEdge>(
   const { id: oldEdgeId, ...rest } = oldEdge;
 
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['006']());
+    devWarn('006', errorMessages['error006']());
 
     return edges;
   }
@@ -129,7 +129,7 @@ export const updateEdgeBase = <EdgeType extends BaseEdge>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['007'](oldEdgeId));
+    devWarn('007', errorMessages['error007'](oldEdgeId));
 
     return edges;
   }

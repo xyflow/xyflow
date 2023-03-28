@@ -103,7 +103,7 @@ export function calcNextPosition(
             ]
           : currentExtent;
     } else {
-      onError?.('005', errorMessages['005']());
+      onError?.('005', errorMessages['error005']());
 
       currentExtent = nodeExtent;
     }

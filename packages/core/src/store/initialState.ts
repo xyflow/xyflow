@@ -42,6 +42,7 @@ const initialState: ReactFlowStore = {
   nodesConnectable: true,
   nodesFocusable: true,
   edgesFocusable: true,
+  edgesUpdatable: true,
   elementsSelectable: true,
   elevateNodesOnSelect: true,
   fitViewOnInit: false,
@@ -51,6 +52,8 @@ const initialState: ReactFlowStore = {
   multiSelectionActive: false,
 
   connectionStartHandle: null,
+  connectionEndHandle: null,
+  connectionClickStartHandle: null,
   connectOnClick: true,
 
   ariaLiveMessage: '',
