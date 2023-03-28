@@ -39,6 +39,7 @@
     "@reactflow/controls": "workspace:*",
     "@reactflow/core": "workspace:*",
     "@reactflow/minimap": "workspace:*",
+    "@reactflow/node-resizer": "workspace:*",
     "@reactflow/node-toolbar": "workspace:*"
   },
   "peerDependencies": {

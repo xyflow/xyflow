@@ -284,6 +284,7 @@ importers:
       '@reactflow/core': workspace:*
       '@reactflow/eslint-config': workspace:*
       '@reactflow/minimap': workspace:*
+      '@reactflow/node-resizer': workspace:^2.1.0
       '@reactflow/node-toolbar': workspace:*
       '@reactflow/rollup-config': workspace:*
       '@reactflow/tsconfig': workspace:*
@@ -296,6 +297,7 @@ importers:
       '@reactflow/controls': link:../controls
       '@reactflow/core': link:../core
       '@reactflow/minimap': link:../minimap
+      '@reactflow/node-resizer': link:../node-resizer
       '@reactflow/node-toolbar': link:../node-toolbar
     devDependencies:
       '@reactflow/eslint-config': link:../../tooling/eslint-config
