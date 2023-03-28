@@ -1,5 +1,44 @@
 # reactflow
 
+## 11.7.0
+
+Most notable updates:
+
+- `@reactflow/node-resizer` is now part of this package. No need to install it separately anymore.
+- Handles: `isConnectableStart` and `isConnectableEnd` props to configure if you can start or end a connection at a certain handle
+- Edges: `updatable` option to enable updates for specific edges
+- MiniMap: `inversePan` and `zoomStep` props
+- Background: `id` and `offset` props - this enables you to combine different patterns (useful if you want a graph paper like background for example)
+- useNodesInitialized: options to configure if hidden nodes should be included (false by default) 
+
+Big thanks to [@Elringus](https://github.com/Elringus) and [@bcakmakoglu](https://github.com/bcakmakoglu)!
+
+### Minor Changes
+
+- [#2964](https://github.com/wbkd/react-flow/pull/2964) [`2fb4c2c8`](https://github.com/wbkd/react-flow/commit/2fb4c2c82343751ff536da262de74bd9080321b4) - add @reactflow/node-resizer package
+- [#2960](https://github.com/wbkd/react-flow/pull/2960) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - edges: add `updatable` option
+- [#2958](https://github.com/wbkd/react-flow/pull/2958) [`4d97a0ed`](https://github.com/wbkd/react-flow/commit/4d97a0ed168ce643fc0c99fa6b47cf1296d66065) - handles: add `isConnectableStart` and `isConnectableEnd` props
+- [#2956](https://github.com/wbkd/react-flow/pull/2956) [`923a54c4`](https://github.com/wbkd/react-flow/commit/923a54c481b90954806202817ba844cfa7203a38) - add options for `useNodesInitialized`, ignore hidden nodes by default
+- [#2944](https://github.com/wbkd/react-flow/pull/2944) Thanks [@Elringus](https://github.com/Elringus)! - add `inversePan` and `zoomStep` props
+- [#2941](https://github.com/wbkd/react-flow/pull/2941) Thanks [@Elringus](https://github.com/Elringus)! - background: add `id` and `offset` props
+
+
+### Patch Changes
+
+- [#2926](https://github.com/wbkd/react-flow/pull/2926) Thanks [@Elringus](https://github.com/Elringus)! - fix non-passive wheel event listener violation
+- [#2933](https://github.com/wbkd/react-flow/pull/2933) [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb) - prefix error keys with "error"
+- [#2939](https://github.com/wbkd/react-flow/pull/2939) [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402) - add connection result to store
+
+
+### Patch Changes
+
+- Updated dependencies [[`098eee3d`](https://github.com/wbkd/react-flow/commit/098eee3d41dabc870777b081796401ff13b5a776), [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb), [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402), [`c1448c2f`](https://github.com/wbkd/react-flow/commit/c1448c2f7415dd3b4b2c54e05404c5ab24e8978d), [`923a54c4`](https://github.com/wbkd/react-flow/commit/923a54c481b90954806202817ba844cfa7203a38), [`4d97a0ed`](https://github.com/wbkd/react-flow/commit/4d97a0ed168ce643fc0c99fa6b47cf1296d66065), [`771c7a5d`](https://github.com/wbkd/react-flow/commit/771c7a5d133ce96e9f7471394c15189e0657ce01), [`c22e1c28`](https://github.com/wbkd/react-flow/commit/c22e1c28c5555a638c2a8e82c3bfc986b3965d36)]:
+  - @reactflow/core@11.7.0
+  - @reactflow/minimap@11.5.0
+  - @reactflow/background@11.2.0
+  - @reactflow/controls@11.1.11
+  - @reactflow/node-toolbar@1.1.11
+
 ## 11.6.1
 
 ### Patch Changes
