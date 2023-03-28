@@ -45,7 +45,7 @@ export function useMarkerSymbol(type: MarkerType) {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 
     if (!symbolExists) {
-      store.getState().onError?.('009', errorMessages['009'](type));
+      store.getState().onError?.('009', errorMessages['error009'](type));
 
       return null;
     }

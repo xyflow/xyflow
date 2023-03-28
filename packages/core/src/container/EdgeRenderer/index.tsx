@@ -39,6 +39,7 @@ type EdgeRendererProps = Pick<
 const selector = (s: ReactFlowState) => ({
   nodesConnectable: s.nodesConnectable,
   edgesFocusable: s.edgesFocusable,
+  edgesUpdatable: s.edgesUpdatable,
   elementsSelectable: s.elementsSelectable,
   width: s.width,
   height: s.height,
@@ -66,10 +67,8 @@ const EdgeRenderer = ({
   onEdgeUpdateEnd,
   children,
 }: EdgeRendererProps) => {
-  const { edgesFocusable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } = useStore(
-    selector,
-    shallow
-  );
+  const { edgesFocusable, edgesUpdatable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } =
+    useStore(selector, shallow);
   const edgeTree = useVisibleEdges(onlyRenderVisibleElements, nodeInternals, elevateEdgesOnSelect);
 
   if (!width) {
@@ -99,7 +98,7 @@ const EdgeRenderer = ({
               let edgeType = edge.type || 'default';
 
               if (!edgeTypes[edgeType]) {
-                onError?.('011', errorMessages['011'](edgeType));
+                onError?.('011', errorMessages['error011'](edgeType));
                 edgeType = 'default';
               }
 
@@ -114,9 +113,12 @@ const EdgeRenderer = ({
               const sourcePosition = sourceHandle?.position || Position.Bottom;
               const targetPosition = targetHandle?.position || Position.Top;
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
+              const isUpdatable =
+                typeof onEdgeUpdate !== 'undefined' &&
+                (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
-                onError?.('008', errorMessages['008'](sourceHandle, edge));
+                onError?.('008', errorMessages['error008'](sourceHandle, edge));
 
                 return null;
               }
@@ -173,6 +175,7 @@ const EdgeRenderer = ({
                   rfId={rfId}
                   ariaLabel={edge.ariaLabel}
                   isFocusable={isFocusable}
+                  isUpdatable={isUpdatable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
                 />

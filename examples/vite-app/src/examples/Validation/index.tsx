@@ -16,6 +16,8 @@ import ReactFlow, {
   Edge,
 } from 'reactflow';
 
+import ConnectionStatus from './ConnectionStatus';
+
 import styles from './validation.module.css';
 
 const initialNodes: Node[] = [
@@ -36,7 +38,7 @@ const CustomInput: FC<NodeProps> = () => (
 
 const CustomNode: FC<NodeProps> = ({ id }) => (
   <>
-    <Handle type="target" position={Position.Left} />
+    <Handle type="target" position={Position.Left} isConnectableStart={false} />
     <div>{id}</div>
     <Handle type="source" position={Position.Right} />
   </>
@@ -96,7 +98,9 @@ const ValidationFlow = () => {
       onEdgeUpdate={onEdgeUpdate}
       isValidConnection={isValidConnection}
       fitView
-    />
+    >
+      <ConnectionStatus />
+    </ReactFlow>
   );
 };
 

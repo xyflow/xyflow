@@ -6,6 +6,8 @@ import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
 
+import 'reactflow/dist/style.css';
+
 const nodeTypes = {
   defaultResizer: DefaultResizer,
   customResizer: CustomResizer,

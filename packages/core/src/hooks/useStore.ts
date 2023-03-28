@@ -6,7 +6,7 @@ import StoreContext from '../contexts/RFStoreContext';
 import { errorMessages } from '../contants';
 import type { ReactFlowState } from '../types';
 
-const zustandErrorMessage = errorMessages['001']();
+const zustandErrorMessage = errorMessages['error001']();
 
 type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T } ? T : never;
 

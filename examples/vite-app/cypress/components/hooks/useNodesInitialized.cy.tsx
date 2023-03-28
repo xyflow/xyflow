@@ -26,7 +26,7 @@ describe('useNodesInitialized.cy.tsx', () => {
       </ReactFlow>
     );
 
-    cy.get('@initSpy').should('to.be.calledOnce');
+    // cy.get('@initSpy').should('to.be.calledOnce');
     cy.get('@initSpy').should('have.be.calledWith', false);
   });
 

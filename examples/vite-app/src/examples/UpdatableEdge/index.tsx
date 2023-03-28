@@ -36,7 +36,7 @@ const initialNodes: Node[] = [
         </>
       ),
     },
-    position: { x: 100, y: 100 },
+    position: { x: 75, y: 0 },
   },
   {
     id: '3',
@@ -55,9 +55,46 @@ const initialNodes: Node[] = [
       width: 180,
     },
   },
+  {
+    id: '4',
+    data: {
+      label: (
+        <>
+          Node <strong>D</strong>
+        </>
+      ),
+    },
+    position: { x: -75, y: 100 },
+  },
+  {
+    id: '5',
+    data: {
+      label: (
+        <>
+          Node <strong>E</strong>
+        </>
+      ),
+    },
+    position: { x: 150, y: 100 },
+  },
+  {
+    id: '6',
+    data: {
+      label: (
+        <>
+          Node <strong>F</strong>
+        </>
+      ),
+    },
+    position: { x: 150, y: 250 },
+  },
 ];
 
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2', label: 'This is a draggable edge' }];
+const initialEdges: Edge[] = [
+  { id: 'e1-3', source: '1', target: '3', label: 'This edge can only be updated from source', updatable: 'source' },
+  { id: 'e2-4', source: '2', target: '4', label: 'This edge can only be updated from target', updatable: 'target' },
+  { id: 'e5-6', source: '5', target: '6', label: 'This edge can be updated from both sides' },
+];
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onEdgeUpdateStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
