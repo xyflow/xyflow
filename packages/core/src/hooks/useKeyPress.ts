@@ -75,8 +75,8 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         }
 
         // fix for Mac: when cmd key is pressed, keyup is not triggered for any other key, see: https://stackoverflow.com/questions/27380018/when-cmd-key-is-kept-pressed-keyup-is-not-triggered-for-any-other-key
-        if (event.key === "Meta") {
-          pressedKeys.current.clear()
+        if (event.key === 'Meta') {
+          pressedKeys.current.clear();
         }
 
         modifierPressed.current = false;
