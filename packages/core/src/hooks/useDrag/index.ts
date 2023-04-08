@@ -44,6 +44,7 @@ function useDrag({
   const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const dragEvent = useRef<MouseEvent | null>(null);
   const autoPanStarted = useRef(false);
+  const previousTransform = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const getPointerPosition = useGetPointerPosition();
 
@@ -116,11 +117,21 @@ function useDrag({
         if (xMovement !== 0 || yMovement !== 0) {
           const { transform, panBy } = store.getState();
 
-          lastPos.current.x = (lastPos.current.x ?? 0) - xMovement / transform[2];
-          lastPos.current.y = (lastPos.current.y ?? 0) - yMovement / transform[2];
+          const nextPos = {
+            x: (lastPos.current.x ?? 0) - xMovement / transform[2],
+            y: (lastPos.current.y ?? 0) - yMovement / transform[2],
+          };
 
-          updateNodes(lastPos.current as XYPosition);
-          panBy({ x: xMovement, y: yMovement });
+          panBy({ x: xMovement, y: yMovement }, (transform) => {
+            if (
+              Math.round(transform.x) !== Math.round(previousTransform.current.x) ||
+              Math.round(transform.y) !== Math.round(previousTransform.current.y)
+            ) {
+              previousTransform.current = transform;
+              lastPos.current = nextPos;
+              updateNodes(nextPos);
+            }
+          });
         }
         autoPanId.current = requestAnimationFrame(autoPan);
       };
