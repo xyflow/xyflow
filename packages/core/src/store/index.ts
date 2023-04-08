@@ -252,7 +252,7 @@ const createRFStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    panBy: (delta: XYPosition) => {
+    panBy: (delta: XYPosition, onBeforeTransform) => {
       const { transform, width, height, d3Zoom, d3Selection, translateExtent } = get();
 
       if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
@@ -267,6 +267,9 @@ const createRFStore = () =>
       ];
 
       const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, translateExtent);
+
+      onBeforeTransform?.(constrainedTransform);
+
       d3Zoom.transform(d3Selection, constrainedTransform);
     },
     cancelConnection: () =>

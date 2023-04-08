@@ -24,6 +24,7 @@ import type { Edge, EdgeProps, WrapEdgeProps } from './edges';
 import type { HandleType, ConnectingHandle } from './handles';
 import type { DefaultEdgeOptions } from '.';
 import type { ReactFlowInstance } from './instance';
+import { ZoomTransform } from 'd3';
 
 export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
 export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };
@@ -252,7 +253,7 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
-  panBy: (delta: XYPosition) => void;
+  panBy: (delta: XYPosition, onBeforeTransform?: (transform: ZoomTransform) => void) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;
