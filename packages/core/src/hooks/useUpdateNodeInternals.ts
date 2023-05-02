@@ -13,9 +13,11 @@ function useUpdateNodeInternals(): UpdateNodeInternals {
     if (nodeElement) {
       const updateIds = Array.isArray(id) ? id : [id];
 
-      updateIds.forEach((id) => {
-        requestAnimationFrame(() => updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]));
-      });
+      requestAnimationFrame(() => {
+        updateIds.forEach((id) => {
+          updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]);
+        });
+      })
     }
   }, []);
 }
