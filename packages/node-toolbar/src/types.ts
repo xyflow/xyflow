@@ -6,4 +6,11 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   isVisible?: boolean;
   position?: Position;
   offset?: number;
+  align?: Align;
 };
+
+export enum Align {
+  Center = 'center',
+  Start = 'start',
+  End = 'end',
+}
