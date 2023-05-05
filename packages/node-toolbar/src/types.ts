@@ -9,8 +9,4 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   align?: Align;
 };
 
-export enum Align {
-  Center = 'center',
-  Start = 'start',
-  End = 'end',
-}
+export type Align = 'center' | 'start' | 'end';

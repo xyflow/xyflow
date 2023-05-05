@@ -35,7 +35,7 @@ const initialNodes: Node[] = [
   {
     id: '3',
     type: 'custom',
-    data: { label: 'toolbar bottom', toolbarPosition: Position.Bottom },
+    data: { label: 'toolbar bottom', toolbarPosition: Position.Bottom, toolbarAlign: 'end' },
     position: { x: 400, y: 100 },
     className: 'react-flow__node-default',
   },

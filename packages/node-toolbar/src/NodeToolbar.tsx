@@ -40,16 +40,6 @@ function getTransform(nodeRect: Rect, transform: Transform, position: Position, 
   let yPos = nodeRect.y * transform[2] + transform[1] - offset;
   let xShift = -50;
   let yShift = -100;
-  switch (align) {
-    case Align.Start:
-      xPos = nodeRect.x * transform[2] + transform[0];
-      xShift = 0;
-      break;
-    case Align.End:
-      xPos = (nodeRect.x + nodeRect.width) * transform[2] + transform[0];
-      xShift = -100;
-      break;
-  }
 
   switch (position) {
     case Position.Right:
@@ -57,50 +47,47 @@ function getTransform(nodeRect: Rect, transform: Transform, position: Position, 
       yPos = (nodeRect.y + nodeRect.height / 2) * transform[2] + transform[1];
       xShift = 0;
       yShift = -50;
-
-      switch (align) {
-        case Align.Start:
-          yPos = nodeRect.y * transform[2] + transform[1];
-          yShift = 0;
-          break;
-        case Align.End:
-          yPos = (nodeRect.y + nodeRect.height) * transform[2] + transform[1];
-          yShift = -100;
-          break;
-      }
       break;
     case Position.Bottom:
       yPos = (nodeRect.y + nodeRect.height) * transform[2] + transform[1] + offset;
       yShift = 0;
-      switch (align) {
-        case Align.Start:
-          xPos = nodeRect.x * transform[2] + transform[0];
-          xShift = 0;
-          break;
-        case Align.End:
-          xPos = (nodeRect.x + nodeRect.width) * transform[2] + transform[0];
-          xShift = -100;
-          break;
-      }
       break;
     case Position.Left:
       xPos = nodeRect.x * transform[2] + transform[0] - offset;
       yPos = (nodeRect.y + nodeRect.height / 2) * transform[2] + transform[1];
       xShift = -100;
       yShift = -50;
+      break;
+  }
 
+  switch (position) {
+    case Position.Right:
+    case Position.Left:
       switch (align) {
-        case Align.Start:
+        case 'start':
           yPos = nodeRect.y * transform[2] + transform[1];
           yShift = 0;
           break;
-        case Align.End:
+        case 'end':
           yPos = (nodeRect.y + nodeRect.height) * transform[2] + transform[1];
           yShift = -100;
           break;
       }
       break;
-  }
+    case Position.Top:
+    case Position.Bottom:
+      switch (align) {
+        case 'start':
+          xPos = nodeRect.x * transform[2] + transform[0];
+          xShift = 0;
+          break;
+        case 'end':
+          xPos = (nodeRect.x + nodeRect.width) * transform[2] + transform[0];
+          xShift = -100;
+          break;
+      }
+    break
+}
 
   return `translate(${xPos}px, ${yPos}px) translate(${xShift}%, ${yShift}%)`;
 }
@@ -113,7 +100,7 @@ function NodeToolbar({
   isVisible,
   position = Position.Top,
   offset = 10,
-  align = Align.Center,
+  align = 'center',
   ...rest
 }: NodeToolbarProps) {
   const contextNodeId = useNodeId();
