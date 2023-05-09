@@ -51,7 +51,7 @@ export function handlePointerDown({
     cancelConnection,
   } = getState();
   let autoPanId = 0;
-  let prevClosestHandle: ConnectionHandle | null;
+  let closestHandle: ConnectionHandle | null;
 
   const { x, y } = getEventPosition(event);
   const clickedHandle = doc?.elementFromPoint(x, y);
@@ -106,9 +106,9 @@ export function handlePointerDown({
 
   function onPointerMove(event: MouseEvent | TouchEvent) {
     const { transform } = getState();
-    connectionPosition = getEventPosition(event, containerBounds);
 
-    prevClosestHandle = getClosestHandle(
+    connectionPosition = getEventPosition(event, containerBounds);
+    closestHandle = getClosestHandle(
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
       handleLookup
@@ -121,7 +121,7 @@ export function handlePointerDown({
 
     const result = isValidHandle(
       event,
-      prevClosestHandle,
+      closestHandle,
       connectionMode,
       nodeId,
       handleId,
@@ -136,20 +136,20 @@ export function handlePointerDown({
 
     setState({
       connectionPosition:
-        prevClosestHandle && isValid
+        closestHandle && isValid
           ? rendererPointToPoint(
               {
-                x: prevClosestHandle.x,
-                y: prevClosestHandle.y,
+                x: closestHandle.x,
+                y: closestHandle.y,
               },
               transform
             )
           : connectionPosition,
-      connectionStatus: getConnectionStatus(!!prevClosestHandle, isValid),
+      connectionStatus: getConnectionStatus(!!closestHandle, isValid),
       connectionEndHandle: result.endHandle,
     });
 
-    if (!prevClosestHandle && !isValid && !handleDomNode) {
+    if (!closestHandle && !isValid && !handleDomNode) {
       return resetRecentHandle(prevActiveHandle);
     }
 
@@ -164,7 +164,7 @@ export function handlePointerDown({
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if ((prevClosestHandle || handleDomNode) && connection && isValid) {
+    if ((closestHandle || handleDomNode) && connection && isValid) {
       onConnect?.(connection);
     }
 
