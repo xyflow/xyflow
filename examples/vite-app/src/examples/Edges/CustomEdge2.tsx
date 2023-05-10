@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { EdgeProps, getBezierPath, EdgeText } from 'reactflow';
+import { EdgeProps, getBezierPath, EdgeText, BaseEdge } from 'reactflow';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,
@@ -22,7 +22,7 @@ const CustomEdge: FC<EdgeProps> = ({
 
   return (
     <>
-      <path id={id} className="react-flow__edge-path" d={edgePath} />
+      <BaseEdge id={id} path={edgePath} />
       <EdgeText
         x={labelX}
         y={labelY}
@@ -34,7 +34,6 @@ const CustomEdge: FC<EdgeProps> = ({
         labelBgBorderRadius={2}
         onClick={() => console.log(data)}
       />
-      ;
     </>
   );
 };

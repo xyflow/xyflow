@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { EdgeProps, getBezierPath } from 'reactflow';
+import { BaseEdge, EdgeProps, getBezierPath } from 'reactflow';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,
@@ -22,7 +22,7 @@ const CustomEdge: FC<EdgeProps> = ({
 
   return (
     <>
-      <path id={id} className="react-flow__edge-path" d={edgePath} />
+      <BaseEdge path={edgePath} id={id} />
       <text>
         <textPath href={`#${id}`} style={{ fontSize: '12px' }} startOffset="50%" textAnchor="middle">
           {data.text}

@@ -3,6 +3,7 @@ import { isNumeric } from '../../utils';
 import type { BaseEdgeProps } from '../../types';
 
 const BaseEdge = ({
+  id,
   path,
   labelX,
   labelY,
@@ -20,6 +21,7 @@ const BaseEdge = ({
   return (
     <>
       <path
+        id={id}
         style={style}
         d={path}
         fill="none"
