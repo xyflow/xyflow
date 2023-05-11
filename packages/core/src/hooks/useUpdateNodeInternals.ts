@@ -8,17 +8,18 @@ function useUpdateNodeInternals(): UpdateNodeInternals {
 
   return useCallback<UpdateNodeInternals>((id: string | string[]) => {
     const { domNode, updateNodeDimensions } = store.getState();
-    const nodeElement = domNode?.querySelector(`.react-flow__node[data-id="${id}"]`) as HTMLDivElement;
 
-    if (nodeElement) {
-      const updateIds = Array.isArray(id) ? id : [id];
+    const updateIds = Array.isArray(id) ? id : [id];
 
-      requestAnimationFrame(() => {
-        updateIds.forEach((id) => {
-          updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]);
-        });
-      })
-    }
+    requestAnimationFrame(() => {
+      updateIds.forEach((updateId) => {
+        const nodeElement = domNode?.querySelector(`.react-flow__node[data-id="${updateId}"]`) as HTMLDivElement;
+
+        if (nodeElement) {
+          updateNodeDimensions([{ id: updateId, nodeElement, forceUpdate: true }]);
+        }
+      });
+    });
   }, []);
 }
 
