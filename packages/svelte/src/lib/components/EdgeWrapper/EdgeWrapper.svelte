@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, type SvelteComponentTyped } from 'svelte';
   import { Position } from '@reactflow/system';
+  import { getMarkerId } from '@reactflow/utils';
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
@@ -16,19 +17,27 @@
   export let sourceY: $$Props['sourceY'] = 0;
   export let targetX: $$Props['targetX'] = 0;
   export let targetY: $$Props['targetY'] = 0;
-  // @ todo: support edge updates
-  // export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
-  // export let targetHandleId: $$Props['targetHandleId'] = undefined;
+  export let data: $$Props['data'] = {};
+  export let style: $$Props['style'] = undefined;
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
   export let targetPosition: $$Props['targetPosition'] = Position.Top;
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let label: $$Props['label'] = undefined;
+  export let markerStart: $$Props['markerStart'] = undefined;
+  export let markerEnd: $$Props['markerEnd'] = undefined;
+  export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
+  export let targetHandleId: $$Props['targetHandleId'] = undefined;
 
-  const { edges, edgeTypes } = useStore();
+   // @ todo: support edge updates
+
+  const { edges, edgeTypes, flowId } = useStore();
   const dispatch = createEventDispatcher();
 
   const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypes[type!] || BezierEdge;
+
+  $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
+  $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 
   function onClick() {
     const edge = $edges.find(e => e.id === id);
@@ -57,6 +66,12 @@
     {animated}
     {selected}
     {label}
+    {data}
+    {style}
+    {sourceHandleId}
+    {targetHandleId}
+    markerStart={markerStartUrl}
+    markerEnd={markerEndUrl}
   />
 </g>
 

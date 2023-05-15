@@ -7,7 +7,8 @@ import {
   ConnectionLineType,
   type SelectionRect,
   type Transform,
-  type SnapGrid
+  type SnapGrid,
+  type MarkerProps
 } from '@reactflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -49,7 +50,7 @@ export const initialEdgeTypes = {
 };
 
 export const initialStoreState = {
-  id: writable<string | null>(null),
+  flowId: writable<string | null>(null),
   nodes: writable<Node[]>([]),
   edges: writable<Edge[]>([]),
   edgesLayouted: readable<EdgeLayouted[]>([]),
@@ -80,5 +81,7 @@ export const initialStoreState = {
   connection: writable<ConnectionData>(initConnectionData),
   connectionRadius: writable<number>(25),
   connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
-  isValidConnection: writable<IsValidConnection>(() => true)
+  isValidConnection: writable<IsValidConnection>(() => true),
+  markers: readable<MarkerProps[]>([]),
+  defaultMarkerColor: writable<string>('#b1b1b7')
 };

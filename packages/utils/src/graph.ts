@@ -5,7 +5,6 @@ import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectTo
 import {
   errorMessages,
   type Connection,
-  type EdgeMarkerType,
   type Transform,
   type XYPosition,
   type Rect,
@@ -53,23 +52,6 @@ export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType e
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
   `reactflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
-
-export const getMarkerId = (marker: EdgeMarkerType | undefined, rfId?: string): string => {
-  if (typeof marker === 'undefined') {
-    return '';
-  }
-
-  if (typeof marker === 'string') {
-    return marker;
-  }
-
-  const idPrefix = rfId ? `${rfId}__` : '';
-
-  return `${idPrefix}${Object.keys(marker)
-    .sort()
-    .map((key: string) => `${key}=${(marker as any)[key]}`)
-    .join('&')}`;
-};
 
 const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
   return edges.some(

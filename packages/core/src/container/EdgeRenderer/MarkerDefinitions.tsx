@@ -1,14 +1,10 @@
 import { memo, useCallback } from 'react';
-import type { EdgeMarker } from '@reactflow/system';
-import { getMarkerId } from '@reactflow/utils';
+import type { MarkerProps } from '@reactflow/system';
+import { createMarkerIds } from '@reactflow/utils';
 
 import { useStore } from '../../hooks/useStore';
 import { useMarkerSymbol } from './MarkerSymbols';
 import type { ReactFlowState } from '../../types';
-
-type MarkerProps = EdgeMarker & {
-  id: string;
-};
 
 type MarkerDefinitionsProps = {
   defaultColor: string;
@@ -51,22 +47,9 @@ const Marker = ({
 const markerSelector =
   ({ defaultColor, rfId }: { defaultColor: string; rfId?: string }) =>
   (s: ReactFlowState) => {
-    const ids: string[] = [];
+    const markers = createMarkerIds(s.edges, { id: rfId, defaultColor });
 
-    return s.edges
-      .reduce<MarkerProps[]>((markers, edge) => {
-        [edge.markerStart, edge.markerEnd].forEach((marker) => {
-          if (marker && typeof marker === 'object') {
-            const markerId = getMarkerId(marker, rfId);
-            if (!ids.includes(markerId)) {
-              markers.push({ id: markerId, color: marker.color || defaultColor, ...marker });
-              ids.push(markerId);
-            }
-          }
-        });
-        return markers;
-      }, [])
-      .sort((a, b) => a.id.localeCompare(b.id));
+    return markers;
   };
 
 // when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore

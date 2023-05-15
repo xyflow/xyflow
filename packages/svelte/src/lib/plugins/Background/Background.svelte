@@ -31,14 +31,14 @@
   let className: $$Props['class'] = '';
   export { className as class };
 
-  const { transform, id } = useStore();
+  const { transform, flowId } = useStore();
   const patternColor = color || defaultColor[variant!];
   const patternSize = size || defaultSize[variant!];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
 
-  $: patternId = `background-pattern-${$id}`;
+  $: patternId = `background-pattern-${$flowId}`;
   $: scaledGap = [gapXY[0] * $transform[2] || 1, gapXY[1] * $transform[2] || 1];
   $: scaledSize = patternSize * $transform[2];
   $: patternDimensions = (isCross ? [scaledSize, scaledSize] : scaledGap) as [number, number];

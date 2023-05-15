@@ -17,7 +17,7 @@
 
   type $$Props = SvelteFlowProps;
 
-  export let id: $$Props['id'] = '1';
+  export let id = '1';
   export let fitView: $$Props['fitView'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
@@ -31,13 +31,14 @@
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
+  export let defaultMarkerColor = '#b1b1b7';
 
   export let style: $$Props['style'] = undefined;
   let className: $$Props['class'] = undefined;
   export { className as class };
-
   let domNode: HTMLDivElement;
-
+  
+  $: flowId = id;
   const store = useStore();
 
   onMount(() => {
@@ -53,12 +54,13 @@
 
   $: {
     const updatableProps = {
-      id,
+      flowId,
       connectionLineType,
       connectionRadius,
       selectionMode,
       snapGrid,
-      isValidConnection
+      isValidConnection,
+      defaultMarkerColor
     };
 
     Object.keys(updatableProps).forEach(prop => {

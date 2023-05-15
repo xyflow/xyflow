@@ -32,6 +32,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   connectionRadius?: number;
   selectionMode?: SelectionMode;
   snapGrid?: SnapGrid;
+  defaultMarkerColor?: string;
 
   class?: string;
   style?: string;

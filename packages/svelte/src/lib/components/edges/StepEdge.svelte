@@ -17,4 +17,14 @@
   });
 </script>
 
-<BaseEdge {path} {labelX} {labelY} {...$$props} />
+<BaseEdge
+  {path}
+  {labelX}
+  {labelY}
+  id={$$props.id}
+  label={$$props.label}
+  markerStart={$$props.markerStart}
+  markerEnd={$$props.markerEnd}
+  interactionWidth={$$props.interactionWidth}
+  style={$$props.style}
+/>

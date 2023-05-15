@@ -57,3 +57,7 @@ export enum MarkerType {
   Arrow = 'arrow',
   ArrowClosed = 'arrowclosed',
 }
+
+export type MarkerProps = EdgeMarker & {
+  id: string;
+};

@@ -1,5 +1,5 @@
 import { getContext } from 'svelte';
-import { get } from 'svelte/store';
+import { derived, get } from 'svelte/store';
 import { zoomIdentity } from 'd3-zoom';
 import {
   type NodeDragItem,
@@ -11,6 +11,7 @@ import {
   type CoordinateExtent
 } from '@reactflow/system';
 import {
+  createMarkerIds,
   fitView as fitViewUtil,
   getD3Transition,
   getDimensions,
@@ -314,6 +315,12 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     // derived state
     edgesLayouted: getEdgesLayouted(store),
     connectionPath: getConnectionPath(store),
+    markers: derived(
+      [store.edges, store.defaultMarkerColor, store.flowId],
+      ([edges, defaultColor, id]) => {
+        return createMarkerIds(edges, { defaultColor, id });
+      }
+    ),
 
     // actions
     setNodeTypes,

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
+  import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
 
   const { edgesLayouted, width, height } = useStore();
@@ -9,7 +10,10 @@
   {#each $edgesLayouted as edge (edge.id)}
     <EdgeWrapper {...edge} on:edge:click />
   {/each}
+
+  <MarkerDefinition />
 </svg>
+
 
 <style>
   .svelte-flow__edges {

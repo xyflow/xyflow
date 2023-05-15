@@ -4,14 +4,26 @@
 
   type $$Props = BaseEdgeProps;
 
+  export let id: $$Props['id'] = undefined;
   export let path: $$Props['path'] = '';
   export let label: $$Props['label'] = undefined;
   export let labelX: $$Props['labelX'] = undefined;
   export let labelY: $$Props['labelY'] = undefined;
+  export let markerStart: $$Props['markerStart'] = undefined;
+  export let markerEnd: $$Props['markerEnd'] = undefined;
+  export let style: $$Props['style'] = undefined;
   export let interactionWidth: $$Props['interactionWidth'] = 20;
 </script>
 
-<path d={path} fill="none" class="svelte-flow__edge-path" />
+<path
+  d={path}
+  id={id}
+  fill="none"
+  class="svelte-flow__edge-path"
+  marker-start={markerStart}
+  marker-end={markerEnd}
+  style={style}
+/>
 
 {#if interactionWidth}
   <path
