@@ -1,5 +1,14 @@
 # @reactflow/controls
 
+## 11.1.12
+
+### Patch Changes
+
+- [#3054](https://github.com/wbkd/react-flow/pull/3054) [`46526b4e`](https://github.com/wbkd/react-flow/commit/46526b4e02b83d74726701e3ba73d0be8cf80787) - fix(icons): show correct lock icon
+
+- Updated dependencies [[`cf7a7d3d`](https://github.com/wbkd/react-flow/commit/cf7a7d3dad1e73215a72a5dc72e21fd50208cdbb), [`07b975bb`](https://github.com/wbkd/react-flow/commit/07b975bbee3580249e36a19582213b250f78093c), [`c80d269b`](https://github.com/wbkd/react-flow/commit/c80d269b85a0054221f4639c328fc36a3befbe70), [`a3fa164c`](https://github.com/wbkd/react-flow/commit/a3fa164c34cc820c79bb031c9fd97b72a3546614)]:
+  - @reactflow/core@11.7.1
+
 ## 11.1.11
 
 ### Patch Changes

@@ -62,7 +62,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
     const store = useStoreApi();
     const nodeId = useNodeId();
     const { connectOnClick, noPanClassName } = useStore(selector, shallow);
-    const { connecting, clickConnecting } = useStore(connectingSelector(nodeId, handleId, type));
+    const { connecting, clickConnecting } = useStore(connectingSelector(nodeId, handleId, type), shallow);
 
     if (!nodeId) {
       store.getState().onError?.('010', errorMessages['error010']());

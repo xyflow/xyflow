@@ -1,5 +1,22 @@
 # reactflow
 
+## 11.7.1
+
+### Patch Changes
+
+- [#3043](https://github.com/wbkd/react-flow/pull/3043) [`cf7a7d3d`](https://github.com/wbkd/react-flow/commit/cf7a7d3dad1e73215a72a5dc72e21fd50208cdbb) - handles: handles on top of each other, reduce re-renderings
+- [#3046](https://github.com/wbkd/react-flow/pull/3046) [`07b975bb`](https://github.com/wbkd/react-flow/commit/07b975bbee3580249e36a19582213b250f78093c) - base-edge: pass id to base edge path
+- [#3007](https://github.com/wbkd/react-flow/pull/3007) [`c80d269b`](https://github.com/wbkd/react-flow/commit/c80d269b85a0054221f4639c328fc36a3befbe70) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - allow array of ids as updateNodeInternals arg
+- [#3029](https://github.com/wbkd/react-flow/pull/3029) [`a3fa164c`](https://github.com/wbkd/react-flow/commit/a3fa164c34cc820c79bb031c9fd97b72a3546614) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - autopan: only update nodes when transform change happen
+- [#3052](https://github.com/wbkd/react-flow/pull/3052) [`55e05cf7`](https://github.com/wbkd/react-flow/commit/55e05cf76ae21863691153e76dbd51d1eecd2c60) Thanks [@Noam3kCH](https://github.com/Noam3kCH)! - node-toolbar: add prop to align bar at start, center or end
+
+- Updated dependencies [[`cf7a7d3d`](https://github.com/wbkd/react-flow/commit/cf7a7d3dad1e73215a72a5dc72e21fd50208cdbb), [`07b975bb`](https://github.com/wbkd/react-flow/commit/07b975bbee3580249e36a19582213b250f78093c), [`55e05cf7`](https://github.com/wbkd/react-flow/commit/55e05cf76ae21863691153e76dbd51d1eecd2c60), [`c80d269b`](https://github.com/wbkd/react-flow/commit/c80d269b85a0054221f4639c328fc36a3befbe70), [`46526b4e`](https://github.com/wbkd/react-flow/commit/46526b4e02b83d74726701e3ba73d0be8cf80787), [`a3fa164c`](https://github.com/wbkd/react-flow/commit/a3fa164c34cc820c79bb031c9fd97b72a3546614)]:
+  - @reactflow/core@11.7.1
+  - @reactflow/node-toolbar@1.2.0
+  - @reactflow/controls@11.1.12
+  - @reactflow/background@11.2.1
+  - @reactflow/minimap@11.5.1
+
 ## 11.7.0
 
 Most notable updates:
@@ -9,7 +26,7 @@ Most notable updates:
 - Edges: `updatable` option to enable updates for specific edges
 - MiniMap: `inversePan` and `zoomStep` props
 - Background: `id` and `offset` props - this enables you to combine different patterns (useful if you want a graph paper like background for example)
-- useNodesInitialized: options to configure if hidden nodes should be included (false by default) 
+- useNodesInitialized: options to configure if hidden nodes should be included (false by default)
 
 Big thanks to [@Elringus](https://github.com/Elringus) and [@bcakmakoglu](https://github.com/bcakmakoglu)!
 
@@ -22,13 +39,11 @@ Big thanks to [@Elringus](https://github.com/Elringus) and [@bcakmakoglu](https:
 - [#2944](https://github.com/wbkd/react-flow/pull/2944) Thanks [@Elringus](https://github.com/Elringus)! - add `inversePan` and `zoomStep` props
 - [#2941](https://github.com/wbkd/react-flow/pull/2941) Thanks [@Elringus](https://github.com/Elringus)! - background: add `id` and `offset` props
 
-
 ### Patch Changes
 
 - [#2926](https://github.com/wbkd/react-flow/pull/2926) Thanks [@Elringus](https://github.com/Elringus)! - fix non-passive wheel event listener violation
 - [#2933](https://github.com/wbkd/react-flow/pull/2933) [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb) - prefix error keys with "error"
 - [#2939](https://github.com/wbkd/react-flow/pull/2939) [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402) - add connection result to store
-
 
 ### Patch Changes
 

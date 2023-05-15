@@ -17,49 +17,38 @@ const nodeTypes: NodeTypes = {
   custom: CustomNode,
 };
 
+const positions = ['top', 'right', 'bottom', 'left'];
+const alignments = ['start', 'center', 'end'];
+
 const initialNodes: Node[] = [
-  {
-    id: '1',
-    type: 'custom',
-    data: { label: 'toolbar top', toolbarPosition: Position.Top },
-    position: { x: 0, y: 50 },
-    className: 'react-flow__node-default',
-  },
-  {
-    id: '2',
-    type: 'custom',
-    data: { label: 'toolbar right', toolbarPosition: Position.Right },
-    position: { x: 300, y: 0 },
-    className: 'react-flow__node-default',
-  },
-  {
-    id: '3',
-    type: 'custom',
-    data: { label: 'toolbar bottom', toolbarPosition: Position.Bottom },
-    position: { x: 400, y: 100 },
-    className: 'react-flow__node-default',
-  },
   {
     id: '4',
     type: 'custom',
-    data: { label: 'toolbar left', toolbarPosition: Position.Left },
-    position: { x: 400, y: 200 },
-    className: 'react-flow__node-default',
-  },
-  {
-    id: '5',
-    type: 'custom',
-    data: { label: 'toolbar always open', toolbarPosition: Position.Top, toolbarVisible: true },
-    position: { x: 0, y: 200 },
+    data: { label: 'toolbar top', toolbarPosition: Position.Top },
+    position: { x: 0, y: -200 },
     className: 'react-flow__node-default',
   },
 ];
 
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e1-3', source: '1', target: '3' },
-  { id: 'e1-4', source: '1', target: '4' },
-];
+positions.forEach((position, posIndex) => {
+  alignments.forEach((align, alignIndex) => {
+    const id = `node-${align}-${position}`;
+    initialNodes.push({
+      id,
+      type: 'custom',
+      data: {
+        label: `toolbar ${position} ${align}`,
+        toolbarPosition: position as Position,
+        toolbarAlign: align,
+        toolbarVisible: true,
+      },
+      className: 'react-flow__node-default',
+      position: { x: posIndex * 300, y: alignIndex * 100 },
+    });
+  });
+});
+
+const initialEdges: Edge[] = [];
 
 const defaultEdgeOptions = { zIndex: 0 };
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
