@@ -14,6 +14,6 @@ export type Node<
   style?: string;
 };
 
-export type NodeTypes = Record<string, typeof SvelteComponentTyped<Partial<NodeProps>>>;
+export type NodeTypes = Record<string, typeof SvelteComponentTyped<NodeProps>>;
 
 export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
