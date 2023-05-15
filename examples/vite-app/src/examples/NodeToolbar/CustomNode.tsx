@@ -4,7 +4,7 @@ import { Handle, Position, NodeProps, NodeToolbar } from 'reactflow';
 const CustomNode: FC<NodeProps> = ({ id, data }) => {
   return (
     <>
-      <NodeToolbar isVisible={data.toolbarVisible} position={data.toolbarPosition}>
+      <NodeToolbar isVisible={data.toolbarVisible} position={data.toolbarPosition} align={data.toolbarAlign}>
         <button>delete</button>
         <button>copy</button>
         <button>expand</button>

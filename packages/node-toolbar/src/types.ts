@@ -6,4 +6,7 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   isVisible?: boolean;
   position?: Position;
   offset?: number;
+  align?: Align;
 };
+
+export type Align = 'center' | 'start' | 'end';

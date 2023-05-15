@@ -14,7 +14,7 @@ import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import NodeToolbarPortal from './NodeToolbarPortal';
-import { NodeToolbarProps } from './types';
+import { Align, NodeToolbarProps } from './types';
 
 const nodeEqualityFn = (a: Node | undefined, b: Node | undefined) =>
   a?.positionAbsolute?.x === b?.positionAbsolute?.x &&
@@ -34,33 +34,46 @@ const storeSelector = (state: ReactFlowState) => ({
   selectedNodesCount: state.getNodes().filter((node) => node.selected).length,
 });
 
-function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number): string {
+function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number, align: Align): string {
+  let alignmentOffset = 0.5;
+
+  if (align === 'start') {
+    alignmentOffset = 0;
+  } else if (align === 'end') {
+    alignmentOffset = 1;
+  }
+
   // position === Position.Top
-  let xPos = (nodeRect.x + nodeRect.width / 2) * transform[2] + transform[0];
-  let yPos = nodeRect.y * transform[2] + transform[1] - offset;
-  let xShift = -50;
-  let yShift = -100;
+  // we set the x any y position of the toolbar based on the nodes position
+  let pos = [
+    (nodeRect.x + nodeRect.width * alignmentOffset) * transform[2] + transform[0],
+    nodeRect.y * transform[2] + transform[1] - offset,
+  ];
+  // and than shift it based on the alignment. The shift values are in %.
+  let shift = [-100 * alignmentOffset, -100];
 
   switch (position) {
     case Position.Right:
-      xPos = (nodeRect.x + nodeRect.width) * transform[2] + transform[0] + offset;
-      yPos = (nodeRect.y + nodeRect.height / 2) * transform[2] + transform[1];
-      xShift = 0;
-      yShift = -50;
+      pos = [
+        (nodeRect.x + nodeRect.width) * transform[2] + transform[0] + offset,
+        (nodeRect.y + nodeRect.height * alignmentOffset) * transform[2] + transform[1],
+      ];
+      shift = [0, -100 * alignmentOffset];
       break;
     case Position.Bottom:
-      yPos = (nodeRect.y + nodeRect.height) * transform[2] + transform[1] + offset;
-      yShift = 0;
+      pos[1] = (nodeRect.y + nodeRect.height) * transform[2] + transform[1] + offset;
+      shift[1] = 0;
       break;
     case Position.Left:
-      xPos = nodeRect.x * transform[2] + transform[0] - offset;
-      yPos = (nodeRect.y + nodeRect.height / 2) * transform[2] + transform[1];
-      xShift = -100;
-      yShift = -50;
+      pos = [
+        nodeRect.x * transform[2] + transform[0] - offset,
+        (nodeRect.y + nodeRect.height * alignmentOffset) * transform[2] + transform[1],
+      ];
+      shift = [-100, -100 * alignmentOffset];
       break;
   }
 
-  return `translate(${xPos}px, ${yPos}px) translate(${xShift}%, ${yShift}%)`;
+  return `translate(${pos[0]}px, ${pos[1]}px) translate(${shift[0]}%, ${shift[1]}%)`;
 }
 
 function NodeToolbar({
@@ -71,6 +84,7 @@ function NodeToolbar({
   isVisible,
   position = Position.Top,
   offset = 10,
+  align = 'center',
   ...rest
 }: NodeToolbarProps) {
   const contextNodeId = useNodeId();
@@ -103,7 +117,7 @@ function NodeToolbar({
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
-    transform: getTransform(nodeRect, transform, position, offset),
+    transform: getTransform(nodeRect, transform, position, offset, align),
     zIndex,
     ...style,
   };
