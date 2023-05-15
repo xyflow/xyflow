@@ -4,6 +4,7 @@
   const routes = [
     'customnode',
     'drag-n-drop',
+    'edges',
     'overview',
     'stress',
     'subflows',

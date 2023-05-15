@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { ChangeEventHandler } from 'svelte/elements';
-    import { writable } from 'svelte/store';
+  import type { ChangeEventHandler } from 'svelte/elements';
+  import { writable } from 'svelte/store';
   import SvelteFlow, {
     SvelteFlowProvider,
     Controls,
@@ -40,7 +40,7 @@
         };
       })
     );
-    }
+  };
 
   const nodes = createNodes([
   {
