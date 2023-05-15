@@ -28,7 +28,15 @@ type BezierEdgeType<T> = DefaultEdge<T> & {
   pathOptions?: BezierPathOptions;
 };
 
-export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T>;
+type StepEdgeType<T> = DefaultEdge<T> & {
+  type: 'step';
+};
+
+export type Edge<T = any> =
+  | DefaultEdge<T>
+  | SmoothStepEdgeType<T>
+  | BezierEdgeType<T>
+  | StepEdgeType<T>;
 
 export type EdgeLayouted = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
   sourceX: number;

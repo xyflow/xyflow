@@ -16,6 +16,7 @@ import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
+import StepEdge from '$lib/components/edges/StepEdge.svelte';
 import type {
   ConnectionData,
   NodeTypes,
@@ -43,7 +44,8 @@ export const initialNodeTypes = {
 export const initialEdgeTypes = {
   straight: StraightEdge,
   smoothstep: SmoothStepEdge,
-  default: BezierEdge
+  default: BezierEdge,
+  step: StepEdge
 };
 
 export const initialStoreState = {
