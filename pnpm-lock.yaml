@@ -346,6 +346,9 @@ importers:
       '@sveltejs/adapter-auto': ^2.0.0
       '@sveltejs/kit': ^1.11.0
       '@sveltejs/package': ^2.0.2
+      '@types/d3-drag': ^3.0.1
+      '@types/d3-selection': ^3.0.3
+      '@types/d3-zoom': ^3.0.1
       '@typescript-eslint/eslint-plugin': ^5.45.0
       '@typescript-eslint/parser': ^5.45.0
       classcat: ^5.0.4
@@ -369,6 +372,9 @@ importers:
       '@reactflow/system': link:../system
       '@reactflow/utils': link:../utils
       '@svelte-put/shortcut': registry.npmjs.org/@svelte-put/shortcut/2.0.0
+      '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.1
+      '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.3
+      '@types/d3-zoom': registry.npmjs.org/@types/d3-zoom/3.0.1
       classcat: registry.npmjs.org/classcat/5.0.4
       d3-drag: registry.npmjs.org/d3-drag/3.0.0
       d3-selection: registry.npmjs.org/d3-selection/3.0.0
