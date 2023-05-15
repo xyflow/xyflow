@@ -1,8 +1,6 @@
-import { memo, useEffect, useState } from 'react';
-import type { FC, PropsWithChildren } from 'react';
+import { memo, useEffect, useState, type FC, type PropsWithChildren } from 'react';
 import cc from 'classcat';
-import { useStore, useStoreApi, useReactFlow, Panel } from '@reactflow/core';
-import type { ReactFlowState } from '@reactflow/core';
+import { useStore, useStoreApi, useReactFlow, Panel, type ReactFlowState } from '@reactflow/core';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';
@@ -13,7 +11,7 @@ import ControlButton from './ControlButton';
 
 import type { ControlProps } from './types';
 
-const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
+const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable || s.nodesConnectable || s.elementsSelectable;
 
 const Controls: FC<PropsWithChildren<ControlProps>> = ({
   style,
