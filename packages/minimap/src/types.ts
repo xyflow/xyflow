@@ -14,6 +14,7 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   maskColor?: string;
   maskStrokeColor?: string;
   maskStrokeWidth?: number;
+  maskStrokeDashArray?: number;
   position?: PanelPosition;
   onClick?: (event: MouseEvent, position: XYPosition) => void;
   onNodeClick?: (event: MouseEvent, node: Node<NodeData>) => void;

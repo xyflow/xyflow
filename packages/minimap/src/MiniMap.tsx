@@ -56,11 +56,12 @@ function MiniMap({
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
   // We need to rename the prop to be `CapitalCase` so that JSX will render it as
-  // a component properly. 
+  // a component properly.
   nodeComponent: NodeComponent = MiniMapNode,
   maskColor = 'rgb(240, 240, 240, 0.6)',
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
+  maskStrokeDashArray = 0,
   position = 'bottom-right',
   onClick,
   onNodeClick,
@@ -68,7 +69,7 @@ function MiniMap({
   zoomable = false,
   ariaLabel = 'React Flow mini map',
   inversePan = false,
-  zoomStep = 10
+  zoomStep = 10,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -213,6 +214,7 @@ function MiniMap({
           fillRule="evenodd"
           stroke={maskStrokeColor}
           strokeWidth={maskStrokeWidth}
+          strokeDasharray={maskStrokeDashArray}
           pointerEvents="none"
         />
       </svg>
