@@ -149,7 +149,7 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
-  panBy: (delta: XYPosition) => void;
+  panBy: (delta: XYPosition) => boolean;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

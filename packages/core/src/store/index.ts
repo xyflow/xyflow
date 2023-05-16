@@ -276,11 +276,11 @@ const createRFStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    panBy: (delta: XYPosition) => {
+    panBy: (delta: XYPosition): boolean => {
       const { transform, width, height, d3Zoom, d3Selection, translateExtent } = get();
 
       if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
-        return;
+        return false;
       }
 
       const nextTransform = zoomIdentity.translate(transform[0] + delta.x, transform[1] + delta.y).scale(transform[2]);
@@ -292,6 +292,13 @@ const createRFStore = () =>
 
       const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, translateExtent);
       d3Zoom.transform(d3Selection, constrainedTransform);
+
+      const transformChanged =
+        transform[0] !== constrainedTransform.x ||
+        transform[1] !== constrainedTransform.y ||
+        transform[2] !== constrainedTransform.k;
+
+      return transformChanged;
     },
     cancelConnection: () =>
       set({

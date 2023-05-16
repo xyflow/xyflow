@@ -2,8 +2,9 @@ import { Handle, NodeProps, Position, ReactFlowState, useStore } from 'reactflow
 
 const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionNodeId;
 
-export default function CustomNode({ id, isConnectable }: NodeProps) {
+export default function CustomNode({ id }: NodeProps) {
   const connectionNodeId = useStore(connectionNodeIdSelector);
+  const isConnecting = !!connectionNodeId;
   const isTarget = connectionNodeId && connectionNodeId !== id;
 
   const targetHandleStyle = { zIndex: isTarget ? 3 : 1 };
@@ -18,19 +19,16 @@ export default function CustomNode({ id, isConnectable }: NodeProps) {
           backgroundColor: isTarget ? '#ffcce3' : '#ccd9f6',
         }}
       >
+        {!isConnecting && (
+          <Handle className="customHandle" style={{ zIndex: 2 }} position={Position.Right} type="source" />
+        )}
+
         <Handle
-          className="targetHandle"
-          style={{ zIndex: 2 }}
-          position={Position.Right}
-          type="source"
-          isConnectable={isConnectable}
-        />
-        <Handle
-          className="targetHandle"
+          className="customHandle"
           style={targetHandleStyle}
           position={Position.Left}
           type="target"
-          isConnectable={isConnectable}
+          isConnectableStart={false}
         />
         {label}
       </div>

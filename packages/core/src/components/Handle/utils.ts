@@ -49,18 +49,30 @@ export function getClosestHandle(
   connectionRadius: number,
   handles: ConnectionHandle[]
 ): ConnectionHandle | null {
-  let closestHandle: ConnectionHandle | null = null;
+  let closestHandles: ConnectionHandle[] = [];
   let minDistance = Infinity;
 
   handles.forEach((handle) => {
     const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
-    if (distance <= connectionRadius && distance < minDistance) {
+    if (distance <= connectionRadius) {
+      if (distance < minDistance) {
+        closestHandles = [handle];
+      } else if (distance === minDistance) {
+        // when multiple handles are on the same distance we collect all of them
+        closestHandles.push(handle);
+      }
       minDistance = distance;
-      closestHandle = handle;
     }
   });
 
-  return closestHandle;
+  if (!closestHandles.length) {
+    return null;
+  }
+
+  return closestHandles.length === 1
+    ? closestHandles[0]
+    : // if multiple handles are layouted on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
+      closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
 }
 
 type Result = {
@@ -89,6 +101,8 @@ export function isValidHandle(
   );
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
+  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
+  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
   const handleToCheck = handleBelow?.classList.contains('react-flow__handle') ? handleBelow : handleDomNode;
 
   const result: Result = {

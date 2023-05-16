@@ -119,8 +119,9 @@ function useDrag({
           lastPos.current.x = (lastPos.current.x ?? 0) - xMovement / transform[2];
           lastPos.current.y = (lastPos.current.y ?? 0) - yMovement / transform[2];
 
-          updateNodes(lastPos.current as XYPosition);
-          panBy({ x: xMovement, y: yMovement });
+          if (panBy({ x: xMovement, y: yMovement })) {
+            updateNodes(lastPos.current as XYPosition);
+          }
         }
         autoPanId.current = requestAnimationFrame(autoPan);
       };

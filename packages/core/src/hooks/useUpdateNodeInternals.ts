@@ -6,13 +6,20 @@ import { useStoreApi } from '../hooks/useStore';
 function useUpdateNodeInternals(): UpdateNodeInternals {
   const store = useStoreApi();
 
-  return useCallback<UpdateNodeInternals>((id: string) => {
+  return useCallback<UpdateNodeInternals>((id: string | string[]) => {
     const { domNode, updateNodeDimensions } = store.getState();
-    const nodeElement = domNode?.querySelector(`.react-flow__node[data-id="${id}"]`) as HTMLDivElement;
 
-    if (nodeElement) {
-      requestAnimationFrame(() => updateNodeDimensions([{ id, nodeElement, forceUpdate: true }]));
-    }
+    const updateIds = Array.isArray(id) ? id : [id];
+
+    requestAnimationFrame(() => {
+      updateIds.forEach((updateId) => {
+        const nodeElement = domNode?.querySelector(`.react-flow__node[data-id="${updateId}"]`) as HTMLDivElement;
+
+        if (nodeElement) {
+          updateNodeDimensions([{ id: updateId, nodeElement, forceUpdate: true }]);
+        }
+      });
+    });
   }, []);
 }
 
