@@ -23,6 +23,7 @@
   {labelY}
   id={$$props.id}
   label={$$props.label}
+  labelStyle={$$props.labelStyle}
   markerStart={$$props.markerStart}
   markerEnd={$$props.markerEnd}
   interactionWidth={$$props.interactionWidth}

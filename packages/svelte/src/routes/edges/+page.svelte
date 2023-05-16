@@ -101,9 +101,7 @@
     source: '5',
     target: '7',
     label: 'label with styled bg',
-    //labelBgPadding: [8, 4],
-    // labelBgBorderRadius: 4,
-    // labelBgStyle: { fill: '#FFCC00', color: '#fff', fillOpacity: 0.7 },
+    labelStyle: 'background: #FFCC00; color: #fff; opacity: 0.7',
     markerEnd: {
       type: MarkerType.ArrowClosed,
     },
@@ -125,7 +123,7 @@
     source: '5',
     target: '6',
     label: 'hi',
-    // labelStyle: 'fill: red; font-weight: 700',
+    labelStyle: 'background: red; font-weight: 700; padding: 5px;',
     style: 'stroke: #ffcc0',
     markerEnd: {
       type: MarkerType.Arrow,

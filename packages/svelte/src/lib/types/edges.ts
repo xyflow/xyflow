@@ -12,6 +12,7 @@ import type { Node } from '$lib/types';
 
 export type DefaultEdge<EdgeData = any> = BaseEdge<EdgeData> & {
   label?: string;
+  labelStyle?: string;
   style?: string;
   class?: string;
   sourceNode?: Node;
@@ -67,6 +68,7 @@ export type EdgeProps = Pick<
   | 'animated'
   | 'selected'
   | 'label'
+  | 'labelStyle'
   | 'interactionWidth'
   | 'markerStart'
   | 'markerEnd'

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import EdgeLabelRenderer from '$lib/components/EdgeLabelRenderer/EdgeLabelRenderer.svelte';
+  import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
   import type { BaseEdgeProps } from './types';
 
   type $$Props = BaseEdgeProps;
@@ -9,10 +9,12 @@
   export let label: $$Props['label'] = undefined;
   export let labelX: $$Props['labelX'] = undefined;
   export let labelY: $$Props['labelY'] = undefined;
+  export let labelStyle: $$Props['labelStyle'] = undefined;
   export let markerStart: $$Props['markerStart'] = undefined;
   export let markerEnd: $$Props['markerEnd'] = undefined;
   export let style: $$Props['style'] = undefined;
   export let interactionWidth: $$Props['interactionWidth'] = 20;
+
 </script>
 
 <path
@@ -40,6 +42,7 @@
     <div
       class="svelte-flow__edge-label"
       style:transform={`translate(-50%, -50%) translate(${labelX}px,${labelY}px)`}
+      style={labelStyle}
     >
       {label}
     </div>

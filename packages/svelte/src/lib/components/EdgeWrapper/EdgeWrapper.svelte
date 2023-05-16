@@ -24,6 +24,7 @@
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let label: $$Props['label'] = undefined;
+  export let labelStyle: $$Props['labelStyle'] = undefined;
   export let markerStart: $$Props['markerStart'] = undefined;
   export let markerEnd: $$Props['markerEnd'] = undefined;
   export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
@@ -66,6 +67,7 @@
     {animated}
     {selected}
     {label}
+    {labelStyle}
     {data}
     {style}
     {sourceHandleId}
