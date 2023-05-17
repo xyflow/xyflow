@@ -24,5 +24,13 @@
       max-width: 12px;
       max-height: 12px;
     }
+
+    &:disabled {
+      pointer-events: none;
+
+      svg {
+        fill-opacity: 0.4;
+      }
+    }
   }
 }
