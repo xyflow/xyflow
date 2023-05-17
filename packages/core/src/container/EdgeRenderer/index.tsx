@@ -115,6 +115,10 @@ const EdgeRenderer = ({
               const isUpdatable =
                 typeof onEdgeUpdate !== 'undefined' &&
                 (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
+              const isSelectable = !!(
+                edge.selectable ||
+                (elementsSelectable && typeof edge.selectable === 'undefined')
+              );
 
               if (!sourceHandle || !targetHandle) {
                 onError?.('008', errorMessages['error008'](sourceHandle, edge));
@@ -160,7 +164,7 @@ const EdgeRenderer = ({
                   targetY={targetY}
                   sourcePosition={sourcePosition}
                   targetPosition={targetPosition}
-                  elementsSelectable={elementsSelectable}
+                  isSelectable={isSelectable}
                   onEdgeUpdate={onEdgeUpdate}
                   onContextMenu={onEdgeContextMenu}
                   onMouseEnter={onEdgeMouseEnter}

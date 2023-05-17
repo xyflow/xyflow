@@ -37,7 +37,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     targetY,
     sourcePosition,
     targetPosition,
-    elementsSelectable,
+    isSelectable,
     hidden,
     sourceHandleId,
     targetHandleId,
@@ -73,7 +73,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       const { edges, addSelectedEdges } = store.getState();
 
-      if (elementsSelectable) {
+      if (isSelectable) {
         store.setState({ nodesSelectionActive: false });
         addSelectedEdges([id]);
       }
@@ -137,10 +137,10 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const onEdgeUpdaterMouseEnter = () => setUpdateHover(true);
     const onEdgeUpdaterMouseOut = () => setUpdateHover(false);
 
-    const inactive = !elementsSelectable && !onClick;
+    const inactive = !isSelectable && !onClick;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
+      if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const { unselectNodesAndEdges, addSelectedEdges, edges } = store.getState();
         const unselect = event.key === 'Escape';
 

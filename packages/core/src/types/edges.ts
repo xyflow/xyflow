@@ -60,7 +60,6 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   targetY: number;
   sourcePosition: Position;
   targetPosition: Position;
-  elementsSelectable?: boolean;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;
@@ -72,6 +71,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   rfId?: string;
   isFocusable: boolean;
   isUpdatable: EdgeUpdatable;
+  isSelectable: boolean;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
 };
 
