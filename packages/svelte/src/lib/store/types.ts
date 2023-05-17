@@ -27,6 +27,7 @@ export type SvelteFlowStoreActions = {
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   resetSelectedElements: () => void;
   addSelectedNodes: (ids: string[]) => void;
+  addSelectedEdges: (ids: string[]) => void;
   panBy: (delta: XYPosition) => void;
   updateConnection: (connection: Partial<ConnectionData>) => void;
   cancelConnection: () => void;

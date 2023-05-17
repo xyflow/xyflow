@@ -14,7 +14,6 @@
   export let markerEnd: $$Props['markerEnd'] = undefined;
   export let style: $$Props['style'] = undefined;
   export let interactionWidth: $$Props['interactionWidth'] = 20;
-
 </script>
 
 <path

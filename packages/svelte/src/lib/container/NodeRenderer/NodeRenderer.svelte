@@ -39,6 +39,7 @@
       data={node.data}
       selected={node.selected}
       draggable={node.draggable || node.draggable === undefined}
+      selectable={node.selectable || node.selectable === undefined}
       connectable={node.connectable || node.connectable === undefined}
       positionAbsolute={node.positionAbsolute}
       positionOrigin={posOrigin}

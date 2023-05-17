@@ -45,6 +45,7 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
 
       res.push({
         ...edge,
+        selectable: edge.selectable || typeof edge.selectable === 'undefined',
         type: edgeType,
         sourceX,
         sourceY,

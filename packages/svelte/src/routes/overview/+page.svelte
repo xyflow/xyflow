@@ -34,7 +34,8 @@
       id: '2',
       type: 'default',
       data: { label: 'Node' },
-      position: { x: 0, y: 150 }
+      position: { x: 0, y: 150 },
+      selectable: false,
     },
     {
       id: 'A',
@@ -83,7 +84,8 @@
       id: '1-3',
       type: 'smoothstep',
       source: '1',
-      target: '3'
+      target: '3',
+      selectable: false
     },
     {
       id: '2-4',

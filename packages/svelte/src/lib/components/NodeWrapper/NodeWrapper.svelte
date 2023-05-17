@@ -15,6 +15,7 @@
   export let data: NodeWrapperProps['data'] = {};
   export let selected: NodeWrapperProps['selected'] = false;
   export let draggable: NodeWrapperProps['draggable'] = undefined;
+  export let selectable: NodeWrapperProps['selectable'] = undefined;
   export let connectable: NodeWrapperProps['connectable'] = true;
   export let dragging: boolean = false;
   export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
@@ -36,13 +37,12 @@
   const nodeTypeValid = !!$nodeTypes[type!];
 
   if (!nodeTypeValid) {
-    console.warn('003', errorMessages['003'](type!));
+    console.warn('003', errorMessages['error003'](type!));
     type = 'default';
   }
 
   const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> =
     $nodeTypes[type!] || DefaultNode;
-  const isSelectable = true;
   const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher();
 
@@ -63,7 +63,7 @@
   }
 
   function onSelectNodeHandler(event: MouseEvent) {
-    if (isSelectable && (!selectNodesOnDrag || !draggable)) {
+    if (selectable && (!selectNodesOnDrag || !draggable)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
       addSelectedNodes([id]);
     }

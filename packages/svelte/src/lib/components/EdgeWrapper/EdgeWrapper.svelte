@@ -23,16 +23,17 @@
   export let targetPosition: $$Props['targetPosition'] = Position.Top;
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
+  export let selectable: $$Props['selectable'] = true;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
   export let markerStart: $$Props['markerStart'] = undefined;
   export let markerEnd: $$Props['markerEnd'] = undefined;
   export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
   export let targetHandleId: $$Props['targetHandleId'] = undefined;
-
+  
    // @ todo: support edge updates
 
-  const { edges, edgeTypes, flowId } = useStore();
+  const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
   const dispatch = createEventDispatcher();
 
   const edgeComponent: typeof SvelteComponentTyped<EdgeProps> = $edgeTypes[type!] || BezierEdge;
@@ -41,6 +42,10 @@
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 
   function onClick() {
+    if (selectable) {
+      addSelectedEdges([id]);
+    }
+
     const edge = $edges.find(e => e.id === id);
     dispatch('edge:click', edge);
   }
@@ -50,6 +55,7 @@
 <g
   class="svelte-flow__edge"
   class:animated
+  class:selected
   data-id={id}
   on:click={onClick}
 >
@@ -83,13 +89,17 @@
     cursor: pointer;
   }
 
-  .svelte-flow__edge :global(path) {
+  .svelte-flow__edge :global(.svelte-flow__edge-path) {
     stroke: #ccc;
     stroke-width: 1;
     fill: none;
   }
 
-  .animated :global(path) {
+  .selected :global(.svelte-flow__edge-path) {
+    stroke: #555;
+  }
+
+  .animated :global(.svelte-flow__edge-path) {
     stroke-dasharray: 5;
     animation: dashdraw 0.5s linear infinite;
   }

@@ -108,7 +108,7 @@ export function calcNextPosition(
             ]
           : currentExtent;
     } else {
-      devWarn('005', errorMessages['005']());
+      devWarn('005', errorMessages['error005']());
       currentExtent = nodeExtent;
     }
   } else if (node.extent && node.parentNode) {

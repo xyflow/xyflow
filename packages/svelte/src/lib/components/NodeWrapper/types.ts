@@ -11,6 +11,7 @@ export type NodeWrapperProps = Pick<
   | 'dragging'
   | 'positionAbsolute'
   | 'selected'
+  | 'selectable'
   | 'style'
   | 'type'
   | 'width'

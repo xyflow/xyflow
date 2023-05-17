@@ -251,6 +251,21 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     );
   }
 
+  function addSelectedEdges(ids: string[]) {
+    if (get(store.multiselectionKeyPressed)) {
+      // @todo handle multiselection key
+    }
+
+    store.edges.update((edges) =>
+      edges.map((edge) => {
+        return {
+          ...edge,
+          selected: ids.includes(edge.id)
+        };
+      })
+    );
+  }
+
   function panBy(delta: XYPosition) {
     const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
     const transform = get(store.transform);
@@ -335,6 +350,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     setMaxZoom,
     resetSelectedElements,
     addSelectedNodes,
+    addSelectedEdges,
     panBy,
     updateConnection,
     cancelConnection,
