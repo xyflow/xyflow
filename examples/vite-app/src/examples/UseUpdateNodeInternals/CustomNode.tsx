@@ -23,7 +23,7 @@ const CustomNode: FC<NodeProps> = ({ id }) => {
       <button
         onClick={() => {
           setHandleCount((c) => c + 1);
-          updateNodeInternals(id);
+          updateNodeInternals([id]);
         }}
       >
         add handle
