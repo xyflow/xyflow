@@ -17,9 +17,11 @@
   export let showFitView: $$Props['showFitView'] = true;
   export let showInteractive: $$Props['showInteractive'] = true;
 
-  const { zoomIn, zoomOut, fitView } = useStore();
+  const { zoomIn, zoomOut, fitView, transform, minZoom, maxZoom } = useStore();
 
   const isInteractive = true;
+  $: minZoomReached = $transform[2] <= $minZoom;
+  $: maxZoomReached = $transform[2] >= $maxZoom;
 
   const onZoomInHandler = () => {
     zoomIn();
@@ -50,6 +52,7 @@
       class="svelte-flow__controls-zoomin"
       title="zoom in"
       aria-label="zoom in"
+      disabled={maxZoomReached}
     >
       <PlusIcon />
     </ControlButton>
@@ -59,6 +62,7 @@
       class="svelte-flow__controls-zoomout"
       title="zoom out"
       aria-label="zoom out"
+      disabled={minZoomReached}
     >
       <MinusIcon />
     </svelte:component>

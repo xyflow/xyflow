@@ -31,9 +31,21 @@
     padding: 5px;
   }
 
+  .svelte-flow__controls-button:hover {
+    background: #f4f4f4;
+  }
+
   .svelte-flow__controls-button :global(svg) {
     width: 100%;
     max-width: 12px;
     max-height: 12px;
+  }
+
+  .svelte-flow__controls-button:disabled {
+    pointer-events: none;
+  }
+
+  .svelte-flow__controls-button:disabled :global(svg) {
+    fill-opacity: 0.4;
   }
 </style>
