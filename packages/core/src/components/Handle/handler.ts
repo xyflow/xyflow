@@ -108,31 +108,34 @@ export function handlePointerDown({
     const { transform } = getState();
 
     connectionPosition = getEventPosition(event, containerBounds);
-    closestHandle = getClosestHandle(
+
+    const { handle, validHandleResult } = getClosestHandle(
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
-      handleLookup
+      handleLookup,
+      (handle) =>
+        isValidHandle(
+          event,
+          handle,
+          connectionMode,
+          nodeId,
+          handleId,
+          isTarget ? 'target' : 'source',
+          isValidConnection,
+          doc
+        )
     );
+
+    closestHandle = handle;
 
     if (!autoPanStarted) {
       autoPan();
       autoPanStarted = true;
     }
 
-    const result = isValidHandle(
-      event,
-      closestHandle,
-      connectionMode,
-      nodeId,
-      handleId,
-      isTarget ? 'target' : 'source',
-      isValidConnection,
-      doc
-    );
-
-    handleDomNode = result.handleDomNode;
-    connection = result.connection;
-    isValid = result.isValid;
+    handleDomNode = validHandleResult.handleDomNode;
+    connection = validHandleResult.connection;
+    isValid = validHandleResult.isValid;
 
     setState({
       connectionPosition:
@@ -146,7 +149,7 @@ export function handlePointerDown({
             )
           : connectionPosition,
       connectionStatus: getConnectionStatus(!!closestHandle, isValid),
-      connectionEndHandle: result.endHandle,
+      connectionEndHandle: validHandleResult.endHandle,
     });
 
     if (!closestHandle && !isValid && !handleDomNode) {
