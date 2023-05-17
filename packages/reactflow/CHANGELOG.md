@@ -1,5 +1,20 @@
 # reactflow
 
+## 11.7.2
+
+### Patch Changes
+
+- [#3063](https://github.com/wbkd/react-flow/pull/3063) [`33915b88`](https://github.com/wbkd/react-flow/commit/33915b88c2ae701847870346b381f9cfa86c6459) - controls: disable zoom buttons when min/max is reached
+- [#3060](https://github.com/wbkd/react-flow/pull/3060) [`70ec97f7`](https://github.com/wbkd/react-flow/commit/70ec97f7daec6d5401215cae3edac04aea88a3ba) - fix useNodes and useEdges bug with infinite re-renderings
+- [#3064](https://github.com/wbkd/react-flow/pull/3064) [`d2d1aebc`](https://github.com/wbkd/react-flow/commit/d2d1aebc0f7fea4183406e7d1915b7fcd6995f48) - refactor useUpdateNodeInternals: only call updateNodeDimensions once
+- [#3059](https://github.com/wbkd/react-flow/pull/3059) [`4374459e`](https://github.com/wbkd/react-flow/commit/4374459ef9fec797bbc0407231f09a1acacd245b) - fix useUpdateNodeInternals: update type
+- Updated dependencies [[`70ec97f7`](https://github.com/wbkd/react-flow/commit/70ec97f7daec6d5401215cae3edac04aea88a3ba), [`33915b88`](https://github.com/wbkd/react-flow/commit/33915b88c2ae701847870346b381f9cfa86c6459), [`d2d1aebc`](https://github.com/wbkd/react-flow/commit/d2d1aebc0f7fea4183406e7d1915b7fcd6995f48), [`4374459e`](https://github.com/wbkd/react-flow/commit/4374459ef9fec797bbc0407231f09a1acacd245b)]:
+  - @reactflow/core@11.7.2
+  - @reactflow/controls@11.1.13
+  - @reactflow/background@11.2.2
+  - @reactflow/minimap@11.5.2
+  - @reactflow/node-toolbar@1.2.1
+
 ## 11.7.1
 
 ### Patch Changes

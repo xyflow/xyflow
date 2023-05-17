@@ -1,5 +1,6 @@
 import { memo, useEffect, useState, type FC, type PropsWithChildren } from 'react';
 import cc from 'classcat';
+import { shallow } from 'zustand/shallow';
 import { useStore, useStoreApi, useReactFlow, Panel, type ReactFlowState } from '@reactflow/core';
 
 import PlusIcon from './Icons/Plus';
@@ -11,7 +12,11 @@ import ControlButton from './ControlButton';
 
 import type { ControlProps } from './types';
 
-const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable || s.nodesConnectable || s.elementsSelectable;
+const selector = (s: ReactFlowState) => ({
+  isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
+  minZoomReached: s.transform[2] <= s.minZoom,
+  maxZoomReached: s.transform[2] >= s.maxZoom,
+});
 
 const Controls: FC<PropsWithChildren<ControlProps>> = ({
   style,
@@ -29,7 +34,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
 }) => {
   const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const isInteractive = useStore(isInteractiveSelector);
+  const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   useEffect(() => {
@@ -79,6 +84,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
             className="react-flow__controls-zoomin"
             title="zoom in"
             aria-label="zoom in"
+            disabled={maxZoomReached}
           >
             <PlusIcon />
           </ControlButton>
@@ -87,6 +93,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
             className="react-flow__controls-zoomout"
             title="zoom out"
             aria-label="zoom out"
+            disabled={minZoomReached}
           >
             <MinusIcon />
           </ControlButton>

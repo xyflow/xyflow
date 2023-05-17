@@ -257,7 +257,7 @@ export type ReactFlowActions = {
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;
 
-export type UpdateNodeInternals = (nodeId: string) => void;
+export type UpdateNodeInternals = (nodeId: string | string[]) => void;
 
 export type OnSelectionChangeParams = {
   nodes: Node[];
