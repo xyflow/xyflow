@@ -17,7 +17,9 @@
   export let showFitView: $$Props['showFitView'] = true;
   export let showInteractive: $$Props['showInteractive'] = true;
 
-  const { zoomIn, zoomOut, fitView, transform, minZoom, maxZoom } = useStore();
+  const {
+    zoomIn, zoomOut, fitView, transform, minZoom, maxZoom, nodesDraggable, nodesConnectable, elementsSelectable
+  } = useStore();
 
   const isInteractive = true;
   $: minZoomReached = $transform[2] <= $minZoom;
@@ -36,12 +38,9 @@
   };
 
   const onToggleInteractivity = () => {
-    // store.setState({
-    //   nodesDraggable: !isInteractive,
-    //   nodesConnectable: !isInteractive,
-    //   elementsSelectable: !isInteractive,
-    // });
-    // onInteractiveChange?.(!isInteractive);
+    nodesDraggable.set(!isInteractive);
+    nodesConnectable.set(!isInteractive);
+    elementsSelectable.set(!isInteractive);
   };
 </script>
  

@@ -82,6 +82,9 @@ export const initialStoreState = {
   connectionRadius: writable<number>(25),
   connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
   isValidConnection: writable<IsValidConnection>(() => true),
+  nodesDraggable: writable<boolean>(true),
+  nodesConnectable: writable<boolean>(true),
+  elementsSelectable: writable<boolean>(true),
   markers: readable<MarkerProps[]>([]),
   defaultMarkerColor: writable<string>('#b1b1b7')
 };

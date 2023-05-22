@@ -67,6 +67,7 @@ export type EdgeProps = Pick<
   | 'targetPosition'
   | 'animated'
   | 'selected'
+  | 'selectable'
   | 'label'
   | 'labelStyle'
   | 'interactionWidth'

@@ -9,6 +9,7 @@ export type BaseEdge<EdgeData = any> = {
   animated?: boolean;
   hidden?: boolean;
   deletable?: boolean;
+  selectable?: boolean;
   data?: EdgeData;
   selected?: boolean;
   markerStart?: EdgeMarkerType;

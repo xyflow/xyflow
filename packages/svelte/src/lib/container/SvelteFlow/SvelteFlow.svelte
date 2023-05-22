@@ -26,6 +26,9 @@
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let selectionMode: $$Props['selectionMode'] = undefined;
+  export let nodesDraggable: $$Props['nodesDraggable'] = undefined;
+  export let nodesConnectable: $$Props['nodesConnectable'] = undefined;
+  export let elementsSelectable: $$Props['elementsSelectable'] = undefined;
   export let snapGrid: $$Props['snapGrid'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
@@ -60,7 +63,10 @@
       selectionMode,
       snapGrid,
       isValidConnection,
-      defaultMarkerColor
+      defaultMarkerColor,
+      nodesDraggable,
+      nodesConnectable,
+      elementsSelectable,
     };
 
     Object.keys(updatableProps).forEach(prop => {

@@ -332,9 +332,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     connectionPath: getConnectionPath(store),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
-      ([edges, defaultColor, id]) => {
-        return createMarkerIds(edges, { defaultColor, id });
-      }
+      ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
     ),
 
     // actions

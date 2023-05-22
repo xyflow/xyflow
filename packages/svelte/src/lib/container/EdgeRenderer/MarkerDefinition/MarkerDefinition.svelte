@@ -7,15 +7,6 @@
 
 <defs>
   {#each $markers as marker(marker.id)}
-    <Marker
-      id={marker.id}
-      type={marker.type}
-      color={marker.color}
-      width={marker.width}
-      height={marker.height}
-      markerUnits={marker.markerUnits}
-      strokeWidth={marker.strokeWidth}
-      orient={marker.orient}
-    />
+    <Marker {...marker} />
   {/each}
 </defs>
