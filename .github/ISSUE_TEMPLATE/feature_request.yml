@@ -2,6 +2,11 @@ name: 🛠 Feature Request
 description: Suggest a new feature or idea for React Flow
 labels: feature request
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for requesting a new feature!
+        The current main / v11 branch is in a feature freeze, and all new features will be implemented in the next version on the xyflow branch. Keep in mind that any new features will take some time to be launched with the xyflow branch.
   - type: textarea
     id: description
     attributes:

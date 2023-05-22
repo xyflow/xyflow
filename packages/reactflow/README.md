@@ -32,6 +32,12 @@ A highly customizable React component for building interactive graphs and node-b
 
 You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
 
+## What's New
+The main branch / v11 is now in a feature freeze. The next version is being developed in the /xyflow branch.
+You can find an unstable pre-alpha version of Svelte Flow in the /xyflow branch.
+Find out more about these changes [here](https://wbkd.notion.site/Upcoming-Changes-at-React-Flow-1a443641891a4069927c0a115e915251).
+
+
 ## Installation
 
 The easiest way to get the latest version of React Flow is to install it via npm, yarn or pnpm:
