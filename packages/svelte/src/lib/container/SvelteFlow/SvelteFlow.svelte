@@ -33,6 +33,9 @@
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
+  export let onMoveStart: $$Props['onMoveStart'] = undefined;
+  export let onMove: $$Props['onMove'] = undefined;
+  export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -111,7 +114,7 @@
   {...$$restProps}
 >
   <KeyHandler {selectionKey} {deleteKey} />
-  <Zoom {initialViewport}>
+  <Zoom {initialViewport} {onMoveStart} {onMove} {onMoveEnd}>
     <Pane on:pane:click>
       <Viewport>
         <EdgeRenderer on:edge:click />

@@ -21,7 +21,7 @@
     zoomIn, zoomOut, fitView, transform, minZoom, maxZoom, nodesDraggable, nodesConnectable, elementsSelectable
   } = useStore();
 
-  const isInteractive = true;
+  $: isInteractive = $nodesDraggable || $nodesConnectable || $elementsSelectable;
   $: minZoomReached = $transform[2] <= $minZoom;
   $: maxZoomReached = $transform[2] >= $maxZoom;
 
@@ -38,9 +38,11 @@
   };
 
   const onToggleInteractivity = () => {
-    nodesDraggable.set(!isInteractive);
-    nodesConnectable.set(!isInteractive);
-    elementsSelectable.set(!isInteractive);
+    isInteractive = !isInteractive;
+
+    nodesDraggable.set(isInteractive);
+    nodesConnectable.set(isInteractive);
+    elementsSelectable.set(isInteractive);
   };
 </script>
  

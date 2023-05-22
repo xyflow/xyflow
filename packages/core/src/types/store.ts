@@ -16,6 +16,7 @@ import {
   ConnectingHandle,
   Transform,
   XYPosition,
+  D3ZoomHandler,
 } from '@reactflow/system';
 
 import type {
@@ -55,7 +56,7 @@ export type ReactFlowStore = {
 
   d3Zoom: D3ZoomInstance | null;
   d3Selection: D3SelectionInstance | null;
-  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  d3ZoomHandler: D3ZoomHandler | null;
   minZoom: number;
   maxZoom: number;
   translateExtent: CoordinateExtent;

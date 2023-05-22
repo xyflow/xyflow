@@ -2,11 +2,33 @@
 import type { Writable } from 'svelte/store';
 import { select } from 'd3-selection';
 import { zoom as d3Zoom, zoomIdentity, type D3ZoomEvent } from 'd3-zoom';
-import type { D3SelectionInstance, D3ZoomInstance, Transform, Viewport } from '@reactflow/system';
+import type {
+  D3SelectionInstance,
+  D3ZoomInstance,
+  OnMove,
+  OnMoveEnd,
+  OnMoveStart,
+  Transform,
+  Viewport
+} from '@reactflow/system';
 import { clamp } from '@reactflow/utils';
 
 const isWrappedWithClass = (event: any, className: string | undefined) =>
   event.target.closest(`.${className}`);
+
+const eventToFlowTransform = (eventViewport: any): Viewport => ({
+  x: eventViewport.x,
+  y: eventViewport.y,
+  zoom: eventViewport.k
+});
+
+const isRightClickPan = (panOnDrag: FlowRendererProps['panOnDrag'], usedButton: number) =>
+  usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
+
+const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
+  prevViewport.x !== eventViewport.x ||
+  prevViewport.y !== eventViewport.y ||
+  prevViewport.zoom !== eventViewport.k;
 
 function filter(event: any, params: ZoomParams): boolean {
   const zoomScroll = true;
@@ -85,10 +107,15 @@ type ZoomParams = {
   minZoom: number;
   maxZoom: number;
   initialViewport: Viewport;
+  dragging: Writable<boolean>;
+  onMoveStart?: OnMoveStart;
+  onMove?: OnMove;
+  onMoveEnd?: OnMoveEnd;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
-  const { transform, d3, minZoom, maxZoom, initialViewport } = params;
+  const { d3, minZoom, maxZoom, initialViewport } = params;
+
   const d3ZoomInstance = d3Zoom().scaleExtent([minZoom, maxZoom]);
   const selection = select(domNode).call(d3ZoomInstance);
 
@@ -98,31 +125,93 @@ export default function zoom(domNode: Element, params: ZoomParams) {
 
   const d3ZoomHandler = selection.on('wheel.zoom');
 
-  d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
-    transform.set([event.transform.x, event.transform.y, event.transform.k]);
-  });
+  let mouseButton = 0;
+  let isZoomingOrPanning = false;
+  let prevTransform: Viewport = { x: 0, y: 0, zoom: 0 };
+  let zoomedWithRightMouseButton = false;
+  let timerId: any;
+
+  function updateZoomHandling(_params: ZoomParams) {
+    const { transform, dragging, onMoveStart, onMove, onMoveEnd } = _params;
+    d3ZoomInstance.on('start', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+      // we need to remember it here, because it's always 0 in the "zoom" event
+      mouseButton = event.sourceEvent?.button || 0;
+
+      isZoomingOrPanning = true;
+
+      if (event.sourceEvent?.type === 'mousedown') {
+        dragging.set(true);
+      }
+
+      if (onMoveStart) {
+        const flowTransform = eventToFlowTransform(event.transform);
+        prevTransform = flowTransform;
+
+        onMoveStart?.((event.sourceEvent as MouseEvent | TouchEvent) || null, flowTransform);
+      }
+    });
+
+    d3ZoomInstance.on('zoom', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+      transform.set([event.transform.x, event.transform.y, event.transform.k]);
+
+      if (onMove) {
+        const flowTransform = eventToFlowTransform(event.transform);
+
+        onMove?.((event.sourceEvent as MouseEvent | TouchEvent) || null, flowTransform);
+      }
+    });
+
+    d3ZoomInstance.on('end', (event: D3ZoomEvent<HTMLDivElement, any>) => {
+      isZoomingOrPanning = false;
+      dragging.set(false);
+
+      if (
+        //onPaneContextMenu &&
+        isRightClickPan(panOnDrag, mouseButton ?? 0) &&
+        !zoomedWithRightMouseButton
+      ) {
+        // onPaneContextMenu(event.sourceEvent);
+      }
+      zoomedWithRightMouseButton = false;
+
+      if (onMoveEnd && viewChanged(prevTransform, event.transform)) {
+        const flowTransform = eventToFlowTransform(event.transform);
+        prevTransform = flowTransform;
+
+        clearTimeout(timerId);
+        timerId = setTimeout(
+          () => {
+            onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          },
+          panOnScroll ? 150 : 0
+        );
+      }
+    });
+
+    selection.on('wheel.zoom', function (event: any, d: any) {
+      if (isWrappedWithClass(event, 'nowheel')) {
+        return null;
+      }
+
+      event.preventDefault();
+      d3ZoomHandler!.call(this, event, d);
+    });
+
+    d3ZoomInstance.filter((event: any) => filter(event, params));
+  }
 
   d3ZoomInstance.transform(selection, updatedTransform);
 
-  selection.on('wheel.zoom', function (event: any, d: any) {
-    if (isWrappedWithClass(event, 'nowheel')) {
-      return null;
-    }
-
-    event.preventDefault();
-    d3ZoomHandler!.call(this, event, d);
-  });
+  updateZoomHandling(params);
 
   d3.set({
     zoom: d3ZoomInstance,
     selection
   });
 
-  d3ZoomInstance.filter((event: any) => filter(event, params));
-
   return {
     update(params: ZoomParams) {
-      d3ZoomInstance.filter((event: any) => filter(event, params));
+      updateZoomHandling(params);
     }
   };
 }

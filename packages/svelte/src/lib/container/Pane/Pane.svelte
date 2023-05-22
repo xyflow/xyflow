@@ -43,22 +43,20 @@
     edges,
     transform,
     dragging,
+    elementsSelectable,
     selectionRect,
     selectionRectMode,
     selectionKeyPressed,
+    selectionMode,
     resetSelectedElements,
-    selectionMode
   } = useStore();
-
-  // @todo take from props
-  const elementsSelectable = true;
 
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
   let selectedNodes: Node[] = [];
 
   $: isSelecting = $selectionKeyPressed;
-  $: hasActiveSelection = elementsSelectable && (isSelecting || $selectionRectMode === 'user');
+  $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
 
   function onClick(event: MouseEvent) {
     dispatch('pane:click', event);

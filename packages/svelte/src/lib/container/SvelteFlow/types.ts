@@ -6,7 +6,10 @@ import type {
   OnConnectStartParams,
   Viewport,
   SelectionMode,
-  SnapGrid
+  SnapGrid,
+  OnMoveStart,
+  OnMove,
+  OnMoveEnd
 } from '@reactflow/system';
 
 import type {
@@ -42,6 +45,10 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
 
   connectionLineType?: ConnectionLineType;
   isValidConnection?: IsValidConnection;
+
+  onMoveStart?: OnMoveStart;
+  onMove?: OnMove;
+  onMoveEnd?: OnMoveEnd;
 
   'on:node:click'?: CustomEvent<Node>;
   'on:node:mouseenter'?: CustomEvent<Node>;

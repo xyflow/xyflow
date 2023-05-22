@@ -1,18 +1,33 @@
-<script lang="ts">
-  import { get } from 'svelte/store';
-  import type { Viewport } from '@reactflow/system';
-  
+<script lang="ts"> 
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
+  import type { ZoomProps } from './types';
 
-  export let initialViewport: Viewport = { x: 0, y: 0, zoom: 1 };
+  type $$Props = ZoomProps; 
 
-  const { transform, d3, selectionKeyPressed, selectionRectMode, minZoom, maxZoom } = useStore();
+  export let initialViewport: $$Props['initialViewport'] = undefined;
+  export let onMoveStart: $$Props['onMoveStart'] = undefined;
+  export let onMove: $$Props['onMove'] = undefined;
+  export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
 
+  const { transform, d3, selectionKeyPressed, selectionRectMode, minZoom, maxZoom, dragging } = useStore();
+  
+  $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
   $: selecting = $selectionKeyPressed || $selectionRectMode === 'user';
 </script>
 
-<div class="svelte-flow__zoom" use:zoom={{ transform, d3, selecting, minZoom: get(minZoom), maxZoom: get(maxZoom), initialViewport }}>
+<div class="svelte-flow__zoom" use:zoom={{
+  transform,
+  d3,
+  selecting,
+  minZoom: $minZoom,
+  maxZoom: $maxZoom,
+  initialViewport: viewPort,
+  dragging,
+  onMoveStart,
+  onMove,
+  onMoveEnd
+}}>
   <slot />
 </div>
 

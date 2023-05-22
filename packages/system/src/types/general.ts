@@ -7,7 +7,7 @@ import type { HandleType } from './handles';
 
 export type Project = (position: XYPosition) => XYPosition;
 
-export type OnMove = (event: MouseEvent | TouchEvent, viewport: Viewport) => void;
+export type OnMove = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
 export type OnMoveStart = OnMove;
 export type OnMoveEnd = OnMove;
 
@@ -93,6 +93,7 @@ export type OnViewportChange = (viewport: Viewport) => void;
 
 export type D3ZoomInstance = ZoomBehavior<Element, unknown>;
 export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>;
+export type D3ZoomHandler = (this: Element, event: any, d: unknown) => void;
 
 export type UpdateNodeInternals = (nodeId: string) => void;
 

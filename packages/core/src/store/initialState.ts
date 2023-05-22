@@ -16,7 +16,7 @@ const initialState: ReactFlowStore = {
   hasDefaultEdges: false,
   d3Zoom: null,
   d3Selection: null,
-  d3ZoomHandler: undefined,
+  d3ZoomHandler: null,
   minZoom: 0.5,
   maxZoom: 2,
   translateExtent: infiniteExtent,
