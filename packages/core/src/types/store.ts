@@ -2,8 +2,6 @@ import {
   ConnectionMode,
   ConnectionStatus,
   CoordinateExtent,
-  D3SelectionInstance,
-  D3ZoomInstance,
   HandleType,
   NodeDimensionUpdate,
   NodeDragItem,
@@ -16,7 +14,7 @@ import {
   ConnectingHandle,
   Transform,
   XYPosition,
-  D3ZoomHandler,
+  PanZoomInstance,
 } from '@reactflow/system';
 
 import type {
@@ -54,9 +52,7 @@ export type ReactFlowStore = {
   paneDragging: boolean;
   noPanClassName: string;
 
-  d3Zoom: D3ZoomInstance | null;
-  d3Selection: D3SelectionInstance | null;
-  d3ZoomHandler: D3ZoomHandler | null;
+  panZoom: PanZoomInstance | null;
   minZoom: number;
   maxZoom: number;
   translateExtent: CoordinateExtent;

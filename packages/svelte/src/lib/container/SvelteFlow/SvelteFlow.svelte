@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import cc from 'classcat';
+  import { PanOnScrollMode, type Viewport } from '@reactflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
-  import { Viewport } from '$lib/container/Viewport';
+  import { Viewport as ViewportComponent } from '$lib/container/Viewport';
   import { NodeRenderer } from '$lib/container/NodeRenderer';
   import { EdgeRenderer } from '$lib/container/EdgeRenderer';
   import { UserSelection } from '$lib/components/UserSelection';
@@ -21,7 +22,7 @@
   export let fitView: $$Props['fitView'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
-  export let initialViewport: $$Props['initialViewport'] = undefined;
+  export let initialViewport: Viewport = { x:0, y: 0, zoom: 1 };
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
@@ -37,6 +38,15 @@
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
+  export let translateExtent: $$Props['translateExtent'] = undefined;
+  export let panOnScrollMode: PanOnScrollMode = PanOnScrollMode.Free;
+  export let preventScrolling: boolean = true;
+  export let zoomOnScroll: boolean = true;
+  export let zoomOnDoubleClick: boolean = true;
+  export let zoomOnPinch: boolean = true;
+  export let panOnScroll: boolean = false;
+  export let panOnDrag: boolean | number[] = true;
+
   export let defaultMarkerColor = '#b1b1b7';
 
   export let style: $$Props['style'] = undefined;
@@ -98,6 +108,10 @@
       store.setMaxZoom(maxZoom);
     }
 
+    if (translateExtent !== undefined) {
+      store.setTranslateExtent(translateExtent)
+    }
+
     if (fitView !== undefined) {
       store.fitViewOnInit.set(fitView);
     }
@@ -114,9 +128,21 @@
   {...$$restProps}
 >
   <KeyHandler {selectionKey} {deleteKey} />
-  <Zoom {initialViewport} {onMoveStart} {onMove} {onMoveEnd}>
+  <Zoom
+    {initialViewport}
+    {onMoveStart}
+    {onMove}
+    {onMoveEnd}
+    {panOnScrollMode}
+    {preventScrolling}
+    {zoomOnScroll}
+    {zoomOnDoubleClick}
+    {zoomOnPinch}
+    {panOnScroll}
+    {panOnDrag}
+  >
     <Pane on:pane:click>
-      <Viewport>
+      <ViewportComponent>
         <EdgeRenderer on:edge:click />
         <ConnectionLine />
         <div class="svelte-flow__edgelabel-renderer" />
@@ -130,7 +156,7 @@
           on:connect:end
         />
         <NodeSelection />
-      </Viewport>
+      </ViewportComponent>
       <UserSelection />
     </Pane>
   </Zoom>

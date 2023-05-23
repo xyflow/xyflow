@@ -88,7 +88,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onSelectionChange?: OnSelectionChangeFunc;
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: ReactMouseEvent) => void;
-  onPaneContextMenu?: (event: ReactMouseEvent) => void;
+  onPaneContextMenu?: (event: ReactMouseEvent | MouseEvent) => void;
   onPaneMouseEnter?: (event: ReactMouseEvent) => void;
   onPaneMouseMove?: (event: ReactMouseEvent) => void;
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;

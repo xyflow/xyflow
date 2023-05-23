@@ -120,7 +120,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodeOrigin = initNodeOrigin,
       edgesFocusable,
       edgesUpdatable,
-      elementsSelectable,
+      elementsSelectable = true,
       defaultViewport = initDefaultViewport,
       minZoom = 0.5,
       maxZoom = 2,

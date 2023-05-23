@@ -298,7 +298,7 @@ export const getD3Transition = (selection: D3SelectionInstance, duration = 0) =>
 };
 
 export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
-  { nodes, width, height, d3Zoom, d3Selection, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
+  { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
@@ -327,11 +327,7 @@ export function fitView<Params extends FitViewParamsBase<BaseNode>, Options exte
 
     const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
 
-    if (typeof options?.duration === 'number' && options.duration > 0) {
-      d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
-    } else {
-      d3Zoom.transform(d3Selection, nextTransform);
-    }
+    panZoom.setTransform(nextTransform, { duration: options?.duration });
 
     return true;
   }

@@ -434,6 +434,7 @@ importers:
       '@types/d3-selection': ^3.0.3
       '@types/d3-zoom': ^3.0.1
       '@types/node': ^18.7.16
+      d3-selection: ^3.0.0
       d3-zoom: ^3.0.0
       typescript: ^4.9.4
     dependencies:
@@ -442,6 +443,7 @@ importers:
       '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.1
       '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.3
       '@types/d3-zoom': registry.npmjs.org/@types/d3-zoom/3.0.1
+      d3-selection: registry.npmjs.org/d3-selection/3.0.0
       d3-zoom: registry.npmjs.org/d3-zoom/3.0.0
     devDependencies:
       '@reactflow/eslint-config': link:../../tooling/eslint-config

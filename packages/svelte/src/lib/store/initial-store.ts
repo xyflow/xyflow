@@ -1,14 +1,14 @@
 import { readable, writable } from 'svelte/store';
 import {
   SelectionMode,
-  type D3ZoomInstance,
-  type D3SelectionInstance,
   ConnectionMode,
   ConnectionLineType,
   type SelectionRect,
   type Transform,
   type SnapGrid,
-  type MarkerProps
+  type MarkerProps,
+  type PanZoomInstance,
+  type CoordinateExtent
 } from '@reactflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -27,6 +27,7 @@ import type {
   Node,
   IsValidConnection
 } from '$lib/types';
+import { infiniteExtent } from '@reactflow/utils';
 
 export const initConnectionData = {
   nodeId: null,
@@ -58,12 +59,10 @@ export const initialStoreState = {
   width: writable<number>(500),
   minZoom: writable<number>(0.5),
   maxZoom: writable<number>(2),
+  translateExtent: writable<CoordinateExtent>(infiniteExtent),
   fitViewOnInit: writable<boolean>(false),
   fitViewOnInitDone: writable<boolean>(false),
-  d3: writable<{ zoom: D3ZoomInstance | null; selection: D3SelectionInstance | null }>({
-    zoom: null,
-    selection: null
-  }),
+  panZoom: writable<PanZoomInstance | null>(null),
   snapGrid: writable<SnapGrid | null>(null),
   dragging: writable<boolean>(false),
   selectionRect: writable<SelectionRect | null>(null),

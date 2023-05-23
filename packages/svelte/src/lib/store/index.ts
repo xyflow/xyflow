@@ -1,6 +1,5 @@
 import { getContext } from 'svelte';
 import { derived, get } from 'svelte/store';
-import { zoomIdentity } from 'd3-zoom';
 import {
   type NodeDragItem,
   type NodeDimensionUpdate,
@@ -13,7 +12,6 @@ import {
 import {
   createMarkerIds,
   fitView as fitViewUtil,
-  getD3Transition,
   getDimensions,
   getElementsToRemove,
   getHandleBounds
@@ -123,21 +121,21 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
       return node;
     });
 
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+    const panZoom = get(store.panZoom);
 
     const fitViewOnInitDone =
       get(store.fitViewOnInitDone) ||
-      (get(store.fitViewOnInit) && !!d3Zoom && !!d3Selection && fitView({ nodes: nextNodes }));
+      (get(store.fitViewOnInit) && !!panZoom && fitView({ nodes: nextNodes }));
 
     store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
   }
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+    const panZoom = get(store.panZoom);
 
-    if (d3Zoom && d3Selection) {
-      d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), factor);
+    if (panZoom) {
+      panZoom.scaleBy(factor, options);
     }
   }
 
@@ -150,28 +148,36 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
   }
 
   function setMinZoom(minZoom: number) {
-    const d3Zoom = get(store.d3).zoom;
+    const panZoom = get(store.panZoom);
 
-    if (d3Zoom) {
-      d3Zoom?.scaleExtent([minZoom, get(store.maxZoom)]);
-
+    if (panZoom) {
+      panZoom.setScaleExtent([minZoom, get(store.maxZoom)]);
       store.minZoom.set(minZoom);
     }
   }
 
   function setMaxZoom(maxZoom: number) {
-    const d3Zoom = get(store.d3).zoom;
-    if (d3Zoom) {
-      d3Zoom?.scaleExtent([get(store.minZoom), maxZoom]);
+    const panZoom = get(store.panZoom);
 
+    if (panZoom) {
+      panZoom.setScaleExtent([get(store.minZoom), maxZoom]);
       store.maxZoom.set(maxZoom);
     }
   }
 
-  function fitView(options?: FitViewOptions) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+  function setTranslateExtent(extent: CoordinateExtent) {
+    const panZoom = get(store.panZoom);
 
-    if (!d3Zoom || !d3Selection) {
+    if (panZoom) {
+      panZoom.setTranslateExtent(extent);
+      store.translateExtent.set(extent);
+    }
+  }
+
+  function fitView(options?: FitViewOptions) {
+    const panZoom = get(store.panZoom);
+
+    if (!panZoom) {
       return false;
     }
 
@@ -184,8 +190,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
         height: get(store.height),
         minZoom: 0.2,
         maxZoom: 2,
-        d3Selection,
-        d3Zoom,
+        panZoom,
         nodeOrigin: [0, 0]
       },
       {}
@@ -267,29 +272,32 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
   }
 
   function panBy(delta: XYPosition) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+    const panZoom = get(store.panZoom);
     const transform = get(store.transform);
     const width = get(store.width);
     const height = get(store.height);
 
-    if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
+    if (!panZoom || (!delta.x && !delta.y)) {
       return;
     }
-
-    const nextTransform = zoomIdentity
-      .translate(transform[0] + delta.x, transform[1] + delta.y)
-      .scale(transform[2]);
 
     const extent: CoordinateExtent = [
       [0, 0],
       [width, height]
     ];
 
-    const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
-    ]);
-    d3Zoom.transform(d3Selection, constrainedTransform);
+    panZoom.setTransformXYZConstrained(
+      {
+        x: transform[0] + delta.x,
+        y: transform[1] + delta.y,
+        zoom: transform[2]
+      },
+      extent,
+      [
+        [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+        [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
+      ]
+    );
   }
 
   function updateConnection(connectionUpdate: Partial<ConnectionData> | null) {
@@ -346,6 +354,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     fitView,
     setMinZoom,
     setMaxZoom,
+    setTranslateExtent,
     resetSelectedElements,
     addSelectedNodes,
     addSelectedEdges,

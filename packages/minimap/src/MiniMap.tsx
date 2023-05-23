@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useEffect, useRef } from 'react';
-import type { MouseEvent } from 'react';
+import { memo, useEffect, useRef, type MouseEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { zoom, zoomIdentity } from 'd3-zoom';
-import type { D3ZoomEvent } from 'd3-zoom';
+import { type D3ZoomEvent, zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import {
   useStore,
@@ -15,8 +13,9 @@ import {
   useStoreApi,
   getNodePositionWithOrigin,
   CoordinateExtent,
+  type ReactFlowState,
+  type Rect,
 } from '@reactflow/core';
-import type { ReactFlowState, Rect } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
 import type { MiniMapProps, GetMiniMapNodeAttribute } from './types';
@@ -68,7 +67,7 @@ function MiniMap({
   zoomable = false,
   ariaLabel = 'React Flow mini map',
   inversePan = false,
-  zoomStep = 10
+  zoomStep = 10,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -99,9 +98,9 @@ function MiniMap({
       const selection = select(svg.current as Element);
 
       const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-        const { transform, d3Selection, d3Zoom } = store.getState();
+        const { transform, panZoom } = store.getState();
 
-        if (event.sourceEvent.type !== 'wheel' || !d3Selection || !d3Zoom) {
+        if (event.sourceEvent.type !== 'wheel' || !panZoom) {
           return;
         }
 
@@ -109,15 +108,15 @@ function MiniMap({
           -event.sourceEvent.deltaY *
           (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
           zoomStep;
-        const zoom = transform[2] * Math.pow(2, pinchDelta);
+        const nextZoom = transform[2] * Math.pow(2, pinchDelta);
 
-        d3Zoom.scaleTo(d3Selection, zoom);
+        panZoom.scaleTo(nextZoom);
       };
 
       const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
-        const { transform, d3Selection, d3Zoom, translateExtent, width, height } = store.getState();
+        const { transform, panZoom, translateExtent, width, height } = store.getState();
 
-        if (event.sourceEvent.type !== 'mousemove' || !d3Selection || !d3Zoom) {
+        if (event.sourceEvent.type !== 'mousemove' || !panZoom) {
           return;
         }
 
@@ -132,10 +131,15 @@ function MiniMap({
           [width, height],
         ];
 
-        const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
-        const constrainedTransform = d3Zoom.constrain()(nextTransform, extent, translateExtent);
-
-        d3Zoom.transform(d3Selection, constrainedTransform);
+        panZoom.setTransformXYZConstrained(
+          {
+            x: position.x,
+            y: position.y,
+            zoom: transform[2],
+          },
+          extent,
+          translateExtent
+        );
       };
 
       const zoomAndPanHandler = zoom()

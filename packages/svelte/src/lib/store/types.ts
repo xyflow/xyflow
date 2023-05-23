@@ -3,7 +3,8 @@ import type {
   XYPosition,
   ViewportHelperFunctionOptions,
   Connection,
-  NodeDragItem
+  NodeDragItem,
+  CoordinateExtent
 } from '@reactflow/system';
 
 import type { initialStoreState } from './initial-store';
@@ -18,6 +19,7 @@ export type SvelteFlowStoreActions = {
   zoomOut: (options?: ViewportHelperFunctionOptions) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
+  setTranslateExtent: (extent: CoordinateExtent) => void;
   fitView: (options?: FitViewOptions) => boolean;
   updateNodePositions: (
     nodeDragItems: NodeDragItem[],
