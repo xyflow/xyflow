@@ -26,7 +26,6 @@
     minZoom,
     maxZoom,
     dragging,
-    elementsSelectable,
     translateExtent
   } = useStore();
   
@@ -40,10 +39,9 @@
   initialViewport: viewPort,
   dragging,
   panZoom,
-  onMoveStart,
-  onMove,
-  onMoveEnd,
-  elementsSelectable: $elementsSelectable,
+  onPanZoomStart: onMoveStart,
+  onPanZoom: onMove,
+  onPanZoomEnd: onMoveEnd,
   zoomOnScroll,
   zoomOnDoubleClick,
   zoomOnPinch,

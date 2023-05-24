@@ -2,10 +2,7 @@ import {
   D3SelectionInstance,
   D3ZoomHandler,
   D3ZoomInstance,
-  OnMove,
-  OnMoveEnd,
-  OnMoveStart,
-  OnViewportChange,
+  OnPanZoom,
   PanOnScrollMode,
   Viewport,
   OnDraggingChange,
@@ -29,8 +26,8 @@ export type ZoomOnScrollParams = {
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
-  zoomedWithRightMouseButton: boolean;
-  prevTransform: Viewport;
+  usedRightMouseButton: boolean;
+  prevViewport: Viewport;
   mouseButton: number;
   timerId: ReturnType<typeof setTimeout> | undefined;
 };
@@ -38,8 +35,7 @@ export type ZoomPanValues = {
 export type PanZoomStartParams = {
   zoomPanValues: ZoomPanValues;
   onDraggingChange: OnDraggingChange;
-  onMoveStart?: OnMoveStart;
-  onViewportChangeStart?: (viewport: Viewport) => void;
+  onPanZoomStart?: OnPanZoom;
 };
 
 export type PanZoomParams = {
@@ -47,8 +43,7 @@ export type PanZoomParams = {
   panOnDrag: boolean | number[];
   onPaneContextMenu: boolean;
   onTransformChange: OnTransformChange;
-  onMove?: OnMove;
-  onViewportChange?: OnViewportChange;
+  onPanZoom?: OnPanZoom;
 };
 
 export type PanZoomEndParams = {
@@ -56,8 +51,7 @@ export type PanZoomEndParams = {
   panOnDrag: boolean | number[];
   panOnScroll: boolean;
   onDraggingChange: (isDragging: boolean) => void;
-  onMoveEnd?: OnMoveEnd;
-  onViewportChangeEnd?: (viewport: Viewport) => void;
+  onPanZoomEnd?: OnPanZoom;
   onPaneContextMenu?: (event: any) => void;
 };
 

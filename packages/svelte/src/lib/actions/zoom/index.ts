@@ -2,9 +2,7 @@
 import type { Writable } from 'svelte/store';
 import type {
   CoordinateExtent,
-  OnMove,
-  OnMoveEnd,
-  OnMoveStart,
+  OnPanZoom,
   PanOnScrollMode,
   PanZoomInstance,
   Transform,
@@ -18,9 +16,9 @@ type ZoomParams = {
   maxZoom: number;
   initialViewport: Viewport;
   dragging: Writable<boolean>;
-  onMoveStart?: OnMoveStart;
-  onMove?: OnMove;
-  onMoveEnd?: OnMoveEnd;
+  onPanZoomStart?: OnPanZoom;
+  onPanZoom?: OnPanZoom;
+  onPanZoomEnd?: OnPanZoom;
   onPaneContextMenu?: (event: MouseEvent) => void;
   translateExtent: CoordinateExtent;
   panZoom: Writable<PanZoomInstance | null>;
@@ -31,7 +29,6 @@ type ZoomParams = {
   panOnDrag: boolean | number[];
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
-  elementsSelectable: boolean;
   zoomActivationKeyPressed: boolean;
   preventScrolling: boolean;
   noPanClassName: string;

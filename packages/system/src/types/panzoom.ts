@@ -1,14 +1,5 @@
 import { ZoomTransform } from 'd3-zoom';
-import {
-  CoordinateExtent,
-  OnMove,
-  OnMoveEnd,
-  OnMoveStart,
-  OnViewportChange,
-  PanOnScrollMode,
-  Transform,
-  Viewport,
-} from './';
+import { CoordinateExtent, PanOnScrollMode, Transform, Viewport } from './';
 
 export type OnDraggingChange = (dragging: boolean) => void;
 export type OnTransformChange = (transform: Transform) => void;
@@ -27,16 +18,15 @@ export type PanZoomTransformOptions = {
   duration?: number;
 };
 
+export type OnPanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
+
 export type PanZoomUpdateOptions = {
   elementsSelectable?: boolean;
   noWheelClassName: string;
   noPanClassName: string;
-  onMoveStart?: OnMoveStart;
-  onMove?: OnMove;
-  onMoveEnd?: OnMoveEnd;
-  onViewportChangeStart?: OnViewportChange;
-  onViewportChange?: OnViewportChange;
-  onViewportChangeEnd?: OnViewportChange;
+  onPanZoomStart?: OnPanZoom;
+  onPanZoom?: OnPanZoom;
+  onPanZoomEnd?: OnPanZoom;
   onPaneContextMenu?: (event: MouseEvent) => void;
   preventScrolling: boolean;
   panOnScroll: boolean;

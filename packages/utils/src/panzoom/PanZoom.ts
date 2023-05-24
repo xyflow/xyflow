@@ -1,4 +1,4 @@
-import { D3ZoomEvent, ZoomTransform, zoom, zoomIdentity } from 'd3-zoom';
+import { D3ZoomEvent, ZoomTransform, zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import {
   PanOnScrollMode,
@@ -16,6 +16,8 @@ import {
   PanZoomInstance,
 } from '@reactflow/system';
 
+import { clamp } from '../utils';
+import FunctionRunner from '../function-runner';
 import {
   FilterParams,
   PanOnScrollParams,
@@ -25,32 +27,21 @@ import {
   ZoomOnScrollParams,
   ZoomPanValues,
 } from './types';
-import { clamp } from '../utils';
-import { Updater } from './utils';
 
-const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
-  prevViewport.x !== eventViewport.x || prevViewport.y !== eventViewport.y || prevViewport.zoom !== eventViewport.k;
-
-const eventToFlowTransform = (eventViewport: any): Viewport => ({
-  x: eventViewport.x,
-  y: eventViewport.y,
-  zoom: eventViewport.k,
-});
-
-const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
-
-const isRightClickPan = (panOnDrag: boolean | number[], usedButton: number) =>
-  usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
-
-const getD3Transition = (selection: D3SelectionInstance, duration = 0) => {
-  return selection.transition().duration(duration);
-};
+import {
+  getD3Transition,
+  isRightClickPan,
+  isWrappedWithClass,
+  transformToViewport,
+  viewChanged,
+  viewportToTransform,
+} from './utils';
 
 export function PanZoom(): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
     isZoomingOrPanning: false,
-    zoomedWithRightMouseButton: false,
-    prevTransform: { x: 0, y: 0, zoom: 0 },
+    usedRightMouseButton: false,
+    prevViewport: { x: 0, y: 0, zoom: 0 },
     mouseButton: 0,
     timerId: undefined,
   };
@@ -61,7 +52,7 @@ export function PanZoom(): PanZoomInstance {
   let onDraggingChange: OnDraggingChange;
   let onTransformChange: OnTransformChange;
 
-  const updater = Updater();
+  const funRun = FunctionRunner();
 
   function init({
     domNode,
@@ -106,15 +97,11 @@ export function PanZoom(): PanZoomInstance {
   }
 
   function update({
-    elementsSelectable,
     noWheelClassName,
     noPanClassName,
-    onMove,
-    onMoveStart,
-    onMoveEnd,
-    onViewportChangeStart,
-    onViewportChange,
-    onViewportChangeEnd,
+    onPanZoom,
+    onPanZoomStart,
+    onPanZoomEnd,
     userSelectionActive,
     onPaneContextMenu,
     panOnScroll,
@@ -127,8 +114,9 @@ export function PanZoom(): PanZoomInstance {
     zoomOnDoubleClick,
     zoomActivationKeyPressed,
   }: PanZoomUpdateOptions) {
+    funRun.restart();
     // wheel scroll / pan handling
-    updater.onChange(() => {
+    funRun.onChange(() => {
       if (!d3ZoomInstance || !d3Selection) {
         return;
       }
@@ -165,52 +153,46 @@ export function PanZoom(): PanZoomInstance {
     ]);
 
     // pan zoom start
-    updater.onChange(() => {
+    funRun.onChange(() => {
       const startHandler = createPanZoomStartHandler({
         zoomPanValues,
         onDraggingChange,
-        onMoveStart,
-        onViewportChangeStart,
+        onPanZoomStart,
       });
       d3ZoomInstance?.on('start', startHandler);
-    }, [d3ZoomInstance, onMoveStart]);
+    }, [d3ZoomInstance, onPanZoomStart]);
 
     // pan zoom
-    updater.onChange(() => {
-      if (!d3ZoomInstance) {
-        return;
-      }
+    funRun.onChange(() => {
       if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
-        d3ZoomInstance.on('zoom', null);
+        d3ZoomInstance?.on('zoom', null);
       } else if (!userSelectionActive) {
         const panZoomHandler = createPanZoomHandler({
-          zoomPanValues: zoomPanValues,
+          zoomPanValues,
           panOnDrag,
           onPaneContextMenu: !!onPaneContextMenu,
-          onMove,
-          onViewportChange,
+          onPanZoom,
           onTransformChange,
         });
-        d3ZoomInstance.on('zoom', panZoomHandler);
+        d3ZoomInstance?.on('zoom', panZoomHandler);
       }
-    }, [userSelectionActive, d3ZoomInstance, onMove, panOnDrag, onPaneContextMenu]);
+    }, [userSelectionActive, d3ZoomInstance, onPanZoom, panOnDrag, onPaneContextMenu]);
 
-    // pan zoom
-    updater.onChange(() => {
+    // pan zoom end
+    funRun.onChange(() => {
       const panZoomEndHandler = createPanZoomEndHandler({
-        zoomPanValues: zoomPanValues,
+        zoomPanValues,
         panOnDrag,
         panOnScroll,
         onPaneContextMenu,
-        onMoveEnd,
-        onViewportChangeEnd,
+        onPanZoomEnd,
         onDraggingChange,
       });
       d3ZoomInstance?.on('end', panZoomEndHandler);
-    }, [d3ZoomInstance, panOnScroll, panOnDrag, onMoveEnd, onPaneContextMenu]);
+    }, [d3ZoomInstance, panOnScroll, panOnDrag, onPanZoomEnd, onPaneContextMenu]);
 
     // apply filter
-    updater.onChange(() => {
+    funRun.onChange(() => {
       const filter = createFilter({
         zoomActivationKeyPressed,
         panOnDrag,
@@ -231,18 +213,16 @@ export function PanZoom(): PanZoomInstance {
       panOnScroll,
       zoomOnDoubleClick,
       panOnDrag,
-      elementsSelectable,
       zoomActivationKeyPressed,
     ]);
   }
 
   function setTransformXYZConstrained(
-    { x, y, zoom }: Viewport,
+    viewport: Viewport,
     extent: CoordinateExtent,
     translateExtent: CoordinateExtent
   ): ZoomTransform | undefined {
-    const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
-
+    const nextTransform = viewportToTransform(viewport);
     const contrainedTransform = d3ZoomInstance?.constrain()(nextTransform, extent, translateExtent);
 
     if (contrainedTransform) {
@@ -252,8 +232,8 @@ export function PanZoom(): PanZoomInstance {
     return contrainedTransform;
   }
 
-  function setTransformXYZ({ x, y, zoom }: Viewport, options?: PanZoomTransformOptions) {
-    const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
+  function setTransformXYZ(viewport: Viewport, options?: PanZoomTransformOptions) {
+    const nextTransform = viewportToTransform(viewport);
 
     setTransform(nextTransform, options);
 
@@ -261,46 +241,29 @@ export function PanZoom(): PanZoomInstance {
   }
 
   function setTransform(_transform: ZoomTransform, options?: PanZoomTransformOptions) {
-    if (!d3ZoomInstance || !d3Selection) {
-      return;
+    if (d3Selection) {
+      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), _transform);
     }
-
-    const zoomSelection =
-      typeof options?.duration === 'number' && options.duration > 0
-        ? getD3Transition(d3Selection, options.duration)
-        : d3Selection;
-
-    d3ZoomInstance.transform(zoomSelection, _transform);
-  }
-
-  function setScaleExtent(scaleExtent: [number, number]) {
-    if (!d3ZoomInstance) {
-      return null;
-    }
-    d3ZoomInstance.scaleExtent(scaleExtent);
-  }
-
-  function setTranslateExtent(translateExtent: CoordinateExtent) {
-    if (!d3ZoomInstance) {
-      return null;
-    }
-    d3ZoomInstance.translateExtent(translateExtent);
   }
 
   function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
-    if (!d3ZoomInstance || !d3Selection) {
-      return;
+    if (d3Selection) {
+      d3ZoomInstance?.scaleTo(getD3Transition(d3Selection, options?.duration), zoom);
     }
-
-    d3ZoomInstance.scaleTo(getD3Transition(d3Selection, options?.duration), zoom);
   }
 
   function scaleBy(factor: number, options?: PanZoomTransformOptions) {
-    if (!d3ZoomInstance || !d3Selection) {
-      return;
+    if (d3Selection) {
+      d3ZoomInstance?.scaleBy(getD3Transition(d3Selection, options?.duration), factor);
     }
+  }
 
-    d3ZoomInstance.scaleBy(getD3Transition(d3Selection, options?.duration), factor);
+  function setScaleExtent(scaleExtent: [number, number]) {
+    d3ZoomInstance?.scaleExtent(scaleExtent);
+  }
+
+  function setTranslateExtent(translateExtent: CoordinateExtent) {
+    d3ZoomInstance?.translateExtent(translateExtent);
   }
 
   return {
@@ -309,10 +272,10 @@ export function PanZoom(): PanZoomInstance {
     setTransform,
     setTransformXYZ,
     setTransformXYZConstrained,
-    setScaleExtent,
-    setTranslateExtent,
     scaleTo,
     scaleBy,
+    setScaleExtent,
+    setTranslateExtent,
   };
 }
 
@@ -369,12 +332,7 @@ export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, 
   };
 }
 
-export function createPanZoomStartHandler({
-  zoomPanValues,
-  onDraggingChange,
-  onMoveStart,
-  onViewportChangeStart,
-}: PanZoomStartParams) {
+export function createPanZoomStartHandler({ zoomPanValues, onDraggingChange, onPanZoomStart }: PanZoomStartParams) {
   return (event: D3ZoomEvent<HTMLDivElement, any>) => {
     // we need to remember it here, because it's always 0 in the "zoom" event
     zoomPanValues.mouseButton = event.sourceEvent?.button || 0;
@@ -385,12 +343,11 @@ export function createPanZoomStartHandler({
       onDraggingChange(true);
     }
 
-    if (onMoveStart || onViewportChangeStart) {
-      const flowTransform = eventToFlowTransform(event.transform);
-      zoomPanValues.prevTransform = flowTransform;
+    if (onPanZoomStart) {
+      const viewport = transformToViewport(event.transform);
+      zoomPanValues.prevViewport = viewport;
 
-      onViewportChangeStart?.(flowTransform);
-      onMoveStart?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+      onPanZoomStart?.(event.sourceEvent as MouseEvent | TouchEvent, viewport);
     }
   };
 }
@@ -400,21 +357,17 @@ export function createPanZoomHandler({
   panOnDrag,
   onPaneContextMenu,
   onTransformChange,
-  onMove,
-  onViewportChange,
+  onPanZoom,
 }: PanZoomParams) {
   return (event: D3ZoomEvent<HTMLDivElement, any>) => {
-    zoomPanValues.zoomedWithRightMouseButton = !!(
+    zoomPanValues.usedRightMouseButton = !!(
       onPaneContextMenu && isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0)
     );
 
     onTransformChange([event.transform.x, event.transform.y, event.transform.k]);
 
-    if (onMove || onViewportChange) {
-      const flowTransform = eventToFlowTransform(event.transform);
-
-      onViewportChange?.(flowTransform);
-      onMove?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+    if (onPanZoom) {
+      onPanZoom?.(event.sourceEvent as MouseEvent | TouchEvent, transformToViewport(event.transform));
     }
   };
 }
@@ -424,8 +377,7 @@ export function createPanZoomEndHandler({
   panOnDrag,
   panOnScroll,
   onDraggingChange,
-  onMoveEnd,
-  onViewportChangeEnd,
+  onPanZoomEnd,
   onPaneContextMenu,
 }: PanZoomEndParams) {
   return (event: D3ZoomEvent<HTMLDivElement, any>) => {
@@ -434,25 +386,25 @@ export function createPanZoomEndHandler({
     if (
       onPaneContextMenu &&
       isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0) &&
-      !zoomPanValues.zoomedWithRightMouseButton &&
+      !zoomPanValues.usedRightMouseButton &&
       event.sourceEvent
     ) {
       onPaneContextMenu(event.sourceEvent);
     }
-    zoomPanValues.zoomedWithRightMouseButton = false;
+    zoomPanValues.usedRightMouseButton = false;
 
     onDraggingChange(false);
 
-    if ((onMoveEnd || onViewportChangeEnd) && viewChanged(zoomPanValues.prevTransform, event.transform)) {
-      const flowTransform = eventToFlowTransform(event.transform);
-      zoomPanValues.prevTransform = flowTransform;
+    if (onPanZoomEnd && viewChanged(zoomPanValues.prevViewport, event.transform)) {
+      const viewport = transformToViewport(event.transform);
+      zoomPanValues.prevViewport = viewport;
 
       clearTimeout(zoomPanValues.timerId);
       zoomPanValues.timerId = setTimeout(
         () => {
-          onViewportChangeEnd?.(flowTransform);
-          onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
+          onPanZoomEnd?.(event.sourceEvent as MouseEvent | TouchEvent, viewport);
         },
+        // we need a setTimeout for panOnScroll to supress multiple end events fired during scroll
         panOnScroll ? 150 : 0
       );
     }

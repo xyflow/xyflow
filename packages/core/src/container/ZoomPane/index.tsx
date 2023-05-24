@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { PanZoom } from '@reactflow/utils';
-import { PanOnScrollMode, type Transform, type PanZoomInstance } from '@reactflow/system';
+import {
+  PanOnScrollMode,
+  type Transform,
+  type PanZoomInstance,
+  Viewport,
+  OnMoveStart,
+  OnMove,
+  OnMoveEnd,
+} from '@reactflow/system';
 
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
@@ -33,7 +41,6 @@ const ZoomPane = ({
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
-  elementsSelectable,
   panOnDrag = true,
   defaultViewport,
   translateExtent,
@@ -73,11 +80,35 @@ const ZoomPane = ({
     }
   }, []);
 
+  const onPanZoomStart: OnMoveStart = useCallback(
+    (event, vp) => {
+      onMoveStart?.(event, vp);
+      store.getState().onViewportChangeStart?.(vp);
+    },
+    [onMoveStart]
+  );
+
+  const onPanZoom: OnMove = useCallback(
+    (event, vp) => {
+      onMove?.(event, vp);
+      store.getState().onViewportChange?.(vp);
+    },
+    [onMove]
+  );
+
+  const onPanZoomEnd: OnMoveEnd = useCallback(
+    (event, vp) => {
+      onMoveEnd?.(event, vp);
+      store.getState().onViewportChangeEnd?.(vp);
+    },
+    [onMoveEnd]
+  );
+
   useEffect(() => {
     panZoom.current.update({
-      onMoveStart,
-      onMove,
-      onMoveEnd,
+      onPanZoomStart,
+      onPanZoom,
+      onPanZoomEnd,
       onPaneContextMenu,
       zoomOnScroll,
       zoomOnPinch,
@@ -86,7 +117,6 @@ const ZoomPane = ({
       panOnScrollMode,
       zoomOnDoubleClick,
       panOnDrag,
-      elementsSelectable,
       zoomActivationKeyPressed,
       preventScrolling,
       noPanClassName,
@@ -94,9 +124,9 @@ const ZoomPane = ({
       noWheelClassName,
     });
   }, [
-    onMoveStart,
-    onMove,
-    onMoveEnd,
+    onPanZoomStart,
+    onPanZoom,
+    onPanZoomEnd,
     onPaneContextMenu,
     zoomOnScroll,
     zoomOnPinch,
@@ -105,7 +135,6 @@ const ZoomPane = ({
     panOnScrollMode,
     zoomOnDoubleClick,
     panOnDrag,
-    elementsSelectable,
     zoomActivationKeyPressed,
     preventScrolling,
     noPanClassName,
