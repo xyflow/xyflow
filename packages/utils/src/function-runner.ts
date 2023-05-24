@@ -2,7 +2,7 @@
  *
  *  const caller = FunctionRunner();
  *
- *  // the passed callback will be called on every change of the dependencies [a, b, c]
+ *  // the callback will be called when one of the dependencies ([a, b, c]) change
  *  caller.onChange(() => {}, [a, b, c]);
  */
 
