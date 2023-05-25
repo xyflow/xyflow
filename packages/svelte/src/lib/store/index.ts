@@ -14,7 +14,8 @@ import {
   fitView as fitViewUtil,
   getDimensions,
   getElementsToRemove,
-  getHandleBounds
+  getHandleBounds,
+  infiniteExtent
 } from '@reactflow/utils';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
@@ -281,22 +282,17 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
       return;
     }
 
-    const extent: CoordinateExtent = [
-      [0, 0],
-      [width, height]
-    ];
-
-    panZoom.setTransformXYZConstrained(
+    panZoom.setViewportConstrained(
       {
         x: transform[0] + delta.x,
         y: transform[1] + delta.y,
         zoom: transform[2]
       },
-      extent,
       [
-        [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-        [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
-      ]
+        [0, 0],
+        [width, height]
+      ],
+      infiniteExtent
     );
   }
 

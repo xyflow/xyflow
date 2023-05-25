@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { zoomIdentity } from 'd3-zoom';
-
 import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
 import {
   errorMessages,
@@ -13,7 +11,6 @@ import {
   type BaseEdge,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  type D3SelectionInstance,
 } from '@reactflow/system';
 
 export const isEdgeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
@@ -293,10 +290,6 @@ export const getTransformForBounds = (
   return [x, y, clampedZoom];
 };
 
-export const getD3Transition = (selection: D3SelectionInstance, duration = 0) => {
-  return selection.transition().duration(duration);
-};
-
 export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
   { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
@@ -325,9 +318,7 @@ export function fitView<Params extends FitViewParamsBase<BaseNode>, Options exte
       options?.padding ?? 0.1
     );
 
-    const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
-
-    panZoom.setTransform(nextTransform, { duration: options?.duration });
+    panZoom.setViewport({ x, y, zoom }, { duration: options?.duration });
 
     return true;
   }

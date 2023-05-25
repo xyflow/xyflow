@@ -1,17 +1,11 @@
-import { type ZoomTransform, zoom } from 'd3-zoom';
+import { type ZoomTransform, zoom, zoomTransform } from 'd3-zoom';
 import { select } from 'd3-selection';
 import {
   type CoordinateExtent,
-  type Transform,
   type Viewport,
-  D3ZoomInstance,
-  D3SelectionInstance,
-  D3ZoomHandler,
   PanZoomTransformOptions,
   PanZoomUpdateOptions,
-  InitPanZoomParams,
-  OnDraggingChange,
-  OnTransformChange,
+  PanZoomParams,
   PanZoomInstance,
 } from '@reactflow/system';
 
@@ -35,7 +29,15 @@ export type ZoomPanValues = {
   timerId: ReturnType<typeof setTimeout> | undefined;
 };
 
-export function PanZoom(): PanZoomInstance {
+export function PanZoom({
+  domNode,
+  minZoom,
+  maxZoom,
+  translateExtent,
+  viewport,
+  onTransformChange: _onTransformChange,
+  onDraggingChange: _onDraggingChange,
+}: PanZoomParams): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
     isZoomingOrPanning: false,
     usedRightMouseButton: false,
@@ -43,56 +45,27 @@ export function PanZoom(): PanZoomInstance {
     mouseButton: 0,
     timerId: undefined,
   };
-
-  let d3Selection: D3SelectionInstance | null = null;
-  let d3ZoomHandler: D3ZoomHandler | null = null;
-  let d3ZoomInstance: D3ZoomInstance | null = null;
-  let onDraggingChange: OnDraggingChange;
-  let onTransformChange: OnTransformChange;
-
   const funRun = FunctionRunner();
+  const bbox = domNode.getBoundingClientRect();
+  const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
+  const d3Selection = select(domNode).call(d3ZoomInstance);
+  const onTransformChange = _onTransformChange;
+  const onDraggingChange = _onDraggingChange;
 
-  function init({
-    domNode,
-    minZoom,
-    maxZoom,
-    translateExtent,
-    viewport,
-    onTransformChange: _onTransformChange,
-    onDraggingChange: _onDraggingChange,
-  }: InitPanZoomParams) {
-    const bbox = domNode.getBoundingClientRect();
-    d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
-    d3Selection = select(domNode).call(d3ZoomInstance);
-
-    const extent: CoordinateExtent = [
+  setViewportConstrained(
+    {
+      x: viewport.x,
+      y: viewport.y,
+      zoom: clamp(viewport.zoom, minZoom, maxZoom),
+    },
+    [
       [0, 0],
       [bbox.width, bbox.height],
-    ];
+    ],
+    translateExtent
+  );
 
-    const constrainedTransform = setTransformXYZConstrained(
-      {
-        x: viewport.x,
-        y: viewport.y,
-        zoom: clamp(viewport.zoom, minZoom, maxZoom),
-      },
-      extent,
-      translateExtent
-    );
-
-    d3ZoomHandler = d3Selection.on('wheel.zoom') || null;
-
-    onTransformChange = _onTransformChange;
-    onDraggingChange = _onDraggingChange;
-
-    return {
-      transform: [
-        constrainedTransform?.x ?? 0,
-        constrainedTransform?.y ?? 0,
-        constrainedTransform?.k ?? 1,
-      ] as Transform,
-    };
-  }
+  const d3ZoomHandler = d3Selection.on('wheel.zoom') || null;
 
   function update({
     noWheelClassName,
@@ -215,7 +188,15 @@ export function PanZoom(): PanZoomInstance {
     ]);
   }
 
-  function setTransformXYZConstrained(
+  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
+    if (d3Selection) {
+      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), transform);
+    }
+  }
+
+  // public functions
+
+  function setViewportConstrained(
     viewport: Viewport,
     extent: CoordinateExtent,
     translateExtent: CoordinateExtent
@@ -230,7 +211,7 @@ export function PanZoom(): PanZoomInstance {
     return contrainedTransform;
   }
 
-  function setTransformXYZ(viewport: Viewport, options?: PanZoomTransformOptions) {
+  function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
     const nextTransform = viewportToTransform(viewport);
 
     setTransform(nextTransform, options);
@@ -238,10 +219,9 @@ export function PanZoom(): PanZoomInstance {
     return nextTransform;
   }
 
-  function setTransform(_transform: ZoomTransform, options?: PanZoomTransformOptions) {
-    if (d3Selection) {
-      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), _transform);
-    }
+  function getViewport(): Viewport {
+    const transform = d3Selection ? zoomTransform(d3Selection.node() as Element) : { x: 0, y: 0, k: 1 };
+    return { x: transform.x, y: transform.y, zoom: transform.k };
   }
 
   function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
@@ -265,11 +245,10 @@ export function PanZoom(): PanZoomInstance {
   }
 
   return {
-    init,
     update,
-    setTransform,
-    setTransformXYZ,
-    setTransformXYZConstrained,
+    setViewport,
+    setViewportConstrained,
+    getViewport,
     scaleTo,
     scaleBy,
     setScaleExtent,

@@ -67,7 +67,7 @@ export function useSvelteFlow(): {
     setViewport: (viewport, options) => {
       const [x, y, zoom] = get(transform);
 
-      get(panZoom)?.setTransformXYZ(
+      get(panZoom)?.setViewport(
         {
           x: viewport.x ?? x,
           y: viewport.y ?? y,
@@ -86,13 +86,11 @@ export function useSvelteFlow(): {
       const _maxZoom = get(maxZoom);
 
       const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : _maxZoom;
-      const centerX = _width / 2 - x * nextZoom;
-      const centerY = _height / 2 - y * nextZoom;
 
-      get(panZoom)?.setTransformXYZ(
+      get(panZoom)?.setViewport(
         {
-          x: centerX,
-          y: centerY,
+          x: _width / 2 - x * nextZoom,
+          y: _height / 2 - y * nextZoom,
           zoom: nextZoom
         },
         { duration: options?.duration }

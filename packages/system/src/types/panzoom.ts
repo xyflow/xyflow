@@ -4,7 +4,7 @@ import { CoordinateExtent, PanOnScrollMode, Transform, Viewport } from './';
 export type OnDraggingChange = (dragging: boolean) => void;
 export type OnTransformChange = (transform: Transform) => void;
 
-export type InitPanZoomParams = {
+export type PanZoomParams = {
   domNode: Element;
   minZoom: number;
   maxZoom: number;
@@ -40,11 +40,10 @@ export type PanZoomUpdateOptions = {
 };
 
 export type PanZoomInstance = {
-  init: (params: InitPanZoomParams) => { transform: Transform };
   update: (params: PanZoomUpdateOptions) => void;
-  setTransform: (transform: ZoomTransform, options?: PanZoomTransformOptions) => void;
-  setTransformXYZ: (viewport: Viewport, options?: PanZoomTransformOptions) => ZoomTransform | undefined;
-  setTransformXYZConstrained: (
+  getViewport: () => Viewport;
+  setViewport: (viewport: Viewport, options?: PanZoomTransformOptions) => ZoomTransform | undefined;
+  setViewportConstrained: (
     viewport: Viewport,
     extent: CoordinateExtent,
     translateExtent: CoordinateExtent

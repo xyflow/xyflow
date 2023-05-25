@@ -57,13 +57,13 @@ const ZoomPane = ({
     shallow
   );
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
-  const panZoom = useRef<PanZoomInstance>(PanZoom());
+  const panZoom = useRef<PanZoomInstance>();
 
   useResizeHandler(zoomPane);
 
   useEffect(() => {
     if (zoomPane.current) {
-      const { transform } = panZoom.current.init({
+      panZoom.current = PanZoom({
         domNode: zoomPane.current,
         minZoom,
         maxZoom,
@@ -73,9 +73,11 @@ const ZoomPane = ({
         onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
       });
 
+      const { x, y, zoom } = panZoom.current.getViewport();
+
       store.setState({
         panZoom: panZoom.current,
-        transform,
+        transform: [x, y, zoom],
         domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement,
       });
     }
@@ -106,7 +108,7 @@ const ZoomPane = ({
   );
 
   useEffect(() => {
-    panZoom.current.update({
+    panZoom.current?.update({
       onPanZoomStart,
       onPanZoom,
       onPanZoomEnd,

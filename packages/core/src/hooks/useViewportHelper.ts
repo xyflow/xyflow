@@ -23,7 +23,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           panZoom,
         } = store.getState();
 
-        panZoom?.setTransformXYZ(
+        panZoom?.setViewport(
           {
             x: viewport.x ?? tX,
             y: viewport.y ?? tY,
@@ -60,7 +60,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         const centerX = width / 2 - x * nextZoom;
         const centerY = height / 2 - y * nextZoom;
 
-        panZoom?.setTransformXYZ(
+        panZoom?.setViewport(
           {
             x: centerX,
             y: centerY,
@@ -73,7 +73,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
         const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
-        panZoom?.setTransformXYZ(
+        panZoom?.setViewport(
           {
             x,
             y,

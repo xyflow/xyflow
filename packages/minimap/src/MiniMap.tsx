@@ -131,7 +131,7 @@ function MiniMap({
           [width, height],
         ];
 
-        panZoom.setTransformXYZConstrained(
+        panZoom.setViewportConstrained(
           {
             x: position.x,
             y: position.y,

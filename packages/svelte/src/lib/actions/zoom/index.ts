@@ -40,8 +40,7 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   const { panZoom, minZoom, maxZoom, initialViewport, transform, dragging, translateExtent } =
     params;
 
-  const panZoomInstance = PanZoom();
-  const { transform: nextTransform } = panZoomInstance.init({
+  const panZoomInstance = PanZoom({
     domNode,
     minZoom,
     maxZoom,
@@ -50,8 +49,8 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     onTransformChange: transform.set,
     onDraggingChange: dragging.set
   });
-
-  transform.set(nextTransform);
+  const { x, y, zoom } = panZoomInstance.getViewport();
+  transform.set([x, y, zoom]);
   panZoom.set(panZoomInstance);
 
   panZoomInstance.update(params);

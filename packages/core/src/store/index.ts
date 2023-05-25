@@ -284,7 +284,7 @@ const createRFStore = () =>
         [width, height],
       ];
 
-      const constrainedTransform = panZoom.setTransformXYZConstrained(
+      const constrainedTransform = panZoom.setViewportConstrained(
         { x: transform[0] + delta.x, y: transform[1] + delta.y, zoom: transform[2] },
         extent,
         translateExtent
