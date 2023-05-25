@@ -2,7 +2,6 @@ import {
   errorMessages,
   type CoordinateExtent,
   type NodeDragItem,
-  type NodeOrigin,
   type XYPosition
 } from '@reactflow/system';
 import { clampPosition, devWarn, getNodePositionWithOrigin, isNumeric } from '@reactflow/utils';

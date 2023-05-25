@@ -67,6 +67,13 @@ export function PanZoom({
 
   const d3ZoomHandler = d3Selection.on('wheel.zoom') || null;
 
+  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
+    if (d3Selection) {
+      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), transform);
+    }
+  }
+
+  // public functions
   function update({
     noWheelClassName,
     noPanClassName,
@@ -187,14 +194,6 @@ export function PanZoom({
       zoomActivationKeyPressed,
     ]);
   }
-
-  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
-    if (d3Selection) {
-      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), transform);
-    }
-  }
-
-  // public functions
 
   function setViewportConstrained(
     viewport: Viewport,
