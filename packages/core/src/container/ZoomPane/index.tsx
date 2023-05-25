@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef } from 'react';
 import { PanZoom } from '@reactflow/utils';
-import {
-  PanOnScrollMode,
-  type Transform,
-  type PanZoomInstance,
-  Viewport,
-  OnMoveStart,
-  OnMove,
-  OnMoveEnd,
-} from '@reactflow/system';
+import { PanOnScrollMode, type Transform, type PanZoomInstance, OnPanZoom } from '@reactflow/system';
+import { shallow } from 'zustand/shallow';
 
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
@@ -28,7 +21,12 @@ type ZoomPaneProps = Omit<
   | 'selectionOnDrag'
 >;
 
-const selector = (s: ReactFlowState) => s.userSelectionActive;
+const selector = (s: ReactFlowState) => ({
+  userSelectionActive: s.userSelectionActive,
+  onViewportChangeStart: s.onViewportChangeStart,
+  onViewportChange: s.onViewportChange,
+  onViewportChangeEnd: s.onViewportChangeEnd,
+});
 
 const ZoomPane = ({
   onMove,
@@ -54,7 +52,10 @@ const ZoomPane = ({
 }: ZoomPaneProps) => {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const userSelectionActive = useStore(selector);
+  const { userSelectionActive, onViewportChangeStart, onViewportChange, onViewportChangeEnd } = useStore(
+    selector,
+    shallow
+  );
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>(PanZoom());
 
@@ -80,28 +81,28 @@ const ZoomPane = ({
     }
   }, []);
 
-  const onPanZoomStart: OnMoveStart = useCallback(
+  const onPanZoomStart: OnPanZoom = useCallback(
     (event, vp) => {
       onMoveStart?.(event, vp);
-      store.getState().onViewportChangeStart?.(vp);
+      onViewportChangeStart?.(vp);
     },
-    [onMoveStart]
+    [onMoveStart, onViewportChangeStart]
   );
 
-  const onPanZoom: OnMove = useCallback(
+  const onPanZoom: OnPanZoom = useCallback(
     (event, vp) => {
       onMove?.(event, vp);
-      store.getState().onViewportChange?.(vp);
+      onViewportChange?.(vp);
     },
-    [onMove]
+    [onMove, onViewportChange]
   );
 
-  const onPanZoomEnd: OnMoveEnd = useCallback(
+  const onPanZoomEnd: OnPanZoom = useCallback(
     (event, vp) => {
       onMoveEnd?.(event, vp);
-      store.getState().onViewportChangeEnd?.(vp);
+      onViewportChangeEnd?.(vp);
     },
-    [onMoveEnd]
+    [onMoveEnd, onViewportChangeEnd]
   );
 
   useEffect(() => {

@@ -21,7 +21,6 @@ export type PanZoomTransformOptions = {
 export type OnPanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
 
 export type PanZoomUpdateOptions = {
-  elementsSelectable?: boolean;
   noWheelClassName: string;
   noPanClassName: string;
   onPanZoomStart?: OnPanZoom;
