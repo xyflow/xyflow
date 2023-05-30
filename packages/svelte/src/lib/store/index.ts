@@ -1,7 +1,7 @@
 import { getContext } from 'svelte';
 import { derived, get } from 'svelte/store';
 import {
-  type NodeDragItem,
+  type UpdateNodePositions,
   type NodeDimensionUpdate,
   internalsSymbol,
   type ViewportHelperFunctionOptions,
@@ -59,7 +59,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
-  function updateNodePositions(nodeDragItems: NodeDragItem[], dragging = false) {
+  const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes.update((nds) => {
       return nds.map((n) => {
         const nodeDragItem = nodeDragItems.find((ndi) => ndi.id === n.id);
@@ -76,7 +76,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
         return n;
       });
     });
-  }
+  };
 
   function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
     const viewportNode = document?.querySelector('.svelte-flow__viewport');

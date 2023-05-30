@@ -84,3 +84,7 @@ export type NodeDragItem = {
 };
 
 export type NodeOrigin = [number, number];
+
+export type OnNodeDrag = (event: MouseEvent, node: BaseNode, nodes: BaseNode[]) => void;
+
+export type OnSelectionDrag = (event: MouseEvent, nodes: BaseNode[]) => void;

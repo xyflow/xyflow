@@ -36,11 +36,16 @@ function useDrag({
       xyDrag.current = XYDrag({
         nodeId,
         domNode: nodeRef.current,
-        getStoreItemsItems: (items: string[]) => {
-          const storeItems = store.getState();
-          return items.map((item) => storeItems[item]);
+        getPointerPosition,
+        getStore: () => {
+          const currentStore = store.getState();
+
+          return {
+            nodes: currentStore.getNodes(),
+            ...store.getState(),
+          };
         },
-        handleNodeClick: () => {
+        onNodeClick: () => {
           if (nodeId) {
             handleNodeClick({
               id: nodeId,
@@ -49,17 +54,21 @@ function useDrag({
             });
           }
         },
-        getPointerPosition,
-        onDraggingChange: setDragging,
+        onDragStart: () => {
+          setDragging(true);
+        },
+        onDragStop: () => {
+          setDragging(false);
+        },
       });
     }
   }, [store, getPointerPosition]);
 
   useEffect(() => {
     if (disabled) {
-      xyDrag.current?.disable();
+      xyDrag.current?.destroy();
     } else {
-      xyDrag.current?.enable({
+      xyDrag.current?.update({
         noDragClassName,
         handleSelector,
         domNode: nodeRef.current as Element,
@@ -67,7 +76,7 @@ function useDrag({
         selectNodesOnDrag,
       });
       return () => {
-        xyDrag.current?.disable();
+        xyDrag.current?.destroy();
       };
     }
   }, [noDragClassName, handleSelector, disabled, isSelectable, selectNodesOnDrag, nodeRef]);

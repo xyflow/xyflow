@@ -9,8 +9,8 @@ import {
 } from '@reactflow/system';
 import { clampPosition, isNumeric, getNodePositionWithOrigin } from '../';
 
-export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: Node[]) => void) {
-  return (event: MouseEvent, _: Node, nodes: Node[]) => selectionFunc?.(event, nodes);
+export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: BaseNode[]) => void) {
+  return (event: MouseEvent, _: BaseNode, nodes: BaseNode[]) => selectionFunc?.(event, nodes);
 }
 
 export function isParentSelected<NodeType extends BaseNode>(node: NodeType, nodes: NodeType[]): boolean {
