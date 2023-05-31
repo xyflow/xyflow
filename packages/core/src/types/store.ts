@@ -18,6 +18,9 @@ import {
   type PanBy,
   OnNodeDrag,
   OnSelectionDrag,
+  OnMoveStart,
+  OnMove,
+  OnMoveEnd,
 } from '@reactflow/system';
 
 import type {
@@ -96,6 +99,10 @@ export type ReactFlowStore = {
   onSelectionDragStart?: OnSelectionDrag;
   onSelectionDrag?: OnSelectionDrag;
   onSelectionDragStop?: OnSelectionDrag;
+
+  onMoveStart?: OnMoveStart;
+  onMove?: OnMove;
+  onMoveEnd?: OnMoveEnd;
 
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;

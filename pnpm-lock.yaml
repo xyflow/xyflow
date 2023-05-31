@@ -59,7 +59,7 @@ importers:
       '@types/dagre': ^0.7.48
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
-      '@vitejs/plugin-react': ^3.0.1
+      '@vitejs/plugin-react': 4.0.0
       classcat: ^5.0.3
       cypress: ^10.6.0
       cypress-real-events: ^1.7.1
@@ -71,7 +71,7 @@ importers:
       reactflow: workspace:*
       start-server-and-test: ^1.14.0
       typescript: ^4.9.4
-      vite: ^4.0.4
+      vite: 4.3.9
       zustand: ^4.3.1
     dependencies:
       '@reactflow/node-resizer': link:../../packages/node-resizer
@@ -88,7 +88,7 @@ importers:
       '@types/dagre': registry.npmjs.org/@types/dagre/0.7.48
       '@types/react': registry.npmjs.org/@types/react/18.2.7
       '@types/react-dom': registry.npmjs.org/@types/react-dom/18.2.4
-      '@vitejs/plugin-react': registry.npmjs.org/@vitejs/plugin-react/3.1.0_vite@4.3.9
+      '@vitejs/plugin-react': registry.npmjs.org/@vitejs/plugin-react/4.0.0_vite@4.3.9
       cypress: registry.npmjs.org/cypress/10.11.0
       cypress-real-events: registry.npmjs.org/cypress-real-events/1.8.1_cypress@10.11.0
       start-server-and-test: registry.npmjs.org/start-server-and-test/1.15.4
@@ -246,11 +246,11 @@ importers:
 
   packages/node-resizer:
     specifiers:
-      '@reactflow/core': workspace:*
+      '@reactflow/core': workspace:^11.6.0
       '@reactflow/eslint-config': workspace:*
       '@reactflow/rollup-config': workspace:*
       '@reactflow/tsconfig': workspace:*
-      '@reactflow/utils': workspace:^11.5.5
+      '@reactflow/utils': workspace:*
       '@types/d3-drag': ^3.0.1
       '@types/d3-selection': ^3.0.3
       '@types/node': ^18.7.16
@@ -468,7 +468,7 @@ importers:
 
   tooling/rollup-config:
     specifiers:
-      '@rollup/plugin-commonjs': 25.0.0
+      '@rollup/plugin-commonjs': ^25.0.0
       '@rollup/plugin-node-resolve': ^15.1.0
       '@rollup/plugin-replace': ^5.0.2
       '@rollup/plugin-terser': ^0.4.3
@@ -2303,19 +2303,18 @@ packages:
       eslint-visitor-keys: registry.npmjs.org/eslint-visitor-keys/3.4.1
     dev: true
 
-  registry.npmjs.org/@vitejs/plugin-react/3.1.0_vite@4.3.9:
-    resolution: {integrity: sha512-AfgcRL8ZBhAlc3BFdigClmTUMISmmzHn7sB2h9U1odvc5U/MjWXsAaz18b/WoppUTDBzxOJwo2VdClfUcItu9g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-3.1.0.tgz}
-    id: registry.npmjs.org/@vitejs/plugin-react/3.1.0
+  registry.npmjs.org/@vitejs/plugin-react/4.0.0_vite@4.3.9:
+    resolution: {integrity: sha512-HX0XzMjL3hhOYm+0s95pb0Z7F8O81G7joUHgfDd/9J/ZZf5k4xX6QAMFkKsHFxaHlf6X7GD7+XuaZ66ULiJuhQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-4.0.0.tgz}
+    id: registry.npmjs.org/@vitejs/plugin-react/4.0.0
     name: '@vitejs/plugin-react'
-    version: 3.1.0
+    version: 4.0.0
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^4.1.0-beta.0
+      vite: ^4.2.0
     dependencies:
       '@babel/core': registry.npmjs.org/@babel/core/7.22.1
       '@babel/plugin-transform-react-jsx-self': registry.npmjs.org/@babel/plugin-transform-react-jsx-self/7.21.0_@babel+core@7.22.1
       '@babel/plugin-transform-react-jsx-source': registry.npmjs.org/@babel/plugin-transform-react-jsx-source/7.19.6_@babel+core@7.22.1
-      magic-string: registry.npmjs.org/magic-string/0.27.0
       react-refresh: registry.npmjs.org/react-refresh/0.14.0
       vite: registry.npmjs.org/vite/4.3.9
     transitivePeerDependencies:

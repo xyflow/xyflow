@@ -10,7 +10,6 @@ import {
 } from '@reactflow/system';
 
 import { clamp } from '../utils';
-import FunctionRunner from '../function-runner';
 import { getD3Transition, viewportToTransform } from './utils';
 import {
   createPanOnScrollHandler,
@@ -35,6 +34,9 @@ export function XYPanZoom({
   maxZoom,
   translateExtent,
   viewport,
+  onPanZoom,
+  onPanZoomStart,
+  onPanZoomEnd,
   onTransformChange,
   onDraggingChange,
 }: PanZoomParams): PanZoomInstance {
@@ -45,7 +47,6 @@ export function XYPanZoom({
     mouseButton: 0,
     timerId: undefined,
   };
-  const funRun = FunctionRunner();
   const bbox = domNode.getBoundingClientRect();
   const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
@@ -63,7 +64,7 @@ export function XYPanZoom({
     translateExtent
   );
 
-  const d3ZoomHandler = d3Selection.on('wheel.zoom') || null;
+  const d3ZoomHandler = d3Selection.on('wheel.zoom')!;
 
   function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
@@ -75,9 +76,6 @@ export function XYPanZoom({
   function update({
     noWheelClassName,
     noPanClassName,
-    onPanZoom,
-    onPanZoomStart,
-    onPanZoomEnd,
     onPaneContextMenu,
     userSelectionActive,
     panOnScroll,
@@ -90,72 +88,49 @@ export function XYPanZoom({
     zoomOnDoubleClick,
     zoomActivationKeyPressed,
   }: PanZoomUpdateOptions) {
-    funRun.restart();
-    // wheel scroll / pan handling
-    funRun.onChange(() => {
-      if (!d3ZoomInstance || !d3Selection) {
-        return;
-      }
+    if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
+      destroy();
+    }
 
-      if (panOnScroll && !zoomActivationKeyPressed && !userSelectionActive) {
-        const panOnScrollHandler = createPanOnScrollHandler({
+    const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
+
+    const wheelHandler = isPanOnScroll
+      ? createPanOnScrollHandler({
           noWheelClassName,
           d3Selection,
           d3Zoom: d3ZoomInstance,
           panOnScrollMode,
           panOnScrollSpeed,
           zoomOnPinch,
-        });
-        d3Selection.on('wheel.zoom', panOnScrollHandler, { passive: false });
-      } else if (d3ZoomHandler !== null) {
-        const zoomOnScrollHandler = createZoomOnScrollHandler({
+        })
+      : createZoomOnScrollHandler({
           noWheelClassName,
           preventScrolling,
           d3ZoomHandler,
         });
-        d3Selection.on('wheel.zoom', zoomOnScrollHandler, { passive: false });
-      }
-    }, [
-      userSelectionActive,
-      panOnScroll,
-      panOnScrollMode,
-      d3Selection,
-      d3ZoomInstance,
-      d3ZoomHandler,
-      zoomActivationKeyPressed,
-      zoomOnPinch,
-      preventScrolling,
-      noWheelClassName,
-    ]);
 
-    // pan zoom start
-    funRun.onChange(() => {
+    d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
+
+    if (!userSelectionActive) {
+      // pan zoom start
       const startHandler = createPanZoomStartHandler({
         zoomPanValues,
         onDraggingChange,
         onPanZoomStart,
       });
-      d3ZoomInstance?.on('start', startHandler);
-    }, [d3ZoomInstance, onPanZoomStart]);
+      d3ZoomInstance.on('start', startHandler);
 
-    // pan zoom
-    funRun.onChange(() => {
-      if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
-        d3ZoomInstance?.on('zoom', null);
-      } else if (!userSelectionActive) {
-        const panZoomHandler = createPanZoomHandler({
-          zoomPanValues,
-          panOnDrag,
-          onPaneContextMenu: !!onPaneContextMenu,
-          onPanZoom,
-          onTransformChange,
-        });
-        d3ZoomInstance?.on('zoom', panZoomHandler);
-      }
-    }, [userSelectionActive, d3ZoomInstance, onPanZoom, panOnDrag, onPaneContextMenu]);
+      // pan zoom
+      const panZoomHandler = createPanZoomHandler({
+        zoomPanValues,
+        panOnDrag,
+        onPaneContextMenu: !!onPaneContextMenu,
+        onPanZoom,
+        onTransformChange,
+      });
+      d3ZoomInstance.on('zoom', panZoomHandler);
 
-    // pan zoom end
-    funRun.onChange(() => {
+      // pan zoom end
       const panZoomEndHandler = createPanZoomEndHandler({
         zoomPanValues,
         panOnDrag,
@@ -164,33 +139,25 @@ export function XYPanZoom({
         onPanZoomEnd,
         onDraggingChange,
       });
-      d3ZoomInstance?.on('end', panZoomEndHandler);
-    }, [d3ZoomInstance, panOnScroll, panOnDrag, onPanZoomEnd, onPaneContextMenu]);
+      d3ZoomInstance.on('end', panZoomEndHandler);
+    }
 
-    // apply filter
-    funRun.onChange(() => {
-      const filter = createFilter({
-        zoomActivationKeyPressed,
-        panOnDrag,
-        zoomOnScroll,
-        panOnScroll,
-        zoomOnDoubleClick,
-        zoomOnPinch,
-        userSelectionActive,
-        noPanClassName,
-        noWheelClassName,
-      });
-      d3ZoomInstance?.filter(filter);
-    }, [
-      userSelectionActive,
-      d3ZoomInstance,
+    const filter = createFilter({
+      zoomActivationKeyPressed,
+      panOnDrag,
       zoomOnScroll,
-      zoomOnPinch,
       panOnScroll,
       zoomOnDoubleClick,
-      panOnDrag,
-      zoomActivationKeyPressed,
-    ]);
+      zoomOnPinch,
+      userSelectionActive,
+      noPanClassName,
+      noWheelClassName,
+    });
+    d3ZoomInstance.filter(filter);
+  }
+
+  function destroy() {
+    d3ZoomInstance.on('zoom', null);
   }
 
   function setViewportConstrained(
@@ -243,6 +210,7 @@ export function XYPanZoom({
 
   return {
     update,
+    destroy,
     setViewport,
     setViewportConstrained,
     getViewport,

@@ -12,6 +12,9 @@ export type PanZoomParams = {
   translateExtent: CoordinateExtent;
   onTransformChange: OnTransformChange;
   onDraggingChange: OnDraggingChange;
+  onPanZoomStart?: OnPanZoom;
+  onPanZoom?: OnPanZoom;
+  onPanZoomEnd?: OnPanZoom;
 };
 
 export type PanZoomTransformOptions = {
@@ -23,9 +26,6 @@ export type OnPanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewpo
 export type PanZoomUpdateOptions = {
   noWheelClassName: string;
   noPanClassName: string;
-  onPanZoomStart?: OnPanZoom;
-  onPanZoom?: OnPanZoom;
-  onPanZoomEnd?: OnPanZoom;
   onPaneContextMenu?: (event: MouseEvent) => void;
   preventScrolling: boolean;
   panOnScroll: boolean;
@@ -41,6 +41,7 @@ export type PanZoomUpdateOptions = {
 
 export type PanZoomInstance = {
   update: (params: PanZoomUpdateOptions) => void;
+  destroy: () => void;
   getViewport: () => Viewport;
   setViewport: (viewport: Viewport, options?: PanZoomTransformOptions) => ZoomTransform | undefined;
   setViewportConstrained: (

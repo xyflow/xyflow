@@ -15,7 +15,7 @@ type UseDragParams = {
 export default function drag(domNode: Element, params: UseDragParams) {
   const dragInstance = XYDrag({
     domNode,
-    getStore: () => {
+    getStoreItems: () => {
       const { store } = params;
       const snapGrid = get(store.snapGrid);
 

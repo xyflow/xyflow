@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { XYPanZoom } from '@reactflow/utils';
-import { PanOnScrollMode, type Transform, type PanZoomInstance, OnPanZoom } from '@reactflow/system';
+import { PanOnScrollMode, type Transform, type PanZoomInstance } from '@reactflow/system';
 
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
@@ -29,9 +29,6 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const ZoomPane = ({
-  onMove,
-  onMoveStart,
-  onMoveEnd,
   onPaneContextMenu,
   zoomOnScroll = true,
   zoomOnPinch = true,
@@ -52,10 +49,7 @@ const ZoomPane = ({
 }: ZoomPaneProps) => {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, onViewportChangeStart, onViewportChange, onViewportChangeEnd } = useStore(
-    selector,
-    shallow
-  );
+  const { userSelectionActive } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -71,6 +65,21 @@ const ZoomPane = ({
         viewport: defaultViewport,
         onTransformChange: (transform: Transform) => store.setState({ transform }),
         onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
+        onPanZoomStart: (event, vp) => {
+          const { onViewportChangeStart, onMoveStart } = store.getState();
+          onMoveStart?.(event, vp);
+          onViewportChangeStart?.(vp);
+        },
+        onPanZoom: (event, vp) => {
+          const { onViewportChange, onMove } = store.getState();
+          onMove?.(event, vp);
+          onViewportChange?.(vp);
+        },
+        onPanZoomEnd: (event, vp) => {
+          const { onViewportChangeEnd, onMoveEnd } = store.getState();
+          onMoveEnd?.(event, vp);
+          onViewportChangeEnd?.(vp);
+        },
       });
 
       const { x, y, zoom } = panZoom.current.getViewport();
@@ -80,38 +89,15 @@ const ZoomPane = ({
         transform: [x, y, zoom],
         domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement,
       });
+
+      return () => {
+        panZoom.current?.destroy();
+      };
     }
   }, []);
 
-  const onPanZoomStart: OnPanZoom = useCallback(
-    (event, vp) => {
-      onMoveStart?.(event, vp);
-      onViewportChangeStart?.(vp);
-    },
-    [onMoveStart, onViewportChangeStart]
-  );
-
-  const onPanZoom: OnPanZoom = useCallback(
-    (event, vp) => {
-      onMove?.(event, vp);
-      onViewportChange?.(vp);
-    },
-    [onMove, onViewportChange]
-  );
-
-  const onPanZoomEnd: OnPanZoom = useCallback(
-    (event, vp) => {
-      onMoveEnd?.(event, vp);
-      onViewportChangeEnd?.(vp);
-    },
-    [onMoveEnd, onViewportChangeEnd]
-  );
-
   useEffect(() => {
     panZoom.current?.update({
-      onPanZoomStart,
-      onPanZoom,
-      onPanZoomEnd,
       onPaneContextMenu,
       zoomOnScroll,
       zoomOnPinch,
@@ -127,9 +113,6 @@ const ZoomPane = ({
       noWheelClassName,
     });
   }, [
-    onPanZoomStart,
-    onPanZoom,
-    onPanZoomEnd,
     onPaneContextMenu,
     zoomOnScroll,
     zoomOnPinch,

@@ -44,6 +44,9 @@ type StoreUpdaterProps = Pick<
   | 'onSelectionDragStart'
   | 'onSelectionDrag'
   | 'onSelectionDragStop'
+  | 'onMove'
+  | 'onMoveStart'
+  | 'onMoveEnd'
   | 'noPanClassName'
   | 'nodeOrigin'
   | 'elevateNodesOnSelect'
@@ -125,6 +128,9 @@ const StoreUpdater = ({
   onSelectionDrag,
   onSelectionDragStart,
   onSelectionDragStop,
+  onMoveStart,
+  onMove,
+  onMoveEnd,
   noPanClassName,
   nodeOrigin,
   rfId,
@@ -185,6 +191,9 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onSelectionDrag', onSelectionDrag, store.setState);
   useDirectStoreUpdater('onSelectionDragStart', onSelectionDragStart, store.setState);
   useDirectStoreUpdater('onSelectionDragStop', onSelectionDragStop, store.setState);
+  useDirectStoreUpdater('onMove', onMove, store.setState);
+  useDirectStoreUpdater('onMoveStart', onMoveStart, store.setState);
+  useDirectStoreUpdater('onMoveEnd', onMoveEnd, store.setState);
   useDirectStoreUpdater('noPanClassName', noPanClassName, store.setState);
   useDirectStoreUpdater('nodeOrigin', nodeOrigin, store.setState);
   useDirectStoreUpdater('rfId', rfId, store.setState);

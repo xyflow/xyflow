@@ -4,4 +4,3 @@ export * from './edges';
 export * from './handles';
 export * from './utils';
 export * from './panzoom';
-export * from './store';

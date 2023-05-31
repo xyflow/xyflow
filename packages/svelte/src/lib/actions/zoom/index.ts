@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Writable } from 'svelte/store';
 import type {
   CoordinateExtent,

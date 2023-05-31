@@ -192,9 +192,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         <Wrapper>
           <GraphView
             onInit={onInit}
-            onMove={onMove}
-            onMoveStart={onMoveStart}
-            onMoveEnd={onMoveEnd}
             onNodeClick={onNodeClick}
             onEdgeClick={onEdgeClick}
             onNodeMouseEnter={onNodeMouseEnter}
@@ -294,6 +291,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDrag={onSelectionDrag}
             onSelectionDragStart={onSelectionDragStart}
             onSelectionDragStop={onSelectionDragStop}
+            onMove={onMove}
+            onMoveStart={onMoveStart}
+            onMoveEnd={onMoveEnd}
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
             rfId={rfId}
