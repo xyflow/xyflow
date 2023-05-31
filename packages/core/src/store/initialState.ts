@@ -14,9 +14,7 @@ const initialState: ReactFlowStore = {
   onEdgesChange: null,
   hasDefaultNodes: false,
   hasDefaultEdges: false,
-  d3Zoom: null,
-  d3Selection: null,
-  d3ZoomHandler: null,
+  panZoom: null,
   minZoom: 0.5,
   maxZoom: 2,
   translateExtent: infiniteExtent,
@@ -48,6 +46,7 @@ const initialState: ReactFlowStore = {
   fitViewOnInit: false,
   fitViewOnInitDone: false,
   fitViewOnInitOptions: undefined,
+  selectNodesOnDrag: true,
 
   multiSelectionActive: false,
 

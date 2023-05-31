@@ -44,6 +44,9 @@ type StoreUpdaterProps = Pick<
   | 'onSelectionDragStart'
   | 'onSelectionDrag'
   | 'onSelectionDragStop'
+  | 'onMove'
+  | 'onMoveStart'
+  | 'onMoveEnd'
   | 'noPanClassName'
   | 'nodeOrigin'
   | 'elevateNodesOnSelect'
@@ -52,6 +55,7 @@ type StoreUpdaterProps = Pick<
   | 'onError'
   | 'connectionRadius'
   | 'isValidConnection'
+  | 'selectNodesOnDrag'
 > & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({
@@ -124,6 +128,9 @@ const StoreUpdater = ({
   onSelectionDrag,
   onSelectionDragStart,
   onSelectionDragStop,
+  onMoveStart,
+  onMove,
+  onMoveEnd,
   noPanClassName,
   nodeOrigin,
   rfId,
@@ -132,6 +139,7 @@ const StoreUpdater = ({
   onError,
   connectionRadius,
   isValidConnection,
+  selectNodesOnDrag,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -183,6 +191,9 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onSelectionDrag', onSelectionDrag, store.setState);
   useDirectStoreUpdater('onSelectionDragStart', onSelectionDragStart, store.setState);
   useDirectStoreUpdater('onSelectionDragStop', onSelectionDragStop, store.setState);
+  useDirectStoreUpdater('onMove', onMove, store.setState);
+  useDirectStoreUpdater('onMoveStart', onMoveStart, store.setState);
+  useDirectStoreUpdater('onMoveEnd', onMoveEnd, store.setState);
   useDirectStoreUpdater('noPanClassName', noPanClassName, store.setState);
   useDirectStoreUpdater('nodeOrigin', nodeOrigin, store.setState);
   useDirectStoreUpdater('rfId', rfId, store.setState);
@@ -191,6 +202,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onError', onError, store.setState);
   useDirectStoreUpdater('connectionRadius', connectionRadius, store.setState);
   useDirectStoreUpdater('isValidConnection', isValidConnection, store.setState);
+  useDirectStoreUpdater('selectNodesOnDrag', selectNodesOnDrag, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

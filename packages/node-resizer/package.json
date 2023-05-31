@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@reactflow/core": "workspace:^11.6.0",
+    "@reactflow/utils": "workspace:*",
     "classcat": "^5.0.4",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",

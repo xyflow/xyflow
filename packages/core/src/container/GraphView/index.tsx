@@ -8,7 +8,10 @@ import useOnInitHandler from '../../hooks/useOnInitHandler';
 import ConnectionLine from '../../components/ConnectionLine';
 import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
 
-export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
+export type GraphViewProps = Omit<
+  ReactFlowProps,
+  'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes' | 'onMove' | 'onMoveStart' | 'onMoveEnd'
+> &
   Required<
     Pick<
       ReactFlowProps,
@@ -21,7 +24,6 @@ export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' 
       | 'minZoom'
       | 'maxZoom'
       | 'defaultMarkerColor'
-      | 'selectNodesOnDrag'
       | 'noDragClassName'
       | 'noDragClassName'
       | 'noWheelClassName'
@@ -39,9 +41,6 @@ export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' 
 const GraphView = ({
   nodeTypes,
   edgeTypes,
-  onMove,
-  onMoveStart,
-  onMoveEnd,
   onInit,
   onNodeClick,
   onEdgeClick,
@@ -67,7 +66,6 @@ const GraphView = ({
   deleteKeyCode,
   onlyRenderVisibleElements,
   elementsSelectable,
-  selectNodesOnDrag,
   defaultViewport,
   translateExtent,
   minZoom,
@@ -124,9 +122,6 @@ const GraphView = ({
       panActivationKeyCode={panActivationKeyCode}
       zoomActivationKeyCode={zoomActivationKeyCode}
       elementsSelectable={elementsSelectable}
-      onMove={onMove}
-      onMoveStart={onMoveStart}
-      onMoveEnd={onMoveEnd}
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
       zoomOnDoubleClick={zoomOnDoubleClick}
@@ -182,7 +177,6 @@ const GraphView = ({
           onNodeMouseMove={onNodeMouseMove}
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
-          selectNodesOnDrag={selectNodesOnDrag}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}

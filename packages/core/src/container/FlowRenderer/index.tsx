@@ -38,9 +38,6 @@ const FlowRenderer = ({
   onPaneContextMenu,
   onPaneScroll,
   deleteKeyCode,
-  onMove,
-  onMoveStart,
-  onMoveEnd,
   selectionKeyCode,
   selectionOnDrag,
   selectionMode,
@@ -78,9 +75,6 @@ const FlowRenderer = ({
 
   return (
     <ZoomPane
-      onMove={onMove}
-      onMoveStart={onMoveStart}
-      onMoveEnd={onMoveEnd}
       onPaneContextMenu={onPaneContextMenu}
       elementsSelectable={elementsSelectable}
       zoomOnScroll={zoomOnScroll}

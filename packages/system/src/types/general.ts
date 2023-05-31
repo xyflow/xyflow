@@ -2,8 +2,9 @@
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect } from './utils';
-import type { BaseNode, NodeOrigin } from './nodes';
+import type { BaseNode, NodeDragItem, NodeOrigin } from './nodes';
 import type { HandleType } from './handles';
+import { PanZoomInstance } from './panzoom';
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -39,8 +40,7 @@ export type FitViewParamsBase<NodeType extends BaseNode> = {
   nodes: NodeType[];
   width: number;
   height: number;
-  d3Zoom: D3ZoomInstance;
-  d3Selection: D3SelectionInstance;
+  panZoom: PanZoomInstance;
   minZoom: number;
   maxZoom: number;
   nodeOrigin?: NodeOrigin;
@@ -117,3 +117,10 @@ export type SelectionRect = Rect & {
 };
 
 export type OnError = (id: string, message: string) => void;
+
+export type UpdateNodePositions = (
+  dragItems: NodeDragItem[] | BaseNode[],
+  positionChanged?: boolean,
+  dragging?: boolean
+) => void;
+export type PanBy = (delta: XYPosition) => boolean;

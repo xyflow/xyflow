@@ -7,12 +7,11 @@ import type {
   XYPosition,
   ZoomInOut
 } from '@reactflow/system';
-import { zoomIdentity } from 'd3-zoom';
+import { pointToRendererPoint } from '@reactflow/utils';
 
 import { useStore } from '$lib/store';
 import type { FitViewOptions } from '$lib/types';
 import type { SvelteFlowStore } from '$lib/store/types';
-import { getD3Transition, pointToRendererPoint } from '@reactflow/utils';
 
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
@@ -38,7 +37,7 @@ export function useSvelteFlow(): {
     width,
     height,
     maxZoom,
-    d3,
+    panZoom,
     nodes,
     edges
   } = useStore();
@@ -62,23 +61,20 @@ export function useSvelteFlow(): {
     zoomIn,
     zoomOut,
     setZoom: (zoomLevel, options) => {
-      const { zoom, selection } = get(d3);
-
-      if (zoom && selection) {
-        zoom.scaleTo(getD3Transition(selection, options?.duration), zoomLevel);
-      }
+      get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
     },
     getZoom: () => get(transform)[2],
     setViewport: (viewport, options) => {
       const [x, y, zoom] = get(transform);
-      const { zoom: d3Zoom, selection } = get(d3);
 
-      if (d3Zoom && selection) {
-        const nextTransform = zoomIdentity
-          .translate(viewport.x ?? x, viewport.y ?? y)
-          .scale(viewport.zoom ?? zoom);
-        d3Zoom.transform(getD3Transition(selection, options?.duration), nextTransform);
-      }
+      get(panZoom)?.setViewport(
+        {
+          x: viewport.x ?? x,
+          y: viewport.y ?? y,
+          zoom: viewport.zoom ?? zoom
+        },
+        { duration: options?.duration }
+      );
     },
     getViewport: () => {
       const [x, y, zoom] = get(transform);
@@ -88,16 +84,17 @@ export function useSvelteFlow(): {
       const _width = get(width);
       const _height = get(height);
       const _maxZoom = get(maxZoom);
-      const { zoom, selection } = get(d3);
 
-      if (zoom && selection) {
-        const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : _maxZoom;
-        const centerX = _width / 2 - x * nextZoom;
-        const centerY = _height / 2 - y * nextZoom;
-        const transform = zoomIdentity.translate(centerX, centerY).scale(nextZoom);
+      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : _maxZoom;
 
-        zoom.transform(getD3Transition(selection, options?.duration), transform);
-      }
+      get(panZoom)?.setViewport(
+        {
+          x: _width / 2 - x * nextZoom,
+          y: _height / 2 - y * nextZoom,
+          zoom: nextZoom
+        },
+        { duration: options?.duration }
+      );
     },
     fitView,
     project: (position: XYPosition) => {

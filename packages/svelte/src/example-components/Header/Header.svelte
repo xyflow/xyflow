@@ -5,6 +5,7 @@
     'customnode',
     'drag-n-drop',
     'edges',
+    'interaction',
     'overview',
     'stress',
     'subflows',

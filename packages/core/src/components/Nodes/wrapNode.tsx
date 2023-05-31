@@ -40,7 +40,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     isSelectable,
     isConnectable,
     isFocusable,
-    selectNodesOnDrag,
     sourcePosition,
     targetPosition,
     hidden,
@@ -69,6 +68,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const onContextMenuHandler = getMouseHandler(id, store.getState, onContextMenu);
     const onDoubleClickHandler = getMouseHandler(id, store.getState, onDoubleClick);
     const onSelectNodeHandler = (event: MouseEvent) => {
+      const { selectNodesOnDrag } = store.getState();
       if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
         // this handler gets called within the drag start event when selectNodesOnDrag=true
         handleNodeClick({
@@ -154,7 +154,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       handleSelector: dragHandle,
       nodeId: id,
       isSelectable,
-      selectNodesOnDrag,
     });
 
     if (hidden) {

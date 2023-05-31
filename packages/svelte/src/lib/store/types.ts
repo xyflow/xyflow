@@ -3,7 +3,8 @@ import type {
   XYPosition,
   ViewportHelperFunctionOptions,
   Connection,
-  NodeDragItem
+  UpdateNodePositions,
+  CoordinateExtent
 } from '@reactflow/system';
 
 import type { initialStoreState } from './initial-store';
@@ -18,17 +19,14 @@ export type SvelteFlowStoreActions = {
   zoomOut: (options?: ViewportHelperFunctionOptions) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
+  setTranslateExtent: (extent: CoordinateExtent) => void;
   fitView: (options?: FitViewOptions) => boolean;
-  updateNodePositions: (
-    nodeDragItems: NodeDragItem[],
-    positionChanged?: boolean,
-    dragging?: boolean
-  ) => void;
+  updateNodePositions: UpdateNodePositions;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  resetSelectedElements: () => void;
+  unselectNodesAndEdges: () => void;
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
-  panBy: (delta: XYPosition) => void;
+  panBy: (delta: XYPosition) => boolean;
   updateConnection: (connection: Partial<ConnectionData>) => void;
   cancelConnection: () => void;
   reset(): void;

@@ -9,7 +9,9 @@ import type {
   SnapGrid,
   OnMoveStart,
   OnMove,
-  OnMoveEnd
+  OnMoveEnd,
+  CoordinateExtent,
+  PanOnScrollMode
 } from '@reactflow/system';
 
 import type {
@@ -39,6 +41,14 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
   elementsSelectable?: boolean;
+  translateExtent?: CoordinateExtent;
+  panOnScrollMode?: PanOnScrollMode;
+  preventScrolling?: boolean;
+  zoomOnScroll?: boolean;
+  zoomOnDoubleClick?: boolean;
+  zoomOnPinch?: boolean;
+  panOnScroll?: boolean;
+  panOnDrag?: boolean | number[];
 
   class?: string;
   style?: string;
