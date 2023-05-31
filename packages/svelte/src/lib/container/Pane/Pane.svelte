@@ -48,7 +48,7 @@
     selectionRectMode,
     selectionKeyPressed,
     selectionMode,
-    resetSelectedElements,
+    unselectNodesAndEdges,
   } = useStore();
 
   let container: HTMLDivElement;
@@ -61,7 +61,7 @@
   function onClick(event: MouseEvent) {
     dispatch('pane:click', event);
 
-    resetSelectedElements();
+    unselectNodesAndEdges();
     selectionRectMode.set(null);
   }
 
@@ -80,7 +80,7 @@
 
     const { x, y } = getEventPosition(event, containerBounds);
 
-    resetSelectedElements();
+    unselectNodesAndEdges();
 
     selectionRect.set({
       width: 0,

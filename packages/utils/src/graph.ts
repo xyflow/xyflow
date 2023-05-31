@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
+import {
+  boxToRect,
+  clamp,
+  clampPosition,
+  devWarn,
+  getBoundsOfBoxes,
+  getOverlappingArea,
+  isNumeric,
+  rectToBox,
+} from './utils';
 import {
   errorMessages,
   type Connection,
@@ -11,6 +20,10 @@ import {
   type BaseEdge,
   type FitViewParamsBase,
   type FitViewOptionsBase,
+  SnapGrid,
+  NodeDragItem,
+  CoordinateExtent,
+  OnError,
 } from '@reactflow/system';
 
 export const isEdgeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
@@ -324,4 +337,91 @@ export function fitView<Params extends FitViewParamsBase<BaseNode>, Options exte
   }
 
   return false;
+}
+
+export type GetPointerPositionParams = {
+  transform: Transform;
+  snapGrid?: SnapGrid;
+  snapToGrid?: boolean;
+};
+
+export function getPointerPosition(
+  event: MouseEvent | TouchEvent,
+  { snapGrid = [0, 0], snapToGrid = false, transform }: GetPointerPositionParams
+): XYPosition & { xSnapped: number; ySnapped: number } {
+  const x = 'touches' in event ? event.touches[0].clientX : event.clientX;
+  const y = 'touches' in event ? event.touches[0].clientY : event.clientY;
+
+  const pointerPos = {
+    x: (x - transform[0]) / transform[2],
+    y: (y - transform[1]) / transform[2],
+  };
+
+  // we need the snapped position in order to be able to skip unnecessary drag events
+  return {
+    xSnapped: snapToGrid ? snapGrid[0] * Math.round(pointerPos.x / snapGrid[0]) : pointerPos.x,
+    ySnapped: snapToGrid ? snapGrid[1] * Math.round(pointerPos.y / snapGrid[1]) : pointerPos.y,
+    ...pointerPos,
+  };
+}
+
+export function calcNextPosition<NodeType extends BaseNode>(
+  node: NodeDragItem | NodeType,
+  nextPosition: XYPosition,
+  nodes: NodeType[],
+  nodeExtent?: CoordinateExtent,
+  nodeOrigin: NodeOrigin = [0, 0],
+  onError?: OnError
+): { position: XYPosition; positionAbsolute: XYPosition } {
+  let currentExtent = node.extent || nodeExtent;
+
+  if (node.extent === 'parent') {
+    if (node.parentNode && node.width && node.height) {
+      const parent = nodes.find((n) => n.id === node.parentNode);
+      const parentOrigin = parent?.origin || nodeOrigin;
+      const currNodeOrigin = node.origin || nodeOrigin;
+
+      const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parentOrigin).positionAbsolute;
+      currentExtent =
+        parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
+          ? [
+              [parentX + node.width * currNodeOrigin[0], parentY + node.height * currNodeOrigin[1]],
+              [
+                parentX + parent.width - node.width + node.width * currNodeOrigin[0],
+                parentY + parent.height - node.height + node.height * currNodeOrigin[1],
+              ],
+            ]
+          : currentExtent;
+    } else {
+      onError?.('005', errorMessages['error005']());
+
+      currentExtent = nodeExtent;
+    }
+  } else if (node.extent && node.parentNode) {
+    const parent = nodes.find((n) => n.id === node.parentNode);
+    const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parent?.origin || nodeOrigin).positionAbsolute;
+    currentExtent = [
+      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
+      [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
+    ];
+  }
+
+  let parentPosition = { x: 0, y: 0 };
+
+  if (node.parentNode) {
+    const parentNode = nodes.find((n) => n.id === node.parentNode);
+    parentPosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin).positionAbsolute;
+  }
+
+  const positionAbsolute = currentExtent
+    ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
+    : nextPosition;
+
+  return {
+    position: {
+      x: positionAbsolute.x - parentPosition.x,
+      y: positionAbsolute.y - parentPosition.y,
+    },
+    positionAbsolute,
+  };
 }

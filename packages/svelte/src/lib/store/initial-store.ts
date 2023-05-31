@@ -59,7 +59,9 @@ export const initialStoreState = {
   width: writable<number>(500),
   minZoom: writable<number>(0.5),
   maxZoom: writable<number>(2),
+  nodeExtent: writable<CoordinateExtent>(infiniteExtent),
   translateExtent: writable<CoordinateExtent>(infiniteExtent),
+  autoPanOnNodeDrag: writable<boolean>(true),
   fitViewOnInit: writable<boolean>(false),
   fitViewOnInitDone: writable<boolean>(false),
   panZoom: writable<PanZoomInstance | null>(null),
@@ -84,6 +86,7 @@ export const initialStoreState = {
   nodesDraggable: writable<boolean>(true),
   nodesConnectable: writable<boolean>(true),
   elementsSelectable: writable<boolean>(true),
+  selectNodesOnDrag: writable<boolean>(true),
   markers: readable<MarkerProps[]>([]),
   defaultMarkerColor: writable<string>('#b1b1b7')
 };

@@ -52,6 +52,7 @@ type StoreUpdaterProps = Pick<
   | 'onError'
   | 'connectionRadius'
   | 'isValidConnection'
+  | 'selectNodesOnDrag'
 > & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({
@@ -132,6 +133,7 @@ const StoreUpdater = ({
   onError,
   connectionRadius,
   isValidConnection,
+  selectNodesOnDrag,
 }: StoreUpdaterProps) => {
   const {
     setNodes,
@@ -191,6 +193,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('onError', onError, store.setState);
   useDirectStoreUpdater('connectionRadius', connectionRadius, store.setState);
   useDirectStoreUpdater('isValidConnection', isValidConnection, store.setState);
+  useDirectStoreUpdater('selectNodesOnDrag', selectNodesOnDrag, store.setState);
 
   useStoreUpdater<Node[]>(nodes, setNodes);
   useStoreUpdater<Edge[]>(edges, setEdges);

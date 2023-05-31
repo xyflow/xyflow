@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { XYDrag, type XYDragInstance } from '@reactflow/utils';
 
-import { useStoreApi } from '../../hooks/useStore';
-import { handleNodeClick } from '../../components/Nodes/utils';
-import useGetPointerPosition from '../useGetPointerPosition';
-
-export type UseDragData = { dx: number; dy: number };
+import { handleNodeClick } from '../components/Nodes/utils';
+import { useStoreApi } from './useStore';
 
 type UseDragParams = {
   nodeRef: RefObject<Element>;
@@ -14,29 +11,17 @@ type UseDragParams = {
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
-  selectNodesOnDrag?: boolean;
 };
 
-function useDrag({
-  nodeRef,
-  disabled = false,
-  noDragClassName,
-  handleSelector,
-  nodeId,
-  isSelectable,
-  selectNodesOnDrag,
-}: UseDragParams) {
+function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, nodeId, isSelectable }: UseDragParams) {
   const store = useStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
-  const getPointerPosition = useGetPointerPosition();
   const xyDrag = useRef<XYDragInstance>();
 
   useEffect(() => {
     if (nodeRef?.current) {
       xyDrag.current = XYDrag({
-        nodeId,
         domNode: nodeRef.current,
-        getPointerPosition,
         getStore: () => {
           const currentStore = store.getState();
 
@@ -62,7 +47,7 @@ function useDrag({
         },
       });
     }
-  }, [store, getPointerPosition]);
+  }, []);
 
   useEffect(() => {
     if (disabled) {
@@ -73,13 +58,13 @@ function useDrag({
         handleSelector,
         domNode: nodeRef.current as Element,
         isSelectable,
-        selectNodesOnDrag,
+        nodeId,
       });
       return () => {
         xyDrag.current?.destroy();
       };
     }
-  }, [noDragClassName, handleSelector, disabled, isSelectable, selectNodesOnDrag, nodeRef]);
+  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId]);
 
   return dragging;
 }

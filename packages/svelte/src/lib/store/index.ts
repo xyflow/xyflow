@@ -209,7 +209,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     return item;
   }
 
-  function resetSelectedElements() {
+  function unselectNodesAndEdges() {
     store.nodes.update((ns) => ns.map(resetSelectedItem));
     store.edges.update((es) => es.map(resetSelectedItem));
   }
@@ -279,10 +279,10 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     const height = get(store.height);
 
     if (!panZoom || (!delta.x && !delta.y)) {
-      return;
+      return false;
     }
 
-    panZoom.setViewportConstrained(
+    const nextViewport = panZoom.setViewportConstrained(
       {
         x: transform[0] + delta.x,
         y: transform[1] + delta.y,
@@ -294,6 +294,14 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
       ],
       infiniteExtent
     );
+
+    const transformChanged =
+      !!nextViewport &&
+      (nextViewport.x !== transform[0] ||
+        nextViewport.y !== transform[1] ||
+        nextViewport.k !== transform[2]);
+
+    return transformChanged;
   }
 
   function updateConnection(connectionUpdate: Partial<ConnectionData> | null) {
@@ -323,7 +331,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     store.snapGrid.set(null);
     store.isValidConnection.set(() => true);
 
-    resetSelectedElements();
+    unselectNodesAndEdges();
     cancelConnection();
   }
 
@@ -351,7 +359,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
-    resetSelectedElements,
+    unselectNodesAndEdges,
     addSelectedNodes,
     addSelectedEdges,
     panBy,

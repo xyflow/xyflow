@@ -12,7 +12,6 @@ import type { ReactFlowState, WrapNodeProps } from '../../types';
 type NodeRendererProps = Pick<
   GraphViewProps,
   | 'nodeTypes'
-  | 'selectNodesOnDrag'
   | 'onNodeClick'
   | 'onNodeDoubleClick'
   | 'onNodeMouseEnter'
@@ -115,7 +114,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             yPos={posY}
             xPosOrigin={posOrigin.x}
             yPosOrigin={posOrigin.y}
-            selectNodesOnDrag={props.selectNodesOnDrag}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}

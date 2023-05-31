@@ -2,15 +2,8 @@ import { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
-import {
-  useStoreApi,
-  useGetPointerPosition,
-  NodeChange,
-  NodeDimensionChange,
-  useNodeId,
-  NodePositionChange,
-  clamp,
-} from '@reactflow/core';
+import { getPointerPosition } from '@reactflow/utils';
+import { useStoreApi, NodeChange, NodeDimensionChange, useNodeId, NodePositionChange, clamp } from '@reactflow/core';
 
 import { ResizeDragEvent, ResizeControlProps, ResizeControlLineProps, ResizeControlVariant } from './types';
 import { getDirection } from './utils';
@@ -48,7 +41,6 @@ function ResizeControl({
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const startValues = useRef<typeof initStartValues>(initStartValues);
   const prevValues = useRef<typeof initPrevValues>(initPrevValues);
-  const getPointerPosition = useGetPointerPosition();
   const defaultPosition = variant === ResizeControlVariant.Line ? 'right' : 'bottom-right';
   const controlPosition = position ?? defaultPosition;
 
@@ -66,8 +58,9 @@ function ResizeControl({
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
-        const node = store.getState().nodeInternals.get(id);
-        const { xSnapped, ySnapped } = getPointerPosition(event);
+        const { nodeInternals, transform, snapGrid, snapToGrid } = store.getState();
+        const node = nodeInternals.get(id);
+        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
         prevValues.current = {
           width: node?.width ?? 0,
@@ -86,8 +79,8 @@ function ResizeControl({
         onResizeStart?.(event, { ...prevValues.current });
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { nodeInternals, triggerNodeChanges } = store.getState();
-        const { xSnapped, ySnapped } = getPointerPosition(event);
+        const { nodeInternals, transform, snapGrid, snapToGrid, triggerNodeChanges } = store.getState();
+        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         const node = nodeInternals.get(id);
 
         if (node) {
@@ -221,7 +214,7 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, keepAspectRatio, getPointerPosition]);
+  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, keepAspectRatio]);
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';

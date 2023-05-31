@@ -31,7 +31,8 @@
   let className: string = '';
   export { className as class };
 
-  const { nodes, transform, nodeTypes, snapGrid, updateNodePositions, addSelectedNodes } = useStore();
+  const store = useStore();
+  const { nodes, nodeTypes, addSelectedNodes } = store;
 
   let nodeRef: HTMLDivElement;
   const nodeTypeValid = !!$nodeTypes[type!];
@@ -74,7 +75,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-  use:drag={{ nodeId: id, nodes, snapGrid, transform, updateNodePositions }}
+  use:drag={{ nodeId: id, isSelectable: selectable, disabled: false, handleSelector: undefined, noDragClassName: 'nodrag', store }}
   bind:this={nodeRef}
   data-id={id}
   class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}

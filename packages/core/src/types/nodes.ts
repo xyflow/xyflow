@@ -28,7 +28,6 @@ export type WrapNodeProps<NodeData = any> = Pick<
     isSelectable: boolean;
     isDraggable: boolean;
     isFocusable: boolean;
-    selectNodesOnDrag: boolean;
     onClick?: NodeMouseHandler;
     onDoubleClick?: NodeMouseHandler;
     onMouseEnter?: NodeMouseHandler;

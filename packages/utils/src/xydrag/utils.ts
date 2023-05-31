@@ -1,13 +1,4 @@
-import {
-  errorMessages,
-  type CoordinateExtent,
-  type NodeDragItem,
-  type NodeOrigin,
-  type OnError,
-  type XYPosition,
-  BaseNode,
-} from '@reactflow/system';
-import { clampPosition, isNumeric, getNodePositionWithOrigin } from '../';
+import { type NodeDragItem, type XYPosition, BaseNode } from '@reactflow/system';
 
 export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: BaseNode[]) => void) {
   return (event: MouseEvent, _: BaseNode, nodes: BaseNode[]) => selectionFunc?.(event, nodes);
@@ -75,67 +66,6 @@ export function getDragItems<NodeType extends BaseNode>(
       height: n.height,
       origin: n.origin,
     }));
-}
-
-export function calcNextPosition<NodeType extends BaseNode>(
-  node: NodeDragItem | NodeType,
-  nextPosition: XYPosition,
-  nodes: NodeType[],
-  nodeExtent?: CoordinateExtent,
-  nodeOrigin: NodeOrigin = [0, 0],
-  onError?: OnError
-): { position: XYPosition; positionAbsolute: XYPosition } {
-  let currentExtent = node.extent || nodeExtent;
-
-  if (node.extent === 'parent') {
-    if (node.parentNode && node.width && node.height) {
-      const parent = nodes.find((n) => n.id === node.parentNode);
-      const parentOrigin = parent?.origin || nodeOrigin;
-      const currNodeOrigin = node.origin || nodeOrigin;
-
-      const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parentOrigin).positionAbsolute;
-      currentExtent =
-        parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
-          ? [
-              [parentX + node.width * currNodeOrigin[0], parentY + node.height * currNodeOrigin[1]],
-              [
-                parentX + parent.width - node.width + node.width * currNodeOrigin[0],
-                parentY + parent.height - node.height + node.height * currNodeOrigin[1],
-              ],
-            ]
-          : currentExtent;
-    } else {
-      onError?.('005', errorMessages['error005']());
-
-      currentExtent = nodeExtent;
-    }
-  } else if (node.extent && node.parentNode) {
-    const parent = nodes.find((n) => n.id === node.parentNode);
-    const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parent?.origin || nodeOrigin).positionAbsolute;
-    currentExtent = [
-      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
-      [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
-    ];
-  }
-
-  let parentPosition = { x: 0, y: 0 };
-
-  if (node.parentNode) {
-    const parentNode = nodes.find((n) => n.id === node.parentNode);
-    parentPosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin).positionAbsolute;
-  }
-
-  const positionAbsolute = currentExtent
-    ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
-    : nextPosition;
-
-  return {
-    position: {
-      x: positionAbsolute.x - parentPosition.x,
-      y: positionAbsolute.y - parentPosition.y,
-    },
-    positionAbsolute,
-  };
 }
 
 // returns two params:

@@ -23,10 +23,10 @@ export type SvelteFlowStoreActions = {
   fitView: (options?: FitViewOptions) => boolean;
   updateNodePositions: UpdateNodePositions;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  resetSelectedElements: () => void;
+  unselectNodesAndEdges: () => void;
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
-  panBy: (delta: XYPosition) => void;
+  panBy: (delta: XYPosition) => boolean;
   updateConnection: (connection: Partial<ConnectionData>) => void;
   cancelConnection: () => void;
   reset(): void;

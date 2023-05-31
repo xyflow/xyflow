@@ -11,8 +11,8 @@
     type Edge
   } from '../../lib/index';
 
-  const yNodes = 10;
-  const xNodes = 10;
+  const yNodes = 20;
+  const xNodes = 20;
 
   const nodeItems: Node[] = [];
   const edgeItems: Edge[] = [];
@@ -55,6 +55,7 @@
 >
   <SvelteFlow
     fitView
+    minZoom={0.2}
   >
     <Controls />
     <Background variant={BackgroundVariant.Dots} />

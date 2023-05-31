@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef } from 'react';
-import { PanZoom } from '@reactflow/utils';
-import { PanOnScrollMode, type Transform, type PanZoomInstance, OnPanZoom } from '@reactflow/system';
 import { shallow } from 'zustand/shallow';
+import { XYPanZoom } from '@reactflow/utils';
+import { PanOnScrollMode, type Transform, type PanZoomInstance, OnPanZoom } from '@reactflow/system';
 
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
@@ -63,7 +63,7 @@ const ZoomPane = ({
 
   useEffect(() => {
     if (zoomPane.current) {
-      panZoom.current = PanZoom({
+      panZoom.current = XYPanZoom({
         domNode: zoomPane.current,
         minZoom,
         maxZoom,
