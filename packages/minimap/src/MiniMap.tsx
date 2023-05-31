@@ -148,7 +148,7 @@ function MiniMap({
         // @ts-ignore
         .on('zoom.wheel', zoomable ? zoomHandler : null);
 
-      selection.call(zoomAndPanHandler);
+      selection.call(zoomAndPanHandler, {});
 
       return () => {
         selection.on('zoom', null);

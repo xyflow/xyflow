@@ -1,24 +1,26 @@
 import {
   ConnectionMode,
-  ConnectionStatus,
-  CoordinateExtent,
-  HandleType,
-  NodeDimensionUpdate,
-  NodeDragItem,
-  NodeOrigin,
-  OnConnect,
-  OnError,
-  OnViewportChange,
-  SelectionRect,
-  SnapGrid,
-  ConnectingHandle,
-  Transform,
-  XYPosition,
-  PanZoomInstance,
+  type ConnectionStatus,
+  type CoordinateExtent,
+  type HandleType,
+  type NodeDimensionUpdate,
+  type UpdateNodePositions,
+  type NodeOrigin,
+  type OnConnect,
+  type OnError,
+  type OnViewportChange,
+  type SelectionRect,
+  type SnapGrid,
+  type ConnectingHandle,
+  type Transform,
+  type XYPosition,
+  type PanZoomInstance,
+  type PanBy,
+  OnNodeDrag,
+  OnSelectionDrag,
 } from '@reactflow/system';
 
 import type {
-  NodeDragHandler,
   Edge,
   Node,
   NodeChange,
@@ -27,7 +29,6 @@ import type {
   NodeInternals,
   OnConnectStart,
   OnConnectEnd,
-  SelectionDragHandler,
   DefaultEdgeOptions,
   FitViewOptions,
   OnNodesDelete,
@@ -80,6 +81,7 @@ export type ReactFlowStore = {
   edgesUpdatable: boolean;
   elementsSelectable: boolean;
   elevateNodesOnSelect: boolean;
+  selectNodesOnDrag: boolean;
 
   multiSelectionActive: boolean;
 
@@ -87,13 +89,13 @@ export type ReactFlowStore = {
   connectionEndHandle: ConnectingHandle | null;
   connectionClickStartHandle: ConnectingHandle | null;
 
-  onNodeDragStart?: NodeDragHandler;
-  onNodeDrag?: NodeDragHandler;
-  onNodeDragStop?: NodeDragHandler;
+  onNodeDragStart?: OnNodeDrag;
+  onNodeDrag?: OnNodeDrag;
+  onNodeDragStop?: OnNodeDrag;
 
-  onSelectionDragStart?: SelectionDragHandler;
-  onSelectionDrag?: SelectionDragHandler;
-  onSelectionDragStop?: SelectionDragHandler;
+  onSelectionDragStart?: OnSelectionDrag;
+  onSelectionDrag?: OnSelectionDrag;
+  onSelectionDragStop?: OnSelectionDrag;
 
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
@@ -134,7 +136,7 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged: boolean, dragging: boolean) => void;
+  updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
@@ -146,7 +148,7 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
-  panBy: (delta: XYPosition) => boolean;
+  panBy: PanBy;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

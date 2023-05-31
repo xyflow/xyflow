@@ -22,7 +22,6 @@ export { useStore, useStoreApi } from './hooks/useStore';
 export { default as useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
-export { default as useGetPointerPosition } from './hooks/useGetPointerPosition';
 export { useNodeId } from './contexts/NodeIdContext';
 export * from '@reactflow/edge-utils';
 export * from '@reactflow/system';

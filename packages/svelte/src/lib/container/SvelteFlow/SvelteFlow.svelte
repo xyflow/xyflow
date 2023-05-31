@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import cc from 'classcat';
-  import { PanOnScrollMode, type Viewport } from '@reactflow/system';
+  import { PanOnScrollMode, type CoordinateExtent, type Viewport } from '@reactflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -15,6 +15,7 @@
   import { Attribution } from '$lib/components/Attribution';
   import { useStore } from '$lib/store';
   import type { SvelteFlowProps } from './types';
+    import type { EdgeTypes, NodeTypes } from '$lib/types';
 
   type $$Props = SvelteFlowProps;
 
@@ -63,6 +64,15 @@
     store.height.set(height);
     store.domNode.set(domNode);
 
+    updateStore({
+      nodeTypes,
+      edgeTypes,
+      minZoom,
+      maxZoom,
+      translateExtent,
+      fitView
+    });
+
     return () => {
       store.reset();
     }
@@ -91,7 +101,14 @@
     })
   }
 
-  $: {
+  function updateStore({ nodeTypes, edgeTypes, minZoom, maxZoom, translateExtent, fitView }: {
+    nodeTypes?: NodeTypes,
+    edgeTypes?: EdgeTypes,
+    minZoom?: number,
+    maxZoom?: number,
+    translateExtent?: CoordinateExtent,
+    fitView?: boolean
+  }) {
     if (nodeTypes !== undefined) {
      store.setNodeTypes(nodeTypes);
     }
@@ -116,6 +133,15 @@
       store.fitViewOnInit.set(fitView);
     }
   }
+
+  $: updateStore({
+    nodeTypes,
+    edgeTypes,
+    minZoom,
+    maxZoom,
+    translateExtent,
+    fitView
+  })
 </script>
 
 <div

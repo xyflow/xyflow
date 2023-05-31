@@ -216,7 +216,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             panActivationKeyCode={panActivationKeyCode}
             zoomActivationKeyCode={zoomActivationKeyCode}
             onlyRenderVisibleElements={onlyRenderVisibleElements}
-            selectNodesOnDrag={selectNodesOnDrag}
             defaultViewport={defaultViewport}
             translateExtent={translateExtent}
             minZoom={minZoom}
@@ -303,6 +302,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onError={onError}
             connectionRadius={connectionRadius}
             isValidConnection={isValidConnection}
+            selectNodesOnDrag={selectNodesOnDrag}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}

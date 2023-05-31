@@ -8,7 +8,7 @@ import type {
   Transform,
   Viewport
 } from '@reactflow/system';
-import { PanZoom } from '@reactflow/utils';
+import { XYPanZoom } from '@reactflow/utils';
 
 type ZoomParams = {
   transform: Writable<Transform>;
@@ -40,7 +40,7 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   const { panZoom, minZoom, maxZoom, initialViewport, transform, dragging, translateExtent } =
     params;
 
-  const panZoomInstance = PanZoom({
+  const panZoomInstance = XYPanZoom({
     domNode,
     minZoom,
     maxZoom,

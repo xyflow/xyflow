@@ -29,14 +29,14 @@ export type ZoomPanValues = {
   timerId: ReturnType<typeof setTimeout> | undefined;
 };
 
-export function PanZoom({
+export function XYPanZoom({
   domNode,
   minZoom,
   maxZoom,
   translateExtent,
   viewport,
-  onTransformChange: _onTransformChange,
-  onDraggingChange: _onDraggingChange,
+  onTransformChange,
+  onDraggingChange,
 }: PanZoomParams): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
     isZoomingOrPanning: false,
@@ -49,8 +49,6 @@ export function PanZoom({
   const bbox = domNode.getBoundingClientRect();
   const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
-  const onTransformChange = _onTransformChange;
-  const onDraggingChange = _onDraggingChange;
 
   setViewportConstrained(
     {
@@ -67,6 +65,13 @@ export function PanZoom({
 
   const d3ZoomHandler = d3Selection.on('wheel.zoom') || null;
 
+  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
+    if (d3Selection) {
+      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), transform);
+    }
+  }
+
+  // public functions
   function update({
     noWheelClassName,
     noPanClassName,
@@ -187,14 +192,6 @@ export function PanZoom({
       zoomActivationKeyPressed,
     ]);
   }
-
-  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
-    if (d3Selection) {
-      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), transform);
-    }
-  }
-
-  // public functions
 
   function setViewportConstrained(
     viewport: Viewport,

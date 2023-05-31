@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
+import { calcNextPosition } from '@reactflow/utils';
 
 import { useStoreApi } from '../hooks/useStore';
-import { calcNextPosition } from './useDrag/utils';
 
 function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
-    const { nodeInternals, nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid, onError, nodesDraggable } =
+    const { nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid, onError, nodesDraggable } =
       store.getState();
-    const selectedNodes = getNodes().filter(
+    const nodes = getNodes();
+    const selectedNodes = nodes.filter(
       (n) => n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
     );
     // by default a node moves 5px on each key press, or 20px if shift is pressed
@@ -30,14 +31,7 @@ function useUpdateNodePositions() {
           nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
         }
 
-        const { positionAbsolute, position } = calcNextPosition(
-          n,
-          nextPosition,
-          nodeInternals,
-          nodeExtent,
-          undefined,
-          onError
-        );
+        const { positionAbsolute, position } = calcNextPosition(n, nextPosition, nodes, nodeExtent, undefined, onError);
 
         n.position = position;
         n.positionAbsolute = positionAbsolute;

@@ -21,7 +21,6 @@ export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' 
       | 'minZoom'
       | 'maxZoom'
       | 'defaultMarkerColor'
-      | 'selectNodesOnDrag'
       | 'noDragClassName'
       | 'noDragClassName'
       | 'noWheelClassName'
@@ -67,7 +66,6 @@ const GraphView = ({
   deleteKeyCode,
   onlyRenderVisibleElements,
   elementsSelectable,
-  selectNodesOnDrag,
   defaultViewport,
   translateExtent,
   minZoom,
@@ -182,7 +180,6 @@ const GraphView = ({
           onNodeMouseMove={onNodeMouseMove}
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
-          selectNodesOnDrag={selectNodesOnDrag}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}
