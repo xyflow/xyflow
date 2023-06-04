@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-ro
 
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
+import Connectors from '../examples/Connectors';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
 import CustomNode from '../examples/CustomNode';
@@ -66,6 +67,11 @@ const routes: IRoute[] = [
     name: 'Cancel Connection',
     path: '/cancel-connection',
     component: CancelConnection,
+  },
+  {
+    name: 'Connectors',
+    path: '/connectors',
+    component: Connectors,
   },
   {
     name: 'Controlled/Uncontrolled',
