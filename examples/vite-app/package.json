@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000 --open --host",
+    "dev": "vite --port 3000 --open --host --force",
     "serve": "vite serve --port 3000",
     "build": "vite build",
     "test:dev": "cypress open",
@@ -14,7 +14,6 @@
     "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
   },
   "dependencies": {
-    "@reactflow/node-resizer": "workspace:*",
     "classcat": "^5.0.3",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",

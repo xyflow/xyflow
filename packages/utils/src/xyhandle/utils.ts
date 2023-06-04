@@ -1,31 +1,17 @@
 import {
   internalsSymbol,
-  ConnectionMode,
   ConnectionStatus,
-  type ConnectingHandle,
-  type Connection,
   type HandleType,
   type NodeHandleBounds,
   type XYPosition,
+  type BaseNode,
+  type ConnectionHandle,
 } from '@reactflow/system';
-import { getEventPosition } from '@reactflow/utils';
-
-import type { Node } from '../../types';
-
-export type ConnectionHandle = {
-  id: string | null;
-  type: HandleType;
-  nodeId: string;
-  x: number;
-  y: number;
-};
-
-export type ValidConnectionFunc = (connection: Connection) => boolean;
 
 // this functions collects all handles and adds an absolute position
 // so that we can later find the closest handle to the mouse position
 export function getHandles(
-  node: Node,
+  node: BaseNode,
   handleBounds: NodeHandleBounds,
   type: HandleType,
   currentHandle: string
@@ -75,83 +61,8 @@ export function getClosestHandle(
       closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
 }
 
-type Result = {
-  handleDomNode: Element | null;
-  isValid: boolean;
-  connection: Connection;
-  endHandle: ConnectingHandle | null;
-};
-
-const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
-
-// checks if  and returns connection in fom of an object { source: 123, target: 312 }
-export function isValidHandle(
-  event: MouseEvent | TouchEvent,
-  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null,
-  connectionMode: ConnectionMode,
-  fromNodeId: string,
-  fromHandleId: string | null,
-  fromType: HandleType,
-  isValidConnection: ValidConnectionFunc,
-  doc: Document | ShadowRoot
-) {
-  const isTarget = fromType === 'target';
-  const handleDomNode = doc.querySelector(
-    `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
-  );
-  const { x, y } = getEventPosition(event);
-  const handleBelow = doc.elementFromPoint(x, y);
-  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
-  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
-  const handleToCheck = handleBelow?.classList.contains('react-flow__handle') ? handleBelow : handleDomNode;
-
-  const result: Result = {
-    handleDomNode: handleToCheck,
-    isValid: false,
-    connection: nullConnection,
-    endHandle: null,
-  };
-
-  if (handleToCheck) {
-    const handleType = getHandleType(undefined, handleToCheck);
-    const handleNodeId = handleToCheck.getAttribute('data-nodeid');
-    const handleId = handleToCheck.getAttribute('data-handleid');
-    const connectable = handleToCheck.classList.contains('connectable');
-    const connectableEnd = handleToCheck.classList.contains('connectableend');
-
-    const connection: Connection = {
-      source: isTarget ? handleNodeId : fromNodeId,
-      sourceHandle: isTarget ? handleId : fromHandleId,
-      target: isTarget ? fromNodeId : handleNodeId,
-      targetHandle: isTarget ? fromHandleId : handleId,
-    };
-
-    result.connection = connection;
-
-    const isConnectable = connectable && connectableEnd;
-    // in strict mode we don't allow target to target or source to source connections
-    const isValid =
-      isConnectable &&
-      (connectionMode === ConnectionMode.Strict
-        ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
-        : handleNodeId !== fromNodeId || handleId !== fromHandleId);
-
-    if (isValid) {
-      result.endHandle = {
-        nodeId: handleNodeId as string,
-        handleId,
-        type: handleType as HandleType,
-      };
-
-      result.isValid = isValidConnection(connection);
-    }
-  }
-
-  return result;
-}
-
 type GetHandleLookupParams = {
-  nodes: Node[];
+  nodes: BaseNode[];
   nodeId: string;
   handleId: string | null;
   handleType: string;
@@ -190,8 +101,8 @@ export function getHandleType(
   return null;
 }
 
-export function resetRecentHandle(handleDomNode: Element): void {
-  handleDomNode?.classList.remove('valid', 'connecting', 'react-flow__handle-valid', 'react-flow__handle-connecting');
+export function resetRecentHandle(handleDomNode: Element, lib: string): void {
+  handleDomNode?.classList.remove('valid', 'connecting', `${lib}-flow__handle-valid`, `${lib}-flow__handle-connecting`);
 }
 
 export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {

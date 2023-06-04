@@ -1,6 +1,6 @@
 import { Handle, NodeProps, Position, ReactFlowState, useStore } from 'reactflow';
 
-const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionNodeId;
+const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionStartHandle?.nodeId;
 
 export default function CustomNode({ id }: NodeProps) {
   const connectionNodeId = useStore(connectionNodeIdSelector);

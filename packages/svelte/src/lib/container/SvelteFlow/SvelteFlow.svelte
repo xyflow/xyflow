@@ -167,7 +167,7 @@
     {panOnScroll}
     {panOnDrag}
   >
-    <Pane on:pane:click>
+    <Pane on:pane:click {panOnDrag}>
       <ViewportComponent>
         <EdgeRenderer on:edge:click />
         <ConnectionLine />

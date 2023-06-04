@@ -8,7 +8,8 @@ import {
   type SnapGrid,
   type MarkerProps,
   type PanZoomInstance,
-  type CoordinateExtent
+  type CoordinateExtent,
+  type IsValidConnection
 } from '@reactflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -18,23 +19,14 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type {
-  ConnectionData,
-  NodeTypes,
-  EdgeTypes,
-  EdgeLayouted,
-  Edge,
-  Node,
-  IsValidConnection
-} from '$lib/types';
+import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Edge, Node } from '$lib/types';
 import { infiniteExtent } from '@reactflow/utils';
 
 export const initConnectionData = {
-  nodeId: null,
-  handleId: null,
-  handleType: null,
-  position: null,
-  status: null
+  connectionStartHandle: null,
+  connectionEndHandle: null,
+  connectionPosition: null,
+  connectionStatus: null
 };
 
 export const initialNodeTypes = {
@@ -88,5 +80,6 @@ export const initialStoreState = {
   elementsSelectable: writable<boolean>(true),
   selectNodesOnDrag: writable<boolean>(true),
   markers: readable<MarkerProps[]>([]),
-  defaultMarkerColor: writable<string>('#b1b1b7')
+  defaultMarkerColor: writable<string>('#b1b1b7'),
+  lib: readable<string>('svelte')
 };

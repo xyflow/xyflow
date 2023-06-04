@@ -36,6 +36,11 @@
   import { useStore } from '$lib/store';
   import { getConnectedEdges } from '$lib/utils';
   import type { Node, Edge } from '$lib/types';
+  import type { PaneProps } from './types';
+
+  type $$Props = PaneProps;
+
+  export let panOnDrag: $$Props['panOnDrag'] = undefined;
 
   const dispatch = createEventDispatcher();
   const {
@@ -133,9 +138,9 @@
 
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
-    // if (!userSelectionActive && userSelectionRect && event.target === container.current) {
-    //   onClick?.(event);
-    // }
+    if (!isSelecting && $selectionRectMode === 'user' && event.target === container) {
+      onClick?.(event);
+    }
     selectionRect.set(null);
 
     if (selectedNodes.length > 0) {
@@ -155,10 +160,10 @@
   };
 
   const onContextMenu = (event: MouseEvent) => {
-    // if (Array.isArray(panOnDrag) && panOnDrag?.includes(2)) {
-    //   event.preventDefault();
-    //   return;
-    // }
+    if (Array.isArray(panOnDrag) && panOnDrag?.includes(2)) {
+      event.preventDefault();
+      return;
+    }
 
     dispatch('pane:contextmenu', event);
   };

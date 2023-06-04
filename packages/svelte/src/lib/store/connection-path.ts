@@ -21,20 +21,23 @@ export function getConnectionPath(store: SvelteFlowStoreState) {
       store.transform
     ],
     ([connection, connectionLineType, connectionMode, nodes, transform]) => {
-      if (!connection.nodeId) {
+      if (!connection.connectionStartHandle?.nodeId) {
         return null;
       }
 
-      const fromNode = nodes.find((n) => n.id === connection.nodeId);
+      const fromNode = nodes.find((n) => n.id === connection.connectionStartHandle?.nodeId);
       const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
-      const handleBoundsStrict = fromHandleBounds?.[connection.handleType || 'source'] || [];
+      const handleBoundsStrict =
+        fromHandleBounds?.[connection.connectionStartHandle.type || 'source'] || [];
       const handleBoundsLoose = handleBoundsStrict
         ? handleBoundsStrict
-        : fromHandleBounds?.[connection.handleType === 'source' ? 'target' : 'source']!;
+        : fromHandleBounds?.[
+            connection?.connectionStartHandle?.type === 'source' ? 'target' : 'source'
+          ]!;
       const handleBounds =
         connectionMode === ConnectionMode.Strict ? handleBoundsStrict : handleBoundsLoose;
-      const fromHandle = connection.handleId
-        ? handleBounds.find((d) => d.id === connection.handleId)
+      const fromHandle = connection.connectionStartHandle?.handleId
+        ? handleBounds.find((d) => d.id === connection.connectionStartHandle?.handleId)
         : handleBounds[0];
       const fromHandleX = fromHandle
         ? fromHandle.x + fromHandle.width / 2
@@ -49,8 +52,8 @@ export function getConnectionPath(store: SvelteFlowStoreState) {
         sourceX: fromX,
         sourceY: fromY,
         sourcePosition: fromPosition,
-        targetX: ((connection.position?.x ?? 0) - transform[0]) / transform[2],
-        targetY: ((connection.position?.y ?? 0) - transform[1]) / transform[2],
+        targetX: ((connection.connectionPosition?.x ?? 0) - transform[0]) / transform[2],
+        targetY: ((connection.connectionPosition?.y ?? 0) - transform[1]) / transform[2],
         targetPosition: toPosition
       };
 

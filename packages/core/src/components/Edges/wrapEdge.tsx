@@ -1,11 +1,10 @@
 import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent } from 'react';
 import cc from 'classcat';
-import { getMarkerId, elementSelectionKeys } from '@reactflow/utils';
+import { getMarkerId, elementSelectionKeys, XYHandle } from '@reactflow/utils';
 import type { Connection } from '@reactflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
-import { handlePointerDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMouseHandler } from './utils';
 import type { EdgeProps, WrapEdgeProps } from '../../types';
@@ -96,7 +95,22 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         return;
       }
 
-      const { edges, isValidConnection: isValidConnectionStore } = store.getState();
+      const {
+        autoPanOnConnect,
+        domNode,
+        edges,
+        isValidConnection: isValidConnectionStore,
+        connectionMode,
+        connectionRadius,
+        transform,
+        lib,
+        onConnectStart,
+        onConnectEnd,
+        cancelConnection,
+        getNodes,
+        panBy,
+        updateConnection,
+      } = store.getState();
       const nodeId = isSourceHandle ? target : source;
       const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
       const handleType = isSourceHandle ? 'target' : 'source';
@@ -104,6 +118,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
       const isTarget = isSourceHandle;
       const edge = edges.find((e) => e.id === id)!;
+      const nodes = getNodes();
 
       setUpdating(true);
       onEdgeUpdateStart?.(event, edge, handleType);
@@ -115,17 +130,26 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
       const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
 
-      handlePointerDown({
-        event,
+      XYHandle.onPointerDown(event.nativeEvent, {
+        autoPanOnConnect,
+        connectionMode,
+        connectionRadius,
+        domNode,
         handleId,
         nodeId,
-        onConnect: onConnectEdge,
+        nodes,
         isTarget,
-        getState: store.getState,
-        setState: store.setState,
-        isValidConnection,
         edgeUpdaterType: handleType,
+        transform,
+        lib,
+        cancelConnection,
+        panBy,
+        isValidConnection,
+        onConnect: onConnectEdge,
+        onConnectStart,
+        onConnectEnd,
         onEdgeUpdateEnd: _onEdgeUpdateEnd,
+        updateConnection,
       });
     };
 

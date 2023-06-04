@@ -4,11 +4,12 @@ import type {
   ViewportHelperFunctionOptions,
   Connection,
   UpdateNodePositions,
-  CoordinateExtent
+  CoordinateExtent,
+  UpdateConnection
 } from '@reactflow/system';
 
 import type { initialStoreState } from './initial-store';
-import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
+import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
 import type { Writable } from 'svelte/store';
 
 export type SvelteFlowStoreActions = {
@@ -27,7 +28,7 @@ export type SvelteFlowStoreActions = {
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
   panBy: (delta: XYPosition) => boolean;
-  updateConnection: (connection: Partial<ConnectionData>) => void;
+  updateConnection: UpdateConnection;
   cancelConnection: () => void;
   reset(): void;
 };

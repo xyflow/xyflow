@@ -43,7 +43,7 @@ const ConnectionLine = ({
     useCallback(
       (s: ReactFlowStore) => ({
         fromNode: s.nodeInternals.get(nodeId),
-        handleId: s.connectionHandleId,
+        handleId: s.connectionStartHandle?.handleId,
         toX: (s.connectionPosition.x - s.transform[0]) / s.transform[2],
         toY: (s.connectionPosition.y - s.transform[1]) / s.transform[2],
         connectionMode: s.connectionMode,
@@ -133,8 +133,8 @@ type ConnectionLineWrapperProps = {
 };
 
 const selector = (s: ReactFlowState) => ({
-  nodeId: s.connectionNodeId,
-  handleType: s.connectionHandleType,
+  nodeId: s.connectionStartHandle?.nodeId,
+  handleType: s.connectionStartHandle?.type,
   nodesConnectable: s.nodesConnectable,
   connectionStatus: s.connectionStatus,
   width: s.width,

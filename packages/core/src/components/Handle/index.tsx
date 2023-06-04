@@ -2,16 +2,12 @@ import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent, TouchE
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { errorMessages, Position, type HandleProps, type Connection, type HandleType } from '@reactflow/system';
-import { getHostForElement, isMouseEvent } from '@reactflow/utils';
+import { XYHandle, getHostForElement, isMouseEvent } from '@reactflow/utils';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import { handlePointerDown } from './handler';
 import { addEdge } from '../../utils/';
 import { type ReactFlowState } from '../../types';
-import { isValidHandle } from './utils';
-
-const alwaysValid = () => true;
 
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
 
@@ -95,15 +91,26 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         isConnectableStart &&
         ((isMouseTriggered && (event as ReactMouseEvent<HTMLDivElement>).button === 0) || !isMouseTriggered)
       ) {
-        handlePointerDown({
-          event,
+        const currentStore = store.getState();
+
+        XYHandle.onPointerDown(event.nativeEvent, {
+          autoPanOnConnect: currentStore.autoPanOnConnect,
+          connectionMode: currentStore.connectionMode,
+          connectionRadius: currentStore.connectionRadius,
+          domNode: currentStore.domNode,
+          nodes: currentStore.getNodes(),
+          transform: currentStore.transform,
+          lib: currentStore.lib,
+          isTarget,
           handleId,
           nodeId,
+          panBy: currentStore.panBy,
+          cancelConnection: currentStore.cancelConnection,
+          onConnectStart: currentStore.onConnectStart,
+          onConnectEnd: currentStore.onConnectEnd,
+          updateConnection: currentStore.updateConnection,
           onConnect: onConnectExtended,
-          isTarget,
-          getState: store.getState,
-          setState: store.setState,
-          isValidConnection: isValidConnection || store.getState().isValidConnection || alwaysValid,
+          isValidConnection: isValidConnection || currentStore.isValidConnection,
         });
       }
 
@@ -121,6 +128,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         connectionClickStartHandle,
         connectionMode,
         isValidConnection: isValidConnectionStore,
+        lib,
       } = store.getState();
 
       if (!nodeId || (!connectionClickStartHandle && !isConnectableStart)) {
@@ -128,27 +136,27 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
       }
 
       if (!connectionClickStartHandle) {
-        onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
+        onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
         store.setState({ connectionClickStartHandle: { nodeId, type, handleId } });
         return;
       }
 
       const doc = getHostForElement(event.target as HTMLElement);
-      const isValidConnectionHandler = isValidConnection || isValidConnectionStore || alwaysValid;
-      const { connection, isValid } = isValidHandle(
-        event.nativeEvent,
-        {
+      const isValidConnectionHandler = isValidConnection || isValidConnectionStore;
+      const { connection, isValid } = XYHandle.isValid(event.nativeEvent, {
+        handle: {
           nodeId,
           id: handleId,
           type,
         },
         connectionMode,
-        connectionClickStartHandle.nodeId,
-        connectionClickStartHandle.handleId || null,
-        connectionClickStartHandle.type,
-        isValidConnectionHandler,
-        doc
-      );
+        fromNodeId: connectionClickStartHandle.nodeId,
+        fromHandleId: connectionClickStartHandle.handleId || null,
+        fromType: connectionClickStartHandle.type,
+        isValidConnection: isValidConnectionHandler,
+        doc,
+        lib,
+      });
 
       if (isValid) {
         onConnectExtended(connection);

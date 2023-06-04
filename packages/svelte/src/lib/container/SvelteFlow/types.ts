@@ -11,17 +11,11 @@ import type {
   OnMove,
   OnMoveEnd,
   CoordinateExtent,
-  PanOnScrollMode
+  PanOnScrollMode,
+  IsValidConnection
 } from '@reactflow/system';
 
-import type {
-  Edge,
-  Node,
-  NodeTypes,
-  KeyDefinition,
-  EdgeTypes,
-  IsValidConnection
-} from '$lib/types';
+import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
 
 export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   id?: string;

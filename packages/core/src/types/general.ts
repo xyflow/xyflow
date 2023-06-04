@@ -1,15 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
-  MouseEvent as ReactMouseEvent,
-  TouchEvent as ReactTouchEvent,
-  ComponentType,
-  MemoExoticComponent,
-} from 'react';
+import type { ComponentType, MemoExoticComponent } from 'react';
 import {
   FitViewParamsBase,
   FitViewOptionsBase,
   NodeProps,
-  OnConnectStartParams,
   ZoomInOut,
   ZoomTo,
   SetViewport,
@@ -18,7 +12,6 @@ import {
   SetCenter,
   FitBounds,
   Project,
-  Connection,
 } from '@reactflow/system';
 
 import type { NodeChange, EdgeChange, Node, WrapNodeProps, Edge, EdgeProps, WrapEdgeProps, ReactFlowInstance } from '.';
@@ -46,15 +39,10 @@ export type OnSelectionChangeParams = {
 
 export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 
-export type OnConnectStart = (event: ReactMouseEvent | ReactTouchEvent, params: OnConnectStartParams) => void;
-export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
-
 export type FitViewParams = FitViewParamsBase<Node>;
 export type FitViewOptions = FitViewOptionsBase<Node>;
 export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
 export type OnInit<NodeData = any, EdgeData = any> = (reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>) => void;
-
-export type IsValidConnection = (edge: Edge | Connection) => boolean;
 
 export type ViewportHelperFunctions = {
   zoomIn: ZoomInOut;

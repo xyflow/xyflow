@@ -2,7 +2,6 @@ import {
   ConnectionMode,
   type ConnectionStatus,
   type CoordinateExtent,
-  type HandleType,
   type NodeDimensionUpdate,
   type UpdateNodePositions,
   type NodeOrigin,
@@ -16,11 +15,15 @@ import {
   type XYPosition,
   type PanZoomInstance,
   type PanBy,
-  OnNodeDrag,
-  OnSelectionDrag,
-  OnMoveStart,
-  OnMove,
-  OnMoveEnd,
+  type OnConnectStart,
+  type OnConnectEnd,
+  type OnNodeDrag,
+  type OnSelectionDrag,
+  type OnMoveStart,
+  type OnMove,
+  type OnMoveEnd,
+  type IsValidConnection,
+  type UpdateConnection,
 } from '@reactflow/system';
 
 import type {
@@ -30,15 +33,12 @@ import type {
   OnNodesChange,
   OnEdgesChange,
   NodeInternals,
-  OnConnectStart,
-  OnConnectEnd,
   DefaultEdgeOptions,
   FitViewOptions,
   OnNodesDelete,
   OnEdgesDelete,
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
-  IsValidConnection,
 } from '.';
 
 export type ReactFlowStore = {
@@ -67,9 +67,6 @@ export type ReactFlowStore = {
   userSelectionActive: boolean;
   userSelectionRect: SelectionRect | null;
 
-  connectionNodeId: string | null;
-  connectionHandleId: string | null;
-  connectionHandleType: HandleType | null;
   connectionPosition: XYPosition;
   connectionStatus: ConnectionStatus | null;
   connectionMode: ConnectionMode;
@@ -135,6 +132,8 @@ export type ReactFlowStore = {
   connectionRadius: number;
 
   isValidConnection?: IsValidConnection;
+
+  lib: string;
 };
 
 export type ReactFlowActions = {
@@ -153,6 +152,8 @@ export type ReactFlowActions = {
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
+  // @todo can this be reused by system?
+  updateConnection: UpdateConnection;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
   panBy: PanBy;

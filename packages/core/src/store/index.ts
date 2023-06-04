@@ -1,12 +1,6 @@
 import { createStore } from 'zustand';
 import { clampPosition, getDimensions, fitView, getHandleBounds } from '@reactflow/utils';
-import {
-  internalsSymbol,
-  type NodeDimensionUpdate,
-  type CoordinateExtent,
-  type NodeDragItem,
-  type XYPosition,
-} from '@reactflow/system';
+import { internalsSymbol, type CoordinateExtent } from '@reactflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { createNodeInternals, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
@@ -20,7 +14,6 @@ import type {
   NodeSelectionChange,
   NodePositionChange,
   UnselectNodesAndEdgesParams,
-  NodeChange,
 } from '../types';
 
 const createRFStore = () =>
@@ -48,7 +41,7 @@ const createRFStore = () =>
 
       set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
-    updateNodeDimensions: (updates: NodeDimensionUpdate[]) => {
+    updateNodeDimensions: (updates) => {
       const {
         onNodesChange,
         nodeInternals,
@@ -132,7 +125,7 @@ const createRFStore = () =>
         onNodesChange?.(changes);
       }
     },
-    updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged = true, dragging = false) => {
+    updateNodePositions: (nodeDragItems, positionChanged = true, dragging = false) => {
       const { triggerNodeChanges } = get();
 
       const changes = nodeDragItems.map((node) => {
@@ -153,7 +146,7 @@ const createRFStore = () =>
       triggerNodeChanges(changes);
     },
 
-    triggerNodeChanges: (changes: NodeChange[]) => {
+    triggerNodeChanges: (changes) => {
       const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin, getNodes, elevateNodesOnSelect } = get();
 
       if (changes?.length) {
@@ -167,7 +160,7 @@ const createRFStore = () =>
       }
     },
 
-    addSelectedNodes: (selectedNodeIds: string[]) => {
+    addSelectedNodes: (selectedNodeIds) => {
       const { multiSelectionActive, edges, getNodes } = get();
       let changedNodes: NodeSelectionChange[];
       let changedEdges: EdgeSelectionChange[] | null = null;
@@ -186,7 +179,7 @@ const createRFStore = () =>
         set,
       });
     },
-    addSelectedEdges: (selectedEdgeIds: string[]) => {
+    addSelectedEdges: (selectedEdgeIds) => {
       const { multiSelectionActive, edges, getNodes } = get();
       let changedEdges: EdgeSelectionChange[];
       let changedNodes: NodeSelectionChange[] | null = null;
@@ -225,19 +218,19 @@ const createRFStore = () =>
         set,
       });
     },
-    setMinZoom: (minZoom: number) => {
+    setMinZoom: (minZoom) => {
       const { panZoom, maxZoom } = get();
       panZoom?.setScaleExtent([minZoom, maxZoom]);
 
       set({ minZoom });
     },
-    setMaxZoom: (maxZoom: number) => {
+    setMaxZoom: (maxZoom) => {
       const { panZoom, minZoom } = get();
       panZoom?.setScaleExtent([minZoom, maxZoom]);
 
       set({ maxZoom });
     },
-    setTranslateExtent: (translateExtent: CoordinateExtent) => {
+    setTranslateExtent: (translateExtent) => {
       get().panZoom?.setTranslateExtent(translateExtent);
 
       set({ translateExtent });
@@ -260,7 +253,7 @@ const createRFStore = () =>
         set,
       });
     },
-    setNodeExtent: (nodeExtent: CoordinateExtent) => {
+    setNodeExtent: (nodeExtent) => {
       const { nodeInternals } = get();
 
       nodeInternals.forEach((node) => {
@@ -272,7 +265,7 @@ const createRFStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    panBy: (delta: XYPosition): boolean => {
+    panBy: (delta): boolean => {
       const { transform, width, height, panZoom, translateExtent } = get();
 
       if (!panZoom || (!delta.x && !delta.y)) {
@@ -300,13 +293,22 @@ const createRFStore = () =>
     },
     cancelConnection: () =>
       set({
-        connectionNodeId: initialState.connectionNodeId,
-        connectionHandleId: initialState.connectionHandleId,
-        connectionHandleType: initialState.connectionHandleType,
         connectionStatus: initialState.connectionStatus,
         connectionStartHandle: initialState.connectionStartHandle,
         connectionEndHandle: initialState.connectionEndHandle,
       }),
+    updateConnection: (params) => {
+      const { connectionStatus, connectionStartHandle, connectionEndHandle, connectionPosition } = get();
+
+      const currentConnection = {
+        connectionPosition: params.connectionPosition ?? connectionPosition,
+        connectionStatus: params.connectionStatus ?? connectionStatus,
+        connectionStartHandle: params.connectionStartHandle ?? connectionStartHandle,
+        connectionEndHandle: params.connectionEndHandle ?? connectionEndHandle,
+      };
+
+      set(currentConnection);
+    },
     reset: () => set({ ...initialState }),
   }));
 

@@ -3,8 +3,9 @@ import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavi
 
 import type { XYPosition, Rect } from './utils';
 import type { BaseNode, NodeDragItem, NodeOrigin } from './nodes';
-import type { HandleType } from './handles';
+import type { ConnectingHandle, HandleType } from './handles';
 import { PanZoomInstance } from './panzoom';
+import { BaseEdge } from '..';
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -34,7 +35,17 @@ export enum ConnectionMode {
   Loose = 'loose',
 }
 
+export type OnConnectStartParams = {
+  nodeId: string | null;
+  handleId: string | null;
+  handleType: HandleType | null;
+};
+
+export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectStartParams) => void;
 export type OnConnect = (connection: Connection) => void;
+export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
+
+export type IsValidConnection = (edge: BaseEdge | Connection) => boolean;
 
 export type FitViewParamsBase<NodeType extends BaseNode> = {
   nodes: NodeType[];
@@ -53,12 +64,6 @@ export type FitViewOptionsBase<NodeType extends BaseNode> = {
   maxZoom?: number;
   duration?: number;
   nodes?: (Partial<NodeType> & { id: NodeType['id'] })[];
-};
-
-export type OnConnectStartParams = {
-  nodeId: string | null;
-  handleId: string | null;
-  handleType: HandleType | null;
 };
 
 export type Viewport = {
@@ -124,3 +129,10 @@ export type UpdateNodePositions = (
   dragging?: boolean
 ) => void;
 export type PanBy = (delta: XYPosition) => boolean;
+
+export type UpdateConnection = (params: {
+  connectionPosition?: XYPosition | null;
+  connectionStatus?: ConnectionStatus | null;
+  connectionStartHandle?: ConnectingHandle | null;
+  connectionEndHandle?: ConnectingHandle | null;
+}) => void;

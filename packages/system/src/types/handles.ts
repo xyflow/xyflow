@@ -1,4 +1,4 @@
-import type { XYPosition, Position, Dimensions, OnConnect, Connection } from '.';
+import type { XYPosition, Position, Dimensions, OnConnect, IsValidConnection } from '.';
 
 export type HandleType = 'source' | 'target';
 
@@ -14,6 +14,14 @@ export type ConnectingHandle = {
   handleId?: string | null;
 };
 
+export type ConnectionHandle = {
+  id: string | null;
+  type: HandleType;
+  nodeId: string;
+  x: number;
+  y: number;
+};
+
 export type HandleProps = {
   type: HandleType;
   position: Position;
@@ -21,6 +29,6 @@ export type HandleProps = {
   isConnectableStart?: boolean;
   isConnectableEnd?: boolean;
   onConnect?: OnConnect;
-  isValidConnection?: (connection: Connection) => boolean;
+  isValidConnection?: IsValidConnection;
   id?: string;
 };

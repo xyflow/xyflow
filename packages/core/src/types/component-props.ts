@@ -3,6 +3,8 @@ import type {
   ConnectionMode,
   ConnectionLineType,
   OnConnect,
+  OnConnectStart,
+  OnConnectEnd,
   CoordinateExtent,
   KeyCode,
   PanOnScrollMode,
@@ -16,6 +18,7 @@ import type {
   HandleType,
   SelectionMode,
   OnError,
+  IsValidConnection,
 } from '@reactflow/system';
 
 import type {
@@ -25,8 +28,6 @@ import type {
   Node,
   Edge,
   ConnectionLineComponent,
-  OnConnectStart,
-  OnConnectEnd,
   OnEdgeUpdateFunc,
   OnInit,
   DefaultEdgeOptions,
@@ -40,7 +41,6 @@ import type {
   SelectionDragHandler,
   EdgeMouseHandler,
 } from '.';
-import { ValidConnectionFunc } from '../components/Handle/utils';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   nodes?: Node[];
@@ -148,7 +148,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   autoPanOnConnect?: boolean;
   connectionRadius?: number;
   onError?: OnError;
-  isValidConnection?: ValidConnectionFunc;
+  isValidConnection?: IsValidConnection;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

@@ -7,7 +7,8 @@ import {
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
-  type CoordinateExtent
+  type CoordinateExtent,
+  type UpdateConnection
 } from '@reactflow/system';
 import {
   createMarkerIds,
@@ -304,21 +305,22 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     return transformChanged;
   }
 
-  function updateConnection(connectionUpdate: Partial<ConnectionData> | null) {
+  const updateConnection: UpdateConnection = (update) => {
     const currentConnectionData = get(store.connection);
+
     const nextConnectionData = currentConnectionData
       ? {
           ...initConnectionData,
           ...currentConnectionData,
-          ...connectionUpdate
+          ...update
         }
       : {
           ...initConnectionData,
-          ...connectionUpdate
+          ...update
         };
 
     store.connection.set(nextConnectionData);
-  }
+  };
 
   function cancelConnection() {
     updateConnection(initConnectionData);

@@ -2,9 +2,8 @@
   import { getContext, createEventDispatcher } from 'svelte';
   import cc from 'classcat';
   import { Position, type Connection } from '@reactflow/system';
-  import { isMouseEvent } from '@reactflow/utils';
+  import { XYHandle, isMouseEvent } from '@reactflow/utils';
 
-  import { handlePointerDown } from './handler';
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
 
@@ -23,7 +22,8 @@
 
   const handleId = id || null;
   const dispatch = createEventDispatcher();
-
+  
+  const store = useStore();
   const {
     connectionMode,
     domNode,
@@ -31,11 +31,12 @@
     connectionRadius,
     transform,
     isValidConnection,
+    lib,
     addEdge,
     panBy,
     cancelConnection,
     updateConnection,
-  } = useStore();
+  } = store;
 
   function dispatchEvent(eventName: string, params?: Connection) {
     dispatch(eventName, params || { nodeId, handleId, type });
@@ -50,23 +51,22 @@
     const isMouseTriggered = isMouseEvent(event);
 
     if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
-      handlePointerDown({
-        event,
+      XYHandle.onPointerDown(event, {
         handleId,
         nodeId,
         isTarget,
         connectionRadius: $connectionRadius,
         domNode: $domNode,
-        nodes,
+        nodes: $nodes,
         connectionMode: $connectionMode,
-        transform,
+        transform: $transform,
+        lib: $lib,
+        autoPanOnConnect: true,
         isValidConnection: $isValidConnection,
-        onConnect: onConnectExtended,
         updateConnection,
         cancelConnection,
         panBy,
-        onConnectStart: () => dispatchEvent('connect:start'),
-        onConnectEnd: () => dispatchEvent('connect:end')
+        onConnect: onConnectExtended,
       });
     }
   }

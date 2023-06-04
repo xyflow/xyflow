@@ -22,9 +22,6 @@ const initialState: ReactFlowStore = {
   nodesSelectionActive: false,
   userSelectionActive: false,
   userSelectionRect: null,
-  connectionNodeId: null,
-  connectionHandleId: null,
-  connectionHandleType: 'source',
   connectionPosition: { x: 0, y: 0 },
   connectionStatus: null,
   connectionMode: ConnectionMode.Strict,
@@ -61,6 +58,8 @@ const initialState: ReactFlowStore = {
   connectionRadius: 20,
   onError: devWarn,
   isValidConnection: undefined,
+
+  lib: 'react',
 };
 
 export default initialState;
