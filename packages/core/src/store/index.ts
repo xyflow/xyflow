@@ -1,6 +1,5 @@
 import { createStore } from 'zustand';
-import { zoomIdentity } from 'd3-zoom';
-import { clampPosition, getDimensions, fitView } from '@reactflow/utils';
+import { clampPosition, getDimensions, fitView, getHandleBounds } from '@reactflow/utils';
 import {
   internalsSymbol,
   type NodeDimensionUpdate,
@@ -10,7 +9,6 @@ import {
 } from '@reactflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { getHandleBounds } from '../components/Nodes/utils';
 import { createNodeInternals, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 import type {
@@ -63,8 +61,7 @@ const createRFStore = () =>
         height,
         minZoom,
         maxZoom,
-        d3Selection,
-        d3Zoom,
+        panZoom,
       } = get();
       const viewportNode = domNode?.querySelector('.react-flow__viewport');
 
@@ -92,8 +89,8 @@ const createRFStore = () =>
               [internalsSymbol]: {
                 ...node[internalsSymbol],
                 handleBounds: {
-                  source: getHandleBounds('.source', update.nodeElement, zoom, nodeOrigin),
-                  target: getHandleBounds('.target', update.nodeElement, zoom, nodeOrigin),
+                  source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
+                  target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
                 },
               },
               ...dimensions,
@@ -116,15 +113,13 @@ const createRFStore = () =>
         fitViewOnInitDone ||
         (fitViewOnInit &&
           !fitViewOnInitDone &&
-          !!d3Zoom &&
-          !!d3Selection &&
+          !!panZoom &&
           fitView(
             {
               nodes: Array.from(nodeInternals.values()),
               width,
               height,
-              d3Zoom,
-              d3Selection,
+              panZoom,
               minZoom,
               maxZoom,
               nodeOrigin,
@@ -231,19 +226,19 @@ const createRFStore = () =>
       });
     },
     setMinZoom: (minZoom: number) => {
-      const { d3Zoom, maxZoom } = get();
-      d3Zoom?.scaleExtent([minZoom, maxZoom]);
+      const { panZoom, maxZoom } = get();
+      panZoom?.setScaleExtent([minZoom, maxZoom]);
 
       set({ minZoom });
     },
     setMaxZoom: (maxZoom: number) => {
-      const { d3Zoom, minZoom } = get();
-      d3Zoom?.scaleExtent([minZoom, maxZoom]);
+      const { panZoom, minZoom } = get();
+      panZoom?.setScaleExtent([minZoom, maxZoom]);
 
       set({ maxZoom });
     },
     setTranslateExtent: (translateExtent: CoordinateExtent) => {
-      get().d3Zoom?.translateExtent(translateExtent);
+      get().panZoom?.setTranslateExtent(translateExtent);
 
       set({ translateExtent });
     },
@@ -277,22 +272,31 @@ const createRFStore = () =>
         nodeInternals: new Map(nodeInternals),
       });
     },
-    panBy: (delta: XYPosition) => {
-      const { transform, width, height, d3Zoom, d3Selection, translateExtent } = get();
+    panBy: (delta: XYPosition): boolean => {
+      const { transform, width, height, panZoom, translateExtent } = get();
 
-      if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
-        return;
+      if (!panZoom || (!delta.x && !delta.y)) {
+        return false;
       }
-
-      const nextTransform = zoomIdentity.translate(transform[0] + delta.x, transform[1] + delta.y).scale(transform[2]);
 
       const extent: CoordinateExtent = [
         [0, 0],
         [width, height],
       ];
 
-      const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, translateExtent);
-      d3Zoom.transform(d3Selection, constrainedTransform);
+      const constrainedTransform = panZoom.setViewportConstrained(
+        { x: transform[0] + delta.x, y: transform[1] + delta.y, zoom: transform[2] },
+        extent,
+        translateExtent
+      );
+
+      const transformChanged =
+        !!constrainedTransform &&
+        (transform[0] !== constrainedTransform.x ||
+          transform[1] !== constrainedTransform.y ||
+          transform[2] !== constrainedTransform.k);
+
+      return transformChanged;
     },
     cancelConnection: () =>
       set({
@@ -300,6 +304,8 @@ const createRFStore = () =>
         connectionHandleId: initialState.connectionHandleId,
         connectionHandleType: initialState.connectionHandleType,
         connectionStatus: initialState.connectionStatus,
+        connectionStartHandle: initialState.connectionStartHandle,
+        connectionEndHandle: initialState.connectionEndHandle,
       }),
     reset: () => set({ ...initialState }),
   }));

@@ -5,6 +5,7 @@ import type { BaseEdgeProps } from '../../types';
 import EdgeText from './EdgeText';
 
 const BaseEdge = ({
+  id,
   path,
   labelX,
   labelY,
@@ -22,6 +23,7 @@ const BaseEdge = ({
   return (
     <>
       <path
+        id={id}
         style={style}
         d={path}
         fill="none"

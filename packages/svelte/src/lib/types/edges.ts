@@ -3,6 +3,7 @@ import type { SvelteComponentTyped } from 'svelte';
 import type {
   BaseEdge,
   BezierPathOptions,
+  DefaultEdgeOptionsBase,
   Position,
   SmoothStepPathOptions
 } from '@reactflow/system';
@@ -11,6 +12,7 @@ import type { Node } from '$lib/types';
 
 export type DefaultEdge<EdgeData = any> = BaseEdge<EdgeData> & {
   label?: string;
+  labelStyle?: string;
   style?: string;
   class?: string;
   sourceNode?: Node;
@@ -27,7 +29,15 @@ type BezierEdgeType<T> = DefaultEdge<T> & {
   pathOptions?: BezierPathOptions;
 };
 
-export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T>;
+type StepEdgeType<T> = DefaultEdge<T> & {
+  type: 'step';
+};
+
+export type Edge<T = any> =
+  | DefaultEdge<T>
+  | SmoothStepEdgeType<T>
+  | BezierEdgeType<T>
+  | StepEdgeType<T>;
 
 export type EdgeLayouted = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
   sourceX: number;
@@ -38,11 +48,15 @@ export type EdgeLayouted = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
   targetPosition: Position;
   sourceHandleId?: string;
   targetHandleId?: string;
+  markerStart?: string;
+  markerEnd?: string;
 };
 
 export type EdgeProps = Pick<
   EdgeLayouted,
   | 'id'
+  | 'data'
+  | 'style'
   | 'source'
   | 'target'
   | 'sourceX'
@@ -53,8 +67,16 @@ export type EdgeProps = Pick<
   | 'targetPosition'
   | 'animated'
   | 'selected'
+  | 'selectable'
   | 'label'
+  | 'labelStyle'
   | 'interactionWidth'
+  | 'markerStart'
+  | 'markerEnd'
+  | 'sourceHandleId'
+  | 'targetHandleId'
 >;
 
 export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;
+
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;

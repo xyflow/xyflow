@@ -1,23 +1,28 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
+  import { getContext, createEventDispatcher } from 'svelte';
   import cc from 'classcat';
-  import { Position, type Connection, type HandleProps } from '@reactflow/system';
+  import { Position, type Connection } from '@reactflow/system';
   import { isMouseEvent } from '@reactflow/utils';
 
   import { handlePointerDown } from './handler';
   import { useStore } from '$lib/store';
+  import type { HandleComponentProps } from '$lib/types';
 
-  type $$Props = HandleProps;
+  type $$Props = HandleComponentProps;
 
   export let id: $$Props['id'] = undefined;
   export let type: $$Props['type'] = 'source';
   export let position: $$Props['position'] = Position.Top;
-  export let isConnectable: $$Props['isConnectable'] = true;
-  export let isValidConnection: $$Props['isValidConnection'] = (_: Connection) => true;
+  export let style: $$Props['style'] = undefined;
+  let className: $$Props['class'] = undefined;
+  export { className as class };
 
   const isTarget = type === 'target';
-  const nodeId = getContext<string>('rf_nodeid');
+  const nodeId = getContext<string>('svelteflow__node_id');
+  const connectable = getContext<string>('svelteflow__node_connectable');
+
   const handleId = id || null;
+  const dispatch = createEventDispatcher();
 
   const {
     connectionMode,
@@ -25,17 +30,20 @@
     nodes,
     connectionRadius,
     transform,
+    isValidConnection,
     addEdge,
     panBy,
     cancelConnection,
-    updateConnection
+    updateConnection,
   } = useStore();
+
+  function dispatchEvent(eventName: string, params?: Connection) {
+    dispatch(eventName, params || { nodeId, handleId, type });
+  }
 
   function onConnectExtended(params: Connection) {
     addEdge(params);
-    // @todo add props
-    // onConnectAction?.(edgeParams);
-    // onConnect?.(edgeParams);
+    dispatchEvent('connect', params)
   }
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -49,22 +57,18 @@
         isTarget,
         connectionRadius: $connectionRadius,
         domNode: $domNode,
-        nodes: $nodes,
+        nodes,
         connectionMode: $connectionMode,
         transform,
-        isValidConnection: isValidConnection!,
+        isValidConnection: $isValidConnection,
         onConnect: onConnectExtended,
         updateConnection,
         cancelConnection,
-        panBy
+        panBy,
+        onConnectStart: () => dispatchEvent('connect:start'),
+        onConnectEnd: () => dispatchEvent('connect:end')
       });
     }
-
-    // if (isMouseTriggered) {
-    //   onMouseDown?.(event);
-    // } else {
-    //   onTouchStart?.(event);
-    // }
   }
 </script>
 
@@ -74,23 +78,25 @@
   data-handlepos={position}
   data-id={`${nodeId}-${id}-${type}`}
   class={cc([
-    'react-flow__handle',
-    `react-flow__handle-${position}`,
+    'svelte-flow__handle',
+    `svelte-flow__handle-${position}`,
     'nodrag',
     'nopan',
-    position
+    position,
+    className
   ])}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectable={isConnectable}
+  class:connectable
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
+  {style}
 >
   <slot />
 </div>
 
 <style>
-  .react-flow__handle {
+  .svelte-flow__handle {
     position: absolute;
     pointer-events: none;
     min-width: 5px;

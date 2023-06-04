@@ -27,6 +27,7 @@ export type BaseNode<T = any, U extends string | undefined = string | undefined>
   positionAbsolute?: XYPosition;
   ariaLabel?: string;
   focusable?: boolean;
+  origin?: NodeOrigin;
 
   // only used internally
   [internalsSymbol]?: {
@@ -79,6 +80,11 @@ export type NodeDragItem = {
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
   dragging?: boolean;
+  origin?: NodeOrigin;
 };
 
 export type NodeOrigin = [number, number];
+
+export type OnNodeDrag = (event: MouseEvent, node: BaseNode, nodes: BaseNode[]) => void;
+
+export type OnSelectionDrag = (event: MouseEvent, nodes: BaseNode[]) => void;

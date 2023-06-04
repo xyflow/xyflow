@@ -3,32 +3,38 @@ import type {
   XYPosition,
   ViewportHelperFunctionOptions,
   Connection,
-  NodeDragItem
+  UpdateNodePositions,
+  CoordinateExtent
 } from '@reactflow/system';
 
 import type { initialStoreState } from './initial-store';
-import type { Node, Edge, ConnectionData } from '$lib/types';
+import type { Node, Edge, ConnectionData, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
+import type { Writable } from 'svelte/store';
 
 export type SvelteFlowStoreActions = {
-  setNodes: (nodes: Node[]) => void;
-  setEdges: (edges: Edge[]) => void;
+  setNodeTypes: (nodeTypes: NodeTypes) => void;
+  setEdgeTypes: (edgeTypes: EdgeTypes) => void;
   addEdge: (edge: Edge | Connection) => void;
   zoomIn: (options?: ViewportHelperFunctionOptions) => void;
   zoomOut: (options?: ViewportHelperFunctionOptions) => void;
-  fitView: (options?: ViewportHelperFunctionOptions) => boolean;
-  updateNodePositions: (
-    nodeDragItems: NodeDragItem[],
-    positionChanged?: boolean,
-    dragging?: boolean
-  ) => void;
+  setMinZoom: (minZoom: number) => void;
+  setMaxZoom: (maxZoom: number) => void;
+  setTranslateExtent: (extent: CoordinateExtent) => void;
+  fitView: (options?: FitViewOptions) => boolean;
+  updateNodePositions: UpdateNodePositions;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  resetSelectedElements: () => void;
+  unselectNodesAndEdges: () => void;
   addSelectedNodes: (ids: string[]) => void;
-  panBy: (delta: XYPosition) => void;
+  addSelectedEdges: (ids: string[]) => void;
+  panBy: (delta: XYPosition) => boolean;
   updateConnection: (connection: Partial<ConnectionData>) => void;
   cancelConnection: () => void;
+  reset(): void;
 };
 
-export type SvelteFlowStoreState = typeof initialStoreState;
+export type SvelteFlowStoreState = typeof initialStoreState & {
+  nodes: Writable<Node[]>;
+  edges: Writable<Edge[]>;
+};
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

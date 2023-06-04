@@ -1,9 +1,16 @@
 import type {
-  KeyboardEvent as ReactKeyboardEvent,
-  MouseEvent as ReactMouseEvent,
-  TouchEvent as ReactTouchEvent,
-} from 'react';
-import type { Dimensions, XYPosition, CoordinateExtent, Box, Rect, BaseNode } from '@reactflow/system';
+  Dimensions,
+  XYPosition,
+  CoordinateExtent,
+  Box,
+  Rect,
+  BaseNode,
+  BaseEdge,
+  NodeOrigin,
+  HandleElement,
+  Position,
+} from '@reactflow/system';
+import { getConnectedEdgesBase } from './graph';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
@@ -92,13 +99,9 @@ export const devWarn = (id: string, message: string) => {
   }
 };
 
-const isReactKeyboardEvent = (event: KeyboardEvent | ReactKeyboardEvent): event is ReactKeyboardEvent =>
-  'nativeEvent' in event;
-
-export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boolean {
-  const kbEvent = isReactKeyboardEvent(event) ? event.nativeEvent : event;
+export function isInputDOMNode(event: KeyboardEvent): boolean {
   // using composed path for handling shadow dom
-  const target = (kbEvent.composedPath?.()?.[0] || event.target) as HTMLElement;
+  const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
 
   const isInput = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) || target?.hasAttribute('contenteditable');
   // we want to be able to do a multi selection event if we are in an input field
@@ -108,14 +111,9 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
   return (isInput && !isModifierKey) || !!target?.closest('.nokey');
 }
 
-export const isMouseEvent = (
-  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent
-): event is MouseEvent | ReactMouseEvent => 'clientX' in event;
+export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
 
-export const getEventPosition = (
-  event: MouseEvent | ReactMouseEvent | TouchEvent | ReactTouchEvent,
-  bounds?: DOMRect
-) => {
+export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRect) => {
   const isMouseTriggered = isMouseEvent(event);
   const evtX = isMouseTriggered ? event.clientX : event.touches?.[0].clientX;
   const evtY = isMouseTriggered ? event.clientY : event.touches?.[0].clientY;
@@ -130,3 +128,102 @@ export const infiniteExtent: CoordinateExtent = [
   [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
   [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
 ];
+
+// helper function to get arrays of nodes and edges that can be deleted
+// you can pass in a list of nodes and edges that should be deleted
+// and the function only returns elements that are deletable and also handles connected nodes and child nodes
+export function getElementsToRemove<NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>({
+  nodesToRemove,
+  edgesToRemove,
+  nodes,
+  edges,
+}: {
+  nodesToRemove: Partial<NodeType>[];
+  edgesToRemove: Partial<EdgeType>[];
+  nodes: NodeType[];
+  edges: EdgeType[];
+}): {
+  matchingNodes: NodeType[];
+  matchingEdges: EdgeType[];
+} {
+  const nodeIds = nodesToRemove.map((node) => node.id);
+  const edgeIds = edgesToRemove.map((edge) => edge.id);
+
+  const matchingNodes = nodes.reduce<NodeType[]>((res, node) => {
+    const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
+    const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
+    if (deletable && (nodeIds.includes(node.id) || parentHit)) {
+      res.push(node);
+    }
+
+    return res;
+  }, []);
+  const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
+  const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
+  const connectedEdges = getConnectedEdgesBase<NodeType, EdgeType>(matchingNodes, deletableEdges);
+  const matchingEdges = [...initialHitEdges, ...connectedEdges];
+
+  return {
+    matchingEdges,
+    matchingNodes,
+  };
+}
+
+export const getPositionWithOrigin = ({
+  x,
+  y,
+  width,
+  height,
+  origin = [0, 0],
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  origin?: NodeOrigin;
+}): XYPosition => {
+  if (!width || !height) {
+    return { x, y };
+  }
+
+  if (origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
+    return { x, y };
+  }
+
+  return {
+    x: x - width * origin[0],
+    y: y - height * origin[1],
+  };
+};
+
+export const getHandleBounds = (
+  selector: string,
+  nodeElement: HTMLDivElement,
+  zoom: number,
+  nodeOrigin: NodeOrigin = [0, 0]
+): HandleElement[] | null => {
+  const handles = nodeElement.querySelectorAll(selector);
+
+  if (!handles || !handles.length) {
+    return null;
+  }
+
+  const handlesArray = Array.from(handles) as HTMLDivElement[];
+  const nodeBounds = nodeElement.getBoundingClientRect();
+  const nodeOffset = {
+    x: nodeBounds.width * nodeOrigin[0],
+    y: nodeBounds.height * nodeOrigin[1],
+  };
+
+  return handlesArray.map((handle): HandleElement => {
+    const handleBounds = handle.getBoundingClientRect();
+
+    return {
+      id: handle.getAttribute('data-handleid'),
+      position: handle.getAttribute('data-handlepos') as unknown as Position,
+      x: (handleBounds.left - nodeBounds.left - nodeOffset.x) / zoom,
+      y: (handleBounds.top - nodeBounds.top - nodeOffset.y) / zoom,
+      ...getDimensions(handle),
+    };
+  });
+};

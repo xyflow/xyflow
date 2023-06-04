@@ -2,7 +2,7 @@ import { internalsSymbol, ConnectionMode, type ConnectionStatus } from '@reactfl
 import type { Connection, HandleType, XYPosition, NodeHandleBounds } from '@reactflow/system';
 import { getEventPosition } from '@reactflow/utils';
 
-import type { Node } from '$lib/types';
+import type { IsValidConnection, Node } from '$lib/types';
 
 export type ConnectionHandle = {
   id: string | null;
@@ -76,16 +76,17 @@ export function isValidHandle(
   fromNodeId: string,
   fromHandleId: string | null,
   fromType: string,
-  isValidConnection: ValidConnectionFunc,
-  doc: Document | ShadowRoot
+  isValidConnection: IsValidConnection,
+  doc: Document | ShadowRoot,
+  nodes: Node[]
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = doc.querySelector(
-    `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
+    `.svelte-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
   );
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
-  const handleToCheck = handleBelow?.classList.contains('react-flow__handle')
+  const handleToCheck = handleBelow?.classList.contains('svelte-flow__handle')
     ? handleBelow
     : handleDomNode;
 
@@ -116,7 +117,10 @@ export function isValidHandle(
         : handleNodeId !== fromNodeId || handleId !== fromHandleId;
 
     if (isValid) {
-      result.isValid = isValidConnection(connection);
+      const fromNode: Node | undefined = nodes.find((n) => n.id === connection.source);
+      const toNode: Node | undefined = nodes.find((n) => n.id === connection.target);
+
+      if (fromNode && toNode) result.isValid = isValidConnection(connection, { fromNode, toNode });
     }
   }
 

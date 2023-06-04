@@ -40,6 +40,7 @@ import type {
   SelectionDragHandler,
   EdgeMouseHandler,
 } from '.';
+import { ValidConnectionFunc } from '../components/Handle/utils';
 
 export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   nodes?: Node[];
@@ -87,7 +88,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onSelectionChange?: OnSelectionChangeFunc;
   onPaneScroll?: (event?: WheelEvent) => void;
   onPaneClick?: (event: ReactMouseEvent) => void;
-  onPaneContextMenu?: (event: ReactMouseEvent) => void;
+  onPaneContextMenu?: (event: ReactMouseEvent | MouseEvent) => void;
   onPaneMouseEnter?: (event: ReactMouseEvent) => void;
   onPaneMouseMove?: (event: ReactMouseEvent) => void;
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
@@ -113,6 +114,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   nodesFocusable?: boolean;
   nodeOrigin?: NodeOrigin;
   edgesFocusable?: boolean;
+  edgesUpdatable?: boolean;
   initNodeOrigin?: NodeOrigin;
   elementsSelectable?: boolean;
   selectNodesOnDrag?: boolean;
@@ -146,6 +148,7 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   autoPanOnConnect?: boolean;
   connectionRadius?: number;
   onError?: OnError;
+  isValidConnection?: ValidConnectionFunc;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

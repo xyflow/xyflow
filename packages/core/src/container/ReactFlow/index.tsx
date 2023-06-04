@@ -119,7 +119,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodesFocusable,
       nodeOrigin = initNodeOrigin,
       edgesFocusable,
-      elementsSelectable,
+      edgesUpdatable,
+      elementsSelectable = true,
       defaultViewport = initDefaultViewport,
       minZoom = 0.5,
       maxZoom = 2,
@@ -167,6 +168,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       autoPanOnConnect = true,
       autoPanOnNodeDrag = true,
       connectionRadius = 20,
+      isValidConnection,
       onError,
       style,
       id,
@@ -190,9 +192,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         <Wrapper>
           <GraphView
             onInit={onInit}
-            onMove={onMove}
-            onMoveStart={onMoveStart}
-            onMoveEnd={onMoveEnd}
             onNodeClick={onNodeClick}
             onEdgeClick={onEdgeClick}
             onNodeMouseEnter={onNodeMouseEnter}
@@ -214,7 +213,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             panActivationKeyCode={panActivationKeyCode}
             zoomActivationKeyCode={zoomActivationKeyCode}
             onlyRenderVisibleElements={onlyRenderVisibleElements}
-            selectNodesOnDrag={selectNodesOnDrag}
             defaultViewport={defaultViewport}
             translateExtent={translateExtent}
             minZoom={minZoom}
@@ -269,6 +267,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             edgesFocusable={edgesFocusable}
+            edgesUpdatable={edgesUpdatable}
             elementsSelectable={elementsSelectable}
             elevateNodesOnSelect={elevateNodesOnSelect}
             minZoom={minZoom}
@@ -292,6 +291,9 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionDrag={onSelectionDrag}
             onSelectionDragStart={onSelectionDragStart}
             onSelectionDragStop={onSelectionDragStop}
+            onMove={onMove}
+            onMoveStart={onMoveStart}
+            onMoveEnd={onMoveEnd}
             noPanClassName={noPanClassName}
             nodeOrigin={nodeOrigin}
             rfId={rfId}
@@ -299,6 +301,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             autoPanOnNodeDrag={autoPanOnNodeDrag}
             onError={onError}
             connectionRadius={connectionRadius}
+            isValidConnection={isValidConnection}
+            selectNodesOnDrag={selectNodesOnDrag}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}

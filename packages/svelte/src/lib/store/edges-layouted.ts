@@ -1,21 +1,23 @@
 import { derived } from 'svelte/store';
 import { Position } from '@reactflow/system';
+import { getHandle } from '@reactflow/edge-utils';
 
-import { getEdgePositions, getHandle, getNodeData } from '$lib/container/EdgeRenderer/utils';
+import { getEdgePositions, getNodeData } from '$lib/container/EdgeRenderer/utils';
 import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
 
 export function getEdgesLayouted(store: SvelteFlowStoreState) {
-  return derived([store.edges, store.nodes], ([edges, nodes]) => {
-    return edges
-      .map((edge) => {
+  return derived(
+    [store.edges, store.nodes, store.elementsSelectable],
+    ([edges, nodes, elementsSelectable]) => {
+      return edges.reduce<EdgeLayouted[]>((res, edge) => {
         const sourceNode = nodes.find((node) => node.id === edge.source);
         const targetNode = nodes.find((node) => node.id === edge.target);
         const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(sourceNode);
         const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(targetNode);
 
         if (!sourceIsValid || !targetIsValid) {
-          return null;
+          return res;
         }
 
         const edgeType = edge.type || 'default';
@@ -27,7 +29,7 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
         const targetPosition = targetHandle?.position || Position.Top;
 
         if (!sourceHandle || !targetHandle) {
-          return null;
+          return res;
         }
 
         const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
@@ -42,9 +44,14 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
         // we nee to do this to match the types
         const sourceHandleId = edge.sourceHandle;
         const targetHandleId = edge.targetHandle;
+        const selectable = !!(
+          edge.selectable ||
+          (elementsSelectable && typeof edge.selectable === 'undefined')
+        );
 
-        return {
+        res.push({
           ...edge,
+          selectable,
           type: edgeType,
           sourceX,
           sourceY,
@@ -54,8 +61,10 @@ export function getEdgesLayouted(store: SvelteFlowStoreState) {
           targetPosition,
           sourceHandleId,
           targetHandleId
-        };
-      })
-      .filter((e) => e !== null) as EdgeLayouted[];
-  });
+        } as EdgeLayouted);
+
+        return res;
+      }, []);
+    }
+  );
 }

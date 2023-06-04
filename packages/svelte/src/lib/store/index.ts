@@ -1,53 +1,57 @@
 import { getContext } from 'svelte';
-import { get } from 'svelte/store';
-import { zoomIdentity } from 'd3-zoom';
+import { derived, get } from 'svelte/store';
 import {
-  type Transform,
-  type NodeDragItem,
+  type UpdateNodePositions,
   type NodeDimensionUpdate,
   internalsSymbol,
-  type NodeOrigin,
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
   type CoordinateExtent
 } from '@reactflow/system';
-import { fitView as fitViewUtil, getD3Transition, getDimensions } from '@reactflow/utils';
+import {
+  createMarkerIds,
+  fitView as fitViewUtil,
+  getDimensions,
+  getElementsToRemove,
+  getHandleBounds,
+  infiniteExtent
+} from '@reactflow/utils';
 
-import { getHandleBounds, getConnectedEdges, addEdge as addEdgeUtil } from '$lib/utils';
-import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData } from '$lib/types';
+import { addEdge as addEdgeUtil } from '$lib/utils';
+import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData, FitViewOptions } from '$lib/types';
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
-import { initConnectionData, initialStoreState } from './initial-store';
+import {
+  initConnectionData,
+  initialEdgeTypes,
+  initialNodeTypes,
+  initialStoreState
+} from './initial-store';
 import type { SvelteFlowStore } from './types';
 
 export const key = Symbol();
 
-type CreateStoreProps = {
-  fitView?: boolean;
-  nodeOrigin?: NodeOrigin;
-  transform?: Transform;
-  nodeTypes?: NodeTypes;
-  edgeTypes?: EdgeTypes;
-  id?: string;
-};
+type CreateStoreParams = Pick<SvelteFlowStore, 'nodes' | 'edges'>;
 
-export function createStore({
-  transform = [0, 0, 1],
-  nodeOrigin = [0, 0],
-  fitView: fitViewOnInit = false,
-  nodeTypes = {},
-  edgeTypes = {},
-  id = '1'
-}: CreateStoreProps): SvelteFlowStore {
+export function createStore(params: CreateStoreParams): SvelteFlowStore {
   const store = {
-    ...initialStoreState
+    ...initialStoreState,
+    ...params
   };
 
-  let fitViewOnInitDone = false;
+  function setNodeTypes(nodeTypes: NodeTypes) {
+    store.nodeTypes.set({
+      ...initialNodeTypes,
+      ...nodeTypes
+    });
+  }
 
-  function setEdges(edges: Edge[]) {
-    store.edges.set(edges);
+  function setEdgeTypes(edgeTypes: EdgeTypes) {
+    store.edgeTypes.set({
+      ...initialEdgeTypes,
+      ...edgeTypes
+    });
   }
 
   function addEdge(edgeParams: Edge | Connection) {
@@ -55,23 +59,7 @@ export function createStore({
     store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
-  function setNodes(nodes: Node[]) {
-    store.nodes.update((currentNodes) => {
-      const nextNodes = nodes.map((n) => {
-        const currentNode = currentNodes.find((cn) => cn.id === n.id) || {};
-
-        return {
-          ...currentNode,
-          ...n,
-          positionAbsolute: n.position
-        };
-      });
-
-      return nextNodes;
-    });
-  }
-
-  function updateNodePositions(nodeDragItems: NodeDragItem[], dragging = false) {
+  const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes.update((nds) => {
       return nds.map((n) => {
         const nodeDragItem = nodeDragItems.find((ndi) => ndi.id === n.id);
@@ -88,10 +76,10 @@ export function createStore({
         return n;
       });
     });
-  }
+  };
 
   function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
-    const viewportNode = document?.querySelector('.react-flow__viewport');
+    const viewportNode = document?.querySelector('.svelte-flow__viewport');
 
     if (!viewportNode) {
       return;
@@ -99,7 +87,6 @@ export function createStore({
 
     const style = window.getComputedStyle(viewportNode);
     const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-
     const nextNodes = get(store.nodes).map((node) => {
       const update = updates.find((u) => u.id === node.id);
 
@@ -115,61 +102,97 @@ export function createStore({
         );
 
         if (doUpdate) {
-          node[internalsSymbol] = {
-            ...node[internalsSymbol],
-            handleBounds: {
-              source: getHandleBounds('.source', update.nodeElement, zoom),
-              target: getHandleBounds('.target', update.nodeElement, zoom)
+          const newNode = {
+            ...node,
+            width: dimensions.width,
+            height: dimensions.height,
+            [internalsSymbol]: {
+              ...node[internalsSymbol],
+              handleBounds: {
+                source: getHandleBounds('.source', update.nodeElement, zoom, node.origin),
+                target: getHandleBounds('.target', update.nodeElement, zoom, node.origin)
+              }
             }
           };
-          node.width = dimensions.width;
-          node.height = dimensions.height;
+
+          return newNode;
         }
       }
 
       return node;
     });
 
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+    const panZoom = get(store.panZoom);
 
-    fitViewOnInitDone =
-      fitViewOnInitDone || (fitViewOnInit && !!d3Zoom && !!d3Selection && fitView());
+    const fitViewOnInitDone =
+      get(store.fitViewOnInitDone) ||
+      (get(store.fitViewOnInit) && !!panZoom && fitView({ nodes: nextNodes }));
 
+    store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
   }
 
-  function zoomIn(options?: ViewportHelperFunctionOptions) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+    const panZoom = get(store.panZoom);
 
-    if (d3Zoom && d3Selection) {
-      d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1.2);
+    if (panZoom) {
+      panZoom.scaleBy(factor, options);
     }
+  }
+
+  function zoomIn(options?: ViewportHelperFunctionOptions) {
+    zoomBy(1.2, options);
   }
 
   function zoomOut(options?: ViewportHelperFunctionOptions) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
-    if (d3Zoom && d3Selection) {
-      d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1 / 1.2);
+    zoomBy(1 / 1.2, options);
+  }
+
+  function setMinZoom(minZoom: number) {
+    const panZoom = get(store.panZoom);
+
+    if (panZoom) {
+      panZoom.setScaleExtent([minZoom, get(store.maxZoom)]);
+      store.minZoom.set(minZoom);
     }
   }
 
-  function fitView() {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+  function setMaxZoom(maxZoom: number) {
+    const panZoom = get(store.panZoom);
 
-    if (!d3Zoom || !d3Selection) {
+    if (panZoom) {
+      panZoom.setScaleExtent([get(store.minZoom), maxZoom]);
+      store.maxZoom.set(maxZoom);
+    }
+  }
+
+  function setTranslateExtent(extent: CoordinateExtent) {
+    const panZoom = get(store.panZoom);
+
+    if (panZoom) {
+      panZoom.setTranslateExtent(extent);
+      store.translateExtent.set(extent);
+    }
+  }
+
+  function fitView(options?: FitViewOptions) {
+    const panZoom = get(store.panZoom);
+
+    if (!panZoom) {
       return false;
     }
 
+    const fitViewNodes = options?.nodes || get(store.nodes);
+
     return fitViewUtil(
       {
-        nodes: get(store.nodes),
+        nodes: fitViewNodes as Node[],
         width: get(store.width),
         height: get(store.height),
         minZoom: 0.2,
         maxZoom: 2,
-        d3Selection,
-        d3Zoom,
-        nodeOrigin: get(store.nodeOrigin)
+        panZoom,
+        nodeOrigin: [0, 0]
       },
       {}
     );
@@ -186,7 +209,7 @@ export function createStore({
     return item;
   }
 
-  function resetSelectedElements() {
+  function unselectNodesAndEdges() {
     store.nodes.update((ns) => ns.map(resetSelectedItem));
     store.edges.update((es) => es.map(resetSelectedItem));
   }
@@ -198,38 +221,20 @@ export function createStore({
       const selectedNodes = nodes.filter((node) => node.selected);
       const selectedEdges = edges.filter((edge) => edge.selected);
 
-      // @todo can we put this stuff into @reactflow/utils?
-      const nodeIds = selectedNodes.map((node) => node.id);
-      const edgeIds = selectedEdges.map((edge) => edge.id);
-      const nodesToRemove = nodes.reduce<Node[]>((res, node) => {
-        const parentHit =
-          !nodeIds.includes(node.id) &&
-          node.parentNode &&
-          res.find((n) => n.id === node.parentNode);
-        const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
-        if (deletable && (nodeIds.includes(node.id) || parentHit)) {
-          res.push(node);
-        }
+      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+        nodesToRemove: selectedNodes,
+        edgesToRemove: selectedEdges,
+        nodes,
+        edges
+      });
 
-        return res;
-      }, []);
-      const deletableEdges = edges.filter((e) =>
-        typeof e.deletable === 'boolean' ? e.deletable : true
-      );
-      const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
-
-      if (nodesToRemove || initialHitEdges) {
-        const connectedEdges = getConnectedEdges(nodesToRemove, deletableEdges);
-        const edgesToRemove = [...initialHitEdges, ...connectedEdges];
-        const edgeIdsToRemove = edgesToRemove.reduce<string[]>((res, edge) => {
-          if (!res.includes(edge.id)) {
-            res.push(edge.id);
-          }
-          return res;
-        }, []);
-
-        store.nodes.update((nds) => nds.filter((node) => !nodeIds.includes(node.id)));
-        store.edges.update((eds) => eds.filter((edge) => !edgeIdsToRemove.includes(edge.id)));
+      if (matchingNodes.length || matchingEdges.length) {
+        store.nodes.update((nds) =>
+          nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
+        );
+        store.edges.update((eds) =>
+          eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
+        );
       }
     }
   });
@@ -252,30 +257,51 @@ export function createStore({
     );
   }
 
+  function addSelectedEdges(ids: string[]) {
+    if (get(store.multiselectionKeyPressed)) {
+      // @todo handle multiselection key
+    }
+
+    store.edges.update((edges) =>
+      edges.map((edge) => {
+        return {
+          ...edge,
+          selected: ids.includes(edge.id)
+        };
+      })
+    );
+  }
+
   function panBy(delta: XYPosition) {
-    const { zoom: d3Zoom, selection: d3Selection } = get(store.d3);
+    const panZoom = get(store.panZoom);
     const transform = get(store.transform);
     const width = get(store.width);
     const height = get(store.height);
 
-    if (!d3Zoom || !d3Selection || (!delta.x && !delta.y)) {
-      return;
+    if (!panZoom || (!delta.x && !delta.y)) {
+      return false;
     }
 
-    const nextTransform = zoomIdentity
-      .translate(transform[0] + delta.x, transform[1] + delta.y)
-      .scale(transform[2]);
+    const nextViewport = panZoom.setViewportConstrained(
+      {
+        x: transform[0] + delta.x,
+        y: transform[1] + delta.y,
+        zoom: transform[2]
+      },
+      [
+        [0, 0],
+        [width, height]
+      ],
+      infiniteExtent
+    );
 
-    const extent: CoordinateExtent = [
-      [0, 0],
-      [width, height]
-    ];
+    const transformChanged =
+      !!nextViewport &&
+      (nextViewport.x !== transform[0] ||
+        nextViewport.y !== transform[1] ||
+        nextViewport.k !== transform[2]);
 
-    const constrainedTransform = d3Zoom?.constrain()(nextTransform, extent, [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY]
-    ]);
-    d3Zoom.transform(d3Selection, constrainedTransform);
+    return transformChanged;
   }
 
   function updateConnection(connectionUpdate: Partial<ConnectionData> | null) {
@@ -298,6 +324,17 @@ export function createStore({
     updateConnection(initConnectionData);
   }
 
+  function reset() {
+    store.fitViewOnInitDone.set(false);
+    store.selectionRect.set(null);
+    store.selectionRectMode.set(null);
+    store.snapGrid.set(null);
+    store.isValidConnection.set(() => true);
+
+    unselectNodesAndEdges();
+    cancelConnection();
+  }
+
   return {
     // state
     ...store,
@@ -305,26 +342,41 @@ export function createStore({
     // derived state
     edgesLayouted: getEdgesLayouted(store),
     connectionPath: getConnectionPath(store),
+    markers: derived(
+      [store.edges, store.defaultMarkerColor, store.flowId],
+      ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
+    ),
 
     // actions
-    setNodes,
-    setEdges,
+    setNodeTypes,
+    setEdgeTypes,
     addEdge,
     updateNodePositions,
     updateNodeDimensions,
     zoomIn,
     zoomOut,
     fitView,
-    resetSelectedElements,
+    setMinZoom,
+    setMaxZoom,
+    setTranslateExtent,
+    unselectNodesAndEdges,
     addSelectedNodes,
+    addSelectedEdges,
     panBy,
     updateConnection,
-    cancelConnection
+    cancelConnection,
+    reset
   };
 }
 
 export function useStore(): SvelteFlowStore {
-  const { getStore } = getContext<{ getStore: () => SvelteFlowStore }>(key);
+  const store = getContext<{ getStore: () => SvelteFlowStore }>(key);
 
-  return getStore();
+  if (!store) {
+    throw new Error(
+      'In order to use useStore you need to wrap your component in a <SvelteFlowProvider />'
+    );
+  }
+
+  return store.getStore();
 }

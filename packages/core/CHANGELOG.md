@@ -1,5 +1,62 @@
 # @reactflow/core
 
+## 11.7.2
+
+### Patch Changes
+
+- [#3060](https://github.com/wbkd/react-flow/pull/3060) [`70ec97f7`](https://github.com/wbkd/react-flow/commit/70ec97f7daec6d5401215cae3edac04aea88a3ba) - fix useNodes and useEdges bug with infinite re-renderings
+- [#3064](https://github.com/wbkd/react-flow/pull/3064) [`d2d1aebc`](https://github.com/wbkd/react-flow/commit/d2d1aebc0f7fea4183406e7d1915b7fcd6995f48) - refactor(useUpdateNodeInternals): only call updateNodeDimensions once
+- [#3059](https://github.com/wbkd/react-flow/pull/3059) [`4374459e`](https://github.com/wbkd/react-flow/commit/4374459ef9fec797bbc0407231f09a1acacd245b) - fix useUpdateNodeInternals type
+
+## 11.7.1
+
+### Patch Changes
+
+- [#3043](https://github.com/wbkd/react-flow/pull/3043) [`cf7a7d3d`](https://github.com/wbkd/react-flow/commit/cf7a7d3dad1e73215a72a5dc72e21fd50208cdbb) - handles: handles on top of each other, reduce re-renderings
+- [#3046](https://github.com/wbkd/react-flow/pull/3046) [`07b975bb`](https://github.com/wbkd/react-flow/commit/07b975bbee3580249e36a19582213b250f78093c) - base-edge: pass id to base edge path
+- [#3007](https://github.com/wbkd/react-flow/pull/3007) [`c80d269b`](https://github.com/wbkd/react-flow/commit/c80d269b85a0054221f4639c328fc36a3befbe70) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - allow array of ids as updateNodeInternals arg
+- [#3029](https://github.com/wbkd/react-flow/pull/3029) [`a3fa164c`](https://github.com/wbkd/react-flow/commit/a3fa164c34cc820c79bb031c9fd97b72a3546614) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - autopan: only update nodes when transform change happen
+
+## 11.7.0
+
+Most notable updates:
+
+- Handles: `isConnectableStart` and `isConnectableEnd` props to configure if you can start or end a connection at a certain handle
+- Edges: `updatable` option to enable updates for specific edges
+- useNodesInitialized: options to configure if hidden nodes should be included (false by default)
+
+### Minor Changes
+
+- [#2960](https://github.com/wbkd/react-flow/pull/2960) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - edges: add `updatable` option
+- [#2958](https://github.com/wbkd/react-flow/pull/2958) [`4d97a0ed`](https://github.com/wbkd/react-flow/commit/4d97a0ed168ce643fc0c99fa6b47cf1296d66065) - handles: add `isConnectableStart` and `isConnectableEnd` props
+- [#2956](https://github.com/wbkd/react-flow/pull/2956) [`923a54c4`](https://github.com/wbkd/react-flow/commit/923a54c481b90954806202817ba844cfa7203a38) - add options for `useNodesInitialized`, ignore hidden nodes by default
+
+### Patch Changes
+
+- [#2926](https://github.com/wbkd/react-flow/pull/2926) Thanks [@Elringus](https://github.com/Elringus)! - fix non-passive wheel event listener violation
+- [#2933](https://github.com/wbkd/react-flow/pull/2933) [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb) - prefix error keys with "error"
+- [#2939](https://github.com/wbkd/react-flow/pull/2939) [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402) - add connection result to store
+
+## 11.6.1
+
+### Patch Changes
+
+- Always create new edge object (fixes an issue with Redux toolkit and other immutable helper libs)
+
+## 11.6.0
+
+### Minor Changes
+
+- [#2877](https://github.com/wbkd/react-flow/pull/2877) [`b8886514`](https://github.com/wbkd/react-flow/commit/b88865140c72fa7e92a883498768000cb2cc96a7) - add `isValidConnection` prop for ReactFlow component
+- [#2847](https://github.com/wbkd/react-flow/pull/2847) [`16bf89f2`](https://github.com/wbkd/react-flow/commit/16bf89f2b7bbf8449c00d0e2c07c19c3ff6d2533) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add option to enable/disable replacing edge id when using `updateEdge`
+
+### Patch Changes
+
+- [#2895](https://github.com/wbkd/react-flow/pull/2895) [`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425) - add data-testid for controls, minimap and background
+- [#2894](https://github.com/wbkd/react-flow/pull/2894) [`83fc4675`](https://github.com/wbkd/react-flow/commit/83fc467545527729633e817dbccfe59d0040da4b) - fix(nodes): blur when node gets unselected
+- [#2892](https://github.com/wbkd/react-flow/pull/2892) [`5fabd272`](https://github.com/wbkd/react-flow/commit/5fabd2720f6367f75f79a45822d8f675a3b8e1cf) Thanks [@danielgek](https://github.com/danielgek) - track modifier keys on useKeypress
+- [#2893](https://github.com/wbkd/react-flow/pull/2893) [`8f080bd5`](https://github.com/wbkd/react-flow/commit/8f080bd5e0e7e6c71f51eee9c9f2bc4b25182861) - fix: check if handle is connectable
+
 ## 11.5.5
 
 ### Patch Changes

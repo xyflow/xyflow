@@ -1,5 +1,45 @@
 # @reactflow/background
 
+## 11.2.2
+
+### Patch Changes
+
+- Updated dependencies [[`70ec97f7`](https://github.com/wbkd/react-flow/commit/70ec97f7daec6d5401215cae3edac04aea88a3ba), [`d2d1aebc`](https://github.com/wbkd/react-flow/commit/d2d1aebc0f7fea4183406e7d1915b7fcd6995f48), [`4374459e`](https://github.com/wbkd/react-flow/commit/4374459ef9fec797bbc0407231f09a1acacd245b)]:
+  - @reactflow/core@11.7.2
+
+## 11.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`cf7a7d3d`](https://github.com/wbkd/react-flow/commit/cf7a7d3dad1e73215a72a5dc72e21fd50208cdbb), [`07b975bb`](https://github.com/wbkd/react-flow/commit/07b975bbee3580249e36a19582213b250f78093c), [`c80d269b`](https://github.com/wbkd/react-flow/commit/c80d269b85a0054221f4639c328fc36a3befbe70), [`a3fa164c`](https://github.com/wbkd/react-flow/commit/a3fa164c34cc820c79bb031c9fd97b72a3546614)]:
+  - @reactflow/core@11.7.1
+
+## 11.2.0
+
+### Minor Changes
+
+- [#2941](https://github.com/wbkd/react-flow/pull/2941) Thanks [@Elringus](https://github.com/Elringus)! - add `id` and `offset` props
+
+### Patch Changes
+
+- Updated dependencies [[`098eee3d`](https://github.com/wbkd/react-flow/commit/098eee3d41dabc870777b081796401ff13b5a776), [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb), [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402), [`923a54c4`](https://github.com/wbkd/react-flow/commit/923a54c481b90954806202817ba844cfa7203a38), [`4d97a0ed`](https://github.com/wbkd/react-flow/commit/4d97a0ed168ce643fc0c99fa6b47cf1296d66065), [`c22e1c28`](https://github.com/wbkd/react-flow/commit/c22e1c28c5555a638c2a8e82c3bfc986b3965d36)]:
+  - @reactflow/core@11.7.0
+
+## 11.1.10
+
+### Patch Changes
+
+- Updated dependencies
+
+## 11.1.9
+
+### Patch Changes
+
+- [#2895](https://github.com/wbkd/react-flow/pull/2895) [`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425) Thanks [@moklick](https://github.com/moklick)! - add data-testid for controls, minimap and background
+
+- Updated dependencies [[`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425), [`83fc4675`](https://github.com/wbkd/react-flow/commit/83fc467545527729633e817dbccfe59d0040da4b), [`b1190837`](https://github.com/wbkd/react-flow/commit/b11908370bc438ca8d4179497cd4eb1f8c656798), [`5fabd272`](https://github.com/wbkd/react-flow/commit/5fabd2720f6367f75f79a45822d8f675a3b8e1cf), [`8f080bd5`](https://github.com/wbkd/react-flow/commit/8f080bd5e0e7e6c71f51eee9c9f2bc4b25182861), [`b8886514`](https://github.com/wbkd/react-flow/commit/b88865140c72fa7e92a883498768000cb2cc96a7), [`16bf89f2`](https://github.com/wbkd/react-flow/commit/16bf89f2b7bbf8449c00d0e2c07c19c3ff6d2533)]:
+  - @reactflow/core@11.6.0
+
 ## 11.1.8
 
 ### Patch Changes

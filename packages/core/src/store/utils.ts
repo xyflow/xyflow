@@ -16,7 +16,7 @@ function calculateXYZPosition(
     return result;
   }
   const parentNode = nodeInternals.get(node.parentNode)!;
-  const parentNodePosition = getNodePositionWithOrigin(parentNode, nodeOrigin);
+  const parentNodePosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
 
   return calculateXYZPosition(
     parentNode,
@@ -26,7 +26,7 @@ function calculateXYZPosition(
       y: (result.y ?? 0) + parentNodePosition.y,
       z: (parentNode[internalsSymbol]?.z ?? 0) > (result.z ?? 0) ? parentNode[internalsSymbol]?.z ?? 0 : result.z ?? 0,
     },
-    nodeOrigin
+    parentNode.origin || nodeOrigin
   );
 }
 
@@ -41,6 +41,7 @@ export function updateAbsoluteNodePositions(
     }
 
     if (node.parentNode || parentNodes?.[node.id]) {
+      const parentNode = node.parentNode ? nodeInternals.get(node.parentNode) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
         nodeInternals,
@@ -48,7 +49,7 @@ export function updateAbsoluteNodePositions(
           ...node.position,
           z: node[internalsSymbol]?.z ?? 0,
         },
-        nodeOrigin
+        parentNode?.origin || nodeOrigin
       );
 
       node.positionAbsolute = {

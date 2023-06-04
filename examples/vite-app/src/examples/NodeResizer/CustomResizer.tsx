@@ -1,8 +1,6 @@
 import { memo, FC } from 'react';
-import { Handle, Position, NodeProps } from 'reactflow';
+import { Handle, Position, NodeProps, NodeResizeControl } from 'reactflow';
 
-import { NodeResizeControl } from '@reactflow/node-resizer';
-import '@reactflow/node-resizer/dist/style.css';
 import ResizeIcon from './ResizeIcon';
 
 const controlStyle = {
@@ -10,10 +8,21 @@ const controlStyle = {
   border: 'none',
 };
 
-const CustomNode: FC<NodeProps> = ({ id, data }) => {
+const CustomResizerNode: FC<NodeProps> = ({ data }) => {
   return (
     <>
-      <NodeResizeControl style={controlStyle}>
+      <NodeResizeControl
+        minWidth={data.minWidth ?? undefined}
+        maxWidth={data.maxWidth ?? undefined}
+        minHeight={data.minHeight ?? undefined}
+        maxHeight={data.maxHeight ?? undefined}
+        shouldResize={data.shouldResize ?? undefined}
+        onResizeStart={data.onResizeStart ?? undefined}
+        onResize={data.onResize ?? undefined}
+        onResizeEnd={data.onResizeEnd ?? undefined}
+        keepAspectRatio={data.keepAspectRatio ?? undefined}
+        style={controlStyle}
+      >
         <ResizeIcon />
       </NodeResizeControl>
 
@@ -24,4 +33,4 @@ const CustomNode: FC<NodeProps> = ({ id, data }) => {
   );
 };
 
-export default memo(CustomNode);
+export default memo(CustomResizerNode);

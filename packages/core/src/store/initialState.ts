@@ -14,9 +14,7 @@ const initialState: ReactFlowStore = {
   onEdgesChange: null,
   hasDefaultNodes: false,
   hasDefaultEdges: false,
-  d3Zoom: null,
-  d3Selection: null,
-  d3ZoomHandler: undefined,
+  panZoom: null,
   minZoom: 0.5,
   maxZoom: 2,
   translateExtent: infiniteExtent,
@@ -42,15 +40,19 @@ const initialState: ReactFlowStore = {
   nodesConnectable: true,
   nodesFocusable: true,
   edgesFocusable: true,
+  edgesUpdatable: true,
   elementsSelectable: true,
   elevateNodesOnSelect: true,
   fitViewOnInit: false,
   fitViewOnInitDone: false,
   fitViewOnInitOptions: undefined,
+  selectNodesOnDrag: true,
 
   multiSelectionActive: false,
 
   connectionStartHandle: null,
+  connectionEndHandle: null,
+  connectionClickStartHandle: null,
   connectOnClick: true,
 
   ariaLiveMessage: '',
@@ -58,6 +60,7 @@ const initialState: ReactFlowStore = {
   autoPanOnNodeDrag: true,
   connectionRadius: 20,
   onError: devWarn,
+  isValidConnection: undefined,
 };
 
 export default initialState;

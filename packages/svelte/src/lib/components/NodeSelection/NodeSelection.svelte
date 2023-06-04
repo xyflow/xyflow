@@ -5,17 +5,18 @@
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
 
-  const { selectionRectMode, nodes, nodeOrigin, transform, updateNodePositions } = useStore();
+  const store = useStore();
+  const { selectionRectMode, nodes } = store;
 
   $: selectedNodes = $nodes.filter((n) => n.selected);
-  $: rect = getRectOfNodes(selectedNodes, $nodeOrigin);
+  $: rect = getRectOfNodes(selectedNodes);
 </script>
 
-{#if selectedNodes}
+{#if selectedNodes && $selectionRectMode === 'nodes'}
   <div
     class="selection-wrapper nopan"
     style={`width: ${rect.width}px; height: ${rect.height}px; transform: translate(${rect.x}px, ${rect.y}px)`}
-    use:drag={{ nodes, transform, updateNodePositions }}
+    use:drag={{ disabled: false, store }}
   />
   <Selection
     isVisible={$selectionRectMode === 'nodes'}

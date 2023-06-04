@@ -6,6 +6,7 @@ import Backgrounds from '../examples/Backgrounds';
 import Connectors from '../examples/Connectors';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
+import CustomMiniMapNode from '../examples/CustomMiniMapNode';
 import CustomNode from '../examples/CustomNode';
 import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
@@ -45,6 +46,7 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import useNodesInitialized from '../examples/UseNodesInit';
 
 interface IRoute {
   name: string;
@@ -82,6 +84,11 @@ const routes: IRoute[] = [
     name: 'Custom Connection Line',
     path: '/custom-connectionline',
     component: CustomConnectionLine,
+  },
+  {
+    name: 'Custom Minimap Node',
+    path: '/custom-minimap-node',
+    component: CustomMiniMapNode,
   },
   {
     name: 'Custom Node',
@@ -247,6 +254,11 @@ const routes: IRoute[] = [
     name: 'Update Node',
     path: '/update-node',
     component: UpdateNode,
+  },
+  {
+    name: 'useNodesInitialized',
+    path: '/use-nodes-initialized',
+    component: useNodesInitialized,
   },
   {
     name: 'useOnSelectionChange',

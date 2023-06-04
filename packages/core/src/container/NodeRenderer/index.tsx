@@ -1,19 +1,17 @@
 import { memo, useMemo, useEffect, useRef, type ComponentType } from 'react';
 import { shallow } from 'zustand/shallow';
 import { internalsSymbol, errorMessages, Position } from '@reactflow/system';
-import { clampPosition } from '@reactflow/utils';
+import { clampPosition, getPositionWithOrigin } from '@reactflow/utils';
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
-import { getPositionWithOrigin } from './utils';
 import type { ReactFlowState, WrapNodeProps } from '../../types';
 
 type NodeRendererProps = Pick<
   GraphViewProps,
   | 'nodeTypes'
-  | 'selectNodesOnDrag'
   | 'onNodeClick'
   | 'onNodeDoubleClick'
   | 'onNodeMouseEnter'
@@ -76,7 +74,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
         let nodeType = node.type || 'default';
 
         if (!props.nodeTypes[nodeType]) {
-          onError?.('003', errorMessages['003'](nodeType));
+          onError?.('003', errorMessages['error003'](nodeType));
 
           nodeType = 'default';
         }
@@ -98,7 +96,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           y: posY,
           width: node.width ?? 0,
           height: node.height ?? 0,
-          origin: props.nodeOrigin,
+          origin: node.origin || props.nodeOrigin,
         });
 
         return (
@@ -116,7 +114,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
             yPos={posY}
             xPosOrigin={posOrigin.x}
             yPosOrigin={posOrigin.y}
-            selectNodesOnDrag={props.selectNodesOnDrag}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}

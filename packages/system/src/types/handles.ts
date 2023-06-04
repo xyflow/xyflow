@@ -8,7 +8,7 @@ export type HandleElement = XYPosition &
     position: Position;
   };
 
-export type StartHandle = {
+export type ConnectingHandle = {
   nodeId: string;
   type: HandleType;
   handleId?: string | null;
@@ -18,6 +18,8 @@ export type HandleProps = {
   type: HandleType;
   position: Position;
   isConnectable?: boolean;
+  isConnectableStart?: boolean;
+  isConnectableEnd?: boolean;
   onConnect?: OnConnect;
   isValidConnection?: (connection: Connection) => boolean;
   id?: string;

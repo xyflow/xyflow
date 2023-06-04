@@ -1,18 +1,66 @@
-<script lang="ts">
+<script lang="ts"> 
+  import { PanOnScrollMode } from '@reactflow/system';
+
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
+  import type { ZoomProps } from './types';
 
-  const { transform, d3, selectionKeyPressed, selectionRectMode } = useStore();
+  type $$Props = ZoomProps; 
 
-  $: selecting = $selectionKeyPressed || $selectionRectMode === 'user';
+  export let initialViewport: $$Props['initialViewport'];
+  export let onMoveStart: $$Props['onMoveStart'] = undefined;
+  export let onMove: $$Props['onMove'] = undefined;
+  export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
+  export let panOnScrollMode: $$Props['panOnScrollMode'];
+  export let preventScrolling: $$Props['preventScrolling'];;
+  export let zoomOnScroll: $$Props['zoomOnScroll'];;
+  export let zoomOnDoubleClick: $$Props['zoomOnDoubleClick'];;
+  export let zoomOnPinch: $$Props['zoomOnPinch'];;
+  export let panOnDrag: $$Props['panOnDrag'];
+  export let panOnScroll: $$Props['panOnScroll'];;
+
+  const {
+    transform,
+    panZoom,
+    selectionKeyPressed,
+    minZoom,
+    maxZoom,
+    dragging,
+    translateExtent
+  } = useStore();
+  
+  $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
 </script>
 
-<div class="react-flow__zoom" use:zoom={{ transform, d3, selecting }}>
+<div class="svelte-flow__zoom" use:zoom={{
+  transform,
+  minZoom: $minZoom,
+  maxZoom: $maxZoom,
+  initialViewport: viewPort,
+  dragging,
+  panZoom,
+  onPanZoomStart: onMoveStart,
+  onPanZoom: onMove,
+  onPanZoomEnd: onMoveEnd,
+  zoomOnScroll,
+  zoomOnDoubleClick,
+  zoomOnPinch,
+  panOnScroll,
+  panOnDrag,
+  panOnScrollSpeed: 0.5,
+  panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
+  zoomActivationKeyPressed: false,
+  preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
+  noPanClassName: 'nopan',
+  noWheelClassName: 'nowheel',
+  userSelectionActive: $selectionKeyPressed,
+  translateExtent: $translateExtent
+}}>
   <slot />
 </div>
 
 <style>
-  .react-flow__zoom {
+  .svelte-flow__zoom {
     width: 100%;
     height: 100%;
     position: absolute;

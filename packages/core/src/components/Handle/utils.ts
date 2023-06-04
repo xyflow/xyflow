@@ -1,12 +1,12 @@
-import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import {
   internalsSymbol,
   ConnectionMode,
   ConnectionStatus,
+  type ConnectingHandle,
   type Connection,
   type HandleType,
-  type XYPosition,
   type NodeHandleBounds,
+  type XYPosition,
 } from '@reactflow/system';
 import { getEventPosition } from '@reactflow/utils';
 
@@ -49,36 +49,49 @@ export function getClosestHandle(
   connectionRadius: number,
   handles: ConnectionHandle[]
 ): ConnectionHandle | null {
-  let closestHandle: ConnectionHandle | null = null;
+  let closestHandles: ConnectionHandle[] = [];
   let minDistance = Infinity;
 
   handles.forEach((handle) => {
     const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
-    if (distance <= connectionRadius && distance < minDistance) {
+    if (distance <= connectionRadius) {
+      if (distance < minDistance) {
+        closestHandles = [handle];
+      } else if (distance === minDistance) {
+        // when multiple handles are on the same distance we collect all of them
+        closestHandles.push(handle);
+      }
       minDistance = distance;
-      closestHandle = handle;
     }
   });
 
-  return closestHandle;
+  if (!closestHandles.length) {
+    return null;
+  }
+
+  return closestHandles.length === 1
+    ? closestHandles[0]
+    : // if multiple handles are layouted on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
+      closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
 }
 
 type Result = {
   handleDomNode: Element | null;
   isValid: boolean;
   connection: Connection;
+  endHandle: ConnectingHandle | null;
 };
 
 const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
 
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
 export function isValidHandle(
-  event: MouseEvent | TouchEvent | ReactMouseEvent | ReactTouchEvent,
+  event: MouseEvent | TouchEvent,
   handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null,
   connectionMode: ConnectionMode,
   fromNodeId: string,
   fromHandleId: string | null,
-  fromType: string,
+  fromType: HandleType,
   isValidConnection: ValidConnectionFunc,
   doc: Document | ShadowRoot
 ) {
@@ -88,18 +101,23 @@ export function isValidHandle(
   );
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
+  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
+  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
   const handleToCheck = handleBelow?.classList.contains('react-flow__handle') ? handleBelow : handleDomNode;
 
   const result: Result = {
     handleDomNode: handleToCheck,
     isValid: false,
     connection: nullConnection,
+    endHandle: null,
   };
 
   if (handleToCheck) {
     const handleType = getHandleType(undefined, handleToCheck);
     const handleNodeId = handleToCheck.getAttribute('data-nodeid');
     const handleId = handleToCheck.getAttribute('data-handleid');
+    const connectable = handleToCheck.classList.contains('connectable');
+    const connectableEnd = handleToCheck.classList.contains('connectableend');
 
     const connection: Connection = {
       source: isTarget ? handleNodeId : fromNodeId,
@@ -110,13 +128,21 @@ export function isValidHandle(
 
     result.connection = connection;
 
+    const isConnectable = connectable && connectableEnd;
     // in strict mode we don't allow target to target or source to source connections
     const isValid =
-      connectionMode === ConnectionMode.Strict
+      isConnectable &&
+      (connectionMode === ConnectionMode.Strict
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
-        : handleNodeId !== fromNodeId || handleId !== fromHandleId;
+        : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
     if (isValid) {
+      result.endHandle = {
+        nodeId: handleNodeId as string,
+        handleId,
+        type: handleType as HandleType,
+      };
+
       result.isValid = isValidConnection(connection);
     }
   }

@@ -1,18 +1,22 @@
 <script lang="ts">
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
+  import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
 
   const { edgesLayouted, width, height } = useStore();
 </script>
 
-<svg width={$width} height={$height} class="react-flow__edges">
+<svg width={$width} height={$height} class="svelte-flow__edges">
   {#each $edgesLayouted as edge (edge.id)}
-    <EdgeWrapper {...edge} />
+    <EdgeWrapper {...edge} on:edge:click />
   {/each}
+
+  <MarkerDefinition />
 </svg>
 
+
 <style>
-  .react-flow__edges {
+  .svelte-flow__edges {
     width: 100%;
     height: 100%;
     position: absolute;

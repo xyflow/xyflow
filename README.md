@@ -97,7 +97,7 @@ Run `pnpm build` once and then you can use `pnpm dev` for local development.
 
 ## Testing
 
-Testing is done with cypress. You can find the tests in the [`examples/cypress`](/examples/cypress/) folder. In order to run the tests do:
+Testing is done with cypress. You can find the tests in the [`examples/vite-app/cypress`](/examples/vite-app/cypress/) folder. In order to run the tests do:
 
 ```sh
 pnpm test

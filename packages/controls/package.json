@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/controls",
-  "version": "11.1.8",
+  "version": "11.1.13",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
     "react",
@@ -39,7 +39,8 @@
   },
   "dependencies": {
     "@reactflow/core": "workspace:*",
-    "classcat": "^5.0.3"
+    "classcat": "^5.0.3",
+    "zustand": "^4.3.1"
   },
   "peerDependencies": {
     "react": ">=17",
@@ -55,7 +56,9 @@
   },
   "rollup": {
     "globals": {
-      "classcat": "cc"
+      "classcat": "cc",
+      "zustand": "Zustand",
+      "zustand/shallow": "zustandShallow"
     },
     "name": "ReactFlowControls"
   }

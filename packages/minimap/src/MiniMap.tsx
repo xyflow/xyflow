@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useEffect, useRef } from 'react';
-import type { MouseEvent } from 'react';
+import { memo, useEffect, useRef, type MouseEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { zoom, zoomIdentity } from 'd3-zoom';
-import type { D3ZoomEvent } from 'd3-zoom';
+import { type D3ZoomEvent, zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import {
   useStore,
@@ -15,8 +13,9 @@ import {
   useStoreApi,
   getNodePositionWithOrigin,
   CoordinateExtent,
+  type ReactFlowState,
+  type Rect,
 } from '@reactflow/core';
-import type { ReactFlowState, Rect } from '@reactflow/core';
 
 import MiniMapNode from './MiniMapNode';
 import type { MiniMapProps, GetMiniMapNodeAttribute } from './types';
@@ -55,6 +54,9 @@ function MiniMap({
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth = 2,
+  // We need to rename the prop to be `CapitalCase` so that JSX will render it as
+  // a component properly.
+  nodeComponent: NodeComponent = MiniMapNode,
   maskColor = 'rgb(240, 240, 240, 0.6)',
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
@@ -64,6 +66,8 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
+  inversePan = false,
+  zoomStep = 10,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -94,42 +98,48 @@ function MiniMap({
       const selection = select(svg.current as Element);
 
       const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-        const { transform, d3Selection, d3Zoom } = store.getState();
+        const { transform, panZoom } = store.getState();
 
-        if (event.sourceEvent.type !== 'wheel' || !d3Selection || !d3Zoom) {
+        if (event.sourceEvent.type !== 'wheel' || !panZoom) {
           return;
         }
 
         const pinchDelta =
           -event.sourceEvent.deltaY *
           (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-          10;
-        const zoom = transform[2] * Math.pow(2, pinchDelta);
+          zoomStep;
+        const nextZoom = transform[2] * Math.pow(2, pinchDelta);
 
-        d3Zoom.scaleTo(d3Selection, zoom);
+        panZoom.scaleTo(nextZoom);
       };
 
       const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
-        const { transform, d3Selection, d3Zoom, translateExtent, width, height } = store.getState();
+        const { transform, panZoom, translateExtent, width, height } = store.getState();
 
-        if (event.sourceEvent.type !== 'mousemove' || !d3Selection || !d3Zoom) {
+        if (event.sourceEvent.type !== 'mousemove' || !panZoom) {
           return;
         }
 
         // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
+        const moveScale = viewScaleRef.current * Math.max(1, transform[2]) * (inversePan ? -1 : 1);
         const position = {
-          x: transform[0] - event.sourceEvent.movementX * viewScaleRef.current * Math.max(1, transform[2]),
-          y: transform[1] - event.sourceEvent.movementY * viewScaleRef.current * Math.max(1, transform[2]),
+          x: transform[0] - event.sourceEvent.movementX * moveScale,
+          y: transform[1] - event.sourceEvent.movementY * moveScale,
         };
         const extent: CoordinateExtent = [
           [0, 0],
           [width, height],
         ];
 
-        const nextTransform = zoomIdentity.translate(position.x, position.y).scale(transform[2]);
-        const constrainedTransform = d3Zoom.constrain()(nextTransform, extent, translateExtent);
-
-        d3Zoom.transform(d3Selection, constrainedTransform);
+        panZoom.setViewportConstrained(
+          {
+            x: position.x,
+            y: position.y,
+            zoom: transform[2],
+          },
+          extent,
+          translateExtent
+        );
       };
 
       const zoomAndPanHandler = zoom()
@@ -138,13 +148,13 @@ function MiniMap({
         // @ts-ignore
         .on('zoom.wheel', zoomable ? zoomHandler : null);
 
-      selection.call(zoomAndPanHandler);
+      selection.call(zoomAndPanHandler, {});
 
       return () => {
         selection.on('zoom', null);
       };
     }
-  }, [pannable, zoomable]);
+  }, [pannable, zoomable, inversePan, zoomStep]);
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {
@@ -161,7 +171,12 @@ function MiniMap({
     : undefined;
 
   return (
-    <Panel position={position} style={style} className={cc(['react-flow__minimap', className])}>
+    <Panel
+      position={position}
+      style={style}
+      className={cc(['react-flow__minimap', className])}
+      data-testid="rf__minimap"
+    >
       <svg
         width={elementWidth}
         height={elementHeight}
@@ -173,10 +188,10 @@ function MiniMap({
       >
         {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
         {nodes.map((node) => {
-          const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+          const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin).positionAbsolute;
 
           return (
-            <MiniMapNode
+            <NodeComponent
               key={node.id}
               x={x}
               y={y}

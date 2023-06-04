@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import type { NodeProps, NodeOrigin, XYPosition } from '@reactflow/system';
+import type { NodeProps } from '@reactflow/system';
 
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
@@ -32,30 +32,3 @@ export function createNodeTypes(nodeTypes: NodeTypes): NodeTypesWrapped {
     ...specialTypes,
   };
 }
-
-export const getPositionWithOrigin = ({
-  x,
-  y,
-  width,
-  height,
-  origin,
-}: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  origin: NodeOrigin;
-}): XYPosition => {
-  if (!width || !height) {
-    return { x, y };
-  }
-
-  if (origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
-    return { x, y };
-  }
-
-  return {
-    x: x - width * origin[0],
-    y: y - height * origin[1],
-  };
-};

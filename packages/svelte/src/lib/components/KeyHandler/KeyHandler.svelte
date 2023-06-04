@@ -5,12 +5,12 @@
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 
-  const { selectionKeyPressed, deleteKeyPressed } = useStore();
-
   type $$Props = KeyHandlerProps;
 
   export let selectionKey: $$Props['selectionKey'] = 'Shift';
   export let deleteKey: $$Props['deleteKey'] = 'Backspace';
+
+  const { selectionKeyPressed, deleteKeyPressed } = useStore();
 
   function isKeyObject(key?: KeyDefinition): key is KeyDefinitionObject {
     return typeof key === 'object';

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Handle } from '$lib/components/Handle';
   import { Position } from '@reactflow/system';
+  import { Handle } from '../../../lib/index';
 
   export let data: { label: string } = { label: 'Node' };
   export let xPos: number = 0;
@@ -10,8 +10,12 @@
 <div class="custom">
   <div>{data.label}</div>
   <div>{~~xPos}, {~~yPos}</div>
+
   <Handle type="target" position={Position.Top} />
-  <Handle type="source" position={Position.Bottom} />
+
+  <Handle type="source" position={Position.Bottom} style="left: 10%;" id="a" />
+  <Handle type="source" position={Position.Bottom} id="b" />
+  <Handle type="source" position={Position.Bottom} style="left: 90%;" id="c" />
 </div>
 
 <style>

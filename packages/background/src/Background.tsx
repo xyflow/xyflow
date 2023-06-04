@@ -21,12 +21,14 @@ const defaultSize = {
 const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
 function Background({
+  id,
   variant = BackgroundVariant.Dots,
-  gap = 20,
   // only used for dots and cross
-  size,
+  gap = 20,
   // only used for lines and cross
+  size,
   lineWidth = 1,
+  offset = 2,
   color,
   style,
   className,
@@ -44,8 +46,8 @@ function Background({
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
 
   const patternOffset = isDots
-    ? [scaledSize / 2, scaledSize / 2]
-    : [patternDimensions[0] / 2, patternDimensions[1] / 2];
+    ? [scaledSize / offset, scaledSize / offset]
+    : [patternDimensions[0] / offset, patternDimensions[1] / offset];
 
   return (
     <svg
@@ -59,9 +61,10 @@ function Background({
         left: 0,
       }}
       ref={ref}
+      data-testid="rf__background"
     >
       <pattern
-        id={patternId}
+        id={patternId+id}
         x={transform[0] % scaledGap[0]}
         y={transform[1] % scaledGap[1]}
         width={scaledGap[0]}
@@ -70,12 +73,12 @@ function Background({
         patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
       >
         {isDots ? (
-          <DotPattern color={patternColor} radius={scaledSize / 2} />
+          <DotPattern color={patternColor} radius={scaledSize / offset} />
         ) : (
           <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
         )}
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId+id})`} />
     </svg>
   );
 }

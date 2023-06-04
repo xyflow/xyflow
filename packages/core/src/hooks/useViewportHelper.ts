@@ -1,104 +1,94 @@
 import { useMemo } from 'react';
-import { zoomIdentity } from 'd3-zoom';
-import { shallow } from 'zustand/shallow';
-import { pointToRendererPoint, getTransformForBounds, getD3Transition, fitView } from '@reactflow/utils';
+import { pointToRendererPoint, getTransformForBounds, fitView } from '@reactflow/utils';
 import type { XYPosition } from '@reactflow/system';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
 import type { ViewportHelperFunctions, ReactFlowState } from '../types';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
-
-const initialViewportHelper: ViewportHelperFunctions = {
-  zoomIn: noop,
-  zoomOut: noop,
-  zoomTo: noop,
-  getZoom: () => 1,
-  setViewport: noop,
-  getViewport: () => ({ x: 0, y: 0, zoom: 1 }),
-  fitView: () => false,
-  setCenter: noop,
-  fitBounds: noop,
-  project: (position: XYPosition) => position,
-  viewportInitialized: false,
-};
-
-const selector = (s: ReactFlowState) => ({
-  d3Zoom: s.d3Zoom,
-  d3Selection: s.d3Selection,
-});
+const selector = (s: ReactFlowState) => !!s.panZoom;
 
 const useViewportHelper = (): ViewportHelperFunctions => {
   const store = useStoreApi();
-  const { d3Zoom, d3Selection } = useStore(selector, shallow);
+  const panZoomInitialized = useStore(selector);
 
   const viewportHelperFunctions = useMemo<ViewportHelperFunctions>(() => {
-    if (d3Selection && d3Zoom) {
-      return {
-        zoomIn: (options) => d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1.2),
-        zoomOut: (options) => d3Zoom.scaleBy(getD3Transition(d3Selection, options?.duration), 1 / 1.2),
-        zoomTo: (zoomLevel, options) => d3Zoom.scaleTo(getD3Transition(d3Selection, options?.duration), zoomLevel),
-        getZoom: () => store.getState().transform[2],
-        setViewport: (transform, options) => {
-          const [x, y, zoom] = store.getState().transform;
-          const nextTransform = zoomIdentity
-            .translate(transform.x ?? x, transform.y ?? y)
-            .scale(transform.zoom ?? zoom);
-          d3Zoom.transform(getD3Transition(d3Selection, options?.duration), nextTransform);
-        },
-        getViewport: () => {
-          const [x, y, zoom] = store.getState().transform;
-          return { x, y, zoom };
-        },
-        fitView: (options) => {
-          const { getNodes, width, height, nodeOrigin, minZoom, maxZoom, d3Selection, d3Zoom } = store.getState();
-          const d3Initialized = d3Selection && d3Zoom;
+    return {
+      zoomIn: (options) => store.getState().panZoom?.scaleBy(1.2, { duration: options?.duration }),
+      zoomOut: (options) => store.getState().panZoom?.scaleBy(1 / 1.2, { duration: options?.duration }),
+      zoomTo: (zoomLevel, options) => store.getState().panZoom?.scaleTo(zoomLevel, { duration: options?.duration }),
+      getZoom: () => store.getState().transform[2],
+      setViewport: (viewport, options) => {
+        const {
+          transform: [tX, tY, tZoom],
+          panZoom,
+        } = store.getState();
 
-          if (!d3Initialized) {
-            return false;
-          }
+        panZoom?.setViewport(
+          {
+            x: viewport.x ?? tX,
+            y: viewport.y ?? tY,
+            zoom: viewport.zoom ?? tZoom,
+          },
+          { duration: options?.duration }
+        );
+      },
+      getViewport: () => {
+        const [x, y, zoom] = store.getState().transform;
+        return { x, y, zoom };
+      },
+      fitView: (options) => {
+        const { getNodes, width, height, nodeOrigin, minZoom, maxZoom, panZoom } = store.getState();
 
-          return fitView(
-            {
-              nodes: getNodes(),
-              width,
-              height,
-              nodeOrigin,
-              minZoom,
-              maxZoom,
-              d3Selection,
-              d3Zoom,
-            },
-            options
-          );
-        },
-        setCenter: (x, y, options) => {
-          const { width, height, maxZoom } = store.getState();
-          const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
-          const centerX = width / 2 - x * nextZoom;
-          const centerY = height / 2 - y * nextZoom;
-          const transform = zoomIdentity.translate(centerX, centerY).scale(nextZoom);
+        return panZoom
+          ? fitView(
+              {
+                nodes: getNodes(),
+                width,
+                height,
+                nodeOrigin,
+                minZoom,
+                maxZoom,
+                panZoom,
+              },
+              options
+            )
+          : false;
+      },
+      setCenter: (x, y, options) => {
+        const { width, height, maxZoom, panZoom } = store.getState();
+        const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
+        const centerX = width / 2 - x * nextZoom;
+        const centerY = height / 2 - y * nextZoom;
 
-          d3Zoom.transform(getD3Transition(d3Selection, options?.duration), transform);
-        },
-        fitBounds: (bounds, options) => {
-          const { width, height, minZoom, maxZoom } = store.getState();
-          const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
-          const transform = zoomIdentity.translate(x, y).scale(zoom);
+        panZoom?.setViewport(
+          {
+            x: centerX,
+            y: centerY,
+            zoom: nextZoom,
+          },
+          { duration: options?.duration }
+        );
+      },
+      fitBounds: (bounds, options) => {
+        const { width, height, minZoom, maxZoom, panZoom } = store.getState();
+        const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
-          d3Zoom.transform(getD3Transition(d3Selection, options?.duration), transform);
-        },
-        project: (position: XYPosition) => {
-          const { transform, snapToGrid, snapGrid } = store.getState();
-          return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
-        },
-        viewportInitialized: true,
-      };
-    }
-
-    return initialViewportHelper;
-  }, [d3Zoom, d3Selection]);
+        panZoom?.setViewport(
+          {
+            x,
+            y,
+            zoom,
+          },
+          { duration: options?.duration }
+        );
+      },
+      project: (position: XYPosition) => {
+        const { transform, snapToGrid, snapGrid } = store.getState();
+        return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
+      },
+      viewportInitialized: panZoomInitialized,
+    };
+  }, [panZoomInitialized]);
 
   return viewportHelperFunctions;
 };

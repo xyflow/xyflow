@@ -17,9 +17,13 @@
   export let showFitView: $$Props['showFitView'] = true;
   export let showInteractive: $$Props['showInteractive'] = true;
 
-  const { zoomIn, zoomOut, fitView } = useStore();
+  const {
+    zoomIn, zoomOut, fitView, transform, minZoom, maxZoom, nodesDraggable, nodesConnectable, elementsSelectable
+  } = useStore();
 
-  const isInteractive = true;
+  $: isInteractive = $nodesDraggable || $nodesConnectable || $elementsSelectable;
+  $: minZoomReached = $transform[2] <= $minZoom;
+  $: maxZoomReached = $transform[2] >= $maxZoom;
 
   const onZoomInHandler = () => {
     zoomIn();
@@ -34,31 +38,32 @@
   };
 
   const onToggleInteractivity = () => {
-    // store.setState({
-    //   nodesDraggable: !isInteractive,
-    //   nodesConnectable: !isInteractive,
-    //   elementsSelectable: !isInteractive,
-    // });
-    // onInteractiveChange?.(!isInteractive);
+    isInteractive = !isInteractive;
+
+    nodesDraggable.set(isInteractive);
+    nodesConnectable.set(isInteractive);
+    elementsSelectable.set(isInteractive);
   };
 </script>
-
-<Panel class="react-flow__controls" {position}>
+ 
+<Panel class="svelte-flow__controls" {position} data-testid="svelte-flow__controls">
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}
-      class="react-flow__controls-zoomin"
+      class="svelte-flow__controls-zoomin"
       title="zoom in"
       aria-label="zoom in"
+      disabled={maxZoomReached}
     >
       <PlusIcon />
     </ControlButton>
     <svelte:component
       this={ControlButton}
       on:click={onZoomOutHandler}
-      class="react-flow__controls-zoomout"
+      class="svelte-flow__controls-zoomout"
       title="zoom out"
       aria-label="zoom out"
+      disabled={minZoomReached}
     >
       <MinusIcon />
     </svelte:component>
@@ -66,7 +71,7 @@
   {#if showFitView}
     <svelte:component
       this={ControlButton}
-      class="react-flow__controls-fitview"
+      class="svelte-flow__controls-fitview"
       on:click={onFitViewHandler}
       title="fit view"
       aria-label="fit view"
@@ -77,7 +82,7 @@
   {#if showInteractive}
     <svelte:component
       this={ControlButton}
-      class="react-flow__controls-interactive"
+      class="svelte-flow__controls-interactive"
       on:click={onToggleInteractivity}
       title="toggle interactivity"
       aria-label="toggle interactivity"

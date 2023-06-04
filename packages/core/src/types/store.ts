@@ -1,25 +1,29 @@
 import {
   ConnectionMode,
-  ConnectionStatus,
-  CoordinateExtent,
-  D3SelectionInstance,
-  D3ZoomInstance,
-  HandleType,
-  NodeDimensionUpdate,
-  NodeDragItem,
-  NodeOrigin,
-  OnConnect,
-  OnError,
-  OnViewportChange,
-  SelectionRect,
-  SnapGrid,
-  StartHandle,
-  Transform,
-  XYPosition,
+  type ConnectionStatus,
+  type CoordinateExtent,
+  type HandleType,
+  type NodeDimensionUpdate,
+  type UpdateNodePositions,
+  type NodeOrigin,
+  type OnConnect,
+  type OnError,
+  type OnViewportChange,
+  type SelectionRect,
+  type SnapGrid,
+  type ConnectingHandle,
+  type Transform,
+  type XYPosition,
+  type PanZoomInstance,
+  type PanBy,
+  OnNodeDrag,
+  OnSelectionDrag,
+  OnMoveStart,
+  OnMove,
+  OnMoveEnd,
 } from '@reactflow/system';
 
 import type {
-  NodeDragHandler,
   Edge,
   Node,
   NodeChange,
@@ -28,13 +32,13 @@ import type {
   NodeInternals,
   OnConnectStart,
   OnConnectEnd,
-  SelectionDragHandler,
   DefaultEdgeOptions,
   FitViewOptions,
   OnNodesDelete,
   OnEdgesDelete,
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
+  IsValidConnection,
 } from '.';
 
 export type ReactFlowStore = {
@@ -52,9 +56,7 @@ export type ReactFlowStore = {
   paneDragging: boolean;
   noPanClassName: string;
 
-  d3Zoom: D3ZoomInstance | null;
-  d3Selection: D3SelectionInstance | null;
-  d3ZoomHandler: ((this: Element, event: any, d: unknown) => void) | undefined;
+  panZoom: PanZoomInstance | null;
   minZoom: number;
   maxZoom: number;
   translateExtent: CoordinateExtent;
@@ -79,20 +81,28 @@ export type ReactFlowStore = {
   nodesConnectable: boolean;
   nodesFocusable: boolean;
   edgesFocusable: boolean;
+  edgesUpdatable: boolean;
   elementsSelectable: boolean;
   elevateNodesOnSelect: boolean;
+  selectNodesOnDrag: boolean;
 
   multiSelectionActive: boolean;
 
-  connectionStartHandle: StartHandle | null;
+  connectionStartHandle: ConnectingHandle | null;
+  connectionEndHandle: ConnectingHandle | null;
+  connectionClickStartHandle: ConnectingHandle | null;
 
-  onNodeDragStart?: NodeDragHandler;
-  onNodeDrag?: NodeDragHandler;
-  onNodeDragStop?: NodeDragHandler;
+  onNodeDragStart?: OnNodeDrag;
+  onNodeDrag?: OnNodeDrag;
+  onNodeDragStop?: OnNodeDrag;
 
-  onSelectionDragStart?: SelectionDragHandler;
-  onSelectionDrag?: SelectionDragHandler;
-  onSelectionDragStop?: SelectionDragHandler;
+  onSelectionDragStart?: OnSelectionDrag;
+  onSelectionDrag?: OnSelectionDrag;
+  onSelectionDragStop?: OnSelectionDrag;
+
+  onMoveStart?: OnMoveStart;
+  onMove?: OnMove;
+  onMoveEnd?: OnMoveEnd;
 
   onConnect?: OnConnect;
   onConnectStart?: OnConnectStart;
@@ -123,6 +133,8 @@ export type ReactFlowStore = {
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   connectionRadius: number;
+
+  isValidConnection?: IsValidConnection;
 };
 
 export type ReactFlowActions = {
@@ -131,7 +143,7 @@ export type ReactFlowActions = {
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
-  updateNodePositions: (nodeDragItems: NodeDragItem[] | Node[], positionChanged: boolean, dragging: boolean) => void;
+  updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
@@ -143,7 +155,7 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
-  panBy: (delta: XYPosition) => void;
+  panBy: PanBy;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

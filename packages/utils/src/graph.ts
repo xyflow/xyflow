@@ -1,20 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Selection as D3Selection } from 'd3';
-import { zoomIdentity } from 'd3-zoom';
-
-import { boxToRect, clamp, devWarn, getBoundsOfBoxes, getOverlappingArea, rectToBox } from './utils';
+import {
+  boxToRect,
+  clamp,
+  clampPosition,
+  devWarn,
+  getBoundsOfBoxes,
+  getOverlappingArea,
+  isNumeric,
+  rectToBox,
+} from './utils';
 import {
   errorMessages,
   type Connection,
-  type EdgeMarkerType,
   type Transform,
   type XYPosition,
   type Rect,
   type NodeOrigin,
-  BaseNode,
-  BaseEdge,
-  FitViewParamsBase,
-  FitViewOptionsBase,
+  type BaseNode,
+  type BaseEdge,
+  type FitViewParamsBase,
+  type FitViewOptionsBase,
+  SnapGrid,
+  NodeDragItem,
+  CoordinateExtent,
+  OnError,
 } from '@reactflow/system';
 
 export const isEdgeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
@@ -54,23 +63,6 @@ export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType e
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
   `reactflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
-export const getMarkerId = (marker: EdgeMarkerType | undefined, rfId?: string): string => {
-  if (typeof marker === 'undefined') {
-    return '';
-  }
-
-  if (typeof marker === 'string') {
-    return marker;
-  }
-
-  const idPrefix = rfId ? `${rfId}__` : '';
-
-  return `${idPrefix}${Object.keys(marker)
-    .sort()
-    .map((key: string) => `${key}=${(marker as any)[key]}`)
-    .join('&')}`;
-};
-
 const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
   return edges.some(
     (el) =>
@@ -86,7 +78,7 @@ export const addEdgeBase = <EdgeType extends BaseEdge>(
   edges: EdgeType[]
 ): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['006']());
+    devWarn('006', errorMessages['error006']());
 
     return edges;
   }
@@ -108,13 +100,20 @@ export const addEdgeBase = <EdgeType extends BaseEdge>(
   return edges.concat(edge);
 };
 
+export type UpdateEdgeOptions = {
+  shouldReplaceId?: boolean;
+};
+
 export const updateEdgeBase = <EdgeType extends BaseEdge>(
   oldEdge: EdgeType,
   newConnection: Connection,
-  edges: EdgeType[]
+  edges: EdgeType[],
+  options: UpdateEdgeOptions = { shouldReplaceId: true }
 ): EdgeType[] => {
+  const { id: oldEdgeId, ...rest } = oldEdge;
+
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['006']());
+    devWarn('006', errorMessages['error006']());
 
     return edges;
   }
@@ -122,22 +121,22 @@ export const updateEdgeBase = <EdgeType extends BaseEdge>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['007'](oldEdge.id));
+    devWarn('007', errorMessages['error007'](oldEdgeId));
 
     return edges;
   }
 
   // Remove old edge and create the new edge with parameters of old edge.
   const edge = {
-    ...oldEdge,
-    id: getEdgeId(newConnection),
+    ...rest,
+    id: options.shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
     source: newConnection.source,
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,
     targetHandle: newConnection.targetHandle,
   } as EdgeType;
 
-  return edges.filter((e) => e.id !== oldEdge.id).concat(edge);
+  return edges.filter((e) => e.id !== oldEdgeId).concat(edge);
 };
 
 export const pointToRendererPoint = (
@@ -209,7 +208,7 @@ export const getRectOfNodes = (nodes: BaseNode[], nodeOrigin: NodeOrigin = [0, 0
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+      const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin).positionAbsolute;
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
@@ -249,7 +248,7 @@ export const getNodesInside = <NodeType extends BaseNode>(
       return res;
     }
 
-    const { positionAbsolute } = getNodePositionWithOrigin(node, nodeOrigin);
+    const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
     const nodeRect = {
       x: positionAbsolute.x,
@@ -304,12 +303,8 @@ export const getTransformForBounds = (
   return [x, y, clampedZoom];
 };
 
-export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {
-  return selection.transition().duration(duration);
-};
-
 export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
-  { nodes, width, height, d3Zoom, d3Selection, nodeOrigin, minZoom, maxZoom }: Params,
+  { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
@@ -336,16 +331,97 @@ export function fitView<Params extends FitViewParamsBase<BaseNode>, Options exte
       options?.padding ?? 0.1
     );
 
-    const nextTransform = zoomIdentity.translate(x, y).scale(zoom);
-
-    if (typeof options?.duration === 'number' && options.duration > 0) {
-      d3Zoom.transform(getD3Transition(d3Selection, options.duration), nextTransform);
-    } else {
-      d3Zoom.transform(d3Selection, nextTransform);
-    }
+    panZoom.setViewport({ x, y, zoom }, { duration: options?.duration });
 
     return true;
   }
 
   return false;
+}
+
+export type GetPointerPositionParams = {
+  transform: Transform;
+  snapGrid?: SnapGrid;
+  snapToGrid?: boolean;
+};
+
+export function getPointerPosition(
+  event: MouseEvent | TouchEvent,
+  { snapGrid = [0, 0], snapToGrid = false, transform }: GetPointerPositionParams
+): XYPosition & { xSnapped: number; ySnapped: number } {
+  const x = 'touches' in event ? event.touches[0].clientX : event.clientX;
+  const y = 'touches' in event ? event.touches[0].clientY : event.clientY;
+
+  const pointerPos = {
+    x: (x - transform[0]) / transform[2],
+    y: (y - transform[1]) / transform[2],
+  };
+
+  // we need the snapped position in order to be able to skip unnecessary drag events
+  return {
+    xSnapped: snapToGrid ? snapGrid[0] * Math.round(pointerPos.x / snapGrid[0]) : pointerPos.x,
+    ySnapped: snapToGrid ? snapGrid[1] * Math.round(pointerPos.y / snapGrid[1]) : pointerPos.y,
+    ...pointerPos,
+  };
+}
+
+export function calcNextPosition<NodeType extends BaseNode>(
+  node: NodeDragItem | NodeType,
+  nextPosition: XYPosition,
+  nodes: NodeType[],
+  nodeExtent?: CoordinateExtent,
+  nodeOrigin: NodeOrigin = [0, 0],
+  onError?: OnError
+): { position: XYPosition; positionAbsolute: XYPosition } {
+  let currentExtent = node.extent || nodeExtent;
+
+  if (node.extent === 'parent') {
+    if (node.parentNode && node.width && node.height) {
+      const parent = nodes.find((n) => n.id === node.parentNode);
+      const parentOrigin = parent?.origin || nodeOrigin;
+      const currNodeOrigin = node.origin || nodeOrigin;
+
+      const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parentOrigin).positionAbsolute;
+      currentExtent =
+        parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
+          ? [
+              [parentX + node.width * currNodeOrigin[0], parentY + node.height * currNodeOrigin[1]],
+              [
+                parentX + parent.width - node.width + node.width * currNodeOrigin[0],
+                parentY + parent.height - node.height + node.height * currNodeOrigin[1],
+              ],
+            ]
+          : currentExtent;
+    } else {
+      onError?.('005', errorMessages['error005']());
+
+      currentExtent = nodeExtent;
+    }
+  } else if (node.extent && node.parentNode) {
+    const parent = nodes.find((n) => n.id === node.parentNode);
+    const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parent?.origin || nodeOrigin).positionAbsolute;
+    currentExtent = [
+      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
+      [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
+    ];
+  }
+
+  let parentPosition = { x: 0, y: 0 };
+
+  if (node.parentNode) {
+    const parentNode = nodes.find((n) => n.id === node.parentNode);
+    parentPosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin).positionAbsolute;
+  }
+
+  const positionAbsolute = currentExtent
+    ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
+    : nextPosition;
+
+  return {
+    position: {
+      x: positionAbsolute.x - parentPosition.x,
+      y: positionAbsolute.y - parentPosition.y,
+    },
+    positionAbsolute,
+  };
 }

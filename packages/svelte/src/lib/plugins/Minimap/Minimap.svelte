@@ -35,7 +35,7 @@
 
   const defaultWidth = 200;
   const defaultHeight = 150;
-  const { nodes, transform, width: containerWidth, height: containerHeight, nodeOrigin, id } = useStore();
+  const { nodes, transform, width: containerWidth, height: containerHeight, id } = useStore();
 
   
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -43,7 +43,7 @@
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
   const shapeRendering =
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
-  const labelledBy = `react-flow__minimap-desc-${$id}`;
+  const labelledBy = `svelte-flow__minimap-desc-${$id}`;
 
   $: viewBB = {
     x: -$transform[0] / $transform[2],
@@ -52,7 +52,7 @@
     height: $containerHeight / $transform[2]
   };
   $: boundingRect =
-    $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes, $nodeOrigin), viewBB) : viewBB;
+    $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes), viewBB) : viewBB;
   $: elementWidth = width ?? defaultWidth;
   $: elementHeight = height ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;
@@ -69,8 +69,9 @@
 
 <Panel
   {position}
-  class={cc(['react-flow__minimap', className])}
+  class={cc(['svelte-flow__minimap', className])}
   style={`background-color: ${bgColor}; ${style}`}
+  data-testid="svelte-flow__minimap"
 >
   <svg
     width={elementWidth}
@@ -83,7 +84,7 @@
 
     {#each $nodes as node (node.id)}
       {#if node.width && node.height}
-        {@const pos = getNodePositionWithOrigin(node, $nodeOrigin).positionAbsolute}
+        {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
         <MinimapNode
           x={pos.x}
           y={pos.y}
@@ -100,7 +101,7 @@
       {/if}
     {/each}
     <path
-      class="react-flow__minimap-mask"
+      class="svelte-flow__minimap-mask"
       d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${
         -viewboxWidth - offset * 2
       }z

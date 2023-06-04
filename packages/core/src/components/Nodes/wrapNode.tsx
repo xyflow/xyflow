@@ -40,7 +40,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     isSelectable,
     isConnectable,
     isFocusable,
-    selectNodesOnDrag,
     sourcePosition,
     targetPosition,
     hidden,
@@ -69,11 +68,13 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     const onContextMenuHandler = getMouseHandler(id, store.getState, onContextMenu);
     const onDoubleClickHandler = getMouseHandler(id, store.getState, onDoubleClick);
     const onSelectNodeHandler = (event: MouseEvent) => {
+      const { selectNodesOnDrag } = store.getState();
       if (isSelectable && (!selectNodesOnDrag || !isDraggable)) {
         // this handler gets called within the drag start event when selectNodesOnDrag=true
         handleNodeClick({
           id,
           store,
+          nodeRef,
         });
       }
 
@@ -84,19 +85,18 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (isInputDOMNode(event)) {
+      if (isInputDOMNode(event.nativeEvent)) {
         return;
       }
 
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
-        if (unselect) {
-          nodeRef.current?.blur();
-        }
+
         handleNodeClick({
           id,
           store,
           unselect,
+          nodeRef,
         });
       } else if (
         !disableKeyboardA11y &&
@@ -154,7 +154,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       handleSelector: dragHandle,
       nodeId: id,
       isSelectable,
-      selectNodesOnDrag,
     });
 
     if (hidden) {

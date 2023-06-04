@@ -1,8 +1,7 @@
-import { memo, useEffect, useState } from 'react';
-import type { FC, PropsWithChildren } from 'react';
+import { memo, useEffect, useState, type FC, type PropsWithChildren } from 'react';
 import cc from 'classcat';
-import { useStore, useStoreApi, useReactFlow, Panel } from '@reactflow/core';
-import type { ReactFlowState } from '@reactflow/core';
+import { shallow } from 'zustand/shallow';
+import { useStore, useStoreApi, useReactFlow, Panel, type ReactFlowState } from '@reactflow/core';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';
@@ -13,7 +12,11 @@ import ControlButton from './ControlButton';
 
 import type { ControlProps } from './types';
 
-const isInteractiveSelector = (s: ReactFlowState) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable;
+const selector = (s: ReactFlowState) => ({
+  isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
+  minZoomReached: s.transform[2] <= s.minZoom,
+  maxZoomReached: s.transform[2] >= s.maxZoom,
+});
 
 const Controls: FC<PropsWithChildren<ControlProps>> = ({
   style,
@@ -31,7 +34,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
 }) => {
   const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const isInteractive = useStore(isInteractiveSelector);
+  const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   useEffect(() => {
@@ -68,7 +71,12 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   };
 
   return (
-    <Panel className={cc(['react-flow__controls', className])} position={position} style={style}>
+    <Panel
+      className={cc(['react-flow__controls', className])}
+      position={position}
+      style={style}
+      data-testid="rf__controls"
+    >
       {showZoom && (
         <>
           <ControlButton
@@ -76,6 +84,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
             className="react-flow__controls-zoomin"
             title="zoom in"
             aria-label="zoom in"
+            disabled={maxZoomReached}
           >
             <PlusIcon />
           </ControlButton>
@@ -84,6 +93,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
             className="react-flow__controls-zoomout"
             title="zoom out"
             aria-label="zoom out"
+            disabled={minZoomReached}
           >
             <MinusIcon />
           </ControlButton>

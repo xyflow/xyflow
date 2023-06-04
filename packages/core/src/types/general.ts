@@ -18,6 +18,7 @@ import {
   SetCenter,
   FitBounds,
   Project,
+  Connection,
 } from '@reactflow/system';
 
 import type { NodeChange, EdgeChange, Node, WrapNodeProps, Edge, EdgeProps, WrapEdgeProps, ReactFlowInstance } from '.';
@@ -52,6 +53,8 @@ export type FitViewParams = FitViewParamsBase<Node>;
 export type FitViewOptions = FitViewOptionsBase<Node>;
 export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
 export type OnInit<NodeData = any, EdgeData = any> = (reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>) => void;
+
+export type IsValidConnection = (edge: Edge | Connection) => boolean;
 
 export type ViewportHelperFunctions = {
   zoomIn: ZoomInOut;
