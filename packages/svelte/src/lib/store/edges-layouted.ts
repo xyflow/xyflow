@@ -1,6 +1,6 @@
 import { derived } from 'svelte/store';
-import { Position } from '@reactflow/system';
-import { getHandle } from '@reactflow/edge-utils';
+import { Position } from '@xyflow/system';
+import { getHandle } from '@xyflow/system';
 
 import { getEdgePositions, getNodeData } from '$lib/container/EdgeRenderer/utils';
 import type { EdgeLayouted } from '$lib/types';

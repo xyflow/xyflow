@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getContext, createEventDispatcher } from 'svelte';
   import cc from 'classcat';
-  import { Position, type Connection } from '@reactflow/system';
-  import { XYHandle, isMouseEvent } from '@reactflow/utils';
+  import { Position, type Connection } from '@xyflow/system';
+  import { XYHandle, isMouseEvent } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
@@ -16,7 +16,6 @@
   export let isConnectable: $$Props['isConnectable'] = true;
   export let isConnectableStart: $$Props['isConnectableStart'] = true;
   export let isConnectableEnd: $$Props['isConnectableEnd'] = true;
-
 
   let className: $$Props['class'] = undefined;
   export { className as class };
@@ -64,7 +63,6 @@
         domNode: $domNode,
         nodes: $nodes,
         connectionMode: $connectionMode,
-        transform: $transform,
         lib: $lib,
         autoPanOnConnect: true,
         isValidConnection: $isValidConnection,
@@ -72,6 +70,7 @@
         cancelConnection,
         panBy,
         onConnect: onConnectExtended,
+        getTransform: () => $transform,
       });
     }
   }
@@ -92,8 +91,8 @@
   ])}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectableStart={isConnectableStart}
-  class:isConnectableEnd={isConnectableEnd}
+  class:connectablestart={isConnectableStart}
+  class:connectableend={isConnectableEnd}
   class:connectable={isConnectable}
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}

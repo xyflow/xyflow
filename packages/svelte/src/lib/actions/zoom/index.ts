@@ -6,8 +6,8 @@ import type {
   PanZoomInstance,
   Transform,
   Viewport
-} from '@reactflow/system';
-import { XYPanZoom } from '@reactflow/utils';
+} from '@xyflow/system';
+import { XYPanZoom } from '@xyflow/system';
 
 type ZoomParams = {
   transform: Writable<Transform>;
@@ -33,6 +33,7 @@ type ZoomParams = {
   noPanClassName: string;
   noWheelClassName: string;
   userSelectionActive: boolean;
+  lib: string;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {

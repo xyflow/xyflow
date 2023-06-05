@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import ReactFlow, { Node, Edge, addEdge, useNodesState, useEdgesState, MarkerType, OnConnect } from 'reactflow';
+import { ReactFlow, Node, Edge, addEdge, useNodesState, useEdgesState, MarkerType, OnConnect } from '@xyflow/react';
 
 import CustomNode from './CustomNode';
 import FloatingEdge from './FloatingEdge';
 import CustomConnectionLine from './CustomConnectionLine';
 
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 import './style.css';
 
 const initialNodes: Node[] = [

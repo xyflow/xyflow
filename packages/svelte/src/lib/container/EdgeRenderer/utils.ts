@@ -1,11 +1,11 @@
-import { getHandlePosition } from '@reactflow/edge-utils';
+import { getHandlePosition } from '@xyflow/system';
 import {
   type NodeHandleBounds,
   type Rect,
   type HandleElement,
   Position,
   internalsSymbol
-} from '@reactflow/system';
+} from '@xyflow/system';
 
 import type { Node } from '$lib/types';
 

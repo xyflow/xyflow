@@ -1,5 +1,5 @@
 import { FC, MouseEvent } from 'react';
-import { EdgeProps, getBezierPath, EdgeLabelRenderer, useStore } from 'reactflow';
+import { EdgeProps, getBezierPath, EdgeLabelRenderer, useStore } from '@xyflow/react';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,

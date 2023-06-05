@@ -9,7 +9,7 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection
-} from '@reactflow/system';
+} from '@xyflow/system';
 import {
   createMarkerIds,
   fitView as fitViewUtil,
@@ -17,7 +17,7 @@ import {
   getElementsToRemove,
   getHandleBounds,
   infiniteExtent
-} from '@reactflow/utils';
+} from '@xyflow/system';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData, FitViewOptions } from '$lib/types';

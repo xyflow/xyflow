@@ -1,5 +1,6 @@
 import { FC, useCallback, useState } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Handle,
   Connection,
@@ -14,7 +15,8 @@ import ReactFlow, {
   OnConnect,
   updateEdge,
   Edge,
-} from 'reactflow';
+  IsValidConnection,
+} from '@xyflow/react';
 
 import ConnectionStatus from './ConnectionStatus';
 
@@ -27,7 +29,7 @@ const initialNodes: Node[] = [
   { id: 'C', type: 'customnode', position: { x: 250, y: 300 }, data: null },
 ];
 
-const isValidConnection = (connection: Connection) => connection.target === 'B';
+const isValidConnection: IsValidConnection = (connection) => connection.target === 'B';
 
 const CustomInput: FC<NodeProps> = () => (
   <>

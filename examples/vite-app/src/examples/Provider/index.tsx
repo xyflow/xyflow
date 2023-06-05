@@ -1,5 +1,6 @@
 import { MouseEvent, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Controls,
   ReactFlowProvider,
   addEdge,
@@ -10,7 +11,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import Sidebar from './Sidebar';
 

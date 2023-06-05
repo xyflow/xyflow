@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   Controls,
   MiniMap,
@@ -10,7 +11,7 @@ import ReactFlow, {
   Edge,
   useNodesState,
   useEdgesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import { getElements } from './utils';
 

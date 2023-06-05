@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getStraightPath } from '@reactflow/edge-utils';
+  import { getStraightPath } from '@xyflow/system';
 
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';

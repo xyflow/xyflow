@@ -1,5 +1,5 @@
 {
-  "name": "@reactflow/eslint-config",
+  "name": "@xyflow/eslint-config",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",

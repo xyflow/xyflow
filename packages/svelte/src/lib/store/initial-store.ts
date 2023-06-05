@@ -10,7 +10,7 @@ import {
   type PanZoomInstance,
   type CoordinateExtent,
   type IsValidConnection
-} from '@reactflow/system';
+} from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
@@ -20,7 +20,7 @@ import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
 import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Edge, Node } from '$lib/types';
-import { infiniteExtent } from '@reactflow/utils';
+import { infiniteExtent } from '@xyflow/system';
 
 export const initConnectionData = {
   connectionStartHandle: null,

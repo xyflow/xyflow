@@ -6,7 +6,7 @@ import type {
   UpdateNodePositions,
   CoordinateExtent,
   UpdateConnection
-} from '@reactflow/system';
+} from '@xyflow/system';
 
 import type { initialStoreState } from './initial-store';
 import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';

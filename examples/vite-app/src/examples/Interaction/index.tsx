@@ -1,5 +1,6 @@
 import { useState, MouseEvent as ReactMouseEvent, WheelEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Connection,
@@ -10,7 +11,7 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   MiniMap,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {
@@ -36,7 +37,7 @@ const onEdgeClick = (_: ReactMouseEvent, edge: Edge) => console.log('click', edg
 const onPaneClick = (event: ReactMouseEvent) => console.log('onPaneClick', event);
 const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
 const onPaneContextMenu = (event: ReactMouseEvent) => console.log('onPaneContextMenu', event);
-const onMoveEnd = (_: TouchEvent | MouseEvent, viewport: Viewport) => console.log('onMoveEnd', viewport);
+const onMoveEnd = (_: TouchEvent | MouseEvent | null, viewport: Viewport) => console.log('onMoveEnd', viewport);
 
 const InteractionFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);

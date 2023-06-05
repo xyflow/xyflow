@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getSmoothStepPath } from '@reactflow/edge-utils';
+  import { getSmoothStepPath } from '@xyflow/system';
 
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';

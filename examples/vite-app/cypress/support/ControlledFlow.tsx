@@ -10,7 +10,7 @@ import {
   Connection,
   addEdge,
   ReactFlowProps,
-} from 'reactflow';
+} from '@xyflow/react';
 
 function ControlledFlow({
   addOnNodeChangeHandler = true,

@@ -41,10 +41,14 @@ export const esmConfig = defineConfig({
   ],
 });
 
-const globals = {
+const reactGlobals = {
   react: 'React',
   'react-dom': 'ReactDOM',
   'react/jsx-runtime': 'jsxRuntime',
+};
+
+const globals = {
+  ...(pkg.rollup?.vanilla ? {} : reactGlobals),
   ...(pkg.rollup?.globals || {}),
 };
 

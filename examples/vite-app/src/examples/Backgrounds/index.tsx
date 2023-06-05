@@ -1,13 +1,14 @@
 import { FC } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   Node,
   ReactFlowProvider,
   useNodesState,
   Background,
   BackgroundProps,
   BackgroundVariant,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import styles from './style.module.css';
 

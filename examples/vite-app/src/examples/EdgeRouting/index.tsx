@@ -1,4 +1,4 @@
-import ReactFlow, { Node, Edge, Position, MarkerType } from 'reactflow';
+import { ReactFlow, Node, Edge, Position, MarkerType } from '@xyflow/react';
 
 const nodes: Node[] = [
   // LTR

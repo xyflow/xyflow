@@ -1,4 +1,4 @@
-import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode, Viewport } from '@reactflow/system';
+import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode, Viewport } from '@xyflow/system';
 
 export type ZoomProps = {
   initialViewport: Viewport;

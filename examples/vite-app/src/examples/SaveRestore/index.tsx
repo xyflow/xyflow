@@ -1,5 +1,14 @@
 import { useCallback } from 'react';
-import ReactFlow, { ReactFlowProvider, Node, addEdge, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
+import {
+  ReactFlow,
+  ReactFlowProvider,
+  Node,
+  addEdge,
+  Connection,
+  Edge,
+  useNodesState,
+  useEdgesState,
+} from '@xyflow/react';
 
 import Controls from './Controls';
 

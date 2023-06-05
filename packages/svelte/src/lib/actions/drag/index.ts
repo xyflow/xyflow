@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { XYDrag } from '@reactflow/utils';
+import { XYDrag } from '@xyflow/system';
 
 import type { SvelteFlowStore } from '$lib/store/types';
 

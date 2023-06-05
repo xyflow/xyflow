@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, type SvelteComponentTyped } from 'svelte';
-  import { Position } from '@reactflow/system';
-  import { getMarkerId } from '@reactflow/utils';
+  import { Position } from '@xyflow/system';
+  import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/BezierEdge.svelte';

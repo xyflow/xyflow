@@ -1,4 +1,4 @@
-import type { PanelPosition } from '@reactflow/system';
+import type { PanelPosition } from '@xyflow/system';
 
 export type ControlsProps = {
   position?: PanelPosition;

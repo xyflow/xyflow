@@ -1,5 +1,5 @@
 {
-  "name": "svelteflow",
+  "name": "@xyflow/svelte",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite dev",
@@ -17,13 +17,11 @@
     ".": "./package/index.js"
   },
   "dependencies": {
-    "@reactflow/edge-utils": "workspace:*",
-    "@reactflow/system": "workspace:*",
-    "@reactflow/utils": "workspace:*",
     "@svelte-put/shortcut": "^2.0.0",
     "@types/d3-drag": "^3.0.1",
     "@types/d3-selection": "^3.0.3",
     "@types/d3-zoom": "^3.0.1",
+    "@xyflow/system": "workspace:*",
     "classcat": "^5.0.4",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",

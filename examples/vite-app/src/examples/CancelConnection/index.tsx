@@ -1,4 +1,5 @@
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   MiniMap,
   addEdge,
@@ -10,7 +11,7 @@ import ReactFlow, {
   OnConnectStart,
   OnConnectEnd,
   useStore,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import useCountdown from './hooks/useCountdown';
 import { initialEdges, initialNodes } from './data';
@@ -21,7 +22,7 @@ const CANCEL_AFTER = 5; // seconds
 const CancelConnection = () => {
   const [nodes, _, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const cancelConnection = useStore(state => state.cancelConnection)
+  const cancelConnection = useStore((state) => state.cancelConnection);
 
   // Cancels connection after 5 seconds
   const countdown = useCountdown(() => cancelConnection());
@@ -32,11 +33,7 @@ const CancelConnection = () => {
 
   return (
     <>
-      <Timer
-        duration={CANCEL_AFTER}
-        show={countdown.counting}
-        remaining={countdown.remaining}
-      />
+      <Timer duration={CANCEL_AFTER} show={countdown.counting} remaining={countdown.remaining} />
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -53,7 +50,7 @@ const CancelConnection = () => {
       </ReactFlow>
     </>
   );
-}
+};
 
 export default () => (
   <ReactFlowProvider>

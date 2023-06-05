@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   addEdge,
   ReactFlowInstance,
@@ -8,7 +9,7 @@ import ReactFlow, {
   Connection,
   useNodesState,
   useEdgesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import styles from './style.module.css';
 

@@ -1,5 +1,5 @@
 import { memo, FC } from 'react';
-import { Handle, Position, NodeProps, NodeResizeControl } from 'reactflow';
+import { Handle, Position, NodeProps, NodeResizeControl } from '@xyflow/react';
 
 const CustomNode: FC<NodeProps> = ({ id, data }) => {
   return (

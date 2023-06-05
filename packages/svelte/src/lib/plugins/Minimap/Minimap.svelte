@@ -7,7 +7,7 @@
 
 <script lang="ts">
   import cc from 'classcat';
-  import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@reactflow/utils';
+  import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Panel } from '$lib/container/Panel';
@@ -35,7 +35,7 @@
 
   const defaultWidth = 200;
   const defaultHeight = 150;
-  const { nodes, transform, width: containerWidth, height: containerHeight, id } = useStore();
+  const { nodes, transform, width: containerWidth, height: containerHeight, flowId } = useStore();
 
   
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -43,7 +43,7 @@
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
   const shapeRendering =
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
-  const labelledBy = `svelte-flow__minimap-desc-${$id}`;
+  const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
 
   $: viewBB = {
     x: -$transform[0] / $transform[2],

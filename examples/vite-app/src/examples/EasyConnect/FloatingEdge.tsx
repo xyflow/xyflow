@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useStore, getStraightPath, EdgeProps } from 'reactflow';
+import { useStore, getStraightPath, EdgeProps } from '@xyflow/react';
 
 import { getEdgeParams } from './utils.js';
 

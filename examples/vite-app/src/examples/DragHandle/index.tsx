@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react';
-import ReactFlow, { Node, Edge, useNodesState, useEdgesState } from 'reactflow';
+import { ReactFlow, Node, Edge, useNodesState, useEdgesState } from '@xyflow/react';
 
 import DragHandleNode from './DragHandleNode';
 

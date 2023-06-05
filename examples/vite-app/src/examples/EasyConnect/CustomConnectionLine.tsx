@@ -1,4 +1,4 @@
-import { ConnectionLineComponentProps, getStraightPath } from 'reactflow';
+import { ConnectionLineComponentProps, getStraightPath } from '@xyflow/react';
 
 function CustomConnectionLine({ fromX, fromY, toX, toY, connectionLineStyle }: ConnectionLineComponentProps) {
   const [edgePath] = getStraightPath({

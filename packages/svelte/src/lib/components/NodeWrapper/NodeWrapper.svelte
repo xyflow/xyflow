@@ -2,7 +2,7 @@
   
   import { createEventDispatcher, onMount, setContext, SvelteComponentTyped } from 'svelte';
   import cc from 'classcat';
-  import { errorMessages, type NodeProps } from '@reactflow/system';
+  import { errorMessages, type NodeProps } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';

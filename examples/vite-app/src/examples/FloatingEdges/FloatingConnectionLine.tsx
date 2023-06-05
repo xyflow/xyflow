@@ -1,16 +1,10 @@
-import React, { FC } from 'react';
-import { getBezierPath, ConnectionLineComponentProps, Node } from 'reactflow';
+import { FC } from 'react';
+import { getBezierPath, ConnectionLineComponentProps, Node } from '@xyflow/react';
 
 import { getEdgeParams } from './utils';
 
-const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
-  targetX,
-  targetY,
-  sourcePosition,
-  targetPosition,
-  sourceNode,
-}) => {
-  if (!sourceNode) {
+const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({ toX, toY, fromPosition, toPosition, fromNode }) => {
+  if (!fromNode) {
     return null;
   }
 
@@ -18,23 +12,24 @@ const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
     id: 'connection-target',
     width: 1,
     height: 1,
-    position: { x: targetX, y: targetY },
+    position: { x: toX, y: toY },
   } as Node;
 
-  const { sx, sy } = getEdgeParams(sourceNode, targetNode);
-  const d = getBezierPath({
+  const { sx, sy } = getEdgeParams(fromNode, targetNode);
+
+  const [path] = getBezierPath({
     sourceX: sx,
     sourceY: sy,
-    sourcePosition,
-    targetPosition,
-    targetX,
-    targetY,
+    sourcePosition: fromPosition,
+    targetPosition: toPosition,
+    targetX: toX,
+    targetY: toY,
   });
 
   return (
     <g>
-      <path fill="none" stroke="#222" strokeWidth={1.5} className="animated" d={d} />
-      <circle cx={targetX} cy={targetY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
+      <path fill="none" stroke="#222" strokeWidth={1.5} className="animated" d={path} />
+      <circle cx={toX} cy={toY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
     </g>
   );
 };

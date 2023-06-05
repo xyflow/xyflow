@@ -1,4 +1,4 @@
-import { useKeyPress } from 'reactflow';
+import { useKeyPress } from '@xyflow/react';
 
 const UseKeyPressComponent = () => {
   const metaPressed = useKeyPress(['Meta']);

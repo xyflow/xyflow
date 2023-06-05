@@ -1,4 +1,5 @@
-import ReactFlow, {
+import {
+  ReactFlow,
   MiniMap,
   Background,
   BackgroundVariant,
@@ -8,7 +9,7 @@ import ReactFlow, {
   NodeTypes,
   Position,
   NodeOrigin,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import CustomNode from './CustomNode';
 import SelectedNodesToolbar from './SelectedNodesToolbar';

@@ -1,5 +1,6 @@
 import { useState, useEffect, MouseEvent, ChangeEvent, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   MiniMap,
   Controls,
   addEdge,
@@ -10,7 +11,7 @@ import ReactFlow, {
   Connection,
   useNodesState,
   useEdgesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
 

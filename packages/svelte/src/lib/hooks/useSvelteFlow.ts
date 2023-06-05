@@ -6,8 +6,8 @@ import type {
   ViewportHelperFunctionOptions,
   XYPosition,
   ZoomInOut
-} from '@reactflow/system';
-import { pointToRendererPoint } from '@reactflow/utils';
+} from '@xyflow/system';
+import { pointToRendererPoint } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 import type { FitViewOptions } from '$lib/types';

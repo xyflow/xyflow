@@ -1,5 +1,6 @@
 import { MouseEvent as ReactMouseEvent, CSSProperties, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Node,
   Viewport,
@@ -13,7 +14,7 @@ import ReactFlow, {
   Controls,
   Background,
   MiniMap,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
 const onNodeDrag = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
@@ -36,8 +37,8 @@ const onInit = (reactFlowInstance: ReactFlowInstance) => {
   console.log('pane ready:', reactFlowInstance);
 };
 
-const onMoveStart = (_: MouseEvent | TouchEvent, viewport: Viewport) => console.log('zoom/move start', viewport);
-const onMoveEnd = (_: MouseEvent | TouchEvent, viewport: Viewport) => console.log('zoom/move end', viewport);
+const onMoveStart = (_: MouseEvent | TouchEvent | null, viewport: Viewport) => console.log('zoom/move start', viewport);
+const onMoveEnd = (_: MouseEvent | TouchEvent | null, viewport: Viewport) => console.log('zoom/move end', viewport);
 const onEdgeContextMenu = (_: ReactMouseEvent, edge: Edge) => console.log('edge context menu', edge);
 const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse enter', edge);
 const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse move', edge);

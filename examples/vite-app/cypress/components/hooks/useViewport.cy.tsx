@@ -1,4 +1,4 @@
-import ReactFlow, { useViewport, Viewport } from 'reactflow';
+import ReactFlow, { useViewport, Viewport } from '@xyflow/react';
 
 describe('useViewport.cy.tsx', () => {
   it('handles drag', () => {

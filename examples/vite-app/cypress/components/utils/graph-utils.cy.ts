@@ -1,4 +1,4 @@
-import { Node, Edge, isNode, isEdge, getOutgoers, getIncomers, addEdge } from 'reactflow';
+import { Node, Edge, isNode, isEdge, getOutgoers, getIncomers, addEdge } from '@xyflow/react';
 
 const nodes: Node[] = [
   {

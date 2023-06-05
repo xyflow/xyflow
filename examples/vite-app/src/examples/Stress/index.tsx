@@ -1,5 +1,6 @@
 import { useState, CSSProperties, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   ReactFlowInstance,
   Edge,
   Node,
@@ -12,7 +13,7 @@ import ReactFlow, {
   Controls,
   Background,
   MiniMap,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import { getNodesAndEdges } from './utils';
 

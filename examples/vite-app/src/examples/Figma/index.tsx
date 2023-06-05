@@ -1,4 +1,4 @@
-import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode } from 'reactflow';
+import { ReactFlow, Background, BackgroundVariant, Node, Edge, SelectionMode } from '@xyflow/react';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 

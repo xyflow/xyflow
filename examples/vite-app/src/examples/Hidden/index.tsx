@@ -1,6 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import ReactFlow, { addEdge, Connection, Edge, Node, useNodesState, useEdgesState, MiniMap, Controls } from 'reactflow';
+import {
+  ReactFlow,
+  addEdge,
+  Connection,
+  Edge,
+  Node,
+  useNodesState,
+  useEdgesState,
+  MiniMap,
+  Controls,
+} from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {

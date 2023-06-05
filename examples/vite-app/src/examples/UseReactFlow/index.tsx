@@ -1,5 +1,6 @@
 import { useCallback, MouseEvent, useEffect } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   MiniMap,
   Node,
@@ -11,7 +12,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   Panel,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {

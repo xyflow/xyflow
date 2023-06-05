@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type MarkerProps, MarkerType } from '@reactflow/system';
+  import { type MarkerProps, MarkerType } from '@xyflow/system';
 
   type $$Props = MarkerProps;
 

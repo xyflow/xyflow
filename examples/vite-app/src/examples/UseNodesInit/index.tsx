@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   MiniMap,
   Node,
@@ -10,7 +11,7 @@ import ReactFlow, {
   useEdgesState,
   OnConnect,
   useNodesInitialized,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {

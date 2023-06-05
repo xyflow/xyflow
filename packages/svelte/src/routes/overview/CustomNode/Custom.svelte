@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Position } from '@reactflow/system';
+  import { Position } from '@xyflow/system';
   import { Handle } from '../../../lib/index';
 
   export let data: { label: string } = { label: 'Node' };

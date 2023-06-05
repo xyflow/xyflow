@@ -1,6 +1,5 @@
-import React, { memo, FC, CSSProperties } from 'react';
-
-import { Handle, Position, NodeProps } from 'reactflow';
+import { memo, FC, CSSProperties } from 'react';
+import { Handle, Position, NodeProps } from '@xyflow/react';
 
 const nodeStyles: CSSProperties = {
   padding: '10px 15px',

@@ -1,5 +1,6 @@
 import { useState, DragEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   ReactFlowProvider,
   addEdge,
   ReactFlowInstance,
@@ -10,7 +11,7 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   NodeOrigin,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import Sidebar from './Sidebar';
 

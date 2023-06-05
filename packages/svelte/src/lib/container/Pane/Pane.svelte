@@ -30,8 +30,8 @@
 
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { SelectionMode } from '@reactflow/system';
-  import { getEventPosition, getNodesInside } from '@reactflow/utils';
+  import { SelectionMode } from '@xyflow/system';
+  import { getEventPosition, getNodesInside } from '@xyflow/system';
   
   import { useStore } from '$lib/store';
   import { getConnectedEdges } from '$lib/utils';

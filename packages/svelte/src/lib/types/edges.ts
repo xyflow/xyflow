@@ -6,7 +6,7 @@ import type {
   DefaultEdgeOptionsBase,
   Position,
   SmoothStepPathOptions
-} from '@reactflow/system';
+} from '@xyflow/system';
 
 import type { Node } from '$lib/types';
 

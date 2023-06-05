@@ -1,5 +1,6 @@
 import { useCallback, MouseEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   NodeTypes,
   addEdge,
   useReactFlow,
@@ -10,7 +11,7 @@ import ReactFlow, {
   Position,
   useNodesState,
   useEdgesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import CustomNode from './CustomNode';
 

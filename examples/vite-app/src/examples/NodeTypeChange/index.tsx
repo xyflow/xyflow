@@ -1,5 +1,5 @@
 import { CSSProperties, useCallback } from 'react';
-import ReactFlow, { addEdge, Node, Position, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
+import { ReactFlow, addEdge, Node, Position, Connection, Edge, useNodesState, useEdgesState } from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {

@@ -8,7 +8,7 @@
     createEdges,
     type IsValidConnection
   } from '../../lib/index';
-  import { Position } from '@reactflow/system';
+  import { Position } from '@xyflow/system';
 
   const nodes = createNodes([
     { id: '0', type: 'default', position: { x: 0, y: 150 }, data: { label: 'only connectable with B' } },

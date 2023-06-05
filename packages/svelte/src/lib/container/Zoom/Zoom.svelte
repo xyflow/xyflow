@@ -1,5 +1,5 @@
 <script lang="ts"> 
-  import { PanOnScrollMode } from '@reactflow/system';
+  import { PanOnScrollMode } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
@@ -26,7 +26,8 @@
     minZoom,
     maxZoom,
     dragging,
-    translateExtent
+    translateExtent,
+    lib
   } = useStore();
   
   $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
@@ -54,7 +55,8 @@
   noPanClassName: 'nopan',
   noWheelClassName: 'nowheel',
   userSelectionActive: $selectionKeyPressed,
-  translateExtent: $translateExtent
+  translateExtent: $translateExtent,
+  lib: $lib
 }}>
   <slot />
 </div>

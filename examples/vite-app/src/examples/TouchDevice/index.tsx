@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import ReactFlow, { Node, Edge, useNodesState, useEdgesState, Position, Connection, addEdge } from 'reactflow';
+import { ReactFlow, Node, Edge, useNodesState, useEdgesState, Position, Connection, addEdge } from '@xyflow/react';
 
 import styles from './touch-device.module.css';
 

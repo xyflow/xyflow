@@ -1,4 +1,4 @@
-import type { PanelPosition, ProOptions } from '@reactflow/system';
+import type { PanelPosition, ProOptions } from '@xyflow/system';
 
 export type AttributionProps = {
   proOptions?: ProOptions;

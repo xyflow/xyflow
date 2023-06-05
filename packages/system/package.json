@@ -1,14 +1,15 @@
 {
-  "name": "@reactflow/system",
-  "version": "11.5.5",
-  "description": "Core system of React Flow.",
+  "name": "@xyflow/system",
+  "version": "0.0.1",
+  "description": "Core system of xyflow.",
   "keywords": [
     "node-based UI",
     "graph",
     "diagram",
     "workflow",
     "reactflow",
-    "svelteflow"
+    "svelteflow",
+    "xyflow"
   ],
   "files": [
     "dist"
@@ -17,9 +18,7 @@
   "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "sideEffects": [
-    "*.css"
-  ],
+  "sideEffects": false,
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -30,26 +29,34 @@
     "directory": "packages/system"
   },
   "scripts": {
-    "dev": "rollup --config node:@reactflow/rollup-config --watch",
-    "build": "rollup --config node:@reactflow/rollup-config --environment NODE_ENV:production",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\"",
+    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production",
+    "lint": "eslint --ext .js,.ts src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@types/d3": "^7.4.0",
     "@types/d3-drag": "^3.0.1",
     "@types/d3-selection": "^3.0.3",
-    "@types/d3-zoom": "^3.0.1"
+    "@types/d3-zoom": "^3.0.1",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
-    "@reactflow/eslint-config": "workspace:*",
-    "@reactflow/rollup-config": "workspace:*",
-    "@reactflow/tsconfig": "workspace:*",
     "@types/node": "^18.7.16",
+    "@xyflow/eslint-config": "workspace:*",
+    "@xyflow/rollup-config": "workspace:*",
+    "@xyflow/tsconfig": "workspace:*",
     "typescript": "^4.9.4"
   },
   "rollup": {
-    "globals": {},
-    "name": "ReactFlowSystem"
+    "globals": {
+      "d3-selection": "d3Selection",
+      "d3-zoom": "d3Zoom",
+      "d3-drag": "d3Drag"
+    },
+    "vanilla": true,
+    "name": "XYFlowSystem"
   }
 }

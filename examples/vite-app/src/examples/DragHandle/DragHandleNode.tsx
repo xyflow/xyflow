@@ -1,6 +1,5 @@
-import React, { memo, FC } from 'react';
-
-import { Handle, Position, NodeProps, Connection, Edge } from 'reactflow';
+import { memo, FC } from 'react';
+import { Handle, Position, NodeProps, Connection, Edge } from '@xyflow/react';
 
 const onConnect = (params: Connection | Edge) => console.log('handle onConnect', params);
 

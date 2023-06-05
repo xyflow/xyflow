@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Position, type NodeProps } from '@reactflow/system';
+  import { Position, type NodeProps } from '@xyflow/system';
 
   import { Handle } from '$lib/components/Handle';
 

@@ -1,4 +1,4 @@
-import type { PanelPosition } from '@reactflow/system';
+import type { PanelPosition } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
 

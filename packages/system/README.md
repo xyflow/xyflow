@@ -1,10 +1,10 @@
-# @reactflow/system
+# @xyflow/system
 
 Types for React Flow.
 
 ## Installation 
 
 ```sh 
-npm install @reactflow/system
+npm install @xyflow/system
 ```
 

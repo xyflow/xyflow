@@ -1,5 +1,5 @@
 import React, { memo, FC, CSSProperties, useCallback } from 'react';
-import { Handle, Position, NodeProps, Connection, Edge, useOnViewportChange, Viewport } from 'reactflow';
+import { Handle, Position, NodeProps, Connection, Edge, useOnViewportChange, Viewport } from '@xyflow/react';
 
 const targetHandleStyle: CSSProperties = { background: '#555' };
 const sourceHandleStyleA: CSSProperties = { ...targetHandleStyle, top: 10 };

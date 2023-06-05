@@ -1,10 +1,10 @@
 {
-  "name": "@reactflow/examples",
+  "name": "@xyflow/react-examples",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3000 --open --host --force",
+    "dev": "vite --port 3000 --open --host",
     "serve": "vite serve --port 3000",
     "build": "vite build",
     "test:dev": "cypress open",
@@ -14,13 +14,13 @@
     "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
   },
   "dependencies": {
+    "@xyflow/react": "workspace:*",
     "classcat": "^5.0.3",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "reactflow": "workspace:*",
     "zustand": "^4.3.1"
   },
   "devDependencies": {
@@ -29,6 +29,7 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "4.0.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
     "cypress": "^10.6.0",
     "cypress-real-events": "^1.7.1",
     "start-server-and-test": "^1.14.0",

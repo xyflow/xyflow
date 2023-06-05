@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type { SvelteComponentTyped } from 'svelte';
-import type { BaseNode, NodeProps } from '@reactflow/system';
+import type { BaseNode, NodeProps } from '@xyflow/system';
 
 // @todo: currently the helper function only like Node from '@reactflow/core'
 // we need a base node type or helpes that accept Node like types

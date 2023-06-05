@@ -1,5 +1,6 @@
 import { useState, MouseEvent, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Controls,
   MiniMap,
   Background,
@@ -10,7 +11,7 @@ import ReactFlow, {
   Edge,
   ReactFlowInstance,
   Connection,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);

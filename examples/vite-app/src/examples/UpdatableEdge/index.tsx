@@ -1,5 +1,6 @@
 import { useState, useCallback, MouseEvent as ReactMouseEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Controls,
   updateEdge,
   addEdge,
@@ -12,7 +13,7 @@ import ReactFlow, {
   NodeChange,
   EdgeChange,
   HandleType,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {

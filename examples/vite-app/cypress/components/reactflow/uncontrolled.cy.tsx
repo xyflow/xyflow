@@ -1,4 +1,4 @@
-import ReactFlow from 'reactflow';
+import ReactFlow from '@xyflow/react';
 
 import { nodes, edges } from '../../fixtures/simpleflow';
 

@@ -1,4 +1,4 @@
-import { ReactFlowState, useStore } from 'reactflow';
+import { ReactFlowState, useStore } from '@xyflow/react';
 import { shallow } from 'zustand/shallow';
 
 import styles from './validation.module.css';

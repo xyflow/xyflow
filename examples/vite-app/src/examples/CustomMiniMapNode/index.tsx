@@ -1,6 +1,7 @@
 import { MouseEvent, CSSProperties, useCallback } from 'react';
 
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   Background,
   BackgroundVariant,
@@ -13,7 +14,7 @@ import ReactFlow, {
   ReactFlowInstance,
   useEdgesState,
   useNodesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);

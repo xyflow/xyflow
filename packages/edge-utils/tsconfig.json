@@ -1,6 +1,0 @@
-{
-  "extends": "@reactflow/tsconfig/react.json",
-  "display": "@reactflow/utils",
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
-}

@@ -1,5 +1,5 @@
-import React, { useState, memo, FC, useMemo, CSSProperties } from 'react';
-import { Handle, Position, NodeProps, useUpdateNodeInternals } from 'reactflow';
+import { useState, memo, FC, useMemo, CSSProperties } from 'react';
+import { Handle, Position, NodeProps, useUpdateNodeInternals } from '@xyflow/react';
 
 const nodeStyles: CSSProperties = { padding: 10, border: '1px solid #ddd' };
 

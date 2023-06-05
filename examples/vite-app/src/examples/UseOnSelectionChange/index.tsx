@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   ReactFlowProvider,
   Node,
@@ -9,7 +10,7 @@ import ReactFlow, {
   useEdgesState,
   useOnSelectionChange,
   OnSelectionChangeParams,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const initialNodes: Node[] = [
   {
@@ -67,8 +68,8 @@ const WrappedFlow = () => (
     <Flow />
     <SelectionLogger />
     <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-        <input type={'text'} placeholder={'name'} />
-      </div>
+      <input type={'text'} placeholder={'name'} />
+    </div>
   </ReactFlowProvider>
 );
 

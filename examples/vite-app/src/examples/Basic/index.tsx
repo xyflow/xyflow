@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   MiniMap,
   Background,
   BackgroundVariant,
@@ -9,7 +10,7 @@ import ReactFlow, {
   Edge,
   useReactFlow,
   Panel,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);

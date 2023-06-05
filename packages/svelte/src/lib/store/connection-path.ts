@@ -1,6 +1,6 @@
 import { derived } from 'svelte/store';
-import { getBezierPath, getSmoothStepPath, getStraightPath } from '@reactflow/edge-utils';
-import { ConnectionLineType, ConnectionMode, Position, internalsSymbol } from '@reactflow/system';
+import { getBezierPath, getSmoothStepPath, getStraightPath } from '@xyflow/system';
+import { ConnectionLineType, ConnectionMode, Position, internalsSymbol } from '@xyflow/system';
 
 import type { SvelteFlowStoreState } from './types';
 

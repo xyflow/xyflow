@@ -54,7 +54,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import 'reactflow/dist/style.css';
 

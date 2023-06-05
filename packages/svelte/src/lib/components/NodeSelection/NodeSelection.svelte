@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getRectOfNodes } from '@reactflow/utils';
+  import { getRectOfNodes } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Selection } from '$lib/components/Selection';

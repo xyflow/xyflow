@@ -1,5 +1,6 @@
 import { MouseEvent, useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   Controls,
   Background,
   MiniMap,
@@ -11,7 +12,7 @@ import ReactFlow, {
   Node,
   useEdgesState,
   useNodesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';

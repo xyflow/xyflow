@@ -1,4 +1,5 @@
 import { ZoomTransform } from 'd3-zoom';
+
 import { CoordinateExtent, PanOnScrollMode, Transform, Viewport } from './';
 
 export type OnDraggingChange = (dragging: boolean) => void;
@@ -37,6 +38,7 @@ export type PanZoomUpdateOptions = {
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
   zoomActivationKeyPressed: boolean;
+  lib: string;
 };
 
 export type PanZoomInstance = {

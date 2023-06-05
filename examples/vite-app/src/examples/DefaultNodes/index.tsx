@@ -1,4 +1,5 @@
-import ReactFlow, {
+import {
+  ReactFlow,
   useReactFlow,
   Node,
   Edge,
@@ -6,7 +7,7 @@ import ReactFlow, {
   Background,
   BackgroundVariant,
   Panel,
-} from 'reactflow';
+} from '@xyflow/react';
 
 const defaultNodes: Node[] = [
   {

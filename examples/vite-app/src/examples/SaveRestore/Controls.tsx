@@ -1,5 +1,5 @@
 import React, { memo, useCallback, Dispatch, FC } from 'react';
-import { useReactFlow, Edge, Node, ReactFlowJsonObject } from 'reactflow';
+import { useReactFlow, Edge, Node, ReactFlowJsonObject } from '@xyflow/react';
 import localforage from 'localforage';
 
 import styles from './save.module.css';

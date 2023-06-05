@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getBezierPath } from '@reactflow/edge-utils';
+  import { getBezierPath } from '@xyflow/system';
 
   import { BaseEdge, EdgeLabelRenderer, useSvelteFlow, type EdgeProps } from '../../../lib/index';
 

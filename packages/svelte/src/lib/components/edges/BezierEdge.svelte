@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getBezierPath } from '@reactflow/edge-utils';
+  import { getBezierPath } from '@xyflow/system';
 
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';

@@ -5,7 +5,7 @@ import type {
   Position,
   XYPosition,
   ConnectingHandle
-} from '@reactflow/system';
+} from '@xyflow/system';
 
 import type { Node } from './nodes';
 
@@ -26,9 +26,9 @@ export type HandleComponentProps = {
   id?: string;
   class?: string;
   style?: string;
-  isConnectable?: boolean;,
-  isConnectableStart?: boolean;,
-  isConnectableEnd?: boolean;,
+  isConnectable?: boolean;
+  isConnectableStart?: boolean;
+  isConnectableEnd?: boolean;
 };
 
 export type FitViewOptions = FitViewOptionsBase<Node>;

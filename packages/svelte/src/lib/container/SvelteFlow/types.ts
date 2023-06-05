@@ -13,7 +13,7 @@ import type {
   CoordinateExtent,
   PanOnScrollMode,
   IsValidConnection
-} from '@reactflow/system';
+} from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
 

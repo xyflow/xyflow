@@ -1,6 +1,6 @@
 import { FC } from 'react';
-
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   addEdge,
   Node,
@@ -11,7 +11,7 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
   MiniMap,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import styles from './multiflows.module.css';
 

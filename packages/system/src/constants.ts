@@ -18,3 +18,5 @@ export const errorMessages = {
   error010: () => 'Handle: No node id found. Make sure to only use a Handle inside a custom Node.',
   error011: (edgeType: string) => `Edge type "${edgeType}" not found. Using fallback type "default".`,
 };
+
+export const internalsSymbol = Symbol.for('internals');

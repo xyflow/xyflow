@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import cc from 'classcat';
-  import { PanOnScrollMode, type CoordinateExtent, type Viewport } from '@reactflow/system';
+  import { PanOnScrollMode, type CoordinateExtent, type Viewport } from '@xyflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';

@@ -1,12 +1,22 @@
 import { useCallback, useState } from 'react';
-import ReactFlow, { Controls, addEdge, Connection, useNodesState, useEdgesState, Panel, Node, Edge } from 'reactflow';
+import {
+  ReactFlow,
+  Controls,
+  addEdge,
+  Connection,
+  useNodesState,
+  useEdgesState,
+  Panel,
+  Node,
+  Edge,
+} from '@xyflow/react';
 
 import DefaultResizer from './DefaultResizer';
 import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
 
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 
 const nodeTypes = {
   defaultResizer: DefaultResizer,

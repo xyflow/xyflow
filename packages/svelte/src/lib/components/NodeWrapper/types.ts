@@ -1,4 +1,4 @@
-import type { XYPosition } from '@reactflow/system';
+import type { XYPosition } from '@xyflow/system';
 import type { Node } from '$lib/types';
 
 export type NodeWrapperProps = Pick<

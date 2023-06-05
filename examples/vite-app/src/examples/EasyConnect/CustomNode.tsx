@@ -1,4 +1,4 @@
-import { Handle, NodeProps, Position, ReactFlowState, useStore } from 'reactflow';
+import { Handle, NodeProps, Position, ReactFlowState, useStore } from '@xyflow/react';
 
 const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionStartHandle?.nodeId;
 

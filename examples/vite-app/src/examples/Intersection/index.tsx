@@ -1,5 +1,6 @@
 import { useCallback, MouseEvent } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   MiniMap,
   Background,
   Controls,
@@ -8,7 +9,7 @@ import ReactFlow, {
   Edge,
   useReactFlow,
   useNodesState,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import './style.css';
 

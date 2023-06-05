@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import dagre from 'dagre';
-import ReactFlow, {
+import {
+  ReactFlow,
   Controls,
   ReactFlowProvider,
   addEdge,
@@ -13,7 +14,7 @@ import ReactFlow, {
   EdgeMarker,
   Panel,
   useReactFlow,
-} from 'reactflow';
+} from '@xyflow/react';
 
 import initialItems from './initial-elements';
 
