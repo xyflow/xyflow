@@ -26,6 +26,9 @@ export type HandleComponentProps = {
   id?: string;
   class?: string;
   style?: string;
+  isConnectable?: boolean;,
+  isConnectableStart?: boolean;,
+  isConnectableEnd?: boolean;,
 };
 
 export type FitViewOptions = FitViewOptionsBase<Node>;

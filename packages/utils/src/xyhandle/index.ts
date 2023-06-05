@@ -266,8 +266,6 @@ function isValidHandle(
     endHandle: null,
   };
 
-  console.log(1, result);
-
   if (handleToCheck) {
     const handleType = getHandleType(undefined, handleToCheck);
     const handleNodeId = handleToCheck.getAttribute('data-nodeid');

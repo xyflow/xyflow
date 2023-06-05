@@ -13,12 +13,17 @@
   export let type: $$Props['type'] = 'source';
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
+  export let isConnectable: $$Props['isConnectable'] = true;
+  export let isConnectableStart: $$Props['isConnectableStart'] = true;
+  export let isConnectableEnd: $$Props['isConnectableEnd'] = true;
+
+
   let className: $$Props['class'] = undefined;
   export { className as class };
 
   const isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
-  const connectable = getContext<string>('svelteflow__node_connectable');
+  // const connectable = getContext<string>('svelteflow__node_connectable');
 
   const handleId = id || null;
   const dispatch = createEventDispatcher();
@@ -87,7 +92,9 @@
   ])}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectable
+  class:connectableStart={isConnectableStart}
+  class:isConnectableEnd={isConnectableEnd}
+  class:connectable={isConnectable}
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
   {style}
