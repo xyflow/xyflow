@@ -3,7 +3,7 @@
     Controls,
     Background,
     BackgroundVariant,
-    Minimap,
+    MiniMap,
     useSvelteFlow,
     type Node
   } from '../../lib/index';
@@ -52,7 +52,7 @@
   >
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
-    <Minimap />
+    <MiniMap />
   </SvelteFlow>
   <Sidebar />
 </main>

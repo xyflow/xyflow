@@ -61,7 +61,6 @@ importers:
       '@vitejs/plugin-react': 4.0.0
       '@vitejs/plugin-react-swc': ^3.3.2
       '@xyflow/react': workspace:*
-      '@xyflow/test': workspace:^0.0.1
       classcat: ^5.0.3
       cypress: ^10.6.0
       cypress-real-events: ^1.7.1
@@ -76,7 +75,6 @@ importers:
       zustand: ^4.3.1
     dependencies:
       '@xyflow/react': link:../../packages/react
-      '@xyflow/test': link:../../packages/test
       classcat: registry.npmjs.org/classcat/5.0.4
       dagre: registry.npmjs.org/dagre/0.8.5
       localforage: registry.npmjs.org/localforage/1.10.0
@@ -196,35 +194,6 @@ importers:
       vite: registry.npmjs.org/vite/4.3.9
 
   packages/system:
-    specifiers:
-      '@types/d3': ^7.4.0
-      '@types/d3-drag': ^3.0.1
-      '@types/d3-selection': ^3.0.3
-      '@types/d3-zoom': ^3.0.1
-      '@types/node': ^18.7.16
-      '@xyflow/eslint-config': workspace:*
-      '@xyflow/rollup-config': workspace:*
-      '@xyflow/tsconfig': workspace:*
-      d3-drag: ^3.0.0
-      d3-selection: ^3.0.0
-      d3-zoom: ^3.0.0
-      typescript: ^4.9.4
-    dependencies:
-      '@types/d3': registry.npmjs.org/@types/d3/7.4.0
-      '@types/d3-drag': registry.npmjs.org/@types/d3-drag/3.0.2
-      '@types/d3-selection': registry.npmjs.org/@types/d3-selection/3.0.5
-      '@types/d3-zoom': registry.npmjs.org/@types/d3-zoom/3.0.3
-      d3-drag: registry.npmjs.org/d3-drag/3.0.0
-      d3-selection: registry.npmjs.org/d3-selection/3.0.0
-      d3-zoom: registry.npmjs.org/d3-zoom/3.0.0
-    devDependencies:
-      '@types/node': registry.npmjs.org/@types/node/18.16.16
-      '@xyflow/eslint-config': link:../../tooling/eslint-config
-      '@xyflow/rollup-config': link:../../tooling/rollup-config
-      '@xyflow/tsconfig': link:../../tooling/tsconfig
-      typescript: registry.npmjs.org/typescript/4.9.5
-
-  packages/test:
     specifiers:
       '@types/d3': ^7.4.0
       '@types/d3-drag': ^3.0.1
@@ -2083,7 +2052,7 @@ packages:
     version: 2.10.0
     requiresBuild: true
     dependencies:
-      '@types/node': registry.npmjs.org/@types/node/18.16.16
+      '@types/node': registry.npmjs.org/@types/node/14.18.48
     dev: true
     optional: true
 

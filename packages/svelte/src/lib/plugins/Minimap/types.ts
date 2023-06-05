@@ -22,6 +22,8 @@ export type MiniMapProps = {
   height?: number;
   // onClick?: (event: MouseEvent, position: XYPosition) => void;
   // onNodeClick?: (event: MouseEvent, node: Node) => void;
-  // pannable?: boolean;
-  // zoomable?: boolean;
+  pannable?: boolean;
+  zoomable?: boolean;
+  inversePan?: boolean;
+  zoomStep?: number;
 };

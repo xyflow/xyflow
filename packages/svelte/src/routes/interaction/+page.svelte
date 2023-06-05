@@ -6,7 +6,7 @@
     createNodes,
     createEdges,
     PanOnScrollMode,
-    Minimap,
+    MiniMap,
     type OnMoveEnd,
     type Node,
     type Edge,
@@ -70,7 +70,7 @@
     panOnDrag={panOnDrag}
     onMoveEnd={onMoveEnd}
   >
-    <Minimap />
+    <MiniMap />
     <Controls />
 
     <Panel position="top-right">

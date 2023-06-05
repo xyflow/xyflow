@@ -3,7 +3,7 @@
     Controls,
     Background,
     BackgroundVariant,
-    Minimap,
+    MiniMap,
   } from '../../lib/index';
   import Sidebar from './Sidebar.svelte';
 </script>
@@ -14,7 +14,7 @@
   >
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
-    <Minimap />
+    <MiniMap />
   </SvelteFlow>
   <Sidebar />
 </main>

@@ -4,7 +4,7 @@
     Controls,
     Background,
     BackgroundVariant,
-    Minimap,
+    MiniMap,
     Panel,
     createNodes,
     createEdges,
@@ -138,7 +138,7 @@
   >
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
-    <Minimap />
+    <MiniMap />
     <Panel position="top-right">
       <button on:click={updateNode}>update node pos</button>
     </Panel>

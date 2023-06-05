@@ -12,6 +12,7 @@
   import { useStore } from '$lib/store';
   import { Panel } from '$lib/container/Panel';
   import MinimapNode from './MinimapNode.svelte';
+  import interactive from './interactive'
   import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
 
   type $$Props = MiniMapProps;
@@ -30,13 +31,17 @@
   let maskStrokeWidth: $$Props['maskStrokeWidth'] = 1;
   let width: $$Props['width'] = undefined;
   let height: $$Props['height'] = undefined;
+  let pannable: $$Props['pannable'] = true;
+  let zoomable: $$Props['zoomable'] = true;  
+  let inversePan: $$Props['inversePan'] = undefined;
+  let zoomStep: $$Props['zoomStep'] = undefined;
+
   let className: $$Props['class'] = '';
   export { className as class };
 
   const defaultWidth = 200;
   const defaultHeight = 150;
-  const { nodes, transform, width: containerWidth, height: containerHeight, flowId } = useStore();
-
+  const { nodes, transform, width: containerWidth, height: containerHeight, flowId, panZoom, translateExtent } = useStore();
   
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -65,6 +70,8 @@
   $: y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   $: viewboxWidth = viewWidth + offset * 2;
   $: viewboxHeight = viewHeight + offset * 2;
+
+  const getViewScale = () => viewScale;
 </script>
 
 <Panel
@@ -73,44 +80,58 @@
   style={`background-color: ${bgColor}; ${style}`}
   data-testid="svelte-flow__minimap"
 >
-  <svg
-    width={elementWidth}
-    height={elementHeight}
-    viewBox={`${x} ${y} ${viewboxWidth} ${viewboxHeight}`}
-    role="img"
-    aria-labelledby={labelledBy}
-  >
-    {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
+  {#if $panZoom}
+    <svg
+      width={elementWidth}
+      height={elementHeight}
+      viewBox={`${x} ${y} ${viewboxWidth} ${viewboxHeight}`}
+      role="img"
+      aria-labelledby={labelledBy}
+      use:interactive={{
+        panZoom: $panZoom,
+        transform,
+        getViewScale,
+        translateExtent: $translateExtent,
+        width: $containerWidth,
+        height: $containerHeight,
+        inversePan,
+        zoomStep,
+        pannable,
+        zoomable,
+      }}
+    >
+      {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
-    {#each $nodes as node (node.id)}
-      {#if node.width && node.height}
-        {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
-        <MinimapNode
-          x={pos.x}
-          y={pos.y}
-          width={node.width}
-          height={node.height}
-          color={nodeColorFunc(node)}
-          borderRadius={nodeBorderRadius}
-          strokeColor={nodeStrokeColorFunc(node)}
-          strokeWidth={nodeStrokeWidth}
-          {shapeRendering}
-          class={nodeClassNameFunc(node)}
-          style={{}}
-        />
-      {/if}
-    {/each}
-    <path
-      class="svelte-flow__minimap-mask"
-      d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${
-        -viewboxWidth - offset * 2
-      }z
-    M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
-      fill={maskColor}
-      fill-rule="evenodd"
-      stroke={maskStrokeColor}
-      stroke-width={maskStrokeWidth}
-      pointer-events="none"
-    />
-  </svg>
+      {#each $nodes as node (node.id)}
+        {#if node.width && node.height}
+          {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
+          <MinimapNode
+            x={pos.x}
+            y={pos.y}
+            width={node.width}
+            height={node.height}
+            color={nodeColorFunc(node)}
+            borderRadius={nodeBorderRadius}
+            strokeColor={nodeStrokeColorFunc(node)}
+            strokeWidth={nodeStrokeWidth}
+            {shapeRendering}
+            class={nodeClassNameFunc(node)}
+            style={{}}
+          />
+        {/if}
+      {/each}
+      <path
+        class="svelte-flow__minimap-mask"
+        d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${
+          -viewboxWidth - offset * 2
+        }z
+      M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
+        fill={maskColor}
+        fill-rule="evenodd"
+        stroke={maskStrokeColor}
+        stroke-width={maskStrokeWidth}
+        pointer-events="none"
+      />
+    </svg>
+  {/if}
 </Panel>

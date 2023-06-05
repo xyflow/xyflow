@@ -1,1 +1,1 @@
-export { default as Minimap } from './Minimap.svelte';
+export { default as MiniMap } from './Minimap.svelte';

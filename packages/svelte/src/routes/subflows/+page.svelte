@@ -4,7 +4,7 @@
     Controls,
     Background,
     BackgroundVariant,
-    Minimap,
+    MiniMap,
     createNodes,
     createEdges,
     type NodeTypes,
@@ -130,7 +130,7 @@
   >
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
-    <Minimap />
+    <MiniMap />
   </SvelteFlow>
 </SvelteFlowProvider>
 

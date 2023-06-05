@@ -98,10 +98,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         autoPanOnConnect,
         domNode,
         edges,
-        isValidConnection: isValidConnectionStore,
+        isValidConnection,
         connectionMode,
         connectionRadius,
-        transform,
         lib,
         onConnectStart,
         onConnectEnd,
@@ -113,7 +112,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       const nodeId = isSourceHandle ? target : source;
       const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
       const handleType = isSourceHandle ? 'target' : 'source';
-      const isValidConnection = isValidConnectionStore || alwaysValidConnection;
 
       const isTarget = isSourceHandle;
       const edge = edges.find((e) => e.id === id)!;
@@ -139,7 +137,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         nodes,
         isTarget,
         edgeUpdaterType: handleType,
-        transform,
         lib,
         cancelConnection,
         panBy,
@@ -149,6 +146,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onConnectEnd,
         onEdgeUpdateEnd: _onEdgeUpdateEnd,
         updateConnection,
+        getTransform: () => store.getState().transform,
       });
     };
 

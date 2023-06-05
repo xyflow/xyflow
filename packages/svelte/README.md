@@ -23,7 +23,7 @@ A basic flow looks like this:
     Controls,
     Background,
     BackgroundVariant,
-    Minimap,
+    MiniMap,
     Panel,
     createNodes,
     createEdges,
@@ -73,7 +73,7 @@ A basic flow looks like this:
   >
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
-    <Minimap />
+    <MiniMap />
   </SvelteFlow>
 </SvelteFlowProvider>
 ```

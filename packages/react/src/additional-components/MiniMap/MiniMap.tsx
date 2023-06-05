@@ -3,14 +3,13 @@
 import { memo, useEffect, useRef, type MouseEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { type D3ZoomEvent, zoom } from 'd3-zoom';
-import { select, pointer } from 'd3-selection';
 import {
   getRectOfNodes,
   getBoundsOfRects,
   getNodePositionWithOrigin,
-  CoordinateExtent,
+  XYMinimap,
   type Rect,
+  type XYMinimapInstance,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -40,12 +39,17 @@ const selector = (s: ReactFlowState) => {
     boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes, s.nodeOrigin), viewBB) : viewBB,
     rfId: s.rfId,
     nodeOrigin: s.nodeOrigin,
+    panZoom: s.panZoom,
+    translateExtent: s.translateExtent,
+    flowWidth: s.width,
+    flowHeight: s.height,
   };
 };
 
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
+
 function MiniMap({
   style,
   className,
@@ -66,12 +70,15 @@ function MiniMap({
   pannable = false,
   zoomable = false,
   ariaLabel = 'React Flow mini map',
-  inversePan = false,
-  zoomStep = 10,
+  inversePan,
+  zoomStep,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, nodes, rfId, nodeOrigin } = useStore(selector, shallow);
+  const { boundingRect, viewBB, nodes, rfId, nodeOrigin, panZoom, translateExtent, flowWidth, flowHeight } = useStore(
+    selector,
+    shallow
+  );
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const nodeColorFunc = getAttrFunction(nodeColor);
@@ -90,76 +97,41 @@ function MiniMap({
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
   const viewScaleRef = useRef(0);
+  const minimapInstance = useRef<XYMinimapInstance>();
 
   viewScaleRef.current = viewScale;
 
   useEffect(() => {
-    if (svg.current) {
-      const selection = select(svg.current as Element);
-
-      const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-        const { transform, panZoom } = store.getState();
-
-        if (event.sourceEvent.type !== 'wheel' || !panZoom) {
-          return;
-        }
-
-        const pinchDelta =
-          -event.sourceEvent.deltaY *
-          (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-          zoomStep;
-        const nextZoom = transform[2] * Math.pow(2, pinchDelta);
-
-        panZoom.scaleTo(nextZoom);
-      };
-
-      const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
-        const { transform, panZoom, translateExtent, width, height } = store.getState();
-
-        if (event.sourceEvent.type !== 'mousemove' || !panZoom) {
-          return;
-        }
-
-        // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
-        const moveScale = viewScaleRef.current * Math.max(1, transform[2]) * (inversePan ? -1 : 1);
-        const position = {
-          x: transform[0] - event.sourceEvent.movementX * moveScale,
-          y: transform[1] - event.sourceEvent.movementY * moveScale,
-        };
-        const extent: CoordinateExtent = [
-          [0, 0],
-          [width, height],
-        ];
-
-        panZoom.setViewportConstrained(
-          {
-            x: position.x,
-            y: position.y,
-            zoom: transform[2],
-          },
-          extent,
-          translateExtent
-        );
-      };
-
-      const zoomAndPanHandler = zoom()
-        // @ts-ignore
-        .on('zoom', pannable ? panHandler : null)
-        // @ts-ignore
-        .on('zoom.wheel', zoomable ? zoomHandler : null);
-
-      selection.call(zoomAndPanHandler, {});
+    if (svg.current && panZoom) {
+      minimapInstance.current = XYMinimap({
+        domNode: svg.current,
+        panZoom,
+        getTransform: () => store.getState().transform,
+        getViewScale: () => viewScaleRef.current,
+      });
 
       return () => {
-        selection.on('zoom', null);
+        minimapInstance.current?.destroy();
       };
     }
-  }, [pannable, zoomable, inversePan, zoomStep]);
+  }, [panZoom]);
+
+  useEffect(() => {
+    minimapInstance.current?.update({
+      translateExtent,
+      width: flowWidth,
+      height: flowHeight,
+      inversePan,
+      pannable,
+      zoomStep,
+      zoomable,
+    });
+  }, [pannable, zoomable, inversePan, zoomStep, translateExtent, flowWidth, flowHeight]);
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {
-        const rfCoord = pointer(event);
-        onClick(event, { x: rfCoord[0], y: rfCoord[1] });
+        const rfCoord = minimapInstance.current?.pointer(event);
+        onClick(event, { x: rfCoord?.[0] ?? 0, y: rfCoord?.[1] ?? 0 });
       }
     : undefined;
 
