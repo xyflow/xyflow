@@ -221,7 +221,18 @@ function ResizeControl({
     return () => {
       selection.on('.drag', null);
     };
-  }, [id, controlPosition, minWidth, minHeight, maxWidth, maxHeight, keepAspectRatio]);
+  }, [
+    id,
+    controlPosition,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight,
+    keepAspectRatio,
+    onResizeStart,
+    onResize,
+    onResizeEnd,
+  ]);
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
