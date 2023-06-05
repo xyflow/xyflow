@@ -1,5 +1,6 @@
 import { readable, writable } from 'svelte/store';
 import {
+  infiniteExtent,
   SelectionMode,
   ConnectionMode,
   ConnectionLineType,
@@ -20,7 +21,6 @@ import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
 import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Edge, Node } from '$lib/types';
-import { infiniteExtent } from '@xyflow/system';
 
 export const initConnectionData = {
   connectionStartHandle: null,

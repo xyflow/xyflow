@@ -8,9 +8,11 @@ import {
   updateEdgeBase,
   getConnectedEdgesBase,
   isNumeric,
-  getNodePositionWithOrigin
+  getNodePositionWithOrigin,
+  internalsSymbol,
+  type XYZPosition
 } from '@xyflow/system';
-import { internalsSymbol, type XYZPosition } from '@xyflow/system';
+
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
 
 export const isNode = isNodeBase<Node, Edge>;

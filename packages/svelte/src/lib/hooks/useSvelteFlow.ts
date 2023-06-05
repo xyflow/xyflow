@@ -1,13 +1,13 @@
 import { get, writable, type Writable } from 'svelte/store';
-import type {
-  Project,
-  SetCenterOptions,
-  Viewport,
-  ViewportHelperFunctionOptions,
-  XYPosition,
-  ZoomInOut
+import {
+  pointToRendererPoint,
+  type Project,
+  type SetCenterOptions,
+  type Viewport,
+  type ViewportHelperFunctionOptions,
+  type XYPosition,
+  type ZoomInOut
 } from '@xyflow/system';
-import { pointToRendererPoint } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 import type { FitViewOptions } from '$lib/types';

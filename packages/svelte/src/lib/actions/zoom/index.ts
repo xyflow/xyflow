@@ -1,13 +1,13 @@
 import type { Writable } from 'svelte/store';
-import type {
-  CoordinateExtent,
-  OnPanZoom,
+import {
   PanOnScrollMode,
-  PanZoomInstance,
-  Transform,
-  Viewport
+  XYPanZoom,
+  type CoordinateExtent,
+  type OnPanZoom,
+  type PanZoomInstance,
+  type Transform,
+  type Viewport
 } from '@xyflow/system';
-import { XYPanZoom } from '@xyflow/system';
 
 type ZoomParams = {
   transform: Writable<Transform>;

@@ -1,3 +1,4 @@
+import type { Writable } from 'svelte/store';
 import type {
   NodeDimensionUpdate,
   XYPosition,
@@ -10,7 +11,6 @@ import type {
 
 import type { initialStoreState } from './initial-store';
 import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
-import type { Writable } from 'svelte/store';
 
 export type SvelteFlowStoreActions = {
   setNodeTypes: (nodeTypes: NodeTypes) => void;

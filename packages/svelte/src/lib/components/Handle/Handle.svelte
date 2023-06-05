@@ -1,8 +1,7 @@
 <script lang="ts">
   import { getContext, createEventDispatcher } from 'svelte';
   import cc from 'classcat';
-  import { Position, type Connection } from '@xyflow/system';
-  import { XYHandle, isMouseEvent } from '@xyflow/system';
+  import { Position, type Connection, XYHandle, isMouseEvent } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';

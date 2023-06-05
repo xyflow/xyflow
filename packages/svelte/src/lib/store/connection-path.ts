@@ -1,6 +1,13 @@
 import { derived } from 'svelte/store';
-import { getBezierPath, getSmoothStepPath, getStraightPath } from '@xyflow/system';
-import { ConnectionLineType, ConnectionMode, Position, internalsSymbol } from '@xyflow/system';
+import {
+  getBezierPath,
+  getSmoothStepPath,
+  getStraightPath,
+  ConnectionLineType,
+  ConnectionMode,
+  Position,
+  internalsSymbol
+} from '@xyflow/system';
 
 import type { SvelteFlowStoreState } from './types';
 

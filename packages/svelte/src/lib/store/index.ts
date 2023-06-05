@@ -1,26 +1,24 @@
 import { getContext } from 'svelte';
 import { derived, get } from 'svelte/store';
 import {
+  internalsSymbol,
+  createMarkerIds,
+  fitView as fitViewUtil,
+  getDimensions,
+  getElementsToRemove,
+  getHandleBounds,
+  infiniteExtent,
   type UpdateNodePositions,
   type NodeDimensionUpdate,
-  internalsSymbol,
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection
 } from '@xyflow/system';
-import {
-  createMarkerIds,
-  fitView as fitViewUtil,
-  getDimensions,
-  getElementsToRemove,
-  getHandleBounds,
-  infiniteExtent
-} from '@xyflow/system';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
-import type { EdgeTypes, NodeTypes, Node, Edge, ConnectionData, FitViewOptions } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
 import {

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { internalsSymbol } from '@xyflow/system';
-  import { getPositionWithOrigin } from '@xyflow/system';
+  import { internalsSymbol, getPositionWithOrigin } from '@xyflow/system';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';

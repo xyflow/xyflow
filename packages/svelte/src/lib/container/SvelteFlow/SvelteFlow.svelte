@@ -15,7 +15,7 @@
   import { Attribution } from '$lib/components/Attribution';
   import { useStore } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-    import type { EdgeTypes, NodeTypes } from '$lib/types';
+  import type { EdgeTypes, NodeTypes } from '$lib/types';
 
   type $$Props = SvelteFlowProps;
 

@@ -18,7 +18,5 @@ export * from '$lib/utils';
 export * from '$lib/hooks/useSvelteFlow';
 
 export * from '@xyflow/system';
-export * from '@xyflow/system';
-export * from '@xyflow/system';
 
 export default SvelteFlow;
