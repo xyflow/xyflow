@@ -18,16 +18,8 @@
   },
   "dependencies": {
     "@svelte-put/shortcut": "^2.0.0",
-    "@types/d3-drag": "^3.0.1",
-    "@types/d3-selection": "^3.0.3",
-    "@types/d3-zoom": "^3.0.1",
     "@xyflow/system": "workspace:*",
-    "classcat": "^5.0.4",
-    "d3-drag": "^3.0.0",
-    "d3-selection": "^3.0.0",
-    "d3-zoom": "^3.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "classcat": "^5.0.4"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.1.0",
