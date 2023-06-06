@@ -20,7 +20,8 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Edge, Node } from '$lib/types';
+import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
+import { createNodes, createEdges } from './utils';
 
 export const initConnectionData = {
   connectionStartHandle: null,
@@ -42,10 +43,10 @@ export const initialEdgeTypes = {
   step: StepEdge
 };
 
-export const initialStoreState = {
+export const getInitialStore = () => ({
   flowId: writable<string | null>(null),
-  nodes: writable<Node[]>([]),
-  edges: writable<Edge[]>([]),
+  nodes: createNodes([]),
+  edges: createEdges([]),
   edgesLayouted: readable<EdgeLayouted[]>([]),
   height: writable<number>(500),
   width: writable<number>(500),
@@ -82,4 +83,4 @@ export const initialStoreState = {
   markers: readable<MarkerProps[]>([]),
   defaultMarkerColor: writable<string>('#b1b1b7'),
   lib: readable<string>('svelte')
-};
+});

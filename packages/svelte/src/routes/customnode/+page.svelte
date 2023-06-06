@@ -2,13 +2,10 @@
   import type { ChangeEventHandler } from 'svelte/elements';
   import { writable } from 'svelte/store';
   import SvelteFlow, {
-    SvelteFlowProvider,
     Controls,
     Background,
     BackgroundVariant,
     MiniMap,
-    createNodes,
-    createEdges,
     type NodeTypes,
     Position
   } from '../../lib/index';
@@ -23,7 +20,7 @@
   const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     nodes.update((nds) =>
       nds.map((node) => {
-        if (node.id !== '2') {
+        if (node.type !== 'colorNode') {
           return node;
         }
 
@@ -42,7 +39,7 @@
     );
   };
 
-  const nodes = createNodes([
+  const nodes = writable([
   {
     id: '1',
     type: 'input',
@@ -73,7 +70,7 @@
   },
   ]);
 
-  const edges = createEdges([
+  const edges = writable([
     {
       id: 'e1-2',
       source: '1',
@@ -94,23 +91,20 @@
       target: '4',
       animated: true,
     },
-  ], { animated: true });
+  ]);
 </script>
 
-<SvelteFlowProvider
+<SvelteFlow
   {nodes}
   {edges}
+  {nodeTypes}
+  style="--bgcolor: {$bgColor}"
+  fitView
 >
-  <SvelteFlow
-    {nodeTypes}
-    style="--bgcolor: {$bgColor}"
-    fitView
-  >
-    <Controls />
-    <Background variant={BackgroundVariant.Dots} />
-    <MiniMap />
-  </SvelteFlow>
-</SvelteFlowProvider>
+  <Controls />
+  <Background variant={BackgroundVariant.Dots} />
+  <MiniMap />
+</SvelteFlow>
 
 <style>
   :global(.svelte-flow) {

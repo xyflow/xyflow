@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, hasContext } from 'svelte';
   import cc from 'classcat';
-  import { PanOnScrollMode, type CoordinateExtent, type Viewport } from '@xyflow/system';
+  import { PanOnScrollMode, type Viewport } from '@xyflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -13,13 +13,15 @@
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { Attribution } from '$lib/components/Attribution';
-  import { useStore } from '$lib/store';
+  import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import type { EdgeTypes, NodeTypes } from '$lib/types';
+  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
 
   type $$Props = SvelteFlowProps;
 
   export let id = '1';
+  export let nodes: $$Props['nodes'];
+  export let edges: $$Props['edges'];
   export let fitView: $$Props['fitView'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
@@ -53,10 +55,10 @@
   export let style: $$Props['style'] = undefined;
   let className: $$Props['class'] = undefined;
   export { className as class };
+
   let domNode: HTMLDivElement;
-  
-  $: flowId = id;
-  const store = useStore();
+
+  const store = hasContext(key) ? useStore() : createStoreContext();
 
   onMount(() => {
     const { width, height } = domNode.getBoundingClientRect();
@@ -64,13 +66,19 @@
     store.height.set(height);
     store.domNode.set(domNode);
 
-    updateStore({
+    store.syncNodeStores(nodes)
+    store.syncEdgeStores(edges)
+
+    if (fitView !== undefined) {
+      store.fitViewOnInit.set(fitView);
+    }
+
+    updateStore(store, {
       nodeTypes,
       edgeTypes,
       minZoom,
       maxZoom,
       translateExtent,
-      fitView
     });
 
     return () => {
@@ -78,70 +86,32 @@
     }
   });
 
+  // this updates the store for simple changes 
+  // where the prop names equals the store name
   $: {
-    const updatableProps = {
-      flowId,
+    const updatableProps: UpdatableStoreProps = {
+      flowId: id,
       connectionLineType,
       connectionRadius,
       selectionMode,
       snapGrid,
-      isValidConnection,
       defaultMarkerColor,
       nodesDraggable,
       nodesConnectable,
       elementsSelectable,
+      isValidConnection,
     };
 
-    Object.keys(updatableProps).forEach(prop => {
-      // @ts-ignore
-      if (updatableProps[prop] !== undefined) {
-        // @ts-ignore
-        store[prop].set(updatableProps[prop]);
-      }
-    })
+   updateStoreByKeys(store, updatableProps);
   }
 
-  function updateStore({ nodeTypes, edgeTypes, minZoom, maxZoom, translateExtent, fitView }: {
-    nodeTypes?: NodeTypes,
-    edgeTypes?: EdgeTypes,
-    minZoom?: number,
-    maxZoom?: number,
-    translateExtent?: CoordinateExtent,
-    fitView?: boolean
-  }) {
-    if (nodeTypes !== undefined) {
-     store.setNodeTypes(nodeTypes);
-    }
-
-    if (edgeTypes !== undefined) {
-      store.setEdgeTypes(edgeTypes);
-    }
-
-    if (minZoom !== undefined) {
-      store.setMinZoom(minZoom);
-    }
-
-    if (maxZoom !== undefined) {
-      store.setMaxZoom(maxZoom);
-    }
-
-    if (translateExtent !== undefined) {
-      store.setTranslateExtent(translateExtent)
-    }
-
-    if (fitView !== undefined) {
-      store.fitViewOnInit.set(fitView);
-    }
-  }
-
-  $: updateStore({
+  $: updateStore(store, {
     nodeTypes,
     edgeTypes,
     minZoom,
     maxZoom,
-    translateExtent,
-    fitView
-  })
+    translateExtent
+  });
 </script>
 
 <div

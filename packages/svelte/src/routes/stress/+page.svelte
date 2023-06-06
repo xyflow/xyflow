@@ -1,12 +1,10 @@
 <script lang="ts">
+    import { writable } from 'svelte/store';
   import SvelteFlow, {
-    SvelteFlowProvider,
     Controls,
     Background,
     BackgroundVariant,
     MiniMap,
-    createNodes,
-    createEdges,
     type Node,
     type Edge
   } from '../../lib/index';
@@ -45,20 +43,17 @@
     }
   }
 
-  const nodes = createNodes(nodeItems);
-  const edges = createEdges(edgeItems, { animated: true });
+  const nodes = writable(nodeItems);
+  const edges = writable(edgeItems);
 </script>
 
-<SvelteFlowProvider
+<SvelteFlow
   {nodes}
   {edges}
+  fitView
+  minZoom={0.2}
 >
-  <SvelteFlow
-    fitView
-    minZoom={0.2}
-  >
-    <Controls />
-    <Background variant={BackgroundVariant.Dots} />
-    <MiniMap />
-  </SvelteFlow>
-</SvelteFlowProvider>
+  <Controls />
+  <Background variant={BackgroundVariant.Dots} />
+  <MiniMap />
+</SvelteFlow>

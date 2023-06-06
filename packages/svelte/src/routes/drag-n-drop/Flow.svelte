@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { writable } from 'svelte/store';
   import SvelteFlow, {
     Controls,
     Background,
@@ -8,6 +9,45 @@
     type Node
   } from '../../lib/index';
   import Sidebar from './Sidebar.svelte';
+
+  const nodes = writable(
+    [
+      {
+        id: '1',
+        type: 'input',
+        data: { label: 'Input Node' },
+        position: { x: 150, y: 5 }
+      },
+      {
+        id: '2',
+        type: 'default',
+        data: { label: 'Node' },
+        position: { x: 0, y: 150 }
+      },
+      {
+        id: '3',
+        type: 'output',
+        data: { label: 'Output Node' },
+        position: { x: 300, y: 150 }
+      }
+    ]
+  );
+
+  const edges = writable([
+    {
+      id: '1-2',
+      type: 'default',
+      source: '1',
+      target: '2',
+      label: 'Edge Text'
+    },
+    {
+      id: '1-3',
+      type: 'smoothstep',
+      source: '1',
+      target: '3'
+    }
+  ]);
 
   const svelteFlow = useSvelteFlow();
 
@@ -46,6 +86,8 @@
 
 <main>
   <SvelteFlow
+    {nodes}
+    {edges}
     fitView
     on:dragover={onDragOver}
     on:drop={onDrop}

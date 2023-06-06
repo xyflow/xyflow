@@ -16,9 +16,12 @@ import type {
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
+import type { Writable } from 'svelte/store';
 
 export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   id?: string;
+  nodes: Writable<Node[]>;
+  edges: Writable<Edge[]>;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
   selectionKey?: KeyDefinition;

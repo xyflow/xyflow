@@ -1,44 +1,36 @@
 <script lang="ts">
+  import { writable } from 'svelte/store';
+
   import SvelteFlow, {
-    SvelteFlowProvider,
     Controls,
     Background,
     BackgroundVariant,
-    createNodes,
-    createEdges,
     type IsValidConnection
   } from '../../lib/index';
-  import { Position } from '@xyflow/system';
 
-  const nodes = createNodes([
+  const nodes = writable([
     { id: '0', type: 'default', position: { x: 0, y: 150 }, data: { label: 'only connectable with B' } },
     { id: 'A', type: 'default', position: { x: 250, y: 0 }, data: { label: 'A' } },
     { id: 'B', type: 'default', position: { x: 250, y: 150 }, data: { label: 'B' } },
     { id: 'C', type: 'default', position: { x: 250, y: 300 }, data: { label: 'C' } }
-  ], {
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left
-  });
+  ]);
 
-  const edges = createEdges([]);
+  const edges = writable([]);
 
-  const isValidConnection: IsValidConnection = (connection) => connection.target === 'B'
+  const isValidConnection: IsValidConnection = (connection) => connection.target === 'B';
 </script>
 
-<SvelteFlowProvider
+<SvelteFlow
   {nodes}
   {edges}
+  fitView
+  minZoom={0.1}
+  maxZoom={2.5}
+  isValidConnection={isValidConnection}
 >
-  <SvelteFlow
-    fitView
-    minZoom={0.1}
-    maxZoom={2.5}
-    isValidConnection={isValidConnection}
-  >
-    <Controls />
-    <Background variant={BackgroundVariant.Dots} />
-  </SvelteFlow>
-</SvelteFlowProvider>
+  <Controls />
+  <Background variant={BackgroundVariant.Dots} />
+</SvelteFlow>
 
 <style>
   :global(.svelte-flow__handle.connecting) {

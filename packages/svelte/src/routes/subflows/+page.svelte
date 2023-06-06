@@ -1,12 +1,10 @@
 <script lang="ts">
+    import { writable } from 'svelte/store';
   import SvelteFlow, {
-    SvelteFlowProvider,
     Controls,
     Background,
     BackgroundVariant,
     MiniMap,
-    createNodes,
-    createEdges,
     type NodeTypes,
   } from '../../lib/index';
   import { DebugNode } from './DebugNode';
@@ -15,7 +13,7 @@
     default: DebugNode,
   };
 
-  const nodes = createNodes([
+  const nodes = writable([
     {
       id: '1',
       type: 'input',
@@ -92,7 +90,7 @@
     }
   ]);
 
-  const edges = createEdges([
+  const edges = writable([
     {
     id: 'e1-2',
     source: '1',
@@ -111,28 +109,25 @@
   { id: 'e4a-4b1', source: '4a', target: '4b1' },
   { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
   { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
-  ], { animated: true });
+  ]);
 
   $: {
     console.log($nodes)
   }
 </script>
 
-<SvelteFlowProvider
+<SvelteFlow
   {nodes}
   {edges}
+  {nodeTypes}
+  fitView
+  minZoom={0.1}
+  maxZoom={2.5}
 >
-  <SvelteFlow
-    {nodeTypes}
-    fitView
-    minZoom={0.1}
-    maxZoom={2.5}
-  >
-    <Controls />
-    <Background variant={BackgroundVariant.Dots} />
-    <MiniMap />
-  </SvelteFlow>
-</SvelteFlowProvider>
+  <Controls />
+  <Background variant={BackgroundVariant.Dots} />
+  <MiniMap />
+</SvelteFlow>
 
 <style>
   :global(.svelte-flow .svelte-flow__node.parent) {

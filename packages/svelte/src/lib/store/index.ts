@@ -1,4 +1,4 @@
-import { getContext } from 'svelte';
+import { getContext, setContext } from 'svelte';
 import { derived, get } from 'svelte/store';
 import {
   internalsSymbol,
@@ -25,19 +25,15 @@ import {
   initConnectionData,
   initialEdgeTypes,
   initialNodeTypes,
-  initialStoreState
+  getInitialStore
 } from './initial-store';
 import type { SvelteFlowStore } from './types';
+import { syncNodeStores, syncEdgeStores } from './utils';
 
 export const key = Symbol();
 
-type CreateStoreParams = Pick<SvelteFlowStore, 'nodes' | 'edges'>;
-
-export function createStore(params: CreateStoreParams): SvelteFlowStore {
-  const store = {
-    ...initialStoreState,
-    ...params
-  };
+export function createStore(): SvelteFlowStore {
+  const store = getInitialStore();
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -55,6 +51,7 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
 
   function addEdge(edgeParams: Edge | Connection) {
     const edges = get(store.edges);
+
     store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
@@ -348,6 +345,8 @@ export function createStore(params: CreateStoreParams): SvelteFlowStore {
     ),
 
     // actions
+    syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
+    syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
     setNodeTypes,
     setEdgeTypes,
     addEdge,
@@ -379,4 +378,14 @@ export function useStore(): SvelteFlowStore {
   }
 
   return store.getStore();
+}
+
+export function createStoreContext() {
+  const store = createStore();
+
+  setContext(key, {
+    getStore: () => store
+  });
+
+  return store;
 }

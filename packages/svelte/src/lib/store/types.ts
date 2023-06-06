@@ -9,10 +9,12 @@ import type {
   UpdateConnection
 } from '@xyflow/system';
 
-import type { initialStoreState } from './initial-store';
+import type { getInitialStore } from './initial-store';
 import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
 
 export type SvelteFlowStoreActions = {
+  syncNodeStores: (nodesStore: Writable<Node[]>) => void;
+  syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
   addEdge: (edge: Edge | Connection) => void;
@@ -33,9 +35,6 @@ export type SvelteFlowStoreActions = {
   reset(): void;
 };
 
-export type SvelteFlowStoreState = typeof initialStoreState & {
-  nodes: Writable<Node[]>;
-  edges: Writable<Edge[]>;
-};
+export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;
