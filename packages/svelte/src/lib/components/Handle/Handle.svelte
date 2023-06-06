@@ -79,7 +79,7 @@
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id={`${nodeId}-${id}-${type}`}
+  data-id="{nodeId}-{id}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
@@ -108,8 +108,8 @@
     min-height: 5px;
     width: 6px;
     height: 6px;
-    background: #1a192b;
-    border: 1px solid white;
+    background: var(--handle-background-color);
+    border: 1px solid var(--handle-border-color);
     border-radius: 100%;
   }
 

@@ -5,11 +5,11 @@ export enum BackgroundVariant {
 }
 
 export type BackgroundProps = {
-  color?: string;
+  bgColor?: string;
+  patternColor?: string;
   class?: string;
   gap?: number | [number, number];
   size?: number;
   lineWidth?: number;
   variant?: BackgroundVariant;
-  style?: string;
 };

@@ -1,10 +1,4 @@
 <script labg="ts" context="module">
-  const defaultColor = {
-    [BackgroundVariant.Dots]: '#91919a',
-    [BackgroundVariant.Lines]: '#eee',
-    [BackgroundVariant.Cross]: '#e2e2e2'
-  };
-
   const defaultSize = {
     [BackgroundVariant.Dots]: 1,
     [BackgroundVariant.Lines]: 1,
@@ -26,13 +20,12 @@
   export let gap: $$Props['gap'] = 20;
   export let size: $$Props['size'] = 1;
   export let lineWidth: $$Props['lineWidth'] = 1;
-  export let color: $$Props['color'] = '#ccc';
-  export let style: $$Props['style'] = '';
+  export let bgColor: $$Props['bgColor'] = undefined;
+  export let patternColor: $$Props['patternColor'] = undefined;
   let className: $$Props['class'] = '';
   export { className as class };
 
   const { transform, flowId } = useStore();
-  const patternColor = color || defaultColor[variant!];
   const patternSize = size || defaultSize[variant!];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
@@ -49,8 +42,8 @@
 
 <svg
   class={cc(['svelte-flow__background', className])}
-  {style}
   data-testid="svelte-flow__background"
+  style:--background-color-props={bgColor}
 >
   <pattern
     id={patternId}
@@ -79,5 +72,6 @@
     left: 0;
     pointer-events: none;
     z-index: -1;
+    background-color: var(--background-color-props, 'transparent');
   }
 </style>

@@ -5,4 +5,8 @@ export type ControlsProps = {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;
+  buttonBgColor?: string;
+  buttonBgColorHover?: string;
+  buttonColor?: string;
+  buttonColorHover?: string;
 };

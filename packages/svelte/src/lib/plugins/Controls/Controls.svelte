@@ -16,6 +16,11 @@
   export let showZoom: $$Props['showZoom'] = true;
   export let showFitView: $$Props['showFitView'] = true;
   export let showInteractive: $$Props['showInteractive'] = true;
+  export let buttonBgColor: $$Props['buttonBgColor'] = undefined;
+  export let buttonBgColorHover: $$Props['buttonBgColorHover'] = undefined;
+  export let buttonColor: $$Props['buttonColor'] = undefined;
+  export let buttonColorHover: $$Props['buttonColorHover'] = undefined;
+  export let buttonBorderColor: $$Props['buttonColorHover'] = undefined;
 
   const {
     zoomIn,
@@ -28,6 +33,14 @@
     nodesConnectable,
     elementsSelectable
   } = useStore();
+
+  const buttonProps = {
+    bgColor: buttonBgColor,
+    bgColorHover: buttonBgColorHover,
+    color: buttonColor,
+    colorHover: buttonColorHover,
+    borderColor: buttonBorderColor
+  };
 
   $: isInteractive = $nodesDraggable || $nodesConnectable || $elementsSelectable;
   $: minZoomReached = $transform[2] <= $minZoom;
@@ -62,40 +75,41 @@
       title="zoom in"
       aria-label="zoom in"
       disabled={maxZoomReached}
+      {...buttonProps}
     >
       <PlusIcon />
     </ControlButton>
-    <svelte:component
-      this={ControlButton}
+    <ControlButton
       on:click={onZoomOutHandler}
       class="svelte-flow__controls-zoomout"
       title="zoom out"
       aria-label="zoom out"
       disabled={minZoomReached}
+      {...buttonProps}
     >
       <MinusIcon />
-    </svelte:component>
+    </ControlButton>
   {/if}
   {#if showFitView}
-    <svelte:component
-      this={ControlButton}
+    <ControlButton
       class="svelte-flow__controls-fitview"
       on:click={onFitViewHandler}
       title="fit view"
       aria-label="fit view"
+      {...buttonProps}
     >
       <FitViewIcon />
-    </svelte:component>
+    </ControlButton>
   {/if}
   {#if showInteractive}
-    <svelte:component
-      this={ControlButton}
+    <ControlButton
       class="svelte-flow__controls-interactive"
       on:click={onToggleInteractivity}
       title="toggle interactivity"
       aria-label="toggle interactivity"
+      {...buttonProps}
     >
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}
-    </svelte:component>
+    </ControlButton>
   {/if}
 </Panel>

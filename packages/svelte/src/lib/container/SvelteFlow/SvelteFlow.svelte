@@ -167,6 +167,8 @@
     overflow: hidden;
     position: relative;
     z-index: 0;
+
+    background-color: var(--background-color);
   }
 
   .svelte-flow :global(.svelte-flow__node-default),
@@ -181,5 +183,34 @@
     height: 100%;
     pointer-events: none;
     user-select: none;
+  }
+
+  :root {
+    --background-color: #fff;
+    --background-pattern-color: #eee;
+
+    --minimap-background-color: #fff;
+    --minimap-mask-color: rgb(240, 240, 240, 0.6);
+    --minimap-mask-stroke-color: none;
+    --minimap-mask-stroke-width: 1;
+
+    --controls-button-background-color: #fefefe;
+    --controls-button-background-color-hover: #f4f4f4;
+    --controls-button-color: inherit;
+    --controls-button-color-hover: inherit;
+    --controls-button-border-color: #eee;
+
+    --edge-color: #cfcfcf;
+    --edge-color-selected: #555;
+
+    --node-color: inherit;
+    --node-border-color: #1a192b;
+    --node-background-color: #fff;
+    --node-shadow-color-selected: #1a192b;
+
+    --handle-background-color: #1a192b;
+    --handle-border-color: #fff;
+
+    --connection-line-color: #b1b1b7;
   }
 </style>

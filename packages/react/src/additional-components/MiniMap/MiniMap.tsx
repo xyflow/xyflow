@@ -130,8 +130,8 @@ function MiniMap({
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {
-        const rfCoord = minimapInstance.current?.pointer(event);
-        onClick(event, { x: rfCoord?.[0] ?? 0, y: rfCoord?.[1] ?? 0 });
+        const [x, y] = minimapInstance.current?.pointer(event) || [0, 0];
+        onClick(event, { x, y });
       }
     : undefined;
 

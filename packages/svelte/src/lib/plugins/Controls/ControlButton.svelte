@@ -2,6 +2,11 @@
   import cc from 'classcat';
 
   let className: string;
+  let bgColor: string | undefined = undefined;
+  let bgColorHover: string | undefined = undefined;
+  let color: string | undefined = undefined;
+  let colorHover: string | undefined = undefined;
+  let borderColor: string | undefined = undefined;
 
   export { className as class };
 </script>
@@ -10,6 +15,11 @@
   type="button"
   on:click
   class={cc(['svelte-flow__controls-button', className])}
+  style:--controls-button-background-color-props={bgColor}
+  style:--controls-button-background-color-hover-props={bgColorHover}
+  style:--controls-button-color-props={color}
+  style:--controls-button-color-hover-props={colorHover}
+  style:--controls-button-border-color-props={borderColor}
   {...$$restProps}
 >
   <slot class="button-svg" />
@@ -18,8 +28,13 @@
 <style>
   .svelte-flow__controls-button {
     border: none;
-    background: #fefefe;
-    border-bottom: 1px solid #eee;
+    background: var(
+      --controls-button-background-color-props,
+      var(--controls-button-background-color)
+    );
+    border-bottom: 1px solid
+      var(--controls-button-border-color-props, var(--controls-button-border-color));
+    color: var(--controls-button-color-props, var(--controls-button-color));
     box-sizing: content-box;
     display: flex;
     justify-content: center;
@@ -32,7 +47,11 @@
   }
 
   .svelte-flow__controls-button:hover {
-    background: #f4f4f4;
+    background: var(
+      --controls-button-background-color-hover-props,
+      var(--controls-button-background-color-hover)
+    );
+    color: var(--controls-button-color-hover-props, var(--controls-button-hover-color));
   }
 
   .svelte-flow__controls-button :global(svg) {

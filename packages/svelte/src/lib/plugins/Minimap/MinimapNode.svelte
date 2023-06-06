@@ -10,12 +10,8 @@
   export let shapeRendering: string;
   export let strokeColor: string;
   export let strokeWidth: number = 2;
-  export let style: Record<string, string>;
   let className: string = '';
   export { className as class };
-
-  const { background, backgroundColor } = style || {};
-  const fill = (color || background || backgroundColor) as string;
 </script>
 
 <rect
@@ -26,7 +22,7 @@
   ry={borderRadius}
   {width}
   {height}
-  {fill}
+  fill={color}
   stroke={strokeColor}
   stroke-width={strokeWidth}
   shape-rendering={shapeRendering}

@@ -17,24 +17,23 @@
 
   type $$Props = MiniMapProps;
 
-  let position: $$Props['position'] = 'bottom-right';
-  let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
-  let style: $$Props['style'] = '';
-  let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
-  let nodeColor: $$Props['nodeColor'] = '#e2e2e2';
-  let nodeClassName: $$Props['nodeClassName'] = '';
-  let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
-  let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
-  let bgColor: $$Props['bgColor'] = '#fff';
-  let maskColor: $$Props['maskColor'] = 'rgb(240, 240, 240, 0.6)';
-  let maskStrokeColor: $$Props['maskStrokeColor'] = 'none';
-  let maskStrokeWidth: $$Props['maskStrokeWidth'] = 1;
-  let width: $$Props['width'] = undefined;
-  let height: $$Props['height'] = undefined;
-  let pannable: $$Props['pannable'] = true;
-  let zoomable: $$Props['zoomable'] = true;
-  let inversePan: $$Props['inversePan'] = undefined;
-  let zoomStep: $$Props['zoomStep'] = undefined;
+  export let position: $$Props['position'] = 'bottom-right';
+  export let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
+  export let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
+  export let nodeColor: $$Props['nodeColor'] = '#e2e2e2';
+  export let nodeClassName: $$Props['nodeClassName'] = '';
+  export let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
+  export let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
+  export let bgColor: $$Props['bgColor'] = undefined;
+  export let maskColor: $$Props['maskColor'] = undefined;
+  export let maskStrokeColor: $$Props['maskStrokeColor'] = undefined;
+  export let maskStrokeWidth: $$Props['maskStrokeWidth'] = undefined;
+  export let width: $$Props['width'] = undefined;
+  export let height: $$Props['height'] = undefined;
+  export let pannable: $$Props['pannable'] = true;
+  export let zoomable: $$Props['zoomable'] = true;
+  export let inversePan: $$Props['inversePan'] = undefined;
+  export let zoomStep: $$Props['zoomStep'] = undefined;
 
   let className: $$Props['class'] = '';
   export { className as class };
@@ -84,16 +83,19 @@
 <Panel
   {position}
   class={cc(['svelte-flow__minimap', className])}
-  style={`background-color: ${bgColor}; ${style}`}
   data-testid="svelte-flow__minimap"
 >
   {#if $panZoom}
     <svg
       width={elementWidth}
       height={elementHeight}
-      viewBox={`${x} ${y} ${viewboxWidth} ${viewboxHeight}`}
+      viewBox="{x} {y} {viewboxWidth} {viewboxHeight}"
       role="img"
       aria-labelledby={labelledBy}
+      style:--minimap-background-color-props={bgColor}
+      style:--minimap-mask-color-props={maskColor}
+      style:--minimap-mask-stroke-color-props={maskStrokeColor}
+      style:--minimap-mask-stroke-width-props={maskStrokeWidth}
       use:interactive={{
         panZoom: $panZoom,
         transform,
@@ -123,22 +125,29 @@
             strokeWidth={nodeStrokeWidth}
             {shapeRendering}
             class={nodeClassNameFunc(node)}
-            style={{}}
           />
         {/if}
       {/each}
       <path
         class="svelte-flow__minimap-mask"
-        d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${
-          viewboxHeight + offset * 2
-        }h${-viewboxWidth - offset * 2}z
-      M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
-        fill={maskColor}
+        d="M{x - offset},{y - offset}h{viewboxWidth + offset * 2}v{viewboxHeight +
+          offset * 2}h{-viewboxWidth - offset * 2}z
+      M{viewBB.x},{viewBB.y}h{viewBB.width}v{viewBB.height}h{-viewBB.width}z"
         fill-rule="evenodd"
-        stroke={maskStrokeColor}
-        stroke-width={maskStrokeWidth}
         pointer-events="none"
       />
     </svg>
   {/if}
 </Panel>
+
+<style>
+  svg {
+    background-color: var(--minimap-background-color-props, var(--minimap-background-color));
+  }
+
+  .svelte-flow__minimap-mask {
+    fill: var(--minimap-mask-color-props, var(--minimap-mask-color));
+    stroke: var(--minimap-mask-stroke-color-props, var(--minimap-mask-stroke-color));
+    stroke-width: var(--minimap-mask-stroke-width-props, var(--minimap-mask-stroke-width));
+  }
+</style>

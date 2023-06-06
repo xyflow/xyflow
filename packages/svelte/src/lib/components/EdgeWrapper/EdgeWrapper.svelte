@@ -81,25 +81,4 @@
     pointer-events: visibleStroke;
     cursor: pointer;
   }
-
-  .svelte-flow__edge :global(.svelte-flow__edge-path) {
-    stroke: #ccc;
-    stroke-width: 1;
-    fill: none;
-  }
-
-  .selected :global(.svelte-flow__edge-path) {
-    stroke: #555;
-  }
-
-  .animated :global(.svelte-flow__edge-path) {
-    stroke-dasharray: 5;
-    animation: dashdraw 0.5s linear infinite;
-  }
-
-  @keyframes dashdraw {
-    from {
-      stroke-dashoffset: 10;
-    }
-  }
 </style>

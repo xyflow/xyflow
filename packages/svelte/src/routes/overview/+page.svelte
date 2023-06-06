@@ -90,7 +90,8 @@
       id: '2-4',
       type: 'custom',
       source: '2',
-      target: '4'
+      target: '4',
+      animated: true
     }
   ]);
 
@@ -150,5 +151,16 @@
   :global(.svelte-flow .custom-style) {
     background: #ff5050;
     color: white;
+  }
+
+  :root {
+    --background-color: #ffffdd;
+    --background-pattern-color: #5050ff;
+
+    --minimap-background-color: #f5f6f7;
+    --minimap-mask-color: rgb(255, 255, 240, 0.6);
+
+    --controls-button-background-color: #ddd;
+    --controls-button-background-color-hover: #ccc;
   }
 </style>

@@ -9,7 +9,7 @@
 {#if isVisible}
   <div
     class="svelte-flow__selection"
-    style={`width: ${width}px; height: ${height}px; transform: translate(${x}px, ${y}px)`}
+    style="width: {width}px; height: {height}px; transform: translate({x}px, {y}px)"
   />
 {/if}
 

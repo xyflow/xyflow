@@ -91,7 +91,7 @@
   class:draggable
   class:connectable
   class:parent={isParent}
-  style:transform={`translate(${positionOrigin?.x ?? 0}px, ${positionOrigin?.y ?? 0}px)`}
+  style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
   {style}
   on:click={onSelectNodeHandler}
   on:mouseenter={() => dispatchEvent('node:mouseenter')}
@@ -116,12 +116,12 @@
 <style>
   .svelte-flow__node {
     border-radius: 3px;
-    color: #222;
+    color: var(--node-color);
     text-align: center;
     border-width: 1px;
     border-style: solid;
-    border-color: #1a192b;
-    background-color: white;
+    border-color: var(--node-border-color);
+    background-color: var(--node-background-color);
     position: absolute;
     pointer-events: none;
     user-select: none;
@@ -134,7 +134,7 @@
 
   .selected {
     outline: none;
-    box-shadow: 0 0 0 0.5px #1a192b;
+    box-shadow: 0 0 0 0.5px var(--node-shadow-color-selected);
   }
 
   .dragging {

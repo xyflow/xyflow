@@ -15,7 +15,7 @@
 {#if selectedNodes && $selectionRectMode === 'nodes'}
   <div
     class="selection-wrapper nopan"
-    style={`width: ${rect.width}px; height: ${rect.height}px; transform: translate(${rect.x}px, ${rect.y}px)`}
+    style="width: {rect.width}px; height: {rect.height}px; transform: translate({rect.x}px, {rect.y}px)"
     use:drag={{ disabled: false, store }}
   />
   <Selection
