@@ -34,14 +34,14 @@
       type: 'default',
       data: { label: 'Node' },
       position: { x: 0, y: 150 },
-      selectable: false,
+      selectable: false
     },
     {
       id: 'A',
       type: 'default',
       data: { label: 'Styled with class' },
       class: 'custom-style',
-      position: { x: 150, y: 150 },
+      position: { x: 150, y: 150 }
     },
     {
       id: 'D',
@@ -90,25 +90,27 @@
       id: '2-4',
       type: 'custom',
       source: '2',
-      target: '4',
+      target: '4'
     }
   ]);
 
   function updateNode() {
-    nodes.update(nds => nds.map(n => {
-      if (n.id === '1') {
-        return {
-          ...n,
-          position: { x: n.position.x + 20, y: n.position.y }
+    nodes.update((nds) =>
+      nds.map((n) => {
+        if (n.id === '1') {
+          return {
+            ...n,
+            position: { x: n.position.x + 20, y: n.position.y }
+          };
         }
-      }
 
-      return n;
-    }));
+        return n;
+      })
+    );
   }
 
   $: {
-    console.log('nodes changed', $nodes)
+    console.log('nodes changed', $nodes);
   }
 </script>
 
@@ -124,14 +126,17 @@
   initialViewport={{ x: 100, y: 100, zoom: 2 }}
   snapGrid={[25, 25]}
   on:node:click={(event) => console.log('on node click', event)}
-  on:node:mouseenter={(event) => console.log('on node enter', event)} 
+  on:node:mouseenter={(event) => console.log('on node enter', event)}
   on:node:mouseleave={(event) => console.log('on node leave', event)}
   on:edge:click={(event) => console.log('edge click', event)}
   on:connect:start={(event) => console.log('on connect start', event)}
   on:connect={(event) => console.log('on connect', event)}
   on:connect:end={(event) => console.log('on connect end', event)}
   on:pane:click={(event) => console.log('on pane click', event)}
-  on:pane:contextmenu={(event) => { event.preventDefault(); console.log('on pane contextmenu', event); }}
+  on:pane:contextmenu={(event) => {
+    event.preventDefault();
+    console.log('on pane contextmenu', event);
+  }}
 >
   <Controls />
   <Background variant={BackgroundVariant.Dots} />

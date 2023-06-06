@@ -18,7 +18,15 @@
   export let showInteractive: $$Props['showInteractive'] = true;
 
   const {
-    zoomIn, zoomOut, fitView, transform, minZoom, maxZoom, nodesDraggable, nodesConnectable, elementsSelectable
+    zoomIn,
+    zoomOut,
+    fitView,
+    transform,
+    minZoom,
+    maxZoom,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable
   } = useStore();
 
   $: isInteractive = $nodesDraggable || $nodesConnectable || $elementsSelectable;
@@ -45,7 +53,7 @@
     elementsSelectable.set(isInteractive);
   };
 </script>
- 
+
 <Panel class="svelte-flow__controls" {position} data-testid="svelte-flow__controls">
   {#if showZoom}
     <ControlButton

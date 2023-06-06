@@ -8,19 +8,19 @@
   export let width: $$Props['width'] = 12.5;
   export let height: $$Props['height'] = 12.5;
   export let markerUnits: $$Props['markerUnits'] = 'strokeWidth';
-  export let orient: $$Props['orient']= 'auto-start-reverse';
+  export let orient: $$Props['orient'] = 'auto-start-reverse';
   export let color: $$Props['color'] = undefined;
   export let strokeWidth: $$Props['strokeWidth'] = undefined;
 </script>
 
 <marker
   class="svelte-flow__arrowhead"
-  id={id}
+  {id}
   markerWidth={`${width}`}
   markerHeight={`${height}`}
   viewBox="-10 -10 20 20"
-  markerUnits={markerUnits}
-  orient={orient}
+  {markerUnits}
+  {orient}
   refX="0"
   refY="0"
 >

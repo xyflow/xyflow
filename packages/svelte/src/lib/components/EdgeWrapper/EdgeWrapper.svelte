@@ -29,8 +29,8 @@
   export let markerEnd: $$Props['markerEnd'] = undefined;
   export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
   export let targetHandleId: $$Props['targetHandleId'] = undefined;
-  
-   // @ todo: support edge updates
+
+  // @ todo: support edge updates
 
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
   const dispatch = createEventDispatcher();
@@ -45,19 +45,13 @@
       addSelectedEdges([id]);
     }
 
-    const edge = $edges.find(e => e.id === id);
+    const edge = $edges.find((e) => e.id === id);
     dispatch('edge:click', edge);
   }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<g
-  class="svelte-flow__edge"
-  class:animated
-  class:selected
-  data-id={id}
-  on:click={onClick}
->
+<g class="svelte-flow__edge" class:animated class:selected data-id={id} on:click={onClick}>
   <svelte:component
     this={edgeComponent}
     {id}

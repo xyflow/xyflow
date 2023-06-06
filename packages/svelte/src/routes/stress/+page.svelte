@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
   import SvelteFlow, {
     Controls,
     Background,
@@ -26,7 +26,7 @@
         id,
         data,
         position,
-        type: 'default',
+        type: 'default'
       };
       nodeItems.push(node);
 
@@ -34,7 +34,7 @@
         const edge = {
           id: `${source.id}-${id}`,
           source: source.id,
-          target: id,
+          target: id
         };
         edgeItems.push(edge);
       }
@@ -47,12 +47,7 @@
   const edges = writable(edgeItems);
 </script>
 
-<SvelteFlow
-  {nodes}
-  {edges}
-  fitView
-  minZoom={0.2}
->
+<SvelteFlow {nodes} {edges} fitView minZoom={0.2}>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />

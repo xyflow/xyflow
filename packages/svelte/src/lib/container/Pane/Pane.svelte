@@ -30,8 +30,8 @@
 
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { SelectionMode, getEventPosition, getNodesInside  } from '@xyflow/system';
-  
+  import { SelectionMode, getEventPosition, getNodesInside } from '@xyflow/system';
+
   import { useStore } from '$lib/store';
   import { getConnectedEdges } from '$lib/utils';
   import type { Node, Edge } from '$lib/types';
@@ -52,7 +52,7 @@
     selectionRectMode,
     selectionKeyPressed,
     selectionMode,
-    unselectNodesAndEdges,
+    unselectNodesAndEdges
   } = useStore();
 
   let container: HTMLDivElement;
@@ -166,7 +166,6 @@
 
     dispatch('pane:contextmenu', event);
   };
-
 </script>
 
 <div

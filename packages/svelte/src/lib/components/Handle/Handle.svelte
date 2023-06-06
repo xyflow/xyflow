@@ -25,7 +25,7 @@
 
   const handleId = id || null;
   const dispatch = createEventDispatcher();
-  
+
   const store = useStore();
   const {
     connectionMode,
@@ -38,7 +38,7 @@
     addEdge,
     panBy,
     cancelConnection,
-    updateConnection,
+    updateConnection
   } = store;
 
   function dispatchEvent(eventName: string, params?: Connection) {
@@ -47,7 +47,7 @@
 
   function onConnectExtended(params: Connection) {
     addEdge(params);
-    dispatchEvent('connect', params)
+    dispatchEvent('connect', params);
   }
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -69,7 +69,7 @@
         cancelConnection,
         panBy,
         onConnect: onConnectExtended,
-        getTransform: () => $transform,
+        getTransform: () => $transform
       });
     }
   }

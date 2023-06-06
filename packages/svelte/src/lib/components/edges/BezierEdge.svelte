@@ -28,4 +28,3 @@
   interactionWidth={$$props.interactionWidth}
   style={$$props.style}
 />
-

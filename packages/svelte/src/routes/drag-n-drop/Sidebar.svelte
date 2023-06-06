@@ -1,7 +1,5 @@
 <script lang="ts">
-  import {
-    useSvelteFlow
-  } from '../../lib/index';
+  import { useSvelteFlow } from '../../lib/index';
 
   const onDragStart = (event: DragEvent, nodeType: string) => {
     if (!event.dataTransfer) {
@@ -17,7 +15,11 @@
 
 <aside>
   <div class="label">You can drag these nodes to the pane on the left.</div>
-  <div class="input-node node" on:dragstart={(event) => onDragStart(event, 'input')} draggable={true}>
+  <div
+    class="input-node node"
+    on:dragstart={(event) => onDragStart(event, 'input')}
+    draggable={true}
+  >
     Input Node
   </div>
   <div
@@ -38,7 +40,7 @@
 
 <style>
   .label {
-    margin: 0.5rem 0 .25rem 0;
+    margin: 0.5rem 0 0.25rem 0;
   }
 
   aside {
@@ -51,7 +53,7 @@
   .node {
     margin-bottom: 0.5rem;
     border: 1px solid #111;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     font-weight: 700;
     border-radius: 3px;
     cursor: grab;

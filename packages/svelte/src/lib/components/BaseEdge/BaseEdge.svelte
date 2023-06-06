@@ -18,12 +18,12 @@
 
 <path
   d={path}
-  id={id}
+  {id}
   fill="none"
   class="svelte-flow__edge-path"
   marker-start={markerStart}
   marker-end={markerEnd}
-  style={style}
+  {style}
 />
 
 {#if interactionWidth}

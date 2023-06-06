@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
   import SvelteFlow, {
     Controls,
     Panel,
@@ -7,7 +7,7 @@
     MiniMap,
     type OnMoveEnd,
     type Node,
-    type Edge,
+    type Edge
   } from '../../lib/index';
 
   const nodes = writable([
@@ -15,16 +15,16 @@
       id: '1',
       type: 'input',
       data: { label: 'Node 1' },
-      position: { x: 250, y: 5 },
+      position: { x: 250, y: 5 }
     },
     { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
     { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
-    { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
+    { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } }
   ]);
 
   const edges = writable([
     { id: 'e1-2', source: '1', target: '2', animated: true },
-    { id: 'e1-3', source: '1', target: '3' },
+    { id: 'e1-3', source: '1', target: '3' }
   ]);
 
   const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
@@ -35,7 +35,6 @@
   const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
   const onPaneContextMenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
   const onMoveEnd: OnMoveEnd = (_, viewport) => console.log('onMoveEnd', viewport);
-
 
   let isSelectable = false;
   let isDraggable = false;
@@ -57,13 +56,13 @@
   elementsSelectable={isSelectable}
   nodesConnectable={isConnectable}
   nodesDraggable={isDraggable}
-  zoomOnScroll={zoomOnScroll}
-  zoomOnPinch={zoomOnPinch}
-  panOnScroll={panOnScroll}
-  panOnScrollMode={panOnScrollMode}
-  zoomOnDoubleClick={zoomOnDoubleClick}
-  panOnDrag={panOnDrag}
-  onMoveEnd={onMoveEnd}
+  {zoomOnScroll}
+  {zoomOnPinch}
+  {panOnScroll}
+  {panOnScrollMode}
+  {zoomOnDoubleClick}
+  {panOnDrag}
+  {onMoveEnd}
 >
   <MiniMap />
   <Controls />
@@ -141,7 +140,9 @@
         <select
           id="panonscrollmode"
           bind:value={panOnScrollMode}
-          on:change={(event) => { panOnScrollMode = PanOnScrollMode.Free }}
+          on:change={(event) => {
+            panOnScrollMode = PanOnScrollMode.Free;
+          }}
           class="react-flow__panonscrollmode"
         >
           <option value="free">free</option>

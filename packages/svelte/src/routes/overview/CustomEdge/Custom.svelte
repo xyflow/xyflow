@@ -17,7 +17,7 @@
   const svelteFlow = useSvelteFlow();
 
   function onClick() {
-    svelteFlow.edges.update(eds => eds.filter(e => e.id !== $$props.id));
+    svelteFlow.edges.update((eds) => eds.filter((e) => e.id !== $$props.id));
   }
 </script>
 
@@ -29,10 +29,9 @@
     class="edge-button"
     on:click={onClick}
   >
-  ✕
+    ✕
   </button>
 </EdgeLabelRenderer>
-
 
 <style>
   .edge-button {
@@ -49,8 +48,8 @@
     cursor: pointer;
     background-color: #eee;
   }
-  
+
   .edge-button:hover {
-    box-shadow: 0 0 2px 1px rgba(0,0,0,0.12);
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.12);
   }
 </style>

@@ -20,7 +20,7 @@
   import { useStore } from '$lib/store';
   import { BackgroundVariant, type BackgroundProps } from './types';
 
-  type $$Props = BackgroundProps; 
+  type $$Props = BackgroundProps;
 
   export let variant: $$Props['variant'] = BackgroundVariant.Dots;
   export let gap: $$Props['gap'] = 20;
@@ -47,7 +47,11 @@
     : [patternDimensions[0] / 2, patternDimensions[1] / 2];
 </script>
 
-<svg class={cc(['svelte-flow__background', className])} {style} data-testid="svelte-flow__background">
+<svg
+  class={cc(['svelte-flow__background', className])}
+  {style}
+  data-testid="svelte-flow__background"
+>
   <pattern
     id={patternId}
     x={$transform[0] % scaledGap[0]}

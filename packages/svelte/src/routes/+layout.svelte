@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Header } from '../example-components/Header'
+  import { Header } from '../example-components/Header';
 </script>
 
 <div class="app">

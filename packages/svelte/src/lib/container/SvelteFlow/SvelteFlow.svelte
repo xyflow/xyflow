@@ -25,7 +25,7 @@
   export let fitView: $$Props['fitView'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
-  export let initialViewport: Viewport = { x:0, y: 0, zoom: 1 };
+  export let initialViewport: Viewport = { x: 0, y: 0, zoom: 1 };
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
@@ -66,8 +66,8 @@
     store.height.set(height);
     store.domNode.set(domNode);
 
-    store.syncNodeStores(nodes)
-    store.syncEdgeStores(edges)
+    store.syncNodeStores(nodes);
+    store.syncEdgeStores(edges);
 
     if (fitView !== undefined) {
       store.fitViewOnInit.set(fitView);
@@ -78,15 +78,15 @@
       edgeTypes,
       minZoom,
       maxZoom,
-      translateExtent,
+      translateExtent
     });
 
     return () => {
       store.reset();
-    }
+    };
   });
 
-  // this updates the store for simple changes 
+  // this updates the store for simple changes
   // where the prop names equals the store name
   $: {
     const updatableProps: UpdatableStoreProps = {
@@ -99,10 +99,10 @@
       nodesDraggable,
       nodesConnectable,
       elementsSelectable,
-      isValidConnection,
+      isValidConnection
     };
 
-   updateStoreByKeys(store, updatableProps);
+    updateStoreByKeys(store, updatableProps);
   }
 
   $: updateStore(store, {

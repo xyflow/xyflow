@@ -1,9 +1,17 @@
 <script lang="ts">
-  import {
-    useSvelteFlow
-  } from '../../lib/index';
+  import { useSvelteFlow } from '../../lib/index';
 
-  const { zoomIn, zoomOut, setZoom, fitView, setCenter, setViewport, getViewport, viewport, nodes } = useSvelteFlow();
+  const {
+    zoomIn,
+    zoomOut,
+    setZoom,
+    fitView,
+    setCenter,
+    setViewport,
+    getViewport,
+    viewport,
+    nodes
+  } = useSvelteFlow();
 </script>
 
 <aside>
@@ -22,13 +30,15 @@
   {/each}
 
   <div class="label">Viewport:</div>
-  <div>x: {$viewport.x.toFixed(1)} y: {$viewport.y.toFixed(1)} zoom: {$viewport.zoom.toFixed(1)}</div>
+  <div>
+    x: {$viewport.x.toFixed(1)} y: {$viewport.y.toFixed(1)} zoom: {$viewport.zoom.toFixed(1)}
+  </div>
 </aside>
 
 <style>
   .label {
     font-weight: 700;
-    margin: 0.5rem 0 .25rem 0;
+    margin: 0.5rem 0 0.25rem 0;
   }
 
   aside {

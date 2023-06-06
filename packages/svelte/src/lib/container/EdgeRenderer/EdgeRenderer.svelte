@@ -14,7 +14,6 @@
   <MarkerDefinition />
 </svg>
 
-
 <style>
   .svelte-flow__edges {
     width: 100%;

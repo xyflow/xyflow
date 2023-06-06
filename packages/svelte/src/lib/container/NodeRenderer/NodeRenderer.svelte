@@ -5,7 +5,8 @@
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
 
-  const { nodes, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions } = useStore();
+  const { nodes, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions } =
+    useStore();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -38,8 +39,14 @@
       data={node.data}
       selected={node.selected}
       draggable={!!(node.draggable || ($nodesDraggable && typeof node.draggable === 'undefined'))}
-      selectable={!!(node.selectable || ($elementsSelectable && typeof node.selectable === 'undefined'))}
-      connectable={!!(node.connectable || ($nodesConnectable && typeof node.connectable === 'undefined'))}
+      selectable={!!(
+        node.selectable ||
+        ($elementsSelectable && typeof node.selectable === 'undefined')
+      )}
+      connectable={!!(
+        node.connectable ||
+        ($nodesConnectable && typeof node.connectable === 'undefined')
+      )}
       positionAbsolute={node.positionAbsolute}
       positionOrigin={posOrigin}
       isParent={!!node[internalsSymbol]?.isParent}

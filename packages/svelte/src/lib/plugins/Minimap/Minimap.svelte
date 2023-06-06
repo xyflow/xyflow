@@ -12,12 +12,12 @@
   import { useStore } from '$lib/store';
   import { Panel } from '$lib/container/Panel';
   import MinimapNode from './MinimapNode.svelte';
-  import interactive from './interactive'
+  import interactive from './interactive';
   import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
 
   type $$Props = MiniMapProps;
 
-  let position: $$Props['position']  = 'bottom-right';
+  let position: $$Props['position'] = 'bottom-right';
   let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
   let style: $$Props['style'] = '';
   let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
@@ -32,7 +32,7 @@
   let width: $$Props['width'] = undefined;
   let height: $$Props['height'] = undefined;
   let pannable: $$Props['pannable'] = true;
-  let zoomable: $$Props['zoomable'] = true;  
+  let zoomable: $$Props['zoomable'] = true;
   let inversePan: $$Props['inversePan'] = undefined;
   let zoomStep: $$Props['zoomStep'] = undefined;
 
@@ -41,8 +41,16 @@
 
   const defaultWidth = 200;
   const defaultHeight = 150;
-  const { nodes, transform, width: containerWidth, height: containerHeight, flowId, panZoom, translateExtent } = useStore();
-  
+  const {
+    nodes,
+    transform,
+    width: containerWidth,
+    height: containerHeight,
+    flowId,
+    panZoom,
+    translateExtent
+  } = useStore();
+
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction(nodeClassName);
@@ -56,8 +64,7 @@
     width: $containerWidth / $transform[2],
     height: $containerHeight / $transform[2]
   };
-  $: boundingRect =
-    $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes), viewBB) : viewBB;
+  $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes), viewBB) : viewBB;
   $: elementWidth = width ?? defaultWidth;
   $: elementHeight = height ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;
@@ -97,7 +104,7 @@
         inversePan,
         zoomStep,
         pannable,
-        zoomable,
+        zoomable
       }}
     >
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
@@ -122,9 +129,9 @@
       {/each}
       <path
         class="svelte-flow__minimap-mask"
-        d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${viewboxHeight + offset * 2}h${
-          -viewboxWidth - offset * 2
-        }z
+        d={`M${x - offset},${y - offset}h${viewboxWidth + offset * 2}v${
+          viewboxHeight + offset * 2
+        }h${-viewboxWidth - offset * 2}z
       M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
         fill={maskColor}
         fill-rule="evenodd"

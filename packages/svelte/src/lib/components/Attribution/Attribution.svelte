@@ -8,14 +8,18 @@
   export let position: AttributionProps['position'] = 'bottom-right';
 </script>
 
-
 {#if !proOptions?.hideAttribution}
   <Panel
-    position={position}
+    {position}
     class="svelte-flow__attribution"
     data-message="Please only hide this attribution when you are subscribed to Svelte Flow Pro: https://pro.reactflow.dev"
   >
-    <a href="https://reactflow.dev/svelte" target="_blank" rel="noopener noreferrer" aria-label="Svelte Flow attribution">
+    <a
+      href="https://reactflow.dev/svelte"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Svelte Flow attribution"
+    >
       Svelte Flow
     </a>
   </Panel>

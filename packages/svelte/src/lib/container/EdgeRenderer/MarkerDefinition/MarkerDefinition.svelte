@@ -6,7 +6,7 @@
 </script>
 
 <defs>
-  {#each $markers as marker(marker.id)}
+  {#each $markers as marker (marker.id)}
     <Marker {...marker} />
   {/each}
 </defs>

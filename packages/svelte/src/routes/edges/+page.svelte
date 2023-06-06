@@ -13,7 +13,7 @@
       id: '1',
       type: 'input',
       data: { label: 'Input 1' },
-      position: { x: 250, y: 0 },
+      position: { x: 250, y: 0 }
     },
     { id: '2', data: { label: 'Node 2' }, position: { x: 150, y: 100 } },
     { id: '2a', data: { label: 'Node 2a' }, position: { x: 0, y: 180 } },
@@ -26,26 +26,26 @@
       id: '6',
       type: 'output',
       data: { label: 'Output 6' },
-      position: { x: 50, y: 550 },
+      position: { x: 50, y: 550 }
     },
     {
       id: '7',
       type: 'output',
       data: { label: 'Output 7' },
-      position: { x: 250, y: 550 },
+      position: { x: 250, y: 550 }
     },
     {
       id: '8',
       type: 'output',
       data: { label: 'Output 8' },
-      position: { x: 525, y: 600 },
+      position: { x: 525, y: 600 }
     },
     {
       id: '9',
       type: 'output',
       data: { label: 'Output 9' },
-      position: { x: 675, y: 500 },
-    },
+      position: { x: 675, y: 500 }
+    }
   ]);
 
   const edges = writable([
@@ -53,21 +53,21 @@
       id: 'e1-2',
       source: '1',
       target: '2',
-      label: 'bezier edge (default)',
+      label: 'bezier edge (default)'
     },
     {
       id: 'e2-2a',
       source: '2',
       target: '2a',
       type: 'smoothstep',
-      label: 'smoothstep edge',
+      label: 'smoothstep edge'
     },
     {
       id: 'e2a-2b',
       source: '2a',
       target: '2b',
       type: 'simplebezier',
-      label: 'simple bezier edge',
+      label: 'simple bezier edge'
     },
     { id: 'e2-3', source: '2', target: '3', type: 'step', label: 'step edge' },
     {
@@ -75,7 +75,7 @@
       source: '3',
       target: '4',
       type: 'straight',
-      label: 'straight edge',
+      label: 'straight edge'
     },
     {
       id: 'e3-3a',
@@ -83,7 +83,7 @@
       target: '3a',
       type: 'straight',
       label: 'label only edge',
-      style: 'stroke: none',
+      style: 'stroke: none'
     },
     {
       id: 'e3-5',
@@ -91,7 +91,7 @@
       target: '5',
       animated: true,
       label: 'animated styled edge',
-      style: 'stroke: red',
+      style: 'stroke: red'
     },
     {
       id: 'e5-7',
@@ -100,20 +100,20 @@
       label: 'label with styled bg',
       labelStyle: 'background: #FFCC00; color: #fff; opacity: 0.7',
       markerEnd: {
-        type: MarkerType.ArrowClosed,
-      },
+        type: MarkerType.ArrowClosed
+      }
     },
     {
       id: 'e5-8',
       source: '5',
       target: '8',
-      data: { text: 'custom edge' },
+      data: { text: 'custom edge' }
     },
     {
       id: 'e5-9',
       source: '5',
       target: '9',
-      data: { text: 'custom edge 2' },
+      data: { text: 'custom edge 2' }
     },
     {
       id: 'e5-6',
@@ -128,7 +128,7 @@
         markerUnits: 'userSpaceOnUse',
         width: 20,
         height: 20,
-        strokeWidth: 2,
+        strokeWidth: 2
       },
       markerStart: {
         type: MarkerType.ArrowClosed,
@@ -136,17 +136,13 @@
         orient: 'auto-start-reverse',
         markerUnits: 'userSpaceOnUse',
         width: 20,
-        height: 20,
-      },
-    },
+        height: 20
+      }
+    }
   ]);
 </script>
 
-<SvelteFlow
-  {nodes}
-  {edges}
-  fitView
->
+<SvelteFlow {nodes} {edges} fitView>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />

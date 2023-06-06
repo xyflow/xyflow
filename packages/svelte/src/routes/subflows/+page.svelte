@@ -1,31 +1,32 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
   import SvelteFlow, {
     Controls,
     Background,
     BackgroundVariant,
     MiniMap,
     type NodeTypes,
+    type Node
   } from '../../lib/index';
   import { DebugNode } from './DebugNode';
-  
+
   const nodeTypes: NodeTypes = {
-    default: DebugNode,
+    default: DebugNode
   };
 
-  const nodes = writable([
+  const nodes = writable<Node[]>([
     {
       id: '1',
       type: 'input',
       data: { label: 'Node 1' },
       position: { x: 250, y: 5 },
-      origin: [0.5, 0.5],
+      origin: [0.5, 0.5]
     },
     {
       id: '4',
       data: { label: 'Node 4' },
       position: { x: 100, y: 200 },
-      style: "width:500px; height:300px;"
+      style: 'width:500px; height:300px;'
     },
     {
       id: '4a',
@@ -34,96 +35,89 @@
       parentNode: '4',
       extent: [
         [0, 0],
-        [100, 100],
-      ],
+        [100, 100]
+      ]
     },
     {
       id: '4b',
       data: { label: 'Node 4b' },
       position: { x: 100, y: 60 },
-      style: "width: 300px; height: 200px;",
-      parentNode: '4',
+      style: 'width: 300px; height: 200px;',
+      parentNode: '4'
     },
     {
       id: '4b1',
       data: { label: 'Node 4b1' },
       position: { x: 40, y: 20 },
-      parentNode: '4b',
+      parentNode: '4b'
     },
     {
       id: '4b2',
       data: { label: 'Node 4b2' },
       position: { x: 20, y: 100 },
-      parentNode: '4b',
+      parentNode: '4b'
     },
     {
       id: '5',
       type: 'group',
       data: { label: 'Node 5' },
       position: { x: 650, y: 250 },
-      style: "width: 400px; height: 150px",
-      zIndex: 1000,
+      style: 'width: 400px; height: 150px',
+      zIndex: 1000
     },
     {
       id: '5a',
       data: { label: 'Node 5a' },
       position: { x: 0, y: 0 },
       parentNode: '5',
-      extent: 'parent',
+      extent: 'parent'
     },
     {
       id: '5b',
       data: { label: 'Node 5b' },
       position: { x: 225, y: 50 },
       parentNode: '5',
-      expandParent: true,
+      expandParent: true
     },
     {
       id: '2',
       data: { label: 'Node 2' },
-      position: { x: 100, y: 100 },
+      position: { x: 100, y: 100 }
     },
     {
       id: '3',
       data: { label: 'Node 3' },
-      position: { x: 400, y: 100 },
+      position: { x: 400, y: 100 }
     }
   ]);
 
   const edges = writable([
     {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    // markerEnd: {
-    //   type: MarkerType.Arrow,
-    //   strokeWidth: 2,
-    //   width: 15,
-    //   height: 15,
-    //   color: '#f00',
-    // },
-  },
-  { id: 'e1-3', source: '1', target: '3' },
-  { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
-  { id: 'e3-4b', source: '3', target: '4b' },
-  { id: 'e4a-4b1', source: '4a', target: '4b1' },
-  { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
-  { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
+      id: 'e1-2',
+      source: '1',
+      target: '2'
+      // markerEnd: {
+      //   type: MarkerType.Arrow,
+      //   strokeWidth: 2,
+      //   width: 15,
+      //   height: 15,
+      //   color: '#f00',
+      // },
+    },
+    { id: 'e1-3', source: '1', target: '3' },
+    { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
+    { id: 'e3-4b', source: '3', target: '4b' },
+    { id: 'e4a-4b1', source: '4a', target: '4b1' },
+    { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
+    { id: 'e4b1-4b2', source: '4b1', target: '4b2' }
   ]);
 
   $: {
-    console.log($nodes)
+    console.log($nodes);
   }
 </script>
 
-<SvelteFlow
-  {nodes}
-  {edges}
-  {nodeTypes}
-  fitView
-  minZoom={0.1}
-  maxZoom={2.5}
->
+<SvelteFlow {nodes} {edges} {nodeTypes} fitView minZoom={0.1} maxZoom={2.5}>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />
@@ -131,6 +125,6 @@
 
 <style>
   :global(.svelte-flow .svelte-flow__node.parent) {
-    background-color: rgba(220,220,255,0.4)
+    background-color: rgba(220, 220, 255, 0.4);
   }
 </style>

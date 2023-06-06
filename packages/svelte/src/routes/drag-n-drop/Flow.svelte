@@ -10,28 +10,26 @@
   } from '../../lib/index';
   import Sidebar from './Sidebar.svelte';
 
-  const nodes = writable(
-    [
-      {
-        id: '1',
-        type: 'input',
-        data: { label: 'Input Node' },
-        position: { x: 150, y: 5 }
-      },
-      {
-        id: '2',
-        type: 'default',
-        data: { label: 'Node' },
-        position: { x: 0, y: 150 }
-      },
-      {
-        id: '3',
-        type: 'output',
-        data: { label: 'Output Node' },
-        position: { x: 300, y: 150 }
-      }
-    ]
-  );
+  const nodes = writable([
+    {
+      id: '1',
+      type: 'input',
+      data: { label: 'Input Node' },
+      position: { x: 150, y: 5 }
+    },
+    {
+      id: '2',
+      type: 'default',
+      data: { label: 'Node' },
+      position: { x: 0, y: 150 }
+    },
+    {
+      id: '3',
+      type: 'output',
+      data: { label: 'Output Node' },
+      position: { x: 300, y: 150 }
+    }
+  ]);
 
   const edges = writable([
     {
@@ -54,7 +52,7 @@
   const onDragOver = (event: DragEvent) => {
     event.preventDefault();
 
-    console.log(event)
+    console.log(event);
 
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'move';
@@ -71,27 +69,21 @@
     const type = event.dataTransfer.getData('application/svelteflow');
     const position = svelteFlow.project({
       x: event.clientX,
-      y: event.clientY - 40,
+      y: event.clientY - 40
     });
     const newNode: Node = {
       id: `${Math.random()}`,
       type,
       position,
-      data: { label: `${type} node` },
+      data: { label: `${type} node` }
     };
 
-    svelteFlow.nodes.update(nds => nds.concat(newNode));
+    svelteFlow.nodes.update((nds) => nds.concat(newNode));
   };
 </script>
 
 <main>
-  <SvelteFlow
-    {nodes}
-    {edges}
-    fitView
-    on:dragover={onDragOver}
-    on:drop={onDrop}
-  >
+  <SvelteFlow {nodes} {edges} fitView on:dragover={onDragOver} on:drop={onDrop}>
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
     <MiniMap />
