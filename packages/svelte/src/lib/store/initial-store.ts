@@ -73,7 +73,7 @@ export const getInitialStore = () => ({
   domNode: writable<HTMLDivElement | null>(null),
   connectionPath: readable<string | null>(null),
   connection: writable<ConnectionData>(initConnectionData),
-  connectionRadius: writable<number>(25),
+  connectionRadius: writable<number>(20),
   connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
   isValidConnection: writable<IsValidConnection>(() => true),
   nodesDraggable: writable<boolean>(true),

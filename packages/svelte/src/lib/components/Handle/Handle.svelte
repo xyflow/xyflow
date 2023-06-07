@@ -79,7 +79,7 @@
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{nodeId}-{id}-{type}"
+  data-id="{nodeId}-{id || null}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
