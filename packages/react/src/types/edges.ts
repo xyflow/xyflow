@@ -54,12 +54,6 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onEdgeDoubleClick?: EdgeMouseHandler;
   sourceHandleId?: string | null;
   targetHandleId?: string | null;
-  sourceX: number;
-  sourceY: number;
-  targetX: number;
-  targetY: number;
-  sourcePosition: Position;
-  targetPosition: Position;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;
@@ -88,18 +82,8 @@ export type EdgeProps<T = any> = Pick<
   Edge<T>,
   'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
 > &
-  Pick<
-    WrapEdgeProps,
-    | 'sourceX'
-    | 'sourceY'
-    | 'targetX'
-    | 'targetY'
-    | 'sourcePosition'
-    | 'targetPosition'
-    | 'sourceHandleId'
-    | 'targetHandleId'
-    | 'interactionWidth'
-  > &
+  Pick<WrapEdgeProps, 'sourceHandleId' | 'targetHandleId' | 'interactionWidth'> &
+  EdgePosition &
   EdgeLabelOptions & {
     markerStart?: string;
     markerEnd?: string;
@@ -140,3 +124,12 @@ export type ConnectionLineComponentProps = {
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
+
+export type EdgePosition = {
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+  sourcePosition: Position;
+  targetPosition: Position;
+};

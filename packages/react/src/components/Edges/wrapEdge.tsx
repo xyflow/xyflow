@@ -1,14 +1,14 @@
-import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent } from 'react';
+import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent, useEffect } from 'react';
 import cc from 'classcat';
 import { getMarkerId, elementSelectionKeys, XYHandle, type Connection } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMouseHandler } from './utils';
 import type { EdgeProps, WrapEdgeProps } from '../../types';
-
-const alwaysValidConnection = () => true;
+import { getEdgePosition } from '../../hooks/useVisibleEdges';
+import { shallow } from 'zustand/shallow';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -29,12 +29,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     style,
     source,
     target,
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
     isSelectable,
     hidden,
     sourceHandleId,
@@ -60,11 +54,34 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const [updateHover, setUpdateHover] = useState<boolean>(false);
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
+    const edgePosition = useStore((state) => {
+      const sourceNode = state.nodeInternals.get(source);
+      const targetNode = state.nodeInternals.get(target);
+
+      if (!sourceNode || !targetNode) {
+        return null;
+      }
+
+      const pos = getEdgePosition({
+        sourceNode,
+        targetNode,
+        sourceHandle: sourceHandleId || null,
+        targetHandle: targetHandleId || null,
+        connectionMode: state.connectionMode,
+        onError: state.onError,
+      });
+
+      return pos;
+    }, shallow);
+
+    useEffect(() => {
+      // console.log(edgePosition);
+    }, [edgePosition]);
 
     const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
     const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
 
-    if (hidden) {
+    if (hidden || !edgePosition) {
       return null;
     }
 
@@ -211,12 +228,12 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             labelBgBorderRadius={labelBgBorderRadius}
             data={data}
             style={style}
-            sourceX={sourceX}
-            sourceY={sourceY}
-            targetX={targetX}
-            targetY={targetY}
-            sourcePosition={sourcePosition}
-            targetPosition={targetPosition}
+            sourceX={edgePosition.sourceX}
+            sourceY={edgePosition.sourceY}
+            targetX={edgePosition.targetX}
+            targetY={edgePosition.targetY}
+            sourcePosition={edgePosition.sourcePosition}
+            targetPosition={edgePosition.targetPosition}
             sourceHandleId={sourceHandleId}
             targetHandleId={targetHandleId}
             markerStart={markerStartUrl}
@@ -229,9 +246,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
           <>
             {(isUpdatable === 'source' || isUpdatable === true) && (
               <EdgeAnchor
-                position={sourcePosition}
-                centerX={sourceX}
-                centerY={sourceY}
+                position={edgePosition.sourcePosition}
+                centerX={edgePosition.sourceX}
+                centerY={edgePosition.sourceY}
                 radius={edgeUpdaterRadius}
                 onMouseDown={onEdgeUpdaterSourceMouseDown}
                 onMouseEnter={onEdgeUpdaterMouseEnter}
@@ -241,9 +258,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             )}
             {(isUpdatable === 'target' || isUpdatable === true) && (
               <EdgeAnchor
-                position={targetPosition}
-                centerX={targetX}
-                centerY={targetY}
+                position={edgePosition.targetPosition}
+                centerX={edgePosition.targetX}
+                centerY={edgePosition.targetY}
                 radius={edgeUpdaterRadius}
                 onMouseDown={onEdgeUpdaterTargetMouseDown}
                 onMouseEnter={onEdgeUpdaterMouseEnter}

@@ -90,7 +90,7 @@ function onPointerDown(
     getTransform,
   }: OnPointerDownParams
 ) {
-  // when react-flow is used inside a shadow root we can't use document
+  // when xyflow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
   let autoPanId = 0;
   let closestHandle: ConnectionHandle | null;

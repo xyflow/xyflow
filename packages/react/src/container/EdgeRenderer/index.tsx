@@ -1,14 +1,13 @@
 import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { errorMessages, ConnectionMode, Position, getHandle } from '@xyflow/system';
+import { errorMessages } from '@xyflow/system';
 
 import { useStore } from '../../hooks/useStore';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 import MarkerDefinitions from './MarkerDefinitions';
-import { getEdgePositions, getNodeData } from './utils';
 import { GraphViewProps } from '../GraphView';
-import type { Edge, ReactFlowState } from '../../types';
+import type { ReactFlowState } from '../../types';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
@@ -35,14 +34,12 @@ type EdgeRendererProps = Pick<
 };
 
 const selector = (s: ReactFlowState) => ({
-  nodesConnectable: s.nodesConnectable,
+  width: s.width,
+  height: s.height,
   edgesFocusable: s.edgesFocusable,
   edgesUpdatable: s.edgesUpdatable,
   elementsSelectable: s.elementsSelectable,
-  width: s.width,
-  height: s.height,
   connectionMode: s.connectionMode,
-  nodeInternals: s.nodeInternals,
   onError: s.onError,
 });
 
@@ -65,9 +62,8 @@ const EdgeRenderer = ({
   onEdgeUpdateEnd,
   children,
 }: EdgeRendererProps) => {
-  const { edgesFocusable, edgesUpdatable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } =
-    useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(onlyRenderVisibleElements, nodeInternals, elevateEdgesOnSelect);
+  const { width, height, edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
+  const edgeTree = useVisibleEdges(onlyRenderVisibleElements, elevateEdgesOnSelect);
 
   if (!width) {
     return null;
@@ -85,14 +81,7 @@ const EdgeRenderer = ({
         >
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />}
           <g>
-            {edges.map((edge: Edge) => {
-              const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getNodeData(nodeInternals.get(edge.source));
-              const [targetNodeRect, targetHandleBounds, targetIsValid] = getNodeData(nodeInternals.get(edge.target));
-
-              if (!sourceIsValid || !targetIsValid) {
-                return null;
-              }
-
+            {edges.map((edge) => {
               let edgeType = edge.type || 'default';
 
               if (!edgeTypes[edgeType]) {
@@ -100,16 +89,7 @@ const EdgeRenderer = ({
                 edgeType = 'default';
               }
 
-              const EdgeComponent = edgeTypes[edgeType] || edgeTypes.default;
-              // when connection type is loose we can define all handles as sources and connect source -> source
-              const targetNodeHandles =
-                connectionMode === ConnectionMode.Strict
-                  ? targetHandleBounds!.target
-                  : (targetHandleBounds!.target ?? []).concat(targetHandleBounds!.source ?? []);
-              const sourceHandle = getHandle(sourceHandleBounds!.source!, edge.sourceHandle);
-              const targetHandle = getHandle(targetNodeHandles!, edge.targetHandle);
-              const sourcePosition = sourceHandle?.position || Position.Bottom;
-              const targetPosition = targetHandle?.position || Position.Top;
+              const EdgeComponent = edgeTypes[edgeType];
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
               const isUpdatable =
                 typeof onEdgeUpdate !== 'undefined' &&
@@ -119,27 +99,12 @@ const EdgeRenderer = ({
                 (elementsSelectable && typeof edge.selectable === 'undefined')
               );
 
-              if (!sourceHandle || !targetHandle) {
-                onError?.('008', errorMessages['error008'](sourceHandle, edge));
-
-                return null;
-              }
-
-              const { sourceX, sourceY, targetX, targetY } = getEdgePositions(
-                sourceNodeRect,
-                sourceHandle,
-                sourcePosition,
-                targetNodeRect,
-                targetHandle,
-                targetPosition
-              );
-
               return (
                 <EdgeComponent
                   key={edge.id}
                   id={edge.id}
                   className={cc([edge.className, noPanClassName])}
-                  type={edgeType}
+                  type={edge.type}
                   data={edge.data}
                   selected={!!edge.selected}
                   animated={!!edge.animated}
@@ -157,12 +122,6 @@ const EdgeRenderer = ({
                   targetHandleId={edge.targetHandle}
                   markerEnd={edge.markerEnd}
                   markerStart={edge.markerStart}
-                  sourceX={sourceX}
-                  sourceY={sourceY}
-                  targetX={targetX}
-                  targetY={targetY}
-                  sourcePosition={sourcePosition}
-                  targetPosition={targetPosition}
                   isSelectable={isSelectable}
                   onEdgeUpdate={onEdgeUpdate}
                   onContextMenu={onEdgeContextMenu}
