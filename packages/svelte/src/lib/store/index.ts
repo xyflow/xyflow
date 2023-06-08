@@ -19,7 +19,6 @@ import {
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
-import { getEdgesLayouted } from './edges-layouted';
 import { getConnectionPath } from './connection-path';
 import {
   initConnectionData,
@@ -29,6 +28,7 @@ import {
 } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores } from './utils';
+import { getEdgeTree } from './edge-tree';
 
 export const key = Symbol();
 
@@ -332,12 +332,16 @@ export function createStore(): SvelteFlowStore {
     cancelConnection();
   }
 
+  function onError(id: string, msg: string) {
+    console.log(msg);
+  }
+
   return {
     // state
     ...store,
 
     // derived state
-    edgesLayouted: getEdgesLayouted(store),
+    edgeTree: getEdgeTree(store, onError),
     connectionPath: getConnectionPath(store),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
@@ -364,7 +368,8 @@ export function createStore(): SvelteFlowStore {
     panBy,
     updateConnection,
     cancelConnection,
-    reset
+    reset,
+    onError
   };
 }
 

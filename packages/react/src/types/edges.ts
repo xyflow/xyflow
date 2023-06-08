@@ -12,6 +12,7 @@ import type {
   ConnectionLineType,
   HandleElement,
   ConnectionStatus,
+  EdgePosition,
 } from '@xyflow/system';
 
 import { Node } from '.';
@@ -124,12 +125,3 @@ export type ConnectionLineComponentProps = {
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
-
-export type EdgePosition = {
-  sourceX: number;
-  sourceY: number;
-  targetX: number;
-  targetY: number;
-  sourcePosition: Position;
-  targetPosition: Position;
-};

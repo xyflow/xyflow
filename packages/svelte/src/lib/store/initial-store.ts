@@ -10,7 +10,8 @@ import {
   type MarkerProps,
   type PanZoomInstance,
   type CoordinateExtent,
-  type IsValidConnection
+  type IsValidConnection,
+  type GroupedEdges
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -47,7 +48,7 @@ export const getInitialStore = () => ({
   flowId: writable<string | null>(null),
   nodes: createNodes([]),
   edges: createEdges([]),
-  edgesLayouted: readable<EdgeLayouted[]>([]),
+  edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
   height: writable<number>(500),
   width: writable<number>(500),
   minZoom: writable<number>(0.5),
@@ -82,5 +83,6 @@ export const getInitialStore = () => ({
   selectNodesOnDrag: writable<boolean>(true),
   markers: readable<MarkerProps[]>([]),
   defaultMarkerColor: writable<string>('#b1b1b7'),
-  lib: readable<string>('svelte')
+  lib: readable<string>('svelte'),
+  onlyRenderVisibleElements: writable<boolean>(false)
 });

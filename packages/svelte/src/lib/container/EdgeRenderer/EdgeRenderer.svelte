@@ -3,16 +3,25 @@
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
 
-  const { edgesLayouted, width, height } = useStore();
+  const { width, height, elementsSelectable, edgeTree } = useStore();
 </script>
 
-<svg width={$width} height={$height} class="svelte-flow__edges">
-  {#each $edgesLayouted as edge (edge.id)}
-    <EdgeWrapper {...edge} on:edge:click />
-  {/each}
+{#each $edgeTree as group (group.level)}
+  <svg width={$width} height={$height} style="z-index: {group.level}" class="svelte-flow__edges">
+    {#if group.isMaxLevel} <MarkerDefinition />{/if}
+    <g>
+      {#each group.edges as edge (edge.id)}
+        {@const edgeType = edge.type || 'default'}
+        {@const selectable = !!(
+          edge.selectable ||
+          ($elementsSelectable && typeof edge.selectable === 'undefined')
+        )}
 
-  <MarkerDefinition />
-</svg>
+        <EdgeWrapper {...edge} type={edgeType} {selectable} on:edge:click />
+      {/each}
+    </g>
+  </svg>
+{/each}
 
 <style>
   .svelte-flow__edges {

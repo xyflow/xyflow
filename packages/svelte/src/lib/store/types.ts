@@ -6,7 +6,8 @@ import type {
   Connection,
   UpdateNodePositions,
   CoordinateExtent,
-  UpdateConnection
+  UpdateConnection,
+  OnError
 } from '@xyflow/system';
 
 import type { getInitialStore } from './initial-store';
@@ -33,6 +34,7 @@ export type SvelteFlowStoreActions = {
   updateConnection: UpdateConnection;
   cancelConnection: () => void;
   reset(): void;
+  onError: OnError;
 };
 
 export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;

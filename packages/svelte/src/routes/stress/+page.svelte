@@ -9,8 +9,8 @@
     type Edge
   } from '../../lib/index';
 
-  const yNodes = 20;
-  const xNodes = 20;
+  const yNodes = 25;
+  const xNodes = 25;
 
   const nodeItems: Node[] = [];
   const edgeItems: Edge[] = [];

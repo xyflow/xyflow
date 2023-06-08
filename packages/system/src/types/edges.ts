@@ -1,3 +1,5 @@
+import { Position } from './utils';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type BaseEdge<EdgeData = any> = {
   id: string;
@@ -61,4 +63,13 @@ export enum MarkerType {
 
 export type MarkerProps = EdgeMarker & {
   id: string;
+};
+
+export type EdgePosition = {
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+  sourcePosition: Position;
+  targetPosition: Position;
 };

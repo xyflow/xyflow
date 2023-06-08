@@ -1,4 +1,4 @@
-import { BaseEdge, HandleElement } from './types';
+import { HandleType } from './types';
 
 export const errorMessages = {
   error001: () =>
@@ -11,10 +11,13 @@ export const errorMessages = {
   error006: () => "Can't create edge. An edge needs a source and a target.",
   error007: (id: string) => `The old edge with id=${id} does not exist.`,
   error009: (type: string) => `Marker type "${type}" doesn't exist.`,
-  error008: (sourceHandle: HandleElement | null, edge: BaseEdge) =>
-    `Couldn't create edge for ${!sourceHandle ? 'source' : 'target'} handle id: "${
-      !sourceHandle ? edge.sourceHandle : edge.targetHandle
-    }", edge id: ${edge.id}.`,
+  error008: (
+    handleType: HandleType,
+    { id, sourceHandle, targetHandle }: { id: string; sourceHandle: string | null; targetHandle: string | null }
+  ) =>
+    `Couldn't create edge for ${handleType} handle id: "${
+      !sourceHandle ? sourceHandle : targetHandle
+    }", edge id: ${id}.`,
   error010: () => 'Handle: No node id found. Make sure to only use a Handle inside a custom Node.',
   error011: (edgeType: string) => `Edge type "${edgeType}" not found. Using fallback type "default".`,
 };

@@ -1,14 +1,13 @@
-import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent, useEffect } from 'react';
+import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent } from 'react';
 import cc from 'classcat';
-import { getMarkerId, elementSelectionKeys, XYHandle, type Connection } from '@xyflow/system';
+import { shallow } from 'zustand/shallow';
+import { getMarkerId, elementSelectionKeys, XYHandle, type Connection, getEdgePosition } from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMouseHandler } from './utils';
 import type { EdgeProps, WrapEdgeProps } from '../../types';
-import { getEdgePosition } from '../../hooks/useVisibleEdges';
-import { shallow } from 'zustand/shallow';
 
 export default (EdgeComponent: ComponentType<EdgeProps>) => {
   const EdgeWrapper = ({
@@ -63,6 +62,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       }
 
       const pos = getEdgePosition({
+        id,
         sourceNode,
         targetNode,
         sourceHandle: sourceHandleId || null,
@@ -73,10 +73,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
       return pos;
     }, shallow);
-
-    useEffect(() => {
-      // console.log(edgePosition);
-    }, [edgePosition]);
 
     const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
     const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);

@@ -74,6 +74,7 @@ const StressFlow = () => {
       onConnect={onConnect}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgeChange}
+      minZoom={0.2}
     >
       <MiniMap />
       <Controls />

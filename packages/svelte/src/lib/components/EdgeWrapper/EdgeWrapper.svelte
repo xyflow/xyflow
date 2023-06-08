@@ -1,10 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher, type SvelteComponentTyped } from 'svelte';
-  import { Position, getMarkerId } from '@xyflow/system';
+  import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
-  import type { EdgeProps, EdgeLayouted } from '$lib/types';
+  import type { EdgeLayouted, EdgeProps } from '$lib/types';
 
   type $$Props = EdgeLayouted;
 
@@ -12,14 +12,9 @@
   export let type: $$Props['type'] = 'default';
   export let source: $$Props['source'] = '';
   export let target: $$Props['target'] = '';
-  export let sourceX: $$Props['sourceX'] = 0;
-  export let sourceY: $$Props['sourceY'] = 0;
-  export let targetX: $$Props['targetX'] = 0;
-  export let targetY: $$Props['targetY'] = 0;
   export let data: $$Props['data'] = {};
   export let style: $$Props['style'] = undefined;
-  export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
-  export let targetPosition: $$Props['targetPosition'] = Position.Top;
+
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let selectable: $$Props['selectable'] = true;
@@ -27,9 +22,14 @@
   export let labelStyle: $$Props['labelStyle'] = undefined;
   export let markerStart: $$Props['markerStart'] = undefined;
   export let markerEnd: $$Props['markerEnd'] = undefined;
-  export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
-  export let targetHandleId: $$Props['targetHandleId'] = undefined;
-
+  export let sourceHandle: $$Props['sourceHandle'] = undefined;
+  export let targetHandle: $$Props['targetHandle'] = undefined;
+  export let sourceX: $$Props['sourceX'];
+  export let sourceY: $$Props['sourceY'];
+  export let targetX: $$Props['targetX'];
+  export let targetY: $$Props['targetY'];
+  export let sourcePosition: $$Props['sourcePosition'];
+  export let targetPosition: $$Props['targetPosition'];
   // @ todo: support edge updates
 
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
@@ -69,8 +69,8 @@
     {labelStyle}
     {data}
     {style}
-    {sourceHandleId}
-    {targetHandleId}
+    sourceHandleId={sourceHandle}
+    targetHandleId={targetHandle}
     markerStart={markerStartUrl}
     markerEnd={markerEndUrl}
   />

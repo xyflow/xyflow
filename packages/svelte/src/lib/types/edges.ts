@@ -4,7 +4,7 @@ import type {
   BaseEdge,
   BezierPathOptions,
   DefaultEdgeOptionsBase,
-  Position,
+  EdgePosition,
   SmoothStepPathOptions
 } from '@xyflow/system';
 
@@ -39,30 +39,24 @@ export type Edge<T = any> =
   | BezierEdgeType<T>
   | StepEdgeType<T>;
 
-export type EdgeLayouted = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
-  sourceX: number;
-  sourceY: number;
-  targetX: number;
-  targetY: number;
-  sourcePosition: Position;
-  targetPosition: Position;
-  sourceHandleId?: string;
-  targetHandleId?: string;
-};
+export type EdgeProps = Omit<Edge, 'sourceHandle' | 'targetHandle'> &
+  EdgePosition & {
+    sourceHandleId?: string | null;
+    targetHandleId?: string | null;
+  };
 
-export type EdgeProps = Pick<
-  EdgeLayouted,
+export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;
+
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
+
+export type EdgeLayouted = Pick<
+  Edge,
+  | 'type'
   | 'id'
   | 'data'
   | 'style'
   | 'source'
   | 'target'
-  | 'sourceX'
-  | 'sourceY'
-  | 'targetX'
-  | 'targetY'
-  | 'sourcePosition'
-  | 'targetPosition'
   | 'animated'
   | 'selected'
   | 'selectable'
@@ -71,10 +65,10 @@ export type EdgeProps = Pick<
   | 'interactionWidth'
   | 'markerStart'
   | 'markerEnd'
-  | 'sourceHandleId'
-  | 'targetHandleId'
->;
-
-export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;
-
-export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
+  | 'sourceHandle'
+  | 'targetHandle'
+> &
+  EdgePosition & {
+    sourceHandleId?: string | null;
+    targetHandleId?: string | null;
+  };
