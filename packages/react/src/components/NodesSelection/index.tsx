@@ -14,24 +14,27 @@ import { arrowKeyDiffs } from '../Nodes/wrapNode';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import type { Node, ReactFlowState } from '../../types';
 
-export interface NodesSelectionProps {
+export type NodesSelectionProps = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
   noPanClassName?: string;
   disableKeyboardA11y: boolean;
-}
+};
 
 const selector = (s: ReactFlowState) => {
   const selectedNodes = s.getNodes().filter((n) => n.selected);
+  const { width, height, x, y } = getRectOfNodes(selectedNodes, s.nodeOrigin);
+
   return {
-    ...getRectOfNodes(selectedNodes, s.nodeOrigin),
-    transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`,
+    width,
+    height,
     userSelectionActive: s.userSelectionActive,
+    transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]}) translate(${x}px,${y}px)`,
   };
 };
 
 function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
-  const { width, height, x: left, y: top, transformString, userSelectionActive } = useStore(selector, shallow);
+  const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
   const updatePositions = useUpdateNodePositions();
 
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -88,8 +91,6 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
         style={{
           width,
           height,
-          top,
-          left,
         }}
       />
     </div>
