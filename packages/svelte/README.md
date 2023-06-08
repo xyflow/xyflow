@@ -39,7 +39,7 @@ A basic flow looks like this:
     custom: CustomNode
   };
   
-  // We are using writables for the nodes to sync them easily. When a user drags a node for example, Svelte Flow updates its position.
+  // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position.
   // This also makes it easier to update nodes in user land.
   const nodes = writable([
     {

@@ -46,6 +46,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   zoomOnPinch?: boolean;
   panOnScroll?: boolean;
   panOnDrag?: boolean | number[];
+  onlyRenderVisibleElements?: boolean;
 
   class?: string;
   style?: string;

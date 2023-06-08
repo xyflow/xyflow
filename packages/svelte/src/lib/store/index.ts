@@ -29,6 +29,7 @@ import {
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores } from './utils';
 import { getEdgeTree } from './edge-tree';
+import { getVisibleNodes } from './visible-nodes';
 
 export const key = Symbol();
 
@@ -343,6 +344,7 @@ export function createStore(): SvelteFlowStore {
     // derived state
     edgeTree: getEdgeTree(store, onError),
     connectionPath: getConnectionPath(store),
+    visibleNodes: getVisibleNodes(store),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })

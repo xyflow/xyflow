@@ -5,8 +5,13 @@
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
 
-  const { nodes, nodesDraggable, nodesConnectable, elementsSelectable, updateNodeDimensions } =
-    useStore();
+  const {
+    visibleNodes,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
+    updateNodeDimensions
+  } = useStore();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -26,7 +31,7 @@
 </script>
 
 <div class="svelte-flow__nodes">
-  {#each $nodes as node (node.id)}
+  {#each $visibleNodes as node (node.id)}
     {@const posOrigin = getPositionWithOrigin({
       x: node.positionAbsolute?.x ?? 0,
       y: node.positionAbsolute?.y ?? 0,

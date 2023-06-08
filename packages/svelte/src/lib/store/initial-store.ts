@@ -21,7 +21,7 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted } from '$lib/types';
+import type { ConnectionData, NodeTypes, EdgeTypes, EdgeLayouted, Node } from '$lib/types';
 import { createNodes, createEdges } from './utils';
 
 export const initConnectionData = {
@@ -47,6 +47,7 @@ export const initialEdgeTypes = {
 export const getInitialStore = () => ({
   flowId: writable<string | null>(null),
   nodes: createNodes([]),
+  visibleNodes: readable<Node[]>([]),
   edges: createEdges([]),
   edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
   height: writable<number>(500),

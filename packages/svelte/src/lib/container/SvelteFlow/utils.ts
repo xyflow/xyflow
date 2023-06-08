@@ -57,6 +57,7 @@ export type UpdatableStoreProps = {
   nodesDraggable?: UnwrapWritable<SvelteFlowStore['nodesDraggable']>;
   nodesConnectable?: UnwrapWritable<SvelteFlowStore['nodesConnectable']>;
   elementsSelectable?: UnwrapWritable<SvelteFlowStore['elementsSelectable']>;
+  onlyRenderVisibleElements?: UnwrapWritable<SvelteFlowStore['onlyRenderVisibleElements']>;
   isValidConnection?: UnwrapWritable<SvelteFlowStore['isValidConnection']>;
 };
 

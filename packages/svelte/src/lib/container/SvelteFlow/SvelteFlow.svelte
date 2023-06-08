@@ -42,6 +42,7 @@
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let translateExtent: $$Props['translateExtent'] = undefined;
+  export let onlyRenderVisibleElements: $$Props['onlyRenderVisibleElements'] = undefined;
   export let panOnScrollMode: PanOnScrollMode = PanOnScrollMode.Free;
   export let preventScrolling: boolean = true;
   export let zoomOnScroll: boolean = true;
@@ -99,6 +100,7 @@
       nodesDraggable,
       nodesConnectable,
       elementsSelectable,
+      onlyRenderVisibleElements,
       isValidConnection
     };
 
