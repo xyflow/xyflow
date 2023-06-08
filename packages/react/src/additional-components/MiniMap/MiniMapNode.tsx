@@ -1,8 +1,9 @@
 import { memo } from 'react';
-import type { MiniMapNodeProps } from './types';
 import cc from 'classcat';
 
-const MiniMapNode = ({
+import type { MiniMapNodeProps } from './types';
+
+function MiniMapNode({
   id,
   x,
   y,
@@ -16,7 +17,7 @@ const MiniMapNode = ({
   borderRadius,
   shapeRendering,
   onClick,
-}: MiniMapNodeProps) => {
+}: MiniMapNodeProps) {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
 
@@ -36,8 +37,6 @@ const MiniMapNode = ({
       onClick={onClick ? (event) => onClick(event, id) : undefined}
     />
   );
-};
-
-MiniMapNode.displayName = 'MiniMapNode';
+}
 
 export default memo(MiniMapNode);

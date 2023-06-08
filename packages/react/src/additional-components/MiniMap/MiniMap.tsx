@@ -1,25 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useEffect, useRef, type MouseEvent } from 'react';
+import { memo, useEffect, useRef, type MouseEvent, useCallback } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import {
-  getRectOfNodes,
-  getBoundsOfRects,
-  getNodePositionWithOrigin,
-  XYMinimap,
-  type Rect,
-  type XYMinimapInstance,
-} from '@xyflow/system';
+import { getRectOfNodes, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import Panel from '../../components/Panel';
 import type { ReactFlowState } from '../../types';
 
-import MiniMapNode from './MiniMapNode';
-import type { MiniMapProps, GetMiniMapNodeAttribute } from './types';
-
-declare const window: any;
+import type { MiniMapProps } from './types';
+import MiniMapNodes from './MiniMapNodes';
 
 const defaultWidth = 200;
 const defaultHeight = 150;
@@ -34,7 +25,6 @@ const selector = (s: ReactFlowState) => {
   };
 
   return {
-    nodes: nodes.filter((node) => !node.hidden && node.width && node.height),
     viewBB,
     boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes, s.nodeOrigin), viewBB) : viewBB,
     rfId: s.rfId,
@@ -45,8 +35,6 @@ const selector = (s: ReactFlowState) => {
     flowHeight: s.height,
   };
 };
-
-const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 
@@ -60,7 +48,7 @@ function MiniMap({
   nodeStrokeWidth = 2,
   // We need to rename the prop to be `CapitalCase` so that JSX will render it as
   // a component properly.
-  nodeComponent: NodeComponent = MiniMapNode,
+  nodeComponent,
   maskColor = 'rgb(240, 240, 240, 0.6)',
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
@@ -75,15 +63,9 @@ function MiniMap({
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, nodes, rfId, nodeOrigin, panZoom, translateExtent, flowWidth, flowHeight } = useStore(
-    selector,
-    shallow
-  );
+  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
-  const nodeColorFunc = getAttrFunction(nodeColor);
-  const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
-  const nodeClassNameFunc = getAttrFunction(nodeClassName);
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
@@ -94,7 +76,6 @@ function MiniMap({
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
-  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
   const viewScaleRef = useRef(0);
   const minimapInstance = useRef<XYMinimapInstance>();
@@ -136,10 +117,10 @@ function MiniMap({
     : undefined;
 
   const onSvgNodeClick = onNodeClick
-    ? (event: MouseEvent, nodeId: string) => {
+    ? useCallback((event: MouseEvent, nodeId: string) => {
         const node = store.getState().nodeInternals.get(nodeId)!;
         onNodeClick(event, node);
-      }
+      }, [])
     : undefined;
 
   return (
@@ -159,28 +140,15 @@ function MiniMap({
         onClick={onSvgClick}
       >
         {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
-        {nodes.map((node) => {
-          const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin).positionAbsolute;
-
-          return (
-            <NodeComponent
-              key={node.id}
-              x={x}
-              y={y}
-              width={node.width!}
-              height={node.height!}
-              style={node.style}
-              className={nodeClassNameFunc(node)}
-              color={nodeColorFunc(node)}
-              borderRadius={nodeBorderRadius}
-              strokeColor={nodeStrokeColorFunc(node)}
-              strokeWidth={nodeStrokeWidth}
-              shapeRendering={shapeRendering}
-              onClick={onSvgNodeClick}
-              id={node.id}
-            />
-          );
-        })}
+        <MiniMapNodes
+          onClick={onSvgNodeClick}
+          nodeColor={nodeColor}
+          nodeStrokeColor={nodeStrokeColor}
+          nodeBorderRadius={nodeBorderRadius}
+          nodeClassName={nodeClassName}
+          nodeStrokeWidth={nodeStrokeWidth}
+          nodeComponent={nodeComponent}
+        />
         <path
           className="react-flow__minimap-mask"
           d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z

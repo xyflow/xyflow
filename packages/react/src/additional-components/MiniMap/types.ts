@@ -26,7 +26,14 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   zoomStep?: number;
 };
 
-export interface MiniMapNodeProps {
+export type MiniMapNodes = Pick<
+  MiniMapProps,
+  'nodeColor' | 'nodeStrokeColor' | 'nodeClassName' | 'nodeBorderRadius' | 'nodeStrokeWidth' | 'nodeComponent'
+> & {
+  onClick?: (event: MouseEvent, nodeId: string) => void;
+};
+
+export type MiniMapNodeProps = {
   id: string;
   x: number;
   y: number;
@@ -40,4 +47,4 @@ export interface MiniMapNodeProps {
   strokeWidth: number;
   style?: CSSProperties;
   onClick?: (event: MouseEvent, id: string) => void;
-}
+};
