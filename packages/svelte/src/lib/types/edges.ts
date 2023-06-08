@@ -48,8 +48,6 @@ export type EdgeLayouted = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
   targetPosition: Position;
   sourceHandleId?: string;
   targetHandleId?: string;
-  markerStart?: string;
-  markerEnd?: string;
 };
 
 export type EdgeProps = Pick<
