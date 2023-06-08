@@ -75,7 +75,7 @@
           id="draggable"
           type="checkbox"
           bind:checked={isDraggable}
-          class="react-flow__draggable"
+          class="svelte-flow__draggable"
         />
       </label>
     </div>
@@ -86,7 +86,7 @@
           id="connectable"
           type="checkbox"
           bind:checked={isConnectable}
-          class="react-flow__connectable"
+          class="svelte-flow__connectable"
         />
       </label>
     </div>
@@ -97,7 +97,7 @@
           id="selectable"
           type="checkbox"
           bind:checked={isSelectable}
-          class="react-flow__selectable"
+          class="svelte-flow__selectable"
         />
       </label>
     </div>
@@ -108,7 +108,7 @@
           id="zoomonscroll"
           type="checkbox"
           bind:checked={zoomOnScroll}
-          class="react-flow__zoomonscroll"
+          class="svelte-flow__zoomonscroll"
         />
       </label>
     </div>
@@ -119,7 +119,7 @@
           id="zoomonpinch"
           type="checkbox"
           bind:checked={zoomOnPinch}
-          class="react-flow__zoomonpinch"
+          class="svelte-flow__zoomonpinch"
         />
       </label>
     </div>
@@ -130,7 +130,7 @@
           id="panonscroll"
           type="checkbox"
           bind:checked={panOnScroll}
-          class="react-flow__panonscroll"
+          class="svelte-flow__panonscroll"
         />
       </label>
     </div>
@@ -143,7 +143,7 @@
           on:change={(event) => {
             panOnScrollMode = PanOnScrollMode.Free;
           }}
-          class="react-flow__panonscrollmode"
+          class="svelte-flow__panonscrollmode"
         >
           <option value="free">free</option>
           <option value="horizontal">horizontal</option>
@@ -158,7 +158,7 @@
           id="zoomondbl"
           type="checkbox"
           bind:checked={zoomOnDoubleClick}
-          class="react-flow__zoomondbl"
+          class="svelte-flow__zoomondbl"
         />
       </label>
     </div>
@@ -169,7 +169,7 @@
           id="panondrag"
           type="checkbox"
           bind:checked={panOnDrag}
-          class="react-flow__panondrag"
+          class="svelte-flow__panondrag"
         />
       </label>
     </div>
@@ -180,7 +180,7 @@
           id="capturezoompaneclick"
           type="checkbox"
           bind:checked={captureZoomClick}
-          class="react-flow__capturezoompaneclick"
+          class="svelte-flow__capturezoompaneclick"
         />
       </label>
     </div>
@@ -191,7 +191,7 @@
           id="capturezoompanescroll"
           type="checkbox"
           bind:checked={captureZoomScroll}
-          class="react-flow__capturezoompanescroll"
+          class="svelte-flow__capturezoompanescroll"
         />
       </label>
     </div>
@@ -202,7 +202,7 @@
           id="captureelementclick"
           type="checkbox"
           bind:checked={captureElementClick}
-          class="react-flow__captureelementclick"
+          class="svelte-flow__captureelementclick"
         />
       </label>
     </div>
