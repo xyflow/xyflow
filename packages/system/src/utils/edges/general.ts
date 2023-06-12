@@ -1,14 +1,6 @@
 import { Transform, internalsSymbol } from '../..';
-import {
-  Position,
-  type HandleElement,
-  type MarkerType,
-  type Rect,
-  type XYPosition,
-  BaseEdge,
-  BaseNode,
-} from '../../types';
-import { isNumeric, rectToBox } from '../utils';
+import { type MarkerType, BaseEdge, BaseNode } from '../../types';
+import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes } from '../utils';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -38,50 +30,6 @@ export const getMarkerEnd = (markerType?: MarkerType, markerEndId?: string): str
 
   return typeof markerType !== 'undefined' ? `url(#react-flow__${markerType})` : 'none';
 };
-
-export function getHandlePosition(position: Position, nodeRect: Rect, handle: HandleElement | null = null): XYPosition {
-  const x = (handle?.x || 0) + nodeRect.x;
-  const y = (handle?.y || 0) + nodeRect.y;
-  const width = handle?.width || nodeRect.width;
-  const height = handle?.height || nodeRect.height;
-
-  switch (position) {
-    case Position.Top:
-      return {
-        x: x + width / 2,
-        y,
-      };
-    case Position.Right:
-      return {
-        x: x + width,
-        y: y + height / 2,
-      };
-    case Position.Bottom:
-      return {
-        x: x + width / 2,
-        y: y + height,
-      };
-    case Position.Left:
-      return {
-        x,
-        y: y + height / 2,
-      };
-  }
-}
-
-export function getHandle(bounds: HandleElement[], handleId?: string | null): HandleElement | null {
-  if (!bounds) {
-    return null;
-  }
-
-  if (bounds.length === 1 || !handleId) {
-    return bounds[0];
-  } else if (handleId) {
-    return bounds.find((d) => d.id === handleId) || null;
-  }
-
-  return null;
-}
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
 
@@ -144,34 +92,15 @@ export function groupEdgesByZLevel<EdgeType extends BaseEdge>(
 }
 
 type IsEdgeVisibleParams = {
-  sourcePos: XYPosition;
-  targetPos: XYPosition;
-  sourceWidth: number;
-  sourceHeight: number;
-  targetWidth: number;
-  targetHeight: number;
+  sourceNode: BaseNode;
+  targetNode: BaseNode;
   width: number;
   height: number;
   transform: Transform;
 };
 
-export function isEdgeVisible({
-  sourcePos,
-  targetPos,
-  sourceWidth,
-  sourceHeight,
-  targetWidth,
-  targetHeight,
-  width,
-  height,
-  transform,
-}: IsEdgeVisibleParams): boolean {
-  const edgeBox = {
-    x: Math.min(sourcePos.x, targetPos.x),
-    y: Math.min(sourcePos.y, targetPos.y),
-    x2: Math.max(sourcePos.x + sourceWidth, targetPos.x + targetWidth),
-    y2: Math.max(sourcePos.y + sourceHeight, targetPos.y + targetHeight),
-  };
+export function isEdgeVisible({ sourceNode, targetNode, width, height, transform }: IsEdgeVisibleParams): boolean {
+  const edgeBox = getBoundsOfBoxes(nodeToBox(sourceNode), nodeToBox(targetNode));
 
   if (edgeBox.x === edgeBox.x2) {
     edgeBox.x2 += 1;
@@ -181,16 +110,12 @@ export function isEdgeVisible({
     edgeBox.y2 += 1;
   }
 
-  const viewBox = rectToBox({
-    x: (0 - transform[0]) / transform[2],
-    y: (0 - transform[1]) / transform[2],
+  const viewRect = {
+    x: -transform[0] / transform[2],
+    y: -transform[1] / transform[2],
     width: width / transform[2],
     height: height / transform[2],
-  });
+  };
 
-  const xOverlap = Math.max(0, Math.min(viewBox.x2, edgeBox.x2) - Math.max(viewBox.x, edgeBox.x));
-  const yOverlap = Math.max(0, Math.min(viewBox.y2, edgeBox.y2) - Math.max(viewBox.y, edgeBox.y));
-  const overlappingArea = Math.ceil(xOverlap * yOverlap);
-
-  return overlappingArea > 0;
+  return getOverlappingArea(viewRect, boxToRect(edgeBox)) > 0;
 }

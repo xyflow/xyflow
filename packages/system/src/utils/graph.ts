@@ -8,6 +8,7 @@ import {
   getOverlappingArea,
   isNumeric,
   rectToBox,
+  nodeToRect,
 } from './utils';
 import {
   type Connection,
@@ -248,17 +249,8 @@ export const getNodesInside = <NodeType extends BaseNode>(
       return res;
     }
 
-    const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
-
-    const nodeRect = {
-      x: positionAbsolute.x,
-      y: positionAbsolute.y,
-      width: width || 0,
-      height: height || 0,
-    };
-    const overlappingArea = getOverlappingArea(paneRect, nodeRect);
-    const notInitialized =
-      typeof width === 'undefined' || typeof height === 'undefined' || width === null || height === null;
+    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node, nodeOrigin));
+    const notInitialized = width === undefined || height === undefined || width === null || height === null;
 
     const partiallyVisible = partially && overlappingArea > 0;
     const area = (width || 0) * (height || 0);
@@ -374,43 +366,39 @@ export function calcNextPosition<NodeType extends BaseNode>(
   onError?: OnError
 ): { position: XYPosition; positionAbsolute: XYPosition } {
   let currentExtent = node.extent || nodeExtent;
+  let parentNode: NodeType;
+  let parentPos = { x: 0, y: 0 };
+
+  if (node.parentNode) {
+    parentNode = nodes.find((n) => n.id === node.parentNode);
+    parentPos = parentNode
+      ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
+      : parentPos;
+  }
 
   if (node.extent === 'parent') {
     if (node.parentNode && node.width && node.height) {
-      const parent = nodes.find((n) => n.id === node.parentNode);
-      const parentOrigin = parent?.origin || nodeOrigin;
       const currNodeOrigin = node.origin || nodeOrigin;
 
-      const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parentOrigin).positionAbsolute;
       currentExtent =
-        parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
+        parentNode && isNumeric(parentNode.width) && isNumeric(parentNode.height)
           ? [
-              [parentX + node.width * currNodeOrigin[0], parentY + node.height * currNodeOrigin[1]],
+              [parentPos.x + node.width * currNodeOrigin[0], parentPos.y + node.height * currNodeOrigin[1]],
               [
-                parentX + parent.width - node.width + node.width * currNodeOrigin[0],
-                parentY + parent.height - node.height + node.height * currNodeOrigin[1],
+                parentPos.x + parentNode.width - node.width + node.width * currNodeOrigin[0],
+                parentPos.y + parentNode.height - node.height + node.height * currNodeOrigin[1],
               ],
             ]
           : currentExtent;
     } else {
       onError?.('005', errorMessages['error005']());
-
       currentExtent = nodeExtent;
     }
   } else if (node.extent && node.parentNode) {
-    const parent = nodes.find((n) => n.id === node.parentNode);
-    const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, parent?.origin || nodeOrigin).positionAbsolute;
     currentExtent = [
-      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
-      [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
+      [node.extent[0][0] + parentPos.x, node.extent[0][1] + parentPos.y],
+      [node.extent[1][0] + parentPos.x, node.extent[1][1] + parentPos.y],
     ];
-  }
-
-  let parentPosition = { x: 0, y: 0 };
-
-  if (node.parentNode) {
-    const parentNode = nodes.find((n) => n.id === node.parentNode);
-    parentPosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin).positionAbsolute;
   }
 
   const positionAbsolute = currentExtent
@@ -419,8 +407,8 @@ export function calcNextPosition<NodeType extends BaseNode>(
 
   return {
     position: {
-      x: positionAbsolute.x - parentPosition.x,
-      y: positionAbsolute.y - parentPosition.y,
+      x: positionAbsolute.x - parentPos.x,
+      y: positionAbsolute.y - parentPos.y,
     },
     positionAbsolute,
   };

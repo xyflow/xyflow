@@ -9,30 +9,25 @@ function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boole
   const edges = useStore(
     useCallback(
       (s: ReactFlowState) => {
-        const visibleEdges = onlyRenderVisible
-          ? s.edges.filter((e) => {
-              const sourceNode = s.nodeInternals.get(e.source);
-              const targetNode = s.nodeInternals.get(e.target);
+        const visibleEdges =
+          onlyRenderVisible && s.width && s.height
+            ? s.edges.filter((e) => {
+                const sourceNode = s.nodeInternals.get(e.source);
+                const targetNode = s.nodeInternals.get(e.target);
 
-              return (
-                sourceNode?.width &&
-                sourceNode?.height &&
-                targetNode?.width &&
-                targetNode?.height &&
-                isEdgeVisible({
-                  sourcePos: sourceNode.positionAbsolute || { x: 0, y: 0 },
-                  targetPos: targetNode.positionAbsolute || { x: 0, y: 0 },
-                  sourceWidth: sourceNode.width,
-                  sourceHeight: sourceNode.height,
-                  targetWidth: targetNode.width,
-                  targetHeight: targetNode.height,
-                  width: s.width,
-                  height: s.height,
-                  transform: s.transform,
-                })
-              );
-            })
-          : s.edges;
+                return (
+                  sourceNode &&
+                  targetNode &&
+                  isEdgeVisible({
+                    sourceNode,
+                    targetNode,
+                    width: s.width,
+                    height: s.height,
+                    transform: s.transform,
+                  })
+                );
+              })
+            : s.edges;
 
         return groupEdgesByZLevel(visibleEdges, s.nodeInternals, elevateEdgesOnSelect);
       },

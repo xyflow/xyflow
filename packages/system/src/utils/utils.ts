@@ -10,7 +10,7 @@ import type {
   HandleElement,
   Position,
 } from '../types';
-import { getConnectedEdgesBase } from './graph';
+import { getConnectedEdgesBase, getNodePositionWithOrigin } from './graph';
 
 export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   width: node.offsetWidth,
@@ -67,11 +67,25 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   height: y2 - y,
 });
 
-export const nodeToRect = (node: BaseNode): Rect => ({
-  ...(node.positionAbsolute || { x: 0, y: 0 }),
-  width: node.width || 0,
-  height: node.height || 0,
-});
+export const nodeToRect = (node: BaseNode, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+
+  return {
+    ...positionAbsolute,
+    width: node.width || 0,
+    height: node.height || 0,
+  };
+};
+
+export const nodeToBox = (node: BaseNode, nodeOrigin: NodeOrigin = [0, 0]): Box => {
+  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+
+  return {
+    ...positionAbsolute,
+    x2: positionAbsolute.x + (node.width || 0),
+    y2: positionAbsolute.y + (node.height || 0),
+  };
+};
 
 export const getBoundsOfRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
@@ -182,11 +196,7 @@ export const getPositionWithOrigin = ({
   height: number;
   origin?: NodeOrigin;
 }): XYPosition => {
-  if (!width || !height) {
-    return { x, y };
-  }
-
-  if (origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
+  if (!width || !height || origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
     return { x, y };
   }
 

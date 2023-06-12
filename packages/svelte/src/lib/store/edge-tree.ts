@@ -15,30 +15,25 @@ export function getEdgeTree(store: SvelteFlowStoreState, onError: OnError) {
       store.height
     ],
     ([edges, nodes, onlyRenderVisibleElements, transform, width, height]) => {
-      const visibleEdges = onlyRenderVisibleElements
-        ? edges.filter((edge) => {
-            const sourceNode = nodes.find((node) => node.id === edge.source);
-            const targetNode = nodes.find((node) => node.id === edge.target);
+      const visibleEdges =
+        onlyRenderVisibleElements && width && height
+          ? edges.filter((edge) => {
+              const sourceNode = nodes.find((node) => node.id === edge.source);
+              const targetNode = nodes.find((node) => node.id === edge.target);
 
-            return (
-              sourceNode?.width &&
-              sourceNode?.height &&
-              targetNode?.width &&
-              targetNode?.height &&
-              isEdgeVisible({
-                sourcePos: sourceNode.positionAbsolute || { x: 0, y: 0 },
-                targetPos: targetNode.positionAbsolute || { x: 0, y: 0 },
-                sourceWidth: sourceNode.width,
-                sourceHeight: sourceNode.height,
-                targetWidth: targetNode.width,
-                targetHeight: targetNode.height,
-                width,
-                height,
-                transform
-              })
-            );
-          })
-        : edges;
+              return (
+                sourceNode &&
+                targetNode &&
+                isEdgeVisible({
+                  sourceNode,
+                  targetNode,
+                  width,
+                  height,
+                  transform
+                })
+              );
+            })
+          : edges;
 
       return visibleEdges;
     }
