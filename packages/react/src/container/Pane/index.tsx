@@ -11,7 +11,7 @@ import UserSelection from '../../components/UserSelection';
 import { containerStyle } from '../../styles';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges, getConnectedEdges } from '../../utils';
-import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange, Node } from '../../types';
+import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -148,7 +148,7 @@ const Pane = memo(
         height: Math.abs(mousePos.y - startY),
       };
 
-      const selectedNodes = getNodesInside<Node>(
+      const selectedNodes = getNodesInside(
         nodes,
         nextUserSelectRect,
         transform,

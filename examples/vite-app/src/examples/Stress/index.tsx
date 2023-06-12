@@ -1,4 +1,4 @@
-import { useState, CSSProperties, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import {
   ReactFlow,
   ReactFlowInstance,
@@ -13,16 +13,10 @@ import {
   Controls,
   Background,
   MiniMap,
+  Panel,
 } from '@xyflow/react';
 
 import { getNodesAndEdges } from './utils';
-
-const buttonWrapperStyles: CSSProperties = {
-  position: 'absolute',
-  right: 10,
-  top: 10,
-  zIndex: 4,
-};
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => {
   reactFlowInstance.fitView();
@@ -80,12 +74,10 @@ const StressFlow = () => {
       <Controls />
       <Background />
 
-      <div style={buttonWrapperStyles}>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
+      <Panel position="top-right">
+        <button onClick={updatePos}>change pos</button>
         <button onClick={updateElements}>update elements</button>
-      </div>
+      </Panel>
     </ReactFlow>
   );
 };

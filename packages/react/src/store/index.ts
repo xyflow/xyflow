@@ -112,7 +112,6 @@ const createRFStore = () =>
       const nextFitViewOnInitDone =
         fitViewOnInitDone ||
         (fitViewOnInit &&
-          !fitViewOnInitDone &&
           !!panZoom &&
           fitView(
             {
@@ -133,8 +132,6 @@ const createRFStore = () =>
       }
     },
     updateNodePositions: (nodeDragItems, positionChanged = true, dragging = false) => {
-      const { triggerNodeChanges } = get();
-
       const changes = nodeDragItems.map((node) => {
         const change: NodePositionChange = {
           id: node.id,
@@ -150,7 +147,7 @@ const createRFStore = () =>
         return change;
       });
 
-      triggerNodeChanges(changes);
+      get().triggerNodeChanges(changes);
     },
 
     triggerNodeChanges: (changes) => {
