@@ -1,4 +1,4 @@
-import { HandleType } from './types';
+import { CoordinateExtent, HandleType } from './types';
 
 // @todo: update URLs to xyflow
 export const errorMessages = {
@@ -24,3 +24,8 @@ export const errorMessages = {
 };
 
 export const internalsSymbol = Symbol.for('internals');
+
+export const infiniteExtent: CoordinateExtent = [
+  [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
+  [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
+];

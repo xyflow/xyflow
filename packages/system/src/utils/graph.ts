@@ -9,6 +9,7 @@ import {
   isNumeric,
   rectToBox,
   nodeToRect,
+  getEventPosition,
 } from './utils';
 import {
   type Connection,
@@ -334,8 +335,7 @@ export function getPointerPosition(
   event: MouseEvent | TouchEvent,
   { snapGrid = [0, 0], snapToGrid = false, transform }: GetPointerPositionParams
 ): XYPosition & { xSnapped: number; ySnapped: number } {
-  const x = 'touches' in event ? event.touches[0].clientX : event.clientX;
-  const y = 'touches' in event ? event.touches[0].clientY : event.clientY;
+  const { x, y } = getEventPosition(event);
 
   const pointerPos = {
     x: (x - transform[0]) / transform[2],

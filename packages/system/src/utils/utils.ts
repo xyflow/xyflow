@@ -128,20 +128,15 @@ export function isInputDOMNode(event: KeyboardEvent): boolean {
 export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
 
 export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRect) => {
-  const isMouseTriggered = isMouseEvent(event);
-  const evtX = isMouseTriggered ? event.clientX : event.touches?.[0].clientX;
-  const evtY = isMouseTriggered ? event.clientY : event.touches?.[0].clientY;
+  const isMouse = isMouseEvent(event);
+  const evtX = isMouse ? event.clientX : event.touches?.[0].clientX;
+  const evtY = isMouse ? event.clientY : event.touches?.[0].clientY;
 
   return {
     x: evtX - (bounds?.left ?? 0),
     y: evtY - (bounds?.top ?? 0),
   };
 };
-
-export const infiniteExtent: CoordinateExtent = [
-  [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-  [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-];
 
 // helper function to get arrays of nodes and edges that can be deleted
 // you can pass in a list of nodes and edges that should be deleted
