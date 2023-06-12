@@ -16,7 +16,6 @@ const defaultWidth = 200;
 const defaultHeight = 150;
 
 const selector = (s: ReactFlowState) => {
-  const nodes = s.getNodes();
   const viewBB: Rect = {
     x: -s.transform[0] / s.transform[2],
     y: -s.transform[1] / s.transform[2],
@@ -26,7 +25,7 @@ const selector = (s: ReactFlowState) => {
 
   return {
     viewBB,
-    boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes, s.nodeOrigin), viewBB) : viewBB,
+    boundingRect: s.nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(s.nodes, s.nodeOrigin), viewBB) : viewBB,
     rfId: s.rfId,
     nodeOrigin: s.nodeOrigin,
     panZoom: s.panZoom,
@@ -118,7 +117,7 @@ function MiniMap({
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeInternals.get(nodeId)!;
+        const node = store.getState().nodes.find((n) => n.id === nodeId)!;
         onNodeClick(event, node);
       }, [])
     : undefined;

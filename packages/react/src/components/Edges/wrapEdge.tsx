@@ -54,8 +54,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
     const edgePosition = useStore((state) => {
-      const sourceNode = state.nodeInternals.get(source);
-      const targetNode = state.nodeInternals.get(target);
+      const sourceNode = state.nodes.find((n) => n.id === source);
+      const targetNode = state.nodes.find((n) => n.id === target);
 
       if (!sourceNode || !targetNode) {
         return null;
@@ -118,7 +118,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onConnectStart,
         onConnectEnd,
         cancelConnection,
-        getNodes,
+        nodes,
         panBy,
         updateConnection,
       } = store.getState();
@@ -128,7 +128,6 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
       const isTarget = isSourceHandle;
       const edge = edges.find((e) => e.id === id)!;
-      const nodes = getNodes();
 
       setUpdating(true);
       onEdgeUpdateStart?.(event, edge, handleType);

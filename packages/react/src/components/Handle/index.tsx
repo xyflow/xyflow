@@ -106,7 +106,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
           connectionMode: currentStore.connectionMode,
           connectionRadius: currentStore.connectionRadius,
           domNode: currentStore.domNode,
-          nodes: currentStore.getNodes(),
+          nodes: currentStore.nodes,
           lib: currentStore.lib,
           isTarget,
           handleId,

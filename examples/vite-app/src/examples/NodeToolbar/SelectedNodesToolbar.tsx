@@ -1,10 +1,7 @@
 import { NodeToolbar, ReactFlowState, useStore } from '@xyflow/react';
 
 const selectedNodesSelector = (state: ReactFlowState) =>
-  state
-    .getNodes()
-    .filter((node) => node.selected)
-    .map((node) => node.id);
+  state.nodes.filter((node) => node.selected).map((node) => node.id);
 
 export default function SelectedNodesToolbar() {
   const selectedNodeIds = useStore(selectedNodesSelector);

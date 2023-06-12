@@ -22,14 +22,7 @@ function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, n
     if (nodeRef?.current) {
       xyDrag.current = XYDrag({
         domNode: nodeRef.current,
-        getStoreItems: () => {
-          const currentStore = store.getState();
-
-          return {
-            nodes: currentStore.getNodes(),
-            ...store.getState(),
-          };
-        },
+        getStoreItems: () => store.getState(),
         onNodeClick: () => {
           if (nodeId) {
             handleNodeClick({

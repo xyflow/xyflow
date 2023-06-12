@@ -12,8 +12,8 @@ function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boole
         const visibleEdges =
           onlyRenderVisible && s.width && s.height
             ? s.edges.filter((e) => {
-                const sourceNode = s.nodeInternals.get(e.source);
-                const targetNode = s.nodeInternals.get(e.target);
+                const sourceNode = s.nodes.find((n) => n.id === e.source);
+                const targetNode = s.nodes.find((n) => n.id === e.target);
 
                 return (
                   sourceNode &&
@@ -29,7 +29,7 @@ function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boole
               })
             : s.edges;
 
-        return groupEdgesByZLevel(visibleEdges, s.nodeInternals, elevateEdgesOnSelect);
+        return groupEdgesByZLevel(visibleEdges, s.nodes, elevateEdgesOnSelect);
       },
       [onlyRenderVisible, elevateEdgesOnSelect]
     ),

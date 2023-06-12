@@ -23,14 +23,11 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   const store = useStoreApi();
 
   const getNodes = useCallback<Instance.GetNodes<NodeData>>(() => {
-    return store
-      .getState()
-      .getNodes()
-      .map((n) => ({ ...n }));
+    return store.getState().nodes.map((n) => ({ ...n }));
   }, []);
 
   const getNode = useCallback<Instance.GetNode<NodeData>>((id) => {
-    return store.getState().nodeInternals.get(id);
+    return store.getState().nodes.find((n) => n.id === id);
   }, []);
 
   const getEdges = useCallback<Instance.GetEdges<EdgeData>>(() => {
@@ -44,8 +41,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const setNodes = useCallback<Instance.SetNodes<NodeData>>((payload) => {
-    const { getNodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
-    const nodes = getNodes();
+    const { nodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
     const nextNodes = typeof payload === 'function' ? payload(nodes) : payload;
 
     if (hasDefaultNodes) {
@@ -76,10 +72,9 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
 
   const addNodes = useCallback<Instance.AddNodes<NodeData>>((payload) => {
     const nodes = Array.isArray(payload) ? payload : [payload];
-    const { getNodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
+    const { nodes: currentNodes, hasDefaultNodes, onNodesChange, setNodes } = store.getState();
 
     if (hasDefaultNodes) {
-      const currentNodes = getNodes();
       const nextNodes = [...currentNodes, ...nodes];
       setNodes(nextNodes);
     } else if (onNodesChange) {
@@ -101,10 +96,10 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const toObject = useCallback<Instance.ToObject<NodeData, EdgeData>>(() => {
-    const { getNodes, edges = [], transform } = store.getState();
+    const { nodes = [], edges = [], transform } = store.getState();
     const [x, y, zoom] = transform;
     return {
-      nodes: getNodes().map((n) => ({ ...n })),
+      nodes: nodes.map((n) => ({ ...n })),
       edges: edges.map((e) => ({ ...e })),
       viewport: {
         x,
@@ -116,8 +111,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
 
   const deleteElements = useCallback<Instance.DeleteElements>(({ nodes: nodesDeleted, edges: edgesDeleted }) => {
     const {
-      nodeInternals,
-      getNodes,
+      nodes,
       edges,
       hasDefaultNodes,
       hasDefaultEdges,
@@ -129,7 +123,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
       nodesToRemove: nodesDeleted || [],
       edgesToRemove: edgesDeleted || [],
-      nodes: getNodes(),
+      nodes,
       edges,
     });
 
@@ -142,12 +136,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         }
 
         if (hasDefaultNodes) {
-          matchingNodes.forEach((node) => {
-            nodeInternals.delete(node.id);
-          });
-
           store.setState({
-            nodeInternals: new Map(nodeInternals),
+            nodes: nodes.filter((n) => !matchingNodes.some((mN) => mN.id === n.id)),
           });
         }
       }
@@ -181,7 +171,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       nodeOrRect: (Partial<Node<NodeData>> & { id: Node['id'] }) | Rect
     ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
       const isRect = isRectObject(nodeOrRect);
-      const node = isRect ? null : store.getState().nodeInternals.get(nodeOrRect.id);
+      const node = isRect ? null : store.getState().nodes.find((n) => n.id === nodeOrRect.id);
 
       if (!isRect && !node) {
         [null, null, isRect];
@@ -202,7 +192,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         return [];
       }
 
-      return (nodes || store.getState().getNodes()).filter((n) => {
+      return (nodes || store.getState().nodes).filter((n) => {
         if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
           return false;
         }

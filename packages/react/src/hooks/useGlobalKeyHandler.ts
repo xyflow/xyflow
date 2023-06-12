@@ -4,6 +4,9 @@ import type { KeyCode } from '@xyflow/system';
 import { useStoreApi } from '../hooks/useStore';
 import useKeyPress from './useKeyPress';
 import useReactFlow from './useReactFlow';
+import { Edge, Node } from '../types';
+
+const getSelected = (item: Node | Edge) => item.selected;
 
 export default ({
   deleteKeyCode,
@@ -20,10 +23,8 @@ export default ({
 
   useEffect(() => {
     if (deleteKeyPressed) {
-      const { edges, getNodes } = store.getState();
-      const selectedNodes = getNodes().filter((node) => node.selected);
-      const selectedEdges = edges.filter((edge) => edge.selected);
-      deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+      const { edges, nodes } = store.getState();
+      deleteElements({ nodes: nodes.filter(getSelected), edges: edges.filter(getSelected) });
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);

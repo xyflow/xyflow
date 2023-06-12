@@ -33,12 +33,10 @@ export type GroupedEdges<EdgeType extends BaseEdge> = {
 
 export function groupEdgesByZLevel<EdgeType extends BaseEdge>(
   edges: EdgeType[],
-  nodes: Map<string, BaseNode> | BaseNode[],
+  nodes: BaseNode[],
   elevateEdgesOnSelect = false
 ): GroupedEdges<EdgeType>[] {
   let maxLevel = -1;
-
-  const isNodeInternals = 'get' in nodes;
 
   const levelLookup = edges.reduce<Record<string, EdgeType[]>>((tree, edge) => {
     const hasZIndex = isNumeric(edge.zIndex);
@@ -48,10 +46,8 @@ export function groupEdgesByZLevel<EdgeType extends BaseEdge>(
       z = hasZIndex
         ? edge.zIndex!
         : Math.max(
-            (isNodeInternals ? nodes.get(edge.source) : nodes.find((n) => n.id === edge.source))?.[internalsSymbol]
-              ?.z || 0,
-            (isNodeInternals ? nodes.get(edge.target) : nodes.find((n) => n.id === edge.target))?.[internalsSymbol]
-              ?.z || 0
+            nodes.find((n) => n.id === edge.source)?.[internalsSymbol]?.z || 0,
+            nodes.find((n) => n.id === edge.target)?.[internalsSymbol]?.z || 0
           );
     }
 

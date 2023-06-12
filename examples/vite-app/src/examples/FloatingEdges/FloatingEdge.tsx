@@ -1,15 +1,15 @@
-import { FC, useMemo, CSSProperties } from 'react';
-import { EdgeProps, useStore, getBezierPath, ReactFlowState } from '@xyflow/react';
+import { FC, CSSProperties } from 'react';
+import { EdgeProps, useStore, getBezierPath } from '@xyflow/react';
 
 import { getEdgeParams } from './utils';
 
-const nodeSelector = (s: ReactFlowState) => s.nodeInternals;
-
 const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
-  const nodeInternals = useStore(nodeSelector);
+  const { sourceNode, targetNode } = useStore((s) => {
+    const sourceNode = s.nodes.find((n) => n.id === source);
+    const targetNode = s.nodes.find((n) => n.id === target);
 
-  const sourceNode = useMemo(() => nodeInternals.get(source), [source, nodeInternals]);
-  const targetNode = useMemo(() => nodeInternals.get(target), [target, nodeInternals]);
+    return { sourceNode, targetNode };
+  });
 
   if (!sourceNode || !targetNode) {
     return null;

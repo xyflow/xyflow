@@ -41,5 +41,3 @@ export type WrapNodeProps<NodeData = any> = Pick<
     rfId: string;
     disableKeyboardA11y: boolean;
   };
-
-export type NodeInternals = Map<string, Node>;

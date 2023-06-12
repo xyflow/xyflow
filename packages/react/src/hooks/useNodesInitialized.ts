@@ -8,12 +8,11 @@ export type UseNodesInitializedOptions = {
 };
 
 const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) => {
-  if (s.nodeInternals.size === 0) {
+  if (s.nodes.length === 0) {
     return false;
   }
 
-  return s
-    .getNodes()
+  return s.nodes
     .filter((n) => (options.includeHiddenNodes ? true : !n.hidden))
     .every((n) => n[internalsSymbol]?.handleBounds !== undefined);
 };

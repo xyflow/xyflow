@@ -65,8 +65,8 @@ function ResizeControl({
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
-        const { nodeInternals, transform, snapGrid, snapToGrid } = store.getState();
-        const node = nodeInternals.get(id);
+        const { nodes, transform, snapGrid, snapToGrid } = store.getState();
+        const node = nodes.find((n) => n.id === id);
         const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
         prevValues.current = {
@@ -86,9 +86,9 @@ function ResizeControl({
         onResizeStart?.(event, { ...prevValues.current });
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { nodeInternals, transform, snapGrid, snapToGrid, triggerNodeChanges } = store.getState();
+        const { nodes, transform, snapGrid, snapToGrid, triggerNodeChanges } = store.getState();
         const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
-        const node = nodeInternals.get(id);
+        const node = nodes.find((n) => n.id === id);
 
         if (node) {
           const changes: NodeChange[] = [];

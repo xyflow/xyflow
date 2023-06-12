@@ -11,7 +11,7 @@ export function getMouseHandler(
   return handler === undefined
     ? handler
     : (event: MouseEvent) => {
-        const node = getState().nodeInternals.get(id)!;
+        const node = getState().nodes.find((n) => n.id === id)!;
         handler(event, { ...node });
       };
 }
@@ -34,8 +34,8 @@ export function handleNodeClick({
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeInternals } = store.getState();
-  const node = nodeInternals.get(id)!;
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodes } = store.getState();
+  const node = nodes.find((n) => n.id === id)!;
 
   store.setState({ nodesSelectionActive: false });
 

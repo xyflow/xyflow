@@ -7,9 +7,7 @@ function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
-    const { nodeExtent, updateNodePositions, getNodes, snapToGrid, snapGrid, onError, nodesDraggable } =
-      store.getState();
-    const nodes = getNodes();
+    const { nodeExtent, updateNodePositions, nodes, snapToGrid, snapGrid, onError, nodesDraggable } = store.getState();
     const selectedNodes = nodes.filter(
       (n) => n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
     );

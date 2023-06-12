@@ -9,8 +9,8 @@ function useVisibleNodes(onlyRenderVisible: boolean) {
     useCallback(
       (s: ReactFlowState) =>
         onlyRenderVisible
-          ? getNodesInside<Node>(s.getNodes(), { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
-          : s.getNodes(),
+          ? getNodesInside<Node>(s.nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
+          : s.nodes,
       [onlyRenderVisible]
     )
   );

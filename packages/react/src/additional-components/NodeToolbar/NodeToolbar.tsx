@@ -24,7 +24,7 @@ const nodesEqualityFn = (a: Node[], b: Node[]) => {
 const storeSelector = (state: ReactFlowState) => ({
   transform: state.transform,
   nodeOrigin: state.nodeOrigin,
-  selectedNodesCount: state.getNodes().filter((node) => node.selected).length,
+  selectedNodesCount: state.nodes.filter((node) => node.selected).length,
 });
 
 function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number, align: Align): string {
@@ -87,7 +87,7 @@ function NodeToolbar({
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
 
       return nodeIds.reduce<Node[]>((acc, id) => {
-        const node = state.nodeInternals.get(id);
+        const node = state.nodes.find((n) => n.id === id);
         if (node) {
           acc.push(node);
         }

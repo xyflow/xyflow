@@ -21,7 +21,7 @@ export type NodesSelectionProps = {
 };
 
 const selector = (s: ReactFlowState) => {
-  const selectedNodes = s.getNodes().filter((n) => n.selected);
+  const selectedNodes = s.nodes.filter((n) => n.selected);
   const { width, height, x, y } = getRectOfNodes(selectedNodes, s.nodeOrigin);
 
   return {
@@ -57,10 +57,7 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
 
   const onContextMenu = onSelectionContextMenu
     ? (event: MouseEvent) => {
-        const selectedNodes = store
-          .getState()
-          .getNodes()
-          .filter((n) => n.selected);
+        const selectedNodes = store.getState().nodes.filter((n) => n.selected);
         onSelectionContextMenu(event, selectedNodes);
       }
     : undefined;

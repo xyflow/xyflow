@@ -129,8 +129,7 @@ const Pane = memo(
     };
 
     const onMouseMove = (event: ReactMouseEvent): void => {
-      const { userSelectionRect, edges, transform, onNodesChange, onEdgesChange, nodeOrigin, getNodes } =
-        store.getState();
+      const { userSelectionRect, edges, transform, nodeOrigin, nodes, onNodesChange, onEdgesChange } = store.getState();
       if (!isSelecting || !containerBounds.current || !userSelectionRect) {
         return;
       }
@@ -149,7 +148,6 @@ const Pane = memo(
         height: Math.abs(mousePos.y - startY),
       };
 
-      const nodes = getNodes();
       const selectedNodes = getNodesInside<Node>(
         nodes,
         nextUserSelectRect,

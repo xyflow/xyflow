@@ -7,7 +7,7 @@ const initialState: ReactFlowStore = {
   width: 0,
   height: 0,
   transform: [0, 0, 1],
-  nodeInternals: new Map(),
+  nodes: [],
   edges: [],
   onNodesChange: null,
   onEdgesChange: null,

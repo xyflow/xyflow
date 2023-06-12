@@ -5,7 +5,7 @@ import styles from './provider.module.css';
 const Sidebar = () => {
   const { setNodes } = useReactFlow();
   const nodeInfos = useStore((store) =>
-    store.getNodes().map((n) => `Node ${n.id} - x: ${n.position.x.toFixed(2)}, y: ${n.position.y.toFixed(2)}`)
+    store.nodes.map((n) => `Node ${n.id} - x: ${n.position.x.toFixed(2)}, y: ${n.position.y.toFixed(2)}`)
   );
   const transform = useStore((store) => store.transform);
 

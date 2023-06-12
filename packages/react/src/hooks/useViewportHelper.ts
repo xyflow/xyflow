@@ -36,12 +36,12 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return { x, y, zoom };
       },
       fitView: (options) => {
-        const { getNodes, width, height, nodeOrigin, minZoom, maxZoom, panZoom } = store.getState();
+        const { nodes, width, height, nodeOrigin, minZoom, maxZoom, panZoom } = store.getState();
 
         return panZoom
           ? fitView(
               {
-                nodes: getNodes(),
+                nodes,
                 width,
                 height,
                 nodeOrigin,

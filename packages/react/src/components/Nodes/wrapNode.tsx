@@ -78,7 +78,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       }
 
       if (onClick) {
-        const node = store.getState().nodeInternals.get(id)!;
+        const node = store.getState().nodes.find((n) => n.id === id)!;
         onClick(event, { ...node });
       }
     };

@@ -26,11 +26,11 @@ const createRFStore = () =>
   createStore<ReactFlowState>((set, get) => ({
     ...initialState,
     setNodes: (nodes: Node[]) => {
-      const { nodeInternals, nodeOrigin, elevateNodesOnSelect } = get();
-      set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect) });
+      const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
+      set({ nodes: createNodeInternals(nodes, storeNodes, nodeOrigin, elevateNodesOnSelect) });
     },
     getNodes: () => {
-      return Array.from(get().nodeInternals.values());
+      return get().nodes;
     },
     setEdges: (edges: Edge[]) => {
       const { defaultEdgeOptions = {} } = get();
@@ -40,17 +40,17 @@ const createRFStore = () =>
       const hasDefaultNodes = typeof nodes !== 'undefined';
       const hasDefaultEdges = typeof edges !== 'undefined';
 
-      const nodeInternals = hasDefaultNodes
-        ? createNodeInternals(nodes, new Map(), get().nodeOrigin, get().elevateNodesOnSelect)
-        : new Map();
+      const nextNodes = hasDefaultNodes
+        ? createNodeInternals(nodes, [], get().nodeOrigin, get().elevateNodesOnSelect)
+        : [];
       const nextEdges = hasDefaultEdges ? edges : [];
 
-      set({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
+      set({ nodes: nextNodes, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates) => {
       const {
         onNodesChange,
-        nodeInternals,
+        nodes,
         fitViewOnInit,
         fitViewOnInitDone,
         fitViewOnInitOptions,
@@ -70,11 +70,12 @@ const createRFStore = () =>
 
       const style = window.getComputedStyle(viewportNode);
       const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
+      const changes: NodeDimensionChange[] = [];
 
-      const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
-        const node = nodeInternals.get(update.id);
+      const nextNodes = nodes.map((node) => {
+        const update = updates.find((change) => change.id === node.id);
 
-        if (node) {
+        if (update) {
           const dimensions = getDimensions(update.nodeElement);
           const doUpdate = !!(
             dimensions.width &&
@@ -83,8 +84,15 @@ const createRFStore = () =>
           );
 
           if (doUpdate) {
-            nodeInternals.set(node.id, {
+            changes.push({
+              id: node.id,
+              type: 'dimensions',
+              dimensions,
+            });
+
+            return {
               ...node,
+              ...dimensions,
               [internalsSymbol]: {
                 ...node[internalsSymbol],
                 handleBounds: {
@@ -92,21 +100,14 @@ const createRFStore = () =>
                   target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
                 },
               },
-              ...dimensions,
-            });
-
-            res.push({
-              id: node.id,
-              type: 'dimensions',
-              dimensions,
-            });
+            };
           }
         }
 
-        return res;
-      }, []);
+        return node;
+      });
 
-      updateAbsoluteNodePositions(nodeInternals, nodeOrigin);
+      updateAbsoluteNodePositions(nextNodes, nodeOrigin);
 
       const nextFitViewOnInitDone =
         fitViewOnInitDone ||
@@ -115,7 +116,7 @@ const createRFStore = () =>
           !!panZoom &&
           fitView(
             {
-              nodes: Array.from(nodeInternals.values()),
+              nodes: nextNodes,
               width,
               height,
               panZoom,
@@ -125,7 +126,7 @@ const createRFStore = () =>
             },
             fitViewOnInitOptions
           ));
-      set({ nodeInternals: new Map(nodeInternals), fitViewOnInitDone: nextFitViewOnInitDone });
+      set({ nodes: nextNodes, fitViewOnInitDone: nextFitViewOnInitDone });
 
       if (changes?.length > 0) {
         onNodesChange?.(changes);
@@ -153,13 +154,13 @@ const createRFStore = () =>
     },
 
     triggerNodeChanges: (changes) => {
-      const { onNodesChange, nodeInternals, hasDefaultNodes, nodeOrigin, getNodes, elevateNodesOnSelect } = get();
+      const { onNodesChange, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
 
       if (changes?.length) {
         if (hasDefaultNodes) {
-          const nodes = applyNodeChanges(changes, getNodes());
-          const nextNodeInternals = createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect);
-          set({ nodeInternals: nextNodeInternals });
+          const updatedNodes = applyNodeChanges(changes, nodes);
+          const nextNodes = createNodeInternals(updatedNodes, nodes, nodeOrigin, elevateNodesOnSelect);
+          set({ nodes: nextNodes });
         }
 
         onNodesChange?.(changes);
@@ -167,14 +168,14 @@ const createRFStore = () =>
     },
 
     addSelectedNodes: (selectedNodeIds) => {
-      const { multiSelectionActive, edges, getNodes } = get();
+      const { multiSelectionActive, edges, nodes } = get();
       let changedNodes: NodeSelectionChange[];
       let changedEdges: EdgeSelectionChange[] | null = null;
 
       if (multiSelectionActive) {
         changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
       } else {
-        changedNodes = getSelectionChanges(getNodes(), selectedNodeIds);
+        changedNodes = getSelectionChanges(nodes, selectedNodeIds);
         changedEdges = getSelectionChanges(edges, []);
       }
 
@@ -186,7 +187,7 @@ const createRFStore = () =>
       });
     },
     addSelectedEdges: (selectedEdgeIds) => {
-      const { multiSelectionActive, edges, getNodes } = get();
+      const { multiSelectionActive, edges, nodes } = get();
       let changedEdges: EdgeSelectionChange[];
       let changedNodes: NodeSelectionChange[] | null = null;
 
@@ -194,7 +195,7 @@ const createRFStore = () =>
         changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
       } else {
         changedEdges = getSelectionChanges(edges, selectedEdgeIds);
-        changedNodes = getSelectionChanges(getNodes(), []);
+        changedNodes = getSelectionChanges(nodes, []);
       }
 
       updateNodesAndEdgesSelections({
@@ -205,8 +206,8 @@ const createRFStore = () =>
       });
     },
     unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-      const { edges: storeEdges, getNodes } = get();
-      const nodesToUnselect = nodes ? nodes : getNodes();
+      const { edges: storeEdges, nodes: storeNodes } = get();
+      const nodesToUnselect = nodes ? nodes : storeNodes;
       const edgesToUnselect = edges ? edges : storeEdges;
 
       const changedNodes = nodesToUnselect.map((n) => {
@@ -242,8 +243,7 @@ const createRFStore = () =>
       set({ translateExtent });
     },
     resetSelectedElements: () => {
-      const { edges, getNodes } = get();
-      const nodes = getNodes();
+      const { edges, nodes } = get();
 
       const nodesToUnselect = nodes
         .filter((e) => e.selected)
@@ -260,15 +260,18 @@ const createRFStore = () =>
       });
     },
     setNodeExtent: (nodeExtent) => {
-      const { nodeInternals } = get();
-
-      nodeInternals.forEach((node) => {
-        node.positionAbsolute = clampPosition(node.position, nodeExtent);
-      });
+      const { nodes } = get();
 
       set({
         nodeExtent,
-        nodeInternals: new Map(nodeInternals),
+        nodes: nodes.map((node) => {
+          const positionAbsolute = clampPosition(node.position, nodeExtent);
+
+          return {
+            ...node,
+            positionAbsolute,
+          };
+        }),
       });
     },
     panBy: (delta): boolean => {

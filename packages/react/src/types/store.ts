@@ -32,7 +32,6 @@ import type {
   NodeChange,
   OnNodesChange,
   OnEdgesChange,
-  NodeInternals,
   DefaultEdgeOptions,
   FitViewOptions,
   OnNodesDelete,
@@ -46,7 +45,7 @@ export type ReactFlowStore = {
   width: number;
   height: number;
   transform: Transform;
-  nodeInternals: NodeInternals;
+  nodes: Node[];
   edges: Edge[];
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;

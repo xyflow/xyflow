@@ -14,7 +14,7 @@ const CustomEdge: FC<EdgeProps> = ({
   data,
 }) => {
   const isConnectedNodeDragging = useStore((s) =>
-    s.getNodes().find((n) => n.dragging && (target === n.id || source === n.id))
+    s.nodes.find((n) => n.dragging && (target === n.id || source === n.id))
   );
 
   const [edgePath, labelX, labelY] = getBezierPath({

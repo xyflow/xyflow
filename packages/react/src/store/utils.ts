@@ -7,25 +7,21 @@ import {
   type NodeOrigin,
 } from '@xyflow/system';
 
-import type { Edge, EdgeSelectionChange, Node, NodeInternals, NodeSelectionChange, ReactFlowState } from '../types';
+import type { Edge, EdgeSelectionChange, Node, NodeSelectionChange, ReactFlowState } from '../types';
 
 type ParentNodes = Record<string, boolean>;
 
-function calculateXYZPosition(
-  node: Node,
-  nodeInternals: NodeInternals,
-  result: XYZPosition,
-  nodeOrigin: NodeOrigin
-): XYZPosition {
+function calculateXYZPosition(node: Node, nodes: Node[], result: XYZPosition, nodeOrigin: NodeOrigin): XYZPosition {
   if (!node.parentNode) {
     return result;
   }
-  const parentNode = nodeInternals.get(node.parentNode)!;
+
+  const parentNode = nodes.find((n) => n.id === node.parentNode)!;
   const parentNodePosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
 
   return calculateXYZPosition(
     parentNode,
-    nodeInternals,
+    nodes,
     {
       x: (result.x ?? 0) + parentNodePosition.x,
       y: (result.y ?? 0) + parentNodePosition.y,
@@ -35,21 +31,17 @@ function calculateXYZPosition(
   );
 }
 
-export function updateAbsoluteNodePositions(
-  nodeInternals: NodeInternals,
-  nodeOrigin: NodeOrigin,
-  parentNodes?: ParentNodes
-) {
-  nodeInternals.forEach((node) => {
-    if (node.parentNode && !nodeInternals.has(node.parentNode)) {
+export function updateAbsoluteNodePositions(nodes: Node[], nodeOrigin: NodeOrigin, parentNodes?: ParentNodes) {
+  nodes.forEach((node) => {
+    if (node.parentNode && !nodes.find((n) => n.id === node.parentNode)) {
       throw new Error(`Parent node ${node.parentNode} not found`);
     }
 
     if (node.parentNode || parentNodes?.[node.id]) {
-      const parentNode = node.parentNode ? nodeInternals.get(node.parentNode) : null;
+      const parentNode = node.parentNode ? nodes.find((n) => n.id === node.parentNode) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
-        nodeInternals,
+        nodes,
         {
           ...node.position,
           z: node[internalsSymbol]?.z ?? 0,
@@ -73,19 +65,19 @@ export function updateAbsoluteNodePositions(
 
 export function createNodeInternals(
   nodes: Node[],
-  nodeInternals: NodeInternals,
+  storeNodes: Node[],
   nodeOrigin: NodeOrigin,
   elevateNodesOnSelect: boolean
-): NodeInternals {
-  const nextNodeInternals = new Map<string, Node>();
+): Node[] {
+  const nextNodes: Node[] = [];
   const parentNodes: ParentNodes = {};
   const selectedNodeZ: number = elevateNodesOnSelect ? 1000 : 0;
 
   nodes.forEach((node) => {
     const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
-    const currInternals = nodeInternals.get(node.id);
+    const currInternals = storeNodes.find((n) => n.id === node.id);
 
-    const internals: Node = {
+    const updatedNode: Node = {
       width: currInternals?.width,
       height: currInternals?.height,
       ...node,
@@ -96,11 +88,11 @@ export function createNodeInternals(
     };
 
     if (node.parentNode) {
-      internals.parentNode = node.parentNode;
+      updatedNode.parentNode = node.parentNode;
       parentNodes[node.parentNode] = true;
     }
 
-    Object.defineProperty(internals, internalsSymbol, {
+    Object.defineProperty(updatedNode, internalsSymbol, {
       enumerable: false,
       value: {
         handleBounds: currInternals?.[internalsSymbol]?.handleBounds,
@@ -108,36 +100,26 @@ export function createNodeInternals(
       },
     });
 
-    nextNodeInternals.set(node.id, internals);
+    nextNodes.push(updatedNode);
   });
 
-  updateAbsoluteNodePositions(nextNodeInternals, nodeOrigin, parentNodes);
+  updateAbsoluteNodePositions(nodes, nodeOrigin, parentNodes);
 
-  return nextNodeInternals;
+  return nextNodes;
 }
 
-export function handleControlledNodeSelectionChange(nodeChanges: NodeSelectionChange[], nodeInternals: NodeInternals) {
-  nodeChanges.forEach((change) => {
-    const node = nodeInternals.get(change.id);
-    if (node) {
-      nodeInternals.set(node.id, {
-        ...node,
-        [internalsSymbol]: node[internalsSymbol],
-        selected: change.selected,
-      });
-    }
-  });
+export function handleControlledSelectionChange<NodeOrEdge extends Node | Edge>(
+  changes: NodeSelectionChange[] | EdgeSelectionChange[],
+  items: NodeOrEdge[]
+): NodeOrEdge[] {
+  return items.map((item) => {
+    const change = changes.find((change) => change.id === item.id);
 
-  return new Map(nodeInternals);
-}
-
-export function handleControlledEdgeSelectionChange(edgeChanges: EdgeSelectionChange[], edges: Edge[]) {
-  return edges.map((e) => {
-    const change = edgeChanges.find((change) => change.id === e.id);
     if (change) {
-      e.selected = change.selected;
+      item.selected = change.selected;
     }
-    return e;
+
+    return item;
   });
 }
 
@@ -149,11 +131,11 @@ type UpdateNodesAndEdgesParams = {
 };
 
 export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get, set }: UpdateNodesAndEdgesParams) {
-  const { nodeInternals, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
+  const { nodes, edges, onNodesChange, onEdgesChange, hasDefaultNodes, hasDefaultEdges } = get();
 
   if (changedNodes?.length) {
     if (hasDefaultNodes) {
-      set({ nodeInternals: handleControlledNodeSelectionChange(changedNodes, nodeInternals) });
+      set({ nodes: handleControlledSelectionChange(changedNodes, nodes) });
     }
 
     onNodesChange?.(changedNodes);
@@ -161,7 +143,7 @@ export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get,
 
   if (changedEdges?.length) {
     if (hasDefaultEdges) {
-      set({ edges: handleControlledEdgeSelectionChange(changedEdges, edges) });
+      set({ edges: handleControlledSelectionChange(changedEdges, edges) });
     }
 
     onEdgesChange?.(changedEdges);

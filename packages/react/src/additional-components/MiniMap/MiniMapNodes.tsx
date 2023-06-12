@@ -12,7 +12,7 @@ import type { MiniMapNodes, GetMiniMapNodeAttribute } from './types';
 declare const window: any;
 
 const selector = (s: ReactFlowState) => s.nodeOrigin;
-const selectorNodes = (s: ReactFlowState) => s.getNodes().filter((node) => !node.hidden && node.width && node.height);
+const selectorNodes = (s: ReactFlowState) => s.nodes.filter((node) => !node.hidden && node.width && node.height);
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 function MiniMapNodes({

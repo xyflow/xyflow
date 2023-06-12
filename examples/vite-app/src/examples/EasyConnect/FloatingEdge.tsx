@@ -4,8 +4,8 @@ import { useStore, getStraightPath, EdgeProps } from '@xyflow/react';
 import { getEdgeParams } from './utils.js';
 
 function FloatingEdge({ id, source, target, markerEnd, style }: EdgeProps) {
-  const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
-  const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
+  const sourceNode = useStore(useCallback((store) => store.nodes.find((n) => n.id === source), [source]));
+  const targetNode = useStore(useCallback((store) => store.nodes.find((n) => n.id === target), [target]));
 
   if (!sourceNode || !targetNode) {
     return null;
