@@ -62,7 +62,7 @@ export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType e
 };
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
-  `reactflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
+  `xyflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
 const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
   return edges.some(

@@ -194,7 +194,6 @@ function onPointerDown(
     if (connection.source !== connection.target && handleDomNode) {
       resetRecentHandle(prevActiveHandle, lib);
       prevActiveHandle = handleDomNode;
-      // @todo: remove the old class names "react-flow__handle-" in the next major version
       handleDomNode.classList.add('connecting', `${lib}-flow__handle-connecting`);
       handleDomNode.classList.toggle('valid', isValid);
       handleDomNode.classList.toggle(`${lib}-flow__handle-valid`, isValid);

@@ -1,5 +1,6 @@
 import { HandleType } from './types';
 
+// @todo: update URLs to xyflow
 export const errorMessages = {
   error001: () =>
     '[React Flow]: Seems like you have not used zustand provider as an ancestor. Help: https://reactflow.dev/error#001',
