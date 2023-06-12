@@ -1,41 +1,49 @@
 import { useCallback } from 'react';
-import { calcNextPosition } from '@xyflow/system';
+import { calcNextPosition, snapPosition } from '@xyflow/system';
 
+import { Node } from '../types';
 import { useStoreApi } from '../hooks/useStore';
+
+const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
+  n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'));
 
 function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
-    const { nodeExtent, updateNodePositions, nodes, snapToGrid, snapGrid, onError, nodesDraggable } = store.getState();
-    const selectedNodes = nodes.filter(
-      (n) => n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
-    );
+    const { nodeExtent, nodes, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions } = store.getState();
+    const selectedNodes = nodes.filter(selectedAndDraggable(nodesDraggable));
     // by default a node moves 5px on each key press, or 20px if shift is pressed
     // if snap grid is enabled, we use that for the velocity.
     const xVelo = snapToGrid ? snapGrid[0] : 5;
     const yVelo = snapToGrid ? snapGrid[1] : 5;
     const factor = params.isShiftPressed ? 4 : 1;
 
-    const positionDiffX = params.x * xVelo * factor;
-    const positionDiffY = params.y * yVelo * factor;
+    const xDiff = params.x * xVelo * factor;
+    const yDiff = params.y * yVelo * factor;
 
-    const nodeUpdates = selectedNodes.map((n) => {
-      if (n.positionAbsolute) {
-        const nextPosition = { x: n.positionAbsolute.x + positionDiffX, y: n.positionAbsolute.y + positionDiffY };
+    const nodeUpdates = selectedNodes.map((node) => {
+      if (node.positionAbsolute) {
+        let nextPosition = { x: node.positionAbsolute.x + xDiff, y: node.positionAbsolute.y + yDiff };
 
         if (snapToGrid) {
-          nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
-          nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
+          nextPosition = snapPosition(nextPosition, snapGrid);
         }
 
-        const { positionAbsolute, position } = calcNextPosition(n, nextPosition, nodes, nodeExtent, undefined, onError);
+        const { positionAbsolute, position } = calcNextPosition(
+          node,
+          nextPosition,
+          nodes,
+          nodeExtent,
+          undefined,
+          onError
+        );
 
-        n.position = position;
-        n.positionAbsolute = positionAbsolute;
+        node.position = position;
+        node.positionAbsolute = positionAbsolute;
       }
 
-      return n;
+      return node;
     });
 
     updateNodePositions(nodeUpdates, true, false);

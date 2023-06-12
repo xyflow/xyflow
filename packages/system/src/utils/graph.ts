@@ -144,21 +144,14 @@ export const pointToRendererPoint = (
   { x, y }: XYPosition,
   [tx, ty, tScale]: Transform,
   snapToGrid: boolean,
-  [snapX, snapY]: [number, number]
+  snapGrid: SnapGrid
 ): XYPosition => {
   const position: XYPosition = {
     x: (x - tx) / tScale,
     y: (y - ty) / tScale,
   };
 
-  if (snapToGrid) {
-    return {
-      x: snapX * Math.round(position.x / snapX),
-      y: snapY * Math.round(position.y / snapY),
-    };
-  }
-
-  return position;
+  return snapToGrid ? snapPosition(position, snapGrid) : position;
 };
 
 export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Transform): XYPosition => {
@@ -349,10 +342,12 @@ export function getPointerPosition(
     y: (y - transform[1]) / transform[2],
   };
 
+  const { x: xSnapped, y: ySnapped } = snapToGrid ? snapPosition(pointerPos, snapGrid) : pointerPos;
+
   // we need the snapped position in order to be able to skip unnecessary drag events
   return {
-    xSnapped: snapToGrid ? snapGrid[0] * Math.round(pointerPos.x / snapGrid[0]) : pointerPos.x,
-    ySnapped: snapToGrid ? snapGrid[1] * Math.round(pointerPos.y / snapGrid[1]) : pointerPos.y,
+    xSnapped,
+    ySnapped,
     ...pointerPos,
   };
 }
@@ -366,11 +361,11 @@ export function calcNextPosition<NodeType extends BaseNode>(
   onError?: OnError
 ): { position: XYPosition; positionAbsolute: XYPosition } {
   let currentExtent = node.extent || nodeExtent;
-  let parentNode: NodeType;
+  let parentNode: NodeType | null = null;
   let parentPos = { x: 0, y: 0 };
 
   if (node.parentNode) {
-    parentNode = nodes.find((n) => n.id === node.parentNode);
+    parentNode = nodes.find((n) => n.id === node.parentNode) || null;
     parentPos = parentNode
       ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
       : parentPos;
@@ -411,5 +406,12 @@ export function calcNextPosition<NodeType extends BaseNode>(
       y: positionAbsolute.y - parentPos.y,
     },
     positionAbsolute,
+  };
+}
+
+export function snapPosition(position: XYPosition, snapGrid: SnapGrid = [1, 1]) {
+  return {
+    x: snapGrid[0] * Math.round(position.x / snapGrid[0]),
+    y: snapGrid[1] * Math.round(position.y / snapGrid[1]),
   };
 }

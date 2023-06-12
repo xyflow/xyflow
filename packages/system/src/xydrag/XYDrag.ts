@@ -1,7 +1,7 @@
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
-import { calcAutoPan, getEventPosition, getPointerPosition, calcNextPosition } from '../utils';
+import { calcAutoPan, getEventPosition, getPointerPosition, calcNextPosition, snapPosition } from '../utils';
 import { getDragItems, getEventHandlerParams, hasSelector, wrapSelectionDragFunc } from './utils';
 import type {
   BaseNode,
@@ -107,11 +107,10 @@ export function XYDrag({
       let hasChange = false;
 
       dragItems = dragItems.map((n) => {
-        const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
+        let nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
 
         if (snapToGrid) {
-          nextPosition.x = snapGrid[0] * Math.round(nextPosition.x / snapGrid[0]);
-          nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
+          nextPosition = snapPosition(nextPosition, snapGrid);
         }
 
         const updatedPos = calcNextPosition(n, nextPosition, nodes, nodeExtent, nodeOrigin, onError);
@@ -173,10 +172,10 @@ export function XYDrag({
           transform,
           snapGrid,
           snapToGrid,
+          selectNodesOnDrag,
           onNodeDragStart,
           onSelectionDragStart,
           unselectNodesAndEdges,
-          selectNodesOnDrag,
         } = getStoreItems();
 
         if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {

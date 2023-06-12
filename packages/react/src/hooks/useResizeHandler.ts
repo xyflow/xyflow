@@ -3,18 +3,12 @@ import { errorMessages, getDimensions } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
 
-function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>): void {
+function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
   const store = useStoreApi();
 
   useEffect(() => {
-    let resizeObserver: ResizeObserver;
-
     const updateDimensions = () => {
-      if (!rendererNode.current) {
-        return;
-      }
-
-      const size = getDimensions(rendererNode.current);
+      const size = getDimensions(domNode.current!);
 
       if (size.height === 0 || size.width === 0) {
         store.getState().onError?.('004', errorMessages['error004']());
@@ -23,21 +17,21 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
       store.setState({ width: size.width || 500, height: size.height || 500 });
     };
 
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
+    if (domNode.current) {
+      updateDimensions();
+      window.addEventListener('resize', updateDimensions);
 
-    if (rendererNode.current) {
-      resizeObserver = new ResizeObserver(() => updateDimensions());
-      resizeObserver.observe(rendererNode.current);
+      const resizeObserver = new ResizeObserver(() => updateDimensions());
+      resizeObserver.observe(domNode.current);
+
+      return () => {
+        window.removeEventListener('resize', updateDimensions);
+
+        if (resizeObserver && domNode.current) {
+          resizeObserver.unobserve(domNode.current);
+        }
+      };
     }
-
-    return () => {
-      window.removeEventListener('resize', updateDimensions);
-
-      if (resizeObserver && rendererNode.current) {
-        resizeObserver.unobserve(rendererNode.current!);
-      }
-    };
   }, []);
 }
 

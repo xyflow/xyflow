@@ -6,7 +6,7 @@ import useKeyPress from './useKeyPress';
 import useReactFlow from './useReactFlow';
 import { Edge, Node } from '../types';
 
-const getSelected = (item: Node | Edge) => item.selected;
+const selected = (item: Node | Edge) => item.selected;
 
 export default ({
   deleteKeyCode,
@@ -24,7 +24,7 @@ export default ({
   useEffect(() => {
     if (deleteKeyPressed) {
       const { edges, nodes } = store.getState();
-      deleteElements({ nodes: nodes.filter(getSelected), edges: edges.filter(getSelected) });
+      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);
