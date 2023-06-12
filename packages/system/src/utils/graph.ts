@@ -3,14 +3,14 @@ import {
   boxToRect,
   clamp,
   clampPosition,
-  devWarn,
   getBoundsOfBoxes,
   getOverlappingArea,
   isNumeric,
   rectToBox,
   nodeToRect,
-  getEventPosition,
-} from './utils';
+  pointToRendererPoint,
+  getTransformForBounds,
+} from './general';
 import {
   type Connection,
   type Transform,
@@ -21,7 +21,6 @@ import {
   type BaseEdge,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  SnapGrid,
   NodeDragItem,
   CoordinateExtent,
   OnError,
@@ -60,106 +59,6 @@ export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType e
 
   const incomersIds = edges.filter((e) => e.target === node.id).map((e) => e.source);
   return nodes.filter((n) => incomersIds.includes(n.id));
-};
-
-const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
-  `xyflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
-
-const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
-  return edges.some(
-    (el) =>
-      el.source === edge.source &&
-      el.target === edge.target &&
-      (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
-      (el.targetHandle === edge.targetHandle || (!el.targetHandle && !edge.targetHandle))
-  );
-};
-
-export const addEdgeBase = <EdgeType extends BaseEdge>(
-  edgeParams: EdgeType | Connection,
-  edges: EdgeType[]
-): EdgeType[] => {
-  if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['error006']());
-
-    return edges;
-  }
-
-  let edge: EdgeType;
-  if (isEdgeBase(edgeParams)) {
-    edge = { ...edgeParams };
-  } else {
-    edge = {
-      ...edgeParams,
-      id: getEdgeId(edgeParams),
-    } as EdgeType;
-  }
-
-  if (connectionExists(edge, edges)) {
-    return edges;
-  }
-
-  return edges.concat(edge);
-};
-
-export type UpdateEdgeOptions = {
-  shouldReplaceId?: boolean;
-};
-
-export const updateEdgeBase = <EdgeType extends BaseEdge>(
-  oldEdge: EdgeType,
-  newConnection: Connection,
-  edges: EdgeType[],
-  options: UpdateEdgeOptions = { shouldReplaceId: true }
-): EdgeType[] => {
-  const { id: oldEdgeId, ...rest } = oldEdge;
-
-  if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['error006']());
-
-    return edges;
-  }
-
-  const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
-
-  if (!foundEdge) {
-    devWarn('007', errorMessages['error007'](oldEdgeId));
-
-    return edges;
-  }
-
-  // Remove old edge and create the new edge with parameters of old edge.
-  const edge = {
-    ...rest,
-    id: options.shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
-    source: newConnection.source,
-    target: newConnection.target,
-    sourceHandle: newConnection.sourceHandle,
-    targetHandle: newConnection.targetHandle,
-  } as EdgeType;
-
-  return edges.filter((e) => e.id !== oldEdgeId).concat(edge);
-};
-
-export const pointToRendererPoint = (
-  { x, y }: XYPosition,
-  [tx, ty, tScale]: Transform,
-  snapToGrid: boolean,
-  snapGrid: SnapGrid
-): XYPosition => {
-  const position: XYPosition = {
-    x: (x - tx) / tScale,
-    y: (y - ty) / tScale,
-  };
-
-  return snapToGrid ? snapPosition(position, snapGrid) : position;
-};
-
-export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Transform): XYPosition => {
-  return {
-    x: x * tScale + tx,
-    y: y * tScale + ty,
-  };
 };
 
 export const getNodePositionWithOrigin = (
@@ -230,8 +129,7 @@ export const getNodesInside = <NodeType extends BaseNode>(
   nodeOrigin: NodeOrigin = [0, 0]
 ): NodeType[] => {
   const paneRect = {
-    x: (rect.x - tx) / tScale,
-    y: (rect.y - ty) / tScale,
+    ...pointToRendererPoint(rect, [tx, ty, tScale]),
     width: rect.width / tScale,
     height: rect.height / tScale,
   };
@@ -269,26 +167,6 @@ export const getConnectedEdgesBase = <NodeType extends BaseNode = BaseNode, Edge
   return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
 };
 
-export const getTransformForBounds = (
-  bounds: Rect,
-  width: number,
-  height: number,
-  minZoom: number,
-  maxZoom: number,
-  padding = 0.1
-): Transform => {
-  const xZoom = width / (bounds.width * (1 + padding));
-  const yZoom = height / (bounds.height * (1 + padding));
-  const zoom = Math.min(xZoom, yZoom);
-  const clampedZoom = clamp(zoom, minZoom, maxZoom);
-  const boundsCenterX = bounds.x + bounds.width / 2;
-  const boundsCenterY = bounds.y + bounds.height / 2;
-  const x = width / 2 - boundsCenterX * clampedZoom;
-  const y = height / 2 - boundsCenterY * clampedZoom;
-
-  return [x, y, clampedZoom];
-};
-
 export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
   { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
@@ -323,33 +201,6 @@ export function fitView<Params extends FitViewParamsBase<BaseNode>, Options exte
   }
 
   return false;
-}
-
-export type GetPointerPositionParams = {
-  transform: Transform;
-  snapGrid?: SnapGrid;
-  snapToGrid?: boolean;
-};
-
-export function getPointerPosition(
-  event: MouseEvent | TouchEvent,
-  { snapGrid = [0, 0], snapToGrid = false, transform }: GetPointerPositionParams
-): XYPosition & { xSnapped: number; ySnapped: number } {
-  const { x, y } = getEventPosition(event);
-
-  const pointerPos = {
-    x: (x - transform[0]) / transform[2],
-    y: (y - transform[1]) / transform[2],
-  };
-
-  const { x: xSnapped, y: ySnapped } = snapToGrid ? snapPosition(pointerPos, snapGrid) : pointerPos;
-
-  // we need the snapped position in order to be able to skip unnecessary drag events
-  return {
-    xSnapped,
-    ySnapped,
-    ...pointerPos,
-  };
 }
 
 export function calcNextPosition<NodeType extends BaseNode>(
@@ -409,9 +260,42 @@ export function calcNextPosition<NodeType extends BaseNode>(
   };
 }
 
-export function snapPosition(position: XYPosition, snapGrid: SnapGrid = [1, 1]) {
+// helper function to get arrays of nodes and edges that can be deleted
+// you can pass in a list of nodes and edges that should be deleted
+// and the function only returns elements that are deletable and also handles connected nodes and child nodes
+export function getElementsToRemove<NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>({
+  nodesToRemove,
+  edgesToRemove,
+  nodes,
+  edges,
+}: {
+  nodesToRemove: Partial<NodeType>[];
+  edgesToRemove: Partial<EdgeType>[];
+  nodes: NodeType[];
+  edges: EdgeType[];
+}): {
+  matchingNodes: NodeType[];
+  matchingEdges: EdgeType[];
+} {
+  const nodeIds = nodesToRemove.map((node) => node.id);
+  const edgeIds = edgesToRemove.map((edge) => edge.id);
+
+  const matchingNodes = nodes.reduce<NodeType[]>((res, node) => {
+    const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
+    const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
+    if (deletable && (nodeIds.includes(node.id) || parentHit)) {
+      res.push(node);
+    }
+
+    return res;
+  }, []);
+  const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
+  const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
+  const connectedEdges = getConnectedEdgesBase<NodeType, EdgeType>(matchingNodes, deletableEdges);
+  const matchingEdges = [...initialHitEdges, ...connectedEdges];
+
   return {
-    x: snapGrid[0] * Math.round(position.x / snapGrid[0]),
-    y: snapGrid[1] * Math.round(position.y / snapGrid[1]),
+    matchingEdges,
+    matchingNodes,
   };
 }

@@ -1,6 +1,6 @@
-import { Transform, internalsSymbol } from '../..';
+import { Connection, Transform, errorMessages, internalsSymbol, isEdgeBase } from '../..';
 import { BaseEdge, BaseNode } from '../../types';
-import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes } from '../utils';
+import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -107,3 +107,82 @@ export function isEdgeVisible({ sourceNode, targetNode, width, height, transform
 
   return getOverlappingArea(viewRect, boxToRect(edgeBox)) > 0;
 }
+
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
+  `xyflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
+
+const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
+  return edges.some(
+    (el) =>
+      el.source === edge.source &&
+      el.target === edge.target &&
+      (el.sourceHandle === edge.sourceHandle || (!el.sourceHandle && !edge.sourceHandle)) &&
+      (el.targetHandle === edge.targetHandle || (!el.targetHandle && !edge.targetHandle))
+  );
+};
+
+export const addEdgeBase = <EdgeType extends BaseEdge>(
+  edgeParams: EdgeType | Connection,
+  edges: EdgeType[]
+): EdgeType[] => {
+  if (!edgeParams.source || !edgeParams.target) {
+    devWarn('006', errorMessages['error006']());
+
+    return edges;
+  }
+
+  let edge: EdgeType;
+  if (isEdgeBase(edgeParams)) {
+    edge = { ...edgeParams };
+  } else {
+    edge = {
+      ...edgeParams,
+      id: getEdgeId(edgeParams),
+    } as EdgeType;
+  }
+
+  if (connectionExists(edge, edges)) {
+    return edges;
+  }
+
+  return edges.concat(edge);
+};
+
+export type UpdateEdgeOptions = {
+  shouldReplaceId?: boolean;
+};
+
+export const updateEdgeBase = <EdgeType extends BaseEdge>(
+  oldEdge: EdgeType,
+  newConnection: Connection,
+  edges: EdgeType[],
+  options: UpdateEdgeOptions = { shouldReplaceId: true }
+): EdgeType[] => {
+  const { id: oldEdgeId, ...rest } = oldEdge;
+
+  if (!newConnection.source || !newConnection.target) {
+    devWarn('006', errorMessages['error006']());
+
+    return edges;
+  }
+
+  const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
+
+  if (!foundEdge) {
+    devWarn('007', errorMessages['error007'](oldEdgeId));
+
+    return edges;
+  }
+
+  // Remove old edge and create the new edge with parameters of old edge.
+  const edge = {
+    ...rest,
+    id: options.shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
+    source: newConnection.source,
+    target: newConnection.target,
+    sourceHandle: newConnection.sourceHandle,
+    targetHandle: newConnection.targetHandle,
+  } as EdgeType;
+
+  return edges.filter((e) => e.id !== oldEdgeId).concat(edge);
+};
