@@ -1,5 +1,5 @@
 import { Transform, internalsSymbol } from '../..';
-import { type MarkerType, BaseEdge, BaseNode } from '../../types';
+import { BaseEdge, BaseNode } from '../../types';
 import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes } from '../utils';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -22,14 +22,6 @@ export function getEdgeCenter({
 
   return [centerX, centerY, xOffset, yOffset];
 }
-
-export const getMarkerEnd = (markerType?: MarkerType, markerEndId?: string): string => {
-  if (typeof markerEndId !== 'undefined' && markerEndId) {
-    return `url(#${markerEndId})`;
-  }
-
-  return typeof markerType !== 'undefined' ? `url(#react-flow__${markerType})` : 'none';
-};
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
 
