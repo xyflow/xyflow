@@ -6,7 +6,7 @@ import {
   type HandleType,
   type Connection,
   type PanBy,
-  type BaseNode,
+  type NodeBase,
   type Transform,
   type ConnectingHandle,
   type OnConnectEnd,
@@ -25,7 +25,7 @@ export type OnPointerDownParams = {
   handleId: string | null;
   nodeId: string;
   isTarget: boolean;
-  nodes: BaseNode[];
+  nodes: NodeBase[];
   lib: string;
   edgeUpdaterType?: HandleType;
   updateConnection: UpdateConnection;

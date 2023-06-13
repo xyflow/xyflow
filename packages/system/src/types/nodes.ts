@@ -3,7 +3,7 @@ import { internalsSymbol } from '../constants';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 
 // this is stuff that all nodes share independent of the framework
-export type BaseNode<T = any, U extends string | undefined = string | undefined> = {
+export type NodeBase<T = any, U extends string | undefined = string | undefined> = {
   id: string;
   position: XYPosition;
   data: T;
@@ -39,13 +39,13 @@ export type BaseNode<T = any, U extends string | undefined = string | undefined>
 
 // props that get passed to a custom node
 export type NodeProps<T = any> = {
-  id: BaseNode['id'];
+  id: NodeBase['id'];
   data: T;
-  dragHandle: BaseNode['dragHandle'];
-  type: BaseNode['type'];
-  selected: BaseNode['selected'];
-  isConnectable: BaseNode['connectable'];
-  zIndex: BaseNode['zIndex'];
+  dragHandle: NodeBase['dragHandle'];
+  type: NodeBase['type'];
+  selected: NodeBase['selected'];
+  isConnectable: NodeBase['connectable'];
+  zIndex: NodeBase['zIndex'];
   xPos: number;
   yPos: number;
   dragging: boolean;
@@ -85,6 +85,6 @@ export type NodeDragItem = {
 
 export type NodeOrigin = [number, number];
 
-export type OnNodeDrag = (event: MouseEvent, node: BaseNode, nodes: BaseNode[]) => void;
+export type OnNodeDrag = (event: MouseEvent, node: NodeBase, nodes: NodeBase[]) => void;
 
-export type OnSelectionDrag = (event: MouseEvent, nodes: BaseNode[]) => void;
+export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;

@@ -1,4 +1,4 @@
-import type { BaseEdge, EdgeMarker, EdgeMarkerType, MarkerProps } from '../types';
+import type { EdgeBase, EdgeMarker, EdgeMarkerType, MarkerProps } from '../types';
 
 export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | null): string {
   if (!marker) {
@@ -18,7 +18,7 @@ export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | nu
 }
 
 export function createMarkerIds(
-  edges: BaseEdge[],
+  edges: EdgeBase[],
   { id, defaultColor }: { id?: string | null; defaultColor?: string }
 ) {
   const ids: string[] = [];

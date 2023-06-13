@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type { SvelteComponentTyped } from 'svelte';
-import type { BaseNode, NodeProps } from '@xyflow/system';
+import type { NodeBase, NodeProps } from '@xyflow/system';
 
 // @todo: currently the helper function only like Node from '@reactflow/core'
 // we need a base node type or helpes that accept Node like types
@@ -9,7 +9,7 @@ import type { BaseNode, NodeProps } from '@xyflow/system';
 export type Node<
   NodeData = any,
   NodeType extends string | undefined = string | undefined
-> = BaseNode<NodeData, NodeType> & {
+> = NodeBase<NodeData, NodeType> & {
   class?: string;
   style?: string;
 };

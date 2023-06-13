@@ -2,7 +2,7 @@
 
 import type { CSSProperties, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
 import type {
-  BaseEdge,
+  EdgeBase,
   BezierPathOptions,
   Position,
   SmoothStepPathOptions,
@@ -28,7 +28,7 @@ export type EdgeLabelOptions = {
 
 export type EdgeUpdatable = boolean | HandleType;
 
-export type DefaultEdge<EdgeData = any> = BaseEdge<EdgeData> & {
+export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
   style?: CSSProperties;
   className?: string;
   sourceNode?: Node;

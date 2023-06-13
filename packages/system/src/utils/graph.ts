@@ -17,8 +17,8 @@ import {
   type XYPosition,
   type Rect,
   type NodeOrigin,
-  type BaseNode,
-  type BaseEdge,
+  type NodeBase,
+  type EdgeBase,
   type FitViewParamsBase,
   type FitViewOptionsBase,
   NodeDragItem,
@@ -27,15 +27,15 @@ import {
 } from '../types';
 import { errorMessages } from '../constants';
 
-export const isEdgeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+export const isEdgeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   element: NodeType | Connection | EdgeType
 ): element is EdgeType => 'id' in element && 'source' in element && 'target' in element;
 
-export const isNodeBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+export const isNodeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   element: NodeType | Connection | EdgeType
 ): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
 
-export const getOutgoersBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType,
   nodes: NodeType[],
   edges: EdgeType[]
@@ -48,7 +48,7 @@ export const getOutgoersBase = <NodeType extends BaseNode = BaseNode, EdgeType e
   return nodes.filter((n) => outgoerIds.includes(n.id));
 };
 
-export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType,
   nodes: NodeType[],
   edges: EdgeType[]
@@ -62,7 +62,7 @@ export const getIncomersBase = <NodeType extends BaseNode = BaseNode, EdgeType e
 };
 
 export const getNodePositionWithOrigin = (
-  node: BaseNode | undefined,
+  node: NodeBase | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
 ): XYPosition & { positionAbsolute: XYPosition } => {
   if (!node) {
@@ -95,7 +95,7 @@ export const getNodePositionWithOrigin = (
   };
 };
 
-export const getRectOfNodes = (nodes: BaseNode[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const getRectOfNodes = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -119,7 +119,7 @@ export const getRectOfNodes = (nodes: BaseNode[], nodeOrigin: NodeOrigin = [0, 0
   return boxToRect(box);
 };
 
-export const getNodesInside = <NodeType extends BaseNode>(
+export const getNodesInside = <NodeType extends NodeBase>(
   nodes: NodeType[],
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
@@ -158,7 +158,7 @@ export const getNodesInside = <NodeType extends BaseNode>(
   return visibleNodes;
 };
 
-export const getConnectedEdgesBase = <NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>(
+export const getConnectedEdgesBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   nodes: NodeType[],
   edges: EdgeType[]
 ): EdgeType[] => {
@@ -167,7 +167,7 @@ export const getConnectedEdgesBase = <NodeType extends BaseNode = BaseNode, Edge
   return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
 };
 
-export function fitView<Params extends FitViewParamsBase<BaseNode>, Options extends FitViewOptionsBase<BaseNode>>(
+export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
   { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
@@ -203,7 +203,7 @@ export function fitView<Params extends FitViewParamsBase<BaseNode>, Options exte
   return false;
 }
 
-export function calcNextPosition<NodeType extends BaseNode>(
+export function calcNextPosition<NodeType extends NodeBase>(
   node: NodeDragItem | NodeType,
   nextPosition: XYPosition,
   nodes: NodeType[],
@@ -263,7 +263,7 @@ export function calcNextPosition<NodeType extends BaseNode>(
 // helper function to get arrays of nodes and edges that can be deleted
 // you can pass in a list of nodes and edges that should be deleted
 // and the function only returns elements that are deletable and also handles connected nodes and child nodes
-export function getElementsToRemove<NodeType extends BaseNode = BaseNode, EdgeType extends BaseEdge = BaseEdge>({
+export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   nodesToRemove,
   edgesToRemove,
   nodes,

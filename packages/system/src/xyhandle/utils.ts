@@ -3,7 +3,7 @@ import {
   type HandleType,
   type NodeHandleBounds,
   type XYPosition,
-  type BaseNode,
+  type NodeBase,
   type ConnectionHandle,
 } from '../types';
 import { internalsSymbol } from '../constants';
@@ -11,7 +11,7 @@ import { internalsSymbol } from '../constants';
 // this functions collects all handles and adds an absolute position
 // so that we can later find the closest handle to the mouse position
 export function getHandles(
-  node: BaseNode,
+  node: NodeBase,
   handleBounds: NodeHandleBounds,
   type: HandleType,
   currentHandle: string
@@ -62,7 +62,7 @@ export function getClosestHandle(
 }
 
 type GetHandleLookupParams = {
-  nodes: BaseNode[];
+  nodes: NodeBase[];
   nodeId: string;
   handleId: string | null;
   handleType: string;

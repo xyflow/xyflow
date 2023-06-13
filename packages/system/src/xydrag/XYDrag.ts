@@ -4,11 +4,11 @@ import { select } from 'd3-selection';
 import { calcAutoPan, getEventPosition, getPointerPosition, calcNextPosition, snapPosition } from '../utils';
 import { getDragItems, getEventHandlerParams, hasSelector, wrapSelectionDragFunc } from './utils';
 import type {
-  BaseNode,
+  NodeBase,
   NodeDragItem,
   UseDragEvent,
   XYPosition,
-  BaseEdge,
+  EdgeBase,
   CoordinateExtent,
   NodeOrigin,
   OnError,
@@ -20,11 +20,11 @@ import type {
   UpdateNodePositions,
 } from '../types';
 
-export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: BaseNode, nodes: BaseNode[]) => void;
+export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBase, nodes: NodeBase[]) => void;
 
 type StoreItems = {
-  nodes: BaseNode[];
-  edges: BaseEdge[];
+  nodes: NodeBase[];
+  edges: EdgeBase[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
   snapToGrid: boolean;

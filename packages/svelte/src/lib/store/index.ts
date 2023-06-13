@@ -13,7 +13,9 @@ import {
   type Connection,
   type XYPosition,
   type CoordinateExtent,
-  type UpdateConnection
+  type UpdateConnection,
+  type NodeBase,
+  type NodeDragItem
 } from '@xyflow/system';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
@@ -57,7 +59,9 @@ export function createStore(): SvelteFlowStore {
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes.update((nds) => {
       return nds.map((n) => {
-        const nodeDragItem = nodeDragItems.find((ndi) => ndi.id === n.id);
+        const nodeDragItem = (nodeDragItems as Array<NodeBase | NodeDragItem>).find(
+          (ndi) => ndi.id === n.id
+        );
 
         if (nodeDragItem) {
           return {

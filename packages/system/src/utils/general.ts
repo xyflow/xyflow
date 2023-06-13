@@ -4,7 +4,7 @@ import type {
   CoordinateExtent,
   Box,
   Rect,
-  BaseNode,
+  NodeBase,
   NodeOrigin,
   SnapGrid,
   Transform,
@@ -58,7 +58,7 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   height: y2 - y,
 });
 
-export const nodeToRect = (node: BaseNode, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const nodeToRect = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
   return {
@@ -68,7 +68,7 @@ export const nodeToRect = (node: BaseNode, nodeOrigin: NodeOrigin = [0, 0]): Rec
   };
 };
 
-export const nodeToBox = (node: BaseNode, nodeOrigin: NodeOrigin = [0, 0]): Box => {
+export const nodeToBox = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
   const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
   return {

@@ -1,10 +1,10 @@
-import { type NodeDragItem, type XYPosition, BaseNode } from '../types';
+import { type NodeDragItem, type XYPosition, NodeBase } from '../types';
 
-export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: BaseNode[]) => void) {
-  return (event: MouseEvent, _: BaseNode, nodes: BaseNode[]) => selectionFunc?.(event, nodes);
+export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: NodeBase[]) => void) {
+  return (event: MouseEvent, _: NodeBase, nodes: NodeBase[]) => selectionFunc?.(event, nodes);
 }
 
-export function isParentSelected<NodeType extends BaseNode>(node: NodeType, nodes: NodeType[]): boolean {
+export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodes: NodeType[]): boolean {
   if (!node.parentNode) {
     return false;
   }
@@ -35,7 +35,7 @@ export function hasSelector(target: Element, selector: string, domNode: Element)
 }
 
 // looks for all selected nodes and created a NodeDragItem for each of them
-export function getDragItems<NodeType extends BaseNode>(
+export function getDragItems<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodesDraggable: boolean,
   mousePos: XYPosition,
@@ -71,7 +71,7 @@ export function getDragItems<NodeType extends BaseNode>(
 // returns two params:
 // 1. the dragged node (or the first of the list, if we are dragging a node selection)
 // 2. array of selected nodes (for multi selections)
-export function getEventHandlerParams<NodeType extends BaseNode>({
+export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeId,
   dragItems,
   nodes,

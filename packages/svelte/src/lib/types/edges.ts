@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { SvelteComponentTyped } from 'svelte';
 import type {
-  BaseEdge,
+  EdgeBase,
   BezierPathOptions,
   DefaultEdgeOptionsBase,
   EdgePosition,
@@ -10,7 +10,7 @@ import type {
 
 import type { Node } from '$lib/types';
 
-export type DefaultEdge<EdgeData = any> = BaseEdge<EdgeData> & {
+export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
   label?: string;
   labelStyle?: string;
   style?: string;

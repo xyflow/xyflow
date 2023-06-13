@@ -1,7 +1,7 @@
 import { Position } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type BaseEdge<EdgeData = any> = {
+export type EdgeBase<EdgeData = any> = {
   id: string;
   type?: string;
   source: string;
@@ -31,7 +31,7 @@ export type BezierPathOptions = {
   curvature?: number;
 };
 
-export type DefaultEdgeOptionsBase<EdgeType extends BaseEdge> = Omit<
+export type DefaultEdgeOptionsBase<EdgeType extends EdgeBase> = Omit<
   EdgeType,
   'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'sourceNode' | 'targetNode'
 >;

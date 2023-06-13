@@ -2,10 +2,10 @@
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect } from './utils';
-import type { BaseNode, NodeDragItem, NodeOrigin } from './nodes';
+import type { NodeBase, NodeDragItem, NodeOrigin } from './nodes';
 import type { ConnectingHandle, HandleType } from './handles';
 import { PanZoomInstance } from './panzoom';
-import { BaseEdge } from '..';
+import { EdgeBase } from '..';
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -45,9 +45,9 @@ export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectS
 export type OnConnect = (connection: Connection) => void;
 export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 
-export type IsValidConnection = (edge: BaseEdge | Connection) => boolean;
+export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
-export type FitViewParamsBase<NodeType extends BaseNode> = {
+export type FitViewParamsBase<NodeType extends NodeBase> = {
   nodes: NodeType[];
   width: number;
   height: number;
@@ -57,7 +57,7 @@ export type FitViewParamsBase<NodeType extends BaseNode> = {
   nodeOrigin?: NodeOrigin;
 };
 
-export type FitViewOptionsBase<NodeType extends BaseNode> = {
+export type FitViewOptionsBase<NodeType extends NodeBase> = {
   padding?: number;
   includeHiddenNodes?: boolean;
   minZoom?: number;
@@ -124,7 +124,7 @@ export type SelectionRect = Rect & {
 export type OnError = (id: string, message: string) => void;
 
 export type UpdateNodePositions = (
-  dragItems: NodeDragItem[] | BaseNode[],
+  dragItems: NodeDragItem[] | NodeBase[],
   positionChanged?: boolean,
   dragging?: boolean
 ) => void;

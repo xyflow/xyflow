@@ -1,6 +1,6 @@
 import { internalsSymbol } from '../constants';
 import {
-  BaseNode,
+  NodeBase,
   CoordinateExtent,
   Dimensions,
   NodeDimensionUpdate,
@@ -16,7 +16,7 @@ import { getNodePositionWithOrigin } from './graph';
 
 type ParentNodes = Record<string, boolean>;
 
-export function updateAbsolutePositions<NodeType extends BaseNode>(
+export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeOrigin: NodeOrigin = [0, 0],
   parentNodes?: ParentNodes
@@ -54,13 +54,13 @@ export function updateAbsolutePositions<NodeType extends BaseNode>(
   });
 }
 
-type UpdateNodesOptions<NodeType extends BaseNode> = {
+type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
 };
 
-export function updateNodes<NodeType extends BaseNode>(
+export function updateNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   storeNodes: NodeType[],
   options: UpdateNodesOptions<NodeType> = {
@@ -104,7 +104,7 @@ export function updateNodes<NodeType extends BaseNode>(
   return nodesWithPositions;
 }
 
-function calculateXYZPosition<NodeType extends BaseNode>(
+function calculateXYZPosition<NodeType extends NodeBase>(
   node: NodeType,
   nodes: NodeType[],
   result: XYZPosition,
@@ -131,11 +131,11 @@ function calculateXYZPosition<NodeType extends BaseNode>(
 
 export function updateNodeDimensions(
   updates: NodeDimensionUpdate[],
-  nodes: BaseNode[],
+  nodes: NodeBase[],
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin,
   onUpdate?: (id: string, dimensions: Dimensions) => void
-): BaseNode[] | null {
+): NodeBase[] | null {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
 
   if (!viewportNode) {

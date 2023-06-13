@@ -1,15 +1,15 @@
 import { EdgePosition } from '../../types/edges';
 import { ConnectionMode, OnError } from '../../types/general';
-import { BaseNode, NodeHandleBounds } from '../../types/nodes';
+import { NodeBase, NodeHandleBounds } from '../../types/nodes';
 import { Position, Rect, XYPosition } from '../../types/utils';
 import { errorMessages, internalsSymbol } from '../../constants';
 import { HandleElement } from '../../types';
 
 export type GetEdgePositionParams = {
   id: string;
-  sourceNode: BaseNode;
+  sourceNode: NodeBase;
   sourceHandle: string | null;
-  targetNode: BaseNode;
+  targetNode: NodeBase;
   targetHandle: string | null;
   connectionMode: ConnectionMode;
   onError?: OnError;
@@ -59,7 +59,7 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
   };
 }
 
-function getHandleDataByNode(node?: BaseNode): [Rect, NodeHandleBounds | null, boolean] {
+function getHandleDataByNode(node?: NodeBase): [Rect, NodeHandleBounds | null, boolean] {
   const handleBounds = node?.[internalsSymbol]?.handleBounds || null;
 
   const isValid =

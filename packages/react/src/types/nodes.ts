@@ -1,7 +1,7 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type { BaseNode } from '@xyflow/system';
+import type { NodeBase } from '@xyflow/system';
 
-export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = BaseNode<
+export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
   NodeData,
   NodeType
 > & {

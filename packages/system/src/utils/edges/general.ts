@@ -1,5 +1,5 @@
 import { Connection, Transform, errorMessages, internalsSymbol, isEdgeBase } from '../..';
-import { BaseEdge, BaseNode } from '../../types';
+import { EdgeBase, NodeBase } from '../../types';
 import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -25,15 +25,15 @@ export function getEdgeCenter({
 
 const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
 
-export type GroupedEdges<EdgeType extends BaseEdge> = {
+export type GroupedEdges<EdgeType extends EdgeBase> = {
   edges: EdgeType[];
   level: number;
   isMaxLevel: boolean;
 };
 
-export function groupEdgesByZLevel<EdgeType extends BaseEdge>(
+export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
   edges: EdgeType[],
-  nodes: BaseNode[],
+  nodes: NodeBase[],
   elevateEdgesOnSelect = false
 ): GroupedEdges<EdgeType>[] {
   let maxLevel = -1;
@@ -80,8 +80,8 @@ export function groupEdgesByZLevel<EdgeType extends BaseEdge>(
 }
 
 type IsEdgeVisibleParams = {
-  sourceNode: BaseNode;
-  targetNode: BaseNode;
+  sourceNode: NodeBase;
+  targetNode: NodeBase;
   width: number;
   height: number;
   transform: Transform;
@@ -108,10 +108,10 @@ export function isEdgeVisible({ sourceNode, targetNode, width, height, transform
   return getOverlappingArea(viewRect, boxToRect(edgeBox)) > 0;
 }
 
-const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | BaseEdge): string =>
+const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | EdgeBase): string =>
   `xyflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
-const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
+const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   return edges.some(
     (el) =>
       el.source === edge.source &&
@@ -121,7 +121,7 @@ const connectionExists = (edge: BaseEdge, edges: BaseEdge[]) => {
   );
 };
 
-export const addEdgeBase = <EdgeType extends BaseEdge>(
+export const addEdgeBase = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
   edges: EdgeType[]
 ): EdgeType[] => {
@@ -152,7 +152,7 @@ export type UpdateEdgeOptions = {
   shouldReplaceId?: boolean;
 };
 
-export const updateEdgeBase = <EdgeType extends BaseEdge>(
+export const updateEdgeBase = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
   newConnection: Connection,
   edges: EdgeType[],
