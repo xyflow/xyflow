@@ -1,4 +1,4 @@
-import ReactFlow, { ReactFlowProps, Viewport, useViewport, SnapGrid, CoordinateExtent, Node } from '@xyflow/react';
+import { ReactFlow, ReactFlowProps, Viewport, useViewport, SnapGrid, CoordinateExtent, Node } from '@xyflow/react';
 
 import ControlledFlow from '../../support/ControlledFlow';
 import * as simpleflow from '../../fixtures/simpleflow';

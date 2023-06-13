@@ -63,12 +63,7 @@ export function getEdgeTree(store: SvelteFlowStoreState, onError: OnError) {
         if (edgePosition) {
           res.push({
             ...edge,
-            sourceX: edgePosition.sourceX,
-            sourceY: edgePosition.sourceY,
-            targetX: edgePosition.targetX,
-            targetY: edgePosition.targetY,
-            sourcePosition: edgePosition.sourcePosition,
-            targetPosition: edgePosition.targetPosition
+            ...edgePosition
           });
         }
 
