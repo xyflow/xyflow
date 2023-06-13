@@ -76,7 +76,7 @@ export function createStore(): SvelteFlowStore {
   };
 
   function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
-    const nextNodes = updateNodeDimensionsAndHandles(
+    const nextNodes = updateNodeDimensionsSystem(
       updates,
       get(store.nodes),
       get(store.domNode),
