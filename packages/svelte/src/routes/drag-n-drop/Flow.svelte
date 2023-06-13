@@ -80,6 +80,10 @@
 
     svelteFlow.nodes.update((nds) => nds.concat(newNode));
   };
+
+  $: {
+    console.log($nodes);
+  }
 </script>
 
 <main>

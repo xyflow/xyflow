@@ -5,11 +5,13 @@ import {
   fitView,
   getHandleBounds,
   internalsSymbol,
+  updateNodes,
+  updateAbsolutePositions,
   type CoordinateExtent,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { createNodeInternals, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
+import { updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 import type {
   ReactFlowState,
@@ -27,7 +29,9 @@ const createRFStore = () =>
     ...initialState,
     setNodes: (nodes: Node[]) => {
       const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
-      set({ nodes: createNodeInternals(nodes, storeNodes, nodeOrigin, elevateNodesOnSelect) });
+      const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
+
+      set({ nodes: nextNodes });
     },
     getNodes: () => {
       return get().nodes;
@@ -41,7 +45,10 @@ const createRFStore = () =>
       const hasDefaultEdges = typeof edges !== 'undefined';
 
       const nextNodes = hasDefaultNodes
-        ? createNodeInternals(nodes, [], get().nodeOrigin, get().elevateNodesOnSelect)
+        ? updateNodes(nodes, [], {
+            nodeOrigin: get().nodeOrigin,
+            elevateNodesOnSelect: get().elevateNodesOnSelect,
+          })
         : [];
       const nextEdges = hasDefaultEdges ? edges : [];
 
@@ -107,7 +114,7 @@ const createRFStore = () =>
         return node;
       });
 
-      updateAbsoluteNodePositions(nextNodes, nodeOrigin);
+      const nodesWithPosition = updateAbsolutePositions(nextNodes, nodeOrigin);
 
       const nextFitViewOnInitDone =
         fitViewOnInitDone ||
@@ -115,7 +122,7 @@ const createRFStore = () =>
           !!panZoom &&
           fitView(
             {
-              nodes: nextNodes,
+              nodes: nodesWithPosition,
               width,
               height,
               panZoom,
@@ -125,7 +132,7 @@ const createRFStore = () =>
             },
             fitViewOnInitOptions
           ));
-      set({ nodes: nextNodes, fitViewOnInitDone: nextFitViewOnInitDone });
+      set({ nodes: nodesWithPosition, fitViewOnInitDone: nextFitViewOnInitDone });
 
       if (changes?.length > 0) {
         onNodesChange?.(changes);
@@ -156,7 +163,10 @@ const createRFStore = () =>
       if (changes?.length) {
         if (hasDefaultNodes) {
           const updatedNodes = applyNodeChanges(changes, nodes);
-          const nextNodes = createNodeInternals(updatedNodes, nodes, nodeOrigin, elevateNodesOnSelect);
+          const nextNodes = updateNodes(updatedNodes, nodes, {
+            nodeOrigin,
+            elevateNodesOnSelect,
+          });
           set({ nodes: nextNodes });
         }
 

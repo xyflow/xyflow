@@ -151,7 +151,6 @@ export type ReactFlowActions = {
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
-  // @todo can this be reused by system?
   updateConnection: UpdateConnection;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;

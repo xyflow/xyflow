@@ -64,6 +64,7 @@ export function createStore(): SvelteFlowStore {
         if (nodeDragItem) {
           return {
             ...n,
+            [internalsSymbol]: n[internalsSymbol],
             dragging,
             positionAbsolute: nodeDragItem.positionAbsolute,
             position: nodeDragItem.position
@@ -89,7 +90,6 @@ export function createStore(): SvelteFlowStore {
 
       if (update) {
         const dimensions = getDimensions(update.nodeElement);
-
         const doUpdate = !!(
           dimensions.width &&
           dimensions.height &&
@@ -99,10 +99,9 @@ export function createStore(): SvelteFlowStore {
         );
 
         if (doUpdate) {
-          const newNode = {
+          return {
             ...node,
-            width: dimensions.width,
-            height: dimensions.height,
+            ...dimensions,
             [internalsSymbol]: {
               ...node[internalsSymbol],
               handleBounds: {
@@ -111,19 +110,14 @@ export function createStore(): SvelteFlowStore {
               }
             }
           };
-
-          return newNode;
         }
       }
 
       return node;
     });
 
-    const panZoom = get(store.panZoom);
-
     const fitViewOnInitDone =
-      get(store.fitViewOnInitDone) ||
-      (get(store.fitViewOnInit) && !!panZoom && fitView({ nodes: nextNodes }));
+      get(store.fitViewOnInitDone) || (get(store.fitViewOnInit) && fitView({ nodes: nextNodes }));
 
     store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
