@@ -6,7 +6,7 @@ import {
   type Writable,
   get
 } from 'svelte/store';
-import { internalsSymbol, updateNodes } from '@xyflow/system';
+import { updateNodes } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
 

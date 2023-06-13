@@ -111,7 +111,7 @@ export type ReactFlowStore = {
   defaultEdgeOptions?: DefaultEdgeOptions;
 
   fitViewOnInit: boolean;
-  fitViewOnInitDone: boolean;
+  fitViewDone: boolean;
   fitViewOnInitOptions: FitViewOptions | undefined;
 
   onNodesDelete?: OnNodesDelete;
@@ -155,6 +155,7 @@ export type ReactFlowActions = {
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
   panBy: PanBy;
+  fitView: (options?: FitViewOptions) => boolean;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

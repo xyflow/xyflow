@@ -1,7 +1,7 @@
 import { createStore } from 'zustand';
 import {
   clampPosition,
-  fitView,
+  fitView as fitViewSystem,
   updateNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
@@ -21,6 +21,7 @@ import type {
   NodeSelectionChange,
   NodePositionChange,
   UnselectNodesAndEdgesParams,
+  FitViewOptions,
 } from '../types';
 
 const createRFStore = () =>
@@ -54,55 +55,39 @@ const createRFStore = () =>
       set({ nodes: nextNodes, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates) => {
-      const {
-        onNodesChange,
-        nodes,
-        fitViewOnInit,
-        fitViewOnInitDone,
-        fitViewOnInitOptions,
-        domNode,
-        nodeOrigin,
-        width,
-        height,
-        minZoom,
-        maxZoom,
-        panZoom,
-      } = get();
+      const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
+        get();
       const changes: NodeDimensionChange[] = [];
 
-      const onUpdate = (id: string, dimensions: Dimensions) => {
-        changes.push({
-          id: id,
-          type: 'dimensions',
-          dimensions,
-        });
-      };
+      const updatedNodes = updateNodeDimensionsSystem(
+        updates,
+        nodes,
+        domNode,
+        nodeOrigin,
+        (id: string, dimensions: Dimensions) => {
+          changes.push({
+            id: id,
+            type: 'dimensions',
+            dimensions,
+          });
+        }
+      );
 
-      const nextNodes = updateNodeDimensionsSystem(updates, nodes, domNode, nodeOrigin, onUpdate);
-
-      if (!nextNodes) {
+      if (!updatedNodes) {
         return;
       }
 
-      const nodesWithPosition = updateAbsolutePositions(nextNodes, nodeOrigin);
+      const nextNodes = updateAbsolutePositions(updatedNodes, nodeOrigin);
 
-      const nextFitViewOnInitDone =
-        fitViewOnInitDone ||
+      const nextFitViewDone =
+        fitViewDone ||
         (fitViewOnInit &&
-          !!panZoom &&
-          fitView(
-            {
-              nodes: nodesWithPosition,
-              width,
-              height,
-              panZoom,
-              minZoom,
-              maxZoom,
-              nodeOrigin,
-            },
-            fitViewOnInitOptions
-          ));
-      set({ nodes: nodesWithPosition, fitViewOnInitDone: nextFitViewOnInitDone });
+          fitView({
+            ...fitViewOnInitOptions,
+            nodes: nextNodes,
+          }));
+
+      set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
       if (changes?.length > 0) {
         onNodesChange?.(changes);
@@ -254,6 +239,27 @@ const createRFStore = () =>
     panBy: (delta): boolean => {
       const { transform, width, height, panZoom, translateExtent } = get();
       return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
+    },
+    fitView: (options?: FitViewOptions): boolean => {
+      const { panZoom, nodes, width, height, minZoom, maxZoom, nodeOrigin } = get();
+      const fitViewNodes = options?.nodes || nodes;
+
+      if (!panZoom) {
+        return false;
+      }
+
+      return fitViewSystem(
+        {
+          nodes: fitViewNodes as Node[],
+          width,
+          height,
+          panZoom,
+          minZoom,
+          maxZoom,
+          nodeOrigin,
+        },
+        options
+      );
     },
     cancelConnection: () =>
       set({

@@ -51,7 +51,6 @@ export function createStore(): SvelteFlowStore {
 
   function addEdge(edgeParams: Edge | Connection) {
     const edges = get(store.edges);
-
     store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
@@ -139,22 +138,21 @@ export function createStore(): SvelteFlowStore {
 
   function fitView(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
+    const fitViewNodes = options?.nodes || get(store.nodes);
 
     if (!panZoom) {
       return false;
     }
-
-    const fitViewNodes = options?.nodes || get(store.nodes);
 
     return fitViewUtil(
       {
         nodes: fitViewNodes as Node[],
         width: get(store.width),
         height: get(store.height),
-        minZoom: 0.2,
-        maxZoom: 2,
+        minZoom: get(store.minZoom),
+        maxZoom: get(store.maxZoom),
         panZoom,
-        nodeOrigin: [0, 0]
+        nodeOrigin: get(store.nodeOrigin)
       },
       {}
     );
@@ -272,6 +270,8 @@ export function createStore(): SvelteFlowStore {
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
     store.isValidConnection.set(() => true);
+    store.nodes.set([]);
+    store.edges.set([]);
 
     unselectNodesAndEdges();
     cancelConnection();
