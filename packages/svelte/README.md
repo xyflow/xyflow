@@ -1,4 +1,4 @@
-# Svelte Flow - alpha
+# Svelte Flow (alpha)
 
 Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow. **This package is currently under heavy development and the API is very likely to change.**
 
@@ -75,18 +75,6 @@ A basic flow looks like this:
   <MiniMap />
 </SvelteFlow>
 ```
-
-## Development
-
-If you want to check out the current version you need to run the following command from the root directory:
-
-1. `pnpm install` - install dependencies
-2. `pnpm build` - needs to be done once
-3. `pnpm dev` - starts dev server
-
-You can now access the examples under http://127.0.0.1:5173
-
-
 ## How to Contribute
 
 **Show us what you make:** Drop it in into our [Discord Server](https://discord.com/invite/Bqt6xrs), [tweet](https://twitter.com/reactflowdev) at us, or email us at info@reactflow.dev
@@ -98,6 +86,18 @@ You can now access the examples under http://127.0.0.1:5173
 **Financial Support:** If you are an organization who wants to make sure Svelte Flow continues to be maintained, reach out to us at info@reactflow.dev
 
 And of course, we love Github stars ⭐
+
+
+## Development
+
+If you want to check out the current version you need to run the following command from the root directory:
+
+1. `pnpm install` - install dependencies
+2. `pnpm build` - needs to be done once
+3. `pnpm dev` - starts dev server
+
+You can now access the examples under http://127.0.0.1:5173
+
 
 # License
 
