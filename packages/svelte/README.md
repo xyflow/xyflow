@@ -1,16 +1,16 @@
-# SvelteFlow
+# Svelte Flow - alpha
 
-A highly customizable Svelte component for building interactive graphs and node-based editors. **This package is currently under heavy development and the API is very likely to change.**
+Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow. **This package is currently under heavy development and the API is very likely to change.**
 
-## Getting started
+## Installation
 
-If you want to check out the current version you need to run the following command from the root directory:
+The easiest way to get the latest version of Svelte Flow is to install it via npm, yarn or pnpm:
 
-1. `pnpm install` - install dependencies
-2. `pnpm build` - needs to be done once
-3. `pnpm dev` - starts dev server
+```sh
+npm install @xyflow/svelte
+```
 
-You can now access the examples under http://127.0.0.1:5173
+What is “xyflow”? Learn more [here](https://wbkd.notion.site/Upcoming-Changes-at-React-Flow-1a443641891a4069927c0a115e915251).
 
 ## Getting started
 
@@ -21,7 +21,7 @@ A basic flow looks like this:
 ```svelte
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import SvelteFlow, {
+  import { SvelteFlow,
     SvelteFlowProvider,
     Controls,
     Background,
@@ -29,13 +29,7 @@ A basic flow looks like this:
     MiniMap,
     Panel,
     type NodeTypes
-  } from '../../lib/index';
-  import { CustomNode } from './CustomNode';
-
-  // Svelte Flow is highly customizable, a node can be anything that fits in a div
-  const nodeTypes: NodeTypes = {
-    custom: CustomNode
-  };
+  } from '@xyflow/svelte';
   
   // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position.
   // This also makes it easier to update nodes in user land.
@@ -81,3 +75,30 @@ A basic flow looks like this:
   <MiniMap />
 </SvelteFlow>
 ```
+
+## Development
+
+If you want to check out the current version you need to run the following command from the root directory:
+
+1. `pnpm install` - install dependencies
+2. `pnpm build` - needs to be done once
+3. `pnpm dev` - starts dev server
+
+You can now access the examples under http://127.0.0.1:5173
+
+
+## How to Contribute
+
+**Show us what you make:** Drop it in into our [Discord Server](https://discord.com/invite/Bqt6xrs), [tweet](https://twitter.com/reactflowdev) at us, or email us at info@reactflow.dev
+
+**Community Participation:** Ask and answer questions in our [Discord Server](https://discord.com/invite/Bqt6xrs) or jump in on Github discussions.
+
+**Squash Bugs:** We can’t catch them all. Check existing issues and discussions first, then create a new issue to tell us what’s up.
+
+**Financial Support:** If you are an organization who wants to make sure Svelte Flow continues to be maintained, reach out to us at info@reactflow.dev
+
+And of course, we love Github stars ⭐
+
+# License
+
+Svelte Flow is MIT Licensed.

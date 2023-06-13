@@ -1,6 +1,6 @@
 # @xyflow/system
 
-Types for React Flow.
+Core system that powers React Flow and Svelte Flow.
 
 ## Installation 
 
