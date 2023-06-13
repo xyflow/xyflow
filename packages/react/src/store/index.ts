@@ -1,13 +1,12 @@
 import { createStore } from 'zustand';
 import {
   clampPosition,
-  getDimensions,
   fitView,
-  getHandleBounds,
-  internalsSymbol,
   updateNodes,
   updateAbsolutePositions,
-  type CoordinateExtent,
+  panBy as panBySystem,
+  Dimensions,
+  updateNodeDimensions as updateNodeDimensionsSystem,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -69,50 +68,21 @@ const createRFStore = () =>
         maxZoom,
         panZoom,
       } = get();
-      const viewportNode = domNode?.querySelector('.react-flow__viewport');
-
-      if (!viewportNode) {
-        return;
-      }
-
-      const style = window.getComputedStyle(viewportNode);
-      const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
       const changes: NodeDimensionChange[] = [];
 
-      const nextNodes = nodes.map((node) => {
-        const update = updates.find((change) => change.id === node.id);
+      const onUpdate = (id: string, dimensions: Dimensions) => {
+        changes.push({
+          id: id,
+          type: 'dimensions',
+          dimensions,
+        });
+      };
 
-        if (update) {
-          const dimensions = getDimensions(update.nodeElement);
-          const doUpdate = !!(
-            dimensions.width &&
-            dimensions.height &&
-            (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
-          );
+      const nextNodes = updateNodeDimensionsSystem(updates, nodes, domNode, nodeOrigin, onUpdate);
 
-          if (doUpdate) {
-            changes.push({
-              id: node.id,
-              type: 'dimensions',
-              dimensions,
-            });
-
-            return {
-              ...node,
-              ...dimensions,
-              [internalsSymbol]: {
-                ...node[internalsSymbol],
-                handleBounds: {
-                  source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
-                  target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
-                },
-              },
-            };
-          }
-        }
-
-        return node;
-      });
+      if (!nextNodes) {
+        return;
+      }
 
       const nodesWithPosition = updateAbsolutePositions(nextNodes, nodeOrigin);
 
@@ -283,29 +253,7 @@ const createRFStore = () =>
     },
     panBy: (delta): boolean => {
       const { transform, width, height, panZoom, translateExtent } = get();
-
-      if (!panZoom || (!delta.x && !delta.y)) {
-        return false;
-      }
-
-      const extent: CoordinateExtent = [
-        [0, 0],
-        [width, height],
-      ];
-
-      const constrainedTransform = panZoom.setViewportConstrained(
-        { x: transform[0] + delta.x, y: transform[1] + delta.y, zoom: transform[2] },
-        extent,
-        translateExtent
-      );
-
-      const transformChanged =
-        !!constrainedTransform &&
-        (transform[0] !== constrainedTransform.x ||
-          transform[1] !== constrainedTransform.y ||
-          transform[2] !== constrainedTransform.k);
-
-      return transformChanged;
+      return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
     },
     cancelConnection: () =>
       set({

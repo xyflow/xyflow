@@ -1,5 +1,16 @@
 import { internalsSymbol } from '../constants';
-import { BaseNode, NodeOrigin, XYZPosition } from '../types';
+import {
+  BaseNode,
+  CoordinateExtent,
+  Dimensions,
+  NodeDimensionUpdate,
+  NodeOrigin,
+  PanZoomInstance,
+  Transform,
+  XYPosition,
+  XYZPosition,
+} from '../types';
+import { getDimensions, getHandleBounds } from './dom';
 import { isNumeric } from './general';
 import { getNodePositionWithOrigin } from './graph';
 
@@ -116,4 +127,92 @@ function calculateXYZPosition<NodeType extends BaseNode>(
     },
     parentNode.origin || nodeOrigin
   );
+}
+
+export function updateNodeDimensions(
+  updates: NodeDimensionUpdate[],
+  nodes: BaseNode[],
+  domNode: HTMLElement | null,
+  nodeOrigin?: NodeOrigin,
+  onUpdate?: (id: string, dimensions: Dimensions) => void
+): BaseNode[] | null {
+  const viewportNode = domNode?.querySelector('.xyflow__viewport');
+
+  if (!viewportNode) {
+    return null;
+  }
+
+  const style = window.getComputedStyle(viewportNode);
+  const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
+
+  const nextNodes = nodes.map((node) => {
+    const update = updates.find((u) => u.id === node.id);
+    if (update) {
+      const dimensions = getDimensions(update.nodeElement);
+      const doUpdate = !!(
+        dimensions.width &&
+        dimensions.height &&
+        (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
+      );
+
+      if (doUpdate) {
+        onUpdate?.(node.id, dimensions);
+
+        return {
+          ...node,
+          ...dimensions,
+          [internalsSymbol]: {
+            ...node[internalsSymbol],
+            handleBounds: {
+              source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
+              target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
+            },
+          },
+        };
+      }
+    }
+
+    return node;
+  });
+
+  return nextNodes;
+}
+
+export function panBy({
+  delta,
+  panZoom,
+  transform,
+  translateExtent,
+  width,
+  height,
+}: {
+  delta: XYPosition;
+  panZoom: PanZoomInstance | null;
+  transform: Transform;
+  translateExtent: CoordinateExtent;
+  width: number;
+  height: number;
+}) {
+  if (!panZoom || (!delta.x && !delta.y)) {
+    return false;
+  }
+
+  const nextViewport = panZoom.setViewportConstrained(
+    {
+      x: transform[0] + delta.x,
+      y: transform[1] + delta.y,
+      zoom: transform[2],
+    },
+    [
+      [0, 0],
+      [width, height],
+    ],
+    translateExtent
+  );
+
+  const transformChanged =
+    !!nextViewport &&
+    (nextViewport.x !== transform[0] || nextViewport.y !== transform[1] || nextViewport.k !== transform[2]);
+
+  return transformChanged;
 }

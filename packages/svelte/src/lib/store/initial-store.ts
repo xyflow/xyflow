@@ -11,7 +11,8 @@ import {
   type PanZoomInstance,
   type CoordinateExtent,
   type IsValidConnection,
-  type GroupedEdges
+  type GroupedEdges,
+  type NodeOrigin
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -54,6 +55,7 @@ export const getInitialStore = () => ({
   width: writable<number>(500),
   minZoom: writable<number>(0.5),
   maxZoom: writable<number>(2),
+  nodeOrigin: writable<NodeOrigin>([0, 0]),
   nodeExtent: writable<CoordinateExtent>(infiniteExtent),
   translateExtent: writable<CoordinateExtent>(infiniteExtent),
   autoPanOnNodeDrag: writable<boolean>(true),

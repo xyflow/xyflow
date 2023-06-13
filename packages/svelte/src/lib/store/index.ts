@@ -4,10 +4,9 @@ import {
   internalsSymbol,
   createMarkerIds,
   fitView as fitViewUtil,
-  getDimensions,
   getElementsToRemove,
-  getHandleBounds,
-  infiniteExtent,
+  panBy as panBySystem,
+  updateNodeDimensions as updateNodeDimensionsSystem,
   type UpdateNodePositions,
   type NodeDimensionUpdate,
   type ViewportHelperFunctionOptions,
@@ -77,44 +76,16 @@ export function createStore(): SvelteFlowStore {
   };
 
   function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
-    const viewportNode = document?.querySelector('.svelte-flow__viewport');
+    const nextNodes = updateNodeDimensionsAndHandles(
+      updates,
+      get(store.nodes),
+      get(store.domNode),
+      get(store.nodeOrigin)
+    );
 
-    if (!viewportNode) {
+    if (!nextNodes) {
       return;
     }
-
-    const style = window.getComputedStyle(viewportNode);
-    const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-    const nextNodes = get(store.nodes).map((node) => {
-      const update = updates.find((u) => u.id === node.id);
-
-      if (update) {
-        const dimensions = getDimensions(update.nodeElement);
-        const doUpdate = !!(
-          dimensions.width &&
-          dimensions.height &&
-          (node.width !== dimensions.width ||
-            node.height !== dimensions.height ||
-            update.forceUpdate)
-        );
-
-        if (doUpdate) {
-          return {
-            ...node,
-            ...dimensions,
-            [internalsSymbol]: {
-              ...node[internalsSymbol],
-              handleBounds: {
-                source: getHandleBounds('.source', update.nodeElement, zoom, node.origin),
-                target: getHandleBounds('.target', update.nodeElement, zoom, node.origin)
-              }
-            }
-          };
-        }
-      }
-
-      return node;
-    });
 
     const fitViewOnInitDone =
       get(store.fitViewOnInitDone) || (get(store.fitViewOnInit) && fitView({ nodes: nextNodes }));
@@ -264,35 +235,14 @@ export function createStore(): SvelteFlowStore {
   }
 
   function panBy(delta: XYPosition) {
-    const panZoom = get(store.panZoom);
-    const transform = get(store.transform);
-    const width = get(store.width);
-    const height = get(store.height);
-
-    if (!panZoom || (!delta.x && !delta.y)) {
-      return false;
-    }
-
-    const nextViewport = panZoom.setViewportConstrained(
-      {
-        x: transform[0] + delta.x,
-        y: transform[1] + delta.y,
-        zoom: transform[2]
-      },
-      [
-        [0, 0],
-        [width, height]
-      ],
-      infiniteExtent
-    );
-
-    const transformChanged =
-      !!nextViewport &&
-      (nextViewport.x !== transform[0] ||
-        nextViewport.y !== transform[1] ||
-        nextViewport.k !== transform[2]);
-
-    return transformChanged;
+    return panBySystem({
+      delta,
+      panZoom: get(store.panZoom),
+      transform: get(store.transform),
+      translateExtent: get(store.translateExtent),
+      width: get(store.width),
+      height: get(store.height)
+    });
   }
 
   const updateConnection: UpdateConnection = (update) => {

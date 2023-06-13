@@ -13,7 +13,7 @@ function Viewport({ children }: ViewportProps) {
   const transform = useStore(selector);
 
   return (
-    <div className="react-flow__viewport react-flow__container" style={{ transform }}>
+    <div className="react-flow__viewport xyflow__viewport react-flow__container" style={{ transform }}>
       {children}
     </div>
   );
