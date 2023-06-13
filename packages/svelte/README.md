@@ -28,8 +28,6 @@ A basic flow looks like this:
     BackgroundVariant,
     MiniMap,
     Panel,
-    createNodes,
-    createEdges,
     type NodeTypes
   } from '../../lib/index';
   import { CustomNode } from './CustomNode';

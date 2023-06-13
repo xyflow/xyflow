@@ -8,6 +8,9 @@ function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): voi
 
   useEffect(() => {
     const updateDimensions = () => {
+      if (!domNode.current) {
+        return false;
+      }
       const size = getDimensions(domNode.current!);
 
       if (size.height === 0 || size.width === 0) {

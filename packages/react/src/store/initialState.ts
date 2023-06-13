@@ -40,7 +40,7 @@ const initialState: ReactFlowStore = {
   elementsSelectable: true,
   elevateNodesOnSelect: true,
   fitViewOnInit: false,
-  fitViewOnInitDone: false,
+  fitViewDone: false,
   fitViewOnInitOptions: undefined,
   selectNodesOnDrag: true,
 

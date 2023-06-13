@@ -62,8 +62,8 @@ importers:
       '@vitejs/plugin-react-swc': ^3.3.2
       '@xyflow/react': workspace:*
       classcat: ^5.0.3
-      cypress: ^10.6.0
-      cypress-real-events: ^1.7.1
+      cypress: 12.14.0
+      cypress-real-events: 1.8.1
       dagre: ^0.8.5
       localforage: ^1.10.0
       react: ^18.2.0
@@ -89,8 +89,8 @@ importers:
       '@types/react-dom': registry.npmjs.org/@types/react-dom/18.2.4
       '@vitejs/plugin-react': registry.npmjs.org/@vitejs/plugin-react/4.0.0_vite@4.3.9
       '@vitejs/plugin-react-swc': registry.npmjs.org/@vitejs/plugin-react-swc/3.3.2_vite@4.3.9
-      cypress: registry.npmjs.org/cypress/10.11.0
-      cypress-real-events: registry.npmjs.org/cypress-real-events/1.8.1_cypress@10.11.0
+      cypress: registry.npmjs.org/cypress/12.14.0
+      cypress-real-events: registry.npmjs.org/cypress-real-events/1.8.1_cypress@12.14.0
       start-server-and-test: registry.npmjs.org/start-server-and-test/1.15.4
       typescript: registry.npmjs.org/typescript/4.9.5
       vite: registry.npmjs.org/vite/4.3.9
@@ -2036,7 +2036,7 @@ packages:
     version: 2.10.0
     requiresBuild: true
     dependencies:
-      '@types/node': registry.npmjs.org/@types/node/14.18.48
+      '@types/node': registry.npmjs.org/@types/node/18.16.16
     dev: true
     optional: true
 
@@ -2874,6 +2874,13 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
+  registry.npmjs.org/commander/6.2.1:
+    resolution: {integrity: sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/commander/-/commander-6.2.1.tgz}
+    name: commander
+    version: 6.2.1
+    engines: {node: '>= 6'}
+    dev: true
+
   registry.npmjs.org/common-tags/1.8.2:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/common-tags/-/common-tags-1.8.2.tgz}
     name: common-tags
@@ -2995,7 +3002,7 @@ packages:
       stream-transform: registry.npmjs.org/stream-transform/2.1.3
     dev: true
 
-  registry.npmjs.org/cypress-real-events/1.8.1_cypress@10.11.0:
+  registry.npmjs.org/cypress-real-events/1.8.1_cypress@12.14.0:
     resolution: {integrity: sha512-8fFnA8EzS3EVbAmpSEUf3A8yZCmfU3IPOSGUDVFCdE1ke1gYL1A+gvXXV6HKUbTPRuvKKt2vpaMbUwYLpDRswQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/cypress-real-events/-/cypress-real-events-1.8.1.tgz}
     id: registry.npmjs.org/cypress-real-events/1.8.1
     name: cypress-real-events
@@ -3003,7 +3010,7 @@ packages:
     peerDependencies:
       cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x
     dependencies:
-      cypress: registry.npmjs.org/cypress/10.11.0
+      cypress: registry.npmjs.org/cypress/12.14.0
     dev: true
 
   registry.npmjs.org/cypress/10.11.0:
@@ -3029,6 +3036,58 @@ packages:
       cli-cursor: registry.npmjs.org/cli-cursor/3.1.0
       cli-table3: registry.npmjs.org/cli-table3/0.6.3
       commander: registry.npmjs.org/commander/5.1.0
+      common-tags: registry.npmjs.org/common-tags/1.8.2
+      dayjs: registry.npmjs.org/dayjs/1.11.8
+      debug: registry.npmjs.org/debug/4.3.4_supports-color@8.1.1
+      enquirer: registry.npmjs.org/enquirer/2.3.6
+      eventemitter2: registry.npmjs.org/eventemitter2/6.4.7
+      execa: registry.npmjs.org/execa/4.1.0
+      executable: registry.npmjs.org/executable/4.1.1
+      extract-zip: registry.npmjs.org/extract-zip/2.0.1_supports-color@8.1.1
+      figures: registry.npmjs.org/figures/3.2.0
+      fs-extra: registry.npmjs.org/fs-extra/9.1.0
+      getos: registry.npmjs.org/getos/3.2.1
+      is-ci: registry.npmjs.org/is-ci/3.0.1
+      is-installed-globally: registry.npmjs.org/is-installed-globally/0.4.0
+      lazy-ass: registry.npmjs.org/lazy-ass/1.6.0
+      listr2: registry.npmjs.org/listr2/3.14.0_enquirer@2.3.6
+      lodash: registry.npmjs.org/lodash/4.17.21
+      log-symbols: registry.npmjs.org/log-symbols/4.1.0
+      minimist: registry.npmjs.org/minimist/1.2.8
+      ospath: registry.npmjs.org/ospath/1.2.2
+      pretty-bytes: registry.npmjs.org/pretty-bytes/5.6.0
+      proxy-from-env: registry.npmjs.org/proxy-from-env/1.0.0
+      request-progress: registry.npmjs.org/request-progress/3.0.0
+      semver: registry.npmjs.org/semver/7.5.1
+      supports-color: registry.npmjs.org/supports-color/8.1.1
+      tmp: registry.npmjs.org/tmp/0.2.1
+      untildify: registry.npmjs.org/untildify/4.0.0
+      yauzl: registry.npmjs.org/yauzl/2.10.0
+    dev: true
+
+  registry.npmjs.org/cypress/12.14.0:
+    resolution: {integrity: sha512-HiLIXKXZaIT1RT7sw1sVPt+qKtis3uYNm6KwC4qoYjabwLKaqZlyS/P+uVvvlBNcHIwL/BC6nQZajpbUd7hOgQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/cypress/-/cypress-12.14.0.tgz}
+    name: cypress
+    version: 12.14.0
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@cypress/request': registry.npmjs.org/@cypress/request/2.88.11
+      '@cypress/xvfb': registry.npmjs.org/@cypress/xvfb/1.2.4_supports-color@8.1.1
+      '@types/node': registry.npmjs.org/@types/node/14.18.48
+      '@types/sinonjs__fake-timers': registry.npmjs.org/@types/sinonjs__fake-timers/8.1.1
+      '@types/sizzle': registry.npmjs.org/@types/sizzle/2.3.3
+      arch: registry.npmjs.org/arch/2.2.0
+      blob-util: registry.npmjs.org/blob-util/2.0.2
+      bluebird: registry.npmjs.org/bluebird/3.7.2
+      buffer: registry.npmjs.org/buffer/5.7.1
+      cachedir: registry.npmjs.org/cachedir/2.3.0
+      chalk: registry.npmjs.org/chalk/4.1.2
+      check-more-types: registry.npmjs.org/check-more-types/2.24.0
+      cli-cursor: registry.npmjs.org/cli-cursor/3.1.0
+      cli-table3: registry.npmjs.org/cli-table3/0.6.3
+      commander: registry.npmjs.org/commander/6.2.1
       common-tags: registry.npmjs.org/common-tags/1.8.2
       dayjs: registry.npmjs.org/dayjs/1.11.8
       debug: registry.npmjs.org/debug/4.3.4_supports-color@8.1.1

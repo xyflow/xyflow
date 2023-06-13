@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="svelte-flow__viewport"
+  class="svelte-flow__viewport xyflow__viewport"
   style="transform: translate({$transform[0]}px, {$transform[1]}px) scale({$transform[2]})"
 >
   <slot />

@@ -4,10 +4,9 @@ import {
   internalsSymbol,
   createMarkerIds,
   fitView as fitViewUtil,
-  getDimensions,
   getElementsToRemove,
-  getHandleBounds,
-  infiniteExtent,
+  panBy as panBySystem,
+  updateNodeDimensions as updateNodeDimensionsSystem,
   type UpdateNodePositions,
   type NodeDimensionUpdate,
   type ViewportHelperFunctionOptions,
@@ -52,7 +51,6 @@ export function createStore(): SvelteFlowStore {
 
   function addEdge(edgeParams: Edge | Connection) {
     const edges = get(store.edges);
-
     store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
@@ -64,6 +62,7 @@ export function createStore(): SvelteFlowStore {
         if (nodeDragItem) {
           return {
             ...n,
+            [internalsSymbol]: n[internalsSymbol],
             dragging,
             positionAbsolute: nodeDragItem.positionAbsolute,
             position: nodeDragItem.position
@@ -76,54 +75,19 @@ export function createStore(): SvelteFlowStore {
   };
 
   function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
-    const viewportNode = document?.querySelector('.svelte-flow__viewport');
+    const nextNodes = updateNodeDimensionsSystem(
+      updates,
+      get(store.nodes),
+      get(store.domNode),
+      get(store.nodeOrigin)
+    );
 
-    if (!viewportNode) {
+    if (!nextNodes) {
       return;
     }
 
-    const style = window.getComputedStyle(viewportNode);
-    const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-    const nextNodes = get(store.nodes).map((node) => {
-      const update = updates.find((u) => u.id === node.id);
-
-      if (update) {
-        const dimensions = getDimensions(update.nodeElement);
-
-        const doUpdate = !!(
-          dimensions.width &&
-          dimensions.height &&
-          (node.width !== dimensions.width ||
-            node.height !== dimensions.height ||
-            update.forceUpdate)
-        );
-
-        if (doUpdate) {
-          const newNode = {
-            ...node,
-            width: dimensions.width,
-            height: dimensions.height,
-            [internalsSymbol]: {
-              ...node[internalsSymbol],
-              handleBounds: {
-                source: getHandleBounds('.source', update.nodeElement, zoom, node.origin),
-                target: getHandleBounds('.target', update.nodeElement, zoom, node.origin)
-              }
-            }
-          };
-
-          return newNode;
-        }
-      }
-
-      return node;
-    });
-
-    const panZoom = get(store.panZoom);
-
     const fitViewOnInitDone =
-      get(store.fitViewOnInitDone) ||
-      (get(store.fitViewOnInit) && !!panZoom && fitView({ nodes: nextNodes }));
+      get(store.fitViewOnInitDone) || (get(store.fitViewOnInit) && fitView({ nodes: nextNodes }));
 
     store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
@@ -174,22 +138,21 @@ export function createStore(): SvelteFlowStore {
 
   function fitView(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
+    const fitViewNodes = options?.nodes || get(store.nodes);
 
     if (!panZoom) {
       return false;
     }
-
-    const fitViewNodes = options?.nodes || get(store.nodes);
 
     return fitViewUtil(
       {
         nodes: fitViewNodes as Node[],
         width: get(store.width),
         height: get(store.height),
-        minZoom: 0.2,
-        maxZoom: 2,
+        minZoom: get(store.minZoom),
+        maxZoom: get(store.maxZoom),
         panZoom,
-        nodeOrigin: [0, 0]
+        nodeOrigin: get(store.nodeOrigin)
       },
       {}
     );
@@ -270,35 +233,14 @@ export function createStore(): SvelteFlowStore {
   }
 
   function panBy(delta: XYPosition) {
-    const panZoom = get(store.panZoom);
-    const transform = get(store.transform);
-    const width = get(store.width);
-    const height = get(store.height);
-
-    if (!panZoom || (!delta.x && !delta.y)) {
-      return false;
-    }
-
-    const nextViewport = panZoom.setViewportConstrained(
-      {
-        x: transform[0] + delta.x,
-        y: transform[1] + delta.y,
-        zoom: transform[2]
-      },
-      [
-        [0, 0],
-        [width, height]
-      ],
-      infiniteExtent
-    );
-
-    const transformChanged =
-      !!nextViewport &&
-      (nextViewport.x !== transform[0] ||
-        nextViewport.y !== transform[1] ||
-        nextViewport.k !== transform[2]);
-
-    return transformChanged;
+    return panBySystem({
+      delta,
+      panZoom: get(store.panZoom),
+      transform: get(store.transform),
+      translateExtent: get(store.translateExtent),
+      width: get(store.width),
+      height: get(store.height)
+    });
   }
 
   const updateConnection: UpdateConnection = (update) => {
@@ -328,6 +270,8 @@ export function createStore(): SvelteFlowStore {
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
     store.isValidConnection.set(() => true);
+    store.nodes.set([]);
+    store.edges.set([]);
 
     unselectNodesAndEdges();
     cancelConnection();

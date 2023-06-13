@@ -1,15 +1,16 @@
 import { createStore } from 'zustand';
 import {
   clampPosition,
-  getDimensions,
-  fitView,
-  getHandleBounds,
-  internalsSymbol,
-  type CoordinateExtent,
+  fitView as fitViewSystem,
+  updateNodes,
+  updateAbsolutePositions,
+  panBy as panBySystem,
+  Dimensions,
+  updateNodeDimensions as updateNodeDimensionsSystem,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { createNodeInternals, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
+import { updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 import type {
   ReactFlowState,
@@ -20,6 +21,7 @@ import type {
   NodeSelectionChange,
   NodePositionChange,
   UnselectNodesAndEdgesParams,
+  FitViewOptions,
 } from '../types';
 
 const createRFStore = () =>
@@ -27,7 +29,9 @@ const createRFStore = () =>
     ...initialState,
     setNodes: (nodes: Node[]) => {
       const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
-      set({ nodes: createNodeInternals(nodes, storeNodes, nodeOrigin, elevateNodesOnSelect) });
+      const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
+
+      set({ nodes: nextNodes });
     },
     getNodes: () => {
       return get().nodes;
@@ -41,91 +45,49 @@ const createRFStore = () =>
       const hasDefaultEdges = typeof edges !== 'undefined';
 
       const nextNodes = hasDefaultNodes
-        ? createNodeInternals(nodes, [], get().nodeOrigin, get().elevateNodesOnSelect)
+        ? updateNodes(nodes, [], {
+            nodeOrigin: get().nodeOrigin,
+            elevateNodesOnSelect: get().elevateNodesOnSelect,
+          })
         : [];
       const nextEdges = hasDefaultEdges ? edges : [];
 
       set({ nodes: nextNodes, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
     },
     updateNodeDimensions: (updates) => {
-      const {
-        onNodesChange,
+      const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
+        get();
+      const changes: NodeDimensionChange[] = [];
+
+      const updatedNodes = updateNodeDimensionsSystem(
+        updates,
         nodes,
-        fitViewOnInit,
-        fitViewOnInitDone,
-        fitViewOnInitOptions,
         domNode,
         nodeOrigin,
-        width,
-        height,
-        minZoom,
-        maxZoom,
-        panZoom,
-      } = get();
-      const viewportNode = domNode?.querySelector('.react-flow__viewport');
+        (id: string, dimensions: Dimensions) => {
+          changes.push({
+            id: id,
+            type: 'dimensions',
+            dimensions,
+          });
+        }
+      );
 
-      if (!viewportNode) {
+      if (!updatedNodes) {
         return;
       }
 
-      const style = window.getComputedStyle(viewportNode);
-      const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-      const changes: NodeDimensionChange[] = [];
+      const nextNodes = updateAbsolutePositions(updatedNodes, nodeOrigin);
 
-      const nextNodes = nodes.map((node) => {
-        const update = updates.find((change) => change.id === node.id);
-
-        if (update) {
-          const dimensions = getDimensions(update.nodeElement);
-          const doUpdate = !!(
-            dimensions.width &&
-            dimensions.height &&
-            (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
-          );
-
-          if (doUpdate) {
-            changes.push({
-              id: node.id,
-              type: 'dimensions',
-              dimensions,
-            });
-
-            return {
-              ...node,
-              ...dimensions,
-              [internalsSymbol]: {
-                ...node[internalsSymbol],
-                handleBounds: {
-                  source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
-                  target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
-                },
-              },
-            };
-          }
-        }
-
-        return node;
-      });
-
-      updateAbsoluteNodePositions(nextNodes, nodeOrigin);
-
-      const nextFitViewOnInitDone =
-        fitViewOnInitDone ||
+      const nextFitViewDone =
+        fitViewDone ||
         (fitViewOnInit &&
-          !!panZoom &&
-          fitView(
-            {
-              nodes: nextNodes,
-              width,
-              height,
-              panZoom,
-              minZoom,
-              maxZoom,
-              nodeOrigin,
-            },
-            fitViewOnInitOptions
-          ));
-      set({ nodes: nextNodes, fitViewOnInitDone: nextFitViewOnInitDone });
+          fitView({
+            ...fitViewOnInitOptions,
+            nodes: nextNodes,
+          }));
+
+      set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
       if (changes?.length > 0) {
         onNodesChange?.(changes);
@@ -156,7 +118,10 @@ const createRFStore = () =>
       if (changes?.length) {
         if (hasDefaultNodes) {
           const updatedNodes = applyNodeChanges(changes, nodes);
-          const nextNodes = createNodeInternals(updatedNodes, nodes, nodeOrigin, elevateNodesOnSelect);
+          const nextNodes = updateNodes(updatedNodes, nodes, {
+            nodeOrigin,
+            elevateNodesOnSelect,
+          });
           set({ nodes: nextNodes });
         }
 
@@ -273,29 +238,28 @@ const createRFStore = () =>
     },
     panBy: (delta): boolean => {
       const { transform, width, height, panZoom, translateExtent } = get();
+      return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
+    },
+    fitView: (options?: FitViewOptions): boolean => {
+      const { panZoom, nodes, width, height, minZoom, maxZoom, nodeOrigin } = get();
+      const fitViewNodes = options?.nodes || nodes;
 
-      if (!panZoom || (!delta.x && !delta.y)) {
+      if (!panZoom) {
         return false;
       }
 
-      const extent: CoordinateExtent = [
-        [0, 0],
-        [width, height],
-      ];
-
-      const constrainedTransform = panZoom.setViewportConstrained(
-        { x: transform[0] + delta.x, y: transform[1] + delta.y, zoom: transform[2] },
-        extent,
-        translateExtent
+      return fitViewSystem(
+        {
+          nodes: fitViewNodes as Node[],
+          width,
+          height,
+          panZoom,
+          minZoom,
+          maxZoom,
+          nodeOrigin,
+        },
+        options
       );
-
-      const transformChanged =
-        !!constrainedTransform &&
-        (transform[0] !== constrainedTransform.x ||
-          transform[1] !== constrainedTransform.y ||
-          transform[2] !== constrainedTransform.k);
-
-      return transformChanged;
     },
     cancelConnection: () =>
       set({
