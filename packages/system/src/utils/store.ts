@@ -49,28 +49,29 @@ type UpdateNodesOptions<NodeType extends BaseNode> = {
   defaults?: Partial<NodeType>;
 };
 
-const defaultOptions = {
-  nodeOrigin: [0, 0] as NodeOrigin,
-  elevateNodesOnSelect: true,
-  defaults: {},
-};
-
 export function updateNodes<NodeType extends BaseNode>(
   nodes: NodeType[],
   storeNodes: NodeType[],
-  options: UpdateNodesOptions<NodeType> = defaultOptions
+  options: UpdateNodesOptions<NodeType> = {
+    nodeOrigin: [0, 0] as NodeOrigin,
+    elevateNodesOnSelect: true,
+    defaults: {},
+  }
 ): NodeType[] {
   const parentNodes: ParentNodes = {};
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   const nextNodes = nodes.map((n) => {
+    const currentStoreNode = storeNodes.find((storeNode) => n.id === storeNode.id);
     const node: NodeType = {
       ...options.defaults,
       ...n,
       positionAbsolute: n.position,
+      width: n.width || currentStoreNode?.width,
+      height: n.height || currentStoreNode?.height,
     };
-    const z = (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
-    const currInternals = n?.[internalsSymbol] || storeNodes.find((n) => n.id === node.id)?.[internalsSymbol];
+    const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
+    const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
 
     if (node.parentNode) {
       parentNodes[node.parentNode] = true;
