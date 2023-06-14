@@ -15,13 +15,15 @@ What is “xyflow”? Learn more [here](https://wbkd.notion.site/Upcoming-Change
 ## Getting started
 
 We are working on a new website and everything so there are no docs for Svelte Flow yet. Everything is typed, so your IDE should help you a bit and you can also the [React Flow docs](https://reactflow.dev/docs) because the API is very similar. You can also check out the [Svelte Flow examples](/packages/svelte/src/routes) in this repo.
+If you want to start right away you can check out the [Svelte Flow examples Stackblitz project](https://stackblitz.com/edit/svelte-flow-examples?file=src%2Froutes%2Foverview%2F%2Bpage.svelte). 
 
 A basic flow looks like this:
 
 ```svelte
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import { SvelteFlow,
+  import {
+    SvelteFlow,
     SvelteFlowProvider,
     Controls,
     Background,
@@ -75,6 +77,7 @@ A basic flow looks like this:
   <MiniMap />
 </SvelteFlow>
 ```
+
 ## How to Contribute
 
 **Show us what you make:** Drop it in into our [Discord Server](https://discord.com/invite/Bqt6xrs), [tweet](https://twitter.com/reactflowdev) at us, or email us at info@reactflow.dev
