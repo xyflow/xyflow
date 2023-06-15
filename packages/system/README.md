@@ -14,15 +14,27 @@ The @xyflow/system package was created to have a place for vanilla utils for Rea
 
 ### XYPanZoom
 
+Adds zoom and pan for the pane. 
+
 ### XYDrag
+
+Adds drag for nodes and selection.
 
 ### XYHandle 
 
+Adds connection line drawing.
+
 ### XYMinimap 
+
+Adds interactive mini map (zoom and pan).
 
 ### Edge utils 
 
+Util function for SVG edge path creating.
+
 ### Store utils
+
+Helpers for store functions.
 
 ### Dom utils
 
