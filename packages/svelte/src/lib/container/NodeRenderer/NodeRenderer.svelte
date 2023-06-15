@@ -63,6 +63,8 @@
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       dragging={node.dragging}
+      zIndex={node[internalsSymbol]?.z ?? 0}
+      dragHandle={node.dragHandle}
       {resizeObserver}
       on:node:click
       on:node:mouseenter

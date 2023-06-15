@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   const routes = [
     'customnode',
@@ -15,15 +16,15 @@
 
   const onChange = (event: Event) => {
     const route = (event.target as HTMLSelectElement).value;
-    goto(`/${route}`);
+    goto(route);
   };
 </script>
 
 <header>
   <div class="logo">Svelte Flow</div>
-  <select on:change={onChange}>
+  <select on:change={onChange} value={$page.route.id}>
     {#each routes as route}
-      <option value={route}>{route}</option>
+      <option value={`/${route}`}>{route}</option>
     {/each}
   </select>
 </header>

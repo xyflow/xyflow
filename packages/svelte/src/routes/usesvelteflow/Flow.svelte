@@ -1,6 +1,7 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import SvelteFlow, { Controls, Background, BackgroundVariant, MiniMap } from '../../lib/index';
+  import { SvelteFlow, Controls, Background, BackgroundVariant, MiniMap } from '../../lib/index';
+
   import Sidebar from './Sidebar.svelte';
 
   const nodes = writable([

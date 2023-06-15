@@ -1,7 +1,7 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
-
-  import SvelteFlow, {
+  import {
+    SvelteFlow,
     Controls,
     Background,
     BackgroundVariant,
@@ -11,6 +11,7 @@
     type NodeTypes,
     type EdgeTypes
   } from '../../lib/index';
+
   import { CustomNode } from './CustomNode';
   import { CustomEdge } from './CustomEdge';
 

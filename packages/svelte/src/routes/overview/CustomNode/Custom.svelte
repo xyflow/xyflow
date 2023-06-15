@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { Position } from '@xyflow/system';
-  import { Handle } from '../../../lib/index';
+  import { Handle, Position } from '../../../lib/index';
 
   export let data: { label: string } = { label: 'Node' };
   export let xPos: number = 0;

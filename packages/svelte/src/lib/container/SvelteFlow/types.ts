@@ -69,7 +69,3 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   'on:pane:click'?: CustomEvent;
   'on:pane:contextmenu'?: CustomEvent;
 };
-
-export type SvelteFlowSlots = {
-  default: { slotValue: string };
-};

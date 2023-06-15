@@ -23,16 +23,6 @@ export { default as useOnViewportChange, type UseOnViewportChangeOptions } from 
 export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useNodeId } from './contexts/NodeIdContext';
-export * from '@xyflow/system';
-// export {
-//   getTransformForBounds,
-//   getRectOfNodes,
-//   getNodePositionWithOrigin,
-//   rectToBox,
-//   boxToRect,
-//   getBoundsOfRects,
-//   clamp,
-// } from '@xyflow/system';
 
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge, getIncomers, getOutgoers, addEdge, updateEdge, getConnectedEdges } from './utils/general';
@@ -40,3 +30,60 @@ export { isNode, isEdge, getIncomers, getOutgoers, addEdge, updateEdge, getConne
 export * from './additional-components';
 
 export * from './types';
+
+// system types
+export {
+  type SmoothStepPathOptions,
+  type BezierPathOptions,
+  ConnectionLineType,
+  type EdgeMarker,
+  type EdgeMarkerType,
+  MarkerType,
+  type OnMove,
+  type OnMoveStart,
+  type OnMoveEnd,
+  type Connection,
+  type ConnectionStatus,
+  ConnectionMode,
+  type OnConnectStartParams,
+  type OnConnectStart,
+  type OnConnect,
+  type OnConnectEnd,
+  type IsValidConnection,
+  type Viewport,
+  type SnapGrid,
+  PanOnScrollMode,
+  type ViewportHelperFunctionOptions,
+  type SetCenterOptions,
+  type FitBoundsOptions,
+  type PanelPosition,
+  type ProOptions,
+  SelectionMode,
+  type SelectionRect,
+  type OnError,
+  type NodeOrigin,
+  type OnNodeDrag,
+  type OnSelectionDrag,
+  Position,
+  type XYPosition,
+  type XYZPosition,
+  type Dimensions,
+  type Rect,
+  type Box,
+  type Transform,
+  type CoordinateExtent,
+} from '@xyflow/system';
+
+// system utils
+export {
+  type GetBezierPathParams,
+  getBezierEdgeCenter,
+  getBezierPath,
+  getEdgeCenter,
+  type GetSmoothStepPathParams,
+  getSmoothStepPath,
+  type GetStraightPathParams,
+  getStraightPath,
+  getTransformForBounds,
+  getRectOfNodes,
+} from '@xyflow/system';

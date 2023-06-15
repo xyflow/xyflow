@@ -27,6 +27,8 @@
   export let positionOrigin: NodeWrapperProps['positionOrigin'] = undefined;
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
+  export let zIndex: NodeWrapperProps['zIndex'];
+  export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
   let className: string = '';
   export { className as class };
 
@@ -41,8 +43,7 @@
     type = 'default';
   }
 
-  const nodeComponent: typeof SvelteComponentTyped<Partial<NodeProps>> =
-    $nodeTypes[type!] || DefaultNode;
+  const nodeComponent: typeof SvelteComponentTyped<NodeProps> = $nodeTypes[type!] || DefaultNode;
   const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher();
 
@@ -105,6 +106,11 @@
     {selected}
     {sourcePosition}
     {targetPosition}
+    {type}
+    {zIndex}
+    {dragging}
+    {dragHandle}
+    isConnectable={connectable}
     xPos={positionAbsolute?.x ?? 0}
     yPos={positionAbsolute?.y ?? 0}
     on:connect:start

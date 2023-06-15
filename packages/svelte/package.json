@@ -22,8 +22,10 @@
   "type": "module",
   "module": "index.ts",
   "exports": {
-    "./package.json": "./package.json",
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js"
+    }
   },
   "publishConfig": {
     "access": "public"
@@ -56,7 +58,6 @@
   "files": [
     "dist"
   ],
-  "svelte": "./dist/index.js",
   "typesVersions": {
     ">4.0": {
       "actions/drag": [

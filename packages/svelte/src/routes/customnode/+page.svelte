@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { ChangeEventHandler } from 'svelte/elements';
   import { writable } from 'svelte/store';
-  import SvelteFlow, {
+  import {
+    SvelteFlow,
     Controls,
     Background,
     BackgroundVariant,

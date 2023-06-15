@@ -21,12 +21,12 @@ export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionO
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
 
-export interface Connection {
+export type Connection = {
   source: string | null;
   target: string | null;
   sourceHandle: string | null;
   targetHandle: string | null;
-}
+};
 
 export type ConnectionStatus = 'valid' | 'invalid';
 

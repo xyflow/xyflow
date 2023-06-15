@@ -1,6 +1,7 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import SvelteFlow, {
+  import {
+    SvelteFlow,
     Controls,
     Background,
     BackgroundVariant,
@@ -8,6 +9,7 @@
     type NodeTypes,
     type Node
   } from '../../lib/index';
+
   import { DebugNode } from './DebugNode';
 
   const nodeTypes: NodeTypes = {

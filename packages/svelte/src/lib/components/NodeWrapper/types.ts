@@ -18,9 +18,11 @@ export type NodeWrapperProps = Pick<
   | 'height'
   | 'sourcePosition'
   | 'targetPosition'
+  | 'dragHandle'
 > & {
   positionOrigin?: XYPosition;
   'on:nodeclick'?: (event: MouseEvent) => void;
   resizeObserver?: ResizeObserver | null;
   isParent?: boolean;
+  zIndex: number;
 };

@@ -1,7 +1,11 @@
 <script lang="ts">
-  import { getBezierPath } from '@xyflow/system';
-
-  import { BaseEdge, EdgeLabelRenderer, useSvelteFlow, type EdgeProps } from '../../../lib/index';
+  import {
+    BaseEdge,
+    EdgeLabelRenderer,
+    useSvelteFlow,
+    type EdgeProps,
+    getBezierPath
+  } from '../../../lib/index';
 
   type $$Props = EdgeProps;
 
