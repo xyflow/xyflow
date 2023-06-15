@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Handle, Position } from '../../../lib/index';
+  import { Handle, Position, type NodeProps } from '../../../lib/index';
+
+  type $$Props = NodeProps;
 
   export let data: { label: string } = { label: 'Node' };
   export let xPos: number = 0;

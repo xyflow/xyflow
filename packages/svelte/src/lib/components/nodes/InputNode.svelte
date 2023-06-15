@@ -5,13 +5,8 @@
 
   interface $$Props extends NodeProps<{ label: string }> {}
 
-  export let id: $$Props['id'];
   export let data: $$Props['data'] = { label: 'Node' };
-  export let targetPosition: $$Props['targetPosition'] = Position.Top;
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
-  export let xPos: $$Props['xPos'];
-  export let yPos: $$Props['yPos'];
-  export let selected: $$Props['selected'] = false;
 </script>
 
 {data?.label}

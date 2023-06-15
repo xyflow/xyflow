@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { Position } from '@xyflow/system';
-  import { Handle } from '../../../lib/index';
+  import { Handle, Position, type NodeProps } from '../../../lib/index';
+
+  type $$Props = NodeProps;
 
   export let data: { color: string; onChange: () => void } = { color: '#111', onChange: () => {} };
-  export let xPos: number = 0;
-  export let yPos: number = 0;
 </script>
 
 <Handle type="target" position={Position.Left} />
