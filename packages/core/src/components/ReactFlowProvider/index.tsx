@@ -9,12 +9,13 @@ import { createNodeInternals } from '../../store/utils';
 
 const ReactFlowProvider: FC<PropsWithChildren<unknown>> = ({ children, initialNodes, initialEdges }) => {
   const storeRef = useRef<StoreApi<ReactFlowState> | null>(null);
-
+  console.log('herherherhehre');
   if (!storeRef.current) {
     const hasDefaultNodes = typeof initialNodes !== 'undefined';
     const hasDefaultEdges = typeof initialEdges !== 'undefined';
 
     const nodeInternals = hasDefaultNodes ? createNodeInternals(initialNodes, new Map(), [0, 0], true) : new Map();
+    console.log('nodeInternals:', nodeInternals);
     const nextEdges = hasDefaultEdges ? initialEdges : [];
 
     storeRef.current = createRFStore({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
