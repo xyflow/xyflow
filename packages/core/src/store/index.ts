@@ -22,9 +22,10 @@ import type {
   XYPosition,
 } from '../types';
 
-const createRFStore = () =>
+const createRFStore = (additionalInitialState) =>
   createStore<ReactFlowState>((set, get) => ({
     ...initialState,
+    ...additionalInitialState,
     setNodes: (nodes: Node[]) => {
       const { nodeInternals, nodeOrigin, elevateNodesOnSelect } = get();
       set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect) });
