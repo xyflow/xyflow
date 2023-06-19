@@ -1,5 +1,14 @@
 # @reactflow/minimap
 
+## 11.5.3
+
+### Patch Changes
+
+- [#3153](https://github.com/wbkd/react-flow/pull/3153) [`fbbee046`](https://github.com/wbkd/react-flow/commit/fbbee046282d466612089d31a2eff5a010733283) - Improve performance for flows with lots of nodes that use the MiniMap component
+
+- Updated dependencies [[`52dbac5a`](https://github.com/wbkd/react-flow/commit/52dbac5a56c092504256f947df7a959eb07385c6), [`3a277cb1`](https://github.com/wbkd/react-flow/commit/3a277cb123a886af093cee694c289c7e139c79ef)]:
+  - @reactflow/core@11.7.3
+
 ## 11.5.2
 
 ### Patch Changes

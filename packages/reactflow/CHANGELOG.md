@@ -1,5 +1,22 @@
 # reactflow
 
+## 11.7.3
+
+### Patch Changes
+
+- [#3154](https://github.com/wbkd/react-flow/pull/3154) [`3a277cb1`](https://github.com/wbkd/react-flow/commit/3a277cb123a886af093cee694c289c7e139c79ef) - ElevateEdgesOnSelect: adjust behaviour so that it works like elevateNodesOnSelect
+- [#3152](https://github.com/wbkd/react-flow/pull/3152) [`52dbac5a`](https://github.com/wbkd/react-flow/commit/52dbac5a56c092504256f947df7a959eb07385c6) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Use all valid handles in proximity to determine the closest handle that can be snapped to. Fixes invalid handles connection radius blocking snap to valid handles inside the same radius
+- [#3150](https://github.com/wbkd/react-flow/pull/3150) [`880a5932`](https://github.com/wbkd/react-flow/commit/880a593292ce5fdff30b656c2a1290cf98771818) Thanks [@goliney](https://github.com/goliney)! - Node-Resizer: add onResize/onResizeStart/onResizeEnd to useEffect deps
+- [#3153](https://github.com/wbkd/react-flow/pull/3153) [`fbbee046`](https://github.com/wbkd/react-flow/commit/fbbee046282d466612089d31a2eff5a010733283) - Minimap: Improve performance for flows with lots of nodes that use the MiniMap component
+
+- Updated dependencies [[`fbbee046`](https://github.com/wbkd/react-flow/commit/fbbee046282d466612089d31a2eff5a010733283), [`52dbac5a`](https://github.com/wbkd/react-flow/commit/52dbac5a56c092504256f947df7a959eb07385c6), [`3a277cb1`](https://github.com/wbkd/react-flow/commit/3a277cb123a886af093cee694c289c7e139c79ef), [`880a5932`](https://github.com/wbkd/react-flow/commit/880a593292ce5fdff30b656c2a1290cf98771818)]:
+  - @reactflow/minimap@11.5.3
+  - @reactflow/core@11.7.3
+  - @reactflow/node-resizer@2.1.1
+  - @reactflow/background@11.2.3
+  - @reactflow/controls@11.1.14
+  - @reactflow/node-toolbar@1.2.2
+
 ## 11.7.2
 
 ### Patch Changes

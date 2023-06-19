@@ -92,7 +92,6 @@ const BasicFlow = () => {
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
-      elevateEdgesOnSelect
       elevateNodesOnSelect={false}
     >
       <Background variant={BackgroundVariant.Dots} />
