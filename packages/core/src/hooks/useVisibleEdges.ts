@@ -15,12 +15,15 @@ function groupEdgesByZLevel(edges: Edge[], nodeInternals: NodeInternals, elevate
     let z = hasZIndex ? edge.zIndex! : 0;
 
     if (elevateEdgesOnSelect) {
-      z = hasZIndex
-        ? edge.zIndex!
-        : Math.max(
-            nodeInternals.get(edge.source)?.[internalsSymbol]?.z || 0,
-            nodeInternals.get(edge.target)?.[internalsSymbol]?.z || 0
-          );
+      const targetNode = nodeInternals.get(edge.target);
+      const sourceNode = nodeInternals.get(edge.source);
+      const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
+      const selectedZIndex = Math.max(
+        sourceNode?.[internalsSymbol]?.z || 0,
+        targetNode?.[internalsSymbol]?.z || 0,
+        1000
+      );
+      z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
     }
 
     if (tree[z]) {
