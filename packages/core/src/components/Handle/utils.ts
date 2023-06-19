@@ -51,7 +51,7 @@ export function getClosestHandle(
     if (distance <= connectionRadius) {
       const validHandleResult = validator(handle);
 
-      if (distance <= minDistance && validHandleResult.isValid) {
+      if (distance <= minDistance) {
         if (distance < minDistance) {
           closestHandles = [{ handle, validHandleResult }];
         } else if (distance === minDistance) {
@@ -71,10 +71,19 @@ export function getClosestHandle(
     return { handle: null, validHandleResult: defaultResult() };
   }
 
-  return closestHandles.length === 1
-    ? closestHandles[0]
-    : // if multiple handles are layout on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
-      closestHandles.find(({ handle }) => handle.type === 'target') || closestHandles[0];
+  if (closestHandles.length === 1) {
+    return closestHandles[0];
+  }
+
+  const hasValidHandle = closestHandles.some(({ validHandleResult }) => validHandleResult.isValid);
+  const hasTargetHandle = closestHandles.some(({ handle }) => handle.type === 'target');
+
+  // if multiple handles are layouted on top of each other we prefer the one with type = target and the one that is valid
+  return (
+    closestHandles.find(({ handle, validHandleResult }) =>
+      hasTargetHandle ? handle.type === 'target' : true && (hasValidHandle ? validHandleResult.isValid : true)
+    ) || closestHandles[0]
+  );
 }
 
 type Result = {
