@@ -39,32 +39,51 @@ export function getHandles(
 export function getClosestHandle(
   pos: XYPosition,
   connectionRadius: number,
-  handles: ConnectionHandle[]
-): ConnectionHandle | null {
-  let closestHandles: ConnectionHandle[] = [];
+  handles: ConnectionHandle[],
+  validator: (handle: ConnectionHandle) => Result
+) {
+  let closestHandles: { handle: ConnectionHandle; validHandleResult: Result }[] = [];
   let minDistance = Infinity;
 
   handles.forEach((handle) => {
-    const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
+    const distance = Math.sqrt((handle.x - pos.x) ** 2 + (handle.y - pos.y) ** 2);
+
     if (distance <= connectionRadius) {
-      if (distance < minDistance) {
-        closestHandles = [handle];
-      } else if (distance === minDistance) {
-        // when multiple handles are on the same distance we collect all of them
-        closestHandles.push(handle);
+      const validHandleResult = validator(handle);
+
+      if (distance <= minDistance) {
+        if (distance < minDistance) {
+          closestHandles = [{ handle, validHandleResult }];
+        } else if (distance === minDistance) {
+          // when multiple handles are on the same distance we collect all of them
+          closestHandles.push({
+            handle,
+            validHandleResult,
+          });
+        }
+
+        minDistance = distance;
       }
-      minDistance = distance;
     }
   });
 
   if (!closestHandles.length) {
-    return null;
+    return { handle: null, validHandleResult: defaultResult() };
   }
 
-  return closestHandles.length === 1
-    ? closestHandles[0]
-    : // if multiple handles are layouted on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
-      closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
+  if (closestHandles.length === 1) {
+    return closestHandles[0];
+  }
+
+  const hasValidHandle = closestHandles.some(({ validHandleResult }) => validHandleResult.isValid);
+  const hasTargetHandle = closestHandles.some(({ handle }) => handle.type === 'target');
+
+  // if multiple handles are layouted on top of each other we prefer the one with type = target and the one that is valid
+  return (
+    closestHandles.find(({ handle, validHandleResult }) =>
+      hasTargetHandle ? handle.type === 'target' : true && (hasValidHandle ? validHandleResult.isValid : true)
+    ) || closestHandles[0]
+  );
 }
 
 type Result = {
@@ -75,6 +94,13 @@ type Result = {
 };
 
 const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
+
+const defaultResult = (): Result => ({
+  handleDomNode: null,
+  isValid: false,
+  connection: nullConnection,
+  endHandle: null,
+});
 
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
 export function isValidHandle(
@@ -97,11 +123,9 @@ export function isValidHandle(
   // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
   const handleToCheck = handleBelow?.classList.contains('react-flow__handle') ? handleBelow : handleDomNode;
 
-  const result: Result = {
+  const result = {
+    ...defaultResult(),
     handleDomNode: handleToCheck,
-    isValid: false,
-    connection: nullConnection,
-    endHandle: null,
   };
 
   if (handleToCheck) {
