@@ -205,6 +205,7 @@ const Subflow = () => {
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
       fitView
+      elevateEdgesOnSelect
     >
       <MiniMap />
       <Controls />
