@@ -15,6 +15,12 @@ A highly customizable React component for building interactive graphs and node-b
 
 ---
 
+## 🚨 Upcoming Changes 
+
+The main branch (v11) is now in a feature freeze. The next version is being developed in the [xyflow branch](https://github.com/wbkd/react-flow/tree/xyflow).
+Find out more about the those changes [here](https://wbkd.notion.site/Upcoming-Changes-at-React-Flow-1a443641891a4069927c0a115e915251).
+
+
 ## Key Features
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
@@ -31,11 +37,6 @@ A highly customizable React component for building interactive graphs and node-b
 **Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://pro.reactflow.dev) or through [Github Sponsors](https://github.com/sponsors/wbkd).
 
 You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
-
-## What's New
-The main branch / v11 is now in a feature freeze. The next version is being developed in the /xyflow branch.
-You can find an unstable pre-alpha version of Svelte Flow in the /xyflow branch.
-Find out more about these changes [here](https://wbkd.notion.site/Upcoming-Changes-at-React-Flow-1a443641891a4069927c0a115e915251).
 
 
 ## Installation
