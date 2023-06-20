@@ -9,7 +9,7 @@ import { createNodeInternals } from '../../store/utils';
 
 const ReactFlowProvider: FC<PropsWithChildren<unknown>> = ({ children, initialNodes, initialEdges }) => {
   const storeRef = useRef<StoreApi<ReactFlowState> | null>(null);
-  console.log('herherherhehre');
+  console.log('herherherhehre * 2');
   if (!storeRef.current) {
     const hasDefaultNodes = typeof initialNodes !== 'undefined';
     const hasDefaultEdges = typeof initialEdges !== 'undefined';
@@ -18,6 +18,7 @@ const ReactFlowProvider: FC<PropsWithChildren<unknown>> = ({ children, initialNo
     console.log('nodeInternals:', nodeInternals);
     const nextEdges = hasDefaultEdges ? initialEdges : [];
 
+    console.log('createRFStore:', createRFStore);
     storeRef.current = createRFStore({ nodeInternals, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
   }
 

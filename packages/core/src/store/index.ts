@@ -24,10 +24,12 @@ import type {
 
 const createRFStore = (additionalInitialState) =>
   createStore<ReactFlowState>((set, get) => {
-    console.log(additionalInitialState);
+    console.log('state', JSON.stringify({ ...initialState, ...additionalInitialState }, null, 2));
+    console.log('additionalInitialState:', additionalInitialState);
     return {
       ...initialState,
       ...additionalInitialState,
+      nodeInternals: additionalInitialState.nodeInternals
       setNodes: (nodes: Node[]) => {
         const { nodeInternals, nodeOrigin, elevateNodesOnSelect } = get();
         set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect) });
