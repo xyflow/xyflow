@@ -43,12 +43,15 @@ export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
     let z = hasZIndex ? edge.zIndex! : 0;
 
     if (elevateEdgesOnSelect) {
-      z = hasZIndex
-        ? edge.zIndex!
-        : Math.max(
-            nodes.find((n) => n.id === edge.source)?.[internalsSymbol]?.z || 0,
-            nodes.find((n) => n.id === edge.target)?.[internalsSymbol]?.z || 0
-          );
+      const targetNode = nodes.find((n) => n.id === edge.target);
+      const sourceNode = nodes.find((n) => n.id === edge.source);
+      const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
+      const selectedZIndex = Math.max(
+        sourceNode?.[internalsSymbol]?.z || 0,
+        targetNode?.[internalsSymbol]?.z || 0,
+        1000
+      );
+      z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
     }
 
     if (tree[z]) {
