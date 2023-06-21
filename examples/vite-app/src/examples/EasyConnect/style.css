@@ -1,4 +1,4 @@
-.customNodeBody {
+.node-body {
   width: 150px;
   height: 80px;
   border: 3px solid black;
@@ -11,7 +11,7 @@
   font-weight: bold;
 }
 
-.customNode:before {
+.node:before {
   content: '';
   position: absolute;
   top: -10px;
@@ -28,10 +28,9 @@
   border: 2px solid #222138;
 }
 
-div.customHandle {
+div.handle {
   width: 100%;
   height: 100%;
-  background: blue;
   position: absolute;
   top: 0;
   left: 0;

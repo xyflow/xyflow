@@ -110,20 +110,13 @@ export function handlePointerDown({
     connectionPosition = getEventPosition(event, containerBounds);
 
     const { handle, validHandleResult } = getClosestHandle(
+      event,
+      doc,
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
       handleLookup,
       (handle) =>
-        isValidHandle(
-          event,
-          handle,
-          connectionMode,
-          nodeId,
-          handleId,
-          isTarget ? 'target' : 'source',
-          isValidConnection,
-          doc
-        )
+        isValidHandle(handle, connectionMode, nodeId, handleId, isTarget ? 'target' : 'source', isValidConnection, doc)
     );
 
     closestHandle = handle;
