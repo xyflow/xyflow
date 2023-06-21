@@ -23,6 +23,7 @@ import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
 import NestedNodes from '../examples/NestedNodes';
+import NodeExtent from '../examples/NodeExtent';
 import NodeResizer from '../examples/NodeResizer';
 import NodeTypeChange from '../examples/NodeTypeChange';
 import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
@@ -178,6 +179,11 @@ const routes: IRoute[] = [
     name: 'Nested Nodes',
     path: '/nested-nodes',
     component: NestedNodes,
+  },
+  {
+    name: 'Node Extent',
+    path: '/nodeextent',
+    component: NodeExtent,
   },
   {
     name: 'Node Type Change',
