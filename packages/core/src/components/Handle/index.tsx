@@ -8,7 +8,7 @@ import { handlePointerDown } from './handler';
 import { getHostForElement, isMouseEvent } from '../../utils';
 import { addEdge } from '../../utils/graph';
 import { type HandleProps, type Connection, type ReactFlowState, HandleType, Position } from '../../types';
-import { isValidHandle } from './utils';
+import { getClosestHandle, isValidHandle } from './utils';
 import { errorMessages } from '../../contants';
 
 const alwaysValid = () => true;
@@ -132,8 +132,8 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
 
       const doc = getHostForElement(event.target as HTMLElement);
       const isValidConnectionHandler = isValidConnection || isValidConnectionStore || alwaysValid;
+
       const { connection, isValid } = isValidHandle(
-        event,
         {
           nodeId,
           id: handleId,

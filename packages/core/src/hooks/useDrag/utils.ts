@@ -68,6 +68,13 @@ export function getDragItems(
     }));
 }
 
+function clampNodeExtent(node: NodeDragItem | Node, extent?: CoordinateExtent | 'parent') {
+  if (!extent || extent === 'parent') {
+    return extent;
+  }
+  return [extent[0], [extent[1][0] - (node.width || 0), extent[1][1] - (node.height || 0)]];
+}
+
 export function calcNextPosition(
   node: NodeDragItem | Node,
   nextPosition: XYPosition,
@@ -76,7 +83,8 @@ export function calcNextPosition(
   nodeOrigin: NodeOrigin = [0, 0],
   onError?: OnError
 ): { position: XYPosition; positionAbsolute: XYPosition } {
-  let currentExtent = node.extent || nodeExtent;
+  const clampedNodeExtent = clampNodeExtent(node, node.extent || nodeExtent);
+  let currentExtent = clampedNodeExtent;
 
   if (node.extent === 'parent') {
     if (node.parentNode && node.width && node.height) {
@@ -95,7 +103,7 @@ export function calcNextPosition(
     } else {
       onError?.('005', errorMessages['error005']());
 
-      currentExtent = nodeExtent;
+      currentExtent = clampedNodeExtent;
     }
   } else if (node.extent && node.parentNode) {
     const parent = nodeInternals.get(node.parentNode);

@@ -6,7 +6,7 @@ import type { Connection, HandleType, XYPosition, Node, NodeHandleBounds } from 
 
 export type ConnectionHandle = {
   id: string | null;
-  type: HandleType;
+  type: HandleType | null;
   nodeId: string;
   x: number;
   y: number;
@@ -37,11 +37,44 @@ export function getHandles(
 }
 
 export function getClosestHandle(
+  event: MouseEvent | TouchEvent | ReactMouseEvent | ReactTouchEvent,
+  doc: Document | ShadowRoot,
   pos: XYPosition,
   connectionRadius: number,
   handles: ConnectionHandle[],
-  validator: (handle: ConnectionHandle) => Result
+  validator: (handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'>) => Result
 ) {
+  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
+  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+  const { x, y } = getEventPosition(event);
+  const domNodes = doc.elementsFromPoint(x, y);
+
+  const handleBelow = domNodes.find((el) => el.classList.contains('react-flow__handle'));
+
+  if (handleBelow) {
+    const handleNodeId = handleBelow.getAttribute('data-nodeid');
+
+    if (handleNodeId) {
+      const handleType = getHandleType(undefined, handleBelow);
+      const handleId = handleBelow.getAttribute('data-handleid');
+      const validHandleResult = validator({ nodeId: handleNodeId, id: handleId, type: handleType });
+
+      if (validHandleResult) {
+        return {
+          handle: {
+            id: handleId,
+            type: handleType,
+            nodeId: handleNodeId,
+            x: pos.x,
+            y: pos.y,
+          },
+          validHandleResult,
+        };
+      }
+    }
+  }
+
+  // if we couldn't find a handle below the mouse cursor we look for the closest distance based on the connectionRadius
   let closestHandles: { handle: ConnectionHandle; validHandleResult: Result }[] = [];
   let minDistance = Infinity;
 
@@ -104,8 +137,7 @@ const defaultResult = (): Result => ({
 
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
 export function isValidHandle(
-  event: MouseEvent | TouchEvent | ReactMouseEvent | ReactTouchEvent,
-  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null,
+  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'>,
   connectionMode: ConnectionMode,
   fromNodeId: string,
   fromHandleId: string | null,
@@ -114,14 +146,9 @@ export function isValidHandle(
   doc: Document | ShadowRoot
 ) {
   const isTarget = fromType === 'target';
-  const handleDomNode = doc.querySelector(
+  const handleToCheck = doc.querySelector(
     `.react-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
   );
-  const { x, y } = getEventPosition(event);
-  const handleBelow = doc.elementFromPoint(x, y);
-  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
-  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
-  const handleToCheck = handleBelow?.classList.contains('react-flow__handle') ? handleBelow : handleDomNode;
 
   const result = {
     ...defaultResult(),
