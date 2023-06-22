@@ -21,6 +21,9 @@ type NodeRendererProps = Pick<
   | 'onNodeMouseEnter'
   | 'onNodeMouseMove'
   | 'onNodeMouseLeave'
+  | 'onNodePointerEnter'
+  | 'onNodePointerMove'
+  | 'onNodePointerLeave'
   | 'onNodeContextMenu'
   | 'onlyRenderVisibleElements'
   | 'noPanClassName'
@@ -123,6 +126,9 @@ const NodeRenderer = (props: NodeRendererProps) => {
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
+            onPointerEnter={props.onNodePointerEnter}
+            onPointerMove={props.onNodePointerMove}
+            onPointerLeave={props.onNodePointerLeave}
             onContextMenu={props.onNodeContextMenu}
             onDoubleClick={props.onNodeDoubleClick}
             selected={!!node.selected}

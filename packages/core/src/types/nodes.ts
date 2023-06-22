@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 
 import { internalsSymbol } from '../utils';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
@@ -42,6 +42,7 @@ export type Node<T = any, U extends string | undefined = string | undefined> = {
 };
 
 export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
+export type NodePointerHandler = (event: ReactPointerEvent, node: Node) => void;
 export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
 
@@ -65,6 +66,9 @@ export type WrapNodeProps<T = any> = Pick<
     onMouseEnter?: NodeMouseHandler;
     onMouseMove?: NodeMouseHandler;
     onMouseLeave?: NodeMouseHandler;
+    onPointerEnter?: NodePointerHandler;
+    onPointerMove?: NodePointerHandler;
+    onPointerLeave?: NodePointerHandler;
     onContextMenu?: NodeMouseHandler;
     resizeObserver: ResizeObserver | null;
     isParent: boolean;

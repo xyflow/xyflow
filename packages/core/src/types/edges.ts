@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CSSProperties, ComponentType, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent } from 'react';
+import type {
+  CSSProperties,
+  ComponentType,
+  HTMLAttributes,
+  ReactNode,
+  MouseEvent as ReactMouseEvent,
+  PointerEvent as ReactPointerEvent,
+} from 'react';
 
 import { ConnectionStatus, Position } from '.';
 import type { Connection, HandleElement, HandleType, Node } from '.';
@@ -68,6 +75,7 @@ export type DefaultEdgeOptions = Omit<
 >;
 
 export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
+export type EdgePointerHandler = (event: ReactPointerEvent, edge: Edge) => void;
 
 export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
   onClick?: EdgeMouseHandler;
@@ -86,6 +94,9 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onMouseEnter?: EdgeMouseHandler;
   onMouseMove?: EdgeMouseHandler;
   onMouseLeave?: EdgeMouseHandler;
+  onPointerEnter?: EdgePointerHandler;
+  onPointerMove?: EdgePointerHandler;
+  onPointerLeave?: EdgePointerHandler;
   edgeUpdaterRadius?: number;
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;

@@ -1,4 +1,4 @@
-import { MouseEvent as ReactMouseEvent } from 'react';
+import { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { StoreApi } from 'zustand';
 
 import type { Edge, MarkerType, ReactFlowState } from '../../types';
@@ -19,6 +19,22 @@ export function getMouseHandler(
   return handler === undefined
     ? handler
     : (event: ReactMouseEvent<SVGGElement, MouseEvent>) => {
+        const edge = getState().edges.find((e) => e.id === id);
+
+        if (edge) {
+          handler(event, { ...edge });
+        }
+      };
+}
+
+export function getPointerHandler(
+  id: string,
+  getState: StoreApi<ReactFlowState>['getState'],
+  handler?: (event: ReactPointerEvent<SVGGElement>, edge: Edge) => void
+) {
+  return handler === undefined
+    ? handler
+    : (event: ReactPointerEvent<SVGGElement>) => {
         const edge = getState().edges.find((e) => e.id === id);
 
         if (edge) {

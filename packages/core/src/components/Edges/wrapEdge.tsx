@@ -7,7 +7,7 @@ import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { handlePointerDown } from '../Handle/handler';
 import { EdgeAnchor } from './EdgeAnchor';
 import { getMarkerId } from '../../utils/graph';
-import { getMouseHandler } from './utils';
+import { getMouseHandler, getPointerHandler } from './utils';
 import { elementSelectionKeys } from '../../utils';
 import type { EdgeProps, WrapEdgeProps, Connection } from '../../types';
 
@@ -46,6 +46,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     onMouseEnter,
     onMouseMove,
     onMouseLeave,
+    onPointerEnter,
+    onPointerMove,
+    onPointerLeave,
     edgeUpdaterRadius,
     onEdgeUpdate,
     onEdgeUpdateStart,
@@ -87,9 +90,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
 
     const onEdgeDoubleClickHandler = getMouseHandler(id, store.getState, onEdgeDoubleClick);
     const onEdgeContextMenu = getMouseHandler(id, store.getState, onContextMenu);
+
     const onEdgeMouseEnter = getMouseHandler(id, store.getState, onMouseEnter);
     const onEdgeMouseMove = getMouseHandler(id, store.getState, onMouseMove);
     const onEdgeMouseLeave = getMouseHandler(id, store.getState, onMouseLeave);
+
+    const onEdgePointerEnter = getPointerHandler(id, store.getState, onPointerEnter);
+    const onEdgePointerMove = getPointerHandler(id, store.getState, onPointerMove);
+    const onEdgePointerLeave = getPointerHandler(id, store.getState, onPointerLeave);
 
     const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
       // avoid triggering edge updater if mouse btn is not left
@@ -168,6 +176,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
+        onPointerEnter={onEdgePointerEnter}
+        onPointerMove={onEdgePointerMove}
+        onPointerLeave={onEdgePointerLeave}
         onKeyDown={isFocusable ? onKeyDown : undefined}
         tabIndex={isFocusable ? 0 : undefined}
         role={isFocusable ? 'button' : undefined}

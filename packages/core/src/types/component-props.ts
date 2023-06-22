@@ -37,6 +37,8 @@ import type {
   HandleType,
   SelectionMode,
   OnError,
+  EdgePointerHandler,
+  NodePointerHandler,
 } from '.';
 import { ValidConnectionFunc } from '../components/Handle/utils';
 
@@ -51,6 +53,9 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onNodeMouseEnter?: NodeMouseHandler;
   onNodeMouseMove?: NodeMouseHandler;
   onNodeMouseLeave?: NodeMouseHandler;
+  onNodePointerEnter?: NodePointerHandler;
+  onNodePointerMove?: NodePointerHandler;
+  onNodePointerLeave?: NodePointerHandler;
   onNodeContextMenu?: NodeMouseHandler;
   onNodeDragStart?: NodeDragHandler;
   onNodeDrag?: NodeDragHandler;
@@ -61,6 +66,9 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   onEdgeMouseEnter?: EdgeMouseHandler;
   onEdgeMouseMove?: EdgeMouseHandler;
   onEdgeMouseLeave?: EdgeMouseHandler;
+  onEdgePointerEnter?: EdgePointerHandler;
+  onEdgePointerMove?: EdgePointerHandler;
+  onEdgePointerLeave?: EdgePointerHandler;
   onEdgeDoubleClick?: EdgeMouseHandler;
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
