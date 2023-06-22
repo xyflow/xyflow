@@ -106,6 +106,7 @@ const GraphView = ({
   noPanClassName,
   elevateEdgesOnSelect,
   disableKeyboardA11y,
+  disablePointerCapture,
   nodeOrigin,
   nodeExtent,
   rfId,
@@ -172,6 +173,7 @@ const GraphView = ({
           noPanClassName={noPanClassName}
           elevateEdgesOnSelect={!!elevateEdgesOnSelect}
           disableKeyboardA11y={disableKeyboardA11y}
+          disablePointerCapture={disablePointerCapture}
           rfId={rfId}
         >
           <ConnectionLine
@@ -199,6 +201,7 @@ const GraphView = ({
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}
           disableKeyboardA11y={disableKeyboardA11y}
+          disablePointerCapture={disablePointerCapture}
           nodeOrigin={nodeOrigin}
           nodeExtent={nodeExtent}
           rfId={rfId}

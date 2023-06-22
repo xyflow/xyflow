@@ -10,6 +10,7 @@ import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { getMouseHandler, getPointerHandler, handleNodeClick } from './utils';
 import { elementSelectionKeys, isInputDOMNode } from '../../utils';
 import type { NodeProps, WrapNodeProps, XYPosition } from '../../types';
+import { onPointerDownDisableCapture } from '../../utils/pointerEvents';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -1 },
@@ -55,6 +56,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     noPanClassName,
     initialized,
     disableKeyboardA11y,
+    disablePointerCapture,
     ariaLabel,
     rfId,
   }: WrapNodeProps) => {
@@ -199,6 +201,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         onMouseEnter={onMouseEnterHandler}
         onMouseMove={onMouseMoveHandler}
         onMouseLeave={onMouseLeaveHandler}
+        onPointerDown={disablePointerCapture ? onPointerDownDisableCapture : undefined}
         onPointerEnter={onPointerEnterHandler}
         onPointerMove={onPointerMoveHandler}
         onPointerLeave={onPointerLeaveHandler}

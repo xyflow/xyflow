@@ -76,6 +76,7 @@ export type WrapNodeProps<T = any> = Pick<
     noPanClassName: string;
     rfId: string;
     disableKeyboardA11y: boolean;
+    disablePointerCapture?: boolean;
   };
 
 // props that get passed to a custom node

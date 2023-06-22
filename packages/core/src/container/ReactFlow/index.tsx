@@ -171,6 +171,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       autoPanOnNodeDrag = true,
       connectionRadius = 20,
       isValidConnection,
+      disablePointerCapture = false,
       onError,
       style,
       id,
@@ -262,6 +263,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             elevateEdgesOnSelect={elevateEdgesOnSelect}
             rfId={rfId}
             disableKeyboardA11y={disableKeyboardA11y}
+            disablePointerCapture={disablePointerCapture}
             nodeOrigin={nodeOrigin}
             nodeExtent={nodeExtent}
           />

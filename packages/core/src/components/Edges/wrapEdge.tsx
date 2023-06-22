@@ -10,6 +10,7 @@ import { getMarkerId } from '../../utils/graph';
 import { getMouseHandler, getPointerHandler } from './utils';
 import { elementSelectionKeys } from '../../utils';
 import type { EdgeProps, WrapEdgeProps, Connection } from '../../types';
+import { onPointerDownDisableCapture } from '../../utils/pointerEvents';
 
 const alwaysValidConnection = () => true;
 
@@ -61,6 +62,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     isUpdatable,
     pathOptions,
     interactionWidth,
+    disablePointerCapture,
   }: WrapEdgeProps): JSX.Element | null => {
     const edgeRef = useRef<SVGGElement>(null);
     const [updateHover, setUpdateHover] = useState<boolean>(false);
@@ -176,6 +178,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
         onMouseLeave={onEdgeMouseLeave}
+        onPointerDown={disablePointerCapture ? onPointerDownDisableCapture : undefined}
         onPointerEnter={onEdgePointerEnter}
         onPointerMove={onEdgePointerMove}
         onPointerLeave={onEdgePointerLeave}

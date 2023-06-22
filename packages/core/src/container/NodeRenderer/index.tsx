@@ -30,6 +30,7 @@ type NodeRendererProps = Pick<
   | 'noDragClassName'
   | 'rfId'
   | 'disableKeyboardA11y'
+  | 'disablePointerCapture'
   | 'nodeOrigin'
   | 'nodeExtent'
 >;
@@ -145,6 +146,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             initialized={!!node.width && !!node.height}
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
+            disablePointerCapture={props.disablePointerCapture}
             ariaLabel={node.ariaLabel}
           />
         );

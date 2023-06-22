@@ -34,6 +34,7 @@ type EdgeRendererProps = Pick<
   | 'elevateEdgesOnSelect'
   | 'rfId'
   | 'disableKeyboardA11y'
+  | 'disablePointerCapture'
 > & {
   elevateEdgesOnSelect: boolean;
   children: ReactNode;
@@ -72,6 +73,7 @@ const EdgeRenderer = ({
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
   children,
+  disablePointerCapture,
 }: EdgeRendererProps) => {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } =
     useStore(selector, shallow);
@@ -187,6 +189,7 @@ const EdgeRenderer = ({
                   isUpdatable={isUpdatable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
+                  disablePointerCapture={disablePointerCapture}
                 />
               );
             })}

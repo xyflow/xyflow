@@ -104,6 +104,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   isFocusable: boolean;
   isUpdatable: EdgeUpdatable;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+  disablePointerCapture?: boolean;
 };
 
 // props that get passed to a custom edge
