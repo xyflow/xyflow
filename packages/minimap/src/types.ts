@@ -22,6 +22,7 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   ariaLabel?: string | null;
   inversePan?: boolean;
   zoomStep?: number;
+  offsetScale?: number;
 };
 
 export type MiniMapNodes = Pick<
