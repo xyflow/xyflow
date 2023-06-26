@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   boxToRect,
-  clamp,
   clampPosition,
   getBoundsOfBoxes,
   getOverlappingArea,
@@ -203,6 +202,13 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   return false;
 }
 
+function clampNodeExtent(node: NodeDragItem | Node, extent?: CoordinateExtent | 'parent') {
+  if (!extent || extent === 'parent') {
+    return extent;
+  }
+  return [extent[0], [extent[1][0] - (node.width || 0), extent[1][1] - (node.height || 0)]];
+}
+
 export function calcNextPosition<NodeType extends NodeBase>(
   node: NodeDragItem | NodeType,
   nextPosition: XYPosition,
@@ -211,7 +217,8 @@ export function calcNextPosition<NodeType extends NodeBase>(
   nodeOrigin: NodeOrigin = [0, 0],
   onError?: OnError
 ): { position: XYPosition; positionAbsolute: XYPosition } {
-  let currentExtent = node.extent || nodeExtent;
+  const clampedNodeExtent = clampNodeExtent(node, node.extent || nodeExtent);
+  let currentExtent = clampedNodeExtent;
   let parentNode: NodeType | null = null;
   let parentPos = { x: 0, y: 0 };
 
@@ -238,7 +245,7 @@ export function calcNextPosition<NodeType extends NodeBase>(
           : currentExtent;
     } else {
       onError?.('005', errorMessages['error005']());
-      currentExtent = nodeExtent;
+      currentExtent = clampedNodeExtent;
     }
   } else if (node.extent && node.parentNode) {
     currentExtent = [
