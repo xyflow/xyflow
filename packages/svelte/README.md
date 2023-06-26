@@ -14,7 +14,7 @@ What is “xyflow”? Learn more [here](https://wbkd.notion.site/Upcoming-Change
 
 ## Getting started
 
-We are working on a new website and everything so there are no docs for Svelte Flow yet. Everything is typed, so your IDE should help you a bit and you can also the [React Flow docs](https://reactflow.dev/docs) because the API is very similar. You can also check out the [Svelte Flow examples](/packages/svelte/src/routes) in this repo.
+We are working on a new website and everything so there are no docs for Svelte Flow yet. Everything is typed, so your IDE should help you a bit and you can also the [React Flow docs](https://reactflow.dev/docs) because the API is very similar. You can also check out the [Svelte Flow examples](https://github.com/wbkd/react-flow/tree/xyflow/packages/svelte/src/routes) in this repo.
 If you want to start right away you can check out the [Svelte Flow examples Stackblitz project](https://stackblitz.com/edit/svelte-flow-examples?file=src%2Froutes%2Foverview%2F%2Bpage.svelte). 
 
 A basic flow looks like this:
