@@ -202,7 +202,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   return false;
 }
 
-function clampNodeExtent(node: NodeDragItem | Node, extent?: CoordinateExtent | 'parent') {
+function clampNodeExtent(node: NodeDragItem | NodeBase, extent?: CoordinateExtent | 'parent') {
   if (!extent || extent === 'parent') {
     return extent;
   }
