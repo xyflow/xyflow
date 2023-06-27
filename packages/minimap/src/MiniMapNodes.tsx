@@ -45,6 +45,7 @@ function MiniMapNodes({
             width={node.width!}
             height={node.height!}
             style={node.style}
+            selected={node.selected}
             className={nodeClassNameFunc(node)}
             color={nodeColorFunc(node)}
             borderRadius={nodeBorderRadius}
