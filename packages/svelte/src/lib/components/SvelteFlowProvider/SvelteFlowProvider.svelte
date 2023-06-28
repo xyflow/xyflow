@@ -1,9 +1,13 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, setContext } from 'svelte';
 
-  import { createStoreContext } from '$lib/store';
+  import { createStore, key } from '$lib/store';
 
-  const store = createStoreContext();
+  const store = createStore();
+
+  setContext(key, {
+    getStore: () => store
+  });
 
   onDestroy(() => {
     store.reset();
