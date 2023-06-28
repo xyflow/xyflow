@@ -10,6 +10,6 @@
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
 </script>
 
-<Handle type="target" position={targetPosition} on:connect:start on:connect on:connect:end />
+<Handle type="target" position={targetPosition} on:connectstart on:connect on:connectend />
 {data?.label}
-<Handle type="source" position={sourcePosition} on:connect:start on:connect on:connect:end />
+<Handle type="source" position={sourcePosition} on:connectstart on:connect on:connectend />

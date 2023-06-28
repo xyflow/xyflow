@@ -127,15 +127,15 @@
   selectionMode={SelectionMode.Full}
   initialViewport={{ x: 100, y: 100, zoom: 2 }}
   snapGrid={[25, 25]}
-  on:node:click={(event) => console.log('on node click', event)}
-  on:node:mouseenter={(event) => console.log('on node enter', event)}
-  on:node:mouseleave={(event) => console.log('on node leave', event)}
-  on:edge:click={(event) => console.log('edge click', event)}
-  on:connect:start={(event) => console.log('on connect start', event)}
+  on:nodeclick={(event) => console.log('on node click', event)}
+  on:nodemouseenter={(event) => console.log('on node enter', event)}
+  on:nodemouseleave={(event) => console.log('on node leave', event)}
+  on:edgeclick={(event) => console.log('edge click', event)}
+  on:connectstart={(event) => console.log('on connect start', event)}
   on:connect={(event) => console.log('on connect', event)}
-  on:connect:end={(event) => console.log('on connect end', event)}
-  on:pane:click={(event) => console.log('on pane click', event)}
-  on:pane:contextmenu={(event) => {
+  on:connectend={(event) => console.log('on connect end', event)}
+  on:paneclick={(event) => console.log('on pane click', event)}
+  on:panecontextmenu={(event) => {
     event.preventDefault();
     console.log('on pane contextmenu', event);
   }}

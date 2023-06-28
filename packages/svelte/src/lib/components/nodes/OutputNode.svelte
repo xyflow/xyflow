@@ -10,4 +10,4 @@
 </script>
 
 {data?.label}
-<Handle type="target" position={targetPosition} on:connect:start on:connect on:connect:end />
+<Handle type="target" position={targetPosition} on:connectstart on:connect on:connectend />

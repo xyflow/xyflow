@@ -66,13 +66,13 @@
       zIndex={node[internalsSymbol]?.z ?? 0}
       dragHandle={node.dragHandle}
       {resizeObserver}
-      on:node:click
-      on:node:mouseenter
-      on:node:mousemove
-      on:node:mouseleave
-      on:connect:start
+      on:nodeclick
+      on:nodemouseenter
+      on:nodemousemove
+      on:nodemouseleave
+      on:connectstart
       on:connect
-      on:connect:end
+      on:connectend
     />
   {/each}
 </div>

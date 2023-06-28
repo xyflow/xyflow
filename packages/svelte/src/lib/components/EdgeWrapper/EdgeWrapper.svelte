@@ -46,7 +46,7 @@
     }
 
     const edge = $edges.find((e) => e.id === id);
-    dispatch('edge:click', edge);
+    dispatch('edgeclick', edge);
   }
 </script>
 

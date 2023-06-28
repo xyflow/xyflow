@@ -70,7 +70,7 @@ A basic flow looks like this:
   {nodeTypes}
   fitView
   snapGrid={snapGrid}
-  on:node:click={(event) => console.log('on node click', event)}
+  on:nodeclick={(event) => console.log('on node click', event)}
 >
   <Controls />
   <Background variant={BackgroundVariant.Dots} />

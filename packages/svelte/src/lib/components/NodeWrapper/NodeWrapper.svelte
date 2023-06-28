@@ -69,7 +69,7 @@
       addSelectedNodes([id]);
     }
 
-    dispatchEvent('node:click');
+    dispatchEvent('nodeclick');
   }
 </script>
 
@@ -95,9 +95,9 @@
   style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
   {style}
   on:click={onSelectNodeHandler}
-  on:mouseenter={() => dispatchEvent('node:mouseenter')}
-  on:mouseleave={() => dispatchEvent('node:mouseleave')}
-  on:mousemove={() => dispatchEvent('node:mousemove')}
+  on:mouseenter={() => dispatchEvent('nodemouseenter')}
+  on:mouseleave={() => dispatchEvent('nodemouseleave')}
+  on:mousemove={() => dispatchEvent('nodemousemove')}
 >
   <svelte:component
     this={nodeComponent}
@@ -113,9 +113,9 @@
     isConnectable={connectable}
     xPos={positionAbsolute?.x ?? 0}
     yPos={positionAbsolute?.y ?? 0}
-    on:connect:start
+    on:connectstart
     on:connect
-    on:connect:end
+    on:connectend
   />
 </div>
 

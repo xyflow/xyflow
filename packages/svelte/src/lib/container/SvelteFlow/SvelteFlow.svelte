@@ -139,19 +139,19 @@
     {panOnScroll}
     {panOnDrag}
   >
-    <Pane on:pane:click {panOnDrag}>
+    <Pane on:paneclick {panOnDrag}>
       <ViewportComponent>
-        <EdgeRenderer on:edge:click />
+        <EdgeRenderer on:edgeclick />
         <ConnectionLine />
         <div class="svelte-flow__edgelabel-renderer" />
         <NodeRenderer
-          on:node:click
-          on:node:mouseenter
-          on:node:mousemove
-          on:node:mouseleave
-          on:connect:start
+          on:nodeclick
+          on:nodemouseenter
+          on:nodemousemove
+          on:nodemouseleave
+          on:connectstart
           on:connect
-          on:connect:end
+          on:connectend
         />
         <NodeSelection />
       </ViewportComponent>
