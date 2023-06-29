@@ -30,11 +30,20 @@
     border: none;
     background: var(
       --controls-button-background-color-props,
-      var(--controls-button-background-color)
+      var(--controls-button-background-color),
+      var(--controls-button-background-color-default)
     );
     border-bottom: 1px solid
-      var(--controls-button-border-color-props, var(--controls-button-border-color));
-    color: var(--controls-button-color-props, var(--controls-button-color));
+      var(
+        --controls-button-border-color-props,
+        var(--controls-button-border-color),
+        var(--controls-button-border-color-default)
+      );
+    color: var(
+      --controls-button-color-props,
+      var(--controls-button-color),
+      var(--controls-button-color-default)
+    );
     box-sizing: content-box;
     display: flex;
     justify-content: center;
@@ -49,9 +58,14 @@
   .svelte-flow__controls-button:hover {
     background: var(
       --controls-button-background-color-hover-props,
-      var(--controls-button-background-color-hover)
+      var(--controls-button-background-color-hover),
+      var(--controls-button-background-color-hover-default)
     );
-    color: var(--controls-button-color-hover-props, var(--controls-button-hover-color));
+    color: var(
+      --controls-button-color-hover-props,
+      var(--controls-button-hover-color),
+      var(--controls-button-hover-color-default)
+    );
   }
 
   .svelte-flow__controls-button :global(svg) {

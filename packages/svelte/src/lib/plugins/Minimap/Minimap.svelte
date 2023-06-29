@@ -142,12 +142,28 @@
 
 <style>
   svg {
-    background-color: var(--minimap-background-color-props, var(--minimap-background-color));
+    background-color: var(
+      --minimap-background-color-props,
+      var(--minimap-background-color),
+      var(--minimap-background-color-default)
+    );
   }
 
   .svelte-flow__minimap-mask {
-    fill: var(--minimap-mask-color-props, var(--minimap-mask-color));
-    stroke: var(--minimap-mask-stroke-color-props, var(--minimap-mask-stroke-color));
-    stroke-width: var(--minimap-mask-stroke-width-props, var(--minimap-mask-stroke-width));
+    fill: var(
+      --minimap-mask-color-props,
+      var(--minimap-mask-color),
+      var(--minimap-mask-color-default)
+    );
+    stroke: var(
+      --minimap-mask-stroke-color-props,
+      var(--minimap-mask-stroke-color),
+      var(--minimap-mask-stroke-color-default)
+    );
+    stroke-width: var(
+      --minimap-mask-stroke-width-props,
+      var(--minimap-mask-stroke-width),
+      var(--minimap-mask-stroke-width-default)
+    );
   }
 </style>

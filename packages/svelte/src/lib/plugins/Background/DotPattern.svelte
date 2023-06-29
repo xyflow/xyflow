@@ -7,6 +7,10 @@
 
 <style>
   circle {
-    fill: var(--pattern-color-props, var(--background-pattern-color));
+    fill: var(
+      --pattern-color-props,
+      var(--background-pattern-color),
+      var(--background-pattern-color-default)
+    );
   }
 </style>

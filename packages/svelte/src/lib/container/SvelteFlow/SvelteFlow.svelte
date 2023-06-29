@@ -170,7 +170,7 @@
     position: relative;
     z-index: 0;
 
-    background-color: var(--background-color);
+    background-color: var(--background-color, var(--background-color-default));
   }
 
   .svelte-flow :global(.svelte-flow__node-default),
@@ -188,31 +188,31 @@
   }
 
   :root {
-    --background-color: #fff;
-    --background-pattern-color: #eee;
+    --background-color-default: #fff;
+    --background-pattern-color-default: #eee;
 
-    --minimap-background-color: #fff;
-    --minimap-mask-color: rgb(240, 240, 240, 0.6);
-    --minimap-mask-stroke-color: none;
-    --minimap-mask-stroke-width: 1;
+    --minimap-background-color-default: #fff;
+    --minimap-mask-color-default: rgb(240, 240, 240, 0.6);
+    --minimap-mask-stroke-color-default: none;
+    --minimap-mask-stroke-width-default: 1;
 
-    --controls-button-background-color: #fefefe;
-    --controls-button-background-color-hover: #f4f4f4;
-    --controls-button-color: inherit;
-    --controls-button-color-hover: inherit;
-    --controls-button-border-color: #eee;
+    --controls-button-background-color-default: #fefefe;
+    --controls-button-background-color-hover-default: #f4f4f4;
+    --controls-button-color-default: inherit;
+    --controls-button-color-hover-default: inherit;
+    --controls-button-border-color-default: #eee;
 
-    --edge-color: #cfcfcf;
-    --edge-color-selected: #555;
+    --edge-color-default: #cfcfcf;
+    --edge-color-selected-default: #555;
 
-    --node-color: inherit;
-    --node-border-color: #1a192b;
-    --node-background-color: #fff;
-    --node-shadow-color-selected: #1a192b;
+    --node-color-default: inherit;
+    --node-border-color-default: #1a192b;
+    --node-background-color-default: #fff;
+    --node-shadow-color-selected-default: #1a192b;
 
-    --handle-background-color: #1a192b;
-    --handle-border-color: #fff;
+    --handle-background-color-default: #1a192b;
+    --handle-border-color-default: #fff;
 
-    --connection-line-color: #b1b1b7;
+    --connection-line-color-default: #b1b1b7;
   }
 </style>

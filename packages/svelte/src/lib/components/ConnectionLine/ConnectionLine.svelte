@@ -32,7 +32,7 @@
 
   .svelte-flow__edge-path,
   .svelte-flow__connection-path {
-    stroke: var(--connection-line-color);
+    stroke: var(--connection-line-color, var(--connection-line-color-default));
     stroke-width: 1;
     fill: none;
   }

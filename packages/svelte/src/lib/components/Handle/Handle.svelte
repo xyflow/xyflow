@@ -108,8 +108,8 @@
     min-height: 5px;
     width: 6px;
     height: 6px;
-    background: var(--handle-background-color);
-    border: 1px solid var(--handle-border-color);
+    background: var(--handle-background-color, var(--handle-background-color-default));
+    border: 1px solid var(--handle-border-color, var(--handle-border-color-default));
     border-radius: 100%;
   }
 

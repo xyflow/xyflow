@@ -86,7 +86,6 @@
   bind:this={nodeRef}
   data-id={id}
   class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}
-  class:initializing={!width && !height}
   class:dragging
   class:selected
   class:draggable
@@ -122,12 +121,12 @@
 <style>
   .svelte-flow__node {
     border-radius: 3px;
-    color: var(--node-color);
+    color: var(--node-color, var(--node-color-default));
     text-align: center;
     border-width: 1px;
     border-style: solid;
-    border-color: var(--node-border-color);
-    background-color: var(--node-background-color);
+    border-color: var(--node-border-color, var(--node-border-color-default));
+    background-color: var(--node-background-color, var(--node-background-color-default));
     position: absolute;
     pointer-events: none;
     user-select: none;
@@ -140,14 +139,11 @@
 
   .selected {
     outline: none;
-    box-shadow: 0 0 0 0.5px var(--node-shadow-color-selected);
+    box-shadow: 0 0 0 0.5px
+      var(--node-shadow-color-selected, var(--node-shadow-color-selected-default));
   }
 
   .dragging {
     cursor: grabbing;
-  }
-
-  .initializing {
-    visibility: hidden;
   }
 </style>

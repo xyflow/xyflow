@@ -12,6 +12,10 @@
 
 <style>
   path {
-    stroke: var(--pattern-color-props, var(--background-pattern-color));
+    stroke: var(
+      --pattern-color-props,
+      var(--background-pattern-color),
+      var(--background-pattern-color-default)
+    );
   }
 </style>
