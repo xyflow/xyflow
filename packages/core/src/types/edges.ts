@@ -19,8 +19,8 @@ type DefaultEdge<T = any> = {
   type?: string;
   source: string;
   target: string;
-  sourceHandle?: string | null;
-  targetHandle?: string | null;
+  sourceHandle: string | null;
+  targetHandle: string | null;
   style?: CSSProperties;
   animated?: boolean;
   hidden?: boolean;
