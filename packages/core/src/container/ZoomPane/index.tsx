@@ -119,9 +119,10 @@ const ZoomPane = ({
             event.preventDefault();
             event.stopImmediatePropagation();
             const { onViewportChange, transform } = store.getState();
+            const [x, y, k] = transform;
             const currentZoom = d3Selection.property('__zoom').k || 1;
             if (onMoveEnd || onViewportChange) {
-              const flowTransform = eventToFlowTransform({ x: transform[0], y: transform[1], k: transform[2] });
+              const flowTransform = eventToFlowTransform({ x, y, k });
               onMoveEnd?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
             }
 
