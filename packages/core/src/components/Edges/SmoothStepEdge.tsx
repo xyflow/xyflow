@@ -110,9 +110,15 @@ function getPoints({
     const targetSource: XYPosition[] = [{ x: targetGapped.x, y: sourceGapped.y }];
     // this handles edges with same handle positions
     if (dirAccessor === 'x') {
-      points = sourceDir.x === currDir ? targetSource : sourceTarget;
-    } else {
-      points = sourceDir.y === currDir ? sourceTarget : targetSource;
+      points = sourcePosition === targetPosition && source.x === target.x
+        ? [{ x: targetGapped.x, y: sourceGapped.y + (targetGapped.y - sourceGapped.y) / 2 }]
+        : sourceDir.x === currDir ? targetSource : sourceTarget
+    }
+
+    if (dirAccessor === 'y') {
+      points = sourcePosition === targetPosition && source.y === target.y
+        ? [{ x: sourceGapped.x + (targetGapped.x - sourceGapped.x) / 2, y: targetGapped.y }]
+        : sourceDir.y === currDir ? sourceTarget : targetSource
     }
 
     // these are conditions for handling mixed handle positions like Right -> Bottom for example
