@@ -73,6 +73,9 @@ function getPoints({
 
   let points: XYPosition[] = [];
   let centerX, centerY;
+  const sourceGapOffset = { x: 0, y: 0 };
+  const targetGapOffset = { x: 0, y: 0 };
+
   const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
     sourceX: source.x,
     sourceY: source.y,
@@ -115,6 +118,20 @@ function getPoints({
       points = sourceDir.y === currDir ? sourceTarget : targetSource;
     }
 
+    if (sourcePosition === targetPosition) {
+      const diff = Math.abs(source[dirAccessor] - target[dirAccessor]);
+
+      // if an edge goes from right to right for example (sourcePosition === targetPosition) and the distance between source.x and target.x is less than the offset, the added point and the gapped source/target will overlap. This leads to a weird edge path. To avoid this we add a gapOffset to the source/target
+      if (diff <= offset) {
+        const gapOffset = Math.min(offset - 1, offset - diff);
+        if (sourceDir[dirAccessor] === currDir) {
+          sourceGapOffset[dirAccessor] = gapOffset;
+        } else {
+          targetGapOffset[dirAccessor] = gapOffset;
+        }
+      }
+    }
+
     // these are conditions for handling mixed handle positions like Right -> Bottom for example
     if (sourcePosition !== targetPosition) {
       const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
@@ -134,7 +151,13 @@ function getPoints({
     centerY = points[0].y;
   }
 
-  const pathPoints = [source, sourceGapped, ...points, targetGapped, target];
+  const pathPoints = [
+    source,
+    { x: sourceGapped.x - sourceGapOffset.x, y: sourceGapped.y - sourceGapOffset.y },
+    ...points,
+    { x: targetGapped.x - targetGapOffset.x, y: targetGapped.y - targetGapOffset.y },
+    target,
+  ];
 
   return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }

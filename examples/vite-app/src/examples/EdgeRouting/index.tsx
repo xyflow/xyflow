@@ -29,7 +29,7 @@ const nodes: Node[] = [
   },
   {
     id: '4',
-    position: { x: 50, y: 150 },
+    position: { x: -100, y: 150 },
     data: { label: 'Target' },
     sourcePosition: Position.Right,
     targetPosition: Position.Right,
@@ -69,6 +69,21 @@ const nodes: Node[] = [
     targetPosition: Position.Bottom,
     style: { background: 'rgba(255,255,255,0.5)' },
   },
+  // Bottom Bottom
+  {
+    id: '9',
+    position: { x: 100, y: 800 },
+    data: { label: 'Source' },
+    sourcePosition: Position.Bottom,
+    targetPosition: Position.Bottom,
+  },
+  {
+    id: '10',
+    position: { x: -100, y: 900 },
+    data: { label: 'Target' },
+    sourcePosition: Position.Bottom,
+    targetPosition: Position.Bottom,
+  },
 ];
 
 const edges: Edge[] = [
@@ -86,7 +101,7 @@ const edges: Edge[] = [
     source: '3',
     target: '4',
     pathOptions: {
-      borderRadius: 2,
+      borderRadius: 20,
     },
     interactionWidth: 0,
   },
@@ -102,10 +117,16 @@ const edges: Edge[] = [
     source: '7',
     target: '8',
   },
+
+  {
+    id: 'e9-10',
+    source: '9',
+    target: '10',
+  },
 ];
 
 const defaultEdgeOptions = {
-  label: 'Edge Label',
+  // label: 'Edge Label',
   type: 'smoothstep',
   markerEnd: {
     type: MarkerType.ArrowClosed,
