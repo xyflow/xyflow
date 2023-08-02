@@ -78,7 +78,7 @@ function useDrag({
         let hasChange = false;
         let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
-        if (nodeExtent && dragItems.current.length > 1) {
+        if (dragItems.current.length > 1 && nodeExtent) {
           const rect = getRectOfNodes(dragItems.current as unknown as Node[], nodeOrigin);
           nodesBox = rectToBox(rect);
         }
@@ -98,7 +98,7 @@ function useDrag({
             [nodeExtent[1][0], nodeExtent[1][1]],
           ];
 
-          if (nodeExtent && !n.extent && dragItems.current.length > 1) {
+          if (dragItems.current.length > 1 && nodeExtent && !n.extent) {
             adjustedNodeExtent[0][0] = n.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
             adjustedNodeExtent[1][0] = n.positionAbsolute.x + (n.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
 
