@@ -1,6 +1,7 @@
 import { memo } from 'react';
-import type { MiniMapNodeProps } from './types';
 import cc from 'classcat';
+
+import type { MiniMapNodeProps } from './types';
 
 const MiniMapNode = ({
   id,
@@ -16,14 +17,14 @@ const MiniMapNode = ({
   borderRadius,
   shapeRendering,
   onClick,
-  selected
+  selected,
 }: MiniMapNodeProps) => {
   const { background, backgroundColor } = style || {};
   const fill = (color || background || backgroundColor) as string;
 
   return (
     <rect
-      className={cc(['react-flow__minimap-node', selected && 'selected', className])}
+      className={cc(['react-flow__minimap-node', { selected }, className])}
       x={x}
       y={y}
       rx={borderRadius}
