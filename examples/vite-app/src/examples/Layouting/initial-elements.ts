@@ -8,6 +8,7 @@ const nodes: Node[] = [
     type: 'input',
     data: { label: 'input' },
     position,
+    extent: 'parent',
   },
   {
     id: '2',

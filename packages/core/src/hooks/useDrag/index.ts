@@ -7,8 +7,17 @@ import { useStoreApi } from '../../hooks/useStore';
 import { getDragItems, getEventHandlerParams, hasSelector, calcNextPosition } from './utils';
 import { handleNodeClick } from '../../components/Nodes/utils';
 import useGetPointerPosition from '../useGetPointerPosition';
-import { calcAutoPan, getEventPosition } from '../../utils';
-import type { NodeDragItem, Node, SelectionDragHandler, UseDragEvent, XYPosition } from '../../types';
+import { calcAutoPan, getEventPosition, rectToBox } from '../../utils';
+import type {
+  NodeDragItem,
+  Node,
+  SelectionDragHandler,
+  UseDragEvent,
+  XYPosition,
+  Box,
+  CoordinateExtent,
+} from '../../types';
+import { getRectOfNodes } from '../../utils/graph';
 
 export type UseDragData = { dx: number; dy: number };
 
@@ -67,6 +76,12 @@ function useDrag({
         lastPos.current = { x, y };
 
         let hasChange = false;
+        let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
+
+        if (nodeExtent && dragItems.current.length > 1) {
+          const rect = getRectOfNodes(dragItems.current as unknown as Node[], nodeOrigin);
+          nodesBox = rectToBox(rect);
+        }
 
         dragItems.current = dragItems.current.map((n) => {
           const nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
@@ -76,9 +91,24 @@ function useDrag({
             nextPosition.y = snapGrid[1] * Math.round(nextPosition.y / snapGrid[1]);
           }
 
-          const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, nodeExtent, nodeOrigin, onError);
+          // if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
+          // based on its position so that the node stays at it's position relative to the selection.
+          const adjustedNodeExtent: CoordinateExtent = [
+            [nodeExtent[0][0], nodeExtent[0][1]],
+            [nodeExtent[1][0], nodeExtent[1][1]],
+          ];
 
-          // we want to make sure that we only fire a change event when there is a changes
+          if (nodeExtent && !n.extent && dragItems.current.length > 1) {
+            adjustedNodeExtent[0][0] = n.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
+            adjustedNodeExtent[1][0] = n.positionAbsolute.x + (n.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
+
+            adjustedNodeExtent[0][1] = n.positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
+            adjustedNodeExtent[1][1] = n.positionAbsolute.y + (n.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
+          }
+
+          const updatedPos = calcNextPosition(n, nextPosition, nodeInternals, adjustedNodeExtent, nodeOrigin, onError);
+
+          // we want to make sure that we only fire a change event when there is a change
           hasChange = hasChange || n.position.x !== updatedPos.position.x || n.position.y !== updatedPos.position.y;
 
           n.position = updatedPos.position;
