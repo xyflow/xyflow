@@ -55,6 +55,7 @@ function MiniMap({
   ariaLabel = 'React Flow mini map',
   inversePan = false,
   zoomStep = 10,
+  offsetScale = 5
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
@@ -67,7 +68,7 @@ function MiniMap({
   const viewScale = Math.max(scaledWidth, scaledHeight);
   const viewWidth = viewScale * elementWidth;
   const viewHeight = viewScale * elementHeight;
-  const offset = 5 * viewScale;
+  const offset = offsetScale * viewScale;
   const x = boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset;
   const y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
   const width = viewWidth + offset * 2;
