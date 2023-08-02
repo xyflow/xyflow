@@ -1,7 +1,3 @@
 .react-flow__minimap {
   background-color: #fff;
 }
-
-.react-flow__minimap-node.selected {
-  filter: invert(30%);
-}
