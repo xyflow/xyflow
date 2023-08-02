@@ -16,6 +16,11 @@ A highly customizable React component for building interactive graphs and node-b
 
 ---
 
+## 🚨 Upcoming Changes 
+
+The main branch (v11) is now in a feature freeze. The next version is being developed in the [xyflow branch](https://github.com/wbkd/react-flow/tree/xyflow).
+Find out more about the those changes [here](https://wbkd.notion.site/Upcoming-Changes-at-React-Flow-1a443641891a4069927c0a115e915251).
+
 ## Key Features
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
