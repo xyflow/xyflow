@@ -187,15 +187,13 @@ const ZoomPane = ({
         const flowTransform = eventToFlowTransform(event.transform);
 
         isZoomingOrPanning.current = true;
+        prevTransform.current = flowTransform;
 
         if (event.sourceEvent?.type === 'mousedown') {
           store.setState({ paneDragging: true });
-          prevTransform.current = flowTransform;
         }
 
         if (onMoveStart || onViewportChangeStart) {
-          prevTransform.current = flowTransform;
-
           onViewportChangeStart?.(flowTransform);
           onMoveStart?.(event.sourceEvent as MouseEvent | TouchEvent, flowTransform);
         }
