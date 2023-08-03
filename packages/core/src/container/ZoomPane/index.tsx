@@ -276,7 +276,7 @@ const ZoomPane = ({
         }
         zoomedWithRightMouseButton.current = false;
 
-        if (onMoveEnd || (onViewportChangeEnd && viewChanged(prevTransform.current, event.transform))) {
+        if ((onMoveEnd || onViewportChangeEnd) && viewChanged(prevTransform.current, event.transform)) {
           const flowTransform = eventToFlowTransform(event.transform);
           prevTransform.current = flowTransform;
 
