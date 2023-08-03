@@ -95,7 +95,6 @@ const LayoutFlow = () => {
         onInit={() => onLayout('TB')}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onError={(a, b) => console.log(a, b)}
       >
         <Controls />
       </ReactFlow>

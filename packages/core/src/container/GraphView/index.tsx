@@ -6,10 +6,10 @@ import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
 import ConnectionLine from '../../components/ConnectionLine';
-import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
-import { useNodeOrEdgeTypes } from '../ReactFlow/utils';
+import { useNodeOrEdgeTypes } from './utils';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
+import type { ReactFlowProps } from '../../types';
 
 export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
   Required<
@@ -107,8 +107,8 @@ const GraphView = ({
   nodeExtent,
   rfId,
 }: GraphViewProps) => {
-  const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
-  const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
+  const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes);
+  const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes);
 
   useOnInitHandler(onInit);
 
