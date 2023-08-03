@@ -9,12 +9,11 @@ import { getEdgePositions, getHandle, getNodeData } from './utils';
 
 import { GraphViewProps } from '../GraphView';
 import { ConnectionMode, Position } from '../../types';
-import type { Edge, ReactFlowState } from '../../types';
+import type { Edge, EdgeTypesWrapped, ReactFlowState } from '../../types';
 import { errorMessages } from '../../contants';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
-  | 'edgeTypes'
   | 'onEdgeClick'
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
@@ -32,6 +31,7 @@ type EdgeRendererProps = Pick<
   | 'rfId'
   | 'disableKeyboardA11y'
 > & {
+  edgeTypes: EdgeTypesWrapped;
   elevateEdgesOnSelect: boolean;
   children: ReactNode;
 };
