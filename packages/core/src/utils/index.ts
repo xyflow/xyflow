@@ -105,7 +105,6 @@ export function isInputDOMNode(event: KeyboardEvent | ReactKeyboardEvent): boole
 
   const isInput = ['INPUT', 'SELECT', 'TEXTAREA'].includes(target?.nodeName) || target?.hasAttribute('contenteditable');
 
-
   // when an input field is focused we don't want to trigger deletion or movement of nodes
   return isInput || !!target?.closest('.nokey');
 }

@@ -7,11 +7,16 @@ import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
 import ConnectionLine from '../../components/ConnectionLine';
 import type { EdgeTypesWrapped, NodeTypesWrapped, ReactFlowProps } from '../../types';
+import { useNodeOrEdgeTypes } from '../ReactFlow/utils';
+import { createNodeTypes } from '../NodeRenderer/utils';
+import { createEdgeTypes } from '../EdgeRenderer/utils';
 
 export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
   Required<
     Pick<
       ReactFlowProps,
+      | 'nodeTypes'
+      | 'edgeTypes'
       | 'selectionKeyCode'
       | 'deleteKeyCode'
       | 'multiSelectionKeyCode'
@@ -31,8 +36,6 @@ export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' 
       | 'nodeOrigin'
     >
   > & {
-    nodeTypes: NodeTypesWrapped;
-    edgeTypes: EdgeTypesWrapped;
     rfId: string;
   };
 
@@ -104,6 +107,9 @@ const GraphView = ({
   nodeExtent,
   rfId,
 }: GraphViewProps) => {
+  const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
+  const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
+
   useOnInitHandler(onInit);
 
   return (
@@ -147,7 +153,7 @@ const GraphView = ({
     >
       <ViewportWrapper>
         <EdgeRenderer
-          edgeTypes={edgeTypes}
+          edgeTypes={edgeTypesWrapped}
           onEdgeClick={onEdgeClick}
           onEdgeDoubleClick={onEdgeDoubleClick}
           onEdgeUpdate={onEdgeUpdate}
@@ -175,7 +181,7 @@ const GraphView = ({
         <div className="react-flow__edgelabel-renderer" />
 
         <NodeRenderer
-          nodeTypes={nodeTypes}
+          nodeTypes={nodeTypesWrapped}
           onNodeClick={onNodeClick}
           onNodeDoubleClick={onNodeDoubleClick}
           onNodeMouseEnter={onNodeMouseEnter}

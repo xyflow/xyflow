@@ -9,12 +9,11 @@ import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
 import { getPositionWithOrigin } from './utils';
 import { Position } from '../../types';
-import type { ReactFlowState, WrapNodeProps } from '../../types';
+import type { NodeTypesWrapped, ReactFlowState, WrapNodeProps } from '../../types';
 import { errorMessages } from '../../contants';
 
 type NodeRendererProps = Pick<
   GraphViewProps,
-  | 'nodeTypes'
   | 'selectNodesOnDrag'
   | 'onNodeClick'
   | 'onNodeDoubleClick'
@@ -29,7 +28,9 @@ type NodeRendererProps = Pick<
   | 'disableKeyboardA11y'
   | 'nodeOrigin'
   | 'nodeExtent'
->;
+> & {
+  nodeTypes: NodeTypesWrapped;
+};
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
