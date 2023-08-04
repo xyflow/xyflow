@@ -36,9 +36,6 @@ export default function drag(domNode: Element, params: UseDragParams) {
         updateNodePositions: store.updateNodePositions,
         panBy: store.panBy
       };
-    },
-    onNodeClick: () => {
-      console.log('node click');
     }
   });
 
