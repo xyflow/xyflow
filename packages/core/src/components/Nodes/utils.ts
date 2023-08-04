@@ -4,6 +4,7 @@ import { StoreApi } from 'zustand';
 import { getDimensions } from '../../utils';
 import { Position } from '../../types';
 import type { HandleElement, Node, NodeOrigin, ReactFlowState } from '../../types';
+import { errorMessages } from '../../contants';
 
 export const getHandleBounds = (
   selector: string,
@@ -68,8 +69,13 @@ export function handleNodeClick({
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeInternals } = store.getState();
-  const node = nodeInternals.get(id)!;
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeInternals, onError } = store.getState();
+  const node = nodeInternals.get(id);
+
+  if (!node) {
+    onError?.('012', errorMessages['error012'](id));
+    return;
+  }
 
   store.setState({ nodesSelectionActive: false });
 
