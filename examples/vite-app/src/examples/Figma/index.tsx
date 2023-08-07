@@ -33,7 +33,6 @@ const BasicFlow = () => {
       selectionMode={SelectionMode.Partial}
       panOnDrag={panOnDrag}
       panOnScroll
-      zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
       onPaneContextMenu={onPaneContextMenu}
       fitView

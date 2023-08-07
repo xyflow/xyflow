@@ -15,6 +15,7 @@ import Wrapper from './Wrapper';
 import { infiniteExtent } from '../../store/initialState';
 import { ConnectionLineType, ConnectionMode, PanOnScrollMode, SelectionMode } from '../../types';
 import type { EdgeTypes, NodeOrigin, NodeTypes, ReactFlowProps, ReactFlowRefType, Viewport } from '../../types';
+import { isMacOs } from '../../utils';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -91,8 +92,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       selectionOnDrag = false,
       selectionMode = SelectionMode.Full,
       panActivationKeyCode = 'Space',
-      multiSelectionKeyCode = 'Meta',
-      zoomActivationKeyCode = 'Meta',
+      multiSelectionKeyCode = isMacOs() ? 'Meta' : 'Control',
+      zoomActivationKeyCode = isMacOs() ? 'Meta' : 'Control',
       snapToGrid = false,
       snapGrid = initSnapGrid,
       onlyRenderVisibleElements = false,
