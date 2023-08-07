@@ -126,3 +126,5 @@ export const getEventPosition = (
     y: evtY - (bounds?.top ?? 0),
   };
 };
+
+export const isMacOs = () => navigator?.userAgent?.indexOf('Mac') >= 0;

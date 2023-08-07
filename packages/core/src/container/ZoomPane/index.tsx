@@ -9,7 +9,7 @@ import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { containerStyle } from '../../styles';
-import { clamp } from '../../utils';
+import { clamp, isMacOs } from '../../utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 import { CoordinateExtent, PanOnScrollMode, type Viewport, type ReactFlowState } from '../../types';
 
@@ -36,6 +36,12 @@ const isWrappedWithClass = (event: any, className: string | undefined) => event.
 
 const isRightClickPan = (panOnDrag: FlowRendererProps['panOnDrag'], usedButton: number) =>
   usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
+
+const wheelDelta = (event: any) => {
+  const factor = event.ctrlKey && isMacOs() ? 10 : 1;
+
+  return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;
+};
 
 const selector = (s: ReactFlowState) => ({
   d3Zoom: s.d3Zoom,
@@ -96,6 +102,7 @@ const ZoomPane = ({
 
       const constrainedTransform = d3ZoomInstance.constrain()(updatedTransform, extent, translateExtent);
       d3ZoomInstance.transform(selection, constrainedTransform);
+      d3ZoomInstance.wheelDelta(wheelDelta);
 
       store.setState({
         d3Zoom: d3ZoomInstance,
@@ -122,14 +129,11 @@ const ZoomPane = ({
 
             const currentZoom = d3Selection.property('__zoom').k || 1;
 
-            if (event.ctrlKey && zoomOnPinch) {
+            // macos sets ctrlKey=true for pinch gesture on a trackpad
+            if (event.ctrlKey && zoomOnPinch && isMacOs()) {
               const point = pointer(event);
-              // on a trackpad pinch zoom, ctrlKey is set to true
-              // we check the deltaY here in order to decrease scroll speed for windows
-              const factor = Math.abs(event.deltaY) >= 100 ? 0.5 : 8;
-              // taken from https://github.com/d3/d3-zoom/blob/master/src/zoom.js
-              const pinchDelta = -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;
-              const zoom = currentZoom * Math.pow(2, clamp(pinchDelta, -1, 1));
+              const pinchDelta = wheelDelta(event);
+              const zoom = currentZoom * Math.pow(2, pinchDelta);
               // @ts-ignore
               d3Zoom.scaleTo(d3Selection, zoom, point, event);
 
