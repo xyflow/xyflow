@@ -124,9 +124,12 @@ const ZoomPane = ({
 
             if (event.ctrlKey && zoomOnPinch) {
               const point = pointer(event);
+              // on a trackpad pinch zoom, ctrlKey is set to true
+              // we check the deltaY here in order to decrease scroll speed for windows
+              const factor = Math.abs(event.deltaY) >= 100 ? 0.5 : 8;
               // taken from https://github.com/d3/d3-zoom/blob/master/src/zoom.js
-              const pinchDelta = -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * 10;
-              const zoom = currentZoom * Math.pow(2, pinchDelta);
+              const pinchDelta = -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;
+              const zoom = currentZoom * Math.pow(2, clamp(pinchDelta, -1, 1));
               // @ts-ignore
               d3Zoom.scaleTo(d3Selection, zoom, point, event);
 
