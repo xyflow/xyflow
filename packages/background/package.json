@@ -46,7 +46,7 @@
   "dependencies": {
     "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3",
-    "zustand": "^4.3.1"
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@reactflow/eslint-config": "workspace:*",

@@ -52,7 +52,7 @@
     "classcat": "^5.0.3",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "zustand": "^4.3.1"
+    "zustand": "^4.4.1"
   },
   "peerDependencies": {
     "react": ">=17",
