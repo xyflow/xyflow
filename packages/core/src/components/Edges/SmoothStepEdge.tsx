@@ -152,12 +152,12 @@ function getPoints({
     const maxXDistance = Math.max(Math.abs(sourceGapPoint.x - points[0].x), Math.abs(targetGapPoint.x - points[0].x));
     const maxYDistance = Math.max(Math.abs(sourceGapPoint.y - points[0].y), Math.abs(targetGapPoint.y - points[0].y));
 
-    centerX = points[0].x;
-    centerY = points[0].y;
-
+    // we want to place the label on the longest segment of the edge
     if (maxXDistance >= maxYDistance) {
       centerX = (sourceGapPoint.x + targetGapPoint.x) / 2;
+      centerY = points[0].y;
     } else {
+      centerX = points[0].x;
       centerY = (sourceGapPoint.y + targetGapPoint.y) / 2;
     }
   }
