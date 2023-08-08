@@ -14,7 +14,7 @@ const doc = typeof document !== 'undefined' ? document : null;
 
 // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
 // a string means a single key 'a' or a combination when '+' is used 'a+d'
-// an array means different possibilites. Explainer: ['a', 'd+s'] here the
+// an array means different possibilities. Explainer: ['a', 'd+s'] here the
 // user can use the single key 'a' or the combination 'd' + 's'
 export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { target: doc }): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
@@ -72,6 +72,12 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         } else {
           pressedKeys.current.delete(event[keyOrCode]);
         }
+
+        // fix for Mac: when cmd key is pressed, keyup is not triggered for any other key, see: https://stackoverflow.com/questions/27380018/when-cmd-key-is-kept-pressed-keyup-is-not-triggered-for-any-other-key
+        if (event.key === 'Meta') {
+          pressedKeys.current.clear();
+        }
+
         modifierPressed.current = false;
       };
 
