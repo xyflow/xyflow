@@ -148,8 +148,8 @@ const ZoomPane = ({
             let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
 
             // this enables vertical scrolling with shift + scroll on windows
-            if (!_isMacOs && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical && !deltaX && deltaY) {
-              deltaX = deltaY;
+            if (!_isMacOs && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical) {
+              deltaX = event.deltaY * deltaNormalize;
               deltaY = 0;
             }
 
