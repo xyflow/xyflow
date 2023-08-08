@@ -128,9 +128,10 @@ const ZoomPane = ({
             event.stopImmediatePropagation();
 
             const currentZoom = d3Selection.property('__zoom').k || 1;
+            const _isMacOs = isMacOs();
 
             // macos sets ctrlKey=true for pinch gesture on a trackpad
-            if (event.ctrlKey && zoomOnPinch && isMacOs()) {
+            if (event.ctrlKey && zoomOnPinch && _isMacOs) {
               const point = pointer(event);
               const pinchDelta = wheelDelta(event);
               const zoom = currentZoom * Math.pow(2, pinchDelta);
@@ -143,8 +144,14 @@ const ZoomPane = ({
             // increase scroll speed in firefox
             // firefox: deltaMode === 1; chrome: deltaMode === 0
             const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
-            const deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
-            const deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
+            let deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
+            let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
+
+            // this enables vertical scrolling with shift + scroll on windows
+            if (!_isMacOs && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical) {
+              deltaX = event.deltaY * deltaNormalize;
+              deltaY = 0;
+            }
 
             d3Zoom.translateBy(
               d3Selection,
