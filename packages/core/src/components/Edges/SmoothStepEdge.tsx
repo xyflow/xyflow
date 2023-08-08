@@ -147,8 +147,19 @@ function getPoints({
       }
     }
 
+    const sourceGapPoint = { x: sourceGapped.x - sourceGapOffset.x, y: sourceGapped.y - sourceGapOffset.y };
+    const targetGapPoint = { x: targetGapped.x - targetGapOffset.x, y: targetGapped.y - targetGapOffset.y };
+    const maxXDistance = Math.max(Math.abs(sourceGapPoint.x - points[0].x), Math.abs(targetGapPoint.x - points[0].x));
+    const maxYDistance = Math.max(Math.abs(sourceGapPoint.y - points[0].y), Math.abs(targetGapPoint.y - points[0].y));
+
     centerX = points[0].x;
     centerY = points[0].y;
+
+    if (maxXDistance >= maxYDistance) {
+      centerX = (sourceGapPoint.x + targetGapPoint.x) / 2;
+    } else {
+      centerY = (sourceGapPoint.y + targetGapPoint.y) / 2;
+    }
   }
 
   const pathPoints = [
