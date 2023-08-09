@@ -1,4 +1,4 @@
-describe('Controls Testing', () => {
+describe('Controls Testing', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/');
   });

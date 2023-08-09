@@ -1,4 +1,4 @@
-describe('Basic Flow Rendering', () => {
+describe('Basic Flow Rendering', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/');
   });

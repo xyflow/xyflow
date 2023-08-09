@@ -1,4 +1,4 @@
-describe('Empty Flow Rendering', () => {
+describe('Empty Flow Rendering', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/Empty');
   });
