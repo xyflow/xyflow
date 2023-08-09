@@ -1,4 +1,4 @@
-describe('Minimap Testing', () => {
+describe('Minimap Testing', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/');
   });

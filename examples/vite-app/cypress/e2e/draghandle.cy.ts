@@ -1,4 +1,4 @@
-describe('DragHandle Flow Rendering', () => {
+describe('DragHandle Flow Rendering', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/DragHandle');
   });
