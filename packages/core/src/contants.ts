@@ -18,5 +18,5 @@ export const errorMessages = {
   error010: () => 'Handle: No node id found. Make sure to only use a Handle inside a custom Node.',
   error011: (edgeType: string) => `Edge type "${edgeType}" not found. Using fallback type "default".`,
   error012: (id: string) =>
-    `Node with id "${id}" does not exist, it may have been removed. This can happen when a node is deleted before the "onNodeClick" handler is called. If this wasn't on purpose, please defer deleting this node until the "onNodeClick" handler is called by using "requestAnimationFrame" or "setTimeout".`,
+    `Node with id "${id}" does not exist, it may have been removed. This can happen when a node is deleted before the "onNodeClick" handler is called.`,
 };

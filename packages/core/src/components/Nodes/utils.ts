@@ -46,8 +46,11 @@ export function getMouseHandler(
   return handler === undefined
     ? handler
     : (event: MouseEvent) => {
-        const node = getState().nodeInternals.get(id)!;
-        handler(event, { ...node });
+        const node = getState().nodeInternals.get(id);
+        
+        if (node) {
+          handler(event, { ...node });
+        }
       };
 }
 
