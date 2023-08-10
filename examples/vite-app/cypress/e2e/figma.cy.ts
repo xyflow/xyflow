@@ -1,4 +1,4 @@
-describe('Figma Flow UI', () => {
+describe('Figma Flow UI', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/figma');
   });

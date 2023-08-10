@@ -1,4 +1,4 @@
-describe('Interaction Flow Rendering', () => {
+describe('Interaction Flow Rendering', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/Interaction');
   });

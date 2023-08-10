@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/controls",
-  "version": "11.1.15",
+  "version": "11.1.16",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
     "react",
@@ -15,8 +15,16 @@
   ],
   "source": "src/index.tsx",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/esm/index.mjs",
   "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/umd/index.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
   "sideEffects": [
     "*.css"
   ],
@@ -40,7 +48,7 @@
   "dependencies": {
     "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3",
-    "zustand": "^4.3.1"
+    "zustand": "^4.4.1"
   },
   "peerDependencies": {
     "react": ">=17",

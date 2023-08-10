@@ -36,6 +36,7 @@ const onEdgeClick = (_: ReactMouseEvent, edge: Edge) => console.log('click', edg
 const onPaneClick = (event: ReactMouseEvent) => console.log('onPaneClick', event);
 const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
 const onPaneContextMenu = (event: ReactMouseEvent) => console.log('onPaneContextMenu', event);
+const onMoveStart = (_: TouchEvent | MouseEvent, viewport: Viewport) => console.log('onMoveStart', viewport);
 const onMoveEnd = (_: TouchEvent | MouseEvent, viewport: Viewport) => console.log('onMoveEnd', viewport);
 
 const InteractionFlow = () => {
@@ -79,6 +80,7 @@ const InteractionFlow = () => {
       onPaneClick={captureZoomClick ? onPaneClick : undefined}
       onPaneScroll={captureZoomScroll ? onPaneScroll : undefined}
       onPaneContextMenu={captureZoomClick ? onPaneContextMenu : undefined}
+      onMoveStart={onMoveStart}
       onMoveEnd={onMoveEnd}
     >
       <MiniMap />

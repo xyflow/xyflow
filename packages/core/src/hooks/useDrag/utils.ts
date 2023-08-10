@@ -121,9 +121,10 @@ export function calcNextPosition(
     parentPosition = getNodePositionWithOrigin(parentNode, nodeOrigin).positionAbsolute;
   }
 
-  const positionAbsolute = currentExtent
-    ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
-    : nextPosition;
+  const positionAbsolute =
+    currentExtent && currentExtent !== 'parent'
+      ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
+      : nextPosition;
 
   return {
     position: {

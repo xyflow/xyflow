@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/background",
-  "version": "11.2.4",
+  "version": "11.2.5",
   "description": "Background component with different variants for React Flow",
   "keywords": [
     "react",
@@ -15,8 +15,15 @@
   ],
   "source": "src/index.tsx",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/esm/index.mjs",
   "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/umd/index.js"
+    }
+  },
   "sideEffects": [
     "*.css"
   ],
@@ -39,7 +46,7 @@
   "dependencies": {
     "@reactflow/core": "workspace:*",
     "classcat": "^5.0.3",
-    "zustand": "^4.3.1"
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@reactflow/eslint-config": "workspace:*",

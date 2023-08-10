@@ -1,4 +1,4 @@
-import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode } from 'reactflow';
+import ReactFlow, { Background, BackgroundVariant, Node, Edge, SelectionMode, Viewport, Controls } from 'reactflow';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 
@@ -21,6 +21,9 @@ const onPaneContextMenu = (e: any) => {
 
 const panOnDrag = [1, 2];
 
+const onMoveStart = (e: any, viewport: Viewport) => console.log('move start', e, viewport);
+const onMoveEnd = (e: any, viewport: Viewport) => console.log('move end', e, viewport);
+
 const BasicFlow = () => {
   return (
     <ReactFlow
@@ -30,14 +33,16 @@ const BasicFlow = () => {
       selectionMode={SelectionMode.Partial}
       panOnDrag={panOnDrag}
       panOnScroll
-      zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
       onPaneContextMenu={onPaneContextMenu}
       fitView
       selectNodesOnDrag={false}
       onSelectionContextMenu={onPaneContextMenu}
+      onMoveStart={onMoveStart}
+      onMoveEnd={onMoveEnd}
     >
       <Background variant={BackgroundVariant.Cross} />
+      <Controls />
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
         <input type={'text'} placeholder={'name'} />
       </div>

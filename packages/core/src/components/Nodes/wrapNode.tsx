@@ -79,8 +79,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       }
 
       if (onClick) {
-        const node = store.getState().nodeInternals.get(id)!;
-        onClick(event, { ...node });
+        const node = store.getState().nodeInternals.get(id);
+
+        if (node) {
+          onClick(event, { ...node });
+        }
       }
     };
 

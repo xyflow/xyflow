@@ -48,9 +48,9 @@ type StoreUpdaterProps = Pick<
   | 'elevateNodesOnSelect'
   | 'autoPanOnConnect'
   | 'autoPanOnNodeDrag'
-  | 'onError'
   | 'connectionRadius'
   | 'isValidConnection'
+  | 'onError'
 > & { rfId: string };
 
 const selector = (s: ReactFlowState) => ({

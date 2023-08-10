@@ -1,5 +1,14 @@
 # @reactflow/controls
 
+## 11.1.16
+
+### Patch Changes
+
+- [#3304](https://github.com/wbkd/react-flow/pull/3304) [`15742c00`](https://github.com/wbkd/react-flow/commit/15742c004759e8cfcb84b83cb71e678b6c855d23) Thanks [@moklick](https://github.com/moklick)! - use latest zustand version
+- [#3292](https://github.com/wbkd/react-flow/pull/3292) [`6255c4cf`](https://github.com/wbkd/react-flow/commit/6255c4cf29ee6177762d49289cff9a555510bcce) Thanks [@moklick](https://github.com/moklick)! - add exports field for package.json
+- Updated dependencies [[`15742c00`](https://github.com/wbkd/react-flow/commit/15742c004759e8cfcb84b83cb71e678b6c855d23), [`10a32239`](https://github.com/wbkd/react-flow/commit/10a32239063be3c2cc107145b9a21ac850c90410), [`fdddf43d`](https://github.com/wbkd/react-flow/commit/fdddf43d0d3b4b71158c0e0b56aab9dcbd61da6d), [`6255c4cf`](https://github.com/wbkd/react-flow/commit/6255c4cf29ee6177762d49289cff9a555510bcce), [`ff85d908`](https://github.com/wbkd/react-flow/commit/ff85d908a94ba5add9bc66a0ded0cb755c95fcda), [`61d90578`](https://github.com/wbkd/react-flow/commit/61d905784113c2fb3cdf5993292cc6ac694dac7c), [`6e6bb674`](https://github.com/wbkd/react-flow/commit/6e6bb6743ed4b4f517528f52411d9612f3f13d58), [`511ca769`](https://github.com/wbkd/react-flow/commit/511ca7699b67d8fc9088069f426c062184487b8a), [`bb1b9318`](https://github.com/wbkd/react-flow/commit/bb1b93183a374fbf002625e962441ff0ff288c08), [`ed4a0c1b`](https://github.com/wbkd/react-flow/commit/ed4a0c1b1629ab356dc4b4fd2dcedfde6e99d3b8), [`f9169108`](https://github.com/wbkd/react-flow/commit/f916910820916305be0d93060532224ff311aa80), [`8b3e8400`](https://github.com/wbkd/react-flow/commit/8b3e840039ab7406ac3837ba373ec01b002892de), [`e64e961a`](https://github.com/wbkd/react-flow/commit/e64e961a80517351068fc04146123fbd4fc744e5), [`de989bc6`](https://github.com/wbkd/react-flow/commit/de989bc604ccbc7951371430381547582f768dff)]:
+  - @reactflow/core@11.8.0
+
 ## 11.1.15
 
 ### Patch Changes

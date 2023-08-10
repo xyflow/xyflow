@@ -8,7 +8,7 @@ import { handlePointerDown } from './handler';
 import { getHostForElement, isMouseEvent } from '../../utils';
 import { addEdge } from '../../utils/graph';
 import { type HandleProps, type Connection, type ReactFlowState, HandleType, Position } from '../../types';
-import { getClosestHandle, isValidHandle } from './utils';
+import { isValidHandle } from './utils';
 import { errorMessages } from '../../contants';
 
 const alwaysValid = () => true;
