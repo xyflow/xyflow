@@ -1,5 +1,12 @@
 # @reactflow/node-toolbar
 
+## 1.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`1d99926c`](https://github.com/wbkd/react-flow/commit/1d99926c92c8519286d01fb584c8ef6497dc247a)]:
+  - @reactflow/core@11.8.1
+
 ## 1.2.4
 
 ### Patch Changes

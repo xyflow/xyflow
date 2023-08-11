@@ -1,14 +1,29 @@
 # reactflow
 
+## 11.8.1
+
+This patch release fixes an issue with nextjs that was introduces in 11.8.0
+
+### Patch Changes
+
+- [`1d99926c`](https://github.com/wbkd/react-flow/commit/1d99926c92c8519286d01fb584c8ef6497dc247a) Thanks [@Reflejo](https://github.com/Reflejo)! - Fix navigator being used on server-side rendering
+- Updated dependencies [[`1d99926c`](https://github.com/wbkd/react-flow/commit/1d99926c92c8519286d01fb584c8ef6497dc247a)]:
+  - @reactflow/core@11.8.1
+  - @reactflow/background@11.2.6
+  - @reactflow/controls@11.1.17
+  - @reactflow/minimap@11.6.1
+  - @reactflow/node-resizer@2.1.3
+  - @reactflow/node-toolbar@1.2.5
+
 ## 11.8.0
 
 This is probably the last minor and hopefully also the last patch release for v11. In the next weeks we will focus on the xyflow branch and the upcoming v12 major release. This release comes with a lot of fixes that we wanted to do for a long time. We finally fixed some windows scroll related bugs (fast zooming, no horizontal pan on scroll) and smooth edge bugs (better label positions, weird layouts).
 
 #### Important updates for Windows users
 
-* default key for zoom activation and multi selection is "Control" instead of "Meta"
-* you can pan horizontally when Shift is pressed (when `panOnScroll` is set)
-* we fixed the fast zooming bug when users pressed Control
+- default key for zoom activation and multi selection is "Control" instead of "Meta"
+- you can pan horizontally when Shift is pressed (when `panOnScroll` is set)
+- we fixed the fast zooming bug when users pressed Control
 
 #### Important note for Zustand users
 
@@ -19,11 +34,11 @@ If you are using Zustand, you need to update to v4.4.1 and follow the migration 
 - [#3286](https://github.com/wbkd/react-flow/pull/3286) [`ff85d908`](https://github.com/wbkd/react-flow/commit/ff85d908a94ba5add9bc66a0ded0cb755c95fcda) - fix(selection): keep node positions when extent is reached
 - [#3289](https://github.com/wbkd/react-flow/pull/3289) [`61d90578`](https://github.com/wbkd/react-flow/commit/61d905784113c2fb3cdf5993292cc6ac694dac7c) - fix(onMoveEnd): falsely triggered on right click
 - [#3307](https://github.com/wbkd/react-flow/pull/3307) [`fdddf43d`](https://github.com/wbkd/react-flow/commit/fdddf43d0d3b4b71158c0e0b56aab9dcbd61da6d) Thanks [@s-yadav](https://github.com/s-yadav)! - fix(windows): allow horizontal pan with Shift + scroll
-- [#3290](https://github.com/wbkd/react-flow/pull/3290) [`6e6bb674`](https://github.com/wbkd/react-flow/commit/6e6bb6743ed4b4f517528f52411d9612f3f13d58) - fix(panOnScroll): fire move events 
+- [#3290](https://github.com/wbkd/react-flow/pull/3290) [`6e6bb674`](https://github.com/wbkd/react-flow/commit/6e6bb6743ed4b4f517528f52411d9612f3f13d58) - fix(panOnScroll): fire move events
 - [#3293](https://github.com/wbkd/react-flow/pull/3293) [`bb1b9318`](https://github.com/wbkd/react-flow/commit/bb1b93183a374fbf002625e962441ff0ff288c08) - fix(zoom): handle windows zoom with ctrl
 - [#3279](https://github.com/wbkd/react-flow/pull/3279) [`ed4a0c1b`](https://github.com/wbkd/react-flow/commit/ed4a0c1b1629ab356dc4b4fd2dcedfde6e99d3b8) - fix(step-edge): edge path for horizontally or vertically aligned nodes
 - [#3305](https://github.com/wbkd/react-flow/pull/3305) [`10a32239`](https://github.com/wbkd/react-flow/commit/10a32239063be3c2cc107145b9a21ac850c90410) - fix(step-edge): better default label positions
-- [#3306](https://github.com/wbkd/react-flow/pull/3306) [`f9169108`](https://github.com/wbkd/react-flow/commit/f916910820916305be0d93060532224ff311aa80) Thanks [@VictorWinberg](https://github.com/VictorWinberg)! - fix(key-press): mac issue keyup not triggered 
+- [#3306](https://github.com/wbkd/react-flow/pull/3306) [`f9169108`](https://github.com/wbkd/react-flow/commit/f916910820916305be0d93060532224ff311aa80) Thanks [@VictorWinberg](https://github.com/VictorWinberg)! - fix(key-press): mac issue keyup not triggered
 - [#3301](https://github.com/wbkd/react-flow/pull/3301) [`8b3e8400`](https://github.com/wbkd/react-flow/commit/8b3e840039ab7406ac3837ba373ec01b002892de) - fix(windows): more natural key defaults
 - [#3294](https://github.com/wbkd/react-flow/pull/3294) [`de989bc6`](https://github.com/wbkd/react-flow/commit/de989bc604ccbc7951371430381547582f768dff) Thanks [@hayleigh-dot-dev](https://github.com/hayleigh-dot-dev)! - fix(node-click): handle deleted node
 
