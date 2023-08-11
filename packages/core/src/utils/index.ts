@@ -127,4 +127,4 @@ export const getEventPosition = (
   };
 };
 
-export const isMacOs = () => navigator?.userAgent?.indexOf('Mac') >= 0;
+export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;
