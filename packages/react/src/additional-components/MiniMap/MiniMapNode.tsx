@@ -16,6 +16,7 @@ function MiniMapNode({
   className,
   borderRadius,
   shapeRendering,
+  selected,
   onClick,
 }: MiniMapNodeProps) {
   const { background, backgroundColor } = style || {};
@@ -23,7 +24,7 @@ function MiniMapNode({
 
   return (
     <rect
-      className={cc(['react-flow__minimap-node', className])}
+      className={cc(['react-flow__minimap-node', { selected }, className])}
       x={x}
       y={y}
       rx={borderRadius}

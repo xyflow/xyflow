@@ -24,6 +24,7 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   ariaLabel?: string | null;
   inversePan?: boolean;
   zoomStep?: number;
+  offsetScale?: number;
 };
 
 export type MiniMapNodes = Pick<
@@ -46,5 +47,6 @@ export type MiniMapNodeProps = {
   strokeColor: string;
   strokeWidth: number;
   style?: CSSProperties;
+  selected: boolean;
   onClick?: (event: MouseEvent, id: string) => void;
 };
