@@ -10,7 +10,7 @@ import {
   PanZoomInstance,
 } from '../types';
 import { clamp } from '../utils';
-import { getD3Transition, viewportToTransform } from './utils';
+import { getD3Transition, viewportToTransform, wheelDelta } from './utils';
 import {
   createPanOnScrollHandler,
   createPanZoomEndHandler,
@@ -65,6 +65,7 @@ export function XYPanZoom({
   );
 
   const d3ZoomHandler = d3Selection.on('wheel.zoom')!;
+  d3ZoomInstance.wheelDelta(wheelDelta);
 
   function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {

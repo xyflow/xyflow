@@ -1,6 +1,7 @@
 import { type ZoomTransform, zoomIdentity } from 'd3-zoom';
 
 import { type D3SelectionInstance, type Viewport } from '../types';
+import { isMacOs } from '../utils';
 
 export const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
   prevViewport.x !== eventViewport.x || prevViewport.y !== eventViewport.y || prevViewport.zoom !== eventViewport.k;
@@ -21,3 +22,9 @@ export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: numbe
 
 export const getD3Transition = (selection: D3SelectionInstance, duration = 0) =>
   typeof duration === 'number' && duration > 0 ? selection.transition().duration(duration) : selection;
+
+export const wheelDelta = (event: any) => {
+  const factor = event.ctrlKey && isMacOs() ? 10 : 1;
+
+  return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;
+};
