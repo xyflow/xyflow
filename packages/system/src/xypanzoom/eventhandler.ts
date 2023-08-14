@@ -114,19 +114,18 @@ export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, 
 
 export function createPanZoomStartHandler({ zoomPanValues, onDraggingChange, onPanZoomStart }: PanZoomStartParams) {
   return (event: D3ZoomEvent<HTMLDivElement, any>) => {
+    const viewport = transformToViewport(event.transform);
+
     // we need to remember it here, because it's always 0 in the "zoom" event
     zoomPanValues.mouseButton = event.sourceEvent?.button || 0;
-
     zoomPanValues.isZoomingOrPanning = true;
+    zoomPanValues.prevViewport = viewport;
 
     if (event.sourceEvent?.type === 'mousedown') {
       onDraggingChange(true);
     }
 
     if (onPanZoomStart) {
-      const viewport = transformToViewport(event.transform);
-      zoomPanValues.prevViewport = viewport;
-
       onPanZoomStart?.(event.sourceEvent as MouseEvent | TouchEvent, viewport);
     }
   };
