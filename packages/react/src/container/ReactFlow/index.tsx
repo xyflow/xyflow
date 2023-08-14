@@ -8,6 +8,7 @@ import {
   infiniteExtent,
   type NodeOrigin,
   type Viewport,
+  isMacOs,
 } from '@xyflow/system';
 
 import Attribution from '../../components/Attribution';
@@ -108,8 +109,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       selectionOnDrag = false,
       selectionMode = SelectionMode.Full,
       panActivationKeyCode = 'Space',
-      multiSelectionKeyCode = 'Meta',
-      zoomActivationKeyCode = 'Meta',
+      multiSelectionKeyCode = isMacOs() ? 'Meta' : 'Control',
+      zoomActivationKeyCode = isMacOs() ? 'Meta' : 'Control',
       snapToGrid = false,
       snapGrid = initSnapGrid,
       onlyRenderVisibleElements = false,
