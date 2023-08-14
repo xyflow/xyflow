@@ -2,6 +2,7 @@ import type { MouseEvent, RefObject } from 'react';
 import type { StoreApi } from 'zustand';
 
 import type { Node, ReactFlowState } from '../../types';
+import { errorMessages } from '@xyflow/system';
 
 export function getMouseHandler(
   id: string,
@@ -34,8 +35,13 @@ export function handleNodeClick({
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodes } = store.getState();
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodes, onError } = store.getState();
   const node = nodes.find((n) => n.id === id)!;
+
+  if (!node) {
+    onError?.('012', errorMessages['error012'](id));
+    return;
+  }
 
   store.setState({ nodesSelectionActive: false });
 
