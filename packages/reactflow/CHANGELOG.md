@@ -1,5 +1,22 @@
 # reactflow
 
+## 11.8.2
+
+With this fix it's possible to use React17 again
+
+
+### Patch Changes
+
+- [#3327](https://github.com/wbkd/react-flow/pull/3327) [`7132c168`](https://github.com/wbkd/react-flow/commit/7132c16895c89c6d538a6b8de626e6167d41ce95) - fix(react17): dont use mjs for esm modules
+
+- Updated dependencies [[`7132c168`](https://github.com/wbkd/react-flow/commit/7132c16895c89c6d538a6b8de626e6167d41ce95)]:
+  - @reactflow/background@11.2.7
+  - @reactflow/controls@11.1.18
+  - @reactflow/core@11.8.2
+  - @reactflow/minimap@11.6.2
+  - @reactflow/node-resizer@2.1.4
+  - @reactflow/node-toolbar@1.2.6
+
 ## 11.8.1
 
 This patch release fixes an issue with nextjs that was introduces in 11.8.0
