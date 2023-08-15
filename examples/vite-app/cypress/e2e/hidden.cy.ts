@@ -1,4 +1,4 @@
-describe('Hidden Flow Rendering', () => {
+describe('Hidden Flow Rendering', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/Hidden');
   });

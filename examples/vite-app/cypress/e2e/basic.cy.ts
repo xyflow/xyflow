@@ -1,4 +1,4 @@
-describe('Basic Flow Rendering', () => {
+describe('Basic Flow Rendering', { testIsolation: false }, () => {
   before(() => {
     cy.visit('/');
   });
@@ -29,7 +29,7 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects a node by click', () => {
-    cy.get('.react-flow__node:first').click({ force: true }).should('have.class', 'selected');
+    cy.get('.react-flow__node:first').as('node').click({ force: true }).should('have.class', 'selected');
   });
 
   it('deselects node', () => {
@@ -38,7 +38,8 @@ describe('Basic Flow Rendering', () => {
   });
 
   it('selects an edge by click', () => {
-    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
+    cy.get('.react-flow__edge:first').as('edge').click({ force: true });
+    cy.get('.react-flow__edge:first').should('have.class', 'selected');
   });
 
   it('deselects edge', () => {
@@ -59,7 +60,6 @@ describe('Basic Flow Rendering', () => {
     cy.wait(200);
 
     cy.get('.react-flow__node').eq(1).should('have.class', 'selected');
-
     cy.get('.react-flow__node').eq(3).should('have.not.class', 'selected');
 
     cy.get('.react-flow__nodesselection-rect');
@@ -82,7 +82,7 @@ describe('Basic Flow Rendering', () => {
     cy.wait(200);
     cy.get('.react-flow__nodesselection-rect');
 
-    cy.get('body').type('{shift}', { release: true });
+    cy.get('body').type('{shift}', { release: true, force: true });
   });
 
   it('removes selection', () => {
@@ -124,7 +124,8 @@ describe('Basic Flow Rendering', () => {
       .wait(200)
       .trigger('mouseup', { force: true, button: 0 });
 
-    cy.get('.react-flow__edge').should('have.length', 3);
+    cy.get('.react-flow__edge').as('edge');
+    cy.get('@edge').should('have.length', 3);
   });
 
   // @TODO: why does this fail since react18?
