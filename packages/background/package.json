@@ -15,12 +15,12 @@
   ],
   "source": "src/index.tsx",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.mjs",
+  "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.mjs",
+      "import": "./dist/esm/index.js",
       "require": "./dist/umd/index.js"
     }
   },
