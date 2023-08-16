@@ -99,8 +99,8 @@ importers:
         specifier: ^6.3.0
         version: registry.npmjs.org/react-router-dom@6.12.1(react-dom@18.2.0)(react@18.2.0)
       zustand:
-        specifier: ^4.3.1
-        version: registry.npmjs.org/zustand@4.3.8(react@18.2.0)
+        specifier: ^4.4.1
+        version: registry.npmjs.org/zustand@4.4.1(@types/react@18.2.12)(react@18.2.0)
     devDependencies:
       '@cypress/skip-test':
         specifier: ^2.6.1
@@ -2421,7 +2421,7 @@ packages:
       '@typescript-eslint/typescript-estree': registry.npmjs.org/@typescript-eslint/typescript-estree@5.60.0(typescript@5.1.3)
       eslint: registry.npmjs.org/eslint@8.43.0
       eslint-scope: registry.npmjs.org/eslint-scope@5.1.1
-      semver: registry.npmjs.org/semver@7.5.1
+      semver: registry.npmjs.org/semver@7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -4140,7 +4140,7 @@ packages:
     dependencies:
       acorn: registry.npmjs.org/acorn@8.8.2
       acorn-jsx: registry.npmjs.org/acorn-jsx@5.3.2(acorn@8.8.2)
-      eslint-visitor-keys: registry.npmjs.org/eslint-visitor-keys@3.4.1
+      eslint-visitor-keys: registry.npmjs.org/eslint-visitor-keys@3.4.3
     dev: true
 
   registry.npmjs.org/esprima@4.0.1:
@@ -5074,14 +5074,6 @@ packages:
     hasBin: true
     dependencies:
       ci-info: registry.npmjs.org/ci-info@3.8.0
-    dev: true
-
-  registry.npmjs.org/is-core-module@2.12.1:
-    resolution: {integrity: sha512-Q4ZuBAe2FUsKtyQJoQHlvP8OvBERxO3jEmy1I7hcRXcJBGGHFh/aJBswbXuS9sgrDH2QUO8ilkwNPHvHMd8clg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/is-core-module/-/is-core-module-2.12.1.tgz}
-    name: is-core-module
-    version: 2.12.1
-    dependencies:
-      has: registry.npmjs.org/has@1.0.3
     dev: true
 
   registry.npmjs.org/is-core-module@2.13.0:
@@ -6772,7 +6764,7 @@ packages:
     version: 1.22.2
     hasBin: true
     dependencies:
-      is-core-module: registry.npmjs.org/is-core-module@2.12.1
+      is-core-module: registry.npmjs.org/is-core-module@2.13.0
       path-parse: registry.npmjs.org/path-parse@1.0.7
       supports-preserve-symlinks-flag: registry.npmjs.org/supports-preserve-symlinks-flag@1.0.0
     dev: true
@@ -8338,30 +8330,34 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  registry.npmjs.org/zustand@4.3.8(react@18.2.0):
-    resolution: {integrity: sha512-4h28KCkHg5ii/wcFFJ5Fp+k1J3gJoasaIbppdgZFO4BPJnsNxL0mQXBSFgOgAdCdBj35aDTPvdAJReTMntFPGg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zustand/-/zustand-4.3.8.tgz}
-    id: registry.npmjs.org/zustand/4.3.8
-    name: zustand
-    version: 4.3.8
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      immer: '>=9.0'
-      react: '>=16.8'
-    peerDependenciesMeta:
-      immer:
-        optional: true
-      react:
-        optional: true
-    dependencies:
-      react: registry.npmjs.org/react@18.2.0
-      use-sync-external-store: registry.npmjs.org/use-sync-external-store@1.2.0(react@18.2.0)
-    dev: false
-
   registry.npmjs.org/zustand@4.4.0(@types/react@18.2.12)(react@18.2.0):
     resolution: {integrity: sha512-2dq6wq4dSxbiPTamGar0NlIG/av0wpyWZJGeQYtUOLegIUvhM2Bf86ekPlmgpUtS5uR7HyetSiktYrGsdsyZgQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zustand/-/zustand-4.4.0.tgz}
     id: registry.npmjs.org/zustand/4.4.0
     name: zustand
     version: 4.4.0
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@types/react': '>=16.8'
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': registry.npmjs.org/@types/react@18.2.12
+      react: registry.npmjs.org/react@18.2.0
+      use-sync-external-store: registry.npmjs.org/use-sync-external-store@1.2.0(react@18.2.0)
+    dev: false
+
+  registry.npmjs.org/zustand@4.4.1(@types/react@18.2.12)(react@18.2.0):
+    resolution: {integrity: sha512-QCPfstAS4EBiTQzlaGP1gmorkh/UL1Leaj2tdj+zZCZ/9bm0WS7sI2wnfD5lpOszFqWJ1DcPnGoY8RDL61uokw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/zustand/-/zustand-4.4.1.tgz}
+    id: registry.npmjs.org/zustand/4.4.1
+    name: zustand
+    version: 4.4.1
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@types/react': '>=16.8'

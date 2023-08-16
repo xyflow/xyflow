@@ -26,6 +26,8 @@ export type ZoomPanValues = {
   prevViewport: Viewport;
   mouseButton: number;
   timerId: ReturnType<typeof setTimeout> | undefined;
+  panScrollTimeout: ReturnType<typeof setTimeout> | undefined;
+  isPanScrolling: boolean;
 };
 
 export function XYPanZoom({
@@ -46,6 +48,8 @@ export function XYPanZoom({
     prevViewport: { x: 0, y: 0, zoom: 0 },
     mouseButton: 0,
     timerId: undefined,
+    panScrollTimeout: undefined,
+    isPanScrolling: false,
   };
   const bbox = domNode.getBoundingClientRect();
   const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
@@ -98,12 +102,16 @@ export function XYPanZoom({
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
+          zoomPanValues,
           noWheelClassName,
           d3Selection,
           d3Zoom: d3ZoomInstance,
           panOnScrollMode,
           panOnScrollSpeed,
           zoomOnPinch,
+          onPanZoomStart,
+          onPanZoom,
+          onPanZoomEnd,
         })
       : createZoomOnScrollHandler({
           noWheelClassName,
