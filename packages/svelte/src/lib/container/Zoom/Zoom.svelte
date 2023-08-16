@@ -27,10 +27,12 @@
     maxZoom,
     dragging,
     translateExtent,
-    lib
+    lib,
+    panActivationKeyPressed
   } = useStore();
 
   $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
+  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
 </script>
 
 <div
@@ -49,7 +51,7 @@
     zoomOnDoubleClick,
     zoomOnPinch,
     panOnScroll,
-    panOnDrag,
+    panOnDrag: _panOnDrag,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
     zoomActivationKeyPressed: false,

@@ -200,8 +200,8 @@ importers:
   packages/svelte:
     dependencies:
       '@svelte-put/shortcut':
-        specifier: ^2.0.0
-        version: registry.npmjs.org/@svelte-put/shortcut@2.0.0
+        specifier: ^3.0.0
+        version: registry.npmjs.org/@svelte-put/shortcut@3.0.0
       '@xyflow/system':
         specifier: workspace:*
         version: link:../system
@@ -1797,10 +1797,10 @@ packages:
     version: 2.0.0
     dev: true
 
-  registry.npmjs.org/@svelte-put/shortcut@2.0.0:
-    resolution: {integrity: sha512-dDyxIFlRz+W6wxwQtl2jUen0rX8ofV2VBWaJdz0QehLb0IMDzP3aWM9W4k8cAZQIGmTT0adr1+Gt7HPPUugcpQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@svelte-put/shortcut/-/shortcut-2.0.0.tgz}
+  registry.npmjs.org/@svelte-put/shortcut@3.0.0:
+    resolution: {integrity: sha512-nZg3pwpTi9wUsvQPlqOzEsxZcF2jmY5j+VBq/20IUjjd2OpM92XqZAga0PCCjE6OuEobOt58UMnC2QZgOvk0tQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@svelte-put/shortcut/-/shortcut-3.0.0.tgz}
     name: '@svelte-put/shortcut'
-    version: 2.0.0
+    version: 3.0.0
     dev: false
 
   registry.npmjs.org/@sveltejs/adapter-auto@2.1.0(@sveltejs/kit@1.22.6):

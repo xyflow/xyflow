@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount, setContext, SvelteComponentTyped } from 'svelte';
+  import {
+    createEventDispatcher,
+    onMount,
+    setContext,
+    SvelteComponent,
+    type ComponentType
+  } from 'svelte';
   import cc from 'classcat';
   import { errorMessages, type NodeProps } from '@xyflow/system';
 
@@ -19,8 +25,6 @@
   export let dragging: boolean = false;
   export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
   export let style: NodeWrapperProps['style'] = undefined;
-  export let width: NodeWrapperProps['width'] = undefined;
-  export let height: NodeWrapperProps['height'] = undefined;
   export let type: NodeWrapperProps['type'] = 'default';
   export let isParent: NodeWrapperProps['isParent'] = false;
   export let positionAbsolute: NodeWrapperProps['positionAbsolute'] = undefined;
@@ -43,7 +47,7 @@
     type = 'default';
   }
 
-  const nodeComponent: typeof SvelteComponentTyped<NodeProps> = $nodeTypes[type!] || DefaultNode;
+  const nodeComponent: ComponentType<SvelteComponent<NodeProps>> = $nodeTypes[type!] || DefaultNode;
   const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher();
 
@@ -74,6 +78,7 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   use:drag={{
     nodeId: id,

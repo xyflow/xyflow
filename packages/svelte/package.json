@@ -33,7 +33,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@svelte-put/shortcut": "^2.0.0",
+    "@svelte-put/shortcut": "^3.0.0",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.4"
   },

@@ -96,6 +96,8 @@
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
   {style}
+  role="button"
+  tabindex="-1"
 >
   <slot />
 </div>

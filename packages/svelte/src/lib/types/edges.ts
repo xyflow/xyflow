@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { SvelteComponentTyped } from 'svelte';
+import type { SvelteComponent, ComponentType } from 'svelte';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -45,7 +45,7 @@ export type EdgeProps = Omit<Edge, 'sourceHandle' | 'targetHandle'> &
     targetHandleId?: string | null;
   };
 
-export type EdgeTypes = Record<string, typeof SvelteComponentTyped<EdgeProps>>;
+export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 

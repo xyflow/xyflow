@@ -52,6 +52,7 @@
     selectionRectMode,
     selectionKeyPressed,
     selectionMode,
+    panActivationKeyPressed,
     unselectNodesAndEdges
   } = useStore();
 
@@ -61,6 +62,7 @@
 
   $: isSelecting = $selectionKeyPressed;
   $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
+  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
 
   function onClick(event: MouseEvent) {
     dispatch('paneclick', event);
@@ -159,7 +161,7 @@
   };
 
   const onContextMenu = (event: MouseEvent) => {
-    if (Array.isArray(panOnDrag) && panOnDrag?.includes(2)) {
+    if (Array.isArray(_panOnDrag) && _panOnDrag?.includes(2)) {
       event.preventDefault();
       return;
     }
@@ -168,6 +170,8 @@
   };
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   bind:this={container}
   class="svelte-flow__pane"

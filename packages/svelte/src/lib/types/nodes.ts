@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { SvelteComponentTyped } from 'svelte';
+import type { ComponentType, SvelteComponent } from 'svelte';
 import type { NodeBase, NodeProps } from '@xyflow/system';
 
 // @todo: currently the helper function only like Node from '@reactflow/core'
@@ -14,6 +14,6 @@ export type Node<
   style?: string;
 };
 
-export type NodeTypes = Record<string, typeof SvelteComponentTyped<NodeProps>>;
+export type NodeTypes = Record<string, ComponentType<SvelteComponent<NodeProps>>>;
 
 export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;

@@ -55,8 +55,6 @@
       positionAbsolute={node.positionAbsolute}
       positionOrigin={posOrigin}
       isParent={!!node[internalsSymbol]?.isParent}
-      width={node.width}
-      height={node.height}
       style={node.style}
       class={node.class}
       type={node.type}

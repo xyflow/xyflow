@@ -6,6 +6,7 @@
     'customnode',
     'drag-n-drop',
     'edges',
+    'figma',
     'interaction',
     'overview',
     'stress',

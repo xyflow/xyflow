@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isWrappedWithClass } from './utils';
 
 export type FilterParams = {

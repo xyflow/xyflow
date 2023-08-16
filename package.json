@@ -8,6 +8,8 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "turbo run dev --parallel",
+    "dev:svelte": "turbo run dev --filter=svelte --filter=system",
+    "dev:react": "turbo run dev --filter=react",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",

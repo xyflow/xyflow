@@ -30,6 +30,7 @@
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let selectionMode: $$Props['selectionMode'] = undefined;
+  export let panActivationKey: $$Props['panActivationKey'] = undefined;
   export let nodesDraggable: $$Props['nodesDraggable'] = undefined;
   export let nodesConnectable: $$Props['nodesConnectable'] = undefined;
   export let elementsSelectable: $$Props['elementsSelectable'] = undefined;
@@ -124,8 +125,9 @@
   on:dragover
   on:drop
   {...$$restProps}
+  role="application"
 >
-  <KeyHandler {selectionKey} {deleteKey} />
+  <KeyHandler {selectionKey} {deleteKey} {panActivationKey} />
   <Zoom
     {initialViewport}
     {onMoveStart}
@@ -189,7 +191,7 @@
 
   :root {
     --background-color-default: #fff;
-    --background-pattern-color-default: #eee;
+    --background-pattern-color-default: #ddd;
 
     --minimap-background-color-default: #fff;
     --minimap-mask-color-default: rgb(240, 240, 240, 0.6);

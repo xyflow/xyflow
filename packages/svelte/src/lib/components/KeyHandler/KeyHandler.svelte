@@ -9,8 +9,9 @@
 
   export let selectionKey: $$Props['selectionKey'] = 'Shift';
   export let deleteKey: $$Props['deleteKey'] = 'Backspace';
+  export let panActivationKey: $$Props['panActivationKey'] = ' ';
 
-  const { selectionKeyPressed, deleteKeyPressed } = useStore();
+  const { selectionKeyPressed, deleteKeyPressed, panActivationKeyPressed } = useStore();
 
   function isKeyObject(key?: KeyDefinition): key is KeyDefinitionObject {
     return typeof key === 'object';
@@ -21,6 +22,10 @@
 
   $: deleteKeyString = typeof deleteKey === 'string' ? deleteKey : deleteKey!.key;
   $: deleteKeyModifier = isKeyObject(deleteKey) ? deleteKey?.modifier : [];
+
+  $: panActivationKeyString =
+    typeof panActivationKey === 'string' ? panActivationKey : panActivationKey!.key;
+  $: panActivationKeyModifier = isKeyObject(panActivationKey) ? panActivationKey?.modifier : [];
 </script>
 
 <svelte:window
@@ -49,7 +54,10 @@
       {
         key: deleteKeyString,
         modifier: deleteKeyModifier,
-        callback: () => deleteKeyPressed.set(true)
+        callback: () => {
+          console.log('delete');
+          deleteKeyPressed.set(true);
+        }
       }
     ],
     type: 'keydown'
@@ -60,6 +68,26 @@
         key: deleteKeyString,
         modifier: deleteKeyModifier,
         callback: () => deleteKeyPressed.set(false)
+      }
+    ],
+    type: 'keyup'
+  }}
+  use:shortcut={{
+    trigger: [
+      {
+        key: panActivationKeyString,
+        modifier: panActivationKeyModifier,
+        callback: () => panActivationKeyPressed.set(true)
+      }
+    ],
+    type: 'keydown'
+  }}
+  use:shortcut={{
+    trigger: [
+      {
+        key: panActivationKeyString,
+        modifier: panActivationKeyModifier,
+        callback: () => panActivationKeyPressed.set(false)
       }
     ],
     type: 'keyup'
