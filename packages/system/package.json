@@ -16,8 +16,15 @@
   ],
   "source": "src/index.ts",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/esm/index.mjs",
   "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/umd/index.js"
+    }
+  },
   "sideEffects": false,
   "license": "MIT",
   "publishConfig": {

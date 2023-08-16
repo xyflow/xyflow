@@ -6,11 +6,10 @@ import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles';
 import { GraphViewProps } from '../GraphView';
-import type { ReactFlowState, WrapNodeProps } from '../../types';
+import type { NodeTypesWrapped, ReactFlowState, WrapNodeProps } from '../../types';
 
 type NodeRendererProps = Pick<
   GraphViewProps,
-  | 'nodeTypes'
   | 'onNodeClick'
   | 'onNodeDoubleClick'
   | 'onNodeMouseEnter'
@@ -24,7 +23,9 @@ type NodeRendererProps = Pick<
   | 'disableKeyboardA11y'
   | 'nodeOrigin'
   | 'nodeExtent'
->;
+> & {
+  nodeTypes: NodeTypesWrapped;
+};
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,

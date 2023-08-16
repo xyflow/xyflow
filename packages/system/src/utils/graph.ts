@@ -254,9 +254,10 @@ export function calcNextPosition<NodeType extends NodeBase>(
     ];
   }
 
-  const positionAbsolute = currentExtent
-    ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
-    : nextPosition;
+  const positionAbsolute =
+    currentExtent && currentExtent !== 'parent'
+      ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
+      : nextPosition;
 
   return {
     position: {

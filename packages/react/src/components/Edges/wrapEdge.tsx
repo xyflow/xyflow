@@ -202,7 +202,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         onMouseLeave={onEdgeMouseLeave}
         onKeyDown={isFocusable ? onKeyDown : undefined}
         tabIndex={isFocusable ? 0 : undefined}
-        role={isFocusable ? 'button' : undefined}
+        role={isFocusable ? 'button' : 'img'}
         data-testid={`rf__edge-${id}`}
         aria-label={ariaLabel === null ? undefined : ariaLabel ? ariaLabel : `Edge from ${source} to ${target}`}
         aria-describedby={isFocusable ? `${ARIA_EDGE_DESC_KEY}-${rfId}` : undefined}

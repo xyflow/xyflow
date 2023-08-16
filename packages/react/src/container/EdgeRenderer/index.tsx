@@ -7,11 +7,10 @@ import { useStore } from '../../hooks/useStore';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import type { ReactFlowState } from '../../types';
+import type { EdgeTypesWrapped, ReactFlowState } from '../../types';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
-  | 'edgeTypes'
   | 'onEdgeClick'
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
@@ -29,6 +28,7 @@ type EdgeRendererProps = Pick<
   | 'rfId'
   | 'disableKeyboardA11y'
 > & {
+  edgeTypes: EdgeTypesWrapped;
   elevateEdgesOnSelect: boolean;
   children: ReactNode;
 };

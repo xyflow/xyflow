@@ -8,6 +8,7 @@ import {
   infiniteExtent,
   type NodeOrigin,
   type Viewport,
+  isMacOs,
 } from '@xyflow/system';
 
 import Attribution from '../../components/Attribution';
@@ -19,19 +20,9 @@ import GroupNode from '../../components/Nodes/GroupNode';
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
 import A11yDescriptions from '../../components/A11yDescriptions';
-import { createEdgeTypes } from '../EdgeRenderer/utils';
-import { createNodeTypes } from '../NodeRenderer/utils';
 import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
-import { useNodeOrEdgeTypes } from './utils';
-import type {
-  EdgeTypes,
-  EdgeTypesWrapped,
-  NodeTypes,
-  NodeTypesWrapped,
-  ReactFlowProps,
-  ReactFlowRefType,
-} from '../../types';
+import type { EdgeTypes, NodeTypes, ReactFlowProps, ReactFlowRefType } from '../../types';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -108,8 +99,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       selectionOnDrag = false,
       selectionMode = SelectionMode.Full,
       panActivationKeyCode = 'Space',
-      multiSelectionKeyCode = 'Meta',
-      zoomActivationKeyCode = 'Meta',
+      multiSelectionKeyCode = isMacOs() ? 'Meta' : 'Control',
+      zoomActivationKeyCode = isMacOs() ? 'Meta' : 'Control',
       snapToGrid = false,
       snapGrid = initSnapGrid,
       onlyRenderVisibleElements = false,
@@ -176,8 +167,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
     },
     ref
   ) => {
-    const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes) as NodeTypesWrapped;
-    const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes) as EdgeTypesWrapped;
     const rfId = id || '1';
 
     return (
@@ -199,8 +188,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onNodeMouseLeave={onNodeMouseLeave}
             onNodeContextMenu={onNodeContextMenu}
             onNodeDoubleClick={onNodeDoubleClick}
-            nodeTypes={nodeTypesWrapped}
-            edgeTypes={edgeTypesWrapped}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             connectionLineType={connectionLineType}
             connectionLineStyle={connectionLineStyle}
             connectionLineComponent={connectionLineComponent}

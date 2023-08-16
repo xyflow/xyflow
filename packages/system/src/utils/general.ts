@@ -173,3 +173,5 @@ export const getTransformForBounds = (
 
   return [x, y, clampedZoom];
 };
+
+export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;

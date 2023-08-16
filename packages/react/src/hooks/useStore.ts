@@ -1,5 +1,6 @@
 import { useContext, useMemo } from 'react';
-import { useStore as useZustandStore, type StoreApi } from 'zustand';
+import { useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
+import type { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/RFStoreContext';
