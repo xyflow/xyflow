@@ -30,6 +30,7 @@
   export let targetY: $$Props['targetY'];
   export let sourcePosition: $$Props['sourcePosition'];
   export let targetPosition: $$Props['targetPosition'];
+  export let ariaLabel: $$Props['ariaLabel'] = undefined;
   // @ todo: support edge updates
 
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
@@ -51,7 +52,19 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<g class="svelte-flow__edge" class:animated class:selected data-id={id} on:click={onClick}>
+<g
+  class="svelte-flow__edge"
+  class:animated
+  class:selected
+  data-id={id}
+  on:click={onClick}
+  aria-label={ariaLabel === null
+    ? undefined
+    : ariaLabel
+    ? ariaLabel
+    : `Edge from ${source} to ${target}`}
+  role="img"
+>
   <svelte:component
     this={edgeComponent}
     {id}

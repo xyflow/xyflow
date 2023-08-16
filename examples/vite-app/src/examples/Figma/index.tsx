@@ -1,4 +1,4 @@
-import { ReactFlow, Background, BackgroundVariant, Node, Edge, SelectionMode } from '@xyflow/react';
+import { ReactFlow, Background, BackgroundVariant, Node, Edge, SelectionMode, Controls, Panel } from '@xyflow/react';
 
 const MULTI_SELECT_KEY = ['Meta', 'Shift'];
 
@@ -21,6 +21,10 @@ const onPaneContextMenu = (e: any) => {
 
 const panOnDrag = [1, 2];
 
+const onMoveStart = (e: any) => console.log('move start', e);
+const onMove = (e: any) => console.log('move', e);
+const onMoveEnd = (e: any) => console.log('move end', e);
+
 const BasicFlow = () => {
   return (
     <ReactFlow
@@ -36,11 +40,15 @@ const BasicFlow = () => {
       fitView
       selectNodesOnDrag={false}
       onSelectionContextMenu={onPaneContextMenu}
+      onMoveStart={onMoveStart}
+      onMove={onMove}
+      onMoveEnd={onMoveEnd}
     >
       <Background variant={BackgroundVariant.Cross} />
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+      <Controls />
+      <Panel position="top-right">
         <input type={'text'} placeholder={'name'} />
-      </div>
+      </Panel>
     </ReactFlow>
   );
 };

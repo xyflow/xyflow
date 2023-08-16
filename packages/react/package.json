@@ -16,8 +16,17 @@
   ],
   "source": "src/index.ts",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/esm/index.mjs",
   "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/umd/index.js"
+    },
+    "./dist/base.css": "./dist/base.css",
+    "./dist/style.css": "./dist/style.css"
+  },
   "sideEffects": [
     "*.css"
   ],
@@ -48,7 +57,7 @@
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "zustand": "^4.3.3"
+    "zustand": "^4.4.0"
   },
   "peerDependencies": {
     "react": ">=17",
