@@ -96,6 +96,7 @@
   class:draggable
   class:connectable
   class:parent={isParent}
+  style:z-index={zIndex}
   style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
   {style}
   on:click={onSelectNodeHandler}

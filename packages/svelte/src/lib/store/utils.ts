@@ -74,7 +74,7 @@ export const createNodesStore = (
   const { subscribe, set, update } = writable<Node[]>([]);
   let value = nodes;
   let defaults = {};
-  let elevateNodesOnSelect = false;
+  let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
     const nextNodes = updateNodes(nds, value, {
