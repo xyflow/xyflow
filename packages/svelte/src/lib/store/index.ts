@@ -174,8 +174,13 @@ export function createStore(): SvelteFlowStore {
   }
 
   function unselectNodesAndEdges() {
-    store.nodes.update((ns) => ns.map(resetSelectedItem));
-    store.edges.update((es) => es.map(resetSelectedItem));
+    if (get(store.nodes).some((node) => node.selected)) {
+      store.nodes.update((ns) => ns.map(resetSelectedItem));
+    }
+
+    if (get(store.edges).some((edge) => edge.selected)) {
+      store.edges.update((es) => es.map(resetSelectedItem));
+    }
   }
 
   store.deleteKeyPressed.subscribe((deleteKeyPressed) => {

@@ -114,6 +114,8 @@
       width: Math.abs(mousePos.x - startX),
       height: Math.abs(mousePos.y - startY)
     };
+    const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
+    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
 
     selectedNodes = getNodesInside<Node>(
       $nodes,
@@ -125,8 +127,20 @@
     const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
-    nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
-    edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
+    // this prevents unnecessary updates while updating the selection rectangle
+    if (
+      prevSelectedNodeIds.length !== selectedNodeIds.length ||
+      selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
+    ) {
+      nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
+    }
+
+    if (
+      prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
+      selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
+    ) {
+      edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
+    }
 
     selectionRectMode.set('user');
     selectionRect.set(nextUserSelectRect);

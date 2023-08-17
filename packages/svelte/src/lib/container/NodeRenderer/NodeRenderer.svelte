@@ -42,7 +42,7 @@
     <NodeWrapper
       id={node.id}
       data={node.data}
-      selected={node.selected}
+      selected={!!node.selected}
       draggable={!!(node.draggable || ($nodesDraggable && typeof node.draggable === 'undefined'))}
       selectable={!!(
         node.selectable ||
