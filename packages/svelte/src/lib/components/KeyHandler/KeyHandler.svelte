@@ -55,7 +55,6 @@
         key: deleteKeyString,
         modifier: deleteKeyModifier,
         callback: () => {
-          console.log('delete');
           deleteKeyPressed.set(true);
         }
       }

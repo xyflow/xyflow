@@ -58,6 +58,13 @@
       position: { x: 250, y: 50 }
     },
     {
+      id: '2a',
+      type: 'colorNode',
+      data: { onChange: onChange, color: $bgColor },
+      style: 'border: 1px solid #777; padding: 10px',
+      position: { x: 250, y: 520 }
+    },
+    {
       id: '3',
       type: 'output',
       data: { label: 'Output A' },
