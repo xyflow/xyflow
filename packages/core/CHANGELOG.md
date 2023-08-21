@@ -1,12 +1,18 @@
 # @reactflow/core
 
+## 11.8.3
+
+### Patch Changes
+
+- [#3345](https://github.com/wbkd/react-flow/pull/3345) [`3b329d69`](https://github.com/wbkd/react-flow/commit/3b329d6991023e66b9b1b8b4cba1cccf21b6788e) - fix(step-edge): routing for equal handle positions
+
 ## 11.8.2
 
 With this fix it's possible to use React17 again
 
 ### Patch Changes
 
-- [#3327](https://github.com/wbkd/react-flow/pull/3327) [`7132c168`](https://github.com/wbkd/react-flow/commit/7132c16895c89c6d538a6b8de626e6167d41ce95) Thanks [@moklick](https://github.com/moklick)! - fix(react17): dont use mjs for esm modules
+- [#3327](https://github.com/wbkd/react-flow/pull/3327) [`7132c168`](https://github.com/wbkd/react-flow/commit/7132c16895c89c6d538a6b8de626e6167d41ce95) - fix(react17): dont use mjs for esm modules
 
 ## 11.8.1
 
