@@ -10,7 +10,8 @@
     Position,
     type Node,
     type NodeTypes,
-    type Edge
+    type Edge,
+    type Connection
   } from '../../lib/index';
   import { CustomNode } from './CustomNode';
 
@@ -102,9 +103,20 @@
       animated: true
     }
   ]);
+
+  const onConnect = (connection: Connection) => {
+    console.log('on connect', connection);
+  };
 </script>
 
-<SvelteFlow {nodes} {edges} {nodeTypes} style="--bgcolor: {$bgColor}" fitView>
+<SvelteFlow
+  {nodes}
+  {edges}
+  {nodeTypes}
+  style="--bgcolor: {$bgColor}"
+  fitView
+  on:connect={onConnect}
+>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />
