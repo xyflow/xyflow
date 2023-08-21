@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/node-toolbar",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "A toolbar component for React Flow that can be attached to a node.",
   "keywords": [
     "react",

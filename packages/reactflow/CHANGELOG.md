@@ -1,9 +1,26 @@
 # reactflow
 
+## 11.8.3
+
+Yet another fix for step and smoothstep edge routes
+
+### Patch Changes
+
+- [#3345](https://github.com/wbkd/react-flow/pull/3345) [`3b329d69`](https://github.com/wbkd/react-flow/commit/3b329d6991023e66b9b1b8b4cba1cccf21b6788e) - fix(step-edge): routing for equal handle positions
+
+### Patch Changes
+
+- Updated dependencies [[`3b329d69`](https://github.com/wbkd/react-flow/commit/3b329d6991023e66b9b1b8b4cba1cccf21b6788e)]:
+  - @reactflow/core@11.8.3
+  - @reactflow/background@11.2.8
+  - @reactflow/controls@11.1.19
+  - @reactflow/minimap@11.6.3
+  - @reactflow/node-resizer@2.1.5
+  - @reactflow/node-toolbar@1.2.7
+
 ## 11.8.2
 
 With this fix it's possible to use React17 again
-
 
 ### Patch Changes
 
