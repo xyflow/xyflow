@@ -125,9 +125,9 @@ function getPoints({
       if (diff <= offset) {
         const gapOffset = Math.min(offset - 1, offset - diff);
         if (sourceDir[dirAccessor] === currDir) {
-          sourceGapOffset[dirAccessor] = gapOffset;
+          sourceGapOffset[dirAccessor] = (sourceGapped[dirAccessor] > source[dirAccessor] ? -1 : 1) * gapOffset;
         } else {
-          targetGapOffset[dirAccessor] = gapOffset;
+          targetGapOffset[dirAccessor] = (targetGapped[dirAccessor] > target[dirAccessor] ? -1 : 1) * gapOffset;
         }
       }
     }
@@ -147,8 +147,8 @@ function getPoints({
       }
     }
 
-    const sourceGapPoint = { x: sourceGapped.x - sourceGapOffset.x, y: sourceGapped.y - sourceGapOffset.y };
-    const targetGapPoint = { x: targetGapped.x - targetGapOffset.x, y: targetGapped.y - targetGapOffset.y };
+    const sourceGapPoint = { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y };
+    const targetGapPoint = { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y };
     const maxXDistance = Math.max(Math.abs(sourceGapPoint.x - points[0].x), Math.abs(targetGapPoint.x - points[0].x));
     const maxYDistance = Math.max(Math.abs(sourceGapPoint.y - points[0].y), Math.abs(targetGapPoint.y - points[0].y));
 
@@ -164,9 +164,9 @@ function getPoints({
 
   const pathPoints = [
     source,
-    { x: sourceGapped.x - sourceGapOffset.x, y: sourceGapped.y - sourceGapOffset.y },
+    { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y },
     ...points,
-    { x: targetGapped.x - targetGapOffset.x, y: targetGapped.y - targetGapOffset.y },
+    { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y },
     target,
   ];
 
