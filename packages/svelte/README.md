@@ -24,13 +24,11 @@ A basic flow looks like this:
   import { writable } from 'svelte/store';
   import {
     SvelteFlow,
-    SvelteFlowProvider,
     Controls,
     Background,
     BackgroundVariant,
     MiniMap,
-    Panel,
-    type NodeTypes
+    type SnapGrid
   } from '@xyflow/svelte';
   
   // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position.
@@ -60,16 +58,12 @@ A basic flow looks like this:
       label: 'Edge Text'
     }
   ]);
-
-  const snapGrid = [25, 25];
 </script>
 
 <SvelteFlow
   {nodes}
   {edges}
-  {nodeTypes}
   fitView
-  snapGrid={snapGrid}
   on:nodeclick={(event) => console.log('on node click', event)}
 >
   <Controls />
