@@ -28,7 +28,6 @@ A basic flow looks like this:
     Background,
     BackgroundVariant,
     MiniMap,
-    type SnapGrid
   } from '@xyflow/svelte';
   
   // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position.
