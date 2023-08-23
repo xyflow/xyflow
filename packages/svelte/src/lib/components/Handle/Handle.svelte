@@ -93,6 +93,7 @@
   class:connectablestart={isConnectableStart}
   class:connectableend={isConnectableEnd}
   class:connectable={isConnectable}
+  class:connectionindicator={isConnectable}
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
   {style}
@@ -101,46 +102,3 @@
 >
   <slot />
 </div>
-
-<style>
-  .svelte-flow__handle {
-    position: absolute;
-    pointer-events: none;
-    min-width: 5px;
-    min-height: 5px;
-    width: 6px;
-    height: 6px;
-    background: var(--handle-background-color, var(--handle-background-color-default));
-    border: 1px solid var(--handle-border-color, var(--handle-border-color-default));
-    border-radius: 100%;
-  }
-
-  .connectable {
-    pointer-events: all;
-    cursor: crosshair;
-  }
-
-  .bottom {
-    top: 100%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .top {
-    left: 50%;
-    top: 0;
-    transform: translate(-50%, -50%);
-  }
-
-  .left {
-    top: 50%;
-    left: 0;
-    transform: translate(-50%, -50%);
-  }
-
-  .right {
-    top: 50%;
-    left: 100%;
-    transform: translate(-50%, -50%);
-  }
-</style>

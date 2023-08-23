@@ -13,27 +13,3 @@
     </g>
   </svg>
 {/if}
-
-<style>
-  .svelte-flow__connectionline {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    overflow: visible;
-    z-index: 1001;
-  }
-
-  .svelte-flow__connection {
-    pointer-events: none;
-  }
-
-  .svelte-flow__edge-path,
-  .svelte-flow__connection-path {
-    stroke: var(--connection-line-color, var(--connection-line-color-default));
-    stroke-width: 1;
-    fill: none;
-  }
-</style>

@@ -47,30 +47,3 @@
     </div>
   </EdgeLabelRenderer>
 {/if}
-
-<style>
-  .svelte-flow__edge-label {
-    position: absolute;
-    background: white;
-  }
-
-  .svelte-flow__edge-path {
-    stroke: var(--edge-color, var(--edge-color-default));
-    stroke-width: 1;
-  }
-
-  :global(.selected) .svelte-flow__edge-path {
-    stroke: var(--edge-color-selected, var(--edge-color-selected-default));
-  }
-
-  :global(.animated) .svelte-flow__edge-path {
-    stroke-dasharray: 5;
-    animation: dashdraw 0.5s linear infinite;
-  }
-
-  @keyframes dashdraw {
-    from {
-      stroke-dashoffset: 10;
-    }
-  }
-</style>

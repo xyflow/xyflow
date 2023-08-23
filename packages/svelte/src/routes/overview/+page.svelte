@@ -12,8 +12,10 @@
     type EdgeTypes
   } from '../../lib/index';
 
-  import { CustomNode } from './CustomNode';
-  import { CustomEdge } from './CustomEdge';
+  import CustomNode from './CustomNode.svelte';
+  import CustomEdge from './CustomEdge.svelte';
+
+  import '../../styles/style.css';
 
   const nodeTypes: NodeTypes = {
     custom: CustomNode

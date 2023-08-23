@@ -16,32 +16,3 @@
 <div class={cc(['svelte-flow__panel', className, ...positionClasses])} {style} {...$$restProps}>
   <slot />
 </div>
-
-<style>
-  .svelte-flow__panel {
-    position: absolute;
-    z-index: 5;
-    margin: 15px;
-  }
-
-  .svelte-flow__panel.top {
-    top: 0;
-  }
-
-  .svelte-flow__panel.bottom {
-    bottom: 0;
-  }
-
-  .svelte-flow__panel.left {
-    left: 0;
-  }
-
-  .svelte-flow__panel.right {
-    right: 0;
-  }
-
-  .svelte-flow__panel.center {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-</style>

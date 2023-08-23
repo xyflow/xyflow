@@ -42,7 +42,7 @@
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\" pnpm:css-watch",
     "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production && npm run css",
-    "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/postcss.config.js --dir dist",
+    "css": "postcss src/styles/{base,style}.css --dir dist",
     "css-watch": "pnpm css --watch",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "typecheck": "tsc --noEmit"
@@ -70,6 +70,13 @@
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^10.1.0",
+    "postcss-combine-duplicated-selectors": "^10.0.3",
+    "postcss-import": "^15.1.0",
+    "postcss-nested": "^6.0.0",
+    "postcss-rename": "^0.6.1",
     "react": "^18.2.0",
     "typescript": "5.1.3"
   },

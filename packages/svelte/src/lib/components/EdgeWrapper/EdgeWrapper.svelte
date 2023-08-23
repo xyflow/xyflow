@@ -89,10 +89,3 @@
     markerEnd={markerEndUrl}
   />
 </g>
-
-<style>
-  .svelte-flow__edge {
-    pointer-events: visibleStroke;
-    cursor: pointer;
-  }
-</style>

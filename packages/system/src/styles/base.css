@@ -1,0 +1,32 @@
+.xy-flow {
+  --handle-background-color-default: #333;
+
+  --selection-background-color-default: rgba(150, 150, 180, 0.1);
+  --selection-border-default: 1px dotted rgba(155, 155, 155, 0.8);
+}
+
+.xy-flow__handle {
+  background-color: var(--handle-background-color, var(--handle-background-color-default));
+}
+
+.xy-flow__node-input,
+.xy-flow__node-default,
+.xy-flow__node-output,
+.xy-flow__node-group {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #bbb;
+
+  &.selected,
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border: 1px solid #555;
+  }
+}
+
+.xy-flow__nodesselection-rect,
+.xy-flow__selection {
+  background: var(--selection-background-color, var(--selection-background-color-default));
+  border: var(--selection-border, var(--selection-border-default));
+}

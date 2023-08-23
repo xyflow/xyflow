@@ -1,0 +1,140 @@
+.xy-flow {
+  --node-color-default: inherit;
+  --node-border-color-default: #1a192b;
+  --node-background-color-default: #fff;
+  --node-group-background-color-default: rgba(240, 240, 240, 0.25);
+  --node-shadow-color-hover-default: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
+  --node-shadow-color-selected-default: 0 0 0 0.5px #1a192b;
+
+  --handle-background-color-default: #1a192b;
+  --handle-border-color-default: #fff;
+
+  --selection-background-color-default: rgba(0, 89, 220, 0.08);
+  --selection-border-default: 1px dotted rgba(0, 89, 220, 0.8);
+
+  --controls-button-background-color-default: #fefefe;
+  --controls-button-background-color-hover-default: #f4f4f4;
+  --controls-button-color-default: inherit;
+  --controls-button-color-hover-default: inherit;
+  --controls-button-border-color-default: #eee;
+  --controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+}
+
+.xy-flow__edge {
+  &.updating {
+    .xy-flow__edge-path {
+      stroke: #777;
+    }
+  }
+
+  &-text {
+    font-size: 10px;
+  }
+}
+
+.xy-flow__node.selectable {
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.xy-flow__node-input,
+.xy-flow__node-default,
+.xy-flow__node-output,
+.xy-flow__node-group {
+  padding: 10px;
+  border-radius: 3px;
+  width: 150px;
+  font-size: 12px;
+  color: var(--node-color, var(--node-color-default));
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--node-border-color, var(--node-border-color-default));
+  background-color: var(--node-background-color, var(--node-background-color-default));
+
+  &.selectable {
+    &:hover {
+      box-shadow: var(--node-shadow-color-hover, var(--node-shadow-color-hover-default));
+    }
+
+    &.selected,
+    &:focus,
+    &:focus-visible {
+      box-shadow: var(--node-shadow-color-selected, var(--node-shadow-color-selected-default));
+    }
+  }
+}
+
+.xy-flow__node-group {
+  background-color: var(--node-group-background-color, var(--node-group-background-color-default));
+}
+
+.xy-flow__nodesselection-rect,
+.xy-flow__selection {
+  background: var(--selection-background-color, var(--selection-background-color-default));
+  border: var(--selection-border, var(--selection-border-default));
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.xy-flow__handle {
+  width: 6px;
+  height: 6px;
+  background-color: var(--handle-background-color, var(--handle-background-color-default));
+  border: 1px solid var(--handle-border-color, var(--handle-border-color-default));
+  border-radius: 100%;
+}
+
+.xy-flow__controls {
+  box-shadow: var(--controls-box-shadow, var(--controls-box-shadow-default));
+
+  &-button {
+    border: none;
+    background: var(--controls-button-background-color, var(--controls-button-background-color-default));
+    border-bottom: 1px solid
+      var(
+        --controls-button-border-color-props,
+        var(--controls-button-border-color, var(--controls-button-border-color-default))
+      );
+    color: var(--controls-button-color-props, var(--controls-button-color, var(--controls-button-color-default)));
+    box-sizing: content-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    user-select: none;
+    padding: 5px;
+
+    &:hover {
+      background: var(
+        --controls-button-background-color-hover-props,
+        var(--controls-button-background-color-hover, var(--controls-button-background-color-hover-default))
+      );
+      color: var(
+        --controls-button-color-hover-props,
+        var(--controls-button-hover-color, var(--controls-button-hover-color-default))
+      );
+    }
+
+    svg {
+      width: 100%;
+      max-width: 12px;
+      max-height: 12px;
+    }
+
+    &:disabled {
+      pointer-events: none;
+
+      svg {
+        fill-opacity: 0.4;
+      }
+    }
+  }
+}
