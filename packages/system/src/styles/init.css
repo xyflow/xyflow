@@ -8,7 +8,13 @@
   --connectionline-stroke-default: #b1b1b7;
   --connectionline-stroke-width-default: 1;
 
+  --attribution-background-color-default: rgba(255, 255, 255, 0.5);
+
   --minimap-background-color-default: #fff;
+
+  --background-pattern-dot-color-default: #91919a;
+  --background-pattern-line-color-default: #eee;
+  --background-pattern-cross-color-default: #e2e2e2;
 }
 
 .xy-flow__container {
@@ -232,7 +238,7 @@
 
 .xy-flow__attribution {
   font-size: 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--attribution-background-color, var(--attribution-background-color-default));
   padding: 2px 3px;
   margin: 0;
 
@@ -260,4 +266,33 @@
 
 .xy-flow__minimap {
   stroke: var(--minimap-background-color, var(--minimap-background-color-default));
+}
+
+.xy-flow__background {
+  pointer-events: none;
+  z-index: -1;
+  background-color: var(--background-color-props, 'transparent');
+}
+
+.xy-flow__background-pattern {
+  &.dot {
+    fill: var(
+      --background-pattern-color-props,
+      var(--background-pattern-color, var(--background-pattern-dot-color-default))
+    );
+  }
+
+  &.line {
+    stroke: var(
+      --background-pattern-color-props,
+      var(--background-pattern-color, var(--background-pattern-line-color-default))
+    );
+  }
+
+  &.cross {
+    stroke: var(
+      --background-pattern-color-props,
+      var(--background-pattern-color, var(--background-pattern-cross-color-default))
+    );
+  }
 }

@@ -1,30 +1,31 @@
+import cc from 'classcat';
+
+import { BackgroundVariant } from './types';
+
 type LinePatternProps = {
   dimensions: [number, number];
+  variant: BackgroundVariant;
   lineWidth?: number;
-  color: string;
+  className?: string;
 };
 
-export function LinePattern({
-  color,
-  dimensions,
-  lineWidth,
-}: LinePatternProps) {
+export function LinePattern({ dimensions, lineWidth, variant, className }: LinePatternProps) {
   return (
     <path
-      stroke={color}
       strokeWidth={lineWidth}
-      d={`M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${
-        dimensions[0]
-      }`}
+      d={`M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${dimensions[0]}`}
+      className={cc(['react-flow__background-pattern', variant, className])}
     />
   );
 }
 
 type DotPatternProps = {
   radius: number;
-  color: string;
+  className?: string;
 };
 
-export function DotPattern({ color, radius }: DotPatternProps) {
-  return <circle cx={radius} cy={radius} r={radius} fill={color} />;
+export function DotPattern({ radius, className }: DotPatternProps) {
+  return (
+    <circle cx={radius} cy={radius} r={radius} className={cc(['react-flow__background-pattern', 'dot', className])} />
+  );
 }

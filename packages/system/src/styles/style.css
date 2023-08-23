@@ -1,10 +1,10 @@
 .xy-flow {
   --node-color-default: inherit;
-  --node-border-color-default: #1a192b;
+  --node-border-default: 1px solid #1a192b;
   --node-background-color-default: #fff;
   --node-group-background-color-default: rgba(240, 240, 240, 0.25);
-  --node-shadow-color-hover-default: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
-  --node-shadow-color-selected-default: 0 0 0 0.5px #1a192b;
+  --node-boxshadow-hover-default: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
+  --node-boxshadow-selected-default: 0 0 0 0.5px #1a192b;
 
   --handle-background-color-default: #1a192b;
   --handle-border-color-default: #fff;
@@ -49,20 +49,18 @@
   font-size: 12px;
   color: var(--node-color, var(--node-color-default));
   text-align: center;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--node-border-color, var(--node-border-color-default));
+  border: var(--node-border, var(--node-border-default));
   background-color: var(--node-background-color, var(--node-background-color-default));
 
   &.selectable {
     &:hover {
-      box-shadow: var(--node-shadow-color-hover, var(--node-shadow-color-hover-default));
+      box-shadow: var(--node-boxshadow-hover, var(--node-boxshadow-hover-default));
     }
 
     &.selected,
     &:focus,
     &:focus-visible {
-      box-shadow: var(--node-shadow-color-selected, var(--node-shadow-color-selected-default));
+      box-shadow: var(--node-boxshadow-selected, var(--node-boxshadow-selected-default));
     }
   }
 }

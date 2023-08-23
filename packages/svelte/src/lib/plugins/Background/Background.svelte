@@ -22,6 +22,7 @@
   export let lineWidth: $$Props['lineWidth'] = 1;
   export let bgColor: $$Props['bgColor'] = undefined;
   export let patternColor: $$Props['patternColor'] = undefined;
+  export let patternClassName: $$Props['patternClassName'] = undefined;
   let className: $$Props['class'] = '';
   export { className as class };
 
@@ -44,6 +45,7 @@
   class={cc(['svelte-flow__background', className])}
   data-testid="svelte-flow__background"
   style:--background-color-props={bgColor}
+  style:--pattern-color-props={patternColor}
 >
   <pattern
     id={patternId}
@@ -55,9 +57,9 @@
     patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
   >
     {#if isDots}
-      <DotPattern color={patternColor} radius={scaledSize / 2} />
+      <DotPattern radius={scaledSize / 2} class={patternClassName} />
     {:else}
-      <LinePattern dimensions={patternDimensions} color={patternColor} {lineWidth} />
+      <LinePattern dimensions={patternDimensions} {variant} {lineWidth} class={patternClassName} />
     {/if}
   </pattern>
   <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
@@ -70,8 +72,5 @@
     height: 100%;
     top: 0;
     left: 0;
-    pointer-events: none;
-    z-index: -1;
-    background-color: var(--background-color-props, 'transparent');
   }
 </style>

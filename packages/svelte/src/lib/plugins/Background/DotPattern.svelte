@@ -1,15 +1,14 @@
 <script lang="ts">
+  import cc from 'classcat';
+
   export let radius = 5;
-  export let color: string | undefined = undefined;
+  let className: string = '';
+  export { className as class };
 </script>
 
-<circle cx={radius} cy={radius} r={radius} style:--pattern-color-props={color} />
-
-<style>
-  circle {
-    fill: var(
-      --pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-color-default))
-    );
-  }
-</style>
+<circle
+  cx={radius}
+  cy={radius}
+  r={radius}
+  class={cc(['svelte-flow__background-pattern', 'dot', className])}
+/>

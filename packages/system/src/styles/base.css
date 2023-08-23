@@ -1,4 +1,7 @@
 .xy-flow {
+  --node-border-default: 1px solid #bbb;
+  --node-border-selected-default: 1px solid #555;
+
   --handle-background-color-default: #333;
 
   --selection-background-color-default: rgba(150, 150, 180, 0.1);
@@ -13,15 +16,13 @@
 .xy-flow__node-default,
 .xy-flow__node-output,
 .xy-flow__node-group {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #bbb;
+  border: var(--node-border, var(--node-border-default));
 
   &.selected,
   &:focus,
   &:focus-visible {
     outline: none;
-    border: 1px solid #555;
+    border: var(--node-border-selected, var(--node-border-selected-default));
   }
 }
 

@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { CSSProperties, memo, useRef } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
@@ -6,12 +6,7 @@ import { useStore } from '../../hooks/useStore';
 import { type ReactFlowState } from '../../types';
 import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './Patterns';
-
-const defaultColor = {
-  [BackgroundVariant.Dots]: '#91919a',
-  [BackgroundVariant.Lines]: '#eee',
-  [BackgroundVariant.Cross]: '#e2e2e2',
-};
+import { containerStyle } from '../../styles/utils';
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
@@ -31,12 +26,13 @@ function Background({
   lineWidth = 1,
   offset = 2,
   color,
+  bgColor,
   style,
   className,
+  patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
   const { transform, patternId } = useStore(selector, shallow);
-  const patternColor = color || defaultColor[variant];
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
@@ -53,14 +49,14 @@ function Background({
   return (
     <svg
       className={cc(['react-flow__background', className])}
-      style={{
-        ...style,
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        top: 0,
-        left: 0,
-      }}
+      style={
+        {
+          ...style,
+          ...containerStyle,
+          '--background-color-props': bgColor,
+          '--background-pattern-color-props': color,
+        } as CSSProperties
+      }
       ref={ref}
       data-testid="rf__background"
     >
@@ -74,9 +70,14 @@ function Background({
         patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
       >
         {isDots ? (
-          <DotPattern color={patternColor} radius={scaledSize / offset} />
+          <DotPattern radius={scaledSize / offset} className={patternClassName} />
         ) : (
-          <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
+          <LinePattern
+            dimensions={patternDimensions}
+            lineWidth={lineWidth}
+            variant={variant}
+            className={patternClassName}
+          />
         )}
       </pattern>
       <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId + id})`} />
