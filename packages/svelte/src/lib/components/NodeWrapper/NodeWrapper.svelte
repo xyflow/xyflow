@@ -75,6 +75,8 @@
 
     dispatchEvent('nodeclick');
   }
+
+  // @todo: add selectable state
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -95,6 +97,7 @@
   class:selected
   class:draggable
   class:connectable
+  class:selectable
   class:parent={isParent}
   style:z-index={zIndex}
   style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
@@ -123,33 +126,3 @@
     on:connectend
   />
 </div>
-
-<style>
-  .svelte-flow__node {
-    border-radius: 3px;
-    color: var(--node-color, var(--node-color-default));
-    text-align: center;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--node-border-color, var(--node-border-color-default));
-    background-color: var(--node-background-color, var(--node-background-color-default));
-    position: absolute;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .draggable {
-    cursor: grab;
-    pointer-events: all;
-  }
-
-  .selected {
-    outline: none;
-    box-shadow: 0 0 0 0.5px
-      var(--node-shadow-color-selected, var(--node-shadow-color-selected-default));
-  }
-
-  .dragging {
-    cursor: grabbing;
-  }
-</style>

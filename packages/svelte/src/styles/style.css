@@ -1,4 +1,3 @@
 /* this gets exported as style.css and can be used for the default theming */
 @import '../../../system/src/styles/init.css';
 @import '../../../system/src/styles/style.css';
-@import '../../../system/src/styles/node-resizer.css';

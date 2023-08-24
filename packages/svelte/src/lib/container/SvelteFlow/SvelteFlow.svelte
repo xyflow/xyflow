@@ -175,25 +175,10 @@
     background-color: var(--background-color, var(--background-color-default));
   }
 
-  .svelte-flow :global(.svelte-flow__node-default),
-  .svelte-flow :global(.svelte-flow__node-input),
-  .svelte-flow :global(.svelte-flow__node-output) {
-    padding: 10px;
-  }
-
-  .svelte-flow__edgelabel-renderer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    user-select: none;
-  }
-
   :root {
     --background-color-default: #fff;
     --background-pattern-color-default: #ddd;
 
-    --minimap-background-color-default: #fff;
     --minimap-mask-color-default: rgb(240, 240, 240, 0.6);
     --minimap-mask-stroke-color-default: none;
     --minimap-mask-stroke-width-default: 1;
@@ -203,18 +188,5 @@
     --controls-button-color-default: inherit;
     --controls-button-color-hover-default: inherit;
     --controls-button-border-color-default: #eee;
-
-    --edge-color-default: #cfcfcf;
-    --edge-color-selected-default: #555;
-
-    --node-color-default: inherit;
-    --node-border-color-default: #1a192b;
-    --node-background-color-default: #fff;
-    --node-shadow-color-selected-default: #1a192b;
-
-    --handle-background-color-default: #1a192b;
-    --handle-border-color-default: #fff;
-
-    --connection-line-color-default: #b1b1b7;
   }
 </style>

@@ -7,9 +7,11 @@ export enum BackgroundVariant {
 }
 
 export type BackgroundProps = {
-  id?: string
+  id?: string;
   color?: string;
+  bgColor?: string;
   className?: string;
+  patternClassName?: string;
   gap?: number | [number, number];
   size?: number;
   offset?: number;

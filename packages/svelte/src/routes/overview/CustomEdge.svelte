@@ -5,7 +5,7 @@
     useSvelteFlow,
     type EdgeProps,
     getBezierPath
-  } from '../../../lib/index';
+  } from '../../lib/index';
 
   type $$Props = EdgeProps;
 

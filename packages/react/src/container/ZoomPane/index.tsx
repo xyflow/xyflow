@@ -6,7 +6,7 @@ import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from
 import useKeyPress from '../../hooks/useKeyPress';
 import useResizeHandler from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { containerStyle } from '../../styles';
+import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 import type { ReactFlowState } from '../../types';
 

@@ -79,7 +79,8 @@
   .svelte-flow__nodes {
     width: 100%;
     height: 100%;
-    pointer-events: none;
-    transform-origin: 0 0;
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 </style>

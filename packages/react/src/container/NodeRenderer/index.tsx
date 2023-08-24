@@ -4,7 +4,7 @@ import { internalsSymbol, errorMessages, Position, clampPosition, getPositionWit
 
 import useVisibleNodes from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
-import { containerStyle } from '../../styles';
+import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import type { NodeTypesWrapped, ReactFlowState, WrapNodeProps } from '../../types';
 

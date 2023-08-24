@@ -18,13 +18,5 @@
     position: absolute;
     top: 0;
     left: 0;
-    background: rgba(0, 89, 220, 0.08);
-    border: 1px dotted rgba(0, 89, 220, 0.8);
-    z-index: 6;
-  }
-
-  .svelte-flow__selection:focus,
-  .svelte-flow__selection:focus-visible {
-    outline: none;
   }
 </style>

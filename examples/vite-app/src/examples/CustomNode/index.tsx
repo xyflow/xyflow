@@ -11,6 +11,7 @@ import {
   Connection,
   useNodesState,
   useEdgesState,
+  Background,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -133,7 +134,6 @@ const CustomNodeFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={onConnect}
       onNodeDragStop={onNodeDragStop}
-      style={{ background: bgColor }}
       onInit={onInit}
       nodeTypes={nodeTypes}
       connectionLineStyle={connectionLineStyle}
@@ -158,6 +158,7 @@ const CustomNodeFlow = () => {
         }}
       />
       <Controls />
+      <Background bgColor={bgColor} />
     </ReactFlow>
   );
 };

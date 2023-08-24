@@ -8,7 +8,7 @@ import cc from 'classcat';
 import { getNodesInside, getEventPosition, SelectionMode } from '@xyflow/system';
 
 import UserSelection from '../../components/UserSelection';
-import { containerStyle } from '../../styles';
+import { containerStyle } from '../../styles/utils';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges, getConnectedEdges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
