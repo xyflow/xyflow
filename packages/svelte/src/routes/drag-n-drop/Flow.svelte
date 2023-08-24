@@ -11,6 +11,8 @@
   } from '../../lib/index';
   import Sidebar from './Sidebar.svelte';
 
+  import '../../styles/style.css';
+
   const nodes = writable([
     {
       id: '1',

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Handle, Position, type NodeProps } from '../../../lib/index';
+  import { Handle, Position, type NodeProps } from '../../lib/index';
 
   type $$Props = NodeProps;
 

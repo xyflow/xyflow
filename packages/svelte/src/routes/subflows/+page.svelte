@@ -10,7 +10,9 @@
     type Node
   } from '../../lib/index';
 
-  import { DebugNode } from './DebugNode';
+  import '../../styles/style.css';
+
+  import DebugNode from './DebugNode.svelte';
 
   const nodeTypes: NodeTypes = {
     default: DebugNode

@@ -10,6 +10,8 @@
     type Edge
   } from '../../lib/index';
 
+  import '../../styles/style.css';
+
   const yNodes = 25;
   const xNodes = 25;
 

@@ -11,6 +11,8 @@
     type Edge
   } from '../../lib/index';
 
+  import '../../styles/style.css';
+
   const nodes = writable([
     {
       id: '1',

@@ -8,6 +8,8 @@
     SelectionMode
   } from '../../lib/index';
 
+  import '../../styles/style.css';
+
   const onPaneContextMenu = (e: any) => {
     e.preventDefault();
     console.log('context menu');

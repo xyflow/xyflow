@@ -13,7 +13,9 @@
     type Edge,
     type Connection
   } from '../../lib/index';
-  import { CustomNode } from './CustomNode';
+  import CustomNode from './CustomNode.svelte';
+
+  import '../../styles/style.css';
 
   const nodeTypes: NodeTypes = {
     colorNode: CustomNode

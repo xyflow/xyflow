@@ -9,6 +9,8 @@
     Position
   } from '../../lib/index';
 
+  import '../../styles/style.css';
+
   const nodeDefaults = {
     sourcePosition: Position.Right,
     targetPosition: Position.Left
