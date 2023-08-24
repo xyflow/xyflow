@@ -29,6 +29,10 @@ A basic flow looks like this:
     BackgroundVariant,
     MiniMap,
   } from '@xyflow/svelte';
+
+  // you need to import the styles for Svelte Flow to work
+  // if you just want to load the basic styleds, you can import '@xyflow/svelte/dist/base.css'
+  import '@xyflow/svelte/dist/style.css'
   
   // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position.
   // This also makes it easier to update nodes in user land.
