@@ -236,6 +236,9 @@ importers:
       cssnano:
         specifier: ^6.0.1
         version: registry.npmjs.org/cssnano@6.0.1(postcss@8.4.27)
+      dotenv:
+        specifier: ^16.3.1
+        version: registry.npmjs.org/dotenv@16.3.1
       eslint:
         specifier: ^8.43.0
         version: registry.npmjs.org/eslint@8.43.0
@@ -4146,6 +4149,13 @@ packages:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/dotenv/-/dotenv-16.0.3.tgz}
     name: dotenv
     version: 16.0.3
+    engines: {node: '>=12'}
+    dev: true
+
+  registry.npmjs.org/dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/dotenv/-/dotenv-16.3.1.tgz}
+    name: dotenv
+    version: 16.3.1
     engines: {node: '>=12'}
     dev: true
 
