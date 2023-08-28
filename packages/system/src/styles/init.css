@@ -129,6 +129,7 @@
 
 .xy-flow__connectionline {
   z-index: 1001;
+  overflow: visible;
 }
 
 .xy-flow__nodes {
