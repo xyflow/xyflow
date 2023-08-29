@@ -14,6 +14,9 @@ export * from '$lib/plugins/Controls';
 export * from '$lib/plugins/Background';
 export * from '$lib/plugins/Minimap';
 
+// store
+export { useStore } from '$lib/store';
+
 // utils
 export * from '$lib/utils';
 export * from '$lib/hooks/useSvelteFlow';
@@ -22,6 +25,7 @@ export * from '$lib/hooks/useSvelteFlow';
 export type { Edge, EdgeProps, EdgeTypes, DefaultEdgeOptions } from '$lib/types/edges';
 export type { HandleComponentProps, FitViewOptions } from '$lib/types/general';
 export type { Node, NodeTypes, DefaultNodeOptions } from '$lib/types/nodes';
+export type { SvelteFlowStore } from '$lib/store/types';
 
 // system types
 export {
