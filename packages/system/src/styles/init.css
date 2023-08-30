@@ -266,7 +266,7 @@
 }
 
 .xy-flow__minimap {
-  stroke: var(--minimap-background-color, var(--minimap-background-color-default));
+  background: var(--minimap-background-color, var(--minimap-background-color-default));
 }
 
 .xy-flow__background {
