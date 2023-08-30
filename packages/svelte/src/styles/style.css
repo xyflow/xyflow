@@ -4,4 +4,5 @@
 
 .svelte-flow__edge-label {
   text-align: center;
+  position: absolute;
 }
