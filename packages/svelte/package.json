@@ -12,8 +12,8 @@
     "xyflow"
   ],
   "scripts": {
-    "dev": "concurrently \"vite dev\" pnpm:css-watch",
-    "build": "svelte-kit sync && svelte-package -o dist && pnpm css",
+    "dev": "concurrently \"svelte-kit sync && svelte-package -o dist/lib -w\" pnpm:css-watch",
+    "build": "svelte-kit sync && svelte-package -o dist/lib && pnpm css",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config --dir dist",
@@ -23,12 +23,12 @@
     "typecheck": "pnpm check"
   },
   "type": "module",
-  "module": "./dist/index.js",
+  "module": "./dist/lib/index.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./dist/lib/index.d.ts",
+      "svelte": "./dist/lib/index.js",
+      "default": "./dist/lib/index.js"
     },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css"
@@ -68,8 +68,7 @@
     "svelte-check": "^3.5.0",
     "svelte-eslint-parser": "^0.32.2",
     "tslib": "^2.5.3",
-    "typescript": "5.1.3",
-    "vite": "^4.3.9"
+    "typescript": "5.1.3"
   },
   "peerDependencies": {
     "svelte": "^3.0.0 || ^4.0.0"
@@ -80,7 +79,7 @@
   "typesVersions": {
     ">4.0": {
       "index": [
-        "./dist/index.d.ts"
+        "./dist/lib/index.d.ts"
       ]
     }
   }

@@ -1,1 +1,1 @@
-<div>this redirects to /overview</div>
+<div>404</div>
