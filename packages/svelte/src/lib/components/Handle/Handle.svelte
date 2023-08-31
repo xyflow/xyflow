@@ -5,6 +5,7 @@
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
+  import type { Writable } from 'svelte/store';
 
   type $$Props = HandleComponentProps;
 
@@ -12,16 +13,17 @@
   export let type: $$Props['type'] = 'source';
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
-  export let isConnectable: $$Props['isConnectable'] = true;
-  export let isConnectableStart: $$Props['isConnectableStart'] = true;
-  export let isConnectableEnd: $$Props['isConnectableEnd'] = true;
+  export let isConnectable: $$Props['isConnectable'] = undefined;
+  // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
+  // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
   let className: $$Props['class'] = undefined;
   export { className as class };
 
   const isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
-  // const connectable = getContext<string>('svelteflow__node_connectable');
+  const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
+  $: handleConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
   const handleId = id || null;
   const dispatch = createEventDispatcher();
@@ -73,6 +75,8 @@
       });
     }
   }
+
+  // @todo implement connectablestart, connectableend
 </script>
 
 <div
@@ -90,10 +94,10 @@
   ])}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectablestart={isConnectableStart}
-  class:connectableend={isConnectableEnd}
-  class:connectable={isConnectable}
-  class:connectionindicator={isConnectable}
+  class:connectablestart={handleConnectable}
+  class:connectableend={handleConnectable}
+  class:connectable={handleConnectable}
+  class:connectionindicator={handleConnectable}
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
   {style}

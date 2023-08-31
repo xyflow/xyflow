@@ -13,6 +13,7 @@
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
+  import { writable } from 'svelte/store';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -50,9 +51,14 @@
   const nodeComponent: ComponentType<SvelteComponent<NodeProps>> = $nodeTypes[type!] || DefaultNode;
   const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher();
+  const connectableStore = writable(connectable);
+
+  $: {
+    connectableStore.set(!!connectable);
+  }
 
   setContext('svelteflow__node_id', id);
-  setContext('svelteflow__node_connectable', connectable);
+  setContext('svelteflow__node_connectable', connectableStore);
 
   onMount(() => {
     resizeObserver?.observe(nodeRef);
@@ -75,7 +81,6 @@
 
     dispatchEvent('nodeclick');
   }
-
   // @todo: add selectable state
 </script>
 
