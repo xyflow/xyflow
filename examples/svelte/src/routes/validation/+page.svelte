@@ -10,6 +10,7 @@
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+	import './style.css';
 
 	const nodeDefaults = {
 		sourcePosition: Position.Right,
@@ -37,13 +38,3 @@
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 </SvelteFlow>
-
-<style>
-	:global(.svelte-flow__handle.connecting) {
-		background: #ff6060;
-	}
-
-	:global(.svelte-flow__handle.valid) {
-		background: #55dd99;
-	}
-</style>
