@@ -48,7 +48,7 @@ export function handleNodeClick({
   if (!node.selected) {
     addSelectedNodes([id]);
   } else if (unselect || (node.selected && multiSelectionActive)) {
-    unselectNodesAndEdges({ nodes: [node] });
+    unselectNodesAndEdges({ nodes: [node], edges: [] });
 
     requestAnimationFrame(() => nodeRef?.current?.blur());
   }
