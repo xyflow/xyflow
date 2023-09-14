@@ -1,4 +1,4 @@
-import { forwardRef, type CSSProperties } from 'react';
+import React, { forwardRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 
 import Attribution from '../../components/Attribution';

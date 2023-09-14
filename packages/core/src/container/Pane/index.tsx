@@ -2,7 +2,7 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { memo, useRef, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
+import React, { memo, useRef, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 

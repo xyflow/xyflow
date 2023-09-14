@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback } from 'react';
+import React, { type CSSProperties, useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 

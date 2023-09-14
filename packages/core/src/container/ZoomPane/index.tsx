@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { zoom, zoomIdentity, type D3ZoomEvent, type ZoomTransform } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import { shallow } from 'zustand/shallow';

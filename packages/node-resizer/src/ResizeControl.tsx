@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo } from 'react';
+import React, { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';

@@ -1,4 +1,4 @@
-import { useCallback, CSSProperties } from 'react';
+import React, { useCallback, CSSProperties } from 'react';
 import {
   Node,
   ReactFlowState,

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import ResizeControl from './ResizeControl';
 import { ControlPosition, NodeResizerProps, ResizeControlVariant, ControlLinePosition } from './types';
 

@@ -1,4 +1,5 @@
-import { CSSProperties } from 'react';
+import React, { type CSSProperties } from 'react';
+
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 

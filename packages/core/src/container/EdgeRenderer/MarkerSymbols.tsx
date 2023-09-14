@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { MarkerType } from '../../types';
 import type { EdgeMarker } from '../../types';

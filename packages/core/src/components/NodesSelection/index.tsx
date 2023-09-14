@@ -3,7 +3,7 @@
  * made a selection with on or several nodes
  */
 
-import { memo, useRef, useEffect } from 'react';
+import React, { memo, useRef, useEffect } from 'react';
 import type { MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
