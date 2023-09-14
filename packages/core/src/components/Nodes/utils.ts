@@ -47,7 +47,7 @@ export function getMouseHandler(
     ? handler
     : (event: MouseEvent) => {
         const node = getState().nodeInternals.get(id);
-        
+
         if (node) {
           handler(event, { ...node });
         }
@@ -85,7 +85,7 @@ export function handleNodeClick({
   if (!node.selected) {
     addSelectedNodes([id]);
   } else if (unselect || (node.selected && multiSelectionActive)) {
-    unselectNodesAndEdges({ nodes: [node] });
+    unselectNodesAndEdges({ nodes: [node], edges: [] });
 
     requestAnimationFrame(() => nodeRef?.current?.blur());
   }
