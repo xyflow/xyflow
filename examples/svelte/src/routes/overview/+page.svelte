@@ -113,6 +113,21 @@
 		);
 	}
 
+	function updateEdge() {
+		edges.update((eds) =>
+			eds.map((edge) => {
+				if (edge.id === '1-2') {
+					return {
+						...edge,
+						type: edge.type === 'default' ? 'smoothstep' : 'default'
+					};
+				}
+
+				return edge;
+			})
+		);
+	}
+
 	$: {
 		console.log('nodes changed', $nodes);
 	}
@@ -147,6 +162,7 @@
 	<MiniMap />
 	<Panel position="top-right">
 		<button on:click={updateNode}>update node pos</button>
+		<button on:click={updateEdge}>update edge type</button>
 	</Panel>
 </SvelteFlow>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, SvelteComponent, type ComponentType } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -36,8 +36,7 @@
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
   const dispatch = createEventDispatcher();
 
-  const edgeComponent: ComponentType<SvelteComponent<EdgeProps>> = $edgeTypes[type!] || BezierEdge;
-
+  $: edgeComponent = $edgeTypes[type!] || BezierEdge;
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 
