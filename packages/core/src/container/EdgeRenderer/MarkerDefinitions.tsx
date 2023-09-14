@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import { getMarkerId } from '../../utils/graph';

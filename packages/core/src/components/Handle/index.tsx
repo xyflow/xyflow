@@ -1,4 +1,10 @@
-import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
+import React, {
+  memo,
+  HTMLAttributes,
+  forwardRef,
+  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
+} from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 

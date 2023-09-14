@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import type { ComponentType, MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 

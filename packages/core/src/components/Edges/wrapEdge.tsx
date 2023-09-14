@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useRef } from 'react';
+import React, { memo, useState, useMemo, useRef } from 'react';
 import type { ComponentType, KeyboardEvent } from 'react';
 import cc from 'classcat';
 

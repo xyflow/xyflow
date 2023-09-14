@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import SmoothStepEdge from './SmoothStepEdge';
 import type { SmoothStepEdgeProps } from '../../types';

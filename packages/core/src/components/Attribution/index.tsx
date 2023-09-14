@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Panel from '../Panel';
 import type { PanelPosition, ProOptions } from '../../types';
 

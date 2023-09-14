@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { shallow } from 'zustand/shallow';
 import { useStore, getNodePositionWithOrigin, type ReactFlowState } from '@reactflow/core';
 

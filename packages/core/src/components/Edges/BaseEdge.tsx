@@ -1,3 +1,5 @@
+import React from 'react';
+
 import EdgeText from './EdgeText';
 import { isNumeric } from '../../utils';
 import type { BaseEdgeProps } from '../../types';
