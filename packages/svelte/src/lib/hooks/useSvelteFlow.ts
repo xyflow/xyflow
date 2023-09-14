@@ -27,7 +27,6 @@ export function useSvelteFlow(): {
   nodes: SvelteFlowStore['nodes'];
   edges: SvelteFlowStore['edges'];
 } {
-  // how to get the new context here? fit view doesn't work, because the store is not updated (uses old nodes store)
   const {
     zoomIn,
     zoomOut,
