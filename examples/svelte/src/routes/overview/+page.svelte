@@ -9,7 +9,9 @@
 		Panel,
 		SelectionMode,
 		type NodeTypes,
-		type EdgeTypes
+		type EdgeTypes,
+		type Node,
+		type Edge
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -25,7 +27,7 @@
 		custom: CustomEdge
 	};
 
-	const nodes = writable([
+	const nodes = writable<Node[]>([
 		{
 			id: '1',
 			type: 'input',
@@ -74,7 +76,7 @@
 		}
 	]);
 
-	const edges = writable([
+	const edges = writable<Edge[]>([
 		{
 			id: '1-2',
 			type: 'default',

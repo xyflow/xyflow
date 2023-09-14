@@ -43,6 +43,7 @@
       id={node.id}
       data={node.data}
       selected={!!node.selected}
+      hidden={!!node.hidden}
       draggable={!!(node.draggable || ($nodesDraggable && typeof node.draggable === 'undefined'))}
       selectable={!!(
         node.selectable ||

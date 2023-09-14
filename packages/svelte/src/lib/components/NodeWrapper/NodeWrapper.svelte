@@ -23,6 +23,7 @@
   export let draggable: NodeWrapperProps['draggable'] = undefined;
   export let selectable: NodeWrapperProps['selectable'] = undefined;
   export let connectable: NodeWrapperProps['connectable'] = true;
+  export let hidden: NodeWrapperProps['hidden'] = false;
   export let dragging: boolean = false;
   export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
   export let style: NodeWrapperProps['style'] = undefined;
@@ -79,6 +80,8 @@
       addSelectedNodes([id]);
     }
 
+    // @todo: support multiselection
+
     dispatchEvent('nodeclick');
   }
   // @todo: add selectable state
@@ -86,48 +89,50 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
-  use:drag={{
-    nodeId: id,
-    isSelectable: selectable,
-    disabled: false,
-    handleSelector: undefined,
-    noDragClassName: 'nodrag',
-    store
-  }}
-  bind:this={nodeRef}
-  data-id={id}
-  class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}
-  class:dragging
-  class:selected
-  class:draggable
-  class:connectable
-  class:selectable
-  class:parent={isParent}
-  style:z-index={zIndex}
-  style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
-  {style}
-  on:click={onSelectNodeHandler}
-  on:mouseenter={() => dispatchEvent('nodemouseenter')}
-  on:mouseleave={() => dispatchEvent('nodemouseleave')}
-  on:mousemove={() => dispatchEvent('nodemousemove')}
->
-  <svelte:component
-    this={nodeComponent}
-    {data}
-    {id}
-    {selected}
-    {sourcePosition}
-    {targetPosition}
-    {type}
-    {zIndex}
-    {dragging}
-    {dragHandle}
-    isConnectable={connectable}
-    xPos={positionAbsolute?.x ?? 0}
-    yPos={positionAbsolute?.y ?? 0}
-    on:connectstart
-    on:connect
-    on:connectend
-  />
-</div>
+{#if !hidden}
+  <div
+    use:drag={{
+      nodeId: id,
+      isSelectable: selectable,
+      disabled: false,
+      handleSelector: undefined,
+      noDragClassName: 'nodrag',
+      store
+    }}
+    bind:this={nodeRef}
+    data-id={id}
+    class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}
+    class:dragging
+    class:selected
+    class:draggable
+    class:connectable
+    class:selectable
+    class:parent={isParent}
+    style:z-index={zIndex}
+    style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
+    {style}
+    on:click={onSelectNodeHandler}
+    on:mouseenter={() => dispatchEvent('nodemouseenter')}
+    on:mouseleave={() => dispatchEvent('nodemouseleave')}
+    on:mousemove={() => dispatchEvent('nodemousemove')}
+  >
+    <svelte:component
+      this={nodeComponent}
+      {data}
+      {id}
+      {selected}
+      {sourcePosition}
+      {targetPosition}
+      {type}
+      {zIndex}
+      {dragging}
+      {dragHandle}
+      isConnectable={connectable}
+      xPos={positionAbsolute?.x ?? 0}
+      yPos={positionAbsolute?.y ?? 0}
+      on:connectstart
+      on:connect
+      on:connectend
+    />
+  </div>
+{/if}

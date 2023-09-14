@@ -19,6 +19,7 @@ export type NodeWrapperProps = Pick<
   | 'sourcePosition'
   | 'targetPosition'
   | 'dragHandle'
+  | 'hidden'
 > & {
   positionOrigin?: XYPosition;
   'on:nodeclick'?: (event: MouseEvent) => void;

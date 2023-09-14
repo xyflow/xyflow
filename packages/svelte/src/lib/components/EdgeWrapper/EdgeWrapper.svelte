@@ -4,7 +4,7 @@
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
-  import type { EdgeLayouted, EdgeProps } from '$lib/types';
+  import type { EdgeLayouted } from '$lib/types';
 
   type $$Props = EdgeLayouted;
 
@@ -18,6 +18,7 @@
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let selectable: $$Props['selectable'] = true;
+  export let hidden: $$Props['hidden'] = false;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
   export let markerStart: $$Props['markerStart'] = undefined;
@@ -52,39 +53,41 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<g
-  class="svelte-flow__edge"
-  class:animated
-  class:selected
-  data-id={id}
-  on:click={onClick}
-  aria-label={ariaLabel === null
-    ? undefined
-    : ariaLabel
-    ? ariaLabel
-    : `Edge from ${source} to ${target}`}
-  role="img"
->
-  <svelte:component
-    this={edgeComponent}
-    {id}
-    {source}
-    {target}
-    {sourceX}
-    {sourceY}
-    {targetX}
-    {targetY}
-    {sourcePosition}
-    {targetPosition}
-    {animated}
-    {selected}
-    {label}
-    {labelStyle}
-    {data}
-    {style}
-    sourceHandleId={sourceHandle}
-    targetHandleId={targetHandle}
-    markerStart={markerStartUrl}
-    markerEnd={markerEndUrl}
-  />
-</g>
+{#if !hidden}
+  <g
+    class="svelte-flow__edge"
+    class:animated
+    class:selected
+    data-id={id}
+    on:click={onClick}
+    aria-label={ariaLabel === null
+      ? undefined
+      : ariaLabel
+      ? ariaLabel
+      : `Edge from ${source} to ${target}`}
+    role="img"
+  >
+    <svelte:component
+      this={edgeComponent}
+      {id}
+      {source}
+      {target}
+      {sourceX}
+      {sourceY}
+      {targetX}
+      {targetY}
+      {sourcePosition}
+      {targetPosition}
+      {animated}
+      {selected}
+      {label}
+      {labelStyle}
+      {data}
+      {style}
+      sourceHandleId={sourceHandle}
+      targetHandleId={targetHandle}
+      markerStart={markerStartUrl}
+      markerEnd={markerEndUrl}
+    />
+  </g>
+{/if}
