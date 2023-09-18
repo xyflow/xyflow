@@ -34,6 +34,7 @@
   export let zoomable: $$Props['zoomable'] = true;
   export let inversePan: $$Props['inversePan'] = undefined;
   export let zoomStep: $$Props['zoomStep'] = undefined;
+  export let style: $$Props['style'] = '';
 
   let className: $$Props['class'] = '';
   export { className as class };
@@ -82,6 +83,7 @@
 
 <Panel
   {position}
+  {style}
   class={cc(['svelte-flow__minimap', className])}
   data-testid="svelte-flow__minimap"
 >
