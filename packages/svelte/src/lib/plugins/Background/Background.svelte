@@ -45,7 +45,7 @@
   class={cc(['svelte-flow__background', className])}
   data-testid="svelte-flow__background"
   style:--background-color-props={bgColor}
-  style:--pattern-color-props={patternColor}
+  style:--background-pattern-color-props={patternColor}
 >
   <pattern
     id={patternId}
