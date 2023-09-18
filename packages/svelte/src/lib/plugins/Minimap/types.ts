@@ -16,6 +16,7 @@ export type MiniMapProps = {
   maskStrokeWidth?: number;
   position?: PanelPosition;
   class?: string;
+  style?: string;
   ariaLabel?: string | null;
   width?: number;
   height?: number;
