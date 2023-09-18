@@ -6,7 +6,7 @@ import type { SvelteFlowStore } from '$lib/store/types';
 type UseDragParams = {
   store: SvelteFlowStore;
   disabled?: boolean;
-  noDragClassName?: string;
+  noDragClass?: string;
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
@@ -47,7 +47,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
 
     dragInstance.update({
       domNode,
-      noDragClassName: params.noDragClassName,
+      noDragClassName: params.noDragClass,
       handleSelector: params.handleSelector,
       nodeId: params.nodeId,
       isSelectable: params.isSelectable
