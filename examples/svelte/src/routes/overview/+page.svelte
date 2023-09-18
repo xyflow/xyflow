@@ -15,12 +15,14 @@
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
+	import CustomNodeDragHandle from './CustomNodeDragHandle.svelte';
 	import CustomEdge from './CustomEdge.svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 
 	const nodeTypes: NodeTypes = {
-		custom: CustomNode
+		custom: CustomNode,
+		dragHandle: CustomNodeDragHandle
 	};
 
 	const edgeTypes: EdgeTypes = {
@@ -67,6 +69,13 @@
 			data: { label: 'Styled with style' },
 			style: 'border: 2px solid #ff5050;',
 			position: { x: 450, y: 150 }
+		},
+		{
+			id: 'C',
+			type: 'dragHandle',
+			data: { label: 'custom drag handle' },
+			dragHandle: '.custom-drag-handle',
+			position: { x: 450, y: 250 }
 		},
 		{
 			id: '4',

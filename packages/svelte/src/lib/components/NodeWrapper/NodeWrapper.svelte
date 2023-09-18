@@ -95,7 +95,7 @@
       nodeId: id,
       isSelectable: selectable,
       disabled: false,
-      handleSelector: undefined,
+      handleSelector: dragHandle,
       noDragClassName: 'nodrag',
       store
     }}
