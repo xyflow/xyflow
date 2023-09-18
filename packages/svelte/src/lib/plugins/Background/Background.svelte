@@ -22,7 +22,7 @@
   export let lineWidth: $$Props['lineWidth'] = 1;
   export let bgColor: $$Props['bgColor'] = undefined;
   export let patternColor: $$Props['patternColor'] = undefined;
-  export let patternClassName: $$Props['patternClassName'] = undefined;
+  export let patternClass: $$Props['patternClass'] = undefined;
   let className: $$Props['class'] = '';
   export { className as class };
 
@@ -57,9 +57,9 @@
     patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
   >
     {#if isDots}
-      <DotPattern radius={scaledSize / 2} class={patternClassName} />
+      <DotPattern radius={scaledSize / 2} class={patternClass} />
     {:else}
-      <LinePattern dimensions={patternDimensions} {variant} {lineWidth} class={patternClassName} />
+      <LinePattern dimensions={patternDimensions} {variant} {lineWidth} class={patternClass} />
     {/if}
   </pattern>
   <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />

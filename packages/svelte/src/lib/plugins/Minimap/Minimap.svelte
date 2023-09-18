@@ -21,7 +21,7 @@
   export let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
   export let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
   export let nodeColor: $$Props['nodeColor'] = '#e2e2e2';
-  export let nodeClassName: $$Props['nodeClassName'] = '';
+  export let nodeClass: $$Props['nodeClass'] = '';
   export let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
   export let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
   export let bgColor: $$Props['bgColor'] = undefined;
@@ -53,7 +53,7 @@
 
   const nodeColorFunc = getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
-  const nodeClassNameFunc = getAttrFunction(nodeClassName);
+  const nodeClassFunc = getAttrFunction(nodeClass);
   const shapeRendering =
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
@@ -126,7 +126,7 @@
             strokeColor={nodeStrokeColorFunc(node)}
             strokeWidth={nodeStrokeWidth}
             {shapeRendering}
-            class={nodeClassNameFunc(node)}
+            class={nodeClassFunc(node)}
           />
         {/if}
       {/each}
