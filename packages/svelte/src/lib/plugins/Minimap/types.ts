@@ -8,7 +8,7 @@ export type MiniMapProps = {
   bgColor?: string;
   nodeColor?: string | GetMiniMapNodeAttribute;
   nodeStrokeColor?: string | GetMiniMapNodeAttribute;
-  nodeClassName?: string | GetMiniMapNodeAttribute;
+  nodeClass?: string | GetMiniMapNodeAttribute;
   nodeBorderRadius?: number;
   nodeStrokeWidth?: number;
   maskColor?: string;

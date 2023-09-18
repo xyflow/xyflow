@@ -30,6 +30,8 @@ type ZoomParams = {
   panOnScrollMode: PanOnScrollMode;
   zoomActivationKeyPressed: boolean;
   preventScrolling: boolean;
+  // last two instances of 'classname' being used
+  // changing it to class would require object restructuring for use with panZoomInstance.update
   noPanClassName: string;
   noWheelClassName: string;
   userSelectionActive: boolean;
