@@ -5,7 +5,6 @@ examples/build
 cypress/videos
 cypress/screenshots
 dist
-.env
 stats.html
 .eslintcache
 .idea
