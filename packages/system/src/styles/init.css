@@ -297,3 +297,20 @@
     );
   }
 }
+
+.xy-flow__controls {
+  &-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 26px;
+    width: 26px;
+    padding: 4px;
+
+    svg {
+      width: 100%;
+      max-width: 12px;
+      max-height: 12px;
+    }
+  }
+}
