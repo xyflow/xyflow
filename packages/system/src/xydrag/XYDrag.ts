@@ -208,7 +208,7 @@ export function XYDrag({
           unselectNodesAndEdges,
         } = getStoreItems();
 
-        if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {
+        if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
           if (!nodes.find((n) => n.id === nodeId)?.selected) {
             // we need to reset selected nodes when selectNodesOnDrag=false
             unselectNodesAndEdges();
