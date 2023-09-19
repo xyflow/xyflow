@@ -96,7 +96,7 @@
       isSelectable: selectable,
       disabled: false,
       handleSelector: dragHandle,
-      noDragClassName: 'nodrag',
+      noDragClass: 'nodrag',
       store
     }}
     bind:this={nodeRef}
