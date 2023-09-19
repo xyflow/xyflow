@@ -187,6 +187,7 @@ function useDrag({
                 nodeRef: nodeRef as RefObject<HTMLDivElement>,
               });
             }
+
             const pointerPos = getPointerPosition(event);
             lastPos.current = pointerPos;
             dragItems.current = getDragItems(nodeInternals, nodesDraggable, pointerPos, nodeId);
