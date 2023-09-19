@@ -70,15 +70,20 @@
         updateConnection,
         cancelConnection,
         panBy,
-        onConnect: (params) => {
-          addEdge(params);
-          dispatch('connect', params);
+        onConnect: (connection) => {
+          addEdge(connection);
+          dispatch('connect', { connection: connection });
         },
-        onConnectStart: (event, params) => {
-          dispatch('connectstart', { event, params });
+        onConnectStart: (event, startParams) => {
+          dispatch('connectstart', {
+            event,
+            nodeId: startParams.nodeId,
+            handleId: startParams.handleId,
+            handleType: startParams.handleType
+          });
         },
         onConnectEnd: (event) => {
-          dispatch('connectend', event);
+          dispatch('connectend', { event });
         },
         getTransform: () => $transform
       });
