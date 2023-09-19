@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext, createEventDispatcher } from 'svelte';
   import cc from 'classcat';
-  import { Position, type Connection, XYHandle, isMouseEvent } from '@xyflow/system';
+  import { Position, XYHandle, isMouseEvent } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
@@ -43,15 +43,6 @@
     updateConnection
   } = store;
 
-  function dispatchEvent(eventName: string, params?: Connection) {
-    dispatch(eventName, params || { nodeId, handleId, type });
-  }
-
-  function onConnectExtended(params: Connection) {
-    addEdge(params);
-    dispatchEvent('connect', params);
-  }
-
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
 
@@ -70,7 +61,24 @@
         updateConnection,
         cancelConnection,
         panBy,
-        onConnect: onConnectExtended,
+        onConnect: (connection) => {
+          addEdge(connection);
+
+          // @todo: should we change/ improve the stuff we are passing here?
+          // instead of source/target we could pass fromNodeId, fromHandleId, etc
+          dispatch('connect', { connection });
+        },
+        onConnectStart: (event, startParams) => {
+          dispatch('connectstart', {
+            event,
+            nodeId: startParams.nodeId,
+            handleId: startParams.handleId,
+            handleType: startParams.handleType
+          });
+        },
+        onConnectEnd: (event) => {
+          dispatch('connectend', { event });
+        },
         getTransform: () => $transform
       });
     }

@@ -3,7 +3,6 @@ import type {
   Connection,
   ConnectionLineType,
   NodeOrigin,
-  OnConnectStartParams,
   Viewport,
   SelectionMode,
   SnapGrid,
@@ -12,7 +11,8 @@ import type {
   OnMoveEnd,
   CoordinateExtent,
   PanOnScrollMode,
-  IsValidConnection
+  IsValidConnection,
+  HandleType
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
@@ -59,14 +59,19 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMove?: OnMove;
   onMoveEnd?: OnMoveEnd;
 
-  'on:nodeclick'?: CustomEvent<Node>;
-  'on:nodemouseenter'?: CustomEvent<Node>;
-  'on:nodemousemove'?: CustomEvent<Node>;
-  'on:nodemouseleave'?: CustomEvent<Node>;
-  'on:edgeclick'?: CustomEvent<Edge>;
-  'on:connectstart'?: CustomEvent<OnConnectStartParams>;
-  'on:connect'?: CustomEvent<Connection>;
-  'on:connectend'?: CustomEvent<OnConnectStartParams>;
-  'on:paneclick'?: CustomEvent;
-  'on:panecontextmenu'?: CustomEvent;
+  'on:nodeclick'?: CustomEvent<{ event: MouseEvent | TouchEvent; node: Node }>;
+  'on:nodemouseenter'?: CustomEvent<{ event: MouseEvent; node: Node }>;
+  'on:nodemousemove'?: CustomEvent<{ event: MouseEvent; node: Node }>;
+  'on:nodemouseleave'?: CustomEvent<{ event: MouseEvent; node: Node }>;
+  'on:edgeclick'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
+  'on:connectstart'?: CustomEvent<{
+    event: MouseEvent | TouchEvent;
+    nodeId?: string;
+    handleId?: string;
+    handleType?: HandleType;
+  }>;
+  'on:connect'?: CustomEvent<{ connection: Connection }>;
+  'on:connectend'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
+  'on:paneclick'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
+  'on:panecontextmenu'?: CustomEvent<{ event: MouseEvent }>;
 };

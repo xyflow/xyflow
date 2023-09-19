@@ -41,13 +41,13 @@
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 
-  function onClick() {
+  function onClick(event: MouseEvent | TouchEvent) {
     if (selectable) {
       addSelectedEdges([id]);
     }
 
     const edge = $edges.find((e) => e.id === id);
-    dispatch('edgeclick', edge);
+    dispatch('edgeclick', { event, edge });
   }
 </script>
 
