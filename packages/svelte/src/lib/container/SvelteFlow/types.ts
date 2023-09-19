@@ -64,9 +64,9 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   'on:nodemousemove'?: CustomEvent<Node>;
   'on:nodemouseleave'?: CustomEvent<Node>;
   'on:edgeclick'?: CustomEvent<Edge>;
-  'on:connectstart'?: CustomEvent<OnConnectStartParams>;
+  'on:connectstart'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
   'on:connect'?: CustomEvent<Connection>;
-  'on:connectend'?: CustomEvent<OnConnectStartParams>;
+  'on:connectend'?: CustomEvent<MouseEvent | TouchEvent>;
   'on:paneclick'?: CustomEvent;
   'on:panecontextmenu'?: CustomEvent;
 };

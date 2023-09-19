@@ -70,7 +70,16 @@
         updateConnection,
         cancelConnection,
         panBy,
-        onConnect: onConnectExtended,
+        onConnect: (params) => {
+          addEdge(params);
+          dispatch('connect', params);
+        },
+        onConnectStart: (event, params) => {
+          dispatch('connectstart', { event, params });
+        },
+        onConnectEnd: (event) => {
+          dispatch('connectend', event);
+        },
         getTransform: () => $transform
       });
     }
