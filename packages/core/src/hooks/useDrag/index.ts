@@ -173,7 +173,7 @@ function useDrag({
 
             const onStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
 
-            if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {
+            if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
               if (!nodeInternals.get(nodeId)?.selected) {
                 // we need to reset selected nodes when selectNodesOnDrag=false
                 unselectNodesAndEdges();
@@ -187,7 +187,6 @@ function useDrag({
                 nodeRef: nodeRef as RefObject<HTMLDivElement>,
               });
             }
-
             const pointerPos = getPointerPosition(event);
             lastPos.current = pointerPos;
             dragItems.current = getDragItems(nodeInternals, nodesDraggable, pointerPos, nodeId);
