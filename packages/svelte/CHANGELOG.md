@@ -1,7 +1,17 @@
+## 0.0.20
+
+- [breaking change] use same convention for all custom events: Always pass the original event if possible and additional data
+  - before: `on:nodeclick: CustomEvent<Node>`
+  - after: `on:nodeclick: CustomEvent<{event: MouseEvent, node: Node}>`
+- fix `on:connectstart` and `on:connectend` handlers
+- fix default styles for `<Controls />` component
+- fix `dragHandle` node option
+- expose `style` prop for minimap
+
 ## 0.0.19
 
 - make it possible to change edge type dynamically
-- fix hiden attribute for nodes and edges
+- fix `hidden` option for nodes and edges
 - add `useUpdateNodeInternals` hook
 
 ## 0.0.18
@@ -27,7 +37,7 @@
 
 ## 0.0.13
 
-- from now on it's necessary to import the styles like `@xyflow/svelte/styles/style.css` or `@xyflow/svelte/styles/base.css`. This makes it easier to work with tailwind or overwrite styles with regular CSS.
+- [breaking change] from now on it's necessary to import the styles like `@xyflow/svelte/styles/style.css` or `@xyflow/svelte/styles/base.css`. This makes it easier to work with tailwind or overwrite styles with regular CSS.
 
 ## 0.0.7 ... 0.0.12
 
