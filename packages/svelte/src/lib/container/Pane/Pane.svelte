@@ -64,8 +64,8 @@
   $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
 
-  function onClick(event: MouseEvent) {
-    dispatch('paneclick', event);
+  function onClick(event: MouseEvent | TouchEvent) {
+    dispatch('paneclick', { event });
 
     unselectNodesAndEdges();
     selectionRectMode.set(null);
@@ -180,7 +180,7 @@
       return;
     }
 
-    dispatch('panecontextmenu', event);
+    dispatch('panecontextmenu', { event });
   };
 </script>
 

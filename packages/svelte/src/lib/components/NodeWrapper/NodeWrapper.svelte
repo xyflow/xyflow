@@ -69,21 +69,21 @@
     };
   });
 
-  function dispatchEvent(eventName: string) {
+  function dispatchEvent(eventName: string, event?: MouseEvent | TouchEvent) {
     const node = $nodes.find((n) => n.id === id);
-    dispatch(eventName, node);
+    dispatch(eventName, { node, event });
   }
 
-  function onSelectNodeHandler(event: MouseEvent) {
+  function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
     if (selectable && (!selectNodesOnDrag || !draggable)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
       addSelectedNodes([id]);
     }
 
     // @todo: support multiselection
-
-    dispatchEvent('nodeclick');
+    dispatchEvent('nodeclick', event);
   }
+
   // @todo: add selectable state
 </script>
 
@@ -112,9 +112,9 @@
     style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
     {style}
     on:click={onSelectNodeHandler}
-    on:mouseenter={() => dispatchEvent('nodemouseenter')}
-    on:mouseleave={() => dispatchEvent('nodemouseleave')}
-    on:mousemove={() => dispatchEvent('nodemousemove')}
+    on:mouseenter={(event) => dispatchEvent('nodemouseenter', event)}
+    on:mouseleave={(event) => dispatchEvent('nodemouseleave', event)}
+    on:mousemove={(event) => dispatchEvent('nodemousemove', event)}
   >
     <svelte:component
       this={nodeComponent}

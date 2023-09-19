@@ -3,7 +3,6 @@ import type {
   Connection,
   ConnectionLineType,
   NodeOrigin,
-  OnConnectStartParams,
   Viewport,
   SelectionMode,
   SnapGrid,
@@ -60,11 +59,11 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMove?: OnMove;
   onMoveEnd?: OnMoveEnd;
 
-  'on:nodeclick'?: CustomEvent<Node>;
-  'on:nodemouseenter'?: CustomEvent<Node>;
-  'on:nodemousemove'?: CustomEvent<Node>;
-  'on:nodemouseleave'?: CustomEvent<Node>;
-  'on:edgeclick'?: CustomEvent<Edge>;
+  'on:nodeclick'?: CustomEvent<{ event: MouseEvent | TouchEvent; node: Node }>;
+  'on:nodemouseenter'?: CustomEvent<{ event: MouseEvent; node: Node }>;
+  'on:nodemousemove'?: CustomEvent<{ event: MouseEvent; node: Node }>;
+  'on:nodemouseleave'?: CustomEvent<{ event: MouseEvent; node: Node }>;
+  'on:edgeclick'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
   'on:connectstart'?: CustomEvent<{
     event: MouseEvent | TouchEvent;
     nodeId?: string;
@@ -73,6 +72,6 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   }>;
   'on:connect'?: CustomEvent<{ connection: Connection }>;
   'on:connectend'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
-  'on:paneclick'?: CustomEvent;
-  'on:panecontextmenu'?: CustomEvent;
+  'on:paneclick'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
+  'on:panecontextmenu'?: CustomEvent<{ event: MouseEvent }>;
 };
