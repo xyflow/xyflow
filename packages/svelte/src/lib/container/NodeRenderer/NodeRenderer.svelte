@@ -40,6 +40,7 @@
       origin: node.origin
     })}
     <NodeWrapper
+      {node}
       id={node.id}
       data={node.data}
       selected={!!node.selected}

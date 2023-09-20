@@ -17,6 +17,7 @@
 
   interface $$Props extends NodeWrapperProps {}
 
+  export let node: NodeWrapperProps['node'];
   export let id: NodeWrapperProps['id'];
   export let data: NodeWrapperProps['data'] = {};
   export let selected: NodeWrapperProps['selected'] = false;
@@ -39,7 +40,7 @@
   export { className as class };
 
   const store = useStore();
-  const { nodes, nodeTypes, addSelectedNodes } = store;
+  const { nodeTypes, addSelectedNodes } = store;
 
   let nodeRef: HTMLDivElement;
   const nodeTypeValid = !!$nodeTypes[type!];
@@ -69,11 +70,6 @@
     };
   });
 
-  function dispatchEvent(eventName: string, event?: MouseEvent | TouchEvent) {
-    const node = $nodes.find((n) => n.id === id);
-    dispatch(eventName, { node, event });
-  }
-
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
     if (selectable && (!selectNodesOnDrag || !draggable)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
@@ -81,7 +77,7 @@
     }
 
     // @todo: support multiselection
-    dispatchEvent('nodeclick', event);
+    dispatch('nodeclick', { node, event });
   }
 
   // @todo: add selectable state
@@ -121,10 +117,10 @@
     style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
     {style}
     on:click={onSelectNodeHandler}
-    on:mouseenter={(event) => dispatchEvent('nodemouseenter', event)}
-    on:mouseleave={(event) => dispatchEvent('nodemouseleave', event)}
-    on:mousemove={(event) => dispatchEvent('nodemousemove', event)}
-    on:contextmenu={(event) => dispatchEvent('nodecontextmenu', event)}
+    on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
+    on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
+    on:mousemove={(event) => dispatch('nodemousemove', { node, event })}
+    on:contextmenu={(event) => dispatch('nodecontextmenu', { node, event })}
   >
     <svelte:component
       this={nodeComponent}
