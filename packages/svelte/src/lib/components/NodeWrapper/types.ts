@@ -26,4 +26,5 @@ export type NodeWrapperProps = Pick<
   resizeObserver?: ResizeObserver | null;
   isParent?: boolean;
   zIndex: number;
+  node: Node;
 };
