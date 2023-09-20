@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useStoreApi } from '../hooks/useStore';
-import useKeyPress from './useKeyPress';
+import useKeyPress, { type UseKeyPressOptions } from './useKeyPress';
 import type { KeyCode } from '../types';
 import useReactFlow from './useReactFlow';
 interface HookParams {
@@ -9,11 +9,13 @@ interface HookParams {
   multiSelectionKeyCode: KeyCode | null;
 }
 
+const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
+
 export default ({ deleteKeyCode, multiSelectionKeyCode }: HookParams): void => {
   const store = useStoreApi();
   const { deleteElements } = useReactFlow();
 
-  const deleteKeyPressed = useKeyPress(deleteKeyCode);
+  const deleteKeyPressed = useKeyPress(deleteKeyCode, deleteKeyOptions);
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
 
   useEffect(() => {

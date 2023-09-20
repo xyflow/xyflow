@@ -7,7 +7,9 @@ type Keys = Array<string>;
 type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 export interface UseKeyPressOptions {
-  target: Window | Document | HTMLElement | ShadowRoot | null;
+  target?: Window | Document | HTMLElement | ShadowRoot | null;
+  // we want to distinguish between actions that are doable within an input (like multiselection) and actions that are not (like deleting a node) while pressing a modifier key
+  actInsideInputWithModifier?: boolean;
 }
 
 const doc = typeof document !== 'undefined' ? document : null;
@@ -16,7 +18,10 @@ const doc = typeof document !== 'undefined' ? document : null;
 // a string means a single key 'a' or a combination when '+' is used 'a+d'
 // an array means different possibilities. Explainer: ['a', 'd+s'] here the
 // user can use the single key 'a' or the combination 'd' + 's'
-export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { target: doc }): boolean => {
+export default (
+  keyCode: KeyCode | null = null,
+  options: UseKeyPressOptions = { target: doc, actInsideInputWithModifier: true }
+): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // we need to remember if a modifier key is pressed in order to track it
@@ -47,10 +52,14 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
         modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey;
+        const preventAction =
+          (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
+          isInputDOMNode(event);
 
-        if (!modifierPressed.current && isInputDOMNode(event)) {
+        if (preventAction) {
           return false;
         }
+
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
@@ -61,7 +70,10 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        if (!modifierPressed.current && isInputDOMNode(event)) {
+        const preventAction =
+          (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
+          isInputDOMNode(event);
+        if (preventAction) {
           return false;
         }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
