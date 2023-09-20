@@ -164,7 +164,6 @@
 	on:connectend={(event) => console.log('on connect end', event)}
 	on:paneclick={(event) => console.log('on pane click', event)}
 	on:panecontextmenu={(event) => {
-		event.preventDefault();
 		console.log('on pane contextmenu', event);
 	}}
 	on:nodedrag={(event) => {
@@ -177,6 +176,7 @@
 		console.log('on node drag stop', event);
 	}}
 	on:nodecontextmenu={(event) => {
+		event.detail.event.preventDefault();
 		console.log('on node contextmenu', event);
 	}}
 >

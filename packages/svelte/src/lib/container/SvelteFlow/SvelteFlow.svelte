@@ -154,8 +154,8 @@
           on:connectstart
           on:connect
           on:connectend
-          on:nodedrag
           on:nodedragstart
+          on:nodedrag
           on:nodedragstop
           on:nodecontextmenu
         />
