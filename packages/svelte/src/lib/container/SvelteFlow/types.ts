@@ -12,7 +12,8 @@ import type {
   CoordinateExtent,
   PanOnScrollMode,
   IsValidConnection,
-  HandleType
+  HandleType,
+  NodeBase
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
@@ -74,4 +75,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   'on:connectend'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
   'on:paneclick'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
   'on:panecontextmenu'?: CustomEvent<{ event: MouseEvent }>;
+  'on:nodedragstart'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
+  'on:nodedrag'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
+  'on:nodedragstop'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
+  'on:nodecontextmenu'?: CustomEvent<{ event: MouseEvent; node: NodeBase }>;
 };

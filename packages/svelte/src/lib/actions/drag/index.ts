@@ -1,22 +1,28 @@
 import { get } from 'svelte/store';
-import { XYDrag } from '@xyflow/system';
+import { XYDrag, type OnDrag } from '@xyflow/system';
 
 import type { SvelteFlowStore } from '$lib/store/types';
 
-type UseDragParams = {
+export type UseDragParams = {
   store: SvelteFlowStore;
   disabled?: boolean;
   noDragClass?: string;
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
+  onDrag?: OnDrag;
+  onDragStart?: OnDrag;
+  onDragStop?: OnDrag;
 };
 
 export default function drag(domNode: Element, params: UseDragParams) {
+  const { store, onDrag, onDragStart, onDragStop } = params;
   const dragInstance = XYDrag({
     domNode,
+    onDrag,
+    onDragStart,
+    onDragStop,
     getStoreItems: () => {
-      const { store } = params;
       const snapGrid = get(store.snapGrid);
 
       return {

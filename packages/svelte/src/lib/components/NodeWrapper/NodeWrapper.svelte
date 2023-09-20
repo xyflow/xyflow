@@ -93,6 +93,15 @@
       disabled: false,
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
+      onDrag: (event, _, node, nodes) => {
+        dispatch('nodedrag', { event, node, nodes });
+      },
+      onDragStart: (event, _, node, nodes) => {
+        dispatch('nodedragstart', { event, node, nodes });
+      },
+      onDragStop: (event, _, node, nodes) => {
+        dispatch('nodedragstop', { event, node, nodes });
+      },
       store
     }}
     bind:this={nodeRef}
@@ -111,6 +120,7 @@
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
     on:mousemove={(event) => dispatch('nodemousemove', { node, event })}
+    on:contextmenu={(event) => dispatch('nodecontextmenu', { node, event })}
   >
     <svelte:component
       this={nodeComponent}
