@@ -1,3 +1,8 @@
+## 0.0.21
+
+- add `on:nodedragstart`, `on:nodedrag` and `on:nodedragstop`
+- add `on:nodecontextmenu`
+
 ## 0.0.20
 
 - [breaking change] use same convention for all custom events: Always pass the original event if possible and additional data
