@@ -78,4 +78,5 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   'on:nodedrag'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
   'on:nodedragstop'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
   'on:nodedragstart'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
+  'on:nodecontextmenu'?: CustomEvent<{ event: MouseEvent; node: NodeBase }>;
 };

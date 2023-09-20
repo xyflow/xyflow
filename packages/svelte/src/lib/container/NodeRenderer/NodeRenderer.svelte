@@ -75,6 +75,7 @@
       on:nodedrag
       on:nodedragstart
       on:nodedragstop
+      on:nodecontextmenu
     />
   {/each}
 </div>

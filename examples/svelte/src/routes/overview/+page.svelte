@@ -176,6 +176,9 @@
 	on:nodedragstop={(event) => {
 		console.log('on node drag stop', event);
 	}}
+	on:nodecontextmenu={(event) => {
+		console.log('on node contextmenu', event);
+	}}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

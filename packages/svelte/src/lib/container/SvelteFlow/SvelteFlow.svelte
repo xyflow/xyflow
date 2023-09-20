@@ -157,6 +157,7 @@
           on:nodedrag
           on:nodedragstart
           on:nodedragstop
+          on:nodecontextmenu
         />
         <NodeSelection />
       </ViewportComponent>

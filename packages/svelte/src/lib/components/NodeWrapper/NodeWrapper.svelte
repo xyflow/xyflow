@@ -124,6 +124,7 @@
     on:mouseenter={(event) => dispatchEvent('nodemouseenter', event)}
     on:mouseleave={(event) => dispatchEvent('nodemouseleave', event)}
     on:mousemove={(event) => dispatchEvent('nodemousemove', event)}
+    on:contextmenu={(event) => dispatchEvent('nodecontextmenu', event)}
   >
     <svelte:component
       this={nodeComponent}
