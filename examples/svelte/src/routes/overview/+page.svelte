@@ -167,6 +167,15 @@
 		event.preventDefault();
 		console.log('on pane contextmenu', event);
 	}}
+	on:nodedrag={(event) => {
+		console.log('on node drag', event);
+	}}
+	on:nodedragstart={(event) => {
+		console.log('on node drag start', event);
+	}}
+	on:nodedragstop={(event) => {
+		console.log('on node drag stop', event);
+	}}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

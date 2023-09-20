@@ -154,6 +154,9 @@
           on:connectstart
           on:connect
           on:connectend
+          on:nodedrag
+          on:nodedragstart
+          on:nodedragstop
         />
         <NodeSelection />
       </ViewportComponent>
