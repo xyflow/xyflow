@@ -110,33 +110,13 @@
 	]);
 
 	function updateNode() {
-		nodes.update((nds) =>
-			nds.map((n) => {
-				if (n.id === '1') {
-					return {
-						...n,
-						position: { x: n.position.x + 20, y: n.position.y }
-					};
-				}
-
-				return n;
-			})
-		);
+		$nodes[0].position.x += 20;
+		$nodes = $nodes;
 	}
 
 	function updateEdge() {
-		edges.update((eds) =>
-			eds.map((edge) => {
-				if (edge.id === '1-2') {
-					return {
-						...edge,
-						type: edge.type === 'default' ? 'smoothstep' : 'default'
-					};
-				}
-
-				return edge;
-			})
-		);
+		$edges[0].type = $edges[0].type === 'default' ? 'smoothstep' : 'default';
+		$edges = $edges;
 	}
 
 	$: {
