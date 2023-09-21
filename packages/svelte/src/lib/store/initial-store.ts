@@ -12,7 +12,9 @@ import {
   type CoordinateExtent,
   type IsValidConnection,
   type GroupedEdges,
-  type NodeOrigin
+  type NodeOrigin,
+  type OnError,
+  devWarn
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -79,8 +81,8 @@ export const getInitialStore = () => ({
   domNode: writable<HTMLDivElement | null>(null),
   connectionPath: readable<string | null>(null),
   connection: writable<ConnectionData>(initConnectionData),
-  connectionRadius: writable<number>(20),
   connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
+  connectionRadius: writable<number>(20),
   isValidConnection: writable<IsValidConnection>(() => true),
   nodesDraggable: writable<boolean>(true),
   nodesConnectable: writable<boolean>(true),
@@ -89,5 +91,6 @@ export const getInitialStore = () => ({
   markers: readable<MarkerProps[]>([]),
   defaultMarkerColor: writable<string>('#b1b1b7'),
   lib: readable<string>('svelte'),
-  onlyRenderVisibleElements: writable<boolean>(false)
+  onlyRenderVisibleElements: writable<boolean>(false),
+  onError: writable<OnError>(devWarn)
 });

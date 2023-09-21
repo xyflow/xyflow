@@ -19,7 +19,7 @@
 
   type $$Props = SvelteFlowProps;
 
-  export let id = '1';
+  export let id: $$Props['id'] = '1';
   export let nodes: $$Props['nodes'];
   export let edges: $$Props['edges'];
   export let fitView: $$Props['fitView'] = undefined;
@@ -44,15 +44,16 @@
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let translateExtent: $$Props['translateExtent'] = undefined;
   export let onlyRenderVisibleElements: $$Props['onlyRenderVisibleElements'] = undefined;
-  export let panOnScrollMode: PanOnScrollMode = PanOnScrollMode.Free;
-  export let preventScrolling: boolean = true;
-  export let zoomOnScroll: boolean = true;
-  export let zoomOnDoubleClick: boolean = true;
-  export let zoomOnPinch: boolean = true;
-  export let panOnScroll: boolean = false;
-  export let panOnDrag: boolean | number[] = true;
+  export let panOnScrollMode: $$Props['panOnScrollMode'] = PanOnScrollMode.Free;
+  export let preventScrolling: $$Props['preventScrolling'] = true;
+  export let zoomOnScroll: $$Props['zoomOnScroll'] = true;
+  export let zoomOnDoubleClick: $$Props['zoomOnDoubleClick'] = true;
+  export let zoomOnPinch: $$Props['zoomOnPinch'] = true;
+  export let panOnScroll: $$Props['panOnScroll'] = false;
+  export let panOnDrag: $$Props['panOnDrag'] = true;
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
+  export let onError: $$Props['onError'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -106,7 +107,8 @@
       onlyRenderVisibleElements,
       isValidConnection,
       autoPanOnConnect,
-      autoPanOnNodeDrag
+      autoPanOnNodeDrag,
+      onError
     };
 
     updateStoreByKeys(store, updatableProps);
@@ -137,15 +139,15 @@
     {onMoveStart}
     {onMove}
     {onMoveEnd}
-    {panOnScrollMode}
-    {preventScrolling}
-    {zoomOnScroll}
-    {zoomOnDoubleClick}
-    {zoomOnPinch}
-    {panOnScroll}
-    {panOnDrag}
+    panOnScrollMode={panOnScrollMode === undefined ? PanOnScrollMode.Free : panOnScrollMode}
+    preventScrolling={preventScrolling === undefined ? true : preventScrolling}
+    zoomOnScroll={zoomOnScroll === undefined ? true : zoomOnScroll}
+    zoomOnDoubleClick={zoomOnDoubleClick === undefined ? true : zoomOnDoubleClick}
+    zoomOnPinch={zoomOnPinch === undefined ? true : zoomOnPinch}
+    panOnScroll={panOnScroll === undefined ? false : panOnScroll}
+    panOnDrag={panOnDrag === undefined ? true : panOnDrag}
   >
-    <Pane on:paneclick {panOnDrag}>
+    <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
         <EdgeRenderer on:edgeclick />
         <ConnectionLine />

@@ -286,16 +286,12 @@ export function createStore(): SvelteFlowStore {
     cancelConnection();
   }
 
-  function onError(id: string, msg: string) {
-    console.log(msg);
-  }
-
   return {
     // state
     ...store,
 
     // derived state
-    edgeTree: getEdgeTree(store, onError),
+    edgeTree: getEdgeTree(store),
     connectionPath: getConnectionPath(store),
     visibleNodes: getVisibleNodes(store),
     markers: derived(
@@ -323,8 +319,7 @@ export function createStore(): SvelteFlowStore {
     panBy,
     updateConnection,
     cancelConnection,
-    reset,
-    onError
+    reset
   };
 }
 

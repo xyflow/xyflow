@@ -13,7 +13,8 @@ import type {
   PanOnScrollMode,
   IsValidConnection,
   HandleType,
-  NodeBase
+  NodeBase,
+  OnError
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
@@ -61,6 +62,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMoveStart?: OnMoveStart;
   onMove?: OnMove;
   onMoveEnd?: OnMoveEnd;
+  onError?: OnError;
 
   'on:nodeclick'?: CustomEvent<{ event: MouseEvent | TouchEvent; node: Node }>;
   'on:nodemouseenter'?: CustomEvent<{ event: MouseEvent; node: Node }>;
