@@ -59,6 +59,8 @@ export type UpdatableStoreProps = {
   elementsSelectable?: UnwrapWritable<SvelteFlowStore['elementsSelectable']>;
   onlyRenderVisibleElements?: UnwrapWritable<SvelteFlowStore['onlyRenderVisibleElements']>;
   isValidConnection?: UnwrapWritable<SvelteFlowStore['isValidConnection']>;
+  autoPanOnConnect?: UnwrapWritable<SvelteFlowStore['autoPanOnConnect']>;
+  autoPanOnNodeDrag?: UnwrapWritable<SvelteFlowStore['autoPanOnNodeDrag']>;
 };
 
 export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStoreProps) {

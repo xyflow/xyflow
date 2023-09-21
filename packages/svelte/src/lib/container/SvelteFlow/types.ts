@@ -49,6 +49,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   panOnScroll?: boolean;
   panOnDrag?: boolean | number[];
   onlyRenderVisibleElements?: boolean;
+  autoPanOnConnect?: boolean;
+  autoPanOnNodeDrag?: boolean;
 
   class?: string;
   style?: string;

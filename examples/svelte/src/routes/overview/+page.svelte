@@ -159,6 +159,8 @@
 		event.detail.event.preventDefault();
 		console.log('on node contextmenu', event);
 	}}
+	autoPanOnConnect
+	autoPanOnNodeDrag
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

@@ -40,7 +40,8 @@
     addEdge,
     panBy,
     cancelConnection,
-    updateConnection
+    updateConnection,
+    autoPanOnConnect
   } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -56,7 +57,7 @@
         nodes: $nodes,
         connectionMode: $connectionMode,
         lib: $lib,
-        autoPanOnConnect: true,
+        autoPanOnConnect: $autoPanOnConnect,
         isValidConnection: $isValidConnection,
         updateConnection,
         cancelConnection,

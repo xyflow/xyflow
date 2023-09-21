@@ -51,6 +51,8 @@
   export let zoomOnPinch: boolean = true;
   export let panOnScroll: boolean = false;
   export let panOnDrag: boolean | number[] = true;
+  export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
+  export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -102,7 +104,9 @@
       nodesConnectable,
       elementsSelectable,
       onlyRenderVisibleElements,
-      isValidConnection
+      isValidConnection,
+      autoPanOnConnect,
+      autoPanOnNodeDrag
     };
 
     updateStoreByKeys(store, updatableProps);
