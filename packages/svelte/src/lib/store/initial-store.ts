@@ -59,6 +59,7 @@ export const getInitialStore = () => ({
   nodeExtent: writable<CoordinateExtent>(infiniteExtent),
   translateExtent: writable<CoordinateExtent>(infiniteExtent),
   autoPanOnNodeDrag: writable<boolean>(true),
+  autoPanOnConnect: writable<boolean>(true),
   fitViewOnInit: writable<boolean>(false),
   fitViewOnInitDone: writable<boolean>(false),
   panZoom: writable<PanZoomInstance | null>(null),
