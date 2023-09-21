@@ -1,9 +1,6 @@
 import { MouseEvent, useCallback } from 'react';
 import ReactFlow, { addEdge, Node, Connection, Edge, useNodesState, useEdgesState } from 'reactflow';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-
 const nodesA: Node[] = [
   {
     id: '1a',
@@ -83,7 +80,10 @@ const edgesB: Edge[] = [
   { id: 'e4b', source: 'inputb', target: '4b' },
 ];
 
+const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
 const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node.position);
+const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(nodesA);
@@ -99,8 +99,10 @@ const BasicFlow = () => {
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}
       onConnect={onConnect}
-      onNodeDragStop={onNodeDragStop}
+      onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
+      onNodeDragStop={onNodeDragStop}
+      nodeDragThreshold={2}
     >
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
         <button
