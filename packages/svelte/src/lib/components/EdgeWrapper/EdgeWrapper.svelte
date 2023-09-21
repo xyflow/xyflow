@@ -33,6 +33,8 @@
   export let targetPosition: $$Props['targetPosition'];
   export let ariaLabel: $$Props['ariaLabel'] = undefined;
   // @ todo: support edge updates
+  let className: string = '';
+  export { className as class };
 
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
   const dispatch = createEventDispatcher();
@@ -55,7 +57,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
   <g
-    class="svelte-flow__edge"
+    class="svelte-flow__edge {className}"
     class:animated
     class:selected
     data-id={id}
