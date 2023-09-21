@@ -33,6 +33,8 @@
   export let targetPosition: $$Props['targetPosition'];
   export let ariaLabel: $$Props['ariaLabel'] = undefined;
   // @ todo: support edge updates
+  let className: string = '';
+  export { className as class };
 
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
   const dispatch = createEventDispatcher();
@@ -69,6 +71,7 @@
   >
     <svelte:component
       this={edgeComponent}
+      class={className}
       {id}
       {source}
       {target}
