@@ -162,6 +162,7 @@ export type ReactFlowStore = {
   translateExtent: CoordinateExtent;
   nodeExtent: CoordinateExtent;
   nodeOrigin: NodeOrigin;
+  nodeDragThreshold: number;
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;

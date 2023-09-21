@@ -147,6 +147,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   connectionRadius?: number;
   onError?: OnError;
   isValidConnection?: ValidConnectionFunc;
+  nodeDragThreshold?: number;
 };
 
 export type ReactFlowRefType = HTMLDivElement;
