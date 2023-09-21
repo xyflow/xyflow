@@ -69,6 +69,7 @@ export type EdgeLayouted = Pick<
   | 'targetHandle'
   | 'ariaLabel'
   | 'hidden'
+  | 'class'
 > &
   EdgePosition & {
     sourceHandleId?: string | null;

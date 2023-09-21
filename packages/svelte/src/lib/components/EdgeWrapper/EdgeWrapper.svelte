@@ -57,7 +57,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
   <g
-    class="svelte-flow__edge"
+    class="svelte-flow__edge {className}"
     class:animated
     class:selected
     data-id={id}
@@ -71,7 +71,6 @@
   >
     <svelte:component
       this={edgeComponent}
-      class={className}
       {id}
       {source}
       {target}
