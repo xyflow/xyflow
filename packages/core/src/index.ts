@@ -21,7 +21,7 @@ export {
   getRectOfNodes,
   getNodePositionWithOrigin,
 } from './utils/graph';
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
+export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
 export { getMarkerEnd } from './components/Edges/utils';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel } from './components/Panel';
