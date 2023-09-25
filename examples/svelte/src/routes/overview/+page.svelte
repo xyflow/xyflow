@@ -11,7 +11,8 @@
 		type NodeTypes,
 		type EdgeTypes,
 		type Node,
-		type Edge
+		type Edge,
+		ConnectionMode
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -165,6 +166,7 @@
 	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
+	connectionMode={ConnectionMode.Strict}
 	attributionPosition={'top-center'}
 >
 	<Controls />

@@ -14,6 +14,7 @@ import {
   Controls,
   Background,
   MiniMap,
+  ConnectionMode,
 } from '@xyflow/react';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -193,6 +194,7 @@ const OverviewFlow = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      connectionMode={ConnectionMode.Strict}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}

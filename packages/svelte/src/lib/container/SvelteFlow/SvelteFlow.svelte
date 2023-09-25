@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, hasContext } from 'svelte';
   import cc from 'classcat';
-  import { PanOnScrollMode, type Viewport } from '@xyflow/system';
+  import { ConnectionMode, PanOnScrollMode, type Viewport } from '@xyflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -38,6 +38,7 @@
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
+  export let connectionMode: $$Props['connectionMode'] = ConnectionMode.Strict;
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
@@ -110,7 +111,8 @@
       isValidConnection,
       autoPanOnConnect,
       autoPanOnNodeDrag,
-      onError
+      onError,
+      connectionMode
     };
 
     updateStoreByKeys(store, updatableProps);

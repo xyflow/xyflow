@@ -15,6 +15,7 @@ import type {
   HandleType,
   NodeBase,
   OnError,
+  ConnectionMode,
   PanelPosition,
   ProOptions
 } from '@xyflow/system';
@@ -37,6 +38,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   maxZoom?: number;
   initialViewport?: Viewport;
   connectionRadius?: number;
+  connectionMode?: ConnectionMode;
   selectionMode?: SelectionMode;
   snapGrid?: SnapGrid;
   defaultMarkerColor?: string;
