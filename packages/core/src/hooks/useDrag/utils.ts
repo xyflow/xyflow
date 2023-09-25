@@ -65,6 +65,7 @@ export function getDragItems(
       parentNode: n.parentNode,
       width: n.width,
       height: n.height,
+      expandParent: n.expandParent,
     }));
 }
 
@@ -86,7 +87,7 @@ export function calcNextPosition(
   const clampedNodeExtent = clampNodeExtent(node, node.extent || nodeExtent);
   let currentExtent = clampedNodeExtent;
 
-  if (node.extent === 'parent') {
+  if (node.extent === 'parent' && !node.expandParent) {
     if (node.parentNode && node.width && node.height) {
       const parent = nodeInternals.get(node.parentNode);
       const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, nodeOrigin).positionAbsolute;
@@ -105,7 +106,7 @@ export function calcNextPosition(
 
       currentExtent = clampedNodeExtent;
     }
-  } else if (node.extent && node.parentNode) {
+  } else if (node.extent && node.parentNode && node.extent !== 'parent') {
     const parent = nodeInternals.get(node.parentNode);
     const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, nodeOrigin).positionAbsolute;
     currentExtent = [
