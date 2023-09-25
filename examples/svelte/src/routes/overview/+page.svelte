@@ -160,9 +160,14 @@
 		event.detail.event.preventDefault();
 		console.log('on node contextmenu', event);
 	}}
+	on:edgecontextmenu={({ detail: { event, edge } }) => {
+		event.preventDefault();
+		console.log('on edge contextmenu', edge);
+	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}
+	attributionPosition={'top-center'}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

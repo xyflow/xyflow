@@ -15,7 +15,9 @@ import type {
   HandleType,
   NodeBase,
   OnError,
-  ConnectionMode
+  ConnectionMode,
+  PanelPosition,
+  ProOptions
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
@@ -54,6 +56,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onlyRenderVisibleElements?: boolean;
   autoPanOnConnect?: boolean;
   autoPanOnNodeDrag?: boolean;
+  attributionPosition?: PanelPosition;
+  proOptions?: ProOptions;
 
   class?: string;
   style?: string;
@@ -71,6 +75,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   'on:nodemousemove'?: CustomEvent<{ event: MouseEvent; node: Node }>;
   'on:nodemouseleave'?: CustomEvent<{ event: MouseEvent; node: Node }>;
   'on:edgeclick'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
+  'on:edgecontextmenu'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
   'on:connectstart'?: CustomEvent<{
     event: MouseEvent | TouchEvent;
     nodeId?: string;

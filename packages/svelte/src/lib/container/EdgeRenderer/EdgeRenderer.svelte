@@ -17,7 +17,7 @@
           ($elementsSelectable && typeof edge.selectable === 'undefined')
         )}
 
-        <EdgeWrapper {...edge} type={edgeType} {selectable} on:edgeclick />
+        <EdgeWrapper {...edge} type={edgeType} {selectable} on:edgeclick on:edgecontextmenu />
       {/each}
     </g>
   </svg>
