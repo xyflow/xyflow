@@ -54,6 +54,7 @@
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onError: $$Props['onError'] = undefined;
+  export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -149,7 +150,7 @@
   >
     <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
-        <EdgeRenderer on:edgeclick />
+        <EdgeRenderer on:edgeclick defaultOptions={defaultEdgeOptions} />
         <ConnectionLine />
         <div class="svelte-flow__edgelabel-renderer" />
         <NodeRenderer

@@ -17,7 +17,14 @@ import type {
   OnError
 } from '@xyflow/system';
 
-import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
+import type {
+  Edge,
+  Node,
+  NodeTypes,
+  KeyDefinition,
+  EdgeTypes,
+  DefaultEdgeOptions
+} from '$lib/types';
 import type { Writable } from 'svelte/store';
 
 export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
@@ -52,6 +59,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onlyRenderVisibleElements?: boolean;
   autoPanOnConnect?: boolean;
   autoPanOnNodeDrag?: boolean;
+  defaultEdgeOptions?: DefaultEdgeOptions;
 
   class?: string;
   style?: string;
