@@ -113,6 +113,7 @@ export type NodeDragItem = {
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
   dragging?: boolean;
+  expandParent?: boolean;
 };
 
 export type NodeOrigin = [number, number];
