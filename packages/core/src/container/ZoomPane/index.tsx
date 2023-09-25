@@ -314,6 +314,7 @@ const ZoomPane = ({
         const pinchZoom = zoomOnPinch && event.ctrlKey;
 
         if (
+          (panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(1))) &&
           event.button === 1 &&
           event.type === 'mousedown' &&
           (isWrappedWithClass(event, 'react-flow__node') || isWrappedWithClass(event, 'react-flow__edge'))
