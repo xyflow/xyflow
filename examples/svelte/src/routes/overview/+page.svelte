@@ -131,7 +131,7 @@
 	{edgeTypes}
 	fitView
 	fitViewOptions={{
-		padding: 10,
+		padding: 0.1,
 		nodes: [
 			{
 				id: '1'

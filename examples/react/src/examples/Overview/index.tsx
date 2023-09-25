@@ -221,7 +221,7 @@ const OverviewFlow = () => {
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
       fitView
-      fitViewOptions={{ padding: 0.1, nodes: [{ id: '1' }] }}
+      fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
       attributionPosition="top-right"
       maxZoom={Infinity}
       onNodesDelete={onNodesDelete}

@@ -82,7 +82,7 @@ const createRFStore = () =>
 
         let nextFitViewDone = fitViewDone;
         if (!fitViewDone && fitViewOnInit) {
-          nextFitViewDone = fitView({
+          nextFitViewDone = fitView(nextNodes, {
             ...fitViewOnInitOptions,
             nodes: fitViewOnInitOptions?.nodes || nextNodes,
           });
@@ -241,8 +241,8 @@ const createRFStore = () =>
         const { transform, width, height, panZoom, translateExtent } = get();
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
-      fitView: (options?: FitViewOptions): boolean => {
-        const { panZoom, nodes, width, height, minZoom, maxZoom, nodeOrigin } = get();
+      fitView: (nodes: Node[], options?: FitViewOptions): boolean => {
+        const { panZoom, width, height, minZoom, maxZoom, nodeOrigin } = get();
 
         if (!panZoom) {
           return false;
