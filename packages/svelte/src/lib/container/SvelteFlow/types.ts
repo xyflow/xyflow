@@ -14,7 +14,8 @@ import type {
   IsValidConnection,
   HandleType,
   NodeBase,
-  OnError
+  OnError,
+  ConnectionMode
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
@@ -35,6 +36,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   maxZoom?: number;
   initialViewport?: Viewport;
   connectionRadius?: number;
+  connectionMode?: ConnectionMode;
   selectionMode?: SelectionMode;
   snapGrid?: SnapGrid;
   defaultMarkerColor?: string;
