@@ -161,6 +161,7 @@
 	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
+	attributionPosition={'top-center'}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

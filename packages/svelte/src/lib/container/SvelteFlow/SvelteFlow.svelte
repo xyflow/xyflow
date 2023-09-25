@@ -54,6 +54,8 @@
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onError: $$Props['onError'] = undefined;
+  export let attributionPosition: $$Props['attributionPosition'] = undefined;
+  export let proOptions: $$Props['proOptions'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -170,7 +172,7 @@
       <UserSelection />
     </Pane>
   </Zoom>
-  <Attribution />
+  <Attribution {proOptions} position={attributionPosition} />
   <slot />
 </div>
 
