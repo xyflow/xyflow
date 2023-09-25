@@ -14,7 +14,9 @@ import type {
   IsValidConnection,
   HandleType,
   NodeBase,
-  OnError
+  OnError,
+  PanelPosition,
+  ProOptions
 } from '@xyflow/system';
 
 import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
@@ -52,6 +54,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onlyRenderVisibleElements?: boolean;
   autoPanOnConnect?: boolean;
   autoPanOnNodeDrag?: boolean;
+  attributionPosition?: PanelPosition;
+  proOptions?: ProOptions;
 
   class?: string;
   style?: string;
