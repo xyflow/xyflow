@@ -23,7 +23,8 @@ import type {
   NodeTypes,
   KeyDefinition,
   EdgeTypes,
-  DefaultEdgeOptions
+  DefaultEdgeOptions,
+  FitViewOptions
 } from '$lib/types';
 import type { Writable } from 'svelte/store';
 
@@ -37,6 +38,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   panActivationKey?: KeyDefinition;
   deleteKey?: KeyDefinition;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
   nodeOrigin?: NodeOrigin;
   minZoom?: number;
   maxZoom?: number;

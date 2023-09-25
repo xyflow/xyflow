@@ -80,13 +80,13 @@ const createRFStore = () =>
 
         const nextNodes = updateAbsolutePositions(updatedNodes, nodeOrigin);
 
-        const nextFitViewDone =
-          fitViewDone ||
-          (fitViewOnInit &&
-            fitView({
-              ...fitViewOnInitOptions,
-              nodes: nextNodes,
-            }));
+        let nextFitViewDone = fitViewDone;
+        if (!fitViewDone && fitViewOnInit) {
+          nextFitViewDone = fitView({
+            ...fitViewOnInitOptions,
+            nodes: fitViewOnInitOptions?.nodes || nextNodes,
+          });
+        }
 
         set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
@@ -243,7 +243,6 @@ const createRFStore = () =>
       },
       fitView: (options?: FitViewOptions): boolean => {
         const { panZoom, nodes, width, height, minZoom, maxZoom, nodeOrigin } = get();
-        const fitViewNodes = options?.nodes || nodes;
 
         if (!panZoom) {
           return false;
@@ -251,7 +250,7 @@ const createRFStore = () =>
 
         return fitViewSystem(
           {
-            nodes: fitViewNodes as Node[],
+            nodes,
             width,
             height,
             panZoom,

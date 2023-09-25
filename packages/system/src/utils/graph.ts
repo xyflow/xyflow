@@ -180,10 +180,11 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
     return isVisible;
   });
 
-  const nodesInitialized = filteredNodes.every((n) => n.width && n.height);
+  console.log(filteredNodes);
 
-  if (nodes.length > 0 && nodesInitialized) {
-    const bounds = getRectOfNodes(nodes, nodeOrigin);
+  if (filteredNodes.length > 0) {
+    const bounds = getRectOfNodes(filteredNodes, nodeOrigin);
+    console.log(bounds);
 
     const [x, y, zoom] = getTransformForBounds(
       bounds,

@@ -23,6 +23,7 @@
   export let nodes: $$Props['nodes'];
   export let edges: $$Props['edges'];
   export let fitView: $$Props['fitView'] = undefined;
+  export let fitViewOptions: $$Props['fitViewOptions'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
   export let initialViewport: Viewport = { x: 0, y: 0, zoom: 1 };
@@ -77,6 +78,10 @@
 
     if (fitView !== undefined) {
       store.fitViewOnInit.set(fitView);
+    }
+
+    if (fitViewOptions) {
+      store.fitViewOptions.set(fitViewOptions);
     }
 
     updateStore(store, {

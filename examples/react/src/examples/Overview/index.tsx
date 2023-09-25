@@ -199,7 +199,7 @@ const OverviewFlow = () => {
       onConnect={onConnect}
       onPaneClick={onPaneClick}
       onPaneScroll={onPaneScroll}
-      onPaneContextMenu={onPaneContextMenu}
+      // onPaneContextMenu={onPaneContextMenu}
       onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
@@ -221,7 +221,7 @@ const OverviewFlow = () => {
       onEdgeMouseLeave={onEdgeMouseLeave}
       onEdgeDoubleClick={onEdgeDoubleClick}
       fitView
-      fitViewOptions={{ padding: 0.2 }}
+      fitViewOptions={{ padding: 0.1, nodes: [{ id: '1' }] }}
       attributionPosition="top-right"
       maxZoom={Infinity}
       onNodesDelete={onNodesDelete}
