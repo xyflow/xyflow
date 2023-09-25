@@ -162,6 +162,7 @@
 	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
+	connectionMode={ConnectionMode.Strict}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
