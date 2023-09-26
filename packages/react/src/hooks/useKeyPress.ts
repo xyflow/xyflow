@@ -6,16 +6,20 @@ type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 
 export type UseKeyPressOptions = {
-  target: Window | Document | HTMLElement | ShadowRoot | null;
+  target?: Window | Document | HTMLElement | ShadowRoot | null;
+  actInsideInputWithModifier?: boolean;
 };
 
-const doc = typeof document !== 'undefined' ? document : null;
+const defaultDoc = typeof document !== 'undefined' ? document : null;
 
 // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
 // a string means a single key 'a' or a combination when '+' is used 'a+d'
 // an array means different possibilites. Explainer: ['a', 'd+s'] here the
 // user can use the single key 'a' or the combination 'd' + 's'
-export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { target: doc }): boolean => {
+export default (
+  keyCode: KeyCode | null = null,
+  options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }
+): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // we need to remember if a modifier key is pressed in order to track it
@@ -43,11 +47,16 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
   }, [keyCode]);
 
   useEffect(() => {
+    const target = options?.target || defaultDoc;
+
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
         modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey;
+        const preventAction =
+          (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
+          isInputDOMNode(event);
 
-        if (!modifierPressed.current && isInputDOMNode(event)) {
+        if (preventAction) {
           return false;
         }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
@@ -60,7 +69,11 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        if (!modifierPressed.current && isInputDOMNode(event)) {
+        const preventAction =
+          (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
+          isInputDOMNode(event);
+
+        if (preventAction) {
           return false;
         }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
@@ -79,13 +92,13 @@ export default (keyCode: KeyCode | null = null, options: UseKeyPressOptions = { 
         setKeyPressed(false);
       };
 
-      options?.target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
-      options?.target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+      target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
+      target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
 
       return () => {
-        options?.target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
-        options?.target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+        target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
+        target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
       };
     }
