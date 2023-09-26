@@ -133,11 +133,7 @@
 	fitView
 	fitViewOptions={{
 		padding: 0.1,
-		nodes: [
-			{
-				id: '1'
-			}
-		]
+		nodes: [{ id: '1' }]
 	}}
 	minZoom={0}
 	maxZoom={Infinity}

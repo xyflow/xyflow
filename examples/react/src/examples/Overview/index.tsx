@@ -201,7 +201,7 @@ const OverviewFlow = () => {
       onConnect={onConnect}
       onPaneClick={onPaneClick}
       onPaneScroll={onPaneScroll}
-      // onPaneContextMenu={onPaneContextMenu}
+      onPaneContextMenu={onPaneContextMenu}
       onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
