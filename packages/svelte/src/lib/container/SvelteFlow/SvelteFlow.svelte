@@ -39,6 +39,8 @@
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
   export let connectionMode: $$Props['connectionMode'] = ConnectionMode.Strict;
+  export let connectionLineStyle: $$Props['connectionLineStyle'] = '';
+  export let connectionLineContainerStyle: $$Props['connectionLineContainerStyle'] = '';
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
@@ -154,7 +156,7 @@
     <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
         <EdgeRenderer on:edgeclick on:edgecontextmenu />
-        <ConnectionLine>
+        <ConnectionLine containerStyle={connectionLineContainerStyle} style={connectionLineStyle}>
           <slot name="connectionLineComponent" slot="connectionLineComponent" />
         </ConnectionLine>
         <div class="svelte-flow__edgelabel-renderer" />
