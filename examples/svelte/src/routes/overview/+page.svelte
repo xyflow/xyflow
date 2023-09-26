@@ -169,9 +169,6 @@
 	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
-	defaultEdgeOptions={{
-		hidden: false
-	}}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
