@@ -8,8 +8,10 @@
 
 {#if $connectionPath}
   <svg width={$width} height={$height} class="svelte-flow__connectionline">
-    <g class={cc(['svelte-flow__connection', $connection.connectionStatus])}>
-      <path d={$connectionPath} fill="none" class="svelte-flow__connection-path" />
-    </g>
+    <slot name="connectionLineComponent">
+      <g class={cc(['svelte-flow__connection', $connection.connectionStatus])}>
+        <path d={$connectionPath} fill="none" class="svelte-flow__connection-path" />
+      </g>
+    </slot>
   </svg>
 {/if}

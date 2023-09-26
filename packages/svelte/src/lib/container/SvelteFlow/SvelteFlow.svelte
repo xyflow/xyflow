@@ -154,7 +154,9 @@
     <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
         <EdgeRenderer on:edgeclick on:edgecontextmenu />
-        <ConnectionLine />
+        <ConnectionLine>
+          <slot name="connectionLineComponent" slot="connectionLineComponent" />
+        </ConnectionLine>
         <div class="svelte-flow__edgelabel-renderer" />
         <NodeRenderer
           on:nodeclick
