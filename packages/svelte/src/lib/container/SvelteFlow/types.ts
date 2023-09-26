@@ -14,7 +14,10 @@ import type {
   IsValidConnection,
   HandleType,
   NodeBase,
-  OnError
+  OnError,
+  ConnectionMode,
+  PanelPosition,
+  ProOptions
 } from '@xyflow/system';
 
 import type {
@@ -44,6 +47,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   maxZoom?: number;
   initialViewport?: Viewport;
   connectionRadius?: number;
+  connectionMode?: ConnectionMode;
   selectionMode?: SelectionMode;
   snapGrid?: SnapGrid;
   defaultMarkerColor?: string;
@@ -61,6 +65,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onlyRenderVisibleElements?: boolean;
   autoPanOnConnect?: boolean;
   autoPanOnNodeDrag?: boolean;
+  attributionPosition?: PanelPosition;
+  proOptions?: ProOptions;
   defaultEdgeOptions?: DefaultEdgeOptions;
 
   class?: string;
@@ -79,6 +85,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   'on:nodemousemove'?: CustomEvent<{ event: MouseEvent; node: Node }>;
   'on:nodemouseleave'?: CustomEvent<{ event: MouseEvent; node: Node }>;
   'on:edgeclick'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
+  'on:edgecontextmenu'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
   'on:connectstart'?: CustomEvent<{
     event: MouseEvent | TouchEvent;
     nodeId?: string;

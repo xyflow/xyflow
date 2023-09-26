@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, hasContext } from 'svelte';
   import cc from 'classcat';
-  import { PanOnScrollMode, type Viewport } from '@xyflow/system';
+  import { ConnectionMode, PanOnScrollMode, type Viewport } from '@xyflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -39,6 +39,7 @@
   export let deleteKey: $$Props['deleteKey'] = undefined;
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
+  export let connectionMode: $$Props['connectionMode'] = ConnectionMode.Strict;
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
@@ -55,6 +56,8 @@
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onError: $$Props['onError'] = undefined;
+  export let attributionPosition: $$Props['attributionPosition'] = undefined;
+  export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
@@ -114,7 +117,8 @@
       isValidConnection,
       autoPanOnConnect,
       autoPanOnNodeDrag,
-      onError
+      onError,
+      connectionMode
     };
 
     updateStoreByKeys(store, updatableProps);
@@ -155,7 +159,7 @@
   >
     <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
-        <EdgeRenderer on:edgeclick {defaultEdgeOptions} />
+        <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
         <ConnectionLine />
         <div class="svelte-flow__edgelabel-renderer" />
         <NodeRenderer
@@ -176,7 +180,7 @@
       <UserSelection />
     </Pane>
   </Zoom>
-  <Attribution />
+  <Attribution {proOptions} position={attributionPosition} />
   <slot />
 </div>
 

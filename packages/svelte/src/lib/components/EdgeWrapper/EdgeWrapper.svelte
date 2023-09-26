@@ -51,6 +51,11 @@
     const edge = $edges.find((e) => e.id === id);
     dispatch('edgeclick', { event, edge });
   }
+
+  function onContextMenu(event: MouseEvent) {
+    const edge = $edges.find((e) => e.id === id);
+    dispatch('edgecontextmenu', { event, edge });
+  }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -62,6 +67,7 @@
     class:selected
     data-id={id}
     on:click={onClick}
+    on:contextmenu={onContextMenu}
     aria-label={ariaLabel === null
       ? undefined
       : ariaLabel

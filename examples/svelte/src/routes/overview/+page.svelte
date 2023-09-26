@@ -11,7 +11,8 @@
 		type NodeTypes,
 		type EdgeTypes,
 		type Node,
-		type Edge
+		type Edge,
+		ConnectionMode
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -167,8 +168,14 @@
 		event.detail.event.preventDefault();
 		console.log('on node contextmenu', event);
 	}}
+	on:edgecontextmenu={({ detail: { event, edge } }) => {
+		event.preventDefault();
+		console.log('on edge contextmenu', edge);
+	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
+	connectionMode={ConnectionMode.Strict}
+	attributionPosition={'top-center'}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
