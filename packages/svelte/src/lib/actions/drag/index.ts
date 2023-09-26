@@ -38,6 +38,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
         autoPanOnNodeDrag: get(store.autoPanOnNodeDrag),
         nodesDraggable: get(store.nodesDraggable),
         selectNodesOnDrag: get(store.selectNodesOnDrag),
+        nodeDragThreshold: get(store.nodeDragThreshold),
         unselectNodesAndEdges: store.unselectNodesAndEdges,
         updateNodePositions: store.updateNodePositions,
         panBy: store.panBy

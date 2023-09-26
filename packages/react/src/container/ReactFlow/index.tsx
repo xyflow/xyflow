@@ -163,6 +163,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onError,
       style,
       id,
+      nodeDragThreshold,
       ...rest
     },
     ref
@@ -292,6 +293,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             connectionRadius={connectionRadius}
             isValidConnection={isValidConnection}
             selectNodesOnDrag={selectNodesOnDrag}
+            nodeDragThreshold={nodeDragThreshold}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}

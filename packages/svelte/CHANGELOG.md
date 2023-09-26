@@ -1,5 +1,8 @@
-## WIP
+## 0.0.22
 
+- add `nodeDragThreshold` prop
+- add `fitViewOptions` prop
+- add `defaultEdgeOptions` prop
 - add `on:edgecontextmenu` event handler prop
 - add `connectionMode` prop
 - add `attributionPosition` prop

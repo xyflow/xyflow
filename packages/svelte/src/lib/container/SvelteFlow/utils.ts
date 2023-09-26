@@ -63,6 +63,7 @@ export type UpdatableStoreProps = {
   autoPanOnNodeDrag?: UnwrapWritable<SvelteFlowStore['autoPanOnNodeDrag']>;
   connectionMode?: UnwrapWritable<SvelteFlowStore['connectionMode']>;
   onError?: UnwrapWritable<SvelteFlowStore['onError']>;
+  nodeDragThreshold?: UnwrapWritable<SvelteFlowStore['nodeDragThreshold']>;
 };
 
 export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStoreProps) {

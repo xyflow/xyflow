@@ -43,6 +43,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   fitView?: boolean;
   fitViewOptions?: FitViewOptions;
   nodeOrigin?: NodeOrigin;
+  nodeDragThreshold?: number;
   minZoom?: number;
   maxZoom?: number;
   initialViewport?: Viewport;

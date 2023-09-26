@@ -44,6 +44,7 @@ type StoreItems = {
   autoPanOnNodeDrag: boolean;
   nodesDraggable: boolean;
   selectNodesOnDrag: boolean;
+  nodeDragThreshold: number;
   panBy: PanBy;
   unselectNodesAndEdges: () => void;
   onError?: OnError;
@@ -93,6 +94,7 @@ export function XYDrag({
   let mousePosition: XYPosition = { x: 0, y: 0 };
   let dragEvent: MouseEvent | null = null;
   let containerBounds: DOMRect | null = null;
+  let dragStarted = false;
 
   const d3Selection = select(domNode);
 
@@ -192,63 +194,84 @@ export function XYDrag({
       autoPanId = requestAnimationFrame(autoPan);
     }
 
+    function startDrag(event: UseDragEvent) {
+      const {
+        nodes,
+        multiSelectionActive,
+        nodesDraggable,
+        transform,
+        snapGrid,
+        snapToGrid,
+        selectNodesOnDrag,
+        onNodeDragStart,
+        onSelectionDragStart,
+        unselectNodesAndEdges,
+      } = getStoreItems();
+
+      dragStarted = true;
+
+      if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
+        if (!nodes.find((n) => n.id === nodeId)?.selected) {
+          // we need to reset selected nodes when selectNodesOnDrag=false
+          unselectNodesAndEdges();
+        }
+      }
+
+      if (isSelectable && selectNodesOnDrag) {
+        onNodeClick?.();
+      }
+
+      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+      lastPos = pointerPos;
+      dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeId);
+
+      const onNodeOrSelectionDragStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
+
+      if (dragItems) {
+        const [currentNode, currentNodes] = getEventHandlerParams({
+          nodeId,
+          dragItems,
+          nodes,
+        });
+        onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
+        onNodeOrSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+      }
+    }
+
     const d3DragInstance = drag()
       .on('start', (event: UseDragEvent) => {
-        const {
-          nodes,
-          multiSelectionActive,
-          domNode,
-          nodesDraggable,
-          transform,
-          snapGrid,
-          snapToGrid,
-          selectNodesOnDrag,
-          onNodeDragStart,
-          onSelectionDragStart,
-          unselectNodesAndEdges,
-        } = getStoreItems();
+        const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
 
-        if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
-          if (!nodes.find((n) => n.id === nodeId)?.selected) {
-            // we need to reset selected nodes when selectNodesOnDrag=false
-            unselectNodesAndEdges();
-          }
-        }
-
-        if (isSelectable && selectNodesOnDrag) {
-          onNodeClick?.();
+        if (nodeDragThreshold === 0) {
+          startDrag(event);
         }
 
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         lastPos = pointerPos;
-        dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeId);
-
-        const onNodeOrSelectionDragStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
-
-        if (dragItems) {
-          const [currentNode, currentNodes] = getEventHandlerParams({
-            nodeId,
-            dragItems,
-            nodes,
-          });
-          onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-          onNodeOrSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
-        }
-
         containerBounds = domNode?.getBoundingClientRect() || null;
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
       })
       .on('drag', (event: UseDragEvent) => {
-        const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid } = getStoreItems();
+        const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold } = getStoreItems();
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
-        if (!autoPanStarted && autoPanOnNodeDrag) {
+        if (!autoPanStarted && autoPanOnNodeDrag && dragStarted) {
           autoPanStarted = true;
           autoPan();
         }
 
+        if (!dragStarted) {
+          const x = pointerPos.xSnapped - (lastPos.x ?? 0);
+          const y = pointerPos.ySnapped - (lastPos.y ?? 0);
+          const distance = Math.sqrt(x * x + y * y);
+
+          if (distance > nodeDragThreshold) {
+            startDrag(event);
+          }
+        }
+
         // skip events without movement
-        if ((lastPos.x !== pointerPos.xSnapped || lastPos.y !== pointerPos.ySnapped) && dragItems) {
+        if ((lastPos.x !== pointerPos.xSnapped || lastPos.y !== pointerPos.ySnapped) && dragItems && dragStarted) {
           dragEvent = event.sourceEvent as MouseEvent;
           mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
 
@@ -256,7 +279,12 @@ export function XYDrag({
         }
       })
       .on('end', (event: UseDragEvent) => {
+        if (!dragStarted) {
+          return;
+        }
+
         autoPanStarted = false;
+        dragStarted = false;
         cancelAnimationFrame(autoPanId);
 
         if (dragItems) {

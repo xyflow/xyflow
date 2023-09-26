@@ -34,6 +34,7 @@
   export let panActivationKey: $$Props['panActivationKey'] = undefined;
   export let nodesDraggable: $$Props['nodesDraggable'] = undefined;
   export let nodesConnectable: $$Props['nodesConnectable'] = undefined;
+  export let nodeDragThreshold: $$Props['nodeDragThreshold'] = undefined;
   export let elementsSelectable: $$Props['elementsSelectable'] = undefined;
   export let snapGrid: $$Props['snapGrid'] = undefined;
   export let deleteKey: $$Props['deleteKey'] = undefined;
@@ -118,7 +119,8 @@
       autoPanOnConnect,
       autoPanOnNodeDrag,
       onError,
-      connectionMode
+      connectionMode,
+      nodeDragThreshold
     };
 
     updateStoreByKeys(store, updatableProps);
