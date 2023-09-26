@@ -1,9 +1,23 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
+  import type { DefaultEdgeOptions } from '$lib/types';
 
-  const { width, height, elementsSelectable, edgeTree } = useStore();
+  export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
+
+  const {
+    width,
+    height,
+    elementsSelectable,
+    edgeTree,
+    edges: { setDefaultOptions }
+  } = useStore();
+
+  onMount(() => {
+    if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
+  });
 </script>
 
 {#each $edgeTree as group (group.level)}

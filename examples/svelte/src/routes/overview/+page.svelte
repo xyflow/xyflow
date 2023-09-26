@@ -131,8 +131,12 @@
 	{nodeTypes}
 	{edgeTypes}
 	fitView
-	minZoom={0.1}
-	maxZoom={2.5}
+	fitViewOptions={{
+		padding: 0.1,
+		nodes: [{ id: '1' }, { id: '2' }, { id: '3' }]
+	}}
+	minZoom={0}
+	maxZoom={Infinity}
 	selectionMode={SelectionMode.Full}
 	initialViewport={{ x: 100, y: 100, zoom: 2 }}
 	snapGrid={[25, 25]}

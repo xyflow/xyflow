@@ -171,7 +171,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
-    const isVisible = options?.includeHiddenNodes ? n.width && n.height : !n.hidden;
+    const isVisible = n.width && n.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (options?.nodes?.length) {
       return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
@@ -180,10 +180,8 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
     return isVisible;
   });
 
-  const nodesInitialized = filteredNodes.every((n) => n.width && n.height);
-
-  if (nodes.length > 0 && nodesInitialized) {
-    const bounds = getRectOfNodes(nodes, nodeOrigin);
+  if (filteredNodes.length > 0) {
+    const bounds = getRectOfNodes(filteredNodes, nodeOrigin);
 
     const [x, y, zoom] = getTransformForBounds(
       bounds,
