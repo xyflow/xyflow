@@ -155,7 +155,7 @@ export type ReactFlowActions = {
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange[]) => void;
   panBy: PanBy;
-  fitView: (options?: FitViewOptions) => boolean;
+  fitView: (nodes: Node[], options?: FitViewOptions) => boolean;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

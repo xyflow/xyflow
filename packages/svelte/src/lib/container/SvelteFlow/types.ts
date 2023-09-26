@@ -20,7 +20,15 @@ import type {
   ProOptions
 } from '@xyflow/system';
 
-import type { Edge, Node, NodeTypes, KeyDefinition, EdgeTypes } from '$lib/types';
+import type {
+  Edge,
+  Node,
+  NodeTypes,
+  KeyDefinition,
+  EdgeTypes,
+  DefaultEdgeOptions,
+  FitViewOptions
+} from '$lib/types';
 import type { Writable } from 'svelte/store';
 
 export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
@@ -33,6 +41,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   panActivationKey?: KeyDefinition;
   deleteKey?: KeyDefinition;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
   nodeOrigin?: NodeOrigin;
   minZoom?: number;
   maxZoom?: number;
@@ -58,6 +67,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   autoPanOnNodeDrag?: boolean;
   attributionPosition?: PanelPosition;
   proOptions?: ProOptions;
+  defaultEdgeOptions?: DefaultEdgeOptions;
 
   class?: string;
   style?: string;
