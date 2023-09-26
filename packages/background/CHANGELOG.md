@@ -1,5 +1,12 @@
 # @reactflow/background
 
+## 11.3.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @reactflow/core@11.9.2
+
 ## 11.3.1
 
 ### Patch Changes

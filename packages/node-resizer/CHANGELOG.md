@@ -1,5 +1,12 @@
 # @reactflow/node-resizer
 
+## 2.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @reactflow/core@11.9.2
+
 ## 2.2.1
 
 ### Patch Changes

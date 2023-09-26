@@ -1,5 +1,12 @@
 # @reactflow/controls
 
+## 11.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @reactflow/core@11.9.2
+
 ## 11.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @reactflow/minimap
 
+## 11.7.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @reactflow/core@11.9.2
+
 ## 11.7.1
 
 ### Patch Changes

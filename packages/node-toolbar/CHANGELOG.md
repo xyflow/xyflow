@@ -1,5 +1,12 @@
 # @reactflow/node-toolbar
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @reactflow/core@11.9.2
+
 ## 1.3.1
 
 ### Patch Changes

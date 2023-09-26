@@ -1,5 +1,13 @@
 # reactflow
 
+## 11.9.2
+
+Fix broken build on npm
+
+### Patch Changes
+- Updated dependencies
+  - @reactflow/core@11.9.2
+
 ## 11.9.1
 
 This release fixes a bug (`deleteKeyCode` didn't work) that was introduced in the previous version.
