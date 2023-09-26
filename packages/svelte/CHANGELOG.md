@@ -1,3 +1,9 @@
+## WIP
+
+- add `on:edgecontextmenu` event handler prop
+- add `connectionMode` prop
+- add `attributionPosition` prop
+
 ## 0.0.21
 
 - add `on:nodedragstart`, `on:nodedrag` and `on:nodedragstop`
