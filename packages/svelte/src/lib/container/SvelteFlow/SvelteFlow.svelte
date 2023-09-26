@@ -150,7 +150,7 @@
   >
     <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
-        <EdgeRenderer on:edgeclick defaultOptions={defaultEdgeOptions} />
+        <EdgeRenderer on:edgeclick {defaultEdgeOptions} />
         <ConnectionLine />
         <div class="svelte-flow__edgelabel-renderer" />
         <NodeRenderer

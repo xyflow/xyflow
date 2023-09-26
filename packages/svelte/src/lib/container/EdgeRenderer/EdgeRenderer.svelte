@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
   import type { DefaultEdgeOptions } from '$lib/types';
-  import { onMount } from 'svelte';
 
-  export let defaultOptions: DefaultEdgeOptions | undefined;
+  export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
   const {
     width,
@@ -16,7 +16,7 @@
   } = useStore();
 
   onMount(() => {
-    if (defaultOptions) setDefaultOptions(defaultOptions);
+    if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
   });
 </script>
 
