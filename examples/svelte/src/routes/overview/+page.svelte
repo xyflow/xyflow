@@ -162,7 +162,7 @@
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	defaultEdgeOptions={{
-		hidden: false
+		// animated: true
 	}}
 >
 	<Controls />

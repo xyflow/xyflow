@@ -3,6 +3,7 @@
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
   import type { DefaultEdgeOptions } from '$lib/types';
+  import { onMount } from 'svelte';
 
   export let defaultOptions: DefaultEdgeOptions | undefined;
 
@@ -14,7 +15,9 @@
     edges: { setDefaultOptions }
   } = useStore();
 
-  $: if (defaultOptions) setDefaultOptions(defaultOptions);
+  onMount(() => {
+    if (defaultOptions) setDefaultOptions(defaultOptions);
+  });
 </script>
 
 {#each $edgeTree as group (group.level)}
@@ -27,7 +30,6 @@
           edge.selectable ||
           ($elementsSelectable && typeof edge.selectable === 'undefined')
         )}
-
         <EdgeWrapper {...edge} type={edgeType} {selectable} on:edgeclick />
       {/each}
     </g>
