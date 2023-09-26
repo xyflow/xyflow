@@ -12,15 +12,13 @@ export interface UseKeyPressOptions {
   actInsideInputWithModifier?: boolean;
 }
 
-const doc = typeof document !== 'undefined' ? document : null;
-
 // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
 // a string means a single key 'a' or a combination when '+' is used 'a+d'
 // an array means different possibilities. Explainer: ['a', 'd+s'] here the
 // user can use the single key 'a' or the combination 'd' + 's'
 export default (
   keyCode: KeyCode | null = null,
-  options: UseKeyPressOptions = { target: doc, actInsideInputWithModifier: true }
+  options: UseKeyPressOptions = { actInsideInputWithModifier: true }
 ): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
 
@@ -49,6 +47,9 @@ export default (
   }, [keyCode]);
 
   useEffect(() => {
+    const doc = typeof document !== 'undefined' ? document : null;
+    const target = options?.target || doc;
+
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
         modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey;
@@ -98,13 +99,13 @@ export default (
         setKeyPressed(false);
       };
 
-      options?.target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
-      options?.target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+      target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
+      target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
 
       return () => {
-        options?.target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
-        options?.target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+        target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
+        target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
       };
     }
