@@ -24,7 +24,7 @@ export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } fro
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useNodeId } from './contexts/NodeIdContext';
 
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
+export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
 export { isNode, isEdge, getIncomers, getOutgoers, addEdge, updateEdge, getConnectedEdges } from './utils/general';
 
 export * from './additional-components';
