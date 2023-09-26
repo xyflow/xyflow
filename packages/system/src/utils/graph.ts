@@ -227,7 +227,7 @@ export function calcNextPosition<NodeType extends NodeBase>(
       : parentPos;
   }
 
-  if (node.extent === 'parent') {
+  if (node.extent === 'parent' && !node.expandParent) {
     if (node.parentNode && node.width && node.height) {
       const currNodeOrigin = node.origin || nodeOrigin;
 
@@ -245,7 +245,7 @@ export function calcNextPosition<NodeType extends NodeBase>(
       onError?.('005', errorMessages['error005']());
       currentExtent = clampedNodeExtent;
     }
-  } else if (node.extent && node.parentNode) {
+  } else if (node.extent && node.parentNode && node.extent !== 'parent') {
     currentExtent = [
       [node.extent[0][0] + parentPos.x, node.extent[0][1] + parentPos.y],
       [node.extent[1][0] + parentPos.x, node.extent[1][1] + parentPos.y],

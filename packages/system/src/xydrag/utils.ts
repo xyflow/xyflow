@@ -65,6 +65,7 @@ export function getDragItems<NodeType extends NodeBase>(
       width: n.width,
       height: n.height,
       origin: n.origin,
+      expandParent: n.expandParent,
     }));
 }
 

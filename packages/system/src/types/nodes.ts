@@ -81,6 +81,7 @@ export type NodeDragItem = {
   parentNode?: string;
   dragging?: boolean;
   origin?: NodeOrigin;
+  expandParent?: boolean;
 };
 
 export type NodeOrigin = [number, number];
