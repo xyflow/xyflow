@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 import cc from 'classcat';
 
 import type { MiniMapNodeProps } from './types';

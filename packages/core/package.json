@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/core",
-  "version": "11.8.3",
+  "version": "11.9.0",
   "description": "Core components and util functions of React Flow.",
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.js",
+      "import": "./dist/esm/index.mjs",
       "require": "./dist/umd/index.js"
     },
     "./dist/base.css": "./dist/base.css",

@@ -1,5 +1,33 @@
 # reactflow
 
+## 11.9.0
+
+With this version you can finally delay node drag events or suppress them when you just click a node. This is possible with the new `nodeDragThreshold` prop. Another big change is that we finally support Astro and Remix while keeping the support for older setups like webpack4 + React 17 for example.
+
+### Minor Changes
+
+- [#3429](https://github.com/wbkd/react-flow/pull/3429) [`f118aee8`](https://github.com/wbkd/react-flow/commit/f118aee8b121df842f2ea1a255f2c9d7d8c3b45b) - feat(props): add `nodeDragThreshold` prop
+- [#3392](https://github.com/wbkd/react-flow/pull/3392) [`190958b5`](https://github.com/wbkd/react-flow/commit/190958b537e3b53cbfd87ac77fb8513173bf1338) - fix(packages): support newer setups (astro, remix, ...) and oder setups (webpack 4, react 17)
+
+### Patch Changes
+
+- [#3443](https://github.com/wbkd/react-flow/pull/3443) [`db4baa86`](https://github.com/wbkd/react-flow/commit/db4baa8606fd2ad771ca4eea701ca3788d4aaf49) Thanks [@bodinsamuel](https://github.com/bodinsamuel)! - chore(utils): export `handleParentExpand` 
+- [#3421](https://github.com/wbkd/react-flow/pull/3421) [`3aac72cb`](https://github.com/wbkd/react-flow/commit/3aac72cb699b9dd495bdbd0bcb3204bbb30c4115) - refactor(nodes): don't delete nodes when user focuses input and presses modifier
+- [#3444](https://github.com/wbkd/react-flow/pull/3444) [`1a7c903c`](https://github.com/wbkd/react-flow/commit/1a7c903cd795ea1aaf8c8f4e23eceb3068720541) - refactor(node): make `expandParent` compatible with `extent: "parent"`
+- [`fd0472d4`](https://github.com/wbkd/react-flow/commit/fd0472d4ab1df8d6ecfde0006d9cabd3258342b9) - fix(step-edge): routing for equal handle positions
+- [#3419](https://github.com/wbkd/react-flow/pull/3419) [`274c73f9`](https://github.com/wbkd/react-flow/commit/274c73f9a26188d52315bf49cbc4192903d3b11c) - fix(panonscroll): respect nopan class name
+- [#3403](https://github.com/wbkd/react-flow/pull/3403) [`17ea954e`](https://github.com/wbkd/react-flow/commit/17ea954ea5fdb613be92863250c89ec12f2b60a5) - chore(edge-marker): use style instead of attributes
+- [#3411](https://github.com/wbkd/react-flow/pull/3411) [`2488941c`](https://github.com/wbkd/react-flow/commit/2488941c147b2b15c89cdf6d24c1420546f2ef91) - fix(node-selection): cleanup selection when node is not selectable
+- [#3446](https://github.com/wbkd/react-flow/pull/3446) [`6139da2b`](https://github.com/wbkd/react-flow/commit/6139da2bdc0d226ae90c4e8e19cbd5c91b4a59c9) - fix(nodes): disable all panning when `panOnDrag={false}`
+- [#3389](https://github.com/wbkd/react-flow/pull/3389) [`db357a42`](https://github.com/wbkd/react-flow/commit/db357a42628563e9cd2d058a27230ab961b6230f) - fix (edge-selection): consistent behaviour with node selection
+- Updated dependencies [[`db4baa86`](https://github.com/wbkd/react-flow/commit/db4baa8606fd2ad771ca4eea701ca3788d4aaf49), [`3aac72cb`](https://github.com/wbkd/react-flow/commit/3aac72cb699b9dd495bdbd0bcb3204bbb30c4115), [`190958b5`](https://github.com/wbkd/react-flow/commit/190958b537e3b53cbfd87ac77fb8513173bf1338), [`1a7c903c`](https://github.com/wbkd/react-flow/commit/1a7c903cd795ea1aaf8c8f4e23eceb3068720541), [`fd0472d4`](https://github.com/wbkd/react-flow/commit/fd0472d4ab1df8d6ecfde0006d9cabd3258342b9), [`f118aee8`](https://github.com/wbkd/react-flow/commit/f118aee8b121df842f2ea1a255f2c9d7d8c3b45b), [`274c73f9`](https://github.com/wbkd/react-flow/commit/274c73f9a26188d52315bf49cbc4192903d3b11c), [`17ea954e`](https://github.com/wbkd/react-flow/commit/17ea954ea5fdb613be92863250c89ec12f2b60a5), [`2488941c`](https://github.com/wbkd/react-flow/commit/2488941c147b2b15c89cdf6d24c1420546f2ef91), [`6139da2b`](https://github.com/wbkd/react-flow/commit/6139da2bdc0d226ae90c4e8e19cbd5c91b4a59c9), [`db357a42`](https://github.com/wbkd/react-flow/commit/db357a42628563e9cd2d058a27230ab961b6230f)]:
+  - @reactflow/core@11.9.0
+  - @reactflow/background@11.3.0
+  - @reactflow/controls@11.2.0
+  - @reactflow/minimap@11.7.0
+  - @reactflow/node-resizer@2.2.0
+  - @reactflow/node-toolbar@1.3.0
+
 ## 11.8.3
 
 Yet another fix for step and smoothstep edge routes

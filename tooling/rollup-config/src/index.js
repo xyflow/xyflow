@@ -25,10 +25,10 @@ const onwarn = (warning, rollupWarn) => {
   }
 };
 
-export const esmConfig = defineConfig({
+const getEsmConfig = (format) => ({
   input: pkg.source,
   output: {
-    file: pkg.module,
+    file: format === 'js' ? pkg.module : pkg.module.replace('.js', '.mjs'),
     format: 'esm',
   },
   onwarn,
@@ -41,10 +41,12 @@ export const esmConfig = defineConfig({
   ],
 });
 
+export const esmJsConfig = defineConfig(getEsmConfig('js'));
+export const esmMjsConfig = defineConfig(getEsmConfig('mjs'));
+
 const globals = {
   react: 'React',
   'react-dom': 'ReactDOM',
-  'react/jsx-runtime': 'jsxRuntime',
   ...(pkg.rollup?.globals || {}),
 };
 
@@ -70,4 +72,4 @@ export const umdConfig = defineConfig({
   ],
 });
 
-export default isProd ? [esmConfig, umdConfig] : esmConfig;
+export default isProd ? [esmJsConfig, esmMjsConfig, umdConfig] : [esmMjsConfig];

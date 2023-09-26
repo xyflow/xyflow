@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/minimap",
-  "version": "11.6.3",
+  "version": "11.7.0",
   "description": "Minimap component for React Flow.",
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.js",
+      "import": "./dist/esm/index.mjs",
       "require": "./dist/umd/index.js"
     },
     "./dist/style.css": "./dist/style.css"

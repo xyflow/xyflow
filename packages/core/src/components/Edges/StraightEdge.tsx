@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 import BaseEdge from './BaseEdge';
 import { getEdgeCenter } from './utils';

@@ -53,6 +53,7 @@ function useDrag({
   const mousePosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const dragEvent = useRef<MouseEvent | null>(null);
   const autoPanStarted = useRef(false);
+  const dragStarted = useRef(false);
 
   const getPointerPosition = useGetPointerPosition();
 
@@ -156,77 +157,100 @@ function useDrag({
         autoPanId.current = requestAnimationFrame(autoPan);
       };
 
+      const startDrag = (event: UseDragEvent) => {
+        const {
+          nodeInternals,
+          multiSelectionActive,
+          nodesDraggable,
+          unselectNodesAndEdges,
+          onNodeDragStart,
+          onSelectionDragStart,
+        } = store.getState();
+        dragStarted.current = true;
+        const onStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
+
+        if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
+          if (!nodeInternals.get(nodeId)?.selected) {
+            // we need to reset selected nodes when selectNodesOnDrag=false
+            unselectNodesAndEdges();
+          }
+        }
+
+        if (nodeId && isSelectable && selectNodesOnDrag) {
+          handleNodeClick({
+            id: nodeId,
+            store,
+            nodeRef: nodeRef as RefObject<HTMLDivElement>,
+          });
+        }
+
+        const pointerPos = getPointerPosition(event);
+        lastPos.current = pointerPos;
+        dragItems.current = getDragItems(nodeInternals, nodesDraggable, pointerPos, nodeId);
+
+        if (onStart && dragItems.current) {
+          const [currentNode, nodes] = getEventHandlerParams({
+            nodeId,
+            dragItems: dragItems.current,
+            nodeInternals,
+          });
+          onStart(event.sourceEvent as MouseEvent, currentNode, nodes);
+        }
+      };
+
       if (disabled) {
         selection.on('.drag', null);
       } else {
         const dragHandler = drag()
           .on('start', (event: UseDragEvent) => {
-            const {
-              nodeInternals,
-              multiSelectionActive,
-              domNode,
-              nodesDraggable,
-              unselectNodesAndEdges,
-              onNodeDragStart,
-              onSelectionDragStart,
-            } = store.getState();
-
-            const onStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
-
-            if (!selectNodesOnDrag && !multiSelectionActive && nodeId) {
-              if (!nodeInternals.get(nodeId)?.selected) {
-                // we need to reset selected nodes when selectNodesOnDrag=false
-                unselectNodesAndEdges();
-              }
-            }
-
-            if (nodeId && isSelectable && selectNodesOnDrag) {
-              handleNodeClick({
-                id: nodeId,
-                store,
-                nodeRef: nodeRef as RefObject<HTMLDivElement>,
-              });
+            const { domNode, nodeDragThreshold } = store.getState();
+            if (nodeDragThreshold === 0) {
+              startDrag(event);
             }
 
             const pointerPos = getPointerPosition(event);
             lastPos.current = pointerPos;
-            dragItems.current = getDragItems(nodeInternals, nodesDraggable, pointerPos, nodeId);
-
-            if (onStart && dragItems.current) {
-              const [currentNode, nodes] = getEventHandlerParams({
-                nodeId,
-                dragItems: dragItems.current,
-                nodeInternals,
-              });
-              onStart(event.sourceEvent as MouseEvent, currentNode, nodes);
-            }
-
             containerBounds.current = domNode?.getBoundingClientRect() || null;
             mousePosition.current = getEventPosition(event.sourceEvent, containerBounds.current!);
           })
           .on('drag', (event: UseDragEvent) => {
             const pointerPos = getPointerPosition(event);
-            const { autoPanOnNodeDrag } = store.getState();
+            const { autoPanOnNodeDrag, nodeDragThreshold } = store.getState();
 
-            if (!autoPanStarted.current && autoPanOnNodeDrag) {
+            if (!autoPanStarted.current && dragStarted.current && autoPanOnNodeDrag) {
               autoPanStarted.current = true;
               autoPan();
+            }
+
+            if (!dragStarted.current) {
+              const x = pointerPos.xSnapped - (lastPos?.current?.x ?? 0);
+              const y = pointerPos.ySnapped - (lastPos?.current?.y ?? 0);
+              const distance = Math.sqrt(x * x + y * y);
+
+              if (distance > nodeDragThreshold) {
+                startDrag(event);
+              }
             }
 
             // skip events without movement
             if (
               (lastPos.current.x !== pointerPos.xSnapped || lastPos.current.y !== pointerPos.ySnapped) &&
-              dragItems.current
+              dragItems.current &&
+              dragStarted.current
             ) {
               dragEvent.current = event.sourceEvent as MouseEvent;
               mousePosition.current = getEventPosition(event.sourceEvent, containerBounds.current!);
-
               updateNodes(pointerPos);
             }
           })
           .on('end', (event: UseDragEvent) => {
+            if (!dragStarted.current) {
+              return;
+            }
+
             setDragging(false);
             autoPanStarted.current = false;
+            dragStarted.current = false;
             cancelAnimationFrame(autoPanId.current);
 
             if (dragItems.current) {

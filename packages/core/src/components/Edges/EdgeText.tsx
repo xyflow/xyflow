@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useEffect } from 'react';
+import React, { memo, useRef, useState, useEffect } from 'react';
 import type { FC, PropsWithChildren } from 'react';
 import cc from 'classcat';
 

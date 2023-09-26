@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 import type { ReactNode } from 'react';
 
 import { useStore } from '../../hooks/useStore';

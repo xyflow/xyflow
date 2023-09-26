@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useRef } from 'react';
+import React, { memo, useState, useMemo, useRef } from 'react';
 import type { ComponentType, KeyboardEvent } from 'react';
 import cc from 'classcat';
 
@@ -72,15 +72,25 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     }
 
     const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-      const { edges, addSelectedEdges } = store.getState();
+      const { edges, addSelectedEdges, unselectNodesAndEdges, multiSelectionActive } = store.getState();
+      const edge = edges.find((e) => e.id === id);
+
+      if (!edge) {
+        return;
+      }
 
       if (elementsSelectable) {
         store.setState({ nodesSelectionActive: false });
-        addSelectedEdges([id]);
+
+        if (edge.selected && multiSelectionActive) {
+          unselectNodesAndEdges({ nodes: [], edges: [edge] });
+          edgeRef.current?.blur();
+        } else {
+          addSelectedEdges([id]);
+        }
       }
 
       if (onClick) {
-        const edge = edges.find((e) => e.id === id)!;
         onClick(event, edge);
       }
     };

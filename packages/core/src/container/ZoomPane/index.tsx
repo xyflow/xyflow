@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { zoom, zoomIdentity, type D3ZoomEvent, type ZoomTransform } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 import { shallow } from 'zustand/shallow';
@@ -314,6 +314,7 @@ const ZoomPane = ({
         const pinchZoom = zoomOnPinch && event.ctrlKey;
 
         if (
+          (panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(1))) &&
           event.button === 1 &&
           event.type === 'mousedown' &&
           (isWrappedWithClass(event, 'react-flow__node') || isWrappedWithClass(event, 'react-flow__edge'))
@@ -342,7 +343,10 @@ const ZoomPane = ({
         }
 
         // if the target element is inside an element with the nopan class, we prevent panning
-        if (isWrappedWithClass(event, noPanClassName) && event.type !== 'wheel') {
+        if (
+          isWrappedWithClass(event, noPanClassName) &&
+          ((!panOnScroll && event.type !== 'wheel') || (panOnScroll && event.type === 'wheel'))
+        ) {
           return false;
         }
 

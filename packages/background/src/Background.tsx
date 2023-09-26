@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import cc from 'classcat';
 import { useStore, ReactFlowState } from '@reactflow/core';
 import { shallow } from 'zustand/shallow';
@@ -64,7 +64,7 @@ function Background({
       data-testid="rf__background"
     >
       <pattern
-        id={patternId+id}
+        id={patternId + id}
         x={transform[0] % scaledGap[0]}
         y={transform[1] % scaledGap[1]}
         width={scaledGap[0]}
@@ -78,7 +78,7 @@ function Background({
           <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
         )}
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId+id})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId + id})`} />
     </svg>
   );
 }

@@ -1,4 +1,4 @@
-import { useRef, type FC, type PropsWithChildren } from 'react';
+import React, { useRef, type FC, type PropsWithChildren } from 'react';
 import { StoreApi } from 'zustand';
 import { UseBoundStoreWithEqualityFn } from 'zustand/traditional';
 

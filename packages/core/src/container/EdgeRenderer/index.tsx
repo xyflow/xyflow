@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react';
+import React, { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 

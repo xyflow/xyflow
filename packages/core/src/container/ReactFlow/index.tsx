@@ -1,4 +1,4 @@
-import { forwardRef, type CSSProperties } from 'react';
+import React, { forwardRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 
 import Attribution from '../../components/Attribution';
@@ -156,6 +156,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onError,
       style,
       id,
+      nodeDragThreshold,
       ...rest
     },
     ref
@@ -285,6 +286,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onError={onError}
             connectionRadius={connectionRadius}
             isValidConnection={isValidConnection}
+            nodeDragThreshold={nodeDragThreshold}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}

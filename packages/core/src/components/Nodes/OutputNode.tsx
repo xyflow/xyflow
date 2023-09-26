@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 
 import Handle from '../../components/Handle';
 import { Position } from '../../types';

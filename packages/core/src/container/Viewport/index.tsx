@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';

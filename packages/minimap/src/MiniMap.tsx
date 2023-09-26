@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import type { MouseEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
@@ -55,7 +55,7 @@ function MiniMap({
   ariaLabel = 'React Flow mini map',
   inversePan = false,
   zoomStep = 10,
-  offsetScale = 5
+  offsetScale = 5,
 }: MiniMapProps) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);

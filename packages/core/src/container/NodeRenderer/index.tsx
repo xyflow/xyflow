@@ -1,4 +1,4 @@
-import { memo, useMemo, useEffect, useRef } from 'react';
+import React, { memo, useMemo, useEffect, useRef } from 'react';
 import type { ComponentType } from 'react';
 import { shallow } from 'zustand/shallow';
 

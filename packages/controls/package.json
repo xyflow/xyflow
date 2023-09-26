@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/controls",
-  "version": "11.1.19",
+  "version": "11.2.0",
   "description": "Component to control the viewport of a React Flow instance",
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.js",
+      "import": "./dist/esm/index.mjs",
       "require": "./dist/umd/index.js"
     },
     "./dist/style.css": "./dist/style.css"

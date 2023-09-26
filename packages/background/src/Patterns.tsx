@@ -1,21 +1,17 @@
+import React from 'react';
+
 type LinePatternProps = {
   dimensions: [number, number];
   lineWidth?: number;
   color: string;
 };
 
-export function LinePattern({
-  color,
-  dimensions,
-  lineWidth,
-}: LinePatternProps) {
+export function LinePattern({ color, dimensions, lineWidth }: LinePatternProps) {
   return (
     <path
       stroke={color}
       strokeWidth={lineWidth}
-      d={`M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${
-        dimensions[0]
-      }`}
+      d={`M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${dimensions[0]}`}
     />
   );
 }

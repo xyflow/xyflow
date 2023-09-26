@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { MarkerType } from '../../types';
 import type { EdgeMarker } from '../../types';
@@ -10,10 +10,12 @@ type SymbolProps = Omit<EdgeMarker, 'type'>;
 const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   return (
     <polyline
-      stroke={color}
+      style={{
+        stroke: color,
+        strokeWidth,
+      }}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={strokeWidth}
       fill="none"
       points="-5,-4 0,0 -5,4"
     />
@@ -23,11 +25,13 @@ const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
 const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   return (
     <polyline
-      stroke={color}
+      style={{
+        stroke: color,
+        fill: color,
+        strokeWidth,
+      }}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={strokeWidth}
-      fill={color}
       points="-5,-4 0,0 -5,4 -5,-4"
     />
   );
