@@ -6,6 +6,6 @@
 
 {#if $connectionPath}
 	<g class={$connection.connectionStatus}>
-		<path d={$connectionPath} fill="none" stroke="red" />
+		<path d={$connectionPath} fill="none" stroke={$connection.connectionStartHandle?.handleId} />
 	</g>
 {/if}
