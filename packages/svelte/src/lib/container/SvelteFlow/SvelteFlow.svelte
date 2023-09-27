@@ -162,8 +162,12 @@
     <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
       <ViewportComponent>
         <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
-        <ConnectionLine containerStyle={connectionLineContainerStyle} style={connectionLineStyle}>
-          <slot name="connectionLineComponent" slot="connectionLineComponent" />
+        <ConnectionLine
+          containerStyle={connectionLineContainerStyle}
+          style={connectionLineStyle}
+          usingCustomLine={$$slots.connectionLine}
+        >
+          <slot name="connectionLine" slot="connectionLine" />
         </ConnectionLine>
         <div class="svelte-flow__edgelabel-renderer" />
         <NodeRenderer

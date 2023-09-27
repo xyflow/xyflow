@@ -5,16 +5,18 @@
 
   export let containerStyle: string = '';
   export let style: string = '';
+  export let usingCustomLine: boolean = false;
 
   const { width, height, connection } = useStore();
 </script>
 
 {#if $connection.path}
   <svg width={$width} height={$height} class="svelte-flow__connectionline" style={containerStyle}>
-    <slot name="connectionLineComponent">
+    <slot name="connectionLine" />
+    {#if !usingCustomLine}
       <g class={cc(['svelte-flow__connection', $connection.status])} {style}>
         <path d={$connection.path} fill="none" class="svelte-flow__connection-path" />
       </g>
-    </slot>
+    {/if}
   </svg>
 {/if}
