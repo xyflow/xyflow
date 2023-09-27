@@ -160,7 +160,7 @@ export const getTransformForBounds = (
   height: number,
   minZoom: number,
   maxZoom: number,
-  padding = 0.1
+  padding: number
 ): Transform => {
   const xZoom = width / (bounds.width * (1 + padding));
   const yZoom = height / (bounds.height * (1 + padding));

@@ -24,7 +24,7 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type { NodeTypes, EdgeTypes, EdgeLayouted, Node } from '$lib/types';
+import type { NodeTypes, EdgeTypes, EdgeLayouted, Node, FitViewOptions } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 
@@ -58,6 +58,7 @@ export const getInitialStore = () => ({
   autoPanOnConnect: writable<boolean>(true),
   fitViewOnInit: writable<boolean>(false),
   fitViewOnInitDone: writable<boolean>(false),
+  fitViewOptions: writable<FitViewOptions>(undefined),
   panZoom: writable<PanZoomInstance | null>(null),
   snapGrid: writable<SnapGrid | null>(null),
   dragging: writable<boolean>(false),

@@ -85,11 +85,37 @@ export function createStore(): SvelteFlowStore {
       return;
     }
 
-    const fitViewOnInitDone =
-      get(store.fitViewOnInitDone) || (get(store.fitViewOnInit) && fitView({ nodes: nextNodes }));
+    if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
+      const fitViewOptions = get(store.fitViewOptions);
+      const fitViewOnInitDone = fitView(nextNodes, {
+        ...fitViewOptions,
+        nodes: fitViewOptions?.nodes || nextNodes
+      });
+      store.fitViewOnInitDone.set(fitViewOnInitDone);
+    }
 
-    store.fitViewOnInitDone.set(fitViewOnInitDone);
     store.nodes.set(nextNodes);
+  }
+
+  function fitView(nodes: Node[], options?: FitViewOptions) {
+    const panZoom = get(store.panZoom);
+
+    if (!panZoom) {
+      return false;
+    }
+
+    return fitViewUtil(
+      {
+        nodes,
+        width: get(store.width),
+        height: get(store.height),
+        minZoom: get(store.minZoom),
+        maxZoom: get(store.maxZoom),
+        panZoom,
+        nodeOrigin: get(store.nodeOrigin)
+      },
+      options
+    );
   }
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
@@ -133,28 +159,6 @@ export function createStore(): SvelteFlowStore {
       panZoom.setTranslateExtent(extent);
       store.translateExtent.set(extent);
     }
-  }
-
-  function fitView(options?: FitViewOptions) {
-    const panZoom = get(store.panZoom);
-    const fitViewNodes = options?.nodes || get(store.nodes);
-
-    if (!panZoom) {
-      return false;
-    }
-
-    return fitViewUtil(
-      {
-        nodes: fitViewNodes as Node[],
-        width: get(store.width),
-        height: get(store.height),
-        minZoom: get(store.minZoom),
-        maxZoom: get(store.maxZoom),
-        panZoom,
-        nodeOrigin: get(store.nodeOrigin)
-      },
-      {}
-    );
   }
 
   function resetSelectedItem<T extends Node | Edge>(item: T) {

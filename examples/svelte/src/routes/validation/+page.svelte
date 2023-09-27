@@ -32,9 +32,21 @@
 	const edges = writable([]);
 
 	const isValidConnection: IsValidConnection = (connection) => connection.target === 'B';
+
+	const defaultEdgeOptions = {
+		animated: true
+	};
 </script>
 
-<SvelteFlow {nodes} {edges} fitView minZoom={0.1} maxZoom={2.5} {isValidConnection}>
+<SvelteFlow
+	{nodes}
+	{edges}
+	fitView
+	minZoom={0.1}
+	maxZoom={2.5}
+	{isValidConnection}
+	{defaultEdgeOptions}
+>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 </SvelteFlow>
