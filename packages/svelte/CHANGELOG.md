@@ -1,5 +1,8 @@
 ## 0.0.22
 
+- add `connectionLine` slot for rendering a custom connection line 
+- add `connectionLineStyle` and `connectionLineContainerStyle` props
+- add `useConnection` hook
 - add `nodeDragThreshold` prop
 - add `fitViewOptions` prop
 - add `defaultEdgeOptions` prop

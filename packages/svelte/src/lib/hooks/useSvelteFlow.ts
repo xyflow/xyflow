@@ -95,9 +95,7 @@ export function useSvelteFlow(): {
         { duration: options?.duration }
       );
     },
-    fitView: (fitViewOptions?: FitViewOptions) => {
-      fitView(get(nodes), fitViewOptions);
-    },
+    fitView,
     project: (position: XYPosition) => {
       const _snapGrid = get(snapGrid);
       return pointToRendererPoint(

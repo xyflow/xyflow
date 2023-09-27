@@ -23,7 +23,7 @@ export type SvelteFlowStoreActions = {
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
   setTranslateExtent: (extent: CoordinateExtent) => void;
-  fitView: (nodes: Node[], options?: FitViewOptions) => boolean;
+  fitView: (options?: FitViewOptions) => boolean;
   updateNodePositions: UpdateNodePositions;
   updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
   unselectNodesAndEdges: () => void;

@@ -167,7 +167,7 @@
         <ConnectionLine
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
-          usingCustomLine={$$slots.connectionLine}
+          isCustomComponent={$$slots.connectionLine}
         >
           <slot name="connectionLine" slot="connectionLine" />
         </ConnectionLine>

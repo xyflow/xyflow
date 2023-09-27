@@ -5,7 +5,7 @@
 
   export let containerStyle: string = '';
   export let style: string = '';
-  export let usingCustomLine: boolean = false;
+  export let isCustomComponent: boolean = false;
 
   const { width, height, connection } = useStore();
 </script>
@@ -15,7 +15,7 @@
     <g class={cc(['svelte-flow__connection', $connection.status])} {style}>
       <slot name="connectionLine" />
       <!-- slot fallbacks do not work if slots are forwarded in parent -->
-      {#if !usingCustomLine}
+      {#if !isCustomComponent}
         <path d={$connection.path} fill="none" class="svelte-flow__connection-path" />
       {/if}
     </g>
