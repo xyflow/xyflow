@@ -10,5 +10,5 @@
   cx={radius}
   cy={radius}
   r={radius}
-  class={cc(['svelte-flow__background-pattern', 'dot', className])}
+  class={cc(['svelte-flow__background-pattern', 'dots', className])}
 />

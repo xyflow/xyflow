@@ -276,14 +276,14 @@
 }
 
 .xy-flow__background-pattern {
-  &.dot {
+  &.dots {
     fill: var(
       --background-pattern-color-props,
       var(--background-pattern-color, var(--background-pattern-dot-color-default))
     );
   }
 
-  &.line {
+  &.lines {
     stroke: var(
       --background-pattern-color-props,
       var(--background-pattern-color, var(--background-pattern-line-color-default))

@@ -52,6 +52,6 @@
 
 <SvelteFlow {nodes} {edges} fitView minZoom={0.2}>
 	<Controls />
-	<Background variant={BackgroundVariant.Dots} />
+	<Background variant={BackgroundVariant.Lines} />
 	<MiniMap />
 </SvelteFlow>
