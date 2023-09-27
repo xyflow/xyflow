@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { useStore } from '@xyflow/svelte';
 
-	const { connectionPath, connection } = useStore();
+	const { connection } = useStore();
 </script>
 
-{#if $connectionPath}
-	<g class={$connection.connectionStatus}>
-		<path d={$connectionPath} fill="none" stroke={$connection.connectionStartHandle?.handleId} />
+{#if $connection.path}
+	<g class={$connection.status}>
+		<path d={$connection.path} fill="none" stroke={$connection.startHandle?.handleId} />
 	</g>
 {/if}

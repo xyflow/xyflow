@@ -6,14 +6,14 @@
   export let containerStyle: string = '';
   export let style: string = '';
 
-  const { connectionPath, width, height, connection } = useStore();
+  const { width, height, connection } = useStore();
 </script>
 
-{#if $connectionPath}
+{#if $connection.path}
   <svg width={$width} height={$height} class="svelte-flow__connectionline" style={containerStyle}>
     <slot name="connectionLineComponent">
-      <g class={cc(['svelte-flow__connection', $connection.connectionStatus])} {style}>
-        <path d={$connectionPath} fill="none" class="svelte-flow__connection-path" />
+      <g class={cc(['svelte-flow__connection', $connection.status])} {style}>
+        <path d={$connection.path} fill="none" class="svelte-flow__connection-path" />
       </g>
     </slot>
   </svg>

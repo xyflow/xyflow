@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte';
-import { derived, get } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import {
   internalsSymbol,
   createMarkerIds,
@@ -19,18 +19,13 @@ import {
 } from '@xyflow/system';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
-import { getConnectionPath } from './connection-path';
-import {
-  initConnectionData,
-  initialEdgeTypes,
-  initialNodeTypes,
-  getInitialStore
-} from './initial-store';
+import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores } from './utils';
 import { getEdgeTree } from './edge-tree';
 import { getVisibleNodes } from './visible-nodes';
+import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
@@ -252,25 +247,22 @@ export function createStore(): SvelteFlowStore {
     });
   }
 
-  const updateConnection: UpdateConnection = (update) => {
-    const currentConnectionData = get(store.connection);
+  const initConnectionUpdateData = {
+    connectionStartHandle: null,
+    connectionEndHandle: null,
+    connectionPosition: null,
+    connectionStatus: null
+  };
 
-    const nextConnectionData = currentConnectionData
-      ? {
-          ...initConnectionData,
-          ...currentConnectionData,
-          ...update
-        }
-      : {
-          ...initConnectionData,
-          ...update
-        };
-
-    store.connection.set(nextConnectionData);
+  // by creating an internal, unexposed store and using a derived store
+  // we prevent using slow get() calls
+  const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
+  const updateConnection: UpdateConnection = (newConnection: ConnectionData) => {
+    currentConnection.set(newConnection);
   };
 
   function cancelConnection() {
-    updateConnection(initConnectionData);
+    updateConnection(initConnectionUpdateData);
   }
 
   function reset() {
@@ -292,7 +284,7 @@ export function createStore(): SvelteFlowStore {
 
     // derived state
     edgeTree: getEdgeTree(store),
-    connectionPath: getConnectionPath(store),
+    connection: getDerivedConnectionProps(store, currentConnection),
     visibleNodes: getVisibleNodes(store),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],

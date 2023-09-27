@@ -131,8 +131,8 @@ export type UpdateNodePositions = (
 export type PanBy = (delta: XYPosition) => boolean;
 
 export type UpdateConnection = (params: {
-  connectionPosition?: XYPosition | null;
-  connectionStatus?: ConnectionStatus | null;
-  connectionStartHandle?: ConnectingHandle | null;
-  connectionEndHandle?: ConnectingHandle | null;
+  connectionPosition: XYPosition | null;
+  connectionStatus: ConnectionStatus | null;
+  connectionStartHandle: ConnectingHandle | null;
+  connectionEndHandle: ConnectingHandle | null;
 }) => void;
