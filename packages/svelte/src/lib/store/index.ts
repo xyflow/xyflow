@@ -313,7 +313,9 @@ export function createStore(): SvelteFlowStore {
     updateNodeDimensions,
     zoomIn,
     zoomOut,
-    fitView,
+    fitView: (options?: FitViewOptions) => {
+      return fitView(get(store.nodes), options);
+    },
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
