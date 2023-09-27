@@ -5,7 +5,5 @@
 </script>
 
 {#if $connection.path}
-	<g class={$connection.status}>
-		<path d={$connection.path} fill="none" stroke={$connection.startHandle?.handleId} />
-	</g>
+	<path d={$connection.path} fill="none" stroke={$connection.startHandle?.handleId} />
 {/if}

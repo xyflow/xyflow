@@ -12,11 +12,12 @@
 
 {#if $connection.path}
   <svg width={$width} height={$height} class="svelte-flow__connectionline" style={containerStyle}>
-    <slot name="connectionLine" />
-    {#if !usingCustomLine}
-      <g class={cc(['svelte-flow__connection', $connection.status])} {style}>
+    <g class={cc(['svelte-flow__connection', $connection.status])} {style}>
+      <slot name="connectionLine" />
+      <!-- slot fallbacks do not work if slots are forwarded in parent -->
+      {#if !usingCustomLine}
         <path d={$connection.path} fill="none" class="svelte-flow__connection-path" />
-      </g>
-    {/if}
+      {/if}
+    </g>
   </svg>
 {/if}
