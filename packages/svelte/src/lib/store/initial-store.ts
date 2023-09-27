@@ -24,22 +24,9 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type {
-  ConnectionData,
-  NodeTypes,
-  EdgeTypes,
-  EdgeLayouted,
-  Node,
-  FitViewOptions
-} from '$lib/types';
+import type { NodeTypes, EdgeTypes, EdgeLayouted, Node, FitViewOptions } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-
-export const initConnectionData = {
-  connectionStartHandle: null,
-  connectionEndHandle: null,
-  connectionPosition: null,
-  connectionStatus: null
-};
+import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -87,8 +74,7 @@ export const getInitialStore = () => ({
   transform: writable<Transform>([0, 0, 1]),
   connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
   domNode: writable<HTMLDivElement | null>(null),
-  connectionPath: readable<string | null>(null),
-  connection: writable<ConnectionData>(initConnectionData),
+  connection: readable<ConnectionProps>(initConnectionProps),
   connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
   connectionRadius: writable<number>(20),
   isValidConnection: writable<IsValidConnection>(() => true),
