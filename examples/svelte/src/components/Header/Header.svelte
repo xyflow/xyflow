@@ -13,7 +13,8 @@
 		'subflows',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation'
+		'validation',
+		'custom-connection-line'
 	];
 
 	const onChange = (event: Event) => {

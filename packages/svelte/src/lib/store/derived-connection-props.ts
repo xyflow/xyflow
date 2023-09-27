@@ -1,4 +1,4 @@
-import { derived } from 'svelte/store';
+import { derived, type Writable } from 'svelte/store';
 import {
   getBezierPath,
   getSmoothStepPath,
@@ -10,6 +10,35 @@ import {
 } from '@xyflow/system';
 
 import type { SvelteFlowStoreState } from './types';
+import type { ConnectionData } from '$lib/types';
+
+export type ConnectionProps = {
+  path: string | null;
+  sourceX: number | null;
+  sourceY: number | null;
+  sourcePosition: Position | undefined | null;
+  targetX: number | null;
+  targetY: number | null;
+  targetPosition: Position | undefined | null;
+  pointerPosition: ConnectionData['connectionPosition'] | null;
+  startHandle: ConnectionData['connectionStartHandle'] | null;
+  endHandle: ConnectionData['connectionEndHandle'] | null;
+  status: ConnectionData['connectionStatus'] | null;
+};
+
+export const initConnectionProps = {
+  path: null,
+  sourceX: null,
+  sourceY: null,
+  sourcePosition: null,
+  targetX: null,
+  targetY: null,
+  targetPosition: null,
+  pointerPosition: null,
+  startHandle: null,
+  endHandle: null,
+  status: null
+};
 
 const oppositePosition = {
   [Position.Left]: Position.Right,
@@ -18,10 +47,13 @@ const oppositePosition = {
   [Position.Bottom]: Position.Top
 };
 
-export function getConnectionPath(store: SvelteFlowStoreState) {
+export function getDerivedConnectionProps(
+  store: SvelteFlowStoreState,
+  currentConnection: Writable<ConnectionData>
+) {
   return derived(
     [
-      store.connection,
+      currentConnection,
       store.connectionLineType,
       store.connectionMode,
       store.nodes,
@@ -29,7 +61,7 @@ export function getConnectionPath(store: SvelteFlowStoreState) {
     ],
     ([connection, connectionLineType, connectionMode, nodes, transform]) => {
       if (!connection.connectionStartHandle?.nodeId) {
-        return null;
+        return initConnectionProps;
       }
 
       const fromNode = nodes.find((n) => n.id === connection.connectionStartHandle?.nodeId);
@@ -80,7 +112,14 @@ export function getConnectionPath(store: SvelteFlowStoreState) {
         [path] = getStraightPath(pathParams);
       }
 
-      return path;
+      return {
+        path,
+        ...pathParams,
+        pointerPosition: connection.connectionPosition,
+        startHandle: connection.connectionStartHandle,
+        endHandle: connection.connectionEndHandle,
+        status: connection.connectionStatus
+      };
     }
   );
 }

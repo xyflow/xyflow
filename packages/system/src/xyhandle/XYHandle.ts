@@ -66,6 +66,8 @@ const nullConnection: Connection = { source: null, target: null, sourceHandle: n
 
 const alwaysValid = () => true;
 
+let connectionStartHandle: ConnectingHandle | null = null;
+
 function onPointerDown(
   event: MouseEvent | TouchEvent,
   {
@@ -129,15 +131,18 @@ function onPointerDown(
     autoPanId = requestAnimationFrame(autoPan);
   }
 
+  // Stays the same for all consecutive pointermove events
+  connectionStartHandle = {
+    nodeId,
+    handleId,
+    type: handleType,
+  };
+
   updateConnection({
     connectionPosition,
     connectionStatus: null,
     // connectionNodeId etc will be removed in the next major in favor of connectionStartHandle
-    connectionStartHandle: {
-      nodeId,
-      handleId,
-      type: handleType,
-    },
+    connectionStartHandle,
     connectionEndHandle: null,
   });
 
@@ -173,6 +178,7 @@ function onPointerDown(
     isValid = result.isValid;
 
     updateConnection({
+      connectionStartHandle,
       connectionPosition:
         closestHandle && isValid
           ? rendererPointToPoint(
@@ -220,6 +226,7 @@ function onPointerDown(
     isValid = false;
     connection = null;
     handleDomNode = null;
+    connectionStartHandle = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
