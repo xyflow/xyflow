@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { useStore } from '@xyflow/svelte';
+	import { useConnection } from '@xyflow/svelte';
 
-	const { connection } = useStore();
+	const connection = useConnection();
 </script>
 
 {#if $connection.path}
