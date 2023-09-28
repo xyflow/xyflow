@@ -47,6 +47,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   minZoom?: number;
   maxZoom?: number;
   initialViewport?: Viewport;
+  viewport?: Writable<Viewport>;
   connectionRadius?: number;
   connectionMode?: ConnectionMode;
   connectionLineStyle?: string;

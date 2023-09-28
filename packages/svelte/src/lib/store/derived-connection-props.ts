@@ -57,9 +57,9 @@ export function getDerivedConnectionProps(
       store.connectionLineType,
       store.connectionMode,
       store.nodes,
-      store.transform
+      store.viewport
     ],
-    ([connection, connectionLineType, connectionMode, nodes, transform]) => {
+    ([connection, connectionLineType, connectionMode, nodes, viewport]) => {
       if (!connection.connectionStartHandle?.nodeId) {
         return initConnectionProps;
       }
@@ -91,8 +91,8 @@ export function getDerivedConnectionProps(
         sourceX: fromX,
         sourceY: fromY,
         sourcePosition: fromPosition,
-        targetX: ((connection.connectionPosition?.x ?? 0) - transform[0]) / transform[2],
-        targetY: ((connection.connectionPosition?.y ?? 0) - transform[1]) / transform[2],
+        targetX: ((connection.connectionPosition?.x ?? 0) - viewport.x) / viewport.zoom,
+        targetY: ((connection.connectionPosition?.y ?? 0) - viewport.y) / viewport.zoom,
         targetPosition: toPosition
       };
 

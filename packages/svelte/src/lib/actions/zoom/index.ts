@@ -5,15 +5,14 @@ import {
   type CoordinateExtent,
   type OnPanZoom,
   type PanZoomInstance,
-  type Transform,
   type Viewport
 } from '@xyflow/system';
 
 type ZoomParams = {
-  transform: Writable<Transform>;
+  viewport: Writable<Viewport>;
+  initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
-  initialViewport: Viewport;
   dragging: Writable<boolean>;
   onPanZoomStart?: OnPanZoom;
   onPanZoom?: OnPanZoom;
@@ -39,7 +38,7 @@ type ZoomParams = {
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
-  const { panZoom, minZoom, maxZoom, initialViewport, transform, dragging, translateExtent } =
+  const { panZoom, minZoom, maxZoom, initialViewport, viewport, dragging, translateExtent } =
     params;
 
   const panZoomInstance = XYPanZoom({
@@ -48,11 +47,12 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     maxZoom,
     translateExtent,
     viewport: initialViewport,
-    onTransformChange: transform.set,
+    onTransformChange: (transform) =>
+      viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] }),
     onDraggingChange: dragging.set
   });
-  const { x, y, zoom } = panZoomInstance.getViewport();
-  transform.set([x, y, zoom]);
+  const currentViewport = panZoomInstance.getViewport();
+  viewport.set(currentViewport);
   panZoom.set(panZoomInstance);
 
   panZoomInstance.update(params);

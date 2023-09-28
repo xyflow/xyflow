@@ -43,7 +43,7 @@
   const defaultHeight = 150;
   const {
     nodes,
-    transform,
+    viewport,
     width: containerWidth,
     height: containerHeight,
     flowId,
@@ -59,10 +59,10 @@
   const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
 
   $: viewBB = {
-    x: -$transform[0] / $transform[2],
-    y: -$transform[1] / $transform[2],
-    width: $containerWidth / $transform[2],
-    height: $containerHeight / $transform[2]
+    x: -$viewport.x / $viewport.zoom,
+    y: -$viewport.y / $viewport.zoom,
+    width: $containerWidth / $viewport.zoom,
+    height: $containerHeight / $viewport.zoom
   };
   $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes), viewBB) : viewBB;
   $: elementWidth = width ?? defaultWidth;
@@ -100,7 +100,7 @@
       style:--minimap-mask-stroke-width-props={maskStrokeWidth}
       use:interactive={{
         panZoom: $panZoom,
-        transform,
+        viewport,
         getViewScale,
         translateExtent: $translateExtent,
         width: $containerWidth,

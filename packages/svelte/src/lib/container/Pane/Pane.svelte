@@ -45,7 +45,7 @@
   const {
     nodes,
     edges,
-    transform,
+    viewport,
     dragging,
     elementsSelectable,
     selectionRect,
@@ -120,7 +120,7 @@
     selectedNodes = getNodesInside<Node>(
       $nodes,
       nextUserSelectRect,
-      $transform,
+      [$viewport.x, $viewport.y, $viewport.zoom],
       $selectionMode === SelectionMode.Partial,
       true
     );

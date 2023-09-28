@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 
 	const routes = [
+		'custom-connection-line',
 		'customnode',
 		'drag-n-drop',
 		'edges',
@@ -11,10 +12,10 @@
 		'overview',
 		'stress',
 		'subflows',
+		'two-way-viewport',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation',
-		'custom-connection-line'
+		'validation'
 	];
 
 	const onChange = (event: Event) => {

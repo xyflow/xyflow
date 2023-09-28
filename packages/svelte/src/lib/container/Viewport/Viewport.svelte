@@ -1,12 +1,12 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
 
-  const { transform } = useStore();
+  const { viewport } = useStore();
 </script>
 
 <div
   class="svelte-flow__viewport xyflow__viewport"
-  style="transform: translate({$transform[0]}px, {$transform[1]}px) scale({$transform[2]})"
+  style="transform: translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
 >
   <slot />
 </div>

@@ -6,7 +6,8 @@ import type {
   Connection,
   UpdateNodePositions,
   CoordinateExtent,
-  UpdateConnection
+  UpdateConnection,
+  Viewport
 } from '@xyflow/system';
 
 import type { getInitialStore } from './initial-store';
@@ -15,6 +16,7 @@ import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/type
 export type SvelteFlowStoreActions = {
   syncNodeStores: (nodesStore: Writable<Node[]>) => void;
   syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
+  syncViewport: (viewportStore?: Writable<Viewport>) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
   addEdge: (edge: Edge | Connection) => void;
