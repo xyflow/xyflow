@@ -1,4 +1,4 @@
-import { get, writable, type Writable } from 'svelte/store';
+import { get, type Writable } from 'svelte/store';
 import {
   pointToRendererPoint,
   type Project,
@@ -48,14 +48,14 @@ export function useSvelteFlow(): {
       get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
     },
     getZoom: () => get(viewport).zoom,
-    setViewport: (viewport, options) => {
-      const { x, y, zoom } = get(viewport);
+    setViewport: (vieport, options) => {
+      const currentViewport = get(viewport);
 
       get(panZoom)?.setViewport(
         {
-          x: viewport.x ?? x,
-          y: viewport.y ?? y,
-          zoom: viewport.zoom ?? zoom
+          x: vieport.x ?? currentViewport.x,
+          y: vieport.y ?? currentViewport.y,
+          zoom: vieport.zoom ?? currentViewport.zoom
         },
         { duration: options?.duration }
       );
@@ -80,12 +80,9 @@ export function useSvelteFlow(): {
     fitView,
     project: (position: XYPosition) => {
       const _snapGrid = get(snapGrid);
-      return pointToRendererPoint(
-        position,
-        [$viewport.x, $viewport.y, $viewport.zoom],
-        _snapGrid !== null,
-        _snapGrid || [1, 1]
-      );
+      const { x, y, zoom } = get(viewport);
+
+      return pointToRendererPoint(position, [x, y, zoom], _snapGrid !== null, _snapGrid || [1, 1]);
     },
     nodes,
     edges,
