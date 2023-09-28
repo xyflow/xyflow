@@ -8,21 +8,9 @@ const selector = (s: ReactFlowState) => `translate(${s.transform[0]}px,${s.trans
 
 type ViewportProps = {
   children: ReactNode;
-  viewport?: Viewport;
 };
 
-function ControlledViewport({ children, viewport }: Required<ViewportProps>) {
-  return (
-    <div
-      className="react-flow__viewport xyflow__viewport react-flow__container"
-      style={{ transform: `translate(${viewport.x}px,${viewport.y}px) scale(${viewport.zoom})` }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function UncontrolledViewport({ children }: Pick<ViewportProps, 'children'>) {
+function Viewport({ children }: ViewportProps) {
   const transform = useStore(selector);
 
   return (
@@ -32,12 +20,4 @@ function UncontrolledViewport({ children }: Pick<ViewportProps, 'children'>) {
   );
 }
 
-function ViewportWrapper({ children, viewport }: ViewportProps) {
-  if (viewport) {
-    return <ControlledViewport viewport={viewport}>{children}</ControlledViewport>;
-  }
-
-  return <UncontrolledViewport>{children}</UncontrolledViewport>;
-}
-
-export default ViewportWrapper;
+export default Viewport;
