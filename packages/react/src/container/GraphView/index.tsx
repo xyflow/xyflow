@@ -5,8 +5,9 @@ import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
 import useOnInitHandler from '../../hooks/useOnInitHandler';
+import useViewportSync from '../../hooks/useViewportSync';
 import ConnectionLine from '../../components/ConnectionLine';
-import type { NodeTypesWrapped, ReactFlowProps } from '../../types';
+import type { ReactFlowProps } from '../../types';
 import { createNodeTypes } from '../NodeRenderer/utils';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import { useNodeOrEdgeTypes } from './utils';
@@ -104,11 +105,14 @@ const GraphView = ({
   nodeOrigin,
   nodeExtent,
   rfId,
+  viewport,
+  onViewportChange,
 }: GraphViewProps) => {
   const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes);
   const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes);
 
   useOnInitHandler(onInit);
+  useViewportSync(viewport);
 
   return (
     <FlowRenderer
@@ -145,6 +149,8 @@ const GraphView = ({
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
       disableKeyboardA11y={disableKeyboardA11y}
+      onViewportChange={onViewportChange}
+      isControlledViewport={!!viewport}
     >
       <ViewportWrapper>
         <EdgeRenderer

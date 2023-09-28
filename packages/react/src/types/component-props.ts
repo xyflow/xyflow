@@ -120,7 +120,9 @@ export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
   panOnDrag?: boolean | number[];
   minZoom?: number;
   maxZoom?: number;
+  viewport?: Viewport;
   defaultViewport?: Viewport;
+  onViewportChange?: (viewport: Viewport) => void;
   translateExtent?: CoordinateExtent;
   preventScrolling?: boolean;
   nodeExtent?: CoordinateExtent;

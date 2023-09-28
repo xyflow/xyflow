@@ -1,6 +1,6 @@
-import { ZoomTransform } from 'd3-zoom';
+import type { ZoomTransform } from 'd3-zoom';
 
-import { CoordinateExtent, PanOnScrollMode, Transform, Viewport } from './';
+import { PanOnScrollMode, type CoordinateExtent, type Transform, type Viewport } from './';
 
 export type OnDraggingChange = (dragging: boolean) => void;
 export type OnTransformChange = (transform: Transform) => void;
@@ -55,4 +55,5 @@ export type PanZoomInstance = {
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   scaleTo: (scale: number, options?: PanZoomTransformOptions) => void;
   scaleBy: (factor: number, options?: PanZoomTransformOptions) => void;
+  syncViewport: (viewport: Viewport) => void;
 };

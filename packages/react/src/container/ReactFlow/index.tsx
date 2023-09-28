@@ -164,6 +164,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       style,
       id,
       nodeDragThreshold,
+      viewport,
+      onViewportChange,
       ...rest
     },
     ref
@@ -242,6 +244,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             disableKeyboardA11y={disableKeyboardA11y}
             nodeOrigin={nodeOrigin}
             nodeExtent={nodeExtent}
+            viewport={viewport}
+            onViewportChange={onViewportChange}
           />
           <StoreUpdater
             nodes={nodes}

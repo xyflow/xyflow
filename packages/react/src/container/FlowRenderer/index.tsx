@@ -24,6 +24,7 @@ export type FlowRendererProps = Omit<
   | 'rfId'
   | 'nodeOrigin'
 > & {
+  isControlledViewport: boolean;
   children: ReactNode;
 };
 
@@ -63,6 +64,8 @@ const FlowRenderer = ({
   noWheelClassName,
   noPanClassName,
   disableKeyboardA11y,
+  onViewportChange,
+  isControlledViewport,
 }: FlowRendererProps) => {
   const nodesSelectionActive = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
@@ -92,6 +95,8 @@ const FlowRenderer = ({
       preventScrolling={preventScrolling}
       noWheelClassName={noWheelClassName}
       noPanClassName={noPanClassName}
+      onViewportChange={onViewportChange}
+      isControlledViewport={isControlledViewport}
     >
       <Pane
         onSelectionStart={onSelectionStart}
