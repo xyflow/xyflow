@@ -34,7 +34,7 @@
     domNode,
     nodes,
     connectionRadius,
-    transform,
+    viewport,
     isValidConnection,
     lib,
     addEdge,
@@ -80,7 +80,7 @@
         onConnectEnd: (event) => {
           dispatch('connectend', { event });
         },
-        getTransform: () => $transform
+        getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom]
       });
     }
   }

@@ -2,13 +2,13 @@ import { get, type Writable } from 'svelte/store';
 import {
   XYMinimap,
   type PanZoomInstance,
-  type Transform,
+  type Viewport,
   type XYMinimapUpdate
 } from '@xyflow/system';
 
 export type UseInteractiveParams = {
   panZoom: PanZoomInstance;
-  transform: Writable<Transform>;
+  viewport: Writable<Viewport>;
   getViewScale: () => number;
 } & XYMinimapUpdate;
 
@@ -16,7 +16,10 @@ export default function interactive(domNode: Element, params: UseInteractivePara
   const minimap = XYMinimap({
     domNode,
     panZoom: params.panZoom,
-    getTransform: () => get(params.transform),
+    getTransform: () => {
+      const viewport = get(params.viewport);
+      return [viewport.x, viewport.y, viewport.zoom];
+    },
     getViewScale: params.getViewScale
   });
 

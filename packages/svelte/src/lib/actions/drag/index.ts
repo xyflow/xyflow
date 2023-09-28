@@ -24,6 +24,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
     onDragStop,
     getStoreItems: () => {
       const snapGrid = get(store.snapGrid);
+      const vp = get(store.viewport);
 
       return {
         nodes: get(store.nodes),
@@ -34,7 +35,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
         nodeOrigin: [0, 0],
         multiSelectionActive: false,
         domNode: get(store.domNode),
-        transform: get(store.transform),
+        transform: [vp.x, vp.y, vp.zoom],
         autoPanOnNodeDrag: get(store.autoPanOnNodeDrag),
         nodesDraggable: get(store.nodesDraggable),
         selectNodesOnDrag: get(store.selectNodesOnDrag),

@@ -183,7 +183,9 @@ export function createPanZoomHandler({
       onPaneContextMenu && isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0)
     );
 
-    onTransformChange([event.transform.x, event.transform.y, event.transform.k]);
+    if (!event.sourceEvent?.sync) {
+      onTransformChange([event.transform.x, event.transform.y, event.transform.k]);
+    }
 
     if (onPanZoom && !event.sourceEvent?.internal) {
       onPanZoom?.(event.sourceEvent as MouseEvent | TouchEvent, transformToViewport(event.transform));

@@ -5,7 +5,6 @@ import {
   ConnectionMode,
   ConnectionLineType,
   type SelectionRect,
-  type Transform,
   type SnapGrid,
   type MarkerProps,
   type PanZoomInstance,
@@ -14,7 +13,8 @@ import {
   type GroupedEdges,
   type NodeOrigin,
   type OnError,
-  devWarn
+  devWarn,
+  type Viewport
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -72,7 +72,7 @@ export const getInitialStore = () => ({
   selectionMode: writable<SelectionMode>(SelectionMode.Partial),
   nodeTypes: writable<NodeTypes>(initialNodeTypes),
   edgeTypes: writable<EdgeTypes>(initialEdgeTypes),
-  transform: writable<Transform>([0, 0, 1]),
+  viewport: writable<Viewport>({ x: 0, y: 0, zoom: 1 }),
   connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
   domNode: writable<HTMLDivElement | null>(null),
   connection: readable<ConnectionProps>(initConnectionProps),

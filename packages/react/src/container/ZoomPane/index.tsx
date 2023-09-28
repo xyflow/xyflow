@@ -18,7 +18,9 @@ type ZoomPaneProps = Omit<
   | 'noDragClassName'
   | 'disableKeyboardA11y'
   | 'selectionOnDrag'
->;
+> & {
+  isControlledViewport: boolean;
+};
 
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
@@ -43,6 +45,8 @@ const ZoomPane = ({
   children,
   noWheelClassName,
   noPanClassName,
+  onViewportChange,
+  isControlledViewport,
 }: ZoomPaneProps) => {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -60,7 +64,13 @@ const ZoomPane = ({
         maxZoom,
         translateExtent,
         viewport: defaultViewport,
-        onTransformChange: (transform: Transform) => store.setState({ transform }),
+        onTransformChange: (transform: Transform) => {
+          onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
+
+          if (!isControlledViewport) {
+            store.setState({ transform });
+          }
+        },
         onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();

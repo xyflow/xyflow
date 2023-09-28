@@ -194,6 +194,22 @@ export function XYPanZoom({
     return nextTransform;
   }
 
+  function syncViewport(viewport: Viewport) {
+    if (d3Selection) {
+      const nextTransform = viewportToTransform(viewport);
+      const currentTransform = d3Selection.property('__zoom');
+
+      if (
+        currentTransform.k !== viewport.zoom ||
+        currentTransform.x !== viewport.x ||
+        currentTransform.y !== viewport.y
+      ) {
+        // @ts-ignore
+        d3ZoomInstance?.transform(d3Selection, nextTransform, null, { sync: true });
+      }
+    }
+  }
+
   function getViewport(): Viewport {
     const transform = d3Selection ? zoomTransform(d3Selection.node() as Element) : { x: 0, y: 0, k: 1 };
     return { x: transform.x, y: transform.y, zoom: transform.k };
@@ -229,5 +245,6 @@ export function XYPanZoom({
     scaleBy,
     setScaleExtent,
     setTranslateExtent,
+    syncViewport,
   };
 }

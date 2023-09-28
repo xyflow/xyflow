@@ -6,7 +6,7 @@ import {
   type Writable,
   get
 } from 'svelte/store';
-import { updateNodes } from '@xyflow/system';
+import { updateNodes, type Transform, type Viewport, type PanZoomInstance } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
 
@@ -55,6 +55,54 @@ export function syncEdgeStores(
   edgesStore.set = userEdgesStore.set = _set;
   edgesStore.update = userEdgesStore.update = (fn: (nds: Edge[]) => Edge[]) => _set(fn(val));
 }
+
+// it is possible to pass a viewport store to SvelteFlow for having more control
+// if that's the case we need to sync the internal viewport with the user viewport
+export const syncViewportStores = (
+  panZoomStore: Writable<PanZoomInstance | null>,
+  viewportStore: Writable<Viewport>,
+  userViewportStore?: Writable<Viewport>
+) => {
+  if (!userViewportStore) {
+    return;
+  }
+
+  const panZoom = get(panZoomStore);
+
+  const viewportStoreSetter = viewportStore.set;
+  const userViewportStoreSetter = userViewportStore.set;
+
+  let val = userViewportStore ? get(userViewportStore) : { x: 0, y: 0, zoom: 1 };
+  viewportStore.set(val);
+
+  viewportStore.set = (vp: Viewport) => {
+    viewportStoreSetter(vp);
+    userViewportStoreSetter(vp);
+
+    val = vp;
+
+    return vp;
+  };
+
+  userViewportStore.set = (vp: Viewport) => {
+    panZoom?.syncViewport(vp);
+
+    viewportStoreSetter(vp);
+    userViewportStoreSetter(vp);
+
+    val = vp;
+
+    return vp;
+  };
+
+  viewportStore.update = (fn: (vp: Viewport) => Viewport) => {
+    viewportStore.set(fn(val));
+  };
+
+  userViewportStore.update = (fn: (vp: Viewport) => Viewport) => {
+    userViewportStore.set(fn(val));
+  };
+};
 
 export type NodeStoreOptions = {
   elevateNodesOnSelect?: boolean;

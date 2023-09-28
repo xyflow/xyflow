@@ -26,15 +26,15 @@
   let className: $$Props['class'] = '';
   export { className as class };
 
-  const { transform, flowId } = useStore();
+  const { viewport, flowId } = useStore();
   const patternSize = size || defaultSize[variant!];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
 
   $: patternId = `background-pattern-${$flowId}`;
-  $: scaledGap = [gapXY[0] * $transform[2] || 1, gapXY[1] * $transform[2] || 1];
-  $: scaledSize = patternSize * $transform[2];
+  $: scaledGap = [gapXY[0] * $viewport.zoom || 1, gapXY[1] * $viewport.zoom || 1];
+  $: scaledSize = patternSize * $viewport.zoom;
   $: patternDimensions = (isCross ? [scaledSize, scaledSize] : scaledGap) as [number, number];
   $: patternOffset = isDots
     ? [scaledSize / 2, scaledSize / 2]
@@ -49,8 +49,8 @@
 >
   <pattern
     id={patternId}
-    x={$transform[0] % scaledGap[0]}
-    y={$transform[1] % scaledGap[1]}
+    x={$viewport.x % scaledGap[0]}
+    y={$viewport.y % scaledGap[1]}
     width={scaledGap[0]}
     height={scaledGap[1]}
     patternUnits="userSpaceOnUse"

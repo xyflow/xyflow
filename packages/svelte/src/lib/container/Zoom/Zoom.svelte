@@ -20,7 +20,7 @@
   export let panOnScroll: $$Props['panOnScroll'];
 
   const {
-    transform,
+    viewport,
     panZoom,
     selectionKeyPressed,
     minZoom,
@@ -38,7 +38,7 @@
 <div
   class="svelte-flow__zoom"
   use:zoom={{
-    transform,
+    viewport,
     minZoom: $minZoom,
     maxZoom: $maxZoom,
     initialViewport: viewPort,

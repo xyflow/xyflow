@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-ro
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
+import ControlledViewport from '../examples/ControlledViewport';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
 import CustomMiniMapNode from '../examples/CustomMiniMapNode';
 import CustomNode from '../examples/CustomNode';
@@ -73,6 +74,11 @@ const routes: IRoute[] = [
     name: 'Controlled/Uncontrolled',
     path: '/controlled-uncontrolled',
     component: ControlledUncontrolled,
+  },
+  {
+    name: 'Controlled Viewport',
+    path: '/controlled-viewport',
+    component: ControlledViewport,
   },
   {
     name: 'Custom Connection Line',

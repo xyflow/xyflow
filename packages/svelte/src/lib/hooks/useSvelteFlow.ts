@@ -1,4 +1,4 @@
-import { get, writable, type Writable } from 'svelte/store';
+import { get, type Writable } from 'svelte/store';
 import {
   pointToRendererPoint,
   type Project,
@@ -32,7 +32,7 @@ export function useSvelteFlow(): {
     zoomOut,
     fitView,
     snapGrid,
-    transform,
+    viewport,
     width,
     height,
     maxZoom,
@@ -41,44 +41,26 @@ export function useSvelteFlow(): {
     edges
   } = useStore();
 
-  const transformValues = get(transform);
-  const viewportWritable = writable({
-    x: transformValues[0],
-    y: transformValues[1],
-    zoom: transformValues[2]
-  });
-
-  transform.subscribe((ts) =>
-    viewportWritable.set({
-      x: ts[0],
-      y: ts[1],
-      zoom: ts[2]
-    })
-  );
-
   return {
     zoomIn,
     zoomOut,
     setZoom: (zoomLevel, options) => {
       get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
     },
-    getZoom: () => get(transform)[2],
-    setViewport: (viewport, options) => {
-      const [x, y, zoom] = get(transform);
+    getZoom: () => get(viewport).zoom,
+    setViewport: (vieport, options) => {
+      const currentViewport = get(viewport);
 
       get(panZoom)?.setViewport(
         {
-          x: viewport.x ?? x,
-          y: viewport.y ?? y,
-          zoom: viewport.zoom ?? zoom
+          x: vieport.x ?? currentViewport.x,
+          y: vieport.y ?? currentViewport.y,
+          zoom: vieport.zoom ?? currentViewport.zoom
         },
         { duration: options?.duration }
       );
     },
-    getViewport: () => {
-      const [x, y, zoom] = get(transform);
-      return { x, y, zoom };
-    },
+    getViewport: () => get(viewport),
     setCenter: (x, y, options) => {
       const _width = get(width);
       const _height = get(height);
@@ -98,15 +80,12 @@ export function useSvelteFlow(): {
     fitView,
     project: (position: XYPosition) => {
       const _snapGrid = get(snapGrid);
-      return pointToRendererPoint(
-        position,
-        get(transform),
-        _snapGrid !== null,
-        _snapGrid || [1, 1]
-      );
+      const { x, y, zoom } = get(viewport);
+
+      return pointToRendererPoint(position, [x, y, zoom], _snapGrid !== null, _snapGrid || [1, 1]);
     },
     nodes,
     edges,
-    viewport: viewportWritable
+    viewport: viewport
   };
 }

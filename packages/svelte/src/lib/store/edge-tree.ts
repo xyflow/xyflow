@@ -10,11 +10,11 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
       store.edges,
       store.nodes,
       store.onlyRenderVisibleElements,
-      store.transform,
+      store.viewport,
       store.width,
       store.height
     ],
-    ([edges, nodes, onlyRenderVisibleElements, transform, width, height]) => {
+    ([edges, nodes, onlyRenderVisibleElements, viewport, width, height]) => {
       const visibleEdges =
         onlyRenderVisibleElements && width && height
           ? edges.filter((edge) => {
@@ -29,7 +29,7 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
                   targetNode,
                   width,
                   height,
-                  transform
+                  transform: [viewport.x, viewport.y, viewport.zoom]
                 })
               );
             })

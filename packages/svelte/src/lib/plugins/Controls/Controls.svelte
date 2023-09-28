@@ -26,7 +26,7 @@
     zoomIn,
     zoomOut,
     fitView,
-    transform,
+    viewport,
     minZoom,
     maxZoom,
     nodesDraggable,
@@ -43,8 +43,8 @@
   };
 
   $: isInteractive = $nodesDraggable || $nodesConnectable || $elementsSelectable;
-  $: minZoomReached = $transform[2] <= $minZoom;
-  $: maxZoomReached = $transform[2] >= $maxZoom;
+  $: minZoomReached = $viewport.zoom <= $minZoom;
+  $: maxZoomReached = $viewport.zoom >= $maxZoom;
 
   const onZoomInHandler = () => {
     zoomIn();
