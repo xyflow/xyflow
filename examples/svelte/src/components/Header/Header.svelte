@@ -15,7 +15,8 @@
 		'two-way-viewport',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation'
+		'validation',
+		'intersections'
 	];
 
 	const onChange = (event: Event) => {

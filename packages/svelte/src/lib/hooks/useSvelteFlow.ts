@@ -1,7 +1,11 @@
 import { get, type Writable } from 'svelte/store';
 import {
+  getOverlappingArea,
+  isRectObject,
+  nodeToRect,
   pointToRendererPoint,
   type Project,
+  type Rect,
   type SetCenterOptions,
   type Viewport,
   type ViewportHelperFunctionOptions,
@@ -10,7 +14,7 @@ import {
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import type { FitViewOptions } from '$lib/types';
+import type { FitViewOptions, Node } from '$lib/types';
 import type { SvelteFlowStore } from '$lib/store/types';
 
 export function useSvelteFlow(): {
@@ -22,6 +26,16 @@ export function useSvelteFlow(): {
   setViewport: (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
   getViewport: () => Viewport;
   fitView: (options?: FitViewOptions) => void;
+  getIntersectingNodes: (
+    nodeOrRect: Partial<Node<any>> | Rect,
+    partially?: boolean,
+    nodesToIntersect?: Node[]
+  ) => Node[];
+  isNodeIntersecting: (
+    nodeOrRect: Partial<Node<any>> | Rect,
+    area: Rect,
+    partially?: boolean
+  ) => boolean;
   project: Project;
   viewport: Writable<Viewport>;
   nodes: SvelteFlowStore['nodes'];
@@ -40,6 +54,21 @@ export function useSvelteFlow(): {
     nodes,
     edges
   } = useStore();
+
+  const getNodeRect = (
+    nodeOrRect: Partial<Node<any>> | Rect
+  ): [Rect | null, Node<any> | null | undefined, boolean] => {
+    const isRect = isRectObject(nodeOrRect);
+    const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
+
+    if (!isRect && !node) {
+      [null, null, isRect];
+    }
+
+    const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
+
+    return [nodeRect, node, isRect];
+  };
 
   return {
     zoomIn,
@@ -78,6 +107,41 @@ export function useSvelteFlow(): {
       );
     },
     fitView,
+    getIntersectingNodes: (
+      nodeOrRect: Partial<Node<any>> | Rect,
+      partially = true,
+      nodesToIntersect?: Node[]
+    ) => {
+      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return [];
+      }
+
+      return (nodesToIntersect || get(nodes)).filter((n) => {
+        if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
+          return false;
+        }
+
+        const currNodeRect = nodeToRect(n);
+        const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+        const partiallyVisible = partially && overlappingArea > 0;
+
+        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      });
+    },
+    isNodeIntersecting: (nodeOrRect: Partial<Node<any>> | Rect, area: Rect, partially = true) => {
+      const [nodeRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return false;
+      }
+
+      const overlappingArea = getOverlappingArea(nodeRect, area);
+      const partiallyVisible = partially && overlappingArea > 0;
+
+      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+    },
     project: (position: XYPosition) => {
       const _snapGrid = get(snapGrid);
       const { x, y, zoom } = get(viewport);
