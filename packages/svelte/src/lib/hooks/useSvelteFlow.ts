@@ -27,12 +27,12 @@ export function useSvelteFlow(): {
   getViewport: () => Viewport;
   fitView: (options?: FitViewOptions) => void;
   getIntersectingNodes: (
-    nodeOrRect: Partial<Node<any>> | Rect,
+    nodeOrRect: (Partial<Node<any>> & { id: Node['id'] }) | Rect,
     partially?: boolean,
     nodesToIntersect?: Node[]
   ) => Node[];
   isNodeIntersecting: (
-    nodeOrRect: Partial<Node<any>> | Rect,
+    nodeOrRect: (Partial<Node<any>> & { id: Node['id'] }) | Rect,
     area: Rect,
     partially?: boolean
   ) => boolean;
@@ -56,7 +56,7 @@ export function useSvelteFlow(): {
   } = useStore();
 
   const getNodeRect = (
-    nodeOrRect: Partial<Node<any>> | Rect
+    nodeOrRect: (Partial<Node<any>> & { id: Node['id'] }) | Rect
   ): [Rect | null, Node<any> | null | undefined, boolean] => {
     const isRect = isRectObject(nodeOrRect);
     const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
@@ -108,7 +108,7 @@ export function useSvelteFlow(): {
     },
     fitView,
     getIntersectingNodes: (
-      nodeOrRect: Partial<Node<any>> | Rect,
+      nodeOrRect: (Partial<Node<any>> & { id: Node['id'] }) | Rect,
       partially = true,
       nodesToIntersect?: Node[]
     ) => {
@@ -130,7 +130,11 @@ export function useSvelteFlow(): {
         return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
       });
     },
-    isNodeIntersecting: (nodeOrRect: Partial<Node<any>> | Rect, area: Rect, partially = true) => {
+    isNodeIntersecting: (
+      nodeOrRect: (Partial<Node<any>> & { id: Node['id'] }) | Rect,
+      area: Rect,
+      partially = true
+    ) => {
       const [nodeRect] = getNodeRect(nodeOrRect);
 
       if (!nodeRect) {
