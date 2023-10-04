@@ -31,6 +31,8 @@ export function useSvelteFlow(): {
     edgesToRemove?: Partial<Edge> & { id: string }[]
   ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
   project: Project;
+  screenToFlowCoordinate: (position: XYPosition) => XYPosition;
+  flowToScreenCoordinate: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
 } {
   const {
@@ -45,7 +47,8 @@ export function useSvelteFlow(): {
     maxZoom,
     panZoom,
     nodes,
-    edges
+    edges,
+    domNode
   } = useStore();
 
   return {
@@ -140,6 +143,31 @@ export function useSvelteFlow(): {
       const { x, y, zoom } = get(viewport);
 
       return pointToRendererPoint(position, [x, y, zoom], _snapGrid !== null, _snapGrid || [1, 1]);
+    },
+    screenToFlowCoordinate: (position: XYPosition) => {
+      const _domNode = get(domNode);
+      if (_domNode) {
+        const _snapGrid = get(snapGrid);
+        const { x, y, zoom } = get(viewport);
+        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+
+        const correctedPosition = {
+          x: position.x - domX,
+          y: position.y - domY
+        };
+
+        return pointToRendererPoint(
+          correctedPosition,
+          [x, y, zoom],
+          _snapGrid !== null,
+          _snapGrid || [1, 1]
+        );
+      }
+
+      return { x: 0, y: 0 };
+    },
+    flowToScreenCoordinate: (position: XYPosition) => {
+      return { x: 0, y: 0 };
     },
     viewport: viewport
   };
