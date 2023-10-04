@@ -2,7 +2,6 @@ import { get, type Writable } from 'svelte/store';
 import {
   pointToRendererPoint,
   type FitBoundsOptions,
-  type Project,
   type SetCenterOptions,
   type Viewport,
   type ViewportHelperFunctionOptions,
@@ -31,7 +30,6 @@ export function useSvelteFlow(): {
     nodesToRemove?: Partial<Node> & { id: string }[],
     edgesToRemove?: Partial<Edge> & { id: string }[]
   ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
-  project: Project;
   screenToFlowCoordinate: (position: XYPosition) => XYPosition;
   flowToScreenCoordinate: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
@@ -138,12 +136,6 @@ export function useSvelteFlow(): {
         deletedNodes: matchingNodes,
         deletedEdges: matchingEdges
       };
-    },
-    project: (position: XYPosition) => {
-      const _snapGrid = get(snapGrid);
-      const { x, y, zoom } = get(viewport);
-
-      return pointToRendererPoint(position, [x, y, zoom], _snapGrid !== null, _snapGrid || [1, 1]);
     },
     screenToFlowCoordinate: (position: XYPosition) => {
       const _domNode = get(domNode);
