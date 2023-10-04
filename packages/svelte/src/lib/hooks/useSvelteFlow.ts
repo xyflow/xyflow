@@ -11,7 +11,6 @@ import {
 
 import { useStore } from '$lib/store';
 import type { FitViewOptions } from '$lib/types';
-import type { SvelteFlowStore } from '$lib/store/types';
 
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
@@ -24,22 +23,9 @@ export function useSvelteFlow(): {
   fitView: (options?: FitViewOptions) => void;
   project: Project;
   viewport: Writable<Viewport>;
-  nodes: SvelteFlowStore['nodes'];
-  edges: SvelteFlowStore['edges'];
 } {
-  const {
-    zoomIn,
-    zoomOut,
-    fitView,
-    snapGrid,
-    viewport,
-    width,
-    height,
-    maxZoom,
-    panZoom,
-    nodes,
-    edges
-  } = useStore();
+  const { zoomIn, zoomOut, fitView, snapGrid, viewport, width, height, maxZoom, panZoom } =
+    useStore();
 
   return {
     zoomIn,
@@ -84,8 +70,6 @@ export function useSvelteFlow(): {
 
       return pointToRendererPoint(position, [x, y, zoom], _snapGrid !== null, _snapGrid || [1, 1]);
     },
-    nodes,
-    edges,
     viewport: viewport
   };
 }
