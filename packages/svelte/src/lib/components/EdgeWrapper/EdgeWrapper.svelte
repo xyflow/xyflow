@@ -1,3 +1,5 @@
+<svelte:options immutable />
+
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { getMarkerId } from '@xyflow/system';
