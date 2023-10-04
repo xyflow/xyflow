@@ -11,7 +11,7 @@ import {
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { updateNodesAndEdgesSelections } from './utils';
-import initialState from './initialState';
+import getInitialState from './initialState';
 import type {
   ReactFlowState,
   Node,
@@ -24,10 +24,10 @@ import type {
   FitViewOptions,
 } from '../types';
 
-const createRFStore = () =>
+const createRFStore = ({ nodes, edges }: { nodes?: Node[]; edges?: Edge[] }) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...initialState,
+      ...getInitialState({ nodes, edges }),
       setNodes: (nodes: Node[]) => {
         const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
         const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
@@ -263,9 +263,9 @@ const createRFStore = () =>
       },
       cancelConnection: () =>
         set({
-          connectionStatus: initialState.connectionStatus,
-          connectionStartHandle: initialState.connectionStartHandle,
-          connectionEndHandle: initialState.connectionEndHandle,
+          connectionStatus: null,
+          connectionStartHandle: null,
+          connectionEndHandle: null,
         }),
       updateConnection: (params) => {
         const { connectionStatus, connectionStartHandle, connectionEndHandle, connectionPosition } = get();
@@ -279,7 +279,7 @@ const createRFStore = () =>
 
         set(currentConnection);
       },
-      reset: () => set({ ...initialState }),
+      reset: () => set({ ...getInitialState({ nodes: [] }) }),
     }),
     Object.is
   );

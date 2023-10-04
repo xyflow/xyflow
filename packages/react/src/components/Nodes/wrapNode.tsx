@@ -181,7 +181,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           zIndex,
           transform: `translate(${xPosOrigin}px,${yPosOrigin}px)`,
           pointerEvents: hasPointerEvents ? 'all' : 'none',
-          visibility: initialized ? 'visible' : 'hidden',
+          visibility: initialized ? 'visible' : 'visible',
           ...style,
         }}
         data-id={id}
