@@ -10,7 +10,8 @@ import {
   type ZoomInOut,
   type Rect,
   getTransformForBounds,
-  getElementsToRemove
+  getElementsToRemove,
+  rendererPointToPoint
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -167,6 +168,19 @@ export function useSvelteFlow(): {
       return { x: 0, y: 0 };
     },
     flowToScreenCoordinate: (position: XYPosition) => {
+      const _domNode = get(domNode);
+      if (_domNode) {
+        const { x, y, zoom } = get(viewport);
+        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+
+        const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
+
+        return {
+          x: rendererPosition.x + domX,
+          y: rendererPosition.y + domY
+        };
+      }
+
       return { x: 0, y: 0 };
     },
     viewport: viewport

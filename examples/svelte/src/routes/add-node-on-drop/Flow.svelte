@@ -22,24 +22,33 @@
 	let id = 1;
 	const getId = () => `${id++}`;
 
-	const { screenToFlowCoordinate } = useSvelteFlow();
+	const { screenToFlowCoordinate, flowToScreenCoordinate } = useSvelteFlow();
 
 	function handleConnectEnd({ detail: { event } }: { detail: { event: MouseEvent | TouchEvent } }) {
 		// See of connection landed inside the flow pane
 		const targetIsPane = event.target?.classList.contains('svelte-flow__pane');
 		if (targetIsPane) {
 			const id = getId();
+			const position = {
+				x: event.clientX,
+				y: event.clientY
+			};
+
+			const doubleTransformedPosition = flowToScreenCoordinate(screenToFlowCoordinate(position));
+			console.log(
+				'Is transforming in both directions (screen-flow, flow-screen) the same?',
+				position.x === doubleTransformedPosition.x && position.y === doubleTransformedPosition.y
+			);
+
 			const newNode: Node = {
 				id,
 				data: { label: `Node ${id}` },
 				// project the screen coordinates to pane coordinates
-				position: screenToFlowCoordinate({
-					x: event.clientX,
-					y: event.clientY
-				}),
+				position: screenToFlowCoordinate(position),
 				// set the origin of the new node so it is centered
 				origin: [0.5, 0.0]
 			};
+
 			$nodes.push(newNode);
 			$edges.push({
 				source: connectingNodeId,
