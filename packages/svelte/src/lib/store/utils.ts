@@ -6,7 +6,7 @@ import {
   type Writable,
   get
 } from 'svelte/store';
-import { updateNodes, type Transform, type Viewport, type PanZoomInstance } from '@xyflow/system';
+import { updateNodes, type Viewport, type PanZoomInstance } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
 

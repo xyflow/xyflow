@@ -16,6 +16,7 @@
   import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
   import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
+  import { get } from 'svelte/store';
 
   type $$Props = SvelteFlowProps;
 
@@ -63,6 +64,8 @@
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
+  export let width: $$Props['width'] = undefined;
+  export let height: $$Props['height'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -72,7 +75,9 @@
 
   let domNode: HTMLDivElement;
 
-  const store = hasContext(key) ? useStore() : createStoreContext();
+  const store = hasContext(key)
+    ? useStore()
+    : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height });
 
   onMount(() => {
     const { width, height } = domNode.getBoundingClientRect();
