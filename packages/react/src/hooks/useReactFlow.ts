@@ -223,6 +223,21 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     []
   );
 
+  const getConnectedEdges = useCallback<Instance.getConnectedEdges>((node) => {
+    const edges = store.getState().edges;
+
+    const nodeIds = new Set();
+    if (typeof node === 'string') {
+      nodeIds.add(node);
+    } else if (node.length >= 1) {
+      node.forEach((n) => {
+        nodeIds.add(n.id);
+      });
+    }
+
+    return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+  }, []);
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -238,6 +253,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       deleteElements,
       getIntersectingNodes,
       isNodeIntersecting,
+      getConnectedEdges,
     };
   }, [
     viewportHelper,
@@ -253,5 +269,6 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     deleteElements,
     getIntersectingNodes,
     isNodeIntersecting,
+    getConnectedEdges,
   ]);
 }
