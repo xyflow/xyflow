@@ -28,7 +28,10 @@ export namespace Instance {
   export type GetEdge<EdgeData> = (id: string) => Edge<EdgeData> | undefined;
   export type AddEdges<EdgeData> = (payload: Edge<EdgeData>[] | Edge<EdgeData>) => void;
   export type ToObject<NodeData = any, EdgeData = any> = () => ReactFlowJsonObject<NodeData, EdgeData>;
-  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => void;
+  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => {
+    deletedNodes: Node[];
+    deletedEdges: Edge[];
+  };
   export type GetIntersectingNodes<NodeData> = (
     node: (Partial<Node<NodeData>> & { id: Node['id'] }) | Rect,
     partially?: boolean,
@@ -39,6 +42,9 @@ export namespace Instance {
     area: Rect,
     partially?: boolean
   ) => boolean;
+  export type getConnectedEdges = (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
+  export type getIncomers = (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  export type getOutgoers = (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
 }
 
 export type ReactFlowInstance<NodeData = any, EdgeData = any> = {

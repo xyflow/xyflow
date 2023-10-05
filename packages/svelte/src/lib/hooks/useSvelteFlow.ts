@@ -1,17 +1,25 @@
 import { get, type Writable } from 'svelte/store';
 import {
+  getIncomersBase,
+  getOutgoersBase,
+  getOverlappingArea,
+  isRectObject,
+  nodeToRect,
   pointToRendererPoint,
-  type Project,
+  type FitBoundsOptions,
   type SetCenterOptions,
   type Viewport,
   type ViewportHelperFunctionOptions,
   type XYPosition,
-  type ZoomInOut
+  type ZoomInOut,
+  type Rect,
+  getTransformForBounds,
+  getElementsToRemove,
+  rendererPointToPoint
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import type { FitViewOptions } from '$lib/types';
-import type { SvelteFlowStore } from '$lib/store/types';
+import type { Edge, FitViewOptions, Node } from '$lib/types';
 
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
@@ -22,10 +30,27 @@ export function useSvelteFlow(): {
   setViewport: (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
   getViewport: () => Viewport;
   fitView: (options?: FitViewOptions) => void;
-  project: Project;
+  getIntersectingNodes: (
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    partially?: boolean,
+    nodesToIntersect?: Node[]
+  ) => Node[];
+  isNodeIntersecting: (
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    area: Rect,
+    partially?: boolean
+  ) => boolean;
+  fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
+  deleteElements: (
+    nodesToRemove?: Partial<Node> & { id: string }[],
+    edgesToRemove?: Partial<Edge> & { id: string }[]
+  ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
+  screenToFlowCoordinate: (position: XYPosition) => XYPosition;
+  flowToScreenCoordinate: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
-  nodes: SvelteFlowStore['nodes'];
-  edges: SvelteFlowStore['edges'];
+  getConnectedEdges: (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
+  getIncomers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  getOutgoers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
 } {
   const {
     zoomIn,
@@ -35,11 +60,28 @@ export function useSvelteFlow(): {
     viewport,
     width,
     height,
+    minZoom,
     maxZoom,
     panZoom,
     nodes,
-    edges
+    edges,
+    domNode
   } = useStore();
+
+  const getNodeRect = (
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect
+  ): [Rect | null, Node | null | undefined, boolean] => {
+    const isRect = isRectObject(nodeOrRect);
+    const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
+
+    if (!isRect && !node) {
+      return [null, null, isRect];
+    }
+
+    const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
+
+    return [nodeRect, node, isRect];
+  };
 
   return {
     zoomIn,
@@ -62,30 +104,165 @@ export function useSvelteFlow(): {
     },
     getViewport: () => get(viewport),
     setCenter: (x, y, options) => {
-      const _width = get(width);
-      const _height = get(height);
-      const _maxZoom = get(maxZoom);
-
-      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : _maxZoom;
+      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : get(maxZoom);
 
       get(panZoom)?.setViewport(
         {
-          x: _width / 2 - x * nextZoom,
-          y: _height / 2 - y * nextZoom,
+          x: get(width) / 2 - x * nextZoom,
+          y: get(height) / 2 - y * nextZoom,
           zoom: nextZoom
         },
         { duration: options?.duration }
       );
     },
     fitView,
-    project: (position: XYPosition) => {
-      const _snapGrid = get(snapGrid);
-      const { x, y, zoom } = get(viewport);
+    fitBounds: (bounds: Rect, options?: FitBoundsOptions) => {
+      const [x, y, zoom] = getTransformForBounds(
+        bounds,
+        get(width),
+        get(height),
+        get(minZoom),
+        get(maxZoom),
+        options?.padding ?? 0.1
+      );
 
-      return pointToRendererPoint(position, [x, y, zoom], _snapGrid !== null, _snapGrid || [1, 1]);
+      get(panZoom)?.setViewport(
+        {
+          x,
+          y,
+          zoom
+        },
+        { duration: options?.duration }
+      );
     },
-    nodes,
-    edges,
-    viewport: viewport
+    getIntersectingNodes: (
+      nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+      partially = true,
+      nodesToIntersect?: Node[]
+    ) => {
+      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect || !node) {
+        return [];
+      }
+
+      return (nodesToIntersect || get(nodes)).filter((n) => {
+        if (!isRect && (n.id === node.id || !n.positionAbsolute)) {
+          return false;
+        }
+
+        const currNodeRect = nodeToRect(n);
+        const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+        const partiallyVisible = partially && overlappingArea > 0;
+
+        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      });
+    },
+    isNodeIntersecting: (
+      nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+      area: Rect,
+      partially = true
+    ) => {
+      const [nodeRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return false;
+      }
+
+      const overlappingArea = getOverlappingArea(nodeRect, area);
+      const partiallyVisible = partially && overlappingArea > 0;
+
+      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+    },
+    deleteElements: (
+      nodesToRemove: Partial<Node> & { id: string }[] = [],
+      edgesToRemove: Partial<Edge> & { id: string }[] = []
+    ) => {
+      const _nodes = get(nodes);
+      const _edges = get(edges);
+      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+        nodesToRemove,
+        edgesToRemove,
+        nodes: _nodes,
+        edges: _edges
+      });
+
+      if (matchingNodes) {
+        nodes.set(_nodes.filter((node) => !matchingNodes.some(({ id }) => id === node.id)));
+      }
+
+      if (matchingEdges) {
+        edges.set(_edges.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id)));
+      }
+
+      return {
+        deletedNodes: matchingNodes,
+        deletedEdges: matchingEdges
+      };
+    },
+    screenToFlowCoordinate: (position: XYPosition) => {
+      const _domNode = get(domNode);
+
+      if (_domNode) {
+        const _snapGrid = get(snapGrid);
+        const { x, y, zoom } = get(viewport);
+        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+
+        const correctedPosition = {
+          x: position.x - domX,
+          y: position.y - domY
+        };
+
+        return pointToRendererPoint(
+          correctedPosition,
+          [x, y, zoom],
+          _snapGrid !== null,
+          _snapGrid || [1, 1]
+        );
+      }
+
+      return { x: 0, y: 0 };
+    },
+    flowToScreenCoordinate: (position: XYPosition) => {
+      const _domNode = get(domNode);
+
+      if (_domNode) {
+        const { x, y, zoom } = get(viewport);
+        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+
+        const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
+
+        return {
+          x: rendererPosition.x + domX,
+          y: rendererPosition.y + domY
+        };
+      }
+
+      return { x: 0, y: 0 };
+    },
+    getConnectedEdges: (node) => {
+      const nodeIds = new Set();
+
+      if (typeof node === 'string') {
+        nodeIds.add(node);
+      } else if (node.length >= 1) {
+        node.forEach((n) => {
+          nodeIds.add(n.id);
+        });
+      }
+
+      return get(edges).filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+    },
+    getIncomers: (node) => {
+      const _node = typeof node === 'string' ? { id: node } : node;
+
+      return getIncomersBase(_node, get(nodes), get(edges));
+    },
+    getOutgoers: (node) => {
+      const _node = typeof node === 'string' ? { id: node } : node;
+
+      return getOutgoersBase(_node, get(nodes), get(edges));
+    },
+    viewport
   };
 }
