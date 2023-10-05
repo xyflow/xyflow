@@ -1,5 +1,6 @@
 ---
-import Flow from '../components/Flow' 
+import RF from '../components/ReactFlowExample' 
+import SF from '../components/SvelteFlowExample/index.svelte' 
 ---
 
 <html lang="en">
@@ -18,9 +19,14 @@ import Flow from '../components/Flow'
 		</style>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<h2>Svelte Flow</h2>
 		<div style="height: 400px">
-			<Flow  />
+			<SF />
+		</div>
+
+		<h2>React Flow</h2>
+		<div >
+			<RF />
 		</div>
 	</body>
 </html>

@@ -204,9 +204,6 @@ const Subflow = () => {
       onNodeDrag={onNodeDrag}
       onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
-      defaultViewport={defaultViewport}
-      minZoom={0.2}
-      maxZoom={4}
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
       fitView
