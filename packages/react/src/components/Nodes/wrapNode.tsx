@@ -52,6 +52,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     disableKeyboardA11y,
     ariaLabel,
     rfId,
+    dimensionWidth,
+    dimensionHeight,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -181,7 +183,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           zIndex,
           transform: `translate(${xPosOrigin}px,${yPosOrigin}px)`,
           pointerEvents: hasPointerEvents ? 'all' : 'none',
-          visibility: initialized ? 'visible' : 'visible',
+          visibility: initialized ? 'visible' : 'hidden',
+          width: dimensionWidth,
+          height: dimensionHeight,
           ...style,
         }}
         data-id={id}

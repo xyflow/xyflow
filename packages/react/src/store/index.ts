@@ -24,10 +24,20 @@ import type {
   FitViewOptions,
 } from '../types';
 
-const createRFStore = ({ nodes, edges }: { nodes?: Node[]; edges?: Edge[] }) =>
+const createRFStore = ({
+  nodes,
+  edges,
+  width,
+  height,
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+}) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...getInitialState({ nodes, edges }),
+      ...getInitialState({ nodes, edges, width, height }),
       setNodes: (nodes: Node[]) => {
         const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
         const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });

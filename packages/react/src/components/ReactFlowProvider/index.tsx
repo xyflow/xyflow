@@ -6,11 +6,23 @@ import { Provider } from '../../contexts/RFStoreContext';
 import { createRFStore } from '../../store';
 import type { ReactFlowState, Node, Edge } from '../../types';
 
-function ReactFlowProvider({ children, nodes, edges }: { children: ReactNode; nodes?: Node[]; edges?: Edge[] }) {
+function ReactFlowProvider({
+  children,
+  nodes,
+  edges,
+  width,
+  height,
+}: {
+  children: ReactNode;
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+}) {
   const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
 
   if (!storeRef.current) {
-    storeRef.current = createRFStore({ nodes, edges });
+    storeRef.current = createRFStore({ nodes, edges, width, height });
   }
 
   return <Provider value={storeRef.current}>{children}</Provider>;

@@ -4,7 +4,19 @@ import StoreContext from '../../contexts/RFStoreContext';
 import ReactFlowProvider from '../../components/ReactFlowProvider';
 import type { Node, Edge } from '../../types';
 
-function Wrapper({ children, nodes, edges }: { children: ReactNode; nodes?: Node[]; edges?: Edge[] }) {
+function Wrapper({
+  children,
+  nodes,
+  edges,
+  width,
+  height,
+}: {
+  children: ReactNode;
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+}) {
   const isWrapped = useContext(StoreContext);
 
   if (isWrapped) {
@@ -14,7 +26,7 @@ function Wrapper({ children, nodes, edges }: { children: ReactNode; nodes?: Node
   }
 
   return (
-    <ReactFlowProvider nodes={nodes} edges={edges}>
+    <ReactFlowProvider nodes={nodes} edges={edges} width={width} height={height}>
       {children}
     </ReactFlowProvider>
   );

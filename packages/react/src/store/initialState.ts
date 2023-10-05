@@ -1,15 +1,45 @@
-import { devWarn, infiniteExtent, ConnectionMode, updateNodes } from '@xyflow/system';
+import {
+  devWarn,
+  infiniteExtent,
+  ConnectionMode,
+  updateNodes,
+  getRectOfNodes,
+  getTransformForBounds,
+  Transform,
+} from '@xyflow/system';
 
 import type { Edge, Node, ReactFlowStore } from '../types';
 
-const getInitialState = ({ nodes = [], edges = [] }: { nodes?: Node[]; edges?: Edge[] }): ReactFlowStore => {
+const getInitialState = ({
+  nodes = [],
+  edges = [],
+  width,
+  height,
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+}): ReactFlowStore => {
   const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+
+  let transform: Transform = [0, 0, 1];
+
+  if (width && height) {
+    const nodesWithDimensions = nextNodes.map((node) => ({
+      ...node,
+      width: node.dimensions?.width,
+      height: node.dimensions?.height,
+    }));
+    const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
+    transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);
+  }
 
   return {
     rfId: '1',
     width: 0,
     height: 0,
-    transform: [0, 0, 1],
+    transform,
     nodes: nextNodes,
     edges: edges,
     onNodesChange: null,

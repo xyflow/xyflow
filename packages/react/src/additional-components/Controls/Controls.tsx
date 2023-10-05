@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, type FC, type PropsWithChildren } from 'react';
+import { memo, type FC, type PropsWithChildren } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
@@ -37,17 +37,8 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   position = 'bottom-left',
 }) => {
   const store = useStoreApi();
-  const [isVisible, setIsVisible] = useState<boolean>(false);
   const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  if (!isVisible) {
-    return null;
-  }
 
   const onZoomInHandler = () => {
     zoomIn();
