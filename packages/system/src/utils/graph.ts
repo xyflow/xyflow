@@ -43,8 +43,14 @@ export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType e
     return [];
   }
 
-  const outgoerIds = edges.filter((e) => e.source === node.id).map((e) => e.target);
-  return nodes.filter((n) => outgoerIds.includes(n.id));
+  const outgoerIds = new Set();
+  edges.forEach((edge) => {
+    if (edge.source === node.id) {
+      outgoerIds.add(edge.target);
+    }
+  });
+
+  return nodes.filter((n) => outgoerIds.has(n.id));
 };
 
 export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
@@ -55,9 +61,14 @@ export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType e
   if (!isNodeBase(node)) {
     return [];
   }
+  const incomersIds = new Set();
+  edges.forEach((edge) => {
+    if (edge.target === node.id) {
+      incomersIds.add(edge.source);
+    }
+  });
 
-  const incomersIds = edges.filter((e) => e.target === node.id).map((e) => e.source);
-  return nodes.filter((n) => incomersIds.includes(n.id));
+  return nodes.filter((n) => incomersIds.has(n.id));
 };
 
 export const getNodePositionWithOrigin = (
