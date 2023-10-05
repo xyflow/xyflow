@@ -16,10 +16,10 @@ export type GetEdgePositionParams = {
 };
 
 export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | null {
-  const [sourceNodeRect, sourceHandleBounds, sourceIsValid] = getHandleDataByNode(params.sourceNode);
-  const [targetNodeRect, targetHandleBounds, targetIsValid] = getHandleDataByNode(params.targetNode);
+  const [sourceNodeRect, sourceHandleBounds, isSourceValid] = getHandleDataByNode(params.sourceNode);
+  const [targetNodeRect, targetHandleBounds, isTargetValid] = getHandleDataByNode(params.targetNode);
 
-  if (!sourceIsValid || !targetIsValid) {
+  if (!isSourceValid || !isTargetValid) {
     return null;
   }
 
@@ -59,13 +59,39 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
   };
 }
 
+function toHandleBounds(handles?: HandleElement[]) {
+  if (!handles) {
+    return null;
+  }
+
+  return handles.reduce<NodeHandleBounds>(
+    (res, item) => {
+      if (item.type === 'source') {
+        res.source?.push(item);
+      }
+
+      if (item.type === 'target') {
+        res.target?.push(item);
+      }
+
+      return res;
+    },
+    {
+      source: [],
+      target: [],
+    }
+  );
+}
+
 function getHandleDataByNode(node?: NodeBase): [Rect, NodeHandleBounds | null, boolean] {
-  const handleBounds = node?.[internalsSymbol]?.handleBounds || null;
+  const handleBounds = node?.[internalsSymbol]?.handleBounds || toHandleBounds(node?.handles) || null;
+  const nodeWidth = node?.width || node?.dimensions?.width;
+  const nodeHeight = node?.height || node?.dimensions?.height;
 
   const isValid =
     handleBounds &&
-    node?.width &&
-    node?.height &&
+    nodeWidth &&
+    nodeHeight &&
     typeof node?.positionAbsolute?.x !== 'undefined' &&
     typeof node?.positionAbsolute?.y !== 'undefined';
 
@@ -73,8 +99,8 @@ function getHandleDataByNode(node?: NodeBase): [Rect, NodeHandleBounds | null, b
     {
       x: node?.positionAbsolute?.x || 0,
       y: node?.positionAbsolute?.y || 0,
-      width: node?.width || 0,
-      height: node?.height || 0,
+      width: nodeWidth || 0,
+      height: nodeHeight || 0,
     },
     handleBounds,
     !!isValid,
