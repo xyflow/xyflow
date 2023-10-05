@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
-import { pointToRendererPoint, getTransformForBounds, fitView, type XYPosition } from '@xyflow/system';
+import {
+  pointToRendererPoint,
+  getTransformForBounds,
+  fitView,
+  type XYPosition,
+  rendererPointToPoint,
+} from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
 import type { ViewportHelperFunctions, ReactFlowState } from '../types';
@@ -84,6 +90,36 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       project: (position: XYPosition) => {
         const { transform, snapToGrid, snapGrid } = store.getState();
         return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
+      },
+      screenToFlowCoordinate: (position: XYPosition) => {
+        const { transform, snapToGrid, snapGrid, domNode } = store.getState();
+        if (domNode) {
+          const { x: domX, y: domY } = domNode.getBoundingClientRect();
+
+          const correctedPosition = {
+            x: position.x - domX,
+            y: position.y - domY,
+          };
+
+          return pointToRendererPoint(correctedPosition, transform, snapToGrid, snapGrid || [1, 1]);
+        }
+
+        return { x: 0, y: 0 };
+      },
+      flowToScreenCoordinate: (position: XYPosition) => {
+        const { transform, domNode } = store.getState();
+        if (domNode) {
+          const { x: domX, y: domY } = domNode.getBoundingClientRect();
+
+          const rendererPosition = rendererPointToPoint(position, transform);
+
+          return {
+            x: rendererPosition.x + domX,
+            y: rendererPosition.y + domY,
+          };
+        }
+
+        return { x: 0, y: 0 };
       },
       viewportInitialized: panZoomInitialized,
     };
