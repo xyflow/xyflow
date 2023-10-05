@@ -172,6 +172,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         }
       }
     }
+
+    return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
   }, []);
 
   const getNodeRect = useCallback(
