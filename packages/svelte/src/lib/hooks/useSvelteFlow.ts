@@ -10,7 +10,7 @@ import {
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import type { FitViewOptions } from '$lib/types';
+import type { Edge, FitViewOptions, Node } from '$lib/types';
 import type { SvelteFlowStore } from '$lib/store/types';
 
 export function useSvelteFlow(): {
@@ -26,6 +26,7 @@ export function useSvelteFlow(): {
   viewport: Writable<Viewport>;
   nodes: SvelteFlowStore['nodes'];
   edges: SvelteFlowStore['edges'];
+  getConnectedEdges: (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
 } {
   const {
     zoomIn,
@@ -86,6 +87,20 @@ export function useSvelteFlow(): {
     },
     nodes,
     edges,
+    getConnectedEdges: (node) => {
+      const _edges = get(edges);
+
+      const nodeIds = new Set();
+      if (typeof node === 'string') {
+        nodeIds.add(node);
+      } else if (node.length >= 1) {
+        node.forEach((n) => {
+          nodeIds.add(n.id);
+        });
+      }
+
+      return _edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+    },
     viewport: viewport
   };
 }
