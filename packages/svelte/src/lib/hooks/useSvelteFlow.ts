@@ -1,5 +1,7 @@
 import { get, type Writable } from 'svelte/store';
 import {
+  getIncomersBase,
+  getOutgoersBase,
   pointToRendererPoint,
   type Project,
   type SetCenterOptions,
@@ -27,6 +29,8 @@ export function useSvelteFlow(): {
   nodes: SvelteFlowStore['nodes'];
   edges: SvelteFlowStore['edges'];
   getConnectedEdges: (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
+  getIncomers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  getOutgoers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
 } {
   const {
     zoomIn,
@@ -100,6 +104,26 @@ export function useSvelteFlow(): {
       }
 
       return _edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+    },
+    getIncomers: (node) => {
+      const _edges = get(edges);
+      const _nodes = get(nodes);
+
+      if (typeof node === 'string') {
+        return getIncomersBase({ id: node }, _nodes, _edges);
+      }
+
+      return getIncomersBase(node, _nodes, _edges);
+    },
+    getOutgoers: (node) => {
+      const _edges = get(edges);
+      const _nodes = get(nodes);
+
+      if (typeof node == 'string') {
+        return getOutgoersBase({ id: node }, _nodes, _edges);
+      }
+
+      return getOutgoersBase(node, _nodes, _edges);
     },
     viewport: viewport
   };
