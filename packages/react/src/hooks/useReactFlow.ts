@@ -1,5 +1,13 @@
 import { useCallback, useMemo } from 'react';
-import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
+import {
+  getElementsToRemove,
+  getIncomersBase,
+  getOutgoersBase,
+  getOverlappingArea,
+  isRectObject,
+  nodeToRect,
+  type Rect,
+} from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from '../hooks/useStore';
@@ -225,6 +233,41 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     []
   );
 
+  const getConnectedEdges = useCallback<Instance.getConnectedEdges>((node) => {
+    const { edges } = store.getState();
+
+    const nodeIds = new Set();
+    if (typeof node === 'string') {
+      nodeIds.add(node);
+    } else if (node.length >= 1) {
+      node.forEach((n) => {
+        nodeIds.add(n.id);
+      });
+    }
+
+    return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+  }, []);
+
+  const getIncomers = useCallback<Instance.getIncomers>((node) => {
+    const { nodes, edges } = store.getState();
+
+    if (typeof node === 'string') {
+      return getIncomersBase({ id: node }, nodes, edges);
+    }
+
+    return getIncomersBase(node, nodes, edges);
+  }, []);
+
+  const getOutgoers = useCallback<Instance.getOutgoers>((node) => {
+    const { nodes, edges } = store.getState();
+
+    if (typeof node == 'string') {
+      return getOutgoersBase({ id: node }, nodes, edges);
+    }
+
+    return getOutgoersBase(node, nodes, edges);
+  }, []);
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -240,6 +283,9 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       deleteElements,
       getIntersectingNodes,
       isNodeIntersecting,
+      getConnectedEdges,
+      getIncomers,
+      getOutgoers,
     };
   }, [
     viewportHelper,
@@ -255,5 +301,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     deleteElements,
     getIntersectingNodes,
     isNodeIntersecting,
+    getConnectedEdges,
+    getIncomers,
+    getOutgoers,
   ]);
 }

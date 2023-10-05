@@ -42,6 +42,9 @@ export namespace Instance {
     area: Rect,
     partially?: boolean
   ) => boolean;
+  export type getConnectedEdges = (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
+  export type getIncomers = (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  export type getOutgoers = (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
 }
 
 export type ReactFlowInstance<NodeData = any, EdgeData = any> = {

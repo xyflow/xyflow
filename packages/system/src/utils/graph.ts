@@ -35,29 +35,40 @@ export const isNodeBase = <NodeType extends NodeBase = NodeBase, EdgeType extend
 ): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
 
 export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  node: NodeType,
+  node: Partial<NodeType> & { id: string },
   nodes: NodeType[],
   edges: EdgeType[]
 ): NodeType[] => {
-  if (!isNodeBase(node)) {
+  if (!node.id) {
     return [];
   }
 
-  const outgoerIds = edges.filter((e) => e.source === node.id).map((e) => e.target);
-  return nodes.filter((n) => outgoerIds.includes(n.id));
+  const outgoerIds = new Set();
+  edges.forEach((edge) => {
+    if (edge.source === node.id) {
+      outgoerIds.add(edge.target);
+    }
+  });
+
+  return nodes.filter((n) => outgoerIds.has(n.id));
 };
 
 export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  node: NodeType,
+  node: Partial<NodeType> & { id: string },
   nodes: NodeType[],
   edges: EdgeType[]
 ): NodeType[] => {
-  if (!isNodeBase(node)) {
+  if (!node.id) {
     return [];
   }
+  const incomersIds = new Set();
+  edges.forEach((edge) => {
+    if (edge.target === node.id) {
+      incomersIds.add(edge.source);
+    }
+  });
 
-  const incomersIds = edges.filter((e) => e.target === node.id).map((e) => e.source);
-  return nodes.filter((n) => incomersIds.includes(n.id));
+  return nodes.filter((n) => incomersIds.has(n.id));
 };
 
 export const getNodePositionWithOrigin = (
@@ -161,9 +172,12 @@ export const getConnectedEdgesBase = <NodeType extends NodeBase = NodeBase, Edge
   nodes: NodeType[],
   edges: EdgeType[]
 ): EdgeType[] => {
-  const nodeIds = nodes.map((node) => node.id);
+  const nodeIds = new Set();
+  nodes.forEach((node) => {
+    nodeIds.add(node.id);
+  });
 
-  return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
+  return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
 };
 
 export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(

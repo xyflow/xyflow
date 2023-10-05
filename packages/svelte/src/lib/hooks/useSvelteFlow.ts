@@ -1,5 +1,7 @@
 import { get, type Writable } from 'svelte/store';
 import {
+  getIncomersBase,
+  getOutgoersBase,
   getOverlappingArea,
   isRectObject,
   nodeToRect,
@@ -46,6 +48,9 @@ export function useSvelteFlow(): {
   screenToFlowCoordinate: (position: XYPosition) => XYPosition;
   flowToScreenCoordinate: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
+  getConnectedEdges: (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
+  getIncomers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  getOutgoers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
 } {
   const {
     zoomIn,
@@ -99,16 +104,12 @@ export function useSvelteFlow(): {
     },
     getViewport: () => get(viewport),
     setCenter: (x, y, options) => {
-      const _width = get(width);
-      const _height = get(height);
-      const _maxZoom = get(maxZoom);
-
-      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : _maxZoom;
+      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : get(maxZoom);
 
       get(panZoom)?.setViewport(
         {
-          x: _width / 2 - x * nextZoom,
-          y: _height / 2 - y * nextZoom,
+          x: get(width) / 2 - x * nextZoom,
+          y: get(height) / 2 - y * nextZoom,
           zoom: nextZoom
         },
         { duration: options?.duration }
@@ -116,17 +117,12 @@ export function useSvelteFlow(): {
     },
     fitView,
     fitBounds: (bounds: Rect, options?: FitBoundsOptions) => {
-      const _width = get(width);
-      const _height = get(height);
-      const _maxZoom = get(maxZoom);
-      const _minZoom = get(minZoom);
-
       const [x, y, zoom] = getTransformForBounds(
         bounds,
-        _width,
-        _height,
-        _minZoom,
-        _maxZoom,
+        get(width),
+        get(height),
+        get(minZoom),
+        get(maxZoom),
         options?.padding ?? 0.1
       );
 
@@ -206,6 +202,7 @@ export function useSvelteFlow(): {
     },
     screenToFlowCoordinate: (position: XYPosition) => {
       const _domNode = get(domNode);
+
       if (_domNode) {
         const _snapGrid = get(snapGrid);
         const { x, y, zoom } = get(viewport);
@@ -228,6 +225,7 @@ export function useSvelteFlow(): {
     },
     flowToScreenCoordinate: (position: XYPosition) => {
       const _domNode = get(domNode);
+
       if (_domNode) {
         const { x, y, zoom } = get(viewport);
         const { x: domX, y: domY } = _domNode.getBoundingClientRect();
@@ -242,6 +240,29 @@ export function useSvelteFlow(): {
 
       return { x: 0, y: 0 };
     },
-    viewport: viewport
+    getConnectedEdges: (node) => {
+      const nodeIds = new Set();
+
+      if (typeof node === 'string') {
+        nodeIds.add(node);
+      } else if (node.length >= 1) {
+        node.forEach((n) => {
+          nodeIds.add(n.id);
+        });
+      }
+
+      return get(edges).filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+    },
+    getIncomers: (node) => {
+      const _node = typeof node === 'string' ? { id: node } : node;
+
+      return getIncomersBase(_node, get(nodes), get(edges));
+    },
+    getOutgoers: (node) => {
+      const _node = typeof node === 'string' ? { id: node } : node;
+
+      return getOutgoersBase(_node, get(nodes), get(edges));
+    },
+    viewport
   };
 }
