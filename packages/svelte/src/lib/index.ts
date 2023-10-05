@@ -19,9 +19,12 @@ export { useStore } from '$lib/store';
 
 // utils
 export * from '$lib/utils';
+
+//hooks
 export * from '$lib/hooks/useSvelteFlow';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
+export * from '$lib/hooks/useNodesEdges';
 
 // types
 export type { Edge, EdgeProps, EdgeTypes, DefaultEdgeOptions } from '$lib/types/edges';
