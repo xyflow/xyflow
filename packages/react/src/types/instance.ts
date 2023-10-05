@@ -28,7 +28,10 @@ export namespace Instance {
   export type GetEdge<EdgeData> = (id: string) => Edge<EdgeData> | undefined;
   export type AddEdges<EdgeData> = (payload: Edge<EdgeData>[] | Edge<EdgeData>) => void;
   export type ToObject<NodeData = any, EdgeData = any> = () => ReactFlowJsonObject<NodeData, EdgeData>;
-  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => void;
+  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => {
+    deletedNodes: Node[];
+    deletedEdges: Edge[];
+  };
   export type GetIntersectingNodes<NodeData> = (
     node: (Partial<Node<NodeData>> & { id: Node['id'] }) | Rect,
     partially?: boolean,
