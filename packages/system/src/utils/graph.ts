@@ -161,9 +161,12 @@ export const getConnectedEdgesBase = <NodeType extends NodeBase = NodeBase, Edge
   nodes: NodeType[],
   edges: EdgeType[]
 ): EdgeType[] => {
-  const nodeIds = nodes.map((node) => node.id);
+  const nodeIds = new Set();
+  nodes.forEach((node) => {
+    nodeIds.add(node.id);
+  });
 
-  return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
+  return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
 };
 
 export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
