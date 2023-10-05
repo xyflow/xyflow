@@ -55,5 +55,7 @@ export type ViewportHelperFunctions = {
   setCenter: SetCenter;
   fitBounds: FitBounds;
   project: Project;
+  screenToFlowCoordinate: Project;
+  flowToScreenCoordinate: Project;
   viewportInitialized: boolean;
 };

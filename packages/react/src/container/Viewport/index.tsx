@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
-import { Viewport } from '@xyflow/system';
 
 const selector = (s: ReactFlowState) => `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`;
 
@@ -10,7 +9,7 @@ type ViewportProps = {
   children: ReactNode;
 };
 
-function Viewport({ children }: ViewportProps) {
+export default function Viewport({ children }: ViewportProps) {
   const transform = useStore(selector);
 
   return (
@@ -19,5 +18,3 @@ function Viewport({ children }: ViewportProps) {
     </div>
   );
 }
-
-export default Viewport;

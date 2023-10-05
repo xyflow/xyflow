@@ -16,7 +16,8 @@
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation',
-		'intersections'
+		'intersections',
+		'add-node-on-drop'
 	];
 
 	const onChange = (event: Event) => {

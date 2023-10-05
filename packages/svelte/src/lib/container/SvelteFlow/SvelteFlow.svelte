@@ -71,13 +71,14 @@
   export { className as class };
 
   let domNode: HTMLDivElement;
+  let clientWidth: number;
+  let clientHeight: number;
 
   const store = hasContext(key) ? useStore() : createStoreContext();
 
   onMount(() => {
-    const { width, height } = domNode.getBoundingClientRect();
-    store.width.set(width);
-    store.height.set(height);
+    store.width.set(clientWidth);
+    store.height.set(clientHeight);
     store.domNode.set(domNode);
 
     store.syncNodeStores(nodes);
@@ -141,6 +142,8 @@
 
 <div
   bind:this={domNode}
+  bind:clientWidth
+  bind:clientHeight
   {style}
   class={cc(['svelte-flow', className])}
   data-testid="svelte-flow__wrapper"
