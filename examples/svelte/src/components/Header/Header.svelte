@@ -16,6 +16,7 @@
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation',
+		'intersections',
 		'add-node-on-drop'
 	];
 

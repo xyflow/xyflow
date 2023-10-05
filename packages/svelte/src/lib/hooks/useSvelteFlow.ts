@@ -1,5 +1,8 @@
 import { get, type Writable } from 'svelte/store';
 import {
+  getOverlappingArea,
+  isRectObject,
+  nodeToRect,
   pointToRendererPoint,
   type FitBoundsOptions,
   type SetCenterOptions,
@@ -25,6 +28,16 @@ export function useSvelteFlow(): {
   setViewport: (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
   getViewport: () => Viewport;
   fitView: (options?: FitViewOptions) => void;
+  getIntersectingNodes: (
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    partially?: boolean,
+    nodesToIntersect?: Node[]
+  ) => Node[];
+  isNodeIntersecting: (
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    area: Rect,
+    partially?: boolean
+  ) => boolean;
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
   deleteElements: (
     nodesToRemove?: Partial<Node> & { id: string }[],
@@ -49,6 +62,21 @@ export function useSvelteFlow(): {
     edges,
     domNode
   } = useStore();
+
+  const getNodeRect = (
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect
+  ): [Rect | null, Node | null | undefined, boolean] => {
+    const isRect = isRectObject(nodeOrRect);
+    const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
+
+    if (!isRect && !node) {
+      return [null, null, isRect];
+    }
+
+    const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
+
+    return [nodeRect, node, isRect];
+  };
 
   return {
     zoomIn,
@@ -110,6 +138,45 @@ export function useSvelteFlow(): {
         },
         { duration: options?.duration }
       );
+    },
+    getIntersectingNodes: (
+      nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+      partially = true,
+      nodesToIntersect?: Node[]
+    ) => {
+      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect || !node) {
+        return [];
+      }
+
+      return (nodesToIntersect || get(nodes)).filter((n) => {
+        if (!isRect && (n.id === node.id || !n.positionAbsolute)) {
+          return false;
+        }
+
+        const currNodeRect = nodeToRect(n);
+        const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+        const partiallyVisible = partially && overlappingArea > 0;
+
+        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      });
+    },
+    isNodeIntersecting: (
+      nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+      area: Rect,
+      partially = true
+    ) => {
+      const [nodeRect] = getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return false;
+      }
+
+      const overlappingArea = getOverlappingArea(nodeRect, area);
+      const partiallyVisible = partially && overlappingArea > 0;
+
+      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
     },
     deleteElements: (
       nodesToRemove: Partial<Node> & { id: string }[] = [],
