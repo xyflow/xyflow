@@ -115,7 +115,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   }, initElements);
 }
 
-export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: Node<NodeData>[]): Node<NodeData>[] {
+export function applyNodeChanges<NodeData = any, NodeType extends string | undefined = string | undefined>(changes: NodeChange[], nodes: Node<NodeData, NodeType>[]): Node<NodeData, NodeType>[] {
   return applyChanges(changes, nodes) as Node<NodeData>[];
 }
 

@@ -45,11 +45,11 @@ export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
 export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
 
-export type WrapNodeProps<T = any> = Pick<
-  Node<T>,
+export type WrapNodeProps<T = any, U extends string | undefined = string | undefined> = Pick<
+  Node<T, U>,
   'id' | 'data' | 'style' | 'className' | 'dragHandle' | 'sourcePosition' | 'targetPosition' | 'hidden' | 'ariaLabel'
 > &
-  Required<Pick<Node<T>, 'selected' | 'type' | 'zIndex'>> & {
+  Required<Pick<Node<T, U>, 'selected' | 'type' | 'zIndex'>> & {
     isConnectable: boolean;
     xPos: number;
     yPos: number;
@@ -75,8 +75,8 @@ export type WrapNodeProps<T = any> = Pick<
   };
 
 // props that get passed to a custom node
-export type NodeProps<T = any> = Pick<
-  WrapNodeProps<T>,
+export type NodeProps<T = any, U extends string | undefined = string | undefined> = Pick<
+  WrapNodeProps<T, U>,
   'id' | 'data' | 'dragHandle' | 'type' | 'selected' | 'isConnectable' | 'xPos' | 'yPos' | 'zIndex'
 > & {
   dragging: boolean;
