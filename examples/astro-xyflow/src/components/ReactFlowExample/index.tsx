@@ -16,7 +16,7 @@ import CustomNode from './CustomNode';
 
 import '@xyflow/react/dist/style.css';
 
-const nodeDimensions = {
+const nodeSize = {
   width: 100,
   height: 40,
 };
@@ -29,13 +29,13 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
-    dimensions: nodeDimensions,
+    size: nodeSize,
     handles: [
       {
         type: 'source',
         position: Position.Bottom,
-        x: nodeDimensions.width * 0.5,
-        y: nodeDimensions.height,
+        x: nodeSize.width * 0.5,
+        y: nodeSize.height,
         width: 1,
         height: 1,
       },
@@ -45,20 +45,20 @@ const initialNodes: Node[] = [
     id: '2',
     data: { label: 'Node 2' },
     position: { x: 100, y: 100 },
-    dimensions: nodeDimensions,
+    size: nodeSize,
     handles: [
       {
         type: 'source',
         position: Position.Bottom,
-        x: nodeDimensions.width * 0.5,
-        y: nodeDimensions.height,
+        x: nodeSize.width * 0.5,
+        y: nodeSize.height,
         width: 1,
         height: 1,
       },
       {
         type: 'target',
         position: Position.Top,
-        x: nodeDimensions.width * 0.5,
+        x: nodeSize.width * 0.5,
         y: 0,
         width: 1,
         height: 1,
@@ -69,20 +69,20 @@ const initialNodes: Node[] = [
     id: '3',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
-    dimensions: nodeDimensions,
+    size: nodeSize,
     handles: [
       {
         type: 'source',
         position: Position.Bottom,
-        x: nodeDimensions.width * 0.5,
-        y: nodeDimensions.height,
+        x: nodeSize.width * 0.5,
+        y: nodeSize.height,
         width: 1,
         height: 1,
       },
       {
         type: 'target',
         position: Position.Top,
-        x: nodeDimensions.width * 0.5,
+        x: nodeSize.width * 0.5,
         y: 0,
         width: 1,
         height: 1,

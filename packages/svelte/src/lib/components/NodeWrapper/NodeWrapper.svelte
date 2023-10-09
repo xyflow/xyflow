@@ -118,8 +118,8 @@
     class:parent={isParent}
     style:z-index={zIndex}
     style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
-    style:width={node.dimensions?.width && `${node.dimensions?.width}px`}
-    style:height={node.dimensions?.height && `${node.dimensions?.height}px`}
+    style:width={node.size?.width && `${node.size?.width}px`}
+    style:height={node.size?.height && `${node.size?.height}px`}
     {style}
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}

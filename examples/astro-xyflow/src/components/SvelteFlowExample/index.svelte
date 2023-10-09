@@ -7,7 +7,7 @@
   const nodeDefaults = {
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
-    dimensions: {
+    size: {
       width: 100,
       height: 40,
     },

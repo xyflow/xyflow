@@ -40,6 +40,6 @@ export type WrapNodeProps<NodeData = any> = Pick<
     noPanClassName: string;
     rfId: string;
     disableKeyboardA11y: boolean;
-    dimensionWidth?: number;
-    dimensionHeight?: number;
+    sizeWidth?: number;
+    sizeHeight?: number;
   };

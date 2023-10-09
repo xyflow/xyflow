@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { internalsSymbol } from '../constants';
-import type { XYPosition, Position, CoordinateExtent, HandleElement, Dimensions } from '.';
+import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 
 // this is stuff that all nodes share independent of the framework
 export type NodeBase<T = any, U extends string | undefined = string | undefined> = {
@@ -29,7 +29,10 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   focusable?: boolean;
   origin?: NodeOrigin;
   handles?: HandleElement[];
-  dimensions?: Dimensions;
+  size?: {
+    width?: number;
+    height?: number;
+  };
 
   // only used internally
   [internalsSymbol]?: {

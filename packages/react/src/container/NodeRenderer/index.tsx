@@ -98,7 +98,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           height: node.height ?? 0,
           origin: node.origin || props.nodeOrigin,
         });
-        const initialized = (!!node.width && !!node.height) || (!!node.dimensions?.width && !!node.dimensions?.height);
+        const initialized = (!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height);
 
         return (
           <NodeComponent
@@ -106,8 +106,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             id={node.id}
             className={node.className}
             style={node.style}
-            dimensionWidth={node.dimensions?.width}
-            dimensionHeight={node.dimensions?.height}
+            sizeWidth={node.size?.width}
+            sizeHeight={node.size?.height}
             type={nodeType}
             data={node.data}
             sourcePosition={node.sourcePosition || Position.Bottom}

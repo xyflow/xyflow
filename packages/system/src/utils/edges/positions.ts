@@ -85,8 +85,8 @@ function toHandleBounds(handles?: HandleElement[]) {
 
 function getHandleDataByNode(node?: NodeBase): [Rect, NodeHandleBounds | null, boolean] {
   const handleBounds = node?.[internalsSymbol]?.handleBounds || toHandleBounds(node?.handles) || null;
-  const nodeWidth = node?.width || node?.dimensions?.width;
-  const nodeHeight = node?.height || node?.dimensions?.height;
+  const nodeWidth = node?.width || node?.size?.width;
+  const nodeHeight = node?.height || node?.size?.height;
 
   const isValid =
     handleBounds &&
