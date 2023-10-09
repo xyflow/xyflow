@@ -1,3 +1,18 @@
+## 0.0.23
+
+- updates `useSvelteFlow` hook:
+  - add `screenToFlowCoordinate` and `flowToScreenCoordinate`
+  - add `getConnectedEdges`, `getIncomers` and `getOutgoers`
+  - add `deleteElements`
+  - add `fitBounds`
+  - add `getIntersectingNodes` and `isNodeIntersecting`
+- add `useConnection` hook
+- add `useNodes` hook
+- add `useEdges` hook
+- add `viewport` prop (writable viewport)
+- fix selection style
+- fix Background component with lines variant
+
 ## 0.0.22
 
 - add `connectionLine` slot for rendering a custom connection line 
