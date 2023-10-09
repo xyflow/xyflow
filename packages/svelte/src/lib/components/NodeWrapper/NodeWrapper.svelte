@@ -9,13 +9,13 @@
     type ComponentType
   } from 'svelte';
   import cc from 'classcat';
+  import { get, writable } from 'svelte/store';
   import { errorMessages, type NodeProps } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
-  import { writable } from 'svelte/store';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -42,7 +42,7 @@
   export { className as class };
 
   const store = useStore();
-  const { nodeTypes, addSelectedNodes } = store;
+  const { nodeTypes, nodeDragThreshold, addSelectedNodes } = store;
 
   let nodeRef: HTMLDivElement;
   const nodeTypeValid = !!$nodeTypes[type!];
@@ -73,7 +73,7 @@
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
-    if (selectable && (!selectNodesOnDrag || !draggable)) {
+    if (selectable && (!selectNodesOnDrag || !draggable || get(nodeDragThreshold) > 0)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
       addSelectedNodes([id]);
     }
