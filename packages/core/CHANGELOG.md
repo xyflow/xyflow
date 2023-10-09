@@ -1,5 +1,17 @@
 # @reactflow/core
 
+## 11.9.2
+
+Fix broken build on npm
+
+## 11.9.1
+
+This release fixes a bug (`deleteKeyCode` didn't work) that was introduced in the previous version.
+
+### Patch Changes
+
+- [#3453](https://github.com/wbkd/react-flow/pull/3453) [`0956f325`](https://github.com/wbkd/react-flow/commit/0956f325afaa84220eca4319e496bb18b86de4bf) Thanks [@moklick](https://github.com/moklick)! - fix(nodes): remove via deleteKeyCode
+
 ## 11.9.0
 
 With this version you can finally delay node drag events or suppress them when you just click a node. This is possible with the new `nodeDragThreshold` prop. Another big change is that we finally support Astro and Remix while keeping the support for older setups like webpack4 + React 17 for example.
@@ -11,7 +23,7 @@ With this version you can finally delay node drag events or suppress them when y
 
 ### Patch Changes
 
-- [#3443](https://github.com/wbkd/react-flow/pull/3443) [`db4baa86`](https://github.com/wbkd/react-flow/commit/db4baa8606fd2ad771ca4eea701ca3788d4aaf49) Thanks [@bodinsamuel](https://github.com/bodinsamuel)! - chore(utils): export `handleParentExpand` 
+- [#3443](https://github.com/wbkd/react-flow/pull/3443) [`db4baa86`](https://github.com/wbkd/react-flow/commit/db4baa8606fd2ad771ca4eea701ca3788d4aaf49) Thanks [@bodinsamuel](https://github.com/bodinsamuel)! - chore(utils): export `handleParentExpand`
 - [#3421](https://github.com/wbkd/react-flow/pull/3421) [`3aac72cb`](https://github.com/wbkd/react-flow/commit/3aac72cb699b9dd495bdbd0bcb3204bbb30c4115) - refactor(nodes): don't delete nodes when user focuses input and presses modifier
 - [#3444](https://github.com/wbkd/react-flow/pull/3444) [`1a7c903c`](https://github.com/wbkd/react-flow/commit/1a7c903cd795ea1aaf8c8f4e23eceb3068720541) - refactor(node): make `expandParent` compatible with `extent: "parent"`
 - [`fd0472d4`](https://github.com/wbkd/react-flow/commit/fd0472d4ab1df8d6ecfde0006d9cabd3258342b9) - fix(step-edge): routing for equal handle positions
