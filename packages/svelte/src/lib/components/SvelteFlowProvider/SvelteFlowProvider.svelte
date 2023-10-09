@@ -6,10 +6,17 @@
 
   type $$Props = SvelteFlowProviderProps;
 
-  export let nodes: $$Props['nodes'] = undefined;
-  export let edges: $$Props['edges'] = undefined;
+  export let initialNodes: $$Props['initialNodes'] = undefined;
+  export let initialEdges: $$Props['initialEdges'] = undefined;
+  export let initialWidth: $$Props['initialWidth'] = undefined;
+  export let initialHeight: $$Props['initialHeight'] = undefined;
 
-  const store = createStore({ nodes, edges });
+  const store = createStore({
+    nodes: initialNodes,
+    edges: initialEdges,
+    width: initialWidth,
+    height: initialHeight
+  });
 
   setContext(key, {
     getStore: () => store

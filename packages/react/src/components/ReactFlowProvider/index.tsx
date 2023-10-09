@@ -8,21 +8,26 @@ import type { ReactFlowState, Node, Edge } from '../../types';
 
 function ReactFlowProvider({
   children,
-  nodes,
-  edges,
-  width,
-  height,
+  initialNodes,
+  initialEdges,
+  initialWidth,
+  initialHeight,
 }: {
   children: ReactNode;
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
+  initialNodes?: Node[];
+  initialEdges?: Edge[];
+  initialWidth?: number;
+  initialHeight?: number;
 }) {
   const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
 
   if (!storeRef.current) {
-    storeRef.current = createRFStore({ nodes, edges, width, height });
+    storeRef.current = createRFStore({
+      nodes: initialNodes,
+      edges: initialEdges,
+      width: initialWidth,
+      height: initialHeight,
+    });
   }
 
   return <Provider value={storeRef.current}>{children}</Provider>;
