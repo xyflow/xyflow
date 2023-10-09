@@ -1,10 +1,25 @@
 # reactflow
 
+## 11.9.3
+
+### Patch Changes
+
+- fix(selection): select nodes on click when nodeDragThreshold > 0
+
+- Updated dependencies [[`530ccc08`](https://github.com/wbkd/react-flow/commit/530ccc08b61a14b6e5913623ee732a768eafdc31)]:
+  - @reactflow/core@11.9.3
+  - @reactflow/background@11.3.3
+  - @reactflow/controls@11.2.3
+  - @reactflow/minimap@11.7.3
+  - @reactflow/node-resizer@2.2.3
+  - @reactflow/node-toolbar@1.3.3
+
 ## 11.9.2
 
 Fix broken build on npm
 
 ### Patch Changes
+
 - Updated dependencies
   - @reactflow/core@11.9.2
 
@@ -13,6 +28,7 @@ Fix broken build on npm
 This release fixes a bug (`deleteKeyCode` didn't work) that was introduced in the previous version.
 
 ### Patch Changes
+
 - [#3453](https://github.com/wbkd/react-flow/pull/3453) [`0956f325`](https://github.com/wbkd/react-flow/commit/0956f325afaa84220eca4319e496bb18b86de4bf) Thanks [@moklick](https://github.com/moklick)! - fix(nodes): remove via deleteKeyCode
 - Updated dependencies [[`0956f325`](https://github.com/wbkd/react-flow/commit/0956f325afaa84220eca4319e496bb18b86de4bf)]:
   - @reactflow/core@11.9.1

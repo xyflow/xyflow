@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.9.3
+
+### Patch Changes
+
+- [#3490](https://github.com/wbkd/react-flow/pull/3490) [`530ccc08`](https://github.com/wbkd/react-flow/commit/530ccc08b61a14b6e5913623ee732a768eafdc31) Thanks [@moklick](https://github.com/moklick)! - fix(selection): select nodes on click when nodeDragThreshold > 0
+
 ## 11.9.2
 
 Fix broken build on npm
