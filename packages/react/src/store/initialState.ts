@@ -20,7 +20,7 @@ const getInitialState = ({
   edges?: Edge[];
   width?: number;
   height?: number;
-}): ReactFlowStore => {
+} = {}): ReactFlowStore => {
   const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
 
   let transform: Transform = [0, 0, 1];
@@ -28,8 +28,8 @@ const getInitialState = ({
   if (width && height) {
     const nodesWithDimensions = nextNodes.map((node) => ({
       ...node,
-      width: node.dimensions?.width,
-      height: node.dimensions?.height,
+      width: node.size?.width,
+      height: node.size?.height,
     }));
     const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
     transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);

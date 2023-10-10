@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 import {

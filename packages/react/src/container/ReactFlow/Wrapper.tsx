@@ -26,7 +26,7 @@ function Wrapper({
   }
 
   return (
-    <ReactFlowProvider nodes={nodes} edges={edges} width={width} height={height}>
+    <ReactFlowProvider initialNodes={nodes} initialEdges={edges} initialWidth={width} initialHeight={height}>
       {children}
     </ReactFlowProvider>
   );

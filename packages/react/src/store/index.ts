@@ -55,15 +55,27 @@ const createRFStore = ({
         const hasDefaultNodes = typeof nodes !== 'undefined';
         const hasDefaultEdges = typeof edges !== 'undefined';
 
-        const nextNodes = hasDefaultNodes
-          ? updateNodes(nodes, [], {
-              nodeOrigin: get().nodeOrigin,
-              elevateNodesOnSelect: get().elevateNodesOnSelect,
-            })
-          : [];
-        const nextEdges = hasDefaultEdges ? edges : [];
+        const nextState: {
+          nodes?: Node[];
+          edges?: Edge[];
+          hasDefaultNodes: boolean;
+          hasDefaultEdges: boolean;
+        } = {
+          hasDefaultNodes,
+          hasDefaultEdges,
+        };
 
-        set({ nodes: nextNodes, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
+        if (hasDefaultNodes) {
+          nextState.nodes = updateNodes(nodes, [], {
+            nodeOrigin: get().nodeOrigin,
+            elevateNodesOnSelect: get().elevateNodesOnSelect,
+          });
+        }
+        if (hasDefaultEdges) {
+          nextState.edges = edges;
+        }
+
+        set(nextState);
       },
       updateNodeDimensions: (updates) => {
         const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
@@ -289,7 +301,13 @@ const createRFStore = ({
 
         set(currentConnection);
       },
-      reset: () => set({ ...getInitialState({ nodes: [] }) }),
+      reset: () => {
+        // @todo: what should we do about this? Do we still need it?
+        // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted
+        // when you switch pages. Does this reset solves this? Currently it always gets called. This
+        // leads to an emtpy nodes array at the beginning.
+        // set({ ...getInitialState() });
+      },
     }),
     Object.is
   );
