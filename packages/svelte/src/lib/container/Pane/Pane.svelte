@@ -41,7 +41,14 @@
 
   export let panOnDrag: $$Props['panOnDrag'] = undefined;
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    paneclick: {
+      event: MouseEvent | TouchEvent;
+    };
+    panecontextmenu: {
+      event: MouseEvent;
+    };
+  }>();
   const {
     nodes,
     edges,

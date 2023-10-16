@@ -6,7 +6,7 @@
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
-  import type { EdgeLayouted } from '$lib/types';
+  import type { EdgeLayouted, Edge } from '$lib/types';
 
   type $$Props = EdgeLayouted;
 
@@ -39,7 +39,10 @@
   export { className as class };
 
   const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
+    edgecontextmenu: { edge: Edge; event: MouseEvent };
+  }>();
 
   $: edgeComponent = $edgeTypes[type!] || BezierEdge;
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
@@ -51,12 +54,18 @@
     }
 
     const edge = $edges.find((e) => e.id === id);
-    dispatch('edgeclick', { event, edge });
+
+    if (edge) {
+      dispatch('edgeclick', { event, edge });
+    }
   }
 
   function onContextMenu(event: MouseEvent) {
     const edge = $edges.find((e) => e.id === id);
-    dispatch('edgecontextmenu', { event, edge });
+
+    if (edge) {
+      dispatch('edgecontextmenu', { event, edge });
+    }
   }
 </script>
 
