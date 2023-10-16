@@ -1,5 +1,12 @@
 # @reactflow/minimap
 
+## 11.7.4
+
+### Patch Changes
+
+- Updated dependencies [[`e0cef7f1`](https://github.com/wbkd/react-flow/commit/e0cef7f1403f489f079ba7acc5b5a9aa596c39e9)]:
+  - @reactflow/core@11.9.4
+
 ## 11.7.3
 
 ### Patch Changes
