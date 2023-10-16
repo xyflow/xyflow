@@ -1,5 +1,19 @@
 # reactflow
 
+## 11.9.4
+
+### Patch Changes
+
+- fix(panOnScroll): use correct filter so that connections work
+
+- Updated dependencies [[`e0cef7f1`](https://github.com/wbkd/react-flow/commit/e0cef7f1403f489f079ba7acc5b5a9aa596c39e9)]:
+  - @reactflow/core@11.9.4
+  - @reactflow/background@11.3.4
+  - @reactflow/controls@11.2.4
+  - @reactflow/minimap@11.7.4
+  - @reactflow/node-resizer@2.2.4
+  - @reactflow/node-toolbar@1.3.4
+
 ## 11.9.3
 
 ### Patch Changes

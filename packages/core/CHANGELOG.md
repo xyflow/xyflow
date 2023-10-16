@@ -1,10 +1,16 @@
 # @reactflow/core
 
+## 11.9.4
+
+### Patch Changes
+
+- [#3508](https://github.com/wbkd/react-flow/pull/3508) [`e0cef7f1`](https://github.com/wbkd/react-flow/commit/e0cef7f1403f489f079ba7acc5b5a9aa596c39e9) - fix(panOnScroll): use correct filter
+
 ## 11.9.3
 
 ### Patch Changes
 
-- [#3490](https://github.com/wbkd/react-flow/pull/3490) [`530ccc08`](https://github.com/wbkd/react-flow/commit/530ccc08b61a14b6e5913623ee732a768eafdc31) Thanks [@moklick](https://github.com/moklick)! - fix(selection): select nodes on click when nodeDragThreshold > 0
+- [#3490](https://github.com/wbkd/react-flow/pull/3490) [`530ccc08`](https://github.com/wbkd/react-flow/commit/530ccc08b61a14b6e5913623ee732a768eafdc31) - fix(selection): select nodes on click when nodeDragThreshold > 0
 
 ## 11.9.2
 
@@ -16,7 +22,7 @@ This release fixes a bug (`deleteKeyCode` didn't work) that was introduced in th
 
 ### Patch Changes
 
-- [#3453](https://github.com/wbkd/react-flow/pull/3453) [`0956f325`](https://github.com/wbkd/react-flow/commit/0956f325afaa84220eca4319e496bb18b86de4bf) Thanks [@moklick](https://github.com/moklick)! - fix(nodes): remove via deleteKeyCode
+- [#3453](https://github.com/wbkd/react-flow/pull/3453) [`0956f325`](https://github.com/wbkd/react-flow/commit/0956f325afaa84220eca4319e496bb18b86de4bf) - fix(nodes): remove via deleteKeyCode
 
 ## 11.9.0
 
