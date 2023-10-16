@@ -345,7 +345,7 @@ const ZoomPane = ({
         // if the target element is inside an element with the nopan class, we prevent panning
         if (
           isWrappedWithClass(event, noPanClassName) &&
-          ((!panOnScroll && event.type !== 'wheel') || (panOnScroll && event.type === 'wheel'))
+          (event.type !== 'wheel' || (panOnScroll && event.type === 'wheel'))
         ) {
           return false;
         }
