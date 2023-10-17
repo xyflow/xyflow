@@ -10,12 +10,14 @@
   export let shapeRendering: string;
   export let strokeColor: string;
   export let strokeWidth: number = 2;
+  export let selected: boolean = false;
   let className: string = '';
   export { className as class };
 </script>
 
 <rect
   class={cc(['svelte-flow__minimap-node', className])}
+  class:selected
   {x}
   {y}
   rx={borderRadius}

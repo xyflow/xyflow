@@ -15,7 +15,7 @@
   export let position: $$Props['position'] = 'bottom-left';
   export let showZoom: $$Props['showZoom'] = true;
   export let showFitView: $$Props['showFitView'] = true;
-  export let showInteractive: $$Props['showInteractive'] = true;
+  export let showLock: $$Props['showLock'] = true;
   export let buttonBgColor: $$Props['buttonBgColor'] = undefined;
   export let buttonBgColorHover: $$Props['buttonBgColorHover'] = undefined;
   export let buttonColor: $$Props['buttonColor'] = undefined;
@@ -101,7 +101,7 @@
       <FitViewIcon />
     </ControlButton>
   {/if}
-  {#if showInteractive}
+  {#if showLock}
     <ControlButton
       class="svelte-flow__controls-interactive"
       on:click={onToggleInteractivity}

@@ -10,4 +10,5 @@ export type BaseEdgeProps = Pick<
   labelY?: number;
   markerStart?: string;
   markerEnd?: string;
+  class?: string;
 };

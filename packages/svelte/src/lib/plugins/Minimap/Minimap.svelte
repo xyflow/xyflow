@@ -121,6 +121,7 @@
             y={pos.y}
             width={node.width}
             height={node.height}
+            selected={node.selected}
             color={nodeColorFunc(node)}
             borderRadius={nodeBorderRadius}
             strokeColor={nodeStrokeColorFunc(node)}

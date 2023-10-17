@@ -16,6 +16,7 @@
 
   type $$Props = BackgroundProps;
 
+  export let id: $$Props['id'] = undefined;
   export let variant: $$Props['variant'] = BackgroundVariant.Dots;
   export let gap: $$Props['gap'] = 20;
   export let size: $$Props['size'] = 1;
@@ -32,7 +33,7 @@
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
 
-  $: patternId = `background-pattern-${$flowId}`;
+  $: patternId = `background-pattern-${$flowId}-${id ? id : ''}`;
   $: scaledGap = [gapXY[0] * $viewport.zoom || 1, gapXY[1] * $viewport.zoom || 1];
   $: scaledSize = patternSize * $viewport.zoom;
   $: patternDimensions = (isCross ? [scaledSize, scaledSize] : scaledGap) as [number, number];

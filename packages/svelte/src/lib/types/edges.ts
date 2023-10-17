@@ -10,13 +10,11 @@ import type {
 
 import type { Node } from '$lib/types';
 
-export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
+export type DefaultEdge<EdgeData = any> = Omit<EdgeBase<EdgeData>, 'focusable'> & {
   label?: string;
   labelStyle?: string;
   style?: string;
   class?: string;
-  sourceNode?: Node;
-  targetNode?: Node;
 };
 
 type SmoothStepEdgeType<T> = DefaultEdge<T> & {
@@ -47,7 +45,7 @@ export type EdgeProps = Omit<Edge, 'sourceHandle' | 'targetHandle'> &
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 
-export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
+export type DefaultEdgeOptions = Omit<DefaultEdgeOptionsBase<Edge>, 'focusable'>;
 
 export type EdgeLayouted = Pick<
   Edge,
@@ -72,6 +70,8 @@ export type EdgeLayouted = Pick<
   | 'class'
 > &
   EdgePosition & {
+    sourceNode?: Node;
+    targetNode?: Node;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
   };

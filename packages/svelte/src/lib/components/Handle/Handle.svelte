@@ -1,7 +1,13 @@
 <script lang="ts">
   import { getContext, createEventDispatcher } from 'svelte';
   import cc from 'classcat';
-  import { Position, XYHandle, isMouseEvent } from '@xyflow/system';
+  import {
+    Position,
+    XYHandle,
+    isMouseEvent,
+    type Connection,
+    type HandleType
+  } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
@@ -26,7 +32,18 @@
   $: handleConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
   const handleId = id || null;
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    connect: { connection: Connection };
+    connectstart: {
+      event: MouseEvent | TouchEvent;
+      nodeId: string | null;
+      handleId: string | null;
+      handleType: HandleType | null;
+    };
+    connectend: {
+      event: MouseEvent | TouchEvent;
+    };
+  }>();
 
   const store = useStore();
   const {

@@ -46,6 +46,8 @@ function Background({
     ? [scaledSize / offset, scaledSize / offset]
     : [patternDimensions[0] / offset, patternDimensions[1] / offset];
 
+  const _patternId = `${patternId}${id ? id : ''}`;
+
   return (
     <svg
       className={cc(['react-flow__background', className])}
@@ -61,7 +63,7 @@ function Background({
       data-testid="rf__background"
     >
       <pattern
-        id={patternId + id}
+        id={_patternId}
         x={transform[0] % scaledGap[0]}
         y={transform[1] % scaledGap[1]}
         width={scaledGap[0]}
@@ -80,7 +82,7 @@ function Background({
           />
         )}
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId + id})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${_patternId})`} />
     </svg>
   );
 }
