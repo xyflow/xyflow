@@ -19,6 +19,17 @@
   export let xPos: $$Props['xPos'] = 0;
   export let yPos: $$Props['yPos'] = 0;
   export let isConnectable: $$Props['isConnectable'] = undefined;
+
+  // @todo: there must be a better way to do this
+  id;
+  selected;
+  type;
+  zIndex;
+  dragging;
+  dragHandle;
+  xPos;
+  yPos;
+  isConnectable;
 </script>
 
 <Handle type="target" position={targetPosition} on:connectstart on:connect on:connectend />

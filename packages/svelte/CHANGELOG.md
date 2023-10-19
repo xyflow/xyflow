@@ -1,3 +1,14 @@
+## 0.0.24
+
+- update node automatically when `type`, `sourcePosition` or `targetPosition` option changes
+- prevent dev tool warnings when using built-in node types
+- updates `useSvelteFlow` hook:
+- add node type "group"
+- add `class` prop for BaseEdge
+- add `id` prop for Background
+- add `selected` prop for MiniMap Node
+- rename Controls prop `showInteractive` to `showLock`
+
 ## 0.0.23
 
 - updates `useSvelteFlow` hook:
