@@ -7,6 +7,18 @@
 
   export let data: $$Props['data'] = { label: 'Node' };
   export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
+
+  // unused props - we need to list them here in order to prevent warnings
+  export let id: $$Props['id'] = '';
+  export let selected: $$Props['selected'] = undefined;
+  export let targetPosition: $$Props['targetPosition'] = undefined;
+  export let type: $$Props['type'] = undefined;
+  export let zIndex: $$Props['zIndex'] = undefined;
+  export let dragging: $$Props['dragging'] = false;
+  export let dragHandle: $$Props['dragHandle'] = undefined;
+  export let xPos: $$Props['xPos'] = 0;
+  export let yPos: $$Props['yPos'] = 0;
+  export let isConnectable: $$Props['isConnectable'] = undefined;
 </script>
 
 {data?.label}
