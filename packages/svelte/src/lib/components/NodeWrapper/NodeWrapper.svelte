@@ -10,7 +10,7 @@
   } from 'svelte';
   import cc from 'classcat';
   import { get, writable } from 'svelte/store';
-  import { errorMessages, type NodeProps } from '@xyflow/system';
+  import { errorMessages, Position, type NodeProps } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
@@ -43,17 +43,18 @@
   export { className as class };
 
   const store = useStore();
-  const { nodeTypes, nodeDragThreshold, addSelectedNodes } = store;
+  const { nodeTypes, nodeDragThreshold, addSelectedNodes, updateNodeDimensions } = store;
+  const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
-  const nodeTypeValid = !!$nodeTypes[type!];
+  const nodeTypeValid = !!$nodeTypes[nodeType];
 
   if (!nodeTypeValid) {
     console.warn('003', errorMessages['error003'](type!));
-    type = 'default';
   }
 
-  const nodeComponent: ComponentType<SvelteComponent<NodeProps>> = $nodeTypes[type!] || DefaultNode;
+  const nodeComponent: ComponentType<SvelteComponent<NodeProps>> =
+    $nodeTypes[nodeType] || DefaultNode;
   const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher<{
     nodeclick: { node: Node; event: MouseEvent | TouchEvent };
@@ -66,9 +67,37 @@
     nodemousemove: { node: Node; event: MouseEvent | TouchEvent };
   }>();
   const connectableStore = writable(connectable);
+  let prevType: string | undefined = undefined;
+  let prevSourcePosition: Position | undefined = undefined;
+  let prevTargetPosition: Position | undefined = undefined;
 
   $: {
     connectableStore.set(!!connectable);
+  }
+
+  $: {
+    // if type, sourcePosition or targetPosition changes,
+    // we need to re-calculate the handle positions
+    const doUpdate =
+      (prevType && nodeType !== prevType) ||
+      (prevSourcePosition && sourcePosition !== prevSourcePosition) ||
+      (prevTargetPosition && targetPosition !== prevTargetPosition);
+
+    if (doUpdate) {
+      requestAnimationFrame(() =>
+        updateNodeDimensions([
+          {
+            id,
+            nodeElement: nodeRef,
+            forceUpdate: true
+          }
+        ])
+      );
+    }
+
+    prevType = nodeType;
+    prevSourcePosition = sourcePosition;
+    prevTargetPosition = targetPosition;
   }
 
   setContext('svelteflow__node_id', id);
@@ -118,7 +147,7 @@
     }}
     bind:this={nodeRef}
     data-id={id}
-    class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}
+    class={cc(['svelte-flow__node', `svelte-flow__node-${nodeType}`, className])}
     class:dragging
     class:selected
     class:draggable

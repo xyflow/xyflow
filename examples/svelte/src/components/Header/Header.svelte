@@ -3,21 +3,22 @@
 	import { page } from '$app/stores';
 
 	const routes = [
+		'add-node-on-drop',
 		'custom-connection-line',
 		'customnode',
+		'dagre',
 		'drag-n-drop',
 		'edges',
 		'figma',
 		'interaction',
+		'intersections',
 		'overview',
 		'stress',
 		'subflows',
 		'two-way-viewport',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation',
-		'intersections',
-		'add-node-on-drop'
+		'validation'
 	];
 
 	const onChange = (event: Event) => {
