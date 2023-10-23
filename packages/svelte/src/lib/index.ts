@@ -7,6 +7,7 @@ export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
 export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/BaseEdge';
+export * from '$lib/components/edges';
 export * from '$lib/components/Handle';
 
 // plugins
