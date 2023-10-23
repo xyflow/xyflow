@@ -29,15 +29,17 @@ const createRFStore = ({
   edges,
   width,
   height,
+  fitView,
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
+  fitView?: boolean;
 }) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...getInitialState({ nodes, edges, width, height }),
+      ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
         const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
         const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });

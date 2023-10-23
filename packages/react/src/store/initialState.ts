@@ -15,17 +15,19 @@ const getInitialState = ({
   edges = [],
   width,
   height,
+  fitView,
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
+  fitView?: boolean;
 } = {}): ReactFlowStore => {
   const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
 
   let transform: Transform = [0, 0, 1];
 
-  if (width && height) {
+  if (fitView && width && height) {
     const nodesWithDimensions = nextNodes.map((node) => ({
       ...node,
       width: node.size?.width,
@@ -89,7 +91,7 @@ const getInitialState = ({
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
     connectionRadius: 20,
-    onError: devWarn,
+    onError: () => null,
     isValidConnection: undefined,
 
     lib: 'react',

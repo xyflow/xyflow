@@ -185,7 +185,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         data-testid="rf__wrapper"
         id={id}
       >
-        <Wrapper nodes={nodes} edges={edges} width={width} height={height}>
+        <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView}>
           <GraphView
             onInit={onInit}
             onNodeClick={onNodeClick}

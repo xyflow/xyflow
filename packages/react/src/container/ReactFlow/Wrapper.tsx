@@ -10,12 +10,14 @@ function Wrapper({
   edges,
   width,
   height,
+  fitView,
 }: {
   children: ReactNode;
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
+  fitView?: boolean;
 }) {
   const isWrapped = useContext(StoreContext);
 
@@ -26,7 +28,13 @@ function Wrapper({
   }
 
   return (
-    <ReactFlowProvider initialNodes={nodes} initialEdges={edges} initialWidth={width} initialHeight={height}>
+    <ReactFlowProvider
+      initialNodes={nodes}
+      initialEdges={edges}
+      initialWidth={width}
+      initialHeight={height}
+      fitView={fitView}
+    >
       {children}
     </ReactFlowProvider>
   );

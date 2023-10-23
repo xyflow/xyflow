@@ -12,12 +12,14 @@ function ReactFlowProvider({
   initialEdges,
   initialWidth,
   initialHeight,
+  fitView,
 }: {
   children: ReactNode;
   initialNodes?: Node[];
   initialEdges?: Edge[];
   initialWidth?: number;
   initialHeight?: number;
+  fitView?: boolean;
 }) {
   const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
 
@@ -27,6 +29,7 @@ function ReactFlowProvider({
       edges: initialEdges,
       width: initialWidth,
       height: initialHeight,
+      fitView,
     });
   }
 
