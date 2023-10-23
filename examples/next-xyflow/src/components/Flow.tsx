@@ -11,6 +11,7 @@ import {
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
+  OnError,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';

@@ -21,8 +21,6 @@ const nodeSize = {
   height: 40,
 };
 
-const handleSize = 1;
-
 const initialNodes: Node[] = [
   {
     id: '1',

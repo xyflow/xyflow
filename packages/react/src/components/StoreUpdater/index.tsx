@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { StoreApi } from 'zustand';
 import { shallow } from 'zustand/shallow';
-import type { CoordinateExtent } from '@xyflow/system';
+import { devWarn, type CoordinateExtent } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, ReactFlowStore } from '../../types';
@@ -201,7 +201,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('rfId', rfId, store.setState);
   useDirectStoreUpdater('autoPanOnConnect', autoPanOnConnect, store.setState);
   useDirectStoreUpdater('autoPanOnNodeDrag', autoPanOnNodeDrag, store.setState);
-  useDirectStoreUpdater('onError', onError, store.setState);
+  useDirectStoreUpdater('onError', onError || devWarn, store.setState);
   useDirectStoreUpdater('connectionRadius', connectionRadius, store.setState);
   useDirectStoreUpdater('isValidConnection', isValidConnection, store.setState);
   useDirectStoreUpdater('selectNodesOnDrag', selectNodesOnDrag, store.setState);
