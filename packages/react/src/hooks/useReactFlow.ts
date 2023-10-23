@@ -178,7 +178,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
 
   const getNodeRect = useCallback(
     (
-      nodeOrRect: (Partial<Node<NodeData>> & { id: Node['id'] }) | Rect
+      nodeOrRect: Node<NodeData> | { id: Node['id'] } | Rect
     ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
       const isRect = isRectObject(nodeOrRect);
       const node = isRect ? null : store.getState().nodes.find((n) => n.id === nodeOrRect.id);

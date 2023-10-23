@@ -31,26 +31,26 @@ export function useSvelteFlow(): {
   getViewport: () => Viewport;
   fitView: (options?: FitViewOptions) => void;
   getIntersectingNodes: (
-    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    nodeOrRect: Node | { id: Node['id'] } | Rect,
     partially?: boolean,
     nodesToIntersect?: Node[]
   ) => Node[];
   isNodeIntersecting: (
-    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    nodeOrRect: Node | { id: Node['id'] } | Rect,
     area: Rect,
     partially?: boolean
   ) => boolean;
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
   deleteElements: (
-    nodesToRemove?: Partial<Node> & { id: string }[],
-    edgesToRemove?: Partial<Edge> & { id: string }[]
+    nodesToRemove?: (Node | { id: Node['id'] })[],
+    edgesToRemove?: (Edge | { id: Edge['id'] })[]
   ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
   screenToFlowCoordinate: (position: XYPosition) => XYPosition;
   flowToScreenCoordinate: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
-  getConnectedEdges: (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
-  getIncomers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
-  getOutgoers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  getConnectedEdges: (id: string | (Node | { id: Node['id'] })[]) => Edge[];
+  getIncomers: (node: string | Node | { id: Node['id'] }) => Node[];
+  getOutgoers: (node: string | Node | { id: Node['id'] }) => Node[];
 } {
   const {
     zoomIn,
@@ -69,7 +69,7 @@ export function useSvelteFlow(): {
   } = useStore();
 
   const getNodeRect = (
-    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect
+    nodeOrRect: Node | { id: Node['id'] } | Rect
   ): [Rect | null, Node | null | undefined, boolean] => {
     const isRect = isRectObject(nodeOrRect);
     const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
@@ -136,7 +136,7 @@ export function useSvelteFlow(): {
       );
     },
     getIntersectingNodes: (
-      nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+      nodeOrRect: Node | { id: Node['id'] } | Rect,
       partially = true,
       nodesToIntersect?: Node[]
     ) => {
@@ -155,11 +155,11 @@ export function useSvelteFlow(): {
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
-        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+        return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
       });
     },
     isNodeIntersecting: (
-      nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+      nodeOrRect: Node | { id: Node['id'] } | Rect,
       area: Rect,
       partially = true
     ) => {
@@ -172,11 +172,11 @@ export function useSvelteFlow(): {
       const overlappingArea = getOverlappingArea(nodeRect, area);
       const partiallyVisible = partially && overlappingArea > 0;
 
-      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
     deleteElements: (
-      nodesToRemove: Partial<Node> & { id: string }[] = [],
-      edgesToRemove: Partial<Edge> & { id: string }[] = []
+      nodesToRemove: (Node | { id: Node['id'] })[] = [],
+      edgesToRemove: (Edge | { id: Edge['id'] })[] = []
     ) => {
       const _nodes = get(nodes);
       const _edges = get(edges);
