@@ -20,6 +20,7 @@ import {
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
+import GroupNode from '$lib/components/nodes/GroupNode.svelte';
 import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
@@ -31,7 +32,8 @@ import { initConnectionProps, type ConnectionProps } from './derived-connection-
 export const initialNodeTypes = {
   input: InputNode,
   output: OutputNode,
-  default: DefaultNode
+  default: DefaultNode,
+  group: GroupNode
 };
 
 export const initialEdgeTypes = {

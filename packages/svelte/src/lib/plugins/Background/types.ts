@@ -5,6 +5,7 @@ export enum BackgroundVariant {
 }
 
 export type BackgroundProps = {
+  id?: string;
   bgColor?: string;
   patternColor?: string;
   patternClass?: string;

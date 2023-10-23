@@ -29,7 +29,34 @@
           ($elementsSelectable && typeof edge.selectable === 'undefined')
         )}
 
-        <EdgeWrapper {...edge} type={edgeType} {selectable} on:edgeclick on:edgecontextmenu />
+        <EdgeWrapper
+          id={edge.id}
+          source={edge.source}
+          target={edge.target}
+          data={edge.data}
+          style={edge.style}
+          animated={edge.animated}
+          selected={edge.selected}
+          hidden={edge.hidden}
+          label={edge.label}
+          labelStyle={edge.labelStyle}
+          markerStart={edge.markerStart}
+          markerEnd={edge.markerEnd}
+          sourceHandle={edge.sourceHandle}
+          targetHandle={edge.targetHandle}
+          sourceX={edge.sourceX}
+          sourceY={edge.sourceY}
+          targetX={edge.targetX}
+          targetY={edge.targetY}
+          sourcePosition={edge.sourcePosition}
+          targetPosition={edge.targetPosition}
+          ariaLabel={edge.ariaLabel}
+          class={edge.class}
+          type={edgeType}
+          {selectable}
+          on:edgeclick
+          on:edgecontextmenu
+        />
       {/each}
     </g>
   </svg>

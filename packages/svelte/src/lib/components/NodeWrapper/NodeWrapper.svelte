@@ -9,13 +9,14 @@
     type ComponentType
   } from 'svelte';
   import cc from 'classcat';
-  import { errorMessages, type NodeProps } from '@xyflow/system';
+  import { get, writable } from 'svelte/store';
+  import { errorMessages, Position, type NodeProps } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
-  import { writable } from 'svelte/store';
+  import type { Node } from '$lib/types';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -42,23 +43,61 @@
   export { className as class };
 
   const store = useStore();
-  const { nodeTypes, addSelectedNodes } = store;
+  const { nodeTypes, nodeDragThreshold, addSelectedNodes, updateNodeDimensions } = store;
+  const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
-  const nodeTypeValid = !!$nodeTypes[type!];
+  const nodeTypeValid = !!$nodeTypes[nodeType];
 
   if (!nodeTypeValid) {
     console.warn('003', errorMessages['error003'](type!));
-    type = 'default';
   }
 
-  const nodeComponent: ComponentType<SvelteComponent<NodeProps>> = $nodeTypes[type!] || DefaultNode;
+  const nodeComponent: ComponentType<SvelteComponent<NodeProps>> =
+    $nodeTypes[nodeType] || DefaultNode;
   const selectNodesOnDrag = false;
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    nodeclick: { node: Node; event: MouseEvent | TouchEvent };
+    nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
+    nodedrag: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
+    nodedragstart: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
+    nodedragstop: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
+    nodemouseenter: { node: Node; event: MouseEvent | TouchEvent };
+    nodemouseleave: { node: Node; event: MouseEvent | TouchEvent };
+    nodemousemove: { node: Node; event: MouseEvent | TouchEvent };
+  }>();
   const connectableStore = writable(connectable);
+  let prevType: string | undefined = undefined;
+  let prevSourcePosition: Position | undefined = undefined;
+  let prevTargetPosition: Position | undefined = undefined;
 
   $: {
     connectableStore.set(!!connectable);
+  }
+
+  $: {
+    // if type, sourcePosition or targetPosition changes,
+    // we need to re-calculate the handle positions
+    const doUpdate =
+      (prevType && nodeType !== prevType) ||
+      (prevSourcePosition && sourcePosition !== prevSourcePosition) ||
+      (prevTargetPosition && targetPosition !== prevTargetPosition);
+
+    if (doUpdate) {
+      requestAnimationFrame(() =>
+        updateNodeDimensions([
+          {
+            id,
+            nodeElement: nodeRef,
+            forceUpdate: true
+          }
+        ])
+      );
+    }
+
+    prevType = nodeType;
+    prevSourcePosition = sourcePosition;
+    prevTargetPosition = targetPosition;
   }
 
   setContext('svelteflow__node_id', id);
@@ -73,7 +112,7 @@
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
-    if (selectable && (!selectNodesOnDrag || !draggable)) {
+    if (selectable && (!selectNodesOnDrag || !draggable || get(nodeDragThreshold) > 0)) {
       // this handler gets called within the drag start event when selectNodesOnDrag=true
       addSelectedNodes([id]);
     }
@@ -108,7 +147,7 @@
     }}
     bind:this={nodeRef}
     data-id={id}
-    class={cc(['svelte-flow__node', `svelte-flow__node-${type || 'default'}`, className])}
+    class={cc(['svelte-flow__node', `svelte-flow__node-${nodeType}`, className])}
     class:dragging
     class:selected
     class:draggable

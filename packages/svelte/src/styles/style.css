@@ -7,3 +7,11 @@
   position: absolute;
   font-size: 10px;
 }
+
+.svelte-flow__nodes {
+  z-index: 0;
+}
+
+.svelte-flow__edgelabel-renderer {
+  z-index: 0;
+}

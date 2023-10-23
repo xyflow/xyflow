@@ -17,14 +17,9 @@
     class="selection-wrapper nopan"
     style="width: {rect.width}px; height: {rect.height}px; transform: translate({rect.x}px, {rect.y}px)"
     use:drag={{ disabled: false, store }}
-  />
-  <Selection
-    isVisible={$selectionRectMode === 'nodes'}
-    width={rect.width}
-    height={rect.height}
-    x={rect.x}
-    y={rect.y}
-  />
+  >
+    <Selection width="100%" height="100%" x={0} y={0} />
+  </div>
 {/if}
 
 <style>

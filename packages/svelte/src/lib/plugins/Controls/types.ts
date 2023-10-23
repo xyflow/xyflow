@@ -4,7 +4,7 @@ export type ControlsProps = {
   position?: PanelPosition;
   showZoom?: boolean;
   showFitView?: boolean;
-  showInteractive?: boolean;
+  showLock?: boolean;
   buttonBgColor?: string;
   buttonBgColorHover?: string;
   buttonColor?: string;

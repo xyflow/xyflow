@@ -85,25 +85,4 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMove?: OnMove;
   onMoveEnd?: OnMoveEnd;
   onError?: OnError;
-
-  'on:nodeclick'?: CustomEvent<{ event: MouseEvent | TouchEvent; node: Node }>;
-  'on:nodemouseenter'?: CustomEvent<{ event: MouseEvent; node: Node }>;
-  'on:nodemousemove'?: CustomEvent<{ event: MouseEvent; node: Node }>;
-  'on:nodemouseleave'?: CustomEvent<{ event: MouseEvent; node: Node }>;
-  'on:edgeclick'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
-  'on:edgecontextmenu'?: CustomEvent<{ event: MouseEvent; edge: Edge }>;
-  'on:connectstart'?: CustomEvent<{
-    event: MouseEvent | TouchEvent;
-    nodeId?: string;
-    handleId?: string;
-    handleType?: HandleType;
-  }>;
-  'on:connect'?: CustomEvent<{ connection: Connection }>;
-  'on:connectend'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
-  'on:paneclick'?: CustomEvent<{ event: MouseEvent | TouchEvent }>;
-  'on:panecontextmenu'?: CustomEvent<{ event: MouseEvent }>;
-  'on:nodedragstart'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
-  'on:nodedrag'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
-  'on:nodedragstop'?: CustomEvent<{ event: MouseEvent; node: NodeBase; nodes: NodeBase[] }>;
-  'on:nodecontextmenu'?: CustomEvent<{ event: MouseEvent; node: NodeBase }>;
 };

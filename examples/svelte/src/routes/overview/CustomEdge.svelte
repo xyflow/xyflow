@@ -2,7 +2,7 @@
 	import {
 		BaseEdge,
 		EdgeLabelRenderer,
-		useSvelteFlow,
+		useEdges,
 		type EdgeProps,
 		getBezierPath
 	} from '@xyflow/svelte';
@@ -18,10 +18,10 @@
 		targetPosition: $$props.targetPosition
 	});
 
-	const svelteFlow = useSvelteFlow();
+	const edges = useEdges();
 
 	function onClick() {
-		svelteFlow.edges.update((eds) => eds.filter((e) => e.id !== $$props.id));
+		edges.update((eds) => eds.filter((e) => e.id !== $$props.id));
 	}
 </script>
 

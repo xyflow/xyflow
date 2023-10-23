@@ -1,16 +1,13 @@
 <script lang="ts">
-  import { Position, type NodeProps } from '@xyflow/system';
+  import type { NodeProps } from '@xyflow/system';
 
-  import { Handle } from '$lib/components/Handle';
-
-  interface $$Props extends NodeProps<{ label: string }> {}
-
-  export let data: $$Props['data'] = { label: 'Node' };
-  export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
+  interface $$Props extends NodeProps<{}> {}
 
   // unused props - we need to list them here in order to prevent warnings
   export let id: $$Props['id'] = '';
+  export let data: $$Props['data'] = {};
   export let selected: $$Props['selected'] = undefined;
+  export let sourcePosition: $$Props['sourcePosition'] = undefined;
   export let targetPosition: $$Props['targetPosition'] = undefined;
   export let type: $$Props['type'] = undefined;
   export let zIndex: $$Props['zIndex'] = undefined;
@@ -22,7 +19,9 @@
 
   // @todo: there must be a better way to do this
   id;
+  data;
   selected;
+  sourcePosition;
   targetPosition;
   type;
   zIndex;
@@ -32,6 +31,3 @@
   yPos;
   isConnectable;
 </script>
-
-{data?.label}
-<Handle type="source" position={sourcePosition} on:connectstart on:connect on:connectend />

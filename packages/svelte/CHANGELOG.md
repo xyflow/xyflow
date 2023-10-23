@@ -1,3 +1,29 @@
+## 0.0.24
+
+- update node automatically when `type`, `sourcePosition` or `targetPosition` option changes
+- prevent dev tool warnings when using built-in node types
+- updates `useSvelteFlow` hook:
+- add node type "group"
+- add `class` prop for BaseEdge
+- add `id` prop for Background
+- add `selected` prop for MiniMap Node
+- rename Controls prop `showInteractive` to `showLock`
+
+## 0.0.23
+
+- updates `useSvelteFlow` hook:
+  - add `screenToFlowCoordinate` and `flowToScreenCoordinate`
+  - add `getConnectedEdges`, `getIncomers` and `getOutgoers`
+  - add `deleteElements`
+  - add `fitBounds`
+  - add `getIntersectingNodes` and `isNodeIntersecting`
+- add `useConnection` hook
+- add `useNodes` hook
+- add `useEdges` hook
+- add `viewport` prop (writable viewport)
+- fix selection style
+- fix Background component with lines variant
+
 ## 0.0.22
 
 - add `connectionLine` slot for rendering a custom connection line 
