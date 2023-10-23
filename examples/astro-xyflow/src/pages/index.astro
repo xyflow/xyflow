@@ -1,15 +1,14 @@
 ---
-import RF from '../components/ReactFlowExample' 
-import SF from '../components/SvelteFlowExample/index.svelte' 
+import ReactFlowApp from '../components/ReactFlowExample' 
+import SvelteFlowApp from '../components/SvelteFlowExample/index.svelte' 
 ---
 
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Astro example for React Flow and Svelte Flow</title>
 
 		<style>
 			html, body {
@@ -20,13 +19,9 @@ import SF from '../components/SvelteFlowExample/index.svelte'
 	</head>
 	<body>
 		<h2>Svelte Flow</h2>
-		<div style="height: 400px">
-			<SF />
-		</div>
+		<SvelteFlowApp />
 
 		<h2>React Flow</h2>
-		<div >
-			<RF />
-		</div>
+		<ReactFlowApp />
 	</body>
 </html>

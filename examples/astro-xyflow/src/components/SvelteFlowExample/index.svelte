@@ -78,7 +78,9 @@
   };
 </script>
 
-<SvelteFlow {nodes} {edges} fitView {defaultEdgeOptions}>
-  <Controls />
-  <Background variant={BackgroundVariant.Dots} />
-</SvelteFlow>
+<div style="height: 400px; width: 700px;">
+  <SvelteFlow {nodes} {edges} fitView {defaultEdgeOptions} width={700} height={400}>
+    <Controls />
+    <Background variant={BackgroundVariant.Dots} />
+  </SvelteFlow>
+</div>
