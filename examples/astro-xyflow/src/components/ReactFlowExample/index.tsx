@@ -34,8 +34,6 @@ const initialNodes: Node[] = [
         position: Position.Bottom,
         x: nodeSize.width * 0.5,
         y: nodeSize.height,
-        width: 1,
-        height: 1,
       },
     ],
   },

@@ -1,5 +1,4 @@
 import {
-  devWarn,
   infiniteExtent,
   ConnectionMode,
   updateNodes,

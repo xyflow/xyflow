@@ -1,6 +1,6 @@
 import { EdgePosition } from '../../types/edges';
 import { ConnectionMode, OnError } from '../../types/general';
-import { NodeBase, NodeHandleBounds } from '../../types/nodes';
+import { NodeBase, NodeHandle, NodeHandleBounds } from '../../types/nodes';
 import { Position, Rect, XYPosition } from '../../types/utils';
 import { errorMessages, internalsSymbol } from '../../constants';
 import { HandleElement } from '../../types';
@@ -59,19 +59,22 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
   };
 }
 
-function toHandleBounds(handles?: HandleElement[]) {
+function toHandleBounds(handles?: NodeHandle[]) {
   if (!handles) {
     return null;
   }
 
   return handles.reduce<NodeHandleBounds>(
     (res, item) => {
+      item.width = item.width || 1;
+      item.height = item.height || 1;
+
       if (item.type === 'source') {
-        res.source?.push(item);
+        res.source?.push(item as HandleElement);
       }
 
       if (item.type === 'target') {
-        res.target?.push(item);
+        res.target?.push(item as HandleElement);
       }
 
       return res;
