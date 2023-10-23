@@ -42,10 +42,7 @@ export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 export type FitViewParams = FitViewParamsBase<Node>;
 export type FitViewOptions = FitViewOptionsBase<Node>;
 export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
-export type OnInit<NodeData = any, EdgeData = any> = (
-  reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>,
-  { nodes, edges }: { nodes: Node<NodeData>[]; edges: Edge<EdgeData>[] }
-) => void;
+export type OnInit<NodeData = any, EdgeData = any> = (reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>) => void;
 
 export type ViewportHelperFunctions = {
   zoomIn: ZoomInOut;

@@ -42,7 +42,7 @@ import type {
   EdgeMouseHandler,
 } from '.';
 
-export type ReactFlowProps = HTMLAttributes<HTMLDivElement> & {
+export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   nodes?: Node[];
   edges?: Edge[];
   defaultNodes?: Node[];
