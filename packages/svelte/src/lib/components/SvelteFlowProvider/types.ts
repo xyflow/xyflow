@@ -5,4 +5,5 @@ export type SvelteFlowProviderProps = {
   initialEdges?: Edge[];
   initialWidth?: number;
   initialHeight?: number;
+  fitView?: boolean;
 };

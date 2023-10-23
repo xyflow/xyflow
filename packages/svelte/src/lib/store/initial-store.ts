@@ -14,7 +14,10 @@ import {
   type NodeOrigin,
   type OnError,
   devWarn,
-  type Viewport
+  type Viewport,
+  updateNodes,
+  getRectOfNodes,
+  getTransformForBounds
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -47,16 +50,33 @@ export const getInitialStore = ({
   nodes = [],
   edges = [],
   width,
-  height
+  height,
+  fitView
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
+  fitView?: boolean;
 }) => {
+  const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+
+  let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
+
+  if (fitView && width && height) {
+    const nodesWithDimensions = nextNodes.map((node) => ({
+      ...node,
+      width: node.size?.width,
+      height: node.size?.height
+    }));
+    const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
+    const transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);
+    viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
+  }
+
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nodes),
+    nodes: createNodesStore(nextNodes),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges),
     edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
@@ -85,7 +105,7 @@ export const getInitialStore = ({
     selectionMode: writable<SelectionMode>(SelectionMode.Partial),
     nodeTypes: writable<NodeTypes>(initialNodeTypes),
     edgeTypes: writable<EdgeTypes>(initialEdgeTypes),
-    viewport: writable<Viewport>({ x: 0, y: 0, zoom: 1 }),
+    viewport: writable<Viewport>(viewport),
     connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
     domNode: writable<HTMLDivElement | null>(null),
     connection: readable<ConnectionProps>(initConnectionProps),

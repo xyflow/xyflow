@@ -79,7 +79,7 @@
 
   const store = hasContext(key)
     ? useStore()
-    : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height });
+    : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height, fitView });
 
   onMount(() => {
     store.width.set(clientWidth);

@@ -10,12 +10,14 @@
   export let initialEdges: $$Props['initialEdges'] = undefined;
   export let initialWidth: $$Props['initialWidth'] = undefined;
   export let initialHeight: $$Props['initialHeight'] = undefined;
+  export let fitView: $$Props['fitView'] = undefined;
 
   const store = createStore({
     nodes: initialNodes,
     edges: initialEdges,
     width: initialWidth,
-    height: initialHeight
+    height: initialHeight,
+    fitView
   });
 
   setContext(key, {

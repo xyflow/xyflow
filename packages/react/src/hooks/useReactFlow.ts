@@ -211,7 +211,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
-        return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+        return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
       });
     },
     []
@@ -228,7 +228,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       const overlappingArea = getOverlappingArea(nodeRect, area);
       const partiallyVisible = partially && overlappingArea > 0;
 
-      return partiallyVisible || overlappingArea >= nodeOrRect.width! * nodeOrRect.height!;
+      return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
     []
   );

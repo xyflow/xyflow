@@ -33,14 +33,16 @@ export function createStore({
   nodes,
   edges,
   width,
-  height
+  height,
+  fitView: fitViewOnCreate
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
+  fitView?: boolean;
 }): SvelteFlowStore {
-  const store = getInitialStore({ nodes, edges, width, height });
+  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -347,14 +349,16 @@ export function createStoreContext({
   nodes,
   edges,
   width,
-  height
+  height,
+  fitView
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
+  fitView?: boolean;
 }) {
-  const store = createStore({ nodes, edges, width, height });
+  const store = createStore({ nodes, edges, width, height, fitView });
 
   setContext(key, {
     getStore: () => store
