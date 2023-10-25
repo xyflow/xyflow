@@ -140,6 +140,8 @@ test.describe('NODES', () => {
     test('deletable=false prevents deletion', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDeletable"]'));
 
+      await expect(node).toBeAttached();
+
       await node.click();
       await page.keyboard.press('Backspace');
 
