@@ -41,6 +41,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4' },
     position: { x: 400, y: 200 },
     className: 'light',
+    connectable: false,
   },
 ];
 
