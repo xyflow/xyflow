@@ -106,6 +106,12 @@
     };
   });
 
+  // Update width & height on resize
+  $: {
+    store.width.set(clientWidth);
+    store.height.set(clientHeight);
+  }
+
   // this updates the store for simple changes
   // where the prop names equals the store name
   $: {
