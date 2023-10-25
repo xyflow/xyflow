@@ -51,6 +51,7 @@ export function useSvelteFlow(): {
   getConnectedEdges: (id: string | (Partial<Node> & { id: Node['id'] })[]) => Edge[];
   getIncomers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
   getOutgoers: (node: string | (Partial<Node> & { id: Node['id'] })) => Node[];
+  toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
 } {
   const {
     zoomIn,
@@ -262,6 +263,17 @@ export function useSvelteFlow(): {
       const _node = typeof node === 'string' ? { id: node } : node;
 
       return getOutgoersBase(_node, get(nodes), get(edges));
+    },
+    toObject: () => {
+      const _nodes = get(nodes);
+      const _edges = get(edges);
+      const _viewport = get(viewport);
+
+      return {
+        nodes: { ..._nodes },
+        edges: { ..._edges },
+        viewport: { ..._viewport }
+      };
     },
     viewport
   };
