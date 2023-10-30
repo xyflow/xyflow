@@ -137,6 +137,7 @@ test.describe('NODES', () => {
       expect(edges).toHaveLength(0);
     });
 
+    // TODO: pressing backspace creates problems on webkit
     test('deletable=false prevents deletion', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDeletable"]'));
 
