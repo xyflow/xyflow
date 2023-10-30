@@ -1,6 +1,6 @@
 # Svelte Flow (alpha)
 
-Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow. **This package is currently under heavy development and the API is very likely to change.**
+Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow. **Svelte Flow alpha and currently under heavy development. The API is relatively stable but some things might change.**
 
 ## Installation
 
