@@ -108,8 +108,10 @@
 
   // Update width & height on resize
   $: {
-    store.width.set(clientWidth);
-    store.height.set(clientHeight);
+    if (clientWidth !== undefined && clientHeight !== undefined) {
+      store.width.set(clientWidth);
+      store.height.set(clientHeight);
+    }
   }
 
   // this updates the store for simple changes
