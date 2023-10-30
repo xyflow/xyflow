@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useSvelteFlow } from '@xyflow/svelte';
+	import { useNodes, useSvelteFlow } from '@xyflow/svelte';
 
 	const {
 		zoomIn,
@@ -10,8 +10,10 @@
 		setViewport,
 		getViewport,
 		viewport,
-		nodes
+		toObject
 	} = useSvelteFlow();
+
+	const nodes = useNodes();
 </script>
 
 <aside>
@@ -23,6 +25,12 @@
 	<button on:click={() => setCenter(0, 0)}>setCenter 0, 0</button>
 	<button on:click={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
 	<button on:click={() => console.log(getViewport())}>getViewport</button>
+	<button
+		on:click={() => {
+			const { nodes, edges, viewport } = toObject();
+			console.log(nodes, edges, viewport);
+		}}>toObject</button
+	>
 
 	<div class="label">Nodes:</div>
 	{#each $nodes as node (node.id)}
