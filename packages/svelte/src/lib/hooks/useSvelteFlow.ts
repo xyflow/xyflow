@@ -265,14 +265,16 @@ export function useSvelteFlow(): {
       return getOutgoersBase(_node, get(nodes), get(edges));
     },
     toObject: () => {
-      const _nodes = get(nodes);
-      const _edges = get(edges);
-      const _viewport = get(viewport);
-
       return {
-        nodes: { ..._nodes },
-        edges: { ..._edges },
-        viewport: { ..._viewport }
+        nodes: get(nodes).map((node) => ({
+          ...node,
+          // we want to make sure that changes to the nodes object that gets returned by toObject
+          // do not affect the nodes object
+          position: { ...node.position },
+          data: { ...node.data }
+        })),
+        edges: get(edges).map((edge) => ({ ...edge })),
+        viewport: { ...get(viewport) }
       };
     },
     viewport
