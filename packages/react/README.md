@@ -112,6 +112,8 @@ React Flow is maintained by the team behind [xyflow](https://xyflow.com). If you
 - Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 - Peter • [Github](https://github.com/peterkogo)
 
+Any support you provide goes directly towards the development and maintenance of React Flow and Svelte Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
+
 ## Community Packages
 
 - [useUndoable](https://github.com/xplato/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
