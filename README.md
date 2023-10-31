@@ -1,4 +1,4 @@
-![reactflow-dark](https://github.com/wbkd/react-flow/assets/2857535/971d6176-c5fb-4f4b-81da-3a46d0d604bd#gh-dark-mode-only)
+![xyflow-readme](https://github.com/wbkd/react-flow/assets/2857535/5504f9d5-adbd-47c6-b3ce-8abccb5fb4a4)
 
 <div align="center">
 
