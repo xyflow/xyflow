@@ -5,7 +5,9 @@
 ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23ff0072)
 ![npm downloads](https://img.shields.io/npm/dt/@xyflow/svelte?color=%23FF0072&label=downloads)
 
-Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow. **Svelte Flow is still alpha and currently under heavy development. The API is relatively stable but some things might change.**
+Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow.
+
+☣️ **Svelte Flow is still alpha and currently under heavy development. The API is relatively stable but some things might change.** ☣️
 
 [🚀 Getting Started](https://svelteflow.dev/learn) | [📖 Documentation](https://svelteflow.dev/api-reference/svelte-flow) | [📺 Examples](https://svelteflow.dev/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) 
 
@@ -115,11 +117,11 @@ You can now access the examples under http://127.0.0.1:5173
 
 Svelte Flow is maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
-- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
-
-Any support you provide goes directly towards the development and maintenance of React Flow and Svelte Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
-
+- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
+- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
+- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Peter • [Github](https://github.com/peterkogo)
 
 # License
 
