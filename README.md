@@ -10,7 +10,7 @@
 
 Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
 
-[React Flow](https://reactflow.dev/) | [Svelte Flow](https://svelteflow.dev/) | [💎 React Flow Pro](https://pro.reactflow.dev)
+[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://pro.reactflow.dev)
 </div>
 
 ---
