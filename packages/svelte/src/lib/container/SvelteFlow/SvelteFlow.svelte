@@ -111,6 +111,14 @@
     };
   });
 
+  // Update width & height on resize
+  $: {
+    if (clientWidth !== undefined && clientHeight !== undefined) {
+      store.width.set(clientWidth);
+      store.height.set(clientHeight);
+    }
+  }
+
   // this updates the store for simple changes
   // where the prop names equals the store name
   $: {

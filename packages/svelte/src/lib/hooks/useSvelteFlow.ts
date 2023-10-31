@@ -51,6 +51,7 @@ export function useSvelteFlow(): {
   getConnectedEdges: (id: string | (Node | { id: Node['id'] })[]) => Edge[];
   getIncomers: (node: string | Node | { id: Node['id'] }) => Node[];
   getOutgoers: (node: string | Node | { id: Node['id'] }) => Node[];
+  toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
 } {
   const {
     zoomIn,
@@ -262,6 +263,19 @@ export function useSvelteFlow(): {
       const _node = typeof node === 'string' ? { id: node } : node;
 
       return getOutgoersBase(_node, get(nodes), get(edges));
+    },
+    toObject: () => {
+      return {
+        nodes: get(nodes).map((node) => ({
+          ...node,
+          // we want to make sure that changes to the nodes object that gets returned by toObject
+          // do not affect the nodes object
+          position: { ...node.position },
+          data: { ...node.data }
+        })),
+        edges: get(edges).map((edge) => ({ ...edge })),
+        viewport: { ...get(viewport) }
+      };
     },
     viewport
   };

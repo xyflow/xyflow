@@ -1,6 +1,7 @@
 <svelte:options immutable />
 
 <script lang="ts">
+  import cc from 'classcat';
   import { createEventDispatcher } from 'svelte';
   import { getMarkerId } from '@xyflow/system';
 
@@ -73,7 +74,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
   <g
-    class="svelte-flow__edge {className}"
+    class={cc(['svelte-flow__edge', className])}
     class:animated
     class:selected
     data-id={id}
