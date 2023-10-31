@@ -20,7 +20,7 @@ A highly customizable React component for building interactive graphs and node-b
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
 - **Customizable:** Different [node](https://reactflow.dev/examples) and [edge types](https://reactflow.dev/examples/edges/edge-types) and support for custom nodes with multiple handles and custom edges
-- **Fast rendering:** Only nodes that have changed are re-rendered and only those in the viewport are displayed
+- **Fast rendering:** Only nodes that have changed are re-rendered 
 - **Hooks and Utils:** [Hooks](https://reactflow.dev/api-reference/hooks) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/api-reference/utils)
 - **Plugin Components:** [Background](https://reactflow.dev/api-reference/components/background), [MiniMap](https://reactflow.dev/api-reference/components/minimap) and [Controls](https://reactflow.dev/api-reference/components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
@@ -105,12 +105,12 @@ pnpm test
 
 ## Maintainers
 
-React Flow is the full-time project of Moritz and Christopher of [webkid](https://webkid.io/), based in Berlin. If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://pro.reactflow.dev/contact) or by joining the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
+React Flow is maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
 - Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 - Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
 
-Any support you provide goes directly towards the development and maintenance of React Flow, allowing us to continue to operate as an independent company, working on what we think is best for React Flow as an open-source library.
+Any support you provide goes directly towards the development and maintenance of React Flow and Svelte Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
 
 ## Community Packages
 
@@ -128,4 +128,4 @@ React Flow was initially developed for [datablocks](https://datablocks.pro), a g
 
 ## License
 
-React Flow is [MIT licensed](../LICENSE).
+React Flow is [MIT licensed](../../LICENSE).
