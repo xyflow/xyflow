@@ -1,5 +1,4 @@
-![readme-header](https://github.com/wbkd/react-flow/assets/2857535/c54e3334-eef0-48b2-b598-792e924c34f1#gh-dark-mode-only)
-![readme-header-dark](https://github.com/wbkd/react-flow/assets/2857535/2f0acf6f-945b-4da8-9d24-6f014911d69a#gh-light-mode-only)
+![readme-header](https://github.com/wbkd/react-flow/assets/2857535/c54e3334-eef0-48b2-b598-792e924c34f1)
 
 <div align="center">
 
