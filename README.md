@@ -152,7 +152,7 @@ npm install @xyflow/svelte
 
 ## Maintainers
 
-React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our[Discord Server](https://discord.gg/Bqt6xrs).
+React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
 - Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 - Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
