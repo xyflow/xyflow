@@ -1,3 +1,12 @@
+## 0.0.25
+
+- add `toObject` to `useSvelteFlow` hook
+- export `BezierEdge`, `StepEdge` and `SmoothStepEdge` components
+- handle window resize (Minimap updates its viewport)
+- fix wrongly selected nodes
+- fix connection line z-index
+- fix broken edges (`interactionWidth` was missing)
+
 ## 0.0.24
 
 - update node automatically when `type`, `sourcePosition` or `targetPosition` option changes
