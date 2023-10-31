@@ -115,8 +115,11 @@ You can now access the examples under http://127.0.0.1:5173
 
 Svelte Flow is maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
-- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
+- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
+- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Peter • [Github](https://github.com/peterkogo)
 
 Any support you provide goes directly towards the development and maintenance of React Flow and Svelte Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
 
