@@ -1,5 +1,4 @@
-![readme-header-dark](https://user-images.githubusercontent.com/3797215/156384064-08a889d6-73c0-4cbf-8ff3-28dc601d1f5f.svg#gh-dark-mode-only)
-![readme-header](https://user-1images.githubusercontent.com/3797215/156259138-fb9f59f8-52f2-474a-b78c-6570867e4ead.svg#gh-light-mode-only)
+![xyflow-readme](https://github.com/wbkd/react-flow/assets/2857535/5504f9d5-adbd-47c6-b3ce-8abccb5fb4a4)
 
 <div align="center">
 
@@ -11,7 +10,7 @@
 
 Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
 
-[React Flow](https://reactflow.dev/) | [Svelte Flow](https://svelteflow.dev/) | [💎 React Flow Pro](https://pro.reactflow.dev)
+[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://pro.reactflow.dev)
 </div>
 
 ---
@@ -19,6 +18,10 @@ Powerful open source libraries for building node-based UIs with React or Svelte.
 ## The xyflow mono repo
 
 The xyflow repository is the home of three packages: React Flow `reactflow`, Svelte Flow `@xyflow/svelte` and a shared helper library `@xyflow/system`. The package name of React Flow will change when we have a stable v12 (probably by beginning of 2024). Until then the current version (v11) of React Flow lives on the v11 branch and is still supported of course. 
+
+* React Flow `reactflow` version v11 is on branch v11
+* Svelte Flow `@xyflow/svelte` can be found under [packages/svelte](./packages/svelte)
+* React Flow v12 (not published yet) can be found under [packages/react](./packages/react)
 
 ## Key Features
 
@@ -153,7 +156,7 @@ npm install @xyflow/svelte
 
 ## Maintainers
 
-React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our[Discord Server](https://discord.gg/Bqt6xrs).
+React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
 - Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 - Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
