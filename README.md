@@ -15,20 +15,13 @@ Powerful open source libraries for building node-based UIs with React or Svelte.
 
 ## The xyflow mono repo
 
-The xyflow repository is the home of three packages: React Flow `reactflow`, Svelte Flow `@xyflow/svelte` and a shared helper library `@xyflow/system`. The package name of React Flow will change (from `reactflow` to `@xyflow/react`) when we have a stable v12. Probably by beginning of 2024. Until then the current published package of React Flow lives on the v11 branch and is still supported of course. 
+The xyflow repository is the home of four packages:
+* React Flow v11 `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
+* React Flow v12 (not published yet) [packages/react](./packages/react)
+* Svelte Flow `@xyflow/svelte` [packages/svelte](./packages/svelte)
+* Shared helper library `@xyflow/system` [packages/system](./packages/system)
 
-* React Flow `reactflow` version v11 is on branch v11
-* Svelte Flow `@xyflow/svelte` can be found under [packages/svelte](./packages/svelte)
-* React Flow v12 (not published yet) can be found under [packages/react](./packages/react)
-
-## Key Features
-
-- **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
-- **Customizable:** Different node and edge types and support for custom nodes with multiple handles and custom edges
-- **Fast rendering:** Only nodes that have changed are re-rendered 
-- **Hooks and Utils:** hooks for handling nodes, edges and the viewport and graph util functions
-- **Plugin Components:** Background, Minimap, Controls and a Panel
-- **Reliable**: Written in Typescript and tested with Cypress and Playwright
+**We just moved repositories** from the @wbkd org to this one. React Flow v11 will remain on the [v11 branch](https://github.com/xyflow/xyflow/tree/v11). When we have a stable v12, the package name of React Flow will change from `reactflow` to `@xyflow/react`.
 
 
 ## Getting Started
@@ -152,14 +145,16 @@ npm install @xyflow/svelte
 ```
 </details>
 
-## Maintainers
+## The xyflow team
 
 React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
-- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
+- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
+- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Peter • [Github](https://github.com/peterkogo)
 
-Any support you provide goes directly towards the development and maintenance of React Flow and Svelte Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
 
 ## License
 
