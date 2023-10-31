@@ -5,8 +5,6 @@
 ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23ff0072)
 ![npm downloads](https://img.shields.io/npm/dt/reactflow?color=%23FF0072&label=React%20Flow%20downloads)
 ![npm downloads](https://img.shields.io/npm/dt/@xyflow/svelte?color=%23FF3E00&label=Svelte%20Flow%20downloads)
-![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
 
 Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
 
