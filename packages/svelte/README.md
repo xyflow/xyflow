@@ -5,7 +5,9 @@
 ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23ff0072)
 ![npm downloads](https://img.shields.io/npm/dt/@xyflow/svelte?color=%23FF0072&label=downloads)
 
-Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow. **Svelte Flow is still alpha and currently under heavy development. The API is relatively stable but some things might change.**
+Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow.
+
+☣️ **Svelte Flow is still alpha and currently under heavy development. The API is relatively stable but some things might change.** ☣️
 
 [🚀 Getting Started](https://svelteflow.dev/learn) | [📖 Documentation](https://svelteflow.dev/api-reference/svelte-flow) | [📺 Examples](https://svelteflow.dev/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) 
 
