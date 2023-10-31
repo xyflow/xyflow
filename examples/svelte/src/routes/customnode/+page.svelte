@@ -23,28 +23,6 @@
 
 	const bgColor = writable('#1A192B');
 
-	const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-		nodes.update((nds) =>
-			nds.map((node) => {
-				if (node.type !== 'colorNode') {
-					return node;
-				}
-
-				const color = (event.target as HTMLInputElement)?.value;
-
-				bgColor.set(color);
-
-				return {
-					...node,
-					data: {
-						...node.data,
-						color
-					}
-				};
-			})
-		);
-	};
-
 	const nodes = writable<Node[]>([
 		{
 			id: '1',
@@ -56,16 +34,8 @@
 		{
 			id: '2',
 			type: 'colorNode',
-			data: { onChange: onChange, color: $bgColor },
-			style: 'border: 1px solid #777; padding: 10px',
+			data: { colorStore: bgColor },
 			position: { x: 250, y: 50 }
-		},
-		{
-			id: '2a',
-			type: 'colorNode',
-			data: { onChange: onChange, color: $bgColor },
-			style: 'border: 1px solid #777; padding: 10px',
-			position: { x: 250, y: 520 }
 		},
 		{
 			id: '3',
@@ -115,7 +85,7 @@
 	{nodes}
 	{edges}
 	{nodeTypes}
-	style="--bgcolor: {$bgColor}"
+	style="--background-color: {$bgColor}"
 	fitView
 	on:connect={onConnect}
 >
@@ -123,9 +93,3 @@
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 </SvelteFlow>
-
-<style>
-	:global(.svelte-flow) {
-		background: var(--bgcolor);
-	}
-</style>

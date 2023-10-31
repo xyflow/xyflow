@@ -13,15 +13,17 @@ export type UseDragParams = {
   onDrag?: OnDrag;
   onDragStart?: OnDrag;
   onDragStop?: OnDrag;
+  onNodeMouseDown?: (id: string) => void;
 };
 
 export default function drag(domNode: Element, params: UseDragParams) {
-  const { store, onDrag, onDragStart, onDragStop } = params;
+  const { store, onDrag, onDragStart, onDragStop, onNodeMouseDown } = params;
   const dragInstance = XYDrag({
     domNode,
     onDrag,
     onDragStart,
     onDragStop,
+    onNodeMouseDown,
     getStoreItems: () => {
       const snapGrid = get(store.snapGrid);
       const vp = get(store.viewport);
@@ -33,7 +35,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
         snapGrid: snapGrid ? snapGrid : [0, 0],
         snapToGrid: !!snapGrid,
         nodeOrigin: [0, 0],
-        multiSelectionActive: false,
+        multiSelectionActive: get(store.multiselectionKeyPressed),
         domNode: get(store.domNode),
         transform: [vp.x, vp.y, vp.zoom],
         autoPanOnNodeDrag: get(store.autoPanOnNodeDrag),

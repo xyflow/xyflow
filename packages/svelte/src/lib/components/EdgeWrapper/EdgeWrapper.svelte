@@ -3,11 +3,12 @@
 <script lang="ts">
   import cc from 'classcat';
   import { createEventDispatcher } from 'svelte';
-  import { getMarkerId } from '@xyflow/system';
+  import { errorMessages, getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
   import type { EdgeLayouted, Edge } from '$lib/types';
+  import { get } from 'svelte/store';
 
   type $$Props = EdgeLayouted;
 
@@ -41,7 +42,16 @@
   let className: string = '';
   export { className as class };
 
-  const { edges, edgeTypes, flowId, addSelectedEdges } = useStore();
+  const {
+    edges,
+    edgeTypes,
+    flowId,
+    selectionRect,
+    selectionRectMode,
+    multiselectionKeyPressed,
+    addSelectedEdges,
+    unselectNodesAndEdges
+  } = useStore();
   const dispatch = createEventDispatcher<{
     edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
     edgecontextmenu: { edge: Edge; event: MouseEvent };
@@ -52,15 +62,25 @@
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 
   function onClick(event: MouseEvent | TouchEvent) {
-    if (selectable) {
-      addSelectedEdges([id]);
-    }
-
     const edge = $edges.find((e) => e.id === id);
 
-    if (edge) {
-      dispatch('edgeclick', { event, edge });
+    if (!edge) {
+      console.warn('012', errorMessages['error012'](id));
+      return;
     }
+
+    if (selectable) {
+      selectionRect.set(null);
+      selectionRectMode.set(null);
+
+      if (!edge.selected) {
+        addSelectedEdges([id]);
+      } else if (edge.selected && get(multiselectionKeyPressed)) {
+        unselectNodesAndEdges({ nodes: [], edges: [edge] });
+      }
+    }
+
+    dispatch('edgeclick', { event, edge });
   }
 
   function onContextMenu(event: MouseEvent) {

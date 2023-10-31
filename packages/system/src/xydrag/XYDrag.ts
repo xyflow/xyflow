@@ -46,7 +46,7 @@ type StoreItems = {
   selectNodesOnDrag: boolean;
   nodeDragThreshold: number;
   panBy: PanBy;
-  unselectNodesAndEdges: () => void;
+  unselectNodesAndEdges: (params?: { nodes?: NodeBase[]; edges?: EdgeBase[] }) => void;
   onError?: OnError;
   onNodeDragStart?: OnNodeDrag;
   onNodeDrag?: OnNodeDrag;
@@ -63,7 +63,7 @@ export type XYDragParams = {
   onDragStart?: OnDrag;
   onDrag?: OnDrag;
   onDragStop?: OnDrag;
-  onNodeClick?: () => void;
+  onNodeMouseDown?: (id: string) => void;
 };
 
 export type XYDragInstance = {
@@ -81,7 +81,7 @@ export type DragUpdateParams = {
 
 export function XYDrag({
   domNode,
-  onNodeClick,
+  onNodeMouseDown,
   getStoreItems,
   onDragStart,
   onDrag,
@@ -217,8 +217,8 @@ export function XYDrag({
         }
       }
 
-      if (isSelectable && selectNodesOnDrag) {
-        onNodeClick?.();
+      if (isSelectable && selectNodesOnDrag && nodeId) {
+        onNodeMouseDown?.(nodeId);
       }
 
       const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });

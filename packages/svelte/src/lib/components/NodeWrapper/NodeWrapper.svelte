@@ -8,8 +8,8 @@
     SvelteComponent,
     type ComponentType
   } from 'svelte';
-  import cc from 'classcat';
   import { get, writable } from 'svelte/store';
+  import cc from 'classcat';
   import { errorMessages, Position, type NodeProps } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -44,7 +44,13 @@
   export { className as class };
 
   const store = useStore();
-  const { nodeTypes, nodeDragThreshold, addSelectedNodes, updateNodeDimensions } = store;
+  const {
+    nodeTypes,
+    nodeDragThreshold,
+    selectNodesOnDrag,
+    handleNodeSelection,
+    updateNodeDimensions
+  } = store;
   const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
@@ -56,7 +62,6 @@
 
   const nodeComponent: ComponentType<SvelteComponent<NodeProps>> =
     $nodeTypes[nodeType] || DefaultNode;
-  const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher<{
     nodeclick: { node: Node; event: MouseEvent | TouchEvent };
     nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
@@ -113,12 +118,12 @@
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
-    if (selectable && (!selectNodesOnDrag || !draggable || get(nodeDragThreshold) > 0)) {
-      // this handler gets called within the drag start event when selectNodesOnDrag=true
-      addSelectedNodes([id]);
+    if (selectable && (!get(selectNodesOnDrag) || !draggable || get(nodeDragThreshold) > 0)) {
+      // this handler gets called by XYDrag on drag start when selectNodesOnDrag=true
+      // here we only need to call it when selectNodesOnDrag=false
+      handleNodeSelection(id);
     }
 
-    // @todo: support multiselection
     dispatch('nodeclick', { node, event });
   }
 
@@ -135,6 +140,7 @@
       disabled: false,
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
+      onNodeMouseDown: handleNodeSelection,
       onDrag: (event, _, node, nodes) => {
         dispatch('nodedrag', { event, node, nodes });
       },
