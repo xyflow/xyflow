@@ -35,6 +35,8 @@
   export let sourcePosition: $$Props['sourcePosition'];
   export let targetPosition: $$Props['targetPosition'];
   export let ariaLabel: $$Props['ariaLabel'] = undefined;
+  export let interactionWidth: $$Props['interactionWidth'] = undefined;
+
   // @ todo: support edge updates
   let className: string = '';
   export { className as class };
@@ -104,6 +106,7 @@
       {labelStyle}
       {data}
       {style}
+      {interactionWidth}
       sourceHandleId={sourceHandle}
       targetHandleId={targetHandle}
       markerStart={markerStartUrl}

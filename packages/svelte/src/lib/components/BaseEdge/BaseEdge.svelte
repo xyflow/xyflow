@@ -17,6 +17,9 @@
   export let interactionWidth: $$Props['interactionWidth'] = 20;
   let className: $$Props['class'] = undefined;
   export { className as class };
+
+  // @todo, why is interactionWidth undefined after first re-render?
+  let interactionWidthValue = interactionWidth === undefined ? 20 : interactionWidth;
 </script>
 
 <path
@@ -29,11 +32,11 @@
   {style}
 />
 
-{#if interactionWidth}
+{#if interactionWidthValue}
   <path
     d={path}
     stroke-opacity={0}
-    stroke-width={interactionWidth}
+    stroke-width={interactionWidthValue}
     fill="none"
     class="svelte-flow__edge-interaction"
   />

@@ -51,6 +51,7 @@
           sourcePosition={edge.sourcePosition}
           targetPosition={edge.targetPosition}
           ariaLabel={edge.ariaLabel}
+          interactionWidth={edge.interactionWidth}
           class={edge.class}
           type={edgeType}
           {selectable}
