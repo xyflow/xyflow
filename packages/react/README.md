@@ -1,5 +1,5 @@
-![readme-header-dark](https://user-images.githubusercontent.com/3797215/156384064-08a889d6-73c0-4cbf-8ff3-28dc601d1f5f.svg#gh-dark-mode-only)
-![readme-header](https://github.com/wbkd/react-flow/assets/2857535/b46cabed-53c8-4507-a7c6-f53cfb9f1002#gh-light-mode-only)
+![readme header - dark](https://github.com/wbkd/react-flow/assets/2857535/44bc20bb-ce63-4812-ae99-490e65fa8a5f#gh-dark-mode-only)
+![readme header](https://github.com/wbkd/react-flow/assets/2857535/ce43cd45-61df-47a1-a700-df5f10c4b28e#gh-light-mode-only)
 
 <div align="center">
 
