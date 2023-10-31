@@ -1,5 +1,4 @@
-![svelteflow](https://github.com/wbkd/react-flow/assets/2857535/1c722629-7e8b-4322-bfd2-aec041d64aab#gh-light-mode-only)
-![svelteflow-dark](https://github.com/wbkd/react-flow/assets/2857535/164c6597-f071-44ef-8d4e-9105a57b2a63#gh-dark-mode-only)
+![svelteflow](https://github.com/wbkd/react-flow/assets/2857535/1c722629-7e8b-4322-bfd2-aec041d64aab)
 
 <div align="center">
 
