@@ -29,8 +29,20 @@ import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
-export function createStore(): SvelteFlowStore {
-  const store = getInitialStore();
+export function createStore({
+  nodes,
+  edges,
+  width,
+  height,
+  fitView: fitViewOnCreate
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+}): SvelteFlowStore {
+  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -333,8 +345,20 @@ export function useStore(): SvelteFlowStore {
   return store.getStore();
 }
 
-export function createStoreContext() {
-  const store = createStore();
+export function createStoreContext({
+  nodes,
+  edges,
+  width,
+  height,
+  fitView
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+}) {
+  const store = createStore({ nodes, edges, width, height, fitView });
 
   setContext(key, {
     getStore: () => store

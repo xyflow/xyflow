@@ -39,6 +39,7 @@
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
+  export let initialized: NodeWrapperProps['initialized'] = false;
   let className: string = '';
   export { className as class };
 
@@ -157,6 +158,9 @@
     class:parent={isParent}
     style:z-index={zIndex}
     style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
+    style:width={node.size?.width && `${node.size?.width}px`}
+    style:height={node.size?.height && `${node.size?.height}px`}
+    style:visibility={initialized ? 'visible' : 'hidden'}
     {style}
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}

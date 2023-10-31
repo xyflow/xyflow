@@ -27,4 +27,5 @@ export type NodeWrapperProps = Pick<
   isParent?: boolean;
   zIndex: number;
   node: Node;
+  initialized: boolean;
 };

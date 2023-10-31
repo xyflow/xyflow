@@ -66,7 +66,7 @@ const DnDFlow = () => {
 
   return (
     <div className={styles.dndflow}>
-      <ReactFlowProvider>
+      <ReactFlowProvider nodes={initialNodes} edges={[]}>
         <div className={styles.wrapper}>
           <ReactFlow
             nodes={nodes}
@@ -77,7 +77,6 @@ const DnDFlow = () => {
             onInit={onInit}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            nodeOrigin={nodeOrigin}
           >
             <Controls />
           </ReactFlow>

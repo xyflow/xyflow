@@ -11,7 +11,7 @@ import {
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import { updateNodesAndEdgesSelections } from './utils';
-import initialState from './initialState';
+import getInitialState from './initialState';
 import type {
   ReactFlowState,
   Node,
@@ -24,10 +24,22 @@ import type {
   FitViewOptions,
 } from '../types';
 
-const createRFStore = () =>
+const createRFStore = ({
+  nodes,
+  edges,
+  width,
+  height,
+  fitView,
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+}) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...initialState,
+      ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
         const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
         const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
@@ -45,15 +57,27 @@ const createRFStore = () =>
         const hasDefaultNodes = typeof nodes !== 'undefined';
         const hasDefaultEdges = typeof edges !== 'undefined';
 
-        const nextNodes = hasDefaultNodes
-          ? updateNodes(nodes, [], {
-              nodeOrigin: get().nodeOrigin,
-              elevateNodesOnSelect: get().elevateNodesOnSelect,
-            })
-          : [];
-        const nextEdges = hasDefaultEdges ? edges : [];
+        const nextState: {
+          nodes?: Node[];
+          edges?: Edge[];
+          hasDefaultNodes: boolean;
+          hasDefaultEdges: boolean;
+        } = {
+          hasDefaultNodes,
+          hasDefaultEdges,
+        };
 
-        set({ nodes: nextNodes, edges: nextEdges, hasDefaultNodes, hasDefaultEdges });
+        if (hasDefaultNodes) {
+          nextState.nodes = updateNodes(nodes, [], {
+            nodeOrigin: get().nodeOrigin,
+            elevateNodesOnSelect: get().elevateNodesOnSelect,
+          });
+        }
+        if (hasDefaultEdges) {
+          nextState.edges = edges;
+        }
+
+        set(nextState);
       },
       updateNodeDimensions: (updates) => {
         const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
@@ -263,9 +287,9 @@ const createRFStore = () =>
       },
       cancelConnection: () =>
         set({
-          connectionStatus: initialState.connectionStatus,
-          connectionStartHandle: initialState.connectionStartHandle,
-          connectionEndHandle: initialState.connectionEndHandle,
+          connectionStatus: null,
+          connectionStartHandle: null,
+          connectionEndHandle: null,
         }),
       updateConnection: (params) => {
         const { connectionStatus, connectionStartHandle, connectionEndHandle, connectionPosition } = get();
@@ -279,7 +303,13 @@ const createRFStore = () =>
 
         set(currentConnection);
       },
-      reset: () => set({ ...initialState }),
+      reset: () => {
+        // @todo: what should we do about this? Do we still need it?
+        // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted
+        // when you switch pages. Does this reset solves this? Currently it always gets called. This
+        // leads to an emtpy nodes array at the beginning.
+        // set({ ...getInitialState() });
+      },
     }),
     Object.is
   );

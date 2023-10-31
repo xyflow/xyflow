@@ -63,7 +63,7 @@ export type FitViewOptionsBase<NodeType extends NodeBase> = {
   minZoom?: number;
   maxZoom?: number;
   duration?: number;
-  nodes?: (Partial<NodeType> & { id: NodeType['id'] })[];
+  nodes?: (NodeType | { id: NodeType['id'] })[];
 };
 
 export type Viewport = {

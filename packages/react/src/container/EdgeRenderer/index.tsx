@@ -62,23 +62,13 @@ const EdgeRenderer = ({
   onEdgeUpdateEnd,
   children,
 }: EdgeRendererProps) => {
-  const { width, height, edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
+  const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
   const edgeTree = useVisibleEdges(onlyRenderVisibleElements, elevateEdgesOnSelect);
-
-  if (!width) {
-    return null;
-  }
 
   return (
     <>
       {edgeTree.map(({ level, edges, isMaxLevel }) => (
-        <svg
-          key={level}
-          style={{ zIndex: level }}
-          width={width}
-          height={height}
-          className="react-flow__edges react-flow__container"
-        >
+        <svg key={level} style={{ zIndex: level }} className="react-flow__edges react-flow__container">
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />}
           <g>
             {edges.map((edge) => {

@@ -8,8 +8,6 @@
   export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
   const {
-    width,
-    height,
     elementsSelectable,
     edgeTree,
     edges: { setDefaultOptions }
@@ -21,7 +19,7 @@
 </script>
 
 {#each $edgeTree as group (group.level)}
-  <svg width={$width} height={$height} style="z-index: {group.level}" class="svelte-flow__edges">
+  <svg style="z-index: {group.level}" class="svelte-flow__edges">
     {#if group.isMaxLevel} <MarkerDefinition />{/if}
     <g>
       {#each group.edges as edge (edge.id)}

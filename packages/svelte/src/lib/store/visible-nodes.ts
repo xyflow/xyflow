@@ -9,6 +9,7 @@ export function getVisibleNodes(store: SvelteFlowStoreState) {
     [store.nodes, store.onlyRenderVisibleElements, store.width, store.height, store.viewport],
     ([nodes, onlyRenderVisibleElements, width, height, viewport]) => {
       const transform: Transform = [viewport.x, viewport.y, viewport.zoom];
+
       return onlyRenderVisibleElements
         ? getNodesInside<Node>(nodes, { x: 0, y: 0, width, height }, transform, true)
         : nodes;

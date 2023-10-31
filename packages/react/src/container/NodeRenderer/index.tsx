@@ -98,6 +98,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           height: node.height ?? 0,
           origin: node.origin || props.nodeOrigin,
         });
+        const initialized = (!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height);
 
         return (
           <NodeComponent
@@ -105,6 +106,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             id={node.id}
             className={node.className}
             style={node.style}
+            sizeWidth={node.size?.width}
+            sizeHeight={node.size?.height}
             type={nodeType}
             data={node.data}
             sourcePosition={node.sourcePosition || Position.Bottom}
@@ -131,7 +134,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isParent={!!node[internalsSymbol]?.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
-            initialized={!!node.width && !!node.height}
+            initialized={initialized}
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
             ariaLabel={node.ariaLabel}
