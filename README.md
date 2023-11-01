@@ -1,4 +1,5 @@
-![xyflow-readme](https://github.com/wbkd/react-flow/assets/2857535/5504f9d5-adbd-47c6-b3ce-8abccb5fb4a4)
+![xyflow-header](https://user-images.githubusercontent.com/2857535/279643999-ffda9f91-6b6d-447d-82be-fcbd6103edb6.svg#gh-light-mode-only)
+![xyflow-header-dark](https://user-images.githubusercontent.com/2857535/279644026-a01c231c-6c6e-4b41-96e0-a85c75c9acee.svg#gh-dark-mode-only)
 
 <div align="center">
 
@@ -8,7 +9,7 @@
 
 Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
 
-[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://pro.reactflow.dev)
+[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://reactflow.dev/pro) · [Discord](https://discord.gg/Bqt6xrs)
 </div>
 
 ---
@@ -23,6 +24,11 @@ The xyflow repository is the home of four packages:
 
 **We just moved repositories** from the @wbkd org to this one. React Flow v11 will remain on the [v11 branch](https://github.com/xyflow/xyflow/tree/v11). When we have a stable v12, the package name of React Flow will change from `reactflow` to `@xyflow/react`.
 
+## Commercial Usage
+
+**Are you using React Flow or Svelte Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
+
+**Are you using React Flow or Svelte Flow at your organization and making money from it?** Awesome! We rely on your support to keep our libraries developed and maintained under an MIT License, just how we like it. For React Flow you can do that on the [React Flow Pro website](https://reactflow.dev/pro) and for both of our libraries you can do it through [Github Sponsors](https://github.com/sponsors/xyflow).
 
 ## Getting Started
 
