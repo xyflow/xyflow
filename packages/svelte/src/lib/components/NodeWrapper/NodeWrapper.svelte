@@ -164,10 +164,10 @@
     class:parent={isParent}
     style:z-index={zIndex}
     style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
-    style:width={node.size?.width && `${node.size?.width}px`}
-    style:height={node.size?.height && `${node.size?.height}px`}
     style:visibility={initialized ? 'visible' : 'hidden'}
-    {style}
+    style="{style} {node.size?.width ? `;width=${node.size?.width}px` : ''} {node.size?.height
+      ? `;height=${node.size?.height}px;`
+      : ''}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
