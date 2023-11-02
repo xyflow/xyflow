@@ -118,5 +118,43 @@ test.describe('EDGES', () => {
       await page.keyboard.press('Backspace');
       await expect(edge).toBeAttached();
     });
+
+    test('zIndex sets z-index of edge svgs', async ({ page }) => {
+      const svg = page.locator('svg', { has: page.locator('#z-index') });
+
+      await expect(svg).toBeAttached();
+      await expect(svg).toHaveCSS('z-index', '3141592');
+    });
+
+    test('aria-lable is working', async ({ page }) => {
+      const edge = page.locator('[data-id="aria-label"]');
+
+      await expect(edge).toHaveAttribute('aria-label', 'aria-label-test');
+    });
+
+    test('interactionWidth is working', async ({ page }) => {
+      const edge = page.locator('[data-id="interaction-width"]');
+
+      await expect(edge).toBeAttached();
+
+      const edgeBox = await edge.boundingBox();
+
+      //FIXME: Negative values are not working. Investigate further
+      await page.mouse.move(edgeBox!.x + edgeBox!.width * 0.5 + 21, edgeBox!.y + edgeBox!.height * 0.5);
+      await page.mouse.down();
+      await page.mouse.up();
+
+      // TODO: times out on webkit
+      await expect(edge).toHaveClass(/selected/);
+    });
+
+    test('markerEnd is setting marker-end', async ({ page }) => {
+      const edge = page.locator('#markers');
+
+      await expect(edge).toBeAttached();
+
+      await expect(edge).toHaveAttribute('marker-start', 'url(#1__type=arrowclosed)');
+      await expect(edge).toHaveAttribute('marker-end', 'url(#1__type=arrow)');
+    });
   });
 });

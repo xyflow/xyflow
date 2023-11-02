@@ -56,17 +56,17 @@ export const initialNodes: Node[] = [
 		id: '11',
 		data: { label: '11' },
 		position: { x: 100, y: 500 }
-	},
-	{
-		id: '12',
-		data: { label: '12' },
-		position: { x: -100, y: 600 }
-	},
-	{
-		id: '13',
-		data: { label: '13' },
-		position: { x: 100, y: 600 }
 	}
+	// {
+	// 	id: '12',
+	// 	data: { label: '12' },
+	// 	position: { x: -100, y: 600 }
+	// },
+	// {
+	// 	id: '13',
+	// 	data: { label: '13' },
+	// 	position: { x: 100, y: 600 }
+	// }
 ];
 
 export const initialEdges: Edge[] = [
