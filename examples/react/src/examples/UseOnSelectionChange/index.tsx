@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import {
+import { useCallback, useState } from 'react';
+import  {
   ReactFlow,
   addEdge,
   ReactFlowProvider,
@@ -35,9 +35,9 @@ const initialEdges: Edge[] = [
   },
 ];
 
-const SelectionLogger = () => {
+const SelectionLogger = ({ id }: { id: string }) => {
   const onChange = useCallback(({ nodes, edges }: OnSelectionChangeParams) => {
-    console.log(nodes, edges);
+    console.log(id, nodes, edges);
   }, []);
 
   useOnSelectionChange({
@@ -63,14 +63,23 @@ const Flow = () => {
   );
 };
 
-const WrappedFlow = () => (
-  <ReactFlowProvider>
-    <Flow />
-    <SelectionLogger />
-    <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-      <input type={'text'} placeholder={'name'} />
-    </div>
-  </ReactFlowProvider>
-);
+const WrappedFlow = () => {
+  const [secondLoggerActive, setSecondLoggerActive] = useState<boolean>(false);
+
+  const toggleSecondLogger = () => {
+    setSecondLoggerActive(!secondLoggerActive);
+  };
+
+  return (
+    <ReactFlowProvider>
+      <Flow />
+      <SelectionLogger id="Logger 1" />
+      {secondLoggerActive && <SelectionLogger id="Logger 2" />}
+      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
+        <button onClick={toggleSecondLogger}>{secondLoggerActive ? 'Disable' : 'Enable'} Logger 2</button>
+      </div>
+    </ReactFlowProvider>
+  );
+};
 
 export default WrappedFlow;

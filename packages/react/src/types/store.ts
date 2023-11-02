@@ -123,8 +123,8 @@ export type ReactFlowStore = {
   onViewportChangeStart?: OnViewportChange;
   onViewportChange?: OnViewportChange;
   onViewportChangeEnd?: OnViewportChange;
-
-  onSelectionChange?: OnSelectionChangeFunc;
+  
+  onSelectionChange: OnSelectionChangeFunc[];
 
   ariaLiveMessage: string;
   autoPanOnConnect: boolean;
