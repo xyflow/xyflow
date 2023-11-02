@@ -20,20 +20,22 @@ test.describe('EDGES', () => {
       await expect(edge).toHaveClass(/selected/);
     });
 
-    // test('selecting multiple edges by meta-click', async ({ page }) => {
-    //   const edge1 = page.locator('[data-id="edge-with-class"]');
-    //   const edge2 = page.locator('[data-id="edge-with-style"]');
+    test('selecting multiple edges by meta-click', async ({ page }) => {
+      const edge1 = page.locator('[data-id="edge-with-class"]');
+      const edge2 = page.locator('[data-id="edge-with-style"]');
 
-    //   await expect(edge1).toBeAttached();
-    //   await expect(edge2).toBeAttached();
+      await expect(edge1).toBeAttached();
+      await expect(edge2).toBeAttached();
+      // FIXME: I cannot get this to work
+      await page.keyboard.down('MetaLeft');
+      await edge1.click();
+      await expect(edge1).toHaveClass(/selected/);
 
-    //   await edge1.click();
-    //   await page.keyboard.down('Meta');
-    //   await edge2.click();
+      await edge2.click();
+      await expect(edge2).toHaveClass(/selected/);
 
-    //   await expect(edge1).toHaveClass(/selected/);
-    //   await expect(edge2).toHaveClass(/selected/);
-    // });
+      await expect(edge1).toHaveClass(/selected/);
+    });
   });
 
   test.describe('properties', () => {
