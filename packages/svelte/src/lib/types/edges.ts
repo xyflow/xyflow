@@ -39,6 +39,8 @@ export type Edge<T = any> =
 
 export type EdgeProps = Omit<Edge, 'sourceHandle' | 'targetHandle'> &
   EdgePosition & {
+    markerStart?: string;
+    markerEnd?: string;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
   };

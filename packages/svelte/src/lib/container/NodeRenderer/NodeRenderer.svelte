@@ -35,8 +35,8 @@
     {@const posOrigin = getPositionWithOrigin({
       x: node.positionAbsolute?.x ?? 0,
       y: node.positionAbsolute?.y ?? 0,
-      width: node.width ?? 0,
-      height: node.height ?? 0,
+      width: (node.size?.width || node.width) ?? 0,
+      height: (node.size?.height || node.height) ?? 0,
       origin: node.origin
     })}
     <NodeWrapper
@@ -65,6 +65,7 @@
       dragging={node.dragging}
       zIndex={node[internalsSymbol]?.z ?? 0}
       dragHandle={node.dragHandle}
+      initialized={(!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height)}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter

@@ -1,0 +1,27 @@
+---
+import ReactFlowApp from '../components/ReactFlowExample' 
+import SvelteFlowApp from '../components/SvelteFlowExample/index.svelte' 
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro example for React Flow and Svelte Flow</title>
+
+		<style>
+			html, body {
+				margin:0;
+				font-family: sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<h2>Svelte Flow</h2>
+		<SvelteFlowApp />
+
+		<h2>React Flow</h2>
+		<ReactFlowApp />
+	</body>
+</html>

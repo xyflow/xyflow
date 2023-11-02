@@ -12,10 +12,10 @@
   <Panel
     {position}
     class="svelte-flow__attribution"
-    data-message="Please only hide this attribution when you are subscribed to Svelte Flow Pro: https://pro.reactflow.dev"
+    data-message="Feel free to remove the attribution or check out how you could support us: https://svelteflow.dev/support-us"
   >
     <a
-      href="https://reactflow.dev/svelte"
+      href="https://svelteflow.dev"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Svelte Flow attribution"

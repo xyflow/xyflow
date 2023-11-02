@@ -17,9 +17,11 @@ export function getNodesAndEdges(xElements = 10, yElements = 10): ElementsCollec
       const data = { label: `Node ${nodeId}` };
       const node = {
         id: nodeId.toString(),
-        style: { width: 50, fontSize: 11 },
+        style: { width: 50, height: 30, fontSize: 11 },
         data,
         position,
+        width: 50,
+        height: 30,
       };
       initialNodes.push(node);
 

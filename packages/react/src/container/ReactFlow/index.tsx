@@ -166,6 +166,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodeDragThreshold,
       viewport,
       onViewportChange,
+      width,
+      height,
       ...rest
     },
     ref
@@ -181,7 +183,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         data-testid="rf__wrapper"
         id={id}
       >
-        <Wrapper>
+        <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView}>
           <GraphView
             onInit={onInit}
             onNodeClick={onNodeClick}

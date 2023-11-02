@@ -23,14 +23,12 @@ function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, n
       xyDrag.current = XYDrag({
         domNode: nodeRef.current,
         getStoreItems: () => store.getState(),
-        onNodeClick: () => {
-          if (nodeId) {
-            handleNodeClick({
-              id: nodeId,
-              store,
-              nodeRef: nodeRef as RefObject<HTMLDivElement>,
-            });
-          }
+        onNodeMouseDown: (id: string) => {
+          handleNodeClick({
+            id,
+            store,
+            nodeRef: nodeRef as RefObject<HTMLDivElement>,
+          });
         },
         onDragStart: () => {
           setDragging(true);

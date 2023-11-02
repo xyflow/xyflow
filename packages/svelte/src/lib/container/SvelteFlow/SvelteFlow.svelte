@@ -16,6 +16,7 @@
   import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
   import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
+  import { get } from 'svelte/store';
 
   type $$Props = SvelteFlowProps;
 
@@ -63,6 +64,8 @@
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
+  export let width: $$Props['width'] = undefined;
+  export let height: $$Props['height'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -74,7 +77,9 @@
   let clientWidth: number;
   let clientHeight: number;
 
-  const store = hasContext(key) ? useStore() : createStoreContext();
+  const store = hasContext(key)
+    ? useStore()
+    : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height, fitView });
 
   onMount(() => {
     store.width.set(clientWidth);
@@ -105,6 +110,14 @@
       store.reset();
     };
   });
+
+  // Update width & height on resize
+  $: {
+    if (clientWidth !== undefined && clientHeight !== undefined) {
+      store.width.set(clientWidth);
+      store.height.set(clientHeight);
+    }
+  }
 
   // this updates the store for simple changes
   // where the prop names equals the store name

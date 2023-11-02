@@ -1,51 +1,50 @@
-![readme-header-dark](https://user-images.githubusercontent.com/3797215/156384064-08a889d6-73c0-4cbf-8ff3-28dc601d1f5f.svg#gh-dark-mode-only)
-![readme-header](https://user-images.githubusercontent.com/3797215/156259138-fb9f59f8-52f2-474a-b78c-6570867e4ead.svg#gh-light-mode-only)
+![xyflow-header](https://user-images.githubusercontent.com/2857535/279643999-ffda9f91-6b6d-447d-82be-fcbd6103edb6.svg#gh-light-mode-only)
+![xyflow-header-dark](https://user-images.githubusercontent.com/2857535/279644026-a01c231c-6c6e-4b41-96e0-a85c75c9acee.svg#gh-dark-mode-only)
 
 <div align="center">
 
 ![GitHub License MIT](https://img.shields.io/github/license/wbkd/react-flow?color=%23ff0072)
-![npm downloads](https://img.shields.io/npm/dt/reactflow?color=%23FF0072&label=downloads)
-![GitHub Repo stars](https://img.shields.io/github/stars/wbkd/react-flow?color=%23FF0072)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/wbkd/react-flow?color=%23FF0072)
+![npm downloads](https://img.shields.io/npm/dt/reactflow?color=%23FF0072&label=React%20Flow%20downloads)
+![npm downloads](https://img.shields.io/npm/dt/@xyflow/svelte?color=%23FF3E00&label=Svelte%20Flow%20downloads)
 
-A highly customizable React component for building interactive graphs and node-based editors.
+Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
 
-[🚀 Getting Started](https://reactflow.dev/docs/quickstart/) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) | [💎 React Flow Pro](https://pro.reactflow.dev)
-
+[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://reactflow.dev/pro) · [Discord](https://discord.gg/Bqt6xrs)
 </div>
 
 ---
 
-## Key Features
+## The xyflow mono repo
 
-- **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
-- **Customizable:** Different [node](https://reactflow.dev/docs/api/nodes/node-types) and [edge types](https://reactflow.dev/docs/api/edges/edge-types) and support for custom nodes with multiple handles and custom edges
-- **Fast rendering:** Only nodes that have changed are re-rendered and only those in the viewport are displayed
-- **Hooks and Utils:** [Hooks](https://reactflow.dev/docs/api/hooks/use-react-flow) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/docs/api/graph-util-functions)
-- **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
-- **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
+The xyflow repository is the home of four packages:
+* React Flow v11 `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
+* React Flow v12 (not published yet) [packages/react](./packages/react)
+* Svelte Flow `@xyflow/svelte` [packages/svelte](./packages/svelte)
+* Shared helper library `@xyflow/system` [packages/system](./packages/system)
+
+**We just moved repositories** from the @wbkd org to this one. React Flow v11 will remain on the [v11 branch](https://github.com/xyflow/xyflow/tree/v11). When we have a stable v12, the package name of React Flow will change from `reactflow` to `@xyflow/react`.
 
 ## Commercial Usage
 
-**Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
+**Are you using React Flow or Svelte Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://pro.reactflow.dev) or through [Github Sponsors](https://github.com/sponsors/wbkd).
+**Are you using React Flow or Svelte Flow at your organization and making money from it?** Awesome! We rely on your support to keep our libraries developed and maintained under an MIT License, just how we like it. For React Flow you can do that on the [React Flow Pro website](https://reactflow.dev/pro) and for both of our libraries you can do it through [Github Sponsors](https://github.com/sponsors/xyflow).
 
-You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
+## Getting Started
 
-## Installation
+The best way to get started is to check out the [React Flow](https://reactflow.dev/learn) or [Svelte Flow](https://svelteflow.dev/learn) learn section. However if you want to get a sneak peek of how to install the and use the libraries you can see it here: 
 
-The easiest way to get the latest version of React Flow is to install it via npm, yarn or pnpm:
+<details>
+  <summary><strong>React Flow</strong> basic usage</summary>
 
-```bash
+  ### Installation
+  
+  ```sh
 npm install reactflow
-```
+  ```
 
-## Quickstart
-
-This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and the full [API reference](https://reactflow.dev/docs/api/react-flow-props).
-
-```jsx
+  ### Basic usage
+  ```jsx
 import { useCallback } from 'react';
 import ReactFlow, {
   MiniMap,
@@ -54,7 +53,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-} from '@xyflow/react';
+} from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
@@ -88,44 +87,81 @@ function Flow() {
 
 export default Flow;
 ```
+</details>
 
-## Development
+<details>
+  <summary><strong>Svelte Flow</strong> basic usage</summary>
 
-Before you can start developing please make sure that you have [pnpm](https://pnpm.io/) installed (`npm i -g pnpm`). Then install the dependencies using pnpm: `pnpm install`.
+  ### Installation
+  
+  ```sh
+npm install @xyflow/svelte
+  ```
 
-Run `pnpm build` once and then you can use `pnpm dev` for local development.
+  ### Basic usage
+  ```svelte
+<script lang="ts">
+  import { writable } from 'svelte/store';
+  import {
+    SvelteFlow,
+    Controls,
+    Background,
+    BackgroundVariant,
+    MiniMap,
+  } from '@xyflow/svelte';
 
-## Testing
+  import '@xyflow/svelte/dist/style.css'
+  
+  const nodes = writable([
+    {
+      id: '1',
+      type: 'input',
+      data: { label: 'Input Node' },
+      position: { x: 0, y: 0 }
+    },
+    {
+      id: '2',
+      type: 'custom',
+      data: { label: 'Node' },
+      position: { x: 0, y: 150 }
+    }
+  ]);
 
-Testing is done with cypress. You can find the tests in the [`examples/vite-app/cypress`](/examples/vite-app/cypress/) folder. In order to run the tests do:
+  const edges = writable([
+    {
+      id: '1-2',
+      type: 'default',
+      source: '1',
+      target: '2',
+      label: 'Edge Text'
+    }
+  ]);
+</script>
 
-```sh
-pnpm test
+<SvelteFlow
+  {nodes}
+  {edges}
+  fitView
+  on:nodeclick={(event) => console.log('on node click', event)}
+>
+  <Controls />
+  <Background variant={BackgroundVariant.Dots} />
+  <MiniMap />
+</SvelteFlow>
 ```
+</details>
 
-## Maintainers
+## The xyflow team
 
-React Flow is the full-time project of Moritz and Christopher of [webkid](https://webkid.io/), based in Berlin. If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://pro.reactflow.dev/contact) or by joining the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
+React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
-- Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
+- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
+- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
+- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Peter • [Github](https://github.com/peterkogo)
 
-Any support you provide goes directly towards the development and maintenance of React Flow, allowing us to continue to operate as an independent company, working on what we think is best for React Flow as an open-source library.
-
-## Community Packages
-
-- [useUndoable](https://github.com/xplato/useUndoable) - Hook for undo/redo functionality with an explicit React Flow example
-- [react-flow-smart-edge](https://github.com/tisoap/react-flow-smart-edge) - Custom edge that doesn't intersect with nodes
-- [Feliz.ReactFlow](https://github.com/tforkmann/Feliz.ReactFlow) - Feliz React Bindings for React Flow
-
-## Credits
-
-React Flow was initially developed for [datablocks](https://datablocks.pro), a graph-based editor for transforming, analyzing and visualizing data in the browser. Under the hood, React Flow depends on these great libraries:
-
-- [d3-zoom](https://github.com/d3/d3-zoom) - used for zoom, pan and drag interactions with the graph canvas
-- [d3-drag](https://github.com/d3/d3-drag) - used for making the nodes draggable
-- [zustand](https://github.com/pmndrs/zustand) - internal state management
 
 ## License
 
-React Flow is [MIT licensed](https://github.com/wbkd/react-flow/blob/main/LICENSE).
+React Flow and Svelte Flow are [MIT licensed](./LICENSE).

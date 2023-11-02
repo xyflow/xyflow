@@ -15,7 +15,8 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type NodeBase,
-  type NodeDragItem
+  type NodeDragItem,
+  errorMessages
 } from '@xyflow/system';
 
 import { addEdge as addEdgeUtil } from '$lib/utils';
@@ -29,8 +30,20 @@ import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
-export function createStore(): SvelteFlowStore {
-  const store = getInitialStore();
+export function createStore({
+  nodes,
+  edges,
+  width,
+  height,
+  fitView: fitViewOnCreate
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+}): SvelteFlowStore {
+  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -161,25 +174,29 @@ export function createStore(): SvelteFlowStore {
     }
   }
 
-  function resetSelectedItem<T extends Node | Edge>(item: T) {
-    if (item.selected) {
-      return {
-        ...item,
-        selected: false
-      };
-    }
+  function resetSelectedItem<T extends Node | Edge>(ids: string[]) {
+    return (item: T) => {
+      if (item.selected && ids.includes(item.id)) {
+        return {
+          ...item,
+          selected: false
+        };
+      }
 
-    return item;
+      return item;
+    };
   }
 
-  function unselectNodesAndEdges() {
-    if (get(store.nodes).some((node) => node.selected)) {
-      store.nodes.update((ns) => ns.map(resetSelectedItem));
-    }
+  function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
+    const nodeIdsToUnselect = (params?.nodes ? params.nodes : get(store.nodes)).map(
+      (item) => item.id
+    );
+    const edgeIdsToUnselect = (params?.edges ? params.edges : get(store.edges)).map(
+      (item) => item.id
+    );
 
-    if (get(store.edges).some((edge) => edge.selected)) {
-      store.edges.update((es) => es.map(resetSelectedItem));
-    }
+    store.nodes.update((ns) => ns.map(resetSelectedItem(nodeIdsToUnselect)));
+    store.edges.update((es) => es.map(resetSelectedItem(edgeIdsToUnselect)));
   }
 
   store.deleteKeyPressed.subscribe((deleteKeyPressed) => {
@@ -208,36 +225,74 @@ export function createStore(): SvelteFlowStore {
   });
 
   function addSelectedNodes(ids: string[]) {
-    store.selectionRect.set(null);
-    store.selectionRectMode.set(null);
-
-    if (get(store.multiselectionKeyPressed)) {
-      // @todo handle multiselection key
-    }
+    const isMultiSelection = get(store.multiselectionKeyPressed);
 
     store.nodes.update((ns) =>
       ns.map((node) => {
-        return {
-          ...node,
-          selected: ids.includes(node.id)
-        };
+        const nodeWillBeSelected = ids.includes(node.id);
+        const selected = isMultiSelection
+          ? node.selected || nodeWillBeSelected
+          : nodeWillBeSelected;
+
+        // we need to mutate the node here in order to have the correct selected state in the drag handler
+        node.selected = selected;
+
+        return node;
       })
     );
+
+    if (!isMultiSelection) {
+      store.edges.update((es) =>
+        es.map((edge) => {
+          edge.selected = false;
+          return edge;
+        })
+      );
+    }
   }
 
   function addSelectedEdges(ids: string[]) {
-    if (get(store.multiselectionKeyPressed)) {
-      // @todo handle multiselection key
-    }
+    const isMultiSelection = get(store.multiselectionKeyPressed);
 
     store.edges.update((edges) =>
       edges.map((edge) => {
-        return {
-          ...edge,
-          selected: ids.includes(edge.id)
-        };
+        const edgeWillBeSelected = ids.includes(edge.id);
+        const selected = isMultiSelection
+          ? edge.selected || edgeWillBeSelected
+          : edgeWillBeSelected;
+
+        edge.selected = selected;
+
+        return edge;
       })
     );
+
+    if (!isMultiSelection) {
+      store.nodes.update((ns) =>
+        ns.map((node) => {
+          node.selected = false;
+          return node;
+        })
+      );
+    }
+  }
+
+  function handleNodeSelection(id: string) {
+    const node = get(store.nodes)?.find((n) => n.id === id);
+
+    if (!node) {
+      console.warn('012', errorMessages['error012'](id));
+      return;
+    }
+
+    store.selectionRect.set(null);
+    store.selectionRectMode.set(null);
+
+    if (!node.selected) {
+      addSelectedNodes([id]);
+    } else if (node.selected && get(store.multiselectionKeyPressed)) {
+      unselectNodesAndEdges({ nodes: [node], edges: [] });
+    }
   }
 
   function panBy(delta: XYPosition) {
@@ -314,6 +369,7 @@ export function createStore(): SvelteFlowStore {
     unselectNodesAndEdges,
     addSelectedNodes,
     addSelectedEdges,
+    handleNodeSelection,
     panBy,
     updateConnection,
     cancelConnection,
@@ -333,8 +389,20 @@ export function useStore(): SvelteFlowStore {
   return store.getStore();
 }
 
-export function createStoreContext() {
-  const store = createStore();
+export function createStoreContext({
+  nodes,
+  edges,
+  width,
+  height,
+  fitView
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+}) {
+  const store = createStore({ nodes, edges, width, height, fitView });
 
   setContext(key, {
     getStore: () => store

@@ -17,6 +17,7 @@ export function useNodeOrEdgeTypes(nodeOrEdgeTypes: any, createTypes: any): any 
   const typesParsed = useMemo(() => {
     if (process.env.NODE_ENV === 'development') {
       const typeKeys = Object.keys(nodeOrEdgeTypes);
+
       if (shallow(typesKeysRef.current, typeKeys)) {
         store.getState().onError?.('002', errorMessages['error002']());
       }

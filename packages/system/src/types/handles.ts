@@ -1,12 +1,16 @@
-import type { XYPosition, Position, Dimensions, OnConnect, IsValidConnection } from '.';
+import type { Position, OnConnect, IsValidConnection } from '.';
 
 export type HandleType = 'source' | 'target';
 
-export type HandleElement = XYPosition &
-  Dimensions & {
-    id?: string | null;
-    position: Position;
-  };
+export type HandleElement = {
+  id?: string | null;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  position: Position;
+  type?: HandleType;
+};
 
 export type ConnectingHandle = {
   nodeId: string;

@@ -35,7 +35,7 @@ export const isNodeBase = <NodeType extends NodeBase = NodeBase, EdgeType extend
 ): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
 
 export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  node: Partial<NodeType> & { id: string },
+  node: NodeType | { id: string },
   nodes: NodeType[],
   edges: EdgeType[]
 ): NodeType[] => {
@@ -54,7 +54,7 @@ export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType e
 };
 
 export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  node: Partial<NodeType> & { id: string },
+  node: NodeType | { id: string },
   nodes: NodeType[],
   edges: EdgeType[]
 ): NodeType[] => {

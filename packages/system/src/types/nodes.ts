@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { internalsSymbol } from '../constants';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
+import { Optional } from '../utils/types';
 
 // this is stuff that all nodes share independent of the framework
 export type NodeBase<T = any, U extends string | undefined = string | undefined> = {
@@ -28,6 +29,11 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   ariaLabel?: string;
   focusable?: boolean;
   origin?: NodeOrigin;
+  handles?: NodeHandle[];
+  size?: {
+    width?: number;
+    height?: number;
+  };
 
   // only used internally
   [internalsSymbol]?: {
@@ -89,3 +95,5 @@ export type NodeOrigin = [number, number];
 export type OnNodeDrag = (event: MouseEvent, node: NodeBase, nodes: NodeBase[]) => void;
 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
+
+export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;

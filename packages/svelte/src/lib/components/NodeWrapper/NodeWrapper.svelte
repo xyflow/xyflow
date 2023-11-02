@@ -8,8 +8,8 @@
     SvelteComponent,
     type ComponentType
   } from 'svelte';
-  import cc from 'classcat';
   import { get, writable } from 'svelte/store';
+  import cc from 'classcat';
   import { errorMessages, Position, type NodeProps } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -39,11 +39,18 @@
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
+  export let initialized: NodeWrapperProps['initialized'] = false;
   let className: string = '';
   export { className as class };
 
   const store = useStore();
-  const { nodeTypes, nodeDragThreshold, addSelectedNodes, updateNodeDimensions } = store;
+  const {
+    nodeTypes,
+    nodeDragThreshold,
+    selectNodesOnDrag,
+    handleNodeSelection,
+    updateNodeDimensions
+  } = store;
   const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
@@ -55,7 +62,6 @@
 
   const nodeComponent: ComponentType<SvelteComponent<NodeProps>> =
     $nodeTypes[nodeType] || DefaultNode;
-  const selectNodesOnDrag = false;
   const dispatch = createEventDispatcher<{
     nodeclick: { node: Node; event: MouseEvent | TouchEvent };
     nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
@@ -112,12 +118,12 @@
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
-    if (selectable && (!selectNodesOnDrag || !draggable || get(nodeDragThreshold) > 0)) {
-      // this handler gets called within the drag start event when selectNodesOnDrag=true
-      addSelectedNodes([id]);
+    if (selectable && (!get(selectNodesOnDrag) || !draggable || get(nodeDragThreshold) > 0)) {
+      // this handler gets called by XYDrag on drag start when selectNodesOnDrag=true
+      // here we only need to call it when selectNodesOnDrag=false
+      handleNodeSelection(id);
     }
 
-    // @todo: support multiselection
     dispatch('nodeclick', { node, event });
   }
 
@@ -134,6 +140,7 @@
       disabled: false,
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
+      onNodeMouseDown: handleNodeSelection,
       onDrag: (event, _, node, nodes) => {
         dispatch('nodedrag', { event, node, nodes });
       },
@@ -157,7 +164,10 @@
     class:parent={isParent}
     style:z-index={zIndex}
     style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
-    {style}
+    style:visibility={initialized ? 'visible' : 'hidden'}
+    style="{style} {node.size?.width ? `;width=${node.size?.width}px` : ''} {node.size?.height
+      ? `;height=${node.size?.height}px;`
+      : ''}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}

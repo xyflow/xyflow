@@ -72,6 +72,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   attributionPosition?: PanelPosition;
   proOptions?: ProOptions;
   defaultEdgeOptions?: DefaultEdgeOptions;
+  width?: number;
+  height?: number;
 
   class?: string;
   style?: string;

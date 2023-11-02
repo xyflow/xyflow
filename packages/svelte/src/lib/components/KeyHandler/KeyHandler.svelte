@@ -4,14 +4,21 @@
   import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
+  import { isMacOs } from '@xyflow/system';
 
   type $$Props = KeyHandlerProps;
 
   export let selectionKey: $$Props['selectionKey'] = 'Shift';
+  export let multiSelectionKey: $$Props['multiSelectionKey'] = isMacOs() ? 'Meta' : 'Control';
   export let deleteKey: $$Props['deleteKey'] = 'Backspace';
   export let panActivationKey: $$Props['panActivationKey'] = ' ';
 
-  const { selectionKeyPressed, deleteKeyPressed, panActivationKeyPressed } = useStore();
+  const {
+    selectionKeyPressed,
+    multiselectionKeyPressed,
+    deleteKeyPressed,
+    panActivationKeyPressed
+  } = useStore();
 
   function isKeyObject(key?: KeyDefinition): key is KeyDefinitionObject {
     return typeof key === 'object';
@@ -19,6 +26,10 @@
 
   $: selectionKeyString = typeof selectionKey === 'string' ? selectionKey : selectionKey!.key;
   $: selectionKeyModifier = isKeyObject(selectionKey) ? selectionKey?.modifier : [];
+
+  $: multiSelectionKeyString =
+    typeof multiSelectionKey === 'string' ? multiSelectionKey : multiSelectionKey!.key;
+  $: multiSelectionKeyModifier = isKeyObject(multiSelectionKey) ? multiSelectionKey?.modifier : [];
 
   $: deleteKeyString = typeof deleteKey === 'string' ? deleteKey : deleteKey!.key;
   $: deleteKeyModifier = isKeyObject(deleteKey) ? deleteKey?.modifier : [];
@@ -45,6 +56,26 @@
         key: selectionKeyString,
         modifier: selectionKeyModifier,
         callback: () => selectionKeyPressed.set(false)
+      }
+    ],
+    type: 'keyup'
+  }}
+  use:shortcut={{
+    trigger: [
+      {
+        key: multiSelectionKeyString,
+        modifier: multiSelectionKeyModifier,
+        callback: () => multiselectionKeyPressed.set(true)
+      }
+    ],
+    type: 'keydown'
+  }}
+  use:shortcut={{
+    trigger: [
+      {
+        key: multiSelectionKeyString,
+        modifier: multiSelectionKeyModifier,
+        callback: () => multiselectionKeyPressed.set(false)
       }
     ],
     type: 'keyup'

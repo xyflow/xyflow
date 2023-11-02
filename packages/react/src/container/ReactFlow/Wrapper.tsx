@@ -1,9 +1,24 @@
-import { useContext, type FC, type PropsWithChildren } from 'react';
+import { useContext, type ReactNode } from 'react';
 
 import StoreContext from '../../contexts/RFStoreContext';
 import ReactFlowProvider from '../../components/ReactFlowProvider';
+import type { Node, Edge } from '../../types';
 
-const Wrapper: FC<PropsWithChildren<unknown>> = ({ children }) => {
+function Wrapper({
+  children,
+  nodes,
+  edges,
+  width,
+  height,
+  fitView,
+}: {
+  children: ReactNode;
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+}) {
   const isWrapped = useContext(StoreContext);
 
   if (isWrapped) {
@@ -12,8 +27,18 @@ const Wrapper: FC<PropsWithChildren<unknown>> = ({ children }) => {
     return <>{children}</>;
   }
 
-  return <ReactFlowProvider>{children}</ReactFlowProvider>;
-};
+  return (
+    <ReactFlowProvider
+      initialNodes={nodes}
+      initialEdges={edges}
+      initialWidth={width}
+      initialHeight={height}
+      fitView={fitView}
+    >
+      {children}
+    </ReactFlowProvider>
+  );
+}
 
 Wrapper.displayName = 'ReactFlowWrapper';
 

@@ -30,6 +30,7 @@ export const esmConfig = defineConfig({
   output: {
     file: pkg.module,
     format: 'esm',
+    banner: '"use client"',
   },
   onwarn,
   plugins: [

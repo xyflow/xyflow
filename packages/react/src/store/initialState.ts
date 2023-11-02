@@ -1,65 +1,100 @@
-import { devWarn, infiniteExtent, ConnectionMode } from '@xyflow/system';
+import {
+  infiniteExtent,
+  ConnectionMode,
+  updateNodes,
+  getRectOfNodes,
+  getTransformForBounds,
+  Transform,
+} from '@xyflow/system';
 
-import type { ReactFlowStore } from '../types';
+import type { Edge, Node, ReactFlowStore } from '../types';
 
-const initialState: ReactFlowStore = {
-  rfId: '1',
-  width: 0,
-  height: 0,
-  transform: [0, 0, 1],
-  nodes: [],
-  edges: [],
-  onNodesChange: null,
-  onEdgesChange: null,
-  hasDefaultNodes: false,
-  hasDefaultEdges: false,
-  panZoom: null,
-  minZoom: 0.5,
-  maxZoom: 2,
-  translateExtent: infiniteExtent,
-  nodeExtent: infiniteExtent,
-  nodesSelectionActive: false,
-  userSelectionActive: false,
-  userSelectionRect: null,
-  connectionPosition: { x: 0, y: 0 },
-  connectionStatus: null,
-  connectionMode: ConnectionMode.Strict,
-  domNode: null,
-  paneDragging: false,
-  noPanClassName: 'nopan',
-  nodeOrigin: [0, 0],
-  nodeDragThreshold: 0,
+const getInitialState = ({
+  nodes = [],
+  edges = [],
+  width,
+  height,
+  fitView,
+}: {
+  nodes?: Node[];
+  edges?: Edge[];
+  width?: number;
+  height?: number;
+  fitView?: boolean;
+} = {}): ReactFlowStore => {
+  const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
 
-  snapGrid: [15, 15],
-  snapToGrid: false,
+  let transform: Transform = [0, 0, 1];
 
-  nodesDraggable: true,
-  nodesConnectable: true,
-  nodesFocusable: true,
-  edgesFocusable: true,
-  edgesUpdatable: true,
-  elementsSelectable: true,
-  elevateNodesOnSelect: true,
-  fitViewOnInit: false,
-  fitViewDone: false,
-  fitViewOnInitOptions: undefined,
-  selectNodesOnDrag: true,
+  if (fitView && width && height) {
+    const nodesWithDimensions = nextNodes.map((node) => ({
+      ...node,
+      width: node.size?.width,
+      height: node.size?.height,
+    }));
+    const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
+    transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);
+  }
 
-  multiSelectionActive: false,
+  return {
+    rfId: '1',
+    width: 0,
+    height: 0,
+    transform,
+    nodes: nextNodes,
+    edges: edges,
+    onNodesChange: null,
+    onEdgesChange: null,
+    hasDefaultNodes: false,
+    hasDefaultEdges: false,
+    panZoom: null,
+    minZoom: 0.5,
+    maxZoom: 2,
+    translateExtent: infiniteExtent,
+    nodeExtent: infiniteExtent,
+    nodesSelectionActive: false,
+    userSelectionActive: false,
+    userSelectionRect: null,
+    connectionPosition: { x: 0, y: 0 },
+    connectionStatus: null,
+    connectionMode: ConnectionMode.Strict,
+    domNode: null,
+    paneDragging: false,
+    noPanClassName: 'nopan',
+    nodeOrigin: [0, 0],
+    nodeDragThreshold: 0,
 
-  connectionStartHandle: null,
-  connectionEndHandle: null,
-  connectionClickStartHandle: null,
-  connectOnClick: true,
+    snapGrid: [15, 15],
+    snapToGrid: false,
 
-  ariaLiveMessage: '',
-  autoPanOnConnect: true,
-  autoPanOnNodeDrag: true,
-  connectionRadius: 20,
-  onError: devWarn,
-  isValidConnection: undefined,
+    nodesDraggable: true,
+    nodesConnectable: true,
+    nodesFocusable: true,
+    edgesFocusable: true,
+    edgesUpdatable: true,
+    elementsSelectable: true,
+    elevateNodesOnSelect: true,
+    fitViewOnInit: false,
+    fitViewDone: false,
+    fitViewOnInitOptions: undefined,
+    selectNodesOnDrag: true,
 
-  lib: 'react',
+    multiSelectionActive: false,
+
+    connectionStartHandle: null,
+    connectionEndHandle: null,
+    connectionClickStartHandle: null,
+    connectOnClick: true,
+
+    ariaLiveMessage: '',
+    autoPanOnConnect: true,
+    autoPanOnNodeDrag: true,
+    connectionRadius: 20,
+    onError: () => null,
+    isValidConnection: undefined,
+
+    lib: 'react',
+  };
 };
 
-export default initialState;
+export default getInitialState;
