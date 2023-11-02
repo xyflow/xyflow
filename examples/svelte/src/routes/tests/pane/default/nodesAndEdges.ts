@@ -21,15 +21,13 @@ export const initialNodes: Node[] = [
 
 export const initialEdges: Edge[] = [
 	{
-		id: 'edge-with-class',
+		id: 'first-edge',
 		source: '1',
-		target: '2',
-		class: 'edge-class-test'
+		target: '2'
 	},
 	{
-		id: 'edge-with-style',
+		id: 'second-edge',
 		source: '1',
-		target: '3',
-		style: 'stroke: red;'
+		target: '3'
 	}
 ];

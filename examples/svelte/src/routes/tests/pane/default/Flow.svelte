@@ -9,4 +9,4 @@
 	const edges = writable(initialEdges);
 </script>
 
-<SvelteFlow {nodes} {edges} fitView />
+<SvelteFlow {nodes} {edges} fitView minZoom={0.25} maxZoom={4} />
