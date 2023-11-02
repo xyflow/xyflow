@@ -4,7 +4,7 @@ const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionStar
 
 export default function CustomNode({ id }: NodeProps) {
   const connectionNodeId = useStore(connectionNodeIdSelector);
-  const isConnecting = !!connectionNodeId;
+  //const isConnecting = !!connectionNodeId;
   const isTarget = connectionNodeId && connectionNodeId !== id;
 
   const targetHandleStyle = { zIndex: isTarget ? 3 : 1 };
@@ -19,7 +19,7 @@ export default function CustomNode({ id }: NodeProps) {
           backgroundColor: isTarget ? '#ffcce3' : '#ccd9f6',
         }}
       >
-        {!isConnecting && (
+        {!isTarget && (
           <Handle className="customHandle" style={{ zIndex: 2 }} position={Position.Right} type="source" />
         )}
 
