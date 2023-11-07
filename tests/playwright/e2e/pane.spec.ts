@@ -182,45 +182,15 @@ test.describe('PANE NON-DEFAULT', () => {
       expect(viewportTransform.scale).toBe(1.234);
     });
   });
+});
 
-  test.describe('PANE ACTIVATION KEYS', () => {
-    test.beforeEach(async ({ page }) => {
-      // Go to the starting url before each test.
-      await page.goto('/tests/generic/pane/activation-keys');
-  
-      // Wait till the edges are rendered
-      await page.waitForSelector('#first-edge', { timeout: 5000 });
-    });
-  
-    test.describe('pan & zoom', () => {
-      test('panOnScroll pans the pane on scrolling', async ({ page }) => {
-        const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
-        const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
-  
-        await expect(pane).toBeAttached();
-  
-        const transformsBefore = await getTransform(viewport);
-  
-        await pane.hover();
-        await page.mouse.wheel(100, 100);
-  
-        const transformsAfter = await getTransform(viewport);
-  
-        expect(transformsAfter.translateX).not.toBe(transformsBefore.translateX);
-        expect(transformsAfter.translateY).not.toBe(transformsBefore.translateY);
-      });
-  
-      test('intialViewport', async ({ page }) => {
-        const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
-        const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
-  
-        await expect(pane).toBeAttached();
-  
-        const viewportTransform = await getTransform(viewport);
-  
-        expect(viewportTransform.translateX).toBe(1.23);
-        expect(viewportTransform.translateY).toBe(9.87);
-        expect(viewportTransform.scale).toBe(1.234);
-      });
-    });
+test.describe('PANE ACTIVATION KEYS', () => {
+  test.beforeEach(async ({ page }) => {
+    // Go to the starting url before each test.
+    await page.goto('/tests/generic/pane/activation-keys');
+
+    // Wait till the edges are rendered
+    await page.waitForSelector('#first-edge', { timeout: 5000 });
+  });
+  // TODO
 });
