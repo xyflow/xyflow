@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+
+import GenericTests from '../generic-tests';
 
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
@@ -57,232 +59,232 @@ interface IRoute {
 const routes: IRoute[] = [
   {
     name: 'Basic',
-    path: '/',
+    path: 'basic',
     component: Basic,
   },
   {
     name: 'Backgrounds',
-    path: '/backgrounds',
+    path: 'backgrounds',
     component: Backgrounds,
   },
   {
     name: 'Cancel Connection',
-    path: '/cancel-connection',
+    path: 'cancel-connection',
     component: CancelConnection,
   },
   {
     name: 'Controlled/Uncontrolled',
-    path: '/controlled-uncontrolled',
+    path: 'controlled-uncontrolled',
     component: ControlledUncontrolled,
   },
   {
     name: 'Controlled Viewport',
-    path: '/controlled-viewport',
+    path: 'controlled-viewport',
     component: ControlledViewport,
   },
   {
     name: 'Custom Connection Line',
-    path: '/custom-connectionline',
+    path: 'custom-connectionline',
     component: CustomConnectionLine,
   },
   {
     name: 'Custom Minimap Node',
-    path: '/custom-minimap-node',
+    path: 'custom-minimap-node',
     component: CustomMiniMapNode,
   },
   {
     name: 'Custom Node',
-    path: '/custom-node',
+    path: 'custom-node',
     component: CustomNode,
   },
   {
     name: 'Default Nodes',
-    path: '/default-nodes',
+    path: 'default-nodes',
     component: DefaultNodes,
   },
   {
     name: 'Drag Handle',
-    path: '/draghandle',
+    path: 'draghandle',
     component: DragHandle,
   },
   {
     name: 'Drag and Drop',
-    path: '/dragndrop',
+    path: 'dragndrop',
     component: DragNDrop,
   },
   {
     name: 'EasyConnect',
-    path: '/easy-connect',
+    path: 'easy-connect',
     component: EasyConnect,
   },
   {
     name: 'Edges',
-    path: '/edges',
+    path: 'edges',
     component: Edges,
   },
   {
     name: 'Edge Renderer',
-    path: '/edge-renderer',
+    path: 'edge-renderer',
     component: EdgeRenderer,
   },
   {
     name: 'Edge Types',
-    path: '/edge-types',
+    path: 'edge-types',
     component: EdgeTypes,
   },
   {
     name: 'Edge Routing',
-    path: '/edge-routing',
+    path: 'edge-routing',
     component: EdgeRouting,
   },
   {
     name: 'Empty',
-    path: '/empty',
+    path: 'empty',
     component: Empty,
   },
   {
     name: 'Figma',
-    path: '/figma',
+    path: 'figma',
     component: Figma,
   },
   {
     name: 'Floating Edges',
-    path: '/floating-edges',
+    path: 'floating-edges',
     component: FloatingEdges,
   },
   {
     name: 'Hidden',
-    path: '/hidden',
+    path: 'hidden',
     component: Hidden,
   },
   {
     name: 'Interaction',
-    path: '/interaction',
+    path: 'interaction',
     component: Interaction,
   },
   {
     name: 'Intersection',
-    path: '/intersection',
+    path: 'intersection',
     component: Intersection,
   },
   {
     name: 'Interactive Minimap',
-    path: '/interactive-minimap',
+    path: 'interactive-minimap',
     component: InteractiveMinimap,
   },
   {
     name: 'Layouting',
-    path: '/layouting',
+    path: 'layouting',
     component: Layouting,
   },
   {
     name: 'Multi Flows',
-    path: '/multiflows',
+    path: 'multiflows',
     component: MultiFlows,
   },
   {
     name: 'Nested Nodes',
-    path: '/nested-nodes',
+    path: 'nested-nodes',
     component: NestedNodes,
   },
   {
     name: 'Node Type Change',
-    path: '/nodetype-change',
+    path: 'nodetype-change',
     component: NodeTypeChange,
   },
   {
     name: 'nodeTypes Object Change',
-    path: '/nodetypesobject-change',
+    path: 'nodetypesobject-change',
     component: NodeTypesObjectChange,
   },
   {
     name: 'NodeToolbar',
-    path: '/node-toolbar',
+    path: 'node-toolbar',
     component: NodeToolbar,
   },
   {
     name: 'NodeResizer',
-    path: '/node-resizer',
+    path: 'node-resizer',
     component: NodeResizer,
   },
   {
     name: 'Overview',
-    path: '/overview',
+    path: 'overview',
     component: Overview,
   },
   {
     name: 'Provider',
-    path: '/provider',
+    path: 'provider',
     component: Provider,
   },
   {
     name: 'Save/Restore',
-    path: '/save-restore',
+    path: 'save-restore',
     component: SaveRestore,
   },
   {
     name: 'Stress',
-    path: '/stress',
+    path: 'stress',
     component: Stress,
   },
   {
     name: 'Subflow',
-    path: '/subflow',
+    path: 'subflow',
     component: Subflow,
   },
   {
     name: 'Switch Flow',
-    path: '/switch',
+    path: 'switch',
     component: SwitchFlow,
   },
   {
     name: 'Touch Device',
-    path: '/touch-device',
+    path: 'touch-device',
     component: TouchDevice,
   },
   {
     name: 'Undirectional',
-    path: '/undirectional',
+    path: 'undirectional',
     component: Undirectional,
   },
   {
     name: 'Updatable Edge',
-    path: '/updatable-edge',
+    path: 'updatable-edge',
     component: UpdatableEdge,
   },
   {
     name: 'Update Node',
-    path: '/update-node',
+    path: 'update-node',
     component: UpdateNode,
   },
   {
     name: 'useNodesInitialized',
-    path: '/use-nodes-initialized',
+    path: 'use-nodes-initialized',
     component: useNodesInitialized,
   },
   {
     name: 'useOnSelectionChange',
-    path: '/use-on-selection-change',
+    path: 'use-on-selection-change',
     component: UseOnSelectionChange,
   },
   {
     name: 'useReactFlow',
-    path: '/usereactflow',
+    path: 'usereactflow',
     component: UseReactFlow,
   },
   {
     name: 'useUpdateNodeInternals',
-    path: '/useupdatenodeinternals',
+    path: 'useupdatenodeinternals',
     component: UseUpdateNodeInternals,
   },
   {
     name: 'Validation',
-    path: '/validation',
+    path: 'validation',
     component: Validation,
   },
   {
     name: 'useKeyPress',
-    path: '/use-key-press',
+    path: 'use-key-press',
     component: UseKeyPress,
   },
 ];
@@ -299,28 +301,38 @@ const Header = () => {
   }, [currentPath]);
 
   return (
-    <header>
-      <a className="logo" href="https://github.com/wbkd/react-flow">
-        React Flow Dev
-      </a>
-      <select value={currentPath} onChange={(event) => setCurrentPath(event.target.value)}>
-        {routes.map((route) => (
-          <option value={route.path} key={route.path}>
-            {route.name}
-          </option>
-        ))}
-      </select>
-    </header>
+    <>
+      <header>
+        <a className="logo" href="https://github.com/wbkd/react-flow">
+          React Flow Dev
+        </a>
+        <select value={currentPath} onChange={(event) => setCurrentPath(event.target.value)}>
+          {routes.map((route) => (
+            <option value={route.path} key={route.path}>
+              {route.name}
+            </option>
+          ))}
+        </select>
+      </header>
+      <Outlet />
+    </>
   );
 };
 
-export default () => (
-  <BrowserRouter>
-    <Header />
-    <Routes>
-      {routes.map((route) => (
-        <Route path={route.path} key={route.path} element={<route.component />} />
-      ))}
-    </Routes>
-  </BrowserRouter>
-);
+export default () => {
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="examples" element={<Header />}>
+            <Route index element={<Basic />} />
+            {routes.map((route) => (
+              <Route path={route.path} key={route.path} element={<route.component />} />
+            ))}
+          </Route>
+          <Route path="tests/generic/*" element={<GenericTests />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
+};
