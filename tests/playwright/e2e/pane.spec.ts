@@ -122,7 +122,7 @@ test.describe('PANE DEFAULT', () => {
 
     test('autoPanOnConnect works as intended', async ({ page }) => {
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
-      const handle = page.locator('[data-id="1"] .svelte-flow__handle');
+      const handle = page.locator(`[data-id="1"] .${FRAMEWORK}-flow__handle`);
 
       await expect(handle).toBeAttached();
 

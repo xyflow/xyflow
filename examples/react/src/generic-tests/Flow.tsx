@@ -6,8 +6,8 @@ type FlowProps = {
 };
 
 export default ({ generics }: FlowProps) => {
-  const [nodes, setNodes] = useState(generics.reactFlowProps.nodes);
-  const [edges, setEdges] = useState(generics.reactFlowProps.edges);
+  const [nodes, setNodes] = useState(generics.flowProps.nodes);
+  const [edges, setEdges] = useState(generics.flowProps.edges);
 
   const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
   const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
@@ -15,7 +15,7 @@ export default ({ generics }: FlowProps) => {
   return (
     <div style={{ height: '100%' }}>
       <ReactFlow
-        {...generics.reactFlowProps}
+        {...generics.flowProps}
         nodes={nodes}
         onNodesChange={onNodesChange}
         edges={edges}

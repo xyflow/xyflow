@@ -1,7 +1,7 @@
 import { MarkerType } from '@xyflow/react';
 
 export default {
-  reactFlowProps: {
+  flowProps: {
     fitView: true,
     nodes: [
       {

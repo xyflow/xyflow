@@ -13,7 +13,7 @@ test.describe('EDGES', () => {
 
   test.describe('selection', () => {
     test('selecting an edge by click', async ({ page }) => {
-      const edge = page.locator('.svelte-flow__edge').and(page.locator('[data-id="edge-with-class"]'));
+      const edge = page.locator(`${FRAMEWORK}.-flow__edge`).and(page.locator('[data-id="edge-with-class"]'));
 
       await expect(edge).toBeAttached();
       await edge.click();
