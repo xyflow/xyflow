@@ -12,7 +12,7 @@ declare global {
 	}
 
 	interface GenericTestCase {
-		svelteFlowProps: Omit<SvelteFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
+		flowProps: Omit<SvelteFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
 	}
 }
 

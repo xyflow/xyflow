@@ -1,7 +1,7 @@
 import { MarkerType } from '@xyflow/svelte';
 
 export default {
-	svelteFlowProps: {
+	flowProps: {
 		fitView: true,
 		nodes: [
 			{

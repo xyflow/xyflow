@@ -1,5 +1,5 @@
 export default {
-	svelteFlowProps: {
+	flowProps: {
 		zoomOnScroll: false,
 		// zoomActivationKey: 'Space',
 		// panOnDrag: false,

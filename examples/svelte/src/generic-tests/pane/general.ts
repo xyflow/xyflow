@@ -1,5 +1,5 @@
 export default {
-	svelteFlowProps: {
+	flowProps: {
 		minZoom: 0.25,
 		maxZoom: 4,
 		fitView: true,
