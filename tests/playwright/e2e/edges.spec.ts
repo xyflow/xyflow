@@ -5,7 +5,7 @@ import { FRAMEWORK } from './constants';
 test.describe('EDGES', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
-    await page.goto('/tests/edges');
+    await page.goto('/tests/generic/edges/general');
 
     // Timeout get's ignored and tests timeout after 200ms ???
     // page.waitForSelector('[data-id="edge-with-class"]', { timeout: 5000 });

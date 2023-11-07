@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 import { FRAMEWORK } from './constants';
-import { transform } from 'typescript';
 
 const MATCH_ALL_NUMBERS = /[\d\.]+/g;
 
@@ -23,7 +22,7 @@ async function getTransform(element) {
 test.describe('PANE DEFAULT', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
-    await page.goto('/tests/pane/default');
+    await page.goto('/tests/generic/pane/general');
 
     // Wait till the edges are rendered
     await page.waitForSelector('#first-edge', { timeout: 5000 });
@@ -146,7 +145,7 @@ test.describe('PANE DEFAULT', () => {
 test.describe('PANE NON-DEFAULT', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
-    await page.goto('/tests/pane/non-default');
+    await page.goto('/tests/generic/pane/non-defaults');
 
     // Wait till the edges are rendered
     await page.waitForSelector('#first-edge', { timeout: 5000 });
