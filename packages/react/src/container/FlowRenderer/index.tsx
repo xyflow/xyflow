@@ -50,7 +50,7 @@ const FlowRenderer = ({
   elementsSelectable,
   zoomOnScroll,
   zoomOnPinch,
-  panOnScroll,
+  panOnScroll: _panOnScroll,
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
@@ -72,6 +72,7 @@ const FlowRenderer = ({
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
 
   const panOnDrag = panActivationKeyPressed || _panOnDrag;
+  const panOnScroll = panActivationKeyPressed || _panOnScroll;
   const isSelecting = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
