@@ -1,6 +1,11 @@
 import { PlaywrightTestConfig, devices } from '@playwright/test';
 
-export function sharedConfigWithPort(port: number): PlaywrightTestConfig {
+type ConfigParams = {
+  port: number;
+  framework: string;
+};
+
+export function sharedConfigWithPort({ port, framework }: ConfigParams): PlaywrightTestConfig {
   return {
     testDir: './e2e',
     /* Run tests in files in parallel */
@@ -20,6 +25,11 @@ export function sharedConfigWithPort(port: number): PlaywrightTestConfig {
 
       /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
       trace: 'on-first-retry',
+    },
+    webServer: {
+      command: `pnpm --filter=${framework}-examples run dev --port ${port}`,
+      port,
+      reuseExistingServer: !process.env.CI,
     },
 
     /* Configure projects for major browsers */
