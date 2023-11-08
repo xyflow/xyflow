@@ -11,7 +11,7 @@ declare global {
 		// interface Platform {}
 	}
 
-	interface GenericTestCase {
+	interface FlowConfig {
 		flowProps: Omit<SvelteFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
 	}
 }

@@ -1,27 +1,30 @@
 import { useState, useCallback } from 'react';
-import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
+import {
+  ReactFlow,
+  applyNodeChanges,
+  applyEdgeChanges,
+  addEdge,
+  OnNodesChange,
+  OnEdgesChange,
+  OnConnect,
+} from '@xyflow/react';
 
 type FlowProps = {
-  generics: GenericTestCase;
+  flowConfig: FlowConfig;
 };
 
-export default ({ generics }: FlowProps) => {
-  const [nodes, setNodes] = useState(generics.flowProps.nodes);
-  const [edges, setEdges] = useState(generics.flowProps.edges);
+export default ({ flowConfig }: FlowProps) => {
+  const [nodes, setNodes] = useState(flowConfig.flowProps.nodes);
+  const [edges, setEdges] = useState(flowConfig.flowProps.edges);
+  const props = { ...flowConfig.flowProps, nodes, edges };
 
-  const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
-  const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onNodesChange: OnNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
+  const onEdgesChange: OnEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
+  const onConnect: OnConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+
   return (
     <div style={{ height: '100%' }}>
-      <ReactFlow
-        {...generics.flowProps}
-        nodes={nodes}
-        onNodesChange={onNodesChange}
-        edges={edges}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-      ></ReactFlow>
+      <ReactFlow {...props} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} />
     </div>
   );
 };

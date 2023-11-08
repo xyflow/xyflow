@@ -37,4 +37,4 @@ export default {
 			}
 		]
 	}
-} satisfies GenericTestCase;
+} satisfies FlowConfig;

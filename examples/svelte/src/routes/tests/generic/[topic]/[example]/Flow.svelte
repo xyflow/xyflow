@@ -4,13 +4,13 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	export let generic: GenericTestCase;
+	export let flowConfig: FlowConfig;
 
 	// Create writables here so it is easier to create test cases
-	const nodes = writable(generic.flowProps.nodes);
-	const edges = writable(generic.flowProps.edges);
+	const nodes = writable(flowConfig.flowProps.nodes);
+	const edges = writable(flowConfig.flowProps.edges);
 
-	const svelteFlowPropsWithWritables = { ...generic.flowProps, nodes, edges };
+	const props = { ...flowConfig.flowProps, nodes, edges };
 </script>
 
-<SvelteFlow {...svelteFlowPropsWithWritables} />
+<SvelteFlow {...props} />

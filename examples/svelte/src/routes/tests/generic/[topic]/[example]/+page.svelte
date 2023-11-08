@@ -3,9 +3,9 @@
 
 	import Flow from './Flow.svelte';
 
-	export let data;
+	export let data: { flowConfig: FlowConfig };
 </script>
 
 <SvelteFlowProvider>
-	<Flow generic={data.generic} />
+	<Flow flowConfig={data.flowConfig} />
 </SvelteFlowProvider>

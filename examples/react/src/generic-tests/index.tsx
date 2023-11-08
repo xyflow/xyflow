@@ -1,17 +1,17 @@
 import { useLocation } from 'react-router-dom';
+
 import Flow from './Flow';
+
+const flowConfigs = import.meta.glob<FlowConfig>('./**/*.ts', { eager: true, import: 'default' });
 
 export default () => {
   const location = useLocation();
-  const files = import.meta.glob<GenericTestCase>('./**/*.ts', { eager: true, import: 'default' });
+  const path = `.${location.pathname.replace('/tests/generic', '')}.ts`;
+  const flowConfig = flowConfigs[path];
 
-  const testCasePath = `.${location.pathname.replace('/tests/generic', '')}.ts`;
-
-  const testCase = files[testCasePath];
-
-  if (!testCase) {
-    return <div></div>;
+  if (!flowConfig) {
+    return `404: This route doesn't exists.`;
   }
 
-  return <Flow generics={testCase} />;
+  return <Flow flowConfig={flowConfig} />;
 };
