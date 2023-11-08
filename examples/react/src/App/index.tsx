@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import GenericTests from '../generic-tests';
 
@@ -324,6 +324,7 @@ export default () => {
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Navigate to="/examples" />} />
           <Route path="examples" element={<Header />}>
             <Route index element={<Basic />} />
             {routes.map((route) => (
