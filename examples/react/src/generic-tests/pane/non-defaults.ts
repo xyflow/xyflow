@@ -1,7 +1,7 @@
 export default {
   flowProps: {
     panOnScroll: true,
-    initialViewport: { x: 1.23, y: 9.87, zoom: 1.234 },
+    defaultViewport: { x: 1.23, y: 9.87, zoom: 1.234 },
     autoPanOnConnect: false,
     autoPanOnNodeDrag: false,
     nodes: [
