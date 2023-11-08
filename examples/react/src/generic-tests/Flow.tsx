@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { ReactFlow, Controls, Background, applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
+import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge } from '@xyflow/react';
 
 type FlowProps = {
   generics: GenericTestCase;
@@ -11,7 +11,7 @@ export default ({ generics }: FlowProps) => {
 
   const onNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
   const onEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
-
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
   return (
     <div style={{ height: '100%' }}>
       <ReactFlow
@@ -20,10 +20,8 @@ export default ({ generics }: FlowProps) => {
         onNodesChange={onNodesChange}
         edges={edges}
         onEdgesChange={onEdgesChange}
-      >
-        <Background />
-        <Controls />
-      </ReactFlow>
+        onConnect={onConnect}
+      ></ReactFlow>
     </div>
   );
 };

@@ -25,7 +25,7 @@ test.describe('PANE DEFAULT', () => {
     await page.goto('/tests/generic/pane/general');
 
     // Wait till the edges are rendered
-    await page.waitForSelector('#first-edge', { timeout: 5000 });
+    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
   });
 
   test.describe('pan & zoom', () => {
@@ -148,7 +148,7 @@ test.describe('PANE NON-DEFAULT', () => {
     await page.goto('/tests/generic/pane/non-defaults');
 
     // Wait till the edges are rendered
-    await page.waitForSelector('#first-edge', { timeout: 5000 });
+    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
   });
 
   test.describe('pan & zoom', () => {
@@ -190,7 +190,7 @@ test.describe('PANE ACTIVATION KEYS', () => {
     await page.goto('/tests/generic/pane/activation-keys');
 
     // Wait till the edges are rendered
-    await page.waitForSelector('#first-edge', { timeout: 5000 });
+    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
   });
   // TODO
 });

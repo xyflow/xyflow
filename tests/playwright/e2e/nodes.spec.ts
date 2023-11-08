@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Locator } from '@playwright/test';
 
 import { FRAMEWORK } from './constants';
 
@@ -28,10 +28,10 @@ test.describe('NODES', () => {
 
       const box = await firstNode.boundingBox();
 
-      await page.mouse.move(box!.x - 100, box!.y - 10);
+      await page.mouse.move(box!.x - 150, box!.y - 25);
       await page.keyboard.down('Shift');
       await page.mouse.down();
-      await page.mouse.move(box!.x + 200, box!.y + 200);
+      await page.mouse.move(box!.x + 275, box!.y + 200);
       await page.mouse.up();
       await page.keyboard.up('Shift');
 
@@ -39,8 +39,14 @@ test.describe('NODES', () => {
       await expect(secondNode).toHaveClass(/selected/);
       await expect(thirdNode).toHaveClass(/selected/);
 
-      const selection = page.locator(`.${FRAMEWORK}-flow__selection`);
-      await expect(selection).toBeInViewport();
+      let selection: Locator | undefined;
+      if (FRAMEWORK === 'react') {
+        selection = page.locator('.react-flow__nodesselection');
+      } else if (FRAMEWORK === 'svelte') {
+        selection = page.locator('.svelte-flow__selection');
+      }
+
+      if (selection) await expect(selection).toBeInViewport();
     });
 
     test('selectable=false prevents selection', async ({ page }) => {

@@ -47,7 +47,7 @@ test.describe('EDGES', () => {
     });
 
     test('styles get applied', async ({ page }) => {
-      const edge = page.locator('#edge-with-style');
+      const edge = page.locator('[data-id="edge-with-style"]').locator(`.${FRAMEWORK}-flow__edge-path`);
 
       await expect(edge).toHaveCSS('stroke', 'rgb(255, 0, 0)');
     });
@@ -121,7 +121,7 @@ test.describe('EDGES', () => {
     });
 
     test('zIndex sets z-index of edge svgs', async ({ page }) => {
-      const svg = page.locator('svg', { has: page.locator('#z-index') });
+      const svg = page.locator('svg', { has: page.locator('[data-id="z-index"]') });
 
       await expect(svg).toBeAttached();
       await expect(svg).toHaveCSS('z-index', '3141592');
@@ -149,8 +149,8 @@ test.describe('EDGES', () => {
       await expect(edge).toHaveClass(/selected/);
     });
 
-    test('markerEnd is setting marker-end', async ({ page }) => {
-      const edge = page.locator('#markers');
+    test('marker-start, marker-end set markers', async ({ page }) => {
+      const edge = page.locator('[data-id="markers"]').locator(`.${FRAMEWORK}-flow__edge-path`);
 
       await expect(edge).toBeAttached();
 
