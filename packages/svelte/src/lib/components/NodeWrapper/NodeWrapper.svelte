@@ -1,13 +1,7 @@
 <svelte:options immutable />
 
 <script lang="ts">
-  import {
-    createEventDispatcher,
-    onMount,
-    setContext,
-    SvelteComponent,
-    type ComponentType
-  } from 'svelte';
+  import { createEventDispatcher, setContext, SvelteComponent, type ComponentType } from 'svelte';
   import { get, writable } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position, type NodeProps } from '@xyflow/system';
@@ -54,6 +48,8 @@
   const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
+  let prevNodeRef: HTMLDivElement;
+
   const nodeTypeValid = !!$nodeTypes[nodeType];
 
   if (!nodeTypeValid) {
@@ -109,13 +105,15 @@
   setContext('svelteflow__node_id', id);
   setContext('svelteflow__node_connectable', connectableStore);
 
-  onMount(() => {
-    resizeObserver?.observe(nodeRef);
-
-    return () => {
-      resizeObserver?.unobserve(nodeRef);
-    };
-  });
+  $: {
+    // hiding the noder removes html element is removed from the dom
+    if (nodeRef) {
+      resizeObserver?.observe(nodeRef);
+      prevNodeRef = nodeRef;
+    } else if (prevNodeRef) {
+      resizeObserver?.unobserve(prevNodeRef);
+    }
+  }
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
     if (selectable && (!get(selectNodesOnDrag) || !draggable || get(nodeDragThreshold) > 0)) {
