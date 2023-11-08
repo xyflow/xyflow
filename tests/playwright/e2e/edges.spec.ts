@@ -13,7 +13,7 @@ test.describe('EDGES', () => {
 
   test.describe('selection', () => {
     test('selecting an edge by click', async ({ page }) => {
-      const edge = page.locator(`${FRAMEWORK}.-flow__edge`).and(page.locator('[data-id="edge-with-class"]'));
+      const edge = page.locator(`[data-id="edge-with-class"]`);
 
       await expect(edge).toBeAttached();
       await edge.click();
@@ -26,11 +26,12 @@ test.describe('EDGES', () => {
 
       await expect(edge1).toBeAttached();
       await expect(edge2).toBeAttached();
-      // FIXME: I cannot get this to work
-      await page.keyboard.down('MetaLeft');
+
       await edge1.click();
       await expect(edge1).toHaveClass(/selected/);
 
+      // FIXME: I cannot get this to work
+      await page.keyboard.down('MetaLeft');
       await edge2.click();
       await expect(edge2).toHaveClass(/selected/);
 
