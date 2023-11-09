@@ -28,6 +28,7 @@ The main branch is the home of @xyflow/svelte and the upcoming @xyflow/react (Re
 - **Hooks and Utils:** [Hooks](https://reactflow.dev/api-reference/hooks) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/api-reference/utils)
 - **Plugin Components:** [Background](https://reactflow.dev/api-reference/components/background), [MiniMap](https://reactflow.dev/api-reference/components/minimap) and [Controls](https://reactflow.dev/api-reference/components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
+
 ## Commercial Usage
 
 **Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
@@ -46,7 +47,7 @@ npm install reactflow
 
 ## Quickstart
 
-This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/learn/customization/custom-nodes), [examples](https://reactflow.dev/examples/overview) and the full [API reference](https://reactflow.dev/api-reference/react-flow).
+This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/learn/customization/custom-nodes), [examples](https://reactflow.dev/examples) and the full [API reference](https://reactflow.dev/api-reference/react-flow).
 
 ```jsx
 import { useCallback } from 'react';
