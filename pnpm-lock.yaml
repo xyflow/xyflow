@@ -3932,6 +3932,7 @@ packages:
     resolution: {integrity: sha512-fpWrvyVHEKyeEvbKZTVOeZF3VSKKWtJxFIxX/jaVPf+cLbGUSitjb49pHLqPV2BUNNZ0LcoeEGfE/YCpyDYHIw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/b4a/-/b4a-1.6.4.tgz}
     name: b4a
     version: 1.6.4
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -3979,6 +3980,7 @@ packages:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/bl/-/bl-4.1.0.tgz}
     name: bl
     version: 4.1.0
+    requiresBuild: true
     dependencies:
       buffer: registry.npmjs.org/buffer@5.7.1
       inherits: registry.npmjs.org/inherits@2.0.4
@@ -4275,6 +4277,7 @@ packages:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/chownr/-/chownr-1.1.4.tgz}
     name: chownr
     version: 1.1.4
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -4425,6 +4428,7 @@ packages:
     resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/color-string/-/color-string-1.9.1.tgz}
     name: color-string
     version: 1.9.1
+    requiresBuild: true
     dependencies:
       color-name: registry.npmjs.org/color-name@1.1.4
       simple-swizzle: registry.npmjs.org/simple-swizzle@0.2.2
@@ -4436,6 +4440,7 @@ packages:
     name: color
     version: 4.2.3
     engines: {node: '>=12.5.0'}
+    requiresBuild: true
     dependencies:
       color-convert: registry.npmjs.org/color-convert@2.0.1
       color-string: registry.npmjs.org/color-string@1.9.1
@@ -4996,6 +5001,7 @@ packages:
     name: decompress-response
     version: 6.0.0
     engines: {node: '>=10'}
+    requiresBuild: true
     dependencies:
       mimic-response: registry.npmjs.org/mimic-response@3.1.0
     dev: false
@@ -5011,6 +5017,7 @@ packages:
     name: deep-extend
     version: 0.6.0
     engines: {node: '>=4.0.0'}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -5088,6 +5095,7 @@ packages:
     name: detect-libc
     version: 2.0.2
     engines: {node: '>=8'}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -5931,6 +5939,7 @@ packages:
     name: expand-template
     version: 2.0.3
     engines: {node: '>=6'}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -6005,6 +6014,7 @@ packages:
     resolution: {integrity: sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/fast-fifo/-/fast-fifo-1.3.2.tgz}
     name: fast-fifo
     version: 1.3.2
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -6196,6 +6206,7 @@ packages:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/fs-constants/-/fs-constants-1.0.0.tgz}
     name: fs-constants
     version: 1.0.0
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -6375,6 +6386,7 @@ packages:
     resolution: {integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/github-from-package/-/github-from-package-0.0.0.tgz}
     name: github-from-package
     version: 0.0.0
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -6845,6 +6857,7 @@ packages:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/ini/-/ini-1.3.8.tgz}
     name: ini
     version: 1.3.8
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -6886,6 +6899,7 @@ packages:
     resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.2.tgz}
     name: is-arrayish
     version: 0.3.2
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -8276,6 +8290,7 @@ packages:
     name: mimic-response
     version: 3.1.0
     engines: {node: '>=10'}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -8330,6 +8345,7 @@ packages:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz}
     name: mkdirp-classic
     version: 0.5.3
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -8390,6 +8406,7 @@ packages:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/napi-build-utils/-/napi-build-utils-1.0.2.tgz}
     name: napi-build-utils
     version: 1.0.2
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -8440,6 +8457,7 @@ packages:
     name: node-abi
     version: 3.51.0
     engines: {node: '>=10'}
+    requiresBuild: true
     dependencies:
       semver: registry.npmjs.org/semver@7.5.4
     dev: false
@@ -8449,6 +8467,7 @@ packages:
     resolution: {integrity: sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/node-addon-api/-/node-addon-api-6.1.0.tgz}
     name: node-addon-api
     version: 6.1.0
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -9474,6 +9493,7 @@ packages:
     version: 7.1.1
     engines: {node: '>=10'}
     hasBin: true
+    requiresBuild: true
     dependencies:
       detect-libc: registry.npmjs.org/detect-libc@2.0.2
       expand-template: registry.npmjs.org/expand-template@2.0.3
@@ -9692,6 +9712,7 @@ packages:
     resolution: {integrity: sha512-kJt5qhMxoszgU/62PLP1CJytzd2NKetjSRnyuj31fDd3Rlcz3fzlFdFLD1SItunPwyqEOkca6GbV612BWfaBag==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/queue-tick/-/queue-tick-1.0.1.tgz}
     name: queue-tick
     version: 1.0.1
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -9715,6 +9736,7 @@ packages:
     name: rc
     version: 1.2.8
     hasBin: true
+    requiresBuild: true
     dependencies:
       deep-extend: registry.npmjs.org/deep-extend@0.6.0
       ini: registry.npmjs.org/ini@1.3.8
@@ -10412,6 +10434,7 @@ packages:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/simple-concat/-/simple-concat-1.0.1.tgz}
     name: simple-concat
     version: 1.0.1
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -10419,6 +10442,7 @@ packages:
     resolution: {integrity: sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/simple-get/-/simple-get-4.0.1.tgz}
     name: simple-get
     version: 4.0.1
+    requiresBuild: true
     dependencies:
       decompress-response: registry.npmjs.org/decompress-response@6.0.0
       once: registry.npmjs.org/once@1.4.0
@@ -10430,6 +10454,7 @@ packages:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/simple-swizzle/-/simple-swizzle-0.2.2.tgz}
     name: simple-swizzle
     version: 0.2.2
+    requiresBuild: true
     dependencies:
       is-arrayish: registry.npmjs.org/is-arrayish@0.3.2
     dev: false
@@ -10697,6 +10722,7 @@ packages:
     resolution: {integrity: sha512-fQMzy2O/Q47rgwErk/eGeLu/roaFWV0jVsogDmrszM9uIw8L5OA+t+V93MgYlufNptfjmYR1tOMWhei/Eh7TQA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/streamx/-/streamx-2.15.1.tgz}
     name: streamx
     version: 2.15.1
+    requiresBuild: true
     dependencies:
       fast-fifo: registry.npmjs.org/fast-fifo@1.3.2
       queue-tick: registry.npmjs.org/queue-tick@1.0.1
@@ -10864,6 +10890,7 @@ packages:
     name: strip-json-comments
     version: 2.0.1
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -11254,6 +11281,7 @@ packages:
     resolution: {integrity: sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/tar-fs/-/tar-fs-2.1.1.tgz}
     name: tar-fs
     version: 2.1.1
+    requiresBuild: true
     dependencies:
       chownr: registry.npmjs.org/chownr@1.1.4
       mkdirp-classic: registry.npmjs.org/mkdirp-classic@0.5.3
@@ -11266,6 +11294,7 @@ packages:
     resolution: {integrity: sha512-5AFQU8b9qLfZCX9zp2duONhPmZv0hGYiBPJsyUdqMjzq/mqVpy/rEUSeHk1+YitmxugaptgBh5oDGU3VsAJq4w==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/tar-fs/-/tar-fs-3.0.4.tgz}
     name: tar-fs
     version: 3.0.4
+    requiresBuild: true
     dependencies:
       mkdirp-classic: registry.npmjs.org/mkdirp-classic@0.5.3
       pump: registry.npmjs.org/pump@3.0.0
@@ -11278,6 +11307,7 @@ packages:
     name: tar-stream
     version: 2.2.0
     engines: {node: '>=6'}
+    requiresBuild: true
     dependencies:
       bl: registry.npmjs.org/bl@4.1.0
       end-of-stream: registry.npmjs.org/end-of-stream@1.4.4
@@ -11291,6 +11321,7 @@ packages:
     resolution: {integrity: sha512-B/UyjYwPpMBv+PaFSWAmtYjwdrlEaZQEhMIBFNC5oEG8lpiW8XjcSdmEaClj28ArfKScKHs2nshz3k2le6crsg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/tar-stream/-/tar-stream-3.1.6.tgz}
     name: tar-stream
     version: 3.1.6
+    requiresBuild: true
     dependencies:
       b4a: registry.npmjs.org/b4a@1.6.4
       fast-fifo: registry.npmjs.org/fast-fifo@1.3.2

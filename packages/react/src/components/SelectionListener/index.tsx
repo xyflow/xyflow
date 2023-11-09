@@ -32,8 +32,9 @@ const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) =
 
   useEffect(() => {
     const params = { nodes: selectedNodes, edges: selectedEdges };
+
     onSelectionChange?.(params);
-    store.getState().onSelectionChange?.(params);
+    store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
   }, [selectedNodes, selectedEdges, onSelectionChange]);
 
   return null;
@@ -41,12 +42,12 @@ const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) =
 
 SelectionListener.displayName = 'SelectionListener';
 
-const changeSelector = (s: ReactFlowState) => !!s.onSelectionChange;
+const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
 
 function Wrapper({ onSelectionChange }: SelectionListenerProps) {
-  const storeHasSelectionChange = useStore(changeSelector);
+  const storeHasSelectionChangeHandlers = useStore(changeSelector);
 
-  if (onSelectionChange || storeHasSelectionChange) {
+  if (onSelectionChange || storeHasSelectionChangeHandlers) {
     return <SelectionListener onSelectionChange={onSelectionChange} />;
   }
 
