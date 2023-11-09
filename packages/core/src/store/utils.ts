@@ -2,7 +2,7 @@ import { zoomIdentity } from 'd3-zoom';
 import type { StoreApi } from 'zustand';
 
 import { internalsSymbol, isNumeric } from '../utils';
-import { getD3Transition, getRectOfNodes, getTransformForBounds, getNodePositionWithOrigin } from '../utils/graph';
+import { getD3Transition, getRectOfNodes, getViewportForBounds, getNodePositionWithOrigin } from '../utils/graph';
 import type {
   Edge,
   EdgeSelectionChange,
@@ -157,7 +157,7 @@ export function fitView(get: StoreApi<ReactFlowState>['getState'], options: Inte
     if (nodes.length > 0 && nodesInitialized) {
       const bounds = getRectOfNodes(nodes, nodeOrigin);
 
-      const [x, y, zoom] = getTransformForBounds(
+      const { x, y, zoom } = getViewportForBounds(
         bounds,
         width,
         height,
