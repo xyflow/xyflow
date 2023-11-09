@@ -290,7 +290,7 @@ export const getTransformForBounds = (
   const { x, y, zoom } = getViewportForBounds(bounds, width, height, minZoom, maxZoom, padding);
 
   console.warn(
-    '[DEPRECATED] `getTransformForBounds` is deprecated. Instead use `getViewportForBounds`. Beware that the return value is type Viewport instead of Transform.'
+    '[DEPRECATED] `getTransformForBounds` is deprecated. Instead use `getViewportForBounds`. Beware that the return value is type Viewport (`{ x: number, y: number, zoom: number }`) instead of Transform (`[number, number, number]`).'
   );
 
   return [x, y, zoom];
