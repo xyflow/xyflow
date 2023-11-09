@@ -60,13 +60,15 @@ export function getClosestHandle(
       const validHandleResult = validator({ nodeId: handleNodeId, id: handleId, type: handleType });
 
       if (validHandleResult) {
+        const handle = handles.find((h) => h.nodeId === handleNodeId && h.type === handleType && h.id === handleId);
+
         return {
           handle: {
             id: handleId,
             type: handleType,
             nodeId: handleNodeId,
-            x: pos.x,
-            y: pos.y,
+            x: handle?.x || pos.x,
+            y: handle?.y || pos.y,
           },
           validHandleResult,
         };
