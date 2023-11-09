@@ -11,11 +11,12 @@ function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
   const store = useStoreApi();
 
   useEffect(() => {
-    const addedOnSelectionChange = [...store.getState().onSelectionChange, onChange];
-    store.setState({ onSelectionChange: addedOnSelectionChange });
+    const nextOnSelectionChangeHandlers = [...store.getState().onSelectionChangeHandlers, onChange];
+    store.setState({ onSelectionChangeHandlers: nextOnSelectionChangeHandlers });
+
     return () => {
-      const removedOnSelectionChange = store.getState().onSelectionChange.filter((fn) => fn !== onChange);
-      store.setState({ onSelectionChange: removedOnSelectionChange });
+      const nextHandlers = store.getState().onSelectionChangeHandlers.filter((fn) => fn !== onChange);
+      store.setState({ onSelectionChangeHandlers: nextHandlers });
     };
   }, [onChange]);
 }

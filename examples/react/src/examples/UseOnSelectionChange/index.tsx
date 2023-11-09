@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import  {
+import {
   ReactFlow,
   addEdge,
   ReactFlowProvider,
@@ -10,6 +10,7 @@ import  {
   useEdgesState,
   useOnSelectionChange,
   OnSelectionChangeParams,
+  OnSelectionChangeFunc,
 } from '@xyflow/react';
 
 const initialNodes: Node[] = [
@@ -64,7 +65,7 @@ const Flow = () => {
 };
 
 const WrappedFlow = () => {
-  const [secondLoggerActive, setSecondLoggerActive] = useState<boolean>(false);
+  const [secondLoggerActive, setSecondLoggerActive] = useState<boolean>(true);
 
   const toggleSecondLogger = () => {
     setSecondLoggerActive(!secondLoggerActive);

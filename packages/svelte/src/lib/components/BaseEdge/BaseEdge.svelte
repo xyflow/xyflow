@@ -24,7 +24,6 @@
 
 <path
   d={path}
-  {id}
   class={cc(['svelte-flow__edge-path', className])}
   marker-start={markerStart}
   marker-end={markerEnd}
