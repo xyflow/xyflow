@@ -22,6 +22,8 @@ export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: numbe
 
 export const getD3Transition = (selection: D3SelectionInstance, duration = 0) =>
   typeof duration === 'number' && duration > 0 ? selection.transition().duration(duration) : selection;
+export const getD3Transition = (selection: D3SelectionInstance, duration = 0, onEnd = () => {}) =>
+  typeof duration === 'number' && duration > 0 ? selection.transition().duration(duration).on('end', onEnd) : selection;
 
 export const wheelDelta = (event: any) => {
   const factor = event.ctrlKey && isMacOs() ? 10 : 1;
