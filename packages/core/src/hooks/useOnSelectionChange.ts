@@ -4,14 +4,20 @@ import { useStoreApi } from './useStore';
 import type { OnSelectionChangeFunc } from '../types';
 
 export type UseOnSelectionChangeOptions = {
-  onChange?: OnSelectionChangeFunc;
+  onChange: OnSelectionChangeFunc;
 };
 
 function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
   const store = useStoreApi();
 
   useEffect(() => {
-    store.setState({ onSelectionChange: onChange });
+    const nextSelectionChangeHandlers = [...store.getState().onSelectionChange, onChange];
+    store.setState({ onSelectionChange: nextSelectionChangeHandlers });
+
+    return () => {
+      const nextHandlers = store.getState().onSelectionChange.filter((fn) => fn !== onChange);
+      store.setState({ onSelectionChange: nextHandlers });
+    };
   }, [onChange]);
 }
 
