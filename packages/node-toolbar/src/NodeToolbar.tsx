@@ -3,7 +3,7 @@ import {
   Node,
   ReactFlowState,
   useStore,
-  getRectOfNodes,
+  getNodesBounds,
   Transform,
   Rect,
   Position,
@@ -112,7 +112,7 @@ function NodeToolbar({
     return null;
   }
 
-  const nodeRect: Rect = getRectOfNodes(nodes, nodeOrigin);
+  const nodeRect: Rect = getNodesBounds(nodes, nodeOrigin);
   const zIndex: number = Math.max(...nodes.map((node) => (node[internalsSymbol]?.z || 1) + 1));
 
   const wrapperStyle: CSSProperties = {

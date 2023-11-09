@@ -7,7 +7,7 @@ import { shallow } from 'zustand/shallow';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import type { D3ZoomEvent } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
-import { useStore, getRectOfNodes, Panel, getBoundsOfRects, useStoreApi, CoordinateExtent } from '@reactflow/core';
+import { useStore, getNodesBounds, Panel, getBoundsOfRects, useStoreApi, CoordinateExtent } from '@reactflow/core';
 import type { ReactFlowState, Rect } from '@reactflow/core';
 
 import type { MiniMapProps } from './types';
@@ -27,7 +27,7 @@ const selector = (s: ReactFlowState) => {
 
   return {
     viewBB,
-    boundingRect: nodes.length > 0 ? getBoundsOfRects(getRectOfNodes(nodes, s.nodeOrigin), viewBB) : viewBB,
+    boundingRect: nodes.length > 0 ? getBoundsOfRects(getNodesBounds(nodes, s.nodeOrigin), viewBB) : viewBB,
     rfId: s.rfId,
   };
 };
