@@ -33,6 +33,7 @@
 
   $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
+  $: _panOnScroll = $panActivationKeyPressed || panOnScroll;
 </script>
 
 <div
@@ -50,7 +51,7 @@
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,
-    panOnScroll,
+    panOnScroll: _panOnScroll,
     panOnDrag: _panOnDrag,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
