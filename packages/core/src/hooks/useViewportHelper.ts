@@ -73,7 +73,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           const { transform, snapToGrid, snapGrid } = store.getState();
 
           console.warn(
-            '[DEPRECATED] `project` is deprecated. Instead use `screenToFlowPosition`. There is no need to subtract the react flow bounds anymore!'
+            '[DEPRECATED] `project` is deprecated. Instead use `screenToFlowPosition`. There is no need to subtract the react flow bounds anymore! https://reactflow.dev/api-reference/types/react-flow-instance#screen-to-flow-position'
           );
 
           return pointToRendererPoint(position, transform, snapToGrid, snapGrid);

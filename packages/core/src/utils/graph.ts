@@ -218,7 +218,9 @@ export const getNodesBounds = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): 
 
 // @deprecated Use `getNodesBounds`.
 export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
-  console.warn('[DEPRECATED] `getRectOfNodes` is deprecated. Instead use `getNodesBounds`.');
+  console.warn(
+    '[DEPRECATED] `getRectOfNodes` is deprecated. Instead use `getNodesBounds` https://reactflow.dev/api-reference/utils/get-nodes-bounds.'
+  );
 
   return getNodesBounds(nodes, nodeOrigin);
 };
@@ -290,7 +292,7 @@ export const getTransformForBounds = (
   const { x, y, zoom } = getViewportForBounds(bounds, width, height, minZoom, maxZoom, padding);
 
   console.warn(
-    '[DEPRECATED] `getTransformForBounds` is deprecated. Instead use `getViewportForBounds`. Beware that the return value is type Viewport (`{ x: number, y: number, zoom: number }`) instead of Transform (`[number, number, number]`).'
+    '[DEPRECATED] `getTransformForBounds` is deprecated. Instead use `getViewportForBounds`. Beware that the return value is type Viewport (`{ x: number, y: number, zoom: number }`) instead of Transform (`[number, number, number]`). https://reactflow.dev/api-reference/utils/get-viewport-for-bounds'
   );
 
   return [x, y, zoom];
