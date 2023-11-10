@@ -18,7 +18,9 @@ export {
   getConnectedEdges,
   updateEdge,
   getTransformForBounds,
+  getViewportForBounds,
   getRectOfNodes,
+  getNodesBounds,
   getNodePositionWithOrigin,
 } from './utils/graph';
 export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';

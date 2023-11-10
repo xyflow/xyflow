@@ -9,7 +9,7 @@ import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { getRectOfNodes } from '../../utils/graph';
+import { getNodesBounds } from '../../utils/graph';
 import useDrag from '../../hooks/useDrag';
 import { arrowKeyDiffs } from '../Nodes/wrapNode';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
@@ -24,7 +24,7 @@ export interface NodesSelectionProps {
 const selector = (s: ReactFlowState) => {
   const selectedNodes = s.getNodes().filter((n) => n.selected);
   return {
-    ...getRectOfNodes(selectedNodes, s.nodeOrigin),
+    ...getNodesBounds(selectedNodes, s.nodeOrigin),
     transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]})`,
     userSelectionActive: s.userSelectionActive,
   };

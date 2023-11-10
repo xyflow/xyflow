@@ -13,6 +13,7 @@ import {
   NodeInternals,
   NodeOrigin,
   UpdateEdgeOptions,
+  Viewport,
 } from '../types';
 import { errorMessages } from '../contants';
 
@@ -191,7 +192,7 @@ export const getNodePositionWithOrigin = (
   };
 };
 
-export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const getNodesBounds = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -213,6 +214,15 @@ export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): 
   );
 
   return boxToRect(box);
+};
+
+// @deprecated Use `getNodesBounds`.
+export const getRectOfNodes = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+  console.warn(
+    '[DEPRECATED] `getRectOfNodes` is deprecated. Instead use `getNodesBounds` https://reactflow.dev/api-reference/utils/get-nodes-bounds.'
+  );
+
+  return getNodesBounds(nodes, nodeOrigin);
 };
 
 export const getNodesInside = (
@@ -270,6 +280,7 @@ export const getConnectedEdges = (nodes: Node[], edges: Edge[]): Edge[] => {
   return edges.filter((edge) => nodeIds.includes(edge.source) || nodeIds.includes(edge.target));
 };
 
+// @deprecated Use `getViewportForBounds`.
 export const getTransformForBounds = (
   bounds: Rect,
   width: number,
@@ -278,6 +289,23 @@ export const getTransformForBounds = (
   maxZoom: number,
   padding = 0.1
 ): Transform => {
+  const { x, y, zoom } = getViewportForBounds(bounds, width, height, minZoom, maxZoom, padding);
+
+  console.warn(
+    '[DEPRECATED] `getTransformForBounds` is deprecated. Instead use `getViewportForBounds`. Beware that the return value is type Viewport (`{ x: number, y: number, zoom: number }`) instead of Transform (`[number, number, number]`). https://reactflow.dev/api-reference/utils/get-viewport-for-bounds'
+  );
+
+  return [x, y, zoom];
+};
+
+export const getViewportForBounds = (
+  bounds: Rect,
+  width: number,
+  height: number,
+  minZoom: number,
+  maxZoom: number,
+  padding = 0.1
+): Viewport => {
   const xZoom = width / (bounds.width * (1 + padding));
   const yZoom = height / (bounds.height * (1 + padding));
   const zoom = Math.min(xZoom, yZoom);
@@ -287,7 +315,7 @@ export const getTransformForBounds = (
   const x = width / 2 - boundsCenterX * clampedZoom;
   const y = height / 2 - boundsCenterY * clampedZoom;
 
-  return [x, y, clampedZoom];
+  return { x, y, zoom: clampedZoom };
 };
 
 export const getD3Transition = (selection: D3Selection<Element, unknown, null, undefined>, duration = 0) => {

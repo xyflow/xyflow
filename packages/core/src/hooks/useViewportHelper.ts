@@ -3,7 +3,7 @@ import { zoomIdentity } from 'd3-zoom';
 import { shallow } from 'zustand/shallow';
 
 import { useStoreApi, useStore } from '../hooks/useStore';
-import { pointToRendererPoint, getTransformForBounds, getD3Transition } from '../utils/graph';
+import { pointToRendererPoint, getViewportForBounds, getD3Transition, rendererPointToPoint } from '../utils/graph';
 import { fitView } from '../store/utils';
 import type { ViewportHelperFunctions, ReactFlowState, XYPosition } from '../types';
 
@@ -63,14 +63,50 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         },
         fitBounds: (bounds, options) => {
           const { width, height, minZoom, maxZoom } = store.getState();
-          const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
+          const { x, y, zoom } = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
           const transform = zoomIdentity.translate(x, y).scale(zoom);
 
           d3Zoom.transform(getD3Transition(d3Selection, options?.duration), transform);
         },
+        // @deprecated Use `screenToFlowPosition`.
         project: (position: XYPosition) => {
           const { transform, snapToGrid, snapGrid } = store.getState();
+
+          console.warn(
+            '[DEPRECATED] `project` is deprecated. Instead use `screenToFlowPosition`. There is no need to subtract the react flow bounds anymore! https://reactflow.dev/api-reference/types/react-flow-instance#screen-to-flow-position'
+          );
+
           return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
+        },
+        screenToFlowPosition: (position: XYPosition) => {
+          const { transform, snapToGrid, snapGrid, domNode } = store.getState();
+
+          if (!domNode) {
+            return position;
+          }
+
+          const { x: domX, y: domY } = domNode.getBoundingClientRect();
+          const relativePosition = {
+            x: position.x - domX,
+            y: position.y - domY,
+          };
+
+          return pointToRendererPoint(relativePosition, transform, snapToGrid, snapGrid);
+        },
+        flowToScreenPosition: (position: XYPosition) => {
+          const { transform, domNode } = store.getState();
+
+          if (!domNode) {
+            return position;
+          }
+
+          const { x: domX, y: domY } = domNode.getBoundingClientRect();
+          const rendererPosition = rendererPointToPoint(position, transform);
+
+          return {
+            x: rendererPosition.x + domX,
+            y: rendererPosition.y + domY,
+          };
         },
         viewportInitialized: true,
       };
