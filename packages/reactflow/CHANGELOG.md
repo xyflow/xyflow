@@ -1,24 +1,37 @@
 # reactflow
 
+## 11.10.1
+
+### Patch Changes
+
+- [#3605](https://github.com/xyflow/xyflow/pull/3605) [`e71dec26`](https://github.com/xyflow/xyflow/commit/e71dec263c8a8296d0a890c2fc7d0a5aac94f9e5) - fix(react-flow-instance): add screenToFlow and flowToScreen types
+- Updated dependencies [[`e71dec26`](https://github.com/xyflow/xyflow/commit/e71dec263c8a8296d0a890c2fc7d0a5aac94f9e5)]:
+  - @reactflow/core@11.10.1
+  - @reactflow/background@11.3.6
+  - @reactflow/controls@11.2.6
+  - @reactflow/minimap@11.7.6
+  - @reactflow/node-resizer@2.2.6
+  - @reactflow/node-toolbar@1.3.6
+
 ## 11.10.0
 
 ### Upcoming v12
 
-We want to make the migration for v12 as smooth as possible. That's why we added deprecation warnings for the following util functions: 
+We want to make the migration for v12 as smooth as possible. That's why we added deprecation warnings for the following util functions:
 
 #### Deprecations / Renamings
 
-* `useReactFlow.project` => `useReactFlow.screenToFlowPosition` (changes: no need to subtract react flow bounds anymore)
-* `getRectOfNodes` => `getNodesBounds` (changes: none)
-* `getTransformForBounds` => `getViewportForBounds` (changes: returns `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
+- `useReactFlow.project` => `useReactFlow.screenToFlowPosition` (changes: no need to subtract react flow bounds anymore)
+- `getRectOfNodes` => `getNodesBounds` (changes: none)
+- `getTransformForBounds` => `getViewportForBounds` (changes: returns `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
 
 ##### New features
 
-* added `useReactFlow.flowToScreenPosition`
+- added `useReactFlow.flowToScreenPosition`
 
 ### Minor Changes
 
-- [#3597](https://github.com/xyflow/xyflow/pull/3597) [`a114c75b`](https://github.com/xyflow/xyflow/commit/a114c75b79d1d7bd24937318119a824879fe0b54) Thanks - chore(utils): add renamed functions and deprecations, add `useReactFlow.flowToScreenPosition`
+- [#3597](https://github.com/xyflow/xyflow/pull/3597) [`a114c75b`](https://github.com/xyflow/xyflow/commit/a114c75b79d1d7bd24937318119a824879fe0b54) - chore(utils): add renamed functions and deprecations, add `useReactFlow.flowToScreenPosition`
 
 ### Patch Changes
 
