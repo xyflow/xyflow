@@ -17,7 +17,7 @@ import type {
   Box,
   CoordinateExtent,
 } from '../../types';
-import { getRectOfNodes } from '../../utils/graph';
+import { getNodesBounds } from '../../utils/graph';
 
 export type UseDragData = { dx: number; dy: number };
 
@@ -80,7 +80,7 @@ function useDrag({
         let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
         if (dragItems.current.length > 1 && nodeExtent) {
-          const rect = getRectOfNodes(dragItems.current as unknown as Node[], nodeOrigin);
+          const rect = getNodesBounds(dragItems.current as unknown as Node[], nodeOrigin);
           nodesBox = rectToBox(rect);
         }
 

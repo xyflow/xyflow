@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/minimap",
-  "version": "11.7.4",
+  "version": "11.7.5",
   "description": "Minimap component for React Flow.",
   "keywords": [
     "react",
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wbkd/react-flow.git",
+    "url": "https://github.com/xyflow/xyflow.git",
     "directory": "packages/minimap"
   },
   "scripts": {

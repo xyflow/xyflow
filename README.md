@@ -10,7 +10,7 @@
 
 A highly customizable React component for building interactive graphs and node-based editors.
 
-[🚀 Getting Started](https://reactflow.dev/docs/quickstart/) | [📖 Documentation](https://reactflow.dev/docs/api/react-flow-props) | [📺 Examples](https://reactflow.dev/docs/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) | [💎 React Flow Pro](https://pro.reactflow.dev)
+[🚀 Getting Started](https://reactflow.dev/learn/quickstart/) | [📖 Documentation](https://reactflow.dev/learn/api/react-flow) | [📺 Examples](https://reactflow.dev/learn/examples) | [☎️ Discord](https://discord.gg/RVmnytFmGW) | [💎 React Flow Pro](https://pro.reactflow.dev)
 
 </div>
 
@@ -18,25 +18,24 @@ A highly customizable React component for building interactive graphs and node-b
 
 ## 🚨 Upcoming Changes 
 
-The main branch (v11) is now in a feature freeze. The next version is being developed in the [xyflow branch](https://github.com/wbkd/react-flow/tree/xyflow).
-Find out more about the those changes [here](https://wbkd.notion.site/Upcoming-Changes-at-React-Flow-1a443641891a4069927c0a115e915251).
+The main branch is the home of @xyflow/svelte and the upcoming @xyflow/react (React Flow v12). The current version is maintained and lives on the [v11 branch](https://github.com/xyflow/xyflow/tree/v11).
 
 ## Key Features
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
-- **Customizable:** Different [node](https://reactflow.dev/docs/api/nodes/node-types) and [edge types](https://reactflow.dev/docs/api/edges/edge-types) and support for custom nodes with multiple handles and custom edges
-- **Fast rendering:** Only nodes that have changed are re-rendered and only those in the viewport are displayed
-- **Hooks and Utils:** [Hooks](https://reactflow.dev/docs/api/hooks/use-react-flow) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/docs/api/graph-util-functions)
-- **Plugin Components:** [Background](https://reactflow.dev/docs/api/plugin-components/background), [MiniMap](https://reactflow.dev/docs/api/plugin-components/minimap) and [Controls](https://reactflow.dev/docs/api/plugin-components/controls)
+- **Customizable:** Different [node](https://reactflow.dev/examples) and [edge types](https://reactflow.dev/examples/edges/edge-types) and support for custom nodes with multiple handles and custom edges
+- **Fast rendering:** Only nodes that have changed are re-rendered 
+- **Hooks and Utils:** [Hooks](https://reactflow.dev/api-reference/hooks) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/api-reference/utils)
+- **Plugin Components:** [Background](https://reactflow.dev/api-reference/components/background), [MiniMap](https://reactflow.dev/api-reference/components/minimap) and [Controls](https://reactflow.dev/api-reference/components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
 
 ## Commercial Usage
 
 **Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://pro.reactflow.dev) or through [Github Sponsors](https://github.com/sponsors/wbkd).
+**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://reactflow.dev/pro) or through [Github Sponsors](https://github.com/sponsors/xyflow).
 
-You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
+You can find more information in our [React Flow Pro FAQs](https://reactflow.dev/pro).
 
 ## Installation
 
@@ -48,7 +47,7 @@ npm install reactflow
 
 ## Quickstart
 
-This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/docs/guides/custom-nodes), [examples](https://reactflow.dev/docs/examples/overview) and the full [API reference](https://reactflow.dev/docs/api/react-flow-props).
+This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/learn/customization/custom-nodes), [examples](https://reactflow.dev/examples) and the full [API reference](https://reactflow.dev/api-reference/react-flow).
 
 ```jsx
 import { useCallback } from 'react';
@@ -110,7 +109,7 @@ pnpm test
 
 ## Maintainers
 
-React Flow is the full-time project of Moritz and Christopher of [webkid](https://webkid.io/), based in Berlin. If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://pro.reactflow.dev/contact) or by joining the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
+React Flow is the full-time project of Moritz and Christopher of [webkid](https://webkid.io/), based in Berlin. If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining the [React Flow Discord Server](https://discord.gg/Bqt6xrs).
 
 - Moritz Klack • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 - Christopher Möller • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
@@ -133,4 +132,4 @@ React Flow was initially developed for [datablocks](https://datablocks.pro), a g
 
 ## License
 
-React Flow is [MIT licensed](https://github.com/wbkd/react-flow/blob/main/LICENSE).
+React Flow is [MIT licensed](https://github.com/xyflow/xyflow/blob/v11/LICENSE).

@@ -33,7 +33,7 @@ const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) =
   useEffect(() => {
     const params = { nodes: selectedNodes, edges: selectedEdges };
     onSelectionChange?.(params);
-    store.getState().onSelectionChange?.(params);
+    store.getState().onSelectionChange.forEach((fn) => fn(params));
   }, [selectedNodes, selectedEdges, onSelectionChange]);
 
   return null;

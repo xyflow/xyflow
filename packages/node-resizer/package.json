@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/node-resizer",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "A helper component for resizing nodes.",
   "keywords": [
     "react",
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wbkd/react-flow.git",
+    "url": "https://github.com/xyflow/xyflow.git",
     "directory": "packages/node-resizer"
   },
   "scripts": {

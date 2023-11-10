@@ -34,9 +34,9 @@ const initialEdges: Edge[] = [
   },
 ];
 
-const SelectionLogger = () => {
+const SelectionLogger = ({ id }: { id: string }) => {
   const onChange = useCallback(({ nodes, edges }: OnSelectionChangeParams) => {
-    console.log(nodes, edges);
+    console.log(id, nodes, edges);
   }, []);
 
   useOnSelectionChange({
@@ -47,7 +47,7 @@ const SelectionLogger = () => {
 };
 
 const Flow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
 
@@ -65,10 +65,8 @@ const Flow = () => {
 const WrappedFlow = () => (
   <ReactFlowProvider>
     <Flow />
-    <SelectionLogger />
-    <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-        <input type={'text'} placeholder={'name'} />
-      </div>
+    <SelectionLogger id="Logger 1" />
+    <SelectionLogger id="Logger 2" />
   </ReactFlowProvider>
 );
 

@@ -17,7 +17,7 @@ function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps
     <Panel
       position={position}
       className="react-flow__attribution"
-      data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
+      data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://reactflow.dev/pro"
     >
       <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer" aria-label="React Flow attribution">
         React Flow

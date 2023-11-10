@@ -1,5 +1,33 @@
 # @reactflow/core
 
+## 11.10.0
+
+### Upcoming v12
+
+We want to make the migration for v12 as smooth as possible. That's why we added deprecation warnings for the following util functions: 
+
+#### Deprecations / Renamings
+
+* `useReactFlow.project` => `useReactFlow.screenToFlowPosition` (changes: no need to subtract react flow bounds anymore)
+* `getRectOfNodes` => `getNodesBounds` (changes: none)
+* `getTransformForBounds` => `getViewportForBounds` (changes: returns `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
+
+##### New features
+
+* added `useReactFlow.flowToScreenPosition`
+
+### Minor Changes
+
+- [#3597](https://github.com/xyflow/xyflow/pull/3597) [`a114c75b`](https://github.com/xyflow/xyflow/commit/a114c75b79d1d7bd24937318119a824879fe0b54) Thanks - chore(utils): add renamed functions and deprecations, add `useReactFlow.flowToScreenPosition`
+
+### Patch Changes
+
+- [#3586](https://github.com/xyflow/xyflow/pull/3586) [`746fa4a0`](https://github.com/xyflow/xyflow/commit/746fa4a0739719402bdc32bcbf18b577bb75cb1b) Thanks [@Nick-Lucas](https://github.com/Nick-Lucas)! - fix(intersection-helpers): use nodeRect instead of nodeOrRect
+- [#3584](https://github.com/xyflow/xyflow/pull/3584) [`291db12f`](https://github.com/xyflow/xyflow/commit/291db12fb1b7e72765fbf8a724f3853b1ff682fe) - fix(panOnScroll): respect zoomActivationKeyPressed when hovering a node
+- [#3593](https://github.com/xyflow/xyflow/pull/3593) [`e1d3d594`](https://github.com/xyflow/xyflow/commit/e1d3d59479cef7e55c4759fd05c7b1d5eb58d070) Thanks [@juspy](https://github.com/juspy)! - fix(useOnSelectionChange): multiple handlers
+- [#3595](https://github.com/xyflow/xyflow/pull/3595) [`ddc40528`](https://github.com/xyflow/xyflow/commit/ddc40528dd90d3de677f773b6670dc57a2c8520b) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - refactor(pan-activation): allow panning by scroll when pan activation key is pressed
+- [#3596](https://github.com/xyflow/xyflow/pull/3596) [`e4c25caf`](https://github.com/xyflow/xyflow/commit/e4c25caf7b699c1a50c3c8a9ffee59e00f0804cc) - refactor(handles): snap to handle center when above handle
+
 ## 11.9.4
 
 ### Patch Changes
