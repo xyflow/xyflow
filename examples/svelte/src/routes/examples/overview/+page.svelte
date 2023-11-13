@@ -83,6 +83,12 @@
 			type: 'custom',
 			data: { label: 'Custom Node' },
 			position: { x: 150, y: 300 }
+		},
+		{
+			id: 'hideunhide',
+			data: { label: 'HIDE ME' },
+			position: { x: 300, y: 75 },
+			hidden: true
 		}
 	]);
 
@@ -179,6 +185,13 @@
 	<Panel position="top-right">
 		<button on:click={updateNode}>update node pos</button>
 		<button on:click={updateEdge}>update edge type</button>
+		<button
+			on:click={() => {
+				console.log($nodes, $nodes.length);
+				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
+				$nodes = $nodes;
+			}}>hide/unhide</button
+		>
 	</Panel>
 </SvelteFlow>
 

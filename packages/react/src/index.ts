@@ -8,7 +8,7 @@ export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/E
 export { default as SmoothStepEdge } from './components/Edges/SmoothStepEdge';
 export { default as BaseEdge } from './components/Edges/BaseEdge';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
-export { default as Panel } from './components/Panel';
+export { default as Panel, type PanelProps } from './components/Panel';
 export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
@@ -85,6 +85,6 @@ export {
   getSmoothStepPath,
   type GetStraightPathParams,
   getStraightPath,
-  getTransformForBounds,
-  getRectOfNodes,
+  getViewportForBounds,
+  getNodesBounds,
 } from '@xyflow/system';

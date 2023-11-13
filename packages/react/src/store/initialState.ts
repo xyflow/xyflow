@@ -2,8 +2,8 @@ import {
   infiniteExtent,
   ConnectionMode,
   updateNodes,
-  getRectOfNodes,
-  getTransformForBounds,
+  getNodesBounds,
+  getViewportForBounds,
   Transform,
 } from '@xyflow/system';
 
@@ -32,8 +32,9 @@ const getInitialState = ({
       width: node.size?.width,
       height: node.size?.height,
     }));
-    const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
-    transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);
+    const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
+    const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    transform = [x, y, zoom];
   }
 
   return {
@@ -92,6 +93,7 @@ const getInitialState = ({
     connectionRadius: 20,
     onError: () => null,
     isValidConnection: undefined,
+    onSelectionChangeHandlers: [],
 
     lib: 'react',
   };

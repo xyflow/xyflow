@@ -57,7 +57,7 @@ const UseZoomPanHelperFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
   const {
-    project,
+    screenToFlowPosition,
     setCenter,
     zoomIn,
     zoomOut,
@@ -72,9 +72,9 @@ const UseZoomPanHelperFlow = () => {
 
   const onPaneClick = useCallback(
     (evt: MouseEvent) => {
-      const projectedPosition = project({
+      const projectedPosition = screenToFlowPosition({
         x: evt.clientX,
-        y: evt.clientY - 40,
+        y: evt.clientY,
       });
 
       setNodes((nds) =>
@@ -87,7 +87,7 @@ const UseZoomPanHelperFlow = () => {
         })
       );
     },
-    [project, setNodes]
+    [screenToFlowPosition, setNodes]
   );
 
   const onNodeClick = useCallback(

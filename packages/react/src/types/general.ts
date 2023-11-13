@@ -11,7 +11,7 @@ import {
   GetViewport,
   SetCenter,
   FitBounds,
-  Project,
+  XYPosition,
 } from '@xyflow/system';
 
 import type { NodeChange, EdgeChange, Node, WrapNodeProps, Edge, EdgeProps, WrapEdgeProps, ReactFlowInstance } from '.';
@@ -54,8 +54,7 @@ export type ViewportHelperFunctions = {
   fitView: FitView;
   setCenter: SetCenter;
   fitBounds: FitBounds;
-  project: Project;
-  screenToFlowCoordinate: Project;
-  flowToScreenCoordinate: Project;
+  screenToFlowPosition: (position: XYPosition) => XYPosition;
+  flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewportInitialized: boolean;
 };

@@ -58,6 +58,7 @@
   export let zoomOnPinch: $$Props['zoomOnPinch'] = true;
   export let panOnScroll: $$Props['panOnScroll'] = false;
   export let panOnDrag: $$Props['panOnDrag'] = true;
+  export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onError: $$Props['onError'] = undefined;
@@ -179,7 +180,7 @@
     panOnScroll={panOnScroll === undefined ? false : panOnScroll}
     panOnDrag={panOnDrag === undefined ? true : panOnDrag}
   >
-    <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag}>
+    <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag} {selectionOnDrag}>
       <ViewportComponent>
         <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
         <ConnectionLine

@@ -8,7 +8,7 @@ import {
   rectToBox,
   nodeToRect,
   pointToRendererPoint,
-  getTransformForBounds,
+  getViewportForBounds,
 } from './general';
 import {
   type Connection,
@@ -105,7 +105,7 @@ export const getNodePositionWithOrigin = (
   };
 };
 
-export const getRectOfNodes = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -195,9 +195,9 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   });
 
   if (filteredNodes.length > 0) {
-    const bounds = getRectOfNodes(filteredNodes, nodeOrigin);
+    const bounds = getNodesBounds(filteredNodes, nodeOrigin);
 
-    const [x, y, zoom] = getTransformForBounds(
+    const viewport = getViewportForBounds(
       bounds,
       width,
       height,
@@ -206,7 +206,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
       options?.padding ?? 0.1
     );
 
-    panZoom.setViewport({ x, y, zoom }, { duration: options?.duration });
+    panZoom.setViewport(viewport, { duration: options?.duration });
 
     return true;
   }

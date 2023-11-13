@@ -183,7 +183,7 @@ const getId = () => `${id++}`;
 const UpdateNodeInternalsFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const { project } = useReactFlow();
+  const { screenToFlowPosition } = useReactFlow();
 
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
   const onEdgeUpdate = useCallback(
@@ -196,12 +196,12 @@ const UpdateNodeInternalsFlow = () => {
       setNodes((nds) =>
         nds.concat({
           id: getId(),
-          position: project({ x: evt.clientX, y: evt.clientY - 40 }),
+          position: screenToFlowPosition({ x: evt.clientX, y: evt.clientY }),
           type: 'custom',
           data: null,
         })
       ),
-    [project, setNodes]
+    [screenToFlowPosition, setNodes]
   );
 
   return (

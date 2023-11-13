@@ -7,7 +7,7 @@
 
 <script lang="ts">
   import cc from 'classcat';
-  import { getBoundsOfRects, getNodePositionWithOrigin, getRectOfNodes } from '@xyflow/system';
+  import { getBoundsOfRects, getNodePositionWithOrigin, getNodesBounds } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Panel } from '$lib/container/Panel';
@@ -64,7 +64,7 @@
     width: $containerWidth / $viewport.zoom,
     height: $containerHeight / $viewport.zoom
   };
-  $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getRectOfNodes($nodes), viewBB) : viewBB;
+  $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getNodesBounds($nodes), viewBB) : viewBB;
   $: elementWidth = width ?? defaultWidth;
   $: elementHeight = height ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;

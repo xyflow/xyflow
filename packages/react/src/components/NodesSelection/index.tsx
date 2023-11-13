@@ -6,7 +6,7 @@
 import { memo, useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getRectOfNodes } from '@xyflow/system';
+import { getNodesBounds } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import useDrag from '../../hooks/useDrag';
@@ -22,7 +22,7 @@ export type NodesSelectionProps = {
 
 const selector = (s: ReactFlowState) => {
   const selectedNodes = s.nodes.filter((n) => n.selected);
-  const { width, height, x, y } = getRectOfNodes(selectedNodes, s.nodeOrigin);
+  const { width, height, x, y } = getNodesBounds(selectedNodes, s.nodeOrigin);
 
   return {
     width,
