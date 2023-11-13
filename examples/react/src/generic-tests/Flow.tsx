@@ -7,6 +7,10 @@ import {
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
+  Controls,
+  Panel,
+  MiniMap,
+  Background,
 } from '@xyflow/react';
 
 type FlowProps = {
@@ -24,7 +28,12 @@ export default ({ flowConfig }: FlowProps) => {
 
   return (
     <div style={{ height: '100%' }}>
-      <ReactFlow {...props} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} />
+      <ReactFlow {...props} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect}>
+        {flowConfig.controlsProps && <Controls {...flowConfig.controlsProps} />}
+        {flowConfig.panelProps && <Panel {...flowConfig.panelProps} />}
+        {flowConfig.minimapProps && <MiniMap {...flowConfig.minimapProps} />}
+        {flowConfig.backgroundProps && <Background {...flowConfig.backgroundProps} />}
+      </ReactFlow>
     </div>
   );
 };
