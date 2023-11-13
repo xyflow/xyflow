@@ -35,20 +35,20 @@ const UpdateNodeInternalsFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
 
-  const { project } = useReactFlow();
+  const { screenToFlowPosition } = useReactFlow();
 
   const onPaneClick = useCallback(
     (evt: MouseEvent) =>
       setNodes((nds) =>
         nds.concat({
           id: getId(),
-          position: project({ x: evt.clientX, y: evt.clientY - 40 }),
+          position: screenToFlowPosition({ x: evt.clientX, y: evt.clientY - 40 }),
           data: { label: 'new node' },
           targetPosition: Position.Left,
           sourcePosition: Position.Right,
         })
       ),
-    [project, setNodes]
+    [screenToFlowPosition, setNodes]
   );
 
   return (

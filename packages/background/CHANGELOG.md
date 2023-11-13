@@ -1,5 +1,12 @@
 # @reactflow/background
 
+## 11.3.6
+
+### Patch Changes
+
+- Updated dependencies [[`e71dec26`](https://github.com/xyflow/xyflow/commit/e71dec263c8a8296d0a890c2fc7d0a5aac94f9e5)]:
+  - @reactflow/core@11.10.1
+
 ## 11.3.5
 
 ### Patch Changes

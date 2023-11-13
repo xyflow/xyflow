@@ -21,6 +21,8 @@ const initialViewportHelper: ViewportHelperFunctions = {
   setCenter: noop,
   fitBounds: noop,
   project: (position: XYPosition) => position,
+  screenToFlowPosition: (position: XYPosition) => position,
+  flowToScreenPosition: (position: XYPosition) => position,
   viewportInitialized: false,
 };
 

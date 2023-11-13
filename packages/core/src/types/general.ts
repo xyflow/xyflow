@@ -136,6 +136,8 @@ export type ViewportHelperFunctions = {
   setCenter: SetCenter;
   fitBounds: FitBounds;
   project: Project;
+  screenToFlowPosition: (position: XYPosition) => XYPosition;
+  flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewportInitialized: boolean;
 };
 
