@@ -53,9 +53,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const [updateHover, setUpdateHover] = useState<boolean>(false);
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
-    const edgePosition = useStore((state) => {
-      const sourceNode = state.nodes.find((n) => n.id === source);
-      const targetNode = state.nodes.find((n) => n.id === target);
+    const edgePosition = useStore(function edgeSelector(state) {
+      const sourceNode = state.nodesLookup.get(source);
+      const targetNode = state.nodesLookup.get(target);
 
       if (!sourceNode || !targetNode) {
         return null;

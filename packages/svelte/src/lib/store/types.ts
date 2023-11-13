@@ -27,7 +27,7 @@ export type SvelteFlowStoreActions = {
   setTranslateExtent: (extent: CoordinateExtent) => void;
   fitView: (options?: FitViewOptions) => boolean;
   updateNodePositions: UpdateNodePositions;
-  updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
+  updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
   unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;

@@ -111,7 +111,8 @@ export type NodeStoreOptions = {
 // we are creating a custom store for the internals nodes in order to update the zIndex and positionAbsolute.
 // The user only passes in relative positions, so we need to calculate the absolute positions based on the parent nodes.
 export const createNodesStore = (
-  nodes: Node[]
+  nodes: Node[],
+  nodesLookup: Map<string, Node>
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -125,7 +126,7 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    const nextNodes = updateNodes(nds, value, {
+    const nextNodes = updateNodes(nds, nodesLookup, {
       elevateNodesOnSelect,
       defaults
     });

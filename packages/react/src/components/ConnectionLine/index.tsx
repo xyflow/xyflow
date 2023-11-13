@@ -43,7 +43,7 @@ const ConnectionLine = ({
   const { fromNode, handleId, toX, toY, connectionMode } = useStore(
     useCallback(
       (s: ReactFlowStore) => ({
-        fromNode: s.nodes.find((n) => n.id === nodeId),
+        fromNode: s.nodesLookup.get(nodeId),
         handleId: s.connectionStartHandle?.handleId,
         toX: (s.connectionPosition.x - s.transform[0]) / s.transform[2],
         toY: (s.connectionPosition.y - s.transform[1]) / s.transform[2],

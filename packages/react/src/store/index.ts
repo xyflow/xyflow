@@ -41,8 +41,8 @@ const createRFStore = ({
     (set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
-        const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
-        const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
+        const { nodesLookup, nodeOrigin, elevateNodesOnSelect } = get();
+        const nextNodes = updateNodes(nodes, nodesLookup, { nodeOrigin, elevateNodesOnSelect });
 
         set({ nodes: nextNodes });
       },
@@ -68,7 +68,7 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          nextState.nodes = updateNodes(nodes, [], {
+          nextState.nodes = updateNodes(nodes, new Map(), {
             nodeOrigin: get().nodeOrigin,
             elevateNodesOnSelect: get().elevateNodesOnSelect,
           });
@@ -80,13 +80,23 @@ const createRFStore = ({
         set(nextState);
       },
       updateNodeDimensions: (updates) => {
-        const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
-          get();
+        const {
+          onNodesChange,
+          fitView,
+          nodes,
+          nodesLookup,
+          fitViewOnInit,
+          fitViewDone,
+          fitViewOnInitOptions,
+          domNode,
+          nodeOrigin,
+        } = get();
         const changes: NodeDimensionChange[] = [];
 
         const updatedNodes = updateNodeDimensionsSystem(
           updates,
           nodes,
+          nodesLookup,
           domNode,
           nodeOrigin,
           (id: string, dimensions: Dimensions) => {
@@ -102,7 +112,7 @@ const createRFStore = ({
           return;
         }
 
-        const nextNodes = updateAbsolutePositions(updatedNodes, nodeOrigin);
+        const nextNodes = updateAbsolutePositions(updatedNodes, nodesLookup, nodeOrigin);
 
         let nextFitViewDone = fitViewDone;
         if (!fitViewDone && fitViewOnInit) {
@@ -138,12 +148,12 @@ const createRFStore = ({
       },
 
       triggerNodeChanges: (changes) => {
-        const { onNodesChange, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
+        const { onNodesChange, nodesLookup, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
 
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = updateNodes(updatedNodes, nodes, {
+            const nextNodes = updateNodes(updatedNodes, nodesLookup, {
               nodeOrigin,
               elevateNodesOnSelect,
             });
