@@ -1,6 +1,5 @@
 import type { DOMAttributes } from 'svelte/elements';
 import type {
-  Connection,
   ConnectionLineType,
   NodeOrigin,
   Viewport,
@@ -12,8 +11,6 @@ import type {
   CoordinateExtent,
   PanOnScrollMode,
   IsValidConnection,
-  HandleType,
-  NodeBase,
   OnError,
   ConnectionMode,
   PanelPosition,
@@ -66,6 +63,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   zoomOnPinch?: boolean;
   panOnScroll?: boolean;
   panOnDrag?: boolean | number[];
+  selectionOnDrag?: boolean;
   onlyRenderVisibleElements?: boolean;
   autoPanOnConnect?: boolean;
   autoPanOnNodeDrag?: boolean;

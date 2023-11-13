@@ -45,6 +45,7 @@
 	{edges}
 	fitView
 	selectionMode={SelectionMode.Partial}
+	selectionOnDrag
 	panOnScroll
 	{panOnDrag}
 	{onMoveStart}

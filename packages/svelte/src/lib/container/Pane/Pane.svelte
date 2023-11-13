@@ -40,6 +40,7 @@
   type $$Props = PaneProps;
 
   export let panOnDrag: $$Props['panOnDrag'] = undefined;
+  export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
 
   const dispatch = createEventDispatcher<{
     paneclick: {
@@ -67,9 +68,9 @@
   let containerBounds: DOMRect | null = null;
   let selectedNodes: Node[] = [];
 
-  $: isSelecting = $selectionKeyPressed;
-  $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
+  $: isSelecting = $selectionKeyPressed || (selectionOnDrag && _panOnDrag !== true);
+  $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
 
   function onClick(event: MouseEvent | TouchEvent) {
     dispatch('paneclick', { event });

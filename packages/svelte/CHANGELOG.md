@@ -1,5 +1,6 @@
 ## 0.0.27
 
+- add `selectionOnDrag` prop - can be used to create figma-like controls in combination with `panOnDrag={false}` / `panOnDrag={[1, 2]}` + `panOnScroll={true}` 
 - ⚠️ rename `screenToFlowCoordinate` to `screenToFlowPosition`
 - ⚠️ rename `flowToScreenCoordinate` to `flowToScreenPosition`
 - ⚠️ rename `getTransformForBounds` to `getViewportForBounds` (return `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
