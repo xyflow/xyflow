@@ -33,8 +33,8 @@ const getInitialState = ({
       height: node.size?.height,
     }));
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
-    const { x, y, z } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
-    transform = [x, y, z];
+    const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    transform = [x, y, zoom];
   }
 
   return {

@@ -1,3 +1,16 @@
+## 0.0.27
+
+- ⚠️ rename `screenToFlowCoordinate` to `screenToFlowPosition`
+- ⚠️ rename `flowToScreenCoordinate` to `flowToScreenPosition`
+- ⚠️ rename `getTransformForBounds` to `getViewportForBounds` (return `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
+- ⚠️ rename `getRectOfNodes` to `getNodesBounds`
+- simplify handle default styles, so that it's easier to override them
+- added e2e tests
+
+## 0.0.26
+
+- fixes broken version on npm
+
 ## 0.0.25
 
 - add `toObject` to `useSvelteFlow` hook
