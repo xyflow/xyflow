@@ -8,6 +8,7 @@ import type {
   NodeOrigin,
   SnapGrid,
   Transform,
+  Viewport,
 } from '../types';
 import { getNodePositionWithOrigin } from './graph';
 
@@ -154,14 +155,14 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
-export const getTransformForBounds = (
+export const getViewportForBounds = (
   bounds: Rect,
   width: number,
   height: number,
   minZoom: number,
   maxZoom: number,
   padding: number
-): Transform => {
+): Viewport => {
   const xZoom = width / (bounds.width * (1 + padding));
   const yZoom = height / (bounds.height * (1 + padding));
   const zoom = Math.min(xZoom, yZoom);
@@ -171,7 +172,7 @@ export const getTransformForBounds = (
   const x = width / 2 - boundsCenterX * clampedZoom;
   const y = height / 2 - boundsCenterY * clampedZoom;
 
-  return [x, y, clampedZoom];
+  return { x, y, zoom: clampedZoom };
 };
 
 export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;

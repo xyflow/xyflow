@@ -16,8 +16,8 @@ import {
   devWarn,
   type Viewport,
   updateNodes,
-  getRectOfNodes,
-  getTransformForBounds
+  getNodesBounds,
+  getViewportForBounds
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -69,9 +69,8 @@ export const getInitialStore = ({
       width: node.size?.width,
       height: node.size?.height
     }));
-    const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
-    const transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);
-    viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
+    const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
+    viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
   return {

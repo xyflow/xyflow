@@ -69,10 +69,10 @@
 			return null;
 		}
 
-		const type = event.dataTransfer.getData('application/svelteflow');
-		const position = svelteFlow.project({
+		const type = event.dataTransfer.getData('application/svelteflow') || 'default';
+		const position = svelteFlow.screenToFlowPosition({
 			x: event.clientX,
-			y: event.clientY - 40
+			y: event.clientY
 		});
 		const newNode: Node = {
 			id: `${Math.random()}`,
@@ -81,7 +81,7 @@
 			data: { label: `${type} node` }
 		};
 
-		svelteFlow.nodes.update((nds) => nds.concat(newNode));
+		nodes.update((nds) => nds.concat(newNode));
 	};
 
 	$: {

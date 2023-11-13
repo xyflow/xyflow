@@ -85,6 +85,6 @@ export {
   getSmoothStepPath,
   type GetStraightPathParams,
   getStraightPath,
-  getTransformForBounds,
-  getRectOfNodes,
+  getViewportForBounds,
+  getNodesBounds,
 } from '@xyflow/system';

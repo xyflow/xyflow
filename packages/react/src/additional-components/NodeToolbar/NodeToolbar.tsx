@@ -1,7 +1,7 @@
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getRectOfNodes, Transform, Rect, Position, internalsSymbol } from '@xyflow/system';
+import { getNodesBounds, Transform, Rect, Position, internalsSymbol } from '@xyflow/system';
 
 import { Node, ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
@@ -105,7 +105,7 @@ function NodeToolbar({
     return null;
   }
 
-  const nodeRect: Rect = getRectOfNodes(nodes, nodeOrigin);
+  const nodeRect: Rect = getNodesBounds(nodes, nodeOrigin);
   const zIndex: number = Math.max(...nodes.map((node) => (node[internalsSymbol]?.z || 1) + 1));
 
   const wrapperStyle: CSSProperties = {

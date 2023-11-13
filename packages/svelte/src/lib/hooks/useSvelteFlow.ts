@@ -13,7 +13,7 @@ import {
   type XYPosition,
   type ZoomInOut,
   type Rect,
-  getTransformForBounds,
+  getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint
 } from '@xyflow/system';
@@ -45,8 +45,8 @@ export function useSvelteFlow(): {
     nodesToRemove?: (Node | { id: Node['id'] })[],
     edgesToRemove?: (Edge | { id: Edge['id'] })[]
   ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
-  screenToFlowCoordinate: (position: XYPosition) => XYPosition;
-  flowToScreenCoordinate: (position: XYPosition) => XYPosition;
+  screenToFlowPosition: (position: XYPosition) => XYPosition;
+  flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
   getConnectedEdges: (id: string | (Node | { id: Node['id'] })[]) => Edge[];
   getIncomers: (node: string | Node | { id: Node['id'] }) => Node[];
@@ -118,7 +118,7 @@ export function useSvelteFlow(): {
     },
     fitView,
     fitBounds: (bounds: Rect, options?: FitBoundsOptions) => {
-      const [x, y, zoom] = getTransformForBounds(
+      const viewport = getViewportForBounds(
         bounds,
         get(width),
         get(height),
@@ -127,14 +127,7 @@ export function useSvelteFlow(): {
         options?.padding ?? 0.1
       );
 
-      get(panZoom)?.setViewport(
-        {
-          x,
-          y,
-          zoom
-        },
-        { duration: options?.duration }
-      );
+      get(panZoom)?.setViewport(viewport, { duration: options?.duration });
     },
     getIntersectingNodes: (
       nodeOrRect: Node | { id: Node['id'] } | Rect,
@@ -201,45 +194,43 @@ export function useSvelteFlow(): {
         deletedEdges: matchingEdges
       };
     },
-    screenToFlowCoordinate: (position: XYPosition) => {
+    screenToFlowPosition: (position: XYPosition) => {
       const _domNode = get(domNode);
 
-      if (_domNode) {
-        const _snapGrid = get(snapGrid);
-        const { x, y, zoom } = get(viewport);
-        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
-
-        const correctedPosition = {
-          x: position.x - domX,
-          y: position.y - domY
-        };
-
-        return pointToRendererPoint(
-          correctedPosition,
-          [x, y, zoom],
-          _snapGrid !== null,
-          _snapGrid || [1, 1]
-        );
+      if (!_domNode) {
+        return position;
       }
 
-      return { x: 0, y: 0 };
+      const _snapGrid = get(snapGrid);
+      const { x, y, zoom } = get(viewport);
+      const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+      const correctedPosition = {
+        x: position.x - domX,
+        y: position.y - domY
+      };
+
+      return pointToRendererPoint(
+        correctedPosition,
+        [x, y, zoom],
+        _snapGrid !== null,
+        _snapGrid || [1, 1]
+      );
     },
-    flowToScreenCoordinate: (position: XYPosition) => {
+    flowToScreenPosition: (position: XYPosition) => {
       const _domNode = get(domNode);
 
-      if (_domNode) {
-        const { x, y, zoom } = get(viewport);
-        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
-
-        const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
-
-        return {
-          x: rendererPosition.x + domX,
-          y: rendererPosition.y + domY
-        };
+      if (!_domNode) {
+        return position;
       }
 
-      return { x: 0, y: 0 };
+      const { x, y, zoom } = get(viewport);
+      const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+      const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
+
+      return {
+        x: rendererPosition.x + domX,
+        y: rendererPosition.y + domY
+      };
     },
     getConnectedEdges: (node) => {
       const nodeIds = new Set();

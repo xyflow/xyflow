@@ -7,7 +7,7 @@ import {
   getPointerPosition,
   calcNextPosition,
   snapPosition,
-  getRectOfNodes,
+  getNodesBounds,
   rectToBox,
 } from '../utils';
 import { getDragItems, getEventHandlerParams, hasSelector, wrapSelectionDragFunc } from './utils';
@@ -119,7 +119,7 @@ export function XYDrag({
       let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
       if (dragItems.length > 1 && nodeExtent) {
-        const rect = getRectOfNodes(dragItems as unknown as NodeBase[], nodeOrigin);
+        const rect = getNodesBounds(dragItems as unknown as NodeBase[], nodeOrigin);
         nodesBox = rectToBox(rect);
       }
 
