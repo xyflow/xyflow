@@ -17,4 +17,4 @@ Development of the library is done against `src/routes/examples`. Feel free to a
 
 ## Adding new E2E implementation
 
-E2E testing is done against the flows implemented in `src/generic-tests`. Adding a new configuration file automatically adds a new route under http://localhost:5173/tests/generic/$foldername/$filename. For further documentation visit [`xyflow/tests/playwright`](/tests/playwright).
+E2E testing is done against the flows implemented in `src/generic-tests`. Adding a new configuration file automatically adds a new route under [`http://localhost:5173/tests/generic/$foldername/$filename`](http://localhost:5173/tests/generic/nodes/general). For further documentation visit [`xyflow/tests/playwright`](/tests/playwright).
