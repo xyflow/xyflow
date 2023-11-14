@@ -75,14 +75,14 @@ export function getDragItems<NodeType extends NodeBase>(
 export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeId,
   dragItems,
-  nodesLookup,
+  nodeLookup,
 }: {
   nodeId?: string;
   dragItems: NodeDragItem[];
-  nodesLookup: Map<string, NodeType>;
+  nodeLookup: Map<string, NodeType>;
 }): [NodeType, NodeType[]] {
   const extentedDragItems: NodeType[] = dragItems.map((n) => {
-    const node = nodesLookup.get(n.id)!;
+    const node = nodeLookup.get(n.id)!;
 
     return {
       ...node,

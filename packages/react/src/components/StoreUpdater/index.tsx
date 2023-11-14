@@ -1,3 +1,8 @@
+/*
+ * This component helps us to update the store with the vlues coming from the user.
+ * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
+ * and values that have a dedicated setter function in the store (like `setNodes`).
+ */
 import { useEffect } from 'react';
 import { StoreApi } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -70,10 +75,10 @@ const selector = (s: ReactFlowState) => ({
   reset: s.reset,
 });
 
-function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => void) {
+function useStoreUpdater<T>(value: T | undefined, setStoreAction: (param: T) => void) {
   useEffect(() => {
     if (typeof value !== 'undefined') {
-      setStoreState(value);
+      setStoreAction(value);
     }
   }, [value]);
 }

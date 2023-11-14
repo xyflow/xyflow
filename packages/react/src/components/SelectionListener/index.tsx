@@ -1,3 +1,9 @@
+/*
+ * This is a helper component for calling the onSelectionChange listener.
+ * It will only be mounted if the user has passed an onSelectionChange listener
+ * or is using the useOnSelectionChange hook.
+ * @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
+ */
 import { memo, useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
@@ -24,8 +30,6 @@ function areEqual(a: SelectorSlice, b: SelectorSlice) {
   );
 }
 
-// This is just a helper component for calling the onSelectionChange listener.
-// @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
 const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) => {
   const store = useStoreApi();
   const { selectedNodes, selectedEdges } = useStore(selector, areEqual);

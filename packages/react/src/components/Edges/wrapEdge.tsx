@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent } from 'react';
+import { memo, useState, useMemo, useRef, type ComponentType, type KeyboardEvent, useCallback } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getMarkerId, elementSelectionKeys, XYHandle, type Connection, getEdgePosition } from '@xyflow/system';
@@ -53,26 +53,30 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const [updateHover, setUpdateHover] = useState<boolean>(false);
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
-    const edgePosition = useStore(function edgeSelector(state) {
-      const sourceNode = state.nodesLookup.get(source);
-      const targetNode = state.nodesLookup.get(target);
+    const edgePosition = useStore(
+      useCallback(
+        (state) => {
+          const sourceNode = state.nodeLookup.get(source);
+          const targetNode = state.nodeLookup.get(target);
 
-      if (!sourceNode || !targetNode) {
-        return null;
-      }
+          if (!sourceNode || !targetNode) {
+            return null;
+          }
 
-      const pos = getEdgePosition({
-        id,
-        sourceNode,
-        targetNode,
-        sourceHandle: sourceHandleId || null,
-        targetHandle: targetHandleId || null,
-        connectionMode: state.connectionMode,
-        onError: state.onError,
-      });
-
-      return pos;
-    }, shallow);
+          return getEdgePosition({
+            id,
+            sourceNode,
+            targetNode,
+            sourceHandle: sourceHandleId || null,
+            targetHandle: targetHandleId || null,
+            connectionMode: state.connectionMode,
+            onError: state.onError,
+          });
+        },
+        [source, target]
+      ),
+      shallow
+    );
 
     const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
     const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);

@@ -42,24 +42,39 @@ export function handleParentExpand(res: any[], updateItem: any) {
   }
 }
 
+// This function applies changes to nodes or edges that are triggered by React Flow internally.
+// When you drag a node for example, React Flow will send a position change update.
+// This function then applies the changes and returns the updated elements.
 function applyChanges(changes: any[], elements: any[]): any[] {
   // we need this hack to handle the setNodes and setEdges function of the useReactFlow hook for controlled flows
   if (changes.some((c) => c.type === 'reset')) {
     return changes.filter((c) => c.type === 'reset').map((c) => c.item);
   }
+
+  let remainingChanges = changes;
   const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
 
   return elements.reduce((res: any[], item: any) => {
-    const currentChanges = changes.filter((c) => c.id === item.id);
+    const nextChanges: any[] = [];
+    const _remainingChanges: any[] = [];
 
-    if (currentChanges.length === 0) {
+    remainingChanges.forEach((c) => {
+      if (c.id === item.id) {
+        nextChanges.push(c);
+      } else {
+        _remainingChanges.push(c);
+      }
+    });
+    remainingChanges = _remainingChanges;
+
+    if (nextChanges.length === 0) {
       res.push(item);
       return res;
     }
 
     const updateItem = { ...item };
 
-    for (const currentChange of currentChanges) {
+    for (const currentChange of nextChanges) {
       if (currentChange) {
         switch (currentChange.type) {
           case 'select': {

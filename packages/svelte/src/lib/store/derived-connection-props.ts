@@ -56,15 +56,15 @@ export function getDerivedConnectionProps(
       currentConnection,
       store.connectionLineType,
       store.connectionMode,
-      store.nodesLookup,
+      store.nodeLookup,
       store.viewport
     ],
-    ([connection, connectionLineType, connectionMode, nodesLookup, viewport]) => {
+    ([connection, connectionLineType, connectionMode, nodeLookup, viewport]) => {
       if (!connection.connectionStartHandle?.nodeId) {
         return initConnectionProps;
       }
 
-      const fromNode = nodesLookup.get(connection.connectionStartHandle?.nodeId);
+      const fromNode = nodeLookup.get(connection.connectionStartHandle?.nodeId);
       const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
       const handleBoundsStrict =
         fromHandleBounds?.[connection.connectionStartHandle.type || 'source'] || [];

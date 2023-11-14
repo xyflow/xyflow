@@ -90,7 +90,7 @@ export function createStore({
     const nextNodes = updateNodeDimensionsSystem(
       updates,
       get(store.nodes),
-      get(store.nodesLookup),
+      get(store.nodeLookup),
       get(store.domNode),
       get(store.nodeOrigin)
     );

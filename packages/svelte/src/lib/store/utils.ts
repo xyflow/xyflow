@@ -112,7 +112,7 @@ export type NodeStoreOptions = {
 // The user only passes in relative positions, so we need to calculate the absolute positions based on the parent nodes.
 export const createNodesStore = (
   nodes: Node[],
-  nodesLookup: Map<string, Node>
+  nodeLookup: Map<string, Node>
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -126,7 +126,7 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    const nextNodes = updateNodes(nds, nodesLookup, {
+    const nextNodes = updateNodes(nds, nodeLookup, {
       elevateNodesOnSelect,
       defaults
     });
