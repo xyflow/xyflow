@@ -23,6 +23,7 @@
 </script>
 
 <path
+  {id}
   d={path}
   class={cc(['svelte-flow__edge-path', className])}
   marker-start={markerStart}

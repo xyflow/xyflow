@@ -87,12 +87,12 @@ function NodeToolbar({
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
 
       return nodeIds.reduce<Node[]>((acc, id) => {
-        const node = state.nodes.find((n) => n.id === id);
+        const node = state.nodeLookup.get(id);
         if (node) {
           acc.push(node);
         }
         return acc;
-      }, [] as Node[]);
+      }, []);
     },
     [nodeId, contextNodeId]
   );

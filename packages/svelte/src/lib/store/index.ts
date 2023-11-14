@@ -86,10 +86,11 @@ export function createStore({
     });
   };
 
-  function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
+  function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
     const nextNodes = updateNodeDimensionsSystem(
       updates,
       get(store.nodes),
+      get(store.nodeLookup),
       get(store.domNode),
       get(store.nodeOrigin)
     );

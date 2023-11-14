@@ -33,6 +33,7 @@ export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBa
 
 type StoreItems = {
   nodes: NodeBase[];
+  nodeLookup: Map<string, NodeBase>;
   edges: EdgeBase[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
@@ -103,6 +104,7 @@ export function XYDrag({
     function updateNodes({ x, y }: XYPosition) {
       const {
         nodes,
+        nodeLookup,
         nodeExtent,
         snapGrid,
         snapToGrid,
@@ -163,11 +165,11 @@ export function XYDrag({
       updateNodePositions(dragItems, true, true);
       const onNodeOrSelectionDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 
-      if (dragEvent) {
+      if (dragEvent && (onDrag || onNodeOrSelectionDrag)) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
-          nodes,
+          nodeLookup,
         });
         onDrag?.(dragEvent as MouseEvent, dragItems, currentNode, currentNodes);
         onNodeOrSelectionDrag?.(dragEvent as MouseEvent, currentNode, currentNodes);
@@ -197,6 +199,7 @@ export function XYDrag({
     function startDrag(event: UseDragEvent) {
       const {
         nodes,
+        nodeLookup,
         multiSelectionActive,
         nodesDraggable,
         transform,
@@ -211,7 +214,7 @@ export function XYDrag({
       dragStarted = true;
 
       if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
-        if (!nodes.find((n) => n.id === nodeId)?.selected) {
+        if (!nodeLookup.get(nodeId)?.selected) {
           // we need to reset selected nodes when selectNodesOnDrag=false
           unselectNodesAndEdges();
         }
@@ -227,11 +230,11 @@ export function XYDrag({
 
       const onNodeOrSelectionDragStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
 
-      if (dragItems) {
+      if (dragItems && (onDragStart || onNodeOrSelectionDragStart)) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
-          nodes,
+          nodeLookup,
         });
         onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
         onNodeOrSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
@@ -288,18 +291,20 @@ export function XYDrag({
         cancelAnimationFrame(autoPanId);
 
         if (dragItems) {
-          const { nodes, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
+          const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
           const onNodeOrSelectionDragStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
 
           updateNodePositions(dragItems, false, false);
 
-          const [currentNode, currentNodes] = getEventHandlerParams({
-            nodeId,
-            dragItems,
-            nodes,
-          });
-          onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-          onNodeOrSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+          if (onDragStop || onNodeOrSelectionDragStop) {
+            const [currentNode, currentNodes] = getEventHandlerParams({
+              nodeId,
+              dragItems,
+              nodeLookup,
+            });
+            onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
+            onNodeOrSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+          }
         }
       })
       .filter((event: MouseEvent) => {

@@ -9,7 +9,7 @@
     "preinstall": "npx only-allow pnpm",
     "dev": "turbo run dev --parallel --concurrency 12",
     "dev:svelte": "turbo run dev --filter=svelte --filter=system",
-    "dev:react": "turbo run dev --filter=react",
+    "dev:react": "turbo run dev --filter=react-examples ",
     "test:svelte": "pnpm --filter=playwright run test:svelte",
     "test:svelte:ui": "pnpm --filter=playwright run test:svelte:ui",
     "test:react": "pnpm --filter=playwright run test:react",

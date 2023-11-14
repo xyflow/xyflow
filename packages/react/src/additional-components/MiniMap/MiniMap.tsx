@@ -118,7 +118,7 @@ function MiniMap({
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodes.find((n) => n.id === nodeId)!;
+        const node = store.getState().nodeLookup.get(nodeId)!;
         onNodeClick(event, node);
       }, [])
     : undefined;

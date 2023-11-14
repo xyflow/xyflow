@@ -59,7 +59,11 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
 }) => {
-  const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nodeLookup = new Map<string, Node>();
+  const nextNodes = updateNodes(nodes, nodeLookup, {
+    nodeOrigin: [0, 0],
+    elevateNodesOnSelect: false
+  });
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
@@ -75,7 +79,8 @@ export const getInitialStore = ({
 
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nextNodes),
+    nodes: createNodesStore(nextNodes, nodeLookup),
+    nodeLookup: readable<Map<string, Node>>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges),
     edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),

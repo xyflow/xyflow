@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import {
   ReactFlow,
-  ReactFlowInstance,
   Edge,
   Node,
   NodeChange,
@@ -17,11 +16,6 @@ import {
 } from '@xyflow/react';
 
 import { getNodesAndEdges } from './utils';
-
-const onInit = (reactFlowInstance: ReactFlowInstance) => {
-  reactFlowInstance.fitView();
-  console.log(reactFlowInstance.getNodes());
-};
 
 const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(25, 25);
 
@@ -64,11 +58,11 @@ const StressFlow = () => {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onInit={onInit}
       onConnect={onConnect}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgeChange}
       minZoom={0.2}
+      fitView
     >
       <MiniMap />
       <Controls />

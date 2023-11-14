@@ -146,7 +146,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         if (targetPosChanged) {
           prevTargetPosition.current = targetPosition;
         }
-        store.getState().updateNodeDimensions([{ id, nodeElement: nodeRef.current, forceUpdate: true }]);
+        store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, forceUpdate: true }]]));
       }
     }, [id, type, sourcePosition, targetPosition]);
 

@@ -9,17 +9,17 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
   // @todo: do we want to add this to system?
   const updateInternals = (id: string | string[]) => {
     const updateIds = Array.isArray(id) ? id : [id];
-    const updates = updateIds.reduce<NodeDimensionUpdate[]>((res, updateId) => {
+    const updates = new Map();
+
+    updateIds.forEach((updateId) => {
       const nodeElement = get(domNode)?.querySelector(
         `.svelte-flow__node[data-id="${updateId}"]`
       ) as HTMLDivElement;
 
       if (nodeElement) {
-        res.push({ id: updateId, nodeElement, forceUpdate: true });
+        updates.set(updateId, { id: updateId, nodeElement, forceUpdate: true });
       }
-
-      return res;
-    }, []);
+    });
 
     requestAnimationFrame(() => updateNodeDimensions(updates));
   };

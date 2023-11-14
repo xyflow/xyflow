@@ -35,7 +35,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const getNode = useCallback<Instance.GetNode<NodeData>>((id) => {
-    return store.getState().nodes.find((n) => n.id === id);
+    return store.getState().nodeLookup.get(id);
   }, []);
 
   const getEdges = useCallback<Instance.GetEdges<EdgeData>>(() => {
@@ -181,7 +181,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       nodeOrRect: Node<NodeData> | { id: Node['id'] } | Rect
     ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
       const isRect = isRectObject(nodeOrRect);
-      const node = isRect ? null : store.getState().nodes.find((n) => n.id === nodeOrRect.id);
+      const node = isRect ? null : store.getState().nodeLookup.get(nodeOrRect.id);
 
       if (!isRect && !node) {
         [null, null, isRect];

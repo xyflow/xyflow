@@ -48,11 +48,16 @@ const NodeRenderer = (props: NodeRendererProps) => {
     }
 
     const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      const updates = entries.map((entry: ResizeObserverEntry) => ({
-        id: entry.target.getAttribute('data-id') as string,
-        nodeElement: entry.target as HTMLDivElement,
-        forceUpdate: true,
-      }));
+      const updates = new Map();
+
+      entries.forEach((entry: ResizeObserverEntry) => {
+        const id = entry.target.getAttribute('data-id') as string;
+        updates.set(id, {
+          id,
+          nodeElement: entry.target as HTMLDivElement,
+          forceUpdate: true,
+        });
+      });
 
       updateNodeDimensions(updates);
     });

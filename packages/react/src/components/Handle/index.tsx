@@ -1,3 +1,8 @@
+/*
+ * The Handle component is used to connect nodes. When the user mousedowns a handle, we start the connection process.
+ * The user can then drag the connection to another handle or node. When the user releases the mouse, we check if the
+ * connection is valid and if so, we call the onConnect callback.
+ */
 import { memo, HTMLAttributes, forwardRef, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
