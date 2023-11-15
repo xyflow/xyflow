@@ -203,34 +203,6 @@ importers:
         specifier: ^4.5.0
         version: registry.npmjs.org/vite@4.5.0(@types/node@18.7.16)
 
-  examples/vite-project:
-    dependencies:
-      '@xyflow/svelte':
-        specifier: workspace:^
-        version: link:../../packages/svelte
-    devDependencies:
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^2.4.2
-        version: registry.npmjs.org/@sveltejs/vite-plugin-svelte@2.4.6(svelte@4.2.1)(vite@4.5.0)
-      '@tsconfig/svelte':
-        specifier: ^5.0.0
-        version: registry.npmjs.org/@tsconfig/svelte@5.0.0
-      svelte:
-        specifier: ^4.0.5
-        version: registry.npmjs.org/svelte@4.2.1
-      svelte-check:
-        specifier: ^3.4.6
-        version: registry.npmjs.org/svelte-check@3.5.0(postcss@8.4.21)(svelte@4.2.1)
-      tslib:
-        specifier: ^2.6.0
-        version: registry.npmjs.org/tslib@2.6.2
-      typescript:
-        specifier: ^5.0.2
-        version: registry.npmjs.org/typescript@5.2.2
-      vite:
-        specifier: ^4.4.5
-        version: registry.npmjs.org/vite@4.5.0(@types/node@18.7.16)
-
   packages/react:
     dependencies:
       '@types/d3':
@@ -2495,12 +2467,6 @@ packages:
     name: '@trysound/sax'
     version: 0.2.0
     engines: {node: '>=10.13.0'}
-    dev: true
-
-  registry.npmjs.org/@tsconfig/svelte@5.0.0:
-    resolution: {integrity: sha512-iu5BqFjU0+OcLTNQp7fHe6Bf6zdNeJ9IZjLZMqWLuGzVFm/xx+lm//Tf6koPyRmxo55/Snm6RRQ990n89cRKFw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@tsconfig/svelte/-/svelte-5.0.0.tgz}
-    name: '@tsconfig/svelte'
-    version: 5.0.0
     dev: true
 
   registry.npmjs.org/@types/babel__core@7.20.3:
