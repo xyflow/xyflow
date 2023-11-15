@@ -34,9 +34,11 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   edges: Writable<Edge[]>;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
-  selectionKey?: KeyDefinition;
-  panActivationKey?: KeyDefinition;
-  deleteKey?: KeyDefinition;
+  selectionKey?: KeyDefinition | null;
+  panActivationKey?: KeyDefinition | null;
+  deleteKey?: KeyDefinition | null;
+  multiSelectionKey?: KeyDefinition | null;
+  zoomActivationKey?: KeyDefinition | null;
   fitView?: boolean;
   fitViewOptions?: FitViewOptions;
   nodeOrigin?: NodeOrigin;

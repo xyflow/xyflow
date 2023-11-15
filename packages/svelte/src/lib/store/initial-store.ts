@@ -105,6 +105,7 @@ export const getInitialStore = ({
     multiselectionKeyPressed: writable<boolean>(false),
     deleteKeyPressed: writable<boolean>(false),
     panActivationKeyPressed: writable<boolean>(false),
+    zoomActivationKeyPressed: writable<boolean>(false),
     selectionRectMode: writable<string | null>(null),
     selectionMode: writable<SelectionMode>(SelectionMode.Partial),
     nodeTypes: writable<NodeTypes>(initialNodeTypes),

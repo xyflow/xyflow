@@ -203,6 +203,34 @@ importers:
         specifier: ^4.5.0
         version: registry.npmjs.org/vite@4.5.0(@types/node@18.7.16)
 
+  examples/vite-project:
+    dependencies:
+      '@xyflow/svelte':
+        specifier: workspace:^
+        version: link:../../packages/svelte
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^2.4.2
+        version: registry.npmjs.org/@sveltejs/vite-plugin-svelte@2.4.6(svelte@4.2.1)(vite@4.5.0)
+      '@tsconfig/svelte':
+        specifier: ^5.0.0
+        version: registry.npmjs.org/@tsconfig/svelte@5.0.0
+      svelte:
+        specifier: ^4.0.5
+        version: registry.npmjs.org/svelte@4.2.1
+      svelte-check:
+        specifier: ^3.4.6
+        version: registry.npmjs.org/svelte-check@3.5.0(postcss@8.4.21)(svelte@4.2.1)
+      tslib:
+        specifier: ^2.6.0
+        version: registry.npmjs.org/tslib@2.6.2
+      typescript:
+        specifier: ^5.0.2
+        version: registry.npmjs.org/typescript@5.2.2
+      vite:
+        specifier: ^4.4.5
+        version: registry.npmjs.org/vite@4.5.0(@types/node@18.7.16)
+
   packages/react:
     dependencies:
       '@types/d3':
@@ -2469,6 +2497,12 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: true
 
+  registry.npmjs.org/@tsconfig/svelte@5.0.0:
+    resolution: {integrity: sha512-iu5BqFjU0+OcLTNQp7fHe6Bf6zdNeJ9IZjLZMqWLuGzVFm/xx+lm//Tf6koPyRmxo55/Snm6RRQ990n89cRKFw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@tsconfig/svelte/-/svelte-5.0.0.tgz}
+    name: '@tsconfig/svelte'
+    version: 5.0.0
+    dev: true
+
   registry.npmjs.org/@types/babel__core@7.20.3:
     resolution: {integrity: sha512-54fjTSeSHwfan8AyHWrKbfBWiEUrNTZsUwPTDSNaaP1QDQIZbeNUg3a59E9D+375MzUw/x1vx2/0F5LBz+AeYA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.3.tgz}
     name: '@types/babel__core'
@@ -3523,7 +3557,6 @@ packages:
     version: 8.11.2
     engines: {node: '>=0.4.0'}
     hasBin: true
-    dev: true
 
   registry.npmjs.org/aggregate-error@3.1.0:
     resolution: {integrity: sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/aggregate-error/-/aggregate-error-3.1.0.tgz}
@@ -4395,7 +4428,7 @@ packages:
     dependencies:
       '@jridgewell/sourcemap-codec': registry.npmjs.org/@jridgewell/sourcemap-codec@1.4.15
       '@types/estree': registry.npmjs.org/@types/estree@1.0.3
-      acorn: registry.npmjs.org/acorn@8.10.0
+      acorn: registry.npmjs.org/acorn@8.11.2
       estree-walker: registry.npmjs.org/estree-walker@3.0.3
       periscopic: registry.npmjs.org/periscopic@3.1.0
 
@@ -6029,6 +6062,7 @@ packages:
       glob-parent: registry.npmjs.org/glob-parent@5.1.2
       merge2: registry.npmjs.org/merge2@1.4.1
       micromatch: registry.npmjs.org/micromatch@4.0.5
+    dev: false
 
   registry.npmjs.org/fast-glob@3.3.2:
     resolution: {integrity: sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/fast-glob/-/fast-glob-3.3.2.tgz}
@@ -10957,7 +10991,7 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': registry.npmjs.org/@jridgewell/trace-mapping@0.3.20
       chokidar: registry.npmjs.org/chokidar@3.5.3
-      fast-glob: registry.npmjs.org/fast-glob@3.3.1
+      fast-glob: registry.npmjs.org/fast-glob@3.3.2
       import-fresh: registry.npmjs.org/import-fresh@3.3.0
       picocolors: registry.npmjs.org/picocolors@1.0.0
       sade: registry.npmjs.org/sade@1.8.1
@@ -11230,7 +11264,7 @@ packages:
       '@ampproject/remapping': registry.npmjs.org/@ampproject/remapping@2.2.1
       '@jridgewell/sourcemap-codec': registry.npmjs.org/@jridgewell/sourcemap-codec@1.4.15
       '@jridgewell/trace-mapping': registry.npmjs.org/@jridgewell/trace-mapping@0.3.20
-      acorn: registry.npmjs.org/acorn@8.10.0
+      acorn: registry.npmjs.org/acorn@8.11.2
       aria-query: registry.npmjs.org/aria-query@5.3.0
       axobject-query: registry.npmjs.org/axobject-query@3.2.1
       code-red: registry.npmjs.org/code-red@1.0.4
