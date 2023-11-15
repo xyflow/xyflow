@@ -136,7 +136,6 @@
 	{edges}
 	{nodeTypes}
 	{edgeTypes}
-	selectionKey={null}
 	fitView
 	fitViewOptions={{
 		padding: 0.1,
