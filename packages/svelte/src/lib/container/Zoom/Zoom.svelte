@@ -28,7 +28,8 @@
     dragging,
     translateExtent,
     lib,
-    panActivationKeyPressed
+    panActivationKeyPressed,
+    zoomActivationKeyPressed
   } = useStore();
 
   $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
@@ -55,7 +56,7 @@
     panOnDrag: _panOnDrag,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
-    zoomActivationKeyPressed: false,
+    zoomActivationKeyPressed: $zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: 'nopan',
     noWheelClassName: 'nowheel',

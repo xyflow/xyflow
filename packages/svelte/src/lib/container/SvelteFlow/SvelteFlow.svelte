@@ -34,6 +34,8 @@
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let selectionMode: $$Props['selectionMode'] = undefined;
   export let panActivationKey: $$Props['panActivationKey'] = undefined;
+  export let multiSelectionKey: $$Props['multiSelectionKey'] = undefined;
+  export let zoomActivationKey: $$Props['zoomActivationKey'] = undefined;
   export let nodesDraggable: $$Props['nodesDraggable'] = undefined;
   export let nodesConnectable: $$Props['nodesConnectable'] = undefined;
   export let nodeDragThreshold: $$Props['nodeDragThreshold'] = undefined;
@@ -166,7 +168,13 @@
   {...$$restProps}
   role="application"
 >
-  <KeyHandler {selectionKey} {deleteKey} {panActivationKey} />
+  <KeyHandler
+    {selectionKey}
+    {deleteKey}
+    {panActivationKey}
+    {multiSelectionKey}
+    {zoomActivationKey}
+  />
   <Zoom
     {initialViewport}
     {onMoveStart}
