@@ -28,7 +28,15 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type { NodeTypes, EdgeTypes, EdgeLayouted, Node, Edge, FitViewOptions } from '$lib/types';
+import type {
+  NodeTypes,
+  EdgeTypes,
+  EdgeLayouted,
+  Node,
+  Edge,
+  FitViewOptions,
+  OnDelete
+} from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 
@@ -125,6 +133,7 @@ export const getInitialStore = ({
     defaultMarkerColor: writable<string>('#b1b1b7'),
     lib: readable<string>('svelte'),
     onlyRenderVisibleElements: writable<boolean>(false),
-    onError: writable<OnError>(devWarn)
+    onerror: writable<OnError>(devWarn),
+    ondelete: writable<OnDelete>(undefined)
   };
 };

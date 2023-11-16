@@ -62,7 +62,8 @@ export type UpdatableStoreProps = {
   autoPanOnConnect?: UnwrapWritable<SvelteFlowStore['autoPanOnConnect']>;
   autoPanOnNodeDrag?: UnwrapWritable<SvelteFlowStore['autoPanOnNodeDrag']>;
   connectionMode?: UnwrapWritable<SvelteFlowStore['connectionMode']>;
-  onError?: UnwrapWritable<SvelteFlowStore['onError']>;
+  onerror?: UnwrapWritable<SvelteFlowStore['onerror']>;
+  ondelete?: UnwrapWritable<SvelteFlowStore['ondelete']>;
   nodeDragThreshold?: UnwrapWritable<SvelteFlowStore['nodeDragThreshold']>;
 };
 

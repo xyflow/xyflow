@@ -41,8 +41,8 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
   );
 
   return derived(
-    [visibleEdges, store.nodes, store.nodeLookup, store.connectionMode, store.onError],
-    ([visibleEdges, , nodeLookup, connectionMode, onError]) => {
+    [visibleEdges, store.nodes, store.nodeLookup, store.connectionMode, store.onerror],
+    ([visibleEdges, , nodeLookup, connectionMode, onerror]) => {
       const layoutedEdges = visibleEdges.reduce<EdgeLayouted[]>((res, edge) => {
         const sourceNode = nodeLookup.get(edge.source);
         const targetNode = nodeLookup.get(edge.target);
@@ -58,7 +58,7 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
           sourceHandle: edge.sourceHandle || null,
           targetHandle: edge.targetHandle || null,
           connectionMode,
-          onError
+          onError: onerror
         });
 
         if (edgePosition) {
