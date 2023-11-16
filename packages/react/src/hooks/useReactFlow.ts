@@ -127,6 +127,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       onEdgesDelete,
       onNodesChange,
       onEdgesChange,
+      onDelete,
     } = store.getState();
     const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
       nodesToRemove: nodesDeleted || [],
@@ -171,6 +172,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
           onNodesChange(nodeChanges);
         }
       }
+
+      onDelete?.({ nodes: matchingNodes, edges: matchingEdges });
     }
 
     return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };

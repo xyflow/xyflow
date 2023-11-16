@@ -43,6 +43,7 @@ type StoreUpdaterProps = Pick<
   | 'fitViewOptions'
   | 'onNodesDelete'
   | 'onEdgesDelete'
+  | 'onDelete'
   | 'onNodeDragStart'
   | 'onNodeDrag'
   | 'onNodeDragStop'
@@ -128,6 +129,7 @@ const StoreUpdater = ({
   fitViewOptions,
   onNodesDelete,
   onEdgesDelete,
+  onDelete,
   onNodeDrag,
   onNodeDragStart,
   onNodeDragStop,
@@ -192,6 +194,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('fitViewOnInitOptions', fitViewOptions, store.setState);
   useDirectStoreUpdater('onNodesDelete', onNodesDelete, store.setState);
   useDirectStoreUpdater('onEdgesDelete', onEdgesDelete, store.setState);
+  useDirectStoreUpdater('onDelete', onDelete, store.setState);
   useDirectStoreUpdater('onNodeDrag', onNodeDrag, store.setState);
   useDirectStoreUpdater('onNodeDragStart', onNodeDragStart, store.setState);
   useDirectStoreUpdater('onNodeDragStop', onNodeDragStop, store.setState);

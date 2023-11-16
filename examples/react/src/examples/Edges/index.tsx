@@ -196,6 +196,7 @@ const EdgesFlow = () => {
       onEdgeMouseEnter={onEdgeMouseEnter}
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
+      onDelete={console.log}
     >
       <MiniMap />
       <Controls />
