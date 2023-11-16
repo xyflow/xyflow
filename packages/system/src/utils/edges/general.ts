@@ -23,63 +23,32 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
-
 export type GroupedEdges<EdgeType extends EdgeBase> = {
   edges: EdgeType[];
   level: number;
   isMaxLevel: boolean;
 };
 
-export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
-  edges: EdgeType[],
-  nodeLookup: Map<string, NodeBase>,
-  elevateEdgesOnSelect = false
-): GroupedEdges<EdgeType>[] {
-  let maxLevel = -1;
+export function adjustEdgeZIndex(edge: EdgeBase, nodeLookup: Map<string, NodeBase>, elevateEdgesOnSelect: boolean) {
+  const hasZIndex = isNumeric(edge.zIndex);
+  let z = hasZIndex ? edge.zIndex! : 0;
 
-  const levelLookup = edges.reduce<Record<string, EdgeType[]>>((tree, edge) => {
-    const hasZIndex = isNumeric(edge.zIndex);
-    let z = hasZIndex ? edge.zIndex! : 0;
+  if (elevateEdgesOnSelect) {
+    const targetNode = nodeLookup.get(edge.target)!;
+    const sourceNode = nodeLookup.get(edge.source)!;
+    const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
+    const selectedZIndex = Math.max(sourceNode?.[internalsSymbol]?.z || 0, targetNode?.[internalsSymbol]?.z || 0, 1000);
+    z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
 
-    if (elevateEdgesOnSelect) {
-      const targetNode = nodeLookup.get(edge.target);
-      const sourceNode = nodeLookup.get(edge.source);
-      const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
-      const selectedZIndex = Math.max(
-        sourceNode?.[internalsSymbol]?.z || 0,
-        targetNode?.[internalsSymbol]?.z || 0,
-        1000
-      );
-      z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
+    if (edge.zIndex !== z) {
+      return {
+        ...edge,
+        zIndex: z,
+      };
     }
-
-    if (tree[z]) {
-      tree[z].push(edge);
-    } else {
-      tree[z] = [edge];
-    }
-
-    maxLevel = z > maxLevel ? z : maxLevel;
-
-    return tree;
-  }, {});
-
-  const edgeTree = Object.entries(levelLookup).map(([key, edges]) => {
-    const level = +key;
-
-    return {
-      edges,
-      level,
-      isMaxLevel: level === maxLevel,
-    };
-  });
-
-  if (edgeTree.length === 0) {
-    return defaultEdgeTree;
   }
 
-  return edgeTree;
+  return edge;
 }
 
 type IsEdgeVisibleParams = {

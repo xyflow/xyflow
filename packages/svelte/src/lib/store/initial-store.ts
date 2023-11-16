@@ -91,7 +91,7 @@ export const getInitialStore = ({
     nodeLookup: readable<Map<string, Node>>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges),
-    edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
+    visibleEdges: readable<EdgeLayouted[]>([]),
     height: writable<number>(500),
     width: writable<number>(500),
     minZoom: writable<number>(0.5),

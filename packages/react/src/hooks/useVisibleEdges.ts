@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
-import { GroupedEdges, groupEdgesByZLevel, isEdgeVisible } from '@xyflow/system';
+import { shallow } from 'zustand/shallow';
+import { adjustEdgeZIndex, isEdgeVisible } from '@xyflow/system';
 
 import { useStore } from '../hooks/useStore';
-import { Edge, type ReactFlowState } from '../types';
-import { shallow } from 'zustand/shallow';
+import { type Edge, type ReactFlowState } from '../types';
 
-function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boolean): GroupedEdges<Edge>[] {
+function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boolean): Edge[] {
   const edges = useStore(
     useCallback(
       (s: ReactFlowState) => {
@@ -29,20 +29,11 @@ function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boole
               })
             : s.edges;
 
-        return groupEdgesByZLevel(visibleEdges, s.nodeLookup, elevateEdgesOnSelect);
+        return visibleEdges.map((edge) => adjustEdgeZIndex(edge, s.nodeLookup, elevateEdgesOnSelect));
       },
       [onlyRenderVisible, elevateEdgesOnSelect]
     ),
-    (groupA, groupB) => {
-      const unEqual = groupA.some(
-        (item, index) =>
-          item.isMaxLevel !== groupB[index].isMaxLevel ||
-          item.level !== groupB[index].level ||
-          !shallow(item.edges, groupB[index].edges)
-      );
-
-      return !unEqual;
-    }
+    shallow
   );
 
   return edges;

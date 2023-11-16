@@ -70,6 +70,7 @@ export type EdgeLayouted = Pick<
   | 'ariaLabel'
   | 'hidden'
   | 'class'
+  | 'zIndex'
 > &
   EdgePosition & {
     sourceNode?: Node;

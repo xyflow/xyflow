@@ -20,6 +20,12 @@
   --controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
 }
 
+.xy-flow__edgewrapper {
+  overflow: visible;
+  position: absolute;
+  pointer-events: none;
+}
+
 .xy-flow__edge {
   &.updating {
     .xy-flow__edge-path {
