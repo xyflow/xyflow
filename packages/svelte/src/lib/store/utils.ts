@@ -18,8 +18,15 @@ export function syncNodeStores(
 ) {
   const nodesStoreSetter = nodesStore.set;
   const userNodesStoreSetter = userNodesStore.set;
+  const currentNodesStore = get(nodesStore);
+  const currentUserNodesStore = get(userNodesStore);
+  // depending how the user initializes the nodes, we need to decide if we want to use
+  // the user nodes or the internal nodes for initialization. A user can use a SvelteFlowProvider
+  // without providing any nodes, in that case we want to use the nodes passed by the user.
+  // By default we are using the store nodes, because they already have the absolute positions.
+  const initWithUserNodes = currentNodesStore.length === 0 && currentUserNodesStore.length > 0;
 
-  let val = get(userNodesStore);
+  let val = initWithUserNodes ? currentUserNodesStore : currentNodesStore;
   nodesStore.set(val);
 
   const _set = (nds: Node[]) => {
