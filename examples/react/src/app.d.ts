@@ -2,10 +2,10 @@ import { BackgroundProps, ControlProps, Edge, MiniMapProps, Node, PanelProps, Re
 
 declare global {
   interface FlowConfig {
-    flowProps: Omit<ReactFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
-    panelProps: PanelProps;
-    backgroundProps: BackgroundProps;
-    controlsProps: ControlProps;
-    minimapProps: MiniMapProps;
+    flowProps?: Omit<ReactFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
+    panelProps?: PanelProps;
+    backgroundProps?: BackgroundProps;
+    controlsProps?: ControlProps;
+    minimapProps?: MiniMapProps;
   }
 }

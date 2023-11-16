@@ -20,11 +20,11 @@ declare global {
 	}
 
 	interface FlowConfig {
-		flowProps: Omit<SvelteFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
-		panelProps: PanelProps;
-		backgroundProps: BackgroundProps;
-		controlsProps: ControlsProps;
-		minimapProps: MiniMapProps;
+		flowProps?: Omit<SvelteFlowProps, 'nodes' | 'edges'> & { nodes: Node[]; edges: Edge[] };
+		panelProps?: PanelProps;
+		backgroundProps?: BackgroundProps;
+		controlsProps?: ControlsProps;
+		minimapProps?: MiniMapProps;
 	}
 }
 
