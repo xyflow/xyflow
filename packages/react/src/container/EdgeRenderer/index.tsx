@@ -67,7 +67,7 @@ const EdgeRenderer = ({
 
   return (
     <div className="react-flow__edges">
-      <svg className="react-flow__container">
+      <svg className="react-flow__marker">
         <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
       </svg>
 

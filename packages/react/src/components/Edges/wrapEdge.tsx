@@ -202,7 +202,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     };
 
     return (
-      <svg className="react-flow__edgewrapper" style={{ zIndex }}>
+      <svg style={{ zIndex }}>
         <g
           className={cc([
             'react-flow__edge',

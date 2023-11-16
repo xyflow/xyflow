@@ -96,7 +96,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
-  <svg class="svelte-flow__edgewrapper" style:zIndex>
+  <svg style:zIndex>
     <g
       class={cc(['svelte-flow__edge', className])}
       class:animated
