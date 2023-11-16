@@ -10,7 +10,6 @@ import {
   type PanZoomInstance,
   type CoordinateExtent,
   type IsValidConnection,
-  type GroupedEdges,
   type NodeOrigin,
   type OnError,
   devWarn,

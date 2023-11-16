@@ -23,12 +23,6 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-export type GroupedEdges<EdgeType extends EdgeBase> = {
-  edges: EdgeType[];
-  level: number;
-  isMaxLevel: boolean;
-};
-
 export function adjustEdgeZIndex(edge: EdgeBase, nodeLookup: Map<string, NodeBase>, elevateEdgesOnSelect: boolean) {
   const hasZIndex = isNumeric(edge.zIndex);
   let z = hasZIndex ? edge.zIndex! : 0;
