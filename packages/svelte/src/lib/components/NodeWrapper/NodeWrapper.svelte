@@ -87,13 +87,18 @@
 
     if (doUpdate) {
       requestAnimationFrame(() =>
-        updateNodeDimensions([
-          {
-            id,
-            nodeElement: nodeRef,
-            forceUpdate: true
-          }
-        ])
+        updateNodeDimensions(
+          new Map([
+            [
+              id,
+              {
+                id,
+                nodeElement: nodeRef,
+                forceUpdate: true
+              }
+            ]
+          ])
+        )
       );
     }
 
@@ -124,8 +129,6 @@
 
     dispatch('nodeclick', { node, event });
   }
-
-  // @todo: add selectable state
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
