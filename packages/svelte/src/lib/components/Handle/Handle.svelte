@@ -106,14 +106,7 @@
   }
 
   function onTargetConnect(event: CustomEvent) {
-    // creating a dummy connection object so this doesn't break the current
-    // connection logic when the target is the starting point of the connection
-    const connection = {
-      source: '',
-      target: nodeId,
-      sourceHandle: '',
-      targetHandle: id as string
-    };
+    const connection = event.detail.connection;
     dispatch('connect', { connection });
   }
 

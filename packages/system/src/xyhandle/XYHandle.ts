@@ -210,7 +210,7 @@ function onPointerDown(
     if ((closestHandle || handleDomNode) && connection && isValid) {
       // calling custom event to trigger the onConnect callback
       // of the target Handle
-      const e = new CustomEvent('targetConnect');
+      const e = new CustomEvent('targetConnect', { detail: connection });
       handleDomNode?.dispatchEvent(e);
       onConnect?.(connection);
     }
