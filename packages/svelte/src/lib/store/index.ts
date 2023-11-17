@@ -228,13 +228,11 @@ export function createStore({
           let handleDomNode = doc.querySelector(
             `.${get(store.lib)}-flow__handle[data-id="${edge.source}-${edge.sourceHandle}-source"]`
           );
-          console.log(handleDomNode);
           handleDomNode?.dispatchEvent(e);
 
           handleDomNode = doc.querySelector(
             `.${get(store.lib)}-flow__handle[data-id="${edge.target}-${edge.targetHandle}-target"]`
           );
-          console.log(handleDomNode);
           handleDomNode?.dispatchEvent(e);
         }
       }
