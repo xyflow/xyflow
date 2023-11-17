@@ -182,12 +182,12 @@ function onPointerDown(
       connectionPosition:
         closestHandle && isValid
           ? rendererPointToPoint(
-              {
-                x: closestHandle.x,
-                y: closestHandle.y,
-              },
-              transform
-            )
+            {
+              x: closestHandle.x,
+              y: closestHandle.y,
+            },
+            transform
+          )
           : connectionPosition,
       connectionStatus: getConnectionStatus(!!closestHandle, isValid),
       connectionEndHandle: result.endHandle,
@@ -208,6 +208,10 @@ function onPointerDown(
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
     if ((closestHandle || handleDomNode) && connection && isValid) {
+      // calling custom event to trigger the onConnect callback
+      // of the target Handle
+      const e = new CustomEvent('targetConnect');
+      handleDomNode?.dispatchEvent(e);
       onConnect?.(connection);
     }
 

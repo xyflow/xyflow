@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, createEventDispatcher } from 'svelte';
+  import { getContext, createEventDispatcher, onMount, onDestroy } from 'svelte';
   import cc from 'classcat';
   import {
     Position,
@@ -43,6 +43,7 @@
     connectend: {
       event: MouseEvent | TouchEvent;
     };
+    disconnect: {};
   }>();
 
   const store = useStore();
@@ -60,6 +61,8 @@
     updateConnection,
     autoPanOnConnect
   } = store;
+
+  let thisHandle: HTMLElement;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -102,10 +105,45 @@
     }
   }
 
+  function onTargetConnect(event: CustomEvent) {
+    // creating a dummy connection object so this doesn't break the current
+    // connection logic when the target is the starting point of the connection
+    const connection = {
+      source: '',
+      target: nodeId,
+      sourceHandle: '',
+      targetHandle: id as string
+    };
+    dispatch('connect', { connection });
+  }
+
+  function onDisconnect(event: CustomEvent) {
+    dispatch('disconnect', {});
+  }
+
+  onMount(() => {
+    if (thisHandle) {
+      // adding a custom event so it can be called from XYHandle's onPointerDown
+      // when onPointerUp is triggered (this way allows for it to be called from DOM
+      // events and custom events)
+      thisHandle.addEventListener('targetConnect', onTargetConnect as EventListener);
+      // this is to handle custom events when an edge is deleted
+      thisHandle.addEventListener('disconnect', onDisconnect as EventListener);
+    }
+  });
+
+  onDestroy(() => {
+    if (thisHandle) {
+      thisHandle.removeEventListener('targetConnect', onTargetConnect as EventListener);
+      thisHandle.removeEventListener('disconnect', onDisconnect as EventListener);
+    }
+  });
+
   // @todo implement connectablestart, connectableend
 </script>
 
 <div
+  bind:this={thisHandle}
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}

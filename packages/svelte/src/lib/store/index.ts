@@ -220,6 +220,23 @@ export function createStore({
         store.edges.update((eds) =>
           eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
         );
+        // call disconnect on handles
+        for (const edge of matchingEdges) {
+          const doc = get(store.domNode) as HTMLElement;
+          const e = new CustomEvent('disconnect');
+
+          let handleDomNode = doc.querySelector(
+            `.${get(store.lib)}-flow__handle[data-id="${edge.source}-${edge.sourceHandle}-source"]`
+          );
+          console.log(handleDomNode);
+          handleDomNode?.dispatchEvent(e);
+
+          handleDomNode = doc.querySelector(
+            `.${get(store.lib)}-flow__handle[data-id="${edge.target}-${edge.targetHandle}-target"]`
+          );
+          console.log(handleDomNode);
+          handleDomNode?.dispatchEvent(e);
+        }
       }
     }
   });
