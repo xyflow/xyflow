@@ -98,6 +98,8 @@ function NodeToolbar({
   );
   const nodes = useStore(nodesSelector, nodesEqualityFn);
   const { transform, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);
+
+  // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =
     typeof isVisible === 'boolean' ? isVisible : nodes.length === 1 && nodes[0].selected && selectedNodesCount === 1;
 

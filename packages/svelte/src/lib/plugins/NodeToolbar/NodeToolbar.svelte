@@ -11,18 +11,18 @@
   export let position: Position;
   export let align: Align;
   export let offset: number = 10;
-  export let isVisible: boolean = true;
+  export let isVisible: boolean;
 
   const { domNode, viewport, nodeLookup, nodes, nodeOrigin } = useStore();
   const nodeIds = getContext<string | string[]>('svelteflow__node_id');
   let transform: string;
 
-  $: {
-    // $nodes only needed for triggering updates
-    if ($nodes) {
-      let toolbarNodes: Node[] = [];
+  let toolbarNodes: Node[] = [];
 
-      let nodeRect: Rect | undefined = undefined;
+  $: {
+    // $nodes only needed to trigger updates
+    if ($nodes) {
+      toolbarNodes = [];
 
       // nodeIds is either an array of ids or just a single id
       if (nodeIds instanceof Array) {
@@ -32,31 +32,44 @@
             toolbarNodes.push(node);
           }
         });
-        nodeRect = getNodesBounds(toolbarNodes, $nodeOrigin);
       } else {
         const node = $nodeLookup.get(nodeIds);
         if (node) {
-          nodeRect = {
-            ...node.position,
-            width: node.width ? node.width : 0,
-            height: node.height ? node.height : 0
-          };
+          toolbarNodes.push(node);
         }
-      }
-
-      if (nodeRect) {
-        transform = getTransform(nodeRect, $viewport, position, offset, align);
       }
     }
   }
 
-  //   $: isActive: typeof isVisible === 'boolean'
-  //     ? isVisible
-  //     : $nodes.length === 1 && $nodes[0].selected && selectedNodesCount === 1;
-  //
+  $: {
+    let nodeRect: Rect | undefined = undefined;
+
+    if (toolbarNodes.length === 1) {
+      nodeRect = {
+        ...toolbarNodes[0].position,
+        width: toolbarNodes[0].width ? toolbarNodes[0].width : 0,
+        height: toolbarNodes[0].height ? toolbarNodes[0].height : 0
+      };
+    } else if (toolbarNodes.length > 1) {
+      nodeRect = getNodesBounds(toolbarNodes, $nodeOrigin);
+    }
+
+    if (nodeRect) {
+      transform = getTransform(nodeRect, $viewport, position, offset, align);
+    }
+  }
+
+  //FIXME: Possible performance bottleneck
+  $: selectedNodesCount = $nodes.filter((node) => node.selected).length;
+
+  // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
+  $: isActive =
+    typeof isVisible === 'boolean'
+      ? isVisible
+      : toolbarNodes.length === 1 && toolbarNodes[0].selected && selectedNodesCount === 1;
 </script>
 
-{#if $domNode}
+{#if $domNode && isActive}
   <div
     class="svelte-flow__node-toolbar"
     style="position: absolute;"
