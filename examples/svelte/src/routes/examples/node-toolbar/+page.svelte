@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Background,
@@ -7,10 +8,11 @@
 		Position,
 		type NodeTypes
 	} from '@xyflow/svelte';
-	import { writable } from 'svelte/store';
-	import CustomNode from './CustomNode.svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+
+	import CustomNode from './CustomNode.svelte';
+	import SelectedNodesToolbar from './SelectedNodesToolbar.svelte';
 
 	const nodeTypes: NodeTypes = {
 		custom: CustomNode
@@ -54,7 +56,8 @@
 </script>
 
 <div style="height: 100vh;">
-	<SvelteFlow {nodes} {nodeTypes} {edges}>
+	<SvelteFlow {nodes} {edges} {nodeTypes} fitView>
 		<Background />
+		<SelectedNodesToolbar />
 	</SvelteFlow>
 </div>

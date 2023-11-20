@@ -1,43 +1,44 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { getNodesBounds, type Position, type Rect } from '@xyflow/system';
+  import { getNodesBounds, Position, type Rect, internalsSymbol } from '@xyflow/system';
   import portal from '$lib/actions/portal';
   import type { Node } from '$lib/types';
   import { useStore } from '$lib/store';
 
   import { getTransform } from './utils';
-  import type { Align } from './types';
+  import type { NodeToolbarProps } from './types';
 
-  export let position: Position;
-  export let align: Align;
-  export let offset: number = 10;
-  export let isVisible: boolean;
+  type $$Props = NodeToolbarProps;
+
+  export let nodeId: $$Props['nodeId'] = undefined;
+  export let position: $$Props['position'] = undefined;
+  export let align: $$Props['align'] = undefined;
+  export let offset: $$Props['offset'] = undefined;
+  export let isVisible: $$Props['isVisible'] = undefined;
 
   const { domNode, viewport, nodeLookup, nodes, nodeOrigin } = useStore();
-  const nodeIds = getContext<string | string[]>('svelteflow__node_id');
-  let transform: string;
+  const contextNodeId = getContext<string>('svelteflow__node_id');
 
+  let transform: string;
   let toolbarNodes: Node[] = [];
+  let _offset = offset !== undefined ? offset : 10;
+  let _position = position !== undefined ? position : Position.Top;
+  let _align = align !== undefined ? align : 'center';
 
   $: {
-    // $nodes only needed to trigger updates
+    // $nodes only needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
     if ($nodes) {
-      toolbarNodes = [];
+      const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
 
-      // nodeIds is either an array of ids or just a single id
-      if (nodeIds instanceof Array) {
-        nodeIds.forEach((nodeId) => {
-          const node = $nodeLookup.get(nodeId);
-          if (node) {
-            toolbarNodes.push(node);
-          }
-        });
-      } else {
-        const node = $nodeLookup.get(nodeIds);
+      toolbarNodes = nodeIds.reduce<Node[]>((res, nodeId) => {
+        const node = $nodeLookup.get(nodeId);
+
         if (node) {
-          toolbarNodes.push(node);
+          res.push(node);
         }
-      }
+
+        return res;
+      }, []);
     }
   }
 
@@ -47,17 +48,22 @@
     if (toolbarNodes.length === 1) {
       nodeRect = {
         ...toolbarNodes[0].position,
-        width: toolbarNodes[0].width ? toolbarNodes[0].width : 0,
-        height: toolbarNodes[0].height ? toolbarNodes[0].height : 0
+        width: toolbarNodes[0].width ?? 0,
+        height: toolbarNodes[0].height ?? 0
       };
     } else if (toolbarNodes.length > 1) {
       nodeRect = getNodesBounds(toolbarNodes, $nodeOrigin);
     }
 
     if (nodeRect) {
-      transform = getTransform(nodeRect, $viewport, position, offset, align);
+      transform = getTransform(nodeRect, $viewport, _position, _offset, _align);
     }
   }
+
+  $: zIndex =
+    toolbarNodes.length === 0
+      ? 1
+      : Math.max(...toolbarNodes.map((node) => (node[internalsSymbol]?.z || 5) + 1));
 
   //FIXME: Possible performance bottleneck
   $: selectedNodesCount = $nodes.filter((node) => node.selected).length;
@@ -69,13 +75,14 @@
       : toolbarNodes.length === 1 && toolbarNodes[0].selected && selectedNodesCount === 1;
 </script>
 
-{#if $domNode && isActive}
+{#if $domNode && isActive && toolbarNodes}
   <div
     data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     class="svelte-flow__node-toolbar"
-    style="position: absolute;"
     use:portal={{ domNode: $domNode }}
+    style:position="absolute"
     style:transform
+    style:z-index={zIndex}
   >
     <slot />
   </div>

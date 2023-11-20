@@ -23,8 +23,9 @@
 
 <style>
 	.node {
-		width: 200px;
+		width: 180px;
 		height: 50px;
 		border: solid 1px black;
+		background: white;
 	}
 </style>

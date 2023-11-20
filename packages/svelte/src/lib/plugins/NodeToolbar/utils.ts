@@ -1,5 +1,4 @@
-import { Position, type Rect, type Transform, type Viewport } from '@xyflow/system';
-import type { Align } from './types';
+import { Position, type Rect, type Viewport, type Align } from '@xyflow/system';
 
 export function getTransform(
   nodeRect: Rect,

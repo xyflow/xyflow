@@ -1,13 +1,13 @@
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getNodesBounds, Transform, Rect, Position, internalsSymbol } from '@xyflow/system';
+import { getNodesBounds, Transform, Rect, Position, internalsSymbol, Align } from '@xyflow/system';
 
 import { Node, ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import NodeToolbarPortal from './NodeToolbarPortal';
-import { Align, NodeToolbarProps } from './types';
+import { NodeToolbarProps } from './types';
 
 const nodeEqualityFn = (a: Node | undefined, b: Node | undefined) =>
   a?.positionAbsolute?.x === b?.positionAbsolute?.x &&

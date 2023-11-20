@@ -12,14 +12,14 @@
 		'figma',
 		'interaction',
 		'intersections',
+		'node-toolbar',
 		'overview',
 		'stress',
 		'subflows',
 		'two-way-viewport',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation',
-		'node-toolbar'
+		'validation'
 	];
 
 	const onChange = (event: Event) => {
