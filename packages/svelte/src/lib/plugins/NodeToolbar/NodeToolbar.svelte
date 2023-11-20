@@ -1,11 +1,16 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { getNodesBounds, Position, type Rect, internalsSymbol } from '@xyflow/system';
+  import {
+    getNodesBounds,
+    Position,
+    type Rect,
+    internalsSymbol,
+    getNodeToolbarTransform
+  } from '@xyflow/system';
   import portal from '$lib/actions/portal';
   import type { Node } from '$lib/types';
   import { useStore } from '$lib/store';
 
-  import { getTransform } from './utils';
   import type { NodeToolbarProps } from './types';
 
   type $$Props = NodeToolbarProps;
@@ -56,7 +61,7 @@
     }
 
     if (nodeRect) {
-      transform = getTransform(nodeRect, $viewport, _position, _offset, _align);
+      transform = getNodeToolbarTransform(nodeRect, $viewport, _position, _offset, _align);
     }
   }
 

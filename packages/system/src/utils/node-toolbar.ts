@@ -1,6 +1,6 @@
-import { Position, type Rect, type Viewport, type Align } from '@xyflow/system';
+import { Position, type Rect, type Viewport, type Align } from '../';
 
-export function getTransform(
+export function getNodeToolbarTransform(
   nodeRect: Rect,
   viewport: Viewport,
   position: Position,
@@ -19,7 +19,7 @@ export function getTransform(
   // we set the x any y position of the toolbar based on the nodes position
   let pos = [
     (nodeRect.x + nodeRect.width * alignmentOffset) * viewport.zoom + viewport.x,
-    nodeRect.y * viewport.zoom + viewport.y - offset
+    nodeRect.y * viewport.zoom + viewport.y - offset,
   ];
   // and than shift it based on the alignment. The shift values are in %.
   let shift = [-100 * alignmentOffset, -100];
@@ -28,7 +28,7 @@ export function getTransform(
     case Position.Right:
       pos = [
         (nodeRect.x + nodeRect.width) * viewport.zoom + viewport.x + offset,
-        (nodeRect.y + nodeRect.height * alignmentOffset) * viewport.zoom + viewport.y
+        (nodeRect.y + nodeRect.height * alignmentOffset) * viewport.zoom + viewport.y,
       ];
       shift = [0, -100 * alignmentOffset];
       break;
@@ -39,7 +39,7 @@ export function getTransform(
     case Position.Left:
       pos = [
         nodeRect.x * viewport.zoom + viewport.x - offset,
-        (nodeRect.y + nodeRect.height * alignmentOffset) * viewport.zoom + viewport.y
+        (nodeRect.y + nodeRect.height * alignmentOffset) * viewport.zoom + viewport.y,
       ];
       shift = [-100, -100 * alignmentOffset];
       break;
