@@ -71,6 +71,7 @@
 
 {#if $domNode && isActive}
   <div
+    data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     class="svelte-flow__node-toolbar"
     style="position: absolute;"
     use:portal={{ domNode: $domNode }}

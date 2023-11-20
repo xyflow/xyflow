@@ -119,7 +119,12 @@ function NodeToolbar({
 
   return (
     <NodeToolbarPortal>
-      <div style={wrapperStyle} className={cc(['react-flow__node-toolbar', className])} {...rest}>
+      <div
+        style={wrapperStyle}
+        className={cc(['react-flow__node-toolbar', className])}
+        {...rest}
+        data-id={nodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
+      >
         {children}
       </div>
     </NodeToolbarPortal>

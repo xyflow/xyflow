@@ -21,7 +21,7 @@
 
 	const initialNodes: Node[] = [
 		{
-			id: '4',
+			id: 'default-node',
 			type: 'custom',
 			data: { label: 'toolbar top', toolbarPosition: Position.Top },
 			position: { x: 0, y: -200 },
