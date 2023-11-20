@@ -145,7 +145,7 @@
 	]);
 </script>
 
-<SvelteFlow {nodes} {edges} fitView nodeDragThreshold={2}>
+<SvelteFlow {nodes} {edges} fitView nodeDragThreshold={2} ondelete={console.log}>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />

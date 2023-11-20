@@ -21,6 +21,7 @@ export type OnEdgesChange = (changes: EdgeChange[]) => void;
 
 export type OnNodesDelete = (nodes: Node[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
+export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 
 export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
 export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };

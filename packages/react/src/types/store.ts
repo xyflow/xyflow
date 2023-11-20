@@ -38,6 +38,7 @@ import type {
   OnEdgesDelete,
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
+  OnDelete,
 } from '.';
 
 export type ReactFlowStore = {
@@ -118,6 +119,7 @@ export type ReactFlowStore = {
 
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onDelete?: OnDelete;
   onError?: OnError;
 
   // event handlers

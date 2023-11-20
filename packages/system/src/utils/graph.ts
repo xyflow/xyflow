@@ -312,7 +312,13 @@ export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeTy
   const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
   const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
   const connectedEdges = getConnectedEdgesBase<NodeType, EdgeType>(matchingNodes, deletableEdges);
-  const matchingEdges = [...initialHitEdges, ...connectedEdges];
+  const matchingEdges = connectedEdges.reduce((res, edge) => {
+    if (!res.find((e) => e.id === edge.id)) {
+      res.push(edge);
+    }
+
+    return res;
+  }, initialHitEdges);
 
   return {
     matchingEdges,

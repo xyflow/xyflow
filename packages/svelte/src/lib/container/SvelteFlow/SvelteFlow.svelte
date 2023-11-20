@@ -63,7 +63,8 @@
   export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
-  export let onError: $$Props['onError'] = undefined;
+  export let onerror: $$Props['onerror'] = undefined;
+  export let ondelete: $$Props['ondelete'] = undefined;
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
@@ -139,7 +140,8 @@
       isValidConnection,
       autoPanOnConnect,
       autoPanOnNodeDrag,
-      onError,
+      onerror,
+      ondelete,
       connectionMode,
       nodeDragThreshold
     };

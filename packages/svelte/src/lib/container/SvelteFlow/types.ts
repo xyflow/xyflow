@@ -24,7 +24,8 @@ import type {
   KeyDefinition,
   EdgeTypes,
   DefaultEdgeOptions,
-  FitViewOptions
+  FitViewOptions,
+  OnDelete
 } from '$lib/types';
 import type { Writable } from 'svelte/store';
 
@@ -84,5 +85,6 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMoveStart?: OnMoveStart;
   onMove?: OnMove;
   onMoveEnd?: OnMoveEnd;
-  onError?: OnError;
+  onerror?: OnError;
+  ondelete?: OnDelete;
 };

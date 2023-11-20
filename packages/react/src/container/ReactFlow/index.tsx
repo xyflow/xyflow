@@ -82,6 +82,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onNodeDragStop,
       onNodesDelete,
       onEdgesDelete,
+      onDelete,
       onSelectionChange,
       onSelectionDragStart,
       onSelectionDrag,
@@ -281,6 +282,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             fitViewOptions={fitViewOptions}
             onNodesDelete={onNodesDelete}
             onEdgesDelete={onEdgesDelete}
+            onDelete={onDelete}
             onNodeDragStart={onNodeDragStart}
             onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}

@@ -34,6 +34,7 @@ import type {
   FitViewOptions,
   OnNodesDelete,
   OnEdgesDelete,
+  OnDelete,
   OnNodesChange,
   OnEdgesChange,
   NodeDragHandler,
@@ -70,6 +71,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   onEdgesChange?: OnEdgesChange;
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onDelete?: OnDelete;
   onSelectionDragStart?: SelectionDragHandler;
   onSelectionDrag?: SelectionDragHandler;
   onSelectionDragStop?: SelectionDragHandler;
