@@ -18,7 +18,8 @@
 		'two-way-viewport',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation'
+		'validation',
+		'node-toolbar'
 	];
 
 	const onChange = (event: Event) => {
