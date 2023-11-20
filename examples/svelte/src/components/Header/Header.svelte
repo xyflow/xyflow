@@ -12,6 +12,7 @@
 		'figma',
 		'interaction',
 		'intersections',
+		'node-toolbar',
 		'overview',
 		'stress',
 		'subflows',

@@ -14,6 +14,7 @@ export * from '$lib/components/Handle';
 export * from '$lib/plugins/Controls';
 export * from '$lib/plugins/Background';
 export * from '$lib/plugins/Minimap';
+export * from '$lib/plugins/NodeToolbar';
 
 // store
 export { useStore } from '$lib/store';

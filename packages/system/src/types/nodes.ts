@@ -97,3 +97,5 @@ export type OnNodeDrag = (event: MouseEvent, node: NodeBase, nodes: NodeBase[]) 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 
 export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
+
+export type Align = 'center' | 'start' | 'end';
