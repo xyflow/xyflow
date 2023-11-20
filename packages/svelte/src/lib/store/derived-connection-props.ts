@@ -80,8 +80,10 @@ export function getDerivedConnectionProps(
         : handleBounds[0];
       const fromHandleX = fromHandle
         ? fromHandle.x + fromHandle.width / 2
-        : (fromNode?.width ?? 0) / 2;
-      const fromHandleY = fromHandle ? fromHandle.y + fromHandle.height / 2 : fromNode?.height ?? 0;
+        : (fromNode?.measuredWidth ?? 0) / 2;
+      const fromHandleY = fromHandle
+        ? fromHandle.y + fromHandle.height / 2
+        : fromNode?.measuredHeight ?? 0;
       const fromX = (fromNode?.positionAbsolute?.x ?? 0) + fromHandleX;
       const fromY = (fromNode?.positionAbsolute?.y ?? 0) + fromHandleY;
       const fromPosition = fromHandle?.position;

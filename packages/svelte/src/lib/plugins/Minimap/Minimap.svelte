@@ -114,13 +114,13 @@
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
       {#each $nodes as node (node.id)}
-        {#if node.width && node.height}
+        {#if node.measuredWidth && node.measuredHeight}
           {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
           <MinimapNode
             x={pos.x}
             y={pos.y}
-            width={node.width}
-            height={node.height}
+            width={node.measuredWidth}
+            height={node.measuredHeight}
             selected={node.selected}
             color={nodeColorFunc(node)}
             borderRadius={nodeBorderRadius}

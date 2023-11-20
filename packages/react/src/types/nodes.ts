@@ -1,9 +1,9 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { NodeBase } from '@xyflow/system';
 
-export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
-  NodeData,
-  NodeType
+export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = Omit<
+  NodeBase<NodeData, NodeType>,
+  'measuredWidth' | 'measuredHeight'
 > & {
   style?: CSSProperties;
   className?: string;

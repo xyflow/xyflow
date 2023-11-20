@@ -60,6 +60,8 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
+  widthAttr: 'width' | 'measuredWidth';
+  heightAttr: 'height' | 'measuredHeight';
 };
 
 export function updateNodes<NodeType extends NodeBase>(
@@ -69,6 +71,8 @@ export function updateNodes<NodeType extends NodeBase>(
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
     defaults: {},
+    widthAttr: 'width',
+    heightAttr: 'height',
   }
 ): NodeType[] {
   const parentNodes: ParentNodes = {};
@@ -80,8 +84,8 @@ export function updateNodes<NodeType extends NodeBase>(
       ...options.defaults,
       ...n,
       positionAbsolute: n.position,
-      width: n.width || currentStoreNode?.width,
-      height: n.height || currentStoreNode?.height,
+      [options.widthAttr]: n[options.widthAttr] || currentStoreNode?.[options.widthAttr],
+      [options.heightAttr]: n[options.heightAttr] || currentStoreNode?.[options.heightAttr],
     };
     const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
     const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
@@ -135,14 +139,16 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   );
 }
 
-export function updateNodeDimensions(
+export function updateNodeDimensions<NodeType extends NodeBase>(
   updates: Map<string, NodeDimensionUpdate>,
-  nodes: NodeBase[],
-  nodeLookup: Map<string, NodeBase>,
+  nodes: NodeType[],
+  nodeLookup: Map<string, NodeType>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin,
+  widthAttr: 'width' | 'measuredWidth' = 'width',
+  heightAttr: 'height' | 'measuredHeight' = 'height',
   onUpdate?: (id: string, dimensions: Dimensions) => void
-): NodeBase[] | null {
+): NodeType[] | null {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
 
   if (!viewportNode) {
@@ -160,7 +166,7 @@ export function updateNodeDimensions(
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
+        (node[widthAttr] !== dimensions.width || node[heightAttr] !== dimensions.height || update.forceUpdate)
       );
 
       if (doUpdate) {
@@ -168,7 +174,8 @@ export function updateNodeDimensions(
 
         const newNode = {
           ...node,
-          ...dimensions,
+          [widthAttr]: dimensions.width,
+          [heightAttr]: dimensions.height,
           [internalsSymbol]: {
             ...node[internalsSymbol],
             handleBounds: {

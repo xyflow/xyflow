@@ -14,21 +14,25 @@
 
   interface $$Props extends NodeWrapperProps {}
 
-  export let node: NodeWrapperProps['node'];
   export let id: NodeWrapperProps['id'];
+  export let node: NodeWrapperProps['node'];
   export let data: NodeWrapperProps['data'] = {};
   export let selected: NodeWrapperProps['selected'] = false;
   export let draggable: NodeWrapperProps['draggable'] = undefined;
   export let selectable: NodeWrapperProps['selectable'] = undefined;
   export let connectable: NodeWrapperProps['connectable'] = true;
   export let hidden: NodeWrapperProps['hidden'] = false;
+  export let width: NodeWrapperProps['width'] = undefined;
+  export let height: NodeWrapperProps['height'] = undefined;
   export let dragging: boolean = false;
   export let resizeObserver: NodeWrapperProps['resizeObserver'] = null;
   export let style: NodeWrapperProps['style'] = undefined;
   export let type: NodeWrapperProps['type'] = 'default';
   export let isParent: NodeWrapperProps['isParent'] = false;
-  export let positionAbsolute: NodeWrapperProps['positionAbsolute'] = undefined;
-  export let positionOrigin: NodeWrapperProps['positionOrigin'] = undefined;
+  export let positionX: NodeWrapperProps['positionX'];
+  export let positionY: NodeWrapperProps['positionY'];
+  export let positionOriginX: NodeWrapperProps['positionOriginX'];
+  export let positionOriginY: NodeWrapperProps['positionOriginY'];
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
@@ -164,11 +168,9 @@
     class:nopan={draggable}
     class:parent={isParent}
     style:z-index={zIndex}
-    style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
+    style:transform="translate({positionOriginX ?? 0}px, {positionOriginY ?? 0}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style} {node.size?.width ? `;width=${node.size?.width}px` : ''} {node.size?.height
-      ? `;height=${node.size?.height}px;`
-      : ''}"
+    style="{style} {width ? `;width=${width}px` : ''} {height ? `;height=${height}px;` : ''}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
@@ -187,8 +189,8 @@
       {dragging}
       {dragHandle}
       isConnectable={connectable}
-      xPos={positionAbsolute?.x ?? 0}
-      yPos={positionAbsolute?.y ?? 0}
+      xPos={positionX}
+      yPos={positionY}
       on:connectstart
       on:connect
       on:connectend

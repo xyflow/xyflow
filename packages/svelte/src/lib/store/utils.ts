@@ -135,7 +135,9 @@ export const createNodesStore = (
   const _set = (nds: Node[]): Node[] => {
     const nextNodes = updateNodes(nds, nodeLookup, {
       elevateNodesOnSelect,
-      defaults
+      defaults,
+      widthAttr: 'measuredWidth',
+      heightAttr: 'measuredHeight'
     });
 
     value = nextNodes;

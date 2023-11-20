@@ -44,7 +44,12 @@ const createRFStore = ({
         const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // Whenver new nodes are set, we need to calculate the absolute positions of the nodes
         // and update the nodeLookup.
-        const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        const nextNodes = updateNodes(nodes, nodeLookup, {
+          nodeOrigin,
+          elevateNodesOnSelect,
+          widthAttr: 'width',
+          heightAttr: 'height',
+        });
 
         set({ nodes: nextNodes });
       },
@@ -72,6 +77,8 @@ const createRFStore = ({
           nextState.nodes = updateNodes(nodes, new Map(), {
             nodeOrigin: get().nodeOrigin,
             elevateNodesOnSelect: get().elevateNodesOnSelect,
+            widthAttr: 'width',
+            heightAttr: 'height',
           });
         }
         if (hasDefaultEdges) {
@@ -103,6 +110,8 @@ const createRFStore = ({
           nodeLookup,
           domNode,
           nodeOrigin,
+          'width',
+          'height',
           (id: string, dimensions: Dimensions) => {
             changes.push({
               id: id,
@@ -166,6 +175,8 @@ const createRFStore = ({
             const nextNodes = updateNodes(updatedNodes, nodeLookup, {
               nodeOrigin,
               elevateNodesOnSelect,
+              widthAttr: 'width',
+              heightAttr: 'height',
             });
             set({ nodes: nextNodes });
           }

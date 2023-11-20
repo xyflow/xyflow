@@ -19,8 +19,10 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   connectable?: boolean;
   deletable?: boolean;
   dragHandle?: string;
-  width?: number | null;
-  height?: number | null;
+  width?: number;
+  height?: number;
+  measuredWidth?: number;
+  measuredHeight?: number;
   parentNode?: string;
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
@@ -31,8 +33,8 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   origin?: NodeOrigin;
   handles?: NodeHandle[];
   size?: {
-    width?: number;
-    height?: number;
+    width: number;
+    height: number;
   };
 
   // only used internally
@@ -81,8 +83,10 @@ export type NodeDragItem = {
   positionAbsolute: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  width?: number | null;
-  height?: number | null;
+  width?: number;
+  height?: number;
+  measuredWidth?: number;
+  measuredHeight?: number;
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
   dragging?: boolean;

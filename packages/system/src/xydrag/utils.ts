@@ -48,24 +48,24 @@ export function getDragItems<NodeType extends NodeBase>(
         (!n.parentNode || !isParentSelected(n, nodes)) &&
         (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
     )
-    .map((n) => ({
-      id: n.id,
-      position: n.position || { x: 0, y: 0 },
-      positionAbsolute: n.positionAbsolute || { x: 0, y: 0 },
+    .map((node) => ({
+      id: node.id,
+      position: node.position || { x: 0, y: 0 },
+      positionAbsolute: node.positionAbsolute || { x: 0, y: 0 },
       distance: {
-        x: mousePos.x - (n.positionAbsolute?.x ?? 0),
-        y: mousePos.y - (n.positionAbsolute?.y ?? 0),
+        x: mousePos.x - (node.positionAbsolute?.x ?? 0),
+        y: mousePos.y - (node.positionAbsolute?.y ?? 0),
       },
       delta: {
         x: 0,
         y: 0,
       },
-      extent: n.extent,
-      parentNode: n.parentNode,
-      width: n.width,
-      height: n.height,
-      origin: n.origin,
-      expandParent: n.expandParent,
+      extent: node.extent,
+      parentNode: node.parentNode,
+      width: node.measuredWidth || node.width,
+      height: node.measuredWidth || node.height,
+      origin: node.origin,
+      expandParent: node.expandParent,
     }));
 }
 

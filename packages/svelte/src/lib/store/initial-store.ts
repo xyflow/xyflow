@@ -70,7 +70,9 @@ export const getInitialStore = ({
   const nodeLookup = new Map<string, Node>();
   const nextNodes = updateNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
-    elevateNodesOnSelect: false
+    elevateNodesOnSelect: false,
+    widthAttr: 'measuredWidth',
+    heightAttr: 'measuredHeight'
   });
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
@@ -78,8 +80,8 @@ export const getInitialStore = ({
   if (fitView && width && height) {
     const nodesWithDimensions = nextNodes.map((node) => ({
       ...node,
-      width: node.size?.width,
-      height: node.size?.height
+      width: node?.width,
+      height: node?.height
     }));
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);

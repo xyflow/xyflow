@@ -87,12 +87,14 @@ export function createStore({
   };
 
   function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
-    const nextNodes = updateNodeDimensionsSystem(
+    const nextNodes = updateNodeDimensionsSystem<Node>(
       updates,
       get(store.nodes),
       get(store.nodeLookup),
       get(store.domNode),
-      get(store.nodeOrigin)
+      get(store.nodeOrigin),
+      'measuredWidth',
+      'measuredHeight'
     );
 
     if (!nextNodes) {

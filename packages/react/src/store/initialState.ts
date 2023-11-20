@@ -23,7 +23,12 @@ const getInitialState = ({
   fitView?: boolean;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, Node>();
-  const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nextNodes = updateNodes(nodes, nodeLookup, {
+    nodeOrigin: [0, 0],
+    elevateNodesOnSelect: false,
+    widthAttr: 'width',
+    heightAttr: 'height',
+  });
 
   let transform: Transform = [0, 0, 1];
 

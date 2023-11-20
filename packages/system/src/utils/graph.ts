@@ -86,8 +86,8 @@ export const getNodePositionWithOrigin = (
     };
   }
 
-  const offsetX = (node.width ?? 0) * nodeOrigin[0];
-  const offsetY = (node.height ?? 0) * nodeOrigin[1];
+  const offsetX = ((node.measuredWidth || node.width) ?? 0) * nodeOrigin[0];
+  const offsetY = ((node.measuredHeight || node.height) ?? 0) * nodeOrigin[1];
 
   const position: XYPosition = {
     x: node.position.x - offsetX,
@@ -118,8 +118,8 @@ export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0
         rectToBox({
           x,
           y,
-          width: node.width || 0,
-          height: node.height || 0,
+          width: node.measuredWidth || node.width || 0,
+          height: node.measuredHeight || node.height || 0,
         })
       );
     },
@@ -145,7 +145,9 @@ export const getNodesInside = <NodeType extends NodeBase>(
   };
 
   const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
-    const { width, height, selectable = true, hidden = false } = node;
+    const { selectable = true, hidden = false } = node;
+    const width = node.measuredWidth || node.width;
+    const height = node.measuredHeight || node.height;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return res;
@@ -184,11 +186,13 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
-  const filteredNodes = nodes.filter((n) => {
-    const isVisible = n.width && n.height && (options?.includeHiddenNodes || !n.hidden);
+  const filteredNodes = nodes.filter((node) => {
+    const nodeWidth = node.measuredWidth || node.width;
+    const nodeHeight = node.measuredHeight || node.height;
+    const isVisible = nodeWidth && nodeHeight && (options?.includeHiddenNodes || !node.hidden);
 
     if (options?.nodes?.length) {
-      return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
+      return isVisible && options?.nodes.some((optionNode) => optionNode.id === node.id);
     }
 
     return isVisible;
@@ -242,16 +246,20 @@ export function calcNextPosition<NodeType extends NodeBase>(
   }
 
   if (node.extent === 'parent' && !node.expandParent) {
-    if (node.parentNode && node.width && node.height) {
+    const nodeWidth = node.measuredWidth || node.width;
+    const nodeHeight = node.measuredHeight || node.height;
+    if (node.parentNode && nodeWidth && nodeHeight) {
       const currNodeOrigin = node.origin || nodeOrigin;
+      const parentWidth = parentNode?.measuredWidth || parentNode?.width;
+      const parentHeight = parentNode?.measuredHeight || parentNode?.height;
 
       currentExtent =
-        parentNode && isNumeric(parentNode.width) && isNumeric(parentNode.height)
+        parentNode && isNumeric(parentWidth) && isNumeric(parentHeight)
           ? [
-              [parentPos.x + node.width * currNodeOrigin[0], parentPos.y + node.height * currNodeOrigin[1]],
+              [parentPos.x + nodeWidth * currNodeOrigin[0], parentPos.y + nodeHeight * currNodeOrigin[1]],
               [
-                parentPos.x + parentNode.width - node.width + node.width * currNodeOrigin[0],
-                parentPos.y + parentNode.height - node.height + node.height * currNodeOrigin[1],
+                parentPos.x + parentWidth - nodeWidth + nodeWidth * currNodeOrigin[0],
+                parentPos.y + parentHeight - nodeHeight + nodeHeight * currNodeOrigin[1],
               ],
             ]
           : currentExtent;
