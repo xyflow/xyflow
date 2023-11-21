@@ -12,9 +12,32 @@
 
   --minimap-background-color-default: #fff;
 
-  --background-pattern-dot-color-default: #91919a;
-  --background-pattern-line-color-default: #eee;
+  --background-color-default: transparent;
+  --background-pattern-dots-color-default: #91919a;
+  --background-pattern-lines-color-default: #eee;
   --background-pattern-cross-color-default: #e2e2e2;
+}
+
+.xy-flow.dark {
+  --edge-stroke-default: #b1b1b7;
+  --edge-stroke-width-default: 1;
+  --edge-stroke-selected-default: #555;
+
+  --connectionline-stroke-default: #b1b1b7;
+  --connectionline-stroke-width-default: 1;
+
+  --attribution-background-color-default: rgba(150, 150, 150, 0.25);
+
+  --minimap-background-color-default: #222;
+
+  --background-color-default: #222;
+  --background-pattern-dots-color-default: #777;
+  --background-pattern-lines-color-default: #777;
+  --background-pattern-cross-color-default: #777;
+}
+
+.xy-flow {
+  background-color: var(--background-color-props, var(--background-color-default, 'transparent'));
 }
 
 .xy-flow__container {
@@ -273,21 +296,20 @@
 .xy-flow__background {
   pointer-events: none;
   z-index: -1;
-  background-color: var(--background-color-props, 'transparent');
 }
 
 .xy-flow__background-pattern {
   &.dots {
     fill: var(
       --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-dot-color-default))
+      var(--background-pattern-color, var(--background-pattern-dots-color-default))
     );
   }
 
   &.lines {
     stroke: var(
       --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-line-color-default))
+      var(--background-pattern-color, var(--background-pattern-lines-color-default))
     );
   }
 
@@ -312,6 +334,7 @@
       width: 100%;
       max-width: 12px;
       max-height: 12px;
+      fill: currentColor;
     }
   }
 }

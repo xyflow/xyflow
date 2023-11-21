@@ -192,6 +192,7 @@ const OverviewFlow = () => {
 
   return (
     <ReactFlow
+      className="dark"
       nodes={nodes}
       edges={edges}
       connectionMode={ConnectionMode.Strict}
@@ -232,7 +233,7 @@ const OverviewFlow = () => {
     >
       <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
       <Controls />
-      <Background color="#aaa" gap={25} />
+      <Background gap={25} />
     </ReactFlow>
   );
 };
