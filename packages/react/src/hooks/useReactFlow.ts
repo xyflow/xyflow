@@ -206,7 +206,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       }
 
       return (nodes || store.getState().nodes).filter((n) => {
-        if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
+        if (!isRect && (n.id === node!.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 

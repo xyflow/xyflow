@@ -10,8 +10,8 @@ import NodeToolbarPortal from './NodeToolbarPortal';
 import { NodeToolbarProps } from './types';
 
 const nodeEqualityFn = (a: Node | undefined, b: Node | undefined) =>
-  a?.positionAbsolute?.x === b?.positionAbsolute?.x &&
-  a?.positionAbsolute?.y === b?.positionAbsolute?.y &&
+  a?.computed?.positionAbsolute?.x === b?.computed?.positionAbsolute?.x &&
+  a?.computed?.positionAbsolute?.y === b?.computed?.positionAbsolute?.y &&
   a?.width === b?.width &&
   a?.height === b?.height &&
   a?.selected === b?.selected &&

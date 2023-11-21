@@ -91,19 +91,19 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
         const clampedPosition = props.nodeExtent
-          ? clampPosition(node.positionAbsolute, props.nodeExtent)
-          : node.positionAbsolute;
+          ? clampPosition(node.computed?.positionAbsolute, props.nodeExtent)
+          : node.computed?.positionAbsolute;
 
         const posX = clampedPosition?.x ?? 0;
         const posY = clampedPosition?.y ?? 0;
         const posOrigin = getPositionWithOrigin({
           x: posX,
           y: posY,
-          width: node.width ?? 0,
-          height: node.height ?? 0,
+          width: node.computed?.width ?? node.width ?? 0,
+          height: node.computed?.height ?? node.height ?? 0,
           origin: node.origin || props.nodeOrigin,
         });
-        const initialized = (!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height);
+        const initialized = (!!node.computed?.width && !!node.computed?.height) || (!!node.width && !!node.height);
 
         return (
           <NodeComponent
@@ -111,8 +111,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             id={node.id}
             className={node.className}
             style={node.style}
-            sizeWidth={node.size?.width}
-            sizeHeight={node.size?.height}
+            width={node.width ?? undefined}
+            height={node.height ?? undefined}
             type={nodeType}
             data={node.data}
             sourcePosition={node.sourcePosition || Position.Bottom}

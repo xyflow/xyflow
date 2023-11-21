@@ -34,6 +34,8 @@
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
+  export let width: NodeWrapperProps['width'] = undefined;
+  export let height: NodeWrapperProps['height'] = undefined;
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
   export let initialized: NodeWrapperProps['initialized'] = false;
   let className: string = '';
@@ -168,9 +170,7 @@
     style:z-index={zIndex}
     style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style} {node.size?.width ? `;width=${node.size?.width}px` : ''} {node.size?.height
-      ? `;height=${node.size?.height}px;`
-      : ''}"
+    style="{style} {width ? `;width=${width}px` : ''} {height ? `;height=${height}px;` : ''}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}

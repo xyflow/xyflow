@@ -147,7 +147,7 @@ const createRFStore = ({
           };
 
           if (positionChanged) {
-            change.positionAbsolute = node.positionAbsolute;
+            change.positionAbsolute = node.computed?.positionAbsolute;
             change.position = node.position;
           }
 
@@ -276,7 +276,10 @@ const createRFStore = ({
 
             return {
               ...node,
-              positionAbsolute,
+              computed: {
+                ...node.computed,
+                positionAbsolute,
+              },
             };
           }),
         });
