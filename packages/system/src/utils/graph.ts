@@ -254,8 +254,8 @@ export function calcNextPosition<NodeType extends NodeBase>(
           ? [
               [parentPos.x + nodeWidth * currNodeOrigin[0], parentPos.y + nodeHeight * currNodeOrigin[1]],
               [
-                parentPos.x + parentNode.computed?.width - nodeWidth + nodeWidth * currNodeOrigin[0],
-                parentPos.y + parentNode.computed?.height - nodeHeight + nodeHeight * currNodeOrigin[1],
+                parentPos.x + parentNode.computed.width - nodeWidth + nodeWidth * currNodeOrigin[0],
+                parentPos.y + parentNode.computed.height - nodeHeight + nodeHeight * currNodeOrigin[1],
               ],
             ]
           : currentExtent;
