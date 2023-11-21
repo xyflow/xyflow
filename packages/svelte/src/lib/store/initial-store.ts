@@ -76,11 +76,7 @@ export const getInitialStore = ({
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height
-    }));
+    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }

@@ -27,7 +27,7 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
-    size: nodeSize,
+    ...nodeSize,
     handles: [
       {
         type: 'source',
@@ -41,7 +41,7 @@ const initialNodes: Node[] = [
     id: '2',
     data: { label: 'Node 2' },
     position: { x: 100, y: 100 },
-    size: nodeSize,
+    ...nodeSize,
     handles: [
       {
         type: 'source',
@@ -65,7 +65,7 @@ const initialNodes: Node[] = [
     id: '3',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
-    size: nodeSize,
+    ...nodeSize,
     handles: [
       {
         type: 'source',
