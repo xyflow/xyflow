@@ -61,8 +61,10 @@
         node.connectable ||
         ($nodesConnectable && typeof node.connectable === 'undefined')
       )}
-      positionAbsolute={node.positionAbsolute}
-      positionOrigin={posOrigin}
+      positionX={node.positionAbsolute?.x ?? 0}
+      positionY={node.positionAbsolute?.y ?? 0}
+      positionOriginX={posOrigin.x ?? 0}
+      positionOriginY={posOrigin.y ?? 0}
       isParent={!!node[internalsSymbol]?.isParent}
       style={node.style}
       class={node.class}

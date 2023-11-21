@@ -1,4 +1,3 @@
-import type { XYPosition } from '@xyflow/system';
 import type { Node } from '$lib/types';
 
 export type NodeWrapperProps = Pick<
@@ -9,7 +8,6 @@ export type NodeWrapperProps = Pick<
   | 'data'
   | 'draggable'
   | 'dragging'
-  | 'positionAbsolute'
   | 'selected'
   | 'selectable'
   | 'style'
@@ -21,7 +19,10 @@ export type NodeWrapperProps = Pick<
   | 'dragHandle'
   | 'hidden'
 > & {
-  positionOrigin?: XYPosition;
+  positionX: number;
+  positionY: number;
+  positionOriginX: number;
+  positionOriginY: number;
   'on:nodeclick'?: (event: MouseEvent) => void;
   resizeObserver?: ResizeObserver | null;
   isParent?: boolean;
