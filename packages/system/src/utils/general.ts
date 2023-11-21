@@ -64,8 +64,8 @@ export const nodeToRect = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rec
 
   return {
     ...positionAbsolute,
-    width: node.width || 0,
-    height: node.height || 0,
+    width: node.computed?.width ?? node.width ?? 0,
+    height: node.computed?.height ?? node.height ?? 0,
   };
 };
 
@@ -74,8 +74,8 @@ export const nodeToBox = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box 
 
   return {
     ...positionAbsolute,
-    x2: positionAbsolute.x + (node.width || 0),
-    y2: positionAbsolute.y + (node.height || 0),
+    x2: positionAbsolute.x + (node.computed?.width ?? node.width ?? 0),
+    y2: positionAbsolute.y + (node.computed?.height ?? node.height ?? 0),
   };
 };
 

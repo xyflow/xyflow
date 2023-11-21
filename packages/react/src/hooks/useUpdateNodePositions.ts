@@ -23,8 +23,11 @@ function useUpdateNodePositions() {
     const yDiff = params.y * yVelo * factor;
 
     const nodeUpdates = selectedNodes.map((node) => {
-      if (node.positionAbsolute) {
-        let nextPosition = { x: node.positionAbsolute.x + xDiff, y: node.positionAbsolute.y + yDiff };
+      if (node.computed?.positionAbsolute) {
+        let nextPosition = {
+          x: node.computed?.positionAbsolute.x + xDiff,
+          y: node.computed?.positionAbsolute.y + yDiff,
+        };
 
         if (snapToGrid) {
           nextPosition = snapPosition(nextPosition, snapGrid);
@@ -40,7 +43,10 @@ function useUpdateNodePositions() {
         );
 
         node.position = position;
-        node.positionAbsolute = positionAbsolute;
+        if (!node.computed) {
+          node.computed = {};
+        }
+        node.computed.positionAbsolute = positionAbsolute;
       }
 
       return node;

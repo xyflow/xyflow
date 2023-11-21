@@ -51,10 +51,11 @@
     let nodeRect: Rect | undefined = undefined;
 
     if (toolbarNodes.length === 1) {
+      const toolbarNode = toolbarNodes[0];
       nodeRect = {
-        ...toolbarNodes[0].position,
-        width: toolbarNodes[0].width ?? 0,
-        height: toolbarNodes[0].height ?? 0
+        ...toolbarNode.position,
+        width: toolbarNode.computed?.width ?? toolbarNode.width ?? 0,
+        height: toolbarNode.computed?.height ?? toolbarNode.height ?? 0
       };
     } else if (toolbarNodes.length > 1) {
       nodeRect = getNodesBounds(toolbarNodes, $nodeOrigin);

@@ -141,7 +141,7 @@ export function useSvelteFlow(): {
       }
 
       return (nodesToIntersect || get(nodes)).filter((n) => {
-        if (!isRect && (n.id === node.id || !n.positionAbsolute)) {
+        if (!isRect && (n.id === node.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 

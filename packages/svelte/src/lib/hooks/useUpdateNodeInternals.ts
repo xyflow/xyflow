@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import type { UpdateNodeInternals, NodeDimensionUpdate } from '@xyflow/system';
+import type { UpdateNodeInternals } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 

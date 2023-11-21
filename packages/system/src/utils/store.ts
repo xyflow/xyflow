@@ -40,7 +40,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
         parentNode?.origin || nodeOrigin
       );
 
-      node.positionAbsolute = {
+      node.computed!.positionAbsolute = {
         x,
         y,
       };
@@ -79,9 +79,11 @@ export function updateNodes<NodeType extends NodeBase>(
     const node: NodeType = {
       ...options.defaults,
       ...n,
-      positionAbsolute: n.position,
-      width: n.width || currentStoreNode?.width,
-      height: n.height || currentStoreNode?.height,
+      computed: {
+        positionAbsolute: n.position,
+        width: n.computed?.width || currentStoreNode?.computed?.width,
+        height: n.computed?.height || currentStoreNode?.computed?.height,
+      },
     };
     const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
     const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
@@ -160,7 +162,7 @@ export function updateNodeDimensions(
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
+        (node.computed?.width !== dimensions.width || node.computed?.height !== dimensions.height || update.forceUpdate)
       );
 
       if (doUpdate) {
@@ -168,7 +170,10 @@ export function updateNodeDimensions(
 
         const newNode = {
           ...node,
-          ...dimensions,
+          computed: {
+            ...node.computed,
+            ...dimensions,
+          },
           [internalsSymbol]: {
             ...node[internalsSymbol],
             handleBounds: {

@@ -28,11 +28,7 @@ const getInitialState = ({
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height,
-    }));
+    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
     transform = [x, y, zoom];
