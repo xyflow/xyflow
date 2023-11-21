@@ -170,9 +170,9 @@
     style:z-index={zIndex}
     style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style:width={width === undefined ? undefined : `${width}px`}
-    style:height={height === undefined ? undefined : `${height}px`}
-    {style}
+    style="{style ?? ''}; {!width ? '' : `width:${width}px;`} {!height
+      ? ''
+      : `height:${height}px;`}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
