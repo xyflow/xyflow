@@ -1,33 +1,30 @@
-import { ChangeEventHandler, FC, useCallback, useState } from 'react';
+import { ChangeEventHandler, useCallback, useState } from 'react';
 import {
   ReactFlow,
   addEdge,
-  Handle,
-  Connection,
-  Position,
   Node,
-  NodeProps,
-  NodeTypes,
   useNodesState,
   useEdgesState,
-  OnConnectStart,
-  OnConnectEnd,
   OnConnect,
-  updateEdge,
   Edge,
-  IsValidConnection,
   MiniMap,
   Background,
   Controls,
   Panel,
   ColorMode,
+  Position,
 } from '@xyflow/react';
 
+const nodeDefaults = {
+  sourcePosition: Position.Right,
+  targetPosition: Position.Left,
+};
+
 const initialNodes: Node[] = [
-  { id: 'A', type: 'input', position: { x: 0, y: 150 }, data: { label: 'A' } },
-  { id: 'B', position: { x: 250, y: 0 }, data: { label: 'B' } },
-  { id: 'C', position: { x: 250, y: 150 }, data: { label: 'C' } },
-  { id: 'D', position: { x: 250, y: 300 }, data: { label: 'D' } },
+  { id: 'A', type: 'input', position: { x: 0, y: 150 }, data: { label: 'A' }, ...nodeDefaults },
+  { id: 'B', position: { x: 250, y: 0 }, data: { label: 'B' }, ...nodeDefaults },
+  { id: 'C', position: { x: 250, y: 150 }, data: { label: 'C' }, ...nodeDefaults },
+  { id: 'D', position: { x: 250, y: 300 }, data: { label: 'D' }, ...nodeDefaults },
 ];
 
 const initialEdges: Edge[] = [
