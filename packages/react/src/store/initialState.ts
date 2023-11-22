@@ -61,7 +61,7 @@ const getInitialState = ({
     paneDragging: false,
     noPanClassName: 'nopan',
     nodeOrigin: [0, 0],
-    nodeDragThreshold: 0,
+    nodeDragThreshold: 1,
 
     snapGrid: [15, 15],
     snapToGrid: false,
