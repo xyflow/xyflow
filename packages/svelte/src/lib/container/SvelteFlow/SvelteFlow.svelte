@@ -15,8 +15,14 @@
   import { Attribution } from '$lib/components/Attribution';
   import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
+  import {
+    updateStore,
+    updateStoreByKeys,
+    type UpdatableStoreProps,
+    getColorModeClass
+  } from './utils';
   import { get } from 'svelte/store';
+  import { useColorModeClass } from '$lib/hooks/useColorModeClass';
 
   type $$Props = SvelteFlowProps;
 
@@ -70,6 +76,7 @@
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
   export let width: $$Props['width'] = undefined;
   export let height: $$Props['height'] = undefined;
+  export let colorMode: $$Props['colorMode'] = 'light';
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -156,6 +163,8 @@
     maxZoom,
     translateExtent
   });
+
+  $: colorModeClass = useColorModeClass(colorMode);
 </script>
 
 <div
@@ -163,7 +172,7 @@
   bind:clientWidth
   bind:clientHeight
   {style}
-  class={cc(['svelte-flow', className])}
+  class={cc(['svelte-flow', className, $colorModeClass])}
   data-testid="svelte-flow__wrapper"
   on:dragover
   on:drop

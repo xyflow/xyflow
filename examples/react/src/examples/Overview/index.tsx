@@ -192,7 +192,6 @@ const OverviewFlow = () => {
 
   return (
     <ReactFlow
-      className="dark"
       nodes={nodes}
       edges={edges}
       connectionMode={ConnectionMode.Strict}

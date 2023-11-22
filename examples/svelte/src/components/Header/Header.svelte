@@ -4,6 +4,7 @@
 
 	const routes = [
 		'add-node-on-drop',
+		'colormode',
 		'custom-connection-line',
 		'customnode',
 		'dagre',

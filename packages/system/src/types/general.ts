@@ -136,3 +136,6 @@ export type UpdateConnection = (params: {
   connectionStartHandle: ConnectingHandle | null;
   connectionEndHandle: ConnectingHandle | null;
 }) => void;
+
+export type ColorModeClass = 'light' | 'dark';
+export type ColorMode = ColorModeClass | 'system';
