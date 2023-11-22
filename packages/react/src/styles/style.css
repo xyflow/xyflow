@@ -10,7 +10,7 @@
 
 .react-flow.dark {
   --edge-label-background-color-default: #141414;
-  --edge-label-color-default: #ffffff;
+  --edge-label-color-default: #f8f8f8;
 }
 
 .react-flow__edge-textbg {

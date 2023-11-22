@@ -7,7 +7,7 @@
 }
 
 .svelte-flow.dark {
-  --edge-label-color-default: #ffffff;
+  --edge-label-color-default: #f8f8f8;
 }
 
 .svelte-flow__edge-label {
