@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useEffect, useRef, type MouseEvent, useCallback } from 'react';
+import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
@@ -40,15 +40,15 @@ const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 function MiniMap({
   style,
   className,
-  nodeStrokeColor = 'transparent',
-  nodeColor = '#e2e2e2',
+  nodeStrokeColor,
+  nodeColor,
   nodeClassName = '',
   nodeBorderRadius = 5,
-  nodeStrokeWidth = 2,
+  nodeStrokeWidth,
   // We need to rename the prop to be `CapitalCase` so that JSX will render it as
   // a component properly.
   nodeComponent,
-  maskColor = 'rgb(240, 240, 240, 0.6)',
+  maskColor,
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
   position = 'bottom-right',
@@ -126,7 +126,15 @@ function MiniMap({
   return (
     <Panel
       position={position}
-      style={style}
+      style={
+        {
+          ...style,
+          '--minimap-mask-color-props': typeof maskColor === 'string' ? maskColor : undefined,
+          '--minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
+          '--minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
+          '--minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
+        } as CSSProperties
+      }
       className={cc(['react-flow__minimap', className])}
       data-testid="rf__minimap"
     >
@@ -153,7 +161,6 @@ function MiniMap({
           className="react-flow__minimap-mask"
           d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
-          fill={maskColor}
           fillRule="evenodd"
           stroke={maskStrokeColor}
           strokeWidth={maskStrokeWidth}

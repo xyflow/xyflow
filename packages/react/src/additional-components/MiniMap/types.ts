@@ -42,10 +42,10 @@ export type MiniMapNodeProps = {
   height: number;
   borderRadius: number;
   className: string;
-  color: string;
+  color?: string;
   shapeRendering: string;
-  strokeColor: string;
-  strokeWidth: number;
+  strokeColor?: string;
+  strokeWidth?: number;
   style?: CSSProperties;
   selected: boolean;
   onClick?: (event: MouseEvent, id: string) => void;

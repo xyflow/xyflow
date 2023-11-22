@@ -11,6 +11,10 @@
   --attribution-background-color-default: rgba(255, 255, 255, 0.5);
 
   --minimap-background-color-default: #fff;
+  --minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
+  --minimap-node-background-color-default: #e2e2e2;
+  --minimap-node-stroke-color-default: transparent;
+  --minimap-node-stroke-width-default: 2;
 
   --background-color-default: transparent;
   --background-pattern-dots-color-default: #91919a;
@@ -19,18 +23,22 @@
 }
 
 .xy-flow.dark {
-  --edge-stroke-default: #b1b1b7;
+  --edge-stroke-default: #3c3c3c;
   --edge-stroke-width-default: 1;
-  --edge-stroke-selected-default: #555;
+  --edge-stroke-selected-default: #727272;
 
   --connectionline-stroke-default: #b1b1b7;
   --connectionline-stroke-width-default: 1;
 
   --attribution-background-color-default: rgba(150, 150, 150, 0.25);
 
-  --minimap-background-color-default: #222;
+  --minimap-background-color-default: #141414;
+  --minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
+  --minimap-node-background-color-default: #2b2b2b;
+  --minimap-node-stroke-color-default: transparent;
+  --minimap-node-stroke-width-default: 2;
 
-  --background-color-default: #222;
+  --background-color-default: #141414;
   --background-pattern-dots-color-default: #777;
   --background-pattern-lines-color-default: #777;
   --background-pattern-cross-color-default: #777;
@@ -131,16 +139,11 @@
     pointer-events: all;
   }
 
-  &-textbg {
-    fill: white;
-  }
-
   .xy-flow__edge-text {
     pointer-events: none;
     user-select: none;
   }
 }
-
 .xy-flow__connection {
   pointer-events: none;
 
@@ -291,6 +294,28 @@
 
 .xy-flow__minimap {
   background: var(--minimap-background-color, var(--minimap-background-color-default));
+
+  &-mask {
+    fill: var(
+      --minimap-mask-background-color-props,
+      var(--minimap-mask-background-color, var(--minimap-mask-background-color-default))
+    );
+  }
+
+  &-node {
+    fill: var(
+      --minimap-node-background-color-props,
+      var(--minimap-node-background-color, var(--minimap-node-background-color-default))
+    );
+    stroke: var(
+      --minimap-node-stroke-color-props,
+      var(--minimap-node-stroke-color, var(--minimap-node-stroke-color-default))
+    );
+    stroke-width: var(
+      --minimap-node-stroke-width-props,
+      var(--minimap-node-stroke-width, var(--minimap-node-stroke-width-default))
+    );
+  }
 }
 
 .xy-flow__background {

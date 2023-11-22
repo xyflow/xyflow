@@ -19,11 +19,11 @@ const selectorNodes = (s: ReactFlowState) =>
 const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
 
 function MiniMapNodes({
-  nodeStrokeColor = 'transparent',
-  nodeColor = '#e2e2e2',
+  nodeStrokeColor,
+  nodeColor,
   nodeClassName = '',
   nodeBorderRadius = 5,
-  nodeStrokeWidth = 2,
+  nodeStrokeWidth,
   // We need to rename the prop to be `CapitalCase` so that JSX will render it as
   // a component properly.
   nodeComponent: NodeComponent = MiniMapNode,
@@ -41,6 +41,8 @@ function MiniMapNodes({
     <>
       {nodes.map((node) => {
         const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin).positionAbsolute;
+        const color = nodeColor === undefined ? undefined : nodeColorFunc(node);
+        const strokeColor = nodeStrokeColor === undefined ? undefined : nodeStrokeColorFunc(node);
 
         return (
           <NodeComponent
@@ -52,9 +54,9 @@ function MiniMapNodes({
             style={node.style}
             selected={!!node.selected}
             className={nodeClassNameFunc(node)}
-            color={nodeColorFunc(node)}
+            color={color}
             borderRadius={nodeBorderRadius}
-            strokeColor={nodeStrokeColorFunc(node)}
+            strokeColor={strokeColor}
             strokeWidth={nodeStrokeWidth}
             shapeRendering={shapeRendering}
             onClick={onClick}

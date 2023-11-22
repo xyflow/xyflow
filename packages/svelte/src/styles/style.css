@@ -2,10 +2,19 @@
 @import '../../../system/src/styles/init.css';
 @import '../../../system/src/styles/style.css';
 
+.svelte-flow {
+  --edge-label-color-default: inherit;
+}
+
+.svelte-flow.dark {
+  --edge-label-color-default: #ffffff;
+}
+
 .svelte-flow__edge-label {
   text-align: center;
   position: absolute;
   font-size: 10px;
+  color: var(--edge-label-color, var(--edge-label-color-default));
 }
 
 .svelte-flow__nodes {
