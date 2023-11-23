@@ -122,6 +122,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             yPos={posY}
             xPosOrigin={posOrigin.x}
             yPosOrigin={posOrigin.y}
+            positionAbsolute={clampedPosition || { x: 0, y: 0 }}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}

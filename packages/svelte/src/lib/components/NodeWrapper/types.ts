@@ -11,14 +11,14 @@ export type NodeWrapperProps = Pick<
   | 'selected'
   | 'selectable'
   | 'style'
-  | 'width'
-  | 'height'
   | 'type'
   | 'sourcePosition'
   | 'targetPosition'
   | 'dragHandle'
   | 'hidden'
 > & {
+  width?: number;
+  height?: number;
   type: string;
   positionX: number;
   positionY: number;

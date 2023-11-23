@@ -68,14 +68,14 @@
       isParent={!!node[internalsSymbol]?.isParent}
       style={node.style}
       class={node.class}
-      type={node.type || 'default'}
+      type={node.type ?? 'default'}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       dragging={node.dragging}
       zIndex={node[internalsSymbol]?.z ?? 0}
       dragHandle={node.dragHandle}
-      width={node.width}
-      height={node.height}
+      width={node.width ?? undefined}
+      height={node.height ?? undefined}
       initialized={(!!node.computed?.width && !!node.computed?.height) ||
         (!!node.width && !!node.height)}
       {resizeObserver}

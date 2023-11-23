@@ -52,6 +52,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     disableKeyboardA11y,
     ariaLabel,
     rfId,
+    positionAbsolute,
     width,
     height,
   }: WrapNodeProps) => {
@@ -209,8 +210,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             id={id}
             data={data}
             type={type}
-            xPos={xPos}
-            yPos={yPos}
+            width={width}
+            height={height}
+            positionAbsolute={positionAbsolute}
             selected={selected}
             isConnectable={isConnectable}
             sourcePosition={sourcePosition}

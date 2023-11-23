@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type { NodeBase } from '@xyflow/system';
+import type { NodeBase, XYPosition } from '@xyflow/system';
 
 export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
   NodeData,
@@ -24,6 +24,7 @@ export type WrapNodeProps<NodeData = any> = Pick<
     yPos: number;
     xPosOrigin: number;
     yPosOrigin: number;
+    positionAbsolute: XYPosition;
     initialized: boolean;
     isSelectable: boolean;
     isDraggable: boolean;
