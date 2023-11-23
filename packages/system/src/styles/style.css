@@ -5,6 +5,7 @@
   --node-group-background-color-default: rgba(240, 240, 240, 0.25);
   --node-boxshadow-hover-default: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
   --node-boxshadow-selected-default: 0 0 0 0.5px #1a192b;
+  --node-border-radius-default: 3px;
 
   --handle-background-color-default: #1a192b;
   --handle-border-color-default: #fff;
@@ -17,6 +18,28 @@
   --controls-button-color-default: inherit;
   --controls-button-color-hover-default: inherit;
   --controls-button-border-color-default: #eee;
+  --controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+}
+
+.xy-flow.dark {
+  --node-color-default: #f8f8f8;
+  --node-border-default: 1px solid #3c3c3c;
+  --node-background-color-default: #1e1e1e;
+  --node-group-background-color-default: rgba(240, 240, 240, 0.25);
+  --node-boxshadow-hover-default: 0 1px 4px 1px rgba(255, 255, 255, 0.08);
+  --node-boxshadow-selected-default: 0 0 0 0.5px #999;
+
+  --handle-background-color-default: #bebebe;
+  --handle-border-color-default: #1e1e1e;
+
+  --selection-background-color-default: rgba(200, 200, 220, 0.08);
+  --selection-border-default: 1px dotted rgba(200, 200, 220, 0.8);
+
+  --controls-button-background-color-default: #2b2b2b;
+  --controls-button-background-color-hover-default: #3e3e3e;
+  --controls-button-color-default: #f8f8f8;
+  --controls-button-color-hover-default: #fff;
+  --controls-button-border-color-default: #5b5b5b;
   --controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
 }
 
@@ -44,7 +67,7 @@
 .xy-flow__node-output,
 .xy-flow__node-group {
   padding: 10px;
-  border-radius: 3px;
+  border-radius: var(--node-border-radius, var(--node-border-radius-default));
   width: 150px;
   font-size: 12px;
   color: var(--node-color, var(--node-color-default));
@@ -110,7 +133,7 @@
       );
       color: var(
         --controls-button-color-hover-props,
-        var(--controls-button-hover-color, var(--controls-button-hover-color-default))
+        var(--controls-button-color-hover, var(--controls-button-color-hover-default))
       );
     }
 
@@ -121,5 +144,9 @@
         fill-opacity: 0.4;
       }
     }
+  }
+
+  &-button:last-child {
+    border-bottom: none;
   }
 }

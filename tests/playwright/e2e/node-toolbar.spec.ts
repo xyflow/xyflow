@@ -1,4 +1,4 @@
-import { test, expect, Locator } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { FRAMEWORK } from './constants';
 
 type Position = 'top' | 'right' | 'bottom' | 'left';

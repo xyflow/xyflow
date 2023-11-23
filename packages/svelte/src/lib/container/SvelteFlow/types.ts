@@ -14,7 +14,8 @@ import type {
   OnError,
   ConnectionMode,
   PanelPosition,
-  ProOptions
+  ProOptions,
+  ColorMode
 } from '@xyflow/system';
 
 import type {
@@ -75,6 +76,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   defaultEdgeOptions?: DefaultEdgeOptions;
   width?: number;
   height?: number;
+  colorMode?: ColorMode;
 
   class?: string;
   style?: string;

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import { FRAMEWORK } from './constants';
 
-test.describe('EDGES', () => {
+test.describe('Edges', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
     await page.goto('/tests/generic/edges/general');
