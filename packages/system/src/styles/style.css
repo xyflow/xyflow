@@ -5,6 +5,7 @@
   --node-group-background-color-default: rgba(240, 240, 240, 0.25);
   --node-boxshadow-hover-default: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
   --node-boxshadow-selected-default: 0 0 0 0.5px #1a192b;
+  --node-border-radius-default: 3px;
 
   --handle-background-color-default: #1a192b;
   --handle-border-color-default: #fff;
@@ -66,7 +67,7 @@
 .xy-flow__node-output,
 .xy-flow__node-group {
   padding: 10px;
-  border-radius: 3px;
+  border-radius: var(--node-border-radius, var(--node-border-radius-default));
   width: 150px;
   font-size: 12px;
   color: var(--node-color, var(--node-color-default));
