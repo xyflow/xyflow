@@ -1,3 +1,8 @@
+/*
+ * This component helps us to update the store with the vlues coming from the user.
+ * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
+ * and values that have a dedicated setter function in the store (like `setNodes`).
+ */
 import { useEffect } from 'react';
 import { StoreApi } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -38,6 +43,7 @@ type StoreUpdaterProps = Pick<
   | 'fitViewOptions'
   | 'onNodesDelete'
   | 'onEdgesDelete'
+  | 'onDelete'
   | 'onNodeDragStart'
   | 'onNodeDrag'
   | 'onNodeDragStop'
@@ -70,10 +76,10 @@ const selector = (s: ReactFlowState) => ({
   reset: s.reset,
 });
 
-function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => void) {
+function useStoreUpdater<T>(value: T | undefined, setStoreAction: (param: T) => void) {
   useEffect(() => {
     if (typeof value !== 'undefined') {
-      setStoreState(value);
+      setStoreAction(value);
     }
   }, [value]);
 }
@@ -123,6 +129,7 @@ const StoreUpdater = ({
   fitViewOptions,
   onNodesDelete,
   onEdgesDelete,
+  onDelete,
   onNodeDrag,
   onNodeDragStart,
   onNodeDragStop,
@@ -187,6 +194,7 @@ const StoreUpdater = ({
   useDirectStoreUpdater('fitViewOnInitOptions', fitViewOptions, store.setState);
   useDirectStoreUpdater('onNodesDelete', onNodesDelete, store.setState);
   useDirectStoreUpdater('onEdgesDelete', onEdgesDelete, store.setState);
+  useDirectStoreUpdater('onDelete', onDelete, store.setState);
   useDirectStoreUpdater('onNodeDrag', onNodeDrag, store.setState);
   useDirectStoreUpdater('onNodeDragStart', onNodeDragStart, store.setState);
   useDirectStoreUpdater('onNodeDragStop', onNodeDragStop, store.setState);

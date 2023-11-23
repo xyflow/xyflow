@@ -38,6 +38,7 @@ import type {
   OnEdgesDelete,
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
+  OnDelete,
 } from '.';
 
 export type ReactFlowStore = {
@@ -46,6 +47,7 @@ export type ReactFlowStore = {
   height: number;
   transform: Transform;
   nodes: Node[];
+  nodeLookup: Map<string, Node>;
   edges: Edge[];
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
@@ -117,6 +119,7 @@ export type ReactFlowStore = {
 
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onDelete?: OnDelete;
   onError?: OnError;
 
   // event handlers
@@ -138,10 +141,9 @@ export type ReactFlowStore = {
 
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
-  getNodes: () => Node[];
   setEdges: (edges: Edge[]) => void;
   setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
-  updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
+  updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;

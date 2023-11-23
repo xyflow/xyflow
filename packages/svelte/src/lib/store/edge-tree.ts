@@ -9,17 +9,18 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
     [
       store.edges,
       store.nodes,
+      store.nodeLookup,
       store.onlyRenderVisibleElements,
       store.viewport,
       store.width,
       store.height
     ],
-    ([edges, nodes, onlyRenderVisibleElements, viewport, width, height]) => {
+    ([edges, , nodeLookup, onlyRenderVisibleElements, viewport, width, height]) => {
       const visibleEdges =
         onlyRenderVisibleElements && width && height
           ? edges.filter((edge) => {
-              const sourceNode = nodes.find((node) => node.id === edge.source);
-              const targetNode = nodes.find((node) => node.id === edge.target);
+              const sourceNode = nodeLookup.get(edge.source);
+              const targetNode = nodeLookup.get(edge.target);
 
               return (
                 sourceNode &&
@@ -40,11 +41,11 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
   );
 
   return derived(
-    [visibleEdges, store.nodes, store.connectionMode, store.onError],
-    ([visibleEdges, nodes, connectionMode, onError]) => {
+    [visibleEdges, store.nodes, store.nodeLookup, store.connectionMode, store.onerror],
+    ([visibleEdges, , nodeLookup, connectionMode, onerror]) => {
       const layoutedEdges = visibleEdges.reduce<EdgeLayouted[]>((res, edge) => {
-        const sourceNode = nodes.find((node) => node.id === edge.source);
-        const targetNode = nodes.find((node) => node.id === edge.target);
+        const sourceNode = nodeLookup.get(edge.source);
+        const targetNode = nodeLookup.get(edge.target);
 
         if (!sourceNode || !targetNode) {
           return res;
@@ -57,7 +58,7 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
           sourceHandle: edge.sourceHandle || null,
           targetHandle: edge.targetHandle || null,
           connectionMode,
-          onError
+          onError: onerror
         });
 
         if (edgePosition) {
@@ -70,7 +71,7 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
         return res;
       }, []);
 
-      const groupedEdges = groupEdgesByZLevel<EdgeLayouted>(layoutedEdges, nodes, false);
+      const groupedEdges = groupEdgesByZLevel<EdgeLayouted>(layoutedEdges, nodeLookup, false);
 
       return groupedEdges;
     }

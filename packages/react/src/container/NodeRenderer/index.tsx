@@ -48,11 +48,16 @@ const NodeRenderer = (props: NodeRendererProps) => {
     }
 
     const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      const updates = entries.map((entry: ResizeObserverEntry) => ({
-        id: entry.target.getAttribute('data-id') as string,
-        nodeElement: entry.target as HTMLDivElement,
-        forceUpdate: true,
-      }));
+      const updates = new Map();
+
+      entries.forEach((entry: ResizeObserverEntry) => {
+        const id = entry.target.getAttribute('data-id') as string;
+        updates.set(id, {
+          id,
+          nodeElement: entry.target as HTMLDivElement,
+          forceUpdate: true,
+        });
+      });
 
       updateNodeDimensions(updates);
     });
@@ -86,19 +91,19 @@ const NodeRenderer = (props: NodeRendererProps) => {
         const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
         const clampedPosition = props.nodeExtent
-          ? clampPosition(node.positionAbsolute, props.nodeExtent)
-          : node.positionAbsolute;
+          ? clampPosition(node.computed?.positionAbsolute, props.nodeExtent)
+          : node.computed?.positionAbsolute;
 
         const posX = clampedPosition?.x ?? 0;
         const posY = clampedPosition?.y ?? 0;
         const posOrigin = getPositionWithOrigin({
           x: posX,
           y: posY,
-          width: node.width ?? 0,
-          height: node.height ?? 0,
+          width: node.computed?.width ?? node.width ?? 0,
+          height: node.computed?.height ?? node.height ?? 0,
           origin: node.origin || props.nodeOrigin,
         });
-        const initialized = (!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height);
+        const initialized = (!!node.computed?.width && !!node.computed?.height) || (!!node.width && !!node.height);
 
         return (
           <NodeComponent
@@ -106,8 +111,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             id={node.id}
             className={node.className}
             style={node.style}
-            sizeWidth={node.size?.width}
-            sizeHeight={node.size?.height}
+            width={node.width ?? undefined}
+            height={node.height ?? undefined}
             type={nodeType}
             data={node.data}
             sourcePosition={node.sourcePosition || Position.Bottom}
@@ -117,6 +122,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             yPos={posY}
             xPosOrigin={posOrigin.x}
             yPosOrigin={posOrigin.y}
+            positionAbsolute={clampedPosition || { x: 0, y: 0 }}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}

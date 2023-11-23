@@ -31,9 +31,11 @@ function MiniMapNode({
       ry={borderRadius}
       width={width}
       height={height}
-      fill={fill}
-      stroke={strokeColor}
-      strokeWidth={strokeWidth}
+      style={{
+        fill,
+        stroke: strokeColor,
+        strokeWidth,
+      }}
       shapeRendering={shapeRendering}
       onClick={onClick ? (event) => onClick(event, id) : undefined}
     />

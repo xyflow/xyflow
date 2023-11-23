@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { Handle, Position, type NodeProps } from '@xyflow/svelte';
+	import { Handle, Position, type NodeProps, type XYPosition } from '@xyflow/svelte';
 
 	type $$Props = NodeProps;
 
 	export let data: { label: string } = { label: 'Node' };
-	export let xPos: number = 0;
-	export let yPos: number = 0;
+	export let positionAbsolute: XYPosition = { x: 0, y: 0 };
 </script>
 
 <div class="custom">
 	<div>{data.label}</div>
-	<div>{~~xPos}, {~~yPos}</div>
+	<div>{~~positionAbsolute.x}, {~~positionAbsolute.y}</div>
 
 	<Handle type="target" position={Position.Top} />
 

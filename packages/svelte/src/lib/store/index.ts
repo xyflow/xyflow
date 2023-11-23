@@ -66,30 +66,34 @@ export function createStore({
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes.update((nds) => {
-      return nds.map((n) => {
+      return nds.map((node) => {
         const nodeDragItem = (nodeDragItems as Array<NodeBase | NodeDragItem>).find(
-          (ndi) => ndi.id === n.id
+          (ndi) => ndi.id === node.id
         );
 
         if (nodeDragItem) {
           return {
-            ...n,
-            [internalsSymbol]: n[internalsSymbol],
+            ...node,
             dragging,
-            positionAbsolute: nodeDragItem.positionAbsolute,
-            position: nodeDragItem.position
+            position: nodeDragItem.position,
+            computed: {
+              ...node.computed,
+              positionAbsolute: nodeDragItem.computed?.positionAbsolute
+            },
+            [internalsSymbol]: node[internalsSymbol]
           };
         }
 
-        return n;
+        return node;
       });
     });
   };
 
-  function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
+  function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
     const nextNodes = updateNodeDimensionsSystem(
       updates,
       get(store.nodes),
+      get(store.nodeLookup),
       get(store.domNode),
       get(store.nodeOrigin)
     );
@@ -220,6 +224,11 @@ export function createStore({
         store.edges.update((eds) =>
           eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
         );
+
+        get(store.ondelete)?.({
+          nodes: matchingNodes,
+          edges: matchingEdges
+        });
       }
     }
   });

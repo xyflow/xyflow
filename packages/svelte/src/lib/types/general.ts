@@ -8,6 +8,7 @@ import type {
 } from '@xyflow/system';
 
 import type { Node } from './nodes';
+import type { Edge } from './edges';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -32,3 +33,5 @@ export type HandleComponentProps = {
 };
 
 export type FitViewOptions = FitViewOptionsBase<Node>;
+
+export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;

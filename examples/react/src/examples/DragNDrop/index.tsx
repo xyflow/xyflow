@@ -49,7 +49,7 @@ const DnDFlow = () => {
 
     if (reactFlowInstance) {
       const type = event.dataTransfer.getData('application/reactflow');
-      const position = reactFlowInstance.screenToFlowCoordinate({
+      const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
@@ -66,7 +66,7 @@ const DnDFlow = () => {
 
   return (
     <div className={styles.dndflow}>
-      <ReactFlowProvider nodes={initialNodes} edges={[]}>
+      <ReactFlowProvider initialNodes={initialNodes} initialEdges={[]}>
         <div className={styles.wrapper}>
           <ReactFlow
             nodes={nodes}

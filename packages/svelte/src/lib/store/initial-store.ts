@@ -28,7 +28,15 @@ import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
 import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
 import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
 import StepEdge from '$lib/components/edges/StepEdge.svelte';
-import type { NodeTypes, EdgeTypes, EdgeLayouted, Node, Edge, FitViewOptions } from '$lib/types';
+import type {
+  NodeTypes,
+  EdgeTypes,
+  EdgeLayouted,
+  Node,
+  Edge,
+  FitViewOptions,
+  OnDelete
+} from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 
@@ -59,23 +67,24 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
 }) => {
-  const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nodeLookup = new Map<string, Node>();
+  const nextNodes = updateNodes(nodes, nodeLookup, {
+    nodeOrigin: [0, 0],
+    elevateNodesOnSelect: false
+  });
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height
-    }));
+    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nextNodes),
+    nodes: createNodesStore(nextNodes, nodeLookup),
+    nodeLookup: readable<Map<string, Node>>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges),
     edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
@@ -100,6 +109,7 @@ export const getInitialStore = ({
     multiselectionKeyPressed: writable<boolean>(false),
     deleteKeyPressed: writable<boolean>(false),
     panActivationKeyPressed: writable<boolean>(false),
+    zoomActivationKeyPressed: writable<boolean>(false),
     selectionRectMode: writable<string | null>(null),
     selectionMode: writable<SelectionMode>(SelectionMode.Partial),
     nodeTypes: writable<NodeTypes>(initialNodeTypes),
@@ -119,6 +129,7 @@ export const getInitialStore = ({
     defaultMarkerColor: writable<string>('#b1b1b7'),
     lib: readable<string>('svelte'),
     onlyRenderVisibleElements: writable<boolean>(false),
-    onError: writable<OnError>(devWarn)
+    onerror: writable<OnError>(devWarn),
+    ondelete: writable<OnDelete>(undefined)
   };
 };

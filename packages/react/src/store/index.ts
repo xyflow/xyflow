@@ -41,18 +41,19 @@ const createRFStore = ({
     (set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
-        const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
-        const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
+        const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
+        // Whenver new nodes are set, we need to calculate the absolute positions of the nodes
+        // and update the nodeLookup.
+        const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
         set({ nodes: nextNodes });
-      },
-      getNodes: () => {
-        return get().nodes;
       },
       setEdges: (edges: Edge[]) => {
         const { defaultEdgeOptions = {} } = get();
         set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
       },
+      // when the user works with an uncontrolled flow,
+      // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
         const hasDefaultNodes = typeof nodes !== 'undefined';
         const hasDefaultEdges = typeof edges !== 'undefined';
@@ -68,7 +69,7 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          nextState.nodes = updateNodes(nodes, [], {
+          nextState.nodes = updateNodes(nodes, new Map(), {
             nodeOrigin: get().nodeOrigin,
             elevateNodesOnSelect: get().elevateNodesOnSelect,
           });
@@ -79,14 +80,27 @@ const createRFStore = ({
 
         set(nextState);
       },
+      // Every node gets registerd at a ResizeObserver. Whenever a node
+      // changes its dimensions, this function is called to measure the
+      // new dimensions and update the nodes.
       updateNodeDimensions: (updates) => {
-        const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
-          get();
+        const {
+          onNodesChange,
+          fitView,
+          nodes,
+          nodeLookup,
+          fitViewOnInit,
+          fitViewDone,
+          fitViewOnInitOptions,
+          domNode,
+          nodeOrigin,
+        } = get();
         const changes: NodeDimensionChange[] = [];
 
         const updatedNodes = updateNodeDimensionsSystem(
           updates,
           nodes,
+          nodeLookup,
           domNode,
           nodeOrigin,
           (id: string, dimensions: Dimensions) => {
@@ -102,8 +116,9 @@ const createRFStore = ({
           return;
         }
 
-        const nextNodes = updateAbsolutePositions(updatedNodes, nodeOrigin);
+        const nextNodes = updateAbsolutePositions(updatedNodes, nodeLookup, nodeOrigin);
 
+        // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
         if (!fitViewDone && fitViewOnInit) {
           nextFitViewDone = fitView(nextNodes, {
@@ -112,6 +127,11 @@ const createRFStore = ({
           });
         }
 
+        // here we are cirmumventing the onNodesChange handler
+        // in order to be able to display nodes even if the user
+        // has not provided an onNodesChange handler.
+        // Nodes are only rendered if they have a width and height
+        // attribute which they get from this handler.
         set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
         if (changes?.length > 0) {
@@ -127,7 +147,7 @@ const createRFStore = ({
           };
 
           if (positionChanged) {
-            change.positionAbsolute = node.positionAbsolute;
+            change.positionAbsolute = node.computed?.positionAbsolute;
             change.position = node.position;
           }
 
@@ -138,12 +158,12 @@ const createRFStore = ({
       },
 
       triggerNodeChanges: (changes) => {
-        const { onNodesChange, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
+        const { onNodesChange, nodeLookup, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
 
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = updateNodes(updatedNodes, nodes, {
+            const nextNodes = updateNodes(updatedNodes, nodeLookup, {
               nodeOrigin,
               elevateNodesOnSelect,
             });
@@ -256,7 +276,10 @@ const createRFStore = ({
 
             return {
               ...node,
-              positionAbsolute,
+              computed: {
+                ...node.computed,
+                positionAbsolute,
+              },
             };
           }),
         });

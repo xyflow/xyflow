@@ -30,6 +30,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
 
       return {
         nodes: get(store.nodes),
+        nodeLookup: get(store.nodeLookup),
         edges: get(store.edges),
         nodeExtent: get(store.nodeExtent),
         snapGrid: snapGrid ? snapGrid : [0, 0],

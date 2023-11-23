@@ -18,8 +18,8 @@ type FlowProps = {
 };
 
 export default ({ flowConfig }: FlowProps) => {
-  const [nodes, setNodes] = useState(flowConfig.flowProps.nodes);
-  const [edges, setEdges] = useState(flowConfig.flowProps.edges);
+  const [nodes, setNodes] = useState(flowConfig.flowProps?.nodes);
+  const [edges, setEdges] = useState(flowConfig.flowProps?.edges);
   const props = { ...flowConfig.flowProps, nodes, edges };
 
   const onNodesChange: OnNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);

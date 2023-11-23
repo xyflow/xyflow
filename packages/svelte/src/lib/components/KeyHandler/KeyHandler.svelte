@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { shortcut } from '@svelte-put/shortcut';
+  import { shortcut, type ShortcutModifierDefinition } from '@svelte-put/shortcut';
 
   import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
@@ -12,40 +12,66 @@
   export let multiSelectionKey: $$Props['multiSelectionKey'] = isMacOs() ? 'Meta' : 'Control';
   export let deleteKey: $$Props['deleteKey'] = 'Backspace';
   export let panActivationKey: $$Props['panActivationKey'] = ' ';
+  export let zoomActivationKey: $$Props['zoomActivationKey'] = isMacOs() ? 'Meta' : 'Control';
 
   const {
     selectionKeyPressed,
     multiselectionKeyPressed,
     deleteKeyPressed,
-    panActivationKeyPressed
+    panActivationKeyPressed,
+    zoomActivationKeyPressed
   } = useStore();
 
-  function isKeyObject(key?: KeyDefinition): key is KeyDefinitionObject {
+  function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
     return typeof key === 'object';
   }
 
-  $: selectionKeyString = typeof selectionKey === 'string' ? selectionKey : selectionKey!.key;
-  $: selectionKeyModifier = isKeyObject(selectionKey) ? selectionKey?.modifier : [];
+  function getModifier(key?: KeyDefinition | null): ShortcutModifierDefinition {
+    return isKeyObject(key) ? key.modifier || [] : [];
+  }
 
-  $: multiSelectionKeyString =
-    typeof multiSelectionKey === 'string' ? multiSelectionKey : multiSelectionKey!.key;
-  $: multiSelectionKeyModifier = isKeyObject(multiSelectionKey) ? multiSelectionKey?.modifier : [];
+  function getKeyString(key?: KeyDefinition | null): string {
+    if (key === null || key === undefined) {
+      // this is a workaround to check if a key is set
+      // if not we won't call the callback
+      return '';
+    }
 
-  $: deleteKeyString = typeof deleteKey === 'string' ? deleteKey : deleteKey!.key;
-  $: deleteKeyModifier = isKeyObject(deleteKey) ? deleteKey?.modifier : [];
+    return isKeyObject(key) ? key.key : key;
+  }
 
-  $: panActivationKeyString =
-    typeof panActivationKey === 'string' ? panActivationKey : panActivationKey!.key;
-  $: panActivationKeyModifier = isKeyObject(panActivationKey) ? panActivationKey?.modifier : [];
+  $: selectionKeyDefinition = {
+    key: getKeyString(selectionKey),
+    modifier: getModifier(selectionKey)
+  };
+
+  $: multiSelectionKeyDefinition = {
+    key: getKeyString(multiSelectionKey),
+    modifier: getModifier(multiSelectionKey)
+  };
+
+  $: deleteKeyDefinition = {
+    key: getKeyString(deleteKey),
+    modifier: getModifier(deleteKey)
+  };
+
+  $: panActivationKeyDefinition = {
+    key: getKeyString(panActivationKey),
+    modifier: getModifier(panActivationKey)
+  };
+
+  $: zoomActivationKeyDefinition = {
+    key: getKeyString(zoomActivationKey),
+    modifier: getModifier(zoomActivationKey)
+  };
 </script>
 
 <svelte:window
   use:shortcut={{
     trigger: [
       {
-        key: selectionKeyString,
-        modifier: selectionKeyModifier,
-        callback: () => selectionKeyPressed.set(true)
+        ...selectionKeyDefinition,
+        callback: () => selectionKeyDefinition.key && selectionKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -53,9 +79,8 @@
   use:shortcut={{
     trigger: [
       {
-        key: selectionKeyString,
-        modifier: selectionKeyModifier,
-        callback: () => selectionKeyPressed.set(false)
+        ...selectionKeyDefinition,
+        callback: () => selectionKeyDefinition.key && selectionKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -63,9 +88,8 @@
   use:shortcut={{
     trigger: [
       {
-        key: multiSelectionKeyString,
-        modifier: multiSelectionKeyModifier,
-        callback: () => multiselectionKeyPressed.set(true)
+        ...multiSelectionKeyDefinition,
+        callback: () => multiSelectionKeyDefinition.key && multiselectionKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -73,9 +97,8 @@
   use:shortcut={{
     trigger: [
       {
-        key: multiSelectionKeyString,
-        modifier: multiSelectionKeyModifier,
-        callback: () => multiselectionKeyPressed.set(false)
+        ...multiSelectionKeyDefinition,
+        callback: () => multiSelectionKeyDefinition.key && multiselectionKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -83,11 +106,8 @@
   use:shortcut={{
     trigger: [
       {
-        key: deleteKeyString,
-        modifier: deleteKeyModifier,
-        callback: () => {
-          deleteKeyPressed.set(true);
-        }
+        ...deleteKeyDefinition,
+        callback: () => deleteKeyDefinition.key && deleteKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -95,9 +115,8 @@
   use:shortcut={{
     trigger: [
       {
-        key: deleteKeyString,
-        modifier: deleteKeyModifier,
-        callback: () => deleteKeyPressed.set(false)
+        ...deleteKeyDefinition,
+        callback: () => deleteKeyDefinition.key && deleteKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -105,9 +124,8 @@
   use:shortcut={{
     trigger: [
       {
-        key: panActivationKeyString,
-        modifier: panActivationKeyModifier,
-        callback: () => panActivationKeyPressed.set(true)
+        ...panActivationKeyDefinition,
+        callback: () => panActivationKeyDefinition.key && panActivationKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -115,9 +133,26 @@
   use:shortcut={{
     trigger: [
       {
-        key: panActivationKeyString,
-        modifier: panActivationKeyModifier,
-        callback: () => panActivationKeyPressed.set(false)
+        ...panActivationKeyDefinition,
+        callback: () => panActivationKeyDefinition.key && panActivationKeyPressed.set(false)
+      }
+    ],
+    type: 'keyup'
+  }}
+  use:shortcut={{
+    trigger: [
+      {
+        ...zoomActivationKeyDefinition,
+        callback: () => zoomActivationKeyDefinition.key && zoomActivationKeyPressed.set(true)
+      }
+    ],
+    type: 'keydown'
+  }}
+  use:shortcut={{
+    trigger: [
+      {
+        ...zoomActivationKeyDefinition,
+        callback: () => zoomActivationKeyDefinition.key && zoomActivationKeyPressed.set(false)
       }
     ],
     type: 'keyup'

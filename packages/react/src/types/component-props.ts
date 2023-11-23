@@ -19,6 +19,7 @@ import type {
   SelectionMode,
   OnError,
   IsValidConnection,
+  ColorMode,
 } from '@xyflow/system';
 
 import type {
@@ -34,6 +35,7 @@ import type {
   FitViewOptions,
   OnNodesDelete,
   OnEdgesDelete,
+  OnDelete,
   OnNodesChange,
   OnEdgesChange,
   NodeDragHandler,
@@ -70,6 +72,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   onEdgesChange?: OnEdgesChange;
   onNodesDelete?: OnNodesDelete;
   onEdgesDelete?: OnEdgesDelete;
+  onDelete?: OnDelete;
   onSelectionDragStart?: SelectionDragHandler;
   onSelectionDrag?: SelectionDragHandler;
   onSelectionDragStop?: SelectionDragHandler;
@@ -153,6 +156,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   nodeDragThreshold?: number;
   width?: number;
   height?: number;
+  colorMode?: ColorMode;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

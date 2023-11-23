@@ -15,8 +15,14 @@
   import { Attribution } from '$lib/components/Attribution';
   import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
+  import {
+    updateStore,
+    updateStoreByKeys,
+    type UpdatableStoreProps,
+    getColorModeClass
+  } from './utils';
   import { get } from 'svelte/store';
+  import { useColorModeClass } from '$lib/hooks/useColorModeClass';
 
   type $$Props = SvelteFlowProps;
 
@@ -34,6 +40,8 @@
   export let selectionKey: $$Props['selectionKey'] = undefined;
   export let selectionMode: $$Props['selectionMode'] = undefined;
   export let panActivationKey: $$Props['panActivationKey'] = undefined;
+  export let multiSelectionKey: $$Props['multiSelectionKey'] = undefined;
+  export let zoomActivationKey: $$Props['zoomActivationKey'] = undefined;
   export let nodesDraggable: $$Props['nodesDraggable'] = undefined;
   export let nodesConnectable: $$Props['nodesConnectable'] = undefined;
   export let nodeDragThreshold: $$Props['nodeDragThreshold'] = undefined;
@@ -61,12 +69,14 @@
   export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
   export let autoPanOnConnect: $$Props['autoPanOnConnect'] = true;
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
-  export let onError: $$Props['onError'] = undefined;
+  export let onerror: $$Props['onerror'] = undefined;
+  export let ondelete: $$Props['ondelete'] = undefined;
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
   export let width: $$Props['width'] = undefined;
   export let height: $$Props['height'] = undefined;
+  export let colorMode: $$Props['colorMode'] = 'light';
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -137,7 +147,8 @@
       isValidConnection,
       autoPanOnConnect,
       autoPanOnNodeDrag,
-      onError,
+      onerror,
+      ondelete,
       connectionMode,
       nodeDragThreshold
     };
@@ -152,6 +163,8 @@
     maxZoom,
     translateExtent
   });
+
+  $: colorModeClass = useColorModeClass(colorMode);
 </script>
 
 <div
@@ -159,14 +172,20 @@
   bind:clientWidth
   bind:clientHeight
   {style}
-  class={cc(['svelte-flow', className])}
+  class={cc(['svelte-flow', className, $colorModeClass])}
   data-testid="svelte-flow__wrapper"
   on:dragover
   on:drop
   {...$$restProps}
   role="application"
 >
-  <KeyHandler {selectionKey} {deleteKey} {panActivationKey} />
+  <KeyHandler
+    {selectionKey}
+    {deleteKey}
+    {panActivationKey}
+    {multiSelectionKey}
+    {zoomActivationKey}
+  />
   <Zoom
     {initialViewport}
     {onMoveStart}
@@ -204,7 +223,7 @@
           on:nodedragstop
           on:nodecontextmenu
         />
-        <NodeSelection />
+        <NodeSelection on:selectionclick on:selectioncontextmenu />
       </ViewportComponent>
       <UserSelection />
     </Pane>

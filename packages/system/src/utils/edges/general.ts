@@ -33,7 +33,7 @@ export type GroupedEdges<EdgeType extends EdgeBase> = {
 
 export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
   edges: EdgeType[],
-  nodes: NodeBase[],
+  nodeLookup: Map<string, NodeBase>,
   elevateEdgesOnSelect = false
 ): GroupedEdges<EdgeType>[] {
   let maxLevel = -1;
@@ -43,8 +43,8 @@ export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
     let z = hasZIndex ? edge.zIndex! : 0;
 
     if (elevateEdgesOnSelect) {
-      const targetNode = nodes.find((n) => n.id === edge.target);
-      const sourceNode = nodes.find((n) => n.id === edge.source);
+      const targetNode = nodeLookup.get(edge.target);
+      const sourceNode = nodeLookup.get(edge.source);
       const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
       const selectedZIndex = Math.max(
         sourceNode?.[internalsSymbol]?.z || 0,

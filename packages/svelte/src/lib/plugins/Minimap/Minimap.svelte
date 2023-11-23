@@ -20,7 +20,7 @@
   export let position: $$Props['position'] = 'bottom-right';
   export let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
   export let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
-  export let nodeColor: $$Props['nodeColor'] = '#e2e2e2';
+  export let nodeColor: $$Props['nodeColor'] = undefined;
   export let nodeClass: $$Props['nodeClass'] = '';
   export let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
   export let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
@@ -51,7 +51,7 @@
     translateExtent
   } = useStore();
 
-  const nodeColorFunc = getAttrFunction(nodeColor);
+  const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassFunc = getAttrFunction(nodeClass);
   const shapeRendering =
@@ -114,15 +114,15 @@
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
       {#each $nodes as node (node.id)}
-        {#if node.width && node.height}
+        {#if (node.computed?.width || node?.width) && (node.computed?.height || node.height)}
           {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
           <MinimapNode
             x={pos.x}
             y={pos.y}
-            width={node.width}
-            height={node.height}
+            width={node.computed?.width ?? node.width ?? 0}
+            height={node.computed?.height ?? node.height ?? 0}
             selected={node.selected}
-            color={nodeColorFunc(node)}
+            color={nodeColorFunc?.(node)}
             borderRadius={nodeBorderRadius}
             strokeColor={nodeStrokeColorFunc(node)}
             strokeWidth={nodeStrokeWidth}
@@ -142,27 +142,3 @@
     </svg>
   {/if}
 </Panel>
-
-<style>
-  svg {
-    background-color: var(
-      --minimap-background-color-props,
-      var(--minimap-background-color, var(--minimap-background-color-default))
-    );
-  }
-
-  .svelte-flow__minimap-mask {
-    fill: var(
-      --minimap-mask-color-props,
-      var(--minimap-mask-color, var(--minimap-mask-color-default))
-    );
-    stroke: var(
-      --minimap-mask-stroke-color-props,
-      var(--minimap-mask-stroke-color, var(--minimap-mask-stroke-color-default))
-    );
-    stroke-width: var(
-      --minimap-mask-stroke-width-props,
-      var(--minimap-mask-stroke-width, var(--minimap-mask-stroke-width-default))
-    );
-  }
-</style>

@@ -52,8 +52,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     disableKeyboardA11y,
     ariaLabel,
     rfId,
-    sizeWidth,
-    sizeHeight,
+    positionAbsolute,
+    width,
+    height,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -146,7 +147,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         if (targetPosChanged) {
           prevTargetPosition.current = targetPosition;
         }
-        store.getState().updateNodeDimensions([{ id, nodeElement: nodeRef.current, forceUpdate: true }]);
+        store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, forceUpdate: true }]]));
       }
     }, [id, type, sourcePosition, targetPosition]);
 
@@ -186,8 +187,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           transform: `translate(${xPosOrigin}px,${yPosOrigin}px)`,
           pointerEvents: hasPointerEvents ? 'all' : 'none',
           visibility: initialized ? 'visible' : 'hidden',
-          width: sizeWidth,
-          height: sizeHeight,
+          width,
+          height,
           ...style,
         }}
         data-id={id}
@@ -209,8 +210,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             id={id}
             data={data}
             type={type}
-            xPos={xPos}
-            yPos={yPos}
+            width={width}
+            height={height}
+            positionAbsolute={positionAbsolute}
             selected={selected}
             isConnectable={isConnectable}
             sourcePosition={sourcePosition}
