@@ -76,80 +76,132 @@ const NodeRenderer = (props: NodeRendererProps) => {
   return (
     <div className="react-flow__nodes" style={containerStyle}>
       {nodes.map((node) => {
-        let nodeType = node.type || 'default';
-
-        if (!props.nodeTypes[nodeType]) {
-          onError?.('003', errorMessages['error003'](nodeType));
-
-          nodeType = 'default';
-        }
-
-        const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
-        const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
-        const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
-        const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
-        const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
-
-        const clampedPosition = props.nodeExtent
-          ? clampPosition(node.computed?.positionAbsolute, props.nodeExtent)
-          : node.computed?.positionAbsolute;
-
-        const posX = clampedPosition?.x ?? 0;
-        const posY = clampedPosition?.y ?? 0;
-        const posOrigin = getPositionWithOrigin({
-          x: posX,
-          y: posY,
-          width: node.computed?.width ?? node.width ?? 0,
-          height: node.computed?.height ?? node.height ?? 0,
-          origin: node.origin || props.nodeOrigin,
-        });
-        const initialized = (!!node.computed?.width && !!node.computed?.height) || (!!node.width && !!node.height);
-
         return (
-          <NodeComponent
+          <NodeComponentWrapper
             key={node.id}
             id={node.id}
-            className={node.className}
-            style={node.style}
-            width={node.width ?? undefined}
-            height={node.height ?? undefined}
-            type={nodeType}
-            data={node.data}
-            sourcePosition={node.sourcePosition || Position.Bottom}
-            targetPosition={node.targetPosition || Position.Top}
-            hidden={node.hidden}
-            xPos={posX}
-            yPos={posY}
-            xPosOrigin={posOrigin.x}
-            yPosOrigin={posOrigin.y}
-            positionAbsolute={clampedPosition || { x: 0, y: 0 }}
-            onClick={props.onNodeClick}
-            onMouseEnter={props.onNodeMouseEnter}
-            onMouseMove={props.onNodeMouseMove}
-            onMouseLeave={props.onNodeMouseLeave}
-            onContextMenu={props.onNodeContextMenu}
-            onDoubleClick={props.onNodeDoubleClick}
-            selected={!!node.selected}
-            isDraggable={isDraggable}
-            isSelectable={isSelectable}
-            isConnectable={isConnectable}
-            isFocusable={isFocusable}
-            resizeObserver={resizeObserver}
-            dragHandle={node.dragHandle}
-            zIndex={node[internalsSymbol]?.z ?? 0}
-            isParent={!!node[internalsSymbol]?.isParent}
+            nodeTypes={props.nodeTypes}
+            nodeExtent={props.nodeExtent}
+            nodeOrigin={props.nodeOrigin}
+            onNodeClick={props.onNodeClick}
+            onNodeMouseEnter={props.onNodeMouseEnter}
+            onNodeMouseMove={props.onNodeMouseMove}
+            onNodeMouseLeave={props.onNodeMouseLeave}
+            onNodeContextMenu={props.onNodeContextMenu}
+            onNodeDoubleClick={props.onNodeDoubleClick}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
-            initialized={initialized}
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
-            ariaLabel={node.ariaLabel}
+            resizeObserver={resizeObserver}
+            nodesDraggable={nodesDraggable}
+            nodesConnectable={nodesConnectable}
+            nodesFocusable={nodesFocusable}
+            elementsSelectable={elementsSelectable}
+            onError={onError}
           />
         );
       })}
     </div>
   );
 };
+
+const NodeComponentWrapper = memo(function NodeComponentWrapper(props: {
+  id: string;
+  nodeExtent: NodeRendererProps['nodeExtent'];
+  nodeTypes: NodeRendererProps['nodeTypes'];
+  nodeOrigin: NodeRendererProps['nodeOrigin'];
+  onNodeClick: NodeRendererProps['onNodeClick'];
+  onNodeMouseEnter: NodeRendererProps['onNodeMouseEnter'];
+  onNodeMouseMove: NodeRendererProps['onNodeMouseMove'];
+  onNodeMouseLeave: NodeRendererProps['onNodeMouseLeave'];
+  onNodeContextMenu: NodeRendererProps['onNodeContextMenu'];
+  onNodeDoubleClick: NodeRendererProps['onNodeDoubleClick'];
+  noDragClassName: NodeRendererProps['noDragClassName'];
+  noPanClassName: NodeRendererProps['noPanClassName'];
+  rfId: NodeRendererProps['rfId'];
+  disableKeyboardA11y: NodeRendererProps['disableKeyboardA11y'];
+  resizeObserver: ResizeObserver | null;
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  nodesFocusable: boolean;
+  elementsSelectable: boolean;
+  onError: ReactFlowState['onError'];
+}) {
+  const node = useStore((s) => s.nodeLookup.get(props.id));
+  if (!node) return null;
+
+  let nodeType = node.type || 'default';
+
+  if (!props.nodeTypes[nodeType]) {
+    props.onError?.('003', errorMessages['error003'](nodeType));
+
+    nodeType = 'default';
+  }
+
+  const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
+  const isDraggable = !!(node.draggable || (props.nodesDraggable && typeof node.draggable === 'undefined'));
+  const isSelectable = !!(node.selectable || (props.elementsSelectable && typeof node.selectable === 'undefined'));
+  const isConnectable = !!(node.connectable || (props.nodesConnectable && typeof node.connectable === 'undefined'));
+  const isFocusable = !!(node.focusable || (props.nodesFocusable && typeof node.focusable === 'undefined'));
+
+  const clampedPosition = props.nodeExtent
+    ? clampPosition(node.computed?.positionAbsolute, props.nodeExtent)
+    : node.computed?.positionAbsolute;
+
+  const posX = clampedPosition?.x ?? 0;
+  const posY = clampedPosition?.y ?? 0;
+  const posOrigin = getPositionWithOrigin({
+    x: posX,
+    y: posY,
+    width: node.computed?.width ?? node.width ?? 0,
+    height: node.computed?.height ?? node.height ?? 0,
+    origin: node.origin || props.nodeOrigin,
+  });
+  const initialized = (!!node.computed?.width && !!node.computed?.height) || (!!node.width && !!node.height);
+
+  return (
+    <NodeComponent
+      key={node.id}
+      id={node.id}
+      className={node.className}
+      style={node.style}
+      width={node.width ?? undefined}
+      height={node.height ?? undefined}
+      type={nodeType}
+      data={node.data}
+      sourcePosition={node.sourcePosition || Position.Bottom}
+      targetPosition={node.targetPosition || Position.Top}
+      hidden={node.hidden}
+      xPos={posX}
+      yPos={posY}
+      xPosOrigin={posOrigin.x}
+      yPosOrigin={posOrigin.y}
+      positionAbsolute={clampedPosition || { x: 0, y: 0 }}
+      onClick={props.onNodeClick}
+      onMouseEnter={props.onNodeMouseEnter}
+      onMouseMove={props.onNodeMouseMove}
+      onMouseLeave={props.onNodeMouseLeave}
+      onContextMenu={props.onNodeContextMenu}
+      onDoubleClick={props.onNodeDoubleClick}
+      selected={!!node.selected}
+      isDraggable={isDraggable}
+      isSelectable={isSelectable}
+      isConnectable={isConnectable}
+      isFocusable={isFocusable}
+      resizeObserver={props.resizeObserver}
+      dragHandle={node.dragHandle}
+      zIndex={node[internalsSymbol]?.z ?? 0}
+      isParent={!!node[internalsSymbol]?.isParent}
+      noDragClassName={props.noDragClassName}
+      noPanClassName={props.noPanClassName}
+      initialized={initialized}
+      rfId={props.rfId}
+      disableKeyboardA11y={props.disableKeyboardA11y}
+      ariaLabel={node.ariaLabel}
+    />
+  );
+});
 
 NodeRenderer.displayName = 'NodeRenderer';
 
