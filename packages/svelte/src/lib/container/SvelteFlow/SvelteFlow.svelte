@@ -223,7 +223,7 @@
           on:nodedragstop
           on:nodecontextmenu
         />
-        <NodeSelection />
+        <NodeSelection on:selectionclick on:selectioncontextmenu />
       </ViewportComponent>
       <UserSelection />
     </Pane>
