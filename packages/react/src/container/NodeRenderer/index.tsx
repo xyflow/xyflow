@@ -2,7 +2,7 @@ import { memo, useMemo, useEffect, useRef, type ComponentType } from 'react';
 import { shallow } from 'zustand/shallow';
 import { internalsSymbol, errorMessages, Position, clampPosition, getPositionWithOrigin } from '@xyflow/system';
 
-import useVisibleNodes from '../../hooks/useVisibleNodes';
+import useVisibleNodesIds from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
@@ -39,7 +39,7 @@ const selector = (s: ReactFlowState) => ({
 const NodeRenderer = (props: NodeRendererProps) => {
   const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, updateNodeDimensions, onError } =
     useStore(selector, shallow);
-  const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
+  const nodeIds = useVisibleNodesIds(props.onlyRenderVisibleElements);
   const resizeObserverRef = useRef<ResizeObserver>();
 
   const resizeObserver = useMemo(() => {
@@ -75,11 +75,11 @@ const NodeRenderer = (props: NodeRendererProps) => {
 
   return (
     <div className="react-flow__nodes" style={containerStyle}>
-      {nodes.map((node) => {
+      {nodeIds.map((nodeId) => {
         return (
           <NodeComponentWrapper
-            key={node.id}
-            id={node.id}
+            key={nodeId}
+            id={nodeId}
             nodeTypes={props.nodeTypes}
             nodeExtent={props.nodeExtent}
             nodeOrigin={props.nodeOrigin}
