@@ -62,7 +62,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   defaults?: Partial<NodeType>;
 };
 
-export function updateNodes<NodeType extends NodeBase>(
+export function adoptUserProvidedNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: Map<string, NodeType>,
   options: UpdateNodesOptions<NodeType> = {
@@ -76,6 +76,8 @@ export function updateNodes<NodeType extends NodeBase>(
 
   const nextNodes = nodes.map((n) => {
     const currentStoreNode = nodeLookup.get(n.id);
+    if (n === currentStoreNode?.[internalsSymbol]?.userProvidedNode.deref()) return currentStoreNode;
+
     const node: NodeType = {
       ...options.defaults,
       ...n,
@@ -97,6 +99,7 @@ export function updateNodes<NodeType extends NodeBase>(
       value: {
         handleBounds: currInternals?.handleBounds,
         z,
+        userProvidedNode: new WeakRef(n),
       },
     });
 

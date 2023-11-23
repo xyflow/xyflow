@@ -2,7 +2,7 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
   fitView as fitViewSystem,
-  updateNodes,
+  adoptUserProvidedNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
   Dimensions,
@@ -42,11 +42,16 @@ const createRFStore = ({
       ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
-        // Whenver new nodes are set, we need to calculate the absolute positions of the nodes
-        // and update the nodeLookup.
-        const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        // setNodes() is called exclusively in response to user actions:
+        // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
+        // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
+        //
+        // When this happens, we take the note objects passed by the user and extend them with fields
+        // relevant for internal React Flow operations.
+        // TODO: consider updating the types to reflect the distinction between user-provided nodes and internal nodes.
+        const nodesWithInternalData = adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
-        set({ nodes: nextNodes });
+        set({ nodes: nodesWithInternalData });
       },
       setEdges: (edges: Edge[]) => {
         const { defaultEdgeOptions = {} } = get();
@@ -69,7 +74,7 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          nextState.nodes = updateNodes(nodes, new Map(), {
+          nextState.nodes = adoptUserProvidedNodes(nodes, new Map(), {
             nodeOrigin: get().nodeOrigin,
             elevateNodesOnSelect: get().elevateNodesOnSelect,
           });
@@ -163,7 +168,7 @@ const createRFStore = ({
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = updateNodes(updatedNodes, nodeLookup, {
+            const nextNodes = adoptUserProvidedNodes(updatedNodes, nodeLookup, {
               nodeOrigin,
               elevateNodesOnSelect,
             });

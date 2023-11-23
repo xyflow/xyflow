@@ -15,7 +15,7 @@ import {
   type OnError,
   devWarn,
   type Viewport,
-  updateNodes,
+  adoptUserProvidedNodes,
   getNodesBounds,
   getViewportForBounds
 } from '@xyflow/system';
@@ -68,7 +68,7 @@ export const getInitialStore = ({
   fitView?: boolean;
 }) => {
   const nodeLookup = new Map<string, Node>();
-  const nextNodes = updateNodes(nodes, nodeLookup, {
+  const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
   });

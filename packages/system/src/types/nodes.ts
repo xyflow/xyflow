@@ -40,6 +40,10 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
     z?: number;
     handleBounds?: NodeHandleBounds;
     isParent?: boolean;
+    /** Holds a reference to the original node object provided by the user
+     * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
+     * as an optimization to avoid certain operations. */
+    userProvidedNode: WeakRef<NodeBase>;
   };
 };
 
