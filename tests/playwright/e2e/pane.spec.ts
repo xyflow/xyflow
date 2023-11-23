@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { FRAMEWORK } from './constants';
 import { getTransform } from './utils';
 
-test.describe('PANE DEFAULT', () => {
+test.describe('Pane default', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
     await page.goto('/tests/generic/pane/general');
@@ -126,7 +126,7 @@ test.describe('PANE DEFAULT', () => {
   });
 });
 
-test.describe('PANE NON-DEFAULT', () => {
+test.describe('Pane non-default', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
     await page.goto('/tests/generic/pane/non-defaults');
@@ -168,7 +168,7 @@ test.describe('PANE NON-DEFAULT', () => {
   });
 });
 
-test.describe('PANE ACTIVATION KEYS', () => {
+test.describe('Pane activation keys', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.
     await page.goto('/tests/generic/pane/activation-keys');

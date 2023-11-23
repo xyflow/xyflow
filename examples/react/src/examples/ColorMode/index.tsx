@@ -75,7 +75,7 @@ const ColorModeFlow = () => {
       <Controls />
 
       <Panel position="top-right">
-        <select onChange={onChange}>
+        <select onChange={onChange} data-testid="colormode-select">
           <option value="light">light</option>
           <option value="dark">dark</option>
           <option value="system">system</option>
