@@ -74,7 +74,8 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          nextState.nodes = adoptUserProvidedNodes(nodes, new Map(), {
+          const { nodeLookup } = get();
+          nextState.nodes = adoptUserProvidedNodes(nodes, nodeLookup, {
             nodeOrigin: get().nodeOrigin,
             elevateNodesOnSelect: get().elevateNodesOnSelect,
           });
