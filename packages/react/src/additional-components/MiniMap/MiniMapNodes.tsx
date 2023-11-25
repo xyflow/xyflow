@@ -49,6 +49,11 @@ function MiniMapNodes({
   return (
     <>
       {nodes.map((nodeId) => (
+        // The split of responsibilities between MiniMapNodes and
+        // NodeComponentWrapper may appear weird. However, it’s designed to
+        // minimize the cost of updates when individual nodes change.
+        //
+        // For more details, see a similar commit in `NodeRenderer/index.tsx`.
         <NodeComponentWrapper
           key={nodeId}
           id={nodeId}
