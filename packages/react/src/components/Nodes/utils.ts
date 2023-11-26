@@ -1,12 +1,10 @@
 import type { MouseEvent, RefObject } from 'react';
-import type { StoreApi } from 'zustand';
-
-import type { Node, ReactFlowState } from '../../types';
+import type { Node, ReactFlowStoreApi } from '../../types';
 import { errorMessages } from '@xyflow/system';
 
 export function getMouseHandler(
   id: string,
-  getState: StoreApi<ReactFlowState>['getState'],
+  getState: ReactFlowStoreApi['getState'],
   handler?: (event: MouseEvent, node: Node) => void
 ) {
   return handler === undefined
@@ -29,8 +27,8 @@ export function handleNodeClick({
 }: {
   id: string;
   store: {
-    getState: StoreApi<ReactFlowState>['getState'];
-    setState: StoreApi<ReactFlowState>['setState'];
+    getState: ReactFlowStoreApi['getState'];
+    setState: ReactFlowStoreApi['setState'];
   };
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;

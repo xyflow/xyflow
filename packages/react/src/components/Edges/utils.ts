@@ -1,11 +1,9 @@
 import type { MouseEvent as ReactMouseEvent } from 'react';
-import type { StoreApi } from 'zustand';
-
-import type { Edge, ReactFlowState } from '../../types';
+import type { Edge, ReactFlowStoreApi } from '../../types';
 
 export function getMouseHandler(
   id: string,
-  getState: StoreApi<ReactFlowState>['getState'],
+  getState: ReactFlowStoreApi['getState'],
   handler?: (event: ReactMouseEvent<SVGGElement, MouseEvent>, edge: Edge) => void
 ) {
   return handler === undefined

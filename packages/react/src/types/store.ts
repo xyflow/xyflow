@@ -41,6 +41,9 @@ import type {
   OnDelete,
 } from '.';
 
+import type { StoreApi } from 'zustand';
+import type { BatchUpdatesFn, Write } from '../store/batchMiddleware';
+
 export type ReactFlowStore = {
   rfId: string;
   width: number;
@@ -162,3 +165,5 @@ export type ReactFlowActions = {
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;
+
+export type ReactFlowStoreApi = Write<StoreApi<ReactFlowState>, { batchUpdates: BatchUpdatesFn }>;

@@ -23,6 +23,7 @@ import type {
   UnselectNodesAndEdgesParams,
   FitViewOptions,
 } from '../types';
+import batchMiddleware from './batchMiddleware';
 
 const createRFStore = ({
   nodes,
@@ -37,8 +38,8 @@ const createRFStore = ({
   height?: number;
   fitView?: boolean;
 }) =>
-  createWithEqualityFn<ReactFlowState>(
-    (set, get) => ({
+  createWithEqualityFn<ReactFlowState>()(
+    batchMiddleware((set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
@@ -333,7 +334,7 @@ const createRFStore = ({
         // leads to an emtpy nodes array at the beginning.
         // set({ ...getInitialState() });
       },
-    }),
+    })),
     Object.is
   );
 

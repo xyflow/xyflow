@@ -1,10 +1,9 @@
 import { useRef, type ReactNode } from 'react';
-import { type StoreApi } from 'zustand';
 import { UseBoundStoreWithEqualityFn } from 'zustand/traditional';
 
 import { Provider } from '../../contexts/RFStoreContext';
 import { createRFStore } from '../../store';
-import type { ReactFlowState, Node, Edge } from '../../types';
+import type { Node, Edge, ReactFlowStoreApi } from '../../types';
 
 function ReactFlowProvider({
   children,
@@ -21,7 +20,7 @@ function ReactFlowProvider({
   initialHeight?: number;
   fitView?: boolean;
 }) {
-  const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
+  const storeRef = useRef<UseBoundStoreWithEqualityFn<ReactFlowStoreApi> | null>(null);
 
   if (!storeRef.current) {
     storeRef.current = createRFStore({

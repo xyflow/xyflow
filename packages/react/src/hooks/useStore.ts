@@ -36,6 +36,7 @@ const useStoreApi = () => {
       setState: store.setState,
       subscribe: store.subscribe,
       destroy: store.destroy,
+      batchUpdates: store.batchUpdates,
     }),
     [store]
   );

@@ -1,5 +1,4 @@
-import type { StoreApi } from 'zustand';
-import type { Edge, EdgeSelectionChange, Node, NodeSelectionChange, ReactFlowState } from '../types';
+import type { Edge, EdgeSelectionChange, Node, NodeSelectionChange, ReactFlowStoreApi } from '../types';
 
 export function handleControlledSelectionChange<NodeOrEdge extends Node | Edge>(
   changes: NodeSelectionChange[] | EdgeSelectionChange[],
@@ -19,8 +18,8 @@ export function handleControlledSelectionChange<NodeOrEdge extends Node | Edge>(
 type UpdateNodesAndEdgesParams = {
   changedNodes: NodeSelectionChange[] | null;
   changedEdges: EdgeSelectionChange[] | null;
-  get: StoreApi<ReactFlowState>['getState'];
-  set: StoreApi<ReactFlowState>['setState'];
+  get: ReactFlowStoreApi['getState'];
+  set: ReactFlowStoreApi['setState'];
 };
 
 export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get, set }: UpdateNodesAndEdgesParams) {
