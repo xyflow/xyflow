@@ -68,10 +68,30 @@ const ZoomPane = ({
           onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
 
           if (!isControlledViewport) {
-            store.setState({ transform });
+            store.setState((state) => {
+              if (
+                transform[0] === state.transform[0] &&
+                transform[1] === state.transform[1] &&
+                transform[2] === state.transform[2]
+              ) {
+                // Nothing has changed, no need to trigger a state update
+                return state;
+              }
+
+              return { transform };
+            });
           }
         },
-        onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
+        onDraggingChange: (paneDragging: boolean) => {
+          return store.setState((state) => {
+            if (paneDragging === state.paneDragging) {
+              // Nothing has changed, no need to trigger a state update
+              return state;
+            }
+
+            return { paneDragging };
+          });
+        },
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
           onMoveStart?.(event, vp);

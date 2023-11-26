@@ -17,7 +17,14 @@ function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): voi
         store.getState().onError?.('004', errorMessages['error004']());
       }
 
-      store.setState({ width: size.width || 500, height: size.height || 500 });
+      store.setState((state) => {
+        if (size.width === state.width && size.height === state.height) {
+          // Nothing has changed, no need to trigger a state update
+          return state;
+        }
+
+        return { width: size.width || 500, height: size.height || 500 };
+      });
     };
 
     if (domNode.current) {
