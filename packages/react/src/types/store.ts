@@ -42,7 +42,7 @@ import type {
 } from '.';
 
 import type { StoreApi } from 'zustand';
-import type { BatchUpdatesFn, Write } from '../store/batchMiddleware';
+import type { BatchUpdatesFn, StartStopBatchingFn, Write } from '../store/batchMiddleware';
 
 export type ReactFlowStore = {
   rfId: string;
@@ -166,4 +166,7 @@ export type ReactFlowActions = {
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;
 
-export type ReactFlowStoreApi = Write<StoreApi<ReactFlowState>, { batchUpdates: BatchUpdatesFn }>;
+export type ReactFlowStoreApi = Write<
+  StoreApi<ReactFlowState>,
+  { batchUpdates: BatchUpdatesFn; unsafe_startBatching: StartStopBatchingFn; unsafe_stopBatching: StartStopBatchingFn }
+>;

@@ -5,18 +5,54 @@ export type Write<T extends object, U extends object> = Omit<T, keyof U> & U;
 type Cast<T, U> = T extends U ? T : U;
 
 export type BatchUpdatesFn = (fn: () => void) => void;
+export type StartStopBatchingFn = () => void;
 
 type BatchMiddleware = <
   T,
   Mps extends [StoreMutatorIdentifier, unknown][] = [],
   Mcs extends [StoreMutatorIdentifier, unknown][] = []
 >(
-  f: StateCreator<T, [...Mps, ['batchUpdates', BatchUpdatesFn]], Mcs>
-) => StateCreator<T, Mps, [['batchUpdates', BatchUpdatesFn], ...Mcs]>;
+  f: StateCreator<
+    T,
+    [
+      ...Mps,
+      ['batchUpdates', BatchUpdatesFn],
+      ['unsafe_startBatching', StartStopBatchingFn],
+      ['unsafe_stopBatching', StartStopBatchingFn]
+    ],
+    Mcs
+  >
+) => StateCreator<
+  T,
+  Mps,
+  [
+    ['batchUpdates', BatchUpdatesFn],
+    ['unsafe_startBatching', StartStopBatchingFn],
+    ['unsafe_stopBatching', StartStopBatchingFn],
+    ...Mcs
+  ]
+>;
 
 declare module 'zustand' {
   interface StoreMutators<S, A> {
-    batchUpdates: Write<Cast<S, object>, { batchUpdates: BatchUpdatesFn }>;
+    batchUpdates: Write<
+      Cast<S, object>,
+      {
+        batchUpdates: BatchUpdatesFn;
+      }
+    >;
+    unsafe_startBatching: Write<
+      Cast<S, object>,
+      {
+        unsafe_startBatching: StartStopBatchingFn;
+      }
+    >;
+    unsafe_stopBatching: Write<
+      Cast<S, object>,
+      {
+        unsafe_stopBatching: StartStopBatchingFn;
+      }
+    >;
   }
 }
 
@@ -25,10 +61,40 @@ type BatchMiddlewareImpl = <T>(stateCreator: StateCreator<T, [], []>) => StateCr
 const batchMiddleware: BatchMiddlewareImpl = (stateCreator) => (originalSet, originalGet, _store) => {
   type StoreType = ReturnType<typeof stateCreator>;
 
-  const store = _store as Mutate<StoreApi<StoreType>, [['batchUpdates', BatchUpdatesFn]]>;
+  const store = _store as Mutate<
+    StoreApi<StoreType>,
+    [
+      ['batchUpdates', BatchUpdatesFn],
+      ['unsafe_startBatching', StartStopBatchingFn],
+      ['unsafe_stopBatching', StartStopBatchingFn]
+    ]
+  >;
 
   // End of TS boilerplate, start of actual middleware implementation:
-  let batchingState: { isBatching: true; intermediateStoreState: StoreType } | { isBatching: false } = {
+  let batchingState:
+    | {
+        isBatching: true;
+        /**
+         * Some places in the codebase might nest `batchUpdate` calls:
+         *
+         *   storeApi.batchUpdates(() => {
+         *     storeApi.batchUpdates(() => {
+         *       storeApi.setState({ a: 5 });
+         *     });
+         *     storeApi.setState({ b: 10 });
+         *   });
+         *
+         * (One of these places is the init sequence, where we batch all initial state updates
+         * together – *alongside* batching updates inside `StoreUpdated`.)
+         *
+         * When this happens, we need to make sure that the outermost `batchUpdate` call
+         * is the one that actually calls `store.setState()`. For this, we use `batchingLevel`
+         * to keep track of the nesting level.
+         */
+        batchingLevel: number;
+        intermediateStoreState: StoreType;
+      }
+    | { isBatching: false } = {
     isBatching: false,
   };
 
@@ -71,9 +137,41 @@ const batchMiddleware: BatchMiddlewareImpl = (stateCreator) => (originalSet, ori
   store.setState = batchingSet;
 
   store.batchUpdates = (fn) => {
-    batchingState = { isBatching: true, intermediateStoreState: originalGet() };
+    store.unsafe_startBatching();
 
     fn();
+
+    store.unsafe_stopBatching();
+  };
+
+  /**
+   * This method is unsafe because without a matching `unsafe_stopBatching()`
+   * call, it will leave the app broken. Use `store.batchUpdates()` unless
+   * you’re 100% sure you need this method.
+   */
+  store.unsafe_startBatching = () => {
+    if (batchingState.isBatching) {
+      batchingState.batchingLevel++;
+      return;
+    }
+
+    batchingState = { isBatching: true, batchingLevel: 0, intermediateStoreState: originalGet() };
+  };
+
+  /**
+   * This method is unsafe because it *must* be paired with
+   * `unsafe_startBatching()` call. Use `store.batchUpdates()` unless you’re
+   * 100% sure you need this method.
+   */
+  store.unsafe_stopBatching = () => {
+    if (!batchingState.isBatching) {
+      throw new Error('`store.unsafe_stopBatching()` called without a matching `store.unsafe_startBatching()`');
+    }
+
+    if (batchingState.batchingLevel > 0) {
+      batchingState.batchingLevel--;
+      return;
+    }
 
     originalSet(batchingState.intermediateStoreState);
     batchingState = { isBatching: false };
