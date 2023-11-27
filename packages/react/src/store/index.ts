@@ -135,6 +135,16 @@ const createRFStore = ({
         // attribute which they get from this handler.
         set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
+        // Here, we are making all nodes visible once we have the dimensions.
+        if (!document.querySelector('#initialized-styles')) {
+          const style = document.createElement('style');
+          style.id = 'initialized-styles';
+          document.head.appendChild(style);
+
+          const css = `.react-flow__node { visibility: visible !important; }`;
+          style.appendChild(document.createTextNode(css));
+        }
+
         if (changes?.length > 0) {
           onNodesChange?.(changes);
         }

@@ -103,7 +103,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
           height: node.computed?.height ?? node.height ?? 0,
           origin: node.origin || props.nodeOrigin,
         });
-        const initialized = (!!node.computed?.width && !!node.computed?.height) || (!!node.width && !!node.height);
 
         return (
           <NodeComponent
@@ -140,7 +139,8 @@ const NodeRenderer = (props: NodeRendererProps) => {
             isParent={!!node[internalsSymbol]?.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
-            initialized={initialized}
+            // Hard-code to false; this will be overridden with styles in updateNodeDimensions() in Zustand
+            initialized={false}
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
             ariaLabel={node.ariaLabel}
