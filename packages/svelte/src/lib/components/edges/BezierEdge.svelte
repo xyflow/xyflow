@@ -4,7 +4,7 @@
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';
 
-  type $$Props = EdgeProps;
+  type $$Props = Partial<EdgeProps>;
 
   $: [path, labelX, labelY] = getBezierPath({
     sourceX: $$props.sourceX,

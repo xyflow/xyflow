@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { getSmoothStepPath } from '@xyflow/system';
+  import { getStraightPath } from '@xyflow/system';
 
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';
 
-  type $$Props = Partial<EdgeProps>;
+  type $$Props = EdgeProps;
 
-  $: [path, labelX, labelY] = getSmoothStepPath({
+  $: [path, labelX, labelY] = getStraightPath({
     sourceX: $$props.sourceX,
     sourceY: $$props.sourceY,
     targetX: $$props.targetX,
-    targetY: $$props.targetY,
-    sourcePosition: $$props.sourcePosition,
-    targetPosition: $$props.targetPosition
+    targetY: $$props.targetY
   });
 </script>
 
@@ -20,7 +18,6 @@
   {path}
   {labelX}
   {labelY}
-  id={$$props.id}
   label={$$props.label}
   labelStyle={$$props.labelStyle}
   markerStart={$$props.markerStart}

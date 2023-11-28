@@ -6,7 +6,7 @@
   import { errorMessages, getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
+  import BezierEdge from '$lib/components/edges/InternalBezierEdge.svelte';
   import type { EdgeLayouted, Edge } from '$lib/types';
   import { get } from 'svelte/store';
 

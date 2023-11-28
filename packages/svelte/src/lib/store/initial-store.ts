@@ -24,10 +24,10 @@ import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import GroupNode from '$lib/components/nodes/GroupNode.svelte';
-import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
-import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
-import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
-import StepEdge from '$lib/components/edges/StepEdge.svelte';
+import BezierEdge from '$lib/components/edges/InternalBezierEdge.svelte';
+import StraightEdge from '$lib/components/edges/InternalStraightEdge.svelte';
+import SmoothStepEdge from '$lib/components/edges/InternalSmoothStepEdge.svelte';
+import StepEdge from '$lib/components/edges/InternalStepEdge.svelte';
 import type {
   NodeTypes,
   EdgeTypes,
