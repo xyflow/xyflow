@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { type Optional, Position, getBezierEdgeCenter } from '@xyflow/system';
+import { Position, getBezierEdgeCenter } from '@xyflow/system';
 
 import BaseEdge from './BaseEdge';
 import type { EdgeProps } from '../../types';
@@ -73,7 +73,6 @@ export function getSimpleBezierPath({
 
 const SimpleBezierEdge = memo(
   ({
-    id,
     sourceX,
     sourceY,
     targetX,
@@ -90,7 +89,7 @@ const SimpleBezierEdge = memo(
     markerEnd,
     markerStart,
     interactionWidth,
-  }: Optional<EdgeProps, 'id' | 'source' | 'target'>) => {
+  }: EdgeProps) => {
     const [path, labelX, labelY] = getSimpleBezierPath({
       sourceX,
       sourceY,
@@ -102,7 +101,6 @@ const SimpleBezierEdge = memo(
 
     return (
       <BaseEdge
-        id={id}
         path={path}
         labelX={labelX}
         labelY={labelY}

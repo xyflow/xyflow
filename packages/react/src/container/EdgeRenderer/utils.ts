@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 
-import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
+import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges/internal';
 import wrapEdge from '../../components/Edges/wrapEdge';
 import type { EdgeProps, EdgeTypes, EdgeTypesWrapped } from '../../types';
 

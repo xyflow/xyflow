@@ -1,12 +1,11 @@
 import { memo } from 'react';
-import { type Optional, getStraightPath } from '@xyflow/system';
+import { getStraightPath } from '@xyflow/system';
 
 import BaseEdge from './BaseEdge';
 import type { EdgeProps } from '../../types';
 
 const StraightEdge = memo(
   ({
-    id,
     sourceX,
     sourceY,
     targetX,
@@ -21,12 +20,11 @@ const StraightEdge = memo(
     markerEnd,
     markerStart,
     interactionWidth,
-  }: Optional<EdgeProps, 'id' | 'source' | 'target'>) => {
+  }: EdgeProps) => {
     const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
 
     return (
       <BaseEdge
-        id={id}
         path={path}
         labelX={labelX}
         labelY={labelY}

@@ -1,11 +1,12 @@
 import { memo } from 'react';
-import { Position, getSmoothStepPath } from '@xyflow/system';
+import { type Optional, Position, getSmoothStepPath } from '@xyflow/system';
 
 import BaseEdge from './BaseEdge';
 import type { SmoothStepEdgeProps } from '../../types';
 
 const SmoothStepEdge = memo(
   ({
+    id,
     sourceX,
     sourceY,
     targetX,
@@ -23,7 +24,7 @@ const SmoothStepEdge = memo(
     markerStart,
     pathOptions,
     interactionWidth,
-  }: SmoothStepEdgeProps) => {
+  }: Optional<SmoothStepEdgeProps, 'id' | 'source' | 'target'>) => {
     const [path, labelX, labelY] = getSmoothStepPath({
       sourceX,
       sourceY,
@@ -37,6 +38,7 @@ const SmoothStepEdge = memo(
 
     return (
       <BaseEdge
+        id={id}
         path={path}
         labelX={labelX}
         labelY={labelY}
