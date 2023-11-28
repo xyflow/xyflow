@@ -80,20 +80,17 @@
         updateConnection,
         cancelConnection,
         panBy,
-        onConnect: (connection) => {
-          if ($onedgecreate) {
-            const modifiedConnection = $onedgecreate(connection);
-            if (modifiedConnection) {
-              addEdge(modifiedConnection);
-              dispatch('connect', { connection });
-            }
+        onConnect: (_connection) => {
+          let connection = $onedgecreate ? $onedgecreate(_connection) : _connection;
+
+          if (!connection) {
             return;
           }
 
           addEdge(connection);
           // @todo: should we change/ improve the stuff we are passing here?
           // instead of source/target we could pass fromNodeId, fromHandleId, etc
-          dispatch('connect', { connection });
+          dispatch('connect', { connection: _connection });
         },
         onConnectStart: (event, startParams) => {
           dispatch('connectstart', {
