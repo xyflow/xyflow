@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Writable } from 'svelte/store';
-	import { Handle, Position, type NodeProps } from '@xyflow/svelte';
+	import { Handle, Position, type NodeProps, BezierEdge, SmoothStepEdge } from '@xyflow/svelte';
 
 	type $$Props = NodeProps;
 

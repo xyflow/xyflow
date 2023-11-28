@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { getSmoothStepPath } from '@xyflow/system';
+  import { getSmoothStepPath, type Optional } from '@xyflow/system';
 
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';
 
-  type $$Props = Partial<EdgeProps>;
+  type $$Props = Optional<EdgeProps, 'id' | 'target' | 'source'>;
 
   $: [path, labelX, labelY] = getSmoothStepPath({
     sourceX: $$props.sourceX,
