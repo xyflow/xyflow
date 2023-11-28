@@ -64,6 +64,7 @@ export type UpdatableStoreProps = {
   connectionMode?: UnwrapWritable<SvelteFlowStore['connectionMode']>;
   onerror?: UnwrapWritable<SvelteFlowStore['onerror']>;
   ondelete?: UnwrapWritable<SvelteFlowStore['ondelete']>;
+  onedgecreate?: UnwrapWritable<SvelteFlowStore['onedgecreate']>;
   nodeDragThreshold?: UnwrapWritable<SvelteFlowStore['nodeDragThreshold']>;
 };
 

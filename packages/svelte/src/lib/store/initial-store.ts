@@ -35,7 +35,8 @@ import type {
   Node,
   Edge,
   FitViewOptions,
-  OnDelete
+  OnDelete,
+  OnEdgeCreate
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
@@ -130,6 +131,7 @@ export const getInitialStore = ({
     lib: readable<string>('svelte'),
     onlyRenderVisibleElements: writable<boolean>(false),
     onerror: writable<OnError>(devWarn),
-    ondelete: writable<OnDelete>(undefined)
+    ondelete: writable<OnDelete>(undefined),
+    onedgecreate: writable<OnEdgeCreate>(undefined)
   };
 };

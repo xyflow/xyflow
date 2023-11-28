@@ -71,6 +71,7 @@
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onerror: $$Props['onerror'] = undefined;
   export let ondelete: $$Props['ondelete'] = undefined;
+  export let onedgecreate: $$Props['onedgecreate'] = undefined;
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
@@ -149,6 +150,7 @@
       autoPanOnNodeDrag,
       onerror,
       ondelete,
+      onedgecreate,
       connectionMode,
       nodeDragThreshold
     };

@@ -145,7 +145,16 @@
 	]);
 </script>
 
-<SvelteFlow {nodes} {edges} fitView nodeDragThreshold={2}>
+<SvelteFlow
+	{nodes}
+	{edges}
+	fitView
+	nodeDragThreshold={2}
+	onedgecreate={(e) => {
+		console.log('on edge create', e);
+		return e;
+	}}
+>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
