@@ -129,10 +129,10 @@ function MiniMap({
       style={
         {
           ...style,
-          '--minimap-mask-color-props': typeof maskColor === 'string' ? maskColor : undefined,
-          '--minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
-          '--minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
-          '--minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
+          '--xy-minimap-mask-color-props': typeof maskColor === 'string' ? maskColor : undefined,
+          '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
+          '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
+          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
         } as CSSProperties
       }
       className={cc(['react-flow__minimap', className])}

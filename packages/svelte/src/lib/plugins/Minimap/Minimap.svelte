@@ -94,10 +94,10 @@
       viewBox="{x} {y} {viewboxWidth} {viewboxHeight}"
       role="img"
       aria-labelledby={labelledBy}
-      style:--minimap-background-color-props={bgColor}
-      style:--minimap-mask-color-props={maskColor}
-      style:--minimap-mask-stroke-color-props={maskStrokeColor}
-      style:--minimap-mask-stroke-width-props={maskStrokeWidth}
+      style:--xy-minimap-background-color-props={bgColor}
+      style:--xy-minimap-mask-color-props={maskColor}
+      style:--xy-minimap-mask-stroke-color-props={maskStrokeColor}
+      style:--xy-minimap-mask-stroke-width-props={maskStrokeWidth}
       use:interactive={{
         panZoom: $panZoom,
         viewport,

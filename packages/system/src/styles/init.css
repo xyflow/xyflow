@@ -1,51 +1,55 @@
 /* these are the necessary styles for React/Svelte Flow, they get used by base.css and style.css */
 
 .xy-flow {
-  --edge-stroke-default: #b1b1b7;
-  --edge-stroke-width-default: 1;
-  --edge-stroke-selected-default: #555;
+  --xy-edge-stroke-default: #b1b1b7;
+  --xy-edge-stroke-width-default: 1;
+  --xy-edge-stroke-selected-default: #555;
 
-  --connectionline-stroke-default: #b1b1b7;
-  --connectionline-stroke-width-default: 1;
+  --xy-connectionline-stroke-default: #b1b1b7;
+  --xy-connectionline-stroke-width-default: 1;
 
-  --attribution-background-color-default: rgba(255, 255, 255, 0.5);
+  --xy-attribution-background-color-default: rgba(255, 255, 255, 0.5);
 
-  --minimap-background-color-default: #fff;
-  --minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
-  --minimap-node-background-color-default: #e2e2e2;
-  --minimap-node-stroke-color-default: transparent;
-  --minimap-node-stroke-width-default: 2;
+  --xy-minimap-background-color-default: #fff;
+  --xy-minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
+  --xy-minimap-node-background-color-default: #e2e2e2;
+  --xy-minimap-node-stroke-color-default: transparent;
+  --xy-minimap-node-stroke-width-default: 2;
 
-  --background-color-default: transparent;
-  --background-pattern-dots-color-default: #91919a;
-  --background-pattern-lines-color-default: #eee;
-  --background-pattern-cross-color-default: #e2e2e2;
+  --xy-background-color-default: transparent;
+  --xy-background-pattern-dots-color-default: #91919a;
+  --xy-background-pattern-lines-color-default: #eee;
+  --xy-background-pattern-cross-color-default: #e2e2e2;
 }
 
 .xy-flow.dark {
-  --edge-stroke-default: #3c3c3c;
-  --edge-stroke-width-default: 1;
-  --edge-stroke-selected-default: #727272;
+  --xy-edge-stroke-default: #3c3c3c;
+  --xy-edge-stroke-width-default: 1;
+  --xy-edge-stroke-selected-default: #727272;
 
-  --connectionline-stroke-default: #b1b1b7;
-  --connectionline-stroke-width-default: 1;
+  --xy-connectionline-stroke-default: #b1b1b7;
+  --xy-connectionline-stroke-width-default: 1;
 
-  --attribution-background-color-default: rgba(150, 150, 150, 0.25);
+  --xy-attribution-background-color-default: rgba(150, 150, 150, 0.25);
 
-  --minimap-background-color-default: #141414;
-  --minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
-  --minimap-node-background-color-default: #2b2b2b;
-  --minimap-node-stroke-color-default: transparent;
-  --minimap-node-stroke-width-default: 2;
+  --xy-minimap-background-color-default: #141414;
+  --xy-minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
+  --xy-minimap-node-background-color-default: #2b2b2b;
+  --xy-minimap-node-stroke-color-default: transparent;
+  --xy-minimap-node-stroke-width-default: 2;
 
-  --background-color-default: #141414;
-  --background-pattern-dots-color-default: #777;
-  --background-pattern-lines-color-default: #777;
-  --background-pattern-cross-color-default: #777;
+  --xy-background-color-default: #141414;
+  --xy-background-pattern-dots-color-default: #777;
+  --xy-background-pattern-lines-color-default: #777;
+  --xy-background-pattern-cross-color-default: #777;
 }
 
 .xy-flow {
-  background-color: var(--background-color-props, var(--background-color-default, 'transparent'));
+  background-color: var(--xy-background-color, var(--xy-background-color-default));
+}
+
+.xy-flow__background {
+  background-color: var(--xy-background-color, var(--xy-background-color-props, var(--xy-background-color-default)));
 }
 
 .xy-flow__container {
@@ -94,14 +98,14 @@
 }
 
 .xy-flow__edge-path {
-  stroke: var(--edge-stroke, var(--edge-stroke-default));
-  stroke-width: var(--edge-stroke-width, var(--edge-stroke-width-default));
+  stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+  stroke-width: var(--xy-edge-stroke-width, var(--xy-edge-stroke-width-default));
   fill: none;
 }
 
 .xy-flow__connection-path {
-  stroke: var(--connectionline-stroke, var(--connectionline-stroke-default));
-  stroke-width: var(--connectionline-stroke-width, var(--connectionline-stroke-width-default));
+  stroke: var(--xy-connectionline-stroke, var(--xy-connectionline-stroke-default));
+  stroke-width: var(--xy-connectionline-stroke-width, var(--xy-connectionline-stroke-width-default));
   fill: none;
 }
 
@@ -132,7 +136,7 @@
   &.selected .xy-flow__edge-path,
   &:focus .xy-flow__edge-path,
   &:focus-visible .xy-flow__edge-path {
-    stroke: var(--edge-stroke-selected, var(--edge-stroke-selected-default));
+    stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
   }
 
   &-textwrapper {
@@ -266,7 +270,7 @@
 
 .xy-flow__attribution {
   font-size: 10px;
-  background: var(--attribution-background-color, var(--attribution-background-color-default));
+  background: var(--xy-attribution-background-color, var(--xy-attribution-background-color-default));
   padding: 2px 3px;
   margin: 0;
 
@@ -293,27 +297,27 @@
 }
 
 .xy-flow__minimap {
-  background: var(--minimap-background-color, var(--minimap-background-color-default));
+  background: var(--xy-minimap-background-color, var(--xy-minimap-background-color-default));
 
   &-mask {
     fill: var(
-      --minimap-mask-background-color-props,
-      var(--minimap-mask-background-color, var(--minimap-mask-background-color-default))
+      --xy-minimap-mask-background-color-props,
+      var(--xy-minimap-mask-background-color, var(--xy-minimap-mask-background-color-default))
     );
   }
 
   &-node {
     fill: var(
-      --minimap-node-background-color-props,
-      var(--minimap-node-background-color, var(--minimap-node-background-color-default))
+      --xy-minimap-node-background-color-props,
+      var(--xy-minimap-node-background-color, var(--xy-minimap-node-background-color-default))
     );
     stroke: var(
-      --minimap-node-stroke-color-props,
-      var(--minimap-node-stroke-color, var(--minimap-node-stroke-color-default))
+      --xy-minimap-node-stroke-color-props,
+      var(--xy-minimap-node-stroke-color, var(--xy-minimap-node-stroke-color-default))
     );
     stroke-width: var(
-      --minimap-node-stroke-width-props,
-      var(--minimap-node-stroke-width, var(--minimap-node-stroke-width-default))
+      --xy-minimap-node-stroke-width-props,
+      var(--xy-minimap-node-stroke-width, var(--xy-minimap-node-stroke-width-default))
     );
   }
 }
@@ -326,22 +330,22 @@
 .xy-flow__background-pattern {
   &.dots {
     fill: var(
-      --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-dots-color-default))
+      --xy-background-pattern-color-props,
+      var(--xy-background-pattern-color, var(--xy-background-pattern-dots-color-default))
     );
   }
 
   &.lines {
     stroke: var(
-      --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-lines-color-default))
+      --xy-background-pattern-color-props,
+      var(--xy-background-pattern-color, var(--xy-background-pattern-lines-color-default))
     );
   }
 
   &.cross {
     stroke: var(
-      --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-cross-color-default))
+      --xy-background-pattern-color-props,
+      var(--xy-background-pattern-color, var(--xy-background-pattern-cross-color-default))
     );
   }
 }

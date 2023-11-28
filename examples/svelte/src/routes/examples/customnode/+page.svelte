@@ -85,7 +85,7 @@
 	{nodes}
 	{edges}
 	{nodeTypes}
-	style="--background-color: {$bgColor}"
+	style="--xy-background-color: {$bgColor}"
 	fitView
 	on:connect={onConnect}
 >
