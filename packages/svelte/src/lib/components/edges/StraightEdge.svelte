@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { getStraightPath } from '@xyflow/system';
-  import type { Optional } from '@xyflow/system/dist/esm/utils/types';
+  import { getStraightPath, type Optional } from '@xyflow/system';
 
   import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';
