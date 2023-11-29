@@ -6,7 +6,8 @@
 		Background,
 		BackgroundVariant,
 		MiniMap,
-		MarkerType
+		MarkerType,
+		type Connection
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
@@ -143,6 +144,12 @@
 			}
 		}
 	]);
+
+	$: console.log('edges', $edges);
+
+	function getEdgeId(connection: Connection) {
+		return `edge-${connection.source}-${connection.target}}`;
+	}
 </script>
 
 <SvelteFlow
@@ -150,9 +157,13 @@
 	{edges}
 	fitView
 	nodeDragThreshold={2}
-	onedgecreate={(e) => {
-		console.log('on edge create', e);
-		return e;
+	onedgecreate={(connection) => {
+		console.log('on edge create', connection);
+
+		return {
+			...connection,
+			id: getEdgeId(connection)
+		};
 	}}
 >
 	<Controls />
