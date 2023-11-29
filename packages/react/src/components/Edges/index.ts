@@ -1,5 +1,5 @@
-export { default as SimpleBezierEdge } from './SimpleBezierEdge';
-export { default as SmoothStepEdge } from './SmoothStepEdge';
-export { default as StepEdge } from './StepEdge';
-export { default as StraightEdge } from './StraightEdge';
-export { default as BezierEdge } from './BezierEdge';
+export { SimpleBezierEdge, SimpleBezierEdgeInternal } from './SimpleBezierEdge';
+export { SmoothStepEdge, SmoothStepEdgeInternal } from './SmoothStepEdge';
+export { StepEdge, StepEdgeInternal } from './StepEdge';
+export { StraightEdge, StraightEdgeInternal } from './StraightEdge';
+export { BezierEdge, BezierEdgeInternal } from './BezierEdge';

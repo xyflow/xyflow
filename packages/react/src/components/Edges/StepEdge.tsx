@@ -1,16 +1,30 @@
 import { memo, useMemo } from 'react';
-import { Optional } from '@xyflow/system';
 
-import SmoothStepEdge from './SmoothStepEdge';
+import { SmoothStepEdge } from './SmoothStepEdge';
 import type { SmoothStepEdgeProps } from '../../types';
 
-const StepEdge = memo((props: Optional<SmoothStepEdgeProps, 'id' | 'source' | 'target'>) => (
-  <SmoothStepEdge
-    {...props}
-    pathOptions={useMemo(() => ({ borderRadius: 0, offset: props.pathOptions?.offset }), [props.pathOptions?.offset])}
-  />
-));
+function createStepEdge(params: { isInternal: boolean }) {
+  // eslint-disable-next-line react/display-name
+  return memo(({ id, ...props }: SmoothStepEdgeProps) => {
+    const _id = params.isInternal ? undefined : id;
+
+    return (
+      <SmoothStepEdge
+        {...props}
+        id={_id}
+        pathOptions={useMemo(
+          () => ({ borderRadius: 0, offset: props.pathOptions?.offset }),
+          [props.pathOptions?.offset]
+        )}
+      />
+    );
+  });
+}
+
+const StepEdge = createStepEdge({ isInternal: false });
+const StepEdgeInternal = createStepEdge({ isInternal: true });
 
 StepEdge.displayName = 'StepEdge';
+StepEdgeInternal.displayName = 'StepEdgeInternal';
 
-export default StepEdge;
+export { StepEdge, StepEdgeInternal };

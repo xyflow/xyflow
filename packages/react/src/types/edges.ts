@@ -13,6 +13,7 @@ import type {
   HandleElement,
   ConnectionStatus,
   EdgePosition,
+  Optional,
 } from '@xyflow/system';
 
 import { Node } from '.';
@@ -100,13 +101,19 @@ export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd
     path: string;
   };
 
-export type SmoothStepEdgeProps<T = any> = EdgeProps<T> & {
+export type EdgeComponentProps<T = any> = Optional<Omit<EdgeProps<T>, 'source' | 'target'>, 'id'>;
+
+export type StraightEdgeProps<T = any> = EdgeComponentProps<T>;
+
+export type SmoothStepEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: SmoothStepPathOptions;
 };
 
-export type BezierEdgeProps<T = any> = EdgeProps<T> & {
+export type BezierEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: BezierPathOptions;
 };
+
+export type SimpleBezierEdgeProps<T = any> = EdgeComponentProps<T>;
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
 
