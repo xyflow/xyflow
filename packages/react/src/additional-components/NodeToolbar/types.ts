@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import type { Position } from '@xyflow/system';
+import type { Position, Align } from '@xyflow/system';
 
 export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   nodeId?: string | string[];
@@ -8,5 +8,3 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   offset?: number;
   align?: Align;
 };
-
-export type Align = 'center' | 'start' | 'end';

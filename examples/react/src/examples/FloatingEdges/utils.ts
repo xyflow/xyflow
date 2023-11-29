@@ -42,13 +42,13 @@ function getEdgePosition(node: Node, intersectionPoint: XYPosition) {
   if (px <= nx + 1) {
     return Position.Left;
   }
-  if (px >= nx + (n.width ?? 0) - 1) {
+  if (px >= nx + (n.computed?.width ?? 0) - 1) {
     return Position.Right;
   }
   if (py <= ny + 1) {
     return Position.Top;
   }
-  if (py >= n.y + (n.height ?? 0) - 1) {
+  if (py >= n.y + (n.computed?.height ?? 0) - 1) {
     return Position.Bottom;
   }
 

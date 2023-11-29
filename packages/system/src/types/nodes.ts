@@ -25,14 +25,14 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
-  positionAbsolute?: XYPosition;
   ariaLabel?: string;
   focusable?: boolean;
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  size?: {
+  computed?: {
     width?: number;
     height?: number;
+    positionAbsolute?: XYPosition;
   };
 
   // only used internally
@@ -52,8 +52,9 @@ export type NodeProps<T = any> = {
   selected: NodeBase['selected'];
   isConnectable: NodeBase['connectable'];
   zIndex: NodeBase['zIndex'];
-  xPos: number;
-  yPos: number;
+  positionAbsolute: XYPosition;
+  width?: number;
+  height?: number;
   dragging: boolean;
   targetPosition?: Position;
   sourcePosition?: Position;
@@ -78,11 +79,13 @@ export type NodeBounds = XYPosition & {
 export type NodeDragItem = {
   id: string;
   position: XYPosition;
-  positionAbsolute: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  width?: number | null;
-  height?: number | null;
+  computed: {
+    width: number | null;
+    height: number | null;
+    positionAbsolute: XYPosition;
+  };
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
   dragging?: boolean;
@@ -97,3 +100,5 @@ export type OnNodeDrag = (event: MouseEvent, node: NodeBase, nodes: NodeBase[]) 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 
 export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
+
+export type Align = 'center' | 'start' | 'end';

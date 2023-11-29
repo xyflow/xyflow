@@ -1,7 +1,6 @@
 import { isNumeric } from '@xyflow/system';
 
 import type { BaseEdgeProps } from '../../types';
-
 import EdgeText from './EdgeText';
 
 const BaseEdge = ({

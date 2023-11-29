@@ -4,6 +4,7 @@
 
 	const routes = [
 		'add-node-on-drop',
+		'colormode',
 		'custom-connection-line',
 		'customnode',
 		'dagre',
@@ -12,6 +13,7 @@
 		'figma',
 		'interaction',
 		'intersections',
+		'node-toolbar',
 		'overview',
 		'stress',
 		'subflows',

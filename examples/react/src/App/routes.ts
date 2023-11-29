@@ -1,5 +1,6 @@
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
+import ColorMode from '../examples/ColorMode';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import ControlledViewport from '../examples/ControlledViewport';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
@@ -61,6 +62,11 @@ const routes: IRoute[] = [
     name: 'Backgrounds',
     path: 'backgrounds',
     component: Backgrounds,
+  },
+  {
+    name: 'Color Mode',
+    path: 'color-mode',
+    component: ColorMode,
   },
   {
     name: 'Cancel Connection',

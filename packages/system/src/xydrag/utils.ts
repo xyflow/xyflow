@@ -51,10 +51,9 @@ export function getDragItems<NodeType extends NodeBase>(
     .map((n) => ({
       id: n.id,
       position: n.position || { x: 0, y: 0 },
-      positionAbsolute: n.positionAbsolute || { x: 0, y: 0 },
       distance: {
-        x: mousePos.x - (n.positionAbsolute?.x ?? 0),
-        y: mousePos.y - (n.positionAbsolute?.y ?? 0),
+        x: mousePos.x - (n.computed?.positionAbsolute?.x ?? 0),
+        y: mousePos.y - (n.computed?.positionAbsolute?.y ?? 0),
       },
       delta: {
         x: 0,
@@ -62,10 +61,13 @@ export function getDragItems<NodeType extends NodeBase>(
       },
       extent: n.extent,
       parentNode: n.parentNode,
-      width: n.width,
-      height: n.height,
       origin: n.origin,
       expandParent: n.expandParent,
+      computed: {
+        positionAbsolute: n.computed?.positionAbsolute || { x: 0, y: 0 },
+        width: n.computed?.width || 0,
+        height: n.computed?.height || 0,
+      },
     }));
 }
 
@@ -75,21 +77,24 @@ export function getDragItems<NodeType extends NodeBase>(
 export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeId,
   dragItems,
-  nodes,
+  nodeLookup,
 }: {
   nodeId?: string;
   dragItems: NodeDragItem[];
-  nodes: NodeType[];
+  nodeLookup: Map<string, NodeType>;
 }): [NodeType, NodeType[]] {
-  const extentedDragItems: NodeType[] = dragItems.map((n) => {
-    const node = nodes.find((node) => node.id === n.id)!;
+  const nodesFromDragItems: NodeType[] = dragItems.map((n) => {
+    const node = nodeLookup.get(n.id)!;
 
     return {
       ...node,
       position: n.position,
-      positionAbsolute: n.positionAbsolute,
+      computed: {
+        ...n.computed,
+        positionAbsolute: n.computed.positionAbsolute,
+      },
     };
   });
 
-  return [nodeId ? extentedDragItems.find((n) => n.id === nodeId)! : extentedDragItems[0], extentedDragItems];
+  return [nodeId ? nodesFromDragItems.find((n) => n.id === nodeId)! : nodesFromDragItems[0], nodesFromDragItems];
 }

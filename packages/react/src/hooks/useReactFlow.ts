@@ -35,7 +35,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const getNode = useCallback<Instance.GetNode<NodeData>>((id) => {
-    return store.getState().nodes.find((n) => n.id === id);
+    return store.getState().nodeLookup.get(id);
   }, []);
 
   const getEdges = useCallback<Instance.GetEdges<EdgeData>>(() => {
@@ -127,6 +127,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       onEdgesDelete,
       onNodesChange,
       onEdgesChange,
+      onDelete,
     } = store.getState();
     const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
       nodesToRemove: nodesDeleted || [],
@@ -171,6 +172,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
           onNodesChange(nodeChanges);
         }
       }
+
+      onDelete?.({ nodes: matchingNodes, edges: matchingEdges });
     }
 
     return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
@@ -181,7 +184,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       nodeOrRect: Node<NodeData> | { id: Node['id'] } | Rect
     ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
       const isRect = isRectObject(nodeOrRect);
-      const node = isRect ? null : store.getState().nodes.find((n) => n.id === nodeOrRect.id);
+      const node = isRect ? null : store.getState().nodeLookup.get(nodeOrRect.id);
 
       if (!isRect && !node) {
         [null, null, isRect];
@@ -203,7 +206,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       }
 
       return (nodes || store.getState().nodes).filter((n) => {
-        if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
+        if (!isRect && (n.id === node!.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 

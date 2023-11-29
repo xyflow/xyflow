@@ -18,19 +18,21 @@ type ParentNodes = Record<string, boolean>;
 
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodes: NodeType[],
+  nodeLookup: Map<string, NodeType>,
   nodeOrigin: NodeOrigin = [0, 0],
   parentNodes?: ParentNodes
 ) {
   return nodes.map((node) => {
-    if (node.parentNode && !nodes.find((n) => n.id === node.parentNode)) {
+    if (node.parentNode && !nodeLookup.has(node.parentNode)) {
       throw new Error(`Parent node ${node.parentNode} not found`);
     }
 
     if (node.parentNode || parentNodes?.[node.id]) {
-      const parentNode = node.parentNode ? nodes.find((n) => n.id === node.parentNode) : null;
+      const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
         nodes,
+        nodeLookup,
         {
           ...node.position,
           z: node[internalsSymbol]?.z ?? 0,
@@ -38,7 +40,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
         parentNode?.origin || nodeOrigin
       );
 
-      node.positionAbsolute = {
+      node.computed!.positionAbsolute = {
         x,
         y,
       };
@@ -62,7 +64,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
 
 export function updateNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
-  storeNodes: NodeType[],
+  nodeLookup: Map<string, NodeType>,
   options: UpdateNodesOptions<NodeType> = {
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
@@ -73,13 +75,15 @@ export function updateNodes<NodeType extends NodeBase>(
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   const nextNodes = nodes.map((n) => {
-    const currentStoreNode = storeNodes.find((storeNode) => n.id === storeNode.id);
+    const currentStoreNode = nodeLookup.get(n.id);
     const node: NodeType = {
       ...options.defaults,
       ...n,
-      positionAbsolute: n.position,
-      width: n.width || currentStoreNode?.width,
-      height: n.height || currentStoreNode?.height,
+      computed: {
+        positionAbsolute: n.position,
+        width: n.computed?.width || currentStoreNode?.computed?.width,
+        height: n.computed?.height || currentStoreNode?.computed?.height,
+      },
     };
     const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
     const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
@@ -96,10 +100,12 @@ export function updateNodes<NodeType extends NodeBase>(
       },
     });
 
+    nodeLookup.set(node.id, node);
+
     return node;
   });
 
-  const nodesWithPositions = updateAbsolutePositions(nextNodes, options.nodeOrigin, parentNodes);
+  const nodesWithPositions = updateAbsolutePositions(nextNodes, nodeLookup, options.nodeOrigin, parentNodes);
 
   return nodesWithPositions;
 }
@@ -107,6 +113,7 @@ export function updateNodes<NodeType extends NodeBase>(
 function calculateXYZPosition<NodeType extends NodeBase>(
   node: NodeType,
   nodes: NodeType[],
+  nodeLookup: Map<string, NodeType>,
   result: XYZPosition,
   nodeOrigin: NodeOrigin
 ): XYZPosition {
@@ -114,12 +121,13 @@ function calculateXYZPosition<NodeType extends NodeBase>(
     return result;
   }
 
-  const parentNode = nodes.find((n) => n.id === node.parentNode)!;
+  const parentNode = nodeLookup.get(node.parentNode)!;
   const parentNodePosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
 
   return calculateXYZPosition(
     parentNode,
     nodes,
+    nodeLookup,
     {
       x: (result.x ?? 0) + parentNodePosition.x,
       y: (result.y ?? 0) + parentNodePosition.y,
@@ -130,8 +138,9 @@ function calculateXYZPosition<NodeType extends NodeBase>(
 }
 
 export function updateNodeDimensions(
-  updates: NodeDimensionUpdate[],
+  updates: Map<string, NodeDimensionUpdate>,
   nodes: NodeBase[],
+  nodeLookup: Map<string, NodeBase>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin,
   onUpdate?: (id: string, dimensions: Dimensions) => void
@@ -146,21 +155,25 @@ export function updateNodeDimensions(
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
 
   const nextNodes = nodes.map((node) => {
-    const update = updates.find((u) => u.id === node.id);
+    const update = updates.get(node.id);
+
     if (update) {
       const dimensions = getDimensions(update.nodeElement);
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.width !== dimensions.width || node.height !== dimensions.height || update.forceUpdate)
+        (node.computed?.width !== dimensions.width || node.computed?.height !== dimensions.height || update.forceUpdate)
       );
 
       if (doUpdate) {
         onUpdate?.(node.id, dimensions);
 
-        return {
+        const newNode = {
           ...node,
-          ...dimensions,
+          computed: {
+            ...node.computed,
+            ...dimensions,
+          },
           [internalsSymbol]: {
             ...node[internalsSymbol],
             handleBounds: {
@@ -169,6 +182,10 @@ export function updateNodeDimensions(
             },
           },
         };
+
+        nodeLookup.set(node.id, newNode);
+
+        return newNode;
       }
     }
 

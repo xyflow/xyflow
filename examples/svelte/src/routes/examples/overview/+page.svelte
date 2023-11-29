@@ -174,6 +174,8 @@
 		event.preventDefault();
 		console.log('on edge contextmenu', edge);
 	}}
+	on:selectionclick={(event) => console.log('on selection click', event)}
+	on:selectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}

@@ -8,6 +8,10 @@
   --selection-border-default: 1px dotted rgba(155, 155, 155, 0.8);
 }
 
+.xy-flow.dark {
+  --node-color-default: #f8f8f8;
+}
+
 .xy-flow__handle {
   background-color: var(--handle-background-color, var(--handle-background-color-default));
 }
@@ -17,6 +21,7 @@
 .xy-flow__node-output,
 .xy-flow__node-group {
   border: var(--node-border, var(--node-border-default));
+  color: var(--node-color, var(--node-color-default));
 
   &.selected,
   &:focus,

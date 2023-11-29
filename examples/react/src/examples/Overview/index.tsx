@@ -23,7 +23,7 @@ const onNodeDragStop = (_: ReactMouseEvent, node: Node, nodes: Node[]) => consol
 const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) => console.log('node double click', node);
 const onPaneClick = (event: ReactMouseEvent) => console.log('pane click', event);
 const onPaneScroll = (event?: ReactMouseEvent) => console.log('pane scroll', event);
-const onPaneContextMenu = (event: ReactMouseEvent) => console.log('pane context menu', event);
+const onPaneContextMenu = (event: ReactMouseEvent | MouseEvent) => console.log('pane context menu', event);
 const onSelectionDrag = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag', nodes);
 const onSelectionDragStart = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag start', nodes);
 const onSelectionDragStop = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag stop', nodes);
@@ -230,9 +230,9 @@ const OverviewFlow = () => {
       onEdgesDelete={onEdgesDelete}
       onPaneMouseMove={onPaneMouseMove}
     >
-      <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
+      <MiniMap nodeBorderRadius={2} />
       <Controls />
-      <Background color="#aaa" gap={25} />
+      <Background gap={25} />
     </ReactFlow>
   );
 };

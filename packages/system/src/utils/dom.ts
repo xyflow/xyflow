@@ -13,7 +13,6 @@ export function getPointerPosition(
 ): XYPosition & { xSnapped: number; ySnapped: number } {
   const { x, y } = getEventPosition(event);
   const pointerPos = pointToRendererPoint({ x, y }, transform);
-
   const { x: xSnapped, y: ySnapped } = snapToGrid ? snapPosition(pointerPos, snapGrid) : pointerPos;
 
   // we need the snapped position in order to be able to skip unnecessary drag events
@@ -58,6 +57,9 @@ export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRec
   };
 };
 
+// The handle bounds are calculated relative to the node element.
+// We store them in the internals object of the node in order to avoid
+// unnecessary recalculations.
 export const getHandleBounds = (
   selector: string,
   nodeElement: HTMLDivElement,
@@ -71,6 +73,8 @@ export const getHandleBounds = (
   }
 
   const handlesArray = Array.from(handles) as HTMLDivElement[];
+
+  // @todo can't we use the node dimensions here?
   const nodeBounds = nodeElement.getBoundingClientRect();
   const nodeOffset = {
     x: nodeBounds.width * nodeOrigin[0],

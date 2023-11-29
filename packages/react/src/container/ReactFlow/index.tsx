@@ -23,6 +23,7 @@ import A11yDescriptions from '../../components/A11yDescriptions';
 import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
 import type { EdgeTypes, NodeTypes, ReactFlowProps, ReactFlowRefType } from '../../types';
+import useColorModeClass from '../../hooks/useColorModeClass';
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -82,6 +83,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onNodeDragStop,
       onNodesDelete,
       onEdgesDelete,
+      onDelete,
       onSelectionChange,
       onSelectionDragStart,
       onSelectionDrag,
@@ -168,18 +170,20 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onViewportChange,
       width,
       height,
+      colorMode = 'light',
       ...rest
     },
     ref
   ) => {
     const rfId = id || '1';
+    const colorModeClassName = useColorModeClass(colorMode);
 
     return (
       <div
         {...rest}
         style={{ ...style, ...wrapperStyle }}
         ref={ref}
-        className={cc(['react-flow', className])}
+        className={cc(['react-flow', className, colorModeClassName])}
         data-testid="rf__wrapper"
         id={id}
       >
@@ -281,6 +285,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             fitViewOptions={fitViewOptions}
             onNodesDelete={onNodesDelete}
             onEdgesDelete={onEdgesDelete}
+            onDelete={onDelete}
             onNodeDragStart={onNodeDragStart}
             onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}

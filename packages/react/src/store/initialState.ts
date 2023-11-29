@@ -22,16 +22,13 @@ const getInitialState = ({
   height?: number;
   fitView?: boolean;
 } = {}): ReactFlowStore => {
-  const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nodeLookup = new Map<string, Node>();
+  const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
 
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height,
-    }));
+    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
     transform = [x, y, zoom];
@@ -43,6 +40,7 @@ const getInitialState = ({
     height: 0,
     transform,
     nodes: nextNodes,
+    nodeLookup,
     edges: edges,
     onNodesChange: null,
     onEdgesChange: null,

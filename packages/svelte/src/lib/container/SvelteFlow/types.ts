@@ -14,7 +14,8 @@ import type {
   OnError,
   ConnectionMode,
   PanelPosition,
-  ProOptions
+  ProOptions,
+  ColorMode
 } from '@xyflow/system';
 
 import type {
@@ -24,7 +25,8 @@ import type {
   KeyDefinition,
   EdgeTypes,
   DefaultEdgeOptions,
-  FitViewOptions
+  FitViewOptions,
+  OnDelete
 } from '$lib/types';
 import type { Writable } from 'svelte/store';
 
@@ -34,9 +36,11 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   edges: Writable<Edge[]>;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
-  selectionKey?: KeyDefinition;
-  panActivationKey?: KeyDefinition;
-  deleteKey?: KeyDefinition;
+  selectionKey?: KeyDefinition | null;
+  panActivationKey?: KeyDefinition | null;
+  deleteKey?: KeyDefinition | null;
+  multiSelectionKey?: KeyDefinition | null;
+  zoomActivationKey?: KeyDefinition | null;
   fitView?: boolean;
   fitViewOptions?: FitViewOptions;
   nodeOrigin?: NodeOrigin;
@@ -72,6 +76,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   defaultEdgeOptions?: DefaultEdgeOptions;
   width?: number;
   height?: number;
+  colorMode?: ColorMode;
 
   class?: string;
   style?: string;
@@ -82,5 +87,6 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMoveStart?: OnMoveStart;
   onMove?: OnMove;
   onMoveEnd?: OnMoveEnd;
-  onError?: OnError;
+  onerror?: OnError;
+  ondelete?: OnDelete;
 };

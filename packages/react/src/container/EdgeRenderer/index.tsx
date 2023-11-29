@@ -63,6 +63,8 @@ const EdgeRenderer = ({
   children,
 }: EdgeRendererProps) => {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
+  // we are grouping edges by zIndex here in order to be able to render them in the correct order
+  // each zIndex gets its own svg element
   const edgeTree = useVisibleEdges(onlyRenderVisibleElements, elevateEdgesOnSelect);
 
   return (
@@ -70,7 +72,7 @@ const EdgeRenderer = ({
       {edgeTree.map(({ level, edges, isMaxLevel }) => (
         <svg key={level} style={{ zIndex: level }} className="react-flow__edges react-flow__container">
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />}
-          <g>
+          <>
             {edges.map((edge) => {
               let edgeType = edge.type || 'default';
 
@@ -132,7 +134,7 @@ const EdgeRenderer = ({
                 />
               );
             })}
-          </g>
+          </>
         </svg>
       ))}
       {children}

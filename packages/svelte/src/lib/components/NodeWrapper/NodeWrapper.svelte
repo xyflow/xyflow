@@ -27,11 +27,15 @@
   export let style: NodeWrapperProps['style'] = undefined;
   export let type: NodeWrapperProps['type'] = 'default';
   export let isParent: NodeWrapperProps['isParent'] = false;
-  export let positionAbsolute: NodeWrapperProps['positionAbsolute'] = undefined;
-  export let positionOrigin: NodeWrapperProps['positionOrigin'] = undefined;
+  export let positionX: NodeWrapperProps['positionX'];
+  export let positionY: NodeWrapperProps['positionY'];
+  export let positionOriginX: NodeWrapperProps['positionOriginX'];
+  export let positionOriginY: NodeWrapperProps['positionOriginY'];
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
+  export let width: NodeWrapperProps['width'] = undefined;
+  export let height: NodeWrapperProps['height'] = undefined;
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
   export let initialized: NodeWrapperProps['initialized'] = false;
   let className: string = '';
@@ -87,13 +91,18 @@
 
     if (doUpdate) {
       requestAnimationFrame(() =>
-        updateNodeDimensions([
-          {
-            id,
-            nodeElement: nodeRef,
-            forceUpdate: true
-          }
-        ])
+        updateNodeDimensions(
+          new Map([
+            [
+              id,
+              {
+                id,
+                nodeElement: nodeRef,
+                forceUpdate: true
+              }
+            ]
+          ])
+        )
       );
     }
 
@@ -124,8 +133,6 @@
 
     dispatch('nodeclick', { node, event });
   }
-
-  // @todo: add selectable state
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -161,11 +168,11 @@
     class:nopan={draggable}
     class:parent={isParent}
     style:z-index={zIndex}
-    style:transform="translate({positionOrigin?.x ?? 0}px, {positionOrigin?.y ?? 0}px)"
+    style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style} {node.size?.width ? `;width=${node.size?.width}px` : ''} {node.size?.height
-      ? `;height=${node.size?.height}px;`
-      : ''}"
+    style="{style ?? ''}; {!width ? '' : `width:${width}px;`} {!height
+      ? ''
+      : `height:${height}px;`}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
@@ -184,8 +191,9 @@
       {dragging}
       {dragHandle}
       isConnectable={connectable}
-      xPos={positionAbsolute?.x ?? 0}
-      yPos={positionAbsolute?.y ?? 0}
+      positionAbsolute={{ x: positionX, y: positionY }}
+      {width}
+      {height}
       on:connectstart
       on:connect
       on:connectend

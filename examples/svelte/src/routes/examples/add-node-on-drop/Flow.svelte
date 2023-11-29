@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { SvelteFlow, useSvelteFlow } from '@xyflow/svelte';
-	import type { Edge, Node } from '@xyflow/svelte';
 	import { writable } from 'svelte/store';
+	import { SvelteFlow, useSvelteFlow, type Edge, type Node } from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 
@@ -22,7 +21,7 @@
 	let id = 1;
 	const getId = () => `${id++}`;
 
-	const { screenToFlowCoordinate, flowToScreenCoordinate } = useSvelteFlow();
+	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
 
 	function handleConnectEnd({ detail: { event } }: { detail: { event: MouseEvent | TouchEvent } }) {
 		// See of connection landed inside the flow pane
@@ -34,7 +33,7 @@
 				y: event.clientY
 			};
 
-			const doubleTransformedPosition = flowToScreenCoordinate(screenToFlowCoordinate(position));
+			const doubleTransformedPosition = flowToScreenPosition(screenToFlowPosition(position));
 			console.log(
 				'Is transforming in both directions (screen-flow, flow-screen) the same?',
 				position.x === doubleTransformedPosition.x && position.y === doubleTransformedPosition.y
@@ -43,8 +42,8 @@
 			const newNode: Node = {
 				id,
 				data: { label: `Node ${id}` },
-				// project the screen coordinates to pane coordinates
-				position: screenToFlowCoordinate(position),
+				// project the screen position to pane position
+				position: screenToFlowPosition(position),
 				// set the origin of the new node so it is centered
 				origin: [0.5, 0.0]
 			};

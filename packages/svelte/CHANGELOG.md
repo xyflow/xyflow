@@ -1,3 +1,21 @@
+## 0.0.28
+
+This is a huge update! We added a new `<NodeToolbar />` component and a new `colorMode` ('light' | 'dark' | 'system') prop for toggling dark/light mode.
+
+There are also some breaking changes again (sorry!) but we are very close to the final API for Svelte Flow 1.0.0. The biggest change is that we group node attriubutes (`width`, `height`, `positionAbsolute`) that are added by the library under `node.computed`. This makes it easier to understand, that this stuff comes from the library itself. `node.width` and `node.height` is still an optional node option and can be used to set certain dimensions for SSR or on the client.
+
+- add `<NodeToolbar />` component
+- add `on:selectionclick` and `on:selectioncontextmenu` event handlers
+- add `ondelete({ nodes, edges })` handler
+- add `zoomActivationKey` prop 
+- add `width` and `height` prop to custom `NodeProps` type
+- add `colorMode` prop ('light' | 'dark' | 'system')
+- ⚠️ replace `xPos` and `yPos` with `positionAbsolute` prop to custom `NodeProps` type
+- ⚠️ `node.width/height` and `node.positionAbsolute` can now be found under `node.computed.width/height/positionAbsolute`
+- ⚠️ `node.width/height` is still optional an can be used for forcing certain dimensions and SSR
+- refactor keys: you can now disable keys by setting them to `null` (e.g. `selectionKey={null}`)
+- performance optimization with internal node lookup
+
 ## 0.0.27
 
 - add `selectionOnDrag` prop - can be used to create figma-like controls in combination with `panOnDrag={false}` / `panOnDrag={[1, 2]}` + `panOnScroll={true}` 

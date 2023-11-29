@@ -86,8 +86,8 @@ export const getNodePositionWithOrigin = (
     };
   }
 
-  const offsetX = (node.width ?? 0) * nodeOrigin[0];
-  const offsetY = (node.height ?? 0) * nodeOrigin[1];
+  const offsetX = (node.computed?.width ?? node.width ?? 0) * nodeOrigin[0];
+  const offsetY = (node.computed?.height ?? node.height ?? 0) * nodeOrigin[1];
 
   const position: XYPosition = {
     x: node.position.x - offsetX,
@@ -96,10 +96,10 @@ export const getNodePositionWithOrigin = (
 
   return {
     ...position,
-    positionAbsolute: node.positionAbsolute
+    positionAbsolute: node.computed?.positionAbsolute
       ? {
-          x: node.positionAbsolute.x - offsetX,
-          y: node.positionAbsolute.y - offsetY,
+          x: node.computed.positionAbsolute.x - offsetX,
+          y: node.computed.positionAbsolute.y - offsetY,
         }
       : position,
   };
@@ -118,8 +118,8 @@ export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0
         rectToBox({
           x,
           y,
-          width: node.width || 0,
-          height: node.height || 0,
+          width: node.computed?.width ?? node.width ?? 0,
+          height: node.computed?.height ?? node.height ?? 0,
         })
       );
     },
@@ -145,17 +145,19 @@ export const getNodesInside = <NodeType extends NodeBase>(
   };
 
   const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
-    const { width, height, selectable = true, hidden = false } = node;
+    const { computed, selectable = true, hidden = false } = node;
+    const width = computed?.width ?? node.width ?? null;
+    const height = computed?.height ?? node.height ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return res;
     }
 
     const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node, nodeOrigin));
-    const notInitialized = width === undefined || height === undefined || width === null || height === null;
+    const notInitialized = width === null || height === null;
 
     const partiallyVisible = partially && overlappingArea > 0;
-    const area = (width || 0) * (height || 0);
+    const area = (width ?? 0) * (height ?? 0);
     const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
 
     if (isVisible || node.dragging) {
@@ -185,7 +187,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
-    const isVisible = n.width && n.height && (options?.includeHiddenNodes || !n.hidden);
+    const isVisible = n.computed?.width && n.computed?.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (options?.nodes?.length) {
       return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
@@ -218,7 +220,7 @@ function clampNodeExtent(node: NodeDragItem | NodeBase, extent?: CoordinateExten
   if (!extent || extent === 'parent') {
     return extent;
   }
-  return [extent[0], [extent[1][0] - (node.width || 0), extent[1][1] - (node.height || 0)]];
+  return [extent[0], [extent[1][0] - (node.computed?.width ?? 0), extent[1][1] - (node.computed?.height ?? 0)]];
 }
 
 export function calcNextPosition<NodeType extends NodeBase>(
@@ -242,16 +244,18 @@ export function calcNextPosition<NodeType extends NodeBase>(
   }
 
   if (node.extent === 'parent' && !node.expandParent) {
-    if (node.parentNode && node.width && node.height) {
+    const nodeWidth = node.computed?.width;
+    const nodeHeight = node.computed?.height;
+    if (node.parentNode && nodeWidth && nodeHeight) {
       const currNodeOrigin = node.origin || nodeOrigin;
 
       currentExtent =
-        parentNode && isNumeric(parentNode.width) && isNumeric(parentNode.height)
+        parentNode && isNumeric(parentNode.computed?.width) && isNumeric(parentNode.computed?.height)
           ? [
-              [parentPos.x + node.width * currNodeOrigin[0], parentPos.y + node.height * currNodeOrigin[1]],
+              [parentPos.x + nodeWidth * currNodeOrigin[0], parentPos.y + nodeHeight * currNodeOrigin[1]],
               [
-                parentPos.x + parentNode.width - node.width + node.width * currNodeOrigin[0],
-                parentPos.y + parentNode.height - node.height + node.height * currNodeOrigin[1],
+                parentPos.x + (parentNode.computed?.width ?? 0) - nodeWidth + nodeWidth * currNodeOrigin[0],
+                parentPos.y + (parentNode.computed?.height ?? 0) - nodeHeight + nodeHeight * currNodeOrigin[1],
               ],
             ]
           : currentExtent;
@@ -312,7 +316,13 @@ export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeTy
   const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
   const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
   const connectedEdges = getConnectedEdgesBase<NodeType, EdgeType>(matchingNodes, deletableEdges);
-  const matchingEdges = [...initialHitEdges, ...connectedEdges];
+  const matchingEdges = connectedEdges.reduce((res, edge) => {
+    if (!res.find((e) => e.id === edge.id)) {
+      res.push(edge);
+    }
+
+    return res;
+  }, initialHitEdges);
 
   return {
     matchingEdges,

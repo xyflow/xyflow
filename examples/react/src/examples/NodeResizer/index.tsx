@@ -16,8 +16,6 @@ import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
 
-import '@xyflow/react/dist/style.css';
-
 const nodeTypes = {
   defaultResizer: DefaultResizer,
   customResizer: CustomResizer,

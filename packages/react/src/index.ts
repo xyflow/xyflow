@@ -73,6 +73,8 @@ export {
   type Box,
   type Transform,
   type CoordinateExtent,
+  type ColorMode,
+  type ColorModeClass,
 } from '@xyflow/system';
 
 // system utils

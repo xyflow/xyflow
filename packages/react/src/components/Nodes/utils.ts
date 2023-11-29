@@ -12,7 +12,7 @@ export function getMouseHandler(
   return handler === undefined
     ? handler
     : (event: MouseEvent) => {
-        const node = getState().nodes.find((n) => n.id === id)!;
+        const node = getState().nodeLookup.get(id)!;
         handler(event, { ...node });
       };
 }
@@ -35,8 +35,8 @@ export function handleNodeClick({
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodes, onError } = store.getState();
-  const node = nodes.find((n) => n.id === id)!;
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
+  const node = nodeLookup.get(id);
 
   if (!node) {
     onError?.('012', errorMessages['error012'](id));

@@ -20,8 +20,6 @@ export function getNodesAndEdges(xElements = 10, yElements = 10): ElementsCollec
         style: { width: 50, height: 30, fontSize: 11 },
         data,
         position,
-        width: 50,
-        height: 30,
       };
       initialNodes.push(node);
 
