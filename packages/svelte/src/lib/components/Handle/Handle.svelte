@@ -55,6 +55,7 @@
     isValidConnection,
     lib,
     addEdge,
+    onedgecreate,
     panBy,
     cancelConnection,
     updateConnection,
@@ -80,8 +81,13 @@
         cancelConnection,
         panBy,
         onConnect: (connection) => {
-          addEdge(connection);
+          const edge = $onedgecreate ? $onedgecreate(connection) : connection;
 
+          if (!edge) {
+            return;
+          }
+
+          addEdge(edge);
           // @todo: should we change/ improve the stuff we are passing here?
           // instead of source/target we could pass fromNodeId, fromHandleId, etc
           dispatch('connect', { connection });

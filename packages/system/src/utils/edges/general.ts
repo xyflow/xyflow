@@ -112,7 +112,7 @@ export function isEdgeVisible({ sourceNode, targetNode, width, height, transform
 }
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | EdgeBase): string =>
-  `xyflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
+  `xy-edge__${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
 const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   return edges.some(
@@ -146,6 +146,14 @@ export const addEdgeBase = <EdgeType extends EdgeBase>(
 
   if (connectionExists(edge, edges)) {
     return edges;
+  }
+
+  if (edge.sourceHandle === null) {
+    delete edge.sourceHandle;
+  }
+
+  if (edge.targetHandle === null) {
+    delete edge.targetHandle;
   }
 
   return edges.concat(edge);
