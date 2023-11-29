@@ -224,6 +224,7 @@ export function createStore({
         store.edges.update((eds) =>
           eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
         );
+
         get(store.ondelete)?.({
           nodes: matchingNodes,
           edges: matchingEdges

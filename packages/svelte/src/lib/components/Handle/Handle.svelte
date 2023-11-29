@@ -105,29 +105,29 @@
     }
   }
 
-  function onTargetConnect(event: CustomEvent) {
+  function onConnect(
+    event: CustomEvent<{
+      connection: Connection;
+    }>
+  ) {
     const connection = event.detail.connection;
     dispatch('connect', { connection });
   }
 
-  function onDisconnect(event: CustomEvent) {
+  function onDisconnect() {
     dispatch('disconnect', {});
   }
 
   onMount(() => {
     if (thisHandle) {
-      // adding a custom event so it can be called from XYHandle's onPointerDown
-      // when onPointerUp is triggered (this way allows for it to be called from DOM
-      // events and custom events)
-      thisHandle.addEventListener('targetConnect', onTargetConnect as EventListener);
-      // this is to handle custom events when an edge is deleted
+      thisHandle.addEventListener('connect', onConnect as EventListener);
       thisHandle.addEventListener('disconnect', onDisconnect as EventListener);
     }
   });
 
   onDestroy(() => {
     if (thisHandle) {
-      thisHandle.removeEventListener('targetConnect', onTargetConnect as EventListener);
+      thisHandle.removeEventListener('connect', onConnect as EventListener);
       thisHandle.removeEventListener('disconnect', onDisconnect as EventListener);
     }
   });
