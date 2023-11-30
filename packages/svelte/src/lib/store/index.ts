@@ -225,6 +225,21 @@ export function createStore({
           eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
         );
 
+        for (const edge of matchingEdges) {
+          const document = get(store.domNode) as HTMLElement;
+          const e = new CustomEvent("disconnect");
+
+          const sourceHandleDomNode = document.querySelector(
+            `.${get(store.lib)}-flow__handle[data-id="${edge.source}-${edge.sourceHandle}-source"]`,
+          );
+          sourceHandleDomNode?.dispatchEvent(e);
+
+          const targetHandleDomNode = document.querySelector(
+            `.${get(store.lib)}-flow__handle[data-id="${edge.target}-${edge.targetHandle}-target"]`,
+          );
+          targetHandleDomNode?.dispatchEvent(e);
+        }
+
         get(store.ondelete)?.({
           nodes: matchingNodes,
           edges: matchingEdges

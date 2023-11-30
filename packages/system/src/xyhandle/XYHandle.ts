@@ -208,8 +208,7 @@ function onPointerDown(
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
     if ((closestHandle || handleDomNode) && connection && isValid) {
-      const e = new CustomEvent<{ connection: Connection }>('connect', { detail: { connection } });
-      handleDomNode?.dispatchEvent(e);
+      handleDomNode?.dispatchEvent(new CustomEvent('connect', { detail: { connection } }));
       onConnect?.(connection);
     }
 
