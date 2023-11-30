@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import { type Optional, getStraightPath } from '@xyflow/system';
+import { getStraightPath } from '@xyflow/system';
 
 import BaseEdge from './BaseEdge';
-import type { EdgeProps } from '../../types';
+import type { StraightEdgeProps } from '../../types';
 
 function createStraightEdge(params: { isInternal: boolean }) {
   // eslint-disable-next-line react/display-name
@@ -23,7 +23,7 @@ function createStraightEdge(params: { isInternal: boolean }) {
       markerEnd,
       markerStart,
       interactionWidth,
-    }: Optional<EdgeProps, 'id' | 'source' | 'target'>) => {
+    }: StraightEdgeProps) => {
       const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
 
       const _id = params.isInternal ? undefined : id;

@@ -109,7 +109,7 @@ export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd
 
 export type EdgeComponentProps<T = any> = Optional<Omit<EdgeProps<T>, 'source' | 'target'>, 'id'>;
 
-export type StraightEdgeProps<T = any> = EdgeComponentProps<T>;
+export type StraightEdgeProps<T = any> = Omit<EdgeComponentProps<T>, 'sourcePosition' | 'targetPosition'>;
 
 export type SmoothStepEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: SmoothStepPathOptions;

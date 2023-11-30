@@ -6,6 +6,7 @@
     "lib": ["dom", "esnext"],
     "module": "esnext",
     "target": "esnext",
-    "outDir": "dist"
+    "outDir": "dist",
+    "noErrorTruncation": true
   }
 }

@@ -40,7 +40,7 @@ export type Edge<T = any> =
   | BezierEdgeType<T>
   | StepEdgeType<T>;
 
-export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> &
+export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle' | 'type'> &
   EdgePosition & {
     markerStart?: string;
     markerEnd?: string;
@@ -48,7 +48,13 @@ export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> 
     targetHandleId?: string | null;
   };
 
-export type EdgeComponentProps<T = any> = Optional<Omit<EdgeProps<T>, 'source' | 'target'>, 'id'>;
+export type EdgeComponentProps<T = any> = Optional<
+  Omit<
+    EdgeProps<T>,
+    'source' | 'target' | 'sourceHandleId' | 'targetHandleId' | 'animated' | 'selected' | 'data'
+  >,
+  'id'
+>;
 
 export type BezierEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: BezierPathOptions;
@@ -62,7 +68,10 @@ export type StepEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: StepPathOptions;
 };
 
-export type StraightEdgeProps<T = any> = EdgeComponentProps<T>;
+export type StraightEdgeProps<T = any> = Omit<
+  EdgeComponentProps<T>,
+  'sourcePosition' | 'targetPosition'
+>;
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 
