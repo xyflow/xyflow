@@ -1,42 +1,56 @@
 <script lang="ts">
-  import { getSmoothStepPath } from '@xyflow/system';
+  import { getBezierPath } from '@xyflow/system';
 
-  import type { SmoothStepEdgeProps } from '$lib/types';
+  import type { EdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';
 
-  type $$Props = SmoothStepEdgeProps;
+  type $$Props = EdgeProps;
 
-  export let id: $$Props['id'] = undefined;
+  // these props are not used in this edge, but passed to every custom edge component
+  export let id: $$Props['id'] = '';
+  export let source: $$Props['source'] = '';
+  export let target: $$Props['target'] = '';
+  export let animated: $$Props['animated'] = undefined;
+  export let selected: $$Props['selected'] = undefined;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
+  export let data: $$Props['data'] = undefined;
   export let style: $$Props['style'] = undefined;
   export let markerStart: $$Props['markerStart'] = undefined;
   export let markerEnd: $$Props['markerEnd'] = undefined;
-  export let pathOptions: $$Props['pathOptions'] = undefined;
   export let interactionWidth: $$Props['interactionWidth'] = undefined;
 
   export let sourceX: $$Props['sourceX'];
   export let sourceY: $$Props['sourceY'];
   export let sourcePosition: $$Props['sourcePosition'];
+  export let sourceHandleId: $$Props['sourceHandleId'] = undefined;
 
   export let targetX: $$Props['targetX'];
   export let targetY: $$Props['targetY'];
   export let targetPosition: $$Props['targetPosition'];
+  export let targetHandleId: $$Props['targetHandleId'] = undefined;
 
-  $: [path, labelX, labelY] = getSmoothStepPath({
+  $: [path, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
     targetY,
     sourcePosition,
-    targetPosition,
-    borderRadius: pathOptions?.borderRadius,
-    offset: pathOptions?.offset
+    targetPosition
   });
+
+  // hopefully with Svelte5, we don't need this kind of workaround anymore
+  id;
+  source;
+  target;
+  animated;
+  selected;
+  data;
+  sourceHandleId;
+  targetHandleId;
 </script>
 
 <BaseEdge
-  {id}
   {path}
   {labelX}
   {labelY}

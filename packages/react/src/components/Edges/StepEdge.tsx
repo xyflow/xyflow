@@ -1,15 +1,30 @@
 import { memo, useMemo } from 'react';
 
-import SmoothStepEdge from './SmoothStepEdge';
-import type { SmoothStepEdgeProps } from '../../types';
+import { SmoothStepEdge } from './SmoothStepEdge';
+import type { StepEdgeProps } from '../../types';
 
-const StepEdge = memo((props: SmoothStepEdgeProps) => (
-  <SmoothStepEdge
-    {...props}
-    pathOptions={useMemo(() => ({ borderRadius: 0, offset: props.pathOptions?.offset }), [props.pathOptions?.offset])}
-  />
-));
+function createStepEdge(params: { isInternal: boolean }) {
+  // eslint-disable-next-line react/display-name
+  return memo(({ id, ...props }: StepEdgeProps) => {
+    const _id = params.isInternal ? undefined : id;
+
+    return (
+      <SmoothStepEdge
+        {...props}
+        id={_id}
+        pathOptions={useMemo(
+          () => ({ borderRadius: 0, offset: props.pathOptions?.offset }),
+          [props.pathOptions?.offset]
+        )}
+      />
+    );
+  });
+}
+
+const StepEdge = createStepEdge({ isInternal: false });
+const StepEdgeInternal = createStepEdge({ isInternal: true });
 
 StepEdge.displayName = 'StepEdge';
+StepEdgeInternal.displayName = 'StepEdgeInternal';
 
-export default StepEdge;
+export { StepEdge, StepEdgeInternal };

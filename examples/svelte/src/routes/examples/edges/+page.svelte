@@ -11,6 +11,8 @@
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+	import ButtonEdge from './ButtonEdge.svelte';
+	import CustomBezierEdge from './CustomBezierEdge.svelte';
 
 	const nodes = writable([
 		{
@@ -111,13 +113,14 @@
 			id: 'e5-8',
 			source: '5',
 			target: '8',
-			data: { text: 'custom edge' }
+			type: 'button'
 		},
 		{
 			id: 'e5-9',
 			source: '5',
 			target: '9',
-			data: { text: 'custom edge 2' }
+			type: 'customBezier',
+			label: 'custom bezier'
 		},
 		{
 			id: 'e5-6',
@@ -144,17 +147,23 @@
 			}
 		}
 	]);
-
-	$: console.log('edges', $edges);
-
-	function getEdgeId(connection: Connection) {
+  
+	const edgeTypes = {
+		button: ButtonEdge,
+		customBezier: CustomBezierEdge
+	};
+  
+  function getEdgeId(connection: Connection) {
 		return `edge-${connection.source}-${connection.target}}`;
 	}
+  
+  $: console.log('edges', $edges);
 </script>
 
 <SvelteFlow
 	{nodes}
 	{edges}
+  {edgeTypes}
 	fitView
 	nodeDragThreshold={2}
 	onedgecreate={(connection) => {

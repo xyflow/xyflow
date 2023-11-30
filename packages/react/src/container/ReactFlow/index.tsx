@@ -12,7 +12,13 @@ import {
 } from '@xyflow/system';
 
 import Attribution from '../../components/Attribution';
-import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
+import {
+  BezierEdgeInternal,
+  SmoothStepEdgeInternal,
+  StepEdgeInternal,
+  StraightEdgeInternal,
+  SimpleBezierEdgeInternal,
+} from '../../components/Edges';
 import DefaultNode from '../../components/Nodes/DefaultNode';
 import InputNode from '../../components/Nodes/InputNode';
 import OutputNode from '../../components/Nodes/OutputNode';
@@ -33,11 +39,11 @@ const defaultNodeTypes: NodeTypes = {
 };
 
 const defaultEdgeTypes: EdgeTypes = {
-  default: BezierEdge,
-  straight: StraightEdge,
-  step: StepEdge,
-  smoothstep: SmoothStepEdge,
-  simplebezier: SimpleBezierEdge,
+  default: BezierEdgeInternal,
+  straight: StraightEdgeInternal,
+  step: StepEdgeInternal,
+  smoothstep: SmoothStepEdgeInternal,
+  simplebezier: SimpleBezierEdgeInternal,
 };
 
 const initNodeOrigin: NodeOrigin = [0, 0];
