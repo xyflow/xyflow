@@ -6,7 +6,7 @@
   import { errorMessages, getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import { BezierEdge } from '$lib/components/edges/internal';
+  import { BezierEdgeInternal } from '$lib/components/edges';
   import type { EdgeLayouted, Edge } from '$lib/types';
   import { get } from 'svelte/store';
 
@@ -57,7 +57,7 @@
     edgecontextmenu: { edge: Edge; event: MouseEvent };
   }>();
 
-  $: edgeComponent = $edgeTypes[type!] || BezierEdge;
+  $: edgeComponent = $edgeTypes[type!] || BezierEdgeInternal;
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 

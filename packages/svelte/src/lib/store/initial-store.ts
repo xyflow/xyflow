@@ -25,7 +25,12 @@ import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import GroupNode from '$lib/components/nodes/GroupNode.svelte';
 
-import { BezierEdge, StraightEdge, StepEdge, SmoothStepEdge } from '$lib/components/edges/internal';
+import {
+  BezierEdgeInternal,
+  SmoothStepEdgeInternal,
+  StraightEdgeInternal,
+  StepEdgeInternal
+} from '$lib/components/edges';
 
 import type {
   NodeTypes,
@@ -47,10 +52,10 @@ export const initialNodeTypes = {
 };
 
 export const initialEdgeTypes = {
-  straight: StraightEdge,
-  smoothstep: SmoothStepEdge,
-  default: BezierEdge,
-  step: StepEdge
+  straight: StraightEdgeInternal,
+  smoothstep: SmoothStepEdgeInternal,
+  default: BezierEdgeInternal,
+  step: StepEdgeInternal
 };
 
 export const getInitialStore = ({

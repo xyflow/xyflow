@@ -1,11 +1,11 @@
 import { memo, useMemo } from 'react';
 
 import { SmoothStepEdge } from './SmoothStepEdge';
-import type { SmoothStepEdgeProps } from '../../types';
+import type { StepEdgeProps } from '../../types';
 
 function createStepEdge(params: { isInternal: boolean }) {
   // eslint-disable-next-line react/display-name
-  return memo(({ id, ...props }: SmoothStepEdgeProps) => {
+  return memo(({ id, ...props }: StepEdgeProps) => {
     const _id = params.isInternal ? undefined : id;
 
     return (

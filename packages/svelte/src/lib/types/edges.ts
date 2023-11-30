@@ -5,7 +5,9 @@ import type {
   BezierPathOptions,
   DefaultEdgeOptionsBase,
   EdgePosition,
-  SmoothStepPathOptions
+  SmoothStepPathOptions,
+  Optional,
+  StepPathOptions
 } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
@@ -29,6 +31,7 @@ type BezierEdgeType<T> = DefaultEdge<T> & {
 
 type StepEdgeType<T> = DefaultEdge<T> & {
   type: 'step';
+  pathOptions?: StepPathOptions;
 };
 
 export type Edge<T = any> =
@@ -37,13 +40,29 @@ export type Edge<T = any> =
   | BezierEdgeType<T>
   | StepEdgeType<T>;
 
-export type EdgeProps = Omit<Edge, 'sourceHandle' | 'targetHandle'> &
+export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> &
   EdgePosition & {
     markerStart?: string;
     markerEnd?: string;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
   };
+
+export type EdgeComponentProps<T = any> = Optional<Omit<EdgeProps<T>, 'source' | 'target'>, 'id'>;
+
+export type BezierEdgeProps<T = any> = EdgeComponentProps<T> & {
+  pathOptions?: BezierPathOptions;
+};
+
+export type SmoothStepEdgeProps<T = any> = EdgeComponentProps<T> & {
+  pathOptions?: SmoothStepPathOptions;
+};
+
+export type StepEdgeProps<T = any> = EdgeComponentProps<T> & {
+  pathOptions?: StepPathOptions;
+};
+
+export type StraightEdgeProps<T = any> = EdgeComponentProps<T>;
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 

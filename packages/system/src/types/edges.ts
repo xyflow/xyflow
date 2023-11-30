@@ -27,6 +27,10 @@ export type SmoothStepPathOptions = {
   borderRadius?: number;
 };
 
+export type StepPathOptions = {
+  offset?: number;
+};
+
 export type BezierPathOptions = {
   curvature?: number;
 };

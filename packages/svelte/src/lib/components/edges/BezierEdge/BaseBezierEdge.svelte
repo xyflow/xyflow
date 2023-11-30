@@ -1,27 +1,29 @@
 <script lang="ts">
-  import { getSmoothStepPath, type Optional } from '@xyflow/system';
+  import { getBezierPath } from '@xyflow/system';
 
-  import type { EdgeProps } from '$lib/types';
+  import type { BezierEdgeProps } from '$lib/types';
   import { BaseEdge } from '$lib/components/BaseEdge';
 
-  type $$Props = Optional<EdgeProps, 'id' | 'target' | 'source'>;
+  type $$Props = BezierEdgeProps & { internal?: boolean };
 
-  $: [path, labelX, labelY] = getSmoothStepPath({
+  $: [path, labelX, labelY] = getBezierPath({
     sourceX: $$props.sourceX,
     sourceY: $$props.sourceY,
     targetX: $$props.targetX,
     targetY: $$props.targetY,
     sourcePosition: $$props.sourcePosition,
     targetPosition: $$props.targetPosition,
-    borderRadius: 0
+    curvature: $$props.pathOptions?.curvature
   });
+
+  $: id = $$props.internal ? undefined : $$props.id;
 </script>
 
 <BaseEdge
   {path}
   {labelX}
   {labelY}
-  id={$$props.id}
+  {id}
   label={$$props.label}
   labelStyle={$$props.labelStyle}
   markerStart={$$props.markerStart}
