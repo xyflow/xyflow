@@ -136,12 +136,12 @@ export function useSvelteFlow(): {
     ) => {
       const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
 
-      if (!nodeRect || !node) {
+      if (!nodeRect) {
         return [];
       }
 
       return (nodesToIntersect || get(nodes)).filter((n) => {
-        if (!isRect && (n.id === node.id || !n.computed?.positionAbsolute)) {
+        if (!isRect && (n.id === node!.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 
