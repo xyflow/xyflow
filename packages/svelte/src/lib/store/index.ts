@@ -192,15 +192,20 @@ export function createStore({
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const nodeIdsToUnselect = (params?.nodes ? params.nodes : get(store.nodes)).map(
-      (item) => item.id
-    );
-    const edgeIdsToUnselect = (params?.edges ? params.edges : get(store.edges)).map(
-      (item) => item.id
-    );
+    const selectedNodeIds = (params?.nodes ? params.nodes : get(store.nodes))
+      .filter((node) => node.selected)
+      .map((node) => node.id);
+    const selectedEdgeIds = (params?.edges ? params.edges : get(store.edges))
+      .filter((edge) => edge.selected)
+      .map((edge) => edge.id);
 
-    store.nodes.update((ns) => ns.map(resetSelectedItem(nodeIdsToUnselect)));
-    store.edges.update((es) => es.map(resetSelectedItem(edgeIdsToUnselect)));
+    if (selectedNodeIds.length) {
+      store.nodes.update((ns) => ns.map(resetSelectedItem(selectedNodeIds)));
+    }
+
+    if (selectedEdgeIds.length) {
+      store.edges.update((es) => es.map(resetSelectedItem(selectedEdgeIds)));
+    }
   }
 
   store.deleteKeyPressed.subscribe((deleteKeyPressed) => {
