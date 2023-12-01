@@ -45,6 +45,7 @@ import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
 import useNodesInitialized from '../examples/UseNodesInit';
+import useHandleConnectionStatus from '../examples/UseHandleConnectionStatus';
 
 export interface IRoute {
   name: string;
@@ -272,6 +273,11 @@ const routes: IRoute[] = [
     name: 'useReactFlow',
     path: 'usereactflow',
     component: UseReactFlow,
+  },
+  {
+    name: 'useHandleConnectionStatus',
+    path: 'usehandleconnectionstatus',
+    component: useHandleConnectionStatus,
   },
   {
     name: 'useUpdateNodeInternals',

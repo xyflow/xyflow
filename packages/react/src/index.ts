@@ -22,6 +22,7 @@ export { useStore, useStoreApi } from './hooks/useStore';
 export { default as useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
+export { useHandleConnectionStatus } from './hooks/useHandleConnectionStatus';
 export { useNodeId } from './contexts/NodeIdContext';
 
 export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';

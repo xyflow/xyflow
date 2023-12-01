@@ -5,9 +5,11 @@ import {
   getNodesBounds,
   getViewportForBounds,
   Transform,
+  Connection,
 } from '@xyflow/system';
 
 import type { Edge, Node, ReactFlowStore } from '../types';
+import { updateConnectionLookup } from './utils';
 
 const getInitialState = ({
   nodes = [],
@@ -23,6 +25,7 @@ const getInitialState = ({
   fitView?: boolean;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, Node>();
+  const connectionLookup = updateConnectionLookup(new Map<string, Connection[]>(), edges);
   const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
 
   let transform: Transform = [0, 0, 1];
@@ -42,6 +45,7 @@ const getInitialState = ({
     nodes: nextNodes,
     nodeLookup,
     edges: edges,
+    connectionLookup,
     onNodesChange: null,
     onEdgesChange: null,
     hasDefaultNodes: false,

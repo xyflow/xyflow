@@ -10,7 +10,7 @@ import {
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { updateNodesAndEdgesSelections } from './utils';
+import { updateConnectionLookup, updateNodesAndEdgesSelections } from './utils';
 import getInitialState from './initialState';
 import type {
   ReactFlowState,
@@ -49,8 +49,12 @@ const createRFStore = ({
         set({ nodes: nextNodes });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {} } = get();
-        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+        const { defaultEdgeOptions = {}, connectionLookup } = get();
+        const nextEdges = edges.map((e) => ({ ...defaultEdgeOptions, ...e }));
+
+        updateConnectionLookup(connectionLookup, nextEdges);
+
+        set({ edges: nextEdges });
       },
       // when the user works with an uncontrolled flow,
       // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
