@@ -8,8 +8,8 @@ import type {
   NodeOrigin,
   SnapGrid,
   Transform,
-  Viewport,
 } from '../types';
+import { type Viewport } from '../types';
 import { getNodePositionWithOrigin } from './graph';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
@@ -155,6 +155,21 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
+/**
+ * Returns a viewport that encloses the given bounds with optional padding.
+ * @remarks You can determine bounds eg. with {@link getNodesBounds} and {@link getBoundsOfRects}
+ * @param bounds - Bounds to fit inside viewport
+ * @param width - Width of the viewport
+ * @param height  - Height of the viewport
+ * @param minZoom - Minimum zoom level of the resulting viewport
+ * @param maxZoom - Maximum zoom level of the resulting viewport
+ * @param padding - Optional padding around the bounds
+ * @returns A {@link Viewport} that encloses the given bounds which you can pass to {@link setViewport}
+ * @example
+ * const { x, y, zoomn } = getViewportForBounds(
+  { x: 0, y: 0, width: 100, height: 100},
+  1200, 800, 0.5, 2);
+ */
 export const getViewportForBounds = (
   bounds: Rect,
   width: number,
