@@ -47,9 +47,7 @@ export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get,
 export function updateConnectionLookup(lookup: Map<string, Connection[]>, edges: Edge[]) {
   lookup.clear();
 
-  edges.forEach((edge) => {
-    const { source, target, sourceHandle = null, targetHandle = null } = edge;
-
+  edges.forEach(({ source, target, sourceHandle = null, targetHandle = null }) => {
     if (source && target) {
       const sourceKey = `${source}-source-${sourceHandle}`;
       const targetKey = `${target}-target-${targetHandle}`;

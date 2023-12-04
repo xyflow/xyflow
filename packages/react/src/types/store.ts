@@ -51,6 +51,7 @@ export type ReactFlowStore = {
   nodeLookup: Map<string, Node>;
   edges: Edge[];
   connectionLookup: Map<string, Connection[]>;
+
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;

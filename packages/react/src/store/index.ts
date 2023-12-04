@@ -330,6 +330,7 @@ const createRFStore = ({
 
         set(currentConnection);
       },
+
       reset: () => {
         // @todo: what should we do about this? Do we still need it?
         // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted

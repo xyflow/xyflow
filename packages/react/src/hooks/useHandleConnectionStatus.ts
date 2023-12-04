@@ -3,6 +3,7 @@ import { Connection, HandleType } from '@xyflow/system';
 
 import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
+import { areConnectionsEqual, isSameConnection } from '../utils/general';
 
 type useHandleConnectionStatusParams = {
   handleType: HandleType;
@@ -11,30 +12,6 @@ type useHandleConnectionStatusParams = {
   onConnect?: (connections: Connection[]) => void;
   onDisconnect?: (connections: Connection[]) => void;
 };
-
-function connectionsEqual(a: Connection[] | null, b: Connection[] | null) {
-  if (!a && !b) {
-    return true;
-  }
-
-  if (!a || !b) {
-    return false;
-  }
-
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  return a.every((connA) =>
-    b.find(
-      (connB) =>
-        connA.source === connB.source &&
-        connA.target === connB.target &&
-        connA.sourceHandle === connB.sourceHandle &&
-        connA.targetHandle === connB.targetHandle
-    )
-  );
-}
 
 export function useHandleConnectionStatus({
   handleType,
@@ -52,23 +29,26 @@ export function useHandleConnectionStatus({
 
   const connections = useStore(
     (state) => state.connectionLookup.get(`${currentNodeId}-${handleType}-${handleId}`) || null,
-    connectionsEqual
+    areConnectionsEqual
   );
 
   useEffect(() => {
-    // we don't want to trigger the handlers for the initial render
+    // @todo dicuss if onConnect/onDisconnect should be called when the component mounts/unmounts
     if (prevConnections.current && prevConnections.current !== connections) {
-      if (prevConnections.current?.length > (connections?.length ?? 0)) {
-        const disconnect = prevConnections.current.filter(
-          (prevConnection) => !connections?.find((connection) => connection.source === prevConnection.source)
-        );
-        onDisconnect?.(disconnect);
-      } else if (connections?.length) {
-        const connect = connections.filter(
-          (connection) =>
-            !prevConnections.current?.find((prevConnection) => prevConnection.source === connection.source)
-        );
-        onConnect?.(connect);
+      const disconnectedConnections = prevConnections.current.filter(
+        (prevConnection) => !connections?.find((connection) => isSameConnection(connection, prevConnection))
+      );
+
+      const newConnections = connections?.filter(
+        (connection) => !prevConnections.current?.find((prevConnection) => isSameConnection(prevConnection, connection))
+      );
+
+      if (disconnectedConnections.length) {
+        onDisconnect?.(disconnectedConnections);
+      }
+
+      if (newConnections?.length) {
+        onConnect?.(newConnections);
       }
     }
 
