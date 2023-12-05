@@ -26,14 +26,36 @@ import {
 } from '../types';
 import { errorMessages } from '../constants';
 
+/**
+ * Test whether an object is useable as an Edge
+ * @public
+ * @remarks In TypeScript this is a type guard that will narrow the type of whatever you pass in to Edge if it returns true
+ * @param element - The element to test
+ * @returns A boolean indicating whether the element is an Edge
+ */
 export const isEdgeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   element: NodeType | Connection | EdgeType
 ): element is EdgeType => 'id' in element && 'source' in element && 'target' in element;
 
+/**
+ * Test whether an object is useable as a Node
+ * @public
+ * @remarks In TypeScript this is a type guard that will narrow the type of whatever you pass in to Node if it returns true
+ * @param element - The element to test
+ * @returns A boolean indicating whether the element is an Node
+ */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   element: NodeType | Connection | EdgeType
 ): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
 
+/**
+ * Pass in a node, and get connected nodes where edge.source === node.id
+ * @public
+ * @param node - The node to get the connected nodes from
+ * @param nodes - The array of all nodes
+ * @param edges - The array of all edges
+ * @returns An array of nodes that are connected over eges where the source is the given node
+ */
 export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType | { id: string },
   nodes: NodeType[],
@@ -53,6 +75,14 @@ export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType e
   return nodes.filter((n) => outgoerIds.has(n.id));
 };
 
+/**
+ * Pass in a node, and get connected nodes where edge.target === node.id
+ * @public
+ * @param node - The node to get the connected nodes from
+ * @param nodes - The array of all nodes
+ * @param edges - The array of all edges
+ * @returns An array of nodes that are connected over eges where the target is the given node
+ */
 export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType | { id: string },
   nodes: NodeType[],
@@ -105,6 +135,14 @@ export const getNodePositionWithOrigin = (
   };
 };
 
+/**
+ * Determines a bounding box that contains all given nodes in an array
+ * @public
+ * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
+ * @param nodes - Nodes to calculate the bounds for
+ * @param nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
+ * @returns Bounding box enclosing all nodes
+ */
 export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
@@ -284,9 +322,15 @@ export function calcNextPosition<NodeType extends NodeBase>(
   };
 }
 
-// helper function to get arrays of nodes and edges that can be deleted
-// you can pass in a list of nodes and edges that should be deleted
-// and the function only returns elements that are deletable and also handles connected nodes and child nodes
+/**
+ * Pass in nodes & edges to delete, get arrays of nodes and edges that actually can be deleted
+ * @internal
+ * @param param.nodesToRemove - The nodes to remove
+ * @param param.edgesToRemove - The edges to remove
+ * @param param.nodes - All nodes
+ * @param param.edges - All edges
+ * @returns matchingNodes: nodes that can be deleted, matchingEdges: edges that can be deleted
+ */
 export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   nodesToRemove,
   edgesToRemove,
