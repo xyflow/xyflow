@@ -208,6 +208,12 @@ export const getNodesInside = <NodeType extends NodeBase>(
   return visibleNodes;
 };
 
+/**
+ * Get all connecting edges for a given set of nodes
+ * @param nodes - Nodes you want to get the connected edges for
+ * @param edges - All edges
+ * @returns Array of edges that connect any of the given nodes with each other
+ */
 export const getConnectedEdgesBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   nodes: NodeType[],
   edges: EdgeType[]

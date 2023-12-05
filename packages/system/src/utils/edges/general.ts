@@ -124,6 +124,14 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   );
 };
 
+/**
+ * This util is a convenience function to add a new Edge to an array of edges
+ * @remarks It also performs some validation to make sure you don't add an invalid edge or duplicate an existing one.
+ * @public
+ * @param edgeParams - Either an Edge or a Connection you want to add
+ * @param edges -  The array of all current edges
+ * @returns A new array of edges with the new edge added
+ */
 export const addEdgeBase = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
   edges: EdgeType[]
@@ -163,6 +171,14 @@ export type UpdateEdgeOptions = {
   shouldReplaceId?: boolean;
 };
 
+/**
+ * A handy utility to update an existing Edge with new properties
+ * @param oldEdge - The edge you want to update
+ * @param newConnection - The new Connection you want to update the edge with
+ * @param edges - The array of all current edges
+ * @param options.shouldReplaceId -
+ * @returns
+ */
 export const updateEdgeBase = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
   newConnection: Connection,
