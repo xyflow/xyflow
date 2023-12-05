@@ -174,10 +174,10 @@ export type UpdateEdgeOptions = {
 /**
  * A handy utility to update an existing Edge with new properties
  * @param oldEdge - The edge you want to update
- * @param newConnection - The new Connection you want to update the edge with
+ * @param newConnection - The new connection you want to update the edge with
  * @param edges - The array of all current edges
- * @param options.shouldReplaceId -
- * @returns
+ * @param options.shouldReplaceId - should the id of the old edge be replaced with the new connection id
+ * @returns the updated edges array
  */
 export const updateEdgeBase = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
