@@ -20,6 +20,7 @@ import type {
   OnError,
   IsValidConnection,
   ColorMode,
+  SnapGrid,
 } from '@xyflow/system';
 
 import type {
@@ -110,7 +111,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;
-  snapGrid?: [number, number];
+  snapGrid?: SnapGrid;
   onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;

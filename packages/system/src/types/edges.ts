@@ -19,7 +19,6 @@ export type EdgeBase<EdgeData = any> = {
   zIndex?: number;
   ariaLabel?: string;
   interactionWidth?: number;
-  focusable?: boolean;
 };
 
 export type SmoothStepPathOptions = {
@@ -37,7 +36,7 @@ export type BezierPathOptions = {
 
 export type DefaultEdgeOptionsBase<EdgeType extends EdgeBase> = Omit<
   EdgeType,
-  'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'sourceNode' | 'targetNode'
+  'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle'
 >;
 
 export enum ConnectionLineType {
