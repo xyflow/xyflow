@@ -139,10 +139,50 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   }, initElements);
 }
 
+/**
+ * Drop in function that applies node changes to an array of nodes.
+ * @public
+ * @remarks Various events on the <ReactFlow /> component can produce an {@link NodeChange} that describes how to update the edges of your flow in some way.
+ If you don't need any custom behaviour, this util can be used to take an array of these changes and apply them to your edges.
+ * @param changes - Array of changes to apply
+ * @param nodes - Array of nodes to apply the changes to
+ * @returns Array of updated nodes
+ * @example
+ *  const onNodesChange = useCallback(
+      (changes) => {
+        setNodes((oldNodes) => applyNodeChanges(changes, oldNodes));
+      },
+      [setNodes],
+    );
+  
+    return (
+      <ReactFLow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
+    );
+ */
 export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: Node<NodeData>[]): Node<NodeData>[] {
   return applyChanges(changes, nodes) as Node<NodeData>[];
 }
 
+/**
+ * Drop in function that applies edge changes to an array of edges.
+ * @public
+ * @remarks Various events on the <ReactFlow /> component can produce an {@link EdgeChange} that describes how to update the edges of your flow in some way.
+ If you don't need any custom behaviour, this util can be used to take an array of these changes and apply them to your edges.
+ * @param changes - Array of changes to apply
+ * @param edges - Array of edge to apply the changes to
+ * @returns Array of updated edges
+ * @example
+ *  const onEdgesChange = useCallback(
+      (changes) => {
+        setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
+      },
+      [setEdges],
+    );
+  
+    return (
+      <ReactFLow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
+    );
+ */
 export function applyEdgeChanges<EdgeData = any>(changes: EdgeChange[], edges: Edge<EdgeData>[]): Edge<EdgeData>[] {
   return applyChanges(changes, edges) as Edge<EdgeData>[];
 }
