@@ -25,7 +25,7 @@ const getInitialState = ({
   fitView?: boolean;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, Node>();
-  const connectionLookup = updateConnectionLookup(new Map<string, Connection[]>(), edges);
+  const connectionLookup = updateConnectionLookup(new Map<string, Map<string, Connection>>(), edges);
   const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
 
   let transform: Transform = [0, 0, 1];

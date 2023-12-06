@@ -23,7 +23,7 @@ function CustomHandle({ nodeId, ...handleProps }: HandleComponentProps & { nodeI
   });
 
   useEffect(() => {
-    //  console.log('useEffect, node id:', nodeId, handleProps.type, status);
+    console.log('useEffect, node id:', nodeId, handleProps.type, status);
   }, [status]);
 
   return <Handle {...handleProps} />;

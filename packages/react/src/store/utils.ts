@@ -44,7 +44,7 @@ export function updateNodesAndEdgesSelections({ changedNodes, changedEdges, get,
   }
 }
 
-export function updateConnectionLookup(lookup: Map<string, Connection[]>, edges: Edge[]) {
+export function updateConnectionLookup(lookup: Map<string, Map<string, Connection>>, edges: Edge[]) {
   lookup.clear();
 
   edges.forEach(({ source, target, sourceHandle = null, targetHandle = null }) => {
@@ -52,13 +52,12 @@ export function updateConnectionLookup(lookup: Map<string, Connection[]>, edges:
       const sourceKey = `${source}-source-${sourceHandle}`;
       const targetKey = `${target}-target-${targetHandle}`;
 
-      const prevSource = lookup.get(sourceKey);
-      const prevTarget = lookup.get(targetKey);
-
+      const prevSource = lookup.get(sourceKey) || new Map();
+      const prevTarget = lookup.get(targetKey) || new Map();
       const connection = { source, target, sourceHandle, targetHandle };
 
-      lookup.set(sourceKey, prevSource ? [...prevSource, connection] : [connection]);
-      lookup.set(targetKey, prevTarget ? [...prevTarget, connection] : [connection]);
+      lookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
+      lookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
     }
   });
 
