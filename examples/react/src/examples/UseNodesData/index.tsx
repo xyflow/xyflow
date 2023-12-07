@@ -13,10 +13,12 @@ import {
 
 import TextNode from './TextNode';
 import ResultNode from './ResultNode';
+import UppercaseNode from './UppercaseNode';
 
 const nodeTypes = {
   text: TextNode,
   result: ResultNode,
+  uppercase: UppercaseNode,
 };
 
 const initNodes: Node[] = [
@@ -26,8 +28,15 @@ const initNodes: Node[] = [
     data: {
       text: 'hello',
     },
-    position: { x: 0, y: 0 },
+    position: { x: -100, y: -50 },
   },
+  {
+    id: '1a',
+    type: 'uppercase',
+    data: {},
+    position: { x: 100, y: 0 },
+  },
+
   {
     id: '2',
     type: 'text',
@@ -47,8 +56,13 @@ const initNodes: Node[] = [
 
 const initEdges: Edge[] = [
   {
-    id: 'e1-3',
+    id: 'e1-1a',
     source: '1',
+    target: '1a',
+  },
+  {
+    id: 'e1a-3',
+    source: '1a',
     target: '3',
   },
   {
