@@ -1,5 +1,5 @@
 export { default as ReactFlow } from './container/ReactFlow';
-export { default as Handle } from './components/Handle';
+export { default as Handle, type HandleComponentProps } from './components/Handle';
 export { default as EdgeText } from './components/Edges/EdgeText';
 export { StraightEdge } from './components/Edges/StraightEdge';
 export { StepEdge } from './components/Edges/StepEdge';
@@ -22,7 +22,9 @@ export { useStore, useStoreApi } from './hooks/useStore';
 export { default as useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
-export { useHandleConnectionStatus } from './hooks/useHandleConnectionStatus';
+export { useHandleConnections } from './hooks/useHandleConnections';
+export { useUpdateNodeData } from './hooks/useUpdateNodeData';
+export { useNodesData } from './hooks/useNodesData';
 export { useNodeId } from './contexts/NodeIdContext';
 
 export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
