@@ -1,5 +1,6 @@
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type { NodeBase, XYPosition } from '@xyflow/system';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { CSSProperties, ComponentType, MemoExoticComponent, MouseEvent as ReactMouseEvent } from 'react';
+import type { NodeBase, NodeProps, XYPosition } from '@xyflow/system';
 
 /**
  * The node data structure that gets used for the nodes prop.
@@ -9,17 +10,8 @@ export type Node<NodeData = any, NodeType extends string | undefined = string | 
   NodeData,
   NodeType
 > & {
-  /**
-   * Inline style object
-   */
   style?: CSSProperties;
-  /**
-   * Inline style object
-   */
   className?: string;
-  /**
-   * Inline style object
-   */
   resizing?: boolean;
 };
 
@@ -27,8 +19,8 @@ export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
 export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
 
-export type WrapNodeProps<NodeData = any> = Pick<
-  Node<NodeData>,
+export type WrapNodeProps<NodeType extends Node = Node> = Pick<
+  NodeType,
   'id' | 'data' | 'style' | 'className' | 'dragHandle' | 'sourcePosition' | 'targetPosition' | 'hidden' | 'ariaLabel'
 > & {
   type: string;
@@ -59,3 +51,6 @@ export type WrapNodeProps<NodeData = any> = Pick<
   width?: number;
   height?: number;
 };
+
+export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
+export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };

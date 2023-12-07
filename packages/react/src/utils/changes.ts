@@ -159,8 +159,8 @@ function applyChanges(changes: any[], elements: any[]): any[] {
       <ReactFLow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
     );
  */
-export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: Node<NodeData>[]): Node<NodeData>[] {
-  return applyChanges(changes, nodes) as Node<NodeData>[];
+export function applyNodeChanges<NodeType extends Node = Node>(changes: NodeChange[], nodes: NodeType[]): NodeType[] {
+  return applyChanges(changes, nodes) as NodeType[];
 }
 
 /**
@@ -183,8 +183,8 @@ export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: N
       <ReactFLow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
     );
  */
-export function applyEdgeChanges<EdgeData = any>(changes: EdgeChange[], edges: Edge<EdgeData>[]): Edge<EdgeData>[] {
-  return applyChanges(changes, edges) as Edge<EdgeData>[];
+export function applyEdgeChanges<EdgeType extends Edge = Edge>(changes: EdgeChange[], edges: EdgeType[]): EdgeType[] {
+  return applyChanges(changes, edges) as EdgeType[];
 }
 
 export const createSelectionChange = (id: string, selected: boolean) => ({

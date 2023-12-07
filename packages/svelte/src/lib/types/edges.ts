@@ -53,6 +53,9 @@ export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle' |
     targetHandleId?: string | null;
   };
 
+/**
+ * Helper type for edge components that get exported by the library.
+ */
 export type EdgeComponentProps = EdgePosition & {
   id?: EdgeProps['id'];
   hidden?: EdgeProps['hidden'];
@@ -73,9 +76,24 @@ export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
   pathOptions?: PathOptions;
 };
 
+/**
+ * BezierEdge component props
+ */
 export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
+
+/**
+ * SmoothStepEdge component props
+ */
 export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
+
+/**
+ * StepEdge component props
+ */
 export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
+
+/**
+ * StraightEdge component props
+ */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;

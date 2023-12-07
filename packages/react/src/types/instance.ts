@@ -3,9 +3,9 @@
 import type { Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions } from '.';
 
-export type ReactFlowJsonObject<NodeData = any, EdgeData = any> = {
-  nodes: Node<NodeData>[];
-  edges: Edge<EdgeData>[];
+export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  nodes: NodeType[];
+  edges: EdgeType[];
   viewport: Viewport;
 };
 
@@ -15,30 +15,33 @@ export type DeleteElementsOptions = {
 };
 
 export namespace Instance {
-  export type GetNodes<NodeData> = () => Node<NodeData>[];
-  export type SetNodes<NodeData> = (
-    payload: Node<NodeData>[] | ((nodes: Node<NodeData>[]) => Node<NodeData>[])
+  export type GetNodes<NodeType extends Node = Node> = () => NodeType[];
+  export type SetNodes<NodeType extends Node = Node> = (
+    payload: NodeType[] | ((nodes: NodeType[]) => NodeType[])
   ) => void;
-  export type AddNodes<NodeData> = (payload: Node<NodeData>[] | Node<NodeData>) => void;
-  export type GetNode<NodeData> = (id: string) => Node<NodeData> | undefined;
-  export type GetEdges<EdgeData> = () => Edge<EdgeData>[];
-  export type SetEdges<EdgeData> = (
-    payload: Edge<EdgeData>[] | ((edges: Edge<EdgeData>[]) => Edge<EdgeData>[])
+  export type AddNodes<NodeType extends Node = Node> = (payload: NodeType[] | NodeType) => void;
+  export type GetNode<NodeType extends Node = Node> = (id: string) => NodeType | undefined;
+  export type GetEdges<EdgeType extends Edge = Edge> = () => EdgeType[];
+  export type SetEdges<EdgeType extends Edge = Edge> = (
+    payload: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])
   ) => void;
-  export type GetEdge<EdgeData> = (id: string) => Edge<EdgeData> | undefined;
-  export type AddEdges<EdgeData> = (payload: Edge<EdgeData>[] | Edge<EdgeData>) => void;
-  export type ToObject<NodeData = any, EdgeData = any> = () => ReactFlowJsonObject<NodeData, EdgeData>;
+  export type GetEdge<EdgeType extends Edge = Edge> = (id: string) => EdgeType | undefined;
+  export type AddEdges<EdgeType extends Edge = Edge> = (payload: EdgeType[] | EdgeType) => void;
+  export type ToObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = () => ReactFlowJsonObject<
+    NodeType,
+    EdgeType
+  >;
   export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => {
     deletedNodes: Node[];
     deletedEdges: Edge[];
   };
-  export type GetIntersectingNodes<NodeData> = (
-    node: Node<NodeData> | { id: Node['id'] } | Rect,
+  export type GetIntersectingNodes<NodeType extends Node = Node> = (
+    node: NodeType | { id: Node['id'] } | Rect,
     partially?: boolean,
-    nodes?: Node<NodeData>[]
-  ) => Node<NodeData>[];
-  export type IsNodeIntersecting<NodeData> = (
-    node: Node<NodeData> | { id: Node['id'] } | Rect,
+    nodes?: NodeType[]
+  ) => NodeType[];
+  export type IsNodeIntersecting<NodeType extends Node = Node> = (
+    node: NodeType | { id: Node['id'] } | Rect,
     area: Rect,
     partially?: boolean
   ) => boolean;
@@ -47,18 +50,18 @@ export namespace Instance {
   export type getOutgoers = (node: string | Node | { id: Node['id'] }) => Node[];
 }
 
-export type ReactFlowInstance<NodeData = any, EdgeData = any> = {
-  getNodes: Instance.GetNodes<NodeData>;
-  setNodes: Instance.SetNodes<NodeData>;
-  addNodes: Instance.AddNodes<NodeData>;
-  getNode: Instance.GetNode<NodeData>;
-  getEdges: Instance.GetEdges<EdgeData>;
-  setEdges: Instance.SetEdges<EdgeData>;
-  addEdges: Instance.AddEdges<EdgeData>;
-  getEdge: Instance.GetEdge<EdgeData>;
-  toObject: Instance.ToObject<NodeData, EdgeData>;
+export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  getNodes: Instance.GetNodes<NodeType>;
+  setNodes: Instance.SetNodes<NodeType>;
+  addNodes: Instance.AddNodes<NodeType>;
+  getNode: Instance.GetNode<NodeType>;
+  getEdges: Instance.GetEdges<EdgeType>;
+  setEdges: Instance.SetEdges<EdgeType>;
+  addEdges: Instance.AddEdges<EdgeType>;
+  getEdge: Instance.GetEdge<EdgeType>;
+  toObject: Instance.ToObject<NodeType, EdgeType>;
   deleteElements: Instance.DeleteElements;
-  getIntersectingNodes: Instance.GetIntersectingNodes<NodeData>;
-  isNodeIntersecting: Instance.IsNodeIntersecting<NodeData>;
+  getIntersectingNodes: Instance.GetIntersectingNodes<NodeType>;
+  isNodeIntersecting: Instance.IsNodeIntersecting<NodeType>;
   viewportInitialized: boolean;
 } & Omit<ViewportHelperFunctions, 'initialized'>;

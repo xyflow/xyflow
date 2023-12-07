@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { CSSProperties, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
+import type {
+  CSSProperties,
+  HTMLAttributes,
+  ReactNode,
+  MouseEvent as ReactMouseEvent,
+  ComponentType,
+  MemoExoticComponent,
+} from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -119,6 +126,9 @@ export type BaseEdgeProps = EdgeLabelOptions & {
   style?: CSSProperties;
 };
 
+/**
+ * Helper type for edge components that get exported by the library.
+ */
 export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
     id?: EdgeProps['id'];
@@ -134,10 +144,29 @@ export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
   pathOptions?: PathOptions;
 };
 
+/**
+ * BezierEdge component props
+ */
 export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
+
+/**
+ * SmoothStepEdge component props
+ */
 export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
+
+/**
+ * StepEdge component props
+ */
 export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
+
+/**
+ * StraightEdge component props
+ */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
+
+/**
+ * SimpleBezier component props
+ */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
@@ -157,3 +186,6 @@ export type ConnectionLineComponentProps = {
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
+
+export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
+export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };
