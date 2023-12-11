@@ -7,10 +7,6 @@ function ResultNode() {
   });
   const nodesData = useNodesData(connections.map((connection) => connection.source));
 
-  useEffect(() => {
-    console.log('incoming data changed', nodesData);
-  }, [nodesData]);
-
   return (
     <div style={{ background: '#eee', color: '#222', padding: 10, fontSize: 12, borderRadius: 10 }}>
       <Handle type="target" position={Position.Left} />
