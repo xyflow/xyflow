@@ -35,12 +35,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@reactflow/background": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/background?planera-v11.4.0",
-    "@reactflow/controls": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/controls?planera-v11.4.0",
-    "@reactflow/core": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/core?planera-v11.4.0",
-    "@reactflow/minimap": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/minimap?planera-v11.4.0",
-    "@reactflow/node-toolbar": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/node-toolbar?planera-v11.4.0",
-    "@reactflow/node-resizer": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/node-resizer?planera-v11.4.0"
+    "@reactflow/background": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/background?scrollstep",
+    "@reactflow/controls": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/controls?scrollstep",
+    "@reactflow/core": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/core?scrollstep",
+    "@reactflow/minimap": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/minimap?scrollstep",
+    "@reactflow/node-toolbar": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/node-toolbar?scrollstep",
+    "@reactflow/node-resizer": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/node-resizer?scrollstep"
   },
   "peerDependencies": {
     "react": ">=17",

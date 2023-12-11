@@ -2338,8 +2338,10 @@ const ZoomPane = ({ onMove, onMoveStart, onMoveEnd, onPaneContextMenu, zoomOnScr
                 console.warn('d3ZoomHandler undefined. NO-OP');
                 return;
             }
+            console.warn('d3ZoomHandler START');
             if (panOnScroll && !zoomActivationKeyPressed && !userSelectionActive) {
                 d3Selection.on('wheel.zoom', (event) => {
+                    console.warn('d3ZoomHandler panOnScroll', event);
                     if (isWrappedWithClass(event, noWheelClassName)) {
                         return false;
                     }
@@ -2365,6 +2367,7 @@ const ZoomPane = ({ onMove, onMoveStart, onMoveEnd, onPaneContextMenu, zoomOnScr
             else if (panOnTouchPadScroll && !zoomActivationKeyPressed) {
                 d3Selection
                     .on('wheel', (event) => {
+                    console.warn('d3ZoomHandler panOnTouchPadScroll', event);
                     const verticalTouchDetected = !!event.wheelDeltaY && event.wheelDeltaY === -3 * event.deltaY;
                     const horizontalTouchDetected = !!event.wheelDeltaX && event.wheelDeltaX === -3 * event.deltaX;
                     const isTouchPad = verticalTouchDetected || horizontalTouchDetected;
@@ -2418,6 +2421,7 @@ const ZoomPane = ({ onMove, onMoveStart, onMoveEnd, onPaneContextMenu, zoomOnScr
             }
             else if (!userSelectionActive) {
                 d3Zoom.on('zoom', (event) => {
+                    console.warn('zoom somethingelse');
                     const { onViewportChange } = store.getState();
                     store.setState({ transform: [event.transform.x, event.transform.y, event.transform.k] });
                     zoomedWithRightMouseButton.current = !!(onPaneContextMenu && isRightClickPan(panOnDrag, event.sourceEvent?.button));

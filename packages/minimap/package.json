@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@reactflow/core": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/core?planera-v11.4.0",
+    "@reactflow/core": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/core?scrollstep",
     "@types/d3-selection": "^3.0.3",
     "@types/d3-zoom": "^3.0.1",
     "classcat": "^5.0.3",

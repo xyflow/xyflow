@@ -38,7 +38,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@reactflow/core": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/core?planera-v11.4.0",
+    "@reactflow/core": "https://gitpkg.now.sh/griffins-planera/react-flow/packages/core?scrollstep",
     "classcat": "^5.0.4",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
