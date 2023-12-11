@@ -107,7 +107,7 @@
     trigger: [
       {
         ...deleteKeyDefinition,
-        callback: () => deleteKeyDefinition.key && deleteKeyPressed.set(true)
+        callback: (event) => deleteKeyDefinition.key && deleteKeyPressed.set(true)
       }
     ],
     type: 'keydown'

@@ -171,7 +171,7 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
         lib,
       });
 
-      if (isValid) {
+      if (isValid && connection) {
         onConnectExtended(connection);
       }
 

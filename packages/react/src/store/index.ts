@@ -7,10 +7,11 @@ import {
   panBy as panBySystem,
   Dimensions,
   updateNodeDimensions as updateNodeDimensionsSystem,
+  updateConnectionLookup,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { updateConnectionLookup, updateNodesAndEdgesSelections } from './utils';
+import { updateNodesAndEdgesSelections } from './utils';
 import getInitialState from './initialState';
 import type {
   ReactFlowState,

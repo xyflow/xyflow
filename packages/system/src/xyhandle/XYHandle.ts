@@ -58,11 +58,9 @@ export type XYHandleInstance = {
 type Result = {
   handleDomNode: Element | null;
   isValid: boolean;
-  connection: Connection;
+  connection: Connection | null;
   endHandle: ConnectingHandle | null;
 };
-
-const nullConnection: Connection = { source: null, target: null, sourceHandle: null, targetHandle: null };
 
 const alwaysValid = () => true;
 
@@ -197,7 +195,7 @@ function onPointerDown(
       return resetRecentHandle(prevActiveHandle, lib);
     }
 
-    if (connection.source !== connection.target && handleDomNode) {
+    if (connection?.source !== connection?.target && handleDomNode) {
       resetRecentHandle(prevActiveHandle, lib);
       prevActiveHandle = handleDomNode;
       handleDomNode.classList.add('connecting', `${lib}-flow__handle-connecting`);
@@ -269,7 +267,7 @@ function isValidHandle(
   const result: Result = {
     handleDomNode: handleToCheck,
     isValid: false,
-    connection: nullConnection,
+    connection: null,
     endHandle: null,
   };
 
@@ -279,6 +277,10 @@ function isValidHandle(
     const handleId = handleToCheck.getAttribute('data-handleid');
     const connectable = handleToCheck.classList.contains('connectable');
     const connectableEnd = handleToCheck.classList.contains('connectableend');
+
+    if (!handleNodeId) {
+      return result;
+    }
 
     const connection: Connection = {
       source: isTarget ? handleNodeId : fromNodeId,

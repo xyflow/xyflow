@@ -5,7 +5,7 @@ function ResultNode() {
   const connections = useHandleConnections({
     handleType: 'target',
   });
-  const nodesData = useNodesData<{ text: string }>(connections.map((connection) => connection.source));
+  const nodesData = useNodesData(connections.map((connection) => connection.source));
 
   useEffect(() => {
     console.log('incoming data changed', nodesData);
@@ -16,7 +16,8 @@ function ResultNode() {
       <Handle type="target" position={Position.Left} />
       <div>
         incoming texts:{' '}
-        {nodesData?.filter((nodeData) => nodeData.text).map(({ text }, i) => <div key={i}>{text}</div>) || 'none'}
+        {nodesData?.filter((nodeData) => nodeData.text !== undefined).map(({ text }, i) => <div key={i}>{text}</div>) ||
+          'none'}
       </div>
     </div>
   );

@@ -15,13 +15,18 @@ import TextNode from './TextNode';
 import ResultNode from './ResultNode';
 import UppercaseNode from './UppercaseNode';
 
+export type TextNode = Node<{ text: string }, 'text'>;
+export type ResultNode = Node<{}, 'result'>;
+export type UppercaseNode = Node<{}, 'uppercase'>;
+export type MyNode = Node<{ text: string }, 'text'> | Node<{}, 'result'> | Node<{}, 'uppercase'>;
+
 const nodeTypes = {
   text: TextNode,
   result: ResultNode,
   uppercase: UppercaseNode,
 };
 
-const initNodes: Node[] = [
+const initNodes: MyNode[] = [
   {
     id: '1',
     type: 'text',

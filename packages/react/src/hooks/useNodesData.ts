@@ -2,9 +2,14 @@ import { useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../hooks/useStore';
+import type { Node } from '../types';
 
-export function useNodesData<NodeData = unknown>(nodeId: string): NodeData | null;
-export function useNodesData<NodeData = unknown>(nodeIds: string[]): NodeData[];
+export function useNodesData<NodeType extends Node = Node>(nodeId: string): NodeType['data'] | null;
+export function useNodesData<NodeType extends Node = Node>(nodeIds: string[]): NodeType['data'][];
+export function useNodesData<NodeType extends Node = Node>(
+  nodeIds: string[],
+  guard: (node: Node) => node is NodeType
+): NodeType['data'][];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const nodesData = useStore(
@@ -14,15 +19,17 @@ export function useNodesData(nodeIds: any): any {
           return s.nodeLookup.get(nodeIds)?.data || null;
         }
 
-        return nodeIds.reduce((res, id) => {
-          const node = s.nodeLookup.get(id);
+        const data = [];
 
-          if (node) {
-            res.push(node.data);
+        for (const nodeId of nodeIds) {
+          const nodeData = s.nodeLookup.get(nodeId)?.data;
+
+          if (nodeData) {
+            data.push(nodeData);
           }
+        }
 
-          return res;
-        }, []);
+        return data;
       },
       [nodeIds]
     ),

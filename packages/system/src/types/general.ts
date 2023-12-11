@@ -139,3 +139,5 @@ export type UpdateConnection = (params: {
 
 export type ColorModeClass = 'light' | 'dark';
 export type ColorMode = ColorModeClass | 'system';
+
+export type ConnectionLookup = Map<string, Map<string, Connection>>;

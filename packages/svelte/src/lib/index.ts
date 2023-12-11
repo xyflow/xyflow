@@ -27,6 +27,9 @@ export * from '$lib/hooks/useSvelteFlow';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';
+export * from '$lib/hooks/useHandleConnections';
+export * from '$lib/hooks/useNodesData';
+export * from '$lib/hooks/useUpdateNodeData';
 
 // types
 export type {

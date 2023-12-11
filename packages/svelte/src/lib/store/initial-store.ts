@@ -17,7 +17,9 @@ import {
   type Viewport,
   updateNodes,
   getNodesBounds,
-  getViewportForBounds
+  getViewportForBounds,
+  updateConnectionLookup,
+  type ConnectionLookup
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -72,11 +74,12 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
 }) => {
-  const nodeLookup = new Map<string, Node>();
+  const nodeLookup = new Map();
   const nextNodes = updateNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
   });
+  const connectionLookup = updateConnectionLookup(new Map(), edges);
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
@@ -91,8 +94,9 @@ export const getInitialStore = ({
     nodes: createNodesStore(nextNodes, nodeLookup),
     nodeLookup: readable<Map<string, Node>>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
-    edges: createEdgesStore(edges),
+    edges: createEdgesStore(edges, connectionLookup),
     edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
+    connectionLookup: readable<ConnectionLookup>(connectionLookup),
     height: writable<number>(500),
     width: writable<number>(500),
     minZoom: writable<number>(0.5),

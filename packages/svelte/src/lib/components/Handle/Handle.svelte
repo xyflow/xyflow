@@ -6,7 +6,9 @@
     XYHandle,
     isMouseEvent,
     type Connection,
-    type HandleType
+    type HandleType,
+    areConnectionMapsEqual,
+    handleConnectionChange
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -20,6 +22,8 @@
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
   export let isConnectable: $$Props['isConnectable'] = undefined;
+  export let onconnect: $$Props['onconnect'] = undefined;
+  export let ondisconnect: $$Props['ondisconnect'] = undefined;
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
@@ -59,7 +63,9 @@
     panBy,
     cancelConnection,
     updateConnection,
-    autoPanOnConnect
+    autoPanOnConnect,
+    edges,
+    connectionLookup
   } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -106,6 +112,26 @@
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom]
       });
     }
+  }
+
+  let prevConnections: Map<string, Connection> | null = null;
+  let connections: Map<string, Connection> | undefined;
+
+  $: if (onconnect || ondisconnect) {
+    // connectionLookup is not reactive, so we use edges to get notified about updates
+    $edges;
+    connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+  }
+
+  $: {
+    if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+      const _connections = connections ?? new Map();
+
+      handleConnectionChange(prevConnections, _connections, ondisconnect);
+      handleConnectionChange(_connections, prevConnections, onconnect);
+    }
+
+    prevConnections = connections ?? new Map();
   }
 
   // @todo implement connectablestart, connectableend
