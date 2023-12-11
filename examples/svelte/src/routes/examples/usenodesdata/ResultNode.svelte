@@ -17,7 +17,7 @@
 		type: 'target'
 	});
 
-	const nodeData = useNodesData($connections.map((connection) => connection.source));
+	$: nodeData = useNodesData($connections.map((connection) => connection.source));
 </script>
 
 <div class="custom">
