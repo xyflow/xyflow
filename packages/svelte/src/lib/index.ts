@@ -29,7 +29,6 @@ export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';
 export * from '$lib/hooks/useHandleConnections';
 export * from '$lib/hooks/useNodesData';
-export * from '$lib/hooks/useSetNodeData';
 
 // types
 export type {

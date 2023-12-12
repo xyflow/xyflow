@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { shortcut, type ShortcutModifierDefinition } from '@svelte-put/shortcut';
   import { isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
-  import { shortcut, type ShortcutModifierDefinition } from '../../actions/shortcut';
 
   type $$Props = KeyHandlerProps;
 
@@ -113,7 +113,7 @@
       {
         ...deleteKeyDefinition,
         enabled: deleteKeyDefinition.key !== null,
-        callback: (detail) => !isInputDOMNode(detail.event) && deleteKeyPressed.set(true)
+        callback: (detail) => !isInputDOMNode(detail.originalEvent) && deleteKeyPressed.set(true)
       }
     ],
     type: 'keydown'

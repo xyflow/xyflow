@@ -5,14 +5,14 @@
 		type NodeProps,
 		useHandleConnections,
 		useNodesData,
-		useSetNodeData
+		useSvelteFlow
 	} from '@xyflow/svelte';
 
 	type $$Props = NodeProps;
 
 	export let id: $$Props['id'];
 
-	const setNodeData = useSetNodeData();
+	const { updateNodeData } = useSvelteFlow();
 	const connections = useHandleConnections({
 		nodeId: id,
 		type: 'target'
@@ -21,7 +21,7 @@
 	$: nodeData = useNodesData($connections[0]?.source);
 
 	$: {
-		setNodeData(id, { text: $nodeData?.text?.toUpperCase() || '' });
+		updateNodeData(id, { text: $nodeData?.text?.toUpperCase() || '' });
 	}
 </script>
 
