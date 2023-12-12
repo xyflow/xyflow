@@ -4,7 +4,6 @@
 		Position,
 		useHandleConnections,
 		useNodesData,
-		useUpdateNodeData,
 		type NodeProps
 	} from '@xyflow/svelte';
 

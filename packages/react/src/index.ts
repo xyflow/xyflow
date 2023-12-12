@@ -23,7 +23,7 @@ export { default as useOnViewportChange, type UseOnViewportChangeOptions } from 
 export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useHandleConnections } from './hooks/useHandleConnections';
-export { useUpdateNodeData } from './hooks/useUpdateNodeData';
+export { useSetNodeData } from './hooks/useSetNodeData';
 export { useNodesData } from './hooks/useNodesData';
 export { useNodeId } from './contexts/NodeIdContext';
 

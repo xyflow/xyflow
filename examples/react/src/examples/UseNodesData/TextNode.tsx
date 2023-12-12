@@ -1,10 +1,10 @@
 import { memo, ChangeEventHandler } from 'react';
-import { Position, NodeProps, useUpdateNodeData, Handle } from '@xyflow/react';
+import { Position, NodeProps, useSetNodeData, Handle } from '@xyflow/react';
 
 function TextNode({ id, data }: NodeProps) {
-  const updateNodeData = useUpdateNodeData();
+  const setNodeData = useSetNodeData();
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = (evt) => updateNodeData(id, { text: evt.target.value });
+  const onChange: ChangeEventHandler<HTMLInputElement> = (evt) => setNodeData(id, { text: evt.target.value });
 
   return (
     <div style={{ background: '#eee', color: '#222', padding: 10, fontSize: 12, borderRadius: 10 }}>

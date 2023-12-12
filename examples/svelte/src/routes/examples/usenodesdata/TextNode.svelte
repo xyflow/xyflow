@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { Handle, Position, type NodeProps, useUpdateNodeData } from '@xyflow/svelte';
+	import { Handle, Position, type NodeProps, useSetNodeData } from '@xyflow/svelte';
 
 	type $$Props = NodeProps;
 
 	export let id: $$Props['id'];
 	export let data: $$Props['data'];
 
-	const updateNodeData = useUpdateNodeData();
+	const setNodeData = useSetNodeData();
 </script>
 
 <div class="custom">
@@ -14,7 +14,7 @@
 	<div>
 		<input
 			value={data.text}
-			on:input={(evt) => updateNodeData(id, { text: evt.currentTarget.value })}
+			on:input={(evt) => setNodeData(id, { text: evt.currentTarget.value })}
 		/>
 	</div>
 	<Handle type="source" position={Position.Right} />

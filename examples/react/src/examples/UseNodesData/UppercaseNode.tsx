@@ -1,15 +1,15 @@
 import { memo, useEffect } from 'react';
-import { Position, NodeProps, useUpdateNodeData, Handle, useHandleConnections, useNodesData } from '@xyflow/react';
+import { Position, NodeProps, useSetNodeData, Handle, useHandleConnections, useNodesData } from '@xyflow/react';
 
 function UppercaseNode({ id }: NodeProps) {
   const connections = useHandleConnections({
     type: 'target',
   });
   const nodeData = useNodesData(connections[0]?.source);
-  const updateNodeData = useUpdateNodeData();
+  const setNodeData = useSetNodeData();
 
   useEffect(() => {
-    updateNodeData(id, { text: nodeData?.text.toUpperCase() });
+    setNodeData(id, { text: nodeData?.text.toUpperCase() });
   }, [nodeData]);
 
   return (
