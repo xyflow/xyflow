@@ -1,9 +1,9 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { Handle, Position, useHandleConnections, useNodesData } from '@xyflow/react';
 
 function ResultNode() {
   const connections = useHandleConnections({
-    handleType: 'target',
+    type: 'target',
   });
   const nodesData = useNodesData(connections.map((connection) => connection.source));
 

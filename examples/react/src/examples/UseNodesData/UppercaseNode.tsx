@@ -3,7 +3,7 @@ import { Position, NodeProps, useUpdateNodeData, Handle, useHandleConnections, u
 
 function UppercaseNode({ id }: NodeProps) {
   const connections = useHandleConnections({
-    handleType: 'target',
+    type: 'target',
   });
   const nodeData = useNodesData(connections[0]?.source);
   const updateNodeData = useUpdateNodeData();

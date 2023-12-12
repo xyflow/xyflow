@@ -5,9 +5,9 @@ import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
 
 type useHandleConnectionsParams = {
-  handleType: HandleType;
+  type: HandleType;
+  id?: string | null;
   nodeId?: string;
-  handleId?: string | null;
   onConnect?: (connections: Connection[]) => void;
   onDisconnect?: (connections: Connection[]) => void;
 };
@@ -16,16 +16,16 @@ type useHandleConnectionsParams = {
  *  Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
  *
  * @public
- * @param param.handleType - 'source' or 'target'
- * @param param.handleId - the handle id (this is only needed if the node has multiple handles of the same type)
+ * @param param.type - handle type 'source' or 'target'
+ * @param param.id - the handle id (this is only needed if the node has multiple handles of the same type)
  * @param param.nodeId - node id - if not provided, the node id from the NodeIdContext is used
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
  */
 export function useHandleConnections({
-  handleType,
-  handleId = null,
+  type,
+  id = null,
   nodeId,
   onConnect,
   onDisconnect,
@@ -35,7 +35,7 @@ export function useHandleConnections({
   const currentNodeId = nodeId || _nodeId;
 
   const connections = useStore(
-    (state) => state.connectionLookup.get(`${currentNodeId}-${handleType}-${handleId}`),
+    (state) => state.connectionLookup.get(`${currentNodeId}-${type}-${id}`),
     areConnectionMapsEqual
   );
 
