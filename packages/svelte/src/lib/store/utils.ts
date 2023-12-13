@@ -6,7 +6,15 @@ import {
   type Writable,
   get
 } from 'svelte/store';
-import { adoptUserProvidedNodes, type Viewport, type PanZoomInstance } from '@xyflow/system';
+import {
+  adoptUserProvidedNodes,
+  updateConnectionLookup,
+  type Viewport,
+  type PanZoomInstance,
+  type Viewport,
+  type PanZoomInstance,
+  type ConnectionLookup
+} from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
 
@@ -168,6 +176,7 @@ export const createNodesStore = (
 
 export const createEdgesStore = (
   edges: Edge[],
+  connectionLookup: ConnectionLookup,
   defaultOptions?: DefaultEdgeOptions
 ): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
   const { subscribe, set, update } = writable<Edge[]>([]);
@@ -176,6 +185,9 @@ export const createEdgesStore = (
 
   const _set: typeof set = (eds: Edge[]) => {
     const nextEdges = defaults ? eds.map((edge) => ({ ...defaults, ...edge })) : eds;
+
+    updateConnectionLookup(connectionLookup, nextEdges);
+
     value = nextEdges;
     set(value);
   };

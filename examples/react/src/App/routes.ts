@@ -44,7 +44,9 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
-import useNodesInitialized from '../examples/UseNodesInit';
+import UseNodesInitialized from '../examples/UseNodesInit';
+import UseNodesData from '../examples/UseNodesData';
+import UseHandleConnections from '../examples/UseHandleConnections';
 
 export interface IRoute {
   name: string;
@@ -261,7 +263,7 @@ const routes: IRoute[] = [
   {
     name: 'useNodesInitialized',
     path: 'use-nodes-initialized',
-    component: useNodesInitialized,
+    component: UseNodesInitialized,
   },
   {
     name: 'useOnSelectionChange',
@@ -272,6 +274,16 @@ const routes: IRoute[] = [
     name: 'useReactFlow',
     path: 'usereactflow',
     component: UseReactFlow,
+  },
+  {
+    name: 'useHandleConnections',
+    path: 'usehandleconnections',
+    component: UseHandleConnections,
+  },
+  {
+    name: 'useNodesData',
+    path: 'usenodesdata',
+    component: UseNodesData,
   },
   {
     name: 'useUpdateNodeInternals',

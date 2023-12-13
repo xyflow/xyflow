@@ -13,6 +13,8 @@ import type {
   HandleElement,
   ConnectionStatus,
   EdgePosition,
+  Optional,
+  StepPathOptions,
 } from '@xyflow/system';
 
 import { Node } from '.';
@@ -46,7 +48,12 @@ type BezierEdgeType<T> = DefaultEdge<T> & {
   pathOptions?: BezierPathOptions;
 };
 
-export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T>;
+type StepEdgeType<T> = DefaultEdge<T> & {
+  type: 'step';
+  pathOptions?: StepPathOptions;
+};
+
+export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T> | StepEdgeType<T>;
 
 export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
 
@@ -100,13 +107,23 @@ export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd
     path: string;
   };
 
-export type SmoothStepEdgeProps<T = any> = EdgeProps<T> & {
+export type EdgeComponentProps<T = any> = Optional<Omit<EdgeProps<T>, 'source' | 'target'>, 'id'>;
+
+export type StraightEdgeProps<T = any> = Omit<EdgeComponentProps<T>, 'sourcePosition' | 'targetPosition'>;
+
+export type SmoothStepEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: SmoothStepPathOptions;
 };
 
-export type BezierEdgeProps<T = any> = EdgeProps<T> & {
+export type BezierEdgeProps<T = any> = EdgeComponentProps<T> & {
   pathOptions?: BezierPathOptions;
 };
+
+export type StepEdgeProps<T = any> = EdgeComponentProps<T> & {
+  pathOptions?: StepPathOptions;
+};
+
+export type SimpleBezierEdgeProps<T = any> = EdgeComponentProps<T>;
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
 

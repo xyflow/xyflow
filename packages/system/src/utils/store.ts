@@ -9,6 +9,8 @@ import {
   Transform,
   XYPosition,
   XYZPosition,
+  ConnectionLookup,
+  EdgeBase,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import { isNumeric } from './general';
@@ -71,11 +73,13 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
     defaults: {},
   }
 ): NodeType[] {
+  const tmpLookup = new Map(nodeLookup);
+  nodeLookup.clear();
   const parentNodes: ParentNodes = {};
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   const nextNodes = nodes.map((n) => {
-    const currentStoreNode = nodeLookup.get(n.id);
+    const currentStoreNode = tmpLookup.get(n.id);
     if (n === currentStoreNode?.[internalsSymbol]?.userProvidedNode.deref()) return currentStoreNode;
 
     const node: NodeType = {
@@ -235,4 +239,24 @@ export function panBy({
     (nextViewport.x !== transform[0] || nextViewport.y !== transform[1] || nextViewport.k !== transform[2]);
 
   return transformChanged;
+}
+
+export function updateConnectionLookup(lookup: ConnectionLookup, edges: EdgeBase[]) {
+  lookup.clear();
+
+  edges.forEach(({ source, target, sourceHandle = null, targetHandle = null }) => {
+    if (source && target) {
+      const sourceKey = `${source}-source-${sourceHandle}`;
+      const targetKey = `${target}-target-${targetHandle}`;
+
+      const prevSource = lookup.get(sourceKey) || new Map();
+      const prevTarget = lookup.get(targetKey) || new Map();
+      const connection = { source, target, sourceHandle, targetHandle };
+
+      lookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
+      lookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
+    }
+  });
+
+  return lookup;
 }

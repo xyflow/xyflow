@@ -64,7 +64,11 @@ export type UpdatableStoreProps = {
   connectionMode?: UnwrapWritable<SvelteFlowStore['connectionMode']>;
   onerror?: UnwrapWritable<SvelteFlowStore['onerror']>;
   ondelete?: UnwrapWritable<SvelteFlowStore['ondelete']>;
+  onedgecreate?: UnwrapWritable<SvelteFlowStore['onedgecreate']>;
   nodeDragThreshold?: UnwrapWritable<SvelteFlowStore['nodeDragThreshold']>;
+  onconnect?: UnwrapWritable<SvelteFlowStore['onconnect']>;
+  onconnectstart?: UnwrapWritable<SvelteFlowStore['onconnectstart']>;
+  onconnectend?: UnwrapWritable<SvelteFlowStore['onconnectend']>;
 };
 
 export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStoreProps) {

@@ -7,7 +7,7 @@ export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
 export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/BaseEdge';
-export * from '$lib/components/edges';
+export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
 export * from '$lib/components/Handle';
 
 // plugins
@@ -27,9 +27,20 @@ export * from '$lib/hooks/useSvelteFlow';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';
+export * from '$lib/hooks/useHandleConnections';
+export * from '$lib/hooks/useNodesData';
 
 // types
-export type { Edge, EdgeProps, EdgeTypes, DefaultEdgeOptions } from '$lib/types/edges';
+export type {
+  Edge,
+  EdgeProps,
+  BezierEdgeProps,
+  SmoothStepEdgeProps,
+  StepEdgeProps,
+  StraightEdgeProps,
+  EdgeTypes,
+  DefaultEdgeOptions
+} from '$lib/types/edges';
 export type { HandleComponentProps, FitViewOptions } from '$lib/types/general';
 export type { Node, NodeTypes, DefaultNodeOptions } from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';

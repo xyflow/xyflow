@@ -194,9 +194,6 @@
       positionAbsolute={{ x: positionX, y: positionY }}
       {width}
       {height}
-      on:connectstart
-      on:connect
-      on:connectend
     />
   </div>
 {/if}

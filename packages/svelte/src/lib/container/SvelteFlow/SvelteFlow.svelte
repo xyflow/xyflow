@@ -71,12 +71,16 @@
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onerror: $$Props['onerror'] = undefined;
   export let ondelete: $$Props['ondelete'] = undefined;
+  export let onedgecreate: $$Props['onedgecreate'] = undefined;
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
   export let width: $$Props['width'] = undefined;
   export let height: $$Props['height'] = undefined;
   export let colorMode: $$Props['colorMode'] = 'light';
+  export let onconnect: $$Props['onconnect'] = undefined;
+  export let onconnectstart: $$Props['onconnectstart'] = undefined;
+  export let onconnectend: $$Props['onconnectend'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -149,8 +153,12 @@
       autoPanOnNodeDrag,
       onerror,
       ondelete,
+      onedgecreate,
       connectionMode,
-      nodeDragThreshold
+      nodeDragThreshold,
+      onconnect,
+      onconnectstart,
+      onconnectend
     };
 
     updateStoreByKeys(store, updatableProps);
@@ -215,9 +223,6 @@
           on:nodemouseenter
           on:nodemousemove
           on:nodemouseleave
-          on:connectstart
-          on:connect
-          on:connectend
           on:nodedragstart
           on:nodedrag
           on:nodedragstop

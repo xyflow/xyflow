@@ -7,6 +7,7 @@ import {
   panBy as panBySystem,
   Dimensions,
   updateNodeDimensions as updateNodeDimensionsSystem,
+  updateConnectionLookup,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -54,8 +55,12 @@ const createRFStore = ({
         set({ nodes: nodesWithInternalData });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {} } = get();
-        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+        const { defaultEdgeOptions = {}, connectionLookup } = get();
+        const nextEdges = edges.map((e) => ({ ...defaultEdgeOptions, ...e }));
+
+        updateConnectionLookup(connectionLookup, nextEdges);
+
+        set({ edges: nextEdges });
       },
       // when the user works with an uncontrolled flow,
       // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
@@ -332,6 +337,7 @@ const createRFStore = ({
 
         set(currentConnection);
       },
+
       reset: () => {
         // @todo: what should we do about this? Do we still need it?
         // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted
