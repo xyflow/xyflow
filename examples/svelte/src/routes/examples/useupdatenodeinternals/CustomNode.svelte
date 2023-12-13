@@ -15,15 +15,9 @@
 	};
 </script>
 
-<Handle type="target" position={Position.Top} on:connect />
+<Handle type="target" position={Position.Top} />
 <button on:click={onClick}>add handle</button>
 
 {#each Array.from({ length: handleCount }) as handle, i}
-	<Handle
-		type="source"
-		position={Position.Bottom}
-		id={`${i}`}
-		style={`left: ${i * 10}px;`}
-		on:connect
-	/>
+	<Handle type="source" position={Position.Bottom} id={`${i}`} style={`left: ${i * 10}px;`} />
 {/each}

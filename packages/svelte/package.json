@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/svelte",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Svelte Flow - A highly customizable Svelte library for building node-based editors, workflow systems, diagrams and more.",
   "keywords": [
     "svelte",
@@ -41,7 +41,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@svelte-put/shortcut": "^3.0.0",
+    "@svelte-put/shortcut": "^3.1.0",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.4"
   },

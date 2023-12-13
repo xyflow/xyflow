@@ -36,4 +36,4 @@
 </script>
 
 {data?.label}
-<Handle type="target" position={targetPosition} on:connectstart on:connect on:connectend />
+<Handle type="target" position={targetPosition} />

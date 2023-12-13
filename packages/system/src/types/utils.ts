@@ -1,3 +1,5 @@
+import type { Optional } from '../utils/types';
+
 export enum Position {
   Left = 'left',
   Top = 'top',
