@@ -12,7 +12,8 @@
 		type EdgeTypes,
 		type Node,
 		type Edge,
-		ConnectionMode
+		ConnectionMode,
+		useSvelteFlow
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';

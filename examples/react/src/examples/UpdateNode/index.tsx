@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ReactFlow, Node, Edge, useNodesState, useEdgesState } from '@xyflow/react';
+import { ReactFlow, Node, Edge, useNodesState, useEdgesState, ReactFlowProvider, useReactFlow } from '@xyflow/react';
 
 import styles from './updatenode.module.css';
 
@@ -13,6 +13,7 @@ const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
 const UpdateNode = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { updateNode } = useReactFlow();
 
   const [nodeName, setNodeName] = useState<string>('Node 1');
   const [nodeBg, setNodeBg] = useState<string>('#eee');
@@ -80,9 +81,19 @@ const UpdateNode = () => {
           <label>hidden:</label>
           <input type="checkbox" checked={nodeHidden} onChange={(evt) => setNodeHidden(evt.target.checked)} />
         </div>
+
+        <button
+          onClick={() => updateNode('1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }))}
+        >
+          update position
+        </button>
       </div>
     </ReactFlow>
   );
 };
 
-export default UpdateNode;
+export default () => (
+  <ReactFlowProvider>
+    <UpdateNode />
+  </ReactFlowProvider>
+);
