@@ -39,4 +39,4 @@
 </script>
 
 {data?.label}
-<Handle type="source" position={sourcePosition} on:connectstart on:connect on:connectend />
+<Handle type="source" position={sourcePosition} />

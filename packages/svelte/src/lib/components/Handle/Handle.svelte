@@ -1,19 +1,18 @@
 <script lang="ts">
-  import { getContext, createEventDispatcher } from 'svelte';
+  import { getContext } from 'svelte';
+  import type { Writable } from 'svelte/store';
   import cc from 'classcat';
   import {
     Position,
     XYHandle,
     isMouseEvent,
     type Connection,
-    type HandleType,
     areConnectionMapsEqual,
     handleConnectionChange
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
-  import type { Writable } from 'svelte/store';
 
   type $$Props = HandleComponentProps;
 
@@ -36,18 +35,6 @@
   $: handleConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
   const handleId = id || null;
-  const dispatch = createEventDispatcher<{
-    connect: { connection: Connection };
-    connectstart: {
-      event: MouseEvent | TouchEvent;
-      nodeId: string | null;
-      handleId: string | null;
-      handleType: HandleType | null;
-    };
-    connectend: {
-      event: MouseEvent | TouchEvent;
-    };
-  }>();
 
   const store = useStore();
   const {
@@ -65,7 +52,10 @@
     updateConnection,
     autoPanOnConnect,
     edges,
-    connectionLookup
+    connectionLookup,
+    onconnect: onConnectAction,
+    onconnectstart: onConnectStartAction,
+    onconnectend: onConnectEndAction
   } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -94,20 +84,17 @@
           }
 
           addEdge(edge);
-          // @todo: should we change/ improve the stuff we are passing here?
-          // instead of source/target we could pass fromNodeId, fromHandleId, etc
-          dispatch('connect', { connection });
+          $onConnectAction?.(connection);
         },
         onConnectStart: (event, startParams) => {
-          dispatch('connectstart', {
-            event,
+          $onConnectStartAction?.(event, {
             nodeId: startParams.nodeId,
             handleId: startParams.handleId,
             handleType: startParams.handleType
           });
         },
         onConnectEnd: (event) => {
-          dispatch('connectend', { event });
+          $onConnectEndAction?.(event);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom]
       });

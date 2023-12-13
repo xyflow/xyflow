@@ -19,7 +19,10 @@ import {
   getNodesBounds,
   getViewportForBounds,
   updateConnectionLookup,
-  type ConnectionLookup
+  type ConnectionLookup,
+  type OnConnect,
+  type OnConnectStart,
+  type OnConnectEnd
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -140,6 +143,9 @@ export const getInitialStore = ({
     onlyRenderVisibleElements: writable<boolean>(false),
     onerror: writable<OnError>(devWarn),
     ondelete: writable<OnDelete>(undefined),
-    onedgecreate: writable<OnEdgeCreate>(undefined)
+    onedgecreate: writable<OnEdgeCreate>(undefined),
+    onconnect: writable<OnConnect>(undefined),
+    onconnectstart: writable<OnConnectStart>(undefined),
+    onconnectend: writable<OnConnectEnd>(undefined)
   };
 };

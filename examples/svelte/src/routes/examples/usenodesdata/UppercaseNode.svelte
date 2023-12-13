@@ -2,10 +2,10 @@
 	import {
 		Handle,
 		Position,
-		type NodeProps,
 		useHandleConnections,
 		useNodesData,
-		useSvelteFlow
+		useSvelteFlow,
+		type NodeProps
 	} from '@xyflow/svelte';
 
 	type $$Props = NodeProps;
