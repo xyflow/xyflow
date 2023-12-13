@@ -2,6 +2,7 @@ import { isNumeric } from '@xyflow/system';
 
 import type { BaseEdgeProps } from '../../types';
 import EdgeText from './EdgeText';
+import classcat from 'classcat';
 
 const BaseEdge = ({
   id,
@@ -17,6 +18,7 @@ const BaseEdge = ({
   style,
   markerEnd,
   markerStart,
+  className,
   interactionWidth = 20,
 }: BaseEdgeProps) => {
   return (
@@ -26,7 +28,7 @@ const BaseEdge = ({
         style={style}
         d={path}
         fill="none"
-        className="react-flow__edge-path"
+        className={classcat(['react-flow__edge-path', className])}
         markerEnd={markerEnd}
         markerStart={markerStart}
       />

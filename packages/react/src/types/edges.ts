@@ -99,8 +99,9 @@ export type EdgeProps<T = any> = Pick<
     pathOptions?: any;
   };
 
-export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd' | 'interactionWidth'> &
-  EdgeLabelOptions & {
+export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd' | 'interactionWidth'> & {
+  className?: CSSProperties;
+} & EdgeLabelOptions & {
     id?: string;
     labelX?: number;
     labelY?: number;
