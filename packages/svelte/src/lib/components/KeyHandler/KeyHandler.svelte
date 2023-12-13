@@ -23,7 +23,7 @@
   } = useStore();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
-    return typeof key === 'object';
+    return key !== null && typeof key === 'object';
   }
 
   function getModifier(key?: KeyDefinition | null): ShortcutModifierDefinition {
