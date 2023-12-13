@@ -15,7 +15,10 @@ import type {
   ConnectionMode,
   PanelPosition,
   ProOptions,
-  ColorMode
+  ColorMode,
+  OnConnect,
+  OnConnectStart,
+  OnConnectEnd
 } from '@xyflow/system';
 
 import type {
@@ -92,4 +95,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   ondelete?: OnDelete;
 
   onedgecreate?: OnEdgeCreate;
+
+  onconnect?: OnConnect;
+  onconnectstart?: OnConnectStart;
+  onconnectend?: OnConnectEnd;
 };

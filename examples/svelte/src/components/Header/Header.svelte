@@ -11,6 +11,7 @@
 		'drag-n-drop',
 		'edges',
 		'figma',
+		'handle-connect',
 		'interaction',
 		'intersections',
 		'node-toolbar',
@@ -18,6 +19,7 @@
 		'stress',
 		'subflows',
 		'two-way-viewport',
+		'usenodesdata',
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation'

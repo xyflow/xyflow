@@ -45,6 +45,17 @@ export namespace Instance {
   export type getConnectedEdges = (id: string | (Node | { id: Node['id'] })[]) => Edge[];
   export type getIncomers = (node: string | Node | { id: Node['id'] }) => Node[];
   export type getOutgoers = (node: string | Node | { id: Node['id'] }) => Node[];
+
+  export type UpdateNode = (
+    id: string,
+    dataUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    options?: { replace: boolean }
+  ) => void;
+  export type UpdateNodeData = (
+    id: string,
+    dataUpdate: object | ((node: Node) => object),
+    options?: { replace: boolean }
+  ) => void;
 }
 
 export type ReactFlowInstance<NodeData = any, EdgeData = any> = {
@@ -60,5 +71,7 @@ export type ReactFlowInstance<NodeData = any, EdgeData = any> = {
   deleteElements: Instance.DeleteElements;
   getIntersectingNodes: Instance.GetIntersectingNodes<NodeData>;
   isNodeIntersecting: Instance.IsNodeIntersecting<NodeData>;
+  updateNode: Instance.UpdateNode;
+  updateNodeData: Instance.UpdateNodeData;
   viewportInitialized: boolean;
 } & Omit<ViewportHelperFunctions, 'initialized'>;

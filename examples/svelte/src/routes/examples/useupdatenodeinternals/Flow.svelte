@@ -6,7 +6,9 @@
 		Background,
 		BackgroundVariant,
 		MiniMap,
-		type NodeTypes
+		type NodeTypes,
+		useSvelteFlow,
+		Panel
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -50,6 +52,12 @@
 			target: '3'
 		}
 	]);
+
+	const { updateNode } = useSvelteFlow();
+
+	const updateNodePosition = () => {
+		updateNode('1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
+	};
 </script>
 
 <main>
@@ -57,6 +65,8 @@
 		<Controls />
 		<Background variant={BackgroundVariant.Dots} />
 		<MiniMap />
+
+		<Panel><button on:click={updateNodePosition}>update node</button></Panel>
 	</SvelteFlow>
 </main>
 

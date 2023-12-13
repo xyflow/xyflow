@@ -1,10 +1,10 @@
 <script lang="ts">
   import { shortcut, type ShortcutModifierDefinition } from '@svelte-put/shortcut';
+  import { isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
-  import { isMacOs } from '@xyflow/system';
 
   type $$Props = KeyHandlerProps;
 
@@ -23,7 +23,7 @@
   } = useStore();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
-    return typeof key === 'object';
+    return key !== null && typeof key === 'object';
   }
 
   function getModifier(key?: KeyDefinition | null): ShortcutModifierDefinition {
@@ -71,16 +71,19 @@
     trigger: [
       {
         ...selectionKeyDefinition,
-        callback: () => selectionKeyDefinition.key && selectionKeyPressed.set(true)
+        enabled: selectionKeyDefinition.key !== null,
+        callback: () => selectionKeyPressed.set(true)
       }
     ],
+
     type: 'keydown'
   }}
   use:shortcut={{
     trigger: [
       {
         ...selectionKeyDefinition,
-        callback: () => selectionKeyDefinition.key && selectionKeyPressed.set(false)
+        enabled: selectionKeyDefinition.key !== null,
+        callback: () => selectionKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -89,7 +92,8 @@
     trigger: [
       {
         ...multiSelectionKeyDefinition,
-        callback: () => multiSelectionKeyDefinition.key && multiselectionKeyPressed.set(true)
+        enabled: multiSelectionKeyDefinition.key !== null,
+        callback: () => multiselectionKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -98,7 +102,8 @@
     trigger: [
       {
         ...multiSelectionKeyDefinition,
-        callback: () => multiSelectionKeyDefinition.key && multiselectionKeyPressed.set(false)
+        enabled: multiSelectionKeyDefinition.key !== null,
+        callback: () => multiselectionKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -107,7 +112,8 @@
     trigger: [
       {
         ...deleteKeyDefinition,
-        callback: () => deleteKeyDefinition.key && deleteKeyPressed.set(true)
+        enabled: deleteKeyDefinition.key !== null,
+        callback: (detail) => !isInputDOMNode(detail.originalEvent) && deleteKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -116,7 +122,8 @@
     trigger: [
       {
         ...deleteKeyDefinition,
-        callback: () => deleteKeyDefinition.key && deleteKeyPressed.set(false)
+        enabled: deleteKeyDefinition.key !== null,
+        callback: () => deleteKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -125,7 +132,8 @@
     trigger: [
       {
         ...panActivationKeyDefinition,
-        callback: () => panActivationKeyDefinition.key && panActivationKeyPressed.set(true)
+        enabled: panActivationKeyDefinition.key !== null,
+        callback: () => panActivationKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -134,7 +142,8 @@
     trigger: [
       {
         ...panActivationKeyDefinition,
-        callback: () => panActivationKeyDefinition.key && panActivationKeyPressed.set(false)
+        enabled: panActivationKeyDefinition.key !== null,
+        callback: () => panActivationKeyPressed.set(false)
       }
     ],
     type: 'keyup'
@@ -143,7 +152,8 @@
     trigger: [
       {
         ...zoomActivationKeyDefinition,
-        callback: () => zoomActivationKeyDefinition.key && zoomActivationKeyPressed.set(true)
+        enabled: zoomActivationKeyDefinition.key !== null,
+        callback: () => zoomActivationKeyPressed.set(true)
       }
     ],
     type: 'keydown'
@@ -152,7 +162,8 @@
     trigger: [
       {
         ...zoomActivationKeyDefinition,
-        callback: () => zoomActivationKeyDefinition.key && zoomActivationKeyPressed.set(false)
+        enabled: zoomActivationKeyDefinition.key !== null,
+        callback: () => zoomActivationKeyPressed.set(false)
       }
     ],
     type: 'keyup'

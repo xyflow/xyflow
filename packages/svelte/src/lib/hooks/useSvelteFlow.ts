@@ -1,7 +1,5 @@
 import { get, type Writable } from 'svelte/store';
 import {
-  getIncomersBase,
-  getOutgoersBase,
   getOverlappingArea,
   isRectObject,
   nodeToRect,
@@ -20,6 +18,7 @@ import {
 
 import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, Node } from '$lib/types';
+import { isNode } from '$lib/utils';
 
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
@@ -48,9 +47,16 @@ export function useSvelteFlow(): {
   screenToFlowPosition: (position: XYPosition) => XYPosition;
   flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
-  getConnectedEdges: (id: string | (Node | { id: Node['id'] })[]) => Edge[];
-  getIncomers: (node: string | Node | { id: Node['id'] }) => Node[];
-  getOutgoers: (node: string | Node | { id: Node['id'] }) => Node[];
+  updateNode: (
+    id: string,
+    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    options?: { replace: boolean }
+  ) => void;
+  updateNodeData: (
+    id: string,
+    dataUpdate: object | ((node: Node) => object),
+    options?: { replace: boolean }
+  ) => void;
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
 } {
   const {
@@ -82,6 +88,24 @@ export function useSvelteFlow(): {
     const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
 
     return [nodeRect, node, isRect];
+  };
+
+  const updateNode = (
+    id: string,
+    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    options: { replace: boolean } = { replace: false }
+  ) => {
+    nodes.update((nds) =>
+      nds.map((node) => {
+        if (node.id === id) {
+          const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
+
+          return options.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+        }
+
+        return node;
+      })
+    );
   };
 
   return {
@@ -232,29 +256,6 @@ export function useSvelteFlow(): {
         y: rendererPosition.y + domY
       };
     },
-    getConnectedEdges: (node) => {
-      const nodeIds = new Set();
-
-      if (typeof node === 'string') {
-        nodeIds.add(node);
-      } else if (node.length >= 1) {
-        node.forEach((n) => {
-          nodeIds.add(n.id);
-        });
-      }
-
-      return get(edges).filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
-    },
-    getIncomers: (node) => {
-      const _node = typeof node === 'string' ? { id: node } : node;
-
-      return getIncomersBase(_node, get(nodes), get(edges));
-    },
-    getOutgoers: (node) => {
-      const _node = typeof node === 'string' ? { id: node } : node;
-
-      return getOutgoersBase(_node, get(nodes), get(edges));
-    },
     toObject: () => {
       return {
         nodes: get(nodes).map((node) => ({
@@ -267,6 +268,16 @@ export function useSvelteFlow(): {
         edges: get(edges).map((edge) => ({ ...edge })),
         viewport: { ...get(viewport) }
       };
+    },
+    updateNode,
+    updateNodeData: (id, dataUpdate, options) => {
+      updateNode(id, (node) => {
+        const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+
+        return options?.replace
+          ? { ...node, data: nextData }
+          : { ...node, data: { ...node.data, ...nextData } };
+      });
     },
     viewport
   };

@@ -11,7 +11,6 @@ import {
   getViewportForBounds,
 } from './general';
 import {
-  type Connection,
   type Transform,
   type XYPosition,
   type Rect,
@@ -26,13 +25,11 @@ import {
 } from '../types';
 import { errorMessages } from '../constants';
 
-export const isEdgeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  element: NodeType | Connection | EdgeType
-): element is EdgeType => 'id' in element && 'source' in element && 'target' in element;
+export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): element is EdgeType =>
+  'id' in element && 'source' in element && 'target' in element;
 
-export const isNodeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  element: NodeType | Connection | EdgeType
-): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
+export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
+  'id' in element && !('source' in element) && !('target' in element);
 
 export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType | { id: string },

@@ -1,17 +1,18 @@
 <script lang="ts">
-  import { getContext, createEventDispatcher } from 'svelte';
+  import { getContext } from 'svelte';
+  import type { Writable } from 'svelte/store';
   import cc from 'classcat';
   import {
     Position,
     XYHandle,
     isMouseEvent,
     type Connection,
-    type HandleType
+    areConnectionMapsEqual,
+    handleConnectionChange
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
-  import type { Writable } from 'svelte/store';
 
   type $$Props = HandleComponentProps;
 
@@ -20,6 +21,8 @@
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
   export let isConnectable: $$Props['isConnectable'] = undefined;
+  export let onconnect: $$Props['onconnect'] = undefined;
+  export let ondisconnect: $$Props['ondisconnect'] = undefined;
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
@@ -32,18 +35,6 @@
   $: handleConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
   const handleId = id || null;
-  const dispatch = createEventDispatcher<{
-    connect: { connection: Connection };
-    connectstart: {
-      event: MouseEvent | TouchEvent;
-      nodeId: string | null;
-      handleId: string | null;
-      handleType: HandleType | null;
-    };
-    connectend: {
-      event: MouseEvent | TouchEvent;
-    };
-  }>();
 
   const store = useStore();
   const {
@@ -59,7 +50,12 @@
     panBy,
     cancelConnection,
     updateConnection,
-    autoPanOnConnect
+    autoPanOnConnect,
+    edges,
+    connectionLookup,
+    onconnect: onConnectAction,
+    onconnectstart: onConnectStartAction,
+    onconnectend: onConnectEndAction
   } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -88,24 +84,41 @@
           }
 
           addEdge(edge);
-          // @todo: should we change/ improve the stuff we are passing here?
-          // instead of source/target we could pass fromNodeId, fromHandleId, etc
-          dispatch('connect', { connection });
+          $onConnectAction?.(connection);
         },
         onConnectStart: (event, startParams) => {
-          dispatch('connectstart', {
-            event,
+          $onConnectStartAction?.(event, {
             nodeId: startParams.nodeId,
             handleId: startParams.handleId,
             handleType: startParams.handleType
           });
         },
         onConnectEnd: (event) => {
-          dispatch('connectend', { event });
+          $onConnectEndAction?.(event);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom]
       });
     }
+  }
+
+  let prevConnections: Map<string, Connection> | null = null;
+  let connections: Map<string, Connection> | undefined;
+
+  $: if (onconnect || ondisconnect) {
+    // connectionLookup is not reactive, so we use edges to get notified about updates
+    $edges;
+    connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+  }
+
+  $: {
+    if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+      const _connections = connections ?? new Map();
+
+      handleConnectionChange(prevConnections, _connections, ondisconnect);
+      handleConnectionChange(_connections, prevConnections, onconnect);
+    }
+
+    prevConnections = connections ?? new Map();
   }
 
   // @todo implement connectablestart, connectableend
