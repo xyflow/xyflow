@@ -43,7 +43,7 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
     /** Holds a reference to the original node object provided by the user
      * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
      * as an optimization to avoid certain operations. */
-    userProvidedNode: WeakRef<NodeBase>;
+    userProvidedNode: NodeBase<T, U>;
   };
 };
 

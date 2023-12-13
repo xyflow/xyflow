@@ -80,7 +80,10 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
 
   const nextNodes = nodes.map((n) => {
     const currentStoreNode = tmpLookup.get(n.id);
-    if (n === currentStoreNode?.[internalsSymbol]?.userProvidedNode.deref()) return currentStoreNode;
+    if (n === currentStoreNode?.[internalsSymbol]?.userProvidedNode) {
+      nodeLookup.set(n.id, currentStoreNode);
+      return currentStoreNode;
+    }
 
     const node: NodeType = {
       ...options.defaults,
@@ -103,7 +106,7 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
       value: {
         handleBounds: currInternals?.handleBounds,
         z,
-        userProvidedNode: new WeakRef(n),
+        userProvidedNode: n,
       },
     });
 
@@ -144,14 +147,14 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   );
 }
 
-export function updateNodeDimensions(
+export function updateNodeDimensions<NodeType extends NodeBase>(
   updates: Map<string, NodeDimensionUpdate>,
-  nodes: NodeBase[],
-  nodeLookup: Map<string, NodeBase>,
+  nodes: NodeType[],
+  nodeLookup: Map<string, NodeType>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin,
   onUpdate?: (id: string, dimensions: Dimensions) => void
-): NodeBase[] | null {
+): NodeType[] | null {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
 
   if (!viewportNode) {

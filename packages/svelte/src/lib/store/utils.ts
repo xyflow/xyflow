@@ -11,8 +11,6 @@ import {
   updateConnectionLookup,
   type Viewport,
   type PanZoomInstance,
-  type Viewport,
-  type PanZoomInstance,
   type ConnectionLookup
 } from '@xyflow/system';
 
