@@ -55,14 +55,17 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   }
 
   let remainingChanges = changes;
-  const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
+  const updatedElements: any[] = [];
 
-  return elements.reduce((res: any[], item: any) => {
+  for (let i = 0; i < elements.length; i++) {
     const nextChanges: any[] = [];
     const _remainingChanges: any[] = [];
+    const item = elements[i];
 
     remainingChanges.forEach((c) => {
-      if (c.id === item.id) {
+      if (c.type === 'add') {
+        updatedElements.push(c.item);
+      } else if (c.id === item.id) {
         nextChanges.push(c);
       } else {
         _remainingChanges.push(c);
@@ -71,8 +74,8 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     remainingChanges = _remainingChanges;
 
     if (nextChanges.length === 0) {
-      res.push(item);
-      return res;
+      updatedElements.push(item);
+      continue;
     }
 
     const updateItem = { ...item };
@@ -101,7 +104,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (updateItem.expandParent) {
-              handleParentExpand(res, updateItem);
+              handleParentExpand(updatedElements, updateItem);
             }
             break;
           }
@@ -123,20 +126,20 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (updateItem.expandParent) {
-              handleParentExpand(res, updateItem);
+              handleParentExpand(updatedElements, updateItem);
             }
             break;
           }
           case 'remove': {
-            return res;
+            continue;
           }
         }
       }
+      updatedElements.push(updateItem);
     }
+  }
 
-    res.push(updateItem);
-    return res;
-  }, initElements);
+  return updatedElements;
 }
 
 export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: Node<NodeData>[]): Node<NodeData>[] {
