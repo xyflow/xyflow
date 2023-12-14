@@ -56,7 +56,8 @@ export type NodeProps<T = any> = {
   selected: NodeBase['selected'];
   isConnectable: NodeBase['connectable'];
   zIndex: NodeBase['zIndex'];
-  positionAbsolute: XYPosition;
+  positionAbsoluteX: number;
+  positionAbsoluteY: number;
   width?: number;
   height?: number;
   dragging: boolean;

@@ -235,9 +235,6 @@ importers:
       react-dom:
         specifier: '>=17'
         version: registry.npmjs.org/react-dom@18.2.0(react@18.2.0)
-      reselect:
-        specifier: ^4.1.8
-        version: registry.npmjs.org/reselect@4.1.8
       zustand:
         specifier: ^4.4.0
         version: registry.npmjs.org/zustand@4.4.1(@types/react@18.2.24)(react@18.2.0)
@@ -10035,12 +10032,6 @@ packages:
     name: requires-port
     version: 1.0.0
     dev: true
-
-  registry.npmjs.org/reselect@4.1.8:
-    resolution: {integrity: sha512-ab9EmR80F/zQTMNeneUr4cv+jSwPJgIlvEmVwLerwrWVbpLlBuls9XHzIeTFy4cegU2NHBp3va0LKOzU5qFEYQ==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/reselect/-/reselect-4.1.8.tgz}
-    name: reselect
-    version: 4.1.8
-    dev: false
 
   registry.npmjs.org/resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/resolve-from/-/resolve-from-4.0.0.tgz}

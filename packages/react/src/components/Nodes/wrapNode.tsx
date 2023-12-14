@@ -22,10 +22,10 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     id,
     type,
     data,
-    xPos,
-    yPos,
     xPosOrigin,
     yPosOrigin,
+    positionAbsoluteX,
+    positionAbsoluteY,
     selected,
     onClick,
     onMouseEnter,
@@ -52,7 +52,6 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     disableKeyboardA11y,
     ariaLabel,
     rfId,
-    positionAbsolute,
     width,
     height,
   }: WrapNodeProps) => {
@@ -111,7 +110,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         store.setState({
           ariaLiveMessage: `Moved selected node ${event.key
             .replace('Arrow', '')
-            .toLowerCase()}. New position, x: ${~~xPos}, y: ${~~yPos}`,
+            .toLowerCase()}. New position, x: ${~~positionAbsoluteX}, y: ${~~positionAbsoluteY}`,
         });
 
         updatePositions({
@@ -212,7 +211,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
             type={type}
             width={width}
             height={height}
-            positionAbsolute={positionAbsolute}
+            positionAbsoluteX={positionAbsoluteX}
+            positionAbsoluteY={positionAbsoluteY}
             selected={selected}
             isConnectable={isConnectable}
             sourcePosition={sourcePosition}
