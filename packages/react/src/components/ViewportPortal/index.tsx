@@ -4,9 +4,9 @@ import { createPortal } from 'react-dom';
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 
-const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__view-portal');
+const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__viewport-portal');
 
-function ViewPortal({ children }: { children: ReactNode }) {
+function ViewportPortal({ children }: { children: ReactNode }) {
   const viewPortalDiv = useStore(selector);
 
   if (!viewPortalDiv) {
@@ -16,4 +16,4 @@ function ViewPortal({ children }: { children: ReactNode }) {
   return createPortal(children, viewPortalDiv);
 }
 
-export default ViewPortal;
+export default ViewportPortal;

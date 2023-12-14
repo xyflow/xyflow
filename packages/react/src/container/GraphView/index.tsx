@@ -180,7 +180,7 @@ const GraphView = ({
           />
         </EdgeRenderer>
         <div className="react-flow__edgelabel-renderer" />
-        <div className="react-flow__view-portal" />
+        <div className="react-flow__viewport-portal" />
         <NodeRenderer
           nodeTypes={nodeTypesWrapped}
           onNodeClick={onNodeClick}

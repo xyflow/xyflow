@@ -7,6 +7,6 @@
   const { domNode } = useStore();
 </script>
 
-<div use:portal={{ target: '.svelte-flow__view-portal', domNode: $domNode }}>
+<div use:portal={{ target: '.svelte-flow__viewport-portal', domNode: $domNode }}>
   <slot />
 </div>
