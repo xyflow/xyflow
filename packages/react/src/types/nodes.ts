@@ -1,5 +1,6 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type { NodeBase } from '@xyflow/system';
+import type { CoordinateExtent, NodeBase, NodeOrigin, OnError } from '@xyflow/system';
+import { NodeTypes } from './general';
 
 export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
   NodeData,
@@ -14,32 +15,25 @@ export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
 export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
 
-export type WrapNodeProps<NodeData = any> = Pick<
-  Node<NodeData>,
-  'id' | 'data' | 'style' | 'className' | 'dragHandle' | 'sourcePosition' | 'targetPosition' | 'hidden' | 'ariaLabel'
-> &
-  Required<Pick<Node<NodeData>, 'selected' | 'type' | 'zIndex'>> & {
-    isConnectable: boolean;
-    xPosOrigin: number;
-    yPosOrigin: number;
-    positionAbsoluteX: number;
-    positionAbsoluteY: number;
-    initialized: boolean;
-    isSelectable: boolean;
-    isDraggable: boolean;
-    isFocusable: boolean;
-    onClick?: NodeMouseHandler;
-    onDoubleClick?: NodeMouseHandler;
-    onMouseEnter?: NodeMouseHandler;
-    onMouseMove?: NodeMouseHandler;
-    onMouseLeave?: NodeMouseHandler;
-    onContextMenu?: NodeMouseHandler;
-    resizeObserver: ResizeObserver | null;
-    isParent: boolean;
-    noDragClassName: string;
-    noPanClassName: string;
-    rfId: string;
-    disableKeyboardA11y: boolean;
-    width?: number;
-    height?: number;
-  };
+export type NodeWrapperProps = {
+  id: string;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
+  nodesDraggable: boolean;
+  nodesFocusable: boolean;
+  onClick?: NodeMouseHandler;
+  onDoubleClick?: NodeMouseHandler;
+  onMouseEnter?: NodeMouseHandler;
+  onMouseMove?: NodeMouseHandler;
+  onMouseLeave?: NodeMouseHandler;
+  onContextMenu?: NodeMouseHandler;
+  resizeObserver: ResizeObserver | null;
+  noDragClassName: string;
+  noPanClassName: string;
+  rfId: string;
+  disableKeyboardA11y: boolean;
+  nodeTypes: NodeTypes;
+  nodeExtent?: CoordinateExtent;
+  nodeOrigin: NodeOrigin;
+  onError?: OnError;
+};

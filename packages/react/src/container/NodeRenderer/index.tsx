@@ -5,9 +5,9 @@ import useVisibleNodesIds from '../../hooks/useVisibleNodes';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
-import type { NodeTypesWrapped, ReactFlowState } from '../../types';
-import NodeComponentWrapper from './NodeComponentWrapper';
+import type { ReactFlowState } from '../../types';
 import useResizeObserver from './useResizeObserver';
+import NodeWrapper from '../../components/Nodes/NodeWrapper';
 
 export type NodeRendererProps = Pick<
   GraphViewProps,
@@ -24,9 +24,8 @@ export type NodeRendererProps = Pick<
   | 'disableKeyboardA11y'
   | 'nodeOrigin'
   | 'nodeExtent'
-> & {
-  nodeTypes: NodeTypesWrapped;
-};
+  | 'nodeTypes'
+>;
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
@@ -68,18 +67,18 @@ const NodeRenderer = (props: NodeRendererProps) => {
           //   moved into `NodeComponentWrapper`. This ensures they are
           //   memorized – so if `NodeRenderer` *has* to rerender, it only
           //   needs to regenerate the list of nodes, nothing else.
-          <NodeComponentWrapper
+          <NodeWrapper
             key={nodeId}
             id={nodeId}
             nodeTypes={props.nodeTypes}
             nodeExtent={props.nodeExtent}
             nodeOrigin={props.nodeOrigin}
-            onNodeClick={props.onNodeClick}
-            onNodeMouseEnter={props.onNodeMouseEnter}
-            onNodeMouseMove={props.onNodeMouseMove}
-            onNodeMouseLeave={props.onNodeMouseLeave}
-            onNodeContextMenu={props.onNodeContextMenu}
-            onNodeDoubleClick={props.onNodeDoubleClick}
+            onClick={props.onNodeClick}
+            onMouseEnter={props.onNodeMouseEnter}
+            onMouseMove={props.onNodeMouseMove}
+            onMouseLeave={props.onNodeMouseLeave}
+            onContextMenu={props.onNodeContextMenu}
+            onDoubleClick={props.onNodeDoubleClick}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
             rfId={props.rfId}
