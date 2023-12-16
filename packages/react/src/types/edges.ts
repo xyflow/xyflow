@@ -15,9 +15,10 @@ import type {
   EdgePosition,
   Optional,
   StepPathOptions,
+  OnError,
 } from '@xyflow/system';
 
-import { Node } from '.';
+import { EdgeTypes, Node } from '.';
 
 export type EdgeLabelOptions = {
   label?: string | ReactNode;
@@ -57,7 +58,7 @@ export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeT
 
 export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
 
-export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
+export type EdgeWrapperProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
   onClick?: EdgeMouseHandler;
   onEdgeDoubleClick?: EdgeMouseHandler;
   sourceHandleId?: string | null;
@@ -75,6 +76,8 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   isUpdatable: EdgeUpdatable;
   isSelectable: boolean;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+  edgeTypes?: EdgeTypes;
+  onError?: OnError;
 };
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
@@ -90,7 +93,7 @@ export type EdgeProps<T = any> = Pick<
   Edge<T>,
   'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
 > &
-  Pick<WrapEdgeProps, 'sourceHandleId' | 'targetHandleId' | 'interactionWidth'> &
+  Pick<EdgeWrapperProps, 'sourceHandleId' | 'targetHandleId' | 'interactionWidth'> &
   EdgePosition &
   EdgeLabelOptions & {
     markerStart?: string;

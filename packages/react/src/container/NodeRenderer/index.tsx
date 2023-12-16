@@ -7,7 +7,7 @@ import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import type { ReactFlowState } from '../../types';
 import useResizeObserver from './useResizeObserver';
-import NodeWrapper from '../../components/NodeWrapper/NodeWrapper';
+import NodeWrapper from '../../components/NodeWrapper';
 
 export type NodeRendererProps = Pick<
   GraphViewProps,

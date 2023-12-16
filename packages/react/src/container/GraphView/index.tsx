@@ -8,19 +8,15 @@ import useOnInitHandler from '../../hooks/useOnInitHandler';
 import useViewportSync from '../../hooks/useViewportSync';
 import ConnectionLine from '../../components/ConnectionLine';
 import type { ReactFlowProps } from '../../types';
-import { createNodeTypes } from '../NodeRenderer/utils';
-import { createEdgeTypes } from '../EdgeRenderer/utils';
-import { useNodeOrEdgeTypes } from './utils';
+import useNodeOrEdgeTypesWarning from './useNodeOrEdgeTypesWarning';
 
 export type GraphViewProps = Omit<
   ReactFlowProps,
-  'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes' | 'onMove' | 'onMoveStart' | 'onMoveEnd'
+  'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd'
 > &
   Required<
     Pick<
       ReactFlowProps,
-      | 'nodeTypes'
-      | 'edgeTypes'
       | 'selectionKeyCode'
       | 'deleteKeyCode'
       | 'multiSelectionKeyCode'
@@ -108,8 +104,8 @@ const GraphView = ({
   viewport,
   onViewportChange,
 }: GraphViewProps) => {
-  const nodeTypesWrapped = useNodeOrEdgeTypes(nodeTypes, createNodeTypes);
-  const edgeTypesWrapped = useNodeOrEdgeTypes(edgeTypes, createEdgeTypes);
+  useNodeOrEdgeTypesWarning(nodeTypes);
+  useNodeOrEdgeTypesWarning(edgeTypes);
 
   useOnInitHandler(onInit);
   useViewportSync(viewport);
@@ -154,7 +150,7 @@ const GraphView = ({
     >
       <ViewportWrapper>
         <EdgeRenderer
-          edgeTypes={edgeTypesWrapped}
+          edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
           onEdgeDoubleClick={onEdgeDoubleClick}
           onEdgeUpdate={onEdgeUpdate}
@@ -182,7 +178,7 @@ const GraphView = ({
         <div className="react-flow__edgelabel-renderer" />
 
         <NodeRenderer
-          nodeTypes={nodeTypesWrapped}
+          nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}
           onNodeDoubleClick={onNodeDoubleClick}
           onNodeMouseEnter={onNodeMouseEnter}

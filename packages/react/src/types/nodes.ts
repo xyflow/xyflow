@@ -32,7 +32,7 @@ export type NodeWrapperProps = {
   noPanClassName: string;
   rfId: string;
   disableKeyboardA11y: boolean;
-  nodeTypes: NodeTypes;
+  nodeTypes?: NodeTypes;
   nodeExtent?: CoordinateExtent;
   nodeOrigin: NodeOrigin;
   onError?: OnError;

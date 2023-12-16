@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo, type MouseEvent, type KeyboardEvent, ComponentType } from 'react';
+import { useEffect, useRef, memo, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import {
   clampPosition,
@@ -7,7 +7,6 @@ import {
   getPositionWithOrigin,
   internalsSymbol,
   isInputDOMNode,
-  NodeProps,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -17,7 +16,7 @@ import useDrag from '../../hooks/useDrag';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { handleNodeClick } from '../Nodes/utils';
 import type { NodeWrapperProps } from '../../types';
-import { arrowKeyDiffs } from './utils';
+import { arrowKeyDiffs, builtinNodeTypes } from './utils';
 
 const NodeWrapper = ({
   id,
@@ -44,10 +43,12 @@ const NodeWrapper = ({
   const node = useStore((s) => s.nodeLookup.get(id)!);
 
   let nodeType = node.type || 'default';
+  let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
 
-  if (!nodeTypes[nodeType]) {
+  if (NodeComponent === undefined) {
     onError?.('003', errorMessages['error003'](nodeType));
     nodeType = 'default';
+    NodeComponent = builtinNodeTypes.default;
   }
 
   const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
@@ -105,7 +106,6 @@ const NodeWrapper = ({
     return null;
   }
 
-  const NodeComponent = (nodeTypes[nodeType] || nodeTypes.default) as ComponentType<NodeProps>;
   const width = node.width ?? undefined;
   const height = node.height ?? undefined;
   const computedWidth = node.computed?.width;
