@@ -93,7 +93,7 @@ export const getInitialStore = ({
     minZoom: writable<number>(0.5),
     maxZoom: writable<number>(2),
     nodeOrigin: writable<NodeOrigin>([0, 0]),
-    nodeDragThreshold: writable<number>(0),
+    nodeDragThreshold: writable<number>(1),
     nodeExtent: writable<CoordinateExtent>(infiniteExtent),
     translateExtent: writable<CoordinateExtent>(infiniteExtent),
     autoPanOnNodeDrag: writable<boolean>(true),
