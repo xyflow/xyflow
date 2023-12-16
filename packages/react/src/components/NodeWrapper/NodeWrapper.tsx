@@ -8,7 +8,6 @@ import {
   internalsSymbol,
   isInputDOMNode,
   NodeProps,
-  type XYPosition,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -16,15 +15,9 @@ import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import useDrag from '../../hooks/useDrag';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
-import { handleNodeClick } from './utils';
+import { handleNodeClick } from '../Nodes/utils';
 import type { NodeWrapperProps } from '../../types';
-
-export const arrowKeyDiffs: Record<string, XYPosition> = {
-  ArrowUp: { x: 0, y: -1 },
-  ArrowDown: { x: 0, y: 1 },
-  ArrowLeft: { x: -1, y: 0 },
-  ArrowRight: { x: 1, y: 0 },
-};
+import { arrowKeyDiffs } from './utils';
 
 const NodeWrapper = ({
   id,
