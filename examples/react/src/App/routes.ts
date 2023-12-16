@@ -21,7 +21,6 @@ import Interaction from '../examples/Interaction';
 import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
-import NestedNodes from '../examples/NestedNodes';
 import NodeResizer from '../examples/NodeResizer';
 import NodeTypeChange from '../examples/NodeTypeChange';
 import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
@@ -184,11 +183,6 @@ const routes: IRoute[] = [
     name: 'Multi Flows',
     path: 'multiflows',
     component: MultiFlows,
-  },
-  {
-    name: 'Nested Nodes',
-    path: 'nested-nodes',
-    component: NestedNodes,
   },
   {
     name: 'Node Type Change',

@@ -1,13 +1,13 @@
 import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { errorMessages } from '@xyflow/system';
 
 import { useStore } from '../../hooks/useStore';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import type { EdgeTypesWrapped, ReactFlowState } from '../../types';
+import type { ReactFlowState } from '../../types';
+import EdgeWrapper from '../../components/EdgeWrapper';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
@@ -27,8 +27,8 @@ type EdgeRendererProps = Pick<
   | 'elevateEdgesOnSelect'
   | 'rfId'
   | 'disableKeyboardA11y'
+  | 'edgeTypes'
 > & {
-  edgeTypes: EdgeTypesWrapped;
   elevateEdgesOnSelect: boolean;
   children: ReactNode;
 };
@@ -74,14 +74,6 @@ const EdgeRenderer = ({
           {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />}
           <>
             {edges.map((edge) => {
-              let edgeType = edge.type || 'default';
-
-              if (!edgeTypes[edgeType]) {
-                onError?.('011', errorMessages['error011'](edgeType));
-                edgeType = 'default';
-              }
-
-              const EdgeComponent = edgeTypes[edgeType];
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
               const isUpdatable =
                 typeof onEdgeUpdate !== 'undefined' &&
@@ -92,7 +84,7 @@ const EdgeRenderer = ({
               );
 
               return (
-                <EdgeComponent
+                <EdgeWrapper
                   key={edge.id}
                   id={edge.id}
                   className={cc([edge.className, noPanClassName])}
@@ -131,6 +123,8 @@ const EdgeRenderer = ({
                   isUpdatable={isUpdatable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
+                  onError={onError}
+                  edgeTypes={edgeTypes}
                 />
               );
             })}

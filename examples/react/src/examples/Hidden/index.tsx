@@ -48,8 +48,10 @@ const initialEdges: Edge[] = [
 
 const setHidden = (hidden: boolean) => (els: any[]) =>
   els.map((e: any) => {
-    e.hidden = hidden;
-    return e;
+    return {
+      ...e,
+      hidden,
+    };
   });
 
 const HiddenFlow = () => {

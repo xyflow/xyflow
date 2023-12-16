@@ -40,6 +40,10 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
     z?: number;
     handleBounds?: NodeHandleBounds;
     isParent?: boolean;
+    /** Holds a reference to the original node object provided by the user
+     * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
+     * as an optimization to avoid certain operations. */
+    userProvidedNode: NodeBase<T, U>;
   };
 };
 
@@ -52,7 +56,8 @@ export type NodeProps<T = any> = {
   selected: NodeBase['selected'];
   isConnectable: NodeBase['connectable'];
   zIndex: NodeBase['zIndex'];
-  positionAbsolute: XYPosition;
+  positionAbsoluteX: number;
+  positionAbsoluteY: number;
   width?: number;
   height?: number;
   dragging: boolean;

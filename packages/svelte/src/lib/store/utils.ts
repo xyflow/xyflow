@@ -7,11 +7,11 @@ import {
   get
 } from 'svelte/store';
 import {
-  updateNodes,
+  adoptUserProvidedNodes,
+  updateConnectionLookup,
   type Viewport,
   type PanZoomInstance,
-  type ConnectionLookup,
-  updateConnectionLookup
+  type ConnectionLookup
 } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
@@ -139,7 +139,7 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    const nextNodes = updateNodes(nds, nodeLookup, {
+    const nextNodes = adoptUserProvidedNodes(nds, nodeLookup, {
       elevateNodesOnSelect,
       defaults
     });

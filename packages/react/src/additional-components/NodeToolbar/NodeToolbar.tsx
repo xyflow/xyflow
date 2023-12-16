@@ -9,16 +9,20 @@ import { useNodeId } from '../../contexts/NodeIdContext';
 import NodeToolbarPortal from './NodeToolbarPortal';
 import { NodeToolbarProps } from './types';
 
-const nodeEqualityFn = (a: Node | undefined, b: Node | undefined) =>
-  a?.computed?.positionAbsolute?.x === b?.computed?.positionAbsolute?.x &&
-  a?.computed?.positionAbsolute?.y === b?.computed?.positionAbsolute?.y &&
-  a?.width === b?.width &&
-  a?.height === b?.height &&
-  a?.selected === b?.selected &&
-  a?.[internalsSymbol]?.z === b?.[internalsSymbol]?.z;
+const nodeEqualityFn = (a?: Node, b?: Node) =>
+  a?.computed?.positionAbsolute?.x !== b?.computed?.positionAbsolute?.x ||
+  a?.computed?.positionAbsolute?.y !== b?.computed?.positionAbsolute?.y ||
+  a?.computed?.width !== b?.computed?.width ||
+  a?.computed?.height !== b?.computed?.height ||
+  a?.selected !== b?.selected ||
+  a?.[internalsSymbol]?.z !== b?.[internalsSymbol]?.z;
 
 const nodesEqualityFn = (a: Node[], b: Node[]) => {
-  return a.length === b.length && a.every((node, i) => nodeEqualityFn(node, b[i]));
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  return !a.some((node, i) => nodeEqualityFn(node, b[i]));
 };
 
 const storeSelector = (state: ReactFlowState) => ({

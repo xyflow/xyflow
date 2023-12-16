@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ComponentType, MemoExoticComponent } from 'react';
+import type { ComponentType } from 'react';
 import {
   FitViewParamsBase,
   FitViewOptionsBase,
@@ -14,7 +14,7 @@ import {
   XYPosition,
 } from '@xyflow/system';
 
-import type { NodeChange, EdgeChange, Node, WrapNodeProps, Edge, EdgeProps, WrapEdgeProps, ReactFlowInstance } from '.';
+import type { NodeChange, EdgeChange, Node, Edge, EdgeProps, ReactFlowInstance } from '.';
 
 export type OnNodesChange = (changes: NodeChange[]) => void;
 export type OnEdgesChange = (changes: EdgeChange[]) => void;
@@ -24,9 +24,7 @@ export type OnEdgesDelete = (edges: Edge[]) => void;
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 
 export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
-export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };
 export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
-export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };
 
 export type UnselectNodesAndEdgesParams = {
   nodes?: Node[];

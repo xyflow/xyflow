@@ -64,7 +64,6 @@ const StressFlow = () => {
       minZoom={0.2}
       fitView
     >
-      <MiniMap />
       <Controls />
       <Background />
 

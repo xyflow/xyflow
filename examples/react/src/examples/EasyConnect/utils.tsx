@@ -4,8 +4,12 @@ import { Node, Position, MarkerType, XYPosition } from '@xyflow/react';
 // of the line between the center of the intersectionNode and the target node
 function getNodeIntersection(intersectionNode: Node, targetNode: Node) {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
-  const { width: intersectionNodeWidth, height: intersectionNodeHeight } = intersectionNode;
-  const intersectionNodePosition = intersectionNode.computed?.positionAbsolute!;
+
+  const {
+    width: intersectionNodeWidth,
+    height: intersectionNodeHeight,
+    positionAbsolute: intersectionNodePosition,
+  } = intersectionNode.computed || {};
   const targetPosition = targetNode.computed?.positionAbsolute!;
 
   const w = intersectionNodeWidth! / 2;

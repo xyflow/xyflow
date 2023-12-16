@@ -1,21 +1,22 @@
-import { useCallback } from 'react';
 import { getNodesInside } from '@xyflow/system';
+import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../hooks/useStore';
 import type { Node, ReactFlowState } from '../types';
+import { useCallback } from 'react';
 
-function useVisibleNodes(onlyRenderVisible: boolean) {
-  const nodes = useStore(
-    useCallback(
-      (s: ReactFlowState) =>
-        onlyRenderVisible
-          ? getNodesInside<Node>(s.nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true)
-          : s.nodes,
-      [onlyRenderVisible]
-    )
-  );
+const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
+  return onlyRenderVisible
+    ? getNodesInside<Node>(s.nodes, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true).map(
+        (node) => node.id
+      )
+    : Array.from(s.nodeLookup.keys());
+};
 
-  return nodes;
+function useVisibleNodeIds(onlyRenderVisible: boolean) {
+  const nodeIds = useStore(useCallback(selector(onlyRenderVisible), [onlyRenderVisible]), shallow);
+
+  return nodeIds;
 }
 
-export default useVisibleNodes;
+export default useVisibleNodeIds;

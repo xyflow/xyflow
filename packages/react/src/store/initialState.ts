@@ -1,7 +1,7 @@
 import {
   infiniteExtent,
   ConnectionMode,
-  updateNodes,
+  adoptUserProvidedNodes,
   getNodesBounds,
   getViewportForBounds,
   Transform,
@@ -25,7 +25,10 @@ const getInitialState = ({
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map();
   const connectionLookup = updateConnectionLookup(new Map(), edges);
-  const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
+    nodeOrigin: [0, 0],
+    elevateNodesOnSelect: false,
+  });
 
   let transform: Transform = [0, 0, 1];
 
