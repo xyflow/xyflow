@@ -8,13 +8,14 @@ import {
   type Connection,
   getEdgePosition,
   errorMessages,
+  getEdgeZIndex,
 } from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import { getMouseHandler } from '../Edges/utils';
-import type { EdgeWrapperProps } from '../../types';
+import type { EdgeWrapperProps, Node } from '../../types';
 import { builtinEdgeTypes } from './utils';
 
 function EdgeWrapper({
@@ -56,7 +57,8 @@ function EdgeWrapper({
   pathOptions,
   interactionWidth,
   edgeTypes,
-  zIndex,
+  zIndex: edgeZIndex,
+  elevateEdgesOnSelect,
   onError,
 }: EdgeWrapperProps): JSX.Element | null {
   let edgeType = type || 'default';
@@ -72,27 +74,45 @@ function EdgeWrapper({
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const store = useStoreApi();
-  const edgePosition = useStore(
+  const prevSourceNode = useRef<Node | undefined>();
+  const prevTargetNode = useRef<Node | undefined>();
+  const prevZIndex = useRef<number | undefined>(edgeZIndex);
+  const prevEdgePosition = useRef<ReturnType<typeof getEdgePosition> | null>(null);
+
+  const { edgePosition, zIndex } = useStore(
     useCallback(
       (state) => {
         const sourceNode = state.nodeLookup.get(source);
         const targetNode = state.nodeLookup.get(target);
 
         if (!sourceNode || !targetNode) {
-          return null;
+          return { edgePosition: null, zIndex: edgeZIndex };
         }
 
-        return getEdgePosition({
-          id,
-          sourceNode,
-          targetNode,
-          sourceHandle: sourceHandleId || null,
-          targetHandle: targetHandleId || null,
-          connectionMode: state.connectionMode,
-          onError: state.onError,
-        });
+        const nodesChanged = prevSourceNode.current !== sourceNode || prevTargetNode.current !== targetNode;
+
+        prevSourceNode.current = sourceNode;
+        prevTargetNode.current = targetNode;
+
+        prevEdgePosition.current = nodesChanged
+          ? getEdgePosition({
+              id,
+              sourceNode,
+              targetNode,
+              sourceHandle: sourceHandleId || null,
+              targetHandle: targetHandleId || null,
+              connectionMode: state.connectionMode,
+              onError: state.onError,
+            })
+          : prevEdgePosition.current;
+        prevZIndex.current = getEdgeZIndex(selected, edgeZIndex, sourceNode, targetNode, elevateEdgesOnSelect);
+
+        return {
+          edgePosition: prevEdgePosition.current,
+          zIndex: prevZIndex.current,
+        };
       },
-      [source, target]
+      [source, target, selected, edgeZIndex]
     ),
     shallow
   );

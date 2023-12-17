@@ -78,6 +78,7 @@ export type EdgeWrapperProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHa
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
   edgeTypes?: EdgeTypes;
   onError?: OnError;
+  elevateEdgesOnSelect?: boolean;
 };
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;

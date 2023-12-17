@@ -1,5 +1,5 @@
 import { derived } from 'svelte/store';
-import { isEdgeVisible, getEdgePosition, adjustEdgeZIndex } from '@xyflow/system';
+import { isEdgeVisible, getEdgePosition, getEdgeZIndex } from '@xyflow/system';
 
 import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
@@ -41,15 +41,8 @@ export function getVisibleEdges(store: SvelteFlowStoreState) {
   );
 
   return derived(
-    [
-      visibleEdges,
-      store.nodes,
-      store.nodeLookup,
-      store.connectionMode,
-      store.onlyRenderVisibleElements,
-      store.onerror
-    ],
-    ([visibleEdges, , nodeLookup, connectionMode, onlyRenderVisibleElements, onerror]) => {
+    [visibleEdges, store.nodes, store.nodeLookup, store.connectionMode, store.onerror],
+    ([visibleEdges, , nodeLookup, connectionMode, onerror]) => {
       const layoutedEdges = visibleEdges.reduce<EdgeLayouted[]>((res, edge) => {
         const sourceNode = nodeLookup.get(edge.source);
         const targetNode = nodeLookup.get(edge.target);
@@ -70,7 +63,8 @@ export function getVisibleEdges(store: SvelteFlowStoreState) {
 
         if (edgePosition) {
           res.push({
-            ...adjustEdgeZIndex(edge, nodeLookup, onlyRenderVisibleElements),
+            ...edge,
+            zIndex: getEdgeZIndex(edge.selected, edge.zIndex, sourceNode, targetNode, false),
             ...edgePosition
           });
         }

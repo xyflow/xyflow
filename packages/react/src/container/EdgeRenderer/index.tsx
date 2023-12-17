@@ -63,7 +63,7 @@ const EdgeRenderer = ({
   children,
 }: EdgeRendererProps) => {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
-  const edges = useVisibleEdges(onlyRenderVisibleElements, elevateEdgesOnSelect);
+  const edges = useVisibleEdges(onlyRenderVisibleElements);
 
   return (
     <div className="react-flow__edges">
@@ -121,6 +121,7 @@ const EdgeRenderer = ({
             interactionWidth={edge.interactionWidth}
             onError={onError}
             edgeTypes={edgeTypes}
+            elevateEdgesOnSelect={elevateEdgesOnSelect}
           />
         );
       })}

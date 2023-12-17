@@ -23,26 +23,23 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-export function adjustEdgeZIndex(edge: EdgeBase, nodeLookup: Map<string, NodeBase>, elevateEdgesOnSelect: boolean) {
-  const hasZIndex = isNumeric(edge.zIndex);
-  let z = hasZIndex ? edge.zIndex! : 0;
+export function getEdgeZIndex(
+  selected: boolean | undefined,
+  zIndex: number | undefined,
+  sourceNode: NodeBase,
+  targetNode: NodeBase,
+  elevateEdgesOnSelect?: boolean
+) {
+  const hasZIndex = isNumeric(zIndex);
+  let nextZIndex = hasZIndex ? zIndex! : 0;
 
   if (elevateEdgesOnSelect) {
-    const targetNode = nodeLookup.get(edge.target)!;
-    const sourceNode = nodeLookup.get(edge.source)!;
-    const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
+    const edgeOrConnectedNodeSelected = selected || targetNode?.selected || sourceNode?.selected;
     const selectedZIndex = Math.max(sourceNode?.[internalsSymbol]?.z || 0, targetNode?.[internalsSymbol]?.z || 0, 1000);
-    z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
-
-    if (edge.zIndex !== z) {
-      return {
-        ...edge,
-        zIndex: z,
-      };
-    }
+    nextZIndex = (hasZIndex ? zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
   }
 
-  return edge;
+  return nextZIndex;
 }
 
 type IsEdgeVisibleParams = {

@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
-import { adjustEdgeZIndex, isEdgeVisible } from '@xyflow/system';
+import { isEdgeVisible } from '@xyflow/system';
 
 import { useStore } from '../hooks/useStore';
 import { type Edge, type ReactFlowState } from '../types';
 
-function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boolean): Edge[] {
+function useVisibleEdges(onlyRenderVisible: boolean): Edge[] {
   const edges = useStore(
     useCallback(
       (s: ReactFlowState) => {
@@ -29,9 +29,9 @@ function useVisibleEdges(onlyRenderVisible: boolean, elevateEdgesOnSelect: boole
               })
             : s.edges;
 
-        return visibleEdges.map((edge) => adjustEdgeZIndex(edge, s.nodeLookup, elevateEdgesOnSelect));
+        return visibleEdges;
       },
-      [onlyRenderVisible, elevateEdgesOnSelect]
+      [onlyRenderVisible]
     ),
     shallow
   );
