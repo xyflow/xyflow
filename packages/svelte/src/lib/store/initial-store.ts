@@ -14,19 +14,28 @@ import {
   type OnError,
   devWarn,
   type Viewport,
-  updateNodes,
+  adoptUserProvidedNodes,
   getNodesBounds,
-  getViewportForBounds
+  getViewportForBounds,
+  updateConnectionLookup,
+  type ConnectionLookup,
+  type OnConnect,
+  type OnConnectStart,
+  type OnConnectEnd
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
 import OutputNode from '$lib/components/nodes/OutputNode.svelte';
 import GroupNode from '$lib/components/nodes/GroupNode.svelte';
-import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
-import StraightEdge from '$lib/components/edges/StraightEdge.svelte';
-import SmoothStepEdge from '$lib/components/edges/SmoothStepEdge.svelte';
-import StepEdge from '$lib/components/edges/StepEdge.svelte';
+
+import {
+  BezierEdgeInternal,
+  SmoothStepEdgeInternal,
+  StraightEdgeInternal,
+  StepEdgeInternal
+} from '$lib/components/edges';
+
 import type {
   NodeTypes,
   EdgeTypes,
@@ -34,7 +43,8 @@ import type {
   Node,
   Edge,
   FitViewOptions,
-  OnDelete
+  OnDelete,
+  OnEdgeCreate
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
@@ -47,10 +57,10 @@ export const initialNodeTypes = {
 };
 
 export const initialEdgeTypes = {
-  straight: StraightEdge,
-  smoothstep: SmoothStepEdge,
-  default: BezierEdge,
-  step: StepEdge
+  straight: StraightEdgeInternal,
+  smoothstep: SmoothStepEdgeInternal,
+  default: BezierEdgeInternal,
+  step: StepEdgeInternal
 };
 
 export const getInitialStore = ({
@@ -66,20 +76,17 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
 }) => {
-  const nodeLookup = new Map<string, Node>();
-  const nextNodes = updateNodes(nodes, nodeLookup, {
+  const nodeLookup = new Map();
+  const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
   });
+  const connectionLookup = updateConnectionLookup(new Map(), edges);
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height
-    }));
+    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
@@ -89,14 +96,15 @@ export const getInitialStore = ({
     nodes: createNodesStore(nextNodes, nodeLookup),
     nodeLookup: readable<Map<string, Node>>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
-    edges: createEdgesStore(edges),
+    edges: createEdgesStore(edges, connectionLookup),
     visibleEdges: readable<EdgeLayouted[]>([]),
+    connectionLookup: readable<ConnectionLookup>(connectionLookup),
     height: writable<number>(500),
     width: writable<number>(500),
     minZoom: writable<number>(0.5),
     maxZoom: writable<number>(2),
     nodeOrigin: writable<NodeOrigin>([0, 0]),
-    nodeDragThreshold: writable<number>(0),
+    nodeDragThreshold: writable<number>(1),
     nodeExtent: writable<CoordinateExtent>(infiniteExtent),
     translateExtent: writable<CoordinateExtent>(infiniteExtent),
     autoPanOnNodeDrag: writable<boolean>(true),
@@ -133,6 +141,10 @@ export const getInitialStore = ({
     lib: readable<string>('svelte'),
     onlyRenderVisibleElements: writable<boolean>(false),
     onerror: writable<OnError>(devWarn),
-    ondelete: writable<OnDelete>(undefined)
+    ondelete: writable<OnDelete>(undefined),
+    onedgecreate: writable<OnEdgeCreate>(undefined),
+    onconnect: writable<OnConnect>(undefined),
+    onconnectstart: writable<OnConnectStart>(undefined),
+    onconnectend: writable<OnConnectEnd>(undefined)
   };
 };

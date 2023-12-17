@@ -11,13 +11,13 @@ const idStyle: CSSProperties = {
   left: 2,
 };
 
-const DebugNode: FC<NodeProps> = ({ zIndex, xPos, yPos, id }) => {
+const DebugNode: FC<NodeProps> = ({ zIndex, positionAbsoluteX, positionAbsoluteY, id }) => {
   return (
     <>
       <Handle type="target" position={Position.Top} />
       <div style={idStyle}>{id}</div>
       <div style={infoStyle}>
-        x:{Math.round(xPos || 0)} y:{Math.round(yPos || 0)} z:{zIndex}
+        x:{Math.round(positionAbsoluteX)} y:{Math.round(positionAbsoluteY)} z:{zIndex}
       </div>
       <Handle type="source" position={Position.Bottom} />
     </>

@@ -1,13 +1,13 @@
 import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { errorMessages } from '@xyflow/system';
 
 import { useStore } from '../../hooks/useStore';
 import useVisibleEdges from '../../hooks/useVisibleEdges';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import type { EdgeTypesWrapped, ReactFlowState } from '../../types';
+import type { ReactFlowState } from '../../types';
+import EdgeWrapper from '../../components/EdgeWrapper';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,
@@ -27,8 +27,8 @@ type EdgeRendererProps = Pick<
   | 'elevateEdgesOnSelect'
   | 'rfId'
   | 'disableKeyboardA11y'
+  | 'edgeTypes'
 > & {
-  edgeTypes: EdgeTypesWrapped;
   elevateEdgesOnSelect: boolean;
   children: ReactNode;
 };
@@ -72,14 +72,6 @@ const EdgeRenderer = ({
       </svg>
 
       {edges.map((edge) => {
-        let edgeType = edge.type || 'default';
-
-        if (!edgeTypes[edgeType]) {
-          onError?.('011', errorMessages['error011'](edgeType));
-          edgeType = 'default';
-        }
-
-        const EdgeComponent = edgeTypes[edgeType];
         const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
         const isUpdatable =
           typeof onEdgeUpdate !== 'undefined' &&
@@ -87,15 +79,16 @@ const EdgeRenderer = ({
         const isSelectable = !!(edge.selectable || (elementsSelectable && typeof edge.selectable === 'undefined'));
 
         return (
-          <EdgeComponent
+          <EdgeWrapper
             key={edge.id}
             id={edge.id}
             className={cc([edge.className, noPanClassName])}
-            type={edgeType}
+            type={edge.type}
             data={edge.data}
             selected={!!edge.selected}
             animated={!!edge.animated}
             hidden={!!edge.hidden}
+            zIndex={edge.zIndex}
             label={edge.label}
             labelStyle={edge.labelStyle}
             labelShowBg={edge.labelShowBg}
@@ -103,7 +96,6 @@ const EdgeRenderer = ({
             labelBgPadding={edge.labelBgPadding}
             labelBgBorderRadius={edge.labelBgBorderRadius}
             style={edge.style}
-            zIndex={edge.zIndex}
             source={edge.source}
             target={edge.target}
             sourceHandleId={edge.sourceHandle}
@@ -127,10 +119,11 @@ const EdgeRenderer = ({
             isUpdatable={isUpdatable}
             pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
             interactionWidth={edge.interactionWidth}
+            onError={onError}
+            edgeTypes={edgeTypes}
           />
         );
       })}
-
       {children}
     </div>
   );

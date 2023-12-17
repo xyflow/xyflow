@@ -4,12 +4,13 @@ import { Node, Position, MarkerType, XYPosition } from '@xyflow/react';
 // of the line between the center of the intersectionNode and the target node
 function getNodeIntersection(intersectionNode: Node, targetNode: Node) {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
+
   const {
     width: intersectionNodeWidth,
     height: intersectionNodeHeight,
     positionAbsolute: intersectionNodePosition,
-  } = intersectionNode;
-  const targetPosition = targetNode.positionAbsolute!;
+  } = intersectionNode.computed || {};
+  const targetPosition = targetNode.computed?.positionAbsolute!;
 
   const w = intersectionNodeWidth! / 2;
   const h = intersectionNodeHeight! / 2;
@@ -32,7 +33,7 @@ function getNodeIntersection(intersectionNode: Node, targetNode: Node) {
 
 // returns the position (top,right,bottom or right) passed node compared to the intersection point
 function getEdgePosition(node: Node, intersectionPoint: XYPosition) {
-  const n = { ...node.positionAbsolute, ...node };
+  const n = { ...node.computed?.positionAbsolute, ...node };
   const nx = Math.round(n.x!);
   const ny = Math.round(n.y!);
   const px = Math.round(intersectionPoint.x);
@@ -41,13 +42,13 @@ function getEdgePosition(node: Node, intersectionPoint: XYPosition) {
   if (px <= nx + 1) {
     return Position.Left;
   }
-  if (px >= nx + n.width! - 1) {
+  if (px >= nx + n.computed?.width! - 1) {
     return Position.Right;
   }
   if (py <= ny + 1) {
     return Position.Top;
   }
-  if (py >= n.y! + n.height! - 1) {
+  if (py >= n.y! + n.computed?.height! - 1) {
     return Position.Bottom;
   }
 

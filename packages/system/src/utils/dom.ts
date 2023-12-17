@@ -73,6 +73,8 @@ export const getHandleBounds = (
   }
 
   const handlesArray = Array.from(handles) as HTMLDivElement[];
+
+  // @todo can't we use the node dimensions here?
   const nodeBounds = nodeElement.getBoundingClientRect();
   const nodeOffset = {
     x: nodeBounds.width * nodeOrigin[0],

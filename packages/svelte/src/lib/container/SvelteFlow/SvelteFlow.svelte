@@ -15,8 +15,14 @@
   import { Attribution } from '$lib/components/Attribution';
   import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
+  import {
+    updateStore,
+    updateStoreByKeys,
+    type UpdatableStoreProps,
+    getColorModeClass
+  } from './utils';
   import { get } from 'svelte/store';
+  import { useColorModeClass } from '$lib/hooks/useColorModeClass';
 
   type $$Props = SvelteFlowProps;
 
@@ -65,11 +71,16 @@
   export let autoPanOnNodeDrag: $$Props['autoPanOnNodeDrag'] = true;
   export let onerror: $$Props['onerror'] = undefined;
   export let ondelete: $$Props['ondelete'] = undefined;
+  export let onedgecreate: $$Props['onedgecreate'] = undefined;
   export let attributionPosition: $$Props['attributionPosition'] = undefined;
   export let proOptions: $$Props['proOptions'] = undefined;
   export let defaultEdgeOptions: $$Props['defaultEdgeOptions'] = undefined;
   export let width: $$Props['width'] = undefined;
   export let height: $$Props['height'] = undefined;
+  export let colorMode: $$Props['colorMode'] = 'light';
+  export let onconnect: $$Props['onconnect'] = undefined;
+  export let onconnectstart: $$Props['onconnectstart'] = undefined;
+  export let onconnectend: $$Props['onconnectend'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -142,8 +153,12 @@
       autoPanOnNodeDrag,
       onerror,
       ondelete,
+      onedgecreate,
       connectionMode,
-      nodeDragThreshold
+      nodeDragThreshold,
+      onconnect,
+      onconnectstart,
+      onconnectend
     };
 
     updateStoreByKeys(store, updatableProps);
@@ -156,6 +171,8 @@
     maxZoom,
     translateExtent
   });
+
+  $: colorModeClass = useColorModeClass(colorMode);
 </script>
 
 <div
@@ -163,7 +180,7 @@
   bind:clientWidth
   bind:clientHeight
   {style}
-  class={cc(['svelte-flow', className])}
+  class={cc(['svelte-flow', className, $colorModeClass])}
   data-testid="svelte-flow__wrapper"
   on:dragover
   on:drop
@@ -206,15 +223,12 @@
           on:nodemouseenter
           on:nodemousemove
           on:nodemouseleave
-          on:connectstart
-          on:connect
-          on:connectend
           on:nodedragstart
           on:nodedrag
           on:nodedragstop
           on:nodecontextmenu
         />
-        <NodeSelection />
+        <NodeSelection on:selectionclick on:selectioncontextmenu />
       </ViewportComponent>
       <UserSelection />
     </Pane>

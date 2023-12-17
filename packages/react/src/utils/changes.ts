@@ -5,14 +5,17 @@ export function handleParentExpand(res: any[], updateItem: any) {
   const parent = res.find((e) => e.id === updateItem.parentNode);
 
   if (parent) {
-    const extendWidth = updateItem.position.x + updateItem.width - parent.width;
-    const extendHeight = updateItem.position.y + updateItem.height - parent.height;
+    if (!parent.computed) {
+      parent.computed = {};
+    }
+    const extendWidth = updateItem.position.x + updateItem.computed.width - parent.computed.width;
+    const extendHeight = updateItem.position.y + updateItem.computed.height - parent.computed.height;
 
     if (extendWidth > 0 || extendHeight > 0 || updateItem.position.x < 0 || updateItem.position.y < 0) {
       parent.style = { ...parent.style } || {};
 
-      parent.style.width = parent.style.width ?? parent.width;
-      parent.style.height = parent.style.height ?? parent.height;
+      parent.style.width = parent.style.width ?? parent.computed.width;
+      parent.style.height = parent.style.height ?? parent.computed.height;
 
       if (extendWidth > 0) {
         parent.style.width += extendWidth;
@@ -36,8 +39,8 @@ export function handleParentExpand(res: any[], updateItem: any) {
         updateItem.position.y = 0;
       }
 
-      parent.width = parent.style.width;
-      parent.height = parent.style.height;
+      parent.computed.width = parent.style.width;
+      parent.computed.height = parent.style.height;
     }
   }
 }
@@ -52,14 +55,17 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   }
 
   let remainingChanges = changes;
-  const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
+  const updatedElements: any[] = [];
 
-  return elements.reduce((res: any[], item: any) => {
+  for (let i = 0; i < elements.length; i++) {
     const nextChanges: any[] = [];
     const _remainingChanges: any[] = [];
+    const item = elements[i];
 
     remainingChanges.forEach((c) => {
-      if (c.id === item.id) {
+      if (c.type === 'add') {
+        updatedElements.push(c.item);
+      } else if (c.id === item.id) {
         nextChanges.push(c);
       } else {
         _remainingChanges.push(c);
@@ -68,8 +74,8 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     remainingChanges = _remainingChanges;
 
     if (nextChanges.length === 0) {
-      res.push(item);
-      return res;
+      updatedElements.push(item);
+      continue;
     }
 
     const updateItem = { ...item };
@@ -87,7 +93,10 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (typeof currentChange.positionAbsolute !== 'undefined') {
-              updateItem.positionAbsolute = currentChange.positionAbsolute;
+              if (!updateItem.computed) {
+                updateItem.computed = {};
+              }
+              updateItem.computed.positionAbsolute = currentChange.positionAbsolute;
             }
 
             if (typeof currentChange.dragging !== 'undefined') {
@@ -95,14 +104,17 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (updateItem.expandParent) {
-              handleParentExpand(res, updateItem);
+              handleParentExpand(updatedElements, updateItem);
             }
             break;
           }
           case 'dimensions': {
             if (typeof currentChange.dimensions !== 'undefined') {
-              updateItem.width = currentChange.dimensions.width;
-              updateItem.height = currentChange.dimensions.height;
+              if (!updateItem.computed) {
+                updateItem.computed = {};
+              }
+              updateItem.computed.width = currentChange.dimensions.width;
+              updateItem.computed.height = currentChange.dimensions.height;
             }
 
             if (typeof currentChange.updateStyle !== 'undefined') {
@@ -114,20 +126,20 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (updateItem.expandParent) {
-              handleParentExpand(res, updateItem);
+              handleParentExpand(updatedElements, updateItem);
             }
             break;
           }
           case 'remove': {
-            return res;
+            continue;
           }
         }
       }
+      updatedElements.push(updateItem);
     }
+  }
 
-    res.push(updateItem);
-    return res;
-  }, initElements);
+  return updatedElements;
 }
 
 export function applyNodeChanges<NodeData = any>(changes: NodeChange[], nodes: Node<NodeData>[]): Node<NodeData>[] {

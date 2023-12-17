@@ -1,6 +1,49 @@
+## 0.0.29
+
+Another huge update for Svelte Flow 🙏 Handling data flows will be way easier with the new hooks and functions. You can now subscribe to connected nodes, receive data and update nodes more easily. We fix a big issue about the `<Handle />` component. No more `on:connect` that only worked for target `<Handle />` components but `onconnect` and `ondisconnect` that works for every `<Handle />`.
+
+### Features
+
+- add `useHandleConnections` hook for receiving connected node and handle ids for a specific handle
+- add `useNodesData(ids: string | string[])` hook for receiving data from other nodes
+- export `updateNode` and `updateNodeData` from `useSvelteFlow` to update a node or the data object
+- add `onedgecreate` function for passing a certain id or other attributes to a newly created edge
+
+### ⚠️ Breaking
+
+- replace `on:connect`, `on:connectstart` and `on:connectend` with `onconnect`, `onconnectstart` and `onconnectend`, no need to forward `on:connect..` anymore
+
+### Fixes and minor changes
+
+- `onconnect` and `ondisconnect` callback work for `<Handle />` component
+- don't delete a node when user presses Backspace inside an input/textarea/.nokey element
+- `bgColor` prop for Background didn't work
+- prefix css vars with "xy-"
+- don't update nodes and edges on pane click if not necessary
+- cleaner types for exported edges
+- fix `getIntersectingNodes` bug when passing `Rect`
+
+## 0.0.28
+
+This is a huge update! We added a new `<NodeToolbar />` component and a new `colorMode` ('light' | 'dark' | 'system') prop for toggling dark/light mode.
+
+There are also some breaking changes again (sorry!) but we are very close to the final API for Svelte Flow 1.0.0. The biggest change is that we group node attriubutes (`width`, `height`, `positionAbsolute`) that are added by the library under `node.computed`. This makes it easier to understand, that this stuff comes from the library itself. `node.width` and `node.height` is still an optional node option and can be used to set certain dimensions for SSR or on the client.
+
+- add `<NodeToolbar />` component
+- add `on:selectionclick` and `on:selectioncontextmenu` event handlers
+- add `ondelete({ nodes, edges })` handler
+- add `zoomActivationKey` prop
+- add `width` and `height` prop to custom `NodeProps` type
+- add `colorMode` prop ('light' | 'dark' | 'system')
+- ⚠️ replace `xPos` and `yPos` with `positionAbsolute` prop to custom `NodeProps` type
+- ⚠️ `node.width/height` and `node.positionAbsolute` can now be found under `node.computed.width/height/positionAbsolute`
+- ⚠️ `node.width/height` is still optional an can be used for forcing certain dimensions and SSR
+- refactor keys: you can now disable keys by setting them to `null` (e.g. `selectionKey={null}`)
+- performance optimization with internal node lookup
+
 ## 0.0.27
 
-- add `selectionOnDrag` prop - can be used to create figma-like controls in combination with `panOnDrag={false}` / `panOnDrag={[1, 2]}` + `panOnScroll={true}` 
+- add `selectionOnDrag` prop - can be used to create figma-like controls in combination with `panOnDrag={false}` / `panOnDrag={[1, 2]}` + `panOnScroll={true}`
 - ⚠️ rename `screenToFlowCoordinate` to `screenToFlowPosition`
 - ⚠️ rename `flowToScreenCoordinate` to `flowToScreenPosition`
 - ⚠️ rename `getTransformForBounds` to `getViewportForBounds` (return `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
@@ -49,7 +92,7 @@
 
 ## 0.0.22
 
-- add `connectionLine` slot for rendering a custom connection line 
+- add `connectionLine` slot for rendering a custom connection line
 - add `connectionLineStyle` and `connectionLineContainerStyle` props
 - add `useConnection` hook
 - add `nodeDragThreshold` prop
@@ -82,7 +125,7 @@
 
 ## 0.0.18
 
-- add `nodesDraggable` prop 
+- add `nodesDraggable` prop
 - minimap: add default background
 
 ## 0.0.17
@@ -95,7 +138,7 @@
 
 ## 0.0.15
 
-- fix wrongly displayed connectionline 
+- fix wrongly displayed connectionline
 
 ## 0.0.14
 
@@ -134,14 +177,14 @@ this version is broken because of a wrong path in the package.json
 
 - add `connectionRadius`
 
-## 0.0.1 
+## 0.0.1
 
-Svelte Flow alpha is here 🔥 You can expect some changes until we reach 1.0.0 but we try to stick as close as possible to the React Flow API. There are no docs yet, but we are working on it! For now the easiest way is to use the autocomplete of your IDE, lookup the props in the SvelteFlow component or check out the React Flow docs. 
+Svelte Flow alpha is here 🔥 You can expect some changes until we reach 1.0.0 but we try to stick as close as possible to the React Flow API. There are no docs yet, but we are working on it! For now the easiest way is to use the autocomplete of your IDE, lookup the props in the SvelteFlow component or check out the React Flow docs.
 
 This very first release comes with lots of features already:
 
-- pass `nodes` and `edges` as writables 
-- draggable, selectable and deletable nodes 
+- pass `nodes` and `edges` as writables
+- draggable, selectable and deletable nodes
 - support for custom `nodeTypes` and `edgeTypes`
 - basic viewport settings like `fitView`, `minZoom` and `maxZoom`
 - additional components: `<MiniMap />`, `<Controls />` & `<Background />` 

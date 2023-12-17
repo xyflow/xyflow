@@ -12,32 +12,14 @@ import {
 } from '@xyflow/system';
 
 import Attribution from '../../components/Attribution';
-import { BezierEdge, SmoothStepEdge, StepEdge, StraightEdge, SimpleBezierEdge } from '../../components/Edges';
-import DefaultNode from '../../components/Nodes/DefaultNode';
-import InputNode from '../../components/Nodes/InputNode';
-import OutputNode from '../../components/Nodes/OutputNode';
-import GroupNode from '../../components/Nodes/GroupNode';
+
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
 import A11yDescriptions from '../../components/A11yDescriptions';
 import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
-import type { EdgeTypes, NodeTypes, ReactFlowProps, ReactFlowRefType } from '../../types';
-
-const defaultNodeTypes: NodeTypes = {
-  input: InputNode,
-  default: DefaultNode,
-  output: OutputNode,
-  group: GroupNode,
-};
-
-const defaultEdgeTypes: EdgeTypes = {
-  default: BezierEdge,
-  straight: StraightEdge,
-  step: StepEdge,
-  smoothstep: SmoothStepEdge,
-  simplebezier: SimpleBezierEdge,
-};
+import type { ReactFlowProps, ReactFlowRefType } from '../../types';
+import useColorModeClass from '../../hooks/useColorModeClass';
 
 const initNodeOrigin: NodeOrigin = [0, 0];
 const initSnapGrid: [number, number] = [15, 15];
@@ -59,8 +41,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       defaultNodes,
       defaultEdges,
       className,
-      nodeTypes = defaultNodeTypes,
-      edgeTypes = defaultEdgeTypes,
+      nodeTypes,
+      edgeTypes,
       onNodeClick,
       onEdgeClick,
       onInit,
@@ -169,18 +151,20 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onViewportChange,
       width,
       height,
+      colorMode = 'light',
       ...rest
     },
     ref
   ) => {
     const rfId = id || '1';
+    const colorModeClassName = useColorModeClass(colorMode);
 
     return (
       <div
         {...rest}
         style={{ ...style, ...wrapperStyle }}
         ref={ref}
-        className={cc(['react-flow', className])}
+        className={cc(['react-flow', className, colorModeClassName])}
         data-testid="rf__wrapper"
         id={id}
       >

@@ -24,6 +24,7 @@ import {
   type OnMoveEnd,
   type IsValidConnection,
   type UpdateConnection,
+  Connection,
 } from '@xyflow/system';
 
 import type {
@@ -49,6 +50,8 @@ export type ReactFlowStore = {
   nodes: Node[];
   nodeLookup: Map<string, Node>;
   edges: Edge[];
+  connectionLookup: Map<string, Map<string, Connection>>;
+
   onNodesChange: OnNodesChange | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;

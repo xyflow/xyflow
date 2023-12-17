@@ -12,7 +12,8 @@
 		type EdgeTypes,
 		type Node,
 		type Edge,
-		ConnectionMode
+		ConnectionMode,
+		useSvelteFlow
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -150,9 +151,9 @@
 	on:nodemouseenter={(event) => console.log('on node enter', event)}
 	on:nodemouseleave={(event) => console.log('on node leave', event)}
 	on:edgeclick={(event) => console.log('edge click', event)}
-	on:connectstart={(event) => console.log('on connect start', event)}
-	on:connect={(event) => console.log('on connect', event)}
-	on:connectend={(event) => console.log('on connect end', event)}
+	onconnectstart={(event) => console.log('on connect start', event)}
+	onconnect={(event) => console.log('on connect', event)}
+	onconnectend={(event) => console.log('on connect end', event)}
 	on:paneclick={(event) => console.log('on pane click', event)}
 	on:panecontextmenu={(event) => {
 		console.log('on pane contextmenu', event);
@@ -174,6 +175,8 @@
 		event.preventDefault();
 		console.log('on edge contextmenu', edge);
 	}}
+	on:selectionclick={(event) => console.log('on selection click', event)}
+	on:selectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}

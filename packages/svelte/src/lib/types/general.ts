@@ -4,7 +4,8 @@ import type {
   HandleType,
   Position,
   XYPosition,
-  ConnectingHandle
+  ConnectingHandle,
+  Connection
 } from '@xyflow/system';
 
 import type { Node } from './nodes';
@@ -30,8 +31,11 @@ export type HandleComponentProps = {
   isConnectable?: boolean;
   isConnectableStart?: boolean;
   isConnectableEnd?: boolean;
+  onconnect?: (connections: Connection[]) => void;
+  ondisconnect?: (connections: Connection[]) => void;
 };
 
 export type FitViewOptions = FitViewOptionsBase<Node>;
 
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
+export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;

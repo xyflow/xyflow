@@ -6,9 +6,9 @@
   export let width: number = 0;
   export let height: number = 0;
   export let borderRadius: number = 5;
-  export let color: string;
+  export let color: string | undefined = undefined;
   export let shapeRendering: string;
-  export let strokeColor: string;
+  export let strokeColor: string | undefined = undefined;
   export let strokeWidth: number = 2;
   export let selected: boolean = false;
   let className: string = '';
@@ -24,8 +24,8 @@
   ry={borderRadius}
   {width}
   {height}
-  fill={color}
-  stroke={strokeColor}
-  stroke-width={strokeWidth}
+  style={`${color ? `fill: ${color};` : ''}${strokeColor ? `stroke: ${strokeColor};` : ''}${
+    strokeWidth ? `stroke-width: ${strokeWidth};` : ''
+  }`}
   shape-rendering={shapeRendering}
 />

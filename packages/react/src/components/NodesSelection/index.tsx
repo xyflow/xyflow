@@ -10,9 +10,9 @@ import { getNodesBounds } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import useDrag from '../../hooks/useDrag';
-import { arrowKeyDiffs } from '../Nodes/wrapNode';
 import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import type { Node, ReactFlowState } from '../../types';
+import { arrowKeyDiffs } from '../NodeWrapper/utils';
 
 export type NodesSelectionProps = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;

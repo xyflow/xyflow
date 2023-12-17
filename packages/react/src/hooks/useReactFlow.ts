@@ -10,7 +10,7 @@ import {
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
-import { useStoreApi } from '../hooks/useStore';
+import { useStoreApi } from './useStore';
 import type {
   ReactFlowInstance,
   Instance,
@@ -24,6 +24,7 @@ import type {
   Node,
   Edge,
 } from '../types';
+import { isNode } from '../utils';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
@@ -206,7 +207,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       }
 
       return (nodes || store.getState().nodes).filter((n) => {
-        if (!isRect && (n.id === node!.id || !n.positionAbsolute)) {
+        if (!isRect && (n.id === node!.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 
@@ -271,6 +272,36 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     return getOutgoersBase(node, nodes, edges);
   }, []);
 
+  const updateNode = useCallback<Instance.UpdateNode>(
+    (id, nodeUpdate, options = { replace: true }) => {
+      setNodes((prevNodes) =>
+        prevNodes.map((node) => {
+          if (node.id === id) {
+            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
+            return options.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+          }
+
+          return node;
+        })
+      );
+    },
+    [setNodes]
+  );
+
+  const updateNodeData = useCallback<Instance.UpdateNodeData>(
+    (id, dataUpdate, options = { replace: false }) => {
+      updateNode(
+        id,
+        (node) => {
+          const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+          return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
+        },
+        options
+      );
+    },
+    [updateNode]
+  );
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -289,6 +320,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       getConnectedEdges,
       getIncomers,
       getOutgoers,
+      updateNode,
+      updateNodeData,
     };
   }, [
     viewportHelper,

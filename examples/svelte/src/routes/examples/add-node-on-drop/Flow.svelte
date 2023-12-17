@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import { SvelteFlow, useSvelteFlow, type Edge, type Node } from '@xyflow/svelte';
+	import {
+		SvelteFlow,
+		useSvelteFlow,
+		type Edge,
+		type Node,
+		type OnConnectEnd
+	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 
@@ -16,16 +22,18 @@
 	const nodes = writable<Node[]>(initialNodes);
 	const edges = writable<Edge[]>([]);
 
-	let connectingNodeId: string = '0';
+	let connectingNodeId: string | null = '0';
 	let rect: DOMRectReadOnly;
 	let id = 1;
 	const getId = () => `${id++}`;
 
 	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
 
-	function handleConnectEnd({ detail: { event } }: { detail: { event: MouseEvent | TouchEvent } }) {
+	const handleConnectEnd: OnConnectEnd = (event) => {
+		if (!connectingNodeId) return;
+
 		// See of connection landed inside the flow pane
-		const targetIsPane = event.target?.classList.contains('svelte-flow__pane');
+		const targetIsPane = (event.target as HTMLDivElement)?.classList.contains('svelte-flow__pane');
 		if (targetIsPane) {
 			const id = getId();
 			const position = {
@@ -58,7 +66,7 @@
 			$nodes = $nodes;
 			$edges = $edges;
 		}
-	}
+	};
 </script>
 
 <svelte:window />
@@ -69,11 +77,11 @@
 		{edges}
 		fitView
 		fitViewOptions={{ padding: 2 }}
-		on:connectstart={({ detail: { nodeId } }) => {
+		onconnectstart={(_, { nodeId }) => {
 			// Memorize the nodeId you start draggin a connection line from a node
 			connectingNodeId = nodeId;
 		}}
-		on:connectend={handleConnectEnd}
+		onconnectend={handleConnectEnd}
 	/>
 </div>
 

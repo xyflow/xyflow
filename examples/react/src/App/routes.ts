@@ -1,5 +1,6 @@
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
+import ColorMode from '../examples/ColorMode';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import ControlledViewport from '../examples/ControlledViewport';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
@@ -20,7 +21,6 @@ import Interaction from '../examples/Interaction';
 import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
-import NestedNodes from '../examples/NestedNodes';
 import NodeResizer from '../examples/NodeResizer';
 import NodeTypeChange from '../examples/NodeTypeChange';
 import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
@@ -43,7 +43,9 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
-import useNodesInitialized from '../examples/UseNodesInit';
+import UseNodesInitialized from '../examples/UseNodesInit';
+import UseNodesData from '../examples/UseNodesData';
+import UseHandleConnections from '../examples/UseHandleConnections';
 
 export interface IRoute {
   name: string;
@@ -61,6 +63,11 @@ const routes: IRoute[] = [
     name: 'Backgrounds',
     path: 'backgrounds',
     component: Backgrounds,
+  },
+  {
+    name: 'Color Mode',
+    path: 'color-mode',
+    component: ColorMode,
   },
   {
     name: 'Cancel Connection',
@@ -178,11 +185,6 @@ const routes: IRoute[] = [
     component: MultiFlows,
   },
   {
-    name: 'Nested Nodes',
-    path: 'nested-nodes',
-    component: NestedNodes,
-  },
-  {
     name: 'Node Type Change',
     path: 'nodetype-change',
     component: NodeTypeChange,
@@ -255,7 +257,7 @@ const routes: IRoute[] = [
   {
     name: 'useNodesInitialized',
     path: 'use-nodes-initialized',
-    component: useNodesInitialized,
+    component: UseNodesInitialized,
   },
   {
     name: 'useOnSelectionChange',
@@ -266,6 +268,16 @@ const routes: IRoute[] = [
     name: 'useReactFlow',
     path: 'usereactflow',
     component: UseReactFlow,
+  },
+  {
+    name: 'useHandleConnections',
+    path: 'usehandleconnections',
+    component: UseHandleConnections,
+  },
+  {
+    name: 'useNodesData',
+    path: 'usenodesdata',
+    component: UseNodesData,
   },
   {
     name: 'useUpdateNodeInternals',

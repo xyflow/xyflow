@@ -4,13 +4,13 @@
 	type $$Props = NodeProps;
 
 	export let data: { label: string } = { label: 'Node' };
-	export let xPos: number = 0;
-	export let yPos: number = 0;
+	export let positionAbsoluteX: number = 0;
+	export let positionAbsoluteY: number = 0;
 </script>
 
 <div class="custom">
 	<div>{data.label}</div>
-	<div>{~~xPos}, {~~yPos}</div>
+	<div>{~~positionAbsoluteX}, {~~positionAbsoluteY}</div>
 
 	<Handle type="target" position={Position.Top} />
 

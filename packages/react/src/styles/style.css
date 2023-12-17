@@ -2,3 +2,21 @@
 @import '../../../system/src/styles/init.css';
 @import '../../../system/src/styles/style.css';
 @import '../../../system/src/styles/node-resizer.css';
+
+.react-flow {
+  --edge-label-background-color-default: #ffffff;
+  --edge-label-color-default: inherit;
+}
+
+.react-flow.dark {
+  --edge-label-background-color-default: #141414;
+  --edge-label-color-default: #f8f8f8;
+}
+
+.react-flow__edge-textbg {
+  fill: var(--edge-label-background-color, var(--edge-label-background-color-default));
+}
+
+.react-flow__edge-text {
+  fill: var(--edge-label-color, var(--edge-label-color-default));
+}

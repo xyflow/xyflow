@@ -5,11 +5,11 @@ import { Position, XYPosition, Node, Edge } from '@xyflow/react';
 function getNodeIntersection(intersectionNode: Node, targetNode: Node): XYPosition {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
 
-  const {
-    width: intersectionNodeWidth,
-    height: intersectionNodeHeight,
-    position: intersectionNodePosition,
-  } = intersectionNode;
+  const { position: intersectionNodePosition } = intersectionNode;
+  const { width: intersectionNodeWidth, height: intersectionNodeHeight } = intersectionNode.computed ?? {
+    width: 0,
+    height: 0,
+  };
   const targetPosition = targetNode.position;
 
   const w = (intersectionNodeWidth ?? 0) / 2;
@@ -42,13 +42,13 @@ function getEdgePosition(node: Node, intersectionPoint: XYPosition) {
   if (px <= nx + 1) {
     return Position.Left;
   }
-  if (px >= nx + (n.width ?? 0) - 1) {
+  if (px >= nx + (n.computed?.width ?? 0) - 1) {
     return Position.Right;
   }
   if (py <= ny + 1) {
     return Position.Top;
   }
-  if (py >= n.y + (n.height ?? 0) - 1) {
+  if (py >= n.y + (n.computed?.height ?? 0) - 1) {
     return Position.Bottom;
   }
 

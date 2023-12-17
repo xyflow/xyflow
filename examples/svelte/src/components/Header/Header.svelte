@@ -4,18 +4,22 @@
 
 	const routes = [
 		'add-node-on-drop',
+		'color-mode',
 		'custom-connection-line',
 		'customnode',
 		'dagre',
 		'drag-n-drop',
 		'edges',
 		'figma',
+		'handle-connect',
 		'interaction',
 		'intersections',
+		'node-toolbar',
 		'overview',
 		'stress',
 		'subflows',
 		'two-way-viewport',
+		'usenodesdata',
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation'

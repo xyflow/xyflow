@@ -10,7 +10,7 @@
 </script>
 
 <div class="custom">
-	<Handle type="target" position={Position.Left} on:connect />
+	<Handle type="target" position={Position.Left} />
 	<div>
 		Custom Color Picker Node: <strong>{$colorStore}</strong>
 	</div>
@@ -20,14 +20,8 @@
 		on:input={(evt) => colorStore.set(evt.currentTarget.value)}
 		value={$colorStore}
 	/>
-	<Handle type="source" position={Position.Right} id="a" style="top: 20px;" on:connect />
-	<Handle
-		type="source"
-		position={Position.Right}
-		id="b"
-		style="top: auto; bottom: 10px;"
-		on:connect
-	/>
+	<Handle type="source" position={Position.Right} id="a" style="top: 20px;" />
+	<Handle type="source" position={Position.Right} id="b" style="top: auto; bottom: 10px;" />
 </div>
 
 <style>

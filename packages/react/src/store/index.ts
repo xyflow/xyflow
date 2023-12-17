@@ -2,11 +2,12 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
   fitView as fitViewSystem,
-  updateNodes,
+  adoptUserProvidedNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
   Dimensions,
   updateNodeDimensions as updateNodeDimensionsSystem,
+  updateConnectionLookup,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -42,15 +43,24 @@ const createRFStore = ({
       ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
-        // Whenver new nodes are set, we need to calculate the absolute positions of the nodes
-        // and update the nodeLookup.
-        const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        // setNodes() is called exclusively in response to user actions:
+        // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
+        // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
+        //
+        // When this happens, we take the note objects passed by the user and extend them with fields
+        // relevant for internal React Flow operations.
+        // TODO: consider updating the types to reflect the distinction between user-provided nodes and internal nodes.
+        const nodesWithInternalData = adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
-        set({ nodes: nextNodes });
+        set({ nodes: nodesWithInternalData });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {} } = get();
-        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+        const { defaultEdgeOptions = {}, connectionLookup } = get();
+        const nextEdges = edges.map((e) => ({ ...defaultEdgeOptions, ...e }));
+
+        updateConnectionLookup(connectionLookup, nextEdges);
+
+        set({ edges: nextEdges });
       },
       // when the user works with an uncontrolled flow,
       // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
@@ -69,7 +79,8 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          nextState.nodes = updateNodes(nodes, new Map(), {
+          const { nodeLookup } = get();
+          nextState.nodes = adoptUserProvidedNodes(nodes, nodeLookup, {
             nodeOrigin: get().nodeOrigin,
             elevateNodesOnSelect: get().elevateNodesOnSelect,
           });
@@ -147,7 +158,7 @@ const createRFStore = ({
           };
 
           if (positionChanged) {
-            change.positionAbsolute = node.positionAbsolute;
+            change.positionAbsolute = node.computed?.positionAbsolute;
             change.position = node.position;
           }
 
@@ -163,7 +174,7 @@ const createRFStore = ({
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = updateNodes(updatedNodes, nodeLookup, {
+            const nextNodes = adoptUserProvidedNodes(updatedNodes, nodeLookup, {
               nodeOrigin,
               elevateNodesOnSelect,
             });
@@ -276,7 +287,10 @@ const createRFStore = ({
 
             return {
               ...node,
-              positionAbsolute,
+              computed: {
+                ...node.computed,
+                positionAbsolute,
+              },
             };
           }),
         });
@@ -323,6 +337,7 @@ const createRFStore = ({
 
         set(currentConnection);
       },
+
       reset: () => {
         // @todo: what should we do about this? Do we still need it?
         // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted

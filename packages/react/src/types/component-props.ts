@@ -19,6 +19,7 @@ import type {
   SelectionMode,
   OnError,
   IsValidConnection,
+  ColorMode,
 } from '@xyflow/system';
 
 import type {
@@ -155,6 +156,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   nodeDragThreshold?: number;
   width?: number;
   height?: number;
+  colorMode?: ColorMode;
 };
 
 export type ReactFlowRefType = HTMLDivElement;

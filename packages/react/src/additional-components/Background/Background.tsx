@@ -55,8 +55,8 @@ function Background({
         {
           ...style,
           ...containerStyle,
-          '--background-color-props': bgColor,
-          '--background-pattern-color-props': color,
+          '--xy-background-color-props': bgColor,
+          '--xy-background-pattern-color-props': color,
         } as CSSProperties
       }
       ref={ref}

@@ -1,10 +1,11 @@
 import {
   infiniteExtent,
   ConnectionMode,
-  updateNodes,
+  adoptUserProvidedNodes,
   getNodesBounds,
   getViewportForBounds,
   Transform,
+  updateConnectionLookup,
 } from '@xyflow/system';
 
 import type { Edge, Node, ReactFlowStore } from '../types';
@@ -22,17 +23,17 @@ const getInitialState = ({
   height?: number;
   fitView?: boolean;
 } = {}): ReactFlowStore => {
-  const nodeLookup = new Map<string, Node>();
-  const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nodeLookup = new Map();
+  const connectionLookup = updateConnectionLookup(new Map(), edges);
+  const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
+    nodeOrigin: [0, 0],
+    elevateNodesOnSelect: false,
+  });
 
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height,
-    }));
+    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
     transform = [x, y, zoom];
@@ -46,6 +47,7 @@ const getInitialState = ({
     nodes: nextNodes,
     nodeLookup,
     edges: edges,
+    connectionLookup,
     onNodesChange: null,
     onEdgesChange: null,
     hasDefaultNodes: false,
@@ -65,7 +67,7 @@ const getInitialState = ({
     paneDragging: false,
     noPanClassName: 'nopan',
     nodeOrigin: [0, 0],
-    nodeDragThreshold: 0,
+    nodeDragThreshold: 1,
 
     snapGrid: [15, 15],
     snapToGrid: false,

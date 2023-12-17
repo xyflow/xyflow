@@ -22,8 +22,8 @@ export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => vo
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
 
 export type Connection = {
-  source: string | null;
-  target: string | null;
+  source: string;
+  target: string;
   sourceHandle: string | null;
   targetHandle: string | null;
 };
@@ -136,3 +136,8 @@ export type UpdateConnection = (params: {
   connectionStartHandle: ConnectingHandle | null;
   connectionEndHandle: ConnectingHandle | null;
 }) => void;
+
+export type ColorModeClass = 'light' | 'dark';
+export type ColorMode = ColorModeClass | 'system';
+
+export type ConnectionLookup = Map<string, Map<string, Connection>>;
