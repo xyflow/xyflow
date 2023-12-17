@@ -1,0 +1,133 @@
+// Updatable edges have a anchors around their handles to update the edge.
+import { XYHandle, type Connection, getEdgePosition } from '@xyflow/system';
+
+import { EdgeAnchor } from '../Edges/EdgeAnchor';
+import type { EdgeWrapperProps, Edge } from '../../types/edges';
+import { useStoreApi } from '../../hooks/useStore';
+
+type EdgeUpdateAnchorsProps = {
+  edgePosition: NonNullable<ReturnType<typeof getEdgePosition>>;
+  edge: Edge;
+  isUpdatable: boolean | 'source' | 'target';
+  edgeUpdaterRadius: EdgeWrapperProps['edgeUpdaterRadius'];
+  sourceHandleId: EdgeWrapperProps['sourceHandleId'];
+  targetHandleId: EdgeWrapperProps['targetHandleId'];
+  onEdgeUpdate: EdgeWrapperProps['onEdgeUpdate'];
+  onEdgeUpdateStart: EdgeWrapperProps['onEdgeUpdateStart'];
+  onEdgeUpdateEnd: EdgeWrapperProps['onEdgeUpdateEnd'];
+  setUpdateHover: (hover: boolean) => void;
+  setUpdating: (updating: boolean) => void;
+};
+
+function EdgeUpdateAnchors({
+  isUpdatable,
+  edgeUpdaterRadius,
+  onEdgeUpdate,
+  onEdgeUpdateStart,
+  onEdgeUpdateEnd,
+  setUpdating,
+  setUpdateHover,
+  edgePosition,
+  edge,
+  targetHandleId,
+  sourceHandleId,
+}: EdgeUpdateAnchorsProps) {
+  const store = useStoreApi();
+
+  const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
+    // avoid triggering edge updater if mouse btn is not left
+    if (event.button !== 0) {
+      return;
+    }
+
+    const {
+      autoPanOnConnect,
+      domNode,
+      isValidConnection,
+      connectionMode,
+      connectionRadius,
+      lib,
+      onConnectStart,
+      onConnectEnd,
+      cancelConnection,
+      nodes,
+      panBy,
+      updateConnection,
+    } = store.getState();
+    const nodeId = isSourceHandle ? edge.target : edge.source;
+    const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
+    const handleType = isSourceHandle ? 'target' : 'source';
+
+    const isTarget = isSourceHandle;
+
+    setUpdating(true);
+    onEdgeUpdateStart?.(event, edge, handleType);
+
+    const _onEdgeUpdateEnd = (evt: MouseEvent | TouchEvent) => {
+      setUpdating(false);
+      onEdgeUpdateEnd?.(evt, edge, handleType);
+    };
+
+    const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
+
+    XYHandle.onPointerDown(event.nativeEvent, {
+      autoPanOnConnect,
+      connectionMode,
+      connectionRadius,
+      domNode,
+      handleId,
+      nodeId,
+      nodes,
+      isTarget,
+      edgeUpdaterType: handleType,
+      lib,
+      cancelConnection,
+      panBy,
+      isValidConnection,
+      onConnect: onConnectEdge,
+      onConnectStart,
+      onConnectEnd,
+      onEdgeUpdateEnd: _onEdgeUpdateEnd,
+      updateConnection,
+      getTransform: () => store.getState().transform,
+    });
+  };
+
+  const onEdgeUpdaterSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
+    handleEdgeUpdater(event, true);
+  const onEdgeUpdaterTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
+    handleEdgeUpdater(event, false);
+  const onEdgeUpdaterMouseEnter = () => setUpdateHover(true);
+  const onEdgeUpdaterMouseOut = () => setUpdateHover(false);
+
+  return (
+    <>
+      {(isUpdatable === 'source' || isUpdatable === true) && (
+        <EdgeAnchor
+          position={edgePosition.sourcePosition}
+          centerX={edgePosition.sourceX}
+          centerY={edgePosition.sourceY}
+          radius={edgeUpdaterRadius}
+          onMouseDown={onEdgeUpdaterSourceMouseDown}
+          onMouseEnter={onEdgeUpdaterMouseEnter}
+          onMouseOut={onEdgeUpdaterMouseOut}
+          type="source"
+        />
+      )}
+      {(isUpdatable === 'target' || isUpdatable === true) && (
+        <EdgeAnchor
+          position={edgePosition.targetPosition}
+          centerX={edgePosition.targetX}
+          centerY={edgePosition.targetY}
+          radius={edgeUpdaterRadius}
+          onMouseDown={onEdgeUpdaterTargetMouseDown}
+          onMouseEnter={onEdgeUpdaterMouseEnter}
+          onMouseOut={onEdgeUpdaterMouseOut}
+          type="target"
+        />
+      )}
+    </>
+  );
+}
+
+export default EdgeUpdateAnchors;

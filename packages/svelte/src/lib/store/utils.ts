@@ -11,7 +11,8 @@ import {
   updateConnectionLookup,
   type Viewport,
   type PanZoomInstance,
-  type ConnectionLookup
+  type ConnectionLookup,
+  type EdgeLookup
 } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
@@ -175,6 +176,7 @@ export const createNodesStore = (
 export const createEdgesStore = (
   edges: Edge[],
   connectionLookup: ConnectionLookup,
+  edgeLookup: EdgeLookup,
   defaultOptions?: DefaultEdgeOptions
 ): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
   const { subscribe, set, update } = writable<Edge[]>([]);
@@ -184,7 +186,7 @@ export const createEdgesStore = (
   const _set: typeof set = (eds: Edge[]) => {
     const nextEdges = defaults ? eds.map((edge) => ({ ...defaults, ...edge })) : eds;
 
-    updateConnectionLookup(connectionLookup, nextEdges);
+    updateConnectionLookup(connectionLookup, edgeLookup, nextEdges);
 
     value = nextEdges;
     set(value);

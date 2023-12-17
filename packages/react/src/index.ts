@@ -77,6 +77,7 @@ export {
   type CoordinateExtent,
   type ColorMode,
   type ColorModeClass,
+  type HandleType,
 } from '@xyflow/system';
 
 // system utils

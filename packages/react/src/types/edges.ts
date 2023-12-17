@@ -58,9 +58,14 @@ export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeT
 
 export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
 
-export type EdgeWrapperProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
+export type EdgeWrapperProps = {
+  id: string;
+  edgesFocusable: boolean;
+  edgesUpdatable: boolean;
+  elementsSelectable: boolean;
+  noPanClassName: string;
   onClick?: EdgeMouseHandler;
-  onEdgeDoubleClick?: EdgeMouseHandler;
+  onDoubleClick?: EdgeMouseHandler;
   sourceHandleId?: string | null;
   targetHandleId?: string | null;
   onEdgeUpdate?: OnEdgeUpdateFunc;
@@ -72,10 +77,6 @@ export type EdgeWrapperProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHa
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
-  isFocusable: boolean;
-  isUpdatable: EdgeUpdatable;
-  isSelectable: boolean;
-  pathOptions?: BezierPathOptions | SmoothStepPathOptions;
   edgeTypes?: EdgeTypes;
   onError?: OnError;
   elevateEdgesOnSelect?: boolean;
@@ -94,13 +95,14 @@ export type EdgeProps<T = any> = Pick<
   Edge<T>,
   'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
 > &
-  Pick<EdgeWrapperProps, 'sourceHandleId' | 'targetHandleId' | 'interactionWidth'> &
+  Pick<EdgeWrapperProps, 'sourceHandleId' | 'targetHandleId'> &
   EdgePosition &
   EdgeLabelOptions & {
     markerStart?: string;
     markerEnd?: string;
     // @TODO: how can we get better types for pathOptions?
     pathOptions?: any;
+    interactionWidth?: number;
   };
 
 export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd' | 'interactionWidth'> &

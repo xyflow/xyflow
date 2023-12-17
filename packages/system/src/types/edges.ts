@@ -77,3 +77,5 @@ export type EdgePosition = {
   sourcePosition: Position;
   targetPosition: Position;
 };
+
+export type EdgeLookup = Map<string, EdgeBase>;

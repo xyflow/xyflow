@@ -55,10 +55,10 @@ const createRFStore = ({
         set({ nodes: nodesWithInternalData });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {}, connectionLookup } = get();
+        const { defaultEdgeOptions = {}, connectionLookup, edgeLookup } = get();
         const nextEdges = edges.map((e) => ({ ...defaultEdgeOptions, ...e }));
 
-        updateConnectionLookup(connectionLookup, nextEdges);
+        updateConnectionLookup(connectionLookup, edgeLookup, nextEdges);
 
         set({ edges: nextEdges });
       },
@@ -79,13 +79,16 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          const { nodeLookup } = get();
+          const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
           nextState.nodes = adoptUserProvidedNodes(nodes, nodeLookup, {
-            nodeOrigin: get().nodeOrigin,
-            elevateNodesOnSelect: get().elevateNodesOnSelect,
+            nodeOrigin,
+            elevateNodesOnSelect,
           });
         }
         if (hasDefaultEdges) {
+          const { connectionLookup, edgeLookup } = get();
+          updateConnectionLookup(connectionLookup, edgeLookup, edges);
+
           nextState.edges = edges;
         }
 

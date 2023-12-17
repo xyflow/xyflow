@@ -1,43 +1,21 @@
 import { memo, useState, useMemo, useRef, type KeyboardEvent, useCallback } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import {
-  getMarkerId,
-  elementSelectionKeys,
-  XYHandle,
-  type Connection,
-  getEdgePosition,
-  errorMessages,
-  getEdgeZIndex,
-} from '@xyflow/system';
+import { getMarkerId, elementSelectionKeys, getEdgePosition, errorMessages, getEdgeZIndex } from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
-import { EdgeAnchor } from '../Edges/EdgeAnchor';
-import { getMouseHandler } from '../Edges/utils';
 import type { EdgeWrapperProps, Node } from '../../types';
 import { builtinEdgeTypes } from './utils';
+import EdgeUpdateAnchors from './EdgeUpdateAnchors';
 
 function EdgeWrapper({
   id,
-  className,
-  type,
-  data,
+  edgesFocusable,
+  edgesUpdatable,
+  elementsSelectable,
   onClick,
-  onEdgeDoubleClick,
-  selected,
-  animated,
-  label,
-  labelStyle,
-  labelShowBg,
-  labelBgStyle,
-  labelBgPadding,
-  labelBgBorderRadius,
-  style,
-  source,
-  target,
-  isSelectable,
-  hidden,
+  onDoubleClick,
   sourceHandleId,
   targetHandleId,
   onContextMenu,
@@ -48,20 +26,15 @@ function EdgeWrapper({
   onEdgeUpdate,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
-  markerEnd,
-  markerStart,
   rfId,
-  ariaLabel,
-  isFocusable,
-  isUpdatable,
-  pathOptions,
-  interactionWidth,
   edgeTypes,
-  zIndex: edgeZIndex,
   elevateEdgesOnSelect,
+  noPanClassName,
   onError,
 }: EdgeWrapperProps): JSX.Element | null {
-  let edgeType = type || 'default';
+  const edge = useStore((s) => s.edgeLookup.get(id)!);
+
+  let edgeType = edge.type || 'default';
   let EdgeComponent = edgeTypes?.[edgeType] || builtinEdgeTypes[edgeType];
 
   if (EdgeComponent === undefined) {
@@ -70,23 +43,29 @@ function EdgeWrapper({
     EdgeComponent = builtinEdgeTypes.default;
   }
 
+  const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
+  const isUpdatable =
+    typeof onEdgeUpdate !== 'undefined' &&
+    (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
+  const isSelectable = !!(edge.selectable || (elementsSelectable && typeof edge.selectable === 'undefined'));
+
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const store = useStoreApi();
   const prevSourceNode = useRef<Node | undefined>();
   const prevTargetNode = useRef<Node | undefined>();
-  const prevZIndex = useRef<number | undefined>(edgeZIndex);
+  const prevZIndex = useRef<number | undefined>(edge.zIndex);
   const prevEdgePosition = useRef<ReturnType<typeof getEdgePosition> | null>(null);
 
   const { edgePosition, zIndex } = useStore(
     useCallback(
       (state) => {
-        const sourceNode = state.nodeLookup.get(source);
-        const targetNode = state.nodeLookup.get(target);
+        const sourceNode = state.nodeLookup.get(edge.source);
+        const targetNode = state.nodeLookup.get(edge.target);
 
         if (!sourceNode || !targetNode) {
-          return { edgePosition: null, zIndex: edgeZIndex };
+          return { edgePosition: null, zIndex: edge.zIndex };
         }
 
         const nodesChanged = prevSourceNode.current !== sourceNode || prevTargetNode.current !== targetNode;
@@ -105,28 +84,33 @@ function EdgeWrapper({
               onError: state.onError,
             })
           : prevEdgePosition.current;
-        prevZIndex.current = getEdgeZIndex(selected, edgeZIndex, sourceNode, targetNode, elevateEdgesOnSelect);
+        prevZIndex.current = getEdgeZIndex(edge.selected, edge.zIndex, sourceNode, targetNode, elevateEdgesOnSelect);
 
         return {
           edgePosition: prevEdgePosition.current,
           zIndex: prevZIndex.current,
         };
       },
-      [source, target, selected, edgeZIndex]
+      [edge.source, edge.target, edge.selected, edge.zIndex]
     ),
     shallow
   );
 
-  const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
-  const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
+  const markerStartUrl = useMemo(
+    () => (edge.markerStart ? `url(#${getMarkerId(edge.markerStart, rfId)})` : undefined),
+    [edge.markerStart, rfId]
+  );
+  const markerEndUrl = useMemo(
+    () => (edge.markerEnd ? `url(#${getMarkerId(edge.markerEnd, rfId)})` : undefined),
+    [edge.markerEnd, rfId]
+  );
 
-  if (hidden || !edgePosition) {
+  if (edge.hidden || !edgePosition) {
     return null;
   }
 
   const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-    const { edges, addSelectedEdges, unselectNodesAndEdges, multiSelectionActive } = store.getState();
-    const edge = edges.find((e) => e.id === id);
+    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive } = store.getState();
 
     if (!edge) {
       return;
@@ -148,82 +132,31 @@ function EdgeWrapper({
     }
   };
 
-  const onEdgeDoubleClickHandler = getMouseHandler(id, store.getState, onEdgeDoubleClick);
-  const onEdgeContextMenu = getMouseHandler(id, store.getState, onContextMenu);
-  const onEdgeMouseEnter = getMouseHandler(id, store.getState, onMouseEnter);
-  const onEdgeMouseMove = getMouseHandler(id, store.getState, onMouseMove);
-  const onEdgeMouseLeave = getMouseHandler(id, store.getState, onMouseLeave);
-
-  const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
-    // avoid triggering edge updater if mouse btn is not left
-    if (event.button !== 0) {
-      return;
-    }
-
-    const {
-      autoPanOnConnect,
-      domNode,
-      edges,
-      isValidConnection,
-      connectionMode,
-      connectionRadius,
-      lib,
-      onConnectStart,
-      onConnectEnd,
-      cancelConnection,
-      nodes,
-      panBy,
-      updateConnection,
-    } = store.getState();
-    const nodeId = isSourceHandle ? target : source;
-    const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
-    const handleType = isSourceHandle ? 'target' : 'source';
-
-    const isTarget = isSourceHandle;
-    const edge = edges.find((e) => e.id === id)!;
-
-    setUpdating(true);
-    onEdgeUpdateStart?.(event, edge, handleType);
-
-    const _onEdgeUpdateEnd = (evt: MouseEvent | TouchEvent) => {
-      setUpdating(false);
-      onEdgeUpdateEnd?.(evt, edge, handleType);
-    };
-
-    const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
-
-    XYHandle.onPointerDown(event.nativeEvent, {
-      autoPanOnConnect,
-      connectionMode,
-      connectionRadius,
-      domNode,
-      handleId,
-      nodeId,
-      nodes,
-      isTarget,
-      edgeUpdaterType: handleType,
-      lib,
-      cancelConnection,
-      panBy,
-      isValidConnection,
-      onConnect: onConnectEdge,
-      onConnectStart,
-      onConnectEnd,
-      onEdgeUpdateEnd: _onEdgeUpdateEnd,
-      updateConnection,
-      getTransform: () => store.getState().transform,
-    });
-  };
-
-  const onEdgeUpdaterSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
-    handleEdgeUpdater(event, true);
-  const onEdgeUpdaterTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
-    handleEdgeUpdater(event, false);
-
-  const onEdgeUpdaterMouseEnter = () => setUpdateHover(true);
-  const onEdgeUpdaterMouseOut = () => setUpdateHover(false);
-
-  const inactive = !isSelectable && !onClick;
+  const onEdgeDoubleClick = onDoubleClick
+    ? (event: React.MouseEvent) => {
+        onDoubleClick(event, { ...edge });
+      }
+    : undefined;
+  const onEdgeContextMenu = onContextMenu
+    ? (event: React.MouseEvent) => {
+        onContextMenu(event, { ...edge });
+      }
+    : undefined;
+  const onEdgeMouseEnter = onMouseEnter
+    ? (event: React.MouseEvent) => {
+        onMouseEnter(event, { ...edge });
+      }
+    : undefined;
+  const onEdgeMouseMove = onMouseMove
+    ? (event: React.MouseEvent) => {
+        onMouseMove(event, { ...edge });
+      }
+    : undefined;
+  const onEdgeMouseLeave = onMouseLeave
+    ? (event: React.MouseEvent) => {
+        onMouseLeave(event, { ...edge });
+      }
+    : undefined;
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (elementSelectionKeys.includes(event.key) && isSelectable) {
@@ -244,12 +177,18 @@ function EdgeWrapper({
       <g
         className={cc([
           'react-flow__edge',
-          `react-flow__edge-${type}`,
-          className,
-          { selected, animated, inactive, updating: updateHover },
+          `react-flow__edge-${edgeType}`,
+          edge.className,
+          noPanClassName,
+          {
+            selected: edge.selected,
+            animated: edge.animated,
+            inactive: !isSelectable && !onClick,
+            updating: updateHover,
+          },
         ])}
         onClick={onEdgeClick}
-        onDoubleClick={onEdgeDoubleClickHandler}
+        onDoubleClick={onEdgeDoubleClick}
         onContextMenu={onEdgeContextMenu}
         onMouseEnter={onEdgeMouseEnter}
         onMouseMove={onEdgeMouseMove}
@@ -259,25 +198,27 @@ function EdgeWrapper({
         role={isFocusable ? 'button' : 'img'}
         data-id={id}
         data-testid={`rf__edge-${id}`}
-        aria-label={ariaLabel === null ? undefined : ariaLabel ? ariaLabel : `Edge from ${source} to ${target}`}
+        aria-label={
+          edge.ariaLabel === null ? undefined : edge.ariaLabel || `Edge from ${edge.source} to ${edge.target}`
+        }
         aria-describedby={isFocusable ? `${ARIA_EDGE_DESC_KEY}-${rfId}` : undefined}
         ref={edgeRef}
       >
         {!updating && (
           <EdgeComponent
             id={id}
-            source={source}
-            target={target}
-            selected={selected}
-            animated={animated}
-            label={label}
-            labelStyle={labelStyle}
-            labelShowBg={labelShowBg}
-            labelBgStyle={labelBgStyle}
-            labelBgPadding={labelBgPadding}
-            labelBgBorderRadius={labelBgBorderRadius}
-            data={data}
-            style={style}
+            source={edge.source}
+            target={edge.target}
+            selected={edge.selected}
+            animated={edge.animated}
+            label={edge.label}
+            labelStyle={edge.labelStyle}
+            labelShowBg={edge.labelShowBg}
+            labelBgStyle={edge.labelBgStyle}
+            labelBgPadding={edge.labelBgPadding}
+            labelBgBorderRadius={edge.labelBgBorderRadius}
+            data={edge.data}
+            style={edge.style}
             sourceX={edgePosition.sourceX}
             sourceY={edgePosition.sourceY}
             targetX={edgePosition.targetX}
@@ -288,37 +229,24 @@ function EdgeWrapper({
             targetHandleId={targetHandleId}
             markerStart={markerStartUrl}
             markerEnd={markerEndUrl}
-            pathOptions={pathOptions}
-            interactionWidth={interactionWidth}
+            pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
+            interactionWidth={edge.interactionWidth}
           />
         )}
         {isUpdatable && (
-          <>
-            {(isUpdatable === 'source' || isUpdatable === true) && (
-              <EdgeAnchor
-                position={edgePosition.sourcePosition}
-                centerX={edgePosition.sourceX}
-                centerY={edgePosition.sourceY}
-                radius={edgeUpdaterRadius}
-                onMouseDown={onEdgeUpdaterSourceMouseDown}
-                onMouseEnter={onEdgeUpdaterMouseEnter}
-                onMouseOut={onEdgeUpdaterMouseOut}
-                type="source"
-              />
-            )}
-            {(isUpdatable === 'target' || isUpdatable === true) && (
-              <EdgeAnchor
-                position={edgePosition.targetPosition}
-                centerX={edgePosition.targetX}
-                centerY={edgePosition.targetY}
-                radius={edgeUpdaterRadius}
-                onMouseDown={onEdgeUpdaterTargetMouseDown}
-                onMouseEnter={onEdgeUpdaterMouseEnter}
-                onMouseOut={onEdgeUpdaterMouseOut}
-                type="target"
-              />
-            )}
-          </>
+          <EdgeUpdateAnchors
+            edge={edge}
+            isUpdatable={isUpdatable}
+            edgeUpdaterRadius={edgeUpdaterRadius}
+            onEdgeUpdate={onEdgeUpdate}
+            onEdgeUpdateStart={onEdgeUpdateStart}
+            onEdgeUpdateEnd={onEdgeUpdateEnd}
+            edgePosition={edgePosition}
+            setUpdateHover={setUpdateHover}
+            setUpdating={setUpdating}
+            sourceHandleId={sourceHandleId}
+            targetHandleId={targetHandleId}
+          />
         )}
       </g>
     </svg>

@@ -81,7 +81,9 @@ export const getInitialStore = ({
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
   });
-  const connectionLookup = updateConnectionLookup(new Map(), edges);
+  const connectionLookup = new Map();
+  const edgeLookup = new Map();
+  updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
@@ -96,7 +98,7 @@ export const getInitialStore = ({
     nodes: createNodesStore(nextNodes, nodeLookup),
     nodeLookup: readable<Map<string, Node>>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
-    edges: createEdgesStore(edges, connectionLookup),
+    edges: createEdgesStore(edges, connectionLookup, edgeLookup),
     visibleEdges: readable<EdgeLayouted[]>([]),
     connectionLookup: readable<ConnectionLookup>(connectionLookup),
     height: writable<number>(500),

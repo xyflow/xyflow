@@ -3,10 +3,10 @@ import { shallow } from 'zustand/shallow';
 import { isEdgeVisible } from '@xyflow/system';
 
 import { useStore } from '../hooks/useStore';
-import { type Edge, type ReactFlowState } from '../types';
+import { type ReactFlowState } from '../types';
 
-function useVisibleEdges(onlyRenderVisible: boolean): Edge[] {
-  const edges = useStore(
+function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
+  const edgeIds = useStore(
     useCallback(
       (s: ReactFlowState) => {
         const visibleEdges =
@@ -29,14 +29,14 @@ function useVisibleEdges(onlyRenderVisible: boolean): Edge[] {
               })
             : s.edges;
 
-        return visibleEdges;
+        return visibleEdges.map((edge) => edge.id);
       },
       [onlyRenderVisible]
     ),
     shallow
   );
 
-  return edges;
+  return edgeIds;
 }
 
-export default useVisibleEdges;
+export default useVisibleEdgeIds;
