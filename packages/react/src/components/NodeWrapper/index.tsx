@@ -17,6 +17,7 @@ import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
 import { handleNodeClick } from '../Nodes/utils';
 import type { NodeWrapperProps } from '../../types';
 import { arrowKeyDiffs, builtinNodeTypes } from './utils';
+import { shallow } from 'zustand/shallow';
 
 const NodeWrapper = ({
   id,
@@ -40,7 +41,23 @@ const NodeWrapper = ({
   nodeOrigin,
   onError,
 }: NodeWrapperProps) => {
-  const node = useStore((s) => s.nodeLookup.get(id)!);
+  const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
+    const node = s.nodeLookup.get(id)!;
+
+    const positionAbsolute = nodeExtent
+      ? clampPosition(node.computed?.positionAbsolute, nodeExtent)
+      : node.computed?.positionAbsolute || { x: 0, y: 0 };
+
+    return {
+      node,
+      // we are mutating positionAbsolute, z and isParent attributes for sub flows
+      // so we we need to force a re-render when some change
+      positionAbsoluteX: positionAbsolute.x,
+      positionAbsoluteY: positionAbsolute.y,
+      zIndex: node[internalsSymbol]?.z ?? 0,
+      isParent: !!node[internalsSymbol]?.isParent,
+    };
+  }, shallow);
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -110,19 +127,15 @@ const NodeWrapper = ({
   const height = node.height ?? undefined;
   const computedWidth = node.computed?.width;
   const computedHeight = node.computed?.height;
-  const positionAbsolute = nodeExtent
-    ? clampPosition(node.computed?.positionAbsolute, nodeExtent)
-    : node.computed?.positionAbsolute || { x: 0, y: 0 };
+
   const positionAbsoluteOrigin = getPositionWithOrigin({
-    x: positionAbsolute.x,
-    y: positionAbsolute.y,
+    x: positionAbsoluteX,
+    y: positionAbsoluteY,
     width: computedWidth ?? width ?? 0,
     height: computedHeight ?? height ?? 0,
     origin: node.origin || nodeOrigin,
   });
   const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
-  const zIndex = node[internalsSymbol]?.z ?? 0;
-  const isParent = !!node[internalsSymbol]?.isParent;
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
   const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...node }) : undefined;
@@ -172,7 +185,7 @@ const NodeWrapper = ({
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~positionAbsolute.x}, y: ${~~positionAbsolute.y}`,
+          .toLowerCase()}. New position, x: ${~~positionAbsoluteX}, y: ${~~positionAbsoluteY}`,
       });
 
       updatePositions({
@@ -231,8 +244,8 @@ const NodeWrapper = ({
           type={nodeType}
           width={computedWidth}
           height={computedHeight}
-          positionAbsoluteX={positionAbsolute.x}
-          positionAbsoluteY={positionAbsolute.y}
+          positionAbsoluteX={positionAbsoluteX}
+          positionAbsoluteY={positionAbsoluteY}
           selected={node.selected}
           isConnectable={isConnectable}
           sourcePosition={node.sourcePosition}
