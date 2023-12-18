@@ -1,6 +1,6 @@
 import { Connection, Transform, errorMessages, internalsSymbol, isEdgeBase } from '../..';
 import { EdgeBase, NodeBase } from '../../types';
-import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
+import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -23,23 +23,29 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-export function getEdgeZIndex(
-  selected: boolean | undefined,
-  zIndex: number | undefined,
-  sourceNode: NodeBase,
-  targetNode: NodeBase,
-  elevateEdgesOnSelect?: boolean
-) {
-  const hasZIndex = isNumeric(zIndex);
-  let nextZIndex = hasZIndex ? zIndex! : 0;
+export type GetEdgeZIndexParams = {
+  sourceNode: NodeBase;
+  targetNode: NodeBase;
+  selected?: boolean;
+  zIndex?: number;
+  elevateOnSelect?: boolean;
+};
 
-  if (elevateEdgesOnSelect) {
-    const edgeOrConnectedNodeSelected = selected || targetNode?.selected || sourceNode?.selected;
-    const selectedZIndex = Math.max(sourceNode?.[internalsSymbol]?.z || 0, targetNode?.[internalsSymbol]?.z || 0, 1000);
-    nextZIndex = (hasZIndex ? zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
+export function getElevatedEdgeZIndex({
+  sourceNode,
+  targetNode,
+  selected = false,
+  zIndex = 0,
+  elevateOnSelect = false,
+}: GetEdgeZIndexParams): number {
+  if (!elevateOnSelect) {
+    return zIndex;
   }
 
-  return nextZIndex;
+  const edgeOrConnectedNodeSelected = selected || targetNode.selected || sourceNode.selected;
+  const selectedZIndex = Math.max(sourceNode[internalsSymbol]?.z || 0, targetNode[internalsSymbol]?.z || 0, 1000);
+
+  return zIndex + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
 }
 
 type IsEdgeVisibleParams = {

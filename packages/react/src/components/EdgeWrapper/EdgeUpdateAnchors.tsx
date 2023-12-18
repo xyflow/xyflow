@@ -1,12 +1,11 @@
 // Updatable edges have a anchors around their handles to update the edge.
-import { XYHandle, type Connection, getEdgePosition } from '@xyflow/system';
+import { XYHandle, type Connection, EdgePosition } from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import type { EdgeWrapperProps, Edge } from '../../types/edges';
 import { useStoreApi } from '../../hooks/useStore';
 
 type EdgeUpdateAnchorsProps = {
-  edgePosition: NonNullable<ReturnType<typeof getEdgePosition>>;
   edge: Edge;
   isUpdatable: boolean | 'source' | 'target';
   edgeUpdaterRadius: EdgeWrapperProps['edgeUpdaterRadius'];
@@ -17,20 +16,25 @@ type EdgeUpdateAnchorsProps = {
   onEdgeUpdateEnd: EdgeWrapperProps['onEdgeUpdateEnd'];
   setUpdateHover: (hover: boolean) => void;
   setUpdating: (updating: boolean) => void;
-};
+} & EdgePosition;
 
 function EdgeUpdateAnchors({
   isUpdatable,
   edgeUpdaterRadius,
+  edge,
+  targetHandleId,
+  sourceHandleId,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
   onEdgeUpdate,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
   setUpdating,
   setUpdateHover,
-  edgePosition,
-  edge,
-  targetHandleId,
-  sourceHandleId,
 }: EdgeUpdateAnchorsProps) {
   const store = useStoreApi();
 
@@ -104,9 +108,9 @@ function EdgeUpdateAnchors({
     <>
       {(isUpdatable === 'source' || isUpdatable === true) && (
         <EdgeAnchor
-          position={edgePosition.sourcePosition}
-          centerX={edgePosition.sourceX}
-          centerY={edgePosition.sourceY}
+          position={sourcePosition}
+          centerX={sourceX}
+          centerY={sourceY}
           radius={edgeUpdaterRadius}
           onMouseDown={onEdgeUpdaterSourceMouseDown}
           onMouseEnter={onEdgeUpdaterMouseEnter}
@@ -116,9 +120,9 @@ function EdgeUpdateAnchors({
       )}
       {(isUpdatable === 'target' || isUpdatable === true) && (
         <EdgeAnchor
-          position={edgePosition.targetPosition}
-          centerX={edgePosition.targetX}
-          centerY={edgePosition.targetY}
+          position={targetPosition}
+          centerX={targetX}
+          centerY={targetY}
           radius={edgeUpdaterRadius}
           onMouseDown={onEdgeUpdaterTargetMouseDown}
           onMouseEnter={onEdgeUpdaterMouseEnter}

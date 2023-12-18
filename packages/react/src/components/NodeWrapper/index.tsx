@@ -125,16 +125,11 @@ const NodeWrapper = ({
   const isParent = !!node[internalsSymbol]?.isParent;
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
-  const onMouseEnterHandler =
-    onMouseEnter === undefined ? undefined : (event: MouseEvent) => onMouseEnter(event, { ...node });
-  const onMouseMoveHandler =
-    onMouseMove === undefined ? undefined : (event: MouseEvent) => onMouseMove(event, { ...node });
-  const onMouseLeaveHandler =
-    onMouseLeave === undefined ? undefined : (event: MouseEvent) => onMouseLeave(event, { ...node });
-  const onContextMenuHandler =
-    onContextMenu === undefined ? undefined : (event: MouseEvent) => onContextMenu(event, { ...node });
-  const onDoubleClickHandler =
-    onDoubleClick === undefined ? undefined : (event: MouseEvent) => onDoubleClick(event, { ...node });
+  const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...node }) : undefined;
+  const onMouseMoveHandler = onMouseMove ? (event: MouseEvent) => onMouseMove(event, { ...node }) : undefined;
+  const onMouseLeaveHandler = onMouseLeave ? (event: MouseEvent) => onMouseLeave(event, { ...node }) : undefined;
+  const onContextMenuHandler = onContextMenu ? (event: MouseEvent) => onContextMenu(event, { ...node }) : undefined;
+  const onDoubleClickHandler = onDoubleClick ? (event: MouseEvent) => onDoubleClick(event, { ...node }) : undefined;
 
   const onSelectNodeHandler = (event: MouseEvent) => {
     const { selectNodesOnDrag, nodeDragThreshold } = store.getState();

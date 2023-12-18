@@ -1,10 +1,10 @@
 import {
   writable,
+  get,
   type Unsubscriber,
   type Subscriber,
   type Updater,
-  type Writable,
-  get
+  type Writable
 } from 'svelte/store';
 import {
   adoptUserProvidedNodes,
@@ -12,7 +12,8 @@ import {
   type Viewport,
   type PanZoomInstance,
   type ConnectionLookup,
-  type EdgeLookup
+  type EdgeLookup,
+  type NodeLookup
 } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
@@ -126,7 +127,7 @@ export type NodeStoreOptions = {
 // The user only passes in relative positions, so we need to calculate the absolute positions based on the parent nodes.
 export const createNodesStore = (
   nodes: Node[],
-  nodeLookup: Map<string, Node>
+  nodeLookup: NodeLookup<Node>
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -176,7 +177,7 @@ export const createNodesStore = (
 export const createEdgesStore = (
   edges: Edge[],
   connectionLookup: ConnectionLookup,
-  edgeLookup: EdgeLookup,
+  edgeLookup: EdgeLookup<Edge>,
   defaultOptions?: DefaultEdgeOptions
 ): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
   const { subscribe, set, update } = writable<Edge[]>([]);

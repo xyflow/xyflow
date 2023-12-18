@@ -78,4 +78,4 @@ export type EdgePosition = {
   targetPosition: Position;
 };
 
-export type EdgeLookup = Map<string, EdgeBase>;
+export type EdgeLookup<EdgeType extends EdgeBase = EdgeBase> = Map<string, EdgeType>;

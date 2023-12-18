@@ -1,5 +1,5 @@
 import { derived } from 'svelte/store';
-import { isEdgeVisible, getEdgePosition, getEdgeZIndex } from '@xyflow/system';
+import { isEdgeVisible, getEdgePosition, getElevatedEdgeZIndex } from '@xyflow/system';
 
 import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
@@ -64,7 +64,13 @@ export function getVisibleEdges(store: SvelteFlowStoreState) {
         if (edgePosition) {
           res.push({
             ...edge,
-            zIndex: getEdgeZIndex(edge.selected, edge.zIndex, sourceNode, targetNode, false),
+            zIndex: getElevatedEdgeZIndex({
+              selected: edge.selected,
+              zIndex: edge.zIndex,
+              sourceNode,
+              targetNode,
+              elevateOnSelect: false
+            }),
             ...edgePosition
           });
         }

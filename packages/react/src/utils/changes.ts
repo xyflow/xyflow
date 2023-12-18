@@ -57,12 +57,11 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   let remainingChanges = changes;
   const updatedElements: any[] = [];
 
-  for (let i = 0; i < elements.length; i++) {
+  for (const item of elements) {
     const nextChanges: any[] = [];
     const _remainingChanges: any[] = [];
-    const item = elements[i];
 
-    remainingChanges.forEach((c) => {
+    for (const c of remainingChanges) {
       if (c.type === 'add') {
         updatedElements.push(c.item);
       } else if (c.id === item.id) {
@@ -70,7 +69,8 @@ function applyChanges(changes: any[], elements: any[]): any[] {
       } else {
         _remainingChanges.push(c);
       }
-    });
+    }
+
     remainingChanges = _remainingChanges;
 
     if (nextChanges.length === 0) {

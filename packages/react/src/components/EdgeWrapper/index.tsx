@@ -1,12 +1,18 @@
 import { memo, useState, useMemo, useRef, type KeyboardEvent, useCallback } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getMarkerId, elementSelectionKeys, getEdgePosition, errorMessages, getEdgeZIndex } from '@xyflow/system';
+import {
+  getMarkerId,
+  elementSelectionKeys,
+  getEdgePosition,
+  errorMessages,
+  getElevatedEdgeZIndex,
+} from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
-import type { EdgeWrapperProps, Node } from '../../types';
-import { builtinEdgeTypes } from './utils';
+import type { EdgeWrapperProps } from '../../types';
+import { builtinEdgeTypes, nullPosition } from './utils';
 import EdgeUpdateAnchors from './EdgeUpdateAnchors';
 
 function EdgeWrapper({
@@ -53,45 +59,44 @@ function EdgeWrapper({
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const store = useStoreApi();
-  const prevSourceNode = useRef<Node | undefined>();
-  const prevTargetNode = useRef<Node | undefined>();
-  const prevZIndex = useRef<number | undefined>(edge.zIndex);
-  const prevEdgePosition = useRef<ReturnType<typeof getEdgePosition> | null>(null);
 
-  const { edgePosition, zIndex } = useStore(
+  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useStore(
     useCallback(
-      (state) => {
-        const sourceNode = state.nodeLookup.get(edge.source);
-        const targetNode = state.nodeLookup.get(edge.target);
+      (store) => {
+        const sourceNode = store.nodeLookup.get(edge.source);
+        const targetNode = store.nodeLookup.get(edge.target);
 
         if (!sourceNode || !targetNode) {
-          return { edgePosition: null, zIndex: edge.zIndex };
+          return {
+            zIndex: edge.zIndex,
+            ...nullPosition,
+          };
         }
 
-        const nodesChanged = prevSourceNode.current !== sourceNode || prevTargetNode.current !== targetNode;
+        const edgePosition = getEdgePosition({
+          id,
+          sourceNode,
+          targetNode,
+          sourceHandle: sourceHandleId || null,
+          targetHandle: targetHandleId || null,
+          connectionMode: store.connectionMode,
+          onError,
+        });
 
-        prevSourceNode.current = sourceNode;
-        prevTargetNode.current = targetNode;
-
-        prevEdgePosition.current = nodesChanged
-          ? getEdgePosition({
-              id,
-              sourceNode,
-              targetNode,
-              sourceHandle: sourceHandleId || null,
-              targetHandle: targetHandleId || null,
-              connectionMode: state.connectionMode,
-              onError: state.onError,
-            })
-          : prevEdgePosition.current;
-        prevZIndex.current = getEdgeZIndex(edge.selected, edge.zIndex, sourceNode, targetNode, elevateEdgesOnSelect);
+        const zIndex = getElevatedEdgeZIndex({
+          selected: edge.selected,
+          zIndex: edge.zIndex,
+          sourceNode,
+          targetNode,
+          elevateOnSelect: elevateEdgesOnSelect,
+        });
 
         return {
-          edgePosition: prevEdgePosition.current,
-          zIndex: prevZIndex.current,
+          zIndex,
+          ...(edgePosition || nullPosition),
         };
       },
-      [edge.source, edge.target, edge.selected, edge.zIndex]
+      [edge.source, edge.target, edge.selected, edge.zIndex, elevateEdgesOnSelect]
     ),
     shallow
   );
@@ -100,12 +105,13 @@ function EdgeWrapper({
     () => (edge.markerStart ? `url(#${getMarkerId(edge.markerStart, rfId)})` : undefined),
     [edge.markerStart, rfId]
   );
+
   const markerEndUrl = useMemo(
     () => (edge.markerEnd ? `url(#${getMarkerId(edge.markerEnd, rfId)})` : undefined),
     [edge.markerEnd, rfId]
   );
 
-  if (edge.hidden || !edgePosition) {
+  if (edge.hidden || !sourceX || !sourceY || !targetX || !targetY) {
     return null;
   }
 
@@ -213,14 +219,14 @@ function EdgeWrapper({
             labelBgStyle={edge.labelBgStyle}
             labelBgPadding={edge.labelBgPadding}
             labelBgBorderRadius={edge.labelBgBorderRadius}
+            sourceX={sourceX}
+            sourceY={sourceY}
+            targetX={targetX}
+            targetY={targetY}
+            sourcePosition={sourcePosition}
+            targetPosition={targetPosition}
             data={edge.data}
             style={edge.style}
-            sourceX={edgePosition.sourceX}
-            sourceY={edgePosition.sourceY}
-            targetX={edgePosition.targetX}
-            targetY={edgePosition.targetY}
-            sourcePosition={edgePosition.sourcePosition}
-            targetPosition={edgePosition.targetPosition}
             sourceHandleId={sourceHandleId}
             targetHandleId={targetHandleId}
             markerStart={markerStartUrl}
@@ -237,7 +243,12 @@ function EdgeWrapper({
             onEdgeUpdate={onEdgeUpdate}
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
-            edgePosition={edgePosition}
+            sourceX={sourceX}
+            sourceY={sourceY}
+            targetX={targetX}
+            targetY={targetY}
+            sourcePosition={sourcePosition}
+            targetPosition={targetPosition}
             setUpdateHover={setUpdateHover}
             setUpdating={setUpdating}
             sourceHandleId={sourceHandleId}

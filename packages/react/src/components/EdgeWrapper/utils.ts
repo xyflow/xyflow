@@ -15,3 +15,12 @@ export const builtinEdgeTypes: EdgeTypes = {
   smoothstep: SmoothStepEdgeInternal as ComponentType<EdgeProps>,
   simplebezier: SimpleBezierEdgeInternal as ComponentType<EdgeProps>,
 };
+
+export const nullPosition = {
+  sourceX: null,
+  sourceY: null,
+  targetX: null,
+  targetY: null,
+  sourcePosition: null,
+  targetPosition: null,
+};
