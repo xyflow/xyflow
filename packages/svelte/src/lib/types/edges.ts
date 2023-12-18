@@ -12,7 +12,7 @@ import type {
 
 import type { Node } from '$lib/types';
 
-export type DefaultEdge<EdgeData = any> = Omit<EdgeBase<EdgeData>, 'focusable'> & {
+export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
   label?: string;
   labelStyle?: string;
   style?: string;
@@ -75,7 +75,7 @@ export type StraightEdgeProps<T = any> = Omit<
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 
-export type DefaultEdgeOptions = Omit<DefaultEdgeOptionsBase<Edge>, 'focusable'>;
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeLayouted = Pick<
   Edge,
@@ -98,6 +98,7 @@ export type EdgeLayouted = Pick<
   | 'ariaLabel'
   | 'hidden'
   | 'class'
+  | 'zIndex'
 > &
   EdgePosition & {
     sourceNode?: Node;

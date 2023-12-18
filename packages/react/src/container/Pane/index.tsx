@@ -10,7 +10,7 @@ import { getNodesInside, getEventPosition, SelectionMode } from '@xyflow/system'
 import UserSelection from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import { getSelectionChanges, getConnectedEdges } from '../../utils';
+import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
 
 type PaneProps = {
@@ -156,19 +156,30 @@ const Pane = memo(
         true,
         nodeOrigin
       );
-      const selectedEdgeIds = getConnectedEdges(selectedNodes, edges).map((e) => e.id);
-      const selectedNodeIds = selectedNodes.map((n) => n.id);
 
-      if (prevSelectedNodesCount.current !== selectedNodeIds.length) {
-        prevSelectedNodesCount.current = selectedNodeIds.length;
-        const changes = getSelectionChanges(nodes, selectedNodeIds) as NodeChange[];
+      const selectedEdgeIds = new Set<string>();
+      const selectedNodeIds = new Set<string>();
+
+      for (const selectedNode of selectedNodes) {
+        selectedNodeIds.add(selectedNode.id);
+
+        for (const edge of edges) {
+          if (edge.source === selectedNode.id || edge.target === selectedNode.id) {
+            selectedEdgeIds.add(edge.id);
+          }
+        }
+      }
+
+      if (prevSelectedNodesCount.current !== selectedNodeIds.size) {
+        prevSelectedNodesCount.current = selectedNodeIds.size;
+        const changes = getSelectionChanges(nodes, selectedNodeIds, true) as NodeChange[];
         if (changes.length) {
           onNodesChange?.(changes);
         }
       }
 
-      if (prevSelectedEdgesCount.current !== selectedEdgeIds.length) {
-        prevSelectedEdgesCount.current = selectedEdgeIds.length;
+      if (prevSelectedEdgesCount.current !== selectedEdgeIds.size) {
+        prevSelectedEdgesCount.current = selectedEdgeIds.size;
         const changes = getSelectionChanges(edges, selectedEdgeIds) as EdgeChange[];
         if (changes.length) {
           onEdgesChange?.(changes);

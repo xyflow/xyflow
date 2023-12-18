@@ -92,11 +92,6 @@
   outline: none;
 }
 
-.xy-flow .xy-flow__edges {
-  pointer-events: none;
-  overflow: visible;
-}
-
 .xy-flow__edge-path {
   stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
   stroke-width: var(--xy-edge-stroke-width, var(--xy-edge-stroke-width-default));

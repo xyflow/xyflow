@@ -18,6 +18,7 @@
   export let target: $$Props['target'] = '';
   export let data: $$Props['data'] = {};
   export let style: $$Props['style'] = undefined;
+  export let zIndex: $$Props['zIndex'] = undefined;
 
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
@@ -95,42 +96,44 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
-  <g
-    class={cc(['svelte-flow__edge', className])}
-    class:animated
-    class:selected
-    data-id={id}
-    on:click={onClick}
-    on:contextmenu={onContextMenu}
-    aria-label={ariaLabel === null
-      ? undefined
-      : ariaLabel
-      ? ariaLabel
-      : `Edge from ${source} to ${target}`}
-    role="img"
-  >
-    <svelte:component
-      this={edgeComponent}
-      {id}
-      {source}
-      {target}
-      {sourceX}
-      {sourceY}
-      {targetX}
-      {targetY}
-      {sourcePosition}
-      {targetPosition}
-      {animated}
-      {selected}
-      {label}
-      {labelStyle}
-      {data}
-      {style}
-      {interactionWidth}
-      sourceHandleId={sourceHandle}
-      targetHandleId={targetHandle}
-      markerStart={markerStartUrl}
-      markerEnd={markerEndUrl}
-    />
-  </g>
+  <svg style:zIndex>
+    <g
+      class={cc(['svelte-flow__edge', className])}
+      class:animated
+      class:selected
+      data-id={id}
+      on:click={onClick}
+      on:contextmenu={onContextMenu}
+      aria-label={ariaLabel === null
+        ? undefined
+        : ariaLabel
+        ? ariaLabel
+        : `Edge from ${source} to ${target}`}
+      role="img"
+    >
+      <svelte:component
+        this={edgeComponent}
+        {id}
+        {source}
+        {target}
+        {sourceX}
+        {sourceY}
+        {targetX}
+        {targetY}
+        {sourcePosition}
+        {targetPosition}
+        {animated}
+        {selected}
+        {label}
+        {labelStyle}
+        {data}
+        {style}
+        {interactionWidth}
+        sourceHandleId={sourceHandle}
+        targetHandleId={targetHandle}
+        markerStart={markerStartUrl}
+        markerEnd={markerEndUrl}
+      />
+    </g>
+  </svg>
 {/if}

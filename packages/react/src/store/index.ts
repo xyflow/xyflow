@@ -55,12 +55,11 @@ const createRFStore = ({
         set({ nodes: nodesWithInternalData });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {}, connectionLookup } = get();
-        const nextEdges = edges.map((e) => ({ ...defaultEdgeOptions, ...e }));
+        const { connectionLookup, edgeLookup } = get();
 
-        updateConnectionLookup(connectionLookup, nextEdges);
+        updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
-        set({ edges: nextEdges });
+        set({ edges });
       },
       // when the user works with an uncontrolled flow,
       // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
@@ -79,13 +78,16 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          const { nodeLookup } = get();
+          const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
           nextState.nodes = adoptUserProvidedNodes(nodes, nodeLookup, {
-            nodeOrigin: get().nodeOrigin,
-            elevateNodesOnSelect: get().elevateNodesOnSelect,
+            nodeOrigin,
+            elevateNodesOnSelect,
           });
         }
         if (hasDefaultEdges) {
+          const { connectionLookup, edgeLookup } = get();
+          updateConnectionLookup(connectionLookup, edgeLookup, edges);
+
           nextState.edges = edges;
         }
 
@@ -193,8 +195,8 @@ const createRFStore = ({
         if (multiSelectionActive) {
           changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
         } else {
-          changedNodes = getSelectionChanges(nodes, selectedNodeIds);
-          changedEdges = getSelectionChanges(edges, []);
+          changedNodes = getSelectionChanges(nodes, new Set([...selectedNodeIds]), true);
+          changedEdges = getSelectionChanges(edges);
         }
 
         updateNodesAndEdgesSelections({
@@ -212,8 +214,8 @@ const createRFStore = ({
         if (multiSelectionActive) {
           changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
         } else {
-          changedEdges = getSelectionChanges(edges, selectedEdgeIds);
-          changedNodes = getSelectionChanges(nodes, []);
+          changedEdges = getSelectionChanges(edges, new Set([...selectedEdgeIds]));
+          changedNodes = getSelectionChanges(nodes, new Set(), true);
         }
 
         updateNodesAndEdgesSelections({

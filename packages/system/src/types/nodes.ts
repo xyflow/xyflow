@@ -107,3 +107,5 @@ export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
 
 export type Align = 'center' | 'start' | 'end';
+
+export type NodeLookup<NodeType extends NodeBase = NodeBase> = Map<string, NodeType>;

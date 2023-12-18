@@ -4,25 +4,25 @@ import {
   SelectionMode,
   ConnectionMode,
   ConnectionLineType,
+  devWarn,
+  adoptUserProvidedNodes,
+  getNodesBounds,
+  getViewportForBounds,
+  updateConnectionLookup,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
   type PanZoomInstance,
   type CoordinateExtent,
   type IsValidConnection,
-  type GroupedEdges,
   type NodeOrigin,
   type OnError,
-  devWarn,
   type Viewport,
-  adoptUserProvidedNodes,
-  getNodesBounds,
-  getViewportForBounds,
-  updateConnectionLookup,
   type ConnectionLookup,
   type OnConnect,
   type OnConnectStart,
-  type OnConnectEnd
+  type OnConnectEnd,
+  type NodeLookup
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -82,7 +82,9 @@ export const getInitialStore = ({
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
   });
-  const connectionLookup = updateConnectionLookup(new Map(), edges);
+  const connectionLookup = new Map();
+  const edgeLookup = new Map();
+  updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
@@ -95,10 +97,10 @@ export const getInitialStore = ({
   return {
     flowId: writable<string | null>(null),
     nodes: createNodesStore(nextNodes, nodeLookup),
-    nodeLookup: readable<Map<string, Node>>(nodeLookup),
+    nodeLookup: readable<NodeLookup>(nodeLookup),
     visibleNodes: readable<Node[]>([]),
-    edges: createEdgesStore(edges, connectionLookup),
-    edgeTree: readable<GroupedEdges<EdgeLayouted>[]>([]),
+    edges: createEdgesStore(edges, connectionLookup, edgeLookup),
+    visibleEdges: readable<EdgeLayouted[]>([]),
     connectionLookup: readable<ConnectionLookup>(connectionLookup),
     height: writable<number>(500),
     width: writable<number>(500),
