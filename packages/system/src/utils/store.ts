@@ -43,10 +43,13 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
         parentNode?.origin || nodeOrigin
       );
 
-      node.computed!.positionAbsolute = {
-        x,
-        y,
-      };
+      const positionChanged = x !== node.computed?.positionAbsolute?.x || y !== node.computed?.positionAbsolute?.y;
+      node.computed!.positionAbsolute = positionChanged
+        ? {
+            x,
+            y,
+          }
+        : node.computed?.positionAbsolute;
 
       node[internalsSymbol]!.z = z;
 
@@ -245,25 +248,22 @@ export function panBy({
   return transformChanged;
 }
 
-export function updateConnectionLookup(lookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {
-  lookup.clear();
+export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {
+  connectionLookup.clear();
   edgeLookup.clear();
 
   for (const edge of edges) {
-    edgeLookup.set(edge.id, edge);
-
     const { source, target, sourceHandle = null, targetHandle = null } = edge;
 
     const sourceKey = `${source}-source-${sourceHandle}`;
     const targetKey = `${target}-target-${targetHandle}`;
 
-    const prevSource = lookup.get(sourceKey) || new Map();
-    const prevTarget = lookup.get(targetKey) || new Map();
+    const prevSource = connectionLookup.get(sourceKey) || new Map();
+    const prevTarget = connectionLookup.get(targetKey) || new Map();
     const connection = { source, target, sourceHandle, targetHandle };
 
-    lookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
-    lookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
+    edgeLookup.set(edge.id, edge);
+    connectionLookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
+    connectionLookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
   }
-
-  return lookup;
 }

@@ -2,11 +2,11 @@ import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
-import useVisibleEdgeIds from '../../hooks/useVisibleEdges';
+import useVisibleEdgeIds from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import type { ReactFlowState } from '../../types';
 import EdgeWrapper from '../../components/EdgeWrapper';
+import type { ReactFlowState } from '../../types';
 
 type EdgeRendererProps = Pick<
   GraphViewProps,

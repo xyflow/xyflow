@@ -34,9 +34,8 @@ export type EdgeUpdatable = boolean | HandleType;
 export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
   style?: CSSProperties;
   className?: string;
-  sourceNode?: Node;
-  targetNode?: Node;
   updatable?: EdgeUpdatable;
+  focusable?: boolean;
 } & EdgeLabelOptions;
 
 type SmoothStepEdgeType<T> = DefaultEdge<T> & {

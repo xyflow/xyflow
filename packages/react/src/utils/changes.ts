@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Node, Edge, EdgeChange, NodeChange } from '../types';
+import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
 
 export function handleParentExpand(res: any[], updateItem: any) {
   const parent = res.find((e) => e.id === updateItem.parentNode);
@@ -150,24 +150,32 @@ export function applyEdgeChanges<EdgeData = any>(changes: EdgeChange[], edges: E
   return applyChanges(changes, edges) as Edge<EdgeData>[];
 }
 
-export const createSelectionChange = (id: string, selected: boolean) => ({
+export const createSelectionChange = (id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange => ({
   id,
   type: 'select',
   selected,
 });
 
-export function getSelectionChanges(items: any[], selectedIds: string[]) {
-  return items.reduce((res, item) => {
-    const willBeSelected = selectedIds.includes(item.id);
+export function getSelectionChanges(
+  items: any[],
+  selectedIds: Set<string> = new Set(),
+  mutateItem = false
+): NodeSelectionChange[] | EdgeSelectionChange[] {
+  const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-    if (!item.selected && willBeSelected) {
-      item.selected = true;
-      res.push(createSelectionChange(item.id, true));
-    } else if (item.selected && !willBeSelected) {
-      item.selected = false;
-      res.push(createSelectionChange(item.id, false));
+  for (const item of items) {
+    const willBeSelected = selectedIds.has(item.id);
+
+    if (item.selected !== willBeSelected) {
+      if (mutateItem) {
+        // this hack is needed for nodes. When the user dragged a node, it's selected.
+        // When another node gets dragged, we need to deselect the previous one,
+        // in order to have only one selected node at a time - the onNodesChange callback comes too late here :/
+        item.selected = willBeSelected;
+      }
+      changes.push(createSelectionChange(item.id, willBeSelected));
     }
+  }
 
-    return res;
-  }, []);
+  return changes;
 }

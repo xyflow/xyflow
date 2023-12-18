@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { shallow } from 'zustand/shallow';
 
-import useVisibleNodesIds from '../../hooks/useVisibleNodes';
+import useVisibleNodesIds from '../../hooks/useVisibleNodeIds';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';

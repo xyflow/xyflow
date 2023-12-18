@@ -18,7 +18,6 @@ import { handleNodeClick } from '../Nodes/utils';
 import type { NodeWrapperProps } from '../../types';
 import { arrowKeyDiffs, builtinNodeTypes } from './utils';
 import { shallow } from 'zustand/shallow';
-
 const NodeWrapper = ({
   id,
   onClick,

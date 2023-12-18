@@ -38,7 +38,9 @@ function EdgeWrapper({
   noPanClassName,
   onError,
 }: EdgeWrapperProps): JSX.Element | null {
-  const edge = useStore((s) => s.edgeLookup.get(id)!);
+  let edge = useStore((s) => s.edgeLookup.get(id)!);
+  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+  edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';
   let EdgeComponent = edgeTypes?.[edgeType] || builtinEdgeTypes[edgeType];

@@ -2,6 +2,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { CoordinateExtent, NodeBase, NodeOrigin, OnError } from '@xyflow/system';
 import { NodeTypes } from './general';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
   NodeData,
   NodeType

@@ -49,7 +49,7 @@ const getInitialState = ({
     transform,
     nodes: nextNodes,
     nodeLookup,
-    edges: edges,
+    edges,
     edgeLookup,
     connectionLookup,
     onNodesChange: null,
