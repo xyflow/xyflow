@@ -28,7 +28,6 @@ type EdgeRendererProps = Pick<
   | 'disableKeyboardA11y'
   | 'edgeTypes'
 > & {
-  elevateEdgesOnSelect: boolean;
   children: ReactNode;
 };
 
@@ -66,9 +65,7 @@ const EdgeRenderer = ({
 
   return (
     <div className="react-flow__edges">
-      <svg className="react-flow__marker">
-        <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
-      </svg>
+      <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
 
       {edgeIds.map((id) => {
         return (
