@@ -30,16 +30,20 @@ export type NodeRemoveChange = {
   type: 'remove';
 };
 
-export type NodeAddChange<NodeData = any> = {
-  item: Node<NodeData>;
+export type NodeAddChange<NodeType extends Node = Node> = {
+  item: NodeType;
   type: 'add';
 };
 
-export type NodeResetChange<NodeData = any> = {
-  item: Node<NodeData>;
+export type NodeResetChange<NodeType extends Node = Node> = {
+  item: NodeType;
   type: 'reset';
 };
 
+/**
+ * Union type of all possible node changes.
+ * @public
+ */
 export type NodeChange =
   | NodeDimensionChange
   | NodePositionChange
@@ -50,12 +54,12 @@ export type NodeChange =
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;
-export type EdgeAddChange<EdgeData = any> = {
-  item: Edge<EdgeData>;
+export type EdgeAddChange<EdgeType extends Edge = Edge> = {
+  item: EdgeType;
   type: 'add';
 };
-export type EdgeResetChange<EdgeData = any> = {
-  item: Edge<EdgeData>;
+export type EdgeResetChange<EdgeType extends Edge = Edge> = {
+  item: EdgeType;
   type: 'reset';
 };
 export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange | EdgeAddChange | EdgeResetChange;

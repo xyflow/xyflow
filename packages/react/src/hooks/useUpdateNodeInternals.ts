@@ -3,6 +3,12 @@ import type { UpdateNodeInternals, NodeDimensionUpdate } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
 
+/**
+ * Hook for updating node internals.
+ *
+ * @public
+ * @returns function for updating node internals
+ */
 function useUpdateNodeInternals(): UpdateNodeInternals {
   const store = useStoreApi();
 

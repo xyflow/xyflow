@@ -21,6 +21,13 @@ const defaultOptions = {
   includeHiddenNodes: false,
 };
 
+/**
+ * Hook which returns true when all nodes are initialized.
+ *
+ * @public
+ * @param options.includeHiddenNodes - defaults to false
+ * @returns boolean indicating whether all nodes are initialized
+ */
 function useNodesInitialized(options: UseNodesInitializedOptions = defaultOptions): boolean {
   const initialized = useStore(selector(options));
 

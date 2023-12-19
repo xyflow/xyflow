@@ -51,32 +51,38 @@ const markerSelector =
     return markers;
   };
 
+const markersEqual = (a: MarkerProps[], b: MarkerProps[]) =>
+  // the id includes all marker options, so we just need to look at that part of the marker
+  !(a.length !== b.length || a.some((m, i) => m.id !== b[i].id));
+
 // when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore
 // when they do have markers with the same ids. To prevent this the user can pass a unique id to the react flow wrapper
 // that we can then use for creating our unique marker ids
 const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
-  const markers = useStore(
-    useCallback(markerSelector({ defaultColor, rfId }), [defaultColor, rfId]),
-    // the id includes all marker options, so we just need to look at that part of the marker
-    (a, b) => !(a.length !== b.length || a.some((m, i) => m.id !== b[i].id))
-  );
+  const markers = useStore(useCallback(markerSelector({ defaultColor, rfId }), [defaultColor, rfId]), markersEqual);
+
+  if (!markers.length) {
+    return null;
+  }
 
   return (
-    <defs>
-      {markers.map((marker: MarkerProps) => (
-        <Marker
-          id={marker.id}
-          key={marker.id}
-          type={marker.type}
-          color={marker.color}
-          width={marker.width}
-          height={marker.height}
-          markerUnits={marker.markerUnits}
-          strokeWidth={marker.strokeWidth}
-          orient={marker.orient}
-        />
-      ))}
-    </defs>
+    <svg className="react-flow__marker">
+      <defs>
+        {markers.map((marker: MarkerProps) => (
+          <Marker
+            id={marker.id}
+            key={marker.id}
+            type={marker.type}
+            color={marker.color}
+            width={marker.width}
+            height={marker.height}
+            markerUnits={marker.markerUnits}
+            strokeWidth={marker.strokeWidth}
+            orient={marker.orient}
+          />
+        ))}
+      </defs>
+    </svg>
   );
 };
 

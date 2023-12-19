@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ComponentType, MemoExoticComponent } from 'react';
 import {
   FitViewParamsBase,
   FitViewOptionsBase,
-  NodeProps,
   ZoomInOut,
   ZoomTo,
   SetViewport,
@@ -12,9 +10,11 @@ import {
   SetCenter,
   FitBounds,
   XYPosition,
+  NodeProps,
 } from '@xyflow/system';
 
-import type { NodeChange, EdgeChange, Node, WrapNodeProps, Edge, EdgeProps, WrapEdgeProps, ReactFlowInstance } from '.';
+import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
+import { ComponentType } from 'react';
 
 export type OnNodesChange = (changes: NodeChange[]) => void;
 export type OnEdgesChange = (changes: EdgeChange[]) => void;
@@ -24,9 +24,7 @@ export type OnEdgesDelete = (edges: Edge[]) => void;
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 
 export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
-export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };
 export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
-export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };
 
 export type UnselectNodesAndEdgesParams = {
   nodes?: Node[];
@@ -43,7 +41,9 @@ export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 export type FitViewParams = FitViewParamsBase<Node>;
 export type FitViewOptions = FitViewOptionsBase<Node>;
 export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
-export type OnInit<NodeData = any, EdgeData = any> = (reactFlowInstance: ReactFlowInstance<NodeData, EdgeData>) => void;
+export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
+  reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
+) => void;
 
 export type ViewportHelperFunctions = {
   zoomIn: ZoomInOut;

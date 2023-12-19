@@ -24,9 +24,12 @@ const UpdateNode = () => {
       nds.map((n) => {
         if (n.id === '1') {
           // it's important that you create a new object here in order to notify react flow about the change
-          n.data = {
-            ...n.data,
-            label: nodeName,
+          return {
+            ...n,
+            data: {
+              ...n.data,
+              label: nodeName,
+            },
           };
         }
 
@@ -40,7 +43,10 @@ const UpdateNode = () => {
       nds.map((n) => {
         if (n.id === '1') {
           // it's important that you create a new object here in order to notify react flow about the change
-          n.style = { ...n.style, backgroundColor: nodeBg };
+          return {
+            ...n,
+            style: { ...n.style, backgroundColor: nodeBg },
+          };
         }
 
         return n;
@@ -52,8 +58,10 @@ const UpdateNode = () => {
     setNodes((nds) =>
       nds.map((n) => {
         if (n.id === '1' || n.id === 'e1-2') {
-          // when you update a simple type you can just update the value
-          n.hidden = nodeHidden;
+          return {
+            ...n,
+            hidden: nodeHidden,
+          };
         }
 
         return n;

@@ -1,10 +1,10 @@
 import { derived } from 'svelte/store';
-import { groupEdgesByZLevel, isEdgeVisible, getEdgePosition } from '@xyflow/system';
+import { isEdgeVisible, getEdgePosition, getElevatedEdgeZIndex } from '@xyflow/system';
 
 import type { EdgeLayouted } from '$lib/types';
 import type { SvelteFlowStoreState } from './types';
 
-export function getEdgeTree(store: SvelteFlowStoreState) {
+export function getVisibleEdges(store: SvelteFlowStoreState) {
   const visibleEdges = derived(
     [
       store.edges,
@@ -64,6 +64,13 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
         if (edgePosition) {
           res.push({
             ...edge,
+            zIndex: getElevatedEdgeZIndex({
+              selected: edge.selected,
+              zIndex: edge.zIndex,
+              sourceNode,
+              targetNode,
+              elevateOnSelect: false
+            }),
             ...edgePosition
           });
         }
@@ -71,9 +78,7 @@ export function getEdgeTree(store: SvelteFlowStoreState) {
         return res;
       }, []);
 
-      const groupedEdges = groupEdgesByZLevel<EdgeLayouted>(layoutedEdges, nodeLookup, false);
-
-      return groupedEdges;
+      return layoutedEdges;
     }
   );
 }

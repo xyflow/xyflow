@@ -9,6 +9,12 @@ function getMediaQuery() {
   return window.matchMedia('(prefers-color-scheme: dark)');
 }
 
+/**
+ * Hook for receiving the current color mode class 'dark' or 'light'.
+ *
+ * @internal
+ * @param colorMode - The color mode to use ('dark', 'light' or 'system')
+ */
 export function useColorModeClass(colorMode: ColorMode = 'light'): Readable<ColorModeClass> {
   const colorModeClass = readable<ColorModeClass>('light', (set) => {
     if (colorMode !== 'system') {

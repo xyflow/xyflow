@@ -20,6 +20,12 @@ import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, Node } from '$lib/types';
 import { isNode } from '$lib/utils';
 
+/**
+ * Hook for accessing the ReactFlow instance.
+ *
+ * @public
+ * @returns helper functions
+ */
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;

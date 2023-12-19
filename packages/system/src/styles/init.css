@@ -92,11 +92,6 @@
   outline: none;
 }
 
-.xy-flow .xy-flow__edges {
-  pointer-events: none;
-  overflow: visible;
-}
-
 .xy-flow__edge-path {
   stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
   stroke-width: var(--xy-edge-stroke-width, var(--xy-edge-stroke-width-default));
@@ -292,6 +287,14 @@
   height: 100%;
   pointer-events: none;
   user-select: none;
+  left: 0;
+  top: 0;
+}
+
+.xy-flow__viewport-portal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   left: 0;
   top: 0;
 }

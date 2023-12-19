@@ -10,6 +10,11 @@ const selected = (item: Node | Edge) => item.selected;
 
 const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
 
+/**
+ * Hook for handling global key events.
+ *
+ * @internal
+ */
 export default ({
   deleteKeyCode,
   multiSelectionKeyCode,

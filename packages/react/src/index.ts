@@ -10,6 +10,7 @@ export { default as BaseEdge } from './components/Edges/BaseEdge';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel, type PanelProps } from './components/Panel';
 export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
+export { default as ViewportPortal } from './components/ViewportPortal';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
@@ -77,6 +78,7 @@ export {
   type CoordinateExtent,
   type ColorMode,
   type ColorModeClass,
+  type HandleType,
 } from '@xyflow/system';
 
 // system utils

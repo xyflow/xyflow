@@ -191,7 +191,8 @@
       {dragging}
       {dragHandle}
       isConnectable={connectable}
-      positionAbsolute={{ x: positionX, y: positionY }}
+      positionAbsoluteX={positionX}
+      positionAbsoluteY={positionY}
       {width}
       {height}
     />

@@ -12,8 +12,8 @@ function CustomHandle({ nodeId, ...handleProps }: HandleComponentProps & { nodeI
     [nodeId]
   );
   const connections = useHandleConnections({
-    handleType: handleProps.type,
-    handleId: handleProps.id,
+    type: handleProps.type,
+    id: handleProps.id,
     onConnect,
     onDisconnect,
   });

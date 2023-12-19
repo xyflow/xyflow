@@ -7,18 +7,16 @@ import type { Node, NodeChange, Edge, EdgeChange } from '../types';
 type ApplyChanges<ItemType, ChangesType> = (changes: ChangesType[], items: ItemType[]) => ItemType[];
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
-// returns a hook that can be used liked this:
-// const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 function createUseItemsState(
   applyChanges: ApplyChanges<Node, NodeChange>
-): <NodeData = any>(
-  initialItems: Node<NodeData>[]
-) => [Node<NodeData>[], Dispatch<SetStateAction<Node<NodeData>[]>>, OnChange<NodeChange>];
+): <NodeType extends Node = Node>(
+  initialItems: NodeType[]
+) => [NodeType[], Dispatch<SetStateAction<NodeType[]>>, OnChange<NodeChange>];
 function createUseItemsState(
   applyChanges: ApplyChanges<Edge, EdgeChange>
-): <EdgeData = any>(
-  initialItems: Edge<EdgeData>[]
-) => [Edge<EdgeData>[], Dispatch<SetStateAction<Edge<EdgeData>[]>>, OnChange<EdgeChange>];
+): <EdgeType extends Edge = Edge>(
+  initialItems: EdgeType[]
+) => [EdgeType[], Dispatch<SetStateAction<EdgeType[]>>, OnChange<EdgeChange>];
 function createUseItemsState(
   applyChanges: ApplyChanges<any, any>
 ): (initialItems: any[]) => [any[], Dispatch<SetStateAction<any[]>>, OnChange<any>] {
@@ -31,5 +29,20 @@ function createUseItemsState(
   };
 }
 
+/**
+ * Hook for managing the state of nodes - should only be used for prototyping / simple use cases.
+ *
+ * @public
+ * @param initialNodes
+ * @returns an array [nodes, setNodes, onNodesChange]
+ */
 export const useNodesState = createUseItemsState(applyNodeChanges);
+
+/**
+ * Hook for managing the state of edges - should only be used for prototyping / simple use cases.
+ *
+ * @public
+ * @param initialEdges
+ * @returns an array [edges, setEdges, onEdgesChange]
+ */
 export const useEdgesState = createUseItemsState(applyEdgeChanges);
