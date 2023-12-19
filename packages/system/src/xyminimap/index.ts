@@ -61,8 +61,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
         return;
       }
 
-      // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
-      const moveScale = getViewScale() * Math.max(1, transform[2]) * (inversePan ? -1 : 1);
+      const moveScale = getViewScale() * Math.max(transform[2], Math.log(transform[2])) * (inversePan ? -1 : 1);
       const position = {
         x: transform[0] - event.sourceEvent.movementX * moveScale,
         y: transform[1] - event.sourceEvent.movementY * moveScale,
