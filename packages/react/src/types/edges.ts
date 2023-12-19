@@ -118,6 +118,7 @@ export type EdgeProps<T = any> = Pick<
 export type BaseEdgeProps = EdgeLabelOptions & {
   id?: string;
   interactionWidth?: number;
+  className?: string;
   labelX?: number;
   labelY?: number;
   markerStart?: string;
