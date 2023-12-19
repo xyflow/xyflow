@@ -10,7 +10,7 @@ import type { Node } from '../types';
  * @public
  * @param nodeId - The id (or ids) of the node to get the data from
  * @param guard - Optional guard function to narrow down the node type
- * @returns An array data objects
+ * @returns An array od data objects
  */
 export function useNodesData<NodeType extends Node = Node>(nodeId: string): NodeType['data'] | null;
 export function useNodesData<NodeType extends Node = Node>(nodeIds: string[]): NodeType['data'][];

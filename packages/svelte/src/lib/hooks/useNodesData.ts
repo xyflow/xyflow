@@ -21,6 +21,14 @@ function areNodesDataEqual(a: Node['data'][] | null, b: Node['data'][] | null) {
   return true;
 }
 
+/**
+ * Hook for receiving data of one or multiple nodes
+ *
+ * @public
+ * @param nodeId - The id (or ids) of the node to get the data from
+ * @param guard - Optional guard function to narrow down the node type
+ * @returns A readable store with an array of data objects
+ */
 export function useNodesData<NodeType extends Node = Node>(
   nodeId: string
 ): Readable<NodeType['data'] | null>;

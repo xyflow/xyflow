@@ -18,7 +18,12 @@ import type {
 } from '../types';
 import { isNode } from '../utils';
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+/**
+ * Hook for accessing the ReactFlow instance.
+ *
+ * @public
+ * @returns ReactFlowInstance
+ */
 export default function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): ReactFlowInstance<
   NodeType,
   EdgeType
