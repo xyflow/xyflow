@@ -174,7 +174,7 @@ const GraphView = ({
           />
         </EdgeRenderer>
         <div className="react-flow__edgelabel-renderer" />
-
+        <div className="react-flow__viewport-portal" />
         <NodeRenderer
           nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}

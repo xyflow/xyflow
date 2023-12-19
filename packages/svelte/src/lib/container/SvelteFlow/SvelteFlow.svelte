@@ -218,6 +218,7 @@
           <slot name="connectionLine" slot="connectionLine" />
         </ConnectionLine>
         <div class="svelte-flow__edgelabel-renderer" />
+        <div class="svelte-flow__viewport-portal" />
         <NodeRenderer
           on:nodeclick
           on:nodemouseenter
