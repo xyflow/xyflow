@@ -1,13 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import {
-  getElementsToRemove,
-  getIncomersBase,
-  getOutgoersBase,
-  getOverlappingArea,
-  isRectObject,
-  nodeToRect,
-  type Rect,
-} from '@xyflow/system';
+import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
@@ -26,32 +18,40 @@ import type {
 } from '../types';
 import { isNode } from '../utils';
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlowInstance<NodeData, EdgeData> {
+/**
+ * Hook for accessing the ReactFlow instance.
+ *
+ * @public
+ * @returns ReactFlowInstance
+ */
+export default function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): ReactFlowInstance<
+  NodeType,
+  EdgeType
+> {
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
 
-  const getNodes = useCallback<Instance.GetNodes<NodeData>>(() => {
-    return store.getState().nodes.map((n) => ({ ...n }));
+  const getNodes = useCallback<Instance.GetNodes<NodeType>>(() => {
+    return store.getState().nodes.map((n) => ({ ...n })) as NodeType[];
   }, []);
 
-  const getNode = useCallback<Instance.GetNode<NodeData>>((id) => {
-    return store.getState().nodeLookup.get(id);
+  const getNode = useCallback<Instance.GetNode<NodeType>>((id) => {
+    return store.getState().nodeLookup.get(id) as NodeType;
   }, []);
 
-  const getEdges = useCallback<Instance.GetEdges<EdgeData>>(() => {
+  const getEdges = useCallback<Instance.GetEdges<EdgeType>>(() => {
     const { edges = [] } = store.getState();
-    return edges.map((e) => ({ ...e }));
+    return edges.map((e) => ({ ...e })) as EdgeType[];
   }, []);
 
-  const getEdge = useCallback<Instance.GetEdge<EdgeData>>((id) => {
+  const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => {
     const { edges = [] } = store.getState();
-    return edges.find((e) => e.id === id);
+    return edges.find((e) => e.id === id) as EdgeType;
   }, []);
 
-  const setNodes = useCallback<Instance.SetNodes<NodeData>>((payload) => {
+  const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
     const { nodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
-    const nextNodes = typeof payload === 'function' ? payload(nodes) : payload;
+    const nextNodes = typeof payload === 'function' ? payload(nodes as NodeType[]) : payload;
 
     if (hasDefaultNodes) {
       setNodes(nextNodes);
@@ -59,14 +59,14 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       const changes =
         nextNodes.length === 0
           ? nodes.map((node) => ({ type: 'remove', id: node.id } as NodeRemoveChange))
-          : nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeData>));
+          : nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeType>));
       onNodesChange(changes);
     }
   }, []);
 
-  const setEdges = useCallback<Instance.SetEdges<EdgeData>>((payload) => {
+  const setEdges = useCallback<Instance.SetEdges<EdgeType>>((payload) => {
     const { edges = [], setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
-    const nextEdges = typeof payload === 'function' ? payload(edges) : payload;
+    const nextEdges = typeof payload === 'function' ? payload(edges as EdgeType[]) : payload;
 
     if (hasDefaultEdges) {
       setEdges(nextEdges);
@@ -74,12 +74,12 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       const changes =
         nextEdges.length === 0
           ? edges.map((edge) => ({ type: 'remove', id: edge.id } as EdgeRemoveChange))
-          : nextEdges.map((edge) => ({ item: edge, type: 'reset' } as EdgeResetChange<EdgeData>));
+          : nextEdges.map((edge) => ({ item: edge, type: 'reset' } as EdgeResetChange<EdgeType>));
       onEdgesChange(changes);
     }
   }, []);
 
-  const addNodes = useCallback<Instance.AddNodes<NodeData>>((payload) => {
+  const addNodes = useCallback<Instance.AddNodes<NodeType>>((payload) => {
     const nodes = Array.isArray(payload) ? payload : [payload];
     const { nodes: currentNodes, hasDefaultNodes, onNodesChange, setNodes } = store.getState();
 
@@ -87,29 +87,29 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       const nextNodes = [...currentNodes, ...nodes];
       setNodes(nextNodes);
     } else if (onNodesChange) {
-      const changes = nodes.map((node) => ({ item: node, type: 'add' } as NodeAddChange<NodeData>));
+      const changes = nodes.map((node) => ({ item: node, type: 'add' } as NodeAddChange<NodeType>));
       onNodesChange(changes);
     }
   }, []);
 
-  const addEdges = useCallback<Instance.AddEdges<EdgeData>>((payload) => {
+  const addEdges = useCallback<Instance.AddEdges<EdgeType>>((payload) => {
     const nextEdges = Array.isArray(payload) ? payload : [payload];
     const { edges = [], setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
 
     if (hasDefaultEdges) {
       setEdges([...edges, ...nextEdges]);
     } else if (onEdgesChange) {
-      const changes = nextEdges.map((edge) => ({ item: edge, type: 'add' } as EdgeAddChange<EdgeData>));
+      const changes = nextEdges.map((edge) => ({ item: edge, type: 'add' } as EdgeAddChange<EdgeType>));
       onEdgesChange(changes);
     }
   }, []);
 
-  const toObject = useCallback<Instance.ToObject<NodeData, EdgeData>>(() => {
+  const toObject = useCallback<Instance.ToObject<NodeType, EdgeType>>(() => {
     const { nodes = [], edges = [], transform } = store.getState();
     const [x, y, zoom] = transform;
     return {
-      nodes: nodes.map((n) => ({ ...n })),
-      edges: edges.map((e) => ({ ...e })),
+      nodes: nodes.map((n) => ({ ...n })) as NodeType[],
+      edges: edges.map((e) => ({ ...e })) as EdgeType[],
       viewport: {
         x,
         y,
@@ -181,11 +181,9 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
   }, []);
 
   const getNodeRect = useCallback(
-    (
-      nodeOrRect: Node<NodeData> | { id: Node['id'] } | Rect
-    ): [Rect | null, Node<NodeData> | null | undefined, boolean] => {
+    (nodeOrRect: NodeType | { id: Node['id'] } | Rect): [Rect | null, NodeType | null | undefined, boolean] => {
       const isRect = isRectObject(nodeOrRect);
-      const node = isRect ? null : store.getState().nodeLookup.get(nodeOrRect.id);
+      const node = isRect ? null : (store.getState().nodeLookup.get(nodeOrRect.id) as NodeType);
 
       if (!isRect && !node) {
         [null, null, isRect];
@@ -198,7 +196,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     []
   );
 
-  const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeData>>(
+  const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeType>>(
     (nodeOrRect, partially = true, nodes) => {
       const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
 
@@ -216,12 +214,12 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
         const partiallyVisible = partially && overlappingArea > 0;
 
         return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
-      });
+      }) as NodeType[];
     },
     []
   );
 
-  const isNodeIntersecting = useCallback<Instance.IsNodeIntersecting<NodeData>>(
+  const isNodeIntersecting = useCallback<Instance.IsNodeIntersecting<NodeType>>(
     (nodeOrRect, area, partially = true) => {
       const [nodeRect] = getNodeRect(nodeOrRect);
 
@@ -237,48 +235,13 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     []
   );
 
-  const getConnectedEdges = useCallback<Instance.getConnectedEdges>((node) => {
-    const { edges } = store.getState();
-
-    const nodeIds = new Set();
-    if (typeof node === 'string') {
-      nodeIds.add(node);
-    } else if (node.length >= 1) {
-      node.forEach((n) => {
-        nodeIds.add(n.id);
-      });
-    }
-
-    return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
-  }, []);
-
-  const getIncomers = useCallback<Instance.getIncomers>((node) => {
-    const { nodes, edges } = store.getState();
-
-    if (typeof node === 'string') {
-      return getIncomersBase({ id: node }, nodes, edges);
-    }
-
-    return getIncomersBase(node, nodes, edges);
-  }, []);
-
-  const getOutgoers = useCallback<Instance.getOutgoers>((node) => {
-    const { nodes, edges } = store.getState();
-
-    if (typeof node == 'string') {
-      return getOutgoersBase({ id: node }, nodes, edges);
-    }
-
-    return getOutgoersBase(node, nodes, edges);
-  }, []);
-
-  const updateNode = useCallback<Instance.UpdateNode>(
+  const updateNode = useCallback<Instance.UpdateNode<NodeType>>(
     (id, nodeUpdate, options = { replace: true }) => {
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {
-            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
-            return options.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as NodeType) : nodeUpdate;
+            return options.replace && isNode(nextNode) ? (nextNode as NodeType) : { ...node, ...nextNode };
           }
 
           return node;
@@ -288,7 +251,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     [setNodes]
   );
 
-  const updateNodeData = useCallback<Instance.UpdateNodeData>(
+  const updateNodeData = useCallback<Instance.UpdateNodeData<NodeType>>(
     (id, dataUpdate, options = { replace: false }) => {
       updateNode(
         id,
@@ -317,9 +280,6 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       deleteElements,
       getIntersectingNodes,
       isNodeIntersecting,
-      getConnectedEdges,
-      getIncomers,
-      getOutgoers,
       updateNode,
       updateNodeData,
     };
@@ -337,8 +297,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     deleteElements,
     getIntersectingNodes,
     isNodeIntersecting,
-    getConnectedEdges,
-    getIncomers,
-    getOutgoers,
+    updateNode,
+    updateNodeData,
   ]);
 }

@@ -12,6 +12,12 @@ import type { ViewportHelperFunctions, ReactFlowState } from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
 
+/**
+ * Hook for getting viewport helper functions.
+ *
+ * @internal
+ * @returns viewport helper functions
+ */
 const useViewportHelper = (): ViewportHelperFunctions => {
   const store = useStoreApi();
   const panZoomInitialized = useStore(selector);

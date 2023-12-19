@@ -5,6 +5,13 @@ import { isEdgeVisible } from '@xyflow/system';
 import { useStore } from './useStore';
 import { type ReactFlowState } from '../types';
 
+/**
+ * Hook for getting the visible edge ids from the store.
+ *
+ * @internal
+ * @param onlyRenderVisible
+ * @returns array with visible edge ids
+ */
 function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
   const edgeIds = useStore(
     useCallback(

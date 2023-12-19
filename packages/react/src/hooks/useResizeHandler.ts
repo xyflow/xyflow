@@ -3,6 +3,11 @@ import { errorMessages, getDimensions } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
 
+/**
+ * Hook for handling resize events.
+ *
+ * @internal
+ */
 function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
   const store = useStoreApi();
 

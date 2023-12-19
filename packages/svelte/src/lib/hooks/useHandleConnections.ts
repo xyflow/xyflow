@@ -11,6 +11,15 @@ export type useHandleConnectionsParams = {
 
 const initialConnections: Connection[] = [];
 
+/**
+ *  Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
+ *
+ * @public
+ * @param param.nodeId
+ * @param param.type - handle type 'source' or 'target'
+ * @param param.id - the handle id (this is only needed if the node has multiple handles of the same type)
+ * @returns an array with connections
+ */
 export function useHandleConnections({ nodeId, type, id = null }: useHandleConnectionsParams) {
   const { edges, connectionLookup } = useStore();
   let prevConnections: Map<string, Connection> | undefined = undefined;

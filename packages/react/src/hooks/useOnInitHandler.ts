@@ -3,6 +3,11 @@ import { useEffect, useRef } from 'react';
 import useReactFlow from './useReactFlow';
 import type { OnInit } from '../types';
 
+/**
+ * Hook for calling onInit handler.
+ *
+ * @internal
+ */
 function useOnInitHandler(onInit: OnInit | undefined) {
   const rfInstance = useReactFlow();
   const isInitialized = useRef<boolean>(false);

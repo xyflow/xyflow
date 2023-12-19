@@ -10,6 +10,14 @@ const zustandErrorMessage = errorMessages['error001']();
 
 type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T } ? T : never;
 
+/**
+ * Hook for accessing the internal store. Should only be used in rare cases.
+ *
+ * @public
+ * @param selector
+ * @param equalityFn
+ * @returns The selected state slice
+ */
 function useStore<StateSlice = ExtractState>(
   selector: (state: ReactFlowState) => StateSlice,
   equalityFn?: (a: StateSlice, b: StateSlice) => boolean

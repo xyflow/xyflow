@@ -13,7 +13,6 @@ import type {
   HandleElement,
   ConnectionStatus,
   EdgePosition,
-  Optional,
   StepPathOptions,
   OnError,
 } from '@xyflow/system';
@@ -31,12 +30,13 @@ export type EdgeLabelOptions = {
 
 export type EdgeUpdatable = boolean | HandleType;
 
-export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
-  style?: CSSProperties;
-  className?: string;
-  updatable?: EdgeUpdatable;
-  focusable?: boolean;
-} & EdgeLabelOptions;
+export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> &
+  EdgeLabelOptions & {
+    style?: CSSProperties;
+    className?: string;
+    updatable?: EdgeUpdatable;
+    focusable?: boolean;
+  };
 
 type SmoothStepEdgeType<T> = DefaultEdge<T> & {
   type: 'smoothstep';
@@ -53,6 +53,10 @@ type StepEdgeType<T> = DefaultEdge<T> & {
   pathOptions?: StepPathOptions;
 };
 
+/**
+ * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
+ * @public
+ */
 export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T> | StepEdgeType<T>;
 
 export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
@@ -88,14 +92,18 @@ export type EdgeTextProps = HTMLAttributes<SVGElement> &
     y: number;
   };
 
-// props that get passed to a custom edge
+/**
+ * Custom edge component props
+ * @public
+ */
 export type EdgeProps<T = any> = Pick<
   Edge<T>,
   'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
 > &
-  Pick<EdgeWrapperProps, 'sourceHandleId' | 'targetHandleId'> &
   EdgePosition &
   EdgeLabelOptions & {
+    sourceHandleId?: string | null;
+    targetHandleId?: string | null;
     markerStart?: string;
     markerEnd?: string;
     // @TODO: how can we get better types for pathOptions?
@@ -103,31 +111,69 @@ export type EdgeProps<T = any> = Pick<
     interactionWidth?: number;
   };
 
-export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd' | 'interactionWidth'> &
+/**
+ * BaseEdge component props
+ * @public
+ */
+export type BaseEdgeProps = EdgeLabelOptions & {
+  id?: string;
+  interactionWidth?: number;
+  labelX?: number;
+  labelY?: number;
+  markerStart?: string;
+  markerEnd?: string;
+  path: string;
+  style?: CSSProperties;
+};
+
+/**
+ * Helper type for edge components that get exported by the library
+ * @public
+ */
+export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
-    id?: string;
-    labelX?: number;
-    labelY?: number;
-    path: string;
+    id?: EdgeProps['id'];
+    markerStart?: EdgeProps['markerStart'];
+    markerEnd?: EdgeProps['markerEnd'];
+    interactionWidth?: EdgeProps['interactionWidth'];
+    style?: EdgeProps['style'];
+    sourceHandleId?: EdgeProps['sourceHandleId'];
+    targetHandleId?: EdgeProps['targetHandleId'];
   };
 
-export type EdgeComponentProps<T = any> = Optional<Omit<EdgeProps<T>, 'source' | 'target'>, 'id'>;
-
-export type StraightEdgeProps<T = any> = Omit<EdgeComponentProps<T>, 'sourcePosition' | 'targetPosition'>;
-
-export type SmoothStepEdgeProps<T = any> = EdgeComponentProps<T> & {
-  pathOptions?: SmoothStepPathOptions;
+export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
+  pathOptions?: PathOptions;
 };
 
-export type BezierEdgeProps<T = any> = EdgeComponentProps<T> & {
-  pathOptions?: BezierPathOptions;
-};
+/**
+ * BezierEdge component props
+ * @public
+ */
+export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
-export type StepEdgeProps<T = any> = EdgeComponentProps<T> & {
-  pathOptions?: StepPathOptions;
-};
+/**
+ * SmoothStepEdge component props
+ * @public
+ */
+export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
 
-export type SimpleBezierEdgeProps<T = any> = EdgeComponentProps<T>;
+/**
+ * StepEdge component props
+ * @public
+ */
+export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
+
+/**
+ * StraightEdge component props
+ * @public
+ */
+export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
+
+/**
+ * SimpleBezier component props
+ * @public
+ */
+export type SimpleBezierEdgeProps = EdgeComponentProps;
 
 export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
 

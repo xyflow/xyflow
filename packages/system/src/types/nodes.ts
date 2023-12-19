@@ -26,7 +26,6 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
   ariaLabel?: string;
-  focusable?: boolean;
   origin?: NodeOrigin;
   handles?: NodeHandle[];
   computed?: {

@@ -1,8 +1,13 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { CoordinateExtent, NodeBase, NodeOrigin, OnError } from '@xyflow/system';
+
 import { NodeTypes } from './general';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * The node data structure that gets used for the nodes prop.
+ * @public
+ */
 export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
   NodeData,
   NodeType
@@ -10,6 +15,7 @@ export type Node<NodeData = any, NodeType extends string | undefined = string | 
   style?: CSSProperties;
   className?: string;
   resizing?: boolean;
+  focusable?: boolean;
 };
 
 export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;

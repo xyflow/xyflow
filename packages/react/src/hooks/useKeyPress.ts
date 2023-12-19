@@ -12,11 +12,19 @@ export type UseKeyPressOptions = {
 
 const defaultDoc = typeof document !== 'undefined' ? document : null;
 
-// the keycode can be a string 'a' or an array of strings ['a', 'a+d']
-// a string means a single key 'a' or a combination when '+' is used 'a+d'
-// an array means different possibilites. Explainer: ['a', 'd+s'] here the
-// user can use the single key 'a' or the combination 'd' + 's'
+/**
+ * Hook for handling key events.
+ *
+ * @public
+ * @param param.keyCode - The key code (string or array of strings) to use
+ * @param param.options - Options
+ * @returns boolean
+ */
 export default (
+  // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
+  // a string means a single key 'a' or a combination when '+' is used 'a+d'
+  // an array means different possibilites. Explainer: ['a', 'd+s'] here the
+  // user can use the single key 'a' or the combination 'd' + 's'
   keyCode: KeyCode | null = null,
   options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }
 ): boolean => {
