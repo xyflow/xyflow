@@ -11,7 +11,6 @@ import {
   getViewportForBounds,
 } from './general';
 import {
-  type Connection,
   type Transform,
   type XYPosition,
   type Rect,
@@ -33,9 +32,8 @@ import { errorMessages } from '../constants';
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Edge
  */
-export const isEdgeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  element: NodeType | Connection | EdgeType
-): element is EdgeType => 'id' in element && 'source' in element && 'target' in element;
+export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): element is EdgeType =>
+  'id' in element && 'source' in element && 'target' in element;
 
 /**
  * Test whether an object is useable as a Node
@@ -44,9 +42,8 @@ export const isEdgeBase = <NodeType extends NodeBase = NodeBase, EdgeType extend
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Node
  */
-export const isNodeBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  element: NodeType | Connection | EdgeType
-): element is NodeType => 'id' in element && !('source' in element) && !('target' in element);
+export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
+  'id' in element && !('source' in element) && !('target' in element);
 
 /**
  * Pass in a node, and get connected nodes where edge.source === node.id

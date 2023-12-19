@@ -78,6 +78,9 @@
   export let width: $$Props['width'] = undefined;
   export let height: $$Props['height'] = undefined;
   export let colorMode: $$Props['colorMode'] = 'light';
+  export let onconnect: $$Props['onconnect'] = undefined;
+  export let onconnectstart: $$Props['onconnectstart'] = undefined;
+  export let onconnectend: $$Props['onconnectend'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -152,7 +155,10 @@
       ondelete,
       onedgecreate,
       connectionMode,
-      nodeDragThreshold
+      nodeDragThreshold,
+      onconnect,
+      onconnectstart,
+      onconnectend
     };
 
     updateStoreByKeys(store, updatableProps);
@@ -217,9 +223,6 @@
           on:nodemouseenter
           on:nodemousemove
           on:nodemouseleave
-          on:connectstart
-          on:connect
-          on:connectend
           on:nodedragstart
           on:nodedrag
           on:nodedragstop

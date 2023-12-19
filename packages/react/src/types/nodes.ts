@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { CSSProperties, ComponentType, MemoExoticComponent, MouseEvent as ReactMouseEvent } from 'react';
-import type { NodeBase, NodeProps, XYPosition } from '@xyflow/system';
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import type { CoordinateExtent, NodeBase, NodeOrigin, OnError } from '@xyflow/system';
 
+import { NodeTypes } from './general';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 /**
  * The node data structure that gets used for the nodes prop.
  * @public
@@ -13,29 +15,19 @@ export type Node<NodeData = any, NodeType extends string | undefined = string | 
   style?: CSSProperties;
   className?: string;
   resizing?: boolean;
+  focusable?: boolean;
 };
 
 export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
 export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
 export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
 
-export type WrapNodeProps<NodeType extends Node = Node> = Pick<
-  NodeType,
-  'id' | 'data' | 'style' | 'className' | 'dragHandle' | 'sourcePosition' | 'targetPosition' | 'hidden' | 'ariaLabel'
-> & {
-  type: string;
-  selected: boolean;
-  zIndex: number;
-  isConnectable: boolean;
-  xPos: number;
-  yPos: number;
-  xPosOrigin: number;
-  yPosOrigin: number;
-  positionAbsolute: XYPosition;
-  initialized: boolean;
-  isSelectable: boolean;
-  isDraggable: boolean;
-  isFocusable: boolean;
+export type NodeWrapperProps = {
+  id: string;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
+  nodesDraggable: boolean;
+  nodesFocusable: boolean;
   onClick?: NodeMouseHandler;
   onDoubleClick?: NodeMouseHandler;
   onMouseEnter?: NodeMouseHandler;
@@ -43,14 +35,12 @@ export type WrapNodeProps<NodeType extends Node = Node> = Pick<
   onMouseLeave?: NodeMouseHandler;
   onContextMenu?: NodeMouseHandler;
   resizeObserver: ResizeObserver | null;
-  isParent: boolean;
   noDragClassName: string;
   noPanClassName: string;
   rfId: string;
   disableKeyboardA11y: boolean;
-  width?: number;
-  height?: number;
+  nodeTypes?: NodeTypes;
+  nodeExtent?: CoordinateExtent;
+  nodeOrigin: NodeOrigin;
+  onError?: OnError;
 };
-
-export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
-export type NodeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapNodeProps>> };

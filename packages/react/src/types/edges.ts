@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type {
-  CSSProperties,
-  HTMLAttributes,
-  ReactNode,
-  MouseEvent as ReactMouseEvent,
-  ComponentType,
-  MemoExoticComponent,
-} from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -21,9 +14,10 @@ import type {
   ConnectionStatus,
   EdgePosition,
   StepPathOptions,
+  OnError,
 } from '@xyflow/system';
 
-import { Node } from '.';
+import { EdgeTypes, Node } from '.';
 
 export type EdgeLabelOptions = {
   label?: string | ReactNode;
@@ -66,9 +60,14 @@ export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeT
 
 export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
 
-export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
+export type EdgeWrapperProps = {
+  id: string;
+  edgesFocusable: boolean;
+  edgesUpdatable: boolean;
+  elementsSelectable: boolean;
+  noPanClassName: string;
   onClick?: EdgeMouseHandler;
-  onEdgeDoubleClick?: EdgeMouseHandler;
+  onDoubleClick?: EdgeMouseHandler;
   sourceHandleId?: string | null;
   targetHandleId?: string | null;
   onEdgeUpdate?: OnEdgeUpdateFunc;
@@ -80,10 +79,8 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   rfId?: string;
-  isFocusable: boolean;
-  isUpdatable: EdgeUpdatable;
-  isSelectable: boolean;
-  pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+  edgeTypes?: EdgeTypes;
+  onError?: OnError;
 };
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
@@ -103,13 +100,13 @@ export type EdgeProps<T = any> = Pick<
 > &
   EdgePosition &
   EdgeLabelOptions & {
-    interactionWidth?: number;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
     markerStart?: string;
     markerEnd?: string;
     // @TODO: how can we get better types for pathOptions?
     pathOptions?: any;
+    interactionWidth?: number;
   };
 
 /**
@@ -186,6 +183,3 @@ export type ConnectionLineComponentProps = {
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
-
-export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
-export type EdgeTypesWrapped = { [key: string]: MemoExoticComponent<ComponentType<WrapEdgeProps>> };

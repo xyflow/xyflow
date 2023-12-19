@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Node, Edge, EdgeChange, NodeChange } from '../types';
+import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
 
 export function handleParentExpand(res: any[], updateItem: any) {
   const parent = res.find((e) => e.id === updateItem.parentNode);
@@ -55,24 +55,27 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   }
 
   let remainingChanges = changes;
-  const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
+  const updatedElements: any[] = [];
 
-  return elements.reduce((res: any[], item: any) => {
+  for (const item of elements) {
     const nextChanges: any[] = [];
     const _remainingChanges: any[] = [];
 
-    remainingChanges.forEach((c) => {
-      if (c.id === item.id) {
+    for (const c of remainingChanges) {
+      if (c.type === 'add') {
+        updatedElements.push(c.item);
+      } else if (c.id === item.id) {
         nextChanges.push(c);
       } else {
         _remainingChanges.push(c);
       }
-    });
+    }
+
     remainingChanges = _remainingChanges;
 
     if (nextChanges.length === 0) {
-      res.push(item);
-      return res;
+      updatedElements.push(item);
+      continue;
     }
 
     const updateItem = { ...item };
@@ -101,7 +104,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (updateItem.expandParent) {
-              handleParentExpand(res, updateItem);
+              handleParentExpand(updatedElements, updateItem);
             }
             break;
           }
@@ -123,20 +126,20 @@ function applyChanges(changes: any[], elements: any[]): any[] {
             }
 
             if (updateItem.expandParent) {
-              handleParentExpand(res, updateItem);
+              handleParentExpand(updatedElements, updateItem);
             }
             break;
           }
           case 'remove': {
-            return res;
+            continue;
           }
         }
       }
+      updatedElements.push(updateItem);
     }
+  }
 
-    res.push(updateItem);
-    return res;
-  }, initElements);
+  return updatedElements;
 }
 
 /**
@@ -187,24 +190,33 @@ export function applyEdgeChanges<EdgeType extends Edge = Edge>(changes: EdgeChan
   return applyChanges(changes, edges) as EdgeType[];
 }
 
-export const createSelectionChange = (id: string, selected: boolean) => ({
+export const createSelectionChange = (id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange => ({
   id,
   type: 'select',
   selected,
 });
 
-export function getSelectionChanges(items: any[], selectedIds: string[]) {
-  return items.reduce((res, item) => {
-    const willBeSelected = selectedIds.includes(item.id);
+export function getSelectionChanges(
+  items: any[],
+  selectedIds: Set<string> = new Set(),
+  mutateItem = false
+): NodeSelectionChange[] | EdgeSelectionChange[] {
+  const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-    if (!item.selected && willBeSelected) {
-      item.selected = true;
-      res.push(createSelectionChange(item.id, true));
-    } else if (item.selected && !willBeSelected) {
-      item.selected = false;
-      res.push(createSelectionChange(item.id, false));
+  for (const item of items) {
+    const willBeSelected = selectedIds.has(item.id);
+
+    // we don't want to set all items to selected=false on the first selection
+    if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
+      if (mutateItem) {
+        // this hack is needed for nodes. When the user dragged a node, it's selected.
+        // When another node gets dragged, we need to deselect the previous one,
+        // in order to have only one selected node at a time - the onNodesChange callback comes too late here :/
+        item.selected = willBeSelected;
+      }
+      changes.push(createSelectionChange(item.id, willBeSelected));
     }
+  }
 
-    return res;
-  }, []);
+  return changes;
 }

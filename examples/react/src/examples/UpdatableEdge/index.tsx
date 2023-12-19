@@ -6,7 +6,6 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  ReactFlowInstance,
   Connection,
   Edge,
   Node,
@@ -97,7 +96,6 @@ const initialEdges: Edge[] = [
   { id: 'e5-6', source: '5', target: '6', label: 'This edge can be updated from both sides' },
 ];
 
-const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
 const onEdgeUpdateStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
   console.log(`start update ${handleType} handle`, edge);
 const onEdgeUpdateEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
@@ -111,7 +109,6 @@ const UpdatableEdge = () => {
   const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
-    console.log(changes);
     setNodes((ns) => applyNodeChanges(changes, ns));
   }, []);
 
@@ -125,12 +122,12 @@ const UpdatableEdge = () => {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      onInit={onInit}
       snapToGrid={true}
       onEdgeUpdate={onEdgeUpdate}
       onConnect={onConnect}
       onEdgeUpdateStart={onEdgeUpdateStart}
       onEdgeUpdateEnd={onEdgeUpdateEnd}
+      fitView
     >
       <Controls />
     </ReactFlow>

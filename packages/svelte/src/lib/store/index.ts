@@ -24,7 +24,7 @@ import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData }
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
-import { getEdgeTree } from './edge-tree';
+import { getVisibleEdges } from './visible-edges';
 import { getVisibleNodes } from './visible-nodes';
 import { getDerivedConnectionProps } from './derived-connection-props';
 
@@ -357,8 +357,8 @@ export function createStore({
     ...store,
 
     // derived state
-    edgeTree: getEdgeTree(store),
     connection: getDerivedConnectionProps(store, currentConnection),
+    visibleEdges: getVisibleEdges(store),
     visibleNodes: getVisibleNodes(store),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],

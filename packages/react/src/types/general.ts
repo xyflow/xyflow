@@ -10,9 +10,11 @@ import {
   SetCenter,
   FitBounds,
   XYPosition,
+  NodeProps,
 } from '@xyflow/system';
 
-import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance } from '.';
+import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
+import { ComponentType } from 'react';
 
 export type OnNodesChange = (changes: NodeChange[]) => void;
 export type OnEdgesChange = (changes: EdgeChange[]) => void;
@@ -20,6 +22,9 @@ export type OnEdgesChange = (changes: EdgeChange[]) => void;
 export type OnNodesDelete = (nodes: Node[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
+
+export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
+export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
 
 export type UnselectNodesAndEdgesParams = {
   nodes?: Node[];

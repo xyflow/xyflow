@@ -23,7 +23,7 @@
 }
 
 .xy-flow.dark {
-  --xy-edge-stroke-default: #3c3c3c;
+  --xy-edge-stroke-default: #3e3e3e;
   --xy-edge-stroke-width-default: 1;
   --xy-edge-stroke-selected-default: #727272;
 
@@ -90,11 +90,6 @@
 .xy-flow__nodesselection-rect:focus,
 .xy-flow__nodesselection-rect:focus-visible {
   outline: none;
-}
-
-.xy-flow .xy-flow__edges {
-  pointer-events: none;
-  overflow: visible;
 }
 
 .xy-flow__edge-path {

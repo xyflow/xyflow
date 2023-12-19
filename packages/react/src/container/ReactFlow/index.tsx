@@ -2,7 +2,6 @@ import { forwardRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 import {
   ConnectionLineType,
-  ConnectionMode,
   PanOnScrollMode,
   SelectionMode,
   infiniteExtent,
@@ -12,42 +11,16 @@ import {
 } from '@xyflow/system';
 
 import Attribution from '../../components/Attribution';
-import {
-  BezierEdgeInternal,
-  SmoothStepEdgeInternal,
-  StepEdgeInternal,
-  StraightEdgeInternal,
-  SimpleBezierEdgeInternal,
-} from '../../components/Edges';
-import DefaultNode from '../../components/Nodes/DefaultNode';
-import InputNode from '../../components/Nodes/InputNode';
-import OutputNode from '../../components/Nodes/OutputNode';
-import GroupNode from '../../components/Nodes/GroupNode';
+
 import SelectionListener from '../../components/SelectionListener';
 import StoreUpdater from '../../components/StoreUpdater';
 import A11yDescriptions from '../../components/A11yDescriptions';
 import GraphView from '../GraphView';
 import Wrapper from './Wrapper';
-import type { EdgeTypes, NodeTypes, ReactFlowProps, ReactFlowRefType } from '../../types';
+import type { ReactFlowProps, ReactFlowRefType } from '../../types';
 import useColorModeClass from '../../hooks/useColorModeClass';
 
-const defaultNodeTypes: NodeTypes = {
-  input: InputNode,
-  default: DefaultNode,
-  output: OutputNode,
-  group: GroupNode,
-};
-
-const defaultEdgeTypes: EdgeTypes = {
-  default: BezierEdgeInternal,
-  straight: StraightEdgeInternal,
-  step: StepEdgeInternal,
-  smoothstep: SmoothStepEdgeInternal,
-  simplebezier: SimpleBezierEdgeInternal,
-};
-
-const initNodeOrigin: NodeOrigin = [0, 0];
-const initSnapGrid: [number, number] = [15, 15];
+export const initNodeOrigin: NodeOrigin = [0, 0];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
 const wrapperStyle: CSSProperties = {
@@ -66,8 +39,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       defaultNodes,
       defaultEdges,
       className,
-      nodeTypes = defaultNodeTypes,
-      edgeTypes = defaultEdgeTypes,
+      nodeTypes,
+      edgeTypes,
       onNodeClick,
       onEdgeClick,
       onInit,
@@ -97,7 +70,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onSelectionContextMenu,
       onSelectionStart,
       onSelectionEnd,
-      connectionMode = ConnectionMode.Strict,
+      connectionMode,
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
       connectionLineComponent,
@@ -109,10 +82,10 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       panActivationKeyCode = 'Space',
       multiSelectionKeyCode = isMacOs() ? 'Meta' : 'Control',
       zoomActivationKeyCode = isMacOs() ? 'Meta' : 'Control',
-      snapToGrid = false,
-      snapGrid = initSnapGrid,
+      snapToGrid,
+      snapGrid,
       onlyRenderVisibleElements = false,
-      selectNodesOnDrag = true,
+      selectNodesOnDrag,
       nodesDraggable,
       nodesConnectable,
       nodesFocusable,
@@ -155,18 +128,18 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       noDragClassName = 'nodrag',
       noWheelClassName = 'nowheel',
       noPanClassName = 'nopan',
-      fitView = false,
+      fitView,
       fitViewOptions,
-      connectOnClick = true,
+      connectOnClick,
       attributionPosition,
       proOptions,
       defaultEdgeOptions,
-      elevateNodesOnSelect = true,
-      elevateEdgesOnSelect = false,
+      elevateNodesOnSelect,
+      elevateEdgesOnSelect,
       disableKeyboardA11y = false,
-      autoPanOnConnect = true,
-      autoPanOnNodeDrag = true,
-      connectionRadius = 20,
+      autoPanOnConnect,
+      autoPanOnNodeDrag,
+      connectionRadius,
       isValidConnection,
       onError,
       style,
@@ -251,7 +224,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             noDragClassName={noDragClassName}
             noWheelClassName={noWheelClassName}
             noPanClassName={noPanClassName}
-            elevateEdgesOnSelect={elevateEdgesOnSelect}
             rfId={rfId}
             disableKeyboardA11y={disableKeyboardA11y}
             nodeOrigin={nodeOrigin}
@@ -276,6 +248,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             edgesUpdatable={edgesUpdatable}
             elementsSelectable={elementsSelectable}
             elevateNodesOnSelect={elevateNodesOnSelect}
+            elevateEdgesOnSelect={elevateEdgesOnSelect}
             minZoom={minZoom}
             maxZoom={maxZoom}
             nodeExtent={nodeExtent}

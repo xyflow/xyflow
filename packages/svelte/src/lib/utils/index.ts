@@ -17,7 +17,7 @@ import type { Edge, Node } from '$lib/types';
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Node
  */
-export const isNode = isNodeBase<Node, Edge>;
+export const isNode = isNodeBase<Node>;
 
 /**
  * Test whether an object is useable as an Edge
@@ -26,7 +26,7 @@ export const isNode = isNodeBase<Node, Edge>;
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Edge
  */
-export const isEdge = isEdgeBase<Node, Edge>;
+export const isEdge = isEdgeBase<Edge>;
 
 /**
  * Pass in a node, and get connected nodes where edge.source === node.id

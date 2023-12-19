@@ -1,3 +1,4 @@
+export * from './connections';
 export * from './dom';
 export * from './edges';
 export * from './graph';

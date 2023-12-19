@@ -87,7 +87,7 @@
 	{nodeTypes}
 	style="--xy-background-color: {$bgColor}"
 	fitView
-	on:connect={onConnect}
+	onconnect={onConnect}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

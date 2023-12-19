@@ -98,7 +98,7 @@ export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'tar
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 
-export type DefaultEdgeOptions = Omit<DefaultEdgeOptionsBase<Edge>, 'focusable'>;
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeLayouted = Pick<
   Edge,
@@ -121,6 +121,7 @@ export type EdgeLayouted = Pick<
   | 'ariaLabel'
   | 'hidden'
   | 'class'
+  | 'zIndex'
 > &
   EdgePosition & {
     sourceNode?: Node;

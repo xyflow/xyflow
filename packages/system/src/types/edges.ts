@@ -36,7 +36,7 @@ export type BezierPathOptions = {
 
 export type DefaultEdgeOptionsBase<EdgeType extends EdgeBase> = Omit<
   EdgeType,
-  'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle'
+  'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'selected'
 >;
 
 export enum ConnectionLineType {
@@ -76,3 +76,5 @@ export type EdgePosition = {
   sourcePosition: Position;
   targetPosition: Position;
 };
+
+export type EdgeLookup<EdgeType extends EdgeBase = EdgeBase> = Map<string, EdgeType>;

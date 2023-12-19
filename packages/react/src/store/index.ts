@@ -2,11 +2,12 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
   fitView as fitViewSystem,
-  updateNodes,
+  adoptUserProvidedNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
   Dimensions,
   updateNodeDimensions as updateNodeDimensionsSystem,
+  updateConnectionLookup,
 } from '@xyflow/system';
 
 import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -42,15 +43,23 @@ const createRFStore = ({
       ...getInitialState({ nodes, edges, width, height, fitView }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
-        // Whenver new nodes are set, we need to calculate the absolute positions of the nodes
-        // and update the nodeLookup.
-        const nextNodes = updateNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        // setNodes() is called exclusively in response to user actions:
+        // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
+        // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
+        //
+        // When this happens, we take the note objects passed by the user and extend them with fields
+        // relevant for internal React Flow operations.
+        // TODO: consider updating the types to reflect the distinction between user-provided nodes and internal nodes.
+        const nodesWithInternalData = adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
-        set({ nodes: nextNodes });
+        set({ nodes: nodesWithInternalData });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {} } = get();
-        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+        const { connectionLookup, edgeLookup } = get();
+
+        updateConnectionLookup(connectionLookup, edgeLookup, edges);
+
+        set({ edges });
       },
       // when the user works with an uncontrolled flow,
       // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
@@ -69,12 +78,16 @@ const createRFStore = ({
         };
 
         if (hasDefaultNodes) {
-          nextState.nodes = updateNodes(nodes, new Map(), {
-            nodeOrigin: get().nodeOrigin,
-            elevateNodesOnSelect: get().elevateNodesOnSelect,
+          const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
+          nextState.nodes = adoptUserProvidedNodes(nodes, nodeLookup, {
+            nodeOrigin,
+            elevateNodesOnSelect,
           });
         }
         if (hasDefaultEdges) {
+          const { connectionLookup, edgeLookup } = get();
+          updateConnectionLookup(connectionLookup, edgeLookup, edges);
+
           nextState.edges = edges;
         }
 
@@ -163,7 +176,7 @@ const createRFStore = ({
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = updateNodes(updatedNodes, nodeLookup, {
+            const nextNodes = adoptUserProvidedNodes(updatedNodes, nodeLookup, {
               nodeOrigin,
               elevateNodesOnSelect,
             });
@@ -182,8 +195,8 @@ const createRFStore = ({
         if (multiSelectionActive) {
           changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
         } else {
-          changedNodes = getSelectionChanges(nodes, selectedNodeIds);
-          changedEdges = getSelectionChanges(edges, []);
+          changedNodes = getSelectionChanges(nodes, new Set([...selectedNodeIds]), true);
+          changedEdges = getSelectionChanges(edges);
         }
 
         updateNodesAndEdgesSelections({
@@ -201,8 +214,8 @@ const createRFStore = ({
         if (multiSelectionActive) {
           changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
         } else {
-          changedEdges = getSelectionChanges(edges, selectedEdgeIds);
-          changedNodes = getSelectionChanges(nodes, []);
+          changedEdges = getSelectionChanges(edges, new Set([...selectedEdgeIds]));
+          changedNodes = getSelectionChanges(nodes, new Set(), true);
         }
 
         updateNodesAndEdgesSelections({
@@ -326,6 +339,7 @@ const createRFStore = ({
 
         set(currentConnection);
       },
+
       reset: () => {
         // @todo: what should we do about this? Do we still need it?
         // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted
