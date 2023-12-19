@@ -13,6 +13,11 @@ type UseDragParams = {
   isSelectable?: boolean;
 };
 
+/**
+ * Hook for calling XYDrag helper from @xyflow/system.
+ *
+ * @internal
+ */
 function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, nodeId, isSelectable }: UseDragParams) {
   const store = useStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);

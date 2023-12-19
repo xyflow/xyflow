@@ -54,7 +54,8 @@ type StepEdgeType<T> = DefaultEdge<T> & {
 };
 
 /**
- * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component.
+ * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
+ * @public
  */
 export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T> | StepEdgeType<T>;
 
@@ -92,7 +93,8 @@ export type EdgeTextProps = HTMLAttributes<SVGElement> &
   };
 
 /**
- * Custom edge component props.
+ * Custom edge component props
+ * @public
  */
 export type EdgeProps<T = any> = Pick<
   Edge<T>,
@@ -110,7 +112,8 @@ export type EdgeProps<T = any> = Pick<
   };
 
 /**
- * BaseEdge component props.
+ * BaseEdge component props
+ * @public
  */
 export type BaseEdgeProps = EdgeLabelOptions & {
   id?: string;
@@ -124,7 +127,8 @@ export type BaseEdgeProps = EdgeLabelOptions & {
 };
 
 /**
- * Helper type for edge components that get exported by the library.
+ * Helper type for edge components that get exported by the library
+ * @public
  */
 export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
@@ -143,26 +147,31 @@ export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
 
 /**
  * BezierEdge component props
+ * @public
  */
 export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
 /**
  * SmoothStepEdge component props
+ * @public
  */
 export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
 
 /**
  * StepEdge component props
+ * @public
  */
 export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
 
 /**
  * StraightEdge component props
+ * @public
  */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props
+ * @public
  */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
 

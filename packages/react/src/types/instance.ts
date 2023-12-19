@@ -51,7 +51,7 @@ export namespace Instance {
 
   export type UpdateNode<NodeType extends Node = Node> = (
     id: string,
-    dataUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options?: { replace: boolean }
   ) => void;
   export type UpdateNodeData<NodeType extends Node = Node> = (

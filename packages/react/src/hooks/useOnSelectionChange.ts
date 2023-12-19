@@ -7,6 +7,12 @@ export type UseOnSelectionChangeOptions = {
   onChange: OnSelectionChangeFunc;
 };
 
+/**
+ * Hook for registering an onSelectionChange handler.
+ *
+ * @public
+ * @params params.onChange - The handler to register
+ */
 function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
   const store = useStoreApi();
 

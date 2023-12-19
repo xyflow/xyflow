@@ -1,13 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import {
-  getElementsToRemove,
-  getIncomersBase,
-  getOutgoersBase,
-  getOverlappingArea,
-  isRectObject,
-  nodeToRect,
-  type Rect,
-} from '@xyflow/system';
+import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
@@ -238,48 +230,13 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
     []
   );
 
-  const getConnectedEdges = useCallback<Instance.getConnectedEdges>((node) => {
-    const { edges } = store.getState();
-
-    const nodeIds = new Set();
-    if (typeof node === 'string') {
-      nodeIds.add(node);
-    } else if (node.length >= 1) {
-      node.forEach((n) => {
-        nodeIds.add(n.id);
-      });
-    }
-
-    return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
-  }, []);
-
-  const getIncomers = useCallback<Instance.getIncomers>((node) => {
-    const { nodes, edges } = store.getState();
-
-    if (typeof node === 'string') {
-      return getIncomersBase({ id: node }, nodes, edges);
-    }
-
-    return getIncomersBase(node, nodes, edges);
-  }, []);
-
-  const getOutgoers = useCallback<Instance.getOutgoers>((node) => {
-    const { nodes, edges } = store.getState();
-
-    if (typeof node == 'string') {
-      return getOutgoersBase({ id: node }, nodes, edges);
-    }
-
-    return getOutgoersBase(node, nodes, edges);
-  }, []);
-
-  const updateNode = useCallback<Instance.UpdateNode>(
+  const updateNode = useCallback<Instance.UpdateNode<NodeType>>(
     (id, nodeUpdate, options = { replace: true }) => {
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {
-            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
-            return options.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as NodeType) : nodeUpdate;
+            return options.replace && isNode(nextNode) ? (nextNode as NodeType) : { ...node, ...nextNode };
           }
 
           return node;
@@ -289,7 +246,7 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
     [setNodes]
   );
 
-  const updateNodeData = useCallback<Instance.UpdateNodeData>(
+  const updateNodeData = useCallback<Instance.UpdateNodeData<NodeType>>(
     (id, dataUpdate, options = { replace: false }) => {
       updateNode(
         id,
@@ -318,9 +275,6 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
       deleteElements,
       getIntersectingNodes,
       isNodeIntersecting,
-      getConnectedEdges,
-      getIncomers,
-      getOutgoers,
       updateNode,
       updateNodeData,
     };
@@ -338,8 +292,7 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
     deleteElements,
     getIntersectingNodes,
     isNodeIntersecting,
-    getConnectedEdges,
-    getIncomers,
-    getOutgoers,
+    updateNode,
+    updateNodeData,
   ]);
 }

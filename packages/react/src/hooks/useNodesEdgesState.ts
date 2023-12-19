@@ -7,8 +7,6 @@ import type { Node, NodeChange, Edge, EdgeChange } from '../types';
 type ApplyChanges<ItemType, ChangesType> = (changes: ChangesType[], items: ItemType[]) => ItemType[];
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
-// returns a hook that can be used liked this:
-// const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 function createUseItemsState(
   applyChanges: ApplyChanges<Node, NodeChange>
 ): <NodeType extends Node = Node>(
@@ -31,5 +29,20 @@ function createUseItemsState(
   };
 }
 
+/**
+ * Hook for managing the state of nodes - should only be used for prototyping / simple use cases.
+ *
+ * @public
+ * @param initialNodes
+ * @returns an array [nodes, setNodes, onNodesChange]
+ */
 export const useNodesState = createUseItemsState(applyNodeChanges);
+
+/**
+ * Hook for managing the state of edges - should only be used for prototyping / simple use cases.
+ *
+ * @public
+ * @param initialEdges
+ * @returns an array [edges, setEdges, onEdgesChange]
+ */
 export const useEdgesState = createUseItemsState(applyEdgeChanges);

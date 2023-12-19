@@ -40,6 +40,10 @@ export type NodeResetChange<NodeType extends Node = Node> = {
   type: 'reset';
 };
 
+/**
+ * Union type of all possible node changes.
+ * @public
+ */
 export type NodeChange =
   | NodeDimensionChange
   | NodePositionChange

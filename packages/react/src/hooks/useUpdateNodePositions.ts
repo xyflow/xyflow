@@ -7,6 +7,12 @@ import { useStoreApi } from '../hooks/useStore';
 const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
   n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'));
 
+/**
+ * Hook for updating node positions.
+ *
+ * @internal
+ * @returns function for updating node positions
+ */
 function useUpdateNodePositions() {
   const store = useStoreApi();
 

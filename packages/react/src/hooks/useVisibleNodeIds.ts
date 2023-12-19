@@ -13,6 +13,13 @@ const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
     : Array.from(s.nodeLookup.keys());
 };
 
+/**
+ * Hook for getting the visible node ids from the store.
+ *
+ * @internal
+ * @param onlyRenderVisible
+ * @returns array with visible node ids
+ */
 function useVisibleNodeIds(onlyRenderVisible: boolean) {
   const nodeIds = useStore(useCallback(selector(onlyRenderVisible), [onlyRenderVisible]), shallow);
 
