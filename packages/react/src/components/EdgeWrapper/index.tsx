@@ -34,7 +34,6 @@ function EdgeWrapper({
   onEdgeUpdateEnd,
   rfId,
   edgeTypes,
-  elevateEdgesOnSelect,
   noPanClassName,
   onError,
 }: EdgeWrapperProps): JSX.Element | null {
@@ -90,7 +89,7 @@ function EdgeWrapper({
           zIndex: edge.zIndex,
           sourceNode,
           targetNode,
-          elevateOnSelect: elevateEdgesOnSelect,
+          elevateOnSelect: store.elevateEdgesOnSelect,
         });
 
         return {
@@ -98,7 +97,7 @@ function EdgeWrapper({
           ...(edgePosition || nullPosition),
         };
       },
-      [edge.source, edge.target, edge.selected, edge.zIndex, elevateEdgesOnSelect]
+      [edge.source, edge.target, edge.selected, edge.zIndex]
     ),
     shallow
   );

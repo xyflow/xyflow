@@ -78,7 +78,6 @@ export type EdgeWrapperProps = {
   rfId?: string;
   edgeTypes?: EdgeTypes;
   onError?: OnError;
-  elevateEdgesOnSelect?: boolean;
 };
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;

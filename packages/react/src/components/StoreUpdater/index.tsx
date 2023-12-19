@@ -5,10 +5,11 @@
  */
 import { useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
-import { type CoordinateExtent } from '@xyflow/system';
+import { infiniteExtent, type CoordinateExtent } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
+import { initNodeOrigin } from '../../container/ReactFlow';
 
 // these fields exist in the global store and we need to keep them up to date
 const reactFlowFieldsToTrack = [
@@ -27,6 +28,7 @@ const reactFlowFieldsToTrack = [
   'edgesFocusable',
   'edgesUpdatable',
   'elevateNodesOnSelect',
+  'elevateEdgesOnSelect',
   'minZoom',
   'maxZoom',
   'nodeExtent',
@@ -103,7 +105,18 @@ const StoreUpdater = (props: StoreUpdaterProps) => {
     };
   }, []);
 
-  const previousFields = useRef<Partial<StoreUpdaterProps>>({});
+  const previousFields = useRef<Partial<StoreUpdaterProps>>({
+    // these are values that are also passed directly to other components
+    // than the StoreUpdater. We can reduce the number of setStore calls
+    // by setting the same values here as prev fields.
+    translateExtent: infiniteExtent,
+    nodeOrigin: initNodeOrigin,
+    minZoom: 0.5,
+    maxZoom: 2,
+    elementsSelectable: true,
+    noPanClassName: 'nopan',
+    rfId: '1',
+  });
 
   useEffect(
     () => {

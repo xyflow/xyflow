@@ -12,7 +12,7 @@ import useNodeOrEdgeTypesWarning from './useNodeOrEdgeTypesWarning';
 
 export type GraphViewProps = Omit<
   ReactFlowProps,
-  'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd'
+  'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd' | 'elevateEdgesOnSelect'
 > &
   Required<
     Pick<
@@ -96,7 +96,6 @@ const GraphView = ({
   noDragClassName,
   noWheelClassName,
   noPanClassName,
-  elevateEdgesOnSelect,
   disableKeyboardA11y,
   nodeOrigin,
   nodeExtent,
@@ -164,7 +163,6 @@ const GraphView = ({
           edgeUpdaterRadius={edgeUpdaterRadius}
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
-          elevateEdgesOnSelect={!!elevateEdgesOnSelect}
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
         >

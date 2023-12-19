@@ -83,6 +83,7 @@ const getInitialState = ({
     edgesUpdatable: true,
     elementsSelectable: true,
     elevateNodesOnSelect: true,
+    elevateEdgesOnSelect: false,
     fitViewOnInit: false,
     fitViewDone: false,
     fitViewOnInitOptions: undefined,

@@ -23,7 +23,6 @@ type EdgeRendererProps = Pick<
   | 'onEdgeUpdateEnd'
   | 'edgeUpdaterRadius'
   | 'noPanClassName'
-  | 'elevateEdgesOnSelect'
   | 'rfId'
   | 'disableKeyboardA11y'
   | 'edgeTypes'
@@ -44,7 +43,6 @@ const selector = (s: ReactFlowState) => ({
 const EdgeRenderer = ({
   defaultMarkerColor,
   onlyRenderVisibleElements,
-  elevateEdgesOnSelect,
   rfId,
   edgeTypes,
   noPanClassName,
@@ -89,7 +87,6 @@ const EdgeRenderer = ({
             rfId={rfId}
             onError={onError}
             edgeTypes={edgeTypes}
-            elevateEdgesOnSelect={elevateEdgesOnSelect}
           />
         );
       })}

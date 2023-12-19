@@ -88,6 +88,7 @@ export type ReactFlowStore = {
   edgesUpdatable: boolean;
   elementsSelectable: boolean;
   elevateNodesOnSelect: boolean;
+  elevateEdgesOnSelect: boolean;
   selectNodesOnDrag: boolean;
 
   multiSelectionActive: boolean;
