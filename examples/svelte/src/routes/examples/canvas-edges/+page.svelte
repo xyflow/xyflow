@@ -60,7 +60,7 @@
 			source: '1',
 			target: '2',
 			label: 'bezier canvas edge',
-			type: 'canvas-ede'
+			type: 'canvas-edge'
 		},
 		{
 			id: 'e2-2a',

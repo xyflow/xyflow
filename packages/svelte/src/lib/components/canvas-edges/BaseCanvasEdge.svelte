@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useCanvasRenderer } from '$lib/hooks/useCanvasEdgeRenderer';
+  import { useCanvasRenderer } from '$lib/hooks/useCanvasRenderer';
   import { onMount } from 'svelte';
 
   export let id: string;

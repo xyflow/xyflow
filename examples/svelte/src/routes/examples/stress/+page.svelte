@@ -11,6 +11,7 @@
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+	import CanvasBezierEdge from '../canvas-edges/CanvasBezierEdge.svelte';
 
 	const yNodes = 25;
 	const xNodes = 25;
@@ -37,7 +38,8 @@
 				const edge = {
 					id: `${source.id}-${id}`,
 					source: source.id,
-					target: id
+					target: id,
+					type: 'canvas-edge'
 				};
 				edgeItems.push(edge);
 			}
@@ -48,9 +50,13 @@
 
 	const nodes = writable(nodeItems);
 	const edges = writable(edgeItems);
+
+	const edgeTypes = {
+		'canvas-edge': CanvasBezierEdge
+	};
 </script>
 
-<SvelteFlow {nodes} {edges} fitView minZoom={0.2}>
+<SvelteFlow {nodes} {edges} {edgeTypes} fitView minZoom={0.2}>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<MiniMap />
