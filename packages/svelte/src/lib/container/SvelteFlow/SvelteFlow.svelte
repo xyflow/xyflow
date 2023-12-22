@@ -23,6 +23,7 @@
   } from './utils';
   import { get } from 'svelte/store';
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
+  import CanvasEdgeRenderer from '../CanvasEdgeRenderer/CanvasEdgeRenderer.svelte';
 
   type $$Props = SvelteFlowProps;
 
@@ -233,6 +234,7 @@
       <UserSelection />
     </Pane>
   </Zoom>
+  <CanvasEdgeRenderer />
   <Attribution {proOptions} position={attributionPosition} />
   <slot />
 </div>

@@ -8,6 +8,7 @@ export * from '$lib/components/SvelteFlowProvider';
 export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/BaseEdge';
 export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
+export { BaseCanvasEdge } from '$lib/components/canvas-edges';
 export * from '$lib/components/Handle';
 
 // plugins

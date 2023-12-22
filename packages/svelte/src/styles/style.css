@@ -24,3 +24,11 @@
 .svelte-flow__edgelabel-renderer {
   z-index: 0;
 }
+
+.svelte-flow__edge-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
