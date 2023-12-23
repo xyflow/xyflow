@@ -11,6 +11,10 @@
   const canvasRenderer = useCanvasRenderer();
 
   $: path2D = new Path2D(path);
+  $: {
+    path2D; // reactivity trigger
+    canvasRenderer.updateElement(id);
+  }
 
   function render() {
     const ctx = canvasRenderer.ctx;
@@ -20,7 +24,13 @@
   }
 
   function hit(x: number, y: number) {
-    return false;
+    // console.log(x, y);
+    // console.log(path);
+    const ctx = canvasRenderer.ctx;
+    ctx.lineWidth = interactionWidth;
+
+    // ctx.stroke(path2D);
+    return ctx.isPointInStroke(path2D, x, y);
   }
 
   onMount(() => {
