@@ -77,6 +77,7 @@ function initRenderer() {
         // TODO: implement hover
         // Optimization: only call hover on elements that are in view
         console.log('clicked', id);
+        break;
       }
     }
   }
