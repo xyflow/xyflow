@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@svelte-put/shortcut": "^3.1.0",
+    "@timohausmann/quadtree-ts": "^2.2.2",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.4"
   },

@@ -2,6 +2,12 @@ import { get } from 'svelte/store';
 import { useSvelteFlow } from './useSvelteFlow';
 import type { Viewport } from '@xyflow/system';
 
+// import { Quadtree } from '@timohausmann/quadtree-ts';
+// should yield surprisingly good performance especially for implmenting hover
+// even though it is not a infinite quadtree implementation,
+// performance seems very fast even when rebuilding the tree every frame
+// new function needed getBounds() -> returns {x, y, width, height}
+
 export type RenderElement = {
   render: () => void;
   hit: (x: number, y: number) => boolean;
