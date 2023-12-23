@@ -177,6 +177,10 @@
 	}}
 	on:selectionclick={(event) => console.log('on selection click', event)}
 	on:selectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
+	onbeforedelete={({ nodes, edges }) => {
+		console.log('on before delete', nodes, edges);
+		return true;
+	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}

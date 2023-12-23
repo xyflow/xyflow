@@ -13,7 +13,8 @@ import {
   type Rect,
   getViewportForBounds,
   getElementsToRemove,
-  rendererPointToPoint
+  rendererPointToPoint,
+  type OnBeforeDelete
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -48,7 +49,8 @@ export function useSvelteFlow(): {
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
   deleteElements: (
     nodesToRemove?: (Node | { id: Node['id'] })[],
-    edgesToRemove?: (Edge | { id: Edge['id'] })[]
+    edgesToRemove?: (Edge | { id: Edge['id'] })[],
+    onBeforeDelete?: OnBeforeDelete
   ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
   screenToFlowPosition: (position: XYPosition) => XYPosition;
   flowToScreenPosition: (position: XYPosition) => XYPosition;
@@ -69,6 +71,7 @@ export function useSvelteFlow(): {
     zoomIn,
     zoomOut,
     fitView,
+    onbeforedelete,
     snapGrid,
     viewport,
     width,
@@ -200,23 +203,27 @@ export function useSvelteFlow(): {
     },
     deleteElements: (
       nodesToRemove: (Node | { id: Node['id'] })[] = [],
-      edgesToRemove: (Edge | { id: Edge['id'] })[] = []
+      edgesToRemove: (Edge | { id: Edge['id'] })[] = [],
+      onBeforeDelete?: OnBeforeDelete
     ) => {
-      const _nodes = get(nodes);
-      const _edges = get(edges);
-      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+      const { nodes: matchingNodes, edges: matchingEdges } = getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
-        nodes: _nodes,
-        edges: _edges
+        nodes: get(nodes),
+        edges: get(edges),
+        onBeforeDelete
       });
 
       if (matchingNodes) {
-        nodes.set(_nodes.filter((node) => !matchingNodes.some(({ id }) => id === node.id)));
+        nodes.update((nds) =>
+          nds.filter((node) => !matchingNodes.some(({ id }) => id === node.id))
+        );
       }
 
       if (matchingEdges) {
-        edges.set(_edges.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id)));
+        edges.update((eds) =>
+          eds.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id))
+        );
       }
 
       return {

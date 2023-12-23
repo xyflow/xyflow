@@ -70,6 +70,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onSelectionContextMenu,
       onSelectionStart,
       onSelectionEnd,
+      onBeforeDelete,
       connectionMode,
       connectionLineType = ConnectionLineType.Bezier,
       connectionLineStyle,
@@ -284,6 +285,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             isValidConnection={isValidConnection}
             selectNodesOnDrag={selectNodesOnDrag}
             nodeDragThreshold={nodeDragThreshold}
+            onBeforeDelete={onBeforeDelete}
           />
           <SelectionListener onSelectionChange={onSelectionChange} />
           {children}

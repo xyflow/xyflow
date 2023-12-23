@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { Rect, Viewport } from '@xyflow/system';
+import type { OnBeforeDelete, Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -12,6 +12,7 @@ export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends E
 export type DeleteElementsOptions = {
   nodes?: (Node | { id: Node['id'] })[];
   edges?: (Edge | { id: Edge['id'] })[];
+  onBeforeDelete?: OnBeforeDelete;
 };
 
 export namespace Instance {
@@ -31,7 +32,7 @@ export namespace Instance {
     NodeType,
     EdgeType
   >;
-  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => {
+  export type DeleteElements = (params: DeleteElementsOptions) => {
     deletedNodes: Node[];
     deletedEdges: Edge[];
   };

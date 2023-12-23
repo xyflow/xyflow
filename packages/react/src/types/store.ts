@@ -27,6 +27,7 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
+  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -132,6 +133,7 @@ export type ReactFlowStore = {
   onViewportChangeStart?: OnViewportChange;
   onViewportChange?: OnViewportChange;
   onViewportChangeEnd?: OnViewportChange;
+  onBeforeDelete?: OnBeforeDelete;
 
   onSelectionChangeHandlers: OnSelectionChangeFunc[];
 

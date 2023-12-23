@@ -15,6 +15,8 @@ import {
   Background,
   MiniMap,
   ConnectionMode,
+  OnBeforeDelete,
+  OnDelete,
 } from '@xyflow/react';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -45,8 +47,11 @@ const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) => console.log('edge m
 const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse move', edge);
 const onEdgeMouseLeave = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
 const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) => console.log('edge double click', edge);
-const onNodesDelete = (nodes: Node[]) => console.log('nodes delete', nodes);
-const onEdgesDelete = (edges: Edge[]) => console.log('edges delete', edges);
+const onBeforeDelete: OnBeforeDelete = ({ nodes, edges }) => {
+  console.log('on before delete', nodes, edges);
+  return true;
+};
+const onDelete: OnDelete = ({ nodes, edges }) => console.log('on delete', nodes, edges);
 const onPaneMouseMove = (e: ReactMouseEvent) => console.log('pane move', e.clientX, e.clientY);
 
 const initialNodes: Node[] = [
@@ -226,8 +231,8 @@ const OverviewFlow = () => {
       fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
       attributionPosition="top-right"
       maxZoom={Infinity}
-      onNodesDelete={onNodesDelete}
-      onEdgesDelete={onEdgesDelete}
+      onBeforeDelete={onBeforeDelete}
+      onDelete={onDelete}
       onPaneMouseMove={onPaneMouseMove}
     >
       <MiniMap nodeBorderRadius={2} />

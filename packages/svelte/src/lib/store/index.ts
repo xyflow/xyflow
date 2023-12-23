@@ -215,11 +215,12 @@ export function createStore({
       const selectedNodes = nodes.filter((node) => node.selected);
       const selectedEdges = edges.filter((edge) => edge.selected);
 
-      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+      const { nodes: matchingNodes, edges: matchingEdges } = getElementsToRemove({
         nodesToRemove: selectedNodes,
         edgesToRemove: selectedEdges,
         nodes,
-        edges
+        edges,
+        onBeforeDelete: get(store.onbeforedelete)
       });
 
       if (matchingNodes.length || matchingEdges.length) {
