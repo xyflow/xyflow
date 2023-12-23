@@ -208,18 +208,19 @@ export function createStore({
     }
   }
 
-  store.deleteKeyPressed.subscribe((deleteKeyPressed) => {
+  store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
     if (deleteKeyPressed) {
       const nodes = get(store.nodes);
       const edges = get(store.edges);
       const selectedNodes = nodes.filter((node) => node.selected);
       const selectedEdges = edges.filter((edge) => edge.selected);
 
-      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove: selectedNodes,
         edgesToRemove: selectedEdges,
         nodes,
-        edges
+        edges,
+        onBeforeDelete: get(store.onbeforedelete)
       });
 
       if (matchingNodes.length || matchingEdges.length) {

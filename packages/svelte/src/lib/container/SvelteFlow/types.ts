@@ -18,7 +18,8 @@ import type {
   ColorMode,
   OnConnect,
   OnConnectStart,
-  OnConnectEnd
+  OnConnectEnd,
+  OnBeforeDelete
 } from '@xyflow/system';
 
 import type {
@@ -93,6 +94,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onMoveEnd?: OnMoveEnd;
   onerror?: OnError;
   ondelete?: OnDelete;
+  onbeforedelete?: OnBeforeDelete;
 
   onedgecreate?: OnEdgeCreate;
 

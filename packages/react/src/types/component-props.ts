@@ -21,6 +21,7 @@ import type {
   IsValidConnection,
   ColorMode,
   SnapGrid,
+  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -100,6 +101,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   onPaneMouseEnter?: (event: ReactMouseEvent) => void;
   onPaneMouseMove?: (event: ReactMouseEvent) => void;
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
+  onBeforeDelete?: OnBeforeDelete;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
   connectionLineType?: ConnectionLineType;

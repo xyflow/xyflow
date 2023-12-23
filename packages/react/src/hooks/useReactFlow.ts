@@ -12,7 +12,6 @@ import type {
   EdgeResetChange,
   NodeRemoveChange,
   EdgeRemoveChange,
-  NodeChange,
   Node,
   Edge,
 } from '../types';
@@ -118,67 +117,65 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
     };
   }, []);
 
-  const deleteElements = useCallback<Instance.DeleteElements>(({ nodes: nodesDeleted, edges: edgesDeleted }) => {
-    const {
-      nodes,
-      edges,
-      hasDefaultNodes,
-      hasDefaultEdges,
-      onNodesDelete,
-      onEdgesDelete,
-      onNodesChange,
-      onEdgesChange,
-      onDelete,
-    } = store.getState();
-    const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
-      nodesToRemove: nodesDeleted || [],
-      edgesToRemove: edgesDeleted || [],
-      nodes,
-      edges,
-    });
+  const deleteElements = useCallback<Instance.DeleteElements>(
+    async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [], onBeforeDelete }) => {
+      const {
+        nodes,
+        edges,
+        hasDefaultNodes,
+        hasDefaultEdges,
+        onNodesDelete,
+        onEdgesDelete,
+        onNodesChange,
+        onEdgesChange,
+        onDelete,
+      } = store.getState();
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+        nodesToRemove,
+        edgesToRemove,
+        nodes,
+        edges,
+        onBeforeDelete,
+      });
 
-    if (matchingNodes.length || matchingEdges.length) {
-      if (hasDefaultEdges || hasDefaultNodes) {
+      const hasMatchingEdges = matchingEdges.length > 0;
+      const hasMatchingNodes = matchingNodes.length > 0;
+
+      if (hasMatchingEdges) {
         if (hasDefaultEdges) {
           store.setState({
             edges: edges.filter((e) => !matchingEdges.some((mE) => mE.id === e.id)),
           });
         }
 
+        onEdgesDelete?.(matchingEdges);
+        onEdgesChange?.(
+          matchingEdges.map((edge) => ({
+            id: edge.id,
+            type: 'remove',
+          }))
+        );
+      }
+
+      if (hasMatchingNodes) {
         if (hasDefaultNodes) {
           store.setState({
             nodes: nodes.filter((n) => !matchingNodes.some((mN) => mN.id === n.id)),
           });
         }
+
+        onNodesDelete?.(matchingNodes);
+        onNodesChange?.(matchingNodes.map((node) => ({ id: node.id, type: 'remove' })));
       }
 
-      if (matchingEdges.length > 0) {
-        onEdgesDelete?.(matchingEdges);
-
-        if (onEdgesChange) {
-          onEdgesChange(
-            matchingEdges.map((edge) => ({
-              id: edge.id,
-              type: 'remove',
-            }))
-          );
-        }
+      if (hasMatchingNodes || hasMatchingEdges) {
+        onDelete?.({ nodes: matchingNodes, edges: matchingEdges });
       }
 
-      if (matchingNodes.length > 0) {
-        onNodesDelete?.(matchingNodes as Node[]);
-
-        if (onNodesChange) {
-          const nodeChanges: NodeChange[] = matchingNodes.map((node) => ({ id: node.id, type: 'remove' }));
-          onNodesChange(nodeChanges);
-        }
-      }
-
-      onDelete?.({ nodes: matchingNodes, edges: matchingEdges });
-    }
-
-    return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
-  }, []);
+      return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
+    },
+    []
+  );
 
   const getNodeRect = useCallback(
     (nodeOrRect: NodeType | { id: Node['id'] } | Rect): [Rect | null, NodeType | null | undefined, boolean] => {

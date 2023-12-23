@@ -1,6 +1,6 @@
 import type { SvelteFlowStore } from '$lib/store/types';
 import type { EdgeTypes, NodeTypes } from '$lib/types';
-import type { ColorMode, CoordinateExtent } from '@xyflow/system';
+import type { CoordinateExtent } from '@xyflow/system';
 import type { Writable } from 'svelte/store';
 
 // this is helper function for updating the store
@@ -69,6 +69,7 @@ export type UpdatableStoreProps = {
   onconnect?: UnwrapWritable<SvelteFlowStore['onconnect']>;
   onconnectstart?: UnwrapWritable<SvelteFlowStore['onconnectstart']>;
   onconnectend?: UnwrapWritable<SvelteFlowStore['onconnectend']>;
+  onbeforedelete?: UnwrapWritable<SvelteFlowStore['onbeforedelete']>;
 };
 
 export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStoreProps) {
@@ -80,16 +81,4 @@ export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStorePr
       store[prop].set(update);
     }
   });
-}
-
-export function getColorModeClass(colorMode?: ColorMode) {
-  if (colorMode !== 'system') {
-    return colorMode;
-  }
-
-  if (!colorMode || typeof window === 'undefined' || !window.matchMedia) {
-    return 'light';
-  }
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }

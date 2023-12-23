@@ -79,6 +79,7 @@ export {
   type ColorMode,
   type ColorModeClass,
   type HandleType,
+  type OnBeforeDelete,
 } from '@xyflow/system';
 
 // system utils

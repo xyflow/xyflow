@@ -22,6 +22,7 @@ import {
   NodeDragItem,
   CoordinateExtent,
   OnError,
+  OnBeforeDelete,
 } from '../types';
 import { errorMessages } from '../constants';
 
@@ -332,47 +333,69 @@ export function calcNextPosition<NodeType extends NodeBase>(
  * @param param.edgesToRemove - The edges to remove
  * @param param.nodes - All nodes
  * @param param.edges - All edges
- * @returns matchingNodes: nodes that can be deleted, matchingEdges: edges that can be deleted
+ * @param param.onBeforeDelete - Callback to check which nodes and edges can be deleted
+ * @returns nodes: nodes that can be deleted, edges: edges that can be deleted
  */
-export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
-  nodesToRemove,
-  edgesToRemove,
+export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
+  nodesToRemove = [],
+  edgesToRemove = [],
   nodes,
   edges,
+  onBeforeDelete,
 }: {
   nodesToRemove: Partial<NodeType>[];
   edgesToRemove: Partial<EdgeType>[];
   nodes: NodeType[];
   edges: EdgeType[];
-}): {
-  matchingNodes: NodeType[];
-  matchingEdges: EdgeType[];
-} {
+  onBeforeDelete?: OnBeforeDelete;
+}): Promise<{
+  nodes: NodeType[];
+  edges: EdgeType[];
+}> {
   const nodeIds = nodesToRemove.map((node) => node.id);
+  const matchingNodes: NodeType[] = [];
+
+  for (const node of nodes) {
+    if (node.deletable === false) {
+      continue;
+    }
+
+    const isIncluded = nodeIds.includes(node.id);
+    const parentHit = !isIncluded && node.parentNode && matchingNodes.find((n) => n.id === node.parentNode);
+
+    if (isIncluded || parentHit) {
+      matchingNodes.push(node);
+    }
+  }
+
   const edgeIds = edgesToRemove.map((edge) => edge.id);
+  const deletableEdges = edges.filter((edge) => edge.deletable !== false);
+  const connectedEdges = getConnectedEdgesBase(matchingNodes, deletableEdges);
+  const matchingEdges: EdgeType[] = connectedEdges;
 
-  const matchingNodes = nodes.reduce<NodeType[]>((res, node) => {
-    const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
-    const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
-    if (deletable && (nodeIds.includes(node.id) || parentHit)) {
-      res.push(node);
+  for (const edge of deletableEdges) {
+    const isIncluded = edgeIds.includes(edge.id);
+
+    if (isIncluded && !matchingEdges.find((e) => e.id === edge.id)) {
+      matchingEdges.push(edge);
     }
+  }
 
-    return res;
-  }, []);
-  const deletableEdges = edges.filter((e) => (typeof e.deletable === 'boolean' ? e.deletable : true));
-  const initialHitEdges = deletableEdges.filter((e) => edgeIds.includes(e.id));
-  const connectedEdges = getConnectedEdgesBase<NodeType, EdgeType>(matchingNodes, deletableEdges);
-  const matchingEdges = connectedEdges.reduce((res, edge) => {
-    if (!res.find((e) => e.id === edge.id)) {
-      res.push(edge);
-    }
+  if (!onBeforeDelete) {
+    return {
+      edges: matchingEdges,
+      nodes: matchingNodes,
+    };
+  }
 
-    return res;
-  }, initialHitEdges);
+  const onBeforeDeleteResult = await onBeforeDelete({
+    nodes: matchingNodes,
+    edges: matchingEdges,
+  });
 
-  return {
-    matchingEdges,
-    matchingNodes,
-  };
+  if (typeof onBeforeDeleteResult === 'boolean') {
+    return onBeforeDeleteResult ? { edges: matchingEdges, nodes: matchingNodes } : { edges: [], nodes: [] };
+  }
+
+  return onBeforeDeleteResult;
 }

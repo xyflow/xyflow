@@ -22,7 +22,8 @@ import {
   type OnConnect,
   type OnConnectStart,
   type OnConnectEnd,
-  type NodeLookup
+  type NodeLookup,
+  type OnBeforeDelete
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -148,6 +149,7 @@ export const getInitialStore = ({
     onedgecreate: writable<OnEdgeCreate>(undefined),
     onconnect: writable<OnConnect>(undefined),
     onconnectstart: writable<OnConnectStart>(undefined),
-    onconnectend: writable<OnConnectEnd>(undefined)
+    onconnectend: writable<OnConnectEnd>(undefined),
+    onbeforedelete: writable<OnBeforeDelete>(undefined)
   };
 };
