@@ -43,6 +43,7 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
 import UseHandleConnections from '../examples/UseHandleConnections';
@@ -253,6 +254,11 @@ const routes: IRoute[] = [
     name: 'Update Node',
     path: 'update-node',
     component: UpdateNode,
+  },
+  {
+    name: 'useConnection',
+    path: 'use-connection',
+    component: UseConnection,
   },
   {
     name: 'useNodesInitialized',
