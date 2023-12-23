@@ -1,33 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useCallback, type SetStateAction, type Dispatch } from 'react';
+import { useState, useCallback, type Dispatch, type SetStateAction } from 'react';
 
 import { applyNodeChanges, applyEdgeChanges } from '../utils/changes';
 import type { Node, NodeChange, Edge, EdgeChange } from '../types';
-
-type ApplyChanges<ItemType, ChangesType> = (changes: ChangesType[], items: ItemType[]) => ItemType[];
-type OnChange<ChangesType> = (changes: ChangesType[]) => void;
-
-function createUseItemsState(
-  applyChanges: ApplyChanges<Node, NodeChange>
-): <NodeType extends Node = Node>(
-  initialItems: NodeType[]
-) => [NodeType[], Dispatch<SetStateAction<NodeType[]>>, OnChange<NodeChange>];
-function createUseItemsState(
-  applyChanges: ApplyChanges<Edge, EdgeChange>
-): <EdgeType extends Edge = Edge>(
-  initialItems: EdgeType[]
-) => [EdgeType[], Dispatch<SetStateAction<EdgeType[]>>, OnChange<EdgeChange>];
-function createUseItemsState(
-  applyChanges: ApplyChanges<any, any>
-): (initialItems: any[]) => [any[], Dispatch<SetStateAction<any[]>>, OnChange<any>] {
-  return (initialItems: any[]) => {
-    const [items, setItems] = useState(initialItems);
-
-    const onItemsChange = useCallback((changes: any[]) => setItems((items: any) => applyChanges(changes, items)), []);
-
-    return [items, setItems, onItemsChange];
-  };
-}
 
 /**
  * Hook for managing the state of nodes - should only be used for prototyping / simple use cases.
@@ -36,7 +10,14 @@ function createUseItemsState(
  * @param initialNodes
  * @returns an array [nodes, setNodes, onNodesChange]
  */
-export const useNodesState = createUseItemsState(applyNodeChanges);
+export function useNodesState<NodeType extends Node = Node>(
+  initialNodes: NodeType[]
+): [NodeType[], Dispatch<SetStateAction<NodeType[]>>, (changes: NodeChange[]) => void] {
+  const [nodes, setNodes] = useState(initialNodes);
+  const onNodesChange = useCallback((changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
+
+  return [nodes, setNodes, onNodesChange];
+}
 
 /**
  * Hook for managing the state of edges - should only be used for prototyping / simple use cases.
@@ -45,4 +26,11 @@ export const useNodesState = createUseItemsState(applyNodeChanges);
  * @param initialEdges
  * @returns an array [edges, setEdges, onEdgesChange]
  */
-export const useEdgesState = createUseItemsState(applyEdgeChanges);
+export function useEdgesState<EdgeType extends Edge = Edge>(
+  initialEdges: EdgeType[]
+): [EdgeType[], Dispatch<SetStateAction<EdgeType[]>>, (changes: EdgeChange[]) => void] {
+  const [edges, setEdges] = useState(initialEdges);
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
+
+  return [edges, setEdges, onEdgesChange];
+}

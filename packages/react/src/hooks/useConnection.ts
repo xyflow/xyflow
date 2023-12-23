@@ -13,6 +13,7 @@ const selector = (s: ReactFlowStore) => ({
 /**
  * Hook for accessing the ongoing connection.
  *
+ * @public
  * @returns ongoing connection: startHandle, endHandle, status, position
  */
 export function useConnection(): {

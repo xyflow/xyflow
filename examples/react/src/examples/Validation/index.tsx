@@ -55,7 +55,7 @@ const nodeTypes: NodeTypes = {
 const ValidationFlow = () => {
   const [value, setValue] = useState(0);
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const onConnectStart: OnConnectStart = useCallback(
     (event, params) => {
