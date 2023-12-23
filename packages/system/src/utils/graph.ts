@@ -336,7 +336,7 @@ export function calcNextPosition<NodeType extends NodeBase>(
  * @param param.onBeforeDelete - Callback to check which nodes and edges can be deleted
  * @returns nodes: nodes that can be deleted, edges: edges that can be deleted
  */
-export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
+export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   nodesToRemove = [],
   edgesToRemove = [],
   nodes,
@@ -348,10 +348,10 @@ export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeTy
   nodes: NodeType[];
   edges: EdgeType[];
   onBeforeDelete?: OnBeforeDelete;
-}): {
+}): Promise<{
   nodes: NodeType[];
   edges: EdgeType[];
-} {
+}> {
   const nodeIds = nodesToRemove.map((node) => node.id);
   const matchingNodes: NodeType[] = [];
 
@@ -388,7 +388,7 @@ export function getElementsToRemove<NodeType extends NodeBase = NodeBase, EdgeTy
     };
   }
 
-  const onBeforeDeleteResult = onBeforeDelete({
+  const onBeforeDeleteResult = await onBeforeDelete({
     nodes: matchingNodes,
     edges: matchingEdges,
   });

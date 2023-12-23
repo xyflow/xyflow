@@ -51,7 +51,7 @@ export function useSvelteFlow(): {
     nodesToRemove?: (Node | { id: Node['id'] })[],
     edgesToRemove?: (Edge | { id: Edge['id'] })[],
     onBeforeDelete?: OnBeforeDelete
-  ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
+  ) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>;
   screenToFlowPosition: (position: XYPosition) => XYPosition;
   flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
@@ -201,12 +201,12 @@ export function useSvelteFlow(): {
 
       return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
-    deleteElements: (
+    deleteElements: async (
       nodesToRemove: (Node | { id: Node['id'] })[] = [],
       edgesToRemove: (Edge | { id: Edge['id'] })[] = [],
       onBeforeDelete?: OnBeforeDelete
     ) => {
-      const { nodes: matchingNodes, edges: matchingEdges } = getElementsToRemove({
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
         nodes: get(nodes),

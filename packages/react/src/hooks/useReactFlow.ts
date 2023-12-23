@@ -118,7 +118,7 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
   }, []);
 
   const deleteElements = useCallback<Instance.DeleteElements>(
-    ({ nodes: nodesToRemove = [], edges: edgesToRemove = [], onBeforeDelete }) => {
+    async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [], onBeforeDelete }) => {
       const {
         nodes,
         edges,
@@ -130,7 +130,7 @@ export default function useReactFlow<NodeType extends Node = Node, EdgeType exte
         onEdgesChange,
         onDelete,
       } = store.getState();
-      const { nodes: matchingNodes, edges: matchingEdges } = getElementsToRemove({
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
         nodes,

@@ -148,4 +148,4 @@ export type OnBeforeDelete = <NodeType extends NodeBase = NodeBase, EdgeType ext
 }: {
   nodes: NodeType[];
   edges: EdgeType[];
-}) => boolean | { nodes: NodeType[]; edges: EdgeType[] };
+}) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;

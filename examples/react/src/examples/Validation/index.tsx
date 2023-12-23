@@ -86,7 +86,7 @@ const ValidationFlow = () => {
     [setEdges]
   );
 
-  const onBeforeDelete: OnBeforeDelete = useCallback(() => {
+  const onBeforeDelete: OnBeforeDelete = useCallback(async () => {
     return true;
   }, []);
 

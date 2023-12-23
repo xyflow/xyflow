@@ -32,10 +32,10 @@ export namespace Instance {
     NodeType,
     EdgeType
   >;
-  export type DeleteElements = (params: DeleteElementsOptions) => {
+  export type DeleteElements = (params: DeleteElementsOptions) => Promise<{
     deletedNodes: Node[];
     deletedEdges: Edge[];
-  };
+  }>;
   export type GetIntersectingNodes<NodeType extends Node = Node> = (
     node: NodeType | { id: Node['id'] } | Rect,
     partially?: boolean,

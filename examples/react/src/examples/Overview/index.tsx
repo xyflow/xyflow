@@ -47,9 +47,10 @@ const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) => console.log('edge m
 const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse move', edge);
 const onEdgeMouseLeave = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
 const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) => console.log('edge double click', edge);
-const onBeforeDelete: OnBeforeDelete = ({ nodes, edges }) => {
+const onBeforeDelete: OnBeforeDelete = async ({ nodes, edges }) => {
   console.log('on before delete', nodes, edges);
-  return true;
+  const deleteElements = confirm('Do you want to remove the selected elements?');
+  return deleteElements;
 };
 const onDelete: OnDelete = ({ nodes, edges }) => console.log('on delete', nodes, edges);
 const onPaneMouseMove = (e: ReactMouseEvent) => console.log('pane move', e.clientX, e.clientY);
