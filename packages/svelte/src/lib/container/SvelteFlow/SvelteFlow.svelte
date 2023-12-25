@@ -8,6 +8,7 @@
   import { Viewport as ViewportComponent } from '$lib/container/Viewport';
   import { NodeRenderer } from '$lib/container/NodeRenderer';
   import { EdgeRenderer } from '$lib/container/EdgeRenderer';
+  import { CanvasRenderer } from '$lib/container/CanvasRenderer';
   import { UserSelection } from '$lib/components/UserSelection';
   import { NodeSelection } from '$lib/components/NodeSelection';
   import { KeyHandler } from '$lib/components/KeyHandler';
@@ -23,7 +24,6 @@
   } from './utils';
   import { get } from 'svelte/store';
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
-  import CanvasEdgeRenderer from '../CanvasEdgeRenderer/CanvasEdgeRenderer.svelte';
 
   type $$Props = SvelteFlowProps;
 
@@ -234,7 +234,7 @@
       <UserSelection />
     </Pane>
   </Zoom>
-  <CanvasEdgeRenderer />
+  <CanvasRenderer />
   <Attribution {proOptions} position={attributionPosition} />
   <slot />
 </div>

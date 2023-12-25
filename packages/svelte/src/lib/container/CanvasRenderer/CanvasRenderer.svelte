@@ -2,8 +2,9 @@
   import { useStore } from '$lib/store';
   import { onMount } from 'svelte';
 
-  const { viewport, visibleEdges, width, height } = useStore();
+  const { width, height } = useStore();
   let canvas: HTMLCanvasElement;
+
   let dpr = 1;
   onMount(() => {
     dpr = window.devicePixelRatio ?? 1;

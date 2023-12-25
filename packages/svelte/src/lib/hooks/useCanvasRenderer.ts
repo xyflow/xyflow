@@ -1,17 +1,17 @@
 import { get } from 'svelte/store';
 import { useSvelteFlow } from './useSvelteFlow';
-import type { Viewport } from '@xyflow/system';
+import type { Rect, Viewport } from '@xyflow/system';
 
-// import { Quadtree } from '@timohausmann/quadtree-ts';
-// should yield surprisingly good performance especially for implmenting hover
-// even though it is not a infinite quadtree implementation,
-// performance seems very fast even when rebuilding the tree every frame
-// new function needed getBounds() -> returns {x, y, width, height}
+import { Quadtree, Rectangle } from '@timohausmann/quadtree-ts';
+import { useStore } from '$lib/store';
+
+//FIXME: Rerender when canvas resizes
 
 export type RenderElement = {
   render: () => void;
   hit: (x: number, y: number) => boolean;
   click?: (e: MouseEvent) => void;
+  getBounds: () => Rect;
 };
 
 // Singleton pattern -> Maybe more elegant as a clojure?
@@ -22,11 +22,22 @@ let ctx: CanvasRenderingContext2D;
 let view: Viewport;
 let viewChanged = false;
 let elementHovered: string | null = null;
+// FIXME: Quadtree size should be dynamic & infinite
+let quadtree: Quadtree<any> = new Quadtree({
+  width: 20000,
+  height: 20000,
+  x: -10000,
+  y: -10000,
+  maxLevels: 8
+});
+let bBox: DOMRectReadOnly;
 
 let lastPointerEvent = {
   changed: false,
   x: 0,
-  y: 0
+  y: 0,
+  screenX: 0,
+  screenY: 0
 };
 
 const elements = new Map<string, RenderElement>();
@@ -48,11 +59,17 @@ function initRenderer() {
   // there is miniscule perf gain if we cache it here maybe relevant at 120Hz
   ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-  const { viewport } = useSvelteFlow();
+  const { viewport, screenToFlowPosition } = useSvelteFlow();
+  const { domNode } = useStore();
   viewport.subscribe((_view) => {
     view = _view;
     viewChanged = true;
   });
+
+  const observer = new IntersectionObserver((entries) => {
+    bBox = entries[0].boundingClientRect;
+  });
+  observer.observe(get(domNode)!);
 
   view = get(viewport);
   viewChanged = true;
@@ -65,17 +82,32 @@ function initRenderer() {
   }
 
   function pointerMove(e: PointerEvent) {
-    // console.log(e);
+    const flowPosition = screenToFlowPosition({ x: e.clientX, y: e.clientY });
     lastPointerEvent.changed = true;
-    lastPointerEvent.x = e.offsetX;
-    lastPointerEvent.y = e.offsetY;
+    lastPointerEvent.x = flowPosition.x;
+    lastPointerEvent.y = flowPosition.y;
+    lastPointerEvent.screenX = e.clientX - bBox?.left;
+    lastPointerEvent.screenY = e.clientY - bBox?.top;
   }
 
   function click(e: MouseEvent) {
-    for (const [id, element] of elements) {
-      if (element.hit(lastPointerEvent.x * dpr, lastPointerEvent.y * dpr)) {
+    // Only check hits on elements that are in proximity of the pointer
+    const closeElements = quadtree.retrieve(
+      new Rectangle({
+        x: lastPointerEvent.x,
+        y: lastPointerEvent.y,
+        width: 1,
+        height: 1
+      })
+    );
+    for (const element of closeElements) {
+      const id = element.data;
+      const _element = elements.get(element.data);
+      if (
+        _element &&
+        _element.hit(lastPointerEvent.screenX * dpr, lastPointerEvent.screenY * dpr)
+      ) {
         // TODO: implement hover
-        // Optimization: only call hover on elements that are in view
         console.log('clicked', id);
         break;
       }
@@ -104,11 +136,24 @@ function initRenderer() {
     if (lastPointerEvent.changed) {
       lastPointerEvent.changed = false;
       let hitSomething = false;
-      for (const [id, element] of elements) {
-        if (element.hit(lastPointerEvent.x * dpr, lastPointerEvent.y * dpr)) {
-          // TODO: implement hover
-          // Optimization: only call hover on elements that are in view
-          //   console.log('hit', id);
+
+      // Only check hits on elements that are in proximity of the pointer
+      const closeElements = quadtree.retrieve(
+        new Rectangle({
+          x: lastPointerEvent.x,
+          y: lastPointerEvent.y,
+          width: 1,
+          height: 1
+        })
+      );
+
+      for (const element of closeElements) {
+        const id = element.data;
+        const _element = elements.get(id);
+        if (
+          _element &&
+          _element.hit(lastPointerEvent.screenX * dpr, lastPointerEvent.screenY * dpr)
+        ) {
           hitSomething = true;
           if (elementHovered !== id) {
             if (elementHovered) {
@@ -135,9 +180,21 @@ function initRenderer() {
       // Set global transform for the canvas based on viewport
       ctx.setTransform(view.zoom * dpr, 0, 0, view.zoom * dpr, view.x * dpr, view.y * dpr);
 
+      // Reset quadtree if elements have been updated
+      if (updatedElements.size > 0) {
+        quadtree.clear();
+      }
+
       // Call render functions on all elements
       // Optimization: only call render on elements that are in view
-      elements.forEach((elem) => elem.render());
+      elements.forEach((elem, key) => {
+        if (updatedElements.size > 0) {
+          const bounds = elem.getBounds() as Rectangle<string>;
+          bounds.data = key;
+          quadtree.insert(new Rectangle(bounds));
+        }
+        elem.render();
+      });
 
       // Reset flags
       viewChanged = false;

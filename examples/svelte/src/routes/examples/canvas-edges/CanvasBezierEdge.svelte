@@ -24,9 +24,16 @@
 		sourcePosition,
 		targetPosition
 	});
+
+	$: bounds = {
+		x: Math.min(sourceX, targetX),
+		y: Math.min(sourceY, targetY),
+		width: Math.abs(sourceX - targetX),
+		height: Math.abs(sourceY - targetY)
+	};
 </script>
 
-<BaseCanvasEdge {id} {path} {interactionWidth} />
+<BaseCanvasEdge {id} {path} {interactionWidth} {bounds} />
 {#if label}
 	<EdgeLabelRenderer>
 		<div
