@@ -16,7 +16,7 @@ export type GetEdgePositionParams = {
 };
 
 function isNodeInitialized(node: NodeBase): boolean {
-  return !!node?.[internalsSymbol]?.handleBounds && !!node?.computed?.width;
+  return !!(node?.[internalsSymbol]?.handleBounds || node?.handles?.length) && !!(node?.computed?.width || node?.width);
 }
 
 export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | null {
