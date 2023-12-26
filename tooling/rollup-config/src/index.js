@@ -25,22 +25,23 @@ const onwarn = (warning, rollupWarn) => {
   }
 };
 
-export const esmConfig = defineConfig({
-  input: pkg.source,
-  output: {
-    file: pkg.module,
-    format: 'esm',
-    banner: '"use client"',
-  },
-  onwarn,
-  plugins: [
-    peerDepsExternal({
-      includeDependencies: true,
-    }),
-    ...defaultPlugins,
-    typescript(),
-  ],
-});
+const defineEsmConfig = (format) =>
+  defineConfig({
+    input: pkg.source,
+    output: {
+      file: format === 'js' ? pkg.module : pkg.module.replace('.js', '.mjs'),
+      format: 'esm',
+      banner: pkg.rollup?.vanilla ? undefined : '"use client"',
+    },
+    onwarn,
+    plugins: [
+      peerDepsExternal({
+        includeDependencies: true,
+      }),
+      ...defaultPlugins,
+      typescript(),
+    ],
+  });
 
 const reactGlobals = {
   react: 'React',
@@ -53,7 +54,10 @@ const globals = {
   ...(pkg.rollup?.globals || {}),
 };
 
-export const umdConfig = defineConfig({
+const esmMjsConfig = defineEsmConfig('mjs');
+const esmJsConfig = defineEsmConfig('js');
+
+const umdConfig = defineConfig({
   input: pkg.source,
   output: {
     file: pkg.main,
@@ -75,4 +79,4 @@ export const umdConfig = defineConfig({
   ],
 });
 
-export default isProd ? [esmConfig, umdConfig] : esmConfig;
+export default isProd ? [esmMjsConfig, esmJsConfig, umdConfig] : esmMjsConfig;

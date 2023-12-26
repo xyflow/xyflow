@@ -16,7 +16,7 @@
   ],
   "source": "src/index.ts",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.mjs",
+  "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wbkd/react-flow.git",
+    "url": "https://github.com/xyflow/xyflow.git",
     "directory": "packages/system"
   },
   "scripts": {

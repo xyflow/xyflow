@@ -103,5 +103,6 @@ export {
   type GetStraightPathParams,
   getStraightPath,
   getViewportForBounds,
-  getNodesBounds
+  getNodesBounds,
+  internalsSymbol
 } from '@xyflow/system';
