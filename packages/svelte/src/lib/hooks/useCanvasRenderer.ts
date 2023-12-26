@@ -1,11 +1,9 @@
 import { get } from 'svelte/store';
 import { useSvelteFlow } from './useSvelteFlow';
-import type { Rect, Viewport } from '@xyflow/system';
+import type { Position, Rect, Viewport } from '@xyflow/system';
 
 import { Quadtree, Rectangle } from '@timohausmann/quadtree-ts';
 import { useStore } from '$lib/store';
-
-//FIXME: Rerender when canvas resizes
 
 export type RenderElement = {
   render: () => void;
@@ -21,6 +19,7 @@ let canvas: HTMLCanvasElement | null;
 let ctx: CanvasRenderingContext2D;
 let view: Viewport;
 let viewChanged = false;
+let canvasResized = false;
 let elementHovered: string | null = null;
 // FIXME: Quadtree size should be dynamic & infinite
 let quadtree: Quadtree<any> = new Quadtree({
@@ -30,14 +29,10 @@ let quadtree: Quadtree<any> = new Quadtree({
   y: -10000,
   maxLevels: 8
 });
-let bBox: DOMRectReadOnly;
-
 let lastPointerEvent = {
   changed: false,
   x: 0,
-  y: 0,
-  screenX: 0,
-  screenY: 0
+  y: 0
 };
 
 const elements = new Map<string, RenderElement>();
@@ -59,20 +54,22 @@ function initRenderer() {
   // there is miniscule perf gain if we cache it here maybe relevant at 120Hz
   ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
+  // Subscribe to changes of viewport
   const { viewport, screenToFlowPosition } = useSvelteFlow();
-  const { domNode } = useStore();
   viewport.subscribe((_view) => {
     view = _view;
     viewChanged = true;
   });
 
-  const observer = new IntersectionObserver((entries) => {
-    bBox = entries[0].boundingClientRect;
-  });
-  observer.observe(get(domNode)!);
-
   view = get(viewport);
   viewChanged = true;
+
+  // Subscribe to resize events
+  const { domNode } = useStore();
+  const resizeObserver = new ResizeObserver(() => {
+    canvasResized = true;
+  });
+  resizeObserver.observe(get(domNode)!);
 
   // Figure out if we need to scale the canvas
   // maybe window check is uneccessary?
@@ -86,8 +83,6 @@ function initRenderer() {
     lastPointerEvent.changed = true;
     lastPointerEvent.x = flowPosition.x;
     lastPointerEvent.y = flowPosition.y;
-    lastPointerEvent.screenX = e.clientX - bBox?.left;
-    lastPointerEvent.screenY = e.clientY - bBox?.top;
   }
 
   function click(e: MouseEvent) {
@@ -100,13 +95,14 @@ function initRenderer() {
         height: 1
       })
     );
+
+    // Wild: the transform needs to be reset otherwise isPointInStroke does not work (???)
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
     for (const element of closeElements) {
       const id = element.data;
       const _element = elements.get(element.data);
-      if (
-        _element &&
-        _element.hit(lastPointerEvent.screenX * dpr, lastPointerEvent.screenY * dpr)
-      ) {
+      if (_element && _element.hit(lastPointerEvent.x, lastPointerEvent.y)) {
         // TODO: implement hover
         console.log('clicked', id);
         break;
@@ -150,10 +146,10 @@ function initRenderer() {
       for (const element of closeElements) {
         const id = element.data;
         const _element = elements.get(id);
-        if (
-          _element &&
-          _element.hit(lastPointerEvent.screenX * dpr, lastPointerEvent.screenY * dpr)
-        ) {
+
+        // Wild: the transform needs to be reset otherwise isPointInStroke does not work (???)
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        if (_element && _element.hit(lastPointerEvent.x, lastPointerEvent.y)) {
           hitSomething = true;
           if (elementHovered !== id) {
             if (elementHovered) {
@@ -171,7 +167,7 @@ function initRenderer() {
       }
     }
 
-    if (viewChanged || updatedElements.size > 0) {
+    if (viewChanged || updatedElements.size > 0 || canvasResized) {
       // Reset context transform so clearRect can do its job
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       // Optimization: only redraw the part that changed? (unlikely to be faster)
@@ -198,6 +194,7 @@ function initRenderer() {
 
       // Reset flags
       viewChanged = false;
+      canvasResized = false;
       updatedElements.clear();
     }
 

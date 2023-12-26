@@ -3,6 +3,8 @@
   import { onMount } from 'svelte';
 
   const { width, height } = useStore();
+
+  // TODO: put canvas element into store
   let canvas: HTMLCanvasElement;
 
   let dpr = 1;
