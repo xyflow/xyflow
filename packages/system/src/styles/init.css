@@ -104,6 +104,10 @@
   fill: none;
 }
 
+.xy-flow__edges {
+  position: absolute;
+}
+
 .xy-flow__edge {
   pointer-events: visibleStroke;
   cursor: pointer;

@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.0.31
+
+### Bugfix
+
+- fix edge rendering
+
 ## 0.0.30
 
 ### Features
