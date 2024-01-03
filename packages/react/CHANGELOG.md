@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.0.0-next.1
+
+### Minor changes
+
+- fix edge rendering
+
 ## 12.0.0-next.0
 
 React Flow v12 is coming soon! We worked hard over the past months and tried to make as few breaking changes as possible (there are some). We are in no rush to release v12, so we’d be happy to hear any early feedback so we can adjust the API or redefine new features before launching stable v12. 🚀 The big topics for this version are:
@@ -35,11 +41,11 @@ Before you can try out the new features, you need to do some minor updates:
 
 Now that you successfully migrated to v12, you can use all the fancy features. As mentioned above, the biggest updates for v12 are:
 
-- **SSR / SSG**: you can define `width`, `height` and `handles` for the nodes. This makes it possible to render a flow on the server and hydrate on the client.  TODO: ADD LINK
+- **SSR / SSG**: you can define `width`, `height` and `handles` for the nodes. This makes it possible to render a flow on the server and hydrate on the client: [codesandbox](https://codesandbox.io/p/devbox/reactflow-v12-next-pr66yh)
     - Details: In v11, `width` and `height` were set by the library as soon as the nodes got measured. This still happens, but we are now using `computed.width` and `computed.height` to store this information. The `positionAbsolute` attribute also gets stored in `computed` . In the previous versions there was always a lot of confusion about `width` and `height`. It’s hard to understand, that you can’t use it for passing an actual width or height. It’s also not obvious that those attributes get added by the library. We think that the new implementation solves both of the problems: `width` and `height` are optional attributes that can be used to define dimensions and everything that is set by the library, is stored in `computed`.
-- **Reactive Flows:** The new hooks `useHandleConnections` and `useNodesData` and the new `updateNode` and `updateNodeData` functions can be used for managing the data flow between your nodes. TODO: ADD LINK
+- **Reactive Flows:** The new hooks `useHandleConnections` and `useNodesData` and the new `updateNode` and `updateNodeData` functions can be used for managing the data flow between your nodes: [codesandbox](https://codesandbox.io/p/sandbox/reactflow-reactive-flow-sy93yx)
     - Details: Working with reactive flows is super common.  You update node A and want to react on those changes in the connected node B. Until now everyone had to come up with a custom solution. With this version we want to change this and give you performant helpers to handle this. If you are excited about this, you can check out this example:
-- **Dark mode and css variables:** React Flow now comes with a built-in dark mode, that can be toggled by using the new `colorMode` prop (”light”, “dark” or “system”).  TODO: ADD LINK
+- **Dark mode and css variables:** React Flow now comes with a built-in dark mode, that can be toggled by using the new `colorMode` prop (”light”, “dark” or “system”): [codesandbox](https://codesandbox.io/p/sandbox/reactflow-dark-mode-256l99)
     - Details: With this version we want to make it easier to switch between dark and light modes and give you a better starting point for dark flows. If you pass colorMode=”dark”, we add the class name “dark” to the wrapper and use it to adjust the styling. To make the implementation for this new feature easier on our ends, we switched to CSS variables for most of the styles. These variables can also be used in user land to customize a flow.
 
 ### More features and updates
