@@ -47,15 +47,15 @@ Now that you successfully migrated to v12, you can use all the fancy features. A
 There is more! Besides the new main features, we added some minor things that were on our list for a long time. We also started to use TS docs for better docs. We already started to add some docs for some types and hooks which should improve the developer experience.
 
 - **`useConnection` hook:** This hook makes it possible to handle an ongoing connection. For example, you can use it for colorizing handles.
-- **`onDelete`** **handler**: We added a combined handler for `onDeleteNodes` and `onDeleteEdges` to make it easier to react to deletions.
-- `**isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programatically added edges. ****
+- **`onDelete` handler**: We added a combined handler for `onDeleteNodes` and `onDeleteEdges` to make it easier to react to deletions.
+- **`isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programatically added edges.
 - **Controlled `viewport`:** This is definitely an advanced feature. Possible use cases are to animate the viewport or round the transform for lower res screens for example. This features brings two new props: `viewport` and `onViewportChange`.
-- `**ViewportPortal` component:** This makes it possible to render elements in the viewport without the need to implement a custom node.
+- **`ViewportPortal` component:** This makes it possible to render elements in the viewport without the need to implement a custom node.
 - **Background component**: add `patternClassName` to be able to style the background pattern by using a class name. This is useful if you want to style the background pattern with Tailwind for example.
-- `**onMove` callback** gets triggered for library-invoked viewport updates (like fitView or zoom-in)
-- `**deleteElements**` now returns deleted nodes and deleted edges
-- add `**origin` attribute** for nodes
-- add `**selectable` attribute** for edges
+- **`onMove` callback** gets triggered for library-invoked viewport updates (like fitView or zoom-in)
+- **`deleteElements`** now returns deleted nodes and deleted edges
+- add **`origin` attribute** for nodes
+- add **`selectable` attribute** for edges
 - Correct types for `BezierEdge`, `StepEdge`, `SmoothStepEdge` and `StraightEdge` components
 - New edges created by the library only have `sourceHandle` and `targetHandle` attributes when those attributes are set. (We used to pass `sourceHandle: null` and `targetHandle: null`)
 - Edges do not mount/unmount when their z-index change
