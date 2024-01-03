@@ -6,6 +6,7 @@ export default {
     nodeTypes: {
       DragHandleNode,
     },
+    nodeDragThreshold: 0,
     nodes: [
       {
         id: 'Node-1',

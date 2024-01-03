@@ -20,6 +20,8 @@ import type {
   OnError,
   IsValidConnection,
   ColorMode,
+  SnapGrid,
+  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -44,6 +46,10 @@ import type {
   EdgeMouseHandler,
 } from '.';
 
+/**
+ * ReactFlow component props.
+ * @public
+ */
 export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   nodes?: Node[];
   edges?: Edge[];
@@ -95,6 +101,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   onPaneMouseEnter?: (event: ReactMouseEvent) => void;
   onPaneMouseMove?: (event: ReactMouseEvent) => void;
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
+  onBeforeDelete?: OnBeforeDelete;
   nodeTypes?: NodeTypes;
   edgeTypes?: EdgeTypes;
   connectionLineType?: ConnectionLineType;
@@ -110,7 +117,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   multiSelectionKeyCode?: KeyCode | null;
   zoomActivationKeyCode?: KeyCode | null;
   snapToGrid?: boolean;
-  snapGrid?: [number, number];
+  snapGrid?: SnapGrid;
   onlyRenderVisibleElements?: boolean;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;

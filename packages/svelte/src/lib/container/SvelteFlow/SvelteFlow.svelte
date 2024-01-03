@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, hasContext } from 'svelte';
+  import { get } from 'svelte/store';
   import cc from 'classcat';
   import { ConnectionMode, PanOnScrollMode, type Viewport } from '@xyflow/system';
 
@@ -15,13 +16,7 @@
   import { Attribution } from '$lib/components/Attribution';
   import { key, useStore, createStoreContext } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import {
-    updateStore,
-    updateStoreByKeys,
-    type UpdatableStoreProps,
-    getColorModeClass
-  } from './utils';
-  import { get } from 'svelte/store';
+  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
 
   type $$Props = SvelteFlowProps;
@@ -81,6 +76,7 @@
   export let onconnect: $$Props['onconnect'] = undefined;
   export let onconnectstart: $$Props['onconnectstart'] = undefined;
   export let onconnectend: $$Props['onconnectend'] = undefined;
+  export let onbeforedelete: $$Props['onbeforedelete'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -158,7 +154,8 @@
       nodeDragThreshold,
       onconnect,
       onconnectstart,
-      onconnectend
+      onconnectend,
+      onbeforedelete
     };
 
     updateStoreByKeys(store, updatableProps);
@@ -218,6 +215,7 @@
           <slot name="connectionLine" slot="connectionLine" />
         </ConnectionLine>
         <div class="svelte-flow__edgelabel-renderer" />
+        <div class="svelte-flow__viewport-portal" />
         <NodeRenderer
           on:nodeclick
           on:nodemouseenter

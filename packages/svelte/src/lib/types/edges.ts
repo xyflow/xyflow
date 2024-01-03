@@ -6,13 +6,12 @@ import type {
   DefaultEdgeOptionsBase,
   EdgePosition,
   SmoothStepPathOptions,
-  Optional,
   StepPathOptions
 } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
 
-export type DefaultEdge<EdgeData = any> = Omit<EdgeBase<EdgeData>, 'focusable'> & {
+export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
   label?: string;
   labelStyle?: string;
   style?: string;
@@ -34,12 +33,18 @@ type StepEdgeType<T> = DefaultEdge<T> & {
   pathOptions?: StepPathOptions;
 };
 
+/**
+ * The Edge type is mainly used for the `edges` that get passed to the SvelteFlow component.
+ */
 export type Edge<T = any> =
   | DefaultEdge<T>
   | SmoothStepEdgeType<T>
   | BezierEdgeType<T>
   | StepEdgeType<T>;
 
+/**
+ * Custom edge component props.
+ */
 export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle' | 'type'> &
   EdgePosition & {
     markerStart?: string;
@@ -48,34 +53,52 @@ export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle' |
     targetHandleId?: string | null;
   };
 
-export type EdgeComponentProps<T = any> = Optional<
-  Omit<
-    EdgeProps<T>,
-    'source' | 'target' | 'sourceHandleId' | 'targetHandleId' | 'animated' | 'selected' | 'data'
-  >,
-  'id'
->;
-
-export type BezierEdgeProps<T = any> = EdgeComponentProps<T> & {
-  pathOptions?: BezierPathOptions;
+/**
+ * Helper type for edge components that get exported by the library.
+ */
+export type EdgeComponentProps = EdgePosition & {
+  id?: EdgeProps['id'];
+  hidden?: EdgeProps['hidden'];
+  deletable?: EdgeProps['deletable'];
+  selectable?: EdgeProps['selectable'];
+  markerStart?: EdgeProps['markerStart'];
+  markerEnd?: EdgeProps['markerEnd'];
+  zIndex?: EdgeProps['zIndex'];
+  ariaLabel?: EdgeProps['ariaLabel'];
+  interactionWidth?: EdgeProps['interactionWidth'];
+  label?: EdgeProps['label'];
+  labelStyle?: EdgeProps['labelStyle'];
+  style?: EdgeProps['style'];
+  class?: EdgeProps['class'];
 };
 
-export type SmoothStepEdgeProps<T = any> = EdgeComponentProps<T> & {
-  pathOptions?: SmoothStepPathOptions;
+export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
+  pathOptions?: PathOptions;
 };
 
-export type StepEdgeProps<T = any> = EdgeComponentProps<T> & {
-  pathOptions?: StepPathOptions;
-};
+/**
+ * BezierEdge component props
+ */
+export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
-export type StraightEdgeProps<T = any> = Omit<
-  EdgeComponentProps<T>,
-  'sourcePosition' | 'targetPosition'
->;
+/**
+ * SmoothStepEdge component props
+ */
+export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
+
+/**
+ * StepEdge component props
+ */
+export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
+
+/**
+ * StraightEdge component props
+ */
+export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
 
-export type DefaultEdgeOptions = Omit<DefaultEdgeOptionsBase<Edge>, 'focusable'>;
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeLayouted = Pick<
   Edge,
@@ -98,6 +121,7 @@ export type EdgeLayouted = Pick<
   | 'ariaLabel'
   | 'hidden'
   | 'class'
+  | 'zIndex'
 > &
   EdgePosition & {
     sourceNode?: Node;

@@ -12,6 +12,7 @@ import {
   useNodesState,
   useEdgesState,
   Background,
+  Edge,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -33,8 +34,8 @@ const nodeTypes = {
 };
 
 const CustomNodeFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const [bgColor, setBgColor] = useState<string>(initBgColor);
 

@@ -33,7 +33,7 @@ const getId = (): string => `${id++}`;
 
 const UpdateNodeInternalsFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
 
   const { screenToFlowPosition } = useReactFlow();

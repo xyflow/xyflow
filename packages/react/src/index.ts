@@ -10,6 +10,7 @@ export { default as BaseEdge } from './components/Edges/BaseEdge';
 export { default as ReactFlowProvider } from './components/ReactFlowProvider';
 export { default as Panel, type PanelProps } from './components/Panel';
 export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
+export { default as ViewportPortal } from './components/ViewportPortal';
 
 export { default as useReactFlow } from './hooks/useReactFlow';
 export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
@@ -24,6 +25,7 @@ export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } fro
 export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useHandleConnections } from './hooks/useHandleConnections';
 export { useNodesData } from './hooks/useNodesData';
+export { useConnection } from './hooks/useConnection';
 export { useNodeId } from './contexts/NodeIdContext';
 
 export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
@@ -77,6 +79,8 @@ export {
   type CoordinateExtent,
   type ColorMode,
   type ColorModeClass,
+  type HandleType,
+  type OnBeforeDelete,
 } from '@xyflow/system';
 
 // system utils
@@ -91,4 +95,5 @@ export {
   getStraightPath,
   getViewportForBounds,
   getNodesBounds,
+  internalsSymbol,
 } from '@xyflow/system';

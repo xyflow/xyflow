@@ -4,12 +4,12 @@ import type { PanelPosition, XYPosition } from '@xyflow/system';
 
 import type { Node } from '../../types';
 
-export type GetMiniMapNodeAttribute<NodeData = any> = (node: Node<NodeData>) => string;
+export type GetMiniMapNodeAttribute<NodeType extends Node = Node> = (node: NodeType) => string;
 
-export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, 'onClick'> & {
-  nodeColor?: string | GetMiniMapNodeAttribute<NodeData>;
-  nodeStrokeColor?: string | GetMiniMapNodeAttribute<NodeData>;
-  nodeClassName?: string | GetMiniMapNodeAttribute<NodeData>;
+export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVGSVGElement>, 'onClick'> & {
+  nodeColor?: string | GetMiniMapNodeAttribute<NodeType>;
+  nodeStrokeColor?: string | GetMiniMapNodeAttribute<NodeType>;
+  nodeClassName?: string | GetMiniMapNodeAttribute<NodeType>;
   nodeBorderRadius?: number;
   nodeStrokeWidth?: number;
   nodeComponent?: ComponentType<MiniMapNodeProps>;
@@ -18,7 +18,7 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   maskStrokeWidth?: number;
   position?: PanelPosition;
   onClick?: (event: MouseEvent, position: XYPosition) => void;
-  onNodeClick?: (event: MouseEvent, node: Node<NodeData>) => void;
+  onNodeClick?: (event: MouseEvent, node: NodeType) => void;
   pannable?: boolean;
   zoomable?: boolean;
   ariaLabel?: string | null;
@@ -27,8 +27,8 @@ export type MiniMapProps<NodeData = any> = Omit<HTMLAttributes<SVGSVGElement>, '
   offsetScale?: number;
 };
 
-export type MiniMapNodes = Pick<
-  MiniMapProps,
+export type MiniMapNodes<NodeType extends Node = Node> = Pick<
+  MiniMapProps<NodeType>,
   'nodeColor' | 'nodeStrokeColor' | 'nodeClassName' | 'nodeBorderRadius' | 'nodeStrokeWidth' | 'nodeComponent'
 > & {
   onClick?: (event: MouseEvent, nodeId: string) => void;

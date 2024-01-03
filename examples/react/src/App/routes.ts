@@ -21,7 +21,6 @@ import Interaction from '../examples/Interaction';
 import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
-import NestedNodes from '../examples/NestedNodes';
 import NodeResizer from '../examples/NodeResizer';
 import NodeTypeChange from '../examples/NodeTypeChange';
 import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
@@ -44,6 +43,7 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
 import UseHandleConnections from '../examples/UseHandleConnections';
@@ -186,11 +186,6 @@ const routes: IRoute[] = [
     component: MultiFlows,
   },
   {
-    name: 'Nested Nodes',
-    path: 'nested-nodes',
-    component: NestedNodes,
-  },
-  {
     name: 'Node Type Change',
     path: 'nodetype-change',
     component: NodeTypeChange,
@@ -259,6 +254,11 @@ const routes: IRoute[] = [
     name: 'Update Node',
     path: 'update-node',
     component: UpdateNode,
+  },
+  {
+    name: 'useConnection',
+    path: 'use-connection',
+    component: UseConnection,
   },
   {
     name: 'useNodesInitialized',

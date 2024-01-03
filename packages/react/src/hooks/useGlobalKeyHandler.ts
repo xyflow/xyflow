@@ -10,6 +10,11 @@ const selected = (item: Node | Edge) => item.selected;
 
 const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
 
+/**
+ * Hook for handling global key events.
+ *
+ * @internal
+ */
 export default ({
   deleteKeyCode,
   multiSelectionKeyCode,
@@ -25,8 +30,8 @@ export default ({
 
   useEffect(() => {
     if (deleteKeyPressed) {
-      const { edges, nodes } = store.getState();
-      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
+      const { edges, nodes, onBeforeDelete } = store.getState();
+      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected), onBeforeDelete });
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);

@@ -16,6 +16,7 @@ import {
   updateEdge,
   Edge,
   IsValidConnection,
+  OnBeforeDelete,
 } from '@xyflow/react';
 
 import ConnectionStatus from './ConnectionStatus';
@@ -54,7 +55,7 @@ const nodeTypes: NodeTypes = {
 const ValidationFlow = () => {
   const [value, setValue] = useState(0);
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const onConnectStart: OnConnectStart = useCallback(
     (event, params) => {
@@ -85,6 +86,10 @@ const ValidationFlow = () => {
     [setEdges]
   );
 
+  const onBeforeDelete: OnBeforeDelete = useCallback(async () => {
+    return true;
+  }, []);
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -99,6 +104,7 @@ const ValidationFlow = () => {
       onConnectEnd={onConnectEnd}
       onEdgeUpdate={onEdgeUpdate}
       isValidConnection={isValidConnection}
+      onBeforeDelete={onBeforeDelete}
       fitView
     >
       <ConnectionStatus />

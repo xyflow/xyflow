@@ -66,7 +66,7 @@ const nodeTypesObjects: NodeTypesObject = {
 const NodeTypeChangeFlow = () => {
   const [nodeTypesId, setNodeTypesId] = useState<string>('a');
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
   const changeType = () => setNodeTypesId((nt) => (nt === 'a' ? 'b' : 'a'));
 

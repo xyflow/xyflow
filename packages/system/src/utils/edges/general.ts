@@ -1,6 +1,6 @@
 import { Connection, Transform, errorMessages, internalsSymbol, isEdgeBase } from '../..';
 import { EdgeBase, NodeBase } from '../../types';
-import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
+import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -23,63 +23,29 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
-
-export type GroupedEdges<EdgeType extends EdgeBase> = {
-  edges: EdgeType[];
-  level: number;
-  isMaxLevel: boolean;
+export type GetEdgeZIndexParams = {
+  sourceNode: NodeBase;
+  targetNode: NodeBase;
+  selected?: boolean;
+  zIndex?: number;
+  elevateOnSelect?: boolean;
 };
 
-export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
-  edges: EdgeType[],
-  nodeLookup: Map<string, NodeBase>,
-  elevateEdgesOnSelect = false
-): GroupedEdges<EdgeType>[] {
-  let maxLevel = -1;
-
-  const levelLookup = edges.reduce<Record<string, EdgeType[]>>((tree, edge) => {
-    const hasZIndex = isNumeric(edge.zIndex);
-    let z = hasZIndex ? edge.zIndex! : 0;
-
-    if (elevateEdgesOnSelect) {
-      const targetNode = nodeLookup.get(edge.target);
-      const sourceNode = nodeLookup.get(edge.source);
-      const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
-      const selectedZIndex = Math.max(
-        sourceNode?.[internalsSymbol]?.z || 0,
-        targetNode?.[internalsSymbol]?.z || 0,
-        1000
-      );
-      z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
-    }
-
-    if (tree[z]) {
-      tree[z].push(edge);
-    } else {
-      tree[z] = [edge];
-    }
-
-    maxLevel = z > maxLevel ? z : maxLevel;
-
-    return tree;
-  }, {});
-
-  const edgeTree = Object.entries(levelLookup).map(([key, edges]) => {
-    const level = +key;
-
-    return {
-      edges,
-      level,
-      isMaxLevel: level === maxLevel,
-    };
-  });
-
-  if (edgeTree.length === 0) {
-    return defaultEdgeTree;
+export function getElevatedEdgeZIndex({
+  sourceNode,
+  targetNode,
+  selected = false,
+  zIndex = 0,
+  elevateOnSelect = false,
+}: GetEdgeZIndexParams): number {
+  if (!elevateOnSelect) {
+    return zIndex;
   }
 
-  return edgeTree;
+  const edgeOrConnectedNodeSelected = selected || targetNode.selected || sourceNode.selected;
+  const selectedZIndex = Math.max(sourceNode[internalsSymbol]?.z || 0, targetNode[internalsSymbol]?.z || 0, 1000);
+
+  return zIndex + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
 }
 
 type IsEdgeVisibleParams = {
@@ -124,6 +90,14 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   );
 };
 
+/**
+ * This util is a convenience function to add a new Edge to an array of edges
+ * @remarks It also performs some validation to make sure you don't add an invalid edge or duplicate an existing one.
+ * @public
+ * @param edgeParams - Either an Edge or a Connection you want to add
+ * @param edges -  The array of all current edges
+ * @returns A new array of edges with the new edge added
+ */
 export const addEdgeBase = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
   edges: EdgeType[]
@@ -163,6 +137,14 @@ export type UpdateEdgeOptions = {
   shouldReplaceId?: boolean;
 };
 
+/**
+ * A handy utility to update an existing Edge with new properties
+ * @param oldEdge - The edge you want to update
+ * @param newConnection - The new connection you want to update the edge with
+ * @param edges - The array of all current edges
+ * @param options.shouldReplaceId - should the id of the old edge be replaced with the new connection id
+ * @returns the updated edges array
+ */
 export const updateEdgeBase = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
   newConnection: Connection,

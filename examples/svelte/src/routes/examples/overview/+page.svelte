@@ -177,6 +177,11 @@
 	}}
 	on:selectionclick={(event) => console.log('on selection click', event)}
 	on:selectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
+	onbeforedelete={async ({ nodes, edges }) => {
+		console.log('on before delete', nodes, edges);
+		const deleteElements = confirm('Are you sure you want to delete the selected elements?');
+		return deleteElements;
+	}}
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}
