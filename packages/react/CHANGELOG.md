@@ -20,14 +20,29 @@ Svelte Flow had a big impact on this release as well. While combing through each
 
 Before you can try out the new features, you need to do some minor updates:
 
-- **A new npm package name**: Our name changed from `reactflow` to `@xyflow/react` and the main component is no longer a default, but a named import:
+- **A new npm package name:** Our name changed from `reactflow` to `@xyflow/react` and the main component is no longer a default, but a named import:
     - v11: `import ReactFlow from 'reactflow';`
     - v12: `import { ReactFlow } from '@xyflow/react';`
 - **Node attribute “computed”:** All computed node values are now stored in `node.computed`
     - v11: `node.width`, `node.height` ,`node.positionAbsolute`
     - v12:  `node.computed.width`, `node.computed.height` and `node.computed.positionAbsolute` . (`node.width`/ `node.height` can now be used for SSG)
+- **Updating nodes:** We are not supporting node updates with object mutations anymore. If you want to update a certain attribute, you need to create a new node.
+    - v11: 
+      ```js
+        setNodes(nds => nds.map((node) => {
+          node.hidden = true;
+          return node;
+        }));
+      ```
+    - v12: 
+      ```js
+        setNodes(nds => nds.map((node) => ({
+          ...node,
+          hidden: true
+        })));
+      ```
 - **NodeProps:** `posX`/`posY` is now called `positionAbsoluteX`/`positionAbsoluteY`
-- **Typescript only**: We simplified types and fixed issues about functions where users could pass a `NodeData` generic. The new way is to define your own node type for the whole app and then only use that one. The big advantage of this is, that you can have multiple node types with different data structures and always be able to distinguish by checking the `node.type` attribute.
+- **Typescript only:** We simplified types and fixed issues about functions where users could pass a `NodeData` generic. The new way is to define your own node type for the whole app and then only use that one. The big advantage of this is, that you can have multiple node types with different data structures and always be able to distinguish by checking the `node.type` attribute.
     - v11: `applyNodeChange<NodeData, NodeType>`
     - v12: `type MyNodeType = Node<{ value: number }, ‘number’> | Node<{ value: string }, ‘text’>; applyNodeChange<MyNodeType>`
     - affected functions: `useNodes`, `useNodesState`, `useEdgesState`, `applyNodeChange`, `onInit`, `applyEdgeChanges` , `MiniMapProps`
