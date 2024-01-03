@@ -1,3 +1,17 @@
+# @xyflow/svelte
+
+## 0.0.30
+
+### Features
+
+- add `onbeforedelete` handler to prevent/ manage deletions
+- TSDocs for hooks and some types 
+
+### Minor changes
+
+- new nodeDragThreshold default is 1
+- refactor/simplify edge rendering
+
 ## 0.0.29
 
 Another huge update for Svelte Flow 🙏 Handling data flows will be way easier with the new hooks and functions. You can now subscribe to connected nodes, receive data and update nodes more easily. We fix a big issue about the `<Handle />` component. No more `on:connect` that only worked for target `<Handle />` components but `onconnect` and `ondisconnect` that works for every `<Handle />`.
