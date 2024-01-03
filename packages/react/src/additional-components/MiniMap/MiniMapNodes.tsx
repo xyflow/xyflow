@@ -83,17 +83,24 @@ const NodeComponentWrapper = memo(function NodeComponentWrapper({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const node = useStore((s) => s.nodeLookup.get(id));
+  const { node, x, y } = useStore((s) => {
+    const node = s.nodeLookup.get(id);
+    const { x, y } = getNodePositionWithOrigin(node, node?.origin || nodeOrigin).positionAbsolute;
+
+    return {
+      node,
+      x,
+      y,
+    };
+  }, shallow);
   if (!node || node.hidden || !(node.computed?.width || node.width) || !(node.computed?.height || node.height)) {
     return null;
   }
 
-  const positionOrigin = getNodePositionWithOrigin(node, node.origin || nodeOrigin).positionAbsolute;
-
   return (
     <NodeComponent
-      x={positionOrigin.x}
-      y={positionOrigin.y}
+      x={x}
+      y={y}
       width={node.computed?.width ?? node.width ?? 0}
       height={node.computed?.height ?? node.height ?? 0}
       style={node.style}
