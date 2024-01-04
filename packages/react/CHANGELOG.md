@@ -14,54 +14,58 @@ React Flow v12 is coming soon! We worked hard over the past months and tried to 
 2. **Reactive flows**: new hooks and helper functions to simplify data flows
 3. **Dark mode**: a new base style and easy way to switch between built in color modes
 
-Svelte Flow had a big impact on this release as well. While combing through each line of React Flow, we created framework agnostic helpers, found bugs, and made some under the hood improvements.  All of these changes are baked into the v12 release as a welcome side-effect of that launch. 🙌🏻 We also improved the performance for larger flows with the help of Ivan.
+Svelte Flow had a big impact on this release as well. While combing through each line of React Flow, we created framework agnostic helpers, found bugs, and made some under the hood improvements. All of these changes are baked into the v12 release as a welcome side-effect of that launch. 🙌🏻 We also improved the performance for larger flows with the help of Ivan.
 
 ### Migrate from 11 to 12
 
 Before you can try out the new features, you need to do some minor updates:
 
 - **A new npm package name:** Our name changed from `reactflow` to `@xyflow/react` and the main component is no longer a default, but a named import:
-    - v11: `import ReactFlow from 'reactflow';`
-    - v12: `import { ReactFlow } from '@xyflow/react';`
+  - v11: `import { ReactFlow } from '@xyflow/react';`
+  - v12: `import { ReactFlow } from '@xyflow/react';`
 - **Node attribute “computed”:** All computed node values are now stored in `node.computed`
-    - v11: `node.width`, `node.height` ,`node.positionAbsolute`
-    - v12:  `node.computed.width`, `node.computed.height` and `node.computed.positionAbsolute` . (`node.width`/ `node.height` can now be used for SSG)
+  - v11: `node.width`, `node.height` ,`node.positionAbsolute`
+  - v12: `node.computed.width`, `node.computed.height` and `node.computed.positionAbsolute` . (`node.width`/ `node.height` can now be used for SSG)
 - **Updating nodes:** We are not supporting node updates with object mutations anymore. If you want to update a certain attribute, you need to create a new node.
-    - v11: 
-      ```js
-        setNodes(nds => nds.map((node) => {
-          node.hidden = true;
-          return node;
-        }));
-      ```
-    - v12: 
-      ```js
-        setNodes(nds => nds.map((node) => ({
-          ...node,
-          hidden: true
-        })));
-      ```
+  - v11:
+    ```js
+    setNodes((nds) =>
+      nds.map((node) => {
+        node.hidden = true;
+        return node;
+      })
+    );
+    ```
+  - v12:
+    ```js
+    setNodes((nds) =>
+      nds.map((node) => ({
+        ...node,
+        hidden: true,
+      }))
+    );
+    ```
 - **NodeProps:** `posX`/`posY` is now called `positionAbsoluteX`/`positionAbsoluteY`
 - **Typescript only:** We simplified types and fixed issues about functions where users could pass a `NodeData` generic. The new way is to define your own node type for the whole app and then only use that one. The big advantage of this is, that you can have multiple node types with different data structures and always be able to distinguish by checking the `node.type` attribute.
-    - v11: `applyNodeChange<NodeData, NodeType>`
-    - v12: `type MyNodeType = Node<{ value: number }, ‘number’> | Node<{ value: string }, ‘text’>; applyNodeChange<MyNodeType>`
-    - affected functions: `useNodes`, `useNodesState`, `useEdgesState`, `applyNodeChange`, `onInit`, `applyEdgeChanges` , `MiniMapProps`
+  - v11: `applyNodeChange<NodeData, NodeType>`
+  - v12: `type MyNodeType = Node<{ value: number }, ‘number’> | Node<{ value: string }, ‘text’>; applyNodeChange<MyNodeType>`
+  - affected functions: `useNodes`, `useNodesState`, `useEdgesState`, `applyNodeChange`, `onInit`, `applyEdgeChanges` , `MiniMapProps`
 - **Removal of deprecated functions:**
-    - `getTransformForBounds` (new name: `getViewportForBounds`),
-    - `getRectOfNodes` ****(new name: `getNodesBounds`)
-    - `project` (new name: `screenToFlowPosition`)
-    - `getMarkerEndId`
+  - `getTransformForBounds` (new name: `getViewportForBounds`),
+  - `getRectOfNodes` \*\*\*\*(new name: `getNodesBounds`)
+  - `project` (new name: `screenToFlowPosition`)
+  - `getMarkerEndId`
 
 ### Main features
 
 Now that you successfully migrated to v12, you can use all the fancy features. As mentioned above, the biggest updates for v12 are:
 
 - **SSR / SSG**: you can define `width`, `height` and `handles` for the nodes. This makes it possible to render a flow on the server and hydrate on the client: [codesandbox](https://codesandbox.io/p/devbox/reactflow-v12-next-pr66yh)
-    - Details: In v11, `width` and `height` were set by the library as soon as the nodes got measured. This still happens, but we are now using `computed.width` and `computed.height` to store this information. The `positionAbsolute` attribute also gets stored in `computed` . In the previous versions there was always a lot of confusion about `width` and `height`. It’s hard to understand, that you can’t use it for passing an actual width or height. It’s also not obvious that those attributes get added by the library. We think that the new implementation solves both of the problems: `width` and `height` are optional attributes that can be used to define dimensions and everything that is set by the library, is stored in `computed`.
+  - Details: In v11, `width` and `height` were set by the library as soon as the nodes got measured. This still happens, but we are now using `computed.width` and `computed.height` to store this information. The `positionAbsolute` attribute also gets stored in `computed` . In the previous versions there was always a lot of confusion about `width` and `height`. It’s hard to understand, that you can’t use it for passing an actual width or height. It’s also not obvious that those attributes get added by the library. We think that the new implementation solves both of the problems: `width` and `height` are optional attributes that can be used to define dimensions and everything that is set by the library, is stored in `computed`.
 - **Reactive Flows:** The new hooks `useHandleConnections` and `useNodesData` and the new `updateNode` and `updateNodeData` functions can be used for managing the data flow between your nodes: [codesandbox](https://codesandbox.io/p/sandbox/reactflow-reactive-flow-sy93yx)
-    - Details: Working with reactive flows is super common.  You update node A and want to react on those changes in the connected node B. Until now everyone had to come up with a custom solution. With this version we want to change this and give you performant helpers to handle this. If you are excited about this, you can check out this example:
+  - Details: Working with reactive flows is super common. You update node A and want to react on those changes in the connected node B. Until now everyone had to come up with a custom solution. With this version we want to change this and give you performant helpers to handle this. If you are excited about this, you can check out this example:
 - **Dark mode and css variables:** React Flow now comes with a built-in dark mode, that can be toggled by using the new `colorMode` prop (”light”, “dark” or “system”): [codesandbox](https://codesandbox.io/p/sandbox/reactflow-dark-mode-256l99)
-    - Details: With this version we want to make it easier to switch between dark and light modes and give you a better starting point for dark flows. If you pass colorMode=”dark”, we add the class name “dark” to the wrapper and use it to adjust the styling. To make the implementation for this new feature easier on our ends, we switched to CSS variables for most of the styles. These variables can also be used in user land to customize a flow.
+  - Details: With this version we want to make it easier to switch between dark and light modes and give you a better starting point for dark flows. If you pass colorMode=”dark”, we add the class name “dark” to the wrapper and use it to adjust the styling. To make the implementation for this new feature easier on our ends, we switched to CSS variables for most of the styles. These variables can also be used in user land to customize a flow.
 
 ### More features and updates
 
@@ -86,12 +90,11 @@ There is more! Besides the new main features, we added some minor things that we
 These changes are not really user-facing, but it could be important for folks who are working with the React Flow store:
 
 - The biggest internal change is that we created a new package **@xyflow/system with framework agnostic helpers** that can be used be React Flow and Svelte Flow
-    - **XYDrag** for handling dragging node(s) and selection
-    - **XYPanZoom** for controlling the viewport panning and zooming
-    - **XYHandle** for managing new connections
+  - **XYDrag** for handling dragging node(s) and selection
+  - **XYPanZoom** for controlling the viewport panning and zooming
+  - **XYHandle** for managing new connections
 - We replaced the `nodeInternals` map with a `nodes` array. We added a new `nodeLookup` map that serves as a lookup, but we are not creating a new map object on any change so it’s really only useful as a lookup.
 - We removed `connectionNodeId`, `connectionHandleId`, `connectionHandleType` from the store and added `connectionStartHandle.nodeId`, `connectionStartHandle.handleId`, …
 - add `data-id` to edges
 
-
-__With v12 the `reactflow` package was renamed to `@xyflow/react` - you can find the v11 source and the [`reactflow` changelog](https://github.com/xyflow/xyflow/blob/v11/packages/reactflow/CHANGELOG.md) on the v11 branch.__
+**With v12 the `reactflow` package was renamed to `@xyflow/react` - you can find the v11 source and the [`reactflow` changelog](https://github.com/xyflow/xyflow/blob/v11/packages/reactflow/CHANGELOG.md) on the v11 branch.**

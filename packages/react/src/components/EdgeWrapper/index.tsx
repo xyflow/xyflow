@@ -22,8 +22,6 @@ function EdgeWrapper({
   elementsSelectable,
   onClick,
   onDoubleClick,
-  sourceHandleId,
-  targetHandleId,
   onContextMenu,
   onMouseEnter,
   onMouseMove,
@@ -78,8 +76,8 @@ function EdgeWrapper({
           id,
           sourceNode,
           targetNode,
-          sourceHandle: sourceHandleId || null,
-          targetHandle: targetHandleId || null,
+          sourceHandle: edge.sourceHandle || null,
+          targetHandle: edge.targetHandle || null,
           connectionMode: store.connectionMode,
           onError,
         });
@@ -97,7 +95,7 @@ function EdgeWrapper({
           ...(edgePosition || nullPosition),
         };
       },
-      [edge.source, edge.target, edge.selected, edge.zIndex]
+      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex]
     ),
     shallow
   );
@@ -228,8 +226,8 @@ function EdgeWrapper({
             targetPosition={targetPosition}
             data={edge.data}
             style={edge.style}
-            sourceHandleId={sourceHandleId}
-            targetHandleId={targetHandleId}
+            sourceHandleId={edge.sourceHandle}
+            targetHandleId={edge.targetHandle}
             markerStart={markerStartUrl}
             markerEnd={markerEndUrl}
             pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
@@ -252,8 +250,8 @@ function EdgeWrapper({
             targetPosition={targetPosition}
             setUpdateHover={setUpdateHover}
             setUpdating={setUpdating}
-            sourceHandleId={sourceHandleId}
-            targetHandleId={targetHandleId}
+            sourceHandleId={edge.sourceHandle}
+            targetHandleId={edge.targetHandle}
           />
         )}
       </g>
