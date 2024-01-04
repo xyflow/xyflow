@@ -7,13 +7,8 @@ import { getPointerPosition, clamp } from '@xyflow/system';
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { NodeChange, NodeDimensionChange, NodePositionChange } from '../../types';
-import {
-  type ResizeDragEvent,
-  type ResizeControlProps,
-  type ResizeControlLineProps,
-  ResizeControlVariant,
-} from './types';
-import { getDirection } from './utils';
+import { type ResizeDragEvent, type ResizeControlProps, type ResizeControlLineProps } from './types';
+import { getResizeDirection, ResizeControlVariant } from '@xyflow/system';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
 
@@ -184,7 +179,7 @@ function ResizeControl({
             return;
           }
 
-          const direction = getDirection({
+          const direction = getResizeDirection({
             width: prevValues.current.width,
             prevWidth,
             height: prevValues.current.height,

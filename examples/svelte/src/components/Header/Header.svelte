@@ -22,7 +22,8 @@
 		'usenodesdata',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation'
+		'validation',
+		'node-resizer'
 	];
 
 	const onChange = (event: Event) => {

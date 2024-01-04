@@ -42,8 +42,12 @@
   },
   "dependencies": {
     "@svelte-put/shortcut": "^3.1.0",
+    "@types/d3-drag": "^3.0.1",
+    "@types/d3-selection": "^3.0.3",
     "@xyflow/system": "workspace:*",
-    "classcat": "^5.0.4"
+    "classcat": "^5.0.4",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.1.0",
