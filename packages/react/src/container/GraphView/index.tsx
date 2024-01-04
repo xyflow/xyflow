@@ -165,14 +165,13 @@ const GraphView = ({
           noPanClassName={noPanClassName}
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
-        >
-          <ConnectionLine
-            style={connectionLineStyle}
-            type={connectionLineType}
-            component={connectionLineComponent}
-            containerStyle={connectionLineContainerStyle}
-          />
-        </EdgeRenderer>
+        />
+        <ConnectionLine
+          style={connectionLineStyle}
+          type={connectionLineType}
+          component={connectionLineComponent}
+          containerStyle={connectionLineContainerStyle}
+        />
         <div className="react-flow__edgelabel-renderer" />
         <div className="react-flow__viewport-portal" />
         <NodeRenderer

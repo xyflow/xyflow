@@ -27,7 +27,7 @@ type EdgeRendererProps = Pick<
   | 'disableKeyboardA11y'
   | 'edgeTypes'
 > & {
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 const selector = (s: ReactFlowState) => ({
