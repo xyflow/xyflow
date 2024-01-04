@@ -1,5 +1,18 @@
 # @xyflow/react
 
+## 12.0.0-next.3
+
+### Minor changes
+
+- fix edges styles when using base.css
+
+## 12.0.0-next.2
+
+### Minor changes
+
+- fix connection line rendering
+- fix multi handle
+
 ## 12.0.0-next.1
 
 ### Minor changes

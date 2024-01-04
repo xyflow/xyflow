@@ -9,8 +9,8 @@ type EdgeUpdateAnchorsProps = {
   edge: Edge;
   isUpdatable: boolean | 'source' | 'target';
   edgeUpdaterRadius: EdgeWrapperProps['edgeUpdaterRadius'];
-  sourceHandleId: EdgeWrapperProps['sourceHandleId'];
-  targetHandleId: EdgeWrapperProps['targetHandleId'];
+  sourceHandleId: Edge['sourceHandle'];
+  targetHandleId: Edge['targetHandle'];
   onEdgeUpdate: EdgeWrapperProps['onEdgeUpdate'];
   onEdgeUpdateStart: EdgeWrapperProps['onEdgeUpdateStart'];
   onEdgeUpdateEnd: EdgeWrapperProps['onEdgeUpdateEnd'];
