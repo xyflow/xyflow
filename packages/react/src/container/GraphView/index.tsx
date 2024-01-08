@@ -4,11 +4,11 @@ import FlowRenderer from '../FlowRenderer';
 import NodeRenderer from '../NodeRenderer';
 import EdgeRenderer from '../EdgeRenderer';
 import ViewportWrapper from '../Viewport';
-import useOnInitHandler from '../../hooks/useOnInitHandler';
-import useViewportSync from '../../hooks/useViewportSync';
+import { useOnInitHandler } from '../../hooks/useOnInitHandler';
+import { useViewportSync } from '../../hooks/useViewportSync';
 import ConnectionLine from '../../components/ConnectionLine';
 import type { ReactFlowProps } from '../../types';
-import useNodeOrEdgeTypesWarning from './useNodeOrEdgeTypesWarning';
+import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
 
 export type GraphViewProps = Omit<
   ReactFlowProps,

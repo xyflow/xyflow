@@ -3,7 +3,7 @@ import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import useReactFlow from '../../hooks/useReactFlow';
+import { useReactFlow } from '../../hooks/useReactFlow';
 import Panel from '../../components/Panel';
 import { type ReactFlowState } from '../../types';
 

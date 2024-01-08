@@ -9,7 +9,7 @@ import { useStoreApi } from '../hooks/useStore';
  * @public
  * @returns function for updating node internals
  */
-function useUpdateNodeInternals(): UpdateNodeInternals {
+export function useUpdateNodeInternals(): UpdateNodeInternals {
   const store = useStoreApi();
 
   return useCallback<UpdateNodeInternals>((id: string | string[]) => {
@@ -28,5 +28,3 @@ function useUpdateNodeInternals(): UpdateNodeInternals {
     requestAnimationFrame(() => updateNodeDimensions(updates));
   }, []);
 }
-
-export default useUpdateNodeInternals;

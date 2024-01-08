@@ -11,10 +11,8 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  * @public
  * @returns An array of nodes
  */
-function useNodes<NodeType extends Node = Node>(): NodeType[] {
+export function useNodes<NodeType extends Node = Node>(): NodeType[] {
   const nodes = useStore(nodesSelector, shallow) as NodeType[];
 
   return nodes;
 }
-
-export default useNodes;

@@ -1,5 +1,12 @@
 # @xyflow/react
 
+## 12.0.0-next.4
+
+### Minor changes
+
+- fix applyChanges: handle empty flows + addNodes/addEdges closes
+- cleanup hook exports
+
 ## 12.0.0-next.3
 
 ### Minor changes

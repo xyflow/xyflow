@@ -9,10 +9,10 @@ import { shallow } from 'zustand/shallow';
 import { getNodesBounds } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import useDrag from '../../hooks/useDrag';
-import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
-import type { Node, ReactFlowState } from '../../types';
+import { useDrag } from '../../hooks/useDrag';
+import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
+import type { Node, ReactFlowState } from '../../types';
 
 export type NodesSelectionProps = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;

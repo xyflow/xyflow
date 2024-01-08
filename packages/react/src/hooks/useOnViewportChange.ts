@@ -17,7 +17,7 @@ export type UseOnViewportChangeOptions = {
  * @param params.onChange - gets called when the viewport changes
  * @param params.onEnd - gets called when the viewport stops changing
  */
-function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOptions) {
+export function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOptions) {
   const store = useStoreApi();
 
   useEffect(() => {
@@ -32,5 +32,3 @@ function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOp
     store.setState({ onViewportChangeEnd: onEnd });
   }, [onEnd]);
 }
-
-export default useOnViewportChange;

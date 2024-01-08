@@ -1,8 +1,8 @@
 import { memo, type ReactNode } from 'react';
 
 import { useStore } from '../../hooks/useStore';
-import useGlobalKeyHandler from '../../hooks/useGlobalKeyHandler';
-import useKeyPress from '../../hooks/useKeyPress';
+import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
+import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
 import ZoomPane from '../ZoomPane';
 import Pane from '../Pane';

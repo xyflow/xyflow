@@ -12,7 +12,7 @@ const selector = (state: ReactFlowState) => state.panZoom?.syncViewport;
  * @internal
  * @param viewport
  */
-export default function useViewportSync(viewport?: Viewport) {
+export function useViewportSync(viewport?: Viewport) {
   const syncViewport = useStore(selector);
   const store = useStoreApi();
 

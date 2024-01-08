@@ -18,7 +18,14 @@ type UseDragParams = {
  *
  * @internal
  */
-function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, nodeId, isSelectable }: UseDragParams) {
+export function useDrag({
+  nodeRef,
+  disabled = false,
+  noDragClassName,
+  handleSelector,
+  nodeId,
+  isSelectable,
+}: UseDragParams) {
   const store = useStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
   const xyDrag = useRef<XYDragInstance>();
@@ -64,5 +71,3 @@ function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, n
 
   return dragging;
 }
-
-export default useDrag;
