@@ -14,52 +14,45 @@ import {
   ReactFlowProvider,
 } from '@xyflow/react';
 
-const initNodes: Node[] = [
-  {
-    id: '1',
+import './style.css';
+
+const initNodes: Node[] = [];
+
+for (let i = 0; i < 100; i++) {
+  initNodes.push({
+    id: i.toString(),
     data: {
-      label: 'hallo',
+      label: `node ${i + 1}`,
     },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: '2',
-    data: {
-      label: 'world',
-    },
-    position: { x: 200, y: 0 },
-  },
-];
+    position: { x: (i % 10) * 60, y: Math.floor(i / 10) * 60 },
+  });
+}
 
 const initEdges: Edge[] = [];
 
 const CustomNodeFlow = () => {
-  const { setNodes } = useReactFlow();
+  const { setNodes, updateNodeData } = useReactFlow();
   const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
 
-  const updateNodes = () => {
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.id === '1') {
-          return { ...n, data: { label: 'updated' } };
-        }
+  const multiSetNodes = () => {
+    nodes.forEach((node) =>
+      setNodes((nds) =>
+        nds.map((n) => {
+          if (n.id === node.id) {
+            return { ...n, data: { label: 'node set' } };
+          }
 
-        return n;
-      })
+          return n;
+        })
+      )
     );
+  };
 
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.id === '2') {
-          return { ...n, data: { label: 'updated' } };
-        }
-
-        return n;
-      })
-    );
+  const multiUpdateNodes = () => {
+    nodes.forEach((node) => updateNodeData(node.id, { label: 'node update' }));
   };
 
   return (
@@ -74,7 +67,8 @@ const CustomNodeFlow = () => {
       <Controls />
       <Background />
       <Panel>
-        <button onClick={updateNodes}>update nodes</button>
+        <button onClick={multiSetNodes}>set nodes</button>
+        <button onClick={multiUpdateNodes}>update nodes</button>
       </Panel>
     </ReactFlow>
   );

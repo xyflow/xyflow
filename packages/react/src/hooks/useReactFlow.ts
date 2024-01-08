@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
@@ -30,6 +30,10 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
 
+  // this is used to handle multiple syncronous setNodes calls
+  const setNodesData = useRef<Node[]>();
+  const setNodesTimeout = useRef<ReturnType<typeof setTimeout>>();
+
   const getNodes = useCallback<Instance.GetNodes<NodeType>>(() => {
     return store.getState().nodes.map((n) => ({ ...n })) as NodeType[];
   }, []);
@@ -50,16 +54,30 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
     const { nodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
-    const nextNodes = typeof payload === 'function' ? payload(nodes as NodeType[]) : payload;
+    setNodesData.current = setNodesData.current || nodes;
+    const nextNodes = typeof payload === 'function' ? payload(setNodesData.current as NodeType[]) : payload;
+
+    setNodesData.current = nextNodes;
 
     if (hasDefaultNodes) {
       setNodes(nextNodes);
     } else if (onNodesChange) {
-      const changes =
-        nextNodes.length === 0
-          ? nodes.map((node) => ({ type: 'remove', id: node.id } as NodeRemoveChange))
-          : nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeType>));
-      onNodesChange(changes);
+      if (setNodesTimeout.current) {
+        clearTimeout(setNodesTimeout.current);
+      }
+
+      // if there are multiple synchronous setNodes calls, we only want to call onNodesChange once
+      // for this, we use a timeout to wait for the last call and store updated nodes in setNodesData
+      // this is not perfect, but should work in most cases
+      setNodesTimeout.current = setTimeout(() => {
+        const changes =
+          nextNodes.length === 0
+            ? nodes.map((node) => ({ type: 'remove', id: node.id } as NodeRemoveChange))
+            : nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeType>));
+        onNodesChange(changes);
+
+        setNodesData.current = undefined;
+      }, 0);
     }
   }, []);
 
