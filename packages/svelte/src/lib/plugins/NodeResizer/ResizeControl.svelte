@@ -7,8 +7,11 @@
   import {
     ResizeControlVariant,
     getPointerPosition,
-    clamp,
-    getResizeDirection
+    getResizeDirection,
+    getControlDirection,
+    type XYResizeControlPosition,
+    getDimensionsAfterResize,
+    getPositionAfterResize
   } from '@xyflow/system';
   import { useStore } from '$lib/store';
 
@@ -52,7 +55,9 @@
   let startValues = { ...initStartValues };
   let prevValues = { ...initPrevValues };
 
-  $: defaultPosition = variant === ResizeControlVariant.Line ? 'right' : 'bottom-right';
+  $: defaultPosition = (
+    variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
+  ) as XYResizeControlPosition;
   $: controlPosition = position ?? defaultPosition;
 
   $: positionClassNames = controlPosition.split('-');
@@ -67,10 +72,7 @@
     }
     const selection = select(resizeControlRef);
 
-    const enableX = controlPosition.includes('right') || controlPosition.includes('left');
-    const enableY = controlPosition.includes('bottom') || controlPosition.includes('top');
-    const invertX = controlPosition.includes('left');
-    const invertY = controlPosition.includes('top');
+    const controlDirection = getControlDirection(controlPosition);
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -98,7 +100,7 @@
         onResizeStart?.(event, { ...prevValues });
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, {
+        const pointerPosition = getPointerPosition(event.sourceEvent, {
           transform: [$viewport.x, $viewport.y, $viewport.zoom],
           snapGrid: $snapGrid ?? undefined,
           snapToGrid: !!$snapGrid
@@ -106,64 +108,27 @@
         const node = $nodeLookup.get(id);
 
         if (node) {
-          const {
-            pointerX: startX,
-            pointerY: startY,
-            width: startWidth,
-            height: startHeight,
-            x: startNodeX,
-            y: startNodeY,
-            aspectRatio
-          } = startValues;
-
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
 
-          const distX = Math.floor(enableX ? xSnapped - startX : 0);
-          const distY = Math.floor(enableY ? ySnapped - startY : 0);
-
-          let width = clamp(startWidth + (invertX ? -distX : distX), minWidth, maxWidth);
-          let height = clamp(startHeight + (invertY ? -distY : distY), minHeight, maxHeight);
-
-          if (keepAspectRatio) {
-            const nextAspectRatio = width / height;
-            const isDiagonal = enableX && enableY;
-            const isHorizontal = enableX && !enableY;
-            const isVertical = enableY && !enableX;
-
-            width =
-              (nextAspectRatio <= aspectRatio && isDiagonal) || isVertical
-                ? height * aspectRatio
-                : width;
-            height =
-              (nextAspectRatio > aspectRatio && isDiagonal) || isHorizontal
-                ? width / aspectRatio
-                : height;
-
-            if (width >= _maxWidth) {
-              width = _maxWidth;
-              height = _maxWidth / aspectRatio;
-            } else if (width <= _minWidth) {
-              width = _minWidth;
-              height = _minWidth / aspectRatio;
-            }
-
-            if (height >= _maxHeight) {
-              height = _maxHeight;
-              width = _maxHeight * aspectRatio;
-            } else if (height <= _minHeight) {
-              height = _minHeight;
-              width = _minHeight * aspectRatio;
-            }
-          }
-
+          const { width, height } = getDimensionsAfterResize(
+            startValues,
+            controlDirection,
+            pointerPosition,
+            {
+              minWidth: _minWidth,
+              minHeight: _minHeight,
+              maxWidth: _maxWidth,
+              maxHeight: _maxHeight
+            },
+            !!keepAspectRatio
+          );
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
           let changes = false;
 
-          if (invertX || invertY) {
-            const x = invertX ? startNodeX - (width - startWidth) : startNodeX;
-            const y = invertY ? startNodeY - (height - startHeight) : startNodeY;
+          if (controlDirection.affectsX || controlDirection.affectsY) {
+            const { x, y } = getPositionAfterResize(startValues, controlDirection, width, height);
 
             // only transform the node if the width or height changes
             const isXPosChange = x !== prevX && isWidthChange;
@@ -199,8 +164,8 @@
             prevWidth,
             height: prevValues.height,
             prevHeight,
-            invertX,
-            invertY
+            affectsX: controlDirection.affectsX,
+            affectsY: controlDirection.affectsY
           });
 
           const nextValues = { ...prevValues, direction };

@@ -30,8 +30,6 @@
   let _minHeight = minHeight || 10;
   let _maxWidth = maxWidth || Number.MAX_VALUE;
   let _maxHeight = maxHeight || Number.MAX_VALUE;
-
-  $: console.log(isVisible);
 </script>
 
 {#if isVisible}

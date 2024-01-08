@@ -2,7 +2,12 @@ import { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
-import { getPointerPosition, clamp } from '@xyflow/system';
+import {
+  getPointerPosition,
+  getControlDirection,
+  getDimensionsAfterResize,
+  getPositionAfterResize,
+} from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
@@ -53,10 +58,7 @@ function ResizeControl({
 
     const selection = select(resizeControlRef.current);
 
-    const enableX = controlPosition.includes('right') || controlPosition.includes('left');
-    const enableY = controlPosition.includes('bottom') || controlPosition.includes('top');
-    const invertX = controlPosition.includes('left');
-    const invertY = controlPosition.includes('top');
+    const controlDirection = getControlDirection(controlPosition);
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -82,61 +84,27 @@ function ResizeControl({
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { nodeLookup, transform, snapGrid, snapToGrid, triggerNodeChanges } = store.getState();
-        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         const node = nodeLookup.get(id);
 
         if (node) {
           const changes: NodeChange[] = [];
-          const {
-            pointerX: startX,
-            pointerY: startY,
-            width: startWidth,
-            height: startHeight,
-            x: startNodeX,
-            y: startNodeY,
-            aspectRatio,
-          } = startValues.current;
 
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues.current;
 
-          const distX = Math.floor(enableX ? xSnapped - startX : 0);
-          const distY = Math.floor(enableY ? ySnapped - startY : 0);
-
-          let width = clamp(startWidth + (invertX ? -distX : distX), minWidth, maxWidth);
-          let height = clamp(startHeight + (invertY ? -distY : distY), minHeight, maxHeight);
-
-          if (keepAspectRatio) {
-            const nextAspectRatio = width / height;
-            const isDiagonal = enableX && enableY;
-            const isHorizontal = enableX && !enableY;
-            const isVertical = enableY && !enableX;
-
-            width = (nextAspectRatio <= aspectRatio && isDiagonal) || isVertical ? height * aspectRatio : width;
-            height = (nextAspectRatio > aspectRatio && isDiagonal) || isHorizontal ? width / aspectRatio : height;
-
-            if (width >= maxWidth) {
-              width = maxWidth;
-              height = maxWidth / aspectRatio;
-            } else if (width <= minWidth) {
-              width = minWidth;
-              height = minWidth / aspectRatio;
-            }
-
-            if (height >= maxHeight) {
-              height = maxHeight;
-              width = maxHeight * aspectRatio;
-            } else if (height <= minHeight) {
-              height = minHeight;
-              width = minHeight * aspectRatio;
-            }
-          }
+          const { width, height } = getDimensionsAfterResize(
+            startValues.current,
+            controlDirection,
+            pointerPosition,
+            { minWidth, minHeight, maxWidth, maxHeight },
+            keepAspectRatio
+          );
 
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
-          if (invertX || invertY) {
-            const x = invertX ? startNodeX - (width - startWidth) : startNodeX;
-            const y = invertY ? startNodeY - (height - startHeight) : startNodeY;
+          if (controlDirection.affectsX || controlDirection.affectsY) {
+            const { x, y } = getPositionAfterResize(startValues.current, controlDirection, width, height);
 
             // only transform the node if the width or height changes
             const isXPosChange = x !== prevX && isWidthChange;
@@ -184,8 +152,8 @@ function ResizeControl({
             prevWidth,
             height: prevValues.current.height,
             prevHeight,
-            invertX,
-            invertY,
+            affectsX: controlDirection.affectsX,
+            affectsY: controlDirection.affectsY,
           });
 
           const nextValues = { ...prevValues.current, direction };
