@@ -1,15 +1,15 @@
 <script lang="ts">
   import { getContext, onMount } from 'svelte';
   import cc from 'classcat';
-  import type { ResizeControlProps } from './types';
+  import { useStore } from '$lib/store';
   import {
+    XYResizer,
     ResizerControlVariant,
     type XYResizerControlPosition,
     type XYResizerInstance,
-    XYResizer,
-    type XYResizeChange
+    type XYResizerChange
   } from '@xyflow/system';
-  import { useStore } from '$lib/store';
+  import type { ResizeControlProps } from './types';
 
   type $$Props = ResizeControlProps;
 
@@ -66,7 +66,7 @@
             snapToGrid: !!$snapGrid
           };
         },
-        onChange: (change: XYResizeChange) => {
+        onChange: (change: XYResizerChange) => {
           const node = $nodeLookup.get(id);
           if (node) {
             node.height = change.isHeightChange ? change.height : node.height;

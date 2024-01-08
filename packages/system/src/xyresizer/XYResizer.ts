@@ -26,7 +26,7 @@ const initChange = {
   isHeightChange: false,
 };
 
-export type XYResizeChange = {
+export type XYResizerChange = {
   x: number;
   y: number;
   width: number;
@@ -46,7 +46,7 @@ type XYResizerParams = {
     snapGrid?: [number, number];
     snapToGrid: boolean;
   };
-  onChange: (changes: XYResizeChange) => void;
+  onChange: (changes: XYResizerChange) => void;
   onEnd?: () => void;
 };
 
