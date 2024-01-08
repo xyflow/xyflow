@@ -1,16 +1,16 @@
 export { default as ReactFlow } from './container/ReactFlow';
-export { default as Handle, type HandleComponentProps } from './components/Handle';
-export { default as EdgeText } from './components/Edges/EdgeText';
+export { Handle, type HandleComponentProps } from './components/Handle';
+export { EdgeText } from './components/Edges/EdgeText';
 export { StraightEdge } from './components/Edges/StraightEdge';
 export { StepEdge } from './components/Edges/StepEdge';
 export { BezierEdge } from './components/Edges/BezierEdge';
 export { SimpleBezierEdge, getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
 export { SmoothStepEdge } from './components/Edges/SmoothStepEdge';
-export { default as BaseEdge } from './components/Edges/BaseEdge';
-export { default as ReactFlowProvider } from './components/ReactFlowProvider';
-export { default as Panel, type PanelProps } from './components/Panel';
-export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
-export { default as ViewportPortal } from './components/ViewportPortal';
+export { BaseEdge } from './components/Edges/BaseEdge';
+export { ReactFlowProvider } from './components/ReactFlowProvider';
+export { Panel, type PanelProps } from './components/Panel';
+export { EdgeLabelRenderer } from './components/EdgeLabelRenderer';
+export { ViewportPortal } from './components/ViewportPortal';
 
 export { useReactFlow } from './hooks/useReactFlow';
 export { useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';

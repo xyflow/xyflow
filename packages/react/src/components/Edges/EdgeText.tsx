@@ -1,10 +1,10 @@
-import { memo, useState, type FC, type PropsWithChildren, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import cc from 'classcat';
 import type { Rect } from '@xyflow/system';
 
 import type { EdgeTextProps } from '../../types';
 
-const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
+function EdgeTextComponent({
   x,
   y,
   label,
@@ -16,7 +16,7 @@ const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
   children,
   className,
   ...rest
-}) => {
+}: EdgeTextProps) {
   const [edgeTextBbox, setEdgeTextBbox] = useState<Rect>({ x: 1, y: 0, width: 0, height: 0 });
   const edgeTextClasses = cc(['react-flow__edge-textwrapper', className]);
 
@@ -68,5 +68,6 @@ const EdgeText: FC<PropsWithChildren<EdgeTextProps>> = ({
       {children}
     </g>
   );
-};
-export default memo(EdgeText);
+}
+
+export const EdgeText = memo(EdgeTextComponent);

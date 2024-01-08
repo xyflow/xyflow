@@ -8,7 +8,7 @@ const selector = (s: ReactFlowState) => ({
   userSelectionRect: s.userSelectionRect,
 });
 
-function UserSelection() {
+export function UserSelection() {
   const { userSelectionActive, userSelectionRect } = useStore(selector, shallow);
   const isActive = userSelectionActive && userSelectionRect;
 
@@ -27,5 +27,3 @@ function UserSelection() {
     />
   );
 }
-
-export default UserSelection;

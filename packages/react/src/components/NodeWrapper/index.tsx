@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo, type MouseEvent, type KeyboardEvent } from 'react';
+import { useEffect, useRef, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -19,7 +19,7 @@ import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes } from './utils';
 import type { NodeWrapperProps } from '../../types';
 
-const NodeWrapper = ({
+export function NodeWrapper({
   id,
   onClick,
   onMouseEnter,
@@ -40,7 +40,7 @@ const NodeWrapper = ({
   nodeExtent,
   nodeOrigin,
   onError,
-}: NodeWrapperProps) => {
+}: NodeWrapperProps) {
   const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
     const node = s.nodeLookup.get(id)!;
 
@@ -257,8 +257,4 @@ const NodeWrapper = ({
       </Provider>
     </div>
   );
-};
-
-NodeWrapper.displayName = 'NodeWrapper';
-
-export default memo(NodeWrapper);
+}

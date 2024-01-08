@@ -47,7 +47,7 @@ const connectingSelector =
     };
   };
 
-const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
+const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
   (
     {
       type = 'source',
@@ -216,6 +216,6 @@ const Handle = forwardRef<HTMLDivElement, HandleComponentProps>(
   }
 );
 
-Handle.displayName = 'Handle';
+HandleComponent.displayName = 'Handle';
 
-export default memo(Handle);
+export const Handle = memo(HandleComponent);

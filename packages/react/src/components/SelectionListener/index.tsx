@@ -4,7 +4,7 @@
  * or is using the useOnSelectionChange hook.
  * @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
  */
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -30,7 +30,7 @@ function areEqual(a: SelectorSlice, b: SelectorSlice) {
   );
 }
 
-const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) => {
+function SelectionListenerInner({ onSelectionChange }: SelectionListenerProps) {
   const store = useStoreApi();
   const { selectedNodes, selectedEdges } = useStore(selector, areEqual);
 
@@ -42,20 +42,16 @@ const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) =
   }, [selectedNodes, selectedEdges, onSelectionChange]);
 
   return null;
-});
-
-SelectionListener.displayName = 'SelectionListener';
+}
 
 const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
 
-function Wrapper({ onSelectionChange }: SelectionListenerProps) {
+export function SelectionListener({ onSelectionChange }: SelectionListenerProps) {
   const storeHasSelectionChangeHandlers = useStore(changeSelector);
 
   if (onSelectionChange || storeHasSelectionChangeHandlers) {
-    return <SelectionListener onSelectionChange={onSelectionChange} />;
+    return <SelectionListenerInner onSelectionChange={onSelectionChange} />;
   }
 
   return null;
 }
-
-export default Wrapper;

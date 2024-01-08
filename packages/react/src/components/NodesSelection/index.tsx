@@ -3,7 +3,7 @@
  * made a selection with on or several nodes
  */
 
-import { memo, useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
+import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getNodesBounds } from '@xyflow/system';
@@ -32,7 +32,7 @@ const selector = (s: ReactFlowState) => {
   };
 };
 
-function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
+export function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
   const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
   const updatePositions = useUpdateNodePositions();
@@ -93,5 +93,3 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
     </div>
   );
 }
-
-export default memo(NodesSelection);

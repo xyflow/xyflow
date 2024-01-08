@@ -5,8 +5,8 @@ import { NodeOrigin, getNodePositionWithOrigin } from '@xyflow/system';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
+import { MiniMapNode } from './MiniMapNode';
 import type { ReactFlowState } from '../../types';
-import MiniMapNode from './MiniMapNode';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
 declare const window: any;

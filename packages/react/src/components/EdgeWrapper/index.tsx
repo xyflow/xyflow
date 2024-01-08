@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useRef, type KeyboardEvent, useCallback } from 'react';
+import { useState, useMemo, useRef, type KeyboardEvent, useCallback } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -11,11 +11,11 @@ import {
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
-import type { EdgeWrapperProps } from '../../types';
 import { builtinEdgeTypes, nullPosition } from './utils';
-import EdgeUpdateAnchors from './EdgeUpdateAnchors';
+import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
+import type { EdgeWrapperProps } from '../../types';
 
-function EdgeWrapper({
+export function EdgeWrapper({
   id,
   edgesFocusable,
   edgesUpdatable,
@@ -258,7 +258,3 @@ function EdgeWrapper({
     </svg>
   );
 }
-
-EdgeWrapper.displayName = 'EdgeWrapper';
-
-export default memo(EdgeWrapper);

@@ -27,7 +27,7 @@ const selector = (s: ReactFlowState) => ({
   lib: s.lib,
 });
 
-const ZoomPane = ({
+export function ZoomPane({
   onPaneContextMenu,
   zoomOnScroll = true,
   zoomOnPinch = true,
@@ -47,7 +47,7 @@ const ZoomPane = ({
   noPanClassName,
   onViewportChange,
   isControlledViewport,
-}: ZoomPaneProps) => {
+}: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
   const { userSelectionActive, lib } = useStore(selector, shallow);
@@ -142,6 +142,4 @@ const ZoomPane = ({
       {children}
     </div>
   );
-};
-
-export default ZoomPane;
+}

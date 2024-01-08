@@ -1,13 +1,13 @@
 import { memo } from 'react';
 import { shallow } from 'zustand/shallow';
 
-import useVisibleNodesIds from '../../hooks/useVisibleNodeIds';
+import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
+import { useResizeObserver } from './useResizeObserver';
+import { NodeWrapper } from '../../components/NodeWrapper';
 import type { ReactFlowState } from '../../types';
-import useResizeObserver from './useResizeObserver';
-import NodeWrapper from '../../components/NodeWrapper';
 
 export type NodeRendererProps = Pick<
   GraphViewProps,
@@ -35,9 +35,9 @@ const selector = (s: ReactFlowState) => ({
   onError: s.onError,
 });
 
-const NodeRenderer = (props: NodeRendererProps) => {
+const NodeRendererComponent = (props: NodeRendererProps) => {
   const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
-  const nodeIds = useVisibleNodesIds(props.onlyRenderVisibleElements);
+  const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 
   return (
@@ -96,6 +96,6 @@ const NodeRenderer = (props: NodeRendererProps) => {
   );
 };
 
-NodeRenderer.displayName = 'NodeRenderer';
+NodeRendererComponent.displayName = 'NodeRenderer';
 
-export default memo(NodeRenderer);
+export const NodeRenderer = memo(NodeRendererComponent);

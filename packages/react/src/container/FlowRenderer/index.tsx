@@ -4,9 +4,9 @@ import { useStore } from '../../hooks/useStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
-import ZoomPane from '../ZoomPane';
-import Pane from '../Pane';
-import NodesSelection from '../../components/NodesSelection';
+import { ZoomPane } from '../ZoomPane';
+import { Pane } from '../Pane';
+import { NodesSelection } from '../../components/NodesSelection';
 import type { ReactFlowState } from '../../types';
 
 export type FlowRendererProps = Omit<
@@ -30,7 +30,7 @@ export type FlowRendererProps = Omit<
 
 const selector = (s: ReactFlowState) => s.nodesSelectionActive;
 
-const FlowRenderer = ({
+const FlowRendererComponent = ({
   children,
   onPaneClick,
   onPaneMouseEnter,
@@ -125,6 +125,6 @@ const FlowRenderer = ({
   );
 };
 
-FlowRenderer.displayName = 'FlowRenderer';
+FlowRendererComponent.displayName = 'FlowRenderer';
 
-export default memo(FlowRenderer);
+export const FlowRenderer = memo(FlowRendererComponent);

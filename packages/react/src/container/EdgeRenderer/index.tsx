@@ -2,10 +2,10 @@ import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
-import useVisibleEdgeIds from '../../hooks/useVisibleEdgeIds';
+import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import EdgeWrapper from '../../components/EdgeWrapper';
+import { EdgeWrapper } from '../../components/EdgeWrapper';
 import type { ReactFlowState } from '../../types';
 
 type EdgeRendererProps = Pick<
@@ -40,7 +40,7 @@ const selector = (s: ReactFlowState) => ({
   onError: s.onError,
 });
 
-const EdgeRenderer = ({
+function EdgeRendererComponent({
   defaultMarkerColor,
   onlyRenderVisibleElements,
   rfId,
@@ -56,8 +56,7 @@ const EdgeRenderer = ({
   onEdgeDoubleClick,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
-  children,
-}: EdgeRendererProps) => {
+}: EdgeRendererProps) {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
@@ -90,11 +89,10 @@ const EdgeRenderer = ({
           />
         );
       })}
-      {children}
     </div>
   );
-};
+}
 
-EdgeRenderer.displayName = 'EdgeRenderer';
+EdgeRendererComponent.displayName = 'EdgeRenderer';
 
-export default memo(EdgeRenderer);
+export const EdgeRenderer = memo(EdgeRendererComponent);

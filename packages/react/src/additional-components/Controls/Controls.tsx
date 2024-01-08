@@ -1,19 +1,18 @@
-import { memo, type FC, type PropsWithChildren } from 'react';
+import { memo } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useReactFlow } from '../../hooks/useReactFlow';
-import Panel from '../../components/Panel';
+import { Panel } from '../../components/Panel';
 import { type ReactFlowState } from '../../types';
 
-import PlusIcon from './Icons/Plus';
-import MinusIcon from './Icons/Minus';
-import FitviewIcon from './Icons/FitView';
-import LockIcon from './Icons/Lock';
-import UnlockIcon from './Icons/Unlock';
-import ControlButton from './ControlButton';
-
+import { PlusIcon } from './Icons/Plus';
+import { MinusIcon } from './Icons/Minus';
+import { FitViewIcon } from './Icons/FitView';
+import { LockIcon } from './Icons/Lock';
+import { UnlockIcon } from './Icons/Unlock';
+import { ControlButton } from './ControlButton';
 import type { ControlProps } from './types';
 
 const selector = (s: ReactFlowState) => ({
@@ -22,7 +21,7 @@ const selector = (s: ReactFlowState) => ({
   maxZoomReached: s.transform[2] >= s.maxZoom,
 });
 
-const Controls: FC<PropsWithChildren<ControlProps>> = ({
+function ControlsComponent({
   style,
   showZoom = true,
   showFitView = true,
@@ -35,7 +34,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   className,
   children,
   position = 'bottom-left',
-}) => {
+}: ControlProps) {
   const store = useStoreApi();
   const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
@@ -101,7 +100,7 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
           title="fit view"
           aria-label="fit view"
         >
-          <FitviewIcon />
+          <FitViewIcon />
         </ControlButton>
       )}
       {showInteractive && (
@@ -117,8 +116,8 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
       {children}
     </Panel>
   );
-};
+}
 
-Controls.displayName = 'Controls';
+ControlsComponent.displayName = 'Controls';
 
-export default memo(Controls);
+export const Controls = memo(ControlsComponent);

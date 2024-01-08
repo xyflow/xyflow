@@ -18,7 +18,7 @@ type EdgeUpdateAnchorsProps = {
   setUpdating: (updating: boolean) => void;
 } & EdgePosition;
 
-function EdgeUpdateAnchors({
+export function EdgeUpdateAnchors({
   isUpdatable,
   edgeUpdaterRadius,
   edge,
@@ -133,5 +133,3 @@ function EdgeUpdateAnchors({
     </>
   );
 }
-
-export default EdgeUpdateAnchors;

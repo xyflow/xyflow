@@ -1,5 +1,3 @@
-const GroupNode = () => null;
-
-GroupNode.displayName = 'GroupNode';
-
-export default GroupNode;
+export function GroupNode() {
+  return null;
+}

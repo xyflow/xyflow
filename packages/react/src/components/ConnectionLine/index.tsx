@@ -142,7 +142,7 @@ const selector = (s: ReactFlowState) => ({
   height: s.height,
 });
 
-function ConnectionLineWrapper({ containerStyle, style, type, component }: ConnectionLineWrapperProps) {
+export function ConnectionLineWrapper({ containerStyle, style, type, component }: ConnectionLineWrapperProps) {
   const { nodeId, handleType, nodesConnectable, width, height, connectionStatus } = useStore(selector, shallow);
   const isValid = !!(nodeId && handleType && width && nodesConnectable);
 
@@ -170,5 +170,3 @@ function ConnectionLineWrapper({ containerStyle, style, type, component }: Conne
     </svg>
   );
 }
-
-export default ConnectionLineWrapper;

@@ -3,7 +3,7 @@ import cc from 'classcat';
 
 import type { MiniMapNodeProps } from './types';
 
-function MiniMapNode({
+function MiniMapNodeComponent({
   id,
   x,
   y,
@@ -42,4 +42,4 @@ function MiniMapNode({
   );
 }
 
-export default memo(MiniMapNode);
+export const MiniMapNode = memo(MiniMapNodeComponent);

@@ -1,13 +1,13 @@
 import type { PanelPosition, ProOptions } from '@xyflow/system';
 
-import Panel from '../Panel';
+import { Panel } from '../Panel';
 
 type AttributionProps = {
   proOptions?: ProOptions;
   position?: PanelPosition;
 };
 
-function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
+export function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
   if (proOptions?.hideAttribution) {
     return null;
   }
@@ -24,5 +24,3 @@ function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps
     </Panel>
   );
 }
-
-export default Attribution;

@@ -12,7 +12,7 @@ import { type ReactFlowState } from '../types';
  * @param onlyRenderVisible
  * @returns array with visible edge ids
  */
-function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
+export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
   const edgeIds = useStore(
     useCallback(
       (s: ReactFlowState) => {
@@ -52,5 +52,3 @@ function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
 
   return edgeIds;
 }
-
-export default useVisibleEdgeIds;
