@@ -1,20 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { D3DragEvent, SubjectPosition } from 'd3-drag';
 import type {
-  XYResizeParams,
-  XYResizeParamsWithDirection,
   XYResizeControlPosition,
   XYResizeControlLinePosition,
   ResizeControlVariant,
+  ShouldResize,
+  OnResizeStart,
+  OnResize,
+  OnResizeEnd,
 } from '@xyflow/system';
-
-type OnResizeHandler<Params = XYResizeParams, Result = void> = (event: ResizeDragEvent, params: Params) => Result;
-export type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
-
-export type ShouldResize = OnResizeHandler<XYResizeParamsWithDirection, boolean>;
-export type OnResizeStart = OnResizeHandler;
-export type OnResize = OnResizeHandler<XYResizeParamsWithDirection>;
-export type OnResizeEnd = OnResizeHandler;
 
 export type NodeResizerProps = {
   nodeId?: string;

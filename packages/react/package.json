@@ -49,12 +49,8 @@
   },
   "dependencies": {
     "@types/d3": "^7.4.0",
-    "@types/d3-drag": "^3.0.1",
-    "@types/d3-selection": "^3.0.3",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.3",
-    "d3-drag": "^3.0.0",
-    "d3-selection": "^3.0.0",
     "zustand": "^4.4.0"
   },
   "peerDependencies": {
