@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.0.0-next.5
+
+### Minor changes
+
+- fix applyChanges: handle multi changes for one node
+
 ## 12.0.0-next.4
 
 ### Minor changes

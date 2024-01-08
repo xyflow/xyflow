@@ -141,8 +141,9 @@ function applyChanges(changes: any[], elements: any[]): any[] {
           }
         }
       }
-      updatedElements.push(updateItem);
     }
+
+    updatedElements.push(updateItem);
   }
 
   return updatedElements;
