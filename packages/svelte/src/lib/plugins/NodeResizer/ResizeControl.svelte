@@ -1,11 +1,10 @@
 <script lang="ts">
   import { getContext, onMount } from 'svelte';
-  import { get } from 'svelte/store';
   import cc from 'classcat';
   import type { ResizeControlProps } from './types';
   import {
-    ResizeControlVariant,
-    type XYResizeControlPosition,
+    ResizerControlVariant,
+    type XYResizerControlPosition,
     type XYResizerInstance,
     XYResizer,
     type XYResizeChange
@@ -16,7 +15,7 @@
 
   export let nodeId: $$Props['nodeId'] = undefined;
   export let position: $$Props['position'] = undefined;
-  export let variant: $$Props['variant'] = ResizeControlVariant.Handle;
+  export let variant: $$Props['variant'] = ResizerControlVariant.Handle;
   export let color: $$Props['color'] = undefined;
   export let minWidth: $$Props['minWidth'] = 10;
   $: _minWidth = minWidth ?? 10;
@@ -44,79 +43,64 @@
   let resizer: XYResizerInstance | null = null;
 
   $: defaultPosition = (
-    variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
-  ) as XYResizeControlPosition;
+    variant === ResizerControlVariant.Line ? 'right' : 'bottom-right'
+  ) as XYResizerControlPosition;
   $: controlPosition = position ?? defaultPosition;
 
   $: positionClassNames = controlPosition.split('-');
 
-  $: colorStyleProp = variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
+  $: colorStyleProp = variant === ResizerControlVariant.Line ? 'border-color' : 'background-color';
   $: _style = style ?? '';
   $: controlStyle = !!color ? `${_style} ${colorStyleProp}: ${color};` : _style;
 
-  function updateNodes() {
-    $nodes = $nodes;
-  }
-
   onMount(() => {
+    if (resizeControlRef) {
+      resizer = XYResizer({
+        domNode: resizeControlRef,
+        nodeId: id,
+        getStoreItems: () => {
+          return {
+            nodeLookup: $nodeLookup,
+            transform: [$viewport.x, $viewport.y, $viewport.zoom],
+            snapGrid: $snapGrid ?? undefined,
+            snapToGrid: !!$snapGrid
+          };
+        },
+        onChange: (change: XYResizeChange) => {
+          const node = $nodeLookup.get(id);
+          if (node) {
+            node.height = change.isHeightChange ? change.height : node.height;
+            node.width = change.isWidthChange ? change.width : node.width;
+            node.position =
+              change.isXPosChange || change.isYPosChange
+                ? { x: change.x, y: change.y }
+                : node.position;
+
+            $nodes = $nodes;
+          }
+        }
+      });
+    }
     return () => {
       resizer?.destroy();
     };
   });
 
   $: {
-    if (resizeControlRef) {
-      if (!resizer) {
-        const _snapGrid = get(snapGrid);
-        const _viewport = get(viewport);
-        resizer = XYResizer({
-          domNode: resizeControlRef,
-          nodeId: id,
-          getStoreItems: () => {
-            return {
-              nodeLookup: get(nodeLookup),
-              transform: [_viewport.x, _viewport.y, _viewport.zoom],
-              snapGrid: _snapGrid ?? undefined,
-              snapToGrid: !!_snapGrid
-            };
-          },
-          onChange: (change: XYResizeChange) => {
-            const _nodeLookup = get(nodeLookup);
-            const node = _nodeLookup.get(id);
-            if (node) {
-              if (change.isHeightChange) {
-                node.height = change.height;
-              }
-
-              if (change.isWidthChange) {
-                node.width = change.width;
-              }
-
-              if (change.isXPosChange || change.isYPosChange) {
-                node.position = { x: change.x, y: change.y };
-              }
-              // This needs to be a function to prevent unnecessary updates
-              updateNodes();
-            }
-          }
-        });
-      }
-
-      resizer.update({
-        controlPosition,
-        boundries: {
-          minWidth: _minWidth,
-          minHeight: _minHeight,
-          maxWidth: _maxWidth,
-          maxHeight: _maxHeight
-        },
-        keepAspectRatio: !!keepAspectRatio,
-        onResizeStart,
-        onResize,
-        onResizeEnd,
-        shouldResize
-      });
-    }
+    resizer?.update({
+      controlPosition,
+      boundries: {
+        minWidth: _minWidth,
+        minHeight: _minHeight,
+        maxWidth: _maxWidth,
+        maxHeight: _maxHeight
+      },
+      keepAspectRatio: !!keepAspectRatio,
+      onResizeStart,
+      onResize,
+      onResizeEnd,
+      shouldResize
+    });
   }
 </script>
 

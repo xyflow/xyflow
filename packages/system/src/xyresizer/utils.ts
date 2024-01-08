@@ -1,5 +1,5 @@
 import { clamp, getPointerPosition } from '../utils';
-import { XYResizeControlPosition } from './types';
+import { XYResizerControlPosition } from './types';
 
 type GetResizeDirectionParams = {
   width: number;
@@ -48,7 +48,7 @@ export function getResizeDirection({
  * @param controlPosition - position of the control that is being dragged
  * @returns isHorizontal, isVertical, affectsX, affectsY,
  */
-export function getControlDirection(controlPosition: XYResizeControlPosition) {
+export function getControlDirection(controlPosition: XYResizerControlPosition) {
   const isHorizontal = controlPosition.includes('right') || controlPosition.includes('left');
   const isVertical = controlPosition.includes('bottom') || controlPosition.includes('top');
   const affectsX = controlPosition.includes('left');

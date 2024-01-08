@@ -2,9 +2,9 @@
   import ResizeControl from './ResizeControl.svelte';
   import type { NodeResizerProps } from './types';
   import {
-    XY_RESIZER_HANDLE_CONTROLS,
-    XY_RESIZER_LINE_CONTROLS,
-    ResizeControlVariant
+    ResizerControlVariant,
+    XY_RESIZER_HANDLE_POSITIONS,
+    XY_RESIZER_LINE_POSITIONS
   } from '@xyflow/system';
 
   type $$Props = NodeResizerProps;
@@ -33,13 +33,13 @@
 </script>
 
 {#if isVisible}
-  {#each XY_RESIZER_LINE_CONTROLS as c (c)}
+  {#each XY_RESIZER_LINE_POSITIONS as position (position)}
     <ResizeControl
       class={lineClass}
       style={lineStyle}
       {nodeId}
-      position={c}
-      variant={ResizeControlVariant.Line}
+      {position}
+      variant={ResizerControlVariant.Line}
       {color}
       minWidth={_minWidth}
       minHeight={_minHeight}
@@ -52,12 +52,12 @@
       {onResizeEnd}
     />
   {/each}
-  {#each XY_RESIZER_HANDLE_CONTROLS as c (c)}
+  {#each XY_RESIZER_HANDLE_POSITIONS as position (position)}
     <ResizeControl
       class={handleClass}
       style={handleStyle}
       {nodeId}
-      position={c}
+      {position}
       {color}
       minWidth={_minWidth}
       minHeight={_minHeight}

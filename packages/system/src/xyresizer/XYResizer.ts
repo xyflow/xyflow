@@ -2,7 +2,7 @@ import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { NodeLookup, Transform } from '../types';
-import { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, XYResizeControlPosition } from './types';
+import { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, XYResizerControlPosition } from './types';
 import { getControlDirection, getDimensionsAfterResize, getPositionAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
 
@@ -51,7 +51,7 @@ type XYResizerParams = {
 };
 
 type XYResizerUpdateParams = {
-  controlPosition: XYResizeControlPosition;
+  controlPosition: XYResizerControlPosition;
   boundries: {
     minWidth: number;
     minHeight: number;
