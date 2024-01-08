@@ -70,4 +70,6 @@ function EdgeTextComponent({
   );
 }
 
+EdgeTextComponent.displayName = 'EdgeText';
+
 export const EdgeText = memo(EdgeTextComponent);

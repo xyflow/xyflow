@@ -5,7 +5,7 @@
 ### Minor changes
 
 - fix applyChanges: handle empty flows + addNodes/addEdges closes
-- cleanup hook exports
+- cleanup exports
 
 ## 12.0.0-next.3
 
@@ -41,7 +41,7 @@ Svelte Flow had a big impact on this release as well. While combing through each
 Before you can try out the new features, you need to do some minor updates:
 
 - **A new npm package name:** Our name changed from `reactflow` to `@xyflow/react` and the main component is no longer a default, but a named import:
-  - v11: `import { ReactFlow } from '@xyflow/react';`
+  - v11: `import ReactFlow from 'reactflow';`
   - v12: `import { ReactFlow } from '@xyflow/react';`
 - **Node attribute “computed”:** All computed node values are now stored in `node.computed`
   - v11: `node.width`, `node.height` ,`node.positionAbsolute`
@@ -72,7 +72,7 @@ Before you can try out the new features, you need to do some minor updates:
   - affected functions: `useNodes`, `useNodesState`, `useEdgesState`, `applyNodeChange`, `onInit`, `applyEdgeChanges` , `MiniMapProps`
 - **Removal of deprecated functions:**
   - `getTransformForBounds` (new name: `getViewportForBounds`),
-  - `getRectOfNodes` \*\*\*\*(new name: `getNodesBounds`)
+  - `getRectOfNodes` (new name: `getNodesBounds`)
   - `project` (new name: `screenToFlowPosition`)
   - `getMarkerEndId`
 
