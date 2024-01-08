@@ -54,20 +54,26 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     return changes.filter((c) => c.type === 'reset').map((c) => c.item);
   }
 
-  let remainingChanges = changes;
+  let remainingChanges = [];
   const updatedElements: any[] = [];
+
+  for (const change of changes) {
+    if (change.type === 'add') {
+      updatedElements.push(change.item);
+    } else {
+      remainingChanges.push(change);
+    }
+  }
 
   for (const item of elements) {
     const nextChanges: any[] = [];
     const _remainingChanges: any[] = [];
 
-    for (const c of remainingChanges) {
-      if (c.type === 'add') {
-        updatedElements.push(c.item);
-      } else if (c.id === item.id) {
-        nextChanges.push(c);
+    for (const change of remainingChanges) {
+      if (change.id === item.id) {
+        nextChanges.push(change);
       } else {
-        _remainingChanges.push(c);
+        _remainingChanges.push(change);
       }
     }
 
