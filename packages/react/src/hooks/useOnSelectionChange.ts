@@ -13,7 +13,7 @@ export type UseOnSelectionChangeOptions = {
  * @public
  * @params params.onChange - The handler to register
  */
-function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
+export function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
   const store = useStoreApi();
 
   useEffect(() => {
@@ -26,5 +26,3 @@ function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
     };
   }, [onChange]);
 }
-
-export default useOnSelectionChange;

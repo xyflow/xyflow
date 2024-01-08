@@ -6,7 +6,7 @@ import { Provider } from '../../contexts/RFStoreContext';
 import { createRFStore } from '../../store';
 import type { ReactFlowState, Node, Edge } from '../../types';
 
-function ReactFlowProvider({
+export function ReactFlowProvider({
   children,
   initialNodes,
   initialEdges,
@@ -35,7 +35,3 @@ function ReactFlowProvider({
 
   return <Provider value={storeRef.current}>{children}</Provider>;
 }
-
-ReactFlowProvider.displayName = 'ReactFlowProvider';
-
-export default ReactFlowProvider;

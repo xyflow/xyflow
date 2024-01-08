@@ -20,10 +20,8 @@ const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
  * @param onlyRenderVisible
  * @returns array with visible node ids
  */
-function useVisibleNodeIds(onlyRenderVisible: boolean) {
+export function useVisibleNodeIds(onlyRenderVisible: boolean) {
   const nodeIds = useStore(useCallback(selector(onlyRenderVisible), [onlyRenderVisible]), shallow);
 
   return nodeIds;
 }
-
-export default useVisibleNodeIds;

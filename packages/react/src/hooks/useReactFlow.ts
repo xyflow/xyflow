@@ -23,7 +23,7 @@ import { isNode } from '../utils';
  * @public
  * @returns ReactFlowInstance
  */
-export default function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): ReactFlowInstance<
+export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): ReactFlowInstance<
   NodeType,
   EdgeType
 > {

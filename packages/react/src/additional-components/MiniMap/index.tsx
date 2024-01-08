@@ -1,2 +1,2 @@
-export { default as MiniMap } from './MiniMap';
+export { MiniMap } from './MiniMap';
 export * from './types';

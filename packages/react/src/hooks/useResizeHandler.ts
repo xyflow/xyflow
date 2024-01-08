@@ -8,7 +8,7 @@ import { useStoreApi } from '../hooks/useStore';
  *
  * @internal
  */
-function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
+export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
   const store = useStoreApi();
 
   useEffect(() => {
@@ -42,5 +42,3 @@ function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): voi
     }
   }, []);
 }
-
-export default useResizeHandler;

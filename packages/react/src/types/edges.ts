@@ -69,8 +69,6 @@ export type EdgeWrapperProps = {
   noPanClassName: string;
   onClick?: EdgeMouseHandler;
   onDoubleClick?: EdgeMouseHandler;
-  sourceHandleId?: string | null;
-  targetHandleId?: string | null;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;

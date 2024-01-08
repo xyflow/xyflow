@@ -106,6 +106,12 @@
 
 .xy-flow__edges {
   position: absolute;
+
+  svg {
+    overflow: visible;
+    position: absolute;
+    pointer-events: none;
+  }
 }
 
 .xy-flow__edge {
@@ -156,7 +162,7 @@
   }
 }
 
-.xy-flow__connectionline {
+svg.xy-flow__connectionline {
   z-index: 1001;
   overflow: visible;
   position: absolute;

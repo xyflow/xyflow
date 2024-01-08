@@ -6,11 +6,11 @@ import { shallow } from 'zustand/shallow';
 import { getNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import Panel from '../../components/Panel';
+import { Panel } from '../../components/Panel';
 import type { ReactFlowState } from '../../types';
 
-import type { MiniMapProps } from './types';
 import MiniMapNodes from './MiniMapNodes';
+import type { MiniMapProps } from './types';
 
 const defaultWidth = 200;
 const defaultHeight = 150;
@@ -37,7 +37,7 @@ const selector = (s: ReactFlowState) => {
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 
-function MiniMap({
+function MiniMapComponent({
   style,
   className,
   nodeStrokeColor,
@@ -171,6 +171,6 @@ function MiniMap({
   );
 }
 
-MiniMap.displayName = 'MiniMap';
+MiniMapComponent.displayName = 'MiniMap';
 
-export default memo(MiniMap);
+export const MiniMap = memo(MiniMapComponent);

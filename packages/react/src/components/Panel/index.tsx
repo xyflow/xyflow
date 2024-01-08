@@ -6,13 +6,13 @@ import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 
 export type PanelProps = HTMLAttributes<HTMLDivElement> & {
-  position: PanelPosition;
+  position?: PanelPosition;
   children: ReactNode;
 };
 
 const selector = (s: ReactFlowState) => (s.userSelectionActive ? 'none' : 'all');
 
-function Panel({ position, children, className, style, ...rest }: PanelProps) {
+export function Panel({ position = 'top-left', children, className, style, ...rest }: PanelProps) {
   const pointerEvents = useStore(selector);
   const positionClasses = `${position}`.split('-');
 
@@ -26,5 +26,3 @@ function Panel({ position, children, className, style, ...rest }: PanelProps) {
     </div>
   );
 }
-
-export default Panel;

@@ -20,14 +20,14 @@ const defaultDoc = typeof document !== 'undefined' ? document : null;
  * @param param.options - Options
  * @returns boolean
  */
-export default (
+export function useKeyPress(
   // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
   // a string means a single key 'a' or a combination when '+' is used 'a+d'
   // an array means different possibilites. Explainer: ['a', 'd+s'] here the
   // user can use the single key 'a' or the combination 'd' + 's'
   keyCode: KeyCode | null = null,
   options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }
-): boolean => {
+): boolean {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // we need to remember if a modifier key is pressed in order to track it
@@ -113,7 +113,7 @@ export default (
   }, [keyCode, setKeyPressed]);
 
   return keyPressed;
-};
+}
 
 // utils
 

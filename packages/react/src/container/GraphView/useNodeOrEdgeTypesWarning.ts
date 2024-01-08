@@ -12,7 +12,7 @@ const emptyTypes = {};
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: NodeTypes): void;
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: EdgeTypes): void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): any {
+export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): any {
   const updateCount = useRef(0);
   const store = useStoreApi();
 

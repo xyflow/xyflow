@@ -11,7 +11,6 @@ import {
   EdgeChange,
   Controls,
   Background,
-  MiniMap,
   Panel,
 } from '@xyflow/react';
 

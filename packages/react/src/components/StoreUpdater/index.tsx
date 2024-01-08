@@ -84,7 +84,7 @@ const selector = (s: ReactFlowState) => ({
   reset: s.reset,
 });
 
-const StoreUpdater = (props: StoreUpdaterProps) => {
+export function StoreUpdater(props: StoreUpdaterProps) {
   const {
     setNodes,
     setEdges,
@@ -149,6 +149,4 @@ const StoreUpdater = (props: StoreUpdaterProps) => {
   );
 
   return null;
-};
-
-export default StoreUpdater;
+}

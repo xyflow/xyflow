@@ -3,16 +3,16 @@
  * made a selection with on or several nodes
  */
 
-import { memo, useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
+import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getNodesBounds } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import useDrag from '../../hooks/useDrag';
-import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
-import type { Node, ReactFlowState } from '../../types';
+import { useDrag } from '../../hooks/useDrag';
+import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
+import type { Node, ReactFlowState } from '../../types';
 
 export type NodesSelectionProps = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
@@ -32,7 +32,7 @@ const selector = (s: ReactFlowState) => {
   };
 };
 
-function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
+export function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
   const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
   const updatePositions = useUpdateNodePositions();
@@ -93,5 +93,3 @@ function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboar
     </div>
   );
 }
-
-export default memo(NodesSelection);
