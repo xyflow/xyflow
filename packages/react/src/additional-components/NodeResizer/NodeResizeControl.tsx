@@ -74,7 +74,6 @@ function ResizeControl({
             const dimensionChange: NodeDimensionChange = {
               id,
               type: 'dimensions',
-              updateStyle: true,
               resizing: true,
               dimensions: {
                 width: change.width,

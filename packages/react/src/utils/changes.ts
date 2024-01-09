@@ -121,10 +121,12 @@ function applyChanges(changes: any[], elements: any[]): any[] {
               }
               updateItem.computed.width = currentChange.dimensions.width;
               updateItem.computed.height = currentChange.dimensions.height;
-            }
 
-            if (typeof currentChange.updateStyle !== 'undefined') {
-              updateItem.style = { ...(updateItem.style || {}), ...currentChange.dimensions };
+              // this is needed for the node resizer to work
+              if (currentChange.resizing) {
+                updateItem.width = currentChange.dimensions.width;
+                updateItem.height = currentChange.dimensions.height;
+              }
             }
 
             if (typeof currentChange.resizing === 'boolean') {
