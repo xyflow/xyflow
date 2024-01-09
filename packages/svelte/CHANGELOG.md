@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.0.32
+
+### Features
+
+- add `NodeResizer` and `NodeResizeControl` components for resizing nodes
+
 ## 0.0.31
 
 ### Bugfix
