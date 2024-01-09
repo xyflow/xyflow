@@ -5,6 +5,7 @@
 ### Minor changes
 
 - fix applyChanges: handle multi changes for one node
+- use `XYResizer` from @xyflow/system
 
 ## 12.0.0-next.4
 

@@ -219,9 +219,9 @@ export function NodeWrapper({
         transform: `translate(${positionAbsoluteOrigin.x}px,${positionAbsoluteOrigin.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
-        width,
-        height,
         ...node.style,
+        width: width ?? node.style?.width,
+        height: height ?? node.style?.height,
       }}
       data-id={id}
       data-testid={`rf__node-${id}`}
