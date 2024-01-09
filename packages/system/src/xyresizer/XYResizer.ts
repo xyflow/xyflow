@@ -73,7 +73,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
     onResizeEnd,
     shouldResize,
   }: XYResizerUpdateParams) {
-    console.log('updated');
     let prevValues = { ...initPrevValues };
     let startValues = { ...initStartValues };
 
