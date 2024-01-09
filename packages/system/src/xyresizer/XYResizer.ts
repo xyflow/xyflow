@@ -26,16 +26,7 @@ const initChange = {
   isHeightChange: false,
 };
 
-export type XYResizerChange = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  isXPosChange: boolean;
-  isYPosChange: boolean;
-  isWidthChange: boolean;
-  isHeightChange: boolean;
-};
+export type XYResizerChange = typeof initChange;
 
 type XYResizerParams = {
   domNode: HTMLDivElement;
