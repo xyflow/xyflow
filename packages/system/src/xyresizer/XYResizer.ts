@@ -1,10 +1,10 @@
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
-import { NodeLookup, Transform } from '../types';
-import { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 import { getControlDirection, getDimensionsAfterResize, getPositionAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
+import type { NodeLookup, Transform } from '../types';
+import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
 
@@ -43,7 +43,7 @@ type XYResizerParams = {
 
 type XYResizerUpdateParams = {
   controlPosition: ControlPosition;
-  boundries: {
+  boundaries: {
     minWidth: number;
     minHeight: number;
     maxWidth: number;
@@ -66,7 +66,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
   function update({
     controlPosition,
-    boundries,
+    boundaries,
     keepAspectRatio,
     onResizeStart,
     onResize,
@@ -114,7 +114,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
             startValues,
             controlDirection,
             pointerPosition,
-            boundries,
+            boundaries,
             keepAspectRatio
           );
 

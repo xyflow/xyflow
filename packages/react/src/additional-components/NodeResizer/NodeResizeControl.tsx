@@ -98,7 +98,7 @@ function ResizeControl({
 
     resizer.current.update({
       controlPosition,
-      boundries: {
+      boundaries: {
         minWidth,
         minHeight,
         maxWidth,

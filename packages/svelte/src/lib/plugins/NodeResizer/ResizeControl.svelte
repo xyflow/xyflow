@@ -89,7 +89,7 @@
   $: {
     resizer?.update({
       controlPosition,
-      boundries: {
+      boundaries: {
         minWidth: _minWidth,
         minHeight: _minHeight,
         maxWidth: _maxWidth,

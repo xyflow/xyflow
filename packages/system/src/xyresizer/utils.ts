@@ -80,7 +80,7 @@ type StartValues = PrevValues & {
  * @param startValues - starting values of resize
  * @param controlDirection - dimensions affected by the resize
  * @param pointerPosition - the current pointer position corrected for snapping
- * @param boundries - maximum and minimum dimensions of the node
+ * @param boundaries - minimum and maximum dimensions of the node
  * @param keepAspectRatio - prevent changes of asprect ratio
  * @returns width: new width of node, height: new height of node
  */
@@ -88,12 +88,12 @@ export function getDimensionsAfterResize(
   startValues: StartValues,
   controlDirection: ReturnType<typeof getControlDirection>,
   pointerPosition: ReturnType<typeof getPointerPosition>,
-  boundries: { minWidth: number; maxWidth: number; minHeight: number; maxHeight: number },
+  boundaries: { minWidth: number; maxWidth: number; minHeight: number; maxHeight: number },
   keepAspectRatio: boolean
 ) {
   const { isHorizontal, isVertical, affectsX, affectsY } = controlDirection;
   const { xSnapped, ySnapped } = pointerPosition;
-  const { minWidth, maxWidth, minHeight, maxHeight } = boundries;
+  const { minWidth, maxWidth, minHeight, maxHeight } = boundaries;
 
   const { pointerX: startX, pointerY: startY, width: startWidth, height: startHeight, aspectRatio } = startValues;
   const distX = Math.floor(isHorizontal ? xSnapped - startX : 0);
@@ -148,7 +148,8 @@ export function getPositionAfterResize(
   width: number,
   height: number
 ) {
-  const x = controlDirection.affectsX ? startValues.x - (width - startValues.width) : startValues.x;
-  const y = controlDirection.affectsY ? startValues.y - (height - startValues.height) : startValues.y;
-  return { x, y };
+  return {
+    x: controlDirection.affectsX ? startValues.x - (width - startValues.width) : startValues.x,
+    y: controlDirection.affectsY ? startValues.y - (height - startValues.height) : startValues.y,
+  };
 }
