@@ -2,7 +2,7 @@
   import ResizeControl from './ResizeControl.svelte';
   import type { NodeResizerProps } from './types';
   import {
-    ResizerControlVariant,
+    ResizeControlVariant,
     XY_RESIZER_HANDLE_POSITIONS,
     XY_RESIZER_LINE_POSITIONS
   } from '@xyflow/system';
@@ -39,7 +39,7 @@
       style={lineStyle}
       {nodeId}
       {position}
-      variant={ResizerControlVariant.Line}
+      variant={ResizeControlVariant.Line}
       {color}
       minWidth={_minWidth}
       minHeight={_minHeight}

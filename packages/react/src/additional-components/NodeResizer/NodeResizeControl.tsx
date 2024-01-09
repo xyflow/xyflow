@@ -1,15 +1,16 @@
 import { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
-import { XYResizer, ResizerControlVariant, type XYResizerInstance, type XYResizerChange } from '@xyflow/system';
+import { XYResizer, ResizeControlVariant, type XYResizerInstance, type XYResizerChange } from '@xyflow/system';
+
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { NodeChange, NodeDimensionChange, NodePositionChange } from '../../types';
-import { type ResizeControlProps, type ResizeControlLineProps } from './types';
+import type { ResizeControlProps, ResizeControlLineProps } from './types';
 
 function ResizeControl({
   nodeId,
   position,
-  variant = ResizerControlVariant.Handle,
+  variant = ResizeControlVariant.Handle,
   className,
   style = {},
   children,
@@ -28,7 +29,7 @@ function ResizeControl({
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
-  const defaultPosition = variant === ResizerControlVariant.Line ? 'right' : 'bottom-right';
+  const defaultPosition = variant === ResizeControlVariant.Line ? 'right' : 'bottom-right';
   const controlPosition = position ?? defaultPosition;
 
   const resizer = useRef<XYResizerInstance | null>(null);
@@ -128,7 +129,7 @@ function ResizeControl({
   ]);
 
   const positionClassNames = controlPosition.split('-');
-  const colorStyleProp = variant === ResizerControlVariant.Line ? 'borderColor' : 'backgroundColor';
+  const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
   const controlStyle = color ? { ...style, [colorStyleProp]: color } : style;
 
   return (
@@ -143,7 +144,7 @@ function ResizeControl({
 }
 
 export function ResizeControlLine(props: ResizeControlLineProps) {
-  return <ResizeControl {...props} variant={ResizerControlVariant.Line} />;
+  return <ResizeControl {...props} variant={ResizeControlVariant.Line} />;
 }
 
-export default memo(ResizeControl);
+export const NodeResizeControl = memo(ResizeControl);

@@ -1,10 +1,10 @@
 import type {
-  XYResizeParams,
-  XYResizeParamsWithDirection,
-  XYResizeControlPosition,
+  ControlPosition,
   ResizeControlVariant,
-  D3DragEvent,
-  SubjectPosition
+  ShouldResize,
+  OnResizeStart,
+  OnResize,
+  OnResizeEnd
 } from '@xyflow/system';
 
 export type NodeResizerProps = {
@@ -40,18 +40,8 @@ export type ResizeControlProps = Pick<
   | 'onResize'
   | 'onResizeEnd'
 > & {
-  position?: XYResizeControlPosition;
+  position?: ControlPosition;
   variant?: ResizeControlVariant;
   class?: string;
   style?: string;
 };
-
-type OnResizeHandler<Params = XYResizeParams, Result = void> = (
-  event: ResizeDragEvent,
-  params: Params
-) => Result;
-export type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
-export type ShouldResize = OnResizeHandler<XYResizeParamsWithDirection, boolean>;
-export type OnResizeStart = OnResizeHandler;
-export type OnResize = OnResizeHandler<XYResizeParamsWithDirection>;
-export type OnResizeEnd = OnResizeHandler;

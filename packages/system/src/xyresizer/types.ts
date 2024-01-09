@@ -11,27 +11,17 @@ export type XYResizerParamsWithDirection = XYResizerParams & {
   direction: number[];
 };
 
-export type XYResizerControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
+export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
 
-export type XYResizerControlPosition =
-  | XYResizerControlLinePosition
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+export type ControlPosition = ControlLinePosition | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
-export enum ResizerControlVariant {
+export enum ResizeControlVariant {
   Line = 'line',
   Handle = 'handle',
 }
 
-export const XY_RESIZER_HANDLE_POSITIONS: XYResizerControlPosition[] = [
-  'top-left',
-  'top-right',
-  'bottom-left',
-  'bottom-right',
-];
-export const XY_RESIZER_LINE_POSITIONS: XYResizerControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
+export const XY_RESIZER_HANDLE_POSITIONS: ControlPosition[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+export const XY_RESIZER_LINE_POSITIONS: ControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
 
 type OnResizeHandler<Params = XYResizerParams, Result = void> = (event: ResizeDragEvent, params: Params) => Result;
 export type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;

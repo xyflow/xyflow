@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type {
-  XYResizeControlPosition,
-  XYResizeControlLinePosition,
+  ControlPosition,
+  ControlLinePosition,
   ResizeControlVariant,
   ShouldResize,
   OnResizeStart,
@@ -42,7 +42,7 @@ export type ResizeControlProps = Pick<
   | 'onResize'
   | 'onResizeEnd'
 > & {
-  position?: XYResizeControlPosition;
+  position?: ControlPosition;
   variant?: ResizeControlVariant;
   className?: string;
   style?: CSSProperties;
@@ -50,5 +50,5 @@ export type ResizeControlProps = Pick<
 };
 
 export type ResizeControlLineProps = ResizeControlProps & {
-  position?: XYResizeControlLinePosition;
+  position?: ControlLinePosition;
 };

@@ -1,8 +1,9 @@
-import ResizeControl from './ResizeControl';
-import { NodeResizerProps } from './types';
-import { ResizerControlVariant, XY_RESIZER_HANDLE_POSITIONS, XY_RESIZER_LINE_POSITIONS } from '@xyflow/system';
+import { ResizeControlVariant, XY_RESIZER_HANDLE_POSITIONS, XY_RESIZER_LINE_POSITIONS } from '@xyflow/system';
 
-export default function NodeResizer({
+import { NodeResizeControl } from './NodeResizeControl';
+import type { NodeResizerProps } from './types';
+
+export function NodeResizer({
   nodeId,
   isVisible = true,
   handleClassName,
@@ -27,13 +28,13 @@ export default function NodeResizer({
   return (
     <>
       {XY_RESIZER_LINE_POSITIONS.map((position) => (
-        <ResizeControl
+        <NodeResizeControl
           key={position}
           className={lineClassName}
           style={lineStyle}
           nodeId={nodeId}
           position={position}
-          variant={ResizerControlVariant.Line}
+          variant={ResizeControlVariant.Line}
           color={color}
           minWidth={minWidth}
           minHeight={minHeight}
@@ -47,7 +48,7 @@ export default function NodeResizer({
         />
       ))}
       {XY_RESIZER_HANDLE_POSITIONS.map((position) => (
-        <ResizeControl
+        <NodeResizeControl
           key={position}
           className={handleClassName}
           style={handleStyle}

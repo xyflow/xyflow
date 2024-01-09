@@ -4,8 +4,8 @@
   import { useStore } from '$lib/store';
   import {
     XYResizer,
-    ResizerControlVariant,
-    type XYResizerControlPosition,
+    ResizeControlVariant,
+    type ControlPosition,
     type XYResizerInstance,
     type XYResizerChange
   } from '@xyflow/system';
@@ -15,7 +15,7 @@
 
   export let nodeId: $$Props['nodeId'] = undefined;
   export let position: $$Props['position'] = undefined;
-  export let variant: $$Props['variant'] = ResizerControlVariant.Handle;
+  export let variant: $$Props['variant'] = ResizeControlVariant.Handle;
   export let color: $$Props['color'] = undefined;
   export let minWidth: $$Props['minWidth'] = 10;
   $: _minWidth = minWidth ?? 10;
@@ -43,13 +43,13 @@
   let resizer: XYResizerInstance | null = null;
 
   $: defaultPosition = (
-    variant === ResizerControlVariant.Line ? 'right' : 'bottom-right'
-  ) as XYResizerControlPosition;
+    variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
+  ) as ControlPosition;
   $: controlPosition = position ?? defaultPosition;
 
   $: positionClassNames = controlPosition.split('-');
 
-  $: colorStyleProp = variant === ResizerControlVariant.Line ? 'border-color' : 'background-color';
+  $: colorStyleProp = variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
   $: _style = style ?? '';
   $: controlStyle = !!color ? `${_style} ${colorStyleProp}: ${color};` : _style;
 

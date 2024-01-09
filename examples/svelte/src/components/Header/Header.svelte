@@ -15,6 +15,7 @@
 		'interaction',
 		'intersections',
 		'node-toolbar',
+		'node-resizer',
 		'overview',
 		'stress',
 		'subflows',
@@ -22,8 +23,7 @@
 		'usenodesdata',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation',
-		'node-resizer'
+		'validation'
 	];
 
 	const onChange = (event: Event) => {

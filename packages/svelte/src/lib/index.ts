@@ -90,7 +90,14 @@ export {
   type Transform,
   type CoordinateExtent,
   type ColorMode,
-  type ColorModeClass
+  type ColorModeClass,
+  type ShouldResize,
+  type OnResizeStart,
+  type OnResize,
+  type OnResizeEnd,
+  type ControlPosition,
+  type ControlLinePosition,
+  type ResizeControlVariant
 } from '@xyflow/system';
 
 // system utils
