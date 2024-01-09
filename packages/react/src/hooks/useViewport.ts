@@ -16,10 +16,8 @@ const viewportSelector = (state: ReactFlowState) => ({
  * @public
  * @returns The current viewport
  */
-function useViewport(): Viewport {
+export function useViewport(): Viewport {
   const viewport = useStore(viewportSelector, shallow);
 
   return viewport;
 }
-
-export default useViewport;

@@ -5,20 +5,19 @@ import {
   PanOnScrollMode,
   SelectionMode,
   infiniteExtent,
+  isMacOs,
   type NodeOrigin,
   type Viewport,
-  isMacOs,
 } from '@xyflow/system';
 
-import Attribution from '../../components/Attribution';
-
-import SelectionListener from '../../components/SelectionListener';
-import StoreUpdater from '../../components/StoreUpdater';
-import A11yDescriptions from '../../components/A11yDescriptions';
-import GraphView from '../GraphView';
-import Wrapper from './Wrapper';
+import { A11yDescriptions } from '../../components/A11yDescriptions';
+import { Attribution } from '../../components/Attribution';
+import { SelectionListener } from '../../components/SelectionListener';
+import { StoreUpdater } from '../../components/StoreUpdater';
+import { useColorModeClass } from '../../hooks/useColorModeClass';
+import { GraphView } from '../GraphView';
+import { Wrapper } from './Wrapper';
 import type { ReactFlowProps, ReactFlowRefType } from '../../types';
-import useColorModeClass from '../../hooks/useColorModeClass';
 
 export const initNodeOrigin: NodeOrigin = [0, 0];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };

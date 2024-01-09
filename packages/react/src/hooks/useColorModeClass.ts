@@ -15,7 +15,7 @@ function getMediaQuery() {
  * @internal
  * @param colorMode - The color mode to use ('dark', 'light' or 'system')
  */
-export default function useColorModeClass(colorMode: ColorMode): ColorModeClass {
+export function useColorModeClass(colorMode: ColorMode): ColorModeClass {
   const [colorModeClass, setColorModeClass] = useState<ColorModeClass | null>(
     colorMode === 'system' ? null : colorMode
   );

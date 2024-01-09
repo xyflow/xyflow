@@ -13,7 +13,7 @@ const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
  * @internal
  * @returns function for updating node positions
  */
-function useUpdateNodePositions() {
+export function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
@@ -63,5 +63,3 @@ function useUpdateNodePositions() {
 
   return updatePositions;
 }
-
-export default useUpdateNodePositions;

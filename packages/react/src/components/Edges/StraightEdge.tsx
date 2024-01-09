@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { getStraightPath } from '@xyflow/system';
 
-import BaseEdge from './BaseEdge';
+import { BaseEdge } from './BaseEdge';
 import type { StraightEdgeProps } from '../../types';
 
 function createStraightEdge(params: { isInternal: boolean }) {

@@ -1,10 +1,10 @@
 import type { ComponentType } from 'react';
 import type { NodeProps, XYPosition } from '@xyflow/system';
 
-import InputNode from '../Nodes/InputNode';
-import DefaultNode from '../Nodes/DefaultNode';
-import GroupNode from '../Nodes/GroupNode';
-import OutputNode from '../Nodes/OutputNode';
+import { InputNode } from '../Nodes/InputNode';
+import { DefaultNode } from '../Nodes/DefaultNode';
+import { GroupNode } from '../Nodes/GroupNode';
+import { OutputNode } from '../Nodes/OutputNode';
 import type { NodeTypes } from '../../types';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {

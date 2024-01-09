@@ -1,5 +1,6 @@
-import { useEffect, useRef, memo, type MouseEvent, type KeyboardEvent } from 'react';
+import { useEffect, useRef, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
+import { shallow } from 'zustand/shallow';
 import {
   clampPosition,
   elementSelectionKeys,
@@ -12,14 +13,13 @@ import {
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
-import useDrag from '../../hooks/useDrag';
-import useUpdateNodePositions from '../../hooks/useUpdateNodePositions';
+import { useDrag } from '../../hooks/useDrag';
+import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
 import { handleNodeClick } from '../Nodes/utils';
-import type { NodeWrapperProps } from '../../types';
 import { arrowKeyDiffs, builtinNodeTypes } from './utils';
-import { shallow } from 'zustand/shallow';
+import type { NodeWrapperProps } from '../../types';
 
-const NodeWrapper = ({
+export function NodeWrapper({
   id,
   onClick,
   onMouseEnter,
@@ -40,7 +40,7 @@ const NodeWrapper = ({
   nodeExtent,
   nodeOrigin,
   onError,
-}: NodeWrapperProps) => {
+}: NodeWrapperProps) {
   const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
     const node = s.nodeLookup.get(id)!;
 
@@ -257,8 +257,4 @@ const NodeWrapper = ({
       </Provider>
     </div>
   );
-};
-
-NodeWrapper.displayName = 'NodeWrapper';
-
-export default memo(NodeWrapper);
+}

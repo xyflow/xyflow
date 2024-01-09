@@ -1,14 +1,14 @@
 import { memo } from 'react';
 
-import FlowRenderer from '../FlowRenderer';
-import NodeRenderer from '../NodeRenderer';
-import EdgeRenderer from '../EdgeRenderer';
-import ViewportWrapper from '../Viewport';
-import useOnInitHandler from '../../hooks/useOnInitHandler';
-import useViewportSync from '../../hooks/useViewportSync';
-import ConnectionLine from '../../components/ConnectionLine';
+import { FlowRenderer } from '../FlowRenderer';
+import { NodeRenderer } from '../NodeRenderer';
+import { EdgeRenderer } from '../EdgeRenderer';
+import { Viewport } from '../Viewport';
+import { useOnInitHandler } from '../../hooks/useOnInitHandler';
+import { useViewportSync } from '../../hooks/useViewportSync';
+import { ConnectionLineWrapper } from '../../components/ConnectionLine';
+import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
 import type { ReactFlowProps } from '../../types';
-import useNodeOrEdgeTypesWarning from './useNodeOrEdgeTypesWarning';
 
 export type GraphViewProps = Omit<
   ReactFlowProps,
@@ -38,7 +38,7 @@ export type GraphViewProps = Omit<
     rfId: string;
   };
 
-const GraphView = ({
+function GraphViewComponent({
   nodeTypes,
   edgeTypes,
   onInit,
@@ -102,7 +102,7 @@ const GraphView = ({
   rfId,
   viewport,
   onViewportChange,
-}: GraphViewProps) => {
+}: GraphViewProps) {
   useNodeOrEdgeTypesWarning(nodeTypes);
   useNodeOrEdgeTypesWarning(edgeTypes);
 
@@ -147,7 +147,7 @@ const GraphView = ({
       onViewportChange={onViewportChange}
       isControlledViewport={!!viewport}
     >
-      <ViewportWrapper>
+      <Viewport>
         <EdgeRenderer
           edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
@@ -165,14 +165,13 @@ const GraphView = ({
           noPanClassName={noPanClassName}
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
-        >
-          <ConnectionLine
-            style={connectionLineStyle}
-            type={connectionLineType}
-            component={connectionLineComponent}
-            containerStyle={connectionLineContainerStyle}
-          />
-        </EdgeRenderer>
+        />
+        <ConnectionLineWrapper
+          style={connectionLineStyle}
+          type={connectionLineType}
+          component={connectionLineComponent}
+          containerStyle={connectionLineContainerStyle}
+        />
         <div className="react-flow__edgelabel-renderer" />
         <div className="react-flow__viewport-portal" />
         <NodeRenderer
@@ -191,11 +190,11 @@ const GraphView = ({
           nodeExtent={nodeExtent}
           rfId={rfId}
         />
-      </ViewportWrapper>
+      </Viewport>
     </FlowRenderer>
   );
-};
+}
 
-GraphView.displayName = 'GraphView';
+GraphViewComponent.displayName = 'GraphView';
 
-export default memo(GraphView);
+export const GraphView = memo(GraphViewComponent);

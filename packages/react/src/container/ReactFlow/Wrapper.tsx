@@ -1,10 +1,10 @@
 import { useContext, type ReactNode } from 'react';
 
 import StoreContext from '../../contexts/RFStoreContext';
-import ReactFlowProvider from '../../components/ReactFlowProvider';
+import { ReactFlowProvider } from '../../components/ReactFlowProvider';
 import type { Node, Edge } from '../../types';
 
-function Wrapper({
+export function Wrapper({
   children,
   nodes,
   edges,
@@ -39,7 +39,3 @@ function Wrapper({
     </ReactFlowProvider>
   );
 }
-
-Wrapper.displayName = 'ReactFlowWrapper';
-
-export default Wrapper;

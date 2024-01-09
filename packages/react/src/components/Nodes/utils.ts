@@ -1,8 +1,8 @@
 import type { RefObject } from 'react';
 import type { StoreApi } from 'zustand';
+import { errorMessages } from '@xyflow/system';
 
 import type { ReactFlowState } from '../../types';
-import { errorMessages } from '@xyflow/system';
 
 // this handler is called by
 // 1. the click handler when node is not draggable or selectNodesOnDrag = false

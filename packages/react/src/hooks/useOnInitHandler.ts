@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import useReactFlow from './useReactFlow';
+import { useReactFlow } from './useReactFlow';
 import type { OnInit } from '../types';
 
 /**
@@ -8,7 +8,7 @@ import type { OnInit } from '../types';
  *
  * @internal
  */
-function useOnInitHandler(onInit: OnInit | undefined) {
+export function useOnInitHandler(onInit: OnInit | undefined) {
   const rfInstance = useReactFlow();
   const isInitialized = useRef<boolean>(false);
 
@@ -19,5 +19,3 @@ function useOnInitHandler(onInit: OnInit | undefined) {
     }
   }, [onInit, rfInstance.viewportInitialized]);
 }
-
-export default useOnInitHandler;

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Position, getBezierEdgeCenter } from '@xyflow/system';
 
-import BaseEdge from './BaseEdge';
+import { BaseEdge } from './BaseEdge';
 import type { SimpleBezierEdgeProps } from '../../types';
 
 export interface GetSimpleBezierPathParams {

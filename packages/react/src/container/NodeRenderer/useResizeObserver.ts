@@ -5,7 +5,7 @@ import { useStore } from '../../hooks/useStore';
 
 const selector = (s: ReactFlowState) => s.updateNodeDimensions;
 
-export default function useResizeObserver() {
+export function useResizeObserver() {
   const updateNodeDimensions = useStore(selector);
   const resizeObserverRef = useRef<ResizeObserver>();
 

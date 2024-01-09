@@ -6,8 +6,8 @@ import { getNodesBounds, Rect, Position, internalsSymbol, getNodeToolbarTransfor
 import { Node, ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import NodeToolbarPortal from './NodeToolbarPortal';
-import { NodeToolbarProps } from './types';
+import { NodeToolbarPortal } from './NodeToolbarPortal';
+import type { NodeToolbarProps } from './types';
 
 const nodeEqualityFn = (a?: Node, b?: Node) =>
   a?.computed?.positionAbsolute?.x !== b?.computed?.positionAbsolute?.x ||
@@ -35,7 +35,7 @@ const storeSelector = (state: ReactFlowState) => ({
   selectedNodesCount: state.nodes.filter((node) => node.selected).length,
 });
 
-function NodeToolbar({
+export function NodeToolbar({
   nodeId,
   children,
   className,
@@ -96,5 +96,3 @@ function NodeToolbar({
     </NodeToolbarPortal>
   );
 }
-
-export default NodeToolbar;
