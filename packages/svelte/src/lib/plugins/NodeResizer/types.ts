@@ -1,21 +1,19 @@
-import type { CSSProperties, ReactNode } from 'react';
 import type {
   ControlPosition,
-  ControlLinePosition,
   ResizeControlVariant,
   ShouldResize,
   OnResizeStart,
   OnResize,
-  OnResizeEnd,
+  OnResizeEnd
 } from '@xyflow/system';
 
 export type NodeResizerProps = {
   nodeId?: string;
   color?: string;
-  handleClassName?: string;
-  handleStyle?: CSSProperties;
-  lineClassName?: string;
-  lineStyle?: CSSProperties;
+  handleClass?: string;
+  handleStyle?: string;
+  lineClass?: string;
+  lineStyle?: string;
   isVisible?: boolean;
   minWidth?: number;
   minHeight?: number;
@@ -44,11 +42,6 @@ export type ResizeControlProps = Pick<
 > & {
   position?: ControlPosition;
   variant?: ResizeControlVariant;
-  className?: string;
-  style?: CSSProperties;
-  children?: ReactNode;
-};
-
-export type ResizeControlLineProps = ResizeControlProps & {
-  position?: ControlLinePosition;
+  class?: string;
+  style?: string;
 };

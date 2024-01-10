@@ -15,6 +15,7 @@
 		'interaction',
 		'intersections',
 		'node-toolbar',
+		'node-resizer',
 		'overview',
 		'stress',
 		'subflows',

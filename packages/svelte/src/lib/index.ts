@@ -16,6 +16,7 @@ export * from '$lib/plugins/Controls';
 export * from '$lib/plugins/Background';
 export * from '$lib/plugins/Minimap';
 export * from '$lib/plugins/NodeToolbar';
+export * from '$lib/plugins/NodeResizer';
 
 // store
 export { useStore } from '$lib/store';
@@ -89,7 +90,14 @@ export {
   type Transform,
   type CoordinateExtent,
   type ColorMode,
-  type ColorModeClass
+  type ColorModeClass,
+  type ShouldResize,
+  type OnResizeStart,
+  type OnResize,
+  type OnResizeEnd,
+  type ControlPosition,
+  type ControlLinePosition,
+  type ResizeControlVariant
 } from '@xyflow/system';
 
 // system utils

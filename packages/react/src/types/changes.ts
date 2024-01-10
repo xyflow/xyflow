@@ -7,7 +7,6 @@ export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
   dimensions?: Dimensions;
-  updateStyle?: boolean;
   resizing?: boolean;
 };
 

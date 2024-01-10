@@ -81,6 +81,13 @@ export {
   type ColorModeClass,
   type HandleType,
   type OnBeforeDelete,
+  type ShouldResize,
+  type OnResizeStart,
+  type OnResize,
+  type OnResizeEnd,
+  type ControlPosition,
+  type ControlLinePosition,
+  type ResizeControlVariant,
 } from '@xyflow/system';
 
 // system utils
