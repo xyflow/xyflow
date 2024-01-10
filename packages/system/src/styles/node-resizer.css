@@ -1,3 +1,7 @@
+.xy-flow {
+  --xy-resize-background-color-default: #3367d9;
+}
+
 .xy-flow__resize-control {
   position: absolute;
 }
@@ -28,7 +32,7 @@
   height: 4px;
   border: 1px solid #fff;
   border-radius: 1px;
-  background-color: #3367d9;
+  background-color: var(--xy-resize-background-color, var(--xy-resize-background-color-default));
   transform: translate(-50%, -50%);
 }
 
@@ -63,7 +67,7 @@
 
 /* line styles */
 .xy-flow__resize-control.line {
-  border-color: #3367d9;
+  border-color: var(--xy-resize-background-color, var(--xy-resize-background-color-default));
   border-width: 0;
   border-style: solid;
 }

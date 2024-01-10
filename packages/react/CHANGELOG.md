@@ -1,5 +1,13 @@
 # @xyflow/react
 
+## 12.0.0-next.5
+
+### Minor changes
+
+- fix applyChanges: handle multi changes for one node, deletions and expandParent
+- use `XYResizer` from @xyflow/system
+- add unit tests for `applyNodeChanges` and `applyEdgeChanges`
+
 ## 12.0.0-next.4
 
 ### Minor changes

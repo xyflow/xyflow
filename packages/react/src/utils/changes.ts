@@ -1,46 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
 
-export function handleParentExpand(res: any[], updateItem: any) {
-  const parent = res.find((e) => e.id === updateItem.parentNode);
+export function handleParentExpand(updatedElements: any[], updateItem: any) {
+  for (const [index, item] of updatedElements.entries()) {
+    if (item.id === updateItem.parentNode) {
+      const parent = { ...item };
 
-  if (parent) {
-    if (!parent.computed) {
-      parent.computed = {};
-    }
-    const extendWidth = updateItem.position.x + updateItem.computed.width - parent.computed.width;
-    const extendHeight = updateItem.position.y + updateItem.computed.height - parent.computed.height;
-
-    if (extendWidth > 0 || extendHeight > 0 || updateItem.position.x < 0 || updateItem.position.y < 0) {
-      parent.style = { ...parent.style } || {};
-
-      parent.style.width = parent.style.width ?? parent.computed.width;
-      parent.style.height = parent.style.height ?? parent.computed.height;
-
-      if (extendWidth > 0) {
-        parent.style.width += extendWidth;
+      if (!parent.computed) {
+        parent.computed = {};
       }
 
-      if (extendHeight > 0) {
-        parent.style.height += extendHeight;
-      }
+      const extendWidth = updateItem.position.x + updateItem.computed.width - parent.computed.width;
+      const extendHeight = updateItem.position.y + updateItem.computed.height - parent.computed.height;
 
-      if (updateItem.position.x < 0) {
-        const xDiff = Math.abs(updateItem.position.x);
-        parent.position.x = parent.position.x - xDiff;
-        parent.style.width += xDiff;
-        updateItem.position.x = 0;
-      }
+      if (extendWidth > 0 || extendHeight > 0 || updateItem.position.x < 0 || updateItem.position.y < 0) {
+        parent.width = parent.width ?? parent.computed.width;
+        parent.height = parent.height ?? parent.computed.height;
 
-      if (updateItem.position.y < 0) {
-        const yDiff = Math.abs(updateItem.position.y);
-        parent.position.y = parent.position.y - yDiff;
-        parent.style.height += yDiff;
-        updateItem.position.y = 0;
-      }
+        if (extendWidth > 0) {
+          parent.width += extendWidth;
+        }
 
-      parent.computed.width = parent.style.width;
-      parent.computed.height = parent.style.height;
+        if (extendHeight > 0) {
+          parent.height += extendHeight;
+        }
+
+        if (updateItem.position.x < 0) {
+          const xDiff = Math.abs(updateItem.position.x);
+          parent.position.x = parent.position.x - xDiff;
+          parent.width += xDiff;
+          updateItem.position.x = 0;
+        }
+
+        if (updateItem.position.y < 0) {
+          const yDiff = Math.abs(updateItem.position.y);
+          parent.position.y = parent.position.y - yDiff;
+          parent.height += yDiff;
+          updateItem.position.y = 0;
+        }
+
+        parent.computed.width = parent.width;
+        parent.computed.height = parent.height;
+
+        updatedElements[index] = parent;
+      }
+      break;
     }
   }
 }
@@ -208,7 +212,7 @@ export function applyNodeChanges<NodeType extends Node = Node>(changes: NodeChan
     );
   
     return (
-      <ReactFLow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
+      <ReactFlow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
     );
  */
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(changes: EdgeChange[], edges: EdgeType[]): EdgeType[] {

@@ -65,7 +65,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   onNodeDragStart?: NodeDragHandler;
   onNodeDrag?: NodeDragHandler;
   onNodeDragStop?: NodeDragHandler;
-  onEdgeClick?: (event: ReactMouseEvent, node: Edge) => void;
+  onEdgeClick?: (event: ReactMouseEvent, edge: Edge) => void;
   onEdgeUpdate?: OnEdgeUpdateFunc;
   onEdgeContextMenu?: EdgeMouseHandler;
   onEdgeMouseEnter?: EdgeMouseHandler;
