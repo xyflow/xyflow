@@ -57,7 +57,7 @@
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-svelte": "^2.31.1",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^15.1.0",
