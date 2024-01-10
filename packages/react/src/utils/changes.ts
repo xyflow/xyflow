@@ -54,98 +54,117 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     return changes.filter((c) => c.type === 'reset').map((c) => c.item);
   }
 
-  let remainingChanges = [];
   const updatedElements: any[] = [];
+  // By storing a map of changes for each element, we can a quick lookup as we
+  // iterate over the elements array!
+  const changesMap = new Map<any, any[]>();
 
   for (const change of changes) {
     if (change.type === 'add') {
       updatedElements.push(change.item);
+      continue;
+    } else if (change.type === 'remove') {
+      // For a 'remove' change we can safely ignore any other changes queued for
+      // the same element, it's going to be removed anyway!
+      changesMap.set(change.id, [change]);
     } else {
-      remainingChanges.push(change);
+      const elementChanges = changesMap.get(change.id);
+      // If we already have a 'remove' change queued for this element, we don't
+      // need to bother queueing any other changes for it,
+      //
+      // We might end up needlessly iterating over this changes array but in
+      // practice it will be very small (e.g. less than 5 or so items).
+      if (elementChanges?.some((c) => c.type === 'remove')) continue;
+      if (elementChanges) {
+        // If we have some changes queued already, we can do a mutable update of
+        // that array and save ourselves some copying.
+        elementChanges.push(change);
+      } else {
+        changesMap.set(change.id, [change]);
+      }
     }
   }
 
-  for (const item of elements) {
-    const nextChanges: any[] = [];
-    const _remainingChanges: any[] = [];
+  for (const element of elements) {
+    const changes = changesMap.get(element.id);
 
-    for (const change of remainingChanges) {
-      if (change.id === item.id) {
-        nextChanges.push(change);
-      } else {
-        _remainingChanges.push(change);
-      }
-    }
-
-    remainingChanges = _remainingChanges;
-
-    if (nextChanges.length === 0) {
-      updatedElements.push(item);
+    // When there are no changes for an element we can just push it unmodified,
+    // no need to copy it.
+    if (!changes) {
+      updatedElements.push(element);
       continue;
     }
 
-    const updateItem = { ...item };
-
-    for (const currentChange of nextChanges) {
-      if (currentChange) {
-        switch (currentChange.type) {
-          case 'select': {
-            updateItem.selected = currentChange.selected;
-            break;
-          }
-          case 'position': {
-            if (typeof currentChange.position !== 'undefined') {
-              updateItem.position = currentChange.position;
-            }
-
-            if (typeof currentChange.positionAbsolute !== 'undefined') {
-              if (!updateItem.computed) {
-                updateItem.computed = {};
-              }
-              updateItem.computed.positionAbsolute = currentChange.positionAbsolute;
-            }
-
-            if (typeof currentChange.dragging !== 'undefined') {
-              updateItem.dragging = currentChange.dragging;
-            }
-
-            if (updateItem.expandParent) {
-              handleParentExpand(updatedElements, updateItem);
-            }
-            break;
-          }
-          case 'dimensions': {
-            if (typeof currentChange.dimensions !== 'undefined') {
-              if (!updateItem.computed) {
-                updateItem.computed = {};
-              }
-              updateItem.computed.width = currentChange.dimensions.width;
-              updateItem.computed.height = currentChange.dimensions.height;
-            }
-
-            if (typeof currentChange.updateStyle !== 'undefined') {
-              updateItem.style = { ...(updateItem.style || {}), ...currentChange.dimensions };
-            }
-
-            if (typeof currentChange.resizing === 'boolean') {
-              updateItem.resizing = currentChange.resizing;
-            }
-
-            if (updateItem.expandParent) {
-              handleParentExpand(updatedElements, updateItem);
-            }
-            break;
-          }
-          case 'remove': {
-            continue;
-          }
-        }
-      }
-      updatedElements.push(updateItem);
+    // If we have a 'remove' change queued, it'll be the only change in the array
+    if (changes[0].type === 'remove') {
+      continue;
     }
+
+    // For other types of changes, we want to start with a shallow copy of the
+    // object so React knows this element has changed. Sequential changes will
+    /// each _mutate_ this object, so there's only ever one copy.
+    const updatedElement = { ...element };
+
+    for (const change of changes) {
+      applyChange(change, updatedElement, elements);
+    }
+
+    updatedElements.push(updatedElement);
   }
 
   return updatedElements;
+}
+
+// Applies a single change to an element. This is a *mutable* update.
+function applyChange(change: any, element: any, elements: any[] = []): any {
+  switch (change.type) {
+    case 'select': {
+      element.selected = change.selected;
+      break;
+    }
+
+    case 'position': {
+      if (typeof change.position !== 'undefined') {
+        element.position = change.position;
+      }
+
+      if (typeof change.positionAbsolute !== 'undefined') {
+        element.computed ??= {};
+        element.computed.positionAbsolute = change.positionAbsolute;
+      }
+
+      if (typeof change.dragging !== 'undefined') {
+        element.dragging = change.dragging;
+      }
+
+      if (element.expandParent) {
+        handleParentExpand(elements, element);
+      }
+      break;
+    }
+
+    case 'dimensions': {
+      if (typeof change.dimensions !== 'undefined') {
+        element.computed ??= {};
+        element.computed.width = change.dimensions.width;
+        element.computed.height = change.dimensions.height;
+      }
+
+      if (typeof change.updateStyle !== 'undefined') {
+        element.style = Object.assign({}, element.style, change.updateStyle);
+      }
+
+      if (typeof change.resizing === 'boolean') {
+        element.resizing = change.resizing;
+      }
+
+      if (element.expandParent) {
+        handleParentExpand(elements, element);
+      }
+
+      break;
+    }
+  }
 }
 
 /**
