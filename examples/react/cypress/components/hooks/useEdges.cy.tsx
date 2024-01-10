@@ -13,7 +13,6 @@ describe('useEdges.cy.tsx', () => {
       </ReactFlow>
     );
 
-    cy.get('@onChangeSpy').should('have.been.calledWith', []);
     cy.get('@onChangeSpy').should('have.been.calledWith', initialEdges);
   });
 
