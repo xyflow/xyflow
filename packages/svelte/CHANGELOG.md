@@ -5,6 +5,7 @@
 ### Bugfix
 
 - fix `deleteElements`
+- fix dragging when draggable=false
 
 ### ⚠️ Breaking
 
