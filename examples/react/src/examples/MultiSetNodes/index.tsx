@@ -63,6 +63,7 @@ const CustomNodeFlow = () => {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       fitView
+      className="multiset"
     >
       <Controls />
       <Background />

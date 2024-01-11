@@ -152,10 +152,11 @@ function applyChange(change: any, element: any, elements: any[] = []): any {
         element.computed ??= {};
         element.computed.width = change.dimensions.width;
         element.computed.height = change.dimensions.height;
-      }
 
-      if (typeof change.updateStyle !== 'undefined') {
-        element.style = Object.assign({}, element.style, change.updateStyle);
+        if (change.resizing) {
+          element.width = change.dimensions.width;
+          element.height = change.dimensions.height;
+        }
       }
 
       if (typeof change.resizing === 'boolean') {
