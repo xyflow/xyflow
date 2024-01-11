@@ -16,6 +16,11 @@
 
 	const nodes = useNodes();
 	const edges = useEdges();
+
+	const deleteNode = () => {
+		$nodes.shift();
+		$nodes = $nodes;
+	};
 </script>
 
 <aside>
@@ -35,6 +40,7 @@
 	<button on:click={() => deleteElements({ nodes: $nodes.map((node) => ({ id: node.id })) })}
 		>deleteElements</button
 	>
+	<button on:click={() => deleteNode()}>delete via store</button>
 	<button
 		on:click={() => {
 			const { nodes, edges, viewport } = toObject();

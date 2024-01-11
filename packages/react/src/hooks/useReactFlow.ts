@@ -144,9 +144,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
       if (hasMatchingEdges) {
         if (hasDefaultEdges) {
-          store.setState({
-            edges: edges.filter((e) => !matchingEdges.some((mE) => mE.id === e.id)),
-          });
+          const nextEdges = edges.filter((e) => !matchingEdges.some((mE) => mE.id === e.id));
+          store.getState().setEdges(nextEdges);
         }
 
         onEdgesDelete?.(matchingEdges);
@@ -160,9 +159,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
       if (hasMatchingNodes) {
         if (hasDefaultNodes) {
-          store.setState({
-            nodes: nodes.filter((n) => !matchingNodes.some((mN) => mN.id === n.id)),
-          });
+          const nextNodes = nodes.filter((n) => !matchingNodes.some((mN) => mN.id === n.id));
+          store.getState().setNodes(nextNodes);
         }
 
         onNodesDelete?.(matchingNodes);
