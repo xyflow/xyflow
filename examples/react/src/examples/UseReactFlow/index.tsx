@@ -1,4 +1,4 @@
-import { useCallback, MouseEvent, useEffect } from 'react';
+import { useCallback, MouseEvent, useEffect, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -68,6 +68,7 @@ const UseZoomPanHelperFlow = () => {
     getNodes,
     getEdges,
     deleteElements,
+    updateNodeData,
   } = useReactFlow();
 
   const onPaneClick = useCallback(
@@ -125,11 +126,30 @@ const UseZoomPanHelperFlow = () => {
     deleteElements({ nodes: [{ id: '2' }], edges: [{ id: 'e1-3' }] });
   }, []);
 
+  const edgeAdded = useRef(false);
+
   useEffect(() => {
-    addEdges({ id: 'e3-4', source: '3', target: '4' });
+    if (!edgeAdded.current) {
+      addEdges({ id: 'e3-4', source: '3', target: '4' });
+      edgeAdded.current = true;
+    }
   }, [addEdges]);
 
   const onResetNodes = useCallback(() => setNodesHook(initialNodes), [setNodesHook]);
+
+  const onSetNodes = () => {
+    setNodes([
+      { id: 'a', position: { x: 0, y: 0 }, data: { label: 'Node a' } },
+      { id: 'b', position: { x: 0, y: 150 }, data: { label: 'Node b' } },
+    ]);
+
+    setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);
+  };
+
+  const onUpdateNode = () => {
+    updateNodeData('1', { label: 'update' });
+    updateNodeData('2', { label: 'update' });
+  };
 
   return (
     <ReactFlow
@@ -153,6 +173,8 @@ const UseZoomPanHelperFlow = () => {
         <button onClick={logNodes}>useNodes</button>
         <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
         <button onClick={deleteSomeElements}>deleteSomeElements</button>
+        <button onClick={onSetNodes}>setNodes</button>
+        <button onClick={onUpdateNode}>updateNode</button>
       </Panel>
       <Background />
       <MiniMap />

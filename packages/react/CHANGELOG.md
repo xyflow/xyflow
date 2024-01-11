@@ -5,6 +5,8 @@
 ### Minor changes
 
 - fix `deleteElements`
+- refactor internal `applyChanges`
+- batch `setNodes` and `setEdges` from `useReactFlow`
 
 ## 12.0.0-next.5
 

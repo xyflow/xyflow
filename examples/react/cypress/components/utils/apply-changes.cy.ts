@@ -156,20 +156,22 @@ describe('applyChanges Testing', () => {
     expect(nextNodes[0].computed).to.be.deep.equal({ width: newWidth, height: newHeight });
   });
 
-  it('resets nodes/edges', () => {
+  it('replaces nodes/edges', () => {
     const nodesLength = nodes.length;
-    const nodeChanges: NodeChange[] = [{ type: 'reset', item: nodes[0] }];
+    const nodeChanges: NodeChange[] = [{ type: 'replace', id: nodes[0].id, item: nodes[1] }];
     const nextNodes = applyNodeChanges(nodeChanges, nodes);
 
     expect(nodes.length).length.to.be.equal(nodesLength);
-    expect(nextNodes.length).to.be.equal(nodeChanges.length);
+    expect(nextNodes.length).to.be.equal(nodesLength);
+    expect(nextNodes[0]).to.be.deep.equal(nodes[1]);
 
     const edgesLength = edges.length;
-    const edgeChange: EdgeChange[] = [{ type: 'reset', item: edges[0] }];
+    const edgeChange: EdgeChange[] = [{ type: 'replace', id: edges[0].id, item: edges[1] }];
     const nextEdges = applyEdgeChanges(edgeChange, edges);
 
     expect(edges.length).length.to.be.equal(edgesLength);
-    expect(nextEdges.length).to.be.equal(edgeChange.length);
+    expect(nextEdges.length).to.be.equal(edgesLength);
+    expect(nextEdges[0]).to.be.deep.equal(edges[1]);
   });
 });
 
