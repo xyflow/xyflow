@@ -178,34 +178,23 @@ export function createStore({
     }
   }
 
-  function resetSelectedItem<T extends Node | Edge>(ids: string[]) {
-    return (item: T) => {
-      if (item.selected && ids.includes(item.id)) {
-        return {
-          ...item,
-          selected: false
-        };
+  function resetSelectedElements(elements: Node[] | Edge[]) {
+    let elementsChanged = false;
+    elements.forEach((element) => {
+      if (element.selected) {
+        element.selected = false;
+        elementsChanged = true;
       }
-
-      return item;
-    };
+    });
+    return elementsChanged;
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const selectedNodeIds = (params?.nodes ? params.nodes : get(store.nodes))
-      .filter((node) => node.selected)
-      .map((node) => node.id);
-    const selectedEdgeIds = (params?.edges ? params.edges : get(store.edges))
-      .filter((edge) => edge.selected)
-      .map((edge) => edge.id);
+    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
+    if (resetNodes) store.nodes.set(get(store.nodes));
 
-    if (selectedNodeIds.length) {
-      store.nodes.update((ns) => ns.map(resetSelectedItem(selectedNodeIds)));
-    }
-
-    if (selectedEdgeIds.length) {
-      store.edges.update((es) => es.map(resetSelectedItem(selectedEdgeIds)));
-    }
+    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
+    if (resetEdges) store.edges.set(get(store.edges));
   }
 
   store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
