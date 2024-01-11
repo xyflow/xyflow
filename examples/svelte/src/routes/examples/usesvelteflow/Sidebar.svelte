@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useNodes, useSvelteFlow } from '@xyflow/svelte';
+	import { useEdges, useNodes, useSvelteFlow } from '@xyflow/svelte';
 
 	const {
 		zoomIn,
@@ -10,10 +10,12 @@
 		setViewport,
 		getViewport,
 		viewport,
-		toObject
+		toObject,
+		deleteElements
 	} = useSvelteFlow();
 
 	const nodes = useNodes();
+	const edges = useEdges();
 </script>
 
 <aside>
@@ -25,6 +27,14 @@
 	<button on:click={() => setCenter(0, 0)}>setCenter 0, 0</button>
 	<button on:click={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
 	<button on:click={() => console.log(getViewport())}>getViewport</button>
+
+	<button on:click={() => deleteElements({ edges: $edges.map((edge) => ({ id: edge.id })) })}
+		>delete edges</button
+	>
+	<button on:click={() => deleteElements({ nodes: [{ id: $nodes[0].id }] })}>delete node</button>
+	<button on:click={() => deleteElements({ nodes: $nodes.map((node) => ({ id: node.id })) })}
+		>deleteElements</button
+	>
 	<button
 		on:click={() => {
 			const { nodes, edges, viewport } = toObject();

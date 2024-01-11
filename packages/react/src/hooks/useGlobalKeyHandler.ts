@@ -30,8 +30,8 @@ export function useGlobalKeyHandler({
 
   useEffect(() => {
     if (deleteKeyPressed) {
-      const { edges, nodes, onBeforeDelete } = store.getState();
-      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected), onBeforeDelete });
+      const { edges, nodes } = store.getState();
+      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);

@@ -1,5 +1,15 @@
 # @xyflow/svelte
 
+## 0.0.33
+
+### Bugfix
+
+- fix `deleteElements`
+
+### ⚠️ Breaking
+
+- `deleteElements` function now takes one object as an argument `{ nodes: [], edges: [] }` instead of two `(nodes, edges)`  
+
 ## 0.0.32
 
 ### Features

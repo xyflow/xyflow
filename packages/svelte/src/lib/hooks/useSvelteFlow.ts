@@ -13,8 +13,7 @@ import {
   type Rect,
   getViewportForBounds,
   getElementsToRemove,
-  rendererPointToPoint,
-  type OnBeforeDelete
+  rendererPointToPoint
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -47,11 +46,13 @@ export function useSvelteFlow(): {
     partially?: boolean
   ) => boolean;
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
-  deleteElements: (
-    nodesToRemove?: (Node | { id: Node['id'] })[],
-    edgesToRemove?: (Edge | { id: Edge['id'] })[],
-    onBeforeDelete?: OnBeforeDelete
-  ) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>;
+  deleteElements: ({
+    nodes,
+    edges
+  }: {
+    nodes?: (Node | { id: Node['id'] })[];
+    edges?: (Edge | { id: Edge['id'] })[];
+  }) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>;
   screenToFlowPosition: (position: XYPosition) => XYPosition;
   flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
@@ -201,17 +202,13 @@ export function useSvelteFlow(): {
 
       return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
-    deleteElements: async (
-      nodesToRemove: (Node | { id: Node['id'] })[] = [],
-      edgesToRemove: (Edge | { id: Edge['id'] })[] = [],
-      onBeforeDelete?: OnBeforeDelete
-    ) => {
+    deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
       const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
         nodes: get(nodes),
         edges: get(edges),
-        onBeforeDelete
+        onBeforeDelete: get(onbeforedelete)
       });
 
       if (matchingNodes) {

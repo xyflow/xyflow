@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.0.0-next.6
+
+### Minor changes
+
+- fix `deleteElements`
+
 ## 12.0.0-next.5
 
 ### Minor changes
