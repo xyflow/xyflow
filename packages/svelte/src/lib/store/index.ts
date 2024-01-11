@@ -200,11 +200,24 @@ export function createStore({
       .map((edge) => edge.id);
 
     if (selectedNodeIds.length) {
-      store.nodes.update((ns) => ns.map(resetSelectedItem(selectedNodeIds)));
+      const nodeLookup = get(store.nodeLookup);
+      selectedNodeIds.forEach((id) => {
+        const node = nodeLookup.get(id);
+        if (node) {
+          node.selected = false;
+        }
+      });
+      store.nodes.set(get(store.nodes));
     }
 
     if (selectedEdgeIds.length) {
-      store.edges.update((es) => es.map(resetSelectedItem(selectedEdgeIds)));
+      const edgeLookup = get(store.edgeLookup);
+      selectedEdgeIds.forEach((id) => {
+        const edge = edgeLookup.get(id);
+        if (edge) {
+          edge.selected = false;
+        }
+      });
     }
   }
 
