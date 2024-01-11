@@ -5,7 +5,8 @@
 ### Bugfix
 
 - fix `deleteElements`
-- fix dragging when draggable=false
+- fix dragging when `draggable=false`
+- add `ariaLabel` prop for `<Controls />`
 
 ### ⚠️ Breaking
 

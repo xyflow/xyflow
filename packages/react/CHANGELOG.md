@@ -7,6 +7,7 @@
 - fix `deleteElements`
 - refactor internal `applyChanges`
 - batch `setNodes` and `setEdges` from `useReactFlow`
+- add `aria-label` prop for `<Controls />`
 
 ## 12.0.0-next.5
 
