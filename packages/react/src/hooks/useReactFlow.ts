@@ -68,12 +68,13 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       } else if (onNodesChange) {
         const changes: NodeChange[] = getElementsDiffChanges({ items: setNodesData.current, lookup: nodeLookup });
         onNodesChange(changes);
-        setNodesData.current = undefined;
       }
+
+      setNodesData.current = undefined;
     }, 0);
   }, []);
 
-  // this is used to handle multiple syncronous setNodes calls
+  // this is used to handle multiple syncronous setEdges calls
   const setEdgesData = useRef<Edge[]>();
   const setEdgesTimeout = useRef<ReturnType<typeof setTimeout>>();
   const setEdges = useCallback<Instance.SetEdges<EdgeType>>((payload) => {
@@ -93,6 +94,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const changes: EdgeChange[] = getElementsDiffChanges({ items: nextEdges, lookup: edgeLookup });
         onEdgesChange(changes);
       }
+
+      setEdgesData.current = undefined;
     }, 0);
   }, []);
 
