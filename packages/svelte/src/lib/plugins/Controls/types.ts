@@ -9,4 +9,5 @@ export type ControlsProps = {
   buttonBgColorHover?: string;
   buttonColor?: string;
   buttonColorHover?: string;
+  'aria-label'?: string;
 };
