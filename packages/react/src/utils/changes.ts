@@ -73,12 +73,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
       changesMap.set(change.id, [change]);
     } else {
       const elementChanges = changesMap.get(change.id);
-      // If we already have a 'remove' change queued for this element, we don't
-      // need to bother queueing any other changes for it,
-      //
-      // We might end up needlessly iterating over this changes array but in
-      // practice it will be very small (e.g. less than 5 or so items).
-      if (elementChanges?.some((c) => c.type === 'remove')) continue;
+
       if (elementChanges) {
         // If we have some changes queued already, we can do a mutable update of
         // that array and save ourselves some copying.
