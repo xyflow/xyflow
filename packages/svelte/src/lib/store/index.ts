@@ -178,22 +178,22 @@ export function createStore({
     }
   }
 
-  function resetSelected(elements: Node[] | Edge[]) {
-    let resetSomeElements = false;
+  function resetSelectedElements(elements: Node[] | Edge[]) {
+    let elementsChanged = false;
     elements.forEach((element) => {
       if (element.selected) {
         element.selected = false;
-        resetSomeElements = true;
+        elementsChanged = true;
       }
     });
-    return resetSomeElements;
+    return elementsChanged;
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const resetNodes = resetSelected(params?.nodes || get(store.nodes));
+    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
     if (resetNodes) store.nodes.set(get(store.nodes));
 
-    const resetEdges = resetSelected(params?.edges || get(store.edges));
+    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
     if (resetEdges) store.edges.set(get(store.edges));
   }
 
