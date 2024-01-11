@@ -23,7 +23,8 @@ import {
   type OnConnectStart,
   type OnConnectEnd,
   type NodeLookup,
-  type OnBeforeDelete
+  type OnBeforeDelete,
+  type EdgeLookup
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -99,6 +100,7 @@ export const getInitialStore = ({
     flowId: writable<string | null>(null),
     nodes: createNodesStore(nextNodes, nodeLookup),
     nodeLookup: readable<NodeLookup>(nodeLookup),
+    edgeLookup: readable<EdgeLookup>(edgeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
     visibleEdges: readable<EdgeLayouted[]>([]),

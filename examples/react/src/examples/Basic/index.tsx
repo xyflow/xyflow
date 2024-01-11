@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -53,10 +53,11 @@ const initialEdges: Edge[] = [
 const defaultEdgeOptions = {};
 
 const BasicFlow = () => {
-  const instance = useReactFlow();
+  const { setNodes, getNodes, setEdges, getEdges, deleteElements, updateNodeData, toObject, setViewport } =
+    useReactFlow();
 
   const updatePos = () => {
-    instance.setNodes((nodes) =>
+    setNodes((nodes) =>
       nodes.map((node) => {
         node.position = {
           x: Math.random() * 400,
@@ -68,17 +69,41 @@ const BasicFlow = () => {
     );
   };
 
-  const logToObject = () => console.log(instance.toObject());
-  const resetTransform = () => instance.setViewport({ x: 0, y: 0, zoom: 1 });
+  const logToObject = () => console.log(toObject());
+  const resetTransform = () => setViewport({ x: 0, y: 0, zoom: 1 });
 
   const toggleClassnames = () => {
-    instance.setNodes((nodes) =>
+    setNodes((nodes) =>
       nodes.map((node) => {
         node.className = node.className === 'light' ? 'dark' : 'light';
 
         return node;
       })
     );
+  };
+
+  const deleteSelectedElements = useCallback(() => {
+    const selectedNodes = getNodes().filter((node) => node.selected);
+    const selectedEdges = getEdges().filter((edge) => edge.selected);
+    deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+  }, [deleteElements]);
+
+  const deleteSomeElements = useCallback(() => {
+    deleteElements({ nodes: [{ id: '2' }], edges: [{ id: 'e1-3' }] });
+  }, []);
+
+  const onSetNodes = () => {
+    setNodes([
+      { id: 'a', position: { x: 0, y: 0 }, data: { label: 'Node a' } },
+      { id: 'b', position: { x: 0, y: 150 }, data: { label: 'Node b' } },
+    ]);
+
+    setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);
+  };
+
+  const onUpdateNode = () => {
+    updateNodeData('1', { label: 'update' });
+    updateNodeData('2', { label: 'update' });
   };
 
   return (
@@ -106,6 +131,11 @@ const BasicFlow = () => {
         <button onClick={updatePos}>change pos</button>
         <button onClick={toggleClassnames}>toggle classnames</button>
         <button onClick={logToObject}>toObject</button>
+
+        <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
+        <button onClick={deleteSomeElements}>deleteSomeElements</button>
+        <button onClick={onSetNodes}>setNodes</button>
+        <button onClick={onUpdateNode}>updateNode</button>
       </Panel>
     </ReactFlow>
   );

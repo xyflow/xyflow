@@ -21,6 +21,7 @@
   export let buttonColor: $$Props['buttonColor'] = undefined;
   export let buttonColorHover: $$Props['buttonColorHover'] = undefined;
   export let buttonBorderColor: $$Props['buttonColorHover'] = undefined;
+  export let ariaLabel: $$Props['aria-label'] = undefined;
 
   const {
     zoomIn,
@@ -67,7 +68,12 @@
   };
 </script>
 
-<Panel class="svelte-flow__controls" {position} data-testid="svelte-flow__controls">
+<Panel
+  class="svelte-flow__controls"
+  {position}
+  data-testid="svelte-flow__controls"
+  aria-label={ariaLabel ?? 'Svelte Flow controls'}
+>
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}

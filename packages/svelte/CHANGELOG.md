@@ -1,5 +1,17 @@
 # @xyflow/svelte
 
+## 0.0.33
+
+### Bugfix
+
+- fix `deleteElements`
+- fix dragging when `draggable=false`
+- add `ariaLabel` prop for `<Controls />`
+
+### ⚠️ Breaking
+
+- `deleteElements` function now takes one object as an argument `{ nodes: [], edges: [] }` instead of two `(nodes, edges)`  
+
 ## 0.0.32
 
 ### Features

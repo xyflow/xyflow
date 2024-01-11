@@ -78,7 +78,7 @@ const initEdges: Edge[] = [
 ];
 
 const CustomNodeFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);

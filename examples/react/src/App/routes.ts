@@ -21,6 +21,7 @@ import Interaction from '../examples/Interaction';
 import Intersection from '../examples/Intersection';
 import Layouting from '../examples/Layouting';
 import MultiFlows from '../examples/MultiFlows';
+import MultiSetNodes from '../examples/MultiSetNodes';
 import NodeResizer from '../examples/NodeResizer';
 import NodeTypeChange from '../examples/NodeTypeChange';
 import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
@@ -179,6 +180,11 @@ const routes: IRoute[] = [
     name: 'Layouting',
     path: 'layouting',
     component: Layouting,
+  },
+  {
+    name: 'Multi setNodes',
+    path: 'multi-setnodes',
+    component: MultiSetNodes,
   },
   {
     name: 'Multi Flows',

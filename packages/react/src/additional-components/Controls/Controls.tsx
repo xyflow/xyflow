@@ -34,6 +34,7 @@ function ControlsComponent({
   className,
   children,
   position = 'bottom-left',
+  'aria-label': ariaLabel = 'React Flow controls',
 }: ControlProps) {
   const store = useStoreApi();
   const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
@@ -70,6 +71,7 @@ function ControlsComponent({
       position={position}
       style={style}
       data-testid="rf__controls"
+      aria-label={ariaLabel}
     >
       {showZoom && (
         <>
