@@ -8,14 +8,12 @@ import type {
   Instance,
   NodeAddChange,
   EdgeAddChange,
-  NodeResetChange,
-  EdgeResetChange,
-  NodeRemoveChange,
-  EdgeRemoveChange,
   Node,
   Edge,
+  NodeChange,
+  EdgeChange,
 } from '../types';
-import { isNode } from '../utils';
+import { getElementsDiffChanges, isNode } from '../utils';
 
 /**
  * Hook for accessing the ReactFlow instance.
@@ -29,10 +27,6 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 > {
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
-
-  // this is used to handle multiple syncronous setNodes calls
-  const setNodesData = useRef<Node[]>();
-  const setNodesTimeout = useRef<ReturnType<typeof setTimeout>>();
 
   const getNodes = useCallback<Instance.GetNodes<NodeType>>(() => {
     return store.getState().nodes.map((n) => ({ ...n })) as NodeType[];
@@ -52,48 +46,54 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     return edges.find((e) => e.id === id) as EdgeType;
   }, []);
 
+  // this is used to handle multiple syncronous setNodes calls
+  const setNodesData = useRef<Node[]>();
+  const setNodesTimeout = useRef<ReturnType<typeof setTimeout>>();
   const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
-    const { nodes, setNodes, hasDefaultNodes, onNodesChange } = store.getState();
-    setNodesData.current = setNodesData.current || nodes;
-    const nextNodes = typeof payload === 'function' ? payload(setNodesData.current as NodeType[]) : payload;
+    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
+    const nextNodes = typeof payload === 'function' ? payload((setNodesData.current as NodeType[]) || nodes) : payload;
 
     setNodesData.current = nextNodes;
 
-    if (hasDefaultNodes) {
-      setNodes(nextNodes);
-    } else if (onNodesChange) {
-      if (setNodesTimeout.current) {
-        clearTimeout(setNodesTimeout.current);
-      }
-
-      // if there are multiple synchronous setNodes calls, we only want to call onNodesChange once
-      // for this, we use a timeout to wait for the last call and store updated nodes in setNodesData
-      // this is not perfect, but should work in most cases
-      setNodesTimeout.current = setTimeout(() => {
-        const changes =
-          nextNodes.length === 0
-            ? nodes.map((node) => ({ type: 'remove', id: node.id } as NodeRemoveChange))
-            : nextNodes.map((node) => ({ item: node, type: 'reset' } as NodeResetChange<NodeType>));
-        onNodesChange(changes);
-
-        setNodesData.current = undefined;
-      }, 0);
+    if (setNodesTimeout.current) {
+      clearTimeout(setNodesTimeout.current);
     }
+
+    // if there are multiple synchronous setNodes calls, we only want to call onNodesChange once
+    // for this, we use a timeout to wait for the last call and store updated nodes in setNodesData
+    // this is not perfect, but should work in most cases
+    setNodesTimeout.current = setTimeout(() => {
+      if (hasDefaultNodes) {
+        setNodes(nextNodes);
+      } else if (onNodesChange) {
+        const changes: NodeChange[] = getElementsDiffChanges({ items: setNodesData.current, lookup: nodeLookup });
+        onNodesChange(changes);
+        setNodesData.current = undefined;
+      }
+    }, 0);
   }, []);
 
+  // this is used to handle multiple syncronous setNodes calls
+  const setEdgesData = useRef<Edge[]>();
+  const setEdgesTimeout = useRef<ReturnType<typeof setTimeout>>();
   const setEdges = useCallback<Instance.SetEdges<EdgeType>>((payload) => {
-    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
-    const nextEdges = typeof payload === 'function' ? payload(edges as EdgeType[]) : payload;
+    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup } = store.getState();
+    const nextEdges = typeof payload === 'function' ? payload((setEdgesData.current as EdgeType[]) || edges) : payload;
 
-    if (hasDefaultEdges) {
-      setEdges(nextEdges);
-    } else if (onEdgesChange) {
-      const changes =
-        nextEdges.length === 0
-          ? edges.map((edge) => ({ type: 'remove', id: edge.id } as EdgeRemoveChange))
-          : nextEdges.map((edge) => ({ item: edge, type: 'reset' } as EdgeResetChange<EdgeType>));
-      onEdgesChange(changes);
+    setEdgesData.current = nextEdges;
+
+    if (setEdgesTimeout.current) {
+      clearTimeout(setEdgesTimeout.current);
     }
+
+    setEdgesTimeout.current = setTimeout(() => {
+      if (hasDefaultEdges) {
+        setEdges(nextEdges);
+      } else if (onEdgesChange) {
+        const changes: EdgeChange[] = getElementsDiffChanges({ items: nextEdges, lookup: edgeLookup });
+        onEdgesChange(changes);
+      }
+    }, 0);
   }, []);
 
   const addNodes = useCallback<Instance.AddNodes<NodeType>>((payload) => {

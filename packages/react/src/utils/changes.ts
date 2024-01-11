@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
 
 export function handleParentExpand(updatedElements: any[], updateItem: any) {
@@ -53,11 +54,6 @@ export function handleParentExpand(updatedElements: any[], updateItem: any) {
 // When you drag a node for example, React Flow will send a position change update.
 // This function then applies the changes and returns the updated elements.
 function applyChanges(changes: any[], elements: any[]): any[] {
-  // we need this hack to handle the setNodes and setEdges function of the useReactFlow hook for controlled flows
-  if (changes.some((c) => c.type === 'reset')) {
-    return changes.filter((c) => c.type === 'reset').map((c) => c.item);
-  }
-
   const updatedElements: any[] = [];
   // By storing a map of changes for each element, we can a quick lookup as we
   // iterate over the elements array!
@@ -67,7 +63,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     if (change.type === 'add') {
       updatedElements.push(change.item);
       continue;
-    } else if (change.type === 'remove') {
+    } else if (change.type === 'remove' || change.type === 'replace') {
       // For a 'remove' change we can safely ignore any other changes queued for
       // the same element, it's going to be removed anyway!
       changesMap.set(change.id, [change]);
@@ -96,6 +92,11 @@ function applyChanges(changes: any[], elements: any[]): any[] {
 
     // If we have a 'remove' change queued, it'll be the only change in the array
     if (changes[0].type === 'remove') {
+      continue;
+    }
+
+    if (changes[0].type === 'replace') {
+      updatedElements.push({ ...changes[0].item });
       continue;
     }
 
@@ -240,6 +241,62 @@ export function getSelectionChanges(
         item.selected = willBeSelected;
       }
       changes.push(createSelectionChange(item.id, willBeSelected));
+    }
+  }
+
+  return changes;
+}
+
+/**
+ * This function is used to find the changes between two sets of elements.
+ * It is used to determine which nodes or edges have been added, removed or replaced.
+ *
+ * @internal
+ * @param params.items = the next set of elements (nodes or edges)
+ * @param params.lookup = a lookup map of the current store elements
+ * @returns an array of changes
+ */
+export function getElementsDiffChanges({
+  items,
+  lookup,
+}: {
+  items: Node[] | undefined;
+  lookup: NodeLookup;
+}): NodeChange[];
+export function getElementsDiffChanges({
+  items,
+  lookup,
+}: {
+  items: Edge[] | undefined;
+  lookup: EdgeLookup;
+}): EdgeChange[];
+export function getElementsDiffChanges({
+  items = [],
+  lookup,
+}: {
+  items: any[] | undefined;
+  lookup: Map<string, any>;
+}): any[] {
+  const changes: any[] = [];
+  const itemsLookup = new Map<string, any>(items.map((item) => [item.id, item]));
+
+  for (const item of items) {
+    const storeItem = lookup.get(item.id);
+
+    if (storeItem !== undefined && storeItem !== item) {
+      changes.push({ id: item.id, item: item, type: 'replace' });
+    }
+
+    if (storeItem === undefined) {
+      changes.push({ item: item, type: 'add' });
+    }
+  }
+
+  for (const [id] of lookup) {
+    const nextNode = itemsLookup.get(id);
+
+    if (nextNode === undefined) {
+      changes.push({ id, type: 'remove' });
     }
   }
 

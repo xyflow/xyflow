@@ -34,9 +34,10 @@ export type NodeAddChange<NodeType extends Node = Node> = {
   type: 'add';
 };
 
-export type NodeResetChange<NodeType extends Node = Node> = {
+export type NodeReplaceChange<NodeType extends Node = Node> = {
+  id: string;
   item: NodeType;
-  type: 'reset';
+  type: 'replace';
 };
 
 /**
@@ -49,7 +50,7 @@ export type NodeChange =
   | NodeSelectionChange
   | NodeRemoveChange
   | NodeAddChange
-  | NodeResetChange;
+  | NodeReplaceChange;
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;
@@ -57,8 +58,10 @@ export type EdgeAddChange<EdgeType extends Edge = Edge> = {
   item: EdgeType;
   type: 'add';
 };
-export type EdgeResetChange<EdgeType extends Edge = Edge> = {
+
+export type EdgeReplaceChange<EdgeType extends Edge = Edge> = {
+  id: string;
   item: EdgeType;
-  type: 'reset';
+  type: 'replace';
 };
-export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange | EdgeAddChange | EdgeResetChange;
+export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange | EdgeAddChange | EdgeReplaceChange;
