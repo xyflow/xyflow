@@ -44,13 +44,13 @@ export type NodeReplaceChange<NodeType extends Node = Node> = {
  * Union type of all possible node changes.
  * @public
  */
-export type NodeChange =
+export type NodeChange<NodeType extends Node = Node> =
   | NodeDimensionChange
   | NodePositionChange
   | NodeSelectionChange
   | NodeRemoveChange
-  | NodeAddChange
-  | NodeReplaceChange;
+  | NodeAddChange<NodeType>
+  | NodeReplaceChange<NodeType>;
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;
@@ -64,4 +64,9 @@ export type EdgeReplaceChange<EdgeType extends Edge = Edge> = {
   item: EdgeType;
   type: 'replace';
 };
-export type EdgeChange = EdgeSelectionChange | EdgeRemoveChange | EdgeAddChange | EdgeReplaceChange;
+
+export type EdgeChange<EdgeType extends Edge = Edge> =
+  | EdgeSelectionChange
+  | EdgeRemoveChange
+  | EdgeAddChange<EdgeType>
+  | EdgeReplaceChange<EdgeType>;

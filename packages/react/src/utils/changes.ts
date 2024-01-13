@@ -188,7 +188,10 @@ function applyChange(change: any, element: any, elements: any[] = []): any {
       <ReactFLow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
     );
  */
-export function applyNodeChanges<NodeType extends Node = Node>(changes: NodeChange[], nodes: NodeType[]): NodeType[] {
+export function applyNodeChanges<NodeType extends Node = Node>(
+  changes: NodeChange<NodeType>[],
+  nodes: NodeType[]
+): NodeType[] {
   return applyChanges(changes, nodes) as NodeType[];
 }
 
@@ -212,7 +215,10 @@ export function applyNodeChanges<NodeType extends Node = Node>(changes: NodeChan
       <ReactFlow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
     );
  */
-export function applyEdgeChanges<EdgeType extends Edge = Edge>(changes: EdgeChange[], edges: EdgeType[]): EdgeType[] {
+export function applyEdgeChanges<EdgeType extends Edge = Edge>(
+  changes: EdgeChange<EdgeType>[],
+  edges: EdgeType[]
+): EdgeType[] {
   return applyChanges(changes, edges) as EdgeType[];
 }
 
