@@ -1,3 +1,4 @@
+import type { HTMLButtonAttributes } from 'svelte/elements';
 import type { PanelPosition } from '@xyflow/system';
 
 export type ControlsProps = {
@@ -10,4 +11,13 @@ export type ControlsProps = {
   buttonColor?: string;
   buttonColorHover?: string;
   'aria-label'?: string;
+};
+
+export type ControlButtonProps = HTMLButtonAttributes & {
+  class?: string;
+  bgColor?: string;
+  bgColorHover?: string;
+  color?: string;
+  colorHover?: string;
+  borderColor?: string;
 };

@@ -13,7 +13,8 @@
 		type Node,
 		type Edge,
 		ConnectionMode,
-		useSvelteFlow
+		useSvelteFlow,
+		ControlButton
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -187,7 +188,12 @@
 	connectionMode={ConnectionMode.Strict}
 	attributionPosition={'top-center'}
 >
-	<Controls />
+	<Controls>
+		<ControlButton slot="before">xy</ControlButton>
+		<ControlButton aria-label="log" on:click={() => console.log('control button')}
+			>log</ControlButton
+		>
+	</Controls>
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 	<Panel position="top-right">
