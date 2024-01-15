@@ -54,7 +54,7 @@ export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): 
  * @param edges - The array of all edges
  * @returns An array of nodes that are connected over eges where the source is the given node
  */
-export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
+export const getOutgoers = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType | { id: string },
   nodes: NodeType[],
   edges: EdgeType[]
@@ -81,7 +81,7 @@ export const getOutgoersBase = <NodeType extends NodeBase = NodeBase, EdgeType e
  * @param edges - The array of all edges
  * @returns An array of nodes that are connected over eges where the target is the given node
  */
-export const getIncomersBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
+export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   node: NodeType | { id: string },
   nodes: NodeType[],
   edges: EdgeType[]
@@ -212,7 +212,7 @@ export const getNodesInside = <NodeType extends NodeBase>(
  * @param edges - All edges
  * @returns Array of edges that connect any of the given nodes with each other
  */
-export const getConnectedEdgesBase = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
+export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   nodes: NodeType[],
   edges: EdgeType[]
 ): EdgeType[] => {
@@ -370,7 +370,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
 
   const edgeIds = edgesToRemove.map((edge) => edge.id);
   const deletableEdges = edges.filter((edge) => edge.deletable !== false);
-  const connectedEdges = getConnectedEdgesBase(matchingNodes, deletableEdges);
+  const connectedEdges = getConnectedEdges(matchingNodes, deletableEdges);
   const matchingEdges: EdgeType[] = connectedEdges;
 
   for (const edge of deletableEdges) {

@@ -7,6 +7,7 @@
 - pass Node/Edge types to changes thanks @FelipeEmos
 - use position instead of positionAbsolute for `getNodesBounds`
 - add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
+- infer types for `getIncomers`, `getOutgoers`, `updateEdge`, `addEdge` and `getConnectedEdges` thanks @joeyballentine
 
 ## 12.0.0-next.6
 

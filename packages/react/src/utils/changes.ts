@@ -267,7 +267,7 @@ export function getElementsDiffChanges({
   lookup,
 }: {
   items: Node[] | undefined;
-  lookup: NodeLookup;
+  lookup: NodeLookup<Node>;
 }): NodeChange[];
 export function getElementsDiffChanges({
   items,

@@ -7,6 +7,7 @@ import {
   getElementsToRemove,
   panBy as panBySystem,
   updateNodeDimensions as updateNodeDimensionsSystem,
+  addEdge as addEdgeUtil,
   type UpdateNodePositions,
   type NodeDimensionUpdate,
   type ViewportHelperFunctionOptions,
@@ -19,7 +20,6 @@ import {
   errorMessages
 } from '@xyflow/system';
 
-import { addEdge as addEdgeUtil } from '$lib/utils';
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
