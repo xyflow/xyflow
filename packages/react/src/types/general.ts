@@ -16,8 +16,8 @@ import {
 import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
 import { ComponentType } from 'react';
 
-export type OnNodesChange = (changes: NodeChange[]) => void;
-export type OnEdgesChange = (changes: EdgeChange[]) => void;
+export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
+export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
 
 export type OnNodesDelete = (nodes: Node[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
