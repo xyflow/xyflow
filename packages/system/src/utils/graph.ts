@@ -114,8 +114,8 @@ export const getNodePositionWithOrigin = (
     };
   }
 
-  const offsetX = (node.computed?.width ?? node.width ?? 0) * nodeOrigin[0];
-  const offsetY = (node.computed?.height ?? node.height ?? 0) * nodeOrigin[1];
+  const offsetX = (node.computed?.width ?? node.initialWidth ?? 0) * nodeOrigin[0];
+  const offsetY = (node.computed?.height ?? node.initialHeight ?? 0) * nodeOrigin[1];
 
   const position: XYPosition = {
     x: node.position.x - offsetX,
@@ -154,8 +154,8 @@ export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0
         rectToBox({
           x,
           y,
-          width: node.computed?.width ?? node.width ?? 0,
-          height: node.computed?.height ?? node.height ?? 0,
+          width: node.computed?.width ?? node.initialWidth ?? 0,
+          height: node.computed?.height ?? node.initialHeight ?? 0,
         })
       );
     },
@@ -182,8 +182,8 @@ export const getNodesInside = <NodeType extends NodeBase>(
 
   const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
     const { computed, selectable = true, hidden = false } = node;
-    const width = computed?.width ?? node.width ?? null;
-    const height = computed?.height ?? node.height ?? null;
+    const width = computed?.width ?? node.initialWidth ?? null;
+    const height = computed?.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return res;

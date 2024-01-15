@@ -93,7 +93,12 @@ const NodeComponentWrapper = memo(function NodeComponentWrapper({
       y,
     };
   }, shallow);
-  if (!node || node.hidden || !(node.computed?.width || node.width) || !(node.computed?.height || node.height)) {
+  if (
+    !node ||
+    node.hidden ||
+    !(node.computed?.width || node.initialWidth) ||
+    !(node.computed?.height || node.initialHeight)
+  ) {
     return null;
   }
 
@@ -101,8 +106,8 @@ const NodeComponentWrapper = memo(function NodeComponentWrapper({
     <NodeComponent
       x={x}
       y={y}
-      width={node.computed?.width ?? node.width ?? 0}
-      height={node.computed?.height ?? node.height ?? 0}
+      width={node.computed?.width ?? node.initialWidth ?? 0}
+      height={node.computed?.height ?? node.initialHeight ?? 0}
       style={node.style}
       selected={!!node.selected}
       className={nodeClassNameFunc(node)}

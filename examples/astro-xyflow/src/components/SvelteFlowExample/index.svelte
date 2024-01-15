@@ -11,8 +11,8 @@
       data: { label: 'Node 0' },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
-      width: 100,
-      height: 40,
+      initialWidth: 100,
+      initialHeight: 40,
       handles: [
         { type: 'source', x: 100, y: 20, position: Position.Right },
         { type: 'target', x: 0, y: 20, position: Position.Left },
@@ -24,8 +24,8 @@
       data: { label: 'A' },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
-      width: 100,
-      height: 40,
+      initialWidth: 100,
+      initialHeight: 40,
       handles: [
         { type: 'source', x: 100, y: 20, position: Position.Right },
         { type: 'target', x: 0, y: 20, position: Position.Left },
@@ -37,8 +37,8 @@
       data: { label: 'B' },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
-      width: 100,
-      height: 40,
+      initialWidth: 100,
+      initialHeight: 40,
       handles: [
         { type: 'source', x: 100, y: 20, position: Position.Right },
         { type: 'target', x: 0, y: 20, position: Position.Left },
@@ -50,8 +50,8 @@
       data: { label: 'C' },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
-      width: 100,
-      height: 40,
+      initialWidth: 100,
+      initialHeight: 40,
       handles: [
         { type: 'source', x: 100, y: 20, position: Position.Right },
         { type: 'target', x: 0, y: 20, position: Position.Left },

@@ -17,3 +17,5 @@ export type Node<
 export type NodeTypes = Record<string, ComponentType<SvelteComponent<NodeProps>>>;
 
 export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
+
+export type NodeLookup = Map<string, Node>;

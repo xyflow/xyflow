@@ -19,8 +19,8 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   connectable?: boolean;
   deletable?: boolean;
   dragHandle?: string;
-  width?: number | null;
-  height?: number | null;
+  initialWidth?: number;
+  initialHeight?: number;
   parentNode?: string;
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;

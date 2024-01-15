@@ -91,7 +91,7 @@ export const getInitialStore = ({
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
+    const nodesWithDimensions = nextNodes.filter((node) => node.initialWidth && node.initialHeight);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
@@ -99,7 +99,7 @@ export const getInitialStore = ({
   return {
     flowId: writable<string | null>(null),
     nodes: createNodesStore(nextNodes, nodeLookup),
-    nodeLookup: readable<NodeLookup>(nodeLookup),
+    nodeLookup: readable<NodeLookup<Node>>(nodeLookup),
     edgeLookup: readable<EdgeLookup>(edgeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),

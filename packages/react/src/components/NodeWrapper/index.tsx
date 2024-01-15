@@ -123,19 +123,21 @@ export function NodeWrapper({
     return null;
   }
 
-  const width = node.width ?? undefined;
-  const height = node.height ?? undefined;
+  const initialWidth = node.initialWidth;
+  const initialHeight = node.initialHeight;
   const computedWidth = node.computed?.width;
   const computedHeight = node.computed?.height;
+  const inlineStyleWidth = computedWidth ? node.style?.width : initialWidth ?? node.style?.width;
+  const inlineStyleHeight = computedHeight ? node.style?.height : initialHeight ?? node.style?.height;
 
   const positionAbsoluteOrigin = getPositionWithOrigin({
     x: positionAbsoluteX,
     y: positionAbsoluteY,
-    width: computedWidth ?? width ?? 0,
-    height: computedHeight ?? height ?? 0,
+    width: computedWidth ?? initialWidth ?? 0,
+    height: computedHeight ?? initialHeight ?? 0,
     origin: node.origin || nodeOrigin,
   });
-  const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
+  const initialized = (!!computedWidth && !!computedHeight) || (!!initialWidth && !!initialHeight);
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
   const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...node }) : undefined;
@@ -220,8 +222,8 @@ export function NodeWrapper({
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
         ...node.style,
-        width: width ?? node.style?.width,
-        height: height ?? node.style?.height,
+        width: inlineStyleWidth,
+        height: inlineStyleHeight,
       }}
       data-id={id}
       data-testid={`rf__node-${id}`}

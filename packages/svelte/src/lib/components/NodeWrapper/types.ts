@@ -30,4 +30,6 @@ export type NodeWrapperProps = Pick<
   zIndex: number;
   node: Node;
   initialized: boolean;
+  computedWidth?: number;
+  computedHeight?: number;
 };

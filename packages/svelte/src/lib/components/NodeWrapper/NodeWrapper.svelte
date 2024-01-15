@@ -38,6 +38,8 @@
   export let height: NodeWrapperProps['height'] = undefined;
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
   export let initialized: NodeWrapperProps['initialized'] = false;
+  export let computedWidth: NodeWrapperProps['computedWidth'] = undefined;
+  export let computedHeight: NodeWrapperProps['computedHeight'] = undefined;
   let className: string = '';
   export { className as class };
 
@@ -133,6 +135,9 @@
 
     dispatch('nodeclick', { node, event });
   }
+
+  $: inlineStyleWidth = computedWidth ? '' : `width:${width}px;`;
+  $: inlineStyleHeight = computedHeight ? '' : `height:${height}px;`;
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -170,9 +175,7 @@
     style:z-index={zIndex}
     style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style ?? ''}; {!width ? '' : `width:${width}px;`} {!height
-      ? ''
-      : `height:${height}px;`}"
+    style="{inlineStyleWidth} {inlineStyleHeight} {style ?? ''};"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}

@@ -69,8 +69,11 @@
         onChange: (change: XYResizerChange) => {
           const node = $nodeLookup.get(id);
           if (node) {
-            node.height = change.isHeightChange ? change.height : node.height;
-            node.width = change.isWidthChange ? change.width : node.width;
+            const nextHeight = change.isHeightChange ? change.height : node.computed?.height;
+            const nextWidth = change.isWidthChange ? change.width : node.computed?.width;
+
+            node.style = `${node.style ?? ''}; height: ${nextHeight}px; width: ${nextWidth}px;`;
+
             node.position =
               change.isXPosChange || change.isYPosChange
                 ? { x: change.x, y: change.y }
