@@ -7,6 +7,7 @@
 - add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
 - add slot to `Controls`
 - cleanup `ControlButton` types
+- infer types for `getIncomers`, `getOutgoers`, `updateEdge`, `addEdge` and `getConnectedEdges` thanks @joeyballentine
 
 ## 0.0.33
 
