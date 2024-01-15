@@ -55,7 +55,7 @@ export type ViewportHelperFunctions = {
   fitView: FitView;
   setCenter: SetCenter;
   fitBounds: FitBounds;
-  screenToFlowPosition: (position: XYPosition) => XYPosition;
+  screenToFlowPosition: (position: XYPosition, options?: { snapToGrid: boolean }) => XYPosition;
   flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewportInitialized: boolean;
 };

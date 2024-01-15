@@ -53,7 +53,7 @@ export function useSvelteFlow(): {
     nodes?: (Node | { id: Node['id'] })[];
     edges?: (Edge | { id: Edge['id'] })[];
   }) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>;
-  screenToFlowPosition: (position: XYPosition) => XYPosition;
+  screenToFlowPosition: (position: XYPosition, options?: { snapToGrid: boolean }) => XYPosition;
   flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
   updateNode: (
@@ -228,14 +228,17 @@ export function useSvelteFlow(): {
         deletedEdges: matchingEdges
       };
     },
-    screenToFlowPosition: (position: XYPosition) => {
+    screenToFlowPosition: (
+      position: XYPosition,
+      options: { snapToGrid: boolean } = { snapToGrid: true }
+    ) => {
       const _domNode = get(domNode);
 
       if (!_domNode) {
         return position;
       }
 
-      const _snapGrid = get(snapGrid);
+      const _snapGrid = options.snapToGrid ? get(snapGrid) : false;
       const { x, y, zoom } = get(viewport);
       const { x: domX, y: domY } = _domNode.getBoundingClientRect();
       const correctedPosition = {

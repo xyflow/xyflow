@@ -2,6 +2,14 @@
 
 ## 12.0.0-next.6
 
+## Minor changes
+
+- pass Node/Edge types to changes thanks @FelipeEmos
+- use position instead of positionAbsolute for `getNodesBounds`
+- add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
+
+## 12.0.0-next.6
+
 ### Minor changes
 
 - fix `deleteElements`

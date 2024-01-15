@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.0.34
+
+## Minor changes
+
+- add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
+
 ## 0.0.33
 
 ### Bugfix
