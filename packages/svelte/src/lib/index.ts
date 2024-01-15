@@ -112,5 +112,9 @@ export {
   getStraightPath,
   getViewportForBounds,
   getNodesBounds,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges,
+  addEdge,
   internalsSymbol
 } from '@xyflow/system';

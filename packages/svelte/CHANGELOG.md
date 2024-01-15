@@ -5,6 +5,8 @@
 ## Minor changes
 
 - add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
+- add slot to `Controls`
+- cleanup `ControlButton` types
 
 ## 0.0.33
 

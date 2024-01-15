@@ -99,7 +99,7 @@ export const getInitialStore = ({
   return {
     flowId: writable<string | null>(null),
     nodes: createNodesStore(nextNodes, nodeLookup),
-    nodeLookup: readable<NodeLookup>(nodeLookup),
+    nodeLookup: readable<NodeLookup<Node>>(nodeLookup),
     edgeLookup: readable<EdgeLookup>(edgeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
