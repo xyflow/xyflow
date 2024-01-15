@@ -196,8 +196,10 @@ export function NodeWrapper({
     }
   };
 
+  const NodeWrapperComponent = node.as ?? 'div';
+
   return (
-    <div
+    <NodeWrapperComponent
       className={cc([
         'react-flow__node',
         `react-flow__node-${nodeType}`,
@@ -255,6 +257,6 @@ export function NodeWrapper({
           zIndex={zIndex}
         />
       </Provider>
-    </div>
+    </NodeWrapperComponent>
   );
 }
