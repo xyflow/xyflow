@@ -12,6 +12,7 @@ import {
   XYHandle,
   getHostForElement,
   isMouseEvent,
+  addEdge,
   type HandleProps,
   type Connection,
   type HandleType,
@@ -19,7 +20,6 @@ import {
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import { addEdge } from '../../utils/';
 import { type ReactFlowState } from '../../types';
 
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;

@@ -30,10 +30,14 @@
 
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { SelectionMode, getEventPosition, getNodesInside } from '@xyflow/system';
+  import {
+    SelectionMode,
+    getEventPosition,
+    getNodesInside,
+    getConnectedEdges
+  } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import { getConnectedEdges } from '$lib/utils';
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
 

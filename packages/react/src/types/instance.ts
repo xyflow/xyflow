@@ -45,9 +45,6 @@ export namespace Instance {
     area: Rect,
     partially?: boolean
   ) => boolean;
-  export type getConnectedEdges = (id: string | (Node | { id: Node['id'] })[]) => Edge[];
-  export type getIncomers = (node: string | Node | { id: Node['id'] }) => Node[];
-  export type getOutgoers = (node: string | Node | { id: Node['id'] }) => Node[];
 
   export type UpdateNode<NodeType extends Node = Node> = (
     id: string,
