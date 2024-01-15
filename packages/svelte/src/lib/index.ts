@@ -116,5 +116,6 @@ export {
   getOutgoers,
   getConnectedEdges,
   addEdge,
+  updateEdge,
   internalsSymbol
 } from '@xyflow/system';
