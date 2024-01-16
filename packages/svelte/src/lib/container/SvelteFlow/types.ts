@@ -78,7 +78,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
    * @example
    * import CustomEdge from './CustomEdge.svelte';
    *
-   * const edgeypes = { nameOfEdgeType: CustomEdge };
+   * const edgeTypes = { nameOfEdgeType: CustomEdge };
    */
   edgeTypes?: EdgeTypes;
   /** Pressing down this key you can select multiple elements with a selection box.
@@ -292,7 +292,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
    * @example ConnectionLineType.Straight | ConnectionLineType.Default | ConnectionLineType.Step | ConnectionLineType.SmoothStep | ConnectionLineType.Bezier
    */
   connectionLineType?: ConnectionLineType;
-  /**This callback can be used to validate a new connection
+  /** This callback can be used to validate a new connection
    *
    * If you return false, the edge will not be added to your flow.
    * If you have custom connection logic its preferred to use this callback over the isValidConnection prop on the handle component for performance reasons.
