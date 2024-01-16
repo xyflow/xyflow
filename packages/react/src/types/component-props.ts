@@ -242,7 +242,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * const edgeTypes = { nameOfEdgeType: CustomEdge };
    */
   edgeTypes?: EdgeTypes;
-  /** nThe type of edge path to use for connection lines.
+  /** The type of edge path to use for connection lines.
    *
    * Although created edges can be of any type, React Flow needs to know what type of path to render for the connection line before the edge is created!
    */
@@ -285,7 +285,7 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * @default 'Meta' for macOS, "Ctrl" for other systems
    */
   multiSelectionKeyCode?: KeyCode | null;
-  /**If a key is set, you can zoom the viewport while that key is held down even if panOnScroll is set to false.
+  /** If a key is set, you can zoom the viewport while that key is held down even if panOnScroll is set to false.
    *
    * By setting this prop to null you can disable this functionality.
    * @default 'Meta' for macOS, "Ctrl" for other systems
@@ -334,6 +334,9 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * @default true
    */
   elementsSelectable?: boolean;
+  /** If true, nodes get selected on drag
+   * @default true
+   */
   selectNodesOnDrag?: boolean;
   /** Enableing this prop allows users to pan the viewport by clicking and dragging.
    *
@@ -362,7 +365,9 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * };
    */
   defaultViewport?: Viewport;
-
+  /**
+   * Gets called when the viewport changes.
+   */
   onViewportChange?: (viewport: Viewport) => void;
   /** By default the viewport extends infinitely. You can use this prop to set a boundary.
    *
@@ -452,6 +457,10 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * @default true
    */
   elevateEdgesOnSelect?: boolean;
+  /**
+   * Can be set true if built-in keyboard controls should be disabled.
+   * @default false
+   */
   disableKeyboardA11y?: boolean;
   /** You can enable this prop to automatically pan the viewport while dragging a node.
    * @default true

@@ -4,31 +4,31 @@ import type { PanelPosition } from '@xyflow/system';
 import type { FitViewOptions } from '../../types';
 
 export type ControlProps = {
-  /** show button for zoom in/out */
+  /** Show button for zoom in/out */
   showZoom?: boolean;
-  /** show button for fit view */
+  /** Show button for fit view */
   showFitView?: boolean;
-  /** show button for toggling interactivity */
+  /** Show button for toggling interactivity */
   showInteractive?: boolean;
-  /** options being used when fit view button is clicked */
+  /** Options being used when fit view button is clicked */
   fitViewOptions?: FitViewOptions;
-  /** callback when zoom in button is clicked */
+  /** Callback when zoom in button is clicked */
   onZoomIn?: () => void;
-  /** callback when zoom out button is clicked */
+  /** Callback when zoom out button is clicked */
   onZoomOut?: () => void;
-  /** callback when fit view button is clicked */
+  /** Callback when fit view button is clicked */
   onFitView?: () => void;
-  /** callback when interactivity is toggled */
+  /** Callback when interactivity is toggled */
   onInteractiveChange?: (interactiveStatus: boolean) => void;
-  /** position of the controls on the pane
+  /** Position of the controls on the pane
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
    * PanelPosition.BottomLeft, PanelPosition.BottomRight
    */
   position?: PanelPosition;
   children?: ReactNode;
-  /** style applied to container */
+  /** Style applied to container */
   style?: React.CSSProperties;
-  /**className applied to container */
+  /** ClassName applied to container */
   className?: string;
   'aria-label'?: string;
 };

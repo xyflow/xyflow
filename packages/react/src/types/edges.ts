@@ -114,24 +114,24 @@ export type EdgeProps<T = any> = Pick<
  * @public
  */
 export type BaseEdgeProps = EdgeLabelOptions & {
-  /** unique id of edge */
+  /** Unique id of edge */
   id?: string;
-  /** additional padding where interacting with an edge is still possible */
+  /** Additional padding where interacting with an edge is still possible */
   interactionWidth?: number;
   className?: string;
-  /** x position of edge label */
+  /** The x position of edge label */
   labelX?: number;
-  /** y position of edge label */
+  /** The y position of edge label */
   labelY?: number;
-  /** marker at start of edge
+  /** Marker at start of edge
    * @example 'url(#arrow)'
    */
   markerStart?: string;
-  /** marker at end of edge
+  /** Marker at end of edge
    * @example 'url(#arrow)'
    */
   markerEnd?: string;
-  /** svg path of the edge */
+  /** SVG path of the edge */
   path: string;
   style?: CSSProperties;
 };

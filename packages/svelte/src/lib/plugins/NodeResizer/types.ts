@@ -8,39 +8,39 @@ import type {
 } from '@xyflow/system';
 
 export type NodeResizerProps = {
-  /** id of the node it is resizing
+  /** Id of the node it is resizing
    * @remarks optional if used inside custom node
    */
   nodeId?: string;
-  /** color of the resize handle */
+  /** Color of the resize handle */
   color?: string;
-  /** class applied to handle */
+  /** Class applied to handle */
   handleClass?: string;
-  /** style applied to handle */
+  /** Style applied to handle */
   handleStyle?: string;
-  /** class applied to line */
+  /** Class applied to line */
   lineClass?: string;
-  /** style applied to line */
+  /** Style applied to line */
   lineStyle?: string;
-  /** are the controls visible */
+  /** Are the controls visible */
   isVisible?: boolean;
-  /** minimum width of node */
+  /** Minimum width of node */
   minWidth?: number;
-  /** minimum height of node */
+  /** Minimum height of node */
   minHeight?: number;
-  /** maximum width of node */
+  /** Maximum width of node */
   maxWidth?: number;
-  /** maximum height of node */
+  /** Maximum height of node */
   maxHeight?: number;
-  /** keep aspect ratio when resizing */
+  /** Keep aspect ratio when resizing */
   keepAspectRatio?: boolean;
-  /** callback to determine if node should resize */
+  /** Callback to determine if node should resize */
   shouldResize?: ShouldResize;
-  /** callback called when resizing starts */
+  /** Callback called when resizing starts */
   onResizeStart?: OnResizeStart;
-  /** callback called when resizing */
+  /** Callback called when resizing */
   onResize?: OnResize;
-  /** callback called when resizing ends */
+  /** Callback called when resizing ends */
   onResizeEnd?: OnResizeEnd;
 };
 
@@ -58,12 +58,12 @@ export type ResizeControlProps = Pick<
   | 'onResize'
   | 'onResizeEnd'
 > & {
-  /** position of control
+  /** Position of control
    * @example ControlPosition.TopLeft, ControlPosition.TopRight,
    * ControlPosition.BottomLeft, ControlPosition.BottomRight
    */
   position?: ControlPosition;
-  /** variant of control
+  /** Variant of control
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;

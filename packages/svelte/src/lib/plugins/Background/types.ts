@@ -6,21 +6,21 @@ export enum BackgroundVariant {
 
 export type BackgroundProps = {
   id?: string;
-  /** color of the background */
+  /** Color of the background */
   bgColor?: string;
-  /** color of the pattern */
+  /** Color of the pattern */
   patternColor?: string;
-  /** class applied to the pattern */
+  /** Class applied to the pattern */
   patternClass?: string;
-  /** class applied to the container */
+  /** Class applied to the container */
   class?: string;
-  /** gap between repetitions of the pattern */
+  /** Gap between repetitions of the pattern */
   gap?: number | [number, number];
-  /** size of a single pattern element */
+  /** Size of a single pattern element */
   size?: number;
-  /** line width of the Line pattern */
+  /** Line width of the Line pattern */
   lineWidth?: number;
-  /** variant of the pattern
+  /** Variant of the pattern
    * @example BackgroundVariant.Lines, BackgroundVariant.Dots, BackgroundVariant.Cross
    * 'lines', 'dots', 'cross'
    */

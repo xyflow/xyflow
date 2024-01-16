@@ -5,17 +5,17 @@ export type BaseEdgeProps = Pick<
   'interactionWidth' | 'label' | 'labelStyle' | 'style'
 > & {
   id?: string;
-  /** svg path of the edge */
+  /** SVG path of the edge */
   path: string;
-  /** x coordinate of the label */
+  /** The x coordinate of the label */
   labelX?: number;
-  /** y coordinate of the label */
+  /** The y coordinate of the label */
   labelY?: number;
-  /** marker at start of edge
+  /** Marker at start of edge
    * @example 'url(#arrow)'
    */
   markerStart?: string;
-  /** marker at end of edge
+  /** Marker at end of edge
    * @example 'url(#arrow)'
    */
   markerEnd?: string;

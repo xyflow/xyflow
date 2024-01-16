@@ -36,7 +36,9 @@ import type {
 import type { Writable } from 'svelte/store';
 
 export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
-  /** id of the flow
+  /** The id of the flow
+   *
+   * This is necessary if you want to render multiple flows.
    * @optional
    */
   id?: string;
@@ -99,7 +101,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
    * @default 'Meta' for macOS, "Ctrl" for other systems
    */
   multiSelectionKey?: KeyDefinition | null;
-  /**If a key is set, you can zoom the viewport while that key is held down even if panOnScroll is set to false.
+  /** If a key is set, you can zoom the viewport while that key is held down even if panOnScroll is set to false.
    *
    * By setting this prop to null you can disable this functionality.
    * @default 'Meta' for macOS, "Ctrl" for other systems
