@@ -25,9 +25,9 @@ import { type ReactFlowState } from '../../types';
 export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
 
 const selector = (s: ReactFlowState) => ({
-  connectionStartHandle: s.connectionStartHandle,
   connectOnClick: s.connectOnClick,
   noPanClassName: s.noPanClassName,
+  rfId: s.rfId,
 });
 
 const connectingSelector =
@@ -70,7 +70,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
     const isTarget = type === 'target';
     const store = useStoreApi();
     const nodeId = useNodeId();
-    const { connectOnClick, noPanClassName } = useStore(selector, shallow);
+    const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
     const { connecting, clickConnecting } = useStore(connectingSelector(nodeId, handleId, type), shallow);
 
     if (!nodeId) {
@@ -116,6 +116,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
           isTarget,
           handleId,
           nodeId,
+          flowId: currentStore.rfId,
           panBy: currentStore.panBy,
           cancelConnection: currentStore.cancelConnection,
           onConnectStart: currentStore.onConnectStart,
@@ -142,6 +143,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
         connectionMode,
         isValidConnection: isValidConnectionStore,
         lib,
+        rfId: flowId,
       } = store.getState();
 
       if (!nodeId || (!connectionClickStartHandle && !isConnectableStart)) {
@@ -167,6 +169,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
         fromHandleId: connectionClickStartHandle.handleId || null,
         fromType: connectionClickStartHandle.type,
         isValidConnection: isValidConnectionHandler,
+        flowId,
         doc,
         lib,
       });
@@ -185,7 +188,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
         data-handleid={handleId}
         data-nodeid={nodeId}
         data-handlepos={position}
-        data-id={`${nodeId}-${handleId}-${type}`}
+        data-id={`${rfId}-${nodeId}-${handleId}-${type}`}
         className={cc([
           'react-flow__handle',
           `react-flow__handle-${position}`,

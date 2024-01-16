@@ -55,7 +55,8 @@
     connectionLookup,
     onconnect: onConnectAction,
     onconnectstart: onConnectStartAction,
-    onconnectend: onConnectEndAction
+    onconnectend: onConnectEndAction,
+    flowId
   } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -72,6 +73,7 @@
         connectionMode: $connectionMode,
         lib: $lib,
         autoPanOnConnect: $autoPanOnConnect,
+        flowId: $flowId,
         isValidConnection: $isValidConnection,
         updateConnection,
         cancelConnection,
@@ -128,7 +130,7 @@
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{nodeId}-{id || null}-{type}"
+  data-id="{flowId}-{nodeId}-{id || null}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
