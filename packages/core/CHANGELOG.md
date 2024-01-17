@@ -1,20 +1,27 @@
 # @reactflow/core
 
+## 11.10.1
+
+### Patch Changes
+
+- [#3807](https://github.com/xyflow/xyflow/pull/3807) [`59c44df5`](https://github.com/xyflow/xyflow/commit/59c44df5300a87aedde53393ac31b85f7fcbcaa0) Thanks [@rhys-okane-instil](https://github.com/rhys-okane-instil)! - fix internally used getNodeRect function
+- [#3810](https://github.com/xyflow/xyflow/pull/3810) [`814ae219`](https://github.com/xyflow/xyflow/commit/814ae219991804f4429a22f72b2774a372964153) - fix(getNodesBounds): use position instead of positionAbsolute for subflows
+
 ## 11.10.0
 
 ### Upcoming v12
 
-We want to make the migration for v12 as smooth as possible. That's why we added deprecation warnings for the following util functions: 
+We want to make the migration for v12 as smooth as possible. That's why we added deprecation warnings for the following util functions:
 
 #### Deprecations / Renamings
 
-* `useReactFlow.project` => `useReactFlow.screenToFlowPosition` (changes: no need to subtract react flow bounds anymore)
-* `getRectOfNodes` => `getNodesBounds` (changes: none)
-* `getTransformForBounds` => `getViewportForBounds` (changes: returns `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
+- `useReactFlow.project` => `useReactFlow.screenToFlowPosition` (changes: no need to subtract react flow bounds anymore)
+- `getRectOfNodes` => `getNodesBounds` (changes: none)
+- `getTransformForBounds` => `getViewportForBounds` (changes: returns `{ x: number, y: number, zoom: number }` instead of `[number, number, number]`)
 
 ##### New features
 
-* added `useReactFlow.flowToScreenPosition`
+- added `useReactFlow.flowToScreenPosition`
 
 ### Minor Changes
 
