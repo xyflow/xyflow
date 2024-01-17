@@ -200,7 +200,7 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
       const node = isRect ? null : store.getState().nodeInternals.get(nodeOrRect.id);
 
       if (!isRect && !node) {
-        [null, null, isRect];
+        return [null, null, isRect];
       }
 
       const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
