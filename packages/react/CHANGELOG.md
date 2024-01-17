@@ -1,6 +1,6 @@
 # @xyflow/react
 
-## 12.0.0-next.6
+## 12.0.0-next.7
 
 ## Minor changes
 
