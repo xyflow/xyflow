@@ -86,8 +86,8 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
         panZoom?.setViewport(viewport, { duration: options?.duration });
       },
-      screenToFlowPosition: (position: XYPosition) => {
-        const { transform, snapToGrid, snapGrid, domNode } = store.getState();
+      screenToFlowPosition: (position: XYPosition, options: { snapToGrid: boolean } = { snapToGrid: true }) => {
+        const { transform, snapGrid, domNode } = store.getState();
 
         if (!domNode) {
           return position;
@@ -100,7 +100,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           y: position.y - domY,
         };
 
-        return pointToRendererPoint(correctedPosition, transform, snapToGrid, snapGrid || [1, 1]);
+        return pointToRendererPoint(correctedPosition, transform, options.snapToGrid, snapGrid);
       },
       flowToScreenPosition: (position: XYPosition) => {
         const { transform, domNode } = store.getState();

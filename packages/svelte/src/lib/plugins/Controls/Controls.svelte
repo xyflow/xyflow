@@ -74,6 +74,7 @@
   data-testid="svelte-flow__controls"
   aria-label={ariaLabel ?? 'Svelte Flow controls'}
 >
+  <slot name="before" />
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}
@@ -118,4 +119,6 @@
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}
     </ControlButton>
   {/if}
+  <slot />
+  <slot name="after" />
 </Panel>

@@ -1,12 +1,16 @@
 <script lang="ts">
   import cc from 'classcat';
 
-  let className: string;
-  let bgColor: string | undefined = undefined;
-  let bgColorHover: string | undefined = undefined;
-  let color: string | undefined = undefined;
-  let colorHover: string | undefined = undefined;
-  let borderColor: string | undefined = undefined;
+  import type { ControlButtonProps } from './types';
+
+  type $$Props = ControlButtonProps;
+
+  let className: $$Props['class'] = undefined;
+  let bgColor: $$Props['bgColor'] = undefined;
+  let bgColorHover: $$Props['bgColorHover'] = undefined;
+  let color: $$Props['color'] = undefined;
+  let colorHover: $$Props['colorHover'] = undefined;
+  let borderColor: $$Props['borderColor'] = undefined;
 
   export { className as class };
 </script>

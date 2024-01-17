@@ -29,7 +29,7 @@ export { useConnection } from './hooks/useConnection';
 export { useNodeId } from './contexts/NodeIdContext';
 
 export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
-export { isNode, isEdge, getIncomers, getOutgoers, addEdge, updateEdge, getConnectedEdges } from './utils/general';
+export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
 
@@ -102,5 +102,10 @@ export {
   getStraightPath,
   getViewportForBounds,
   getNodesBounds,
+  getIncomers,
+  getOutgoers,
+  addEdge,
+  updateEdge,
+  getConnectedEdges,
   internalsSymbol,
 } from '@xyflow/system';

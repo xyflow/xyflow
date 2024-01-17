@@ -55,6 +55,7 @@ export function EdgeUpdateAnchors({
       onConnectEnd,
       cancelConnection,
       nodes,
+      rfId: flowId,
       panBy,
       updateConnection,
     } = store.getState();
@@ -85,6 +86,7 @@ export function EdgeUpdateAnchors({
       isTarget,
       edgeUpdaterType: handleType,
       lib,
+      flowId,
       cancelConnection,
       panBy,
       isValidConnection,

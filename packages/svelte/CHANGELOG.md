@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 0.0.34
+
+## Minor changes
+
+- add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
+- add slot to `Controls`
+- cleanup `ControlButton` types
+- infer types for `getIncomers`, `getOutgoers`, `updateEdge`, `addEdge` and `getConnectedEdges` thanks @joeyballentine
+- refactor handles: prefix with flow id for handling nested flows
+- add comments for types like `SvelteFlowProps` or `Node` for a better developer experience
+
 ## 0.0.33
 
 ### Bugfix

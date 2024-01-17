@@ -98,7 +98,7 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
  * @param edges -  The array of all current edges
  * @returns A new array of edges with the new edge added
  */
-export const addEdgeBase = <EdgeType extends EdgeBase>(
+export const addEdge = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
   edges: EdgeType[]
 ): EdgeType[] => {
@@ -145,7 +145,7 @@ export type UpdateEdgeOptions = {
  * @param options.shouldReplaceId - should the id of the old edge be replaced with the new connection id
  * @returns the updated edges array
  */
-export const updateEdgeBase = <EdgeType extends EdgeBase>(
+export const updateEdge = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
   newConnection: Connection,
   edges: EdgeType[],

@@ -27,6 +27,7 @@ export type OnPointerDownParams = {
   isTarget: boolean;
   nodes: NodeBase[];
   lib: string;
+  flowId: string | null;
   edgeUpdaterType?: HandleType;
   updateConnection: UpdateConnection;
   panBy: PanBy;
@@ -48,6 +49,7 @@ export type IsValidParams = {
   isValidConnection?: IsValidConnection;
   doc: Document | ShadowRoot;
   lib: string;
+  flowId: string | null;
 };
 
 export type XYHandleInstance = {
@@ -79,6 +81,7 @@ function onPointerDown(
     nodes,
     lib,
     autoPanOnConnect,
+    flowId,
     panBy,
     cancelConnection,
     onConnectStart,
@@ -169,6 +172,7 @@ function onPointerDown(
       isValidConnection,
       doc,
       lib,
+      flowId,
     });
 
     handleDomNode = result.handleDomNode;
@@ -251,12 +255,13 @@ function isValidHandle(
     fromType,
     doc,
     lib,
+    flowId,
     isValidConnection = alwaysValid,
   }: IsValidParams
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = doc.querySelector(
-    `.${lib}-flow__handle[data-id="${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
+    `.${lib}-flow__handle[data-id="${flowId}-${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
   );
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
