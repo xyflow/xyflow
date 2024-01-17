@@ -48,9 +48,9 @@ const DnDFlow = () => {
 
     if (reactFlowInstance) {
       const type = event.dataTransfer.getData('application/reactflow');
-      const position = reactFlowInstance.project({
+      const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
-        y: event.clientY - 40,
+        y: event.clientY,
       });
       const newNode: Node = {
         id: getId(),

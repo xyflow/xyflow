@@ -25,7 +25,7 @@ We want to make the migration for v12 as smooth as possible. That's why we added
 
 ### Minor Changes
 
-- [#3597](https://github.com/xyflow/xyflow/pull/3597) [`a114c75b`](https://github.com/xyflow/xyflow/commit/a114c75b79d1d7bd24937318119a824879fe0b54) Thanks - chore(utils): add renamed functions and deprecations, add `useReactFlow.flowToScreenPosition`
+- [#3597](https://github.com/xyflow/xyflow/pull/3597) [`a114c75b`](https://github.com/xyflow/xyflow/commit/a114c75b79d1d7bd24937318119a824879fe0b54) - chore(utils): add renamed functions and deprecations, add `useReactFlow.flowToScreenPosition`
 
 ### Patch Changes
 
