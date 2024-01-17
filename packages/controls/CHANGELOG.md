@@ -1,10 +1,17 @@
 # @reactflow/controls
 
-## 11.2.6
+## 11.2.7
 
 ### Patch Changes
 
 - Updated dependencies [[`59c44df5`](https://github.com/xyflow/xyflow/commit/59c44df5300a87aedde53393ac31b85f7fcbcaa0), [`814ae219`](https://github.com/xyflow/xyflow/commit/814ae219991804f4429a22f72b2774a372964153)]:
+  - @reactflow/core@11.10.2
+
+## 11.2.6
+
+### Patch Changes
+
+- Updated dependencies [[`e71dec26`](https://github.com/xyflow/xyflow/commit/e71dec263c8a8296d0a890c2fc7d0a5aac94f9e5)]:
   - @reactflow/core@11.10.1
 
 ## 11.2.5
