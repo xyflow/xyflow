@@ -4,9 +4,9 @@
   import { getContext } from 'svelte';
   import type { BaseEdgeProps } from '../BaseEdge/types';
 
-  export let labelStyle: BaseEdgeProps['labelStyle'] = undefined;
-  export let labelX: BaseEdgeProps['labelX'] = undefined;
-  export let labelY: BaseEdgeProps['labelY'] = undefined;
+  export let style: BaseEdgeProps['labelStyle'] = undefined;
+  export let x: BaseEdgeProps['labelX'] = undefined;
+  export let y: BaseEdgeProps['labelY'] = undefined;
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
@@ -16,8 +16,8 @@
 <EdgeLabelRenderer>
   <div
     class="svelte-flow__edge-label"
-    style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
-    style={'pointer-events: all;' + labelStyle}
+    style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
+    style={'pointer-events: all;' + style}
     on:click={() => {
       if (id) handleEdgeSelect(id);
     }}

@@ -18,7 +18,6 @@
   let className: $$Props['class'] = undefined;
   export { className as class };
 
-  // @todo, why is interactionWidth undefined after first re-render?
   let interactionWidthValue = interactionWidth === undefined ? 20 : interactionWidth;
 </script>
 
@@ -43,7 +42,7 @@
 {/if}
 
 {#if label}
-  <EdgeLabel {labelX} {labelY} {labelStyle}>
+  <EdgeLabel x={labelX} y={labelY} style={labelStyle}>
     {label}
   </EdgeLabel>
 {/if}
