@@ -1,7 +1,7 @@
 <script lang="ts">
   import cc from 'classcat';
-  import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
   import type { BaseEdgeProps } from './types';
+  import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
   type $$Props = BaseEdgeProps;
 
@@ -43,13 +43,7 @@
 {/if}
 
 {#if label}
-  <EdgeLabelRenderer>
-    <div
-      class="svelte-flow__edge-label"
-      style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
-      style={labelStyle}
-    >
-      {label}
-    </div>
-  </EdgeLabelRenderer>
+  <EdgeLabel {labelX} {labelY} {labelStyle}>
+    {label}
+  </EdgeLabel>
 {/if}
