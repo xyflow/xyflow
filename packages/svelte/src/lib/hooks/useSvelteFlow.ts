@@ -29,6 +29,10 @@ import { isNode } from '$lib/utils';
 export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
+  getNode: (id: string) => Node | undefined;
+  getNodes: (ids: string[]) => (Node | undefined)[];
+  getEdge: (id: string) => Edge | undefined;
+  getEdges: (ids: string[]) => (Edge | undefined)[];
   setZoom: (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
   getZoom: () => number;
   setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
@@ -82,7 +86,9 @@ export function useSvelteFlow(): {
     panZoom,
     nodes,
     edges,
-    domNode
+    domNode,
+    nodeLookup,
+    edgeLookup
   } = useStore();
 
   const getNodeRect = (
@@ -121,6 +127,10 @@ export function useSvelteFlow(): {
   return {
     zoomIn,
     zoomOut,
+    getNode: (id) => get(nodeLookup).get(id),
+    getNodes: (ids) => ids.map((id) => get(nodeLookup).get(id)),
+    getEdge: (id) => get(edgeLookup).get(id),
+    getEdges: (ids) => ids.map((id) => get(edgeLookup).get(id)),
     setZoom: (zoomLevel, options) => {
       get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
     },
