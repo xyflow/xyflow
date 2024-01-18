@@ -139,8 +139,8 @@
   }
 
   &.selected .xy-flow__edge-path,
-  &:focus .xy-flow__edge-path,
-  &:focus-visible .xy-flow__edge-path {
+  &.selectable:focus .xy-flow__edge-path,
+  &.selectable:focus-visible .xy-flow__edge-path {
     stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
   }
 
