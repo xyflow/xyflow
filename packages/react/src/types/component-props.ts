@@ -50,7 +50,7 @@ import type {
  * ReactFlow component props.
  * @public
  */
-export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
+export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
   /** An array of nodes to render in a controlled flow.
    * @example
    * const nodes = [
@@ -502,6 +502,6 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * @example 'system' | 'light' | 'dark'
    */
   colorMode?: ColorMode;
-};
+}
 
 export type ReactFlowRefType = HTMLDivElement;

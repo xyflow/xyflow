@@ -126,6 +126,10 @@
   // @todo implement connectablestart, connectableend
 </script>
 
+<!--
+@component
+The Handle component is the part of a node that can be used to connect nodes.
+-->
 <div
   data-handleid={handleId}
   data-nodeid={nodeId}
