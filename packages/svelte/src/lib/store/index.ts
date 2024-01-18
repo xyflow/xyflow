@@ -112,6 +112,10 @@ export function createStore({
     }
 
     store.nodes.set(nextNodes);
+
+    if (!get(store.nodesInitialized)) {
+      store.nodesInitialized.set(true);
+    }
   }
 
   function fitView(nodes: Node[], options?: FitViewOptions) {
@@ -354,6 +358,33 @@ export function createStore({
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
     ),
+    initialized: (() => {
+      console.log('This closure gets called');
+      let initialized = false;
+      const initialNodesLength = get(store.nodes).length;
+      const initialEdgesLength = get(store.edges).length;
+      return derived(
+        [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
+        ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
+          console.log('Get the derived store even called?');
+          // If it was already initialized once return true from then on
+          if (initialized) return initialized;
+
+          // if it hasn't been initialised check if is now
+          if (initialNodesLength === 0) {
+            initialized = viewportInitialized;
+            return initialized;
+          }
+          if (initialEdgesLength === 0) {
+            initialized = viewportInitialized && nodesInitialized;
+            return initialized;
+          }
+
+          initialized = viewportInitialized && nodesInitialized && edgesInitialized;
+          return initialized;
+        }
+      );
+    })(),
 
     // actions
     syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),

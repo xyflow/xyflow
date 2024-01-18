@@ -152,6 +152,10 @@ export const getInitialStore = ({
     onconnect: writable<OnConnect>(undefined),
     onconnectstart: writable<OnConnectStart>(undefined),
     onconnectend: writable<OnConnectEnd>(undefined),
-    onbeforedelete: writable<OnBeforeDelete>(undefined)
+    onbeforedelete: writable<OnBeforeDelete>(undefined),
+    nodesInitialized: writable<boolean>(false),
+    edgesInitialized: writable<boolean>(false),
+    viewportInitialized: writable<boolean>(false),
+    initialized: readable<boolean>(false)
   };
 };

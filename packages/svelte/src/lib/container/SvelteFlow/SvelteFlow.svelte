@@ -77,6 +77,7 @@
   export let onconnectstart: $$Props['onconnectstart'] = undefined;
   export let onconnectend: $$Props['onconnectend'] = undefined;
   export let onbeforedelete: $$Props['onbeforedelete'] = undefined;
+  export let oninit: $$Props['oninit'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -127,6 +128,16 @@
     if (clientWidth !== undefined && clientHeight !== undefined) {
       store.width.set(clientWidth);
       store.height.set(clientHeight);
+    }
+  }
+
+  // Call oninit once when flow is intialized
+  const { initialized } = store;
+  let onInitCalled = false;
+  $: {
+    if (!onInitCalled && $initialized) {
+      oninit?.();
+      onInitCalled = true;
     }
   }
 
