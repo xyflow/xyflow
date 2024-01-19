@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
@@ -46,33 +46,73 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     return edges.find((e) => e.id === id) as EdgeType;
   }, []);
 
-  // this is used to handle multiple syncronous setNodes calls
-  const setNodesData = useRef<Node[]>();
-  const setNodesTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const setNodesQueue = useRef<(NodeType[] | ((nodes: NodeType[]) => NodeType[]))[]>([]);
+  const setNodesHasStateReplacement = useRef(false);
+  const [setNodesShouldFlushNodesQueue, setSetNodesShouldFlushNodesQueue] = useState(false);
   const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
-    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
-    const nextNodes = typeof payload === 'function' ? payload((setNodesData.current as NodeType[]) || nodes) : payload;
+    if (typeof payload === 'function' && !setNodesHasStateReplacement.current) {
+      setNodesQueue.current.push(payload);
+      setSetNodesShouldFlushNodesQueue(true);
+    } else {
+      setNodesQueue.current = [payload];
+      setNodesHasStateReplacement.current = true;
+      setSetNodesShouldFlushNodesQueue(true);
+    }
+  }, []);
 
-    setNodesData.current = nextNodes;
+  useLayoutEffect(() => {
+    if (!setNodesShouldFlushNodesQueue) {
+      setNodesQueue.current = [];
+      setNodesHasStateReplacement.current = false;
 
-    if (setNodesTimeout.current) {
-      clearTimeout(setNodesTimeout.current);
+      return;
     }
 
-    // if there are multiple synchronous setNodes calls, we only want to call onNodesChange once
-    // for this, we use a timeout to wait for the last call and store updated nodes in setNodesData
-    // this is not perfect, but should work in most cases
-    setNodesTimeout.current = setTimeout(() => {
-      if (hasDefaultNodes) {
-        setNodes(nextNodes);
-      } else if (onNodesChange) {
-        const changes: NodeChange[] = getElementsDiffChanges({ items: setNodesData.current, lookup: nodeLookup });
-        onNodesChange(changes);
-      }
+    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
+    const nextNodes = setNodesQueue.current.reduce(
+      (prev: NodeType[], payload) => (typeof payload === 'function' ? payload(prev) : payload),
+      nodes as NodeType[]
+    );
 
-      setNodesData.current = undefined;
-    }, 0);
-  }, []);
+    if (hasDefaultNodes) {
+      setNodes(nextNodes);
+    } else if (onNodesChange) {
+      const changes: NodeChange[] = getElementsDiffChanges({ items: nextNodes, lookup: nodeLookup });
+      onNodesChange(changes);
+    }
+
+    setNodesQueue.current = [];
+    setNodesHasStateReplacement.current = false;
+    setSetNodesShouldFlushNodesQueue(false);
+  }, [setNodesShouldFlushNodesQueue]);
+
+  // // this is used to handle multiple syncronous setNodes calls
+  // const setNodesData = useRef<Node[]>();
+  // const setNodesTimeout = useRef<ReturnType<typeof setTimeout>>();
+  // const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
+  //   const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
+  //   const nextNodes = typeof payload === 'function' ? payload((setNodesData.current as NodeType[]) || nodes) : payload;
+
+  //   setNodesData.current = nextNodes;
+
+  //   if (setNodesTimeout.current) {
+  //     clearTimeout(setNodesTimeout.current);
+  //   }
+
+  //   // if there are multiple synchronous setNodes calls, we only want to call onNodesChange once
+  //   // for this, we use a timeout to wait for the last call and store updated nodes in setNodesData
+  //   // this is not perfect, but should work in most cases
+  //   setNodesTimeout.current = setTimeout(() => {
+  //     if (hasDefaultNodes) {
+  //       setNodes(nextNodes);
+  //     } else if (onNodesChange) {
+  //       const changes: NodeChange[] = getElementsDiffChanges({ items: setNodesData.current, lookup: nodeLookup });
+  //       onNodesChange(changes);
+  //     }
+
+  //     setNodesData.current = undefined;
+  //   }, 0);
+  // }, []);
 
   // this is used to handle multiple syncronous setEdges calls
   const setEdgesData = useRef<Edge[]>();
