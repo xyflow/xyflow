@@ -1,8 +1,8 @@
 <svelte:options immutable />
 
 <script lang="ts">
-  import cc from 'classcat';
   import { createEventDispatcher, setContext } from 'svelte';
+  import cc from 'classcat';
   import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';

@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { getContext } from 'svelte';
+
   import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
-  import { getContext } from 'svelte';
-  import type { BaseEdgeProps } from '../BaseEdge/types';
+  import type { BaseEdgeProps } from '$lib/components/BaseEdge/types';
 
   export let style: BaseEdgeProps['labelStyle'] = undefined;
   export let x: BaseEdgeProps['labelX'] = undefined;
