@@ -30,9 +30,9 @@ export function useSvelteFlow(): {
   zoomIn: ZoomInOut;
   zoomOut: ZoomInOut;
   getNode: (id: string) => Node | undefined;
-  getNodes: (ids?: string[]) => (Node | undefined)[];
+  getNodes: (ids?: string[]) => Node[];
   getEdge: (id: string) => Edge | undefined;
-  getEdges: (ids?: string[]) => (Edge | undefined)[];
+  getEdges: (ids?: string[]) => Edge[];
   setZoom: (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
   getZoom: () => number;
   setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
@@ -128,19 +128,9 @@ export function useSvelteFlow(): {
     zoomIn,
     zoomOut,
     getNode: (id) => get(nodeLookup).get(id),
-    getNodes: (ids) => {
-      if (!ids) {
-        return get(nodes);
-      }
-      return ids.map((id) => get(nodeLookup).get(id));
-    },
+    getNodes: (ids) => (ids === undefined ? get(nodes) : getElements(get(nodeLookup), ids)),
     getEdge: (id) => get(edgeLookup).get(id),
-    getEdges: (ids) => {
-      if (!ids) {
-        return get(edges);
-      }
-      return ids.map((id) => get(edgeLookup).get(id));
-    },
+    getEdges: (ids) => (ids === undefined ? get(edges) : getElements(get(edgeLookup), ids)),
     setZoom: (zoomLevel, options) => {
       get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
     },
@@ -314,4 +304,18 @@ export function useSvelteFlow(): {
     },
     viewport
   };
+}
+
+function getElements<EdgeOrNode>(lookup: Map<string, EdgeOrNode>, ids: string[]) {
+  const result = [];
+
+  for (const id of ids) {
+    const element = lookup.get(id);
+
+    if (element) {
+      result.push(element);
+    }
+  }
+
+  return result;
 }
