@@ -79,7 +79,6 @@ export {
   type OnError,
   type NodeProps,
   type NodeOrigin,
-  type OnNodeDrag,
   type OnSelectionDrag,
   Position,
   type XYPosition,

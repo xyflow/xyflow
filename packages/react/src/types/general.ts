@@ -19,7 +19,7 @@ import { ComponentType } from 'react';
 export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
 
-export type OnNodesDelete = (nodes: Node[]) => void;
+export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
 export type OnEdgesDelete = (edges: Edge[]) => void;
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 

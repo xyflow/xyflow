@@ -17,7 +17,6 @@ import {
   type PanBy,
   type OnConnectStart,
   type OnConnectEnd,
-  type OnNodeDrag,
   type OnSelectionDrag,
   type OnMoveStart,
   type OnMove,
@@ -43,6 +42,7 @@ import type {
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
   OnDelete,
+  OnNodeDrag,
 } from '.';
 
 export type ReactFlowStore = {
