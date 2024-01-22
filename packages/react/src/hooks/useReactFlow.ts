@@ -3,16 +3,7 @@ import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
-import type {
-  ReactFlowInstance,
-  Instance,
-  NodeAddChange,
-  EdgeAddChange,
-  Node,
-  Edge,
-  NodeChange,
-  EdgeChange,
-} from '../types';
+import type { ReactFlowInstance, Instance, Node, Edge } from '../types';
 import { getElementsDiffChanges, isNode } from '../utils';
 
 /**
