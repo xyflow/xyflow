@@ -17,6 +17,7 @@ export type DefaultEdge<EdgeData = any> = Omit<EdgeBase<EdgeData>, 'focusable'> 
   labelStyle?: string;
   style?: string;
   class?: string;
+  noDom?: boolean;
 };
 
 type SmoothStepEdgeType<T> = DefaultEdge<T> & {
@@ -99,6 +100,7 @@ export type EdgeLayouted = Pick<
   | 'hidden'
   | 'class'
   | 'zIndex'
+  | 'noDom'
 > &
   EdgePosition & {
     sourceNode?: Node;
