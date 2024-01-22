@@ -19,6 +19,9 @@
   --xy-controls-button-color-hover-default: inherit;
   --xy-controls-button-border-color-default: #eee;
   --xy-controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+
+  --xy-edge-label-background-color-default: #ffffff;
+  --xy-edge-label-color-default: inherit;
 }
 
 .xy-flow.dark {
@@ -41,6 +44,9 @@
   --xy-controls-button-color-hover-default: #fff;
   --xy-controls-button-border-color-default: #5b5b5b;
   --xy-controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
+
+  --xy-edge-label-background-color-default: #141414;
+  --xy-edge-label-color-default: #f8f8f8;
 }
 
 .xy-flow__edge {

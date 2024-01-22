@@ -186,6 +186,7 @@ export function EdgeWrapper({
             animated: edge.animated,
             inactive: !isSelectable && !onClick,
             updating: updateHover,
+            selectable: isSelectable,
           },
         ])}
         onClick={onEdgeClick}

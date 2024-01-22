@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.0.35
+
+## Minor changes
+
+- Edge label has a default background and is clickable
+
 ## 0.0.34
 
 ## Minor changes
