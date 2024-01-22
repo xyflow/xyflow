@@ -97,17 +97,7 @@ const createRFStore = ({
       // changes its dimensions, this function is called to measure the
       // new dimensions and update the nodes.
       updateNodeDimensions: (updates) => {
-        const {
-          onNodesChange,
-          fitView,
-          nodes,
-          nodeLookup,
-          fitViewOnInit,
-          fitViewDone,
-          fitViewOnInitOptions,
-          domNode,
-          nodeOrigin,
-        } = get();
+        const { onNodesChange, fitView, nodes, nodeLookup, fitViewScheduled, domNode, nodeOrigin } = get();
         const changes: NodeDimensionChange[] = [];
 
         const updatedNodes = updateNodeDimensionsSystem(
@@ -131,13 +121,18 @@ const createRFStore = ({
 
         const nextNodes = updateAbsolutePositions(updatedNodes, nodeLookup, nodeOrigin);
 
-        // we call fitView once initially after all dimensions are set
-        let nextFitViewDone = fitViewDone;
-        if (!fitViewDone && fitViewOnInit) {
-          nextFitViewDone = fitView(nextNodes, {
-            ...fitViewOnInitOptions,
-            nodes: fitViewOnInitOptions?.nodes || nextNodes,
-          });
+        let nextFitViewScheduled = fitViewScheduled;
+        if (fitViewScheduled) {
+          const fitViewOptions =
+            typeof fitViewScheduled === 'boolean'
+              ? { nodes: nextNodes }
+              : {
+                  ...fitViewScheduled,
+                  waitForInit: false,
+                  nodes: fitViewScheduled.nodes ?? nextNodes,
+                };
+          const fitViewDone = fitView(nextNodes, fitViewOptions);
+          if (fitViewDone) nextFitViewScheduled = false;
         }
 
         // here we are cirmumventing the onNodesChange handler
@@ -145,7 +140,7 @@ const createRFStore = ({
         // has not provided an onNodesChange handler.
         // Nodes are only rendered if they have a width and height
         // attribute which they get from this handler.
-        set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
+        set({ nodes: nextNodes, fitViewScheduled: nextFitViewScheduled });
 
         if (changes?.length > 0) {
           onNodesChange?.(changes);
@@ -306,6 +301,11 @@ const createRFStore = ({
 
         if (!panZoom) {
           return false;
+        }
+
+        if (options?.waitForInit) {
+          set({ fitViewScheduled: options });
+          return true; // TODO: what should be returned here
         }
 
         return fitViewSystem(

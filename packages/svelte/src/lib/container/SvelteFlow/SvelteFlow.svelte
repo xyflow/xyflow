@@ -102,11 +102,7 @@
     store.syncViewport(viewport);
 
     if (fitView !== undefined) {
-      store.fitViewOnInit.set(fitView);
-    }
-
-    if (fitViewOptions) {
-      store.fitViewOptions.set(fitViewOptions);
+      store.fitViewScheduled.set(fitViewOptions ?? true);
     }
 
     updateStore(store, {

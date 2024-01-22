@@ -90,6 +90,7 @@ export const getInitialStore = ({
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
+  // this is needed for SSR
   if (fitView && width && height) {
     const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
     const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
@@ -115,9 +116,7 @@ export const getInitialStore = ({
     translateExtent: writable<CoordinateExtent>(infiniteExtent),
     autoPanOnNodeDrag: writable<boolean>(true),
     autoPanOnConnect: writable<boolean>(true),
-    fitViewOnInit: writable<boolean>(false),
-    fitViewOnInitDone: writable<boolean>(false),
-    fitViewOptions: writable<FitViewOptions>(undefined),
+    fitViewScheduled: writable<boolean | FitViewOptions>(false),
     panZoom: writable<PanZoomInstance | null>(null),
     snapGrid: writable<SnapGrid | null>(null),
     dragging: writable<boolean>(false),

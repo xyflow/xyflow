@@ -136,8 +136,8 @@ export function StoreUpdater(props: StoreUpdaterProps) {
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         // Renamed fields
-        else if (fieldName === 'fitView') store.setState({ fitViewOnInit: fieldValue as boolean });
-        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOnInitOptions: fieldValue as FitViewOptions });
+        else if (fieldName === 'fitView') store.setState({ fitViewScheduled: fieldValue as boolean });
+        else if (fieldName === 'fitViewOptions') store.setState({ fitViewScheduled: fieldValue as FitViewOptions });
         // General case
         else store.setState({ [fieldName]: fieldValue });
       }

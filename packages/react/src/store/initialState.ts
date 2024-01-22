@@ -84,9 +84,7 @@ const getInitialState = ({
     elementsSelectable: true,
     elevateNodesOnSelect: true,
     elevateEdgesOnSelect: false,
-    fitViewOnInit: false,
-    fitViewDone: false,
-    fitViewOnInitOptions: undefined,
+    fitViewScheduled: false,
     selectNodesOnDrag: true,
 
     multiSelectionActive: false,
