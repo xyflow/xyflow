@@ -13,15 +13,6 @@ export function useNodesInitialized() {
 }
 
 /**
- * Hook for seeing if edges are initialized
- * @returns - edgesInitialized Writable
- */
-export function useEdgesInitialized() {
-  const { edgesInitialized } = useStore();
-  return edgesInitialized;
-}
-
-/**
  * Hook for seeing if the flow is initialized
  * @returns - initialized Writable
  */
