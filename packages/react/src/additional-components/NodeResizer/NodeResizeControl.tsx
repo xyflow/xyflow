@@ -1,6 +1,12 @@
 import { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
-import { XYResizer, ResizeControlVariant, type XYResizerInstance, type XYResizerChange } from '@xyflow/system';
+import {
+  XYResizer,
+  ResizeControlVariant,
+  type XYResizerInstance,
+  type XYResizerChange,
+  XYResizerChildChange,
+} from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
@@ -52,7 +58,7 @@ function ResizeControl({
             snapToGrid,
           };
         },
-        onChange: (change: XYResizerChange) => {
+        onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           const { triggerNodeChanges } = store.getState();
 
           const changes: NodeChange[] = [];
@@ -83,6 +89,17 @@ function ResizeControl({
 
             changes.push(dimensionChange);
           }
+
+          childChanges.forEach((childChange) => {
+            const positionChange: NodePositionChange = {
+              id: childChange.id,
+              type: 'position',
+              position: childChange.position,
+            };
+
+            changes.push(positionChange);
+          });
+
           triggerNodeChanges(changes);
         },
         onEnd: () => {

@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getPositionAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
-import type { NodeLookup, Transform } from '../types';
+import type { NodeBase, NodeLookup, Transform } from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
@@ -28,6 +28,14 @@ const initChange = {
 
 export type XYResizerChange = typeof initChange;
 
+export type XYResizerChildChange = {
+  id: string;
+  position: {
+    x: number;
+    y: number;
+  };
+};
+
 type XYResizerParams = {
   domNode: HTMLDivElement;
   nodeId: string;
@@ -37,7 +45,7 @@ type XYResizerParams = {
     snapGrid?: [number, number];
     snapToGrid: boolean;
   };
-  onChange: (changes: XYResizerChange) => void;
+  onChange: (changes: XYResizerChange, childChanges: XYResizerChildChange[]) => void;
   onEnd?: () => void;
 };
 
@@ -78,6 +86,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
     const controlDirection = getControlDirection(controlPosition);
 
+    let childNodes: XYResizerChildChange[] = [];
+
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
         const { nodeLookup, transform, snapGrid, snapToGrid } = getStoreItems();
@@ -98,12 +108,23 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           aspectRatio: prevValues.width / prevValues.height,
         };
 
+        childNodes = [];
+        nodeLookup.forEach((_node, _nodeId) => {
+          if (_node.parentNode === nodeId) {
+            childNodes.push({
+              id: _nodeId,
+              position: { ..._node.position },
+            });
+          }
+        });
         onResizeStart?.(event, { ...prevValues });
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { nodeLookup, transform, snapGrid, snapToGrid } = getStoreItems();
         const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         const node = nodeLookup.get(nodeId);
+
+        let childChanges: XYResizerChildChange[] = [];
 
         if (node) {
           const change = { ...initChange };
@@ -136,6 +157,18 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
               prevValues.x = change.x;
               prevValues.y = change.y;
+            }
+
+            if (childNodes.length > 0) {
+              const xChange = x - prevX;
+              const yChange = y - prevY;
+              childNodes.forEach((childNode) => {
+                childNode.position = {
+                  x: childNode.position.x - xChange,
+                  y: childNode.position.y - yChange,
+                };
+                childChanges.push(childNode);
+              });
             }
           }
 
@@ -170,7 +203,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           }
 
           onResize?.(event, nextValues);
-          onChange(change);
+          onChange(change, childChanges);
         }
       })
       .on('end', (event: ResizeDragEvent) => {
