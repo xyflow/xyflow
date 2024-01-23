@@ -5,24 +5,32 @@ import {
   Controls,
   addEdge,
   Node,
-  ReactFlowInstance,
   Position,
   SnapGrid,
-  Connection,
-  useNodesState,
   useEdgesState,
   Background,
   Edge,
+  OnNodeDrag,
+  OnInit,
+  applyNodeChanges,
+  OnNodesChange,
+  OnConnect,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
 
-const onInit = (reactFlowInstance: ReactFlowInstance) => {
+export type ColorSelectorNode = Node<
+  { color: string; onChange: (event: ChangeEvent<HTMLInputElement>) => void },
+  'selectorNode'
+>;
+export type MyNode = Node | ColorSelectorNode;
+
+const onInit: OnInit<MyNode> = (reactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
 };
 
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+const onNodeDragStop: OnNodeDrag<MyNode> = (_, node) => console.log('drag stop', node);
+const onNodeClick = (_: MouseEvent, node: MyNode) => console.log('click', node);
 
 const initBgColor = '#1A192B';
 
@@ -34,7 +42,16 @@ const nodeTypes = {
 };
 
 const CustomNodeFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [nodes, setNodes] = useState<MyNode[]>([]);
+  const onNodesChange: OnNodesChange = useCallback(
+    (changes) =>
+      setNodes((nds) => {
+        const nextNodes = applyNodeChanges(changes, nds);
+        return nextNodes;
+      }),
+    [setNodes]
+  );
+
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const [bgColor, setBgColor] = useState<string>(initBgColor);
@@ -120,9 +137,8 @@ const CustomNodeFlow = () => {
     ]);
   }, []);
 
-  const onConnect = useCallback(
-    (connection: Connection) =>
-      setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds)),
+  const onConnect: OnConnect = useCallback(
+    (connection) => setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds)),
     [setEdges]
   );
 
@@ -145,14 +161,14 @@ const CustomNodeFlow = () => {
       maxZoom={2}
     >
       <MiniMap
-        nodeStrokeColor={(n: Node): string => {
+        nodeStrokeColor={(n: MyNode): string => {
           if (n.type === 'input') return '#0041d0';
           if (n.type === 'selectorNode') return bgColor;
           if (n.type === 'output') return '#ff0072';
 
           return '#eee';
         }}
-        nodeColor={(n: Node): string => {
+        nodeColor={(n: MyNode): string => {
           if (n.type === 'selectorNode') return bgColor;
 
           return '#fff';

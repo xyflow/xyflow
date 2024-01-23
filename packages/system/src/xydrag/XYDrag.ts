@@ -23,7 +23,6 @@ import type {
   SnapGrid,
   Transform,
   PanBy,
-  OnNodeDrag,
   OnSelectionDrag,
   UpdateNodePositions,
   Box,
@@ -31,7 +30,7 @@ import type {
 
 export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBase, nodes: NodeBase[]) => void;
 
-type StoreItems = {
+type StoreItems<OnNodeDrag> = {
   nodes: NodeBase[];
   nodeLookup: Map<string, NodeBase>;
   edges: EdgeBase[];
@@ -58,9 +57,9 @@ type StoreItems = {
   updateNodePositions: UpdateNodePositions;
 };
 
-export type XYDragParams = {
+export type XYDragParams<OnNodeDrag> = {
   domNode: Element;
-  getStoreItems: () => StoreItems;
+  getStoreItems: () => StoreItems<OnNodeDrag>;
   onDragStart?: OnDrag;
   onDrag?: OnDrag;
   onDragStop?: OnDrag;
@@ -80,14 +79,15 @@ export type DragUpdateParams = {
   domNode: Element;
 };
 
-export function XYDrag({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => void | undefined>({
   domNode,
   onNodeMouseDown,
   getStoreItems,
   onDragStart,
   onDrag,
   onDragStop,
-}: XYDragParams): XYDragInstance {
+}: XYDragParams<OnNodeDrag>): XYDragInstance {
   let lastPos: { x: number | null; y: number | null } = { x: null, y: null };
   let autoPanId = 0;
   let dragItems: NodeDragItem[] = [];
