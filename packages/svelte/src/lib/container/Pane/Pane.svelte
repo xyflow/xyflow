@@ -73,7 +73,8 @@
   let selectedNodes: Node[] = [];
 
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
-  $: isSelecting = $selectionKeyPressed || (selectionOnDrag && _panOnDrag !== true);
+  $: isSelecting =
+    $selectionKeyPressed || $selectionRect || (selectionOnDrag && _panOnDrag !== true);
   $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
 
   function onClick(event: MouseEvent | TouchEvent) {
