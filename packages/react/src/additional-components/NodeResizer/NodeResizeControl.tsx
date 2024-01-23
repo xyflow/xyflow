@@ -92,9 +92,8 @@ function ResizeControl({
 
           childChanges.forEach((childChange) => {
             const positionChange: NodePositionChange = {
-              id: childChange.id,
+              ...childChange,
               type: 'position',
-              position: childChange.position,
             };
 
             changes.push(positionChange);
