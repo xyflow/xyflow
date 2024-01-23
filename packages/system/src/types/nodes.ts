@@ -94,9 +94,9 @@ export type NodeProps<T = any> = {
   positionAbsoluteY: number;
   width?: number;
   height?: number;
-  dragging: boolean;
-  targetPosition?: Position;
-  sourcePosition?: Position;
+  dragging: NodeBase['dragging'];
+  sourcePosition?: NodeBase['sourcePosition'];
+  targetPosition?: NodeBase['targetPosition'];
 };
 
 export type NodeHandleBounds = {
@@ -133,8 +133,6 @@ export type NodeDragItem = {
 };
 
 export type NodeOrigin = [number, number];
-
-export type OnNodeDrag = (event: MouseEvent, node: NodeBase, nodes: NodeBase[]) => void;
 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 

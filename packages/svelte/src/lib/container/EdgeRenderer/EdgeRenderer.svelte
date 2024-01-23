@@ -9,7 +9,6 @@
   export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
   const {
-    elementsSelectable,
     visibleEdges,
     edgesInitialized,
     edges: { setDefaultOptions }
@@ -26,11 +25,6 @@
   </svg>
 
   {#each $visibleEdges as edge (edge.id)}
-    {@const edgeType = edge.type || 'default'}
-    {@const selectable = !!(
-      edge.selectable ||
-      ($elementsSelectable && typeof edge.selectable === 'undefined')
-    )}
     <EdgeWrapper
       id={edge.id}
       source={edge.source}
@@ -55,9 +49,8 @@
       ariaLabel={edge.ariaLabel}
       interactionWidth={edge.interactionWidth}
       class={edge.class}
-      type={edgeType}
+      type={edge.type || 'default'}
       zIndex={edge.zIndex}
-      {selectable}
       on:edgeclick
       on:edgecontextmenu
     />

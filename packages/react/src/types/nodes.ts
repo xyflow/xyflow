@@ -3,11 +3,11 @@ import type { CoordinateExtent, NodeBase, NodeOrigin, OnError } from '@xyflow/sy
 
 import { NodeTypes } from './general';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 /**
  * The node data structure that gets used for the nodes prop.
  * @public
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
   NodeData,
   NodeType
@@ -18,9 +18,13 @@ export type Node<NodeData = any, NodeType extends string | undefined = string | 
   focusable?: boolean;
 };
 
-export type NodeMouseHandler = (event: ReactMouseEvent, node: Node) => void;
-export type NodeDragHandler = (event: ReactMouseEvent, node: Node, nodes: Node[]) => void;
-export type SelectionDragHandler = (event: ReactMouseEvent, nodes: Node[]) => void;
+export type NodeMouseHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, node: NodeType) => void;
+export type SelectionDragHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, nodes: NodeType[]) => void;
+export type OnNodeDrag<NodeType extends Node = Node> = (
+  event: ReactMouseEvent,
+  node: NodeType,
+  nodes: NodeType[]
+) => void;
 
 export type NodeWrapperProps = {
   id: string;

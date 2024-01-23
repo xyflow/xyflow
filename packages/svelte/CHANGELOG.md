@@ -1,11 +1,25 @@
 # @xyflow/svelte
 
+## 0.0.35
+
+## Minor changes
+
+- add `getNode`, `getNodes`, `getEdge` and `getEdges` to `useSvelteFlow`
+
+## Patch changes
+
+- Edge label has a default background and is clickable
+- refactor(handles): do not use fallback handle if an id is being used #3409
+
 ## 0.0.34
 
 ## Minor changes
 
 - add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
 - add slot to `Controls`
+
+## Patch changes
+
 - cleanup `ControlButton` types
 - infer types for `getIncomers`, `getOutgoers`, `updateEdge`, `addEdge` and `getConnectedEdges` thanks @joeyballentine
 - refactor handles: prefix with flow id for handling nested flows
@@ -42,7 +56,7 @@
 - add `onbeforedelete` handler to prevent/ manage deletions
 - TSDocs for hooks and some types 
 
-### Minor changes
+### Patch changes
 
 - new nodeDragThreshold default is 1
 - refactor/simplify edge rendering

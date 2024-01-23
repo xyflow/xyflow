@@ -22,7 +22,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 
-export type HandleComponentProps = HandleProps & Omit<HTMLAttributes<HTMLDivElement>, 'id'>;
+export interface HandleComponentProps extends HandleProps, Omit<HTMLAttributes<HTMLDivElement>, 'id'> {}
 
 const selector = (s: ReactFlowState) => ({
   connectOnClick: s.connectOnClick,
@@ -221,4 +221,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
 
 HandleComponent.displayName = 'Handle';
 
+/**
+ * The Handle component is the part of a node that can be used to connect nodes.
+ */
 export const Handle = memo(HandleComponent);

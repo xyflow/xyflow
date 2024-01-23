@@ -142,7 +142,7 @@ export type ColorMode = ColorModeClass | 'system';
 
 export type ConnectionLookup = Map<string, Map<string, Connection>>;
 
-export type OnBeforeDelete = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
+export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = ({
   nodes,
   edges,
 }: {
