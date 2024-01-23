@@ -359,28 +359,24 @@ export function createStore({
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
     ),
     initialized: (() => {
-      console.log('This closure gets called');
       let initialized = false;
       const initialNodesLength = get(store.nodes).length;
       const initialEdgesLength = get(store.edges).length;
       return derived(
         [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
         ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
-          console.log('Get the derived store even called?');
-          // If it was already initialized once return true from then on
+          // If it was already initialized, return true from then on
           if (initialized) return initialized;
 
-          // if it hasn't been initialised check if is now
+          // if it hasn't been initialised check if it's now
           if (initialNodesLength === 0) {
             initialized = viewportInitialized;
-            return initialized;
-          }
-          if (initialEdgesLength === 0) {
+          } else if (initialEdgesLength === 0) {
             initialized = viewportInitialized && nodesInitialized;
-            return initialized;
+          } else {
+            initialized = viewportInitialized && nodesInitialized && edgesInitialized;
           }
 
-          initialized = viewportInitialized && nodesInitialized && edgesInitialized;
           return initialized;
         }
       );
