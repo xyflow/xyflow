@@ -4,6 +4,7 @@
 
 ### Patch changes
 
+- selection box is not interrupted by selectionKey being let go
 - fix `OnNodeDrag` type
 
 ## 12.0.0-next.7

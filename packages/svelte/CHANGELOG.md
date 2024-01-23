@@ -8,6 +8,7 @@
 
 ## Patch changes
 
+- selection box is not interrupted by selectionKey being let go
 - Edge label has a default background and is clickable
 
 ## 0.0.34
