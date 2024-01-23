@@ -7,7 +7,6 @@ import {
   Node,
   Position,
   SnapGrid,
-  Connection,
   useEdgesState,
   Background,
   Edge,
@@ -15,6 +14,7 @@ import {
   OnInit,
   applyNodeChanges,
   OnNodesChange,
+  OnConnect,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -137,9 +137,8 @@ const CustomNodeFlow = () => {
     ]);
   }, []);
 
-  const onConnect = useCallback(
-    (connection: Connection) =>
-      setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds)),
+  const onConnect: OnConnect = useCallback(
+    (connection) => setEdges((eds) => addEdge({ ...connection, animated: true, style: { stroke: '#fff' } }, eds)),
     [setEdges]
   );
 
