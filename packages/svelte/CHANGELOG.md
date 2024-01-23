@@ -9,6 +9,7 @@
 ## Patch changes
 
 - Edge label has a default background and is clickable
+- refactor(handles): do not use fallback handle if an id is being used #3409
 
 ## 0.0.34
 
