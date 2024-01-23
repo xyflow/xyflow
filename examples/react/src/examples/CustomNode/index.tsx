@@ -15,6 +15,7 @@ import {
   applyNodeChanges,
   OnNodesChange,
   OnConnect,
+  OnBeforeDelete,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -142,6 +143,8 @@ const CustomNodeFlow = () => {
     [setEdges]
   );
 
+  const onBeforeDelete: OnBeforeDelete<MyNode> = useCallback(async (params) => true, []);
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -159,6 +162,7 @@ const CustomNodeFlow = () => {
       fitView
       minZoom={0.3}
       maxZoom={2}
+      onBeforeDelete={onBeforeDelete}
     >
       <MiniMap
         nodeStrokeColor={(n: MyNode): string => {

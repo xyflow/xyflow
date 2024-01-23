@@ -22,7 +22,7 @@ import {
   NodeDragItem,
   CoordinateExtent,
   OnError,
-  OnBeforeDelete,
+  OnBeforeDeleteBase,
 } from '../types';
 import { errorMessages } from '../constants';
 
@@ -347,7 +347,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edgesToRemove: Partial<EdgeType>[];
   nodes: NodeType[];
   edges: EdgeType[];
-  onBeforeDelete?: OnBeforeDelete;
+  onBeforeDelete?: OnBeforeDeleteBase<NodeType, EdgeType>;
 }): Promise<{
   nodes: NodeType[];
   edges: EdgeType[];

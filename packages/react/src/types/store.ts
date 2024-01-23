@@ -26,7 +26,6 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
-  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -43,6 +42,7 @@ import type {
   UnselectNodesAndEdgesParams,
   OnDelete,
   OnNodeDrag,
+  OnBeforeDelete,
 } from '.';
 
 export type ReactFlowStore = {

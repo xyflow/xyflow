@@ -5,7 +5,8 @@ import type {
   Position,
   XYPosition,
   ConnectingHandle,
-  Connection
+  Connection,
+  OnBeforeDeleteBase
 } from '@xyflow/system';
 
 import type { Node } from './nodes';
@@ -52,3 +53,7 @@ export type FitViewOptions = FitViewOptionsBase<Node>;
 
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;
+export type OnBeforeDelete<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = OnBeforeDeleteBase<NodeType, EdgeType>;

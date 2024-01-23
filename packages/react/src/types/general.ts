@@ -11,6 +11,7 @@ import {
   FitBounds,
   XYPosition,
   NodeProps,
+  OnBeforeDeleteBase,
 } from '@xyflow/system';
 
 import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
@@ -59,3 +60,8 @@ export type ViewportHelperFunctions = {
   flowToScreenPosition: (position: XYPosition) => XYPosition;
   viewportInitialized: boolean;
 };
+
+export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OnBeforeDeleteBase<
+  NodeType,
+  EdgeType
+>;

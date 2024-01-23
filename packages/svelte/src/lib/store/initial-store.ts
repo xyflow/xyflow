@@ -23,7 +23,6 @@ import {
   type OnConnectStart,
   type OnConnectEnd,
   type NodeLookup,
-  type OnBeforeDelete,
   type EdgeLookup
 } from '@xyflow/system';
 
@@ -47,7 +46,8 @@ import type {
   Edge,
   FitViewOptions,
   OnDelete,
-  OnEdgeCreate
+  OnEdgeCreate,
+  OnBeforeDelete
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';

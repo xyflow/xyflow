@@ -21,7 +21,6 @@ import type {
   IsValidConnection,
   ColorMode,
   SnapGrid,
-  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -44,6 +43,7 @@ import type {
   SelectionDragHandler,
   EdgeMouseHandler,
   OnNodeDrag,
+  OnBeforeDelete,
 } from '.';
 
 /**
