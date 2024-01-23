@@ -5,6 +5,7 @@
 ### Patch changes
 
 - fix `OnNodeDrag` type
+- refactor(handles): do not use fallback handle if an id is being used #3409
 
 ## 12.0.0-next.7
 
