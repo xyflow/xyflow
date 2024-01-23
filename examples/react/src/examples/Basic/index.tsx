@@ -10,9 +10,10 @@ import {
   Edge,
   useReactFlow,
   Panel,
+  OnNodeDrag,
 } from '@xyflow/react';
 
-const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
+const onNodeDrag: OnNodeDrag = (_, node) => console.log('drag', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 

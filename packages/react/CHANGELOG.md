@@ -1,19 +1,28 @@
 # @xyflow/react
 
+## 12.0.0-next.8
+
+### Patch changes
+
+- fix `OnNodeDrag` type
+
 ## 12.0.0-next.7
 
 ## Minor changes
 
-- pass Node/Edge types to changes thanks @FelipeEmos
-- use position instead of positionAbsolute for `getNodesBounds`
 - add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
+
+### Patch changes
+
+- pass `Node`/ `Edge` types to changes thanks @FelipeEmos
+- use position instead of positionAbsolute for `getNodesBounds`
 - infer types for `getIncomers`, `getOutgoers`, `updateEdge`, `addEdge` and `getConnectedEdges` thanks @joeyballentine
 - refactor handles: prefix with flow id for handling nested flows
 - add comments for types like `ReactFlowProps` or `Node` for a better developer experience
 
 ## 12.0.0-next.6
 
-### Minor changes
+### Patch changes
 
 - fix `deleteElements`
 - refactor internal `applyChanges`

@@ -15,7 +15,6 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  type NodeBase,
   type NodeDragItem,
   errorMessages
 } from '@xyflow/system';
@@ -67,7 +66,7 @@ export function createStore({
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes.update((nds) => {
       return nds.map((node) => {
-        const nodeDragItem = (nodeDragItems as Array<NodeBase | NodeDragItem>).find(
+        const nodeDragItem = (nodeDragItems as Array<Node | NodeDragItem>).find(
           (ndi) => ndi.id === node.id
         );
 

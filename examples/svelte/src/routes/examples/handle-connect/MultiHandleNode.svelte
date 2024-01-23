@@ -43,10 +43,8 @@
 	export let zIndex: $$Props['zIndex'] = undefined;
 	export let dragging: $$Props['dragging'] = false;
 	export let dragHandle: $$Props['dragHandle'] = undefined;
-	export let positionAbsolute: $$Props['positionAbsolute'] = {
-		x: 0,
-		y: 0
-	};
+	export let positionAbsoluteX: $$Props['positionAbsoluteX'] = 0;
+	export let positionAbsoluteY: $$Props['positionAbsoluteY'] = 0;
 	export let isConnectable: $$Props['isConnectable'] = undefined;
 
 	data;
@@ -59,7 +57,8 @@
 	zIndex;
 	dragging;
 	dragHandle;
-	positionAbsolute;
+	positionAbsoluteX;
+	positionAbsoluteY;
 	isConnectable;
 </script>
 
