@@ -12,9 +12,15 @@ const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) =>
     return false;
   }
 
-  return s.nodes
-    .filter((n) => (options.includeHiddenNodes ? true : !n.hidden))
-    .every((n) => n[internalsSymbol]?.handleBounds !== undefined);
+  for (const node of s.nodes) {
+    if (options.includeHiddenNodes || !node.hidden) {
+      if (node[internalsSymbol]?.handleBounds === undefined) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 };
 
 const defaultOptions = {

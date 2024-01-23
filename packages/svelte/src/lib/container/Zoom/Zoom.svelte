@@ -4,6 +4,7 @@
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
+  import { onMount } from 'svelte';
 
   type $$Props = ZoomProps;
 
@@ -29,12 +30,17 @@
     translateExtent,
     lib,
     panActivationKeyPressed,
-    zoomActivationKeyPressed
+    zoomActivationKeyPressed,
+    viewportInitialized
   } = useStore();
 
   $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
   $: _panOnScroll = $panActivationKeyPressed || panOnScroll;
+
+  onMount(() => {
+    $viewportInitialized = true;
+  });
 </script>
 
 <div

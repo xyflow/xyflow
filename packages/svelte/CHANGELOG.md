@@ -5,6 +5,7 @@
 ## Minor changes
 
 - add `getNode`, `getNodes`, `getEdge` and `getEdges` to `useSvelteFlow`
+- add `useInitialized` / `useNNodesInitialized` hooks and `oninit` handler
 
 ## Patch changes
 
