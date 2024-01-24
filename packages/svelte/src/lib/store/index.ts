@@ -63,7 +63,7 @@ export function createStore({
     store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
-  const updateNodePositions: UpdateNodePositions = (nodeDragItems, _, dragging = false) => {
+  const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     const nodeLookup = get(store.nodeLookup);
 
     nodeDragItems.forEach((nodeDragItem) => {

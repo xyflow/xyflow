@@ -3,6 +3,7 @@ import { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
 
 export function handleParentExpand(updatedElements: any[], updateItem: any) {
+  console.log(updatedElements, updateItem);
   for (const [index, item] of updatedElements.entries()) {
     if (item.id === updateItem.parentNode) {
       const parent = { ...item };
@@ -106,7 +107,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     const updatedElement = { ...element };
 
     for (const change of changes) {
-      applyChange(change, updatedElement, elements);
+      applyChange(change, updatedElement, updatedElements);
     }
 
     updatedElements.push(updatedElement);

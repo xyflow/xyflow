@@ -164,7 +164,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         return;
       }
 
-      updateNodePositions(dragItems, true, true);
+      updateNodePositions(dragItems, true);
       const onNodeOrSelectionDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 
       if (dragEvent && (onDrag || onNodeOrSelectionDrag)) {
@@ -296,7 +296,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
           const onNodeOrSelectionDragStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
 
-          updateNodePositions(dragItems, false, false);
+          updateNodePositions(dragItems, false);
 
           if (onDragStop || onNodeOrSelectionDragStop) {
             const [currentNode, currentNodes] = getEventHandlerParams({
