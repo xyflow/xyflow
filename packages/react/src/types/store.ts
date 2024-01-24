@@ -45,17 +45,17 @@ import type {
   OnBeforeDelete,
 } from '.';
 
-export type ReactFlowStore = {
+export type ReactFlowStore<NodeType extends Node> = {
   rfId: string;
   width: number;
   height: number;
   transform: Transform;
-  nodes: Node[];
-  nodeLookup: NodeLookup<Node>;
+  nodes: NodeType[];
+  nodeLookup: NodeLookup<NodeType>;
   edges: Edge[];
   edgeLookup: EdgeLookup<Edge>;
   connectionLookup: ConnectionLookup;
-  onNodesChange: OnNodesChange | null;
+  onNodesChange: OnNodesChange<NodeType> | null;
   onEdgesChange: OnEdgesChange | null;
   hasDefaultNodes: boolean;
   hasDefaultEdges: boolean;
@@ -98,9 +98,9 @@ export type ReactFlowStore = {
   connectionEndHandle: ConnectingHandle | null;
   connectionClickStartHandle: ConnectingHandle | null;
 
-  onNodeDragStart?: OnNodeDrag;
-  onNodeDrag?: OnNodeDrag;
-  onNodeDragStop?: OnNodeDrag;
+  onNodeDragStart?: OnNodeDrag<NodeType>;
+  onNodeDrag?: OnNodeDrag<NodeType>;
+  onNodeDragStop?: OnNodeDrag<NodeType>;
 
   onSelectionDragStart?: OnSelectionDrag;
   onSelectionDrag?: OnSelectionDrag;
@@ -147,10 +147,10 @@ export type ReactFlowStore = {
   lib: string;
 };
 
-export type ReactFlowActions = {
-  setNodes: (nodes: Node[]) => void;
+export type ReactFlowActions<NodeType extends Node> = {
+  setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: Edge[]) => void;
-  setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
+  setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
@@ -164,9 +164,9 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection;
   reset: () => void;
-  triggerNodeChanges: (changes: NodeChange[]) => void;
+  triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   panBy: PanBy;
-  fitView: (nodes: Node[], options?: FitViewOptions) => boolean;
+  fitView: (nodes: NodeType[], options?: FitViewOptions) => boolean;
 };
 
-export type ReactFlowState = ReactFlowStore & ReactFlowActions;
+export type ReactFlowState<NodeType extends Node = Node> = ReactFlowStore<NodeType> & ReactFlowActions<NodeType>;

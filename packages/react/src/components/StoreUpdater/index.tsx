@@ -68,7 +68,9 @@ const reactFlowFieldsToTrack = [
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];
-type StoreUpdaterProps = Pick<ReactFlowProps, ReactFlowFieldsToTrack> & { rfId: string };
+type StoreUpdaterProps<NodeType extends Node = Node> = Pick<ReactFlowProps<NodeType>, ReactFlowFieldsToTrack> & {
+  rfId: string;
+};
 
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
 const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
@@ -84,7 +86,7 @@ const selector = (s: ReactFlowState) => ({
   reset: s.reset,
 });
 
-export function StoreUpdater(props: StoreUpdaterProps) {
+export function StoreUpdater<NodeType extends Node = Node>(props: StoreUpdaterProps<NodeType>) {
   const {
     setNodes,
     setEdges,
@@ -106,7 +108,7 @@ export function StoreUpdater(props: StoreUpdaterProps) {
     };
   }, []);
 
-  const previousFields = useRef<Partial<StoreUpdaterProps>>({
+  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType>>>({
     // these are values that are also passed directly to other components
     // than the StoreUpdater. We can reduce the number of setStore calls
     // by setting the same values here as prev fields.

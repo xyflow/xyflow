@@ -8,15 +8,15 @@ import { useOnInitHandler } from '../../hooks/useOnInitHandler';
 import { useViewportSync } from '../../hooks/useViewportSync';
 import { ConnectionLineWrapper } from '../../components/ConnectionLine';
 import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
-import type { ReactFlowProps } from '../../types';
+import type { Node, ReactFlowProps } from '../../types';
 
-export type GraphViewProps = Omit<
-  ReactFlowProps,
+export type GraphViewProps<NodeType extends Node = Node> = Omit<
+  ReactFlowProps<NodeType>,
   'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd' | 'elevateEdgesOnSelect'
 > &
   Required<
     Pick<
-      ReactFlowProps,
+      ReactFlowProps<NodeType>,
       | 'selectionKeyCode'
       | 'deleteKeyCode'
       | 'multiSelectionKeyCode'
@@ -38,7 +38,7 @@ export type GraphViewProps = Omit<
     rfId: string;
   };
 
-function GraphViewComponent({
+function GraphViewComponent<NodeType extends Node = Node>({
   nodeTypes,
   edgeTypes,
   onInit,
@@ -102,7 +102,7 @@ function GraphViewComponent({
   rfId,
   viewport,
   onViewportChange,
-}: GraphViewProps) {
+}: GraphViewProps<NodeType>) {
   useNodeOrEdgeTypesWarning(nodeTypes);
   useNodeOrEdgeTypesWarning(edgeTypes);
 
@@ -110,7 +110,7 @@ function GraphViewComponent({
   useViewportSync(viewport);
 
   return (
-    <FlowRenderer
+    <FlowRenderer<NodeType>
       onPaneClick={onPaneClick}
       onPaneMouseEnter={onPaneMouseEnter}
       onPaneMouseMove={onPaneMouseMove}
@@ -174,7 +174,7 @@ function GraphViewComponent({
         />
         <div className="react-flow__edgelabel-renderer" />
         <div className="react-flow__viewport-portal" />
-        <NodeRenderer
+        <NodeRenderer<NodeType>
           nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}
           onNodeDoubleClick={onNodeDoubleClick}
@@ -197,4 +197,4 @@ function GraphViewComponent({
 
 GraphViewComponent.displayName = 'GraphView';
 
-export const GraphView = memo(GraphViewComponent);
+export const GraphView = memo(GraphViewComponent) as typeof GraphViewComponent;

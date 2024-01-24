@@ -17,9 +17,9 @@ import { useDrag } from '../../hooks/useDrag';
 import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes } from './utils';
-import type { NodeWrapperProps } from '../../types';
+import type { Node, NodeWrapperProps } from '../../types';
 
-export function NodeWrapper({
+export function NodeWrapper<NodeType extends Node>({
   id,
   onClick,
   onMouseEnter,
@@ -40,9 +40,9 @@ export function NodeWrapper({
   nodeExtent,
   nodeOrigin,
   onError,
-}: NodeWrapperProps) {
+}: NodeWrapperProps<NodeType>) {
   const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
-    const node = s.nodeLookup.get(id)!;
+    const node = s.nodeLookup.get(id)! as NodeType;
 
     const positionAbsolute = nodeExtent
       ? clampPosition(node.computed?.positionAbsolute, nodeExtent)

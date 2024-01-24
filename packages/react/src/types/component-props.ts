@@ -50,7 +50,7 @@ import type {
  * ReactFlow component props.
  * @public
  */
-export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface ReactFlowProps<NodeType extends Node = Node> extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
   /** An array of nodes to render in a controlled flow.
    * @example
    * const nodes = [
@@ -62,7 +62,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    *  }
    * ];
    */
-  nodes?: Node[];
+  nodes?: NodeType[];
   /** An array of edges to render in a controlled flow.
    * @example
    * const edges = [
@@ -75,7 +75,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    */
   edges?: Edge[];
   /** The initial nodes to render in an uncontrolled flow. */
-  defaultNodes?: Node[];
+  defaultNodes?: NodeType[];
   /** The initial edges to render in an uncontrolled flow. */
   defaultEdges?: Edge[];
   /** Defaults to be applied to all new edges that are added to the flow.
@@ -99,23 +99,23 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    */
   defaultEdgeOptions?: DefaultEdgeOptions;
   /** This event handler is called when a user clicks on a node */
-  onNodeClick?: NodeMouseHandler;
+  onNodeClick?: NodeMouseHandler<NodeType>;
   /** This event handler is called when a user double clicks on a node */
-  onNodeDoubleClick?: NodeMouseHandler;
+  onNodeDoubleClick?: NodeMouseHandler<NodeType>;
   /** This event handler is called when mouse of a user enters a node */
-  onNodeMouseEnter?: NodeMouseHandler;
+  onNodeMouseEnter?: NodeMouseHandler<NodeType>;
   /** This event handler is called when mouse of a user moves over a node */
-  onNodeMouseMove?: NodeMouseHandler;
+  onNodeMouseMove?: NodeMouseHandler<NodeType>;
   /** This event handler is called when mouse of a user leaves a node */
-  onNodeMouseLeave?: NodeMouseHandler;
+  onNodeMouseLeave?: NodeMouseHandler<NodeType>;
   /** This event handler is called when a user right clicks on a node */
-  onNodeContextMenu?: NodeMouseHandler;
+  onNodeContextMenu?: NodeMouseHandler<NodeType>;
   /** This event handler is called when a user starts to drag a node */
-  onNodeDragStart?: OnNodeDrag;
+  onNodeDragStart?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user drags a node */
-  onNodeDrag?: OnNodeDrag;
+  onNodeDrag?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user stops dragging a node */
-  onNodeDragStop?: OnNodeDrag;
+  onNodeDragStop?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user clicks on an edge */
   onEdgeClick?: (event: ReactMouseEvent, edge: Edge) => void;
   /** This event handler is called when a user right clicks on an edge */
@@ -147,7 +147,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    *
    * return (<ReactFlow onNodeChange={onNodeChange} {...rest} />)
    */
-  onNodesChange?: OnNodesChange;
+  onNodesChange?: OnNodesChange<NodeType>;
   /** This event handler is called when a Edge is updated
    * @example // Use EdgesState hook to create edges and get onEdgesChange handler
    * import ReactFlow, { useEdgesState } from '@xyflow/react';
@@ -166,7 +166,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    */
   onEdgesChange?: OnEdgesChange;
   /** This event handler gets called when a Node is deleted */
-  onNodesDelete?: OnNodesDelete;
+  onNodesDelete?: OnNodesDelete<NodeType>;
   /** This event handler gets called when a Edge is deleted */
   onEdgesDelete?: OnEdgesDelete;
   /** This event handler gets called when a Node or Edge is deleted */
@@ -179,7 +179,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onSelectionDragStop?: SelectionDragHandler;
   onSelectionStart?: (event: ReactMouseEvent) => void;
   onSelectionEnd?: (event: ReactMouseEvent) => void;
-  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: NodeType[]) => void;
   /** When a connection line is completed and two nodes are connected by the user, this event fires with the new connection.
    *
    * You can use the addEdge utility to convert the connection to a complete edge.
@@ -201,7 +201,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onClickConnectStart?: OnConnectStart;
   onClickConnectEnd?: OnConnectEnd;
   /** This event handler gets called when a flow has finished initializing */
-  onInit?: OnInit;
+  onInit?: OnInit<NodeType>;
   /** This event handler is called while the user is either panning or zooming the viewport. */
   onMove?: OnMove;
   /** This event handler gets called when a user starts to pan or zoom the viewport */
@@ -223,7 +223,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   /** This event handler gets called when mouse leaves the pane */
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
   /** This handler gets called before the user deletes nodes or edges and provides a way to abort the deletion by returning false. */
-  onBeforeDelete?: OnBeforeDelete;
+  onBeforeDelete?: OnBeforeDelete<NodeType>;
   /** Custom node types to be available in a flow.
    *
    * React Flow matches a node's type to a component in the nodeTypes object.

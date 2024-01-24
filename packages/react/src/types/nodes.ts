@@ -26,18 +26,18 @@ export type OnNodeDrag<NodeType extends Node = Node> = (
   nodes: NodeType[]
 ) => void;
 
-export type NodeWrapperProps = {
+export type NodeWrapperProps<NodeType extends Node> = {
   id: string;
   nodesConnectable: boolean;
   elementsSelectable: boolean;
   nodesDraggable: boolean;
   nodesFocusable: boolean;
-  onClick?: NodeMouseHandler;
-  onDoubleClick?: NodeMouseHandler;
-  onMouseEnter?: NodeMouseHandler;
-  onMouseMove?: NodeMouseHandler;
-  onMouseLeave?: NodeMouseHandler;
-  onContextMenu?: NodeMouseHandler;
+  onClick?: NodeMouseHandler<NodeType>;
+  onDoubleClick?: NodeMouseHandler<NodeType>;
+  onMouseEnter?: NodeMouseHandler<NodeType>;
+  onMouseMove?: NodeMouseHandler<NodeType>;
+  onMouseLeave?: NodeMouseHandler<NodeType>;
+  onContextMenu?: NodeMouseHandler<NodeType>;
   resizeObserver: ResizeObserver | null;
   noDragClassName: string;
   noPanClassName: string;

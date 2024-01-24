@@ -14,8 +14,8 @@ import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
 import type { Node, ReactFlowState } from '../../types';
 
-export type NodesSelectionProps = {
-  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
+export type NodesSelectionProps<NodeType> = {
+  onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
   noPanClassName?: string;
   disableKeyboardA11y: boolean;
 };
@@ -32,7 +32,11 @@ const selector = (s: ReactFlowState) => {
   };
 };
 
-export function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
+export function NodesSelection<NodeType extends Node>({
+  onSelectionContextMenu,
+  noPanClassName,
+  disableKeyboardA11y,
+}: NodesSelectionProps<NodeType>) {
   const store = useStoreApi();
   const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
   const updatePositions = useUpdateNodePositions();
@@ -58,7 +62,7 @@ export function NodesSelection({ onSelectionContextMenu, noPanClassName, disable
   const onContextMenu = onSelectionContextMenu
     ? (event: MouseEvent) => {
         const selectedNodes = store.getState().nodes.filter((n) => n.selected);
-        onSelectionContextMenu(event, selectedNodes);
+        onSelectionContextMenu(event, selectedNodes as NodeType[]);
       }
     : undefined;
 

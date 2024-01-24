@@ -7,10 +7,10 @@ import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
 import { NodeWrapper } from '../../components/NodeWrapper';
-import type { ReactFlowState } from '../../types';
+import type { Node, ReactFlowState } from '../../types';
 
-export type NodeRendererProps = Pick<
-  GraphViewProps,
+export type NodeRendererProps<NodeType extends Node> = Pick<
+  GraphViewProps<NodeType>,
   | 'onNodeClick'
   | 'onNodeDoubleClick'
   | 'onNodeMouseEnter'
@@ -35,7 +35,7 @@ const selector = (s: ReactFlowState) => ({
   onError: s.onError,
 });
 
-const NodeRendererComponent = (props: NodeRendererProps) => {
+function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
   const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
@@ -67,7 +67,7 @@ const NodeRendererComponent = (props: NodeRendererProps) => {
           //   moved into `NodeComponentWrapper`. This ensures they are
           //   memorized – so if `NodeRenderer` *has* to rerender, it only
           //   needs to regenerate the list of nodes, nothing else.
-          <NodeWrapper
+          <NodeWrapper<NodeType>
             key={nodeId}
             id={nodeId}
             nodeTypes={props.nodeTypes}
@@ -94,8 +94,8 @@ const NodeRendererComponent = (props: NodeRendererProps) => {
       })}
     </div>
   );
-};
+}
 
 NodeRendererComponent.displayName = 'NodeRenderer';
 
-export const NodeRenderer = memo(NodeRendererComponent);
+export const NodeRenderer = memo(NodeRendererComponent) as typeof NodeRendererComponent;

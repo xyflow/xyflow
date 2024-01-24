@@ -31,7 +31,7 @@ function useStore<StateSlice = ExtractState>(
   return useZustandStore(store, selector, equalityFn);
 }
 
-const useStoreApi = () => {
+function useStoreApi() {
   const store = useContext(StoreContext);
 
   if (store === null) {
@@ -47,6 +47,6 @@ const useStoreApi = () => {
     }),
     [store]
   );
-};
+}
 
 export { useStore, useStoreApi };
