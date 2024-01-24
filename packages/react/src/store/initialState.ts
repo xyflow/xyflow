@@ -6,6 +6,7 @@ import {
   getViewportForBounds,
   Transform,
   updateConnectionLookup,
+  devWarn,
 } from '@xyflow/system';
 
 import type { Edge, Node, ReactFlowStore } from '../types';
@@ -100,7 +101,7 @@ const getInitialState = ({
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
     connectionRadius: 20,
-    onError: () => null,
+    onError: devWarn,
     isValidConnection: undefined,
     onSelectionChangeHandlers: [],
 
