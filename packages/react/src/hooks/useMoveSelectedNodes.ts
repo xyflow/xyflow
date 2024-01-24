@@ -57,7 +57,7 @@ export function useMoveSelectedNodes() {
       return node;
     });
 
-    updateNodePositions(nodeUpdates, true, false);
+    updateNodePositions(nodeUpdates);
   }, []);
 
   return moveSelectedNodes;
