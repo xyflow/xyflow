@@ -198,3 +198,7 @@ export const getViewportForBounds = (
 };
 
 export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;
+
+export function isCoordinateExtent(extent?: CoordinateExtent | 'parent'): extent is CoordinateExtent {
+  return extent !== undefined && extent !== 'parent';
+}
