@@ -13,6 +13,7 @@
 - Edge label has a default background and is clickable
 - do not use fallback handle if a specific id is being used
 - use correct id for `<Handle />` data-id attribute
+- fix `getNodesBounds` and add second param for passing options
 
 ## 0.0.34
 

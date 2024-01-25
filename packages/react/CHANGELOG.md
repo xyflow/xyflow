@@ -8,6 +8,7 @@
 - fix `OnNodeDrag` type
 - do not use fallback handle if a specific id is being used
 - fix `defaultEdgeOptions` markers not being applied
+- fix `getNodesBounds` and add second param for passing options
 
 ## 12.0.0-next.7
 
