@@ -134,7 +134,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{flowId}-{nodeId}-{id || null}-{type}"
+  data-id="{$flowId}-{nodeId}-{id || null}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
