@@ -1,5 +1,18 @@
 # reactflow
 
+## 11.10.3
+
+### Patch Changes
+
+- [#3829](https://github.com/xyflow/xyflow/pull/3829) [`b367173a`](https://github.com/xyflow/xyflow/commit/b367173a568cef0e3e84e42e50b2c15ec1d6e23a) - fix(subflow): show correct selection box
+- Updated dependencies [[`b367173a`](https://github.com/xyflow/xyflow/commit/b367173a568cef0e3e84e42e50b2c15ec1d6e23a)]:
+  - @reactflow/core@11.10.3
+  - @reactflow/background@11.3.8
+  - @reactflow/controls@11.2.8
+  - @reactflow/minimap@11.7.8
+  - @reactflow/node-resizer@2.2.8
+  - @reactflow/node-toolbar@1.3.8
+
 ## 11.10.2
 
 - [#3807](https://github.com/xyflow/xyflow/pull/3807) [`59c44df5`](https://github.com/xyflow/xyflow/commit/59c44df5300a87aedde53393ac31b85f7fcbcaa0) Thanks [@rhys-okane-instil](https://github.com/rhys-okane-instil)! - fix internally used getNodeRect function

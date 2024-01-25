@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.10.3
+
+### Patch Changes
+
+- [#3829](https://github.com/xyflow/xyflow/pull/3829) [`b367173a`](https://github.com/xyflow/xyflow/commit/b367173a568cef0e3e84e42e50b2c15ec1d6e23a) - fix(subflow): show correct selection box
+
 ## 11.10.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @reactflow/minimap
 
+## 11.7.8
+
+### Patch Changes
+
+- Updated dependencies [[`b367173a`](https://github.com/xyflow/xyflow/commit/b367173a568cef0e3e84e42e50b2c15ec1d6e23a)]:
+  - @reactflow/core@11.10.3
+
 ## 11.7.7
 
 ### Patch Changes
